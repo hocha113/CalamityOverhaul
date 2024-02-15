@@ -1,0 +1,37 @@
+﻿using CalamityMod.Items;
+using CalamityMod.Projectiles.Ranged;
+using CalamityMod.Sounds;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.Items.Ranged
+{
+    /// <summary>
+    /// 元素爆破
+    /// </summary>
+    internal class ElementalBlaster : EctypeItem
+    {
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "ElementalBlaster";
+        public override void SetDefaults() {
+            Item.damage = 67;
+            Item.DamageType = DamageClass.Ranged;
+            Item.width = 104;
+            Item.height = 42;
+            Item.useTime = 6;
+            Item.useAnimation = 6;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.noMelee = true;
+            Item.knockBack = 1.75f;
+            Item.value = CalamityGlobalItem.Rarity11BuyPrice;
+            Item.rare = ItemRarityID.Purple;
+            Item.UseSound = CommonCalamitySounds.PlasmaBoltSound;
+            Item.autoReuse = true;
+            Item.shoot = ModContent.ProjectileType<RainbowBlast>();
+            Item.shootSpeed = 18f;
+            Item.CWR().heldProjType = ModContent.ProjectileType<ElementalBlasterHeldProj>();
+            Item.CWR().hasHeldNoCanUseBool = true;
+        }
+    }
+}

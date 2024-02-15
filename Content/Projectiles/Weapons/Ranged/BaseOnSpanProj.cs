@@ -1,0 +1,109 @@
+﻿using CalamityMod.Projectiles.Ranged;
+using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using Terraria;
+using Terraria.Audio;
+using Terraria.Graphics.Effects;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
+{
+    /// <summary>
+    /// 一个通用的用于制造蓄力效果的实体栈，其中Projectile.ai[0]默认作为时间计数器
+    /// 而Projectile.ai[1]用于存储需要跟随的弹幕的索引
+    /// </summary>
+    internal class BaseOnSpanProj : ModProjectile
+    {
+        public override string Texture => CWRConstant.Placeholder;
+        public Player Owner => Main.player[Projectile.owner];
+        public virtual float MaxCharge => 90f;
+        public virtual float ChargeProgress => (MaxCharge - Projectile.timeLeft) / MaxCharge;
+        public virtual float Spread => MathHelper.PiOver2 * (1 - (float)Math.Pow(ChargeProgress, 1.5) * 0.95f);
+        protected virtual float angle => Projectile.rotation;
+        /// <summary>
+        /// 一个4长度的颜色数组
+        /// </summary>
+        protected virtual Color[] colors => new Color[] { Color.White, Color.White, Color.White, Color.White };
+        protected virtual float edgeBlendLength => 0.07f;
+        protected virtual float edgeBlendStrength => 8f;
+        protected virtual float halfSpreadAngleRate => 0.5f;
+        protected bool onFire;
+
+        public override void SetDefaults() {
+            Projectile.width = 14;
+            Projectile.height = 14;
+            Projectile.friendly = true;
+            Projectile.alpha = 255;
+            Projectile.extraUpdates = 1;
+            Projectile.penetrate = 1;
+            Projectile.timeLeft = (int)MaxCharge;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.light = 0.2f;
+        }
+
+        public sealed override bool? CanDamage() => false;
+
+        public sealed override void AI() {
+            Player player = Main.player[Projectile.owner];
+            Projectile owner = null;
+            if (Projectile.ai[1] >= 0 && Projectile.ai[1] < Main.maxProjectiles) {
+                owner = Main.projectile[(int)Projectile.ai[1]];
+            }
+            if (owner == null) {
+                Projectile.Kill();
+                return;
+            }
+            Projectile.Center = owner.Center;
+            Projectile.rotation = owner.rotation;
+            if (++Projectile.ai[0] >= MaxCharge) {
+                onFire = true;
+            }
+            if (!player.PressKey(false)) {
+                Projectile.Kill();
+            }
+        }
+
+        public virtual void SpanSoundFunc() => SoundEngine.PlaySound(SoundID.Item96, Projectile.Center);
+
+        public virtual void SpanProjFunc() {
+
+        }
+
+        public sealed override void OnKill(int timeLeft) {
+            if (Projectile.IsOwnedByLocalPlayer() && onFire) {
+                SpanSoundFunc();
+                SpanProjFunc();
+            }
+        }
+
+        public sealed override bool PreDraw(ref Color lightColor) {
+            float blinkage = 0;
+            if (Projectile.timeLeft >= MaxCharge * 1.5f) {
+                blinkage = (float)Math.Sin(MathHelper.Clamp((Projectile.timeLeft - MaxCharge * 1.5f) / 15f, 0, 1) * MathHelper.PiOver2 + MathHelper.PiOver2);
+            }
+            Effect effect = Filters.Scene["CalamityMod:SpreadTelegraph"].GetShader().Shader;
+            effect.Parameters["centerOpacity"].SetValue(ChargeProgress + 0.3f);
+            effect.Parameters["mainOpacity"].SetValue((float)Math.Sqrt(ChargeProgress));
+            effect.Parameters["halfSpreadAngle"].SetValue(Spread * halfSpreadAngleRate);
+            effect.Parameters["edgeColor"].SetValue(Color.Lerp(colors[0], colors[1], blinkage).ToVector3());
+            effect.Parameters["centerColor"].SetValue(Color.Lerp(colors[2], colors[3], blinkage).ToVector3());
+            effect.Parameters["edgeBlendLength"].SetValue(0.17f);
+            effect.Parameters["edgeBlendStrength"].SetValue(8f);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+
+            Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+
+            Main.EntitySpriteDraw(texture, Owner.MountedCenter - Main.screenPosition, null, Color.White, angle, new Vector2(texture.Width / 2f, texture.Height / 2f), 700f, 0, 0);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+            return false;
+        }
+    }
+}

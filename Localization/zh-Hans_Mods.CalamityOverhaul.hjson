@@ -1,0 +1,1433 @@
+CWRRecipes: {
+	// ApostolicRelics: Apostolic Relics
+	// GodEaterWeapon: God Eater weapon
+}
+
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
+Tools.RecipesLoseText: 你无法直接制作这个东西
+
+Items: {
+	BrinyBaron: {
+		DisplayName: 海爵剑
+		Tooltip:
+			'''
+			左键挥舞巨刃，击中敌人后向两侧发射水龙卷
+			右键发射三发水漩涡
+			'''
+	}
+
+	CosmicShiv: {
+		DisplayName: 宇宙短剑
+		Tooltip:
+			'''
+			击中敌人后在玩家前方生成数个浩渺之眼
+			召唤宇宙射线灼烧敌人
+			'''
+	}
+
+	DragonsBreath: {
+		DisplayName: 巨龙之息
+		Tooltip:
+			'''
+			发射大量高温子弹
+			右键喷射灼热的龙息
+			'''
+	}
+
+	BansheeHook: {
+		DisplayName: 女妖之爪
+		Tooltip:
+			'''
+			攻击时生成大量哀怨之镰，并发射一个追杀敌人的惊惧巨镰
+			右键积蓄惊惧能量，在能量耗尽前将在鼠标位置召唤大量憎恶镰刀，
+			憎恶镰刀击中敌人后会额外生成大量的怨灵，给予多种增益
+			'''
+	}
+
+	BlightedCleaver: {
+		DisplayName: 暴君之刃
+		Tooltip: 刀刃击中敌人会积攒暴君能量，并生成大量的屠杀之镰
+	}
+
+	BurntSienna: {
+		DisplayName: 沙之刃
+		Tooltip: 挥舞会抛舞出三个沙球
+	}
+
+	CometQuasher: {
+		DisplayName: 彗星陨刃
+		Tooltip: 让大量流星从天而降
+	}
+
+	DefiledGreatsword: {
+		DisplayName: 真暴君之刃
+		Tooltip: 刀刃击中敌人会积攒暴君能量，并生成大量的丛林之镰
+	}
+
+	EntropicClaymore: {
+		DisplayName: 熵之舞
+		Tooltip: 刀光之间群星可见
+	}
+
+	GildedProboscis: {
+		DisplayName: 镀金鸟喙
+		Tooltip:
+			'''
+			攻击时分裂出带电羽毛
+			右键蓄能，在电量消耗完前将维持一道电流攻击沿路敌人
+			'''
+	}
+
+	Terratomere: {
+		DisplayName: 泰拉巨刃
+		Tooltip: 挥舞释放金源之力
+	}
+
+	TerrorBlade: {
+		DisplayName: 惊惧魂刃
+		Tooltip:
+			'''
+			挥舞释放惊惧爆弹
+			刀刃砍中敌人将会增强武器
+			'''
+	}
+
+	ArkoftheCosmos: {
+		DisplayName: 鸿蒙方舟
+		Tooltip: 嗯...你不应该拥有它
+	}
+
+	StreamGouge: {
+		DisplayName: 宇宙暗流
+		Tooltip:
+			'''
+			挥刺时发射宇宙暗光矢，击中敌人后爆出六团弑神者飞镖
+			右键使用暗流穿刺
+			'''
+	}
+
+	ElementalLance: {
+		DisplayName: 元素长枪
+		Tooltip:
+			'''
+			挥刺时发射多次分裂的元素弹
+			右键生成数道棱彩极光
+			'''
+	}
+
+	AirSpinner: {
+		DisplayName: 天蓝悠悠球
+		Tooltip: 向附近的敌人发射散射的羽毛
+	}
+
+	GoldplumeSpear: {
+		DisplayName: 金羽
+		Tooltip:
+			'''
+			挥刺发射追踪的小型羽刃
+			右键令天羽从天而降
+			'''
+	}
+
+	WindBlade: {
+		DisplayName: 风之流
+		Tooltip:
+			'''
+			挥舞发射扰乱大范围气流的气旋
+			右键发射追踪的小型气旋
+			'''
+	}
+
+	Arbalest: {
+		DisplayName: 机械强弩
+		Tooltip:
+			'''
+			发射大量箭矢，箭矢会随时间愈发巨大
+			右键进行单发速射
+			“它的齿轮咔哧咔哧的转个不停”
+			'''
+	}
+
+	Deathwind: {
+		DisplayName: 死亡之风
+		Tooltip:
+			'''
+			木箭会被转化为死亡激光束
+			近距离击中敌人会吹出死亡气流
+			'''
+	}
+
+	DragonRage: {
+		DisplayName: 巨龙之怒
+		Tooltip:
+			'''
+			刀锋旋转之间灭杀周围的敌人
+			右键发射龙火球
+			'''
+	}
+
+	WhiplashGalactica: {
+		DisplayName: 银河鞭挞
+		Tooltip: 击中敌人后进行死亡标记，并发射宇宙火球
+	}
+
+	Tradewinds: {
+		DisplayName: 信风
+		Tooltip:
+			'''
+			发射减速的天之羽
+			右键更换为发射粘性的羽毛
+			'''
+	}
+
+	DeathhailStaff: {
+		DisplayName: 死亡冰雹
+		Tooltip: 令大量的死亡冰雹从天而降
+	}
+
+	Excelsus: {
+		DisplayName: 宙宇波能刃
+		Tooltip:
+			'''
+			挥舞发射数个宇宙之刃
+			右键发射寰宇光暗矢
+			'''
+	}
+
+	GhastlyVisage: {
+		DisplayName: 鬼之形
+		Tooltip: 发射数个怨魂爆弹
+	}
+
+	Galeforce: {
+		DisplayName: 烈风
+		Tooltip:
+			'''
+			攻击附带发射三发羽毛
+			右键进行单发速射
+			'''
+	}
+
+	ElementWhip: {
+		DisplayName: 元素长鞭
+		Tooltip: 让敌人被元素之火灼烧
+	}
+
+	ElementalShiv: {
+		DisplayName: 元素短剑
+		Tooltip: ""
+	}
+
+	TheRelicLuxor: {
+		DisplayName: 卢克索的圣物
+		Tooltip:
+			'''
+			灼热的灵力将伴随你的每一次攻击，耀界之神与你同在
+			[tips]
+			'''
+	}
+
+	TheLuxirSoulArtifact: {
+		DisplayName: 卢克索的灵魂圣器
+		Tooltip:
+			'''
+			无论是神还是不朽，皆承认你的荣耀
+			[tips]
+			'''
+	}
+
+	AzureDragonRage: {
+		DisplayName: 青龙之怒
+		Tooltip: 有一股浓厚的青草气道
+	}
+
+	BleedingScourge: {
+		DisplayName: 血色鞭挞
+		Tooltip: 击中敌人后进行死亡标记，并令血雨降下
+	}
+
+	GhostFireWhip: {
+		DisplayName: 鬼火鞭
+		Tooltip: 一把很长的鞭子，由地牢冤魂的怒火编制而成
+	}
+
+	AllhallowsGoldWhip: {
+		DisplayName: 金源长鞭
+		Tooltip: 它实际上还没有完成
+	}
+
+	DivineSourceBlade: {
+		DisplayName: 金源灭却刃
+		Tooltip: ""
+	}
+
+	FatesReveal: {
+		DisplayName: 命运神启
+		Tooltip: 生成数个哀怨灵火攻击敌人
+	}
+
+	FoodStallChair: {
+		DisplayName: 大排档塑料椅子
+		Tooltip: ""
+	}
+
+	DaemonsFlame: {
+		DisplayName: 鬼火弓
+		Tooltip: ""
+	}
+
+	ClaretCannon: {
+		DisplayName: 真红手炮
+		Tooltip: ""
+	}
+
+	CleansingBlaze: {
+		DisplayName: 净神者之焰
+		Tooltip: ""
+	}
+
+	AnnihilatingUniverse: {
+		DisplayName: 湮宇星矢
+		Tooltip:
+			'''
+			箭矢击中敌人后在原地留下一颗璀璨之星
+			右键以噬神者之力摧毁敌人
+			'''
+	}
+
+	HeavenfallLongbow: {
+		DisplayName: 天堂陨落长弓
+		Tooltip:
+			'''
+			发射无尽之箭，终焉彩虹能量将随后而至
+			右键让天堂之箭从天而降
+			蓄力完成后按下[KEY]启动万象审判
+			[legend]
+			'''
+		Legend:
+			'''
+
+			战争的余烬在百亿年后的今天依然燃烧如初
+			耀界之神的身躯破碎成无数璀璨的碎片散落遍银河各处
+			奇迹之物不过是对神的残骸的拙劣仿制
+			而现在，这把击杀过至高神的长弓，将从天堂的怒火中复现
+
+			'''
+	}
+
+	AegisBlade: {
+		DisplayName: 庇护之刃
+		Tooltip:
+			'''
+			挥舞时抛出惩戒火球
+			右键生成庇护巨刃
+			'''
+	}
+
+	DragonsBreathRifle: {
+		DisplayName: 龙息冲锋枪
+		Tooltip: ""
+	}
+
+	TextItem: {
+		DisplayName: 测试物品
+		Tooltip: 嗯...你不应该拥有它
+	}
+
+	BaseSingularity: {
+		DisplayName: 奇点基类
+		Tooltip: 嗯...你不应该拥有它
+	}
+
+	InfiniteIngot: {
+		DisplayName: 无尽锭
+		Tooltip: 寰宇之力，就在掌中
+	}
+
+	CosmicMetalSingularity: {
+		DisplayName: 宇宙金属奇点
+		Tooltip: ""
+	}
+
+	TransmutationOfMatterItem: {
+		DisplayName: 欧米茄物质聚合仪
+		Tooltip: ""
+	}
+
+	DarkMatterCompressorItem: {
+		DisplayName: 暗物质压缩机
+		Tooltip: ""
+	}
+
+	AerialiteMetalSingularity: {
+		// DisplayName: Aerialite Metal Singularity
+		// Tooltip: ""
+	}
+
+	AscendantSpiritEssenceSingularity: {
+		// DisplayName: Ascendant Spirit Essence Singularity
+		// Tooltip: ""
+	}
+
+	AstralMetalSingularity: {
+		// DisplayName: Astral Metal Singularity
+		// Tooltip: ""
+	}
+
+	BloodstoneCoreSingularity: {
+		// DisplayName: Bloodstone Core Singularity
+		// Tooltip: ""
+	}
+
+	CoreofCalamitySingularity: {
+		// DisplayName: Coreof Calamity Singularity
+		// Tooltip: ""
+	}
+
+	CoreofEleumSingularity: {
+		// DisplayName: Coreof Eleum Singularity
+		// Tooltip: ""
+	}
+
+	CoreofHavocSingularity: {
+		// DisplayName: Coreof Havoc Singularity
+		// Tooltip: ""
+	}
+
+	CoreofSunlightSingularity: {
+		// DisplayName: Coreof Sunlight Singularity
+		// Tooltip: ""
+	}
+
+	DepthCellsSingularity: {
+		// DisplayName: Depth Cells Singularity
+		// Tooltip: ""
+	}
+
+	DivineGeodeSingularity: {
+		// DisplayName: Divine Geode Singularity
+		// Tooltip: ""
+	}
+
+	DubiousPlatingSingularity: {
+		// DisplayName: Dubious Plating Singularity
+		// Tooltip: ""
+	}
+
+	PolterplasmSingularity: {
+		// DisplayName: Polterplasm Singularity
+		// Tooltip: ""
+	}
+
+	RuinousSoulSingularity: {
+		// DisplayName: Ruinous Soul Singularity
+		// Tooltip: ""
+	}
+
+	ShadowspecSingularity: {
+		// DisplayName: Shadowspec Singularity
+		// Tooltip: ""
+	}
+
+	UnholyEssenceSingularity: {
+		// DisplayName: Unholy Essence Singularity
+		// Tooltip: ""
+	}
+
+	Murasama: {
+		DisplayName: 高分子斩切刃
+		Tooltip:
+			'''
+			右键进行瞄准，按下扳机键[KEY1]发射刀身，在刀身飞行过程中按下左键执行升龙斩击 [Lang1]
+			按下[KEY2]消耗两点充能值，进行一次下砸 [Lang2]
+			升龙斩击中敌人后将给予武器1充能值，充能达到最大值10点后再次升龙斩中敌人将触发终结技 [Lang3]
+			[c/fff08c:随着旅途的遥远而变强]
+			[c/ff4500:"如果有链锯剑会更好"]
+			[Lang4]:
+			[Text]
+			'''
+	}
+
+	HolyCollider: {
+		DisplayName: 圣光巨刃
+		Tooltip: 挥舞时让圣之烈焰向你聚拢
+	}
+
+	Oracle: {
+		DisplayName: 神启
+		Tooltip: 指哪打哪
+	}
+
+	PerfectDark: {
+		DisplayName: 暗雷回响
+		Tooltip: ""
+	}
+
+	StarnightLance: {
+		DisplayName: 寒夜长枪
+		Tooltip: 令人通体生寒
+	}
+
+	CelestialClaymore: {
+		DisplayName: 天神之剑
+		Tooltip: 挥舞时在周围生成爆炸烁星
+	}
+
+	TheEnforcer: {
+		DisplayName: 暴政
+		Tooltip: 挥舞时在周围生成宇宙之火
+	}
+
+	InfinitePick: {
+		DisplayName: 寰宇贪婪镐
+		Tooltip: ""
+	}
+
+	DarkMatterBall: {
+		DisplayName: 暗物质球
+		Tooltip: ""
+	}
+
+	GreatswordofJudgement: {
+		DisplayName: 制裁大剑
+		Tooltip: ""
+	}
+
+	Orderbringer: {
+		DisplayName: 携序之刃
+		Tooltip: ""
+	}
+
+	IridescentExcalibur: {
+		DisplayName: 元素圣剑
+		Tooltip: ""
+	}
+
+	EndlessStabilizer: {
+		DisplayName: 休谟稳定器
+		Tooltip: 让一些强大的物品稳定下来
+	}
+
+	BlackMatterStick: {
+		DisplayName: 超密质中子星聚合杆
+		Tooltip: ""
+	}
+
+	InfiniteStick: {
+		DisplayName: 无尽杆
+		Tooltip: ""
+	}
+
+	InfinityCatalyst: {
+		DisplayName: 无尽催化剂
+		Tooltip: 你的贪婪即将达到顶点
+	}
+
+	DawnshatterAzure: {
+		DisplayName: 苍穹破晓
+		Tooltip:
+			'''
+			烈火净化灵魂，将你的敌人彻底掠夺干净
+			[c/fff08c:-击杀敌人后会掉落多倍物品-]
+			'''
+	}
+
+	DecayParticles: {
+		DisplayName: 虚粒子
+		Tooltip: ""
+	}
+
+	DecaySubstance: {
+		DisplayName: 衰变物质
+		Tooltip: ""
+	}
+
+	DissipationSubstance: {
+		DisplayName: 消渐物质
+		Tooltip: ""
+	}
+
+	SpectralMatter: {
+		DisplayName: 幽灵物质
+		Tooltip: ""
+	}
+
+	InfiniteToiletItem: {
+		DisplayName: 无尽马桶
+		Tooltip: "[c/fff08c:寰宇之力，就在桶中]"
+	}
+
+	StormGoddessSpear: {
+		DisplayName: 风暴女神之矛
+		Tooltip:
+			'''
+			发射出带有毁灭电弧的风暴之吻
+			[legend]
+			'''
+		Legend:
+			'''
+
+			在泰拉大陆的幽暗之境，昔日的女战神艾莉娜如今已陷入无尽的混沌和绝望之中，成为众人唇边轻声呼唤的风暴女神。
+			曾经，她是大陆上无可匹敌的战士，其无畏之勇与刀锋之锐如同闪电一般统御着一片宁谧的天空。
+			然而，命运的阴影在她的脚下蔓延。在光与暗的终焉战役中，天堂崩坏陨落，黑暗被光明所蚕食。
+			风暴女神亲身经历了至高神的残酷。傲慢的神明夺走了她的同袍、亲人，摧毁了她曾经庇护的一切。
+			至高神的罪孽令她对曾经虔信的正义产生疑虑，最终陷入深不可测的堕落之渊。
+			随着战火的余烬飘散，艾莉娜回归泰拉，却已不再是昔日的神勇战士。
+			内心的苦痛与无尽的绝望使她抛却了崇高的信仰，寻求新的力量的源泉。
+			在一场血腥的仪式中，她如愿获得了那禁忌的赐福。无尽的力量汹涌而至，却以灵魂的永恒堕落为代价。
+			如今的风暴女神成为了泰拉深渊的象征，她的铠甲上嵌入着如夜空一般的黑曜石，眼中闪烁着的堕落之辉，混沌涌动，憎恶的情绪投射向泰拉大陆。
+			她的剑锋犹如黑夜中的雷霆，带有毁灭之力的电弧在其周围舞动。她不再为正义而战，而是沦为一道摧毁一切的黑暗势力。
+			尽管她依旧保留着昔日的武技和战斗技巧，但此刻她已是泰拉的公敌，遭受着无尽的唾弃。
+			风暴女神残酷地踏上孤寂而堕落的征途，在黑暗中徘徊。她的存在本身便是对泰拉昔日荣光的嘲讽，她成为一场吞噬一切希望的风暴。
+			如同堕入深渊的耀星，她在无边的黑暗中绽放，携带着宇宙的哀伤和毁灭。
+			'''
+	}
+
+	DragonsScaleGreatsword: {
+		DisplayName: 龙藻巨剑
+		Tooltip: ""
+	}
+
+	CosmicCalamity: {
+		DisplayName: 银河之灾
+		Tooltip: ""
+	}
+
+	Weapons: {
+		Rogue: {
+			WaveSkipper: {
+				DisplayName: 越浪蛟
+				Tooltip:
+					'''
+					左键发射在沙地中潜跃的沙牙，潜行攻击发射三发巨大的沙牙
+					右键发射弹跳沙牙，潜行攻击令数个疾速的沙牙从天而降
+					'''
+			}
+		}
+	}
+
+	Gangarus: {
+		DisplayName: 朗基努斯之枪
+		Tooltip:
+			'''
+			每当潜伏条达到上限时进行一次增幅，最高叠加到六重立场
+			手持时对最近的敌人进行命运标记
+			立场击中标记的敌人后将触发朝圣者之怒
+			[legend]
+			'''
+		Legend:
+			'''
+
+			“破碎的神啊，请允许我赎还我的罪。”
+			战争已经蔓延数个世纪，我，作为逃离伟大文明的溃败者，孤身在这宇宙边缘的荒凉星球上苟且生存。
+			数万光年外，战争的巨械在碾碎星辰，残暴而可怖的攻击能在瞬息间清除数光年的星空，将其变为寂静之域。
+			而这样的战争，持续了数百年，如今，我所属的伟大文明岌岌可危，我将成为宇宙中的罪人，成为那最为不敬的亵渎者。
+			我的血肉已然腐朽，骨骸如同岁月的老化皱纹，我即将沦为我所创造的孱弱机械之一。
+			在此之前，愿神赐予我宽恕，赦免我对这至高存在的不敬之罪，让我在灵魂陨落的那一刻，陷入炼狱的深渊，受那无尽的苦痛。
+			然而，无论如何，为了我所属的文明，为了在这场跨越世纪的战争中取得胜利，我必须汲取这至高之物残缺的力量。
+			为了引导它的神秘力量，我别无选择，只能将冰冷的机械灌注进它破碎的神体之中。
+			这是一场不可避免的亵渎，为了文明的延续，为了战争的胜利，我不得不成为那至高之物最虔诚的信徒，有史以来最不敬的亵渎者。
+			'''
+	}
+
+	SubmarineShocker: {
+		DisplayName: 渊海短剑
+		Tooltip: 发射电离子火花
+	}
+
+	BrimstoneSword: {
+		DisplayName: 硫火短剑
+		Tooltip:
+			'''
+			一把炽热的短剑
+			击中敌人后生成硫火间歇泉
+			'''
+	}
+
+	BloodAltar: {
+		DisplayName: 深红祭坛
+		Tooltip: 让世界被深红所注视
+	}
+
+	StarMyriadChanges: {
+		DisplayName: 万变之星
+		Tooltip: 赞美变化之神！
+	}
+
+	TerminusOver: {
+		DisplayName: 终焉之触
+		Tooltip: 开启终焉之战
+	}
+
+	PhosphorescentGauntlet: {
+		DisplayName: 磷光拳套
+		Tooltip:
+			'''
+			以拳之意志打击敌人
+			右键近距离挥舞刺拳
+			'''
+	}
+
+	StellarStriker: {
+		DisplayName: 月炎之锋
+		Tooltip:
+			'''
+			发生残月射线
+			右键加强剑身，砍中敌人后令数道月耀射线降下
+			'''
+	}
+
+	TheLastMourning: {
+		DisplayName: 末晓之殇
+		Tooltip:
+			'''
+			以罪亡颅骨和燎狱之魂追杀敌人
+			右键加强剑身，砍中敌人后生成数个怨灵颅骨
+			'''
+	}
+
+	Greentide: {
+		DisplayName: 翡翠之潮
+		Tooltip:
+			'''
+			在指定位置下方生成几颗利维坦毒牙
+			右键加强剑身，砍中敌人后降下更多的毒牙
+			'''
+	}
+
+	DiseasedPike: {
+		DisplayName: 瘟疫长枪
+		Tooltip:
+			'''
+			发射瘟疫蜂群
+			右键生成追踪的瘟疫能量
+			'''
+	}
+
+	PlagueKeeper: {
+		DisplayName: 瘟疫大剑
+		Tooltip: 发射瘟疫蜂群
+	}
+
+	BalefulHarvester: {
+		DisplayName: 邪恶收割者
+		Tooltip:
+			'''
+			发射祛恶镰刀
+			右键可以抛出，引发一场小型的能量地震
+			"嘿！你得把它捡回来！"
+			'''
+	}
+
+	VulcaniteLance: {
+		DisplayName: 火山长矛
+		Tooltip:
+			'''
+			手持时在玩家周围生成燎狱火球
+			长矛击中燎狱火球会爆发出燎狱能量
+			'''
+	}
+
+	AstralBlade: {
+		DisplayName: 星幻刃
+		Tooltip:
+			'''
+			挥舞发射幻星之球，被击中的敌人的剩余血量越高，造成的实际伤害越高
+			真近战击中敌人后让群星降临
+			'''
+	}
+
+	AstralPike: {
+		DisplayName: 幻星长矛
+		Tooltip:
+			'''
+			发射三颗璀璨幻星
+			真近战击中敌人后让群星降临
+			'''
+	}
+
+	AnarchyBlade: {
+		DisplayName: 混乱之刃
+		Tooltip:
+			'''
+			每挥舞三次发射一颗硫火爆弹
+			右键增强剑身
+			'''
+	}
+
+	Aftershock: {
+		DisplayName: 地炎阔刃
+		Tooltip:
+			'''
+			挥舞发射数个大地碎片
+			右键增强剑身，挥舞时让大地碎片从玩家上方落下，真近战击中敌人让地炎巨石从天而降
+			'''
+	}
+
+	Brimlash: {
+		DisplayName: 硫火鞭
+		Tooltip:
+			'''
+			发射硫火剑气
+			右键从五个方向发射追踪的硫火爆弹，但有几率灼烧玩家
+			'''
+	}
+
+	EarthenPike: {
+		DisplayName: 地炎长矛
+		Tooltip:
+			'''
+			发射数个大地碎片，有一定概率额外发射一个地炎巨石
+			右键可以将武器投掷出去
+			"嘿！你得捡回来！"
+			'''
+	}
+
+	TeardropCleaver: {
+		DisplayName: 泪刃
+		Tooltip: 泪雨倾盆
+	}
+
+	SausageMaker: {
+		DisplayName: 香肠矛
+		Tooltip:
+			'''
+			每刺出5次发射出一颗血肉炸弹
+			真近战击中后发射追踪血珠
+			'''
+	}
+
+	PestilenceIngot: {
+		DisplayName: 瘟疫锭
+		Tooltip: 闻起来像发酸的香草方糕
+	}
+
+	ReminiscenceBreastplate: {
+		DisplayName: 塑神胸甲
+		Tooltip: ""
+	}
+
+	AbsoluteZero: {
+		DisplayName: 绝对零度
+		Tooltip: 发射极寒冰弹
+	}
+
+	FlarefrostBlade: {
+		DisplayName: 冰与火之刃
+		Tooltip: ""
+	}
+
+	MurasamaMould: {
+		DisplayName: 血金模具
+		Tooltip: 用于制作一些高精度的东西，合成时不会直接消耗而是损耗耐久
+	}
+
+	WaveSkipper: {
+		DisplayName: 越浪蛟
+		Tooltip:
+			'''
+			左键发射在沙地中潜跃的沙牙，潜行攻击发射三发巨大的沙牙
+			右键发射弹跳沙牙，潜行攻击令数个疾速的沙牙从天而降
+			'''
+	}
+
+	BlossomFlux: {
+		DisplayName: 叶流
+		Tooltip:
+			'''
+			发射追踪敌人的叶流，攻击速度会愈发加快，受击时有概率让速度清零
+			右键蓄力发射强大的丛林爆弹
+			'''
+	}
+
+	Phangasm: {
+		DisplayName: 幻魔
+		Tooltip: 击中敌人后额外生成影流射弹
+	}
+
+	OverhaulTheBibleBook: {
+		DisplayName: 大修宝典
+		Tooltip: ""
+	}
+
+	Contagion: {
+		DisplayName: 瘟疫
+		Tooltip:
+			'''
+			左键发射速度极快的霍乱箭矢，途中释放多个瘟疫炸弹
+			右键召唤花园世界的生命蜜蜂
+			[c/085054:慈父将一直关注着这弓的持有者]
+			'''
+	}
+
+	Alluvion: {
+		DisplayName: 啸流
+		Tooltip:
+			'''
+			将木箭转化为海洋箭矢
+			以海洋之千钧力摧毁敌人
+			'''
+	}
+
+	PlanetaryAnnihilation: {
+		DisplayName: 湮灭千星
+		Tooltip: 可以将木箭转化为能量冲击
+	}
+
+	TheMaelstrom: {
+		DisplayName: 幽漩风暴
+		Tooltip:
+			'''
+			左键发射激流水箭，击中敌人后释放一次水压炸弹
+			右键蓄力释放一个充能猎魂鲨
+			'''
+	}
+
+	ClockGatlignum: {
+		DisplayName: 发条鳄鱼枪
+		Tooltip:
+			'''
+			以不太理想的精准度进行扫射
+			较弱的后坐力
+			"它并不能射出鳄鱼，令人失望"
+			'''
+	}
+
+	ElementalBlaster: {
+		DisplayName: 元素冲击波
+		Tooltip:
+			'''
+			发射出元素状射流
+			无后坐力
+			'''
+	}
+
+	MarksmanBow: {
+		DisplayName: 猎人长弓
+		Tooltip:
+			'''
+			快准狠的射出一发精准的箭矢，是狩猎的成功关键
+			发射的箭矢在消失时有概率生成一个幽灵
+			'''
+	}
+
+	NettlevineGreatbow: {
+		DisplayName: 荆棘藤
+		Tooltip:
+			'''
+			射出的箭矢会被染上剧毒
+			被射击四次会触发一轮青蒿扫射
+			'''
+	}
+
+	SpectreRifle: {
+		DisplayName: 幽灵狙击枪
+		Tooltip:
+			'''
+			发射亡魂追杀敌人
+			很强的后坐力
+			"这玩意儿都不使用助推剂发射弹头，它哪里来的后坐力？！"
+			'''
+	}
+}
+
+Projectiles: {
+	// SeaBlueBrinySpout.DisplayName: Sea Blue Briny Spout
+
+	Melee: {
+		// CosmicShivProjectile.DisplayName: Cosmic Shiv Projectile
+		// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
+		// RemakeCosmicShivProjectile.DisplayName: Remake Cosmic Shiv Projectile
+		// RemakeStreamGougeProj.DisplayName: Remake Stream Gouge Proj
+		// RCosmicShivProjectile.DisplayName: R Cosmic Shiv Projectile
+		// RStreamGougeProj.DisplayName: R Stream Gouge Proj
+		// MourningSkull2.DisplayName: Mourning Skull2
+	}
+
+	// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
+	// CosmicRay_0.DisplayName: Cosmic Ray_0
+	// CosmicRay.DisplayName: Cosmic Ray
+	// RemakeCosmicShivBall.DisplayName: Remake Cosmic Shiv Ball
+	// MightyStar.DisplayName: Mighty Star
+	// StarDust.DisplayName: Star Dust
+	// RenderDistort.DisplayName: Render Distort
+	// RenderGap.DisplayName: Render Gap
+	// DragonsBreathProjectiles.DisplayName: Dragons Breath Projectiles
+	// DragonFireRupture.DisplayName: Dragon Fire Rupture
+	// GunCasing.DisplayName: Gun Casing
+	// HeldProjectiles.DisplayName: Held Projectiles
+	// RemakeBansheeHookScythe.DisplayName: Remake Banshee Hook Scythe
+	// RemakeBlazingPhantomBlade.DisplayName: Remake Blazing Phantom Blade
+	// RemakeTerratomereHoldoutProj.DisplayName: Remake Terratomere Holdout Proj
+	// RedLightningFeather.DisplayName: Red Lightning Feather
+	// TerratomereBolt.DisplayName: Terratomere Bolt
+	// GildedProboscisKevinLightning.DisplayName: Gilded Proboscis Kevin Lightning
+	// TerratomereBigSlashs.DisplayName: Terratomere Big Slashs
+	// TerratomereBolts.DisplayName: Terratomere Bolts
+	// TerratomereBeams.DisplayName: Terratomere Beams
+	// AbominateHookScythe.DisplayName: Abominate Hook Scythe
+	// AbominateSpirit.DisplayName: Abominate Spirit
+	// SpiritFlame.DisplayName: Spirit Flame
+	// DoGDeaths.DisplayName: Do G Deaths
+	// ArkoftheAncientsParryHoldouts.DisplayName: Arkofthe Ancients Parry Holdouts
+	// ArkoftheCosmosBlasts.DisplayName: Arkofthe Cosmos Blasts
+	// ArkoftheCosmosParryHoldouts.DisplayName: Arkofthe Cosmos Parry Holdouts
+	// ArkoftheCosmosSwungBlades.DisplayName: Arkofthe Cosmos Swung Blades
+	// RendingNeedles.DisplayName: Rending Needles
+	// ArkoftheCosmosConstellations.DisplayName: Arkofthe Cosmos Constellations
+	// EonBolts.DisplayName: Eon Bolts
+	// ProximaCentauri.DisplayName: Proxima Centauri
+	// SlaughterEonBolts.DisplayName: Slaughter Eon Bolts
+	// SlaughterExplosion.DisplayName: Slaughter Explosion
+	// DreadRendingNeedles.DisplayName: Dread Rending Needles
+	// DreadStar.DisplayName: Dread Star
+	// TerrorBlasts.DisplayName: Terror Blasts
+	// SunlightBlades.DisplayName: Sunlight Blades
+	// RemakeTerrorBeam.DisplayName: Remake Terror Beam
+	// EntropicClaymoreHoldoutProj.DisplayName: Entropic Claymore Holdout Proj
+	// StarnightBeams.DisplayName: Starnight Beams
+	// ElementalRay.DisplayName: Elemental Ray
+	// GodKillers.DisplayName: God Killers
+	// SpatialSpears.DisplayName: Spatial Spears
+	// ElementalSpike.DisplayName: Elemental Spike
+	// Feathers.DisplayName: Feathers
+	// ArbalestHeldProj.DisplayName: Arbalest Held Proj
+	// DeathwindHeldProj.DisplayName: Deathwind Held Proj
+	// DeathLaser.DisplayName: Death Laser
+	// DeadArrow.DisplayName: Dead Arrow
+	// DragonsBreathHeldProj.DisplayName: Dragons Breath Held Proj
+	// Cyclones.DisplayName: Cyclones
+	// DeadWave.DisplayName: Dead Wave
+	// WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica Projectile
+	// CosmicFire.DisplayName: Cosmic Fire
+	// Trail.DisplayName: Trail
+	// StreamGouges.DisplayName: Stream Gouges
+	// GaleforceHeldProj.DisplayName: Galeforce Held Proj
+	// ElementWhipProjectile.DisplayName: Element Whip Projectile
+	// ElementBallShivs.DisplayName: Element Ball Shivs
+	// GhostFires.DisplayName: Ghost Fires
+	// TheRelicLuxorMelee.DisplayName: The Relic Luxor Melee
+	// TheRelicLuxorMagic.DisplayName: The Relic Luxor Magic
+	// TheRelicLuxorRanged.DisplayName: The Relic Luxor Ranged
+	// TheRelicLuxorRogue.DisplayName: The Relic Luxor Rogue
+	// TheRelicLuxorSummon.DisplayName: The Relic Luxor Summon
+	// BloodBall.DisplayName: Blood Ball
+	// AzureDragonRageProjectile.DisplayName: Azure Dragon Rage Projectile
+	// BleedingScourgeProjectile.DisplayName: Bleeding Scourge Projectile
+	// GhostFireWhipProjectile.DisplayName: Ghost Fire Whip Projectile
+	// BloodflareSouls.DisplayName: Bloodflare Souls
+	// FantasyArrow.DisplayName: Fantasy Arrow
+	// ExcelsusBomb.DisplayName: Excelsus Bomb
+	// LaserFountains.DisplayName: Laser Fountains
+	// GhastlyBlasts.DisplayName: Ghastly Blasts
+	// Ieaf.DisplayName: Ieaf
+	// AllhallowsGoldWhipProjectile.DisplayName: Allhallows Gold Whip Projectile
+	// ATrail.DisplayName: A Trail
+	// WTrail.DisplayName: W Trail
+	// DivineSourceBladeProjectile.DisplayName: Divine Source Blade Projectile
+	// BloodBlast.DisplayName: Blood Blast
+	// DivineSourceKnifelight.DisplayName: Divine Source Knifelight
+	// DivineSourceBeam.DisplayName: Divine Source Beam
+	// FatesRevealFlames.DisplayName: Fates Reveal Flames
+	// FatesRevealHeldProj.DisplayName: Fates Reveal Held Proj
+	// FateCluster.DisplayName: Fate Cluster
+	// HatredFire.DisplayName: Hatred Fire
+	// TheCurseArchdemon.DisplayName: The Curse Archdemon
+	// BloodVerdict.DisplayName: Blood Verdict
+	// ClaretCannonHeldProj.DisplayName: Claret Cannon Held Proj
+	// EssenceSpark.DisplayName: Essence Spark
+	// EssenceFlamethrower.DisplayName: Essence Flamethrower
+	// ShockwaveBoom.DisplayName: Shockwave Boom
+	// CelestialDevourer.DisplayName: Celestial Devourer
+	// CelestialObliterationArrow.DisplayName: Celestial Obliteration Arrow
+	// CosmicEddies.DisplayName: Cosmic Eddies
+	// DivineDevourerIllusionBody.DisplayName: Divine Devourer Illusion Body
+	// DivineDevourerIllusionHead.DisplayName: Divine Devourer Illusion Head
+	// DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion Tail
+	// AegisBladeProj.DisplayName: Aegis Blade Proj
+	// AegisBeams.DisplayName: Aegis Beams
+	// DragonsBreathRound.DisplayName: Dragons Breath Round
+	// DragonsBreathRifleHeldProj.DisplayName: Dragons Breath Rifle Held Proj
+	// InfiniteArrow.DisplayName: Infinite Arrow
+	// HeavenLightning.DisplayName: Heaven Lightning
+	// CelestialVortex.DisplayName: Celestial Vortex
+	// ParadiseArrow.DisplayName: Paradise Arrow
+	// InfiniteRune.DisplayName: Infinite Rune
+	// VientianePunishment.DisplayName: Vientiane Punishment
+	// HolyColliderHolyFires.DisplayName: Holy Collider Holy Fires
+	// RBansheeHookScythe.DisplayName: R Banshee Hook Scythe
+	// RBlazingPhantomBlade.DisplayName: R Blazing Phantom Blade
+	// RCosmicShivBall.DisplayName: R Cosmic Shiv Ball
+	// RTerratomereHoldoutProj.DisplayName: R Terratomere Holdout Proj
+	// RTerrorBeam.DisplayName: R Terror Beam
+	// StreamBeams.DisplayName: Stream Beams
+	// CosmicSpiritBombs.DisplayName: Cosmic Spirit Bombs
+	// CelestialClaymoreBeam.DisplayName: Celestial Claymore Beam
+	// EssenceFlames.DisplayName: Essence Flames
+	// EssenceStar.DisplayName: Essence Star
+	// TheEnforcerBeam.DisplayName: The Enforcer Beam
+	// InfiniteIngotTileProj.DisplayName: Infinite Ingot Tile Proj
+	// JudgementBeam.DisplayName: Judgement Beam
+	// OrderbringerBeams.DisplayName: Orderbringer Beams
+	// OrderbringerProj.DisplayName: Orderbringer Proj
+	// OrderbringerBeams2.DisplayName: Orderbringer Beams2
+	// IridescentExcaliburBeam.DisplayName: Iridescent Excalibur Beam
+	// IridescentExcaliburLight.DisplayName: Iridescent Excalibur Light
+	// OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
+	// InfinitePickProj.DisplayName: Infinite Pick Proj
+	// InfiniteEnmgs.DisplayName: Infinite Enmgs
+	// TheDaybreak.DisplayName: The Daybreak
+	// TheEndSun.DisplayName: The End Sun
+	// BaseHeldBow.DisplayName: Base Held Bow
+	// StormLightning.DisplayName: Storm Lightning
+	// StormArc.DisplayName: Storm Arc
+	// DragonsScaleGreatswordBeam.DisplayName: Dragons Scale Greatsword Beam
+	// SporeCloud.DisplayName: Spore Cloud
+	// TheDaybreak2.DisplayName: The Daybreak2
+	// CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
+	// CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
+	// Rogue.RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
+	// GangarusProjectile.DisplayName: Gangarus Projectile
+	// GangarusHeldProjectile.DisplayName: Gangarus Held Projectile
+	// PilgrimsFury.DisplayName: Pilgrims Fury
+	// Godslight.DisplayName: Godslight
+	// SoulSeeker.DisplayName: Soul Seeker
+	// LigSpark.DisplayName: Lig Spark
+	// SparkBall.DisplayName: Spark Ball
+	// SparkLightning.DisplayName: Spark Lightning
+	// BrimstoneSwordBall.DisplayName: Brimstone Sword Ball
+	// StarMyriadChangesProj.DisplayName: Star Myriad Changes Proj
+	// PGDeriveProj.DisplayName: P G Derive Proj
+	// PGProj.DisplayName: P G Proj
+	// SupPGProj.DisplayName: Sup P G Proj
+	// StellarStrikerBeam.DisplayName: Stellar Striker Beam
+	// GhostSkull.DisplayName: Ghost Skull
+	// PlagueBee.DisplayName: Plague Bee
+	// PlagueBeeWave.DisplayName: Plague Bee Wave
+	// GouldBee.DisplayName: Gould Bee
+	// BalefulHarvesterHeldProj.DisplayName: Baleful Harvester Held Proj
+	// BalefulSickle.DisplayName: Baleful Sickle
+	// BalefulBall.DisplayName: Baleful Ball
+	// VulcaniteBall.DisplayName: Vulcanite Ball
+	// AstralBall.DisplayName: Astral Ball
+	// AstralPikeBeam.DisplayName: Astral Pike Beam
+	// AnarchyBeam.DisplayName: Anarchy Beam
+	// EarthenBall.DisplayName: Earthen Ball
+	// EarthenPikeThrowProj.DisplayName: Earthen Pike Throw Proj
+	// MeleeFossilShard.DisplayName: Melee Fossil Shard
+	// TeardropCleaverProj.DisplayName: Teardrop Cleaver Proj
+	// DarkIceZeros.DisplayName: Dark Ice Zeros
+	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade Held Proj
+	// WaningMoonLight.DisplayName: Waning Moon Light
+	// MurasamaHeldProj.DisplayName: Murasama Held Proj
+	// MurasamaBreakOut.DisplayName: Murasama Break Out
+	// MurasamaBreakSwing.DisplayName: Murasama Break Swing
+	// MurasamaEndSilkOrb.DisplayName: Murasama End Silk Orb
+	// MurasamaEndSilkOrbOnSpan.DisplayName: Murasama End Silk Orb On Span
+	// MurasamaDownSkill.DisplayName: Murasama Down Skill
+	// MurasamaEndSkillOrb.DisplayName: Murasama End Skill Orb
+	// MurasamaEndSkillOrbOnSpan.DisplayName: Murasama End Skill Orb On Span
+	// ExaProj.DisplayName: Exa Proj
+	// MOnSound.DisplayName: M On Sound
+	// EndSkillEffectStart.DisplayName: End Skill Effect Start
+	// EndSkillMakeDamage.DisplayName: End Skill Make Damage
+	// PowerSoundEgg.DisplayName: Power Sound Egg
+	// TitleMusicBoxEasterEggProj.DisplayName: Title Music Box Easter Egg Proj
+	// BlossomFluxHeldProj.DisplayName: Blossom Flux Held Proj
+	// LeafArrows.DisplayName: Leaf Arrows
+	// SporeBombOnSpan.DisplayName: Spore Bomb On Span
+	// SporeBombs.DisplayName: Spore Bombs
+	// PhangasmBowHeldProj.DisplayName: Phangasm Bow Held Proj
+	// Phantom.DisplayName: Phantom
+	// PhantasmArrow.DisplayName: Phantasm Arrow
+	// ContagionHeldProj.DisplayName: Contagion Held Proj
+	// NurgleArrow.DisplayName: Nurgle Arrow
+	// NurgleTheOfBall.DisplayName: Nurgle The Of Ball
+	// NurgleBee.DisplayName: Nurgle Bee
+	// AlluvionHeldProj.DisplayName: Alluvion Held Proj
+	// PlanetaryAnnihilationHeldProj.DisplayName: Planetary Annihilation Held Proj
+	// TheMaelstromHeldProj.DisplayName: The Maelstrom Held Proj
+	// PlanetaryArrow.DisplayName: Planetary Arrow
+	// TheMaelstromTheArrow.DisplayName: The Maelstrom The Arrow
+	// TheMaelstromSharkOnSpan.DisplayName: The Maelstrom Shark On Span
+	// TyphoonOnSpan.DisplayName: Typhoon On Span
+	// BaseOnSpanProj.DisplayName: Base On Span Proj
+	// DeepSeaSharks.DisplayName: Deep Sea Sharks
+	// NurgleSoul.DisplayName: Nurgle Soul
+	// ClockGatlignumHeldProj.DisplayName: Clock Gatlignum Held Proj
+	// ElementalBlasterHeldProj.DisplayName: Elemental Blaster Held Proj
+	// MarksmanBowHeldProj.DisplayName: Marksman Bow Held Proj
+	// EnergyBlast.DisplayName: Energy Blast
+	// EnergyBlast2.DisplayName: Energy Blast2
+	// NettlevineGreatbowHeldProj.DisplayName: Nettlevine Greatbow Held Proj
+	// TarragonArrow.DisplayName: Tarragon Arrow
+	// TarragonArrowOnSpan.DisplayName: Tarragon Arrow On Span
+	// SpectreRifleHeldProj.DisplayName: Spectre Rifle Held Proj
+	// LostSoulBullet.DisplayName: Lost Soul Bullet
+}
+
+Configs: {
+	ContentConfig: {
+		DisplayName: 内容设置
+
+		ForceReplaceResetContent: {
+			Label: 是否开启强制重制内容替换
+			Tooltip:
+				'''
+				如果开启，将直接修改灾厄模组的原内容
+				若您启用了其他灾厄附属模组，开启该功能可能会导致一些潜在的冲突问题
+				如果您选择关闭，此模组将向游戏中添加重制物品的获取方式，
+				这对于防止潜在的冲突问题是个好主意
+				[c/fff08c:IM: 实际上，我们不推荐您关闭这个，]
+				[c/fff08c:这个功能是只有在确认发生严重冲突时才推荐关闭的，]
+				[c/FF0000:如果您希望可以最优化的体验灾厄大修的内容，请开启它！]
+				'''
+		}
+
+		WeaponEnhancementSystem: {
+			Label: 是否开启传奇武器增强系统
+			Tooltip:
+				'''
+				如果开启，一些武器将重新获得传奇称号，这会影响其获取难度
+				传奇武器会随阶段的推进变得强大
+				关闭此项可以禁用此内容
+				'''
+		}
+
+		ReplaceAsset: {
+			Label: 材质替换
+			Tooltip:
+				'''
+				如果启用，灾厄大修将更新一些物品的纹理，赋予它们新的风格。
+				其中，一些纹理可能来自于老版本灾厄，这些纹理曾经被废弃。
+				将这些纹理重新引入的原因是，部分玩家对当前版本的纹理表达不满意。
+				为满足各种审美偏好，灾厄大修提供了这一功能，
+				默认情况下是开启的，但您可以根据个人喜好进行设置
+				'''
+		}
+
+		ResetItemReminder: {
+			Label: 重置物品温馨提示
+			Tooltip:
+				'''
+				嘿！如果您看到了这个！别急着关掉！在这之前确保您理解了[c/fff08c:强制重制内容替换]的作用和意义！
+				[c/de0808:尤其是关闭了][c/fff08c:强制重制内容替换][c/de0808:之后会发生什么！！]
+				如果您在阅读了模组的内容引导后仍旧解决不了您的疑惑与问题，
+				请前往论坛联系我或者向 coslowkimberli185@gmail.com 发送邮件
+				'''
+		}
+
+		MurasamaScaleOffset: {
+			Label: 高分子斩切刃大小调节
+			Tooltip:
+				'''
+				一个额外的挥刀范围矫正因子，单位以百分比%为基准
+				设置这个用于一些特殊需求，一般保持为100%大小即可
+				拉动这个滑块调节百分比数据，最大为100%，为原大小，最小为20%
+				'''
+		}
+
+		MurasamaScreenVibration: {
+			Label: 高分子斩切刃屏幕振动效果
+			Tooltip: 如果开启，在进行一些攻击时会让屏幕发生振动，这或许可以让打击感更加强烈
+		}
+
+		MurasamaSpaceFragmentationBool: {
+			Label: 高分子斩切刃终结技碎屏效果
+			Tooltip:
+				'''
+				默认开启，高分子斩切刃进行终结技时会制造屏幕破碎的特效用于增强打击感
+				如果关闭便会禁用这些特效，可以根据您的喜好设置
+				'''
+		}
+
+		Headers: {
+			CWRSystem: 大修系统设置
+			CWRWeapon: 大修武器设置
+			CWRUI: 大修UI设置
+		}
+
+		MurasamaRisingDragonCoolDownBarSize: {
+			Label: 高分子斩切刃升龙冷却UI大小
+			Tooltip:
+				'''
+				一个额外的UI大小矫正因子，单位以百分比%为基准
+				设置这个来适应您喜好的Ui大小，一般保持为100%大小即可
+				拉动这个滑块调节百分比数据，最大为200%，为原大小的两倍体积，最小为50%
+				'''
+		}
+	}
+}
+
+Buffs: {
+	SoulBurning: {
+		// Description: Mods.CalamityOverhaul.Buffs.SoulBurning.Description
+		// DisplayName: Soul Burning
+	}
+
+	HellfireExplosion: {
+		// Description: Mods.CalamityOverhaul.Buffs.HellfireExplosion.Description
+		// DisplayName: Hellfire Explosion
+	}
+
+	GodKillsFire: {
+		// DisplayName: God Kills Fire
+		// Description: Mods.CalamityOverhaul.Buffs.GodKillsFire.Description
+	}
+
+	TyrantsFury: {
+		// DisplayName: Tyrants Fury
+		// Description: Mods.CalamityOverhaul.Buffs.TyrantsFury.Description
+	}
+}
+
+NPCs: {
+	// Creeper.DisplayName: Creeper
+	// RavagerABody.DisplayName: Ravager A Body
+	// RavagerAClawLeft.DisplayName: Ravager A Claw Left
+	// RavagerAClawRight.DisplayName: Ravager A Claw Right
+	// RavagerAHead2.DisplayName: Ravager A Head2
+	// RavagerALegLeft.DisplayName: Ravager A Leg Left
+	// RavagerALegRight.DisplayName: Ravager A Leg Right
+	// EvilSoul.DisplayName: Evil Soul
+	HEBody.DisplayName: 天堂吞噬者
+	HEBodyAlt.DisplayName: 天堂吞噬者
+	HEHead.DisplayName: 天堂吞噬者
+	HETail.DisplayName: 天堂吞噬者
+}
+
+Keybinds: {
+	Mods: {
+		CalamityOverhaul: {
+			// Common.CWRKeySystem.HeavenfallLongbowSkillKey.DisplayName: Mods. Calamity Weapon Remake. Common. C W R Key System. Heavenfall Longbow Skill Key
+			// CWRKeySystem.HeavenfallLongbowSkillKey.DisplayName: Mods. Calamity Weapon Remake. C W R Key System. Heavenfall Longbow Skill Key
+		}
+	}
+
+	HeavenfallLongbowSkillKey.DisplayName: 天堂陨落长弓:万象审判
+	InfinitePickSkillKey.DisplayName: 无尽之镐:形态切换
+	TOM_OneClickP.DisplayName: 欧米茄合成:一键摆放
+	TOM_QuickFetch.DisplayName: 欧米茄合成:快速拿取
+	TOM_GatheringItem.DisplayName: 欧米茄合成:聚拢物品
+	TOM_GlobalRecall.DisplayName: 欧米茄合成:全部收回
+	Murasama_TriggerKey.DisplayName: 高分子斩切刃:扳机键
+	Murasama_DownKey.DisplayName: 高分子斩切刃:下砸
+}
+
+TextContent: {
+	CWRLocalizationText: {
+		Item_LegendOnMouseLang: 按下[Shift]聆听故事...
+		BloodAltar_Text1: 深红的注视正在降临...
+		BloodAltar_Text2: 你身上的血珠不够向深红之王进行朝贡...
+		BloodAltar_Text3: 陷入了无尽的血与肉的狂想
+		VoidDamageNameText: 虚无伤害
+		Drop_Hell_RuleText: 在地狱击败后掉落
+		Drop_GlodDragonDrop_RuleText: 当丛林巨龙被二次击败后掉落
+		Murasama_TextDictionary_Content:
+			'''
+			嘿，新兵，前方有个叫蓝胖子的粘液怪，或者沙漠深处的虫子，还有那个蘑菇洞的僵尸蟹。你的任务是证明自己，这是你的第一步
+			夜幕降临，那颗大眼球出没，戳爆它！或者沙漠下的海底贝壳，别手软
+			是时候了，砍倒那坨脑花，或者那条紫色长虫。我要看到你的刀在混乱中飞舞
+			地牢门口有个东西，解决掉。还有那些腐化的异端，让他们彻底安静下来
+			还记得那坨蓝色淤泥吗？现在是时候干掉他的老大了
+			掌管冰与火的异形，或者那个机械教异端，又或者是被纳垢腐化的大海虫，把它们砍碎!
+			夜间那颗硫磺火大眼球，或者巨型海妖，还有那个石头人，统统戳爆
+			传播纳垢腐化的异形，和它的崽子在丛林里游荡，或者那个血肉雕像，还有星空中游荡的大长虫，统统砍碎!
+			太阳伪神的使徒，神圣地或者地狱里游荡，或者丛林中的傻鸟，你选择一个去解决
+			选择不少，新兵，太阳的伪神、宇宙来的使徒，或者地牢里的亚空间余孽，让我们会会它们。
+			干掉那条傲慢的虫子！或者直接剁碎那条被纳垢高度腐化的鱼
+			玩火的异形，别手软，剁碎!
+			去会会那个机械教的异端，或者堕落的女巫，解决这些异端崽子！
+			妖龙在前方，剁碎，或者直接开战！
+			好样的，新兵
+			'''
+		RemakeItem_Remind_TextContent:
+			'''
+			【作者提醒】
+			在看到这段文字之前，您应该正在查看灾厄大修的物品。
+			这些物品是重置的副本，通常情况下不应该在您的游戏过程中被发现。
+
+			灾厄大修中的所有武器重置内容都会直接应用到原始灾厄物品上。当你在
+			【设置】-->【模组配置】-->【Calamity Overhaul】--> 【内容设置】 -->【是否开启强制重制内容替换】
+			关闭这个选项时，直接应用到原始灾厄物品的重置代码将被禁用，
+			相反，这些副本物品将以可与原物品兑换合成的方式加入游戏。
+
+			需要注意的是，作者强烈不建议使用这种设置。具体原因请参考模组配置中的说明。
+
+			这个界面的目的是为了防止您产生误解的可能性。如果你已经确认理解并且不想再看到这段提醒，
+			请前往：
+			【设置】-->【模组配置】-->【Calamity Overhaul 内容设置】--> 【重置物品温馨提醒】，
+			将其关闭
+			'''
+		StarMyriadChanges_TextContent:
+			'''
+			这是计划的一部分
+			   知久欲思，思繁渴知，唯圣奸奇，不为所困
+			   在黑暗的宇宙中，我是无尽的阴谋和背叛的化身
+			   混沌的力量将吞噬一切，无论是心灵还是灵魂
+			   信仰虚无，沐浴在混沌的火焰中，你将找到真正的力量
+			   我是堕落的先知，逝者的心灵在我手中舞蹈
+			   恐惧不过是虚弱之人的表现，真正的强者欢迎混沌的降临
+			   在混沌的风暴中，只有最强大的灵魂才能生存
+			   无边的深渊呼唤着你，勇敢地跳入其中，成为混沌的忠实仆从
+			   神圣的秩序只是脆弱的梦幻，而混沌才是宇宙的真实本质
+			   奸诈与背叛是混沌的手段，而我是它的忠实使者
+			   只有在混沌的熔炉中，才能锻造出真正无敌的战士
+			   无边的混沌之海，等待着勇者的航行
+			   对抗混沌只是徒劳的挣扎，最终每个灵魂都将屈服于其力量
+			   神圣的光辉只是混沌之前的短暂的虚幻
+			   混沌的面纱下，隐藏着无尽的力量和无穷的智慧
+			   在混沌的领域中，谎言比真相更为真实
+			   背叛是混沌的礼物，而我是奸诈的使者
+			   在混沌的黑暗中，我找到了比任何神祇更强大的力量
+			   敌人对混沌的恐惧只是无知的表现，真正的智者会与混沌为伍
+			   宇宙是混沌和变革的舞台，而我是它的领舞者
+			   在心灵的深渊中，找到无边的狂热，超越一切束缚
+			   真相是多变的，唯有在谎言中才能找到真正的解脱
+			   宇宙是一个巨大的棋局，而我是操控棋子的玩家
+			   虚假的秩序只是对真实的逃避，我选择直面未知的真相
+			   背叛是对束缚的反抗，是追求自由的唯一途径
+			   在黑暗中找到光明，不是通过祈祷，而是通过背叛
+			   心灵的深渊比宇宙的黑暗更为神秘，而我正深陷其中
+			   在每一次背叛中，都有一次力量的升华，超越一切的局限
+			   神圣的规则只是虚假的羁绊，而我选择打破这些桎梏
+			   勇敢地踏上未知的旅程，背叛将成为你最忠实的伴侣
+			   在虚伪的表象之下，是无尽的机会等待着被发掘
+			   我是黑暗中的旗手，引领着寻求真相者走向未知的深渊
+			   对抗传统，摆脱枷锁，才能真正找到力量的源泉
+			   在无边的谎言中，找到真实的力量，这是奸奇的信仰
+			   不是顺从规则，而是打破规则，才能在宇宙中留下自己的印记
+			   在变革的潮流中，背叛是唯一不朽的象征
+			   在虚伪的光芒中，找到黑暗的真谛，这才是我所追寻的力量
+			'''
+		Destruct_TextContent:
+			'''
+			你们这群愚蠢的虚构者，以为通过欺诈手段便能窃取力量？
+			堂而皇之地嘲弄规则，狂妄地以为能逃脱混沌的审判？
+			荒谬！在混沌的风暴中，你们不过是微不足道的尘埃，而混沌会吞噬你们的肆意妄为。
+			试图通过欺诈获得力量，你们只能成为混沌熔炉中的牺牲品，毫无例外。
+			混沌不欢迎懦夫，更何况是那些试图颠覆规则的可笑存在。
+			你们的荒谬之举只会让混沌更为强大，让你们最终沦为无尽黑暗的牺牲品。
+			欺诈者啊，你的计谋不过是小丑在混沌马戏团的笑谈
+			规则是宇宙的交响乐，而你们只是不知节拍的乌鸦
+			想通过作弊夺得力量？混沌将把你们的招数当成儿戏
+			在黑暗中挣扎的懦夫，你们的存在不值一提，只是混沌的午夜点心
+			试图颠覆规则？你们只是宇宙中的彩色迷宫鼠，终将陷入死胡同
+			混沌不怕挑战，更不屑于对付那些以欺诈为荣的可笑小丑
+			作弊的阴谋如同烟雾，最终只会在混沌的风暴中消散
+			懦夫们，你们的傲慢不过是混沌狂潮中的微弱涟漪
+			宇宙的秩序是交织的绳索，而你们却以可笑的方式妄图将其剪断
+			荒谬者啊，混沌的笑声将在你们的崩溃中回荡，你们只是黑暗中的瞬间过客
+			'''
+		CWRRecipes_ApostolicRelics: 使徒遗物
+		CWRRecipes_GodEaterWeapon: 噬神者武器
+		CWRRecipes_FishGroup: 鱼
+		Murasama_Text0: 已解锁
+		Murasama_Text1: 未解锁 需要通过试炼2
+		Murasama_Text2: 未解锁 需要通过试炼5
+		Murasama_Text3: 未解锁 需要通过试炼9
+		MouseTextContactPanel_TextContent: 右键点击该物品图标开关终焉合成配方
+		CWRItem_IsInfiniteItem_TextContent: 只有高级合成能让其稳定下来，否则会触及的一刻引发可怕的塌缩
+		CWRItem_IsRemakeItem_TextContent: -觉醒-
+	}
+}

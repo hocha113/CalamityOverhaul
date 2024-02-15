@@ -1,0 +1,179 @@
+﻿using CalamityMod.Items.Tools;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.Items.Tools
+{
+    internal class InfinitePick : ModItem
+    {
+        public bool IsPick = true;
+        public override string Texture => CWRConstant.Item + "Tools/" + (IsPick ? "Pickaxe" : "Hammer");
+        public Texture2D value => CWRUtils.GetT2DValue(Texture);
+        private bool oldRDown;
+        private bool rDown;
+        public override void SetStaticDefaults() => Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 16));
+        public override void SetDefaults() {
+            Item.damage = 9999;
+            Item.DamageType = EndlessDamageClass.Instance;
+            Item.width = 40;
+            Item.height = 40;
+            Item.useTime = 10;
+            Item.useAnimation = 10;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.knockBack = 6;
+            Item.value = Item.buyPrice(gold: 999);
+            Item.rare = ItemRarityID.Green;
+            Item.UseSound = SoundID.Item1;
+            Item.autoReuse = true;
+            Item.pick = int.MaxValue;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems3;
+        }
+
+        public override bool AltFunctionUse(Player player) {
+            return true;
+        }
+
+        public override bool? UseItem(Player player) {
+            if (IsPick) {
+                Item.pick = 9999;
+                Item.hammer = 0;
+                Item.useAnimation = Item.useTime = 10;
+
+            }
+            else {
+                Item.pick = 0;
+                Item.hammer = 9999;
+                Item.useAnimation = Item.useTime = 30;
+            }
+
+
+            return base.UseItem(player);
+        }
+
+        public override void HoldItem(Player player) {
+            if (CWRKeySystem.InfinitePickSkillKey.JustPressed) {
+                IsPick = !IsPick;
+                SoundEngine.PlaySound(!IsPick ? ModSound.Pecharge : ModSound.Peuncharge, player.Center);
+                TextureAssets.Item[Type] = CWRUtils.GetT2DAsset(Texture);
+            }
+            rDown = player.PressKey(false);
+            bool justRDown = rDown && !oldRDown;
+            oldRDown = rDown;
+            if (justRDown && !player.mouseInterface) {
+                SoundEngine.PlaySound(new SoundStyle(CWRConstant.Sound + "Pedestruct"), Main.MouseWorld);
+                if (!IsPick) {
+                    for (int i = 0; i < 78; i++) {
+                        HeavenHeavySmoke spark = new HeavenHeavySmoke(Main.MouseWorld, Main.rand.NextVector2Unit() * Main.rand.Next(3, 57)
+                            , CWRUtils.MultiLerpColor(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors)
+                            , Main.rand.Next(30, 75), Main.rand.NextFloat(1.5f, 6.2f), 1, 0.1f);
+                        CWRParticleHandler.AddParticle(spark);
+                    }
+                    int maxX = 500;
+                    int maxY = 500;
+                    Vector2 pos = Main.MouseWorld - new Vector2(maxX, maxY) / 2;
+                    Item ball = new Item(ModContent.ItemType<DarkMatterBall>());
+                    DarkMatterBall darkMatterBall = (DarkMatterBall)ball.ModItem;
+                    if (darkMatterBall != null) {
+                        for (int x = 0; x < maxX; x++) {
+                            for (int y = 0; y < maxY; y++) {
+                                Vector2 tilePos = CWRUtils.WEPosToTilePos(pos + new Vector2(x, y));
+                                Tile tile = CWRUtils.GetTile(tilePos);
+                                if (tile.HasTile && tile.TileType != TileID.Cactus) {
+                                    int dorptype = CWRUtils.GetTileDorp(tile);
+                                    if (dorptype != 0)
+                                        darkMatterBall.dorpTypes.Add(dorptype);
+                                    
+                                    tile.LiquidAmount = 0;
+                                    tile.HasTile = false;
+                                    
+                                    if (Main.netMode != NetmodeID.SinglePlayer)
+                                        NetMessage.SendTileSquare(player.whoAmI, x, y);
+                                }
+
+                                if (tile.WallType != 0) {
+                                    if (CWRIDs.WallToItem.TryGetValue(tile.WallType, out int value))
+                                        darkMatterBall.dorpTypes.Add(value);
+
+                                    tile.WallType = 0;
+
+                                    if (Main.netMode != NetmodeID.SinglePlayer)
+                                        NetMessage.SendTileSquare(player.whoAmI, x, y);
+                                }
+                            }
+                        }
+                        Projectile.NewProjectile(player.parent(), Main.MouseWorld, Vector2.Zero, ModContent.ProjectileType<InfinitePickProj>(), Item.damage * 10, 0, player.whoAmI);
+                        if (darkMatterBall.dorpTypes.Count > 0)
+                            player.QuickSpawnItem(player.parent(), darkMatterBall.Item, 1);
+                    }
+                }
+                else {
+                    int proj = Projectile.NewProjectile(player.parent(), player.Center, player.Center.To(Main.MouseWorld).UnitVector() * 32, ModContent.ProjectileType<InfinitePickProj>(), Item.damage * 10, 0, player.whoAmI, 1);
+                    Main.projectile[proj].width = Main.projectile[proj].height = 64;
+                }
+            }
+        }
+
+        public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
+            if (line.Name == "ItemName" && line.Mod == "Terraria") {
+                Vector2 basePosition = Main.MouseWorld - Main.screenPosition + new Vector2(23, 23);
+                string text = Language.GetTextValue("Mods.CalamityOverhaul.Items.InfinitePick.DisplayName");
+                InfiniteIngot.drawColorText(Main.spriteBatch, line, text, basePosition);
+                return false;
+            }
+            return true;
+        }
+
+        public override void MeleeEffects(Player player, Rectangle hitbox) {
+            HeavenHeavySmoke spark = new HeavenHeavySmoke(player.Center, Main.rand.NextVector2Unit() * Main.rand.Next(13, 17), CWRUtils.MultiLerpColor(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 30, 1, 1, 0.1f);
+            CWRParticleHandler.AddParticle(spark);
+        }
+
+        //public override void AddRecipes() {
+        //    CreateRecipe()
+        //        .AddIngredient<CrystylCrusher>()
+        //        .AddIngredient<AbyssalWarhammer>()
+        //        .AddIngredient<AerialHamaxe>()
+        //        .AddIngredient<AstralHamaxe>()
+        //        .AddIngredient<AstralPickaxe>()
+        //        .AddIngredient<AxeofPurity>()
+        //        .AddIngredient<BeastialPickaxe>()
+        //        .AddIngredient<BerserkerWaraxe>()
+        //        .AddIngredient<BlossomPickaxe>()
+        //        .AddIngredient<FellerofEvergreens>()
+        //        .AddIngredient<Gelpick>()
+        //        .AddIngredient<GenesisPickaxe>()
+        //        .AddIngredient<Grax>()
+        //        .AddIngredient<GreatbayPickaxe>()
+        //        .AddIngredient<InfernaCutter>()
+        //        .AddIngredient<ReefclawHamaxe>()
+        //        .AddIngredient<SeismicHampick>()
+        //        .AddIngredient<ShardlightPickaxe>()
+        //        .AddIngredient<SkyfringePickaxe>()
+        //        .AddIngredient<TectonicTruncator>()
+        //        .AddIngredient<InfiniteIngot>(5)
+        //        .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+        //            amount = 0;
+        //        })
+        //        .AddOnCraftCallback(CWRRecipes.SpawnAction)
+        //        .AddTile(ModContent.TileType<TransmutationOfMatter>())
+        //        .Register();
+        //}
+    }
+}

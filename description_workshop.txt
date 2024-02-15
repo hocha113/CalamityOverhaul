@@ -1,0 +1,2 @@
+﻿This mod is dedicated to rewriting certain items from the Calamity mod. 
+The way the rewritten content is integrated can be determined through adjustable settings!

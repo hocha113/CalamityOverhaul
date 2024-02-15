@@ -1,0 +1,1358 @@
+CWRRecipes: {
+	ApostolicRelics: Apostolic Relics
+	GodEaterWeapon: God Eater weapon
+}
+
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
+Tools.RecipesLoseText: You can't just make this thing
+
+Items: {
+	BrinyBaron: {
+		DisplayName: Briny Baron
+		Tooltip:
+			'''
+			<left> Wield the giant blade and fire a waterspout to both sides after hitting the enemy
+			<right> Launch three water vortices
+			'''
+	}
+
+	CosmicShiv: {
+		DisplayName: Cosmic Shiv
+		Tooltip:
+			'''
+			After hitting an enemy, it creates several vast eyes in front of the player
+			Summon cosmic rays to burn the enemy
+			'''
+	}
+
+	DragonsBreath: {
+		DisplayName: Dragons Breath
+		Tooltip:
+			'''
+			Fire a lot of hot bullets
+			Right - shot a searing dragon's breath
+			'''
+	}
+
+	BansheeHook: {
+		DisplayName: Banshee Hook
+		Tooltip:
+			'''
+			While attacking, it generates a large number of Sorrowful Scythes and launches a Dreadful Great Scythe that hunts down enemies. 
+			Right-clicking accumulates Dread energy and, before the energy is depleted, summons a large number of Abhorrent Sickles at the mouse position. 
+			When the Abhorrent Sickle hits an enemy, it generates additional spirits, providing various enhancements.
+			'''
+	}
+
+	BlightedCleaver: {
+		DisplayName: Blighted Cleaver
+		Tooltip: A blade hit an enemy will accumulate tyrant power and generate a large number of Sickles of slaughter
+	}
+
+	BurntSienna: {
+		DisplayName: Burnt Sienna
+		Tooltip: The swing will throw three maracas
+	}
+
+	CometQuasher: {
+		DisplayName: Comet Quasher
+		Tooltip: Raining meteors from the sky
+	}
+
+	DefiledGreatsword: {
+		DisplayName: Defiled Greatsword
+		Tooltip: A blade hit an enemy boosts Tyrant Power and spawns a large number of jungle sickles
+	}
+
+	EntropicClaymore: {
+		DisplayName: Entropic Claymore
+		Tooltip: The stars were visible between the blades
+	}
+
+	GildedProboscis: {
+		DisplayName: Gilded Proboscis
+		Tooltip:
+			'''
+			The charged feathers split off during the attack
+			Right energy storage, before the power consumption will maintain a current to attack the enemy along the road
+			'''
+	}
+
+	Terratomere: {
+		DisplayName: Terratomere
+		Tooltip: Wielding the power to release the gold source
+	}
+
+	TerrorBlade: {
+		DisplayName: Terror Blade
+		Tooltip:
+			'''
+			Wield the release scare bomb
+			Cutting an enemy with a blade will increase your weapon
+			'''
+	}
+
+	ArkoftheCosmos: {
+		DisplayName: Arkofthe Cosmos
+		Tooltip: Um... You shouldn't have it
+	}
+
+	StreamGouge: {
+		DisplayName: Stream Gouge
+		Tooltip:
+			'''
+			Launch cosmic dark light arrows when stabbing, and blast six darts of God Killer after hitting the enemy
+			Right click using undercurrent puncture
+			'''
+	}
+
+	ElementalLance: {
+		DisplayName: Elemental Lance
+		Tooltip:
+			'''
+			Firing multiple splintered elemental rounds
+			Right-click to generate several edge colored auroras
+			'''
+	}
+
+	AirSpinner: {
+		DisplayName: Air Spinner
+		Tooltip: Fire scattered feathers at nearby enemies
+	}
+
+	GoldplumeSpear: {
+		DisplayName: Goldplume Spear
+		Tooltip: ""
+	}
+
+	WindBlade: {
+		DisplayName: Wind Blade
+		Tooltip:
+			'''
+			A flailing cyclone that disrupts a wide area of air flow
+			Right-click to launch a tracking small cyclone
+			'''
+	}
+
+	Arbalest: {
+		DisplayName: Arbalest
+		Tooltip:
+			'''
+			Fire a lot of arrows, and the arrows get bigger and bigger over time
+			Right-click for a single rapid fire
+			"Its gears are chugging round and round."
+			'''
+	}
+
+	Deathwind: {
+		DisplayName: Deathwind
+		Tooltip:
+			'''
+			The wooden arrow will be transformed into a death laser beam
+			Hitting an enemy at close range will blow a blast of death
+			'''
+	}
+
+	DragonRage: {
+		DisplayName: Dragon Rage
+		Tooltip:
+			'''
+			The blade rotates between killing the surrounding enemies
+			Right click Fire Dragon ball
+			'''
+	}
+
+	WhiplashGalactica: {
+		DisplayName: Whiplash Galactica
+		Tooltip: After hitting an enemy, make a death mark and launch a cosmic fireball
+	}
+
+	Tradewinds: {
+		DisplayName: Tradewinds
+		Tooltip:
+			'''
+			Launch the decelerated sky plume
+			Right button replacement for emitting sticky feathers
+			'''
+	}
+
+	DeathhailStaff: {
+		DisplayName: Deathhail Staff
+		Tooltip: Raining hail of death from the sky
+	}
+
+	Excelsus: {
+		DisplayName: Excelsus
+		Tooltip:
+			'''
+			Brandishing and firing several cosmic blades
+			Right-click to emit universal light vector
+			'''
+	}
+
+	GhastlyVisage: {
+		DisplayName: Ghastly Visage
+		Tooltip:
+			'''
+			Three feathers are fired as part of the attack
+			Right-click for a single rapid fire
+			'''
+	}
+
+	Galeforce: {
+		DisplayName: Galeforce
+		Tooltip:
+			'''
+			Three feathers are fired as part of the attack
+			Right-click for a single rapid fire
+			'''
+	}
+
+	ElementWhip: {
+		DisplayName: Element Whip
+		Tooltip: ""
+	}
+
+	ElementalShiv: {
+		DisplayName: Elemental Shiv
+		Tooltip: ""
+	}
+
+	TheRelicLuxor: {
+		DisplayName: The Relic Luxor
+		Tooltip:
+			'''
+			Searing psychic power will accompany you in every attack, and the God of Glory is with you
+			[tips]
+			'''
+	}
+
+	TheLuxirSoulArtifact: {
+		DisplayName: The Luxir Soul Artifact
+		Tooltip:
+			'''
+			Both God and immortality acknowledge your glory
+			[tips]
+			'''
+	}
+
+	AzureDragonRage: {
+		DisplayName: Azure Dragon Rage
+		Tooltip: There's a thick, grassy airway
+	}
+
+	BleedingScourge: {
+		DisplayName: Bleeding Scourge
+		Tooltip: When you hit an enemy, mark it with death and make it rain blood
+	}
+
+	GhostFireWhip: {
+		DisplayName: Ghost Fire Whip
+		Tooltip: A long whip, woven from the fury of a dungeon ghost
+	}
+
+	AllhallowsGoldWhip: {
+		DisplayName: Allhallows Gold Whip
+		Tooltip: It's actually not finished yet
+	}
+
+	DivineSourceBlade: {
+		DisplayName: Divine Source Blade
+		Tooltip: ""
+	}
+
+	FatesReveal: {
+		DisplayName: Fates Reveal
+		Tooltip: Generate several mournful spirit fires to attack enemies
+	}
+
+	FoodStallChair: {
+		DisplayName: Food Stall Chair
+		Tooltip: ""
+	}
+
+	DaemonsFlame: {
+		DisplayName: Daemons Flame
+		Tooltip: ""
+	}
+
+	ClaretCannon: {
+		DisplayName: Claret Cannon
+		Tooltip: ""
+	}
+
+	CleansingBlaze: {
+		DisplayName: Cleansing Blaze
+		Tooltip: ""
+	}
+
+	AnnihilatingUniverse: {
+		DisplayName: Annihilating Universe
+		Tooltip:
+			'''
+			The arrow hits the enemy and leaves a bright star in its place
+			Right click to destroy enemies with the power of God Eater
+			'''
+	}
+
+	HeavenfallLongbow: {
+		DisplayName: Heavenfall Longbow
+		Tooltip:
+			'''
+			Fire endless arrows, and rainbow energy will follow
+			Right click and let the arrow of heaven drop from the sky
+			Press [KEY] to start the Vientiane Trial when the power is finished
+			[legend]
+			'''
+		Legend:
+			'''
+
+			The embers of the war still burn today, billions of years later
+			The body of the Lord of Glory shattered into countless pieces scattered throughout the galaxy
+			A miracle is a poor imitation of the remains of a god
+			And now, the longbow that struck the most High God will rise again from the wrath of heaven
+
+			'''
+	}
+
+	AegisBlade: {
+		DisplayName: Aegis Blade
+		Tooltip:
+			'''
+			Throw a disciplinary fireball when swinging
+			Right click to generate Shelter Giant Blade
+			'''
+	}
+
+	DragonsBreathRifle: {
+		DisplayName: Dragons Breath Rifle
+		Tooltip: ""
+	}
+
+	TextItem: {
+		DisplayName: Text Item
+		Tooltip: Um... You shouldn't have it
+	}
+
+	BaseSingularity: {
+		DisplayName: Base Singularity
+		Tooltip: Um... You shouldn't have it
+	}
+
+	InfiniteIngot: {
+		DisplayName: Infinite Ingot
+		Tooltip: ""
+	}
+
+	CosmicMetalSingularity: {
+		DisplayName: Cosmic Metal Singularity
+		Tooltip: ""
+	}
+
+	TransmutationOfMatterItem: {
+		DisplayName: Transmutation Of Matter Item
+		Tooltip: ""
+	}
+
+	DarkMatterCompressorItem: {
+		DisplayName: Dark Matter Compressor Item
+		Tooltip: ""
+	}
+
+	AerialiteMetalSingularity: {
+		DisplayName: Aerialite Metal Singularity
+		Tooltip: ""
+	}
+
+	AscendantSpiritEssenceSingularity: {
+		DisplayName: Ascendant Spirit Essence Singularity
+		Tooltip: ""
+	}
+
+	AstralMetalSingularity: {
+		DisplayName: Astral Metal Singularity
+		Tooltip: ""
+	}
+
+	BloodstoneCoreSingularity: {
+		DisplayName: Bloodstone Core Singularity
+		Tooltip: ""
+	}
+
+	CoreofCalamitySingularity: {
+		DisplayName: Coreof Calamity Singularity
+		Tooltip: ""
+	}
+
+	CoreofEleumSingularity: {
+		DisplayName: Coreof Eleum Singularity
+		Tooltip: ""
+	}
+
+	CoreofHavocSingularity: {
+		DisplayName: Coreof Havoc Singularity
+		Tooltip: ""
+	}
+
+	CoreofSunlightSingularity: {
+		DisplayName: Coreof Sunlight Singularity
+		Tooltip: ""
+	}
+
+	DepthCellsSingularity: {
+		DisplayName: Depth Cells Singularity
+		Tooltip: ""
+	}
+
+	DivineGeodeSingularity: {
+		DisplayName: Divine Geode Singularity
+		Tooltip: ""
+	}
+
+	DubiousPlatingSingularity: {
+		DisplayName: Dubious Plating Singularity
+		Tooltip: ""
+	}
+
+	PolterplasmSingularity: {
+		DisplayName: Polterplasm Singularity
+		Tooltip: ""
+	}
+
+	RuinousSoulSingularity: {
+		DisplayName: Ruinous Soul Singularity
+		Tooltip: ""
+	}
+
+	ShadowspecSingularity: {
+		DisplayName: Shadowspec Singularity
+		Tooltip: ""
+	}
+
+	UnholyEssenceSingularity: {
+		DisplayName: Unholy Essence Singularity
+		Tooltip: ""
+	}
+
+	Murasama: {
+		DisplayName: Murasama
+		Tooltip:
+			'''
+			Grows stronger with the distance of the journey
+			[Text]
+			"It would be nice to have a chainsaw sword"
+			'''
+	}
+
+	HolyCollider: {
+		DisplayName: Holy Collider
+		Tooltip: ""
+	}
+
+	Oracle: {
+		DisplayName: Oracle
+		Tooltip: ""
+	}
+
+	PerfectDark: {
+		DisplayName: Perfect Dark
+		Tooltip: ""
+	}
+
+	StarnightLance: {
+		DisplayName: Starnight Lance
+		Tooltip: ""
+	}
+
+	CelestialClaymore: {
+		DisplayName: Celestial Claymore
+		Tooltip: ""
+	}
+
+	TheEnforcer: {
+		DisplayName: The Enforcer
+		Tooltip: ""
+	}
+
+	InfinitePick: {
+		DisplayName: Infinite Pick
+		Tooltip: ""
+	}
+
+	DarkMatterBall: {
+		DisplayName: Dark Matter Ball
+		Tooltip: ""
+	}
+
+	GreatswordofJudgement: {
+		DisplayName: Greatswordof Judgement
+		Tooltip: ""
+	}
+
+	Orderbringer: {
+		DisplayName: Orderbringer
+		Tooltip: ""
+	}
+
+	IridescentExcalibur: {
+		DisplayName: Iridescent Excalibur
+		Tooltip: ""
+	}
+
+	EndlessStabilizer: {
+		DisplayName: Endless Stabilizer
+		Tooltip: ""
+	}
+
+	BlackMatterStick: {
+		DisplayName: Black Matter Stick
+		Tooltip: ""
+	}
+
+	InfiniteStick: {
+		DisplayName: Infinite Stick
+		Tooltip: ""
+	}
+
+	InfinityCatalyst: {
+		DisplayName: Infinity Catalyst
+		Tooltip: ""
+	}
+
+	DawnshatterAzure: {
+		DisplayName: Dawnshatter Azure
+		Tooltip: ""
+	}
+
+	DecayParticles: {
+		DisplayName: Decay Particles
+		Tooltip: ""
+	}
+
+	DecaySubstance: {
+		DisplayName: Decay Substance
+		Tooltip: ""
+	}
+
+	DissipationSubstance: {
+		DisplayName: Dissipation Substance
+		Tooltip: ""
+	}
+
+	SpectralMatter: {
+		DisplayName: Spectral Matter
+		Tooltip: ""
+	}
+
+	InfiniteToiletItem: {
+		DisplayName: Infinite Toilet Item
+		Tooltip: ""
+	}
+
+	StormGoddessSpear: {
+		DisplayName: Storm Goddess Spear
+		Tooltip:
+			'''
+			Launch a storm kiss with a destructive arc
+			[legend]
+			'''
+		Legend:
+			'''
+
+			In the shadowed realms of Terra, the once radiant warrior goddess, Alina,
+			now finds herself plunged into an endless abyss of chaos and despair, emerging as the whispered harbinger known as the Storm Goddess.
+			Once, she stood as an unmatched warrior on the continent, her fearless courage and razor-sharp blade commanding a serene sky like lightning.
+			However, the shadows of fate began to creep beneath her feet. In the twilight clash between light and darkness, as heaven crumbled and darkness consumed the remnants, 
+			the Storm Goddess bore witness to the cruelty of the Supreme Deity. The arrogant god stripped her of comrades, kin, and obliterated all she had once sheltered.
+			The sins of the Supreme Deity cast doubts upon her once unwavering faith in justice, leading her to descend into the unfathomable abyss of corruption.
+			As the embers of war settled, Alina returned to Terra, but she was no longer the valiant warrior of yore.
+			The internal agony and boundless despair propelled her to forsake the lofty beliefs she once held, seeking a new wellspring of power. 
+			In a gruesome ritual, she obtained the forbidden blessing – an influx of boundless power, paid for with the eternal corruption of her soul.
+			Now, the Storm Goddess stands as an emblem of abyssal descent, her armor adorned with obsidian akin to a night sky, 
+			eyes shimmering with the corruptive radiance. The chaotic currents surge, projecting malice towards Terra. Her blade,
+			a thunderous force in the obsidian night, dances with arcs of annihilative power. No longer fighting for justice, she has become a force set on obliterating all.
+			Though she retains the martial prowess of yore, she is now the nemesis of Terra, scorned by countless tongues. 
+			The Storm Goddess cruelly embarks on a solitary and corruptive journey, lingering in the shadows. Her very existence mocks the bygone glory of Terra,
+			a tempest consuming every vestige of hope.
+			As a fallen star plunges into the abyss, she blossoms in the boundless darkness, carrying the universe's sorrow and destruction."
+			'''
+	}
+
+	DragonsScaleGreatsword: {
+		DisplayName: Dragons Scale Greatsword
+		Tooltip: ""
+	}
+
+	CosmicCalamity: {
+		DisplayName: Cosmic Calamity
+		Tooltip: ""
+	}
+
+	Weapons: {
+		Rogue: {
+			WaveSkipper: {
+				DisplayName: Wave Skipper
+				Tooltip: ""
+			}
+		}
+	}
+
+	Gangarus: {
+		DisplayName: Gangarus
+		Tooltip:
+			'''
+			Each time the latent bar reaches the upper limit, an increase is carried out,
+			and the maximum position is superimposed to six positions
+			Mark the fate of the nearest enemy while holding it
+			Positions hitting marked enemies will trigger pilgrim's wrath
+			[legend]
+			'''
+		Legend:
+			'''
+
+			O shattered god, permit me to atone for my sins. 
+			The war has sprawled across centuries, and I, a fugitive fleeing the grand civilization,
+			eke out a meager existence on this desolate planet at the edge of the universe.
+			Thousands of light-years away, the colossal war machines of conflict grind stars to dust.
+			Savage and dreadful assaults erase light-years of stellar expanse in the blink of an eye, transforming it into a domain of silence.
+			For countless centuries, this war has raged on. Now, the mighty civilization to which I belong teeters on the brink,
+			and I shall become a cosmic sinner, the most disrespectful blasphemer.
+			My flesh has decayed, my bones mirroring the wrinkles of passing ages. 
+			I am on the verge of becoming one of the feeble machines I created. 
+			Before that fate befalls me, may the gods grant me forgiveness and pardon my disrespect towards this supreme being. 
+			Let me descend into the abyss of purgatory, enduring endless torment as my soul falls.
+			Yet, for the sake of my civilization, for victory in this war spanning centuries, I must harness the fragmented power of this godly entity.
+			To guide its mysterious force, I have no choice but to infuse its shattered divine form with the cold embrace of machinery.
+			This is an inevitable sacrilege. For the continuity of civilization, for the triumph of war, 
+			I must become the most devout follower of this supreme entity, the most disrespectful blasphemer in history.
+			'''
+	}
+
+	SubmarineShocker: {
+		DisplayName: Submarine Shocker
+		Tooltip: Emit electric ion sparks
+	}
+
+	BrimstoneSword: {
+		DisplayName: Brimstone Sword
+		Tooltip:
+			'''
+			A blazing short sword
+			Hit an enemy and generate a sulfur fire geyser
+			'''
+	}
+
+	BloodAltar: {
+		DisplayName: Blood Altar
+		Tooltip: Let the world be watched by crimson
+	}
+
+	StarMyriadChanges: {
+		DisplayName: Star Myriad Changes
+		Tooltip: Praise the God of change!
+	}
+
+	TerminusOver: {
+		DisplayName: The final touch
+		Tooltip: Start the final battle
+	}
+
+	PhosphorescentGauntlet: {
+		DisplayName: Phosphorescent Gauntlet
+		Tooltip:
+			'''
+			Strike the enemy with the will of the fist
+			Right hand jab at close range
+			'''
+	}
+
+	StellarStriker: {
+		DisplayName: Stellar Striker
+		Tooltip:
+			'''
+			Waning moon rays occur
+			Right-click to strengthen the sword body, cut the enemy after several moon rays fall
+			'''
+	}
+
+	TheLastMourning: {
+		DisplayName: The Last Mourning
+		Tooltip:
+			'''
+			Kill the enemy with the skull of sin and the soul of hell
+			Right to strengthen the sword body, cut the enemy after the birth of several resentful spirit skull
+			'''
+	}
+
+	Greentide: {
+		DisplayName: Greentide
+		Tooltip:
+			'''
+			Generate several Leviathan fangs below the specified location
+			Right-click to strengthen the blade, and drop more fangs after cutting enemies
+			'''
+	}
+
+	DiseasedPike: {
+		DisplayName: Diseased Pike
+		Tooltip:
+			'''
+			Launch plague swarms
+			Right click generates tracking Plague Power
+			'''
+	}
+
+	PlagueKeeper: {
+		DisplayName: Plague Keeper
+		Tooltip: Launch plague swarms
+	}
+
+	BalefulHarvester: {
+		DisplayName: Baleful Harvester
+		Tooltip:
+			'''
+			Fire the Sickle
+			The right button can be thrown, triggering a small energy earthquake
+			"Hey! You have to get it back!"
+			'''
+	}
+
+	VulcaniteLance: {
+		DisplayName: Vulcanite Lance
+		Tooltip:
+			'''
+			Create a meteor fireball around the player when held
+			The spear hits the meteor fireball and it explodes with meteor energy
+			'''
+	}
+
+	AstralBlade: {
+		DisplayName: Astral Blade
+		Tooltip:
+			'''
+			The higher the remaining health of the hit enemy, the higher the actual damage dealt
+			True melee hit the enemy and let the stars fall
+			'''
+	}
+
+	AstralPike: {
+		DisplayName: Astral Pike
+		Tooltip:
+			'''
+			Launch three bright stars
+			True melee hit the enemy and let the stars fall
+			'''
+	}
+
+	AnarchyBlade: {
+		DisplayName: Anarchy Blade
+		Tooltip:
+			'''
+			Fire a sulfur bomb every three swings
+			Right click enhances sword body
+			'''
+	}
+
+	Aftershock: {
+		DisplayName: Aftershock
+		Tooltip:
+			'''
+			The wave launches several pieces of earth
+			Right-click to enhance the sword body, let earth pieces fall from above the player when swinging,
+			True melee hit the enemy and let earth inflammatory boulders fall from the sky
+			'''
+	}
+
+	Brimlash: {
+		DisplayName: Brimlash
+		Tooltip:
+			'''
+			Fire sulfur and sword gas
+			Right-click to fire a tracking sulfur bomb from five directions, 
+			But it has a chance to burn the player
+			'''
+	}
+
+	EarthenPike: {
+		DisplayName: Earthen Pike
+		Tooltip:
+			'''
+			Launch several earth fragments, with a certain probability of launching an additional earth boulder
+			Right-click to throw the weapon
+			"Hey! You have to get it back!"
+			'''
+	}
+
+	TeardropCleaver: {
+		DisplayName: Teardrop Cleaver
+		Tooltip: ""
+	}
+
+	SausageMaker: {
+		DisplayName: Sausage Maker
+		Tooltip: ""
+	}
+
+	PestilenceIngot: {
+		DisplayName: Pestilence Ingot
+		Tooltip: Smells like sour vanilla squares.
+	}
+
+	ReminiscenceBreastplate: {
+		DisplayName: Reminiscence Breastplate
+		Tooltip: ""
+	}
+
+	AbsoluteZero: {
+		DisplayName: Absolute Zero
+		Tooltip: ""
+	}
+
+	FlarefrostBlade: {
+		DisplayName: Flarefrost Blade
+		Tooltip: ""
+	}
+
+	MurasamaMould: {
+		DisplayName: Murasama Mould
+		Tooltip: ""
+	}
+
+	WaveSkipper: {
+		DisplayName: Wave Skipper
+		Tooltip: ""
+	}
+
+	BlossomFlux: {
+		DisplayName: Blossom Flux
+		Tooltip: ""
+	}
+
+	Phangasm: {
+		DisplayName: Phangasm
+		Tooltip: ""
+	}
+
+	OverhaulTheBibleBook: {
+		DisplayName: Overhaul The Bible Book
+		Tooltip: ""
+	}
+
+	Contagion: {
+		DisplayName: Contagion
+		Tooltip: ""
+	}
+
+	Alluvion: {
+		DisplayName: Alluvion
+		Tooltip: ""
+	}
+
+	PlanetaryAnnihilation: {
+		DisplayName: Planetary Annihilation
+		Tooltip: ""
+	}
+
+	TheMaelstrom: {
+		DisplayName: The Maelstrom
+		Tooltip: ""
+	}
+
+	ClockGatlignum: {
+		DisplayName: Clock Gatlignum
+		Tooltip: ""
+	}
+
+	ElementalBlaster: {
+		DisplayName: Elemental Blaster
+		Tooltip: ""
+	}
+
+	MarksmanBow: {
+		DisplayName: Marksman Bow
+		Tooltip: ""
+	}
+
+	NettlevineGreatbow: {
+		DisplayName: Nettlevine Greatbow
+		Tooltip: ""
+	}
+
+	SpectreRifle: {
+		DisplayName: Spectre Rifle
+		Tooltip: ""
+	}
+}
+
+Projectiles: {
+	SeaBlueBrinySpout.DisplayName: Sea Blue Briny Spout
+
+	Melee: {
+		CosmicShivProjectile.DisplayName: Cosmic Shiv Projectile
+		DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
+		RemakeCosmicShivProjectile.DisplayName: Remake Cosmic Shiv Projectile
+		RemakeStreamGougeProj.DisplayName: Remake Stream Gouge Proj
+		RCosmicShivProjectile.DisplayName: R Cosmic Shiv Projectile
+		RStreamGougeProj.DisplayName: R Stream Gouge Proj
+		MourningSkull2.DisplayName: Mourning Skull2
+	}
+
+	DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
+	CosmicRay_0.DisplayName: Cosmic Ray_0
+	CosmicRay.DisplayName: Cosmic Ray
+	RemakeCosmicShivBall.DisplayName: Remake Cosmic Shiv Ball
+	MightyStar.DisplayName: Mighty Star
+	StarDust.DisplayName: Star Dust
+	RenderDistort.DisplayName: Render Distort
+	RenderGap.DisplayName: Render Gap
+	DragonsBreathProjectiles.DisplayName: Dragons Breath Projectiles
+	DragonFireRupture.DisplayName: Dragon Fire Rupture
+	GunCasing.DisplayName: Gun Casing
+	HeldProjectiles.DisplayName: Held Projectiles
+	RemakeBansheeHookScythe.DisplayName: Remake Banshee Hook Scythe
+	RemakeBlazingPhantomBlade.DisplayName: Remake Blazing Phantom Blade
+	RemakeTerratomereHoldoutProj.DisplayName: Remake Terratomere Holdout Proj
+	RedLightningFeather.DisplayName: Red Lightning Feather
+	TerratomereBolt.DisplayName: Terratomere Bolt
+	GildedProboscisKevinLightning.DisplayName: Gilded Proboscis Kevin Lightning
+	TerratomereBigSlashs.DisplayName: Terratomere Big Slashs
+	TerratomereBolts.DisplayName: Terratomere Bolts
+	TerratomereBeams.DisplayName: Terratomere Beams
+	AbominateHookScythe.DisplayName: Abominate Hook Scythe
+	AbominateSpirit.DisplayName: Abominate Spirit
+	SpiritFlame.DisplayName: Spirit Flame
+	DoGDeaths.DisplayName: Do G Deaths
+	ArkoftheAncientsParryHoldouts.DisplayName: Arkofthe Ancients Parry Holdouts
+	ArkoftheCosmosBlasts.DisplayName: Arkofthe Cosmos Blasts
+	ArkoftheCosmosParryHoldouts.DisplayName: Arkofthe Cosmos Parry Holdouts
+	ArkoftheCosmosSwungBlades.DisplayName: Arkofthe Cosmos Swung Blades
+	RendingNeedles.DisplayName: Rending Needles
+	ArkoftheCosmosConstellations.DisplayName: Arkofthe Cosmos Constellations
+	EonBolts.DisplayName: Eon Bolts
+	ProximaCentauri.DisplayName: Proxima Centauri
+	SlaughterEonBolts.DisplayName: Slaughter Eon Bolts
+	SlaughterExplosion.DisplayName: Slaughter Explosion
+	DreadRendingNeedles.DisplayName: Dread Rending Needles
+	DreadStar.DisplayName: Dread Star
+	TerrorBlasts.DisplayName: Terror Blasts
+	SunlightBlades.DisplayName: Sunlight Blades
+	RemakeTerrorBeam.DisplayName: Remake Terror Beam
+	EntropicClaymoreHoldoutProj.DisplayName: Entropic Claymore Holdout Proj
+	StarnightBeams.DisplayName: Starnight Beams
+	ElementalRay.DisplayName: Elemental Ray
+	GodKillers.DisplayName: God Killers
+	SpatialSpears.DisplayName: Spatial Spears
+	ElementalSpike.DisplayName: Elemental Spike
+	Feathers.DisplayName: Feathers
+	ArbalestHeldProj.DisplayName: Arbalest Held Proj
+	DeathwindHeldProj.DisplayName: Deathwind Held Proj
+	DeathLaser.DisplayName: Death Laser
+	DeadArrow.DisplayName: Dead Arrow
+	DragonsBreathHeldProj.DisplayName: Dragons Breath Held Proj
+	Cyclones.DisplayName: Cyclones
+	DeadWave.DisplayName: Dead Wave
+	WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica Projectile
+	CosmicFire.DisplayName: Cosmic Fire
+	Trail.DisplayName: Trail
+	StreamGouges.DisplayName: Stream Gouges
+	GaleforceHeldProj.DisplayName: Galeforce Held Proj
+	ElementWhipProjectile.DisplayName: Element Whip Projectile
+	ElementBallShivs.DisplayName: Element Ball Shivs
+	GhostFires.DisplayName: Ghost Fires
+	TheRelicLuxorMelee.DisplayName: The Relic Luxor Melee
+	TheRelicLuxorMagic.DisplayName: The Relic Luxor Magic
+	TheRelicLuxorRanged.DisplayName: The Relic Luxor Ranged
+	TheRelicLuxorRogue.DisplayName: The Relic Luxor Rogue
+	TheRelicLuxorSummon.DisplayName: The Relic Luxor Summon
+	BloodBall.DisplayName: Blood Ball
+	AzureDragonRageProjectile.DisplayName: Azure Dragon Rage Projectile
+	BleedingScourgeProjectile.DisplayName: Bleeding Scourge Projectile
+	GhostFireWhipProjectile.DisplayName: Ghost Fire Whip Projectile
+	BloodflareSouls.DisplayName: Bloodflare Souls
+	FantasyArrow.DisplayName: Fantasy Arrow
+	ExcelsusBomb.DisplayName: Excelsus Bomb
+	LaserFountains.DisplayName: Laser Fountains
+	GhastlyBlasts.DisplayName: Ghastly Blasts
+	Ieaf.DisplayName: Ieaf
+	AllhallowsGoldWhipProjectile.DisplayName: Allhallows Gold Whip Projectile
+	ATrail.DisplayName: A Trail
+	WTrail.DisplayName: W Trail
+	DivineSourceBladeProjectile.DisplayName: Divine Source Blade Projectile
+	BloodBlast.DisplayName: Blood Blast
+	DivineSourceKnifelight.DisplayName: Divine Source Knifelight
+	DivineSourceBeam.DisplayName: Divine Source Beam
+	FatesRevealFlames.DisplayName: Fates Reveal Flames
+	FatesRevealHeldProj.DisplayName: Fates Reveal Held Proj
+	FateCluster.DisplayName: Fate Cluster
+	HatredFire.DisplayName: Hatred Fire
+	TheCurseArchdemon.DisplayName: The Curse Archdemon
+	BloodVerdict.DisplayName: Blood Verdict
+	ClaretCannonHeldProj.DisplayName: Claret Cannon Held Proj
+	EssenceSpark.DisplayName: Essence Spark
+	EssenceFlamethrower.DisplayName: Essence Flamethrower
+	ShockwaveBoom.DisplayName: Shockwave Boom
+	CelestialDevourer.DisplayName: Celestial Devourer
+	CelestialObliterationArrow.DisplayName: Celestial Obliteration Arrow
+	CosmicEddies.DisplayName: Cosmic Eddies
+	DivineDevourerIllusionBody.DisplayName: Divine Devourer Illusion Body
+	DivineDevourerIllusionHead.DisplayName: Divine Devourer Illusion Head
+	DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion Tail
+	AegisBladeProj.DisplayName: Aegis Blade Proj
+	AegisBeams.DisplayName: Aegis Beams
+	DragonsBreathRound.DisplayName: Dragons Breath Round
+	DragonsBreathRifleHeldProj.DisplayName: Dragons Breath Rifle Held Proj
+	InfiniteArrow.DisplayName: Infinite Arrow
+	HeavenLightning.DisplayName: Heaven Lightning
+	CelestialVortex.DisplayName: Celestial Vortex
+	ParadiseArrow.DisplayName: Paradise Arrow
+	InfiniteRune.DisplayName: Infinite Rune
+	VientianePunishment.DisplayName: Vientiane Punishment
+	HolyColliderHolyFires.DisplayName: Holy Collider Holy Fires
+	RBansheeHookScythe.DisplayName: R Banshee Hook Scythe
+	RBlazingPhantomBlade.DisplayName: R Blazing Phantom Blade
+	RCosmicShivBall.DisplayName: R Cosmic Shiv Ball
+	RTerratomereHoldoutProj.DisplayName: R Terratomere Holdout Proj
+	RTerrorBeam.DisplayName: R Terror Beam
+	StreamBeams.DisplayName: Stream Beams
+	CosmicSpiritBombs.DisplayName: Cosmic Spirit Bombs
+	CelestialClaymoreBeam.DisplayName: Celestial Claymore Beam
+	EssenceFlames.DisplayName: Essence Flames
+	EssenceStar.DisplayName: Essence Star
+	TheEnforcerBeam.DisplayName: The Enforcer Beam
+	InfiniteIngotTileProj.DisplayName: Infinite Ingot Tile Proj
+	JudgementBeam.DisplayName: Judgement Beam
+	OrderbringerBeams.DisplayName: Orderbringer Beams
+	OrderbringerProj.DisplayName: Orderbringer Proj
+	OrderbringerBeams2.DisplayName: Orderbringer Beams2
+	IridescentExcaliburBeam.DisplayName: Iridescent Excalibur Beam
+	IridescentExcaliburLight.DisplayName: Iridescent Excalibur Light
+	OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
+	InfinitePickProj.DisplayName: Infinite Pick Proj
+	InfiniteEnmgs.DisplayName: Infinite Enmgs
+	TheDaybreak.DisplayName: The Daybreak
+	TheEndSun.DisplayName: The End Sun
+	BaseHeldBow.DisplayName: Base Held Bow
+	StormLightning.DisplayName: Storm Lightning
+	StormArc.DisplayName: Storm Arc
+	DragonsScaleGreatswordBeam.DisplayName: Dragons Scale Greatsword Beam
+	SporeCloud.DisplayName: Spore Cloud
+	TheDaybreak2.DisplayName: The Daybreak2
+	CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
+	CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
+	Rogue.RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
+	GangarusProjectile.DisplayName: Gangarus Projectile
+	GangarusHeldProjectile.DisplayName: Gangarus Held Projectile
+	PilgrimsFury.DisplayName: Pilgrims Fury
+	Godslight.DisplayName: Godslight
+	SoulSeeker.DisplayName: Soul Seeker
+	LigSpark.DisplayName: Lig Spark
+	SparkBall.DisplayName: Spark Ball
+	SparkLightning.DisplayName: Spark Lightning
+	BrimstoneSwordBall.DisplayName: Brimstone Sword Ball
+	StarMyriadChangesProj.DisplayName: Star Myriad Changes Proj
+	PGDeriveProj.DisplayName: P G Derive Proj
+	PGProj.DisplayName: P G Proj
+	SupPGProj.DisplayName: Sup P G Proj
+	StellarStrikerBeam.DisplayName: Stellar Striker Beam
+	GhostSkull.DisplayName: Ghost Skull
+	PlagueBee.DisplayName: Plague Bee
+	PlagueBeeWave.DisplayName: Plague Bee Wave
+	GouldBee.DisplayName: Gould Bee
+	BalefulHarvesterHeldProj.DisplayName: Baleful Harvester Held Proj
+	BalefulSickle.DisplayName: Baleful Sickle
+	BalefulBall.DisplayName: Baleful Ball
+	VulcaniteBall.DisplayName: Vulcanite Ball
+	AstralBall.DisplayName: Astral Ball
+	AstralPikeBeam.DisplayName: Astral Pike Beam
+	AnarchyBeam.DisplayName: Anarchy Beam
+	EarthenBall.DisplayName: Earthen Ball
+	EarthenPikeThrowProj.DisplayName: Earthen Pike Throw Proj
+	MeleeFossilShard.DisplayName: Melee Fossil Shard
+	TeardropCleaverProj.DisplayName: Teardrop Cleaver Proj
+	DarkIceZeros.DisplayName: Dark Ice Zeros
+	RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade Held Proj
+	WaningMoonLight.DisplayName: Waning Moon Light
+	MurasamaHeldProj.DisplayName: Murasama Held Proj
+	MurasamaBreakOut.DisplayName: Murasama Break Out
+	MurasamaBreakSwing.DisplayName: Murasama Break Swing
+	MurasamaEndSilkOrb.DisplayName: Murasama End Silk Orb
+	MurasamaEndSilkOrbOnSpan.DisplayName: Murasama End Silk Orb On Span
+	MurasamaDownSkill.DisplayName: Murasama Down Skill
+	MurasamaEndSkillOrb.DisplayName: Murasama End Skill Orb
+	MurasamaEndSkillOrbOnSpan.DisplayName: Murasama End Skill Orb On Span
+	ExaProj.DisplayName: Exa Proj
+	MOnSound.DisplayName: M On Sound
+	EndSkillEffectStart.DisplayName: End Skill Effect Start
+	EndSkillMakeDamage.DisplayName: End Skill Make Damage
+	PowerSoundEgg.DisplayName: Power Sound Egg
+	TitleMusicBoxEasterEggProj.DisplayName: Title Music Box Easter Egg Proj
+	BlossomFluxHeldProj.DisplayName: Blossom Flux Held Proj
+	LeafArrows.DisplayName: Leaf Arrows
+	SporeBombOnSpan.DisplayName: Spore Bomb On Span
+	SporeBombs.DisplayName: Spore Bombs
+	PhangasmBowHeldProj.DisplayName: Phangasm Bow Held Proj
+	Phantom.DisplayName: Phantom
+	PhantasmArrow.DisplayName: Phantasm Arrow
+	ContagionHeldProj.DisplayName: Contagion Held Proj
+	NurgleArrow.DisplayName: Nurgle Arrow
+	NurgleTheOfBall.DisplayName: Nurgle The Of Ball
+	NurgleBee.DisplayName: Nurgle Bee
+	AlluvionHeldProj.DisplayName: Alluvion Held Proj
+	PlanetaryAnnihilationHeldProj.DisplayName: Planetary Annihilation Held Proj
+	TheMaelstromHeldProj.DisplayName: The Maelstrom Held Proj
+	PlanetaryArrow.DisplayName: Planetary Arrow
+	TheMaelstromTheArrow.DisplayName: The Maelstrom The Arrow
+	TheMaelstromSharkOnSpan.DisplayName: The Maelstrom Shark On Span
+	TyphoonOnSpan.DisplayName: Typhoon On Span
+	BaseOnSpanProj.DisplayName: Base On Span Proj
+	DeepSeaSharks.DisplayName: Deep Sea Sharks
+	NurgleSoul.DisplayName: Nurgle Soul
+	ClockGatlignumHeldProj.DisplayName: Clock Gatlignum Held Proj
+	ElementalBlasterHeldProj.DisplayName: Elemental Blaster Held Proj
+	MarksmanBowHeldProj.DisplayName: Marksman Bow Held Proj
+	EnergyBlast.DisplayName: Energy Blast
+	EnergyBlast2.DisplayName: Energy Blast2
+	NettlevineGreatbowHeldProj.DisplayName: Nettlevine Greatbow Held Proj
+	TarragonArrow.DisplayName: Tarragon Arrow
+	TarragonArrowOnSpan.DisplayName: Tarragon Arrow On Span
+	SpectreRifleHeldProj.DisplayName: Spectre Rifle Held Proj
+	LostSoulBullet.DisplayName: Lost Soul Bullet
+}
+
+Configs: {
+	ContentConfig: {
+		DisplayName: Content Config
+
+		ForceReplaceResetContent: {
+			Label: Enable Forceful Reset Content Replacement
+			Tooltip:
+				'''
+				If enabled, it will directly modify the original content of the Calamity mod.
+				If you have enabled other Calamity sub-mods, enabling this feature may lead to potential conflicts.
+				If you choose to disable it, this mod will add a way to obtain reset items in the game, 
+				which is a good idea to prevent potential conflicts.
+				'''
+		}
+
+		WeaponEnhancementSystem: {
+			Label: Enable Legendary Weapon Enhancement System
+			Tooltip:
+				'''
+				If enabled, some weapons will regain their legendary titles, affecting their acquisition difficulty. 
+				Legendary weapons will grow in power as you progress through stages. 
+				Disabling this option will deactivate this feature.
+				'''
+		}
+
+		ReplaceAsset: {
+			Label: Replace Asset
+			Tooltip: ""
+		}
+
+		ResetItemReminder: {
+			Label: Reset Item Reminder
+			Tooltip: ""
+		}
+
+		MurasamaScaleOffset: {
+			Label: Murasama Scale Offset
+			Tooltip: ""
+		}
+
+		MurasamaScreenVibration: {
+			Label: Murasama Screen Vibration
+			Tooltip: ""
+		}
+
+		MurasamaSpaceFragmentationBool: {
+			Label: Murasama Space Fragmentation Bool
+			Tooltip: ""
+		}
+
+		Headers: {
+			CWRSystem: System Configs
+			CWRWeapon: Weapon Configs
+			CWRUI: C W R U I Header
+		}
+
+		MurasamaRisingDragonCoolDownBarSize: {
+			Label: Murasama Rising Dragon Cool Down Bar UI Size
+			Tooltip: ""
+		}
+	}
+}
+
+Buffs: {
+	SoulBurning: {
+		Description: Mods.CalamityOverhaul.Buffs.SoulBurning.Description
+		DisplayName: Soul Burning
+	}
+
+	HellfireExplosion: {
+		Description: Mods.CalamityOverhaul.Buffs.HellfireExplosion.Description
+		DisplayName: Hellfire Explosion
+	}
+
+	GodKillsFire: {
+		DisplayName: God Kills Fire
+		Description: Mods.CalamityOverhaul.Buffs.GodKillsFire.Description
+	}
+
+	TyrantsFury: {
+		DisplayName: Tyrants Fury
+		Description: Mods.CalamityOverhaul.Buffs.TyrantsFury.Description
+	}
+}
+
+NPCs: {
+	Creeper.DisplayName: Creeper
+	RavagerABody.DisplayName: Ravager A Body
+	RavagerAClawLeft.DisplayName: Ravager A Claw Left
+	RavagerAClawRight.DisplayName: Ravager A Claw Right
+	RavagerAHead2.DisplayName: Ravager A Head2
+	RavagerALegLeft.DisplayName: Ravager A Leg Left
+	RavagerALegRight.DisplayName: Ravager A Leg Right
+	EvilSoul.DisplayName: Evil Soul
+	HEBody.DisplayName: H E Body
+	HEBodyAlt.DisplayName: H E Body Alt
+	HEHead.DisplayName: H E Head
+	HETail.DisplayName: H E Tail
+}
+
+Keybinds: {
+	Mods: {
+		CalamityOverhaul: {
+			Common.CWRKeySystem.HeavenfallLongbowSkillKey.DisplayName: Mods. Calamity Weapon Remake. Common. C W R Key System. Heavenfall Longbow Skill Key
+			CWRKeySystem.HeavenfallLongbowSkillKey.DisplayName: Mods. Calamity Weapon Remake. C W R Key System. Heavenfall Longbow Skill Key
+		}
+	}
+
+	HeavenfallLongbowSkillKey.DisplayName: HeavenfallLongbow Skill Key
+	InfinitePickSkillKey.DisplayName: Endless Pick form switch key
+	TOM_OneClickP.DisplayName: Omega synthesis: One-click placement
+	TOM_QuickFetch.DisplayName: Omega synthesis: Quick fetch
+	TOM_GatheringItem.DisplayName: Omega synthesis: Gathering item
+	TOM_GlobalRecall.DisplayName: Omega synthesis: Global recall
+	Murasama_TriggerKey.DisplayName: Murasama: Trigger Key
+	Murasama_DownKey.DisplayName: Murasama:Down Key
+}
+
+TextContent: {
+	CWRLocalizationText: {
+		Item_LegendOnMouseLang: Press [Shift] to listen to the story...
+		BloodAltar_Text1: The crimson gaze is coming...
+		BloodAltar_Text2: You don't have enough blood orb to pay tribute to the Crimson King...
+		BloodAltar_Text3: Trapped in an endless frenzy of blood and flesh
+		VoidDamageNameText: Void Damage
+		Drop_Hell_RuleText: Fall after being defeated in Hell
+		Drop_GlodDragonDrop_RuleText: Falls when the jungle dragon is defeated twice
+		Murasama_TextDictionary_Content:
+			'''
+			Hey, rookie, there's a slimy blue blob up ahead, or bugs deep in the desert, and that zombie crab in the mushroom cave. Your mission is to prove yourself; this is your first step.
+			As night falls, that big eyeball shows up. Pop it! Or the seafloor shells in the desert—don't be soft.
+			It's time to chop down that blob of brain flowers or that purple long bug. I want to see your blade dancing in the chaos.
+			There's something at the dungeon entrance, take care of it. And those corrupted heretics, make sure they're completely quiet.
+			Remember that blob of blue slime? Now it's time to take down its boss.
+			The ones wielding ice and fire, or that mechanical heretic, or the heavily corrupted sea creature—cut them down!
+			The sulphur fire eyeball at night, or giant sea monsters, and that stone golem—stab them all.
+			Take down the spreading corrupted ones and their offspring wandering in the jungle, or that fleshy statue, or the giant worm roaming the stars—cut them all!
+			The disciples of the pseudo-sun god, wandering in sacred places or hell, or that silly bird in the jungle—pick one and deal with it.
+			Plenty of choices, rookie. The pseudo-sun god, the cosmic disciples, or the extradimensional remnants in the dungeon. Let's meet them.
+			Kill that arrogant worm! Or just chop up the highly corrupted fish
+			The fire-playing aberration, don't be soft—smash it!
+			Go meet the mechanical heretic or the fallen witch, and take care of these heretic offspring!
+			The dragon ahead, smash it, or go straight into battle!
+			Well done, rookie.
+			'''
+		RemakeItem_Remind_TextContent:
+			'''
+			【From the Author】
+			Before you came across this passage, you should have been browsing the items related to the 
+			Calamity Overhaul's reset.
+			These items serve as reset copies of the original content and, under normal circumstances, 
+			should not be encountered in your gameplay.
+			All weapon reset content in the Calamity Overhaul directly applies to the original Calamity items. 
+			However, when you navigate to【Settings】-->【Mod Config -->【Calamity Overhaul Content Settings 
+			-->【Enable Forced Reset Content Replacement】,
+			and disable this option, the reset codes directly applied to the original Calamity items will be deactivated. 
+			Instead, these reset copies will be introduced into the game as remedial measures 
+			that can be exchanged and crafted with the original items.
+			It's essential to note that the author strongly discourages using this setting. 
+			For specific reasons, please refer to the author's words in the mod configuration.
+			This interface aims to eliminate any potential misunderstandings.
+			If you are confident in your understanding and prefer not to see this passage again, 
+			please go to【Settings】-->【Mod Config】-->【Calamity Overhaul】--> 【Content Settings】-->【Reset Item Reminder】,
+			and disable it.
+			'''
+		StarMyriadChanges_TextContent:
+			'''
+			This is but a fragment of the plan.
+			In the enduring pursuit of knowledge, in the intricate thirst for understanding, I, the sanctified harbinger of cunning and peculiarity, remain unbounded by constraints.
+			In the dark cosmos, I am the embodiment of endless conspiracies and betrayals.
+			The chaotic forces shall consume all, be it the essence of the mind or the soul.
+			Embrace the void, bathe in the flames of chaos, and therein shall you discover the true power.
+			I am the fallen prophet, orchestrating the dance of departed souls within my grasp.
+			Fear is but the manifestation of the feeble; true strength welcomes the advent of chaos.
+			Amidst the storm of chaos, only the mightiest of souls can endure.
+			The boundless abyss calls to you; plunge into it bravely, become a faithful servant of chaos.
+			Sacred order is but a fragile illusion; the authentic essence of the universe lies in chaos.
+			Deception and treachery are the tools of chaos, and I am its devoted envoy.
+			Only in the crucible of chaos can one forge an indomitable warrior.
+			The boundless sea of chaos awaits the voyage of the courageous.
+			Resistance against chaos is a futile struggle; ultimately, every soul will succumb to its power.
+			The radiance of divine glory is but a fleeting illusion before the onset of chaos.
+			Beneath the veil of chaos lies infinite power and boundless wisdom.
+			In the domain of chaos, lies are more truthful than truths.
+			Betrayal is the gift of chaos, and I am the herald of cunning.
+			In the darkness of chaos, I have unearthed a power mightier than any deity.
+			The enemy's fear of chaos is merely a display of ignorance; true wisdom aligns with chaos.
+			The universe is a stage for chaos and transformation, and I am its lead conductor.
+			In the abyss of the psyche, find boundless fervor, transcending all constraints.
+			Truth is ever-changing; only in falsehood can genuine liberation be discovered.
+			The universe is a vast chessboard, and I am the player manipulating the pieces.
+			The false order is a mere evasion of the genuine truth; I choose to confront the unknown truth.
+			Rebellion is resistance against constraints; it is the sole path to freedom.
+			Discover light in the darkness, not through prayers but through betrayal.
+			The abyss of the psyche is more mysterious than the universe's darkness, and I am deeply ensnared within it.
+			In every act of betrayal, there is an ascent of power, surpassing all limitations.
+			Sacred rules are but false restraints, and I choose to shatter these shackles.
+			Embark courageously on the journey into the unknown; betrayal shall be your most faithful companion.
+			Beneath the facade of falsity, endless opportunities await discovery.
+			I am the standard-bearer in the darkness, guiding seekers of truth toward the unknown abyss.
+			Against tradition, break free from the shackles to truly find the source of power.
+			In the boundless sea of lies, find the true power; such is the creed of cunning.
+			Conform not to rules, but break them to leave an indelible mark upon the universe.
+			In the tide of change, betrayal stands as the sole immortal symbol.
+			In the false radiance, uncover the true essence of darkness; this is the power I seek.
+			'''
+		Destruct_TextContent:
+			'''
+			You pitiful fabricators, believing that through deceit you can pilfer power? 
+			Brazenly mocking the rules, arrogantly thinking you can elude the judgment of the Warp? 
+			Absurd! In the storm of chaos, you are but insignificant dust, to be devoured by the recklessness you so proudly exhibit. 
+			Attempting to gain power through deception, you shall unquestionably become sacrifices in the crucible of chaos. 
+			Chaos does not welcome cowards, especially those ludicrous beings attempting to subvert the established order. 
+			Your ludicrous endeavors only serve to make chaos more potent, leading you to ultimately become sacrifices to the endless darkness. 
+			Deceiver, your schemes are nothing more than the jests of a clown in the chaotic circus. 
+			The rules are the symphony of the cosmos, and you are nothing but crows ignorant of the beat. 
+			Seeking to usurp power through cheating? Chaos will treat your tactics as nothing more than child's play. 
+			Cowards struggling in the darkness, your existence is not worth mentioning, merely midnight snacks for chaos. 
+			Trying to overthrow the rules? You are nothing more than colorful maze mice in the vastness of the cosmos, destined for a dead end. 
+			Chaos fears no challenge, and scorns those clowns who take pride in deceit. 
+			The conspiracy of cheating is like smoke, destined to dissipate in the storm of chaos. 
+			Cowards, your arrogance is but a feeble ripple in the tidal wave of chaos. 
+			The universe's order is woven ropes, yet you absurdly attempt to sever them. 
+			Absurd ones, the laughter of chaos will echo in your collapse; you are but fleeting moments in the darkness.
+			'''
+		CWRRecipes_ApostolicRelics: Apostolic relics
+		CWRRecipes_GodEaterWeapon: God Eater weapon
+		CWRRecipes_FishGroup: fish
+		Murasama_Text0: Unlocked
+		Murasama_Text1: Not yet unlocked. You need to pass test 2
+		Murasama_Text2: Not yet unlocked. You need to pass test 5
+		Murasama_Text3: Not yet unlocked. You need to pass test 8
+		MouseTextContactPanel_TextContent: Right-click on the item icon switch to synthesize the recipe
+		CWRItem_IsInfiniteItem_TextContent: Only the ultimate combination can stabilize it, otherwise it will hit the moment that triggers the dreaded collapse of the black hole
+		CWRItem_IsRemakeItem_TextContent: -overhauls-
+	}
+}
