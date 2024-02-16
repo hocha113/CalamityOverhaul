@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                             }
                         }
                         if (Murasama.NameIsVergil(Owner)) {
-                            SoundEngine.PlaySound(ModSound.V_Hooaaa with { Volume = 0.6f }, Projectile.Center);
+                            SoundEngine.PlaySound(CWRSound.V_Hooaaa with { Volume = 0.6f }, Projectile.Center);
                         }
                         murasama.initialize();
                         

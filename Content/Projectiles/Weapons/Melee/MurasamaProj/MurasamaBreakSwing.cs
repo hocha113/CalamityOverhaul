@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
                 //如果充能已经满了10点，并且该技能已经解锁，那么进行处决技的释放
                 if (murasama.CWR().ai[0] == 10 && Murasama.UnlockSkill3) {
-                    SoundEngine.PlaySound(ModSound.EndSilkOrbSpanSound with {Volume = 0.7f }, Projectile.Center);
+                    SoundEngine.PlaySound(CWRSound.EndSilkOrbSpanSound with {Volume = 0.7f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {//同样的，释放衍生弹幕和进行自我充能清零的操作只能交由主人玩家执行
                         int maxSpanNum = 13 + level;
                         for (int i = 0; i < maxSpanNum; i++) {

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -11,6 +12,8 @@ namespace CalamityOverhaul.Content
         /// 圣物的装备等级，这个字段决定了玩家会拥有什么样的弹幕效果
         /// </summary>
         public int theRelicLuxor = 0;
+
+        public float PressureIncrease;
 
         public int CompressorPanelID = -1;//未使用的，这个属性属于一个未完成的UI
         /// <summary>
@@ -40,11 +43,13 @@ namespace CalamityOverhaul.Content
 
         public override void Initialize() {
             theRelicLuxor = 0;
+            PressureIncrease = 1;
             onHit = false;
         }
 
         public override void ResetEffects() {
             theRelicLuxor = 0;
+            PressureIncrease = 1;
             inFoodStallChair = false;
             EndlessStabilizerBool = false;
             HeldMurasamaBool = false;
@@ -53,7 +58,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnEnterWorld() {
-            CWRUtils.Text($"{CWRMod.RItemInstances.Count}个武器重置已经装载", Color.GreenYellow);
+            if (ContentConfig.Instance.ForceReplaceResetContent) {
+                CWRUtils.Text(CWRMod.RItemIndsDict.Count + CWRLocalizationText.GetTextValue("OnEnterWorld_TextContent"), Color.GreenYellow);
+            }
         }
 
         public override void OnHurt(Player.HurtInfo info) {

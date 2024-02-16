@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                     CWRParticleHandler.AddParticle(energyLeak);
                 }
 
-                modSoundtyle = ModSound.BlackHole;
+                modSoundtyle = CWRSound.BlackHole;
                 if (!SoundEngine.TryGetActiveSound(soundSlot, out var activeSoundTwister)) {
                     soundSlot = SoundEngine.PlaySound(modSoundtyle, Projectile.Center);
                 }

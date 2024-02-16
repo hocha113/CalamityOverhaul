@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 onFire = false;
             }
             if (onFireR && Owner.ownedProjectileCounts[ModContent.ProjectileType<TyphoonOnSpan>()] == 0) {
-                accumulator = SoundEngine.PlaySound(ModSound.Accumulator with { Pitch = -0.7f }, Projectile.Center);
+                accumulator = SoundEngine.PlaySound(CWRSound.Accumulator with { Pitch = -0.7f }, Projectile.Center);
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<TyphoonOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
             }

@@ -14,25 +14,31 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
     internal class GCWRItems : GlobalItem
     {
         public static void ProcessRemakeAction(Item item, Action<BaseRItem> action) {
-            if (CWRConstant.ForceReplaceResetContent) {
-                foreach (BaseRItem rItem in CWRMod.RItemInstances) {//实例集合
-                    if (rItem.SetReadonlyTargetID == item.type) {
-                        action(rItem);
-                    }
-                }
+            //if (CWRConstant.ForceReplaceResetContent) {
+            //    foreach (BaseRItem rItem in CWRMod.RItemInstances) {//实例集合
+            //        if (rItem.SetReadonlyTargetID == item.type) {
+            //            action(rItem);
+            //        }
+            //    }
+            //}
+            if (CWRConstant.ForceReplaceResetContent && CWRMod.RItemIndsDict.ContainsKey(item.type)) {
+                action(CWRMod.RItemIndsDict[item.type]);
             }
         }
 
         public static bool? ProcessRemakeAction(Item item, Func<BaseRItem, bool?> action) {
             bool? result = null;
-            if (CWRConstant.ForceReplaceResetContent) {
-                foreach (BaseRItem rItem in CWRMod.RItemInstances) {
-                    if (rItem.SetReadonlyTargetID == item.type) {
-                        result = action(rItem);
-                        if (result != null)
-                            break;
-                    }
-                }
+            //if (CWRConstant.ForceReplaceResetContent) {
+            //    foreach (BaseRItem rItem in CWRMod.RItemInstances) {
+            //        if (rItem.SetReadonlyTargetID == item.type) {
+            //            result = action(rItem);
+            //            if (result != null)
+            //                break;
+            //        }
+            //    }
+            //}
+            if (CWRConstant.ForceReplaceResetContent && CWRMod.RItemIndsDict.ContainsKey(item.type)) {
+                result = action(CWRMod.RItemIndsDict[item.type]);
             }
             return result;
         }

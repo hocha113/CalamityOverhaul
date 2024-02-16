@@ -29,7 +29,8 @@ namespace CalamityOverhaul.Content
         Phantom,
         Alluvion,
         Marksman,
-        NettlevineGreat
+        NettlevineGreat,
+        TheStorm
     }
 
     public class CWRProjectile : GlobalProjectile
@@ -65,6 +66,14 @@ namespace CalamityOverhaul.Content
                 Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
                         , (int)CalamityDusts.SulfurousSeaAcid, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
             }
+            if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
+                if (Main.rand.NextBool()) {
+                    var sparkier = Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.UnusedWhiteBluePurple, 0f, 0f, 100, default, 1f);
+                    Main.dust[sparkier].scale += 0.3f + (Main.rand.Next(50) * 0.01f);
+                    Main.dust[sparkier].noGravity = true;
+                    Main.dust[sparkier].velocity *= 0.1f;
+                }
+            }
         }
 
         public override void OnKill(Projectile projectile, int timeLeft) {
@@ -84,6 +93,9 @@ namespace CalamityOverhaul.Content
             RMeowmere.SpanDust(projectile);
             if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
                 target.AddBuff(70, 60);
+            }
+            if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
+                target.AddBuff(BuffID.Electrified, 120);
             }
         }
 
@@ -189,6 +201,10 @@ namespace CalamityOverhaul.Content
 
             if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
                 target.AddBuff(70, 60);
+            }
+
+            if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
+                target.AddBuff(BuffID.Electrified, 120);
             }
 
             if (projectile.type == ModContent.ProjectileType<ExoVortex>()) {

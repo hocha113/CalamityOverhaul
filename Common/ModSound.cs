@@ -2,7 +2,7 @@
 
 namespace CalamityOverhaul.Common
 {
-    public static class ModSound
+    public static class CWRSound
     {
         public static SoundStyle loadTheRounds = new SoundStyle(CWRConstant.Asset + "Sounds/loadTheRounds");
         public static SoundStyle MeatySlash = new SoundStyle(CWRConstant.Asset + "Sounds/MeatySlash");
@@ -12,6 +12,11 @@ namespace CalamityOverhaul.Common
         public static SoundStyle BlackHole = new SoundStyle(CWRConstant.Asset + "Sounds/BlackHole");
         public static SoundStyle Accumulator = new SoundStyle(CWRConstant.Asset + "Sounds/Accumulator");
         public static SoundStyle Bees = new SoundStyle(CWRConstant.Asset + "Sounds/Bees");
+        public static SoundStyle BlankGun = new SoundStyle(CWRConstant.Asset + "Sounds/BlankGun");
+        public static SoundStyle Case = new SoundStyle(CWRConstant.Asset + "Sounds/Case");
+        public static SoundStyle CaseEjection = new SoundStyle(CWRConstant.Asset + "Sounds/CaseEjection");
+        public static SoundStyle CaseEjection2 = new SoundStyle(CWRConstant.Asset + "Sounds/CaseEjection2");
+        public static SoundStyle Ejection = new SoundStyle(CWRConstant.Asset + "Sounds/Ejection");
         public static SoundStyle EndSilkOrbSpanSound = new SoundStyle(CWRConstant.Asset + "Sounds/EndSilkOrbSpanSOund");
         public static SoundStyle V_Kengms = new SoundStyle(CWRConstant.Asset + "Sounds/EasterEggSound/V_Kengms");
         public static SoundStyle V_ThisThePwero = new SoundStyle(CWRConstant.Asset + "Sounds/EasterEggSound/V_ThisThePwero");

@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles
         public override void AI() {
             Projectile.scale += 0.01f;
             if (Projectile.timeLeft % 10 == 0) {
-                SoundEngine.PlaySound(ModSound.BlackHole, Projectile.Center);
+                SoundEngine.PlaySound(CWRSound.BlackHole, Projectile.Center);
                 ExTile();
             }
             CWRUtils.ForceFieldEffect(Projectile.Center, (int)(Projectile.scale * 96), 2, false);

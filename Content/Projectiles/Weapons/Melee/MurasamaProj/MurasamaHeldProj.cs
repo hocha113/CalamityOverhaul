@@ -98,10 +98,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
                 if (Owner.ownedProjectileCounts[breakOutType] == 0) {
                     if (CWRKeySystem.Murasama_TriggerKey.JustPressed && risingDragon <= 0 && noHasDownSkillProj) {//扳机键被按下，并且升龙冷却已经完成，那么将刀发射出去
-                        SoundEngine.PlaySound(ModSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
+                        SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
                         SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.1f, Volume = 0.5f }, Projectile.Center);
                         if (Murasama.NameIsVergil(Owner) && Main.rand.NextBool()) {
-                            SoundStyle sound = Main.rand.NextBool() ? ModSound.V_Kengms : ModSound.V_Heen;
+                            SoundStyle sound = Main.rand.NextBool() ? CWRSound.V_Kengms : CWRSound.V_Heen;
                             SoundEngine.PlaySound(sound with { Volume = 0.5f }, Projectile.Center);
                         }
 

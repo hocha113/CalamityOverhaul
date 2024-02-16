@@ -1,21 +1,23 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
+using Microsoft.Xna.Framework;
 using Terraria.Audio;
 using Terraria.ModLoader;
+using Terraria;
+using CalamityOverhaul.Content.Items.Ranged;
+using Microsoft.Xna.Framework.Input;
+using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class ClockGatlignumHeldProj : BaseHeldGun
+    internal class StormDragoonHeldProj : BaseHeldGun
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "ClockGatlignum";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ClockGatlignum>();
-        public override int targetCWRItem => ModContent.ItemType<ClockGatlignum>();
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "StormDragoon";
+        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.StormDragoon>();
+        public override int targetCWRItem => ModContent.ItemType<StormDragoon>();
         public override float ControlForce => 0.1f;
-        public override float GunPressure => 0.25f;
-        public override float Recoil => 1.5f;
+        public override float GunPressure => 0.3f;
+        public override float Recoil => 1.7f;
         public override void InOwner() {
             float armRotSengsFront = 60 * CWRUtils.atoR;
             float armRotSengsBack = 110 * CWRUtils.atoR;
@@ -30,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = GunOnFireRot;
                     Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 20 + new Vector2(0, -3) + offsetPos;
-                    armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + offsetRot + 0.5f * DirSign)) * DirSign;
+                    armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
                     if (HaveAmmo) {
                         onFire = true;
                         Projectile.ai[1]++;
@@ -50,8 +52,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
                 Vector2 gundir = Projectile.rotation.ToRotationVector2();
 
+                DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, gundir);
                 if (Main.rand.NextBool()) {
-                    DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, gundir);
                     Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
                     Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
                 }

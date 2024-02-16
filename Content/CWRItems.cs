@@ -253,9 +253,7 @@ namespace CalamityOverhaul.Content
 
         public override bool CanUseItem(Item item, Player player) {
             if (heldProjType > 0 && hasHeldNoCanUseBool) {
-                if (player.ownedProjectileCounts[heldProjType] > 0) {
-                    return false;
-                }
+                return false;
             }
             return base.CanUseItem(item, player);
         }
@@ -269,8 +267,8 @@ namespace CalamityOverhaul.Content
                 foreach (BaseRItem rItem in CWRMod.RItemInstances) {
                     if (rItem.SetReadonlyTargetID == item.type) {
                         Texture2D value = CWRUtils.GetT2DValue("CalamityOverhaul/icon_small");
-                        Main.spriteBatch.Draw(value, Main.MouseScreen - new Vector2(22, 0), null, Color.Gold, 0, value.Size() / 2
-                            , MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.1f + 1, SpriteEffects.None, 0);
+                        Main.spriteBatch.Draw(value, Main.MouseScreen - new Vector2(0, -26), null, Color.Gold, 0, value.Size() / 2
+                            , MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
                     }
                 }
             }

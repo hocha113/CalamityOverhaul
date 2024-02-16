@@ -1,27 +1,28 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
+using Microsoft.Xna.Framework;
 using Terraria.Audio;
 using Terraria.ModLoader;
+using Terraria;
+using CalamityOverhaul.Content.Items.Ranged;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class ClockGatlignumHeldProj : BaseHeldGun
+    internal class HalibutCannonHeldProj : BaseHeldGun
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "ClockGatlignum";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ClockGatlignum>();
-        public override int targetCWRItem => ModContent.ItemType<ClockGatlignum>();
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
+        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.HalibutCannon>();
+        public override int targetCWRItem => ModContent.ItemType<HalibutCannon>();
         public override float ControlForce => 0.1f;
-        public override float GunPressure => 0.25f;
-        public override float Recoil => 1.5f;
+        public override float GunPressure => 0.3f;
+        public override float Recoil => 1.7f;
         public override void InOwner() {
             float armRotSengsFront = 60 * CWRUtils.atoR;
             float armRotSengsBack = 110 * CWRUtils.atoR;
 
-            Projectile.Center = Owner.Center + new Vector2(DirSign * 15, 0);
-            Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(20) : MathHelper.ToRadians(160);
+            Projectile.Center = Owner.Center + new Vector2(DirSign * 40, 10);
+            Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(10) : MathHelper.ToRadians(170);
             Projectile.timeLeft = 2;
             SetHeld();
 
@@ -29,8 +30,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (Owner.PressKey()) {
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = GunOnFireRot;
-                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 20 + new Vector2(0, -3) + offsetPos;
-                    armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + offsetRot + 0.5f * DirSign)) * DirSign;
+                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 40 + new Vector2(0, -3) + offsetPos;
+                    armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
                     if (HaveAmmo) {
                         onFire = true;
                         Projectile.ai[1]++;
@@ -50,29 +51,27 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
                 Vector2 gundir = Projectile.rotation.ToRotationVector2();
 
+                DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, gundir);
                 if (Main.rand.NextBool()) {
-                    DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, gundir);
                     Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
                     Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
                 }
 
-                for (int i = 0; i < 3; i++) {
-                    Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3
-                        , gundir.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 13
+                if (AmmoTypes == ProjectileID.Bullet) {
+                    AmmoTypes = ModContent.ProjectileType<TorrentialBullet>();
+                }
+
+                for (int i = 0; i < 33; i++) {
+                    int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3
+                        , gundir.RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f)) * Main.rand.NextFloat(0.9f, 1.32f) * 13
                         , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    Main.projectile[proj].timeLeft = 90;
                 }
                 _ = UpdateConsumeAmmo();
                 _ = CreateRecoil();
                 Projectile.ai[1] = 0;
                 onFire = false;
             }
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
-                , Projectile.rotation, value.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
-            return false;
         }
     }
 }

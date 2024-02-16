@@ -887,8 +887,8 @@ Items: {
 		DisplayName: 发条鳄鱼枪
 		Tooltip:
 			'''
-			以不太理想的精准度进行扫射
 			较弱的后坐力
+			以不太理想的精准度进行扫射
 			"它并不能射出鳄鱼，令人失望"
 			'''
 	}
@@ -897,8 +897,8 @@ Items: {
 		DisplayName: 元素冲击波
 		Tooltip:
 			'''
-			发射出元素状射流
 			无后坐力
+			发射出元素状射流
 			'''
 	}
 
@@ -924,9 +924,79 @@ Items: {
 		DisplayName: 幽灵狙击枪
 		Tooltip:
 			'''
-			发射亡魂追杀敌人
 			很强的后坐力
+			发射亡魂追杀敌人
 			"这玩意儿都不使用助推剂发射弹头，它哪里来的后坐力？！"
+			'''
+	}
+
+	StormDragoon: {
+		DisplayName: 风暴龙骑士
+		Tooltip:
+			'''
+			一般的后坐力
+			让弹药如狂风骤雨般倾泻出去
+			"我是即将到来的风暴"
+			'''
+	}
+
+	TheStorm: {
+		DisplayName: 风暴
+		Tooltip:
+			'''
+			暴雨般落下箭矢，射出的箭矢都会带上电弧
+			会将木箭转化为电弧矢
+			'''
+	}
+
+	Thunderstorm: {
+		DisplayName: 虚灵步枪
+		Tooltip:
+			'''
+			微弱的后坐力
+			发射一发拉德尔电磁冲击，以魔力作为弹药
+			'''
+	}
+
+	TyrannysEnd: {
+		DisplayName: 暴政之终
+		Tooltip:
+			'''
+			极强的后坐力
+			一把发射.50BMG子弹的重型反器材步枪
+			发射后需要按下右键进行换弹
+			'''
+	}
+
+	AntiMaterielRifle: {
+		DisplayName: 巴雷特
+		Tooltip:
+			'''
+			非常强的后坐力
+			一把发射.50BMG子弹的重型反器材步枪
+			发射后需要按下右键进行换弹
+			'''
+	}
+
+	HalibutCannon: {
+		DisplayName: 大比目鱼炮
+		Tooltip:
+			'''
+			较弱的后坐力
+			将火枪子弹转化为海洋弹
+			"瞧瞧这只鱼，端着单片眼镜，头上戴着一顶高礼帽。你信不信它居然上过大学？"
+			"事实如此，先生，我可是海洋学与深渊植物学的博士，曾在硫磺海大学钓鱼比赛中称霸两届。
+			这里的比目鱼，不但懂得海底奥秘，还能拿下海洋界的桂冠。"大比目鱼如是说道
+			'''
+	}
+
+	SDFMG: {
+		DisplayName: SDFMG
+		Tooltip:
+			'''
+			无后坐力
+			有概率发射出一枚海洋导弹
+			"枪体动力学的奇迹"
 			'''
 	}
 }
@@ -1164,6 +1234,17 @@ Projectiles: {
 	// TarragonArrowOnSpan.DisplayName: Tarragon Arrow On Span
 	// SpectreRifleHeldProj.DisplayName: Spectre Rifle Held Proj
 	// LostSoulBullet.DisplayName: Lost Soul Bullet
+	// StormDragoonHeldProj.DisplayName: Storm Dragoon Held Proj
+	// TheStormHeldProj.DisplayName: The Storm Held Proj
+	// ThunderstormHeldProj.DisplayName: Thunderstorm Held Proj
+	// TyrannysEndHeldProj.DisplayName: Tyrannys End Held Proj
+	// BMGBullet.DisplayName: B M G Bullet
+	// BMGFIRE.DisplayName: B M G F I R E
+	// AntiMaterielRifleHeldProj.DisplayName: Anti Materiel Rifle Held Proj
+	// HalibutCannonHeldProj.DisplayName: Halibut Cannon Held Proj
+	// SDFMGHeldProj.DisplayName: S D F M G Held Proj
+	// BMGFIRE2.DisplayName: B M G F I R E2
+	// TorrentialBullet.DisplayName: Torrential Bullet
 }
 
 Configs: {
@@ -1429,5 +1510,7 @@ TextContent: {
 		MouseTextContactPanel_TextContent: 右键点击该物品图标开关终焉合成配方
 		CWRItem_IsInfiniteItem_TextContent: 只有高级合成能让其稳定下来，否则会触及的一刻引发可怕的塌缩
 		CWRItem_IsRemakeItem_TextContent: -觉醒-
+		CaseEjection_TextContent: 空弹
+		OnEnterWorld_TextContent: 个武器重置已经装载
 	}
 }

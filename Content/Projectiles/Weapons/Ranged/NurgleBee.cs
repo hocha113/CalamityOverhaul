@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void AI() {
             if (Time == 0) {
-                beesSound = SoundEngine.PlaySound(ModSound.Bees with { SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Projectile.Center);
+                beesSound = SoundEngine.PlaySound(CWRSound.Bees with { SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Projectile.Center);
             }
 
             float toPlayerLeng = Projectile.Center.Distance(Main.player[Projectile.owner].Center);

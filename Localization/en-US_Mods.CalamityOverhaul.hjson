@@ -882,6 +882,41 @@ Items: {
 		DisplayName: Spectre Rifle
 		Tooltip: ""
 	}
+
+	StormDragoon: {
+		DisplayName: Storm Dragoon
+		Tooltip: ""
+	}
+
+	TheStorm: {
+		DisplayName: The Storm
+		Tooltip: ""
+	}
+
+	Thunderstorm: {
+		DisplayName: Thunderstorm
+		Tooltip: ""
+	}
+
+	TyrannysEnd: {
+		DisplayName: Tyrannys End
+		Tooltip: ""
+	}
+
+	AntiMaterielRifle: {
+		DisplayName: Anti Materiel Rifle
+		Tooltip: ""
+	}
+
+	HalibutCannon: {
+		DisplayName: Halibut Cannon
+		Tooltip: ""
+	}
+
+	SDFMG: {
+		DisplayName: S D F M G
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1117,6 +1152,17 @@ Projectiles: {
 	TarragonArrowOnSpan.DisplayName: Tarragon Arrow On Span
 	SpectreRifleHeldProj.DisplayName: Spectre Rifle Held Proj
 	LostSoulBullet.DisplayName: Lost Soul Bullet
+	StormDragoonHeldProj.DisplayName: Storm Dragoon Held Proj
+	TheStormHeldProj.DisplayName: The Storm Held Proj
+	ThunderstormHeldProj.DisplayName: Thunderstorm Held Proj
+	TyrannysEndHeldProj.DisplayName: Tyrannys End Held Proj
+	BMGBullet.DisplayName: B M G Bullet
+	BMGFIRE.DisplayName: B M G F I R E
+	AntiMaterielRifleHeldProj.DisplayName: Anti Materiel Rifle Held Proj
+	HalibutCannonHeldProj.DisplayName: Halibut Cannon Held Proj
+	SDFMGHeldProj.DisplayName: S D F M G Held Proj
+	BMGFIRE2.DisplayName: B M G F I R E2
+	TorrentialBullet.DisplayName: Torrential Bullet
 }
 
 Configs: {
@@ -1354,5 +1400,7 @@ TextContent: {
 		MouseTextContactPanel_TextContent: Right-click on the item icon switch to synthesize the recipe
 		CWRItem_IsInfiniteItem_TextContent: Only the ultimate combination can stabilize it, otherwise it will hit the moment that triggers the dreaded collapse of the black hole
 		CWRItem_IsRemakeItem_TextContent: -overhauls-
+		OnEnterWorld_TextContent: 个武器重置已经装载
+		CaseEjection_TextContent: 空弹
 	}
 }

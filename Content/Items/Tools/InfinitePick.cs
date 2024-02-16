@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override void HoldItem(Player player) {
             if (CWRKeySystem.InfinitePickSkillKey.JustPressed) {
                 IsPick = !IsPick;
-                SoundEngine.PlaySound(!IsPick ? ModSound.Pecharge : ModSound.Peuncharge, player.Center);
+                SoundEngine.PlaySound(!IsPick ? CWRSound.Pecharge : CWRSound.Peuncharge, player.Center);
                 TextureAssets.Item[Type] = CWRUtils.GetT2DAsset(Texture);
             }
             rDown = player.PressKey(false);

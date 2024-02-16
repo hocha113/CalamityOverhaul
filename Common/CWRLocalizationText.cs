@@ -34,6 +34,8 @@ namespace CalamityOverhaul.Common
         public LocalizedText MouseTextContactPanel_TextContent { get; private set; }
         public LocalizedText CWRItem_IsInfiniteItem_TextContent { get; private set; }
         public LocalizedText CWRItem_IsRemakeItem_TextContent { get; private set; }
+        public LocalizedText OnEnterWorld_TextContent { get; private set; }
+        public LocalizedText CaseEjection_TextContent { get; private set; }
 
         public override void Load() {
             //使用反射进行属性的自动加载

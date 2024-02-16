@@ -6,11 +6,9 @@ using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
 using ReLogic.Utilities;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,12 +22,9 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 using Terraria.UI;
-using Terraria.Utilities;
 using Terraria.WorldBuilding;
-using static Humanizer.In;
 
 namespace CalamityOverhaul
 {
@@ -38,13 +33,14 @@ namespace CalamityOverhaul
         #region System
         public static LocalizedText SafeGetItemName<T>() where T : ModItem {
             Type type = typeof(T);
-            if (type.BaseType == typeof(EctypeItem)) {
-                return Language.GetText($"Mods.CalamityOverhaul.Items.{(Activator.CreateInstance(type) as EctypeItem)?.Name}.DisplayName");
-            }
-            return CalamityUtils.GetItemName<T>();
+            return type.BaseType == typeof(EctypeItem)
+                ? Language.GetText($"Mods.CalamityOverhaul.Items.{(Activator.CreateInstance(type) as EctypeItem)?.Name}.DisplayName")
+                : CalamityUtils.GetItemName<T>();
         }
 
-        public static LocalizedText SafeGetItemName(int id) => ItemLoader.GetItem(id).GetLocalization("DisplayName");
+        public static LocalizedText SafeGetItemName(int id) {
+            return ItemLoader.GetItem(id).GetLocalization("DisplayName");
+        }
 
         /// <summary>
         /// 一个额外的跳字方法，向游戏内打印对象的ToString内容
@@ -116,7 +112,7 @@ namespace CalamityOverhaul
             if (stye == -1) {
                 stye = 0;
             }
-            
+
             return TileLoader.GetItemDropFromTypeAndStyle(tile.TileType, stye);
         }
 
@@ -249,7 +245,7 @@ namespace CalamityOverhaul
             bool DistanceJudgment = Perspective2.LengthSquared() <= 1600 * 1600;
             bool PositioningJudgment = targetPlayer.position.X > npc.position.X;
             bool DirectionJudgment = targetPlayer.direction > npc.direction;
-            bool FacingJudgment = (PositioningJudgment == true && DirectionJudgment == false || PositioningJudgment == false && DirectionJudgment == true) && targetPlayer.direction != npc.direction;
+            bool FacingJudgment = ((PositioningJudgment == true && DirectionJudgment == false) || (PositioningJudgment == false && DirectionJudgment == true)) && targetPlayer.direction != npc.direction;
             bool PerspectiveJudgment = Perspective3.LengthSquared() <= Perspective2.LengthSquared() * 0.5f;
             return PerspectiveJudgment && FacingJudgment && DistanceJudgment;
         }
@@ -287,7 +283,7 @@ namespace CalamityOverhaul
             if (projectiles) {
                 for (int i = 0; i < Main.maxProjectiles; i++) {
                     Projectile projectile = Main.projectile[i];
-                    if (projectile.active && (!magicOnly || projectile.DamageType == DamageClass.Magic && projectile.friendly && !projectile.hostile)) {
+                    if (projectile.active && (!magicOnly || (projectile.DamageType == DamageClass.Magic && projectile.friendly && !projectile.hostile))) {
                         int dist = (int)Vector2.DistanceSquared(projectile.Center, position);
                         if (dist < rangeSquared) {
                             projectile.velocity *= slow;
@@ -424,11 +420,7 @@ namespace CalamityOverhaul
         }
 
         public static bool AlivesByNPC<T>(this ModNPC npc) where T : ModNPC {
-            if (npc == null) {
-                return false;
-            }
-
-            return npc.NPC.Alives() && npc.NPC.type == ModContent.NPCType<T>();
+            return npc != null && npc.NPC.Alives() && npc.NPC.type == ModContent.NPCType<T>();
         }
 
         /// <summary>
@@ -486,21 +478,13 @@ namespace CalamityOverhaul
         /// 根据难度返回相应的血量数值
         /// </summary>
         public static int ConvenientBossHealth(int normalHealth, int expertHealth, int masterHealth) {
-            if (Main.expertMode) {
-                return expertHealth;
-            }
-
-            return Main.masterMode ? masterHealth : normalHealth;
+            return Main.expertMode ? expertHealth : Main.masterMode ? masterHealth : normalHealth;
         }
         /// <summary>
         /// 根据难度返回相应的伤害数值
         /// </summary>
         public static int ConvenientBossDamage(int normalDamage, int expertDamage, int masterDamage) {
-            if (Main.expertMode) {
-                return expertDamage;
-            }
-
-            return Main.masterMode ? masterDamage : normalDamage;
+            return Main.expertMode ? expertDamage : Main.masterMode ? masterDamage : normalDamage;
         }
 
         private static readonly object listLock = new();
@@ -677,8 +661,8 @@ namespace CalamityOverhaul
 
             projectile.position = projectile.Center;
             projectile.width = projectile.height = blastRadius * 2;
-            projectile.position.X -= (projectile.width / 2);
-            projectile.position.Y -= (projectile.height / 2);
+            projectile.position.X -= projectile.width / 2;
+            projectile.position.Y -= projectile.height / 2;
 
             projectile.maxPenetrate = -1;
             projectile.penetrate = -1;
@@ -704,11 +688,7 @@ namespace CalamityOverhaul
             if (Main.netMode == NetmodeID.SinglePlayer) {
                 Player player = Main.player[Main.myPlayer];
 
-                if (maxFindingDg == -1) {
-                    return player;
-                }
-
-                return (NPC.position - player.position).LengthSquared() > maxFindingDg * maxFindingDg ? null : player;
+                return maxFindingDg == -1 ? player : (NPC.position - player.position).LengthSquared() > maxFindingDg * maxFindingDg ? null : player;
             }
             else {
                 float MaxFindingDgSquared = maxFindingDg * maxFindingDg;
@@ -821,7 +801,7 @@ namespace CalamityOverhaul
             if (bossPriority) {
                 bool bossFound = false;
                 for (int index2 = 0; index2 < Main.npc.Length; index2++) {
-                    if (bossFound && !Main.npc[index2].boss && Main.npc[index2].type != NPCID.WallofFleshEye || !Main.npc[index2].CanBeChasedBy()) {
+                    if ((bossFound && !Main.npc[index2].boss && Main.npc[index2].type != NPCID.WallofFleshEye) || !Main.npc[index2].CanBeChasedBy()) {
                         continue;
                     }
                     float extraDistance2 = (Main.npc[index2].width / 2) + (Main.npc[index2].height / 2);
@@ -968,15 +948,15 @@ namespace CalamityOverhaul
         #region GameUtils
 
         public static ShootState GetShootState(this Player player) {
-            ShootState shootState = new ShootState();
-            player.PickAmmo(player.ActiveItem(), out shootState.AmmoTypes, out shootState.ScaleFactor
+            ShootState shootState = new();
+            _ = player.PickAmmo(player.ActiveItem(), out shootState.AmmoTypes, out shootState.ScaleFactor
                 , out shootState.WeaponDamage, out shootState.WeaponKnockback, out shootState.UseAmmoItemType, true);
             return shootState;
         }
 
         public static bool IsRectangleIntersectingFan(Rectangle targetHitbox, Vector2 fanOrigin, float fanRadius, float startAngle, float endAngle) {
             // 计算矩形的中心点
-            Vector2 rectCenter = new Vector2(targetHitbox.X + targetHitbox.Width / 2, targetHitbox.Y + targetHitbox.Height / 2);
+            Vector2 rectCenter = new(targetHitbox.X + targetHitbox.Width / 2, targetHitbox.Y + targetHitbox.Height / 2);
 
             // 计算矩形中心到扇形原点的向量
             Vector2 toRectCenter = rectCenter - fanOrigin;
@@ -1003,6 +983,39 @@ namespace CalamityOverhaul
             return false;
         }
 
+        public static bool IsRangedAmmoFreeThisShot(this Player player, Item ammo) {
+            bool flag2 = false;
+            if (player.magicQuiver && ammo.ammo == AmmoID.Arrow && Main.rand.NextBool(5)) {
+                flag2 = true;
+            }
+
+            if (player.ammoBox && Main.rand.NextBool(5)) {
+                flag2 = true;
+            }
+
+            if (player.ammoPotion && Main.rand.NextBool(5)) {
+                flag2 = true;
+            }
+
+            if (player.huntressAmmoCost90 && Main.rand.NextBool(10)) {
+                flag2 = true;
+            }
+
+            if (player.chloroAmmoCost80 && Main.rand.NextBool(5)) {
+                flag2 = true;
+            }
+
+            if (player.ammoCost80 && Main.rand.NextBool(5)) {
+                flag2 = true;
+            }
+
+            if (player.ammoCost75 && Main.rand.NextBool(4)) {
+                flag2 = true;
+            }
+
+            return flag2;
+        }
+
         /// <summary>
         /// 赋予玩家无敌状态，这个函数与<see cref="Player.SetImmuneTimeForAllTypes(int)"/>类似
         /// </summary>
@@ -1025,8 +1038,9 @@ namespace CalamityOverhaul
         /// <param name="keyName">替换的关键字，默认为 "[KEY]"</param>
         /// <param name="modName">Mod 的名称，默认为 "Terraria"</param>
         public static void SetHotkey(this List<TooltipLine> tooltips, ModKeybind mhk, string keyName = "[KEY]", string modName = "Terraria") {
-            if (Main.dedServ || mhk is null)
+            if (Main.dedServ || mhk is null) {
                 return;
+            }
 
             string finalKey = mhk.TooltipHotkeyString();
             tooltips.ReplaceTooltip(keyName, finalKey, modName);
@@ -1041,8 +1055,9 @@ namespace CalamityOverhaul
         /// <param name="modName">Mod 的名称，默认为 "Terraria"</param>
         public static void ReplaceTooltip(this List<TooltipLine> tooltips, string targetKeyStr, string contentStr, string modName = "Terraria") {
             TooltipLine line = tooltips.FirstOrDefault(x => x.Mod == modName && x.Text.Contains(targetKeyStr));
-            if (line != null)
+            if (line != null) {
                 line.Text = line.Text.Replace(targetKeyStr, contentStr);
+            }
         }
 
         /// <summary>
@@ -1050,7 +1065,9 @@ namespace CalamityOverhaul
         /// </summary>
         /// <param name="item"></param>
         /// <param name="key"></param>
-        public static void EasySetLocalTextNameOverride(this Item item, string key) => item.SetNameOverride(Language.GetText($"Mods.CalamityOverhaul.Items.{key}.DisplayName").Value);
+        public static void EasySetLocalTextNameOverride(this Item item, string key) {
+            item.SetNameOverride(Language.GetText($"Mods.CalamityOverhaul.Items.{key}.DisplayName").Value);
+        }
 
         /// <summary>
         /// 在游戏中发送文本消息
@@ -1078,11 +1095,8 @@ namespace CalamityOverhaul
             else if (Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Russian) {
                 text = Russian;
             }
-            else if (Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Spanish) {
-                text = Spanish;
-            }
             else {
-                text = English;
+                text = Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Spanish ? Spanish : English;
             }
 
             if (text is null or default(string)) {
@@ -1122,20 +1136,39 @@ namespace CalamityOverhaul
         /// <param name="leva"></param>
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, string key) {
             List<TooltipLine> newTooltips = new(tooltips);
-            foreach (TooltipLine line in tooltips.ToList()){//复制 tooltips 集合，以便在遍历时修改
+            List<TooltipLine> overTooltips = new();
+            foreach (TooltipLine line in tooltips.ToList()) {//复制 tooltips 集合，以便在遍历时修改
                 for (int i = 0; i < 9; i++) {
                     if (line.Name == "Tooltip" + i) {
                         line.Hide();
                     }
+                }
+                if (line.Name == "CalamityDonor" || line.Name == "CalamityDev") {
+                    overTooltips.Add(line.Clone());
+                    line.Hide();
                 }
             }
 
             TooltipLine newLine = new(mod, "CWRText"
                 , Language.GetText($"Mods.CalamityOverhaul.Items.{key}.Tooltip").Value);
             newTooltips.Add(newLine);
-
+            newTooltips.AddRange(overTooltips);
             tooltips.Clear(); // 清空原 tooltips 集合
             tooltips.AddRange(newTooltips); // 添加修改后的 newTooltips 集合
+        }
+
+        public static TooltipLine Clone(this TooltipLine tooltipLine) {
+            Mod mod = null;
+            foreach (Mod mod1 in ModLoader.Mods) {
+                if (mod1.Name == tooltipLine.Mod) {
+                    mod = mod1;
+                }
+            }
+            TooltipLine line = new TooltipLine(mod, tooltipLine.Name, tooltipLine.Text);
+            line.OverrideColor = tooltipLine.OverrideColor;
+            line.IsModifier = tooltipLine.IsModifier;
+            line.IsModifierBad = tooltipLine.IsModifierBad;
+            return line;
         }
 
         /// <summary>
@@ -1145,8 +1178,9 @@ namespace CalamityOverhaul
         /// <param name="leftCed">是否检查左鼠标键，否则检测右鼠标键</param>
         /// <param name="netCed">是否进行网络同步检查</param>
         /// <returns>如果按下了指定的鼠标键，则返回true，否则返回false</returns>
-        public static bool PressKey(this Player player, bool leftCed = true, bool netCed = true) 
-            => (!netCed || Main.myPlayer == player.whoAmI) && (leftCed ? PlayerInput.Triggers.Current.MouseLeft : PlayerInput.Triggers.Current.MouseRight);
+        public static bool PressKey(this Player player, bool leftCed = true, bool netCed = true) {
+            return (!netCed || Main.myPlayer == player.whoAmI) && (leftCed ? PlayerInput.Triggers.Current.MouseLeft : PlayerInput.Triggers.Current.MouseRight);
+        }
 
         /// <summary>
         /// 判断是否重写该物品
@@ -1463,10 +1497,17 @@ namespace CalamityOverhaul
 
         public static Random rands = new();
 
-        public static Vector2 randVr(int min, int max) => Main.rand.NextVector2Unit() * Main.rand.Next(min, max);
-        public static Vector2 randVr(int max) => Main.rand.NextVector2Unit() * Main.rand.Next(0, max);
+        public static Vector2 randVr(int min, int max) {
+            return Main.rand.NextVector2Unit() * Main.rand.Next(min, max);
+        }
 
-        public static Vector3 Vr2ToVr3(this Vector2 vector) => new Vector3(vector.X, vector.Y, 0);
+        public static Vector2 randVr(int max) {
+            return Main.rand.NextVector2Unit() * Main.rand.Next(0, max);
+        }
+
+        public static Vector3 Vr2ToVr3(this Vector2 vector) {
+            return new Vector3(vector.X, vector.Y, 0);
+        }
 
         public static float ConvertToClockwiseAngle(float radian) {
             float clockwiseRadian = radian + MathF.PI;
@@ -1477,11 +1518,7 @@ namespace CalamityOverhaul
         }
 
         public static float GetCorrectRadian(float minusRadian) {
-            if (minusRadian < 0) {
-                return (MathHelper.TwoPi + minusRadian) / MathHelper.TwoPi;
-            }
-            else
-                return minusRadian / MathHelper.TwoPi;
+            return minusRadian < 0 ? (MathHelper.TwoPi + minusRadian) / MathHelper.TwoPi : minusRadian / MathHelper.TwoPi;
         }
 
         /// <summary>
@@ -1528,7 +1565,7 @@ namespace CalamityOverhaul
         public static float EllipticalEase(float rotation, float halfShortAxis, float halfLongAxis) {
             float halfFocalLength2 = (halfLongAxis * halfLongAxis) - (halfShortAxis * halfShortAxis);
             float cosX = MathF.Cos(rotation);
-            return (halfLongAxis * halfShortAxis) / MathF.Sqrt(halfLongAxis * halfLongAxis - halfFocalLength2 * cosX * cosX);
+            return halfLongAxis * halfShortAxis / MathF.Sqrt(halfLongAxis * halfLongAxis - halfFocalLength2 * cosX * cosX);
         }
 
         /// <summary>
@@ -1686,12 +1723,7 @@ namespace CalamityOverhaul
         {
             public int Compare(Vector2 v1, Vector2 v2) {
                 // 比较两个向量的Y值，根据Y值大小进行排序
-                if (v1.Y < v2.Y) {
-                    return -1;
-                }
-                else {
-                    return v1.Y > v2.Y ? 1 : 0;
-                }
+                return v1.Y < v2.Y ? -1 : v1.Y > v2.Y ? 1 : 0;
             }
         }
 
@@ -1933,7 +1965,7 @@ namespace CalamityOverhaul
         public static string GetSafeText(string text, Vector2 textSize, float maxWidth) {
             int charWidth = (int)(textSize.X / text.Length);
             List<char> characters = text.ToList();
-            List<char> wrappedText = new List<char>();
+            List<char> wrappedText = new();
             int currentWidth = 0;
 
             foreach (char character in characters) {

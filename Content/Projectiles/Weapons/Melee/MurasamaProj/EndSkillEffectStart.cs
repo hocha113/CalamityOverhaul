@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override void OnKill(int timeLeft) {
             if (Murasama.NameIsVergil(player) || Main.zenithWorld) {
-                SoundStyle[] sounds = new SoundStyle[] { ModSound.V_YouSouDiad , ModSound.V_ThisThePwero , ModSound.V_You_Wo_Namges_Is_The_Pwero };
+                SoundStyle[] sounds = new SoundStyle[] { CWRSound.V_YouSouDiad , CWRSound.V_ThisThePwero , CWRSound.V_You_Wo_Namges_Is_The_Pwero };
                 SoundEngine.PlaySound(sounds[Main.rand.Next(sounds.Length)]);
                 if (Main.rand.NextBool(13)) {
                     player.QuickSpawnItem(player.parent(), ModContent.ItemType<FoodStallChair>());

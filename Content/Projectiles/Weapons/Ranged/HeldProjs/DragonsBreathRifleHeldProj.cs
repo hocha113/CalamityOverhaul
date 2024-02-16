@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
 
                 if (ThisTimeValue % 30 == 0 && ThisTimeValue % 60 != 0 && !Main.dedServ) {
-                    SoundEngine.PlaySound(ModSound.loadTheRounds, Projectile.Center);
+                    SoundEngine.PlaySound(CWRSound.loadTheRounds, Projectile.Center);
                 }
 
                 if (Projectile.localAI[0] % 6 == 0 && Projectile.localAI[2] < 3) {
@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     }
                     spanSmogsBool = true;
                     ShootFire(shootPos);
-                    SpawnDragonsBreathDust(shootPos, speed);
+                    SpawnGunDust(Projectile, shootPos, speed);
                     Projectile.rotation += MathHelper.ToRadians(-15) * Owner.direction;
                     Owner.velocity += speed * -0.2f;
                     SoundEngine.PlaySound(in SoundID.Item38, shootPos);
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (Status == 1) {
                 if (ThisTimeValue % 30 == 0) {
                     spanSmogsBool = true;
-                    SpawnDragonsBreathDust(shootPos, speed);
+                    SpawnGunDust(Projectile, shootPos, speed);
                     SpawnSomgDust(shootPos, speed);
                     ShootFire2(shootPos);
                     SoundEngine.PlaySound(in SoundID.Item74, shootPos);
@@ -186,10 +186,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        private void SpawnDragonsBreathDust(Vector2 pos, Vector2 velocity, int splNum = 1) {
-            if (Main.myPlayer != Projectile.owner) return;
+        public static void SpawnGunDust(Projectile projectile, Vector2 pos, Vector2 velocity, int splNum = 1) {
+            if (Main.myPlayer != projectile.owner) return;
 
-            pos += velocity.SafeNormalize(Vector2.Zero) * Projectile.width * Projectile.scale * 0.71f;
+            pos += velocity.SafeNormalize(Vector2.Zero) * projectile.width * projectile.scale * 0.71f;
             for (int i = 0; i < 30 * splNum; i++) {
                 int dustID;
                 switch (Main.rand.Next(6)) {

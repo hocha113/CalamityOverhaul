@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 }
                 bool useup = item.CWR().MeleeCharge > 0;
                 if (useup != olduseup) {
-                    SoundEngine.PlaySound(ModSound.Peuncharge, player.Center);
+                    SoundEngine.PlaySound(CWRSound.Peuncharge, player.Center);
                 }
             }
 
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.CWR().MeleeCharge += hit.Damage / 5;
             bool charge = item.CWR().MeleeCharge > 0;
             if (charge != oldcharge) {
-                SoundEngine.PlaySound(ModSound.Pecharge, player.Center);
+                SoundEngine.PlaySound(CWRSound.Pecharge, player.Center);
             }
         }
 

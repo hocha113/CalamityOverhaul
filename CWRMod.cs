@@ -27,6 +27,7 @@ namespace CalamityOverhaul
         internal static List<BaseRItem> RItemInstances = new List<BaseRItem>();
         internal static List<EctypeItem> EctypeItemInstance = new List<EctypeItem>();
         internal static List<NPCCustomizer> NPCCustomizerInstances = new List<NPCCustomizer>();
+        public static Dictionary<int, BaseRItem> RItemIndsDict = new Dictionary<int, BaseRItem>();
 
         public override void PostSetupContent() {
             LoadMods = ModLoader.Mods.ToList();
@@ -71,6 +72,13 @@ namespace CalamityOverhaul
                             NPCCustomizerInstances.Add(inds);
                         }
                     }
+                }
+            }
+
+            {
+                RItemIndsDict = new Dictionary<int, BaseRItem>();
+                foreach (BaseRItem ritem in RItemInstances) {
+                    RItemIndsDict.Add(ritem.SetReadonlyTargetID, ritem);
                 }
             }
 

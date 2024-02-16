@@ -21,6 +21,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool HaveAmmo => Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out _, out _, out _, true);
         protected bool onFire;
 
+        protected bool UpdateConsumeAmmo() {
+            bool canConsume = Owner.IsRangedAmmoFreeThisShot(new Item(Owner.GetShootState().UseAmmoItemType));
+            Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out _, out _, out _, canConsume);
+            return canConsume;
+        }
+
         protected void UpdateShootState() => Owner.PickAmmo(Owner.ActiveItem(), out AmmoTypes, out ScaleFactor, out WeaponDamage, out WeaponKnockback, out _, true);
 
         public override void SetDefaults() {
@@ -39,6 +45,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (!CheckAlive()) {
                 Projectile.Kill();
                 return false;
+            }
+            if (Owner.PressKey() && !Owner.mouseInterface) {
+                Owner.itemTime = 2;
             }
             UpdateShootState();
             return true;

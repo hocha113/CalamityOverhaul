@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
                 bool useup = rageEnergy > 0;
                 if (useup != olduseup) {
-                    SoundEngine.PlaySound(ModSound.Peuncharge, player.Center);
+                    SoundEngine.PlaySound(CWRSound.Peuncharge, player.Center);
                 }
             }
 
@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             rageEnergy += hit.Damage / 5;
             bool charge = rageEnergy > 0;
             if (charge != oldcharge) {
-                SoundEngine.PlaySound(ModSound.Pecharge, player.Center);
+                SoundEngine.PlaySound(CWRSound.Pecharge, player.Center);
             }
         }
 
@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             rageEnergy += hurtInfo.Damage * 2;
             bool charge = rageEnergy > 0;
             if (charge != oldcharge) {
-                SoundEngine.PlaySound(ModSound.Pecharge, player.Center);
+                SoundEngine.PlaySound(CWRSound.Pecharge, player.Center);
             }
         }
 

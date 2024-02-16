@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.TileEntitys
             }
             else {
                 if (OldOnBoolMoon) {
-                    SoundEngine.PlaySound(ModSound.Peuncharge, Center);
+                    SoundEngine.PlaySound(CWRSound.Peuncharge, Center);
                     for (int i = 0; i < 133; i++) {
                         Vector2 vr = new Vector2(0, Main.rand.Next(-33, -3));
                         Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y

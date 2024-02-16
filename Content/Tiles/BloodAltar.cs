@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Tiles
                     CalamityNetcode.SyncWorld();
                 }
                 else {
-                    SoundEngine.PlaySound(ModSound.Peuncharge, Center);
+                    SoundEngine.PlaySound(CWRSound.Peuncharge, Center);
                     for (int o = 0; o < 133; o++) {
                         Vector2 vr = new Vector2(0, Main.rand.Next(-33, -3));
                         Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y

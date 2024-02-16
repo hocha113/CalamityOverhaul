@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles
                     CombatText.NewText(rectangle, CWRUtils.MultiLerpColor(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), Text[rands[i]], true);
                 }
                 SoundEngine.PlaySound(SoundID.Lavafall);
-                SoundEngine.PlaySound(ModSound.BlackHole);
+                SoundEngine.PlaySound(CWRSound.BlackHole);
             }
         }
     }
