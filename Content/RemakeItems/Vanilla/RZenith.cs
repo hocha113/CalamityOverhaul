@@ -7,6 +7,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RZenith : BaseRItem
     {
         public override int TargetID => ItemID.Zenith;
-        public override void On_PostSetDefaults(Item item) => item.damage = 378;
+        public override void On_PostSetDefaults(Item item) {
+            item.damage += 128;
+        }
     }
 }

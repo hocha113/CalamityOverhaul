@@ -47,8 +47,8 @@ namespace CalamityOverhaul.Content.UIs
                 int scrollWheelDelta = currentMouseState.ScrollWheelValue - oldMouseState.ScrollWheelValue;
                 //更具滚轮的变动量来更新矫正值
                 LCCoffsetY += scrollWheelDelta * 0.2f;
-                if (LCCoffsetY < -400) {
-                    LCCoffsetY = -400;
+                if (LCCoffsetY < -1500) {
+                    LCCoffsetY = -1500;
                 }
                 if (LCCoffsetY > 0) {
                     LCCoffsetY = 0;
@@ -59,8 +59,8 @@ namespace CalamityOverhaul.Content.UIs
             time++;
         }
         private Vector2 inIndexGetPos(int index) {
-            int x = index % 5;
-            int y = index / 5;
+            int x = index % 4;
+            int y = index / 4;
             return new Vector2(x, y);
         }
         public override void Draw(SpriteBatch spriteBatch) {
@@ -75,9 +75,8 @@ namespace CalamityOverhaul.Content.UIs
             //遍历绘制索引目标卡牌的实例
             for (int i = 0; i < ecTypeItemList.Count; i++) {
                 Item item = ecTypeItemList[i];
-                if (item.ModItem == null)
-                    Main.instance.LoadItem(item.type);
-                Vector2 drawPos = DrawPos + inIndexGetPos(i) * 45 + new Vector2(32, 32 + LCCoffsetY);
+                Main.instance.LoadItem(item.type);
+                Vector2 drawPos = DrawPos + inIndexGetPos(i) * 50 + new Vector2(32, 32 + LCCoffsetY);
                 if (item.type == ModContent.ItemType<Murasama>()) {
                     Texture2D value = TextureAssets.Item[item.type].Value;
                     spriteBatch.Draw(value, drawPos, CWRUtils.GetRec(value, (time / 5) % 12, 13), Color.White, 0f, CWRUtils.GetOrig(value, 13), 0.35f, SpriteEffects.None, 0);

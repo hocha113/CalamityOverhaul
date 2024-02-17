@@ -248,7 +248,11 @@ Items: {
 
 	GhostFireWhip: {
 		DisplayName: Ghost Fire Whip
-		Tooltip: A long whip, woven from the fury of a dungeon ghost
+		Tooltip:
+			'''
+			A long whip, woven from the fury of a dungeon ghost
+			[c/d4bc75:Fall in hell after defeating the Ghost flower]
+			'''
 	}
 
 	AllhallowsGoldWhip: {
@@ -341,7 +345,7 @@ Items: {
 
 	InfiniteIngot: {
 		DisplayName: Infinite Ingot
-		Tooltip: ""
+		Tooltip: The power of the world, in the palm of your hand
 	}
 
 	CosmicMetalSingularity: {
@@ -350,13 +354,17 @@ Items: {
 	}
 
 	TransmutationOfMatterItem: {
-		DisplayName: Transmutation Of Matter Item
-		Tooltip: ""
+		DisplayName: Omega substance polymerizer
+		Tooltip:
+			'''
+			After placing, right-click to open the compositing table
+			"Your greedy journey is officially underway."
+			'''
 	}
 
 	DarkMatterCompressorItem: {
-		DisplayName: Dark Matter Compressor Item
-		Tooltip: ""
+		DisplayName: Dark matter compressor
+		Tooltip: Reconstructing matter like a black hole
 	}
 
 	AerialiteMetalSingularity: {
@@ -438,9 +446,13 @@ Items: {
 		DisplayName: Murasama
 		Tooltip:
 			'''
-			Grows stronger with the distance of the journey
+			Right-click to aim, press the trigger key [KEY1] to launch the blade, and press the left key to execute the rising dragon strike during the blade flight [Lang1]
+			Press [KEY2] to consume two points of charge and perform a punch [Lang2]
+			When you hit an enemy, you will give your weapon 1 recharge. When you hit the maximum 10 recharge, you will trigger the end of the enemy when you lift the dragon again. [Lang3]
+			[c/fff08c: Stronger with the distance of the journey]
+			[c/ff4500:" It would be better if there were a chainsaw sword "]
+			[Lang4]:
 			[Text]
-			"It would be nice to have a chainsaw sword"
 			'''
 	}
 
@@ -598,7 +610,7 @@ Items: {
 	}
 
 	Gangarus: {
-		DisplayName: Gangarus
+		DisplayName: Spear of Longinus
 		Tooltip:
 			'''
 			Each time the latent bar reaches the upper limit, an increase is carried out,
@@ -644,7 +656,12 @@ Items: {
 
 	BloodAltar: {
 		DisplayName: Blood Altar
-		Tooltip: Let the world be watched by crimson
+		Tooltip:
+			'''
+			Right click on the altar and summon the blood moon
+			Automatically collects dropped blood beads from around the world and stores them in the nearest bin
+			"Let the world be watched by crimson."
+			'''
 	}
 
 	StarMyriadChanges: {
@@ -654,7 +671,7 @@ Items: {
 
 	TerminusOver: {
 		DisplayName: The final touch
-		Tooltip: Start the final battle
+		Tooltip: You are allowed to freely toggle the final battle. But there is a price to pay
 	}
 
 	PhosphorescentGauntlet: {
@@ -785,12 +802,16 @@ Items: {
 
 	TeardropCleaver: {
 		DisplayName: Teardrop Cleaver
-		Tooltip: ""
+		Tooltip: Torrential rain of tears
 	}
 
 	SausageMaker: {
 		DisplayName: Sausage Maker
-		Tooltip: ""
+		Tooltip:
+			'''
+			Every five thrusts emits a blood bomb
+			True melee launches tracking blood beads after hitting
+			'''
 	}
 
 	PestilenceIngot: {
@@ -805,7 +826,7 @@ Items: {
 
 	AbsoluteZero: {
 		DisplayName: Absolute Zero
-		Tooltip: ""
+		Tooltip: Emitter ice bomb
 	}
 
 	FlarefrostBlade: {
@@ -814,108 +835,187 @@ Items: {
 	}
 
 	MurasamaMould: {
-		DisplayName: Murasama Mould
-		Tooltip: ""
+		DisplayName: Blood gold mold
+		Tooltip: It is used to make some high-precision things, and it is not directly consumed but durable when synthesized
 	}
 
 	WaveSkipper: {
 		DisplayName: Wave Skipper
-		Tooltip: ""
+		Tooltip:
+			'''
+			The left button fires sand teeth that dive in the sand, and the stealth attack fires three huge sand teeth
+			Right-click to launch bouncing sand teeth, stealth attack to make several fast sand teeth fall from the sky
+			'''
 	}
 
 	BlossomFlux: {
 		DisplayName: Blossom Flux
-		Tooltip: ""
+		Tooltip:
+			'''
+			Launch the blade stream that tracks the enemy, the attack speed will increase, 
+			and the probability of clearing the speed when hit
+			Right-click to fire a powerful jungle bomb
+			'''
 	}
 
 	Phangasm: {
 		DisplayName: Phangasm
-		Tooltip: ""
+		Tooltip: Spawn extra shadow stream projectiles after hitting enemies
 	}
 
 	OverhaulTheBibleBook: {
-		DisplayName: Overhaul The Bible Book
+		DisplayName: Overhaul The Bible
 		Tooltip: ""
 	}
 
 	Contagion: {
 		DisplayName: Contagion
-		Tooltip: ""
+		Tooltip:
+			'''
+			The left button launches an extremely fast cholera arrow, releasing multiple plague bombs along the way
+			Right-click to summon the living bees of the garden world
+			[c/085054:The Loving Father will always watch over the bearer of this bow]
+			'''
 	}
 
 	Alluvion: {
 		DisplayName: Alluvion
-		Tooltip: ""
+		Tooltip:
+			'''
+			Convert wooden arrows into ocean arrows
+			Destroy the enemy with the power of the ocean
+			'''
 	}
 
 	PlanetaryAnnihilation: {
 		DisplayName: Planetary Annihilation
-		Tooltip: ""
+		Tooltip: Can turn the wooden arrow into an energy shock
 	}
 
 	TheMaelstrom: {
 		DisplayName: The Maelstrom
-		Tooltip: ""
+		Tooltip:
+			'''
+			Left click to launch a torrent water arrow and release a water pressure bomb after hitting the enemy
+			Right click Charge unleashes a charged Soul shark
+			'''
 	}
 
 	ClockGatlignum: {
 		DisplayName: Clock Gatlignum
-		Tooltip: ""
+		Tooltip:
+			'''
+			Weak recoil
+			Strafing with less than ideal accuracy
+			"It can't shoot crocodiles, which is disappointing."
+			'''
 	}
 
 	ElementalBlaster: {
 		DisplayName: Elemental Blaster
-		Tooltip: ""
+		Tooltip:
+			'''
+			No recoil
+			Emitting an elemental jet
+			'''
 	}
 
 	MarksmanBow: {
 		DisplayName: Marksman Bow
-		Tooltip: ""
+		Tooltip:
+			'''
+			A quick, accurate shot is the key to a successful hunt
+			A fired arrow has a probability of generating a ghost when it disappears
+			'''
 	}
 
 	NettlevineGreatbow: {
 		DisplayName: Nettlevine Greatbow
-		Tooltip: ""
+		Tooltip:
+			'''
+			The arrows that are fired are highly poisoned
+			Being shot four times will trigger a sweep of artemisia
+			'''
 	}
 
 	SpectreRifle: {
 		DisplayName: Spectre Rifle
-		Tooltip: ""
+		Tooltip:
+			'''
+			Very strong recoil
+			Launch the undead to hunt down the enemy
+			"This thing doesn't use propellant to launch a warhead, so how does it recoil? "
+			'''
 	}
 
 	StormDragoon: {
 		DisplayName: Storm Dragoon
-		Tooltip: ""
+		Tooltip:
+			'''
+			General recoil
+			Let the ammunition pour out like a storm
+			"I am the approaching storm."
+			'''
 	}
 
 	TheStorm: {
 		DisplayName: The Storm
-		Tooltip: ""
+		Tooltip:
+			'''
+			It rains arrows down, and every arrow that goes out has an electric arc
+			Turns a wooden arrow into an arc
+			'''
 	}
 
 	Thunderstorm: {
 		DisplayName: Thunderstorm
-		Tooltip: ""
+		Tooltip:
+			'''
+			Weak recoil
+			Launch a Radder electromagnetic shock, using magic as ammunition
+			'''
 	}
 
 	TyrannysEnd: {
-		DisplayName: Tyrannys End
-		Tooltip: ""
+		DisplayName: Tyranny's End
+		Tooltip:
+			'''
+			Very strong recoil
+			A heavy anti-materiel rifle that fires.50BMG rounds
+			After firing, you need to press the right button to change the projectile
+			'''
 	}
 
 	AntiMaterielRifle: {
-		DisplayName: Anti Materiel Rifle
-		Tooltip: ""
+		DisplayName: Barrett sniper rifle
+		Tooltip:
+			'''
+			Very strong recoil
+			A heavy anti-materiel rifle that fires.50BMG rounds
+			After firing, you need to press the right button to change the projectile
+			'''
 	}
 
 	HalibutCannon: {
 		DisplayName: Halibut Cannon
-		Tooltip: ""
+		Tooltip:
+			'''
+			Weak recoil
+			Convert musket cartridges into sea cartridges
+			"Look at this fish with a monocle and a top hat on his head. Can you believe he went to college?"
+			"The truth is, Sir, I have a PhD in oceanography and abyssal botany, and I won the Sulphur Sea University fishing competition twice.
+			The flounder here not only knows the secrets of the sea, but also takes the crown of the sea." "Said the halibut
+			'''
 	}
 
 	SDFMG: {
-		DisplayName: S D F M G
-		Tooltip: ""
+		DisplayName: SDFMG
+		Tooltip:
+			'''
+			No recoil
+			There's a possibility of launching a sea missile
+			"The wonder of gun dynamics."
+			'''
 	}
 }
 
@@ -933,7 +1033,7 @@ Projectiles: {
 	}
 
 	DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
-	CosmicRay_0.DisplayName: Cosmic Ray_0
+	CosmicRay_0.DisplayName: Cosmic Ray
 	CosmicRay.DisplayName: Cosmic Ray
 	RemakeCosmicShivBall.DisplayName: Remake Cosmic Shiv Ball
 	MightyStar.DisplayName: Mighty Star
@@ -956,7 +1056,7 @@ Projectiles: {
 	AbominateHookScythe.DisplayName: Abominate Hook Scythe
 	AbominateSpirit.DisplayName: Abominate Spirit
 	SpiritFlame.DisplayName: Spirit Flame
-	DoGDeaths.DisplayName: Do G Deaths
+	DoGDeaths.DisplayName: DoG Deaths
 	ArkoftheAncientsParryHoldouts.DisplayName: Arkofthe Ancients Parry Holdouts
 	ArkoftheCosmosBlasts.DisplayName: Arkofthe Cosmos Blasts
 	ArkoftheCosmosParryHoldouts.DisplayName: Arkofthe Cosmos Parry Holdouts
@@ -1032,7 +1132,7 @@ Projectiles: {
 	DivineDevourerIllusionBody.DisplayName: Divine Devourer Illusion Body
 	DivineDevourerIllusionHead.DisplayName: Divine Devourer Illusion Head
 	DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion Tail
-	AegisBladeProj.DisplayName: Aegis Blade Proj
+	AegisBladeProj.DisplayName: Aegis Blade
 	AegisBeams.DisplayName: Aegis Beams
 	DragonsBreathRound.DisplayName: Dragons Breath Round
 	DragonsBreathRifleHeldProj.DisplayName: Dragons Breath Rifle Held Proj
@@ -1046,7 +1146,7 @@ Projectiles: {
 	RBansheeHookScythe.DisplayName: R Banshee Hook Scythe
 	RBlazingPhantomBlade.DisplayName: R Blazing Phantom Blade
 	RCosmicShivBall.DisplayName: R Cosmic Shiv Ball
-	RTerratomereHoldoutProj.DisplayName: R Terratomere Holdout Proj
+	RTerratomereHoldoutProj.DisplayName: Terratomere Holdout
 	RTerrorBeam.DisplayName: R Terror Beam
 	StreamBeams.DisplayName: Stream Beams
 	CosmicSpiritBombs.DisplayName: Cosmic Spirit Bombs
@@ -1054,11 +1154,11 @@ Projectiles: {
 	EssenceFlames.DisplayName: Essence Flames
 	EssenceStar.DisplayName: Essence Star
 	TheEnforcerBeam.DisplayName: The Enforcer Beam
-	InfiniteIngotTileProj.DisplayName: Infinite Ingot Tile Proj
+	InfiniteIngotTileProj.DisplayName: Black holes annihilate their cores
 	JudgementBeam.DisplayName: Judgement Beam
 	OrderbringerBeams.DisplayName: Orderbringer Beams
 	OrderbringerProj.DisplayName: Orderbringer Proj
-	OrderbringerBeams2.DisplayName: Orderbringer Beams2
+	OrderbringerBeams2.DisplayName: Orderbringer Beams
 	IridescentExcaliburBeam.DisplayName: Iridescent Excalibur Beam
 	IridescentExcaliburLight.DisplayName: Iridescent Excalibur Light
 	OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
@@ -1116,7 +1216,7 @@ Projectiles: {
 	MurasamaEndSkillOrb.DisplayName: Murasama End Skill Orb
 	MurasamaEndSkillOrbOnSpan.DisplayName: Murasama End Skill Orb On Span
 	ExaProj.DisplayName: Exa Proj
-	MOnSound.DisplayName: M On Sound
+	MOnSound.DisplayName: MonSound
 	EndSkillEffectStart.DisplayName: End Skill Effect Start
 	EndSkillMakeDamage.DisplayName: End Skill Make Damage
 	PowerSoundEgg.DisplayName: Power Sound Egg
@@ -1156,12 +1256,12 @@ Projectiles: {
 	TheStormHeldProj.DisplayName: The Storm Held Proj
 	ThunderstormHeldProj.DisplayName: Thunderstorm Held Proj
 	TyrannysEndHeldProj.DisplayName: Tyrannys End Held Proj
-	BMGBullet.DisplayName: B M G Bullet
-	BMGFIRE.DisplayName: B M G F I R E
+	BMGBullet.DisplayName: .50 BMG Bullet
+	BMGFIRE.DisplayName: BMGFIRE
 	AntiMaterielRifleHeldProj.DisplayName: Anti Materiel Rifle Held Proj
 	HalibutCannonHeldProj.DisplayName: Halibut Cannon Held Proj
 	SDFMGHeldProj.DisplayName: S D F M G Held Proj
-	BMGFIRE2.DisplayName: B M G F I R E2
+	BMGFIRE2.DisplayName: BMGFIRE
 	TorrentialBullet.DisplayName: Torrential Bullet
 }
 
@@ -1177,6 +1277,9 @@ Configs: {
 				If you have enabled other Calamity sub-mods, enabling this feature may lead to potential conflicts.
 				If you choose to disable it, this mod will add a way to obtain reset items in the game, 
 				which is a good idea to prevent potential conflicts.
+				[c/fff08c:IM: Actually, we don't recommend you turn this off,]
+				[c/fff08c: This feature is only recommended to be turned off when a serious conflict is confirmed.]
+				[c/FF0000: If you want to optimize the experience of disaster overhaul content, please open it!]
 				'''
 		}
 
@@ -1192,61 +1295,91 @@ Configs: {
 
 		ReplaceAsset: {
 			Label: Replace Asset
-			Tooltip: ""
+			Tooltip:
+				'''
+				If enabled, Calamity Overhaul Mod will update the textures of some items, giving them a new style.
+				Some of these textures may come from older versions of the disaster, which were once discarded.
+				The reason for the reintroduction of these textures is that some players are 
+				not satisfied with the texture expression in the current version.
+				To meet a variety of aesthetic preferences, Calamity Overhaul Mod provides this function,
+				It is turned on by default, but you can set it as you like
+				'''
 		}
 
 		ResetItemReminder: {
 			Label: Reset Item Reminder
-			Tooltip: ""
+			Tooltip:
+				'''
+				Hey! If you see this! Don't turn it off! Before doing so, 
+				make sure you understand what [c/fff08c: Mandatory Remastered Content replacement] does and what it means!
+				[c/de0808: Especially closed][c/fff08c: Forced remake content replacement][c/de0808: What happens after!!]
+				If you still can't solve your doubts and questions after reading the content guide of the module,
+				Contact me in the forums or send me an email at coslowkimberli185@gmail.com
+				'''
 		}
 
 		MurasamaScaleOffset: {
 			Label: Murasama Scale Offset
-			Tooltip: ""
+			Tooltip:
+				'''
+				An additional swing range correction factor in percentage %
+				Set this up for some special needs and generally keep it at 100% size
+				Pull this slider to adjust the percentage data, the maximum is 100%, the original size, the minimum is 20%
+				'''
 		}
 
 		MurasamaScreenVibration: {
 			Label: Murasama Screen Vibration
-			Tooltip: ""
+			Tooltip: If turned on, the screen will vibrate during some attacks, which may make the hit feel more intense
 		}
 
 		MurasamaSpaceFragmentationBool: {
 			Label: Murasama Space Fragmentation Bool
-			Tooltip: ""
+			Tooltip:
+				'''
+				Turned on by default, the polymer cutting edge will create a screen crushing effect to enhance the impact
+				If turned off, these effects are disabled and can be set to your liking
+				'''
 		}
 
 		Headers: {
 			CWRSystem: System Configs
 			CWRWeapon: Weapon Configs
-			CWRUI: C W R U I Header
+			CWRUI: UI Configs
 		}
 
 		MurasamaRisingDragonCoolDownBarSize: {
-			Label: Murasama Rising Dragon Cool Down Bar UI Size
-			Tooltip: ""
+			Label: Murasama cooling UI size
+			Tooltip:
+				'''
+				An additional UI size correction factor, in percentage % units
+				Set this to fit your preferred Ui size, which is generally left at 100%
+				Pull the slider to adjust the percentage data to a maximum of 200%, 
+				double the volume of the original size, and a minimum of 50%
+				'''
 		}
 	}
 }
 
 Buffs: {
 	SoulBurning: {
-		Description: Mods.CalamityOverhaul.Buffs.SoulBurning.Description
 		DisplayName: Soul Burning
+		Description: Fire from hell
 	}
 
 	HellfireExplosion: {
-		Description: Mods.CalamityOverhaul.Buffs.HellfireExplosion.Description
-		DisplayName: Hellfire Explosion
+		DisplayName: Hell fire Explosion
+		Description: Fire from hell
 	}
 
 	GodKillsFire: {
 		DisplayName: God Kills Fire
-		Description: Mods.CalamityOverhaul.Buffs.GodKillsFire.Description
+		Description: Scorch the soul
 	}
 
 	TyrantsFury: {
 		DisplayName: Tyrants Fury
-		Description: Mods.CalamityOverhaul.Buffs.TyrantsFury.Description
+		Description: You were furious
 	}
 }
 
@@ -1284,7 +1417,7 @@ Keybinds: {
 }
 
 TextContent: {
-	CWRLocalizationText: {
+	CWRLocText: {
 		Item_LegendOnMouseLang: Press [Shift] to listen to the story...
 		BloodAltar_Text1: The crimson gaze is coming...
 		BloodAltar_Text2: You don't have enough blood orb to pay tribute to the Crimson King...
@@ -1400,7 +1533,10 @@ TextContent: {
 		MouseTextContactPanel_TextContent: Right-click on the item icon switch to synthesize the recipe
 		CWRItem_IsInfiniteItem_TextContent: Only the ultimate combination can stabilize it, otherwise it will hit the moment that triggers the dreaded collapse of the black hole
 		CWRItem_IsRemakeItem_TextContent: -overhauls-
-		OnEnterWorld_TextContent: 个武器重置已经装载
-		CaseEjection_TextContent: 空弹
+		OnEnterWorld_TextContent: weapon reset has been loaded
+		CaseEjection_TextContent: Need to change ammunition
+		SupertableUI_Text1: close
+		SupertableUI_Text2: View recipe
+		SupertableUI_Text3: nothing
 	}
 }

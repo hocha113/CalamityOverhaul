@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Materials
         public new string LocalizationCategory => "Items.Materials";
 
         public static void DompDestruct_TextContent() {
-            string textContent = CWRLocalizationText.GetTextValue("Destruct_TextContent");
+            string textContent = CWRLocText.GetTextValue("Destruct_TextContent");
             string[] texts = textContent.Split("\n");
             if (texts.Length > 0) {
                 //texts[Main.rand.Next(texts.Length)].Domp();

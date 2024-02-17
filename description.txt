@@ -1,2 +1,8 @@
-This mod is dedicated to rewriting certain items from the Calamity mod. 
-The way the rewritten content is integrated can be determined through adjustable settings!
+CalamityOverhaul Mod is designed to comprehensively optimize various aspects of the CalamityMod. 
+The current version has undergone a redesign of over a hundred CalamityMod weapons, making them more refined, practical, and visually striking. 
+
+Additionally, adjustments have been made to hundreds of elements in the CalamityMod, 
+introducing more craftable recipes and implementing extensive numerical balancing to enhance the overall smoothness of the gaming experience.
+
+The mod introduces several new extended weapons along with a brand-new crafting system to further enrich the gameplay flow. 
+Future updates will continue to reset a substantial number of weapons and mechanics within the CalamityMod, offering players a fresh and novel Calamity experience.

@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (Owner.PressKey()) {
                     if (!isKreload && loadingReminder) {
                         SoundEngine.PlaySound(CWRSound.Ejection, Projectile.Center);
-                        CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocalizationText.GetTextValue("CaseEjection_TextContent"));
+                        CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("CaseEjection_TextContent"));
                         loadingReminder = false;
                     }
                 }

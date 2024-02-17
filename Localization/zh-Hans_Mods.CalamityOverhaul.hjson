@@ -238,7 +238,7 @@ Items: {
 
 	AzureDragonRage: {
 		DisplayName: 青龙之怒
-		Tooltip: 有一股浓厚的青草气道
+		Tooltip: 有一股浓厚的青草气味
 	}
 
 	BleedingScourge: {
@@ -248,7 +248,11 @@ Items: {
 
 	GhostFireWhip: {
 		DisplayName: 鬼火鞭
-		Tooltip: 一把很长的鞭子，由地牢冤魂的怒火编制而成
+		Tooltip:
+			'''
+			一把很长的鞭子，由地牢冤魂的怒火编制而成
+			[c/d4bc75:在地狱击败噬魂幽花后掉落]
+			'''
 	}
 
 	AllhallowsGoldWhip: {
@@ -351,12 +355,16 @@ Items: {
 
 	TransmutationOfMatterItem: {
 		DisplayName: 欧米茄物质聚合仪
-		Tooltip: ""
+		Tooltip:
+			'''
+			放置后右键打开合成台
+			"你的贪婪之旅将正式启程"
+			'''
 	}
 
 	DarkMatterCompressorItem: {
 		DisplayName: 暗物质压缩机
-		Tooltip: ""
+		Tooltip: 如黑洞般重构物质
 	}
 
 	AerialiteMetalSingularity: {
@@ -646,7 +654,12 @@ Items: {
 
 	BloodAltar: {
 		DisplayName: 深红祭坛
-		Tooltip: 让世界被深红所注视
+		Tooltip:
+			'''
+			右键祭坛用血珠召唤血月
+			自动收集世界上掉落的血珠存放到最近的箱子中
+			"让世界被深红所注视"
+			'''
 	}
 
 	StarMyriadChanges: {
@@ -656,7 +669,7 @@ Items: {
 
 	TerminusOver: {
 		DisplayName: 终焉之触
-		Tooltip: 开启终焉之战
+		Tooltip: 允许你随意开关终焉之战，但需要付出一些代价
 	}
 
 	PhosphorescentGauntlet: {
@@ -847,7 +860,7 @@ Items: {
 
 	OverhaulTheBibleBook: {
 		DisplayName: 大修宝典
-		Tooltip: ""
+		Tooltip: "[未完成]使用以查看模组教程"
 	}
 
 	Contagion: {
@@ -906,7 +919,7 @@ Items: {
 		DisplayName: 猎人长弓
 		Tooltip:
 			'''
-			快准狠的射出一发精准的箭矢，是狩猎的成功关键
+			快准狠的射出一发精准的箭矢，是一场狩猎的成功关键
 			发射的箭矢在消失时有概率生成一个幽灵
 			'''
 	}
@@ -916,7 +929,7 @@ Items: {
 		Tooltip:
 			'''
 			射出的箭矢会被染上剧毒
-			被射击四次会触发一轮青蒿扫射
+			每射击四次会触发一轮青蒿扫射
 			'''
 	}
 
@@ -936,7 +949,7 @@ Items: {
 			'''
 			一般的后坐力
 			让弹药如狂风骤雨般倾泻出去
-			"我是即将到来的风暴"
+			"我是即将迫近的风暴"
 			'''
 	}
 
@@ -984,8 +997,8 @@ Items: {
 			'''
 			较弱的后坐力
 			将火枪子弹转化为海洋弹
-			"瞧瞧这只鱼，端着单片眼镜，头上戴着一顶高礼帽。你信不信它居然上过大学？"
-			"事实如此，先生，我可是海洋学与深渊植物学的博士，曾在硫磺海大学钓鱼比赛中称霸两届。
+			"瞧瞧这只鱼，端着单片眼镜，头上戴着一顶高礼帽。你信不信它上过大学？"
+			"事实如此，先生，我可是海洋学与深渊植物学科的博士，曾在硫磺海大学钓鱼比赛中称霸两届。
 			这里的比目鱼，不但懂得海底奥秘，还能拿下海洋界的桂冠。"大比目鱼如是说道
 			'''
 	}
@@ -1015,7 +1028,7 @@ Projectiles: {
 	}
 
 	// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
-	// CosmicRay_0.DisplayName: Cosmic Ray_0
+	// CosmicRay_0.DisplayName: Cosmic Ray
 	// CosmicRay.DisplayName: Cosmic Ray
 	// RemakeCosmicShivBall.DisplayName: Remake Cosmic Shiv Ball
 	// MightyStar.DisplayName: Mighty Star
@@ -1038,7 +1051,7 @@ Projectiles: {
 	// AbominateHookScythe.DisplayName: Abominate Hook Scythe
 	// AbominateSpirit.DisplayName: Abominate Spirit
 	// SpiritFlame.DisplayName: Spirit Flame
-	// DoGDeaths.DisplayName: Do G Deaths
+	// DoGDeaths.DisplayName: DoG Deaths
 	// ArkoftheAncientsParryHoldouts.DisplayName: Arkofthe Ancients Parry Holdouts
 	// ArkoftheCosmosBlasts.DisplayName: Arkofthe Cosmos Blasts
 	// ArkoftheCosmosParryHoldouts.DisplayName: Arkofthe Cosmos Parry Holdouts
@@ -1114,7 +1127,7 @@ Projectiles: {
 	// DivineDevourerIllusionBody.DisplayName: Divine Devourer Illusion Body
 	// DivineDevourerIllusionHead.DisplayName: Divine Devourer Illusion Head
 	// DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion Tail
-	// AegisBladeProj.DisplayName: Aegis Blade Proj
+	// AegisBladeProj.DisplayName: Aegis Blade
 	// AegisBeams.DisplayName: Aegis Beams
 	// DragonsBreathRound.DisplayName: Dragons Breath Round
 	// DragonsBreathRifleHeldProj.DisplayName: Dragons Breath Rifle Held Proj
@@ -1128,7 +1141,7 @@ Projectiles: {
 	// RBansheeHookScythe.DisplayName: R Banshee Hook Scythe
 	// RBlazingPhantomBlade.DisplayName: R Blazing Phantom Blade
 	// RCosmicShivBall.DisplayName: R Cosmic Shiv Ball
-	// RTerratomereHoldoutProj.DisplayName: R Terratomere Holdout Proj
+	// RTerratomereHoldoutProj.DisplayName: Terratomere Holdout
 	// RTerrorBeam.DisplayName: R Terror Beam
 	// StreamBeams.DisplayName: Stream Beams
 	// CosmicSpiritBombs.DisplayName: Cosmic Spirit Bombs
@@ -1136,11 +1149,11 @@ Projectiles: {
 	// EssenceFlames.DisplayName: Essence Flames
 	// EssenceStar.DisplayName: Essence Star
 	// TheEnforcerBeam.DisplayName: The Enforcer Beam
-	// InfiniteIngotTileProj.DisplayName: Infinite Ingot Tile Proj
+	// InfiniteIngotTileProj.DisplayName: Black holes annihilate their cores
 	// JudgementBeam.DisplayName: Judgement Beam
 	// OrderbringerBeams.DisplayName: Orderbringer Beams
 	// OrderbringerProj.DisplayName: Orderbringer Proj
-	// OrderbringerBeams2.DisplayName: Orderbringer Beams2
+	// OrderbringerBeams2.DisplayName: Orderbringer Beams
 	// IridescentExcaliburBeam.DisplayName: Iridescent Excalibur Beam
 	// IridescentExcaliburLight.DisplayName: Iridescent Excalibur Light
 	// OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
@@ -1198,7 +1211,7 @@ Projectiles: {
 	// MurasamaEndSkillOrb.DisplayName: Murasama End Skill Orb
 	// MurasamaEndSkillOrbOnSpan.DisplayName: Murasama End Skill Orb On Span
 	// ExaProj.DisplayName: Exa Proj
-	// MOnSound.DisplayName: M On Sound
+	// MOnSound.DisplayName: MonSound
 	// EndSkillEffectStart.DisplayName: End Skill Effect Start
 	// EndSkillMakeDamage.DisplayName: End Skill Make Damage
 	// PowerSoundEgg.DisplayName: Power Sound Egg
@@ -1238,12 +1251,12 @@ Projectiles: {
 	// TheStormHeldProj.DisplayName: The Storm Held Proj
 	// ThunderstormHeldProj.DisplayName: Thunderstorm Held Proj
 	// TyrannysEndHeldProj.DisplayName: Tyrannys End Held Proj
-	// BMGBullet.DisplayName: B M G Bullet
-	// BMGFIRE.DisplayName: B M G F I R E
+	// BMGBullet.DisplayName: .50 BMG Bullet
+	// BMGFIRE.DisplayName: BMGFIRE
 	// AntiMaterielRifleHeldProj.DisplayName: Anti Materiel Rifle Held Proj
 	// HalibutCannonHeldProj.DisplayName: Halibut Cannon Held Proj
 	// SDFMGHeldProj.DisplayName: S D F M G Held Proj
-	// BMGFIRE2.DisplayName: B M G F I R E2
+	// BMGFIRE2.DisplayName: BMGFIRE
 	// TorrentialBullet.DisplayName: Torrential Bullet
 }
 
@@ -1342,23 +1355,23 @@ Configs: {
 
 Buffs: {
 	SoulBurning: {
-		// Description: Mods.CalamityOverhaul.Buffs.SoulBurning.Description
-		// DisplayName: Soul Burning
+		DisplayName: 灵魂火
+		Description: 来自地狱的火焰
 	}
 
 	HellfireExplosion: {
-		// Description: Mods.CalamityOverhaul.Buffs.HellfireExplosion.Description
-		// DisplayName: Hellfire Explosion
+		DisplayName: 地狱炎爆
+		Description: 来自地狱的火焰
 	}
 
 	GodKillsFire: {
-		// DisplayName: God Kills Fire
-		// Description: Mods.CalamityOverhaul.Buffs.GodKillsFire.Description
+		DisplayName: 神焰
+		Description: 烤灼灵魂
 	}
 
 	TyrantsFury: {
-		// DisplayName: Tyrants Fury
-		// Description: Mods.CalamityOverhaul.Buffs.TyrantsFury.Description
+		DisplayName: 暴君之怒
+		Description: 你怒不可遏
 	}
 }
 
@@ -1396,7 +1409,7 @@ Keybinds: {
 }
 
 TextContent: {
-	CWRLocalizationText: {
+	CWRLocText: {
 		Item_LegendOnMouseLang: 按下[Shift]聆听故事...
 		BloodAltar_Text1: 深红的注视正在降临...
 		BloodAltar_Text2: 你身上的血珠不够向深红之王进行朝贡...
@@ -1419,7 +1432,7 @@ TextContent: {
 			干掉那条傲慢的虫子！或者直接剁碎那条被纳垢高度腐化的鱼
 			玩火的异形，别手软，剁碎!
 			去会会那个机械教的异端，或者堕落的女巫，解决这些异端崽子！
-			妖龙在前方，剁碎，或者直接开战！
+			妖龙现身，准备迎战！我们将与异行邪祟展开全面冲突，凭借那块从海沟中得到的石头。新兵，这是我们最后的一战！
 			好样的，新兵
 			'''
 		RemakeItem_Remind_TextContent:
@@ -1443,43 +1456,43 @@ TextContent: {
 		StarMyriadChanges_TextContent:
 			'''
 			这是计划的一部分
-			   知久欲思，思繁渴知，唯圣奸奇，不为所困
-			   在黑暗的宇宙中，我是无尽的阴谋和背叛的化身
-			   混沌的力量将吞噬一切，无论是心灵还是灵魂
-			   信仰虚无，沐浴在混沌的火焰中，你将找到真正的力量
-			   我是堕落的先知，逝者的心灵在我手中舞蹈
-			   恐惧不过是虚弱之人的表现，真正的强者欢迎混沌的降临
-			   在混沌的风暴中，只有最强大的灵魂才能生存
-			   无边的深渊呼唤着你，勇敢地跳入其中，成为混沌的忠实仆从
-			   神圣的秩序只是脆弱的梦幻，而混沌才是宇宙的真实本质
-			   奸诈与背叛是混沌的手段，而我是它的忠实使者
-			   只有在混沌的熔炉中，才能锻造出真正无敌的战士
-			   无边的混沌之海，等待着勇者的航行
-			   对抗混沌只是徒劳的挣扎，最终每个灵魂都将屈服于其力量
-			   神圣的光辉只是混沌之前的短暂的虚幻
-			   混沌的面纱下，隐藏着无尽的力量和无穷的智慧
-			   在混沌的领域中，谎言比真相更为真实
-			   背叛是混沌的礼物，而我是奸诈的使者
-			   在混沌的黑暗中，我找到了比任何神祇更强大的力量
-			   敌人对混沌的恐惧只是无知的表现，真正的智者会与混沌为伍
-			   宇宙是混沌和变革的舞台，而我是它的领舞者
-			   在心灵的深渊中，找到无边的狂热，超越一切束缚
-			   真相是多变的，唯有在谎言中才能找到真正的解脱
-			   宇宙是一个巨大的棋局，而我是操控棋子的玩家
-			   虚假的秩序只是对真实的逃避，我选择直面未知的真相
-			   背叛是对束缚的反抗，是追求自由的唯一途径
-			   在黑暗中找到光明，不是通过祈祷，而是通过背叛
-			   心灵的深渊比宇宙的黑暗更为神秘，而我正深陷其中
-			   在每一次背叛中，都有一次力量的升华，超越一切的局限
-			   神圣的规则只是虚假的羁绊，而我选择打破这些桎梏
-			   勇敢地踏上未知的旅程，背叛将成为你最忠实的伴侣
-			   在虚伪的表象之下，是无尽的机会等待着被发掘
-			   我是黑暗中的旗手，引领着寻求真相者走向未知的深渊
-			   对抗传统，摆脱枷锁，才能真正找到力量的源泉
-			   在无边的谎言中，找到真实的力量，这是奸奇的信仰
-			   不是顺从规则，而是打破规则，才能在宇宙中留下自己的印记
-			   在变革的潮流中，背叛是唯一不朽的象征
-			   在虚伪的光芒中，找到黑暗的真谛，这才是我所追寻的力量
+			知久欲思，思繁渴知，唯圣奸奇，不为所困
+			在黑暗的宇宙中，我是无尽的阴谋和背叛的化身
+			混沌的力量将吞噬一切，无论是心灵还是灵魂
+			信仰虚无，沐浴在混沌的火焰中，你将找到真正的力量
+			我是堕落的先知，逝者的心灵在我手中舞蹈
+			恐惧不过是虚弱之人的表现，真正的强者欢迎混沌的降临
+			在混沌的风暴中，只有最强大的灵魂才能生存
+			无边的深渊呼唤着你，勇敢地跳入其中，成为混沌的忠实仆从
+			神圣的秩序只是脆弱的梦幻，而混沌才是宇宙的真实本质
+			奸诈与背叛是混沌的手段，而我是它的忠实使者
+			只有在混沌的熔炉中，才能锻造出真正无敌的战士
+			无边的混沌之海，等待着勇者的航行
+			对抗混沌只是徒劳的挣扎，最终每个灵魂都将屈服于其力量
+			神圣的光辉只是混沌之前的短暂的虚幻
+			混沌的面纱下，隐藏着无尽的力量和无穷的智慧
+			在混沌的领域中，谎言比真相更为真实
+			背叛是混沌的礼物，而我是奸诈的使者
+			在混沌的黑暗中，我找到了比任何神祇更强大的力量
+			敌人对混沌的恐惧只是无知的表现，真正的智者会与混沌为伍
+			宇宙是混沌和变革的舞台，而我是它的领舞者
+			在心灵的深渊中，找到无边的狂热，超越一切束缚
+			真相是多变的，唯有在谎言中才能找到真正的解脱
+			宇宙是一个巨大的棋局，而我是操控棋子的玩家
+			虚假的秩序只是对真实的逃避，我选择直面未知的真相
+			背叛是对束缚的反抗，是追求自由的唯一途径
+			在黑暗中找到光明，不是通过祈祷，而是通过背叛
+			心灵的深渊比宇宙的黑暗更为神秘，而我正深陷其中
+			在每一次背叛中，都有一次力量的升华，超越一切的局限
+			神圣的规则只是虚假的羁绊，而我选择打破这些桎梏
+			勇敢地踏上未知的旅程，背叛将成为你最忠实的伴侣
+			在虚伪的表象之下，是无尽的机会等待着被发掘
+			我是黑暗中的旗手，引领着寻求真相者走向未知的深渊
+			对抗传统，摆脱枷锁，才能真正找到力量的源泉
+			在无边的谎言中，找到真实的力量，这是奸奇的信仰
+			不是顺从规则，而是打破规则，才能在宇宙中留下自己的印记
+			在变革的潮流中，背叛是唯一不朽的象征
+			在虚伪的光芒中，找到黑暗的真谛，这才是我所追寻的力量
 			'''
 		Destruct_TextContent:
 			'''
@@ -1510,7 +1523,10 @@ TextContent: {
 		MouseTextContactPanel_TextContent: 右键点击该物品图标开关终焉合成配方
 		CWRItem_IsInfiniteItem_TextContent: 只有高级合成能让其稳定下来，否则会触及的一刻引发可怕的塌缩
 		CWRItem_IsRemakeItem_TextContent: -觉醒-
-		CaseEjection_TextContent: 空弹
 		OnEnterWorld_TextContent: 个武器重置已经装载
+		CaseEjection_TextContent: 空弹
+		SupertableUI_Text1: 关闭
+		SupertableUI_Text2: 查看配方
+		SupertableUI_Text3: 无
 	}
 }

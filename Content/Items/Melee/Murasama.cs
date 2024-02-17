@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             {1, 20 },
             {2, 25 },
             {3, 32 },
-            {4, 50 },
+            {4, 40 },
             {5, 80 },
             {6, 150 },
             {7, 220 },
@@ -69,12 +69,12 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// </summary>
         static Dictionary<int, int> SetLevelCritDictionary => new Dictionary<int, int>(){
             {0, -45 },
-            {1, -37 },
-            {2, -27 },
-            {3, -15 },
-            {4, -10 },
-            {5, -5 },
-            {6, 0 },
+            {1, -39 },
+            {2, -30 },
+            {3, -25 },
+            {4, -20 },
+            {5, -15 },
+            {6, -5 },
             {7, 5 },
             {8, 10 },
             {9, 15 },
@@ -205,17 +205,17 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {
             tooltips.SetHotkey(CWRKeySystem.Murasama_TriggerKey, "[KEY1]", modName);
             tooltips.SetHotkey(CWRKeySystem.Murasama_DownKey, "[KEY2]", modName);
-            string text2 = CWRLocalizationText.GetTextValue("Murasama_Text0");
-            tooltips.ReplaceTooltip("[Lang1]", UnlockSkill1 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocalizationText.GetTextValue("Murasama_Text1")}]", modName);
-            tooltips.ReplaceTooltip("[Lang2]", UnlockSkill2 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocalizationText.GetTextValue("Murasama_Text2")}]", modName);
-            tooltips.ReplaceTooltip("[Lang3]", UnlockSkill3 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocalizationText.GetTextValue("Murasama_Text3")}]", modName);
+            string text2 = CWRLocText.GetTextValue("Murasama_Text0");
+            tooltips.ReplaceTooltip("[Lang1]", UnlockSkill1 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text1")}]", modName);
+            tooltips.ReplaceTooltip("[Lang2]", UnlockSkill2 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text2")}]", modName);
+            tooltips.ReplaceTooltip("[Lang3]", UnlockSkill3 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text3")}]", modName);
             tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:试炼{InWorldBossPhase.Instance.Level() + 1}]", modName);
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[Text]") && x.Mod == "Terraria");
             if (legendtops != null) {
-                string lang = CWRLocalizationText.GetTextValue("Murasama_TextDictionary_Content");
+                string lang = CWRLocText.GetTextValue("Murasama_TextDictionary_Content");
                 string[] langs = lang.Split("\n");
                 int index = InWorldBossPhase.Instance.Level();
                 if (index >= 0 && index < langs.Length) {

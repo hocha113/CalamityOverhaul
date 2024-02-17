@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content
                     );
                 TooltipLine line = new TooltipLine(CWRMod.Instance, "CalamityOverhaul",
                     CalamityUtils.ColorMessage(
-                        CWRLocalizationText.GetTextValue("CWRItem_IsRemakeItem_TextContent")
+                        CWRLocText.GetTextValue("CWRItem_IsRemakeItem_TextContent")
                         , new Color(196, 35, 44))
                     );
                 tooltips.Add(line);
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content
             if (isInfiniteItem) {
                 TooltipLine line = new TooltipLine(CWRMod.Instance, "CalamityOverhaul",
                     CalamityUtils.ColorMessage(
-                        CWRLocalizationText.GetTextValue("CWRItem_IsInfiniteItem_TextContent")
+                        CWRLocText.GetTextValue("CWRItem_IsInfiniteItem_TextContent")
                         , CWRUtils.MultiLerpColor(Main.GameUpdateCount % 120 / 120f, Color.DarkRed, Color.Red, Color.DarkGoldenrod, Color.Gold, Color.Red))
                     );
                 tooltips.Add(line);
@@ -279,10 +279,7 @@ namespace CalamityOverhaul.Content
                 MouseTextContactPanel.Instance.DrawPos = new Vector2(700, 100);
                 MouseTextContactPanel.Instance.UpdateSets();
                 MouseTextContactPanel.Instance.Draw(Main.spriteBatch);
-
-                if (!InItemDrawRecipe.Instance.OnSupTale) {
-                    InItemDrawRecipe.Instance.Draw(Main.spriteBatch, new Vector2(700, 100), OmigaSnyContent);
-                }
+                InItemDrawRecipe.Instance.Draw(Main.spriteBatch, new Vector2(700, 100), OmigaSnyContent);
             }
             if (ContentConfig.Instance.ResetItemReminder && item.CWR().remakeItem) {
                 if (ResetItemReminderUI.Instance != null) {

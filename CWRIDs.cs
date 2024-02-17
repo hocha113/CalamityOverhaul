@@ -22,7 +22,6 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Items.Tools;
-using CalamityOverhaul.Content.NPCs.HeavenEaters;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
 using System.Collections.Generic;
@@ -231,11 +230,12 @@ namespace CalamityOverhaul
         /// <summary>
         /// 天堂吞噬者
         /// </summary>
-        public static List<int> targetNpcTypes16;
-        public static int HEHead;
-        public static int HEBody;
-        public static int HEBodyAlt;
-        public static int HETail;
+        //public static List<int> targetNpcTypes16;
+        //public static int HEHead;
+        //public static int HEBody;
+        //public static int HEBodyAlt;
+        //public static int HETail;
+
         /// <summary>
         /// 毁灭魔像
         /// </summary>
@@ -333,10 +333,10 @@ namespace CalamityOverhaul
             EidolonWyrmBodyAlt = NPCType<EidolonWyrmBodyAlt>();
             EidolonWyrmTail = NPCType<EidolonWyrmTail>();
 
-            HEHead = NPCType<HEHead>();
-            HEBody = NPCType<HEBody>();
-            HEBodyAlt = NPCType<HEBodyAlt>();
-            HETail = NPCType<HETail>();
+            //HEHead = NPCType<HEHead>();
+            //HEBody = NPCType<HEBody>();
+            //HEBodyAlt = NPCType<HEBodyAlt>();
+            //HETail = NPCType<HETail>();
 
             RavagerBody = NPCType<RavagerBody>();
             RavagerClawLeft = NPCType<RavagerClawLeft>();
@@ -360,7 +360,7 @@ namespace CalamityOverhaul
             targetNpcTypes13 = new List<int> { NPCID.MoonLordFreeEye, NPCID.MoonLordCore, NPCID.MoonLordHand, NPCID.MoonLordHead, NPCID.MoonLordLeechBlob };
             targetNpcTypes14 = new List<int> { NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail };
             targetNpcTypes15 = new List<int> { NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail };
-            targetNpcTypes16 = new List<int> { HEHead, HEBody, HEBodyAlt, HETail };
+            //targetNpcTypes16 = new List<int> { HEHead, HEBody, HEBodyAlt, HETail };
             targetNpcTypes17 = new List<int> { RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight };
 
             MaterialsTypes = new int[]{

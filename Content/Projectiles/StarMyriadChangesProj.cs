@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles
         }
 
         public override void OnKill(int timeLeft) {
-            string langOverContent = CWRLocalizationText.GetTextValue("StarMyriadChanges_TextContent");
+            string langOverContent = CWRLocText.GetTextValue("StarMyriadChanges_TextContent");
             string[] Text = langOverContent.Split("\n");
             if (Text.Length > 0) {
                 for (int i = 0; i < 33; i++) {

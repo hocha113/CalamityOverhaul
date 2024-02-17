@@ -51,9 +51,9 @@ namespace CalamityOverhaul.Content.TileEntitys
         }
 
         private void SommonLose(Player player) {
-            CWRUtils.Text(CWRLocalizationText.GetTextValue("BloodAltar_Text2"), Color.DarkRed);
+            CWRUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text2"), Color.DarkRed);
             if (player != null) {
-                PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(player.name + CWRLocalizationText.GetTextValue("BloodAltar_Text3"));
+                PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(player.name + CWRLocText.GetTextValue("BloodAltar_Text3"));
                 player.Hurt(pd, player.statLifeMax2 / 10, 0);
             }
             OldOnBoolMoon = OnBoolMoon = false;
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.TileEntitys
                         Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
                             , Scale: Main.rand.NextFloat(1.2f, 3.1f));
                     }
-                    CWRUtils.Text(CWRLocalizationText.GetTextValue("BloodAltar_Text1"), Color.DarkRed);
+                    CWRUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text1"), Color.DarkRed);
                 }
 
                 Main.dayTime = false;

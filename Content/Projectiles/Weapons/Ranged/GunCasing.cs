@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.height = 4;
             Projectile.damage = 10;
             Projectile.timeLeft = 60;
-            Projectile.tileCollide = true;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Default;
@@ -37,8 +36,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Dust.NewDust(Projectile.Center, 3, 3, DustID.Smoke, Projectile.velocity.X, Projectile.velocity.Y);
         }
 
+        public override bool OnTileCollide(Vector2 oldVelocity) {
+            if (Projectile.ai[1] == 0) {
+                SoundEngine.PlaySound(CWRSound.Case with { MaxInstances = 3, PitchVariance = 0.2f, Volume = Main.rand.NextFloat(0.65f, 1.1f) }, Projectile.position);
+                Projectile.ai[1]++;
+            }
+            return true;
+        }
+
         public override void OnKill(int timeLeft) {
-            SoundEngine.PlaySound(CWRSound.Case, Projectile.position);
+            if (Projectile.ai[1] == 0)
+                SoundEngine.PlaySound(CWRSound.Case with { Volume = 0.6f }, Projectile.position);
         }
     }
 }

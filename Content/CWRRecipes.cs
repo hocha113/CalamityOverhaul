@@ -306,7 +306,7 @@ namespace CalamityOverhaul.Content
 
         public override void AddRecipeGroups() {
             void LoadGroup(ref RecipeGroup group, string key, int[] itemIDs) {
-                string name = CWRLocalizationText.GetTextValue(key);
+                string name = CWRLocText.GetTextValue(key);
                 group = new RecipeGroup(() => $"{Any} {name}", itemIDs);
                 RecipeGroup.RegisterGroup(name, group);
             }

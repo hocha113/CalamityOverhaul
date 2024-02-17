@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Items
                     legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
                 }
                 else {
-                    legendtops.Text = CWRLocalizationText.GetTextValue("Item_LegendOnMouseLang");
+                    legendtops.Text = CWRLocText.GetTextValue("Item_LegendOnMouseLang");
                     legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.Gold, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
                 }
             }

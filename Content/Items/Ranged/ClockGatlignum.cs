@@ -8,13 +8,13 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 namespace CalamityOverhaul.Content.Items.Ranged
 {
     /// <summary>
-    /// 鳄鱼机关枪
+    /// 发条鳄鱼枪
     /// </summary>
     internal class ClockGatlignum : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ClockGatlignum";
         public override void SetDefaults() {
-            Item.damage = 55;
+            Item.damage = 35;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 66;
             Item.height = 34;

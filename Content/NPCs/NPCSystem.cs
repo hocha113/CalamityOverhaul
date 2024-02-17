@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.NPCs.HeavenEaters;
 using CalamityOverhaul.Content.NPCs.OverhaulBehavior;
 using System;
 using System.Reflection;

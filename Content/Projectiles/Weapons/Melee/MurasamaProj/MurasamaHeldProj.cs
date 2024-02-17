@@ -113,6 +113,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
                         SpanTriggerEffDust();
                     }
+
+                    if (CWRKeySystem.Murasama_TriggerKey.JustPressed && risingDragon > 0) {
+                        SoundEngine.PlaySound(CWRSound.Ejection with { MaxInstances = 3 }, Projectile.Center);
+                    }
                 }
             }
 

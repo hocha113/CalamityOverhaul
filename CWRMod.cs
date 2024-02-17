@@ -3,7 +3,6 @@ using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.NPCs.HeavenEaters;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
@@ -27,7 +26,7 @@ namespace CalamityOverhaul
         internal static List<BaseRItem> RItemInstances = new List<BaseRItem>();
         internal static List<EctypeItem> EctypeItemInstance = new List<EctypeItem>();
         internal static List<NPCCustomizer> NPCCustomizerInstances = new List<NPCCustomizer>();
-        public static Dictionary<int, BaseRItem> RItemIndsDict = new Dictionary<int, BaseRItem>();
+        internal static Dictionary<int, BaseRItem> RItemIndsDict = new Dictionary<int, BaseRItem>();
 
         public override void PostSetupContent() {
             LoadMods = ModLoader.Mods.ToList();
@@ -97,7 +96,7 @@ namespace CalamityOverhaul
             LoadClient();
 
             //加载头部资源Icon
-            HEHead.LoadHaedIcon();
+            //HEHead.LoadHaedIcon();
 
             CWRParticleHandler.Load();
             EffectsRegistry.LoadEffects();

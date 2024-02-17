@@ -222,10 +222,10 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                     continue;
                 if (npc.active)
                 {
-                    if (CWRIDs.targetNpcTypes16.Contains(npc.type)) {
-                        npc.SimpleStrikeNPC(strikeDamage, 0);
-                        continue;//如果对象属于天堂吞噬者，那么只会造成高伤害
-                    }
+                    //if (CWRIDs.targetNpcTypes16.Contains(npc.type)) {
+                    //    npc.SimpleStrikeNPC(strikeDamage, 0);
+                    //    continue;//如果对象属于天堂吞噬者，那么只会造成高伤害
+                    //}
                     foreach (var targetNpcTypes in allTargetNpcTypes)
                     {
                         if (targetNpcTypes.Contains(npc.type))

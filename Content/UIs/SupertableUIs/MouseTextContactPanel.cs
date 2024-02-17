@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     offset.Y += 5;
             }
             Vector2 uiSize = new Vector2(1.5f, 0.6f);
-            string text = CWRLocalizationText.GetTextValue("MouseTextContactPanel_TextContent");
+            string text = CWRLocText.GetTextValue("MouseTextContactPanel_TextContent");
             Vector2 size = FontAssets.MouseText.Value.MeasureString(text);
             float overSizeX = size.X / (uiSize.X * Texture.Width);
             spriteBatch.Draw(Texture, DrawPos, null, Color.DarkGoldenrod, 0, Vector2.Zero, uiSize * new Vector2(overSizeX, 1), SpriteEffects.None, 0);//绘制出UI主体

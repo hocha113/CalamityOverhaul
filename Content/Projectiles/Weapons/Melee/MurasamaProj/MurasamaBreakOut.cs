@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
         protected Player Owner => Main.player[Projectile.owner];
         protected Item murasama => Owner.ActiveItem();
+        private Vector2 breakOutVector;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 5;
@@ -32,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.MaxUpdates = 5;
             Projectile.timeLeft = 300;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 20;
+            Projectile.localNPCHitCooldown = 22;
         }
 
         public override void PostAI() => CWRUtils.ClockFrame(ref Projectile.frame, 5, 12);
@@ -45,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (Projectile.ai[0] == 0) {//在这一阶段，弹幕负责飞出
                 Projectile.rotation = Projectile.velocity.ToRotation();
                 Projectile.ai[1]++;
-                if (Projectile.ai[1] > (120 + level * 8)) {//级别越高，弹幕的飞行时间便会越加的长
+                if (Projectile.ai[1] > (60 + level * 15)) {//级别越高，弹幕的飞行时间便会越加的长
                     Projectile.ai[0] = 2;
                     Projectile.ai[1] = 0;
                     Projectile.netUpdate = true;
@@ -113,7 +114,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         
                         //sengs.Domp();
                         int sengsDmg = (int)(Murasama.ActualTrueMeleeDamage * sengs);
-                        int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, new Vector2(Math.Sign(toBreakV.X) * 3, -5)
+                        int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
                         , ModContent.ProjectileType<MurasamaBreakSwing>(), sengsDmg, 0, Owner.whoAmI);
                         Main.projectile[proj].scale = 0.5f + level * 0.0f;
 
@@ -163,6 +164,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.3f }, Projectile.Center);
                         Projectile.ai[0] = 2;
                     }
+                    breakOutVector = Owner.Center.To(Projectile.Center).UnitVector();
                 }
             }
         }
@@ -173,8 +175,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 Projectile.ai[1] = 0;
                 Projectile.netUpdate = true;
 
-                if (target.boss) {//如果击中的目标是个Boss级生物，额外给予玩家无敌帧
-                    Owner.GivePlayerImmuneState(60, true);
+                if (target.boss && Murasama.UnlockSkill1) {//如果击中的目标是个Boss级生物，额外给予玩家无敌帧
+                    Owner.GivePlayerImmuneState(35 + InWorldBossPhase.Instance.Level() * 2, true);
                 }
             }
         }

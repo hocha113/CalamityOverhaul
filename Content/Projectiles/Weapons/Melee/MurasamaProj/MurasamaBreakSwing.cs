@@ -44,7 +44,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             
             Projectile.scale += (0.05f + level * 0.002f);
             Projectile.position += Owner.velocity;
-            Projectile.position.Y -= (0.02f + level * 0.005f);
+            Projectile.rotation = Projectile.velocity.ToRotation();
+            //Projectile.position.Y -= (0.02f + level * 0.005f);
             Owner.direction = Math.Sign(Owner.Center.To(Projectile.Center).X);
         }
 
@@ -200,21 +201,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
            }
            if (target.type == NPCID.WallofFleshEye || target.type == NPCID.WallofFlesh) {
                 modifiers.FinalDamage *= 0.25f;
-            }
+           }
            if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
                 modifiers.FinalDamage *= 0.75f;
            }
-           if (target.type == CWRIDs.AquaticScourgeBody) {
+           if (target.type == CWRIDs.AquaticScourgeBody || target.type == CWRIDs.PerforatorBodyLarge 
+                || target.type == CWRIDs.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == NPCID.TheDestroyerBody) {
                 modifiers.FinalDamage *= 0.3f;
-            }
+           }
+           if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
+                modifiers.FinalDamage *= 0.1f;
+           }
         }
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 6)
-            , Murasama.NameIsVergil(Owner) ? Color.Blue : Color.White
-            , Projectile.rotation + MathHelper.ToRadians(100 * Math.Sign(Projectile.velocity.X))
-            , CWRUtils.GetOrig(value, 6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            , Murasama.NameIsVergil(Owner) ? Color.Blue : Color.White, Projectile.rotation
+            , CWRUtils.GetOrig(value, 6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
             return false;
         }
     }

@@ -5,13 +5,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Common
 {
-    internal class CWRLocalizationText : ModType, ILocalizedModType
+    internal class CWRLocText : ModType, ILocalizedModType
     {
         public string LocalizationCategory => "TextContent";
 
         protected override void Register() { }
 
-        public static string GetTextValue(string key) => Language.GetTextValue($"Mods.CalamityOverhaul.TextContent.CWRLocalizationText.{key}");
+        public static string GetTextValue(string key) => Language.GetTextValue($"Mods.CalamityOverhaul.TextContent.CWRLocText.{key}");
 
         public LocalizedText Item_LegendOnMouseLang { get; private set; }
         public LocalizedText BloodAltar_Text1 { get; private set; }
@@ -36,6 +36,9 @@ namespace CalamityOverhaul.Common
         public LocalizedText CWRItem_IsRemakeItem_TextContent { get; private set; }
         public LocalizedText OnEnterWorld_TextContent { get; private set; }
         public LocalizedText CaseEjection_TextContent { get; private set; }
+        public LocalizedText SupertableUI_Text1 { get; private set; }
+        public LocalizedText SupertableUI_Text2 { get; private set; }
+        public LocalizedText SupertableUI_Text3 { get; private set; }
 
         public override void Load() {
             //使用反射进行属性的自动加载

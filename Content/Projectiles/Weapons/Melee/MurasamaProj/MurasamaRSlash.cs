@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
@@ -7,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -138,6 +140,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             player.heldProj = Projectile.whoAmI;
             player.itemTime = 2;
             player.itemAnimation = 2;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.type == NPCID.SkeletronHand) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            if (target.type == NPCID.WallofFleshEye || target.type == NPCID.WallofFlesh) {
+                modifiers.FinalDamage *= 0.25f;
+            }
+            if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
+                modifiers.FinalDamage *= 0.75f;
+            }
+            if (target.type == CWRIDs.AquaticScourgeBody || target.type == CWRIDs.PerforatorBodyLarge
+                 || target.type == CWRIDs.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == NPCID.TheDestroyerBody) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            if (target.type == ModContent.NPCType<SplitEbonianPaladin>() || target.type == ModContent.NPCType<SplitCrimulanPaladin>()) {
+                modifiers.FinalDamage *= 0.3f;
+            }
         }
 
         public void HandleChannelMovement(Player player, Vector2 playerRotatedPoint) {

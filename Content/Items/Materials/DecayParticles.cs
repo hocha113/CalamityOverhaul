@@ -31,13 +31,6 @@ namespace CalamityOverhaul.Content.Items.Materials
                 slp = 32 / (float)value.Width;
             }
             spriteBatch.Draw(value, position, null, Color.White * alp, 0, value.Size() / 2, slp, SpriteEffects.None, 0);
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, null, null, null, null, Main.UIScaleMatrix);
-            float sngs = Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.01f));
-            for (int i = 0; i < 7; i++) {
-                spriteBatch.Draw(value, position, null, Color.White * sngs * alp, 0, value.Size() / 2, slp, SpriteEffects.None, 0);
-            }
-            spriteBatch.ResetUICanvasState();
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {

@@ -47,9 +47,9 @@ namespace CalamityOverhaul.Content
         }
 
         public static IItemDropRuleCondition InHellDropRule =>
-            Rule((info) => Main.LocalPlayer.ZoneUnderworldHeight, () => true, () => CWRLocalizationText.GetTextValue("Drop_Hell_RuleText"));
+            Rule((info) => Main.LocalPlayer.ZoneUnderworldHeight, () => true, () => CWRLocText.GetTextValue("Drop_Hell_RuleText"));
 
         public static IItemDropRuleCondition GlodDragonDropRule =>
-            Rule((info) => InWorldBossPhase.Downed28.Invoke(), () => true, () => CWRLocalizationText.GetTextValue("Drop_GlodDragonDrop_RuleText"));
+            Rule((info) => InWorldBossPhase.Downed28.Invoke(), () => true, () => CWRLocText.GetTextValue("Drop_GlodDragonDrop_RuleText"));
     }
 }

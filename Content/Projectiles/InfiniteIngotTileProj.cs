@@ -20,11 +20,14 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.penetrate = -1;
             Projectile.hostile = true;
             Projectile.friendly = true;
-            Projectile.timeLeft = 900;
+            Projectile.timeLeft = 300;
             darkMatterBall = (DarkMatterBall)(new Item(ModContent.ItemType<DarkMatterBall>()).ModItem);
         }
 
         public void ExTile() {
+            if (!Main.zenithWorld) {
+                return;
+            }
             int maxNum = (int)(12 * Projectile.scale);
             int offset = maxNum / -2;
             int rSquared = maxNum * maxNum / 4;

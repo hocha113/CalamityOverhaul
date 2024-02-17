@@ -1,12 +1,18 @@
 ﻿using CalamityMod;
 using CalamityMod.Enums;
 using CalamityMod.Events;
+using CalamityMod.Items;
+using CalamityMod.Items.SummonItems;
 using CalamityMod.NPCs.ExoMechs;
 using CalamityMod.Projectiles.Typeless;
 using CalamityMod.Systems;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.Tiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -25,13 +31,8 @@ namespace CalamityOverhaul.Content.Items
             Item.useTime = 45;
             Item.channel = true;
             Item.noUseGraphic = true;
-            Item.shoot = ModContent.ProjectileType<TerminusHoldout>();
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.consumable = false;
-        }
-
-        public override bool CanUseItem(Player player) {
-            return !BossRushEvent.BossRushActive;
         }
 
         public override bool? UseItem(Player player) {
@@ -49,7 +50,11 @@ namespace CalamityOverhaul.Content.Items
             }
 
             BossRushEvent.BossRushStage = 0;
-            BossRushEvent.BossRushActive = true;
+            BossRushEvent.BossRushActive = !BossRushEvent.BossRushActive;
+            if (!BossRushEvent.BossRushActive) {
+                PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(player.name + CWRLocText.GetTextValue("BloodAltar_Text3"));
+                player.Hurt(pd, player.statLifeMax2 / 2, 0);
+            }
 
             BossRushDialogueSystem.StartDialogue(DownedBossSystem.startedBossRushAtLeastOnce ? BossRushDialoguePhase.StartRepeat : BossRushDialoguePhase.Start);
 
@@ -76,7 +81,6 @@ namespace CalamityOverhaul.Content.Items
         }
 
         public override void UpdateInventory(Player player) {
-            //player.HeldItem.ModItem?.FullName.Domp();
             if (BossRushEvent.BossRushActive) {
                 Item.SetNameOverride(CalamityUtils.ColorMessage(GenerateRandomString(Main.rand.Next(16, 23))
                     , CWRUtils.MultiLerpColor(Main.rand.NextFloat(), Color.Red, Color.Black, Color.Purple, Color.Plum)));
@@ -101,6 +105,14 @@ namespace CalamityOverhaul.Content.Items
 
         public override void ModifyResearchSorting(ref ContentSamples.CreativeHelper.ItemGroup itemGroup) {
             itemGroup = ContentSamples.CreativeHelper.ItemGroup.EventItem;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<DarkMatterBall>(3)
+                .AddIngredient<Terminus>()
+                .AddTile(ModContent.TileType<DarkMatterCompressor>())
+                .Register();
         }
     }
 }

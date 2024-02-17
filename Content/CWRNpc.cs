@@ -126,6 +126,9 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
+            if (npc.type == CWRIDs.PrimordialWyrmHead) {//我不知道为什么原灾厄没有设置这个字段，为了保持进度的正常，我在这里额外设置一次
+                DownedBossSystem.downedPrimordialWyrm = true;
+            }
             PerforatorBehavior.Instance.BloodMoonDorp(npc);
             HiveMindBehavior.Instance.BloodMoonDorp(npc);
             base.OnKill(npc);
@@ -164,7 +167,7 @@ namespace CalamityOverhaul.Content
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             base.PostDraw(npc, spriteBatch, screenPos, drawColor);
             if (WhipHitNum > 0) {
-                DrawTameBar(spriteBatch, npc);
+                //DrawTameBar(spriteBatch, npc);
             }
             if (Main.bloodMoon) {
                 if (npc.type == CWRIDs.PerforatorHive) {

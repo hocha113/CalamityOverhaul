@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             // 遍历传奇提示行并添加新的提示行
             foreach (string legendtops in legendtopsList) {
                 string text = legendtops;
-                string lang = CWRLocalizationText.GetTextValue("Murasama_TextDictionary_Content");
+                string lang = CWRLocText.GetTextValue("Murasama_TextDictionary_Content");
                 string[] langs = lang.Split("\n");
                 int index = InWorldBossPhase.Instance.Level();
                 TooltipLine newLine = new TooltipLine(CWRMod.Instance, "CWRText", text);
@@ -93,7 +93,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             // 清空原 tooltips 集合并添加修改后的新Tooltips集合
             tooltips.Clear();
             tooltips.AddRange(newTooltips);
-            
         }
 
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) => damage *= Murasama.GetOnDamage / (float)Murasama.GetStartDamage;

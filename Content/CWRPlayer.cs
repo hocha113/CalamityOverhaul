@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content
 
         public override void OnEnterWorld() {
             if (ContentConfig.Instance.ForceReplaceResetContent) {
-                CWRUtils.Text(CWRMod.RItemIndsDict.Count + CWRLocalizationText.GetTextValue("OnEnterWorld_TextContent"), Color.GreenYellow);
+                CWRUtils.Text(CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent"), Color.GreenYellow);
             }
         }
 

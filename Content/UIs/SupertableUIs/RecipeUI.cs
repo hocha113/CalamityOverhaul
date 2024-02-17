@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Placeable;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.UIs.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -160,7 +161,7 @@ End:;
             if (itemTarget != null && SupertableUI.Instance != null && index >= 0 && index < itemTarget.Count) {
                 SupertableUI.DrawItemIcons(spriteBatch, itemTarget[index], DrawPos + new Vector2(5, 5), alp: 0.6f, overSlp: 1.5f);
                 string name = itemTarget[index].HoverName;
-                string text = $"查看配方：{(name == "" ? "无" : name)}";
+                string text = $"{CWRLocText.GetTextValue("SupertableUI_Text2")}：{(name == "" ? CWRLocText.GetTextValue("SupertableUI_Text3") : name)}";
                 Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, DrawPos.X - text.Length * 5, DrawPos.Y - 25, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
             }
             if (onM) { //处理鼠标在UI格中查看物品的事情
