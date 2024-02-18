@@ -11,8 +11,8 @@ Items: {
 		DisplayName: Briny Baron
 		Tooltip:
 			'''
-			<left> Wield the giant blade and fire a waterspout to both sides after hitting the enemy
-			<right> Launch three water vortices
+			Left Click to swing the blade, upon hitting an enemy summon a water tornado and water spouts that travels horizontally
+			Right Click to repeatedly throw 3 water projectiles that home onto enemies
 			'''
 	}
 
@@ -20,8 +20,8 @@ Items: {
 		DisplayName: Cosmic Shiv
 		Tooltip:
 			'''
-			After hitting an enemy, it creates several vast eyes in front of the player
-			Summon cosmic rays to burn the enemy
+			After hitting an enemy, it summons Cosmic Portals to fire at enemies with Piercing Cosmic Beams
+			Inflicts Godslayer Inferno to flay your enemies
 			'''
 	}
 
@@ -38,57 +38,74 @@ Items: {
 		DisplayName: Banshee Hook
 		Tooltip:
 			'''
-			While attacking, it generates a large number of Sorrowful Scythes and launches a Dreadful Great Scythe that hunts down enemies. 
-			Right-clicking accumulates Dread energy and, before the energy is depleted, summons a large number of Abhorrent Sickles at the mouse position. 
-			When the Abhorrent Sickle hits an enemy, it generates additional spirits, providing various enhancements.
+			Swinging the Hook summons several small Sorrowful Scythes before launching a bigger Dreadful Scythe to aggressively hunt down enemies
+			Right click to Accumlate Dread Energy, which upon filling summons Ghastly Spirits to assault your foes with several delibitating debuffs.
+			Scythes summoned with the Right Click will also keep homing in on enemies for several seconds or when Dread Energy is Empty
 			'''
 	}
 
 	BlightedCleaver: {
 		DisplayName: Blighted Cleaver
-		Tooltip: A blade hit an enemy will accumulate tyrant power and generate a large number of Sickles of slaughter
+		Tooltip: 
+			'''
+			Fires Blazing Blades that from home in on enemies and ones from above after hitting giving you the "Brutal Carnage" Buff
+			Upon hitting a True Melee strike, Accumulate Tyrant's Fury which will increase the weapon's damage for a short time.
+			'''
 	}
 
 	BurntSienna: {
 		DisplayName: Burnt Sienna
-		Tooltip: The swing will throw three maracas
+		Tooltip: Swinging will sometimes throw 3 Sand blocks in an arc towards your enemies. Killing enemies summon healing orbs that float.
 	}
 
 	CometQuasher: {
 		DisplayName: Comet Quasher
-		Tooltip: Raining meteors from the sky
+		Tooltip: Swings a Heavy blade that sends a barrage of meteors at your foes and cursor.
 	}
 
 	DefiledGreatsword: {
 		DisplayName: Defiled Greatsword
-		Tooltip: A blade hit an enemy boosts Tyrant Power and spawns a large number of jungle sickles
+		Tooltip:  
+			'''
+			Fires a Myriad of Blazing Blades that aggressively hunt down your foes that give the player the "Brutal Carnage" Buff
+			Upon hitting a True Melee strike, Accumulate Tyrant's Fury which will increase the weapon's damage for a short time along with launching blazing blades at the sides of the screen.
+			'''
 	}
 
 	EntropicClaymore: {
 		DisplayName: Entropic Claymore
-		Tooltip: The stars were visible between the blades
+		Tooltip:   
+			'''
+			Fires several plasma bolts that seek out enemies
+			"The stars Twinkle and shimmer across the blade's edges. It reminds you of the night skies above."
+			'''
 	}
 
 	GildedProboscis: {
 		DisplayName: Gilded Proboscis
 		Tooltip:
 			'''
-			The charged feathers split off during the attack
-			Right energy storage, before the power consumption will maintain a current to attack the enemy along the road
+			Thrusting with the spear causes feathers to split upon impact along with healing you on hit.
+			Right clicking will spin the spear and charge up a Red Lightning Energy Reserve, upon Full Charge it starts shooting out Lightning that bounces off enemies and inflict Electrified until it's Depleted.
 			'''
 	}
 
 	Terratomere: {
 		DisplayName: Terratomere
-		Tooltip: Wielding the power to release the gold source
+		Tooltip: 
+			'''
+			Swing a Sword Infused with the essence of Terraria, causing several piercing energy bolts to seek out enemies along with several beams from above.
+			Upon death, energy bolts discharge and explode, dealing damage in an Area of Effect.
+			"Make this Journey one to remember."
+			'''
 	}
 
 	TerrorBlade: {
 		DisplayName: Terror Blade
 		Tooltip:
 			'''
-			Wield the release scare bomb
-			Cutting an enemy with a blade will increase your weapon
+			Wield a blade manifested with souls filled with agony and despair. Shoots out slow moving sword beams that pierce and ricohet off walls, exploding on every enemy hit.
+			Preforming true melee strikes will enhance the weapon immensely and charge up energy, causing the projectiles fired upon non True Melee Strikes to move faster and summon more beams on enemy hits.
 			'''
 	}
 
@@ -101,8 +118,9 @@ Items: {
 		DisplayName: Stream Gouge
 		Tooltip:
 			'''
-			Launch cosmic dark light arrows when stabbing, and blast six darts of God Killer after hitting the enemy
-			Right click using undercurrent puncture
+			Stabs through space to lacerate enemies with cosmic might, inflicting Godslayer inferno. Upon hitting, 6 God Slayer darts will shoot out Omni Directionally.
+			Right click to form Cosmic rifts that follow your cursor that assault enemies with copies of the Spear and Cosmic Beams.
+                        [c/b300b3:"Rend them apart."]
 			'''
 	}
 
@@ -110,27 +128,32 @@ Items: {
 		DisplayName: Elemental Lance
 		Tooltip:
 			'''
-			Firing multiple splintered elemental rounds
-			Right-click to generate several edge colored auroras
+			Fires a Lance beam that splinters apart after travelling
+			Right click to charge up a meter, upon charging it fires out several colourful aurora beams that follow the cursor until the meter is depleted.
 			'''
 	}
 
 	AirSpinner: {
 		DisplayName: Air Spinner
-		Tooltip: Fire scattered feathers at nearby enemies
+		Tooltip: 
+			'''
+			Fires Feathers that home in on enemies whenever they are near. While spinning in the air, 6 feathers splinter outwards before disappearing.
+			If the splintered feathers hit an enemy, it will latch on and keep dealing damage for a short while.
+                        A very agile yoyo.
+			'''
 	}
 
 	GoldplumeSpear: {
 		DisplayName: Goldplume Spear
-		Tooltip: ""
+		Tooltip: "Fires quick bursts of feathers upon swinging"
 	}
 
 	WindBlade: {
 		DisplayName: Wind Blade
 		Tooltip:
 			'''
-			A flailing cyclone that disrupts a wide area of air flow
-			Right-click to launch a tracking small cyclone
+		        Fires cyclones that suck enemies in
+			Right click to throw cyclones that home in on enemies.
 			'''
 	}
 
@@ -138,9 +161,9 @@ Items: {
 		DisplayName: Arbalest
 		Tooltip:
 			'''
-			Fire a lot of arrows, and the arrows get bigger and bigger over time
-			Right-click for a single rapid fire
-			"Its gears are chugging round and round."
+			Fires a volley of 6 high speed arrows, arrows start small but grow in size with continous fire.
+			Right click to fire a high speed volley of arrows after a short delay
+			"Salvaged from the inner workings of the Twins, the gears show age yet still churn."
 			'''
 	}
 
@@ -148,8 +171,7 @@ Items: {
 		DisplayName: Deathwind
 		Tooltip:
 			'''
-			The wooden arrow will be transformed into a death laser beam
-			Hitting an enemy at close range will blow a blast of death
+			Wooden arrows turn into 3 Nebula Beams that pierce infinitely and go through walls.
 			'''
 	}
 
@@ -157,22 +179,23 @@ Items: {
 		DisplayName: Dragon Rage
 		Tooltip:
 			'''
-			The blade rotates between killing the surrounding enemies
-			Right click Fire Dragon ball
+			Spins a baton that causes explosions on enemy hits. The 10th hit will cause a ring of draconic fireballs to seek enemies that inflict Dragonfire.
+			Right click to spin the baton closer to you that summons fireballs at a slower pace, but without the need to hit enemies.
+                        [c/ff8c1a:"This is my message to my master."]
 			'''
 	}
 
 	WhiplashGalactica: {
 		DisplayName: Whiplash Galactica
-		Tooltip: After hitting an enemy, make a death mark and launch a cosmic fireball
+		Tooltip: Whip your enemies with the tenacity of the Devourer.
 	}
 
 	Tradewinds: {
 		DisplayName: Tradewinds
 		Tooltip:
 			'''
-			Launch the decelerated sky plume
-			Right button replacement for emitting sticky feathers
+			Fires out fast moving sunlight feathers that pierce and return to you after hitting a wall.
+			Right click to fire sunlight feathers that stick onto enemies, dealing constant damage.
 			'''
 	}
 
@@ -185,8 +208,8 @@ Items: {
 		DisplayName: Excelsus
 		Tooltip:
 			'''
-			Brandishing and firing several cosmic blades
-			Right-click to emit universal light vector
+			Sends out Cosmic Blade Mirages that pierce through walls, inflicting God Slayer Inferno. True Melee hits also summon a laser beam from the sky.
+			Right click sends out a high velocity God Slayer dart that explodes on impact.
 			'''
 	}
 
@@ -194,8 +217,7 @@ Items: {
 		DisplayName: Ghastly Visage
 		Tooltip:
 			'''
-			Three feathers are fired as part of the attack
-			Right-click for a single rapid fire
+			Fires out 3 Homing Ghastly Energy bolts to seek out enemies before exploding in anguish.
 			'''
 	}
 
@@ -203,14 +225,14 @@ Items: {
 		DisplayName: Galeforce
 		Tooltip:
 			'''
-			Three feathers are fired as part of the attack
-			Right-click for a single rapid fire
+			Fires out a spread of slow-moving harpy feathers
+			Right click to shoot a non-stop barrage of feathers that ignore gravity
 			'''
 	}
 
 	ElementWhip: {
 		DisplayName: Element Whip
-		Tooltip: ""
+		Tooltip: "A Whip infused with the energy of the Moon and the Elements."
 	}
 
 	ElementalShiv: {
@@ -238,20 +260,20 @@ Items: {
 
 	AzureDragonRage: {
 		DisplayName: Azure Dragon Rage
-		Tooltip: There's a thick, grassy airway
+		Tooltip: Smells like freshly cut albeit musty grass.
 	}
 
 	BleedingScourge: {
 		DisplayName: Bleeding Scourge
-		Tooltip: When you hit an enemy, mark it with death and make it rain blood
+		Tooltip: Hitting an enemy with this whip causing blood to rain down from the sky before bursting on the enemy below, tagging it for minions.
 	}
 
 	GhostFireWhip: {
 		DisplayName: Ghost Fire Whip
 		Tooltip:
 			'''
-			A long whip, woven from the fury of a dungeon ghost
-			[c/d4bc75:Fall in hell after defeating the Ghost flower]
+			An Extremely long whip, formed from fury of the restless dungeon spirits.
+			[c/d4bc75:Pure Zealousy Eminates from the base, encouraging you to seek out who wronged you.]
 			'''
 	}
 
@@ -262,22 +284,22 @@ Items: {
 
 	DivineSourceBlade: {
 		DisplayName: Divine Source Blade
-		Tooltip: ""
+		Tooltip: "Swinging causes a high velocity blade that slashes the first enemy it pierces through into ribbons."
 	}
 
 	FatesReveal: {
 		DisplayName: Fates Reveal
-		Tooltip: Generate several mournful spirit fires to attack enemies
+		Tooltip: Summons Ghastly Fireballs that after a short time seeks out enemies
 	}
 
 	FoodStallChair: {
 		DisplayName: Food Stall Chair
-		Tooltip: ""
+		Tooltip: "I AM THE CHAIR THAT IS APPROACHING!"
 	}
 
 	DaemonsFlame: {
 		DisplayName: Daemons Flame
-		Tooltip: ""
+		Tooltip: "Fires Homing Daemon Flames that explode upon impact"
 	}
 
 	ClaretCannon: {
@@ -294,8 +316,9 @@ Items: {
 		DisplayName: Annihilating Universe
 		Tooltip:
 			'''
-			The arrow hits the enemy and leaves a bright star in its place
-			Right click to destroy enemies with the power of God Eater
+			Wooden Arrows turn into a spread of Cosmic Bolts. Hitting an enemy causes Galaxy Rifts to attack other foes and leaves behind a star close to death, eventually imploding.
+			Right click to summon Projections of the Devourer that grow stronger and bigger over time. Letting go of right click fires the portal used to home in on enemies before eventually dying out.
+                        [c/9C27B0:The End is Nigh.]
 			'''
 	}
 
@@ -303,9 +326,9 @@ Items: {
 		DisplayName: Heavenfall Longbow
 		Tooltip:
 			'''
-			Fire endless arrows, and rainbow energy will follow
-			Right click and let the arrow of heaven drop from the sky
-			Press [KEY] to start the Vientiane Trial when the power is finished
+			Fires out Pure Primordial Rainbow Light to completely annihiliate your foes in brilliance.
+			Right click will have the Primordial light rain down on your foes, exploding in pure magnifience.
+			Press [KEY] to start the Vientiane Trial when at max power.
 			[legend]
 			'''
 		Legend:
@@ -323,8 +346,9 @@ Items: {
 		DisplayName: Aegis Blade
 		Tooltip:
 			'''
-			Throw a disciplinary fireball when swinging
-			Right click to generate Shelter Giant Blade
+			Swinging will cause a shard of sunlight to weakly home in before impacting the enemy, leaving damaging sparks below.
+			Right click to have the blade raise up into the sky. Holding Right click will charge the blade up, increasing in size. 
+                        Letting go of right click hurls the blade at the enemy causing a massive explosion.
 			'''
 	}
 
@@ -345,7 +369,7 @@ Items: {
 
 	InfiniteIngot: {
 		DisplayName: Infinite Ingot
-		Tooltip: The power of the world, in the palm of your hand
+		Tooltip: The power of many worlds, universes and galaxies all coalesce into this singular ingot.
 	}
 
 	CosmicMetalSingularity: {
@@ -357,14 +381,14 @@ Items: {
 		DisplayName: Omega substance polymerizer
 		Tooltip:
 			'''
-			After placing, right-click to open the compositing table
-			"Your greedy journey is officially underway."
+			An Experimental Device of Draedon's Creation. Placing it down and right clicking it opens an extended crafting interface to go beyond mortal limits.
+			"Your Journey into Greedy Madness is now underway."
 			'''
 	}
 
 	DarkMatterCompressorItem: {
-		DisplayName: Dark matter compressor
-		Tooltip: Reconstructing matter like a black hole
+		DisplayName: Dark Matter Compressor
+		Tooltip: A Culmination of Several workstations, now able to compress pure matter like a black hole.
 	}
 
 	AerialiteMetalSingularity: {
@@ -450,7 +474,7 @@ Items: {
 			Press [KEY2] to consume two points of charge and perform a punch [Lang2]
 			When you hit an enemy, you will give your weapon 1 recharge. When you hit the maximum 10 recharge, you will trigger the end of the enemy when you lift the dragon again. [Lang3]
 			[c/fff08c: Stronger with the distance of the journey]
-			[c/ff4500:" It would be better if there were a chainsaw sword "]
+			[c/ff4500:" It would be better if this were a chainsaw sword "]
 			[Lang4]:
 			[Text]
 			'''
@@ -458,7 +482,7 @@ Items: {
 
 	HolyCollider: {
 		DisplayName: Holy Collider
-		Tooltip: ""
+		Tooltip: "Spawns Profaned Flames to surround you upon swinging. Getting close to enemies will have the profaned flames home in on them."
 	}
 
 	Oracle: {
@@ -478,17 +502,17 @@ Items: {
 
 	CelestialClaymore: {
 		DisplayName: Celestial Claymore
-		Tooltip: ""
+		Tooltip: "Spawns cosmic energy flames near the player that seek out enemies after a short while."
 	}
 
 	TheEnforcer: {
 		DisplayName: The Enforcer
-		Tooltip: ""
+		Tooltip: "Spawns Flames directly from the Devourer's Homeworld near the player that explode after a short while."
 	}
 
 	InfinitePick: {
 		DisplayName: Infinite Pick
-		Tooltip: ""
+		Tooltip: "You can sense that the very lands of Terraria trembles in fear whenever you hold it."
 	}
 
 	DarkMatterBall: {
@@ -537,7 +561,7 @@ Items: {
 
 	DawnshatterAzure: {
 		DisplayName: Dawnshatter Azure
-		Tooltip: ""
+		Tooltip: "Summons the full might of Yharon's Auric Soul to tear into your enemies"
 	}
 
 	DecayParticles: {
@@ -562,14 +586,14 @@ Items: {
 
 	InfiniteToiletItem: {
 		DisplayName: Infinite Toilet Item
-		Tooltip: ""
+		Tooltip: "The power of the universe, of the galaxies above and the space inbetween.. Now just reduced to a toilet."
 	}
 
 	StormGoddessSpear: {
 		DisplayName: Storm Goddess Spear
 		Tooltip:
 			'''
-			Launch a storm kiss with a destructive arc
+			A Spear capable of sending out Fierce Lightning Kisses that bounces off enemies.
 			[legend]
 			'''
 		Legend:
@@ -596,19 +620,19 @@ Items: {
 
 	DragonsScaleGreatsword: {
 		DisplayName: Dragons Scale Greatsword
-		Tooltip: ""
+		Tooltip: "Swings a mighty sword that summons poisonous clouds that weakly home into enemies."
 	}
 
 	CosmicCalamity: {
 		DisplayName: Cosmic Calamity
-		Tooltip: ""
+		Tooltip: "Throws a Javelin infused with the Devourer's power. Stealth strikes causes several laser beams to assail the enemy."
 	}
 
-	Weapons: {
+ 	Weapons: {
 		Rogue: {
 			WaveSkipper: {
 				DisplayName: Wave Skipper
-				Tooltip: ""
+				Tooltip: "Throws a Javelin that Buries itself into the earth. Stealth Strikes throws 3 Javelins at once."
 			}
 		}
 	}
@@ -617,10 +641,10 @@ Items: {
 		DisplayName: Spear of Longinus
 		Tooltip:
 			'''
-			Each time the latent bar reaches the upper limit, an increase is carried out,
-			and the maximum position is superimposed to six positions
-			Mark the fate of the nearest enemy while holding it
-			Positions hitting marked enemies will trigger pilgrim's wrath
+			Each time the stealth bar fills, the Spear charges up and depletes stealth back to 0.
+			The maximum amount of charge is 6 full stealth bars.
+			When charged, circles will show the Area of effect. Upon thrown, It will unleash a world shattering strike.
+			If the spear has charge, the attack will be followed by a laser from the sun, sealing anything's fate.
 			[legend]
 			'''
 		Legend:
@@ -646,15 +670,15 @@ Items: {
 
 	SubmarineShocker: {
 		DisplayName: Submarine Shocker
-		Tooltip: Emit electric ion sparks
+		Tooltip: A Fast pair of daggers that shoots out Electrically charged ions. Upon hitting enemies, it will cause a lightning chain to bounce off any enemy nearby.
 	}
 
 	BrimstoneSword: {
 		DisplayName: Brimstone Sword
 		Tooltip:
 			'''
-			A blazing short sword
-			Hit an enemy and generate a sulfur fire geyser
+			A Blazingly Hot and fast shortsword
+			Hitting an enemy will sometimes have brimstone geysers fire out of the ground below.
 			'''
 	}
 
@@ -662,9 +686,9 @@ Items: {
 		DisplayName: Blood Altar
 		Tooltip:
 			'''
-			Right click on the altar and summon the blood moon
-			Automatically collects dropped blood beads from around the world and stores them in the nearest bin
-			"Let the world be watched by crimson."
+			Right click on the Altar to summon the Blood Moon
+			Automatically collects dropped blood orbs from around the world and stores them in the nearest storage bin.
+			"Let the world be wreathed by Crimson."
 			'''
 	}
 
@@ -675,15 +699,15 @@ Items: {
 
 	TerminusOver: {
 		DisplayName: The final touch
-		Tooltip: You are allowed to freely toggle the final battle. But there is a price to pay
+		Tooltip: The final battle awaits, however there is a price to pay.
 	}
 
 	PhosphorescentGauntlet: {
 		DisplayName: Phosphorescent Gauntlet
 		Tooltip:
 			'''
-			Strike the enemy with the will of the fist
-			Right hand jab at close range
+			Strikes the Enemy with multiple fists that home in on enemies. Upon 5 hits, a pair of larger fists will crash onto the enemy hit, causing massive damage.
+			Right click to lunge in the direction of your mouse. On collision, you are knocked back.
 			'''
 	}
 
@@ -691,8 +715,8 @@ Items: {
 		DisplayName: Stellar Striker
 		Tooltip:
 			'''
-			Waning moon rays occur
-			Right-click to strengthen the sword body, cut the enemy after several moon rays fall
+			Waning Moon rays shimmer across the blade's surface.
+			Right-click to strengthen the blade, increasing range while decreasing attack speed. Upon True Melee Strikes in this mode, it fires cosmic rays downwards towards the enemy.
 			'''
 	}
 
@@ -700,8 +724,8 @@ Items: {
 		DisplayName: The Last Mourning
 		Tooltip:
 			'''
-			Kill the enemy with the skull of sin and the soul of hell
-			Right to strengthen the sword body, cut the enemy after the birth of several resentful spirit skull
+			Left click will fire a skull of sin, chasing down enemies before erupting into multiple flares
+			Right click to strengthen the blade, increasing range. True Melee strikes in this mode causes several sin skulls to chase down enemies.
 			'''
 	}
 
@@ -709,8 +733,8 @@ Items: {
 		DisplayName: Greentide
 		Tooltip:
 			'''
-			Generate several Leviathan fangs below the specified location
-			Right-click to strengthen the blade, and drop more fangs after cutting enemies
+			Summons several fangs from the Leviathan below your mouse.
+			Right-click to strengthen the blade, increasing range and decreasing attack speed. True Melee strikes in this mode summons Leviathan teeth from the sky.
 			'''
 	}
 
@@ -718,23 +742,23 @@ Items: {
 		DisplayName: Diseased Pike
 		Tooltip:
 			'''
-			Launch plague swarms
-			Right click generates tracking Plague Power
+			Launches out homing bee swarms that inflict the plague.
+			Right click to summon out inaccurate plague projectiles from the sky, along with homing plague beams.
 			'''
 	}
 
 	PlagueKeeper: {
 		DisplayName: Plague Keeper
-		Tooltip: Launch plague swarms
+		Tooltip: Launches a Myriad of homing bee swarms that inflict the plague
 	}
 
 	BalefulHarvester: {
 		DisplayName: Baleful Harvester
 		Tooltip:
 			'''
-			Fire the Sickle
-			The right button can be thrown, triggering a small energy earthquake
-			"Hey! You have to get it back!"
+			Fires multiple flaming sickle projectiles that home in after they stop swinging along with homing flaming pumpkins that erupt into flares.
+			Right button lets you spin the scythe, letting go has you throw it causing an infernal eruption on the floor below.
+                        You need to pick it back up after everytime you throw the scythe.
 			'''
 	}
 
@@ -742,8 +766,8 @@ Items: {
 		DisplayName: Vulcanite Lance
 		Tooltip:
 			'''
-			Create a meteor fireball around the player when held
-			The spear hits the meteor fireball and it explodes with meteor energy
+			Holding this weapon will cause flames to orbit above the player. Hitting enemies with the spear causes an explosion
+			Hitting the flames with the spear will cause them to explode, sending out homing flares towards the enemy.
 			'''
 	}
 
@@ -751,8 +775,8 @@ Items: {
 		DisplayName: Astral Blade
 		Tooltip:
 			'''
-			The higher the remaining health of the hit enemy, the higher the actual damage dealt
-			True melee hit the enemy and let the stars fall
+			Strikes with the blade inflicts Astral infection. Deals more damage the higher the enemies health is.
+			True Melee strikes causes stars from all directions to chase down the enemy hit.
 			'''
 	}
 
@@ -760,8 +784,8 @@ Items: {
 		DisplayName: Astral Pike
 		Tooltip:
 			'''
-			Launch three bright stars
-			True melee hit the enemy and let the stars fall
+			Every third Swing sends out 3 bright astral stars that converge onto themselves.
+			True melee strikes causes stars from all directions to chase down the enemy hit.
 			'''
 	}
 
@@ -769,8 +793,8 @@ Items: {
 		DisplayName: Anarchy Blade
 		Tooltip:
 			'''
-			Fire a sulfur bomb every three swings
-			Right click enhances sword body
+			Swings a heavy blade that fires a sulfur bomb every 3 attacks.
+			Right click enhances the sword, increasing range while removing the sulfur bomb.
 			'''
 	}
 
@@ -778,9 +802,9 @@ Items: {
 		DisplayName: Aftershock
 		Tooltip:
 			'''
-			The wave launches several pieces of earth
-			Right-click to enhance the sword body, let earth pieces fall from above the player when swinging,
-			True melee hit the enemy and let earth inflammatory boulders fall from the sky
+			Swings causes pieces of the ground to be hurled towards the enemy, crushing their defense
+			Right click to enhance the blade, increasing range and having pieces of earth shower onto you.
+			True Melee strikes with right click causes earthen boulders to fall down from the sky towards your mouse.
 			'''
 	}
 
@@ -788,9 +812,9 @@ Items: {
 		DisplayName: Brimlash
 		Tooltip:
 			'''
-			Fire sulfur and sword gas
-			Right-click to fire a tracking sulfur bomb from five directions, 
-			But it has a chance to burn the player
+			Swings a heavy sword of brimstone that fires brimstone bolts. Bolts eventually explode into 3 smaller bolts before homing onto enemies.
+			Right click to throw out 5 agile brimstone bolts that home onto enemies aggressively.
+			Right clicking has a small chance to backfire and hurt you
 			'''
 	}
 
@@ -798,9 +822,9 @@ Items: {
 		DisplayName: Earthen Pike
 		Tooltip:
 			'''
-			Launch several earth fragments, with a certain probability of launching an additional earth boulder
-			Right-click to throw the weapon
-			"Hey! You have to get it back!"
+			Launches several earth fragments with a high chance to throw a boulder that pierces and rolls.
+			Right click to hurl the pike like a javelin, causing an earthquake around its impact point. 
+                        After using the Right click, you have to pick back up the pike manually before using it again.
 			'''
 	}
 
@@ -813,19 +837,19 @@ Items: {
 		DisplayName: Sausage Maker
 		Tooltip:
 			'''
-			Every five thrusts emits a blood bomb
-			True melee launches tracking blood beads after hitting
+			Every fifth swing will launch out a blood bomb that sticks onto the floor, exploding when an enemy makes contact with it or dying after a short while.
+			True Melee strikes will cause homing blood to track enemies nearby and inflict Boiling Blood
 			'''
 	}
 
 	PestilenceIngot: {
 		DisplayName: Pestilence Ingot
-		Tooltip: Smells like sour vanilla squares.
+		Tooltip: Smells like pungent sour apple candy.
 	}
 
 	ReminiscenceBreastplate: {
 		DisplayName: Reminiscence Breastplate
-		Tooltip: ""
+		Tooltip: "Reminisence on the Journey you've had and how far you have come."
 	}
 
 	AbsoluteZero: {
@@ -840,7 +864,7 @@ Items: {
 
 	MurasamaMould: {
 		DisplayName: Blood gold mold
-		Tooltip: It is used to make some high-precision things, and it is not directly consumed but durable when synthesized
+		Tooltip: A Material from seemingly another plain of existence. Its warm and electrifying to the touch and it seems to seek for bloodshed.
 	}
 
 	WaveSkipper: {
@@ -856,15 +880,15 @@ Items: {
 		DisplayName: Blossom Flux
 		Tooltip:
 			'''
-			Launch the blade stream that tracks the enemy, the attack speed will increase, 
-			and the probability of clearing the speed when hit
-			Right-click to fire a powerful jungle bomb
+			Fires a stream of homing leaves that become faster over time.
+			Getting hit will reset the attack speed back to its base amount.
+			Right click to aim and fire a spread of jungle bombs that travel in a wavy pattern and explode on impact.
 			'''
 	}
 
 	Phangasm: {
 		DisplayName: Phangasm
-		Tooltip: Spawn extra shadow stream projectiles after hitting enemies
+		Tooltip: Arrows fired will be accompanied by several shadow stream projectiles to hit the first enemy it passed through
 	}
 
 	OverhaulTheBibleBook: {
@@ -876,9 +900,9 @@ Items: {
 		DisplayName: Contagion
 		Tooltip:
 			'''
-			The left button launches an extremely fast cholera arrow, releasing multiple plague bombs along the way
-			Right-click to summon the living bees of the garden world
-			[c/085054:The Loving Father will always watch over the bearer of this bow]
+			Left click to fire an insanely fast and piercing Cholera Arrow, which will summon projectiles on its trail. After a short while, the projectiles will home in on enemies nearby.
+			Right click to summon an absurd amount of homing plagued bees that follow your cursor
+			[c/085054:The Loving Father will always watch over the bearer of this bow. Make him proud.]
 			'''
 	}
 
@@ -886,22 +910,22 @@ Items: {
 		DisplayName: Alluvion
 		Tooltip:
 			'''
-			Convert wooden arrows into ocean arrows
-			Destroy the enemy with the power of the ocean
+			Converts wooden arrows into Typhoon Arrows and Sharkrons
+			"The power of the ocean is in your hands."
 			'''
 	}
 
 	PlanetaryAnnihilation: {
 		DisplayName: Planetary Annihilation
-		Tooltip: Can turn the wooden arrow into an energy shock
+		Tooltip: Calls down Arrows from the sky to rain on your enemies. Converts Wooden arrows to homing rainbow bolts.
 	}
 
 	TheMaelstrom: {
 		DisplayName: The Maelstrom
 		Tooltip:
 			'''
-			Left click to launch a torrent water arrow and release a water pressure bomb after hitting the enemy
-			Right click Charge unleashes a charged Soul shark
+			Left click to fire a fast moving typhoon arrow that explodes on impact with water pressure
+			Right click to aim and launch out a Mini Reaper Shark that inflicts Crush depth
 			'''
 	}
 
@@ -909,9 +933,9 @@ Items: {
 		DisplayName: Clock Gatlignum
 		Tooltip:
 			'''
-			Weak recoil
-			Strafing with less than ideal accuracy
-			"It can't shoot crocodiles, which is disappointing."
+			Has Strong Recoil
+			Has Less than Ideal Accuracy but shoots out a barrage of bullets.
+			"Any attempts to fit crocodiles in it has unfortunately failed."
 			'''
 	}
 
@@ -919,8 +943,8 @@ Items: {
 		DisplayName: Elemental Blaster
 		Tooltip:
 			'''
-			No recoil
-			Emitting an elemental jet
+			Has No Recoil
+			Emits an Elemental Helix Stream that causes foes hit to shower in colorful elemental light. 
 			'''
 	}
 
@@ -928,8 +952,8 @@ Items: {
 		DisplayName: Marksman Bow
 		Tooltip:
 			'''
-			A quick, accurate shot is the key to a successful hunt
-			A fired arrow has a probability of generating a ghost when it disappears
+			Any Hunter knows that a quick and accurate shot is key to a successful hunt.
+			Any arrow fired out of the bow will have a chance of having a vengeful spirit chase down and latch onto the enemy.
 			'''
 	}
 
@@ -937,8 +961,8 @@ Items: {
 		DisplayName: Nettlevine Greatbow
 		Tooltip:
 			'''
-			The arrows that are fired are highly poisoned
-			Being shot four times will trigger a sweep of artemisia
+			Any arrow shot out of the bow will be coated in Acid Venom
+			After 4 Normal shots, The 3 shots afterwards will instead be piercing greatvines.
 			'''
 	}
 
@@ -946,9 +970,9 @@ Items: {
 		DisplayName: Spectre Rifle
 		Tooltip:
 			'''
-			Very strong recoil
-			Launch the undead to hunt down the enemy
-			"This thing doesn't use propellant to launch a warhead, so how does it recoil? "
+			Has Strong Recoil
+			Launches out several spirit to latch onto foes, dealing continous damage
+			"The recoil is simply just because the spirits are really angry."
 			'''
 	}
 
@@ -956,9 +980,9 @@ Items: {
 		DisplayName: Storm Dragoon
 		Tooltip:
 			'''
-			General recoil
-			Let the ammunition pour out like a storm
-			"I am the approaching storm."
+			Has Obscene Recoil
+			Uncontrollably lets out a hail of bullets like a storm.
+			"Tests have shown that flying was not intended by the manufacturer, yet still is possible."
 			'''
 	}
 
@@ -966,8 +990,8 @@ Items: {
 		DisplayName: The Storm
 		Tooltip:
 			'''
-			It rains arrows down, and every arrow that goes out has an electric arc
-			Turns a wooden arrow into an arc
+			Calls down Arrows from above to strike down where your mouse cursor is.
+			Converts Wooden Arrows into Lightning arcs
 			'''
 	}
 
@@ -975,8 +999,9 @@ Items: {
 		DisplayName: Thunderstorm
 		Tooltip:
 			'''
-			Weak recoil
-			Launch a Radder electromagnetic shock, using magic as ammunition
+			Has very weak recoil
+			Fires out an plasma beam that rains down extra plasma on hit. Uses Mana as Ammunition.
+                        "Make it rain."
 			'''
 	}
 
@@ -984,9 +1009,11 @@ Items: {
 		DisplayName: Tyranny's End
 		Tooltip:
 			'''
-			Very strong recoil
-			A heavy anti-materiel rifle that fires.50BMG rounds
-			After firing, you need to press the right button to change the projectile
+			Has Extreme Amounts of Recoil
+			An Extremely Heavy Anti-Materiel rifle that converts Musket Balls to high Velocity .70 Caliber Rounds, ripping through enemies and inflicting them with Marked for Death
+			After every shot, Right clicking causes the player to reload the rifle for the next shot.
+                        Shots split into a swarm of several additional bullets along with an auric blast.
+                        "Pierce the heart of even the most heavily-armored foe." 
 			'''
 	}
 
@@ -994,9 +1021,11 @@ Items: {
 		DisplayName: Barrett sniper rifle
 		Tooltip:
 			'''
-			Very strong recoil
-			A heavy anti-materiel rifle that fires.50BMG rounds
-			After firing, you need to press the right button to change the projectile
+			Has Extreme Amounts of Recoil
+			A Heavy Anti-Materiel Rifle that converts musket balls to high velocity .50 Caliber Rounds, Ripping through enemies and inflicting them with Marked for death.
+			After every shot, Right clicking causes the player to reload the rifle for the next shot.
+                        Shots Split into a swarm of several aditional bullets.
+                        "360 NOSCOPE!!!"
 			'''
 	}
 
@@ -1004,11 +1033,11 @@ Items: {
 		DisplayName: Halibut Cannon
 		Tooltip:
 			'''
-			Weak recoil
-			Convert musket cartridges into sea cartridges
+			Has Recoil that pushes you back upon every shot
+			Converts Musket balls into a stream of sea bullets
 			"Look at this fish with a monocle and a top hat on his head. Can you believe he went to college?"
-			"The truth is, Sir, I have a PhD in oceanography and abyssal botany, and I won the Sulphur Sea University fishing competition twice.
-			The flounder here not only knows the secrets of the sea, but also takes the crown of the sea." "Said the halibut
+			"The truth is, Sir, I have a PhD in Oceanography and Abyssal Botany, and I won the Sulphurous Sea University Fishing Competition twice.
+			This Halibut here not only knows the secrets of the sea, but also takes the crown of the sea." - Said the Halibut
 			'''
 	}
 
@@ -1016,9 +1045,9 @@ Items: {
 		DisplayName: SDFMG
 		Tooltip:
 			'''
-			No recoil
-			There's a possibility of launching a sea missile
-			"The wonder of gun dynamics."
+			Has Very Little Recoil
+			There is a slight chance to launch a water missile that homes in on enemies.
+			"The wonder of Fishy Gun Dynamics."
 			'''
 	}
 }
