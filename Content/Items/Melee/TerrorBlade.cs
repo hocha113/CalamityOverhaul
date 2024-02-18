@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TerrorBlade";
 
         public const float TerrorBladeMaxRageEnergy = 5000;
+        private bool InCharge;
 
         private float rageEnergy {
             get => Item.CWR().MeleeCharge;
@@ -74,22 +75,30 @@ namespace CalamityOverhaul.Content.Items.Melee
             UpdateBar();
 
             if (rageEnergy > 0) {
-                Item.damage = 460;
                 Item.shootSpeed = 20f;
                 Item.useAnimation = 10;
                 Item.useTime = 10;
+                InCharge = true;
             }
             else {
-                Item.damage = 560;
                 Item.shootSpeed = 15f;
                 Item.useAnimation = 18;
                 Item.useTime = 18;
+                InCharge = false;
             }
         }
 
         private void UpdateBar() {
             if (rageEnergy > TerrorBladeMaxRageEnergy)
                 rageEnergy = TerrorBladeMaxRageEnergy;
+        }
+
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
+            damage *= InCharge ? 1.25f : 1;
+        }
+
+        public override void ModifyWeaponKnockback(Player player, ref StatModifier knockback) {
+            knockback *= InCharge ? 1.25f : 1;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

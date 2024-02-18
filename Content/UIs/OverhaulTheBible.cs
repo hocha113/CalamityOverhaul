@@ -4,13 +4,11 @@ using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.UIs
 {
@@ -21,6 +19,10 @@ namespace CalamityOverhaul.Content.UIs
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BookPans");
 
         public bool Active;
+        public Vector2 inCellPos => DrawPos + new Vector2(40, 32);
+        public Vector2 cellSlpV => new Vector2(55, 50);
+        public int maxXNum => 4;
+        public int onIndex;
         /// <summary>
         /// 垂直坐标矫正值，因为是需要上下滑动的，这个值作为滑动的矫正变量使用
         /// </summary>
@@ -47,20 +49,34 @@ namespace CalamityOverhaul.Content.UIs
                 int scrollWheelDelta = currentMouseState.ScrollWheelValue - oldMouseState.ScrollWheelValue;
                 //更具滚轮的变动量来更新矫正值
                 LCCoffsetY += scrollWheelDelta * 0.2f;
-                if (LCCoffsetY < -1500) {
-                    LCCoffsetY = -1500;
+                int snegValue = (ecTypeItemList.Count / 4 + 1) * 40;
+                if (LCCoffsetY < -snegValue) {
+                    LCCoffsetY = -snegValue;
                 }
                 if (LCCoffsetY > 0) {
                     LCCoffsetY = 0;
                 }
                 //更新上一帧的鼠标状态
                 oldMouseState = currentMouseState;
+
+                //计算鼠标位置相对于滑轮矩阵左上角的真实位置
+                Vector2 mouseInCellPos = MouPos - DrawPos - new Vector2(16, 16);
+                
+                if (mouseInCellPos.X > 198) {
+                    mouseInCellPos.X = 198;
+                }
+                if (mouseInCellPos.Y > 198) {
+                    mouseInCellPos.Y = 198;
+                }
+                int mouseCellX = (int)(mouseInCellPos.X / 50);
+                int mouseCellY = (int)((mouseInCellPos.Y - LCCoffsetY) / 50);
+                onIndex = (mouseCellY) * maxXNum + mouseCellX;
             }
             time++;
         }
         private Vector2 inIndexGetPos(int index) {
-            int x = index % 4;
-            int y = index / 4;
+            int x = index % maxXNum;
+            int y = index / maxXNum;
             return new Vector2(x, y);
         }
         public override void Draw(SpriteBatch spriteBatch) {
@@ -76,7 +92,7 @@ namespace CalamityOverhaul.Content.UIs
             for (int i = 0; i < ecTypeItemList.Count; i++) {
                 Item item = ecTypeItemList[i];
                 Main.instance.LoadItem(item.type);
-                Vector2 drawPos = DrawPos + inIndexGetPos(i) * 50 + new Vector2(32, 32 + LCCoffsetY);
+                Vector2 drawPos = inCellPos + new Vector2(0, LCCoffsetY) + inIndexGetPos(i) * cellSlpV;
                 if (item.type == ModContent.ItemType<Murasama>()) {
                     Texture2D value = TextureAssets.Item[item.type].Value;
                     spriteBatch.Draw(value, drawPos, CWRUtils.GetRec(value, (time / 5) % 12, 13), Color.White, 0f, CWRUtils.GetOrig(value, 13), 0.35f, SpriteEffects.None, 0);
@@ -88,6 +104,13 @@ namespace CalamityOverhaul.Content.UIs
             //恢复画布
             spriteBatch.GraphicsDevice.ScissorRectangle = originalScissorRect;
             spriteBatch.ResetUICanvasState();
+            if (onIndex >= 0 && onIndex < ecTypeItemList.Count && OnMain) {
+                if (ecTypeItemList[onIndex]?.type != ItemID.None) {
+                    Item previewItem = ecTypeItemList[onIndex];
+                    Main.HoverItem = previewItem.Clone();
+                    Main.hoverItemName = previewItem.Name;
+                }
+            }
         }
     }
 }

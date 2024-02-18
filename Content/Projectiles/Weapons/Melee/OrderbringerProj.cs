@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.DamageType = DamageClass.Melee;
             Projectile.tileCollide = false;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 1;
+            Projectile.localNPCHitCooldown = -1;
         }
 
         public override void AI() {

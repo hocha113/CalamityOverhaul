@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityMod.Items;
-using CalamityMod.NPCs.DevourerofGods;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
@@ -21,6 +20,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheLastMourning";
         public new string LocalizationCategory => "Items.Weapons.Melee";
+        private bool InTureMelee;
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         }
@@ -43,19 +43,29 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.Calamity().donorItem = true;
             Item.shoot = ModContent.ProjectileType<MourningSkull>();
             Item.shootSpeed = 15;
-            
+
         }
 
         public override bool AltFunctionUse(Player player) {
             return true;
         }
 
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
+            damage *= InTureMelee ? 1.5f : 1;
+        }
+
+        public override void ModifyWeaponKnockback(Player player, ref StatModifier knockback) {
+            knockback *= InTureMelee ? 1.25f : 1;
+        }
+
         public override bool? UseItem(Player player) {
             Item.useAnimation = Item.useTime = 18;
             Item.scale = 1f;
+            InTureMelee = false;
             if (player.altFunctionUse == 2) {
                 Item.useAnimation = Item.useTime = 15;
                 Item.scale = 1.5f;
+                InTureMelee = true;
             }
 
             return base.UseItem(player);
@@ -65,13 +75,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (player.altFunctionUse == 2) {
                 return false;
             }
-            if (Main.rand.NextBool()) {
-                Projectile.NewProjectile(source, position + velocity.RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f)) * Main.rand.Next(5)
+            if (Main.rand.NextBool(3)) {
+                _ = Projectile.NewProjectile(source, position + (velocity.RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f)) * Main.rand.Next(5))
                     , velocity.UnitVector() * 5, ModContent.ProjectileType<GhostSkull>()
-                , damage * 2, knockback, Main.myPlayer, 0f, Main.rand.Next(3), Main.rand.Next(3));
+                , damage, knockback, Main.myPlayer, 0f, Main.rand.Next(3), Main.rand.Next(3));
             }
-            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MourningSkull2>()
-                , damage, knockback, Main.myPlayer, 0f, Main.rand.Next(3));
+            _ = Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MourningSkull2>()
+                , damage / 3, knockback, Main.myPlayer, 0f, Main.rand.Next(3));
             return false;
         }
 
@@ -108,7 +118,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     default:
                         break;
                 }
-                int dust = Dust.NewDust(new Vector2((float)hitbox.X, (float)hitbox.Y), hitbox.Width, hitbox.Height, dustType, (float)(player.direction * 2), 0f, 150, default, 1.3f);
+                int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, dustType, player.direction * 2, 0f, 150, default, 1.3f);
                 Main.dust[dust].velocity *= 0.2f;
             }
         }

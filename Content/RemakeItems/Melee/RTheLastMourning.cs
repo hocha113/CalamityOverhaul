@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.TheLastMourning>();
         public override int ProtogenesisID => ModContent.ItemType<TheLastMourning>();
+        private bool InTureMelee;
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         }
@@ -48,14 +49,24 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "TheLastMourning");
         }
 
+        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+            damage *= InTureMelee ? 1.25f : 1;
+        }
+
+        public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback) {
+            knockback *= InTureMelee ? 1.25f : 1;
+        }
+
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
         public override bool? UseItem(Item item, Player player) {
             item.useAnimation = item.useTime = 18;
             item.scale = 1f;
+            InTureMelee = false;
             if (player.altFunctionUse == 2) {
                 item.useAnimation = item.useTime = 15;
                 item.scale = 1.5f;
+                InTureMelee = true;
             }
             return base.UseItem(item, player);
         }
@@ -64,13 +75,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (player.altFunctionUse == 2) {
                 return false;
             }
-            if (Main.rand.NextBool()) {
+            if (Main.rand.NextBool(3)) {
                 Projectile.NewProjectile(source, position + velocity.RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f)) * Main.rand.Next(5)
                     , velocity.UnitVector() * 5, ModContent.ProjectileType<GhostSkull>()
-                , damage * 2, knockback, Main.myPlayer, 0f, Main.rand.Next(3), Main.rand.Next(3));
+                , damage, knockback, Main.myPlayer, 0f, Main.rand.Next(3), Main.rand.Next(3));
             }
             Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MourningSkull2>()
-                , damage, knockback, Main.myPlayer, 0f, Main.rand.Next(3));
+                , damage / 3, knockback, Main.myPlayer, 0f, Main.rand.Next(3));
             return false;
         }
 

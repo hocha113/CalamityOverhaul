@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.friendly = true;
-            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.DamageType = DamageClass.Default;
             Projectile.MaxUpdates = 15;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = Projectile.MaxUpdates * 13;

@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BlightedCleaver";
 
         public const float BlightedCleaverMaxRageEnergy = 5000;
-
         private float rageEnergy {
             get => Item.CWR().MeleeCharge;
             set => Item.CWR().MeleeCharge = value;

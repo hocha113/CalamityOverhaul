@@ -37,10 +37,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
-            if (Time == 0) {
-                beesSound = SoundEngine.PlaySound(CWRSound.Bees with { SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Projectile.Center);
-            }
-
             float toPlayerLeng = Projectile.Center.Distance(Main.player[Projectile.owner].Center);
             if (!CWRUtils.isServer) {//因为蜜蜂云是纯视觉效果，因此不需要在服务器上运行相关代码，因为服务器看不见这些
                 if (Projectile.timeLeft > 60 && Projectile.numHits == 0 && toPlayerLeng <= 1800) {
@@ -92,10 +88,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(ModContent.BuffType<Plague>(), 6000);
+            SoundEngine.PlaySound(CWRSound.Bees with { MaxInstances = 6 }, Projectile.Center);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             target.AddBuff(ModContent.BuffType<Plague>(), 600);
+            SoundEngine.PlaySound(CWRSound.Bees with { MaxInstances = 6 }, Projectile.Center);
         }
 
         public override void OnKill(int timeLeft) {
@@ -103,9 +101,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 bees.Clear();
             }
 
-            if (SoundEngine.TryGetActiveSound(beesSound, out var sound)) {
-                sound.Stop();
-            }
+            SoundEngine.PlaySound(CWRSound.Bees with { MaxInstances = 6 }, Projectile.Center);
         }
 
         public override bool PreDraw(ref Color lightColor) {

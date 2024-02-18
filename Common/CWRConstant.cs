@@ -23,7 +23,6 @@ namespace CalamityOverhaul.Common
         public const string Buff = Asset + "Buffs/";
         public const string Dust = Asset + "Dusts/";
         public const string NPC = Asset + "NPCs/";
-        public const string RavagerA = NPC + "RavagerAs/";
         public const string Sound = Asset + "Sounds/";
 
         public const string Cay_Item = "CalamityMod/Items/";

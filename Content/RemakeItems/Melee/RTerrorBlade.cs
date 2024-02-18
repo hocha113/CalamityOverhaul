@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.TerrorBlade>();
         public override int ProtogenesisID => ModContent.ItemType<TerrorBlade>();
+        private bool InCharge;
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -39,6 +40,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shootSpeed = 20f;
             item.value = CalamityGlobalItem.Rarity13BuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
+        }
+
+        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+            damage *= InCharge ? 1.25f : 1;
+        }
+
+        public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback) {
+            knockback *= InCharge ? 1.25f : 1;
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
@@ -63,18 +72,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
 
             UpdateBar(item);
-
+            InCharge.Domp();
             if (item.CWR().MeleeCharge > 0) {
-                item.damage = 360;
                 item.shootSpeed = 20f;
                 item.useAnimation = 10;
                 item.useTime = 10;
+                InCharge = true;
             }
             else {
-                item.damage = 560;
                 item.shootSpeed = 15f;
                 item.useAnimation = 18;
                 item.useTime = 18;
+                InCharge = false;
             }
         }
 

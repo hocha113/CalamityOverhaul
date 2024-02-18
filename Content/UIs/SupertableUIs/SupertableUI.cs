@@ -627,10 +627,7 @@ End:;
                 Vector2 size = TextureAssets.Item[item.type].Value.Size();
                 if (offset == default)
                     offset = new Vector2(cellWid, cellHig) / 2;
-                float slp = 1;
-                if (size.X > 32) {
-                    slp = 32f / size.X;
-                }
+                float slp = 32f / size.X;
                 slp *= overSlp;
                 if (item.type == CWRIDs.DarkMatterBall) {
                     DarkMatterBall.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
