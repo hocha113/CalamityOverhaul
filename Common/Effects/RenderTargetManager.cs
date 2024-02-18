@@ -7,8 +7,6 @@ namespace CalamityOverhaul.Common.Effects
 {
     public class RenderTargetManager : ModSystem
     {
-        internal static List<ManagedRenderTarget> ManagedTargets = new();
-
         public delegate void RenderTargetUpdateDelegate();
 
         public static event RenderTargetUpdateDelegate RenderTargetUpdateLoopEvent;

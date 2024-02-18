@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -37,6 +38,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ProjectileID.LunarFlare;
             item.shootSpeed = 12f;
         }
+
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "StellarStriker");
 
         public override bool? AltFunctionUse(Item item, Player player) {
             return true;

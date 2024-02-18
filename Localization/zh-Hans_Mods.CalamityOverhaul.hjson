@@ -493,7 +493,11 @@ Items: {
 
 	DarkMatterBall: {
 		DisplayName: 暗物质球
-		Tooltip: ""
+		Tooltip:
+			'''
+			它已经被压缩成了黑洞，但却奇迹般的保持住了稳定状态
+			有的时候会容纳一些物品，右键可以将容纳物取出
+			'''
 	}
 
 	GreatswordofJudgement: {
@@ -1258,6 +1262,8 @@ Projectiles: {
 	// SDFMGHeldProj.DisplayName: S D F M G Held Proj
 	// BMGFIRE2.DisplayName: BMGFIRE
 	// TorrentialBullet.DisplayName: Torrential Bullet
+	// GildedProboscisLightning.DisplayName: Gilded Proboscis Lightning
+	// GildedProboscisLightningArc.DisplayName: Gilded Proboscis Lightning Arc
 }
 
 Configs: {

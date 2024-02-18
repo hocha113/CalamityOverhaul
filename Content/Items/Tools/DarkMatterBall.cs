@@ -44,6 +44,9 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override bool CanRightClick() {
+            if (dorpItems.Count <= 0) {
+                return false;
+            }
             return true;
         }
 
@@ -75,6 +78,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             foreach (var item in dorpItems) {
                 player.QuickSpawnItem(player.parent(), item, item.stack);
             }
+            player.QuickSpawnItem(player.parent(), new Item(Type));
             dorpTypes = new List<int>();
             dorpItems = new List<Item>();
         }

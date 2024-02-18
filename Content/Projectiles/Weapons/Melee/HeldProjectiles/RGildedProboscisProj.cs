@@ -149,12 +149,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
                         gildedProboscis.CWR().MeleeCharge = 500 - (int)Projectile.ai[0];//同步主人玩家的特斯拉充能值，后续将应用于UI绘制
 
-                        if (Projectile.ai[0] > 10 && Owner.ownedProjectileCounts[ModContent.ProjectileType<GildedProboscisKevinLightning>()] == 0) {
+                        if (Projectile.ai[0] > 10 && Owner.ownedProjectileCounts[ModContent.ProjectileType<GildedProboscisLightning>()] == 0) {
                             projIndex = Projectile.NewProjectile(
                                     Owner.parent(),
                                     Owner.Center,
                                     Owner.Center.To(Main.MouseWorld).UnitVector() * 15f,
-                                    ModContent.ProjectileType<GildedProboscisKevinLightning>(),
+                                    ModContent.ProjectileType<GildedProboscisLightning>(),
                                     Projectile.damage / 3,
                                     0,
                                     Owner.whoAmI

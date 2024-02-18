@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Particles
             private set;
         } = new();
 
-        public override bool AnythingToDraw => Particles.Any();
+        public override bool DrawActiveness => Particles.Any();
 
         public override IEnumerable<Texture2D> Layers {
             get {
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Particles
             Particles.Add(new(position, velocity, size, rot, leng, wid));
 
         // 使纹理滚动。
-        public override Vector2 CalculateManualOffsetForLayer(int layerIndex) {
+        public override Vector2 GetLayerDrawOffset(int layerIndex) {
             return Vector2.UnitX.RotatedBy(Main.GlobalTimeWrappedHourly * 0.6f);
         }
 

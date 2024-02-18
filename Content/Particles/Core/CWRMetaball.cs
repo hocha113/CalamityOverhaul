@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// 必需的实用程序，用于确定此元球是否有任何内容可绘制。<br></br>
         /// 这是为了提高效率而存在，确保在不需要时尽可能少执行操作
         /// </summary>
-        public abstract bool AnythingToDraw {
+        public abstract bool DrawActiveness {
             get;
         }
 
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// <summary>
         /// 可选的、可重写的方法，用于在绘制时使图层偏移，以允许图层特定的动画效果。默认为<see cref="Vector2.Zero"/>，即无动画
         /// </summary>
-        public virtual Vector2 CalculateManualOffsetForLayer(int layerIndex) => Vector2.Zero;
+        public virtual Vector2 GetLayerDrawOffset(int layerIndex) => Vector2.Zero;
 
         /// <summary>
         /// 可选的、可重写的方法，允许在绘制单个原始元球实例<i>(而不是最终结果)</i>之前准备<see cref="SpriteBatch"/><br></br>
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// <param name="layerIndex">应该准备的图层索引。</param>
         public virtual void PrepareShaderForTarget(int layerIndex) {
             // 将图形设备和着色器存储在易于使用的本地变量中
-            var metaballShader = EffectsRegistry.MetaballEdgeShader;
+            var metaballShader = EffectsRegistry.EdgeDyeingShader;
             var gd = Main.instance.GraphicsDevice;
 
             // 获取图层纹理。这是将覆盖屏幕上灰度内容的纹理
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Particles.Core
             // 计算图层滚动偏移量。这用于确保给定元球的纹理内容具有视差效果，而不是无论世界位置如何都保持在屏幕上静态
             // 这可以选择性地由元球进行切换关闭
             Vector2 screenSize = new(Main.screenWidth, Main.screenHeight);
-            Vector2 layerScrollOffset = Main.screenPosition / screenSize + CalculateManualOffsetForLayer(layerIndex);
+            Vector2 layerScrollOffset = Main.screenPosition / screenSize + GetLayerDrawOffset(layerIndex);
             if (FixedToScreen)
                 layerScrollOffset = Vector2.Zero;
 

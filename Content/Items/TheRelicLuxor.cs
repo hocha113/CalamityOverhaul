@@ -24,6 +24,10 @@ namespace CalamityOverhaul.Content.Items
 
         public override string Texture => CWRConstant.Item + "TheRelicLuxor";
 
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;
+        }
+
         public override void SetStaticDefaults() {
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(6, 4));
             ItemID.Sets.AnimatesAsSoul[Item.type] = true;

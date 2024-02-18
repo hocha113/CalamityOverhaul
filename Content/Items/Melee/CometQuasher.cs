@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class CometQuasher : EctypeItem
     {
-        public override string Texture => CWRConstant.Item + "Melee/" + "CometQuasher";
+        public override string Texture => CWRConstant.Cay_Wap_Melee + "CometQuasher";
 
         public override void SetDefaults() {
             Item.width = 46;

@@ -1,17 +1,15 @@
-﻿using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using System.Collections.Generic;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
 using System;
-using CalamityOverhaul.Common;
-using CalamityMod;
-using Terraria.Graphics.Shaders;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using SteelSeries.GameSense;
+using System.Collections.Generic;
+using Terraria;
 using Terraria.Audio;
-using ReLogic.Utilities;
+using Terraria.Graphics.Shaders;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj
 {
@@ -32,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.DamageType = DamageClass.Magic;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.timeLeft = 120;
             Projectile.penetrate = 13;
             Projectile.MaxUpdates = 3;
@@ -132,7 +130,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
 
         public float PrimitiveWidthFunction(float completionRatio) => CalamityUtils.Convert01To010(completionRatio) * Projectile.scale * Projectile.width * 0.6f;
 
-        public Color PrimitiveColorFunction(float completionRatio) {
+        public virtual Color PrimitiveColorFunction(float completionRatio) {
             float colorInterpolant = (float)Math.Sin(Projectile.identity / 3f + completionRatio * 20f + Main.GlobalTimeWrappedHourly * 1.1f) * 0.5f + 0.5f;
             Color color = CalamityUtils.MulticolorLerp(colorInterpolant, light);
             return color;

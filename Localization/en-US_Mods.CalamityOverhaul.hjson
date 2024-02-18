@@ -493,7 +493,11 @@ Items: {
 
 	DarkMatterBall: {
 		DisplayName: Dark Matter Ball
-		Tooltip: ""
+		Tooltip:
+			'''
+			It has been compressed into a black hole but miraculously maintained a stable state. 
+			Occasionally, it can contain some items, and right-clicking allows you to withdraw the items it contains.
+			'''
 	}
 
 	GreatswordofJudgement: {
@@ -1263,6 +1267,8 @@ Projectiles: {
 	SDFMGHeldProj.DisplayName: S D F M G Held Proj
 	BMGFIRE2.DisplayName: BMGFIRE
 	TorrentialBullet.DisplayName: Torrential Bullet
+	GildedProboscisLightning.DisplayName: Gilded Proboscis Lightning
+	GildedProboscisLightningArc.DisplayName: Gilded Proboscis Lightning Arc
 }
 
 Configs: {

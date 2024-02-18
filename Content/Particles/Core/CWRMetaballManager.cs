@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Particles.Core
 
         private void PrepareMetaballTargets() {
             // 获取当前正在使用的所有元球的列表
-            var activeMetaballs = metaballs.Where(m => m.AnythingToDraw);
+            var activeMetaballs = metaballs.Where(m => m.DrawActiveness);
 
             // 如果元球目前不使用，不要浪费资源
             if (!activeMetaballs.Any())
@@ -102,14 +102,14 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// </summary>
         /// <param name="layerType">要检查的元球层次类型。</param>
         internal static bool AnyActiveMetaballsAtLayer(MetaballDrawLayer layerType) =>
-            metaballs.Any(m => m.AnythingToDraw && m.DrawContext == layerType);
+            metaballs.Any(m => m.DrawActiveness && m.DrawContext == layerType);
 
         /// <summary>
         /// 绘制给定<see cref="MetaballDrawLayer"/>的所有元球。用于图层排序的原因
         /// </summary>
         /// <param name="layerType">要绘制的层次类型。</param>
         public static void DrawMetaballs(MetaballDrawLayer layerType) {
-            foreach (CWRMetaball metaball in metaballs.Where(m => m.DrawContext == layerType && m.AnythingToDraw)) {
+            foreach (CWRMetaball metaball in metaballs.Where(m => m.DrawContext == layerType && m.DrawActiveness)) {
                 for (int i = 0; i < metaball.LayerTargets.Count; i++) {
                     // 为给定的图层目标准备着色器
                     metaball.PrepareShaderForTarget(i);
