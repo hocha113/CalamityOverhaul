@@ -8,15 +8,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class TyrannysEndHeldProj : BaseHeldGun
+    internal class ScorchedEarthHeldProj : BaseHeldGun
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "TyrannysEnd";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TyrannysEnd>();
-        public override int targetCWRItem => ModContent.ItemType<TyrannysEnd>();
-        public override float ControlForce => 0.04f;
-        public override float GunPressure => 0.85f;
-        public override float Recoil => 13f;
-        protected virtual int HandDistance => 40;
+        public override string Texture => isKreload ? CWRConstant.Item_Ranged + "ScorchedEarth_PrimedForAction" : CWRConstant.Cay_Wap_Ranged + "ScorchedEarth";
+        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ScorchedEarth>();
+        public override int targetCWRItem => ModContent.ItemType<ScorchedEarth>();
+        public override float ControlForce => 0.02f;
+        public override float GunPressure => 0.75f;
+        public override float Recoil => 15f;
         /// <summary>
         /// 装弹提醒，一般来讲会依赖左键的按键事件进行更新
         /// </summary>
@@ -40,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             float armRotSengsFront = 30 * CWRUtils.atoR;
             float armRotSengsBack = 150 * CWRUtils.atoR;
 
-            Projectile.Center = Owner.Center + new Vector2(DirSign * HandDistance, 5);
+            Projectile.Center = Owner.Center + new Vector2(DirSign * 12, 0);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(10) : MathHelper.ToRadians(170);
             Projectile.timeLeft = 2;
             SetHeld();
@@ -49,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (Owner.PressKey()) {
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = GunOnFireRot;
-                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * (HandDistance + 5) + new Vector2(0, -5);
+                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 8 + new Vector2(0, -7);
                     armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign;
                     if (HaveAmmo && isKreload) {//并进需要子弹，还需要判断是否已经装弹
                         onFire = true;
@@ -70,16 +69,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     armRotSengsFront += MathF.Sin(Time * 0.3f) * 0.7f;
                     kreloadTime--;
                     if (kreloadTime == heldItem.useTime - 1) {
-                        SoundEngine.PlaySound(CWRSound.CaseEjection with { Volume = 0.6f }, Projectile.Center);
+                        SoundEngine.PlaySound(CWRSound.CaseEjection with { Volume = 0.7f, Pitch = -0.3f }, Projectile.Center);
                     }
                     if (kreloadTime == heldItem.useTime / 2) {
-                        SoundEngine.PlaySound(loadTheRounds, Projectile.Center);
+                        SoundEngine.PlaySound(loadTheRounds with { Volume = 1.2f, Pitch = -0.5f }, Projectile.Center);
                         Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
                         int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
-                        Main.projectile[proj].scale = 2;
+                        Main.projectile[proj].scale = 5;
                     }
                     if (kreloadTime == heldItem.useTime / 3) {
-                        UpdateConsumeAmmo();
+                        for(int i = 0; i < 8; i++)//因为会射出八颗导弹
+                            UpdateConsumeAmmo();
                     }
                     if (kreloadTime <= 0) {//时间完成后设置装弹状态并准备下一次发射
                         onKreload = false;
@@ -105,10 +105,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public virtual void OnSpanProjFunc() {
-            SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            SoundEngine.PlaySound(ScorchedEarth.ShootSound, Projectile.Center);
             DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                    , ModContent.ProjectileType<BMGBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
+                    , ModContent.ProjectileType<EarthRocketOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
         }
 
         public override void SpanProj() {

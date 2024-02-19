@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RMeowmere : BaseRItem
     {
         public override int TargetID => ItemID.Meowmere;
+        public override bool FormulaSubstitution => false;
         public override void On_PostSetDefaults(Item item) {
             item.rare = ItemRarityID.Red;
             item.UseSound = SoundID.Item58;

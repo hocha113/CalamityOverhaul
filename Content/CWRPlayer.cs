@@ -1,5 +1,8 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items;
+using CalamityOverhaul.Content.UIs;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -81,6 +84,10 @@ namespace CalamityOverhaul.Content
 
         public override bool CanBeHitByProjectile(Projectile proj) {
             return base.CanBeHitByProjectile(proj);
+        }
+
+        public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) {
+            yield return new Item(ModContent.ItemType<OverhaulTheBibleBook>());
         }
     }
 }

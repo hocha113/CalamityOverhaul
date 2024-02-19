@@ -125,16 +125,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                         if (Projectile.localAI[1] % 10 == 0) {
                             for (int i = 0; i < 7; i++) {
                                 Vector2 vr = (MathHelper.TwoPi / 7 * i).ToRotationVector2() * 10;
-                                Projectile.NewProjectile(
-                                    Owner.parent(),
-                                    Owner.Center,
-                                    vr,
-                                    ModContent.ProjectileType<SpiritFlame>(),
-                                    Projectile.damage / 3,
-                                    0,
-                                    Owner.whoAmI,
-                                    1
-                                    );
+                                Projectile.NewProjectile(Owner.parent(), Owner.Center, vr, ModContent.ProjectileType<SpiritFlame>()
+                                    , Projectile.damage / 3, 0, Owner.whoAmI, 1);
                             }
                         }
                     }

@@ -1,12 +1,11 @@
 ﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Magic;
-using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Summon;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +13,6 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Humanizer.In;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
 namespace CalamityOverhaul.Content
@@ -30,7 +28,9 @@ namespace CalamityOverhaul.Content
         Alluvion,
         Marksman,
         NettlevineGreat,
-        TheStorm
+        TheStorm,
+        BarrenBow,
+        FetidEmesis
     }
 
     public class CWRProjectile : GlobalProjectile
@@ -74,6 +74,15 @@ namespace CalamityOverhaul.Content
                     Main.dust[sparkier].velocity *= 0.1f;
                 }
             }
+            if (SpanTypes == (byte)SpanTypesEnum.FetidEmesis) {
+                int dust = Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
+                        , DustID.GemEmerald, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
+                Main.dust[dust].noGravity = true;
+            }
+            if (SpanTypes == (byte)SpanTypesEnum.BarrenBow) {
+                Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
+                        , DustID.Sand, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
+            }
         }
 
         public override void OnKill(Projectile projectile, int timeLeft) {
@@ -85,6 +94,10 @@ namespace CalamityOverhaul.Content
                     Main.projectile[proj].DamageType = DamageClass.Ranged;
                     Main.projectile[proj].timeLeft = 60;
                     NetMessage.SendData(MessageID.SyncProjectile, -1, projectile.owner, null, proj);
+                }
+                if (SpanTypes == (byte)SpanTypesEnum.BarrenBow) {
+                    Projectile.NewProjectile(projectile.parent(), projectile.Center, CWRUtils.randVr(6, 9)
+                        , ModContent.ProjectileType<BarrenOrb>(), projectile.damage, 0, projectile.owner, 0);
                 }
             }
         }
@@ -205,6 +218,10 @@ namespace CalamityOverhaul.Content
 
             if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
                 target.AddBuff(BuffID.Electrified, 120);
+            }
+
+            if (SpanTypes == (byte)SpanTypesEnum.FetidEmesis) {
+                target.AddBuff(ModContent.BuffType<Plague>(), 60);
             }
 
             if (projectile.type == ModContent.ProjectileType<ExoVortex>()) {

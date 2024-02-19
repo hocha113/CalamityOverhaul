@@ -1,21 +1,17 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
+using Terraria;
+using CalamityOverhaul.Content.Items.Ranged;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class ElementalBlasterHeldProj : BaseHeldGun
+    internal class DeadSunsWindHeldProj : BaseHeldGun
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "ElementalBlaster";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ElementalBlaster>();
-        public override int targetCWRItem => ModContent.ItemType<ElementalBlaster>();
-        public override float ControlForce => 0f;
-        public override float GunPressure => 0f;
-        public override float Recoil => 0f;
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "DeadSunsWind";
+        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.DeadSunsWind>();
+        public override int targetCWRItem => ModContent.ItemType<DeadSunsWind>();
         public override void InOwner() {
             float armRotSengsFront = 60 * CWRUtils.atoR;
             float armRotSengsBack = 110 * CWRUtils.atoR;
@@ -48,12 +44,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SpanProj() {
             if (onFire && Projectile.ai[1] > heldItem.useTime) {
                 SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
-                int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                        , ModContent.ProjectileType<EnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                        , ModContent.ProjectileType<EnergyBlast2>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 1, proj, -60);
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                        , ModContent.ProjectileType<EnergyBlast2>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, -1, proj, 60);
+                        , heldItem.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                _ = UpdateConsumeAmmo();
                 Projectile.ai[1] = 0;
                 onFire = false;
             }

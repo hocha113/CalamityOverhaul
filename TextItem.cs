@@ -57,7 +57,7 @@ namespace CalamityOverhaul
             //        CombatText.NewText(player.Hitbox, Color.Gold, "Finishing Blow!!!", true);
             //    }
             //}
-            OverhaulTheBible.Instance.Active = true;
+            OverhaulTheBibleUI.Instance.Active = true;
             
             return false;
         }

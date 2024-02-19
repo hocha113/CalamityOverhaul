@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnConsumeItem(Item item, Player player) {
-            WaterBottle.OnUse(item, player);
+            RWaterBottle.OnUse(item, player);
         }
 
         public override bool CanUseItem(Item item, Player player) {

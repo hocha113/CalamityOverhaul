@@ -946,6 +946,15 @@ namespace CalamityOverhaul
         #endregion
 
         #region GameUtils
+        /// <summary>
+        /// 快捷的将一个物品实例设置为手持对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        public static void SetHeldProj<T>(this Item item) where T : ModProjectile {
+            item.CWR().hasHeldNoCanUseBool = true;
+            item.CWR().heldProjType = ModContent.ProjectileType<T>();
+        }
 
         public static ShootState GetShootState(this Player player) {
             ShootState shootState = new();
@@ -1129,11 +1138,6 @@ namespace CalamityOverhaul
         /// <summary>
         /// 快速修改一个物品的简介文本，从模组本地化文本中拉取资源
         /// </summary>
-        /// <param name="mod"></param>
-        /// <param name="item"></param>
-        /// <param name="tooltips"></param>
-        /// <param name="key"></param>
-        /// <param name="leva"></param>
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, string key) {
             List<TooltipLine> newTooltips = new(tooltips);
             List<TooltipLine> overTooltips = new();
@@ -1151,6 +1155,31 @@ namespace CalamityOverhaul
 
             TooltipLine newLine = new(mod, "CWRText"
                 , Language.GetText($"Mods.CalamityOverhaul.Items.{key}.Tooltip").Value);
+            newTooltips.Add(newLine);
+            newTooltips.AddRange(overTooltips);
+            tooltips.Clear(); // 清空原 tooltips 集合
+            tooltips.AddRange(newTooltips); // 添加修改后的 newTooltips 集合
+        }
+
+        /// <summary>
+        /// 快速修改一个物品的简介文本，从<see cref="CWRLocText"/>中拉取资源
+        /// </summary>
+        public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, LocalizedText value) {
+            List<TooltipLine> newTooltips = new(tooltips);
+            List<TooltipLine> overTooltips = new();
+            foreach (TooltipLine line in tooltips.ToList()) {//复制 tooltips 集合，以便在遍历时修改
+                for (int i = 0; i < 9; i++) {
+                    if (line.Name == "Tooltip" + i) {
+                        line.Hide();
+                    }
+                }
+                if (line.Name == "CalamityDonor" || line.Name == "CalamityDev") {
+                    overTooltips.Add(line.Clone());
+                    line.Hide();
+                }
+            }
+
+            TooltipLine newLine = new(mod, "CWRText", value.Value);
             newTooltips.Add(newLine);
             newTooltips.AddRange(overTooltips);
             tooltips.Clear(); // 清空原 tooltips 集合

@@ -21,14 +21,14 @@ namespace CalamityOverhaul.Content.UIs
             new InItemDrawRecipe().Load();
             new MouseTextContactPanel().Load();
             new ResetItemReminderUI().Load();
-            new OverhaulTheBible().Load();
+            new OverhaulTheBibleUI().Load();
 
-            OverhaulTheBible.Instance.ecTypeItemList = new List<Item>();
+            OverhaulTheBibleUI.Instance.ecTypeItemList = new List<Item>();
             foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
                 Item item = new Item(baseRItem.TargetID);
                 if (item != null) {
                     if (item.type != ItemID.None) {
-                        OverhaulTheBible.Instance.ecTypeItemList.Add(item);
+                        OverhaulTheBibleUI.Instance.ecTypeItemList.Add(item);
                     }
                 }
             }
@@ -74,8 +74,8 @@ namespace CalamityOverhaul.Content.UIs
                     return true;
                 }, InterfaceScaleType.UI));
                 layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("Ov UI", delegate {
-                    if (OverhaulTheBible.Instance.Active) {
-                        OverhaulTheBible.Instance.Draw(Main.spriteBatch);
+                    if (OverhaulTheBibleUI.Instance.Active) {
+                        OverhaulTheBibleUI.Instance.Draw(Main.spriteBatch);
                     }
                     return true;
                 }, InterfaceScaleType.UI));
@@ -92,8 +92,8 @@ namespace CalamityOverhaul.Content.UIs
                 RecipeUI.Instance.Update(gameTime);
                 DragButton.instance.Update(gameTime);
             }  
-            if (OverhaulTheBible.Instance.Active) {
-                OverhaulTheBible.Instance.Update(gameTime);
+            if (OverhaulTheBibleUI.Instance.Active) {
+                OverhaulTheBibleUI.Instance.Update(gameTime);
             }
         }
     }

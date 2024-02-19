@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
-    internal class WaterBottle : BaseRItem
+    internal class RWaterBottle : BaseRItem
     {
         public override int TargetID => ItemID.BottledWater;
         public override bool FormulaSubstitution => false;

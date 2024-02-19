@@ -864,7 +864,7 @@ Items: {
 
 	OverhaulTheBibleBook: {
 		DisplayName: 大修宝典
-		Tooltip: "[未完成]使用以查看模组教程"
+		Tooltip: 使用以查看 Calamity Overhaul Mod 相关教程....这里以后可能会包含更多内容
 	}
 
 	Contagion: {
@@ -1014,6 +1014,79 @@ Items: {
 			无后坐力
 			有概率发射出一枚海洋导弹
 			"枪体动力学的奇迹"
+			'''
+	}
+
+	DeadSunsWind: {
+		DisplayName: 薄冥之风
+		Tooltip:
+			'''
+			无后座力
+			发射一束聚焦的高温等离子体，触碰物块后反弹
+			等离子射线反弹后会追踪最近的敌人
+			连续命中时引发巨大爆炸
+			以凝胶为弹药
+			"它是怎么把凝胶变成这玩意儿的？"
+			'''
+	}
+
+	FetidEmesis: {
+		DisplayName: 腐臭倾泻者
+		Tooltip:
+			'''
+			较弱的后坐力
+			会给子弹染上纳垢剧毒
+			每射出八发子弹就会触发一轮污染物的呕吐攻击
+			"那是一场大瘟疫..."老猪鲨回忆着过去，喃喃自语着
+			"我曾经是一名海洋大学的教授，那条大比目鱼就是我的学生，直到瘟疫到来后，
+			海洋大学变成了硫磺海开发部，我就退休了...对了，你想不想见识一下我能一下吞多少子弹？"
+			'''
+	}
+
+	Seadragon: {
+		DisplayName: 海龙
+		Tooltip:
+			'''
+			较弱的后坐力
+			开火的同时不断喷出海洋泡泡
+			水弹将伴随着弹药倾泻而出
+			'''
+	}
+
+	BarrenBow: {
+		DisplayName: 荒芜弓
+		Tooltip: 发射出的箭矢在击中敌人时会爆发出荒芜电流
+	}
+
+	ScorchedEarth: {
+		DisplayName: 焦土
+		Tooltip:
+			'''
+			荒诞的后坐力
+			右键可以装填八颗地狱火子母弹，火箭在发射出去后会自动导航向敌人
+			击中后引发大爆炸并分裂出多枚子火箭
+			"这玩意儿一定违反了好几项国际公约"
+			'''
+	}
+
+	SeasSearing: {
+		DisplayName: 海之烧灼
+		Tooltip:
+			'''
+			较弱的后坐力
+			装弹完成后进行一轮速射，将子弹转化为海洋弹
+			右键发射海洋漩涡
+			'''
+	}
+
+	CoralCannon: {
+		DisplayName: 珊瑚手炮
+		Tooltip:
+			'''
+			较强的后坐力
+			一把有着不小威力的老式手炮
+			右键装填弹药
+			"枪膛一直是潮湿的，火药很可能点不燃....等等？它不用火药？"
 			'''
 	}
 }
@@ -1264,6 +1337,18 @@ Projectiles: {
 	// TorrentialBullet.DisplayName: Torrential Bullet
 	// GildedProboscisLightning.DisplayName: Gilded Proboscis Lightning
 	// GildedProboscisLightningArc.DisplayName: Gilded Proboscis Lightning Arc
+	// DeadSunsWindHeldProj.DisplayName: Dead Suns Wind Held Proj
+	// FetidEmesisHeldProj.DisplayName: Fetid Emesis Held Proj
+	// SeadragonHeldProj.DisplayName: Seadragon Held Proj
+	// FetidEmesisOnSpan.DisplayName: Fetid Emesis On Span
+	// MinisharkHeldProj.DisplayName: Minishark Held Proj
+	// MegasharkHeldProj.DisplayName: Megashark Held Proj
+	// BarrenOrb.DisplayName: Barren Orb
+	// BarrenBowHeldProj.DisplayName: Barren Bow Held Proj
+	// ScorchedEarthHeldProj.DisplayName: Scorched Earth Held Proj
+	// SeasSearingHeldProj.DisplayName: Seas Searing Held Proj
+	// EarthRocketOnSpan.DisplayName: Earth Rocket On Span
+	// CoralCannonHeldProj.DisplayName: Coral Cannon Held Proj
 }
 
 Configs: {
@@ -1534,5 +1619,24 @@ TextContent: {
 		SupertableUI_Text1: 关闭
 		SupertableUI_Text2: 查看配方
 		SupertableUI_Text3: 无
+		OverhaulTheBibleUI_Text:
+			'''
+			滑动鼠标滚轮，在这里查看已经被重置过的物品
+			这些仅作为参考，因为许多局部改动并不会出现在这个名单中
+			'''
+		Wap_Minishark_Text:
+			'''
+			较弱的后坐力
+			每次有人问起小鲨鱼的光景，它总是嘲讽一笑。
+			"小时候就这样了，在某个清晨醒来，发现这嘴巴里居然冒出一堆枪管。"
+			值得一提的是，小鲨鱼有一份在靶场的工作，它的职责是当一名“开火”顾问
+			'''
+		Wap_Megashark_Text:
+			'''
+			中等的后坐力
+			"口径是真理"鲨鱼侃侃而谈，仿佛自己就是火力至上的代言人
+			然而，就像它的.20口径一样，属于鱼类枪械家族中的平凡之辈
+			或许它需要一支嘲讽的钓竿来捕捉一点自我认知，毕竟在海洋中，口径也许更适合测量谦逊而非真理
+			'''
 	}
 }

@@ -46,7 +46,7 @@ Items: {
 
 	BlightedCleaver: {
 		DisplayName: Blighted Cleaver
-		Tooltip: 
+		Tooltip:
 			'''
 			Fires Blazing Blades that from home in on enemies and ones from above after hitting giving you the "Brutal Carnage" Buff
 			Upon hitting a True Melee strike, Accumulate Tyrant's Fury which will increase the weapon's damage for a short time.
@@ -65,7 +65,7 @@ Items: {
 
 	DefiledGreatsword: {
 		DisplayName: Defiled Greatsword
-		Tooltip:  
+		Tooltip:
 			'''
 			Fires a Myriad of Blazing Blades that aggressively hunt down your foes that give the player the "Brutal Carnage" Buff
 			Upon hitting a True Melee strike, Accumulate Tyrant's Fury which will increase the weapon's damage for a short time along with launching blazing blades at the sides of the screen.
@@ -74,7 +74,7 @@ Items: {
 
 	EntropicClaymore: {
 		DisplayName: Entropic Claymore
-		Tooltip:   
+		Tooltip:
 			'''
 			Fires several plasma bolts that seek out enemies
 			"The stars Twinkle and shimmer across the blade's edges. It reminds you of the night skies above."
@@ -92,7 +92,7 @@ Items: {
 
 	Terratomere: {
 		DisplayName: Terratomere
-		Tooltip: 
+		Tooltip:
 			'''
 			Swing a Sword Infused with the essence of Terraria, causing several piercing energy bolts to seek out enemies along with several beams from above.
 			Upon death, energy bolts discharge and explode, dealing damage in an Area of Effect.
@@ -120,7 +120,7 @@ Items: {
 			'''
 			Stabs through space to lacerate enemies with cosmic might, inflicting Godslayer inferno. Upon hitting, 6 God Slayer darts will shoot out Omni Directionally.
 			Right click to form Cosmic rifts that follow your cursor that assault enemies with copies of the Spear and Cosmic Beams.
-                        [c/b300b3:"Rend them apart."]
+			                     [c/b300b3:"Rend them apart."]
 			'''
 	}
 
@@ -135,24 +135,24 @@ Items: {
 
 	AirSpinner: {
 		DisplayName: Air Spinner
-		Tooltip: 
+		Tooltip:
 			'''
 			Fires Feathers that home in on enemies whenever they are near. While spinning in the air, 6 feathers splinter outwards before disappearing.
 			If the splintered feathers hit an enemy, it will latch on and keep dealing damage for a short while.
-                        A very agile yoyo.
+			                     A very agile yoyo.
 			'''
 	}
 
 	GoldplumeSpear: {
 		DisplayName: Goldplume Spear
-		Tooltip: "Fires quick bursts of feathers upon swinging"
+		Tooltip: Fires quick bursts of feathers upon swinging
 	}
 
 	WindBlade: {
 		DisplayName: Wind Blade
 		Tooltip:
 			'''
-		        Fires cyclones that suck enemies in
+			       Fires cyclones that suck enemies in
 			Right click to throw cyclones that home in on enemies.
 			'''
 	}
@@ -169,10 +169,7 @@ Items: {
 
 	Deathwind: {
 		DisplayName: Deathwind
-		Tooltip:
-			'''
-			Wooden arrows turn into 3 Nebula Beams that pierce infinitely and go through walls.
-			'''
+		Tooltip: Wooden arrows turn into 3 Nebula Beams that pierce infinitely and go through walls.
 	}
 
 	DragonRage: {
@@ -181,7 +178,7 @@ Items: {
 			'''
 			Spins a baton that causes explosions on enemy hits. The 10th hit will cause a ring of draconic fireballs to seek enemies that inflict Dragonfire.
 			Right click to spin the baton closer to you that summons fireballs at a slower pace, but without the need to hit enemies.
-                        [c/ff8c1a:"This is my message to my master."]
+			                     [c/ff8c1a:"This is my message to my master."]
 			'''
 	}
 
@@ -215,10 +212,7 @@ Items: {
 
 	GhastlyVisage: {
 		DisplayName: Ghastly Visage
-		Tooltip:
-			'''
-			Fires out 3 Homing Ghastly Energy bolts to seek out enemies before exploding in anguish.
-			'''
+		Tooltip: Fires out 3 Homing Ghastly Energy bolts to seek out enemies before exploding in anguish.
 	}
 
 	Galeforce: {
@@ -232,7 +226,7 @@ Items: {
 
 	ElementWhip: {
 		DisplayName: Element Whip
-		Tooltip: "A Whip infused with the energy of the Moon and the Elements."
+		Tooltip: A Whip infused with the energy of the Moon and the Elements.
 	}
 
 	ElementalShiv: {
@@ -284,7 +278,7 @@ Items: {
 
 	DivineSourceBlade: {
 		DisplayName: Divine Source Blade
-		Tooltip: "Swinging causes a high velocity blade that slashes the first enemy it pierces through into ribbons."
+		Tooltip: Swinging causes a high velocity blade that slashes the first enemy it pierces through into ribbons.
 	}
 
 	FatesReveal: {
@@ -294,12 +288,12 @@ Items: {
 
 	FoodStallChair: {
 		DisplayName: Food Stall Chair
-		Tooltip: "I AM THE CHAIR THAT IS APPROACHING!"
+		Tooltip: I AM THE CHAIR THAT IS APPROACHING!
 	}
 
 	DaemonsFlame: {
 		DisplayName: Daemons Flame
-		Tooltip: "Fires Homing Daemon Flames that explode upon impact"
+		Tooltip: Fires Homing Daemon Flames that explode upon impact
 	}
 
 	ClaretCannon: {
@@ -318,7 +312,7 @@ Items: {
 			'''
 			Wooden Arrows turn into a spread of Cosmic Bolts. Hitting an enemy causes Galaxy Rifts to attack other foes and leaves behind a star close to death, eventually imploding.
 			Right click to summon Projections of the Devourer that grow stronger and bigger over time. Letting go of right click fires the portal used to home in on enemies before eventually dying out.
-                        [c/9C27B0:The End is Nigh.]
+			                     [c/9C27B0:The End is Nigh.]
 			'''
 	}
 
@@ -348,7 +342,7 @@ Items: {
 			'''
 			Swinging will cause a shard of sunlight to weakly home in before impacting the enemy, leaving damaging sparks below.
 			Right click to have the blade raise up into the sky. Holding Right click will charge the blade up, increasing in size. 
-                        Letting go of right click hurls the blade at the enemy causing a massive explosion.
+			                     Letting go of right click hurls the blade at the enemy causing a massive explosion.
 			'''
 	}
 
@@ -482,7 +476,7 @@ Items: {
 
 	HolyCollider: {
 		DisplayName: Holy Collider
-		Tooltip: "Spawns Profaned Flames to surround you upon swinging. Getting close to enemies will have the profaned flames home in on them."
+		Tooltip: Spawns Profaned Flames to surround you upon swinging. Getting close to enemies will have the profaned flames home in on them.
 	}
 
 	Oracle: {
@@ -502,17 +496,17 @@ Items: {
 
 	CelestialClaymore: {
 		DisplayName: Celestial Claymore
-		Tooltip: "Spawns cosmic energy flames near the player that seek out enemies after a short while."
+		Tooltip: Spawns cosmic energy flames near the player that seek out enemies after a short while.
 	}
 
 	TheEnforcer: {
 		DisplayName: The Enforcer
-		Tooltip: "Spawns Flames directly from the Devourer's Homeworld near the player that explode after a short while."
+		Tooltip: Spawns Flames directly from the Devourer's Homeworld near the player that explode after a short while.
 	}
 
 	InfinitePick: {
 		DisplayName: Infinite Pick
-		Tooltip: "You can sense that the very lands of Terraria trembles in fear whenever you hold it."
+		Tooltip: You can sense that the very lands of Terraria trembles in fear whenever you hold it.
 	}
 
 	DarkMatterBall: {
@@ -561,7 +555,7 @@ Items: {
 
 	DawnshatterAzure: {
 		DisplayName: Dawnshatter Azure
-		Tooltip: "Summons the full might of Yharon's Auric Soul to tear into your enemies"
+		Tooltip: Summons the full might of Yharon's Auric Soul to tear into your enemies
 	}
 
 	DecayParticles: {
@@ -586,7 +580,7 @@ Items: {
 
 	InfiniteToiletItem: {
 		DisplayName: Infinite Toilet Item
-		Tooltip: "The power of the universe, of the galaxies above and the space inbetween.. Now just reduced to a toilet."
+		Tooltip: The power of the universe, of the galaxies above and the space inbetween.. Now just reduced to a toilet.
 	}
 
 	StormGoddessSpear: {
@@ -620,19 +614,19 @@ Items: {
 
 	DragonsScaleGreatsword: {
 		DisplayName: Dragons Scale Greatsword
-		Tooltip: "Swings a mighty sword that summons poisonous clouds that weakly home into enemies."
+		Tooltip: Swings a mighty sword that summons poisonous clouds that weakly home into enemies.
 	}
 
 	CosmicCalamity: {
 		DisplayName: Cosmic Calamity
-		Tooltip: "Throws a Javelin infused with the Devourer's power. Stealth strikes causes several laser beams to assail the enemy."
+		Tooltip: Throws a Javelin infused with the Devourer's power. Stealth strikes causes several laser beams to assail the enemy.
 	}
 
- 	Weapons: {
+	Weapons: {
 		Rogue: {
 			WaveSkipper: {
 				DisplayName: Wave Skipper
-				Tooltip: "Throws a Javelin that Buries itself into the earth. Stealth Strikes throws 3 Javelins at once."
+				Tooltip: Throws a Javelin that Buries itself into the earth. Stealth Strikes throws 3 Javelins at once.
 			}
 		}
 	}
@@ -758,7 +752,7 @@ Items: {
 			'''
 			Fires multiple flaming sickle projectiles that home in after they stop swinging along with homing flaming pumpkins that erupt into flares.
 			Right button lets you spin the scythe, letting go has you throw it causing an infernal eruption on the floor below.
-                        You need to pick it back up after everytime you throw the scythe.
+			                     You need to pick it back up after everytime you throw the scythe.
 			'''
 	}
 
@@ -824,7 +818,7 @@ Items: {
 			'''
 			Launches several earth fragments with a high chance to throw a boulder that pierces and rolls.
 			Right click to hurl the pike like a javelin, causing an earthquake around its impact point. 
-                        After using the Right click, you have to pick back up the pike manually before using it again.
+			                     After using the Right click, you have to pick back up the pike manually before using it again.
 			'''
 	}
 
@@ -849,7 +843,7 @@ Items: {
 
 	ReminiscenceBreastplate: {
 		DisplayName: Reminiscence Breastplate
-		Tooltip: "Reminisence on the Journey you've had and how far you have come."
+		Tooltip: Reminisence on the Journey you've had and how far you have come.
 	}
 
 	AbsoluteZero: {
@@ -893,7 +887,7 @@ Items: {
 
 	OverhaulTheBibleBook: {
 		DisplayName: Overhaul The Bible
-		Tooltip: ""
+		Tooltip: Use to see Calamity Overhaul Mod related tutorials.... There may be more to come here later
 	}
 
 	Contagion: {
@@ -1001,7 +995,7 @@ Items: {
 			'''
 			Has very weak recoil
 			Fires out an plasma beam that rains down extra plasma on hit. Uses Mana as Ammunition.
-                        "Make it rain."
+			"Make it rain."
 			'''
 	}
 
@@ -1012,8 +1006,8 @@ Items: {
 			Has Extreme Amounts of Recoil
 			An Extremely Heavy Anti-Materiel rifle that converts Musket Balls to high Velocity .70 Caliber Rounds, ripping through enemies and inflicting them with Marked for Death
 			After every shot, Right clicking causes the player to reload the rifle for the next shot.
-                        Shots split into a swarm of several additional bullets along with an auric blast.
-                        "Pierce the heart of even the most heavily-armored foe." 
+			Shots split into a swarm of several additional bullets along with an auric blast.
+			"Pierce the heart of even the most heavily-armored foe." 
 			'''
 	}
 
@@ -1024,8 +1018,8 @@ Items: {
 			Has Extreme Amounts of Recoil
 			A Heavy Anti-Materiel Rifle that converts musket balls to high velocity .50 Caliber Rounds, Ripping through enemies and inflicting them with Marked for death.
 			After every shot, Right clicking causes the player to reload the rifle for the next shot.
-                        Shots Split into a swarm of several aditional bullets.
-                        "360 NOSCOPE!!!"
+			   Shots Split into a swarm of several aditional bullets.
+			   "360 NOSCOPE!!!"
 			'''
 	}
 
@@ -1048,6 +1042,73 @@ Items: {
 			Has Very Little Recoil
 			There is a slight chance to launch a water missile that homes in on enemies.
 			"The wonder of Fishy Gun Dynamics."
+			'''
+	}
+
+	DeadSunsWind: {
+		DisplayName: Dead Suns Wind
+		Tooltip: ""
+	}
+
+	FetidEmesis: {
+		DisplayName: Fetid Emesis
+		Tooltip:
+			'''
+			Weak recoil
+			It will infect the bullet with sodium and poison
+			Every eight bullets fired triggers a vomit attack of contaminants
+			"That was one hell of a pandemic..." Old Pig Shark reminisces about the past, muttering to himself.
+			"I used to be a professor at Ocean University; that big flounder there was my student. 
+			Until the pandemic hit, and Ocean University transformed into the Sulfur Sea Exploitation Department, 
+			and that's when I retired... By the way, ever wondered how many bullets I can swallow in one go?"
+			'''
+	}
+
+	Seadragon: {
+		DisplayName: Seadragon
+		Tooltip:
+			'''
+			Weak recoil
+			The fire was accompanied by a steady stream of ocean bubbles
+			Water bombs will be unleashed with ammunition
+			'''
+	}
+
+	BarrenBow: {
+		DisplayName: Barren Bow
+		Tooltip: The arrows fired will burst out a barren current when they hit the enemy
+	}
+
+	ScorchedEarth: {
+		DisplayName: Scorched Earth
+		Tooltip:
+			'''
+			Ridiculous recoil
+			Right-clicking allows the loading of eight Hellfire Mother missiles. 
+			The rockets, once launched, automatically navigate towards the enemy. 
+			Upon impact, they trigger a massive explosion and split into multiple sub-rockets.
+			"This thing surely violates several international conventions."
+			'''
+	}
+
+	SeasSearing: {
+		DisplayName: Seas Searing
+		Tooltip:
+			'''
+			Weak recoil
+			After the loading is complete, a round of rapid fire is carried out to convert the bullet into a sea shell
+			Right click to launch Ocean Vortex
+			'''
+	}
+
+	CoralCannon: {
+		DisplayName: Coral Cannon
+		Tooltip:
+			'''
+			Strong recoil
+			An old handgun with quite a bit of power
+			Right click reload
+			"The chamber had been damp, and the powder probably would not ignite.... Wait a minute? It doesn't use gunpowder?"
 			'''
 	}
 }
@@ -1298,6 +1359,18 @@ Projectiles: {
 	TorrentialBullet.DisplayName: Torrential Bullet
 	GildedProboscisLightning.DisplayName: Gilded Proboscis Lightning
 	GildedProboscisLightningArc.DisplayName: Gilded Proboscis Lightning Arc
+	DeadSunsWindHeldProj.DisplayName: Dead Suns Wind Held Proj
+	FetidEmesisHeldProj.DisplayName: Fetid Emesis Held Proj
+	SeadragonHeldProj.DisplayName: Seadragon Held Proj
+	FetidEmesisOnSpan.DisplayName: Fetid Emesis On Span
+	MinisharkHeldProj.DisplayName: Minishark Held Proj
+	MegasharkHeldProj.DisplayName: Megashark Held Proj
+	BarrenOrb.DisplayName: Barren Orb
+	BarrenBowHeldProj.DisplayName: Barren Bow Held Proj
+	ScorchedEarthHeldProj.DisplayName: Scorched Earth Held Proj
+	SeasSearingHeldProj.DisplayName: Seas Searing Held Proj
+	EarthRocketOnSpan.DisplayName: Earth Rocket On Span
+	CoralCannonHeldProj.DisplayName: Coral Cannon Held Proj
 }
 
 Configs: {
@@ -1573,5 +1646,25 @@ TextContent: {
 		SupertableUI_Text1: close
 		SupertableUI_Text2: View recipe
 		SupertableUI_Text3: nothing
+		OverhaulTheBibleUI_Text:
+			'''
+			Swipe the mouse wheel to see the items that have been reset here
+			These are for reference only, as many partial changes do not appear in this list
+			'''
+		Wap_Minishark_Text:
+			'''
+			Weak recoil
+			Whenever someone asks about the baby shark, he always laughs.
+			"Back in the day, woke up on a random morning only to find a bunch of gun barrels sticking out of this mouth."
+			Worth mentioning, little sharky has a gig at the shooting range, playing the role of a "firearms consultant."
+			'''
+		Wap_Megashark_Text:
+			'''
+			Medium recoil
+			"Caliber is the truth," Sharky confidently declares, as if it were the spokesperson for firepower supremacy.
+			However, much like its .20 caliber, it's just an ordinary member of the fish firearm family.
+			Perhaps it needs a sarcastic fishing rod to catch a bit of self-awareness, after all, in the ocean, 
+			caliber might be better suited to measure humility rather than truth.
+			'''
 	}
 }

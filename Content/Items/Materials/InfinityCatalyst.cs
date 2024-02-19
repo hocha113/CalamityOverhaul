@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Materials
 {
     internal class InfinityCatalyst : ModItem
     {
-        public override string Texture => CWRConstant.Item + "Materials/InfinityCatalyst";
+        public override string Texture => CWRConstant.Item + "Materials/InfinityCatalyst2";
         public static float QFH {
             get {
                 const float baseBonus = 1.0f;
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Items.Materials
 
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 9999;
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(6, 16));
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(10, 6));
         }
 
         public override void SetDefaults() {

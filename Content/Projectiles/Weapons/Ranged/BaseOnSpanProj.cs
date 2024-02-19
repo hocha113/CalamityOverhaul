@@ -46,22 +46,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public sealed override bool? CanDamage() => false;
 
-        public sealed override void AI() {
-            Player player = Main.player[Projectile.owner];
+        /// <summary>
+        /// 需要使用弹幕的AI[1]作为跟随弹幕的索引
+        /// </summary>
+        /// <param name="projectile"></param>
+        public static void FlowerAI(Projectile projectile) {
             Projectile owner = null;
-            if (Projectile.ai[1] >= 0 && Projectile.ai[1] < Main.maxProjectiles) {
-                owner = Main.projectile[(int)Projectile.ai[1]];
+            if (projectile.ai[1] >= 0 && projectile.ai[1] < Main.maxProjectiles) {
+                owner = Main.projectile[(int)projectile.ai[1]];
             }
             if (owner == null) {
-                Projectile.Kill();
+                projectile.Kill();
                 return;
             }
-            Projectile.Center = owner.Center;
-            Projectile.rotation = owner.rotation;
+            projectile.Center = owner.Center;
+            projectile.rotation = owner.rotation;
+        }
+
+        public sealed override void AI() {
+            FlowerAI(Projectile);
             if (++Projectile.ai[0] >= MaxCharge) {
                 onFire = true;
             }
-            if (!player.PressKey(false)) {
+            if (!Main.player[Projectile.owner].PressKey(false)) {
                 Projectile.Kill();
             }
         }

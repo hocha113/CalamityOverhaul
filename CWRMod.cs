@@ -21,6 +21,7 @@ namespace CalamityOverhaul
         internal Mod fargowiltasSouls = null;
         internal Mod catalystMod = null;
         internal Mod weaponOut = null;
+        internal Mod weaponDisplay = null;
 
         internal List<Mod> LoadMods = new List<Mod>();
         internal static List<BaseRItem> RItemInstances = new List<BaseRItem>();
@@ -117,6 +118,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("FargowiltasSouls", out fargowiltasSouls);
             ModLoader.TryGetMod("CatalystMod", out catalystMod);
             ModLoader.TryGetMod("WeaponOut", out weaponOut);
+            ModLoader.TryGetMod("WeaponDisplay", out weaponDisplay);
         }
 
         public void LoadClient() {

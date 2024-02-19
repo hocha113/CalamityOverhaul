@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content
                 for (int i = 0; i < Recipe.numRecipes; i++) {
                     Recipe recipe = Main.recipe[i];
                     if (recipe.HasResult(ItemID.BottledWater)) {
-                        recipe.AddOnCraftCallback(WaterBottle.OnRecipeBottle);
+                        recipe.AddOnCraftCallback(RWaterBottle.OnRecipeBottle);
                     }
                 }
             }
@@ -279,6 +279,14 @@ namespace CalamityOverhaul.Content
                     .AddOnCraftCallback(MouldRecipeEvent)
                     .AddTile(TileID.Anvils)
                     .DisableDecraft()
+                    .Register();
+            }
+            //添加卢克索礼物的合成
+            {
+                Recipe.Create(ItemType<CalamityMod.Items.Accessories.LuxorsGift>())
+                    .AddIngredient(ItemID.FossilOre, 5)
+                    .AddIngredient(ItemType<PearlShard>(), 12)
+                    .AddTile(TileID.Anvils)
                     .Register();
             }
             //添加万变之星的相关配方，为了防止被额外修改或者再次被增删改动，这个部分的代码实现应该放在最后面

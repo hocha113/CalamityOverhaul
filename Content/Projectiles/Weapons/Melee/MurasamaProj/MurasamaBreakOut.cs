@@ -1,4 +1,8 @@
 ﻿using CalamityMod;
+using CalamityMod.NPCs.AquaticScourge;
+using CalamityMod.NPCs.DevourerofGods;
+using CalamityMod.NPCs.ExoMechs.Thanatos;
+using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
@@ -113,7 +117,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         murasama.initialize();
                         
                         //sengs.Domp();
-                        int sengsDmg = (int)(Murasama.ActualTrueMeleeDamage * sengs);
+                        int sengsDmg = (int)(Murasama.GetOnDamage * sengs);
                         int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
                         , ModContent.ProjectileType<MurasamaBreakSwing>(), sengsDmg, 0, Owner.whoAmI);
                         Main.projectile[proj].scale = 0.5f + level * 0.0f;
@@ -169,6 +173,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
         }
 
+        public override bool? CanHitNPC(NPC target) {
+            if (target.type == CWRIDs.AquaticScourgeBody) {
+                return false;
+            }
+            if (target.type == CWRIDs.DevourerofGodsBody) {
+                return false;
+            }
+            if (target.type == CWRIDs.StormWeaverBody) {
+                return false;
+            }
+            if (target.type == CWRIDs.ThanatosBody1 || target.type == CWRIDs.ThanatosBody2) {
+                return false;
+            }
+            return base.CanHitNPC(target);
+        }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {//如果击中了敌人，那么进入旋转滞留阶段
                 Projectile.ai[0] = 1;
@@ -176,7 +196,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 Projectile.netUpdate = true;
 
                 if (target.boss && Murasama.UnlockSkill1) {//如果击中的目标是个Boss级生物，额外给予玩家无敌帧
-                    Owner.GivePlayerImmuneState(35 + InWorldBossPhase.Instance.Level() * 2, true);
+                    //Owner.GivePlayerImmuneState(35 + InWorldBossPhase.Instance.Level() * 2, true);//这个部分存在争议，暂时取消
                 }
             }
         }

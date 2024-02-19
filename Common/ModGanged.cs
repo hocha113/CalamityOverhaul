@@ -26,7 +26,13 @@ namespace CalamityOverhaul.Common
         public static Type weaponOut_WeaponLayer_2_Type;
         public static MethodBase weaponOut_WeaponLayer_2_Method;
 
+        public static Type[] weaponDisplayCodeTypes;
+
+        public static Type weaponDisplay_ModifyDrawInfo_Type;
+        public static MethodBase weaponDisplay_ModifyDrawInfo_Method;
+
         public static void Load() {
+            #region 1
             if (CWRMod.Instance.weaponOut != null) {
                 weaponOutCodeTypes = AssemblyManager.GetLoadableTypes(CWRMod.Instance.weaponOut.Code);
                 foreach (Type type in weaponOutCodeTypes) {
@@ -64,6 +70,31 @@ namespace CalamityOverhaul.Common
             else {
                 "未加载模组 WeaponOut".DompInConsole();
             }
+            #endregion
+
+            #region 2
+            if (CWRMod.Instance.weaponDisplay != null) {
+                weaponDisplayCodeTypes = AssemblyManager.GetLoadableTypes(CWRMod.Instance.weaponDisplay.Code);
+                foreach (Type type in weaponDisplayCodeTypes) {
+                    if (type.Name == "WeaponDisplayPlayer") {
+                        weaponDisplay_ModifyDrawInfo_Type = type;
+                    }
+                }
+
+                if (weaponDisplay_ModifyDrawInfo_Type != null) {
+                    weaponDisplay_ModifyDrawInfo_Method = weaponDisplay_ModifyDrawInfo_Type.GetMethod("ModifyDrawInfo", BindingFlags.Instance | BindingFlags.Public);
+                }
+                else {
+                    "未成功加载 weaponDisplay_ModifyDrawInfo_Method 是否是WeaponDisplayPlayer.ModifyDrawInfo已经改动?".DompInConsole();
+                }
+                if (weaponDisplay_ModifyDrawInfo_Method != null) {
+                    MonoModHooks.Add(weaponDisplay_ModifyDrawInfo_Method, On_MP_Draw_3_Hook);
+                }
+            }
+            else {
+                "未加载模组 WeaponDisplay".DompInConsole();
+            }
+            #endregion
         }
 
         private static bool IFDrawHeld(On_ModPlayerDraw_Dalegate orig, PlayerDrawSet drawInfo) {
@@ -102,6 +133,13 @@ namespace CalamityOverhaul.Common
         }
 
         public static void On_MP_Draw_2_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
+            if (!IFDrawHeld(orig, drawInfo)) {
+                return;
+            }
+            orig.Invoke(obj, ref drawInfo);
+        }
+
+        public static void On_MP_Draw_3_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
             if (!IFDrawHeld(orig, drawInfo)) {
                 return;
             }
