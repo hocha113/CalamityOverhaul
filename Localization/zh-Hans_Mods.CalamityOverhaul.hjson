@@ -1089,6 +1089,26 @@ Items: {
 			"枪膛一直是潮湿的，火药很可能点不燃....等等？它不用火药？"
 			'''
 	}
+
+	AngelicShotgun: {
+		DisplayName: 圣天耀火炮
+		Tooltip:
+			'''
+			较强的后坐力
+			给予射出的子弹圣神祝福
+			会将火枪子弹转化为圣火弹
+			一把大口径霰弹枪，独特的是，它浑身散发着圣神感
+			'''
+	}
+
+	AquashardShotgun: {
+		DisplayName: 碎水霰弹枪
+		Tooltip:
+			'''
+			较强的后坐力
+			会将火枪子弹转化为海洋棱晶弹
+			'''
+	}
 }
 
 Projectiles: {
@@ -1349,6 +1369,8 @@ Projectiles: {
 	// SeasSearingHeldProj.DisplayName: Seas Searing Held Proj
 	// EarthRocketOnSpan.DisplayName: Earth Rocket On Span
 	// CoralCannonHeldProj.DisplayName: Coral Cannon Held Proj
+	// AngelicShotgunHeldProj.DisplayName: Angelic Shotgun Held Proj
+	// AquashardShotgunHeldProj.DisplayName: Aquashard Shotgun Held Proj
 }
 
 Configs: {

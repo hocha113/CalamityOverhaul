@@ -4,6 +4,7 @@ using CalamityMod.Dusts;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Magic;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
@@ -30,7 +31,8 @@ namespace CalamityOverhaul.Content
         NettlevineGreat,
         TheStorm,
         BarrenBow,
-        FetidEmesis
+        FetidEmesis,
+        AngelicShotgun
     }
 
     public class CWRProjectile : GlobalProjectile
@@ -88,6 +90,9 @@ namespace CalamityOverhaul.Content
         public override void OnKill(Projectile projectile, int timeLeft) {
             RMeowmere.SpanDust(projectile, 0.2f);
             if (projectile.IsOwnedByLocalPlayer()) {
+                if (!projectile.friendly) {
+                    return;
+                }
                 if (SpanTypes == (byte)SpanTypesEnum.Marksman) {
                     int proj = Projectile.NewProjectile(projectile.parent(), projectile.Center, projectile.velocity
                         , ProjectileID.LostSoulFriendly, projectile.damage / 2, projectile.knockBack / 2, projectile.owner, 0);
@@ -98,6 +103,14 @@ namespace CalamityOverhaul.Content
                 if (SpanTypes == (byte)SpanTypesEnum.BarrenBow) {
                     Projectile.NewProjectile(projectile.parent(), projectile.Center, CWRUtils.randVr(6, 9)
                         , ModContent.ProjectileType<BarrenOrb>(), projectile.damage, 0, projectile.owner, 0);
+                }
+                if (SpanTypes == (byte)SpanTypesEnum.AngelicShotgun) {
+                    if (Main.rand.NextBool()) {
+                        return;
+                    }
+                    int proj = Projectile.NewProjectile(projectile.parent(), projectile.Center + new Vector2(Main.rand.Next(-32, 32), 0), new Vector2(0, -7)
+                        , ModContent.ProjectileType<AngelicBeam>(), projectile.damage, 0, projectile.owner, 0);
+                    Main.projectile[proj].timeLeft = 90;
                 }
             }
         }

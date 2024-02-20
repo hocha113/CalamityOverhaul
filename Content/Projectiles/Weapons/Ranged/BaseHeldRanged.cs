@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public int WeaponDamage;
         public float WeaponKnockback;
         public Vector2 ShootVelocity => ScaleFactor * UnitToMouseV;
+        public Vector2 ShootVelocityInProjRot => ScaleFactor * Projectile.rotation.ToRotationVector2();
         public bool HaveAmmo => Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out _, out _, out _, true);
         protected bool onFire;
 
@@ -37,6 +38,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.penetrate = -1;
             Projectile.hide = true;
+            SetRangedProperty();
+        }
+
+        /// <summary>
+        /// 用于设置额外的基础属性，在<see cref="SetDefaults"/>中被最后调用
+        /// </summary>
+        public virtual void SetRangedProperty() {
+
         }
 
         public override bool? CanDamage() => false;

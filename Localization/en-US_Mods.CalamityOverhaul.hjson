@@ -1111,6 +1111,16 @@ Items: {
 			"The chamber had been damp, and the powder probably would not ignite.... Wait a minute? It doesn't use gunpowder?"
 			'''
 	}
+
+	AngelicShotgun: {
+		DisplayName: Angelic Shotgun
+		Tooltip: ""
+	}
+
+	AquashardShotgun: {
+		DisplayName: Aquashard Shotgun
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1371,6 +1381,8 @@ Projectiles: {
 	SeasSearingHeldProj.DisplayName: Seas Searing Held Proj
 	EarthRocketOnSpan.DisplayName: Earth Rocket On Span
 	CoralCannonHeldProj.DisplayName: Coral Cannon Held Proj
+	AngelicShotgunHeldProj.DisplayName: Angelic Shotgun Held Proj
+	AquashardShotgunHeldProj.DisplayName: Aquashard Shotgun Held Proj
 }
 
 Configs: {

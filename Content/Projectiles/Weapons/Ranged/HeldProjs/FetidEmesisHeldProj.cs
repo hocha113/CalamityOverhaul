@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "FetidEmesis";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.FetidEmesis>();
         public override int targetCWRItem => ModContent.ItemType<FetidEmesis>();
-        public override float ControlForce => 0.05f;
+        public override float ControlForce => 0.06f;
         public override float GunPressure => 0.2f;
         public override float Recoil => 1.5f;
         public override void InOwner() {
@@ -49,7 +49,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
                 Vector2 gundir = Projectile.rotation.ToRotationVector2();
 
-                int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
+                int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3
+                    , ShootVelocityInProjRot.RotatedBy(Main.rand.NextFloat(-0.02f, 0.02f))
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.FetidEmesis;
 
