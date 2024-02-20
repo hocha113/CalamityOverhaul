@@ -1534,6 +1534,7 @@ Keybinds: {
 	TOM_GlobalRecall.DisplayName: Omega synthesis: Global recall
 	Murasama_TriggerKey.DisplayName: Murasama: Trigger Key
 	Murasama_DownKey.DisplayName: Murasama:Down Key
+	ADS_Key.DisplayName: A D S_ Key
 }
 
 TextContent: {

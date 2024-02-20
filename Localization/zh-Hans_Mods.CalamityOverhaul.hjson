@@ -1519,6 +1519,7 @@ Keybinds: {
 	TOM_GlobalRecall.DisplayName: 欧米茄合成:全部收回
 	Murasama_TriggerKey.DisplayName: 高分子斩切刃:扳机键
 	Murasama_DownKey.DisplayName: 高分子斩切刃:下砸
+	ADS_Key.DisplayName: 打开瞄准镜
 }
 
 TextContent: {

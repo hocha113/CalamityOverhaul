@@ -37,6 +37,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         protected virtual SoundStyle loadTheRounds => CWRSound.CaseEjection2;
 
         public override void InOwner() {
+            if (!CWRKeySystem.ADS_Key.Old)
+                Owner.scope = false;
+
             float armRotSengsFront = 30 * CWRUtils.atoR;
             float armRotSengsBack = 150 * CWRUtils.atoR;
 

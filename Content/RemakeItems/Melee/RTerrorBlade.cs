@@ -72,7 +72,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
 
             UpdateBar(item);
-            InCharge.Domp();
             if (item.CWR().MeleeCharge > 0) {
                 item.shootSpeed = 20f;
                 item.useAnimation = 10;
