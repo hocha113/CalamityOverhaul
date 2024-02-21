@@ -5,6 +5,7 @@ using System;
 using Terraria.Audio;
 using Terraria.ModLoader;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -80,6 +81,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     if (kreloadTime <= 0) {//时间完成后设置装弹状态并准备下一次发射
                         onKreload = false;
                         isKreload = true;
+                        if (heldItem.type != ItemID.None) {
+                            heldItem.CWR().IsKreload = true;
+                        }
                         kreloadTime = 0;
                     }
                 }
@@ -95,6 +99,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     loadingReminder = true;
                 }
             }
+
+            if (heldItem.type != ItemID.None)
+                isKreload = heldItem.CWR().IsKreload;
         }
 
         public virtual void OnSpanProjFunc() {
@@ -110,6 +117,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 CreateRecoil();
                 loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
                 isKreload = false;
+                if (heldItem.type != ItemID.None) {
+                    heldItem.CWR().IsKreload = false;
+                }
                 Projectile.ai[1] = 0;
                 onFire = false;
             }

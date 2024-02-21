@@ -1,4 +1,5 @@
-﻿using CalamityMod.Items.Tools;
+﻿using CalamityMod;
+using CalamityMod.Items.Tools;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Materials;
@@ -10,6 +11,7 @@ using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -65,6 +67,13 @@ namespace CalamityOverhaul.Content.Items.Tools
 
 
             return base.UseItem(player);
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            TooltipLine cumstops = tooltips.FirstOrDefault((TooltipLine x) => x.Name == "Damage" && x.Mod == "Terraria");
+            if (cumstops != null) {
+                tooltips.IntegrateHotkey(CWRKeySystem.InfinitePickSkillKey);
+            }
         }
 
         public override void HoldItem(Player player) {

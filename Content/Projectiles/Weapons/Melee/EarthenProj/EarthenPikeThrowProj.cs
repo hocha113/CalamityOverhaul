@@ -52,6 +52,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj
                 Projectile.ai[1]++;
 
                 Projectile.scale += 0.01f;
+                if (Projectile.scale > 3.5f) {
+                    Projectile.scale = 3.5f;
+                }
 
                 Dir = Math.Sign(Projectile.velocity.X);
             }

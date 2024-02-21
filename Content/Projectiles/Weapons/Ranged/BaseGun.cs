@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using System;
 using Terraria.Audio;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -27,6 +28,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 左手角度值
         /// </summary>
         public float ArmRotSengsBack;
+        /// <summary>
+        /// 是否可以右键
+        /// </summary>
+        public bool CanRightClick;
+        /// <summary>
+        /// 是否正在右键开火
+        /// </summary>
+        protected bool onFireR;
         /// <summary>
         /// 是否在<see cref="InOwner"/>执行后自动更新手臂参数
         /// </summary>
@@ -59,6 +68,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 手持距离，生效于非开火状态下
         /// </summary>
         public float HandDistanceY = 0;
+        /// <summary>
+        /// 手持距离，生效于开火状态下
+        /// </summary>
+        public float HandFireDistance = 20;
+        /// <summary>
+        /// 手持距离，生效于开火状态下
+        /// </summary>
+        public float HandFireDistanceY = -3;
         /// <summary>
         /// 应力范围
         /// </summary>
@@ -110,7 +127,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Owner.PressKey()) {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = GunOnFireRot;
-                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 20 + new Vector2(0, -3) + OffsetPos;
+                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
                 if (HaveAmmo) {
                     onFire = true;
@@ -119,6 +136,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             else {
                 onFire = false;
+            }
+
+            if (Owner.PressKey(false) && !onFire && CanRightClick) {
+                Owner.direction = ToMouse.X > 0 ? 1 : -1;
+                Projectile.rotation = GunOnFireRot;
+                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
+                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
+                if (HaveAmmo) {
+                    onFireR = true;
+                    Projectile.ai[1]++;
+                }
+            }
+            else {
+                onFireR = false;
             }
         }
 
@@ -135,12 +166,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         /// <summary>
-        /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
+        /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="BaseHeldRanged.onFire"/>为<see cref="true"/>才可能调用。
+        /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
         /// </summary>
         public virtual void FiringShoot() {
             Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
+        }
+
+        /// <summary>
+        /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="BaseGun.onFireR"/>为<see cref="true"/>才可能调用。
+        /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
+        /// </summary>
+        public virtual void FiringShootR() {
+            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            _ = UpdateConsumeAmmo();
+            _ = CreateRecoil();
+        }
+
+        public virtual void CaseEjection(float slp = 1) {
+            Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
+            int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
+            Main.projectile[proj].scale = slp;
         }
 
         public override void SpanProj() {
@@ -153,6 +201,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                 Projectile.ai[1] = 0;
                 onFire = false;
+            }
+            if (onFireR && Projectile.ai[1] > heldItem.useTime) {
+                if (FiringDefaultSound) {
+                    SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+                }
+
+                FiringShootR();
+
+                Projectile.ai[1] = 0;
+                onFireR = false;
             }
         }
 

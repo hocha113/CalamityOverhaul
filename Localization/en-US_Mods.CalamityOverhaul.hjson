@@ -506,7 +506,12 @@ Items: {
 
 	InfinitePick: {
 		DisplayName: Infinite Pick
-		Tooltip: You can sense that the very lands of Terraria trembles in fear whenever you hold it.
+		Tooltip:
+			'''
+			Right-click and destroy everything it touches
+			Press [KEY] to change the mode
+			 You can sense that the very lands of Terraria trembles in fear whenever you hold it.
+			'''
 	}
 
 	DarkMatterBall: {
@@ -1114,12 +1119,103 @@ Items: {
 
 	AngelicShotgun: {
 		DisplayName: Angelic Shotgun
-		Tooltip: ""
+		Tooltip:
+			'''
+			Strong recoil
+			Blessed the shot with the Holy Spirit
+			It turns musket bullets into torch rounds
+			A large caliber shotgun, which, in its own way, reeks of the Holy spirit
+			'''
 	}
 
 	AquashardShotgun: {
 		DisplayName: Aquashard Shotgun
-		Tooltip: ""
+		Tooltip:
+			'''
+			Strong recoil
+			It turns musket bullets into Marine prisms
+			'''
+	}
+
+	Animosity: {
+		DisplayName: Animosity
+		Tooltip:
+			'''
+			General recoil
+			Converting musket bullets into kinetic energy bullets
+			The right shot is scattered and the number of shots is fired
+			'''
+	}
+
+	CorinthPrime: {
+		DisplayName: Corinth Prime
+		Tooltip:
+			'''
+			General recoil
+			Fire six high-velocity rounds
+			Right-click and fire a small grenade
+			If the grenade does not touch the enemy within two seconds, it will cause a huge explosion
+			Otherwise it will only trigger a small shock wave
+			'''
+	}
+
+	CursedCapper: {
+		DisplayName: Cursed Capper
+		Tooltip:
+			'''
+			Weak recoil
+			Fire the liquid bullet
+			"You don't want to know where it came from."
+			'''
+	}
+
+	Disseminator: {
+		DisplayName: Disseminator
+		Tooltip:
+			'''
+			General recoil
+			A hail of gunfire
+			Right click for rapid point shot
+			"Textbook crossfire."
+			'''
+	}
+
+	Hellborn: {
+		DisplayName: Hellborn
+		Tooltip:
+			'''
+			Weak recoil
+			A red-hot shotgun
+			When fired, the gun body will deal great damage to enemies
+			'''
+	}
+
+	PetrifiedDisease: {
+		DisplayName: Petrified Disease
+		Tooltip:
+			'''
+			Fire a giant stone poison arrow
+			"A strange disease, whether biological or plant, that gradually turns to stone upon infection."
+			'''
+	}
+
+	Helstorm: {
+		DisplayName: Helstorm
+		Tooltip:
+			'''
+			Weak recoil
+			"Better than Hellborn."
+			'''
+	}
+
+	Leviatitan: {
+		DisplayName: Leviatitan
+		Tooltip:
+			'''
+			Weak recoil
+			Convert musket bullets into water balloons or ocean bullets
+			"Wanna know the trick to induce vomiting?" Leviathan squinted, "Century egg with cheese, guaranteed to turn you into a vomit connoisseur."
+			'''
 	}
 }
 
@@ -1383,6 +1479,17 @@ Projectiles: {
 	CoralCannonHeldProj.DisplayName: Coral Cannon Held Proj
 	AngelicShotgunHeldProj.DisplayName: Angelic Shotgun Held Proj
 	AquashardShotgunHeldProj.DisplayName: Aquashard Shotgun Held Proj
+	AnimosityOnSpan.DisplayName: Animosity On Span
+	AnimosityHeldProj.DisplayName: Animosity Held Proj
+	CorinthPrimeHeldProj.DisplayName: Corinth Prime Held Proj
+	CursedCapperHeldProj.DisplayName: Cursed Capper Held Proj
+	QuadBarrelShotgunHeldProj.DisplayName: Quad Barrel Shotgun Held Proj
+	DisseminatorHeldProj.DisplayName: Disseminator Held Proj
+	HellbornHeldProj.DisplayName: Hellborn Held Proj
+	HelstormHeldProj.DisplayName: Helstorm Held Proj
+	LeviatitanHeldProj.DisplayName: Leviatitan Held Proj
+	PetrifiedDiseaseHeldProj.DisplayName: Petrified Disease Held Proj
+	PetrifiedDiseaseAorrw.DisplayName: Petrified Disease Aorrw
 }
 
 Configs: {

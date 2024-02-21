@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content
             if (SpanTypes == (byte)SpanTypesEnum.Phantom && projectile.numHits == 0) {
                 Projectile.NewProjectile(projectile.parent(), player.Center + projectile.velocity.GetNormalVector() * Main.rand.Next(-130, 130)
                     , projectile.velocity, ModContent.ProjectileType<PhantasmArrow>()
-                    , projectile.damage, projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
+                    , (int)(projectile.damage * 1.5f), projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.Alluvion && projectile.numHits == 0) {

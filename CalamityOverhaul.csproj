@@ -9,9 +9,13 @@
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Remove="Content\NPCs\HeavenEaters\**" />
+    <AdditionalFiles Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
     <Compile Remove="Content\NPCs\HeavenEaters\**" />
+    <Compile Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
     <EmbeddedResource Remove="Content\NPCs\HeavenEaters\**" />
+    <EmbeddedResource Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
     <None Remove="Content\NPCs\HeavenEaters\**" />
+    <None Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\NPCs\TODOs.txt" />

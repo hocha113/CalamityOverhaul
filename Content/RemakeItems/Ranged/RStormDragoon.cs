@@ -1,16 +1,15 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod;
+using CalamityMod.Items;
+using CalamityMod.Rarities;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
-using CalamityMod.Rarities;
-using CalamityMod;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
@@ -19,7 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.StormDragoon>();
         public override int ProtogenesisID => ModContent.ItemType<StormDragoon>();
         public override void SetDefaults(Item item) {
-            item.damage = 96;
+            item.damage = 66;
             item.DamageType = DamageClass.Ranged;
             item.width = 74;
             item.height = 34;

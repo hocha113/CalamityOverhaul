@@ -4,6 +4,8 @@ using CalamityOverhaul.Content.Items.Ranged;
 using Terraria.ID;
 using Terraria;
 using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
+using System;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {

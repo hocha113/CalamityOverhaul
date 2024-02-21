@@ -7,34 +7,30 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// <summary>
-    /// 发条鳄鱼枪
-    /// </summary>
-    internal class ClockGatlignum : EctypeItem
+    internal class Animosity : EctypeItem
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "ClockGatlignum";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Animosity";
         public override void SetDefaults() {
-            Item.damage = 30;
+            Item.damage = 33;
             Item.DamageType = DamageClass.Ranged;
-            Item.width = 66;
-            Item.height = 34;
-            Item.useTime = 3;
-            Item.useAnimation = 9;
-            Item.reuseDelay = 12;
+            Item.width = 70;
+            Item.height = 18;
+            Item.useTime = 4;
+            Item.useAnimation = 12;
+            Item.reuseDelay = 15;
             Item.useLimitPerAnimation = 3;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
-            Item.knockBack = 3.75f;
-            Item.value = CalamityGlobalItem.Rarity8BuyPrice;
-            Item.rare = ItemRarityID.Yellow;
+            Item.knockBack = 2f;
+            Item.value = CalamityGlobalItem.Rarity7BuyPrice;
+            Item.rare = ItemRarityID.Lime;
             Item.UseSound = SoundID.Item31;
             Item.autoReuse = true;
             Item.shoot = ProjectileID.PurificationPowder;
-            Item.shootSpeed = 20f;
+            Item.shootSpeed = 11f;
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.CWR().heldProjType = ModContent.ProjectileType<ClockGatlignumHeldProj>();
-            Item.CWR().hasHeldNoCanUseBool = true;
+            Item.SetHeldProj<AnimosityHeldProj>();
         }
     }
 }

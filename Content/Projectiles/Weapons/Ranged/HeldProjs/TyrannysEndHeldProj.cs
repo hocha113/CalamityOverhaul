@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -34,11 +35,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         /// </summary>
         protected int kreloadTime;
 
+        public override void SetRangedProperty() {
+            
+        }
+
         protected virtual SoundStyle loadTheRounds => CWRSound.CaseEjection2;
 
         public override void InOwner() {
             if (!CWRKeySystem.ADS_Key.Old)
                 Owner.scope = false;
+
+            if (heldItem.type != ItemID.None)
+                isKreload = heldItem.CWR().IsKreload;
 
             float armRotSengsFront = 30 * CWRUtils.atoR;
             float armRotSengsBack = 150 * CWRUtils.atoR;
@@ -87,6 +95,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     if (kreloadTime <= 0) {//时间完成后设置装弹状态并准备下一次发射
                         onKreload = false;
                         isKreload = true;
+                        heldItem.CWR().IsKreload = true;
                         kreloadTime = 0;
                     }
                 }
@@ -120,6 +129,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 CreateRecoil();
                 loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
                 isKreload = false;
+                heldItem.CWR().IsKreload = false;
                 Projectile.ai[1] = 0;
                 onFire = false;
             }

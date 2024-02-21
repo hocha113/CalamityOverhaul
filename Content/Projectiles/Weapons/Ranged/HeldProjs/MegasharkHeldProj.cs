@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ItemID.Megashark;//这样的用法可能需要进行一定的考查，因为基类的设计并没有考虑到原版物品
         public override float ControlForce => 0.07f;
         public override float GunPressure => 0.25f;
-        public override float Recoil => 1.5f;
+        public override float Recoil => 1.3f;
         public override void InOwner() {
             float armRotSengsFront = 60 * CWRUtils.atoR;
             float armRotSengsBack = 110 * CWRUtils.atoR;

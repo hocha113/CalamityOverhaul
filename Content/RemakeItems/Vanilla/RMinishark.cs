@@ -1,12 +1,10 @@
-﻿using CalamityOverhaul.Content.RemakeItems.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using CalamityOverhaul.Content.RemakeItems.Core;
+using System.Collections.Generic;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
-using Microsoft.Xna.Framework.Input;
-using Terraria.Localization;
-using CalamityOverhaul.Common;
-using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {

@@ -23,9 +23,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         {
             Item.height = 154;
             Item.width = 154;
-            Item.damage = 352;
+            Item.damage = 435;
             Item.DamageType = DamageClass.Melee;
-            Item.useAnimation = Item.useTime = 16;
+            Item.useAnimation = Item.useTime = 15;
             Item.scale = 0.8f;
             Item.useTurn = true;
             Item.useStyle = ItemUseStyleID.Swing;

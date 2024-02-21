@@ -1,26 +1,24 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Items.Ranged.Extras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class ElementalBlasterHeldProj : BaseHeldGun
+    internal class PetrifiedDiseaseHeldProj : BaseHeldRanged
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "ElementalBlaster";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ElementalBlaster>();
-        public override int targetCWRItem => ModContent.ItemType<ElementalBlaster>();
-        public override float ControlForce => 0f;
-        public override float GunPressure => 0f;
-        public override float Recoil => 0f;
+        public override string Texture => CWRConstant.Item_Ranged + "PetrifiedDisease";
+        public override int targetCayItem => ModContent.ItemType<PetrifiedDisease>();
+        public override int targetCWRItem => ModContent.ItemType<PetrifiedDisease>();
         public override void InOwner() {
             float armRotSengsFront = 60 * CWRUtils.atoR;
             float armRotSengsBack = 110 * CWRUtils.atoR;
 
-            Projectile.Center = Owner.Center + new Vector2(DirSign * 20, 0);
+            Projectile.Center = Owner.Center + new Vector2(DirSign * 12, 0);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(20) : MathHelper.ToRadians(160);
             Projectile.timeLeft = 2;
             SetHeld();
@@ -29,15 +27,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (Owner.PressKey()) {
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = ToMouseA;
-                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 25 + new Vector2(0, -5);
+                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 12;
                     armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
                     if (HaveAmmo) {
                         onFire = true;
                         Projectile.ai[1]++;
+                        if (Projectile.ai[1] > 40)
+                        armRotSengsFront += MathF.Sin(Time * 0.4f) * 0.7f;
                     }
                 }
                 else {
                     onFire = false;
+                    Projectile.ai[1] = 0;
                 }
             }
 
@@ -48,15 +49,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SpanProj() {
             if (onFire && Projectile.ai[1] > heldItem.useTime) {
                 SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
-                int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                        , ModContent.ProjectileType<EnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                        , ModContent.ProjectileType<EnergyBlast2>(), WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 1, proj, -60);
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                        , ModContent.ProjectileType<EnergyBlast2>(), WeaponDamage / 2, 0, Owner.whoAmI, -1, proj, 60);
+                Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity.UnitVector() * 17
+                    , ModContent.ProjectileType<PetrifiedDiseaseAorrw>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+
                 Projectile.ai[1] = 0;
                 onFire = false;
             }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D value = CWRUtils.GetT2DValue(Texture);
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
+                , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None);
+            return false;
         }
     }
 }

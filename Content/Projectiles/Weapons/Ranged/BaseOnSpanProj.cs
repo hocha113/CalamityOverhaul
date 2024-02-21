@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     /// 一个通用的用于制造蓄力效果的实体栈，其中Projectile.ai[0]默认作为时间计数器
     /// 而Projectile.ai[1]用于存储需要跟随的弹幕的索引
     /// </summary>
-    internal class BaseOnSpanProj : ModProjectile
+    internal abstract class BaseOnSpanProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
         public Player Owner => Main.player[Projectile.owner];

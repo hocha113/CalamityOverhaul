@@ -1276,6 +1276,11 @@ namespace CalamityOverhaul
         }
 
         public static CWRItems CWR(this Item item) {
+            if (item.type == ItemID.None) {
+                "ERROR!发生了一次空传递，该物品为None!".Domp();
+                "ERROR!发生了一次空传递，该物品为None!".DompInConsole();
+                return null;
+            }
             return item.GetGlobalItem<CWRItems>();
         }
 

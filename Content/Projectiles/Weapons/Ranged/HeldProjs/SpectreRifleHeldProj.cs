@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             float armRotSengsFront = 60 * CWRUtils.atoR;
             float armRotSengsBack = 110 * CWRUtils.atoR;
 
-            Projectile.Center = Owner.Center + new Vector2(DirSign * 30, 10);
+            Projectile.Center = Owner.Center + new Vector2(DirSign * 30, 3);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(20) : MathHelper.ToRadians(160);
             Projectile.timeLeft = 2;
             SetHeld();
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (Owner.PressKey()) {
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = GunOnFireRot;
-                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 25 + new Vector2(0, 0);
+                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 30 + new Vector2(0, -8);
                     armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign;
                     if (HaveAmmo) {
                         onFire = true;

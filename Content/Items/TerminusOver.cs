@@ -81,7 +81,6 @@ namespace CalamityOverhaul.Content.Items
         }
 
         public override void UpdateInventory(Player player) {
-            //player.ActiveItem().ModItem?.FullName.Domp();
             if (BossRushEvent.BossRushActive) {
                 Item.SetNameOverride(CalamityUtils.ColorMessage(GenerateRandomString(Main.rand.Next(16, 23))
                     , CWRUtils.MultiLerpColor(Main.rand.NextFloat(), Color.Red, Color.Black, Color.Purple, Color.Plum)));

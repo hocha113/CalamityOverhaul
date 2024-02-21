@@ -488,7 +488,12 @@ Items: {
 
 	InfinitePick: {
 		DisplayName: 寰宇贪婪镐
-		Tooltip: ""
+		Tooltip:
+			'''
+			右键摧毁触及的一切
+			按下[KEY]切换形态
+			"你可以感觉到，每当你握住，泰拉瑞亚的土地就会在恐惧中颤抖"
+			'''
 	}
 
 	DarkMatterBall: {
@@ -1109,6 +1114,87 @@ Items: {
 			会将火枪子弹转化为海洋棱晶弹
 			'''
 	}
+
+	Animosity: {
+		DisplayName: 憎恶
+		Tooltip:
+			'''
+			一般的后坐力
+			将火枪子弹转化为动能子弹
+			右键呈散射状发射数发动能子弹
+			'''
+	}
+
+	CorinthPrime: {
+		DisplayName: 科林斯Prime
+		Tooltip:
+			'''
+			一般的后坐力
+			发射六发高速弹
+			右键发射一颗小型榴弹
+			榴弹如果在两秒内没有接触敌人，便会引发巨大的爆炸
+			否则只会触发一次小型的冲击波
+			'''
+	}
+
+	CursedCapper: {
+		DisplayName: 诅咒手枪
+		Tooltip:
+			'''
+			较弱的后坐力
+			发射灵液子弹
+			"你绝对不会想知道它是从哪里掏出来的"
+			'''
+	}
+
+	Disseminator: {
+		DisplayName: 散播者
+		Tooltip:
+			'''
+			一般的后坐力
+			枪林弹雨般的交叉火力
+			右键进行疾速点射
+			"交叉火力作战的教科书"
+			'''
+	}
+
+	Hellborn: {
+		DisplayName: 地狱降临
+		Tooltip:
+			'''
+			较弱的后坐力
+			一把炽热的霰弹枪
+			开火时枪身将可以对敌人造成巨大伤害
+			'''
+	}
+
+	PetrifiedDisease: {
+		DisplayName: 化石病
+		Tooltip:
+			'''
+			发射一发巨大石性毒箭
+			"一种奇怪的疾病，不管是生物还是植物都会在感染后逐渐变成石头"
+			'''
+	}
+
+	Helstorm: {
+		DisplayName: 地狱风暴
+		Tooltip:
+			'''
+			弱的后坐力
+			"比地狱降临更好"
+			'''
+	}
+
+	Leviatitan: {
+		DisplayName: 利维坦海潮枪
+		Tooltip:
+			'''
+			弱的后坐力
+			将火枪子弹转化为水球或者海洋弹
+			"想知道引发呕吐的诀窍吗？" 利维坦眯起了眼睛，"皮蛋加奶酪，保准你秒变呕吐专家。"
+			'''
+	}
 }
 
 Projectiles: {
@@ -1371,6 +1457,17 @@ Projectiles: {
 	// CoralCannonHeldProj.DisplayName: Coral Cannon Held Proj
 	// AngelicShotgunHeldProj.DisplayName: Angelic Shotgun Held Proj
 	// AquashardShotgunHeldProj.DisplayName: Aquashard Shotgun Held Proj
+	// AnimosityOnSpan.DisplayName: Animosity On Span
+	// AnimosityHeldProj.DisplayName: Animosity Held Proj
+	// CorinthPrimeHeldProj.DisplayName: Corinth Prime Held Proj
+	// CursedCapperHeldProj.DisplayName: Cursed Capper Held Proj
+	// QuadBarrelShotgunHeldProj.DisplayName: Quad Barrel Shotgun Held Proj
+	// DisseminatorHeldProj.DisplayName: Disseminator Held Proj
+	// HellbornHeldProj.DisplayName: Hellborn Held Proj
+	// HelstormHeldProj.DisplayName: Helstorm Held Proj
+	// LeviatitanHeldProj.DisplayName: Leviatitan Held Proj
+	// PetrifiedDiseaseHeldProj.DisplayName: Petrified Disease Held Proj
+	// PetrifiedDiseaseAorrw.DisplayName: Petrified Disease Aorrw
 }
 
 Configs: {
