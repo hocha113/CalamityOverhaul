@@ -72,10 +72,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             if (npc != null) {
                 if (Time % 30 == 0) {
                     Vector2 vr = new Vector2(0, 13);
-                    GangarusWave pulse = new GangarusWave(npc.Center + new Vector2(0, -360), vr, Color.Red, new Vector2(1.2f, 3f), vr.ToRotation(), 0.32f, 0.82f + (slp * 0.001f), 180, npc);
+                    GangarusWave pulse = new GangarusWave(npc.Center + new Vector2(0, -360), vr, Color.Red, new Vector2(1.2f, 3f) * 0.6f, vr.ToRotation(), 0.32f, 0.82f + (slp * 0.001f), 180, npc);
                     CWRParticleHandler.AddParticle(pulse);
                     Vector2 vr2 = new Vector2(0, -13);
-                    GangarusWave pulse2 = new GangarusWave(npc.Center + new Vector2(0, 360), vr2, Color.Red, new Vector2(1.2f, 3f), vr2.ToRotation(), 0.32f, 0.82f + (slp * 0.001f), 180, npc);
+                    GangarusWave pulse2 = new GangarusWave(npc.Center + new Vector2(0, 360), vr2, Color.Red, new Vector2(1.2f, 3f) * 0.6f, vr2.ToRotation(), 0.32f, 0.82f + (slp * 0.001f), 180, npc);
                     CWRParticleHandler.AddParticle(pulse2);
                 }
                 npc.CWR().GangarusSign = true;

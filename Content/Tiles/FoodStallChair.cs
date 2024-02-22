@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.ObjectInteractions;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -73,7 +74,7 @@ namespace CalamityOverhaul.Content.Tiles
 
         public override void MouseOver(int i, int j) {
             Player player = Main.LocalPlayer;
-
+            
             if (!player.IsWithinSnappngRangeToTile(i, j, 180)) { // 匹配RightClick中条件。仅当单击时执行某些操作时才应显示交互
                 return;
             }
@@ -84,6 +85,21 @@ namespace CalamityOverhaul.Content.Tiles
 
             if (Main.tile[i, j].TileFrameX / 18 < 1) {
                 player.cursorItemIconReversed = true;
+            }
+
+            if (Main.tile[i, j].TileFrameX >= 36) {
+                Main.raining = true;
+                Main.maxRaining = 0.99f;
+                Main.cloudAlpha = 0.99f;
+                Main.windSpeedTarget = 0.8f;
+                PunchCameraModifier modifier2 = new PunchCameraModifier(new Vector2(i, j) * 16, new Vector2(0, Main.rand.NextFloat(-2, 2)), 2f, 3f, 2, 1000f, FullName);
+                Main.instance.CameraModifiers.Add(modifier2);
+            }
+            else {
+                Main.raining = false;
+                Main.maxRaining = 0;
+                Main.cloudAlpha = 0;
+                Main.windSpeedTarget = 0;
             }
         }
 

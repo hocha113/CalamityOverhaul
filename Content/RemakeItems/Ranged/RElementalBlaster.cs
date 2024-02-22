@@ -33,6 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.autoReuse = true;
             item.shoot = ModContent.ProjectileType<RainbowBlast>();
             item.shootSpeed = 18f;
+            item.useAmmo = AmmoID.Bullet;
             item.CWR().heldProjType = ModContent.ProjectileType<ElementalBlasterHeldProj>();
             item.CWR().hasHeldNoCanUseBool = true;
         }

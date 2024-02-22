@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.ModLoader;
 using Terraria;
 using Terraria.ID;
+using CalamityMod;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -113,6 +114,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void SpanProj() {
             if (onFire && Projectile.ai[1] > 10) {
+                if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
+                    LuxirEvent();
+                }
                 OnSpanProjFunc();
                 CreateRecoil();
                 loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示

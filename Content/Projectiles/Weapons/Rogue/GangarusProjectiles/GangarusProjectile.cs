@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
         public override string Texture => CWRConstant.Item + "Rogue/Gangarus";
         public Player Owner => Main.player[Projectile.owner];
         private bool SpanPrmst = true;
+        private bool StealthStrike => Projectile.ai[0] > 0;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 16;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
@@ -56,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             int spanPrestMaxWid = (int)(Projectile.width * Projectile.scale);
             if (Projectile.numHits == 0) {
                 if (SpanPrmst) {
-                    if (Projectile.Calamity().stealthStrike) {
+                    if (StealthStrike) {
                         for (int i = 0; i < 4; i++) {
                             float rot = MathHelper.PiOver2 * i;
                             Vector2 vr = rot.ToRotationVector2() * 10;
@@ -143,7 +144,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
         }
 
         public override void OnKill(int timeLeft) {
-            if (Projectile.Calamity().stealthStrike && Projectile.numHits == 0) {
+            if (StealthStrike && Projectile.numHits == 0) {
                 SpanSoulSeeker(Owner.Center);
             }
         }

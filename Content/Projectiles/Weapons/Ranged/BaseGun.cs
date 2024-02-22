@@ -4,6 +4,8 @@ using System;
 using Terraria.Audio;
 using Terraria;
 using Terraria.ModLoader;
+using CalamityMod.Projectiles.Ranged;
+using CalamityMod;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -176,13 +178,33 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         /// <summary>
-        /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="BaseGun.onFireR"/>为<see cref="true"/>才可能调用。
+        /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="onFireR"/>为<see cref="true"/>才可能调用。
         /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
         /// </summary>
         public virtual void FiringShootR() {
             Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
+        }
+
+        /// <summary>
+        /// 一个快捷创建属于卢克索饰品的发射事件，如果luxorsGift为<see langword="true"/>,
+        /// 或者<see cref="CWRPlayer.theRelicLuxor"/>大于0，便会调用该方法，在Firing方法之后调用
+        /// </summary>
+        public virtual void LuxirEvent() {
+            float damageMult = 1f;
+            if (heldItem.useTime < 10) {
+                damageMult -= (10 - heldItem.useTime) / 10f;
+            }   
+            int luxirDamage = Owner.ApplyArmorAccDamageBonusesTo(WeaponDamage * damageMult * 0.15f);
+            if (luxirDamage > 1) {
+                SpanLuxirProj(luxirDamage);
+            }
+        }
+
+        public virtual int SpanLuxirProj(int luxirDamage) {
+            return Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+                , ModContent.ProjectileType<LuxorsGiftRanged>(), luxirDamage, WeaponKnockback / 2, Owner.whoAmI, 0);
         }
 
         public virtual void CaseEjection(float slp = 1) {
@@ -192,25 +214,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void SpanProj() {
-            if (onFire && Projectile.ai[1] > heldItem.useTime) {
+            if (Projectile.ai[1] > heldItem.useTime) {
                 if (FiringDefaultSound) {
                     SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
                 }
 
-                FiringShoot();
+                if (onFire) {
+                    FiringShoot();
+                }
+                if (onFireR) {
+                    FiringShootR();
+                }
+                if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
+                    LuxirEvent();
+                }
 
                 Projectile.ai[1] = 0;
                 onFire = false;
-            }
-            if (onFireR && Projectile.ai[1] > heldItem.useTime) {
-                if (FiringDefaultSound) {
-                    SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
-                }
-
-                FiringShootR();
-
-                Projectile.ai[1] = 0;
-                onFireR = false;
             }
         }
 

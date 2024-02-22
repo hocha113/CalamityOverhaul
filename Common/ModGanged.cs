@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Common
         public static MethodBase weaponDisplay_ModifyDrawInfo_Method;
 
         public static void Load() {
-            #region 1
+            #region weaponOut
             if (CWRMod.Instance.weaponOut != null) {
                 weaponOutCodeTypes = AssemblyManager.GetLoadableTypes(CWRMod.Instance.weaponOut.Code);
                 foreach (Type type in weaponOutCodeTypes) {
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Common
             }
             #endregion
 
-            #region 2
+            #region weaponDisplay
             if (CWRMod.Instance.weaponDisplay != null) {
                 weaponDisplayCodeTypes = AssemblyManager.GetLoadableTypes(CWRMod.Instance.weaponDisplay.Code);
                 foreach (Type type in weaponDisplayCodeTypes) {

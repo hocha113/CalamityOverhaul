@@ -3,6 +3,7 @@ using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -30,6 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<RainbowBlast>();
             Item.shootSpeed = 18f;
+            Item.useAmmo = AmmoID.Bullet;
             Item.CWR().heldProjType = ModContent.ProjectileType<ElementalBlasterHeldProj>();
             Item.CWR().hasHeldNoCanUseBool = true;
         }

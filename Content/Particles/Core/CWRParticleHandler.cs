@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Particles.Core
             particlesToKill.Add(particle);
         }
 
-        public static void DrawAllParticles(SpriteBatch sb) {
+        public static void DrawAll(SpriteBatch sb) {
             if (particles.Count == 0)
                 return;
 

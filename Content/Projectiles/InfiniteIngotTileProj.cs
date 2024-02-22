@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Graphics.Metaballs;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Particles;
 using Microsoft.Xna.Framework;
@@ -68,12 +69,12 @@ namespace CalamityOverhaul.Content.Projectiles
             if (Main.netMode != NetmodeID.Server) {
                 for (int i = 0; i < 2; i++) {
                     Vector2 spawnPosition = Projectile.Center;
-                    DarkMatterMetaBall.SpawnParticle(spawnPosition, Main.rand.NextVector2Circular(3f, 3f), 215f * Projectile.scale);
+                    StreamGougeMetaball.SpawnParticle(spawnPosition, Main.rand.NextVector2Circular(3f, 3f), 215f * Projectile.scale);
                 }
 
                 for (int i = 0; i < 2; i++) {
                     Vector2 spawnPosition = Projectile.Center;
-                    DarkMatterMetaBall.SpawnParticle(spawnPosition, Main.rand.NextVector2Circular(3f, 3f), 215f * Projectile.scale);
+                    StreamGougeMetaball.SpawnParticle(spawnPosition, Main.rand.NextVector2Circular(3f, 3f), 215f * Projectile.scale);
                 }
             }
         }

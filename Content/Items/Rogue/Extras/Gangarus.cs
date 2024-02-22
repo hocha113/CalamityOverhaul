@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (ChargeGrade > 0) {
                 int proj = Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<GangarusProjectile>(), damage, knockback, player.whoAmI);
-                Main.projectile[proj].Calamity().stealthStrike = true;
+                Main.projectile[proj].ai[0] = 1;
                 Main.projectile[proj].ai[1] = ChargeGrade;
                 ChargeGrade = 0;
                 return false;

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.UIs
         public Vector2 inCellPos => DrawPos + new Vector2(35, 32);
         public Vector2 cellSlpV => new Vector2(55, 50);
         public int maxXNum => 4;
-        int snegValue => (ecTypeItemList.Count / 4 + 1) * 40;
+        int snegValue => (ecTypeItemList.Count / 4 + 1) * 42;
         float SliderValueSengs {
             get {
                 if (LCCoffsetY == 0) {

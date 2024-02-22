@@ -8,6 +8,9 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
+    /// <summary>
+    /// 啸流
+    /// </summary>
     internal class Alluvion : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Alluvion";
