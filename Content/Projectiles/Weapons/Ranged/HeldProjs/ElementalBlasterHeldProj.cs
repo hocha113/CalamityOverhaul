@@ -8,55 +8,31 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class ElementalBlasterHeldProj : BaseHeldGun
+    internal class ElementalBlasterHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ElementalBlaster";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ElementalBlaster>();
         public override int targetCWRItem => ModContent.ItemType<ElementalBlaster>();
-        public override float ControlForce => 0f;
-        public override float GunPressure => 0f;
-        public override float Recoil => 0f;
-        public override void InOwner() {
-            float armRotSengsFront = 60 * CWRUtils.atoR;
-            float armRotSengsBack = 110 * CWRUtils.atoR;
-
-            Projectile.Center = Owner.Center + new Vector2(DirSign * 20, 0);
-            Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(20) : MathHelper.ToRadians(160);
-            Projectile.timeLeft = 2;
-            SetHeld();
-
-            if (!Owner.mouseInterface) {
-                if (Owner.PressKey()) {
-                    Owner.direction = ToMouse.X > 0 ? 1 : -1;
-                    Projectile.rotation = ToMouseA;
-                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 25 + new Vector2(0, -5);
-                    armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
-                    if (HaveAmmo) {
-                        onFire = true;
-                        Projectile.ai[1]++;
-                    }
-                }
-                else {
-                    onFire = false;
-                }
-            }
-
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotSengsFront * -DirSign);
-            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotSengsBack * -DirSign);
+        public override void SetRangedProperty() {
+            ControlForce = 0f;
+            GunPressure = 0f;
+            Recoil = 0f;
+            HandDistance = 20;
+            HandFireDistance = 25;
+            HandFireDistanceY = -5;
         }
 
-        public override void SpanProj() {
-            if (onFire && Projectile.ai[1] > heldItem.useTime) {
-                SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
-                int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                        , ModContent.ProjectileType<EnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                        , ModContent.ProjectileType<EnergyBlast2>(), WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 1, proj, -60);
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                        , ModContent.ProjectileType<EnergyBlast2>(), WeaponDamage / 2, 0, Owner.whoAmI, -1, proj, 60);
-                Projectile.ai[1] = 0;
-                onFire = false;
-            }
+        public override void FiringIncident() {
+            base.FiringIncident();
+        }
+
+        public override void FiringShoot() {
+            int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+                       , ModContent.ProjectileType<EnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+                    , ModContent.ProjectileType<EnergyBlast2>(), WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 1, proj, -60);
+            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+                    , ModContent.ProjectileType<EnergyBlast2>(), WeaponDamage / 2, 0, Owner.whoAmI, -1, proj, 60);
         }
     }
 }

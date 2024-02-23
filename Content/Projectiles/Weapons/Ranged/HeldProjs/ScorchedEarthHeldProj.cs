@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using System;
@@ -8,14 +9,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class ScorchedEarthHeldProj : BaseHeldGun
+    internal class ScorchedEarthHeldProj : BaseGun
     {
         public override string Texture => isKreload ? CWRConstant.Item_Ranged + "ScorchedEarth_PrimedForAction" : CWRConstant.Cay_Wap_Ranged + "ScorchedEarth";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ScorchedEarth>();
         public override int targetCWRItem => ModContent.ItemType<ScorchedEarth>();
-        public override float ControlForce => 0.02f;
-        public override float GunPressure => 0.75f;
-        public override float Recoil => 15f;
         /// <summary>
         /// 装弹提醒，一般来讲会依赖左键的按键事件进行更新
         /// </summary>
@@ -35,9 +33,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         protected virtual SoundStyle loadTheRounds => CWRSound.CaseEjection2;
 
+        public override void SetRangedProperty() {
+            ControlForce = 0.02f;
+            GunPressure = 0.75f;
+            Recoil = 15f;
+        }
+
         public override void InOwner() {
-            float armRotSengsFront = 30 * CWRUtils.atoR;
-            float armRotSengsBack = 150 * CWRUtils.atoR;
+            ArmRotSengsFront = 30 * CWRUtils.atoR;
+            ArmRotSengsBack = 150 * CWRUtils.atoR;
 
             Projectile.Center = Owner.Center + new Vector2(DirSign * 12, 0);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(10) : MathHelper.ToRadians(170);
@@ -49,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = GunOnFireRot;
                     Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 8 + new Vector2(0, -7);
-                    armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign;
+                    ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign;
                     if (HaveAmmo && isKreload) {//并进需要子弹，还需要判断是否已经装弹
                         onFire = true;
                         Projectile.ai[1]++;
@@ -65,8 +69,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
 
                 if (onKreload) {//装弹过程
-                    armRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign + 0.3f;
-                    armRotSengsFront += MathF.Sin(Time * 0.3f) * 0.7f;
+                    ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign + 0.3f;
+                    ArmRotSengsFront += MathF.Sin(Time * 0.3f) * 0.7f;
                     kreloadTime--;
                     if (kreloadTime == heldItem.useTime - 1) {
                         SoundEngine.PlaySound(CWRSound.CaseEjection with { Volume = 0.7f, Pitch = -0.3f }, Projectile.Center);
@@ -99,9 +103,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     loadingReminder = true;
                 }
             }
-
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotSengsFront * -DirSign);
-            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotSengsBack * -DirSign);
         }
 
         public virtual void OnSpanProjFunc() {
@@ -115,6 +116,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (onFire && Projectile.ai[1] > 10) {
                 OnSpanProjFunc();
                 CreateRecoil();
+                if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
+                    LuxirEvent();//因为重写了SpanProj,所以这里需要手动调用
+                }
                 loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
                 isKreload = false;
                 Projectile.ai[1] = 0;

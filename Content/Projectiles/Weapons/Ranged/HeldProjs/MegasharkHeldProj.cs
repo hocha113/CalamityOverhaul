@@ -8,7 +8,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class MegasharkHeldProj : BaseHeldGun
+    internal class MegasharkHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Placeholder;
 
@@ -21,51 +21,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override int targetCayItem => ItemID.Megashark;
         public override int targetCWRItem => ItemID.Megashark;//这样的用法可能需要进行一定的考查，因为基类的设计并没有考虑到原版物品
-        public override float ControlForce => 0.07f;
-        public override float GunPressure => 0.25f;
-        public override float Recoil => 1.3f;
-        public override void InOwner() {
-            float armRotSengsFront = 60 * CWRUtils.atoR;
-            float armRotSengsBack = 110 * CWRUtils.atoR;
-
-            Projectile.Center = Owner.Center + new Vector2(DirSign * 15, 0);
-            Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(20) : MathHelper.ToRadians(160);
-            Projectile.timeLeft = 2;
-            SetHeld();
-
-            if (!Owner.mouseInterface) {
-                if (Owner.PressKey()) {
-                    Owner.direction = ToMouse.X > 0 ? 1 : -1;
-                    Projectile.rotation = GunOnFireRot;
-                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 20 + new Vector2(0, -3) + offsetPos;
-                    armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
-                    if (HaveAmmo) {
-                        onFire = true;
-                        Projectile.ai[1]++;
-                    }
-                }
-                else {
-                    onFire = false;
-                }
-            }
-
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotSengsFront * -DirSign);
-            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotSengsBack * -DirSign);
+        public override void SetRangedProperty() {
+            ControlForce = 0.07f;
+            GunPressure = 0.25f;
+            Recoil = 1.3f;
+            HandDistance = 15;
+            HandFireDistance = 20;
+            HandFireDistanceY = -3;
         }
 
-        public override void SpanProj() {
-            if (onFire && Projectile.ai[1] > heldItem.useTime) {
-                SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
-                Vector2 gundir = Projectile.rotation.ToRotationVector2();
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, Projectile.rotation.ToRotationVector2() * ScaleFactor
-                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+        public override void FiringIncident() {
+            base.FiringIncident();
+        }
 
-                _ = UpdateConsumeAmmo();
-                _ = CreateRecoil();
+        public override void FiringShoot() {
+            Vector2 gundir = Projectile.rotation.ToRotationVector2();
+            Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, Projectile.rotation.ToRotationVector2() * ScaleFactor
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
 
-                Projectile.ai[1] = 0;
-                onFire = false;
-            }
+            _ = UpdateConsumeAmmo();
+            _ = CreateRecoil();
         }
     }
 }

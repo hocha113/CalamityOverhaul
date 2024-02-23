@@ -10,7 +10,7 @@ using CalamityMod;
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     /// <summary>
-    /// 一个改进版的枪基类，相对于<see cref="BaseHeldGun"/>，这个基类的基础实现会更加快捷和易于模板化
+    /// 一个改进版的枪基类，这个基类的基础实现会更加快捷和易于模板化
     /// </summary>
     internal abstract class BaseGun : BaseHeldRanged
     {

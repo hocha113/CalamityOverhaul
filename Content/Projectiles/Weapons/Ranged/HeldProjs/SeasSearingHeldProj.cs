@@ -6,23 +6,27 @@ using Terraria;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using System.Security.Cryptography.X509Certificates;
+using CalamityMod;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class SeasSearingHeldProj : BaseHeldGun
+    internal class SeasSearingHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SeasSearing";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.SeasSearing>();
         public override int targetCWRItem => ModContent.ItemType<SeasSearing>();
-        public override float ControlForce => 0.05f;
-        public override float GunPressure => 0.2f;
-        public override float Recoil => 1.5f;
         private const int maxFireCount = 7;
         private int indexFire;
-        private bool onFireR;
+        public override void SetRangedProperty() {
+            ControlForce = 0.05f;
+            GunPressure = 0.2f;
+            Recoil = 1.5f;
+            CanRightClick = true;
+        }
+
         public override void InOwner() {
-            float armRotSengsFront = 60 * CWRUtils.atoR;
-            float armRotSengsBack = 110 * CWRUtils.atoR;
+            ArmRotSengsFront = 60 * CWRUtils.atoR;
+            ArmRotSengsBack = 110 * CWRUtils.atoR;
 
             Projectile.Center = Owner.Center + new Vector2(DirSign * 20, 0);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(20) : MathHelper.ToRadians(160);
@@ -33,8 +37,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (Owner.PressKey()) {
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = GunOnFireRot;
-                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 20 + new Vector2(0, -3) + offsetPos;
-                    armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
+                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 20 + new Vector2(0, -3);
+                    ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
                     if (HaveAmmo) {
                         onFire = true;
                         Projectile.ai[1]++;
@@ -60,8 +64,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (Owner.PressKey(false) && !onFire) {
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = GunOnFireRot;
-                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 20 + new Vector2(0, -3) + offsetPos;
-                    armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
+                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 20 + new Vector2(0, -3);
+                    ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
                     if (HaveAmmo) {
                         onFireR = true;
                         Projectile.ai[1]++;
@@ -71,9 +75,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     onFireR = false;
                 }
             }
-
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotSengsFront * -DirSign);
-            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotSengsBack * -DirSign);
         }
 
         public override void SpanProj() {
@@ -83,6 +84,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
                     , ModContent.ProjectileType<SeasSearingBubble>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+
+                if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
+                    LuxirEvent();//因为重写了SpanProj,所以这里需要手动调用
+                }
 
                 _ = UpdateConsumeAmmo();
                 _ = CreateRecoil();
@@ -101,6 +106,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
                     , ModContent.ProjectileType<SeasSearingSecondary>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+
+                if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
+                    LuxirEvent();//因为重写了SpanProj,所以这里需要手动调用
+                }
 
                 _ = UpdateConsumeAmmo();
                 _ = CreateRecoil();
