@@ -11,6 +11,7 @@ using CalamityOverhaul.Content.Items.Ranged;
 using CalamityMod.Sounds;
 using CalamityMod;
 using Microsoft.Xna.Framework;
+using CalamityOverhaul.Common;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
@@ -41,7 +42,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             CWRUtils.EasySetLocalTextNameOverride(item, "AntiMaterielRifle");
         }
 
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "AntiMaterielRifle");
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
+            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "AntiMaterielRifle");
+            tooltips.ReplaceTooltip("[KEY]", CWRKeySystem.ADS_Key.TooltipHotkeyString(), CWRMod.Instance.Name);
+        }
 
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;

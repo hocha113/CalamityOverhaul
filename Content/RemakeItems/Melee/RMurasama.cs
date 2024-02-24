@@ -54,13 +54,17 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             // 创建一个新的集合以防修改 tooltips 集合时产生异常
             List<TooltipLine> newTooltips = new List<TooltipLine>(tooltips);
-            
+            List<TooltipLine> prefixTooltips = new List<TooltipLine>();
             // 遍历 tooltips 集合并隐藏特定的提示行
             foreach (TooltipLine line in newTooltips.ToList()) {
                 for (int i = 0; i < 9; i++) {
                     if (line.Name == "Tooltip" + i) {
                         line.Hide();
                     }
+                }
+                if (line.Name.Contains("Prefix")) {
+                    prefixTooltips.Add(line.Clone());
+                    line.Hide();
                 }
             }
             // 获取自定义的文本内容
@@ -89,10 +93,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 // 将新提示行添加到新集合中
                 newTooltips.Add(newLine);
             }
+
             Murasama.SetTooltip(ref newTooltips, CWRMod.Instance.Name);
             // 清空原 tooltips 集合并添加修改后的新Tooltips集合
             tooltips.Clear();
             tooltips.AddRange(newTooltips);
+            tooltips.AddRange(prefixTooltips);
         }
 
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) => damage *= Murasama.GetOnDamage / (float)Murasama.GetStartDamage;

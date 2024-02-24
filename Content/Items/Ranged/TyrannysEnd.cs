@@ -6,6 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
@@ -36,6 +37,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.Calamity().canFirePointBlankShots = true;
             Item.CWR().hasHeldNoCanUseBool = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<TyrannysEndHeldProj>();
+        }
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            tooltips.ReplaceTooltip("[KEY]", CWRKeySystem.ADS_Key.TooltipHotkeyString(), CWRMod.Instance.Name);
         }
     }
 }

@@ -757,7 +757,7 @@ Items: {
 			'''
 			Fires multiple flaming sickle projectiles that home in after they stop swinging along with homing flaming pumpkins that erupt into flares.
 			Right button lets you spin the scythe, letting go has you throw it causing an infernal eruption on the floor below.
-			                     You need to pick it back up after everytime you throw the scythe.
+			You need to pick it back up after everytime you throw the scythe.
 			'''
 	}
 
@@ -1012,6 +1012,7 @@ Items: {
 			An Extremely Heavy Anti-Materiel rifle that converts Musket Balls to high Velocity .70 Caliber Rounds, ripping through enemies and inflicting them with Marked for Death
 			After every shot, Right clicking causes the player to reload the rifle for the next shot.
 			Shots split into a swarm of several additional bullets along with an auric blast.
+			Press [KEY] to open the mirror
 			"Pierce the heart of even the most heavily-armored foe." 
 			'''
 	}
@@ -1023,8 +1024,8 @@ Items: {
 			Has Extreme Amounts of Recoil
 			A Heavy Anti-Materiel Rifle that converts musket balls to high velocity .50 Caliber Rounds, Ripping through enemies and inflicting them with Marked for death.
 			After every shot, Right clicking causes the player to reload the rifle for the next shot.
-			   Shots Split into a swarm of several aditional bullets.
-			   "360 NOSCOPE!!!"
+			Shots Split into a swarm of several aditional bullets.
+			"360 NOSCOPE!!!"
 			'''
 	}
 

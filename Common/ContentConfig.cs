@@ -37,13 +37,13 @@ namespace CalamityOverhaul.Common
         [ReloadRequired]
         [DefaultValue(true)]
         public bool WeaponEnhancementSystem { get; set; }
-        /// <summary>
-        /// 纹理资源替换
-        /// </summary>
-        [BackgroundColor(192, 54, 64, 192)]
-        [ReloadRequired]
-        [DefaultValue(true)]
-        public bool ReplaceAsset { get; set; }
+        ///// <summary>
+        ///// 纹理资源替换
+        ///// </summary>
+        //[BackgroundColor(192, 54, 64, 192)]
+        //[ReloadRequired]
+        //[DefaultValue(true)]
+        //public bool ReplaceAsset { get; set; }
         /// <summary>
         /// 重置物品的温馨提示
         /// </summary>

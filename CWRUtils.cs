@@ -1145,6 +1145,7 @@ namespace CalamityOverhaul
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, string key) {
             List<TooltipLine> newTooltips = new(tooltips);
             List<TooltipLine> overTooltips = new();
+            List<TooltipLine> prefixTooltips = new();
             foreach (TooltipLine line in tooltips.ToList()) {//复制 tooltips 集合，以便在遍历时修改
                 for (int i = 0; i < 9; i++) {
                     if (line.Name == "Tooltip" + i) {
@@ -1153,6 +1154,10 @@ namespace CalamityOverhaul
                 }
                 if (line.Name == "CalamityDonor" || line.Name == "CalamityDev") {
                     overTooltips.Add(line.Clone());
+                    line.Hide();
+                }
+                if (line.Name.Contains("Prefix")) {
+                    prefixTooltips.Add(line.Clone());
                     line.Hide();
                 }
             }
@@ -1163,6 +1168,7 @@ namespace CalamityOverhaul
             newTooltips.AddRange(overTooltips);
             tooltips.Clear(); // 清空原 tooltips 集合
             tooltips.AddRange(newTooltips); // 添加修改后的 newTooltips 集合
+            tooltips.AddRange(prefixTooltips);
         }
 
         /// <summary>
@@ -1171,6 +1177,7 @@ namespace CalamityOverhaul
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, LocalizedText value) {
             List<TooltipLine> newTooltips = new(tooltips);
             List<TooltipLine> overTooltips = new();
+            List<TooltipLine> prefixTooltips = new();
             foreach (TooltipLine line in tooltips.ToList()) {//复制 tooltips 集合，以便在遍历时修改
                 for (int i = 0; i < 9; i++) {
                     if (line.Name == "Tooltip" + i) {
@@ -1181,6 +1188,10 @@ namespace CalamityOverhaul
                     overTooltips.Add(line.Clone());
                     line.Hide();
                 }
+                if (line.Name.Contains("Prefix")) {
+                    prefixTooltips.Add(line.Clone());
+                    line.Hide();
+                }
             }
 
             TooltipLine newLine = new(mod, "CWRText", value.Value);
@@ -1188,10 +1199,11 @@ namespace CalamityOverhaul
             newTooltips.AddRange(overTooltips);
             tooltips.Clear(); // 清空原 tooltips 集合
             tooltips.AddRange(newTooltips); // 添加修改后的 newTooltips 集合
+            tooltips.AddRange(prefixTooltips);
         }
 
         public static TooltipLine Clone(this TooltipLine tooltipLine) {
-            Mod mod = null;
+            Mod mod = CWRMod.Instance;
             foreach (Mod mod1 in ModLoader.Mods) {
                 if (mod1.Name == tooltipLine.Mod) {
                     mod = mod1;

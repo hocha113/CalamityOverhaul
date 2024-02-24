@@ -31,11 +31,11 @@ namespace CalamityOverhaul.Content.Items
         }
 
         public override void PostSetupContent() {
-            if (ContentConfig.Instance.ReplaceAsset) {
-                TextureAssets.Item[ModContent.ItemType<GeliticBlade>()] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Replace/GeliticBlade");
-                TextureAssets.Item[ModContent.ItemType<Goobow>()] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Replace/Goobow");
-                TextureAssets.Item[ModContent.ItemType<GunkShot>()] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Replace/GunkShot");
-            }
+            //if (ContentConfig.Instance.ReplaceAsset) {
+            //    TextureAssets.Item[ModContent.ItemType<GeliticBlade>()] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Replace/GeliticBlade");
+            //    TextureAssets.Item[ModContent.ItemType<Goobow>()] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Replace/Goobow");
+            //    TextureAssets.Item[ModContent.ItemType<GunkShot>()] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Replace/GunkShot");
+            //}
         }
     }
 }

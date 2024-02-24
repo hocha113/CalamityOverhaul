@@ -12,6 +12,7 @@ using Terraria;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityMod;
 using Microsoft.Xna.Framework;
+using CalamityOverhaul.Common;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
@@ -41,8 +42,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = ModContent.ProjectileType<TyrannysEndHeldProj>();
         }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "TyrannysEnd");
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
+            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "TyrannysEnd");
+            tooltips.ReplaceTooltip("[KEY]", CWRKeySystem.ADS_Key.TooltipHotkeyString(), CWRMod.Instance.Name);
+        }
 
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
