@@ -6,7 +6,6 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -39,30 +38,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shootSpeed = 20f;
             Item.useAmmo = AmmoID.Arrow;
             Item.Calamity().canFirePointBlankShots = true;
-            
+            Item.SetHeldProj<DeathwindHeldProj>();
         }
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI) {
             Item.DrawItemGlowmaskSingleFrame(spriteBatch, rotation, ModContent.Request<Texture2D>("CalamityMod/Items/Weapons/Ranged/DeathwindGlow").Value);
-        }
-
-        public override void HoldItem(Player player) {
-            Item.initialize();
-            Projectile heldProj = CWRUtils.GetProjectileInstance((int)Item.CWR().ai[0]);
-            if (heldProj != null && heldProj.type == ModContent.ProjectileType<DeathwindHeldProj>()) {
-                heldProj.localAI[1] = Item.CWR().ai[1];
-            }
-        }
-
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Item.initialize();
-            Item.CWR().ai[1] = type;
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<DeathwindHeldProj>()] <= 0) {
-                Item.CWR().ai[0] = Projectile.NewProjectile(source, position, Vector2.Zero
-                , ModContent.ProjectileType<DeathwindHeldProj>()
-                , damage, knockback, player.whoAmI);
-            }
-            return false;
         }
     }
 }

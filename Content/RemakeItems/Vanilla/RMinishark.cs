@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Minishark;
         public override bool FormulaSubstitution => false;
-        public override void On_PostSetDefaults(Item item) {
+        public override void SetDefaults(Item item) {
             item.useTime = 5;
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = ModContent.ProjectileType<MinisharkHeldProj>();

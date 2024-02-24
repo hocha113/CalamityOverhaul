@@ -14,6 +14,7 @@ using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
@@ -121,6 +122,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             npc.CWR().MurasamabrBeatBackAttenuationForce = 0.99f;
         }
 
+        public override bool? CanHitNPC(NPC target) {
+            return null;
+        }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (!CWRUtils.isServer) {
                 for (int i = 0; i < 13; i++) {
@@ -196,22 +201,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-           if (target.type == NPCID.SkeletronHand) {
-                modifiers.FinalDamage /= 2;
-           }
-           if (target.type == NPCID.WallofFleshEye || target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 0.25f;
-           }
-           if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
-                modifiers.FinalDamage *= 0.75f;
-           }
-           if (target.type == CWRIDs.AquaticScourgeBody || target.type == CWRIDs.PerforatorBodyLarge 
-                || target.type == CWRIDs.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == NPCID.TheDestroyerBody) {
-                modifiers.FinalDamage *= 0.3f;
-           }
-           if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
-                modifiers.FinalDamage *= 0.1f;
-           }
+            if (target.type == NPCID.SkeletronHand) {
+                 modifiers.FinalDamage /= 2;
+            }
+            if (target.type == NPCID.WallofFleshEye || target.type == NPCID.WallofFlesh) {
+                 modifiers.FinalDamage *= 0.25f;
+            }
+            if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
+                 modifiers.FinalDamage *= 0.75f;
+            }
+            if (target.type == CWRIDs.AquaticScourgeBody || target.type == CWRIDs.PerforatorBodyLarge 
+                 || target.type == CWRIDs.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == NPCID.TheDestroyerBody) {
+                 modifiers.FinalDamage *= 0.3f;
+            }
+            if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
+                 modifiers.FinalDamage *= 0.1f;
+            }
+            if (CWRIDs.targetNpcTypes7_1.Contains(target.type)) {
+                modifiers.SetMaxDamage(target.lifeMax / 4);
+            }
+            modifiers.DefenseEffectiveness *= 0.25f;
         }
 
         public override bool PreDraw(ref Color lightColor) {

@@ -22,6 +22,7 @@ namespace CalamityOverhaul
         internal Mod catalystMod = null;
         internal Mod weaponOut = null;
         internal Mod weaponDisplay = null;
+        internal Mod magicBuilder = null;
 
         internal List<Mod> LoadMods = new List<Mod>();
         internal static List<BaseRItem> RItemInstances = new List<BaseRItem>();
@@ -119,6 +120,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("CatalystMod", out catalystMod);
             ModLoader.TryGetMod("WeaponOut", out weaponOut);
             ModLoader.TryGetMod("WeaponDisplay", out weaponDisplay);
+            ModLoader.TryGetMod("MagicBuilder", out magicBuilder);
         }
 
         public void LoadClient() {

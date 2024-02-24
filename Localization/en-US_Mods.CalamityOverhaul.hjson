@@ -1407,14 +1407,14 @@ Projectiles: {
 	DarkIceZeros.DisplayName: Dark Ice Zeros
 	RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade Held Proj
 	WaningMoonLight.DisplayName: Waning Moon Light
-	MurasamaHeldProj.DisplayName: Murasama Held Proj
-	MurasamaBreakOut.DisplayName: Murasama Break Out
-	MurasamaBreakSwing.DisplayName: Murasama Break Swing
-	MurasamaEndSilkOrb.DisplayName: Murasama End Silk Orb
-	MurasamaEndSilkOrbOnSpan.DisplayName: Murasama End Silk Orb On Span
-	MurasamaDownSkill.DisplayName: Murasama Down Skill
-	MurasamaEndSkillOrb.DisplayName: Murasama End Skill Orb
-	MurasamaEndSkillOrbOnSpan.DisplayName: Murasama End Skill Orb On Span
+	MurasamaHeldProj.DisplayName: Murasama
+	MurasamaBreakOut.DisplayName: Murasama
+	MurasamaBreakSwing.DisplayName: Half Moon
+	MurasamaEndSilkOrb.DisplayName: Dimensional chopping - end
+	MurasamaEndSilkOrbOnSpan.DisplayName: Dimensional chopping - beginning
+	MurasamaDownSkill.DisplayName: Murasama
+	MurasamaEndSkillOrb.DisplayName: Dimensional chopping - end
+	MurasamaEndSkillOrbOnSpan.DisplayName: Dimensional chopping - beginning
 	ExaProj.DisplayName: Exa Proj
 	MOnSound.DisplayName: MonSound
 	EndSkillEffectStart.DisplayName: End Skill Effect Start
@@ -1584,6 +1584,11 @@ Configs: {
 				Pull the slider to adjust the percentage data to a maximum of 200%, 
 				double the volume of the original size, and a minimum of 50%
 				'''
+		}
+
+		LensEasing: {
+			Label: Lens Easing
+			Tooltip: When enabled, long distance rapid displacement will slow the lens, which avoids the feeling of being moved too fast
 		}
 	}
 }

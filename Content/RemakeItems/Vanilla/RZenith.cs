@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Zenith;
         public override bool FormulaSubstitution => false;
-        public override void On_PostSetDefaults(Item item) {
+        public override void SetDefaults(Item item) {
             item.damage += 128;
         }
     }

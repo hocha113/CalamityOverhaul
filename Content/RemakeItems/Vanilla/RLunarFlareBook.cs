@@ -10,6 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.LunarFlareBook;
         public override bool FormulaSubstitution => false;
-        public override void On_PostSetDefaults(Item item) => item.shoot = ModContent.ProjectileType<WaningMoonLight>();
+        public override void SetDefaults(Item item) => item.shoot = ModContent.ProjectileType<WaningMoonLight>();
     }
 }

@@ -83,19 +83,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0 && Projectile.ai[0] == 0) {
                 int type = ModContent.ProjectileType<HyperBlade>();
-                for (int i = 0; i < 3; i++) {
-                    Vector2 offsetvr = CWRUtils.GetRandomVevtor(-97.5f, -82.5f, 360);
-                    Vector2 spanPos = target.Center + offsetvr;
-                    Projectile.NewProjectile(
-                        Projectile.parent(),
-                        spanPos,
-                        -offsetvr.UnitVector() * 12,
-                        type,
-                        Projectile.damage / 2,
-                        0,
-                        Projectile.owner
-                        );
-                }
+                Vector2 offsetvr = CWRUtils.GetRandomVevtor(-97.5f, -82.5f, 360);
+                Vector2 spanPos = target.Center + offsetvr;
+                Projectile.NewProjectile(Projectile.parent(), spanPos, offsetvr.UnitVector() * -12
+                    , type, Projectile.damage / 2, 0, Projectile.owner);
             }
 
             target.AddBuff(24, 180);

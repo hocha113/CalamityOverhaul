@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -132,6 +133,12 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             rageEnergy += addnum;
 
+            player.AddBuff(ModContent.BuffType<TyrantsFury>(), 300);
+            target.AddBuff(70, 150);
+
+            if (CWRIDs.WormBodys.Contains(target.type) && !Main.rand.NextBool(3)) {
+                return;
+            }
             int type = ModContent.ProjectileType<SunlightBlades>();
             int randomLengs = Main.rand.Next(150);
             for (int i = 0; i < 3; i++) {
@@ -158,9 +165,6 @@ namespace CalamityOverhaul.Content.Items.Melee
                     player.whoAmI
                     );
             }
-
-            player.AddBuff(ModContent.BuffType<TyrantsFury>(), 300);
-            target.AddBuff(70, 150);
         }
 
         public override void OnHitPvp(Player player, Player target, Player.HurtInfo hurtInfo) {

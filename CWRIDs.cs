@@ -6,6 +6,7 @@ using CalamityMod.NPCs.AstrumDeus;
 using CalamityMod.NPCs.DesertScourge;
 using CalamityMod.NPCs.DraedonLabThings;
 using CalamityMod.NPCs.ExoMechs.Apollo;
+using CalamityMod.NPCs.ExoMechs.Ares;
 using CalamityMod.NPCs.ExoMechs.Artemis;
 using CalamityMod.NPCs.ExoMechs.Thanatos;
 using CalamityMod.NPCs.HiveMind;
@@ -164,9 +165,14 @@ namespace CalamityOverhaul
         /// 星流巨械
         /// </summary>
         public static List<int> targetNpcTypes7;
+        public static List<int> targetNpcTypes7_1;
         public static int Apollo;
         public static int Artemis;
         public static int AresBody;
+        public static int AresLaserCannon;
+        public static int AresPlasmaFlamethrower;
+        public static int AresTeslaCannon;
+        public static int AresGaussNuke;
         public static int ThanatosHead;
         public static int ThanatosBody1;
         public static int ThanatosBody2;
@@ -246,6 +252,8 @@ namespace CalamityOverhaul
         public static int RavagerHead;
         public static int RavagerLegLeft;
         public static int RavagerLegRight;
+
+        public static int[] WormBodys;
 
         public static void Load() {
             InfiniteArrow = ProjectileType<InfiniteArrow>();
@@ -345,6 +353,11 @@ namespace CalamityOverhaul
             RavagerLegLeft = NPCType<RavagerLegLeft>();
             RavagerLegRight = NPCType<RavagerLegRight>();
 
+            AresLaserCannon = NPCType<AresLaserCannon>();
+            AresPlasmaFlamethrower = NPCType<AresPlasmaFlamethrower>();
+            AresTeslaCannon = NPCType<AresTeslaCannon>();
+            AresGaussNuke = NPCType<AresGaussNuke>();
+
             targetNpcTypes = new List<int> { SepulcherHead, SepulcherBody, SepulcherTail };
             targetNpcTypes2 = new List<int> { StormWeaverHead, StormWeaverBody, StormWeaverTail };
             targetNpcTypes3 = new List<int> { PrimordialWyrmHead, PrimordialWyrmBody, PrimordialWyrmTail };
@@ -352,6 +365,7 @@ namespace CalamityOverhaul
             targetNpcTypes5 = new List<int> { PerforatorHeadMedium, PerforatorBodyMedium, PerforatorTailMedium };
             targetNpcTypes6 = new List<int> { ArmoredDiggerHead, ArmoredDiggerBody, ArmoredDiggerTail };
             targetNpcTypes7 = new List<int> { Apollo, Artemis, AresBody, ThanatosHead, ThanatosBody1, ThanatosBody2, ThanatosTail };
+            targetNpcTypes7_1 = new List<int> { AresBody, AresLaserCannon, AresPlasmaFlamethrower, AresTeslaCannon, AresGaussNuke };
             targetNpcTypes8 = new List<int> { DevourerofGodsHead, DevourerofGodsBody, DevourerofGodsTail, CosmicGuardianHead, CosmicGuardianBody, CosmicGuardianTail };
             targetNpcTypes9 = new List<int> { DesertScourgeHead, DesertScourgeBody, DesertScourgeTail, DesertNuisanceHead, DesertNuisanceBody, DesertNuisanceTail };
             targetNpcTypes10 = new List<int> { AstrumDeusHead, AstrumDeusBody, AstrumDeusTail };
@@ -362,6 +376,9 @@ namespace CalamityOverhaul
             targetNpcTypes15 = new List<int> { NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail };
             //targetNpcTypes16 = new List<int> { HEHead, HEBody, HEBodyAlt, HETail };
             targetNpcTypes17 = new List<int> { RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight };
+            WormBodys = new int[] { AquaticScourgeBody, ArmoredDiggerBody, StormWeaverBody, ArmoredDiggerBody
+                , PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
+                , AquaticScourgeBody, NPCID.TheDestroyerBody};
 
             MaterialsTypes = new int[]{
                 ItemType<AerialiteBar>(),//水华锭

@@ -9,6 +9,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.QuadBarrelShotgun;
         public override bool FormulaSubstitution => false;
-        public override void On_PostSetDefaults(Item item) => item.SetHeldProj<QuadBarrelShotgunHeldProj>();
+        public override void SetDefaults(Item item) => item.SetHeldProj<QuadBarrelShotgunHeldProj>();
     }
 }

@@ -118,6 +118,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             return color;
         }
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (CWRIDs.targetNpcTypes7_1.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.1f;
+                modifiers.SetMaxDamage(6000);
+            }
+        }
+
         public override bool? CanDamage() {
             if (!EndSkillEffectStart.CanDealDamageToNPCs()) {
                 return false;

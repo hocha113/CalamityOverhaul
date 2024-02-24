@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Common.Effects
         public static Filter ColourModulation => Filters.Scene["ColourModulation"];
         public static Texture2D Ticoninfinity;
         public static Effect ColourModulationShader;
-        public static Effect EdgeDyeingShader;
         public static Effect PowerSFShader;
         public static MiscShaderData FlowColorShader;
         public static MiscShaderData StretchShapeTrail;
@@ -29,9 +28,6 @@ namespace CalamityOverhaul.Common.Effects
             Ref<Effect> colourModulation = new(assets.Request<Effect>(CWRConstant.noEffects + "ColourModulation", AssetRequestMode.ImmediateLoad).Value);
             Filters.Scene["ColourModulation"] = new Filter(new(colourModulation, "GoldenPass"), EffectPriority.VeryHigh);
 
-            Ref<Effect> edgeDyeingShader = new(assets.Request<Effect>(CWRConstant.noEffects + "EdgeDyeingShader", AssetRequestMode.ImmediateLoad).Value);
-            Filters.Scene["EdgeDyeingShader"] = new Filter(new(edgeDyeingShader, "ParticlePass"), EffectPriority.VeryHigh);
-
             Ref<Effect> flowColorShader = new(assets.Request<Effect>(CWRConstant.noEffects + "FlowColorShader", AssetRequestMode.ImmediateLoad).Value);
             GameShaders.Misc["CWRMod:FlowColorShader"] = new MiscShaderData(flowColorShader, "PiercePass");
 
@@ -43,7 +39,6 @@ namespace CalamityOverhaul.Common.Effects
 
             Ticoninfinity = ModContent.Request<Texture2D>("CalamityOverhaul/Assets/UIs/Ticoninfinity", AssetRequestMode.ImmediateLoad).Value;
             ColourModulationShader = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "ColourModulation", AssetRequestMode.ImmediateLoad).Value;
-            EdgeDyeingShader = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "EdgeDyeingShader", AssetRequestMode.ImmediateLoad).Value;
             PowerSFShader = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "PowerSFShader", AssetRequestMode.ImmediateLoad).Value;
             FlowColorShader = GameShaders.Misc["CWRMod:FlowColorShader"];
             StretchShapeTrail = GameShaders.Misc["CWRMod:StretchShapeTrail"];

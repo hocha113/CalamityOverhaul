@@ -41,8 +41,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onCanUseItemMethod = itemLoaderType.GetMethod("CanUseItem", BindingFlags.Public | BindingFlags.Static);
             onPreDrawInInventoryMethod = itemLoaderType.GetMethod("PreDrawInInventory", BindingFlags.Public | BindingFlags.Static);
 
-            if (onSetDefaultsMethod != null) {
-                MonoModHooks.Add(onSetDefaultsMethod, OnSetDefaultsHook);
+            if (onSetDefaultsMethod != null && !ModLoader.HasMod("MagicBuilder")) {
+                //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发送严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
+                //MonoModHooks.Add(onSetDefaultsMethod, OnSetDefaultsHook);
             }
             if (onShootMethod != null) {
                 MonoModHooks.Add(onShootMethod, OnShootHook);
@@ -67,8 +68,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <summary>
         /// 这个钩子用于挂载一个提前于TML方法的SetDefaults，以此来进行一些高级的修改
         /// </summary>
-        public void OnSetDefaultsHook(On_SetDefaults_Dalegate orig, Item item, bool createModItem) {//
-            orig.Invoke(item);
+        public void OnSetDefaultsHook(On_SetDefaults_Dalegate orig, Item item, bool createModItem) {
+            orig.Invoke(item, true);
             if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
                 RItemIndsDict[item.type].On_PostSetDefaults(item);
             }

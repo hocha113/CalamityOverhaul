@@ -84,6 +84,12 @@ namespace CalamityOverhaul.Common
             }
             set => Date.MScaleOffsetValue = value;
         }
+        /// <summary>
+        /// 镜头缓动
+        /// </summary>
+        [BackgroundColor(182, 24, 64, 192)]
+        [DefaultValue(true)]
+        public bool LensEasing { get; set; }
 
         [Header("CWRUI")]
 

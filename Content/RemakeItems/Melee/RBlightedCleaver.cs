@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -91,8 +92,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
             item.CWR().MeleeCharge += addnum;
 
+            if (CWRIDs.WormBodys.Contains(target.type) && !Main.rand.NextBool(5)) {
+                return;
+            }
+
             int type = ModContent.ProjectileType<HyperBlade>();
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 8; i++) {
                 Vector2 offsetvr = CWRUtils.GetRandomVevtor(-127.5f, -52.5f, 360);
                 Vector2 spanPos = target.Center + offsetvr;
                 int proj = Projectile.NewProjectile(
@@ -100,11 +105,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     spanPos,
                     CWRUtils.UnitVector(offsetvr) * -15,
                     type,
-                    item.damage / 4,
+                    item.damage / 2,
                     0,
                     player.whoAmI
                     );
                 Main.projectile[proj].timeLeft = 50;
+                Main.projectile[proj].usesLocalNPCImmunity = true;
+                Main.projectile[proj].localNPCHitCooldown = 15;
             }
 
             player.AddBuff(ModContent.BuffType<TyrantsFury>(), 180);

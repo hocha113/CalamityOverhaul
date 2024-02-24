@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -89,6 +90,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     return true;
                 }
             }
+            
             Item.CWR().closeCombat = false;
             return false;
         }
@@ -110,24 +112,23 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             rageEnergy += addnum;
 
-            int type = ModContent.ProjectileType<HyperBlade>();
-            for (int i = 0; i < 16; i++) {
-                Vector2 offsetvr = CWRUtils.GetRandomVevtor(-127.5f, -52.5f, 360);
-                Vector2 spanPos = target.Center + offsetvr;
-                int proj = Projectile.NewProjectile(
-                    CWRUtils.parent(player),
-                    spanPos,
-                    (Vector2)(-CWRUtils.UnitVector(offsetvr) * 12),
-                    type,
-                    Item.damage / 4,
-                    0,
-                    player.whoAmI
-                    );
-                Main.projectile[proj].timeLeft = 50;
-            }
-
             player.AddBuff(ModContent.BuffType<TyrantsFury>(), 180);
             target.AddBuff(70, 150);
+
+            if (CWRIDs.WormBodys.Contains(target.type)) {
+                return;
+            }
+
+            int type = ModContent.ProjectileType<HyperBlade>();
+            for (int i = 0; i < 8; i++) {
+                Vector2 offsetvr = CWRUtils.GetRandomVevtor(-127.5f, -52.5f, 360);
+                Vector2 spanPos = target.Center + offsetvr;
+                int proj = Projectile.NewProjectile(CWRUtils.parent(player), spanPos,
+                    CWRUtils.UnitVector(offsetvr) * -12, type, Item.damage / 2, 0, player.whoAmI);
+                Main.projectile[proj].timeLeft = 50;
+                Main.projectile[proj].usesLocalNPCImmunity = true;
+                Main.projectile[proj].localNPCHitCooldown = 15;
+            }
         }
 
         public override void OnHitPvp(Player player, Player target, Player.HurtInfo hurtInfo) {

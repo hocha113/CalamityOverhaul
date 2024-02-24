@@ -10,6 +10,7 @@ using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -119,6 +120,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             else addnum *= 2;
             item.CWR().MeleeCharge += addnum;
 
+            player.AddBuff(ModContent.BuffType<TyrantsFury>(), 300);
+            target.AddBuff(70, 150);
+
+            if (CWRIDs.WormBodys.Contains(target.type) && !Main.rand.NextBool(3)) {
+                return;
+            }
             int type = ModContent.ProjectileType<SunlightBlades>();
             int randomLengs = Main.rand.Next(150);
             for (int i = 0; i < 3; i++) {
@@ -145,9 +152,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     player.whoAmI
                     );
             }
-
-            player.AddBuff(ModContent.BuffType<TyrantsFury>(), 300);
-            target.AddBuff(70, 150);
         }
 
         private static void UpdateBar(Item item) {

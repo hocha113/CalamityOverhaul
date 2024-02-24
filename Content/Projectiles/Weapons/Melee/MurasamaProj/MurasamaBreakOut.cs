@@ -93,6 +93,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
                 if (Projectile.IsOwnedByLocalPlayer()) {//发射衍生弹幕和进行位移的代码只能交由主人玩家执行
                     Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.1f);
+                    if (ContentConfig.Instance.LensEasing) {
+                        Main.SetCameraLerp(0.1f, 10);
+                    }
                     float projToOwnerLeng = Projectile.Center.Distance(Owner.Center);
                     if (projToOwnerLeng < 233) {
                         Owner.GivePlayerImmuneState(5, true);

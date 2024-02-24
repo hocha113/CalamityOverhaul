@@ -1,4 +1,6 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Potions.Alcohol;
+using CalamityMod.NPCs.TownNPCs;
 using CalamityOverhaul;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
@@ -17,6 +19,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -946,6 +949,7 @@ namespace CalamityOverhaul
         #endregion
 
         #region GameUtils
+        
         /// <summary>
         /// 快捷的将一个物品实例设置为手持对象
         /// </summary>

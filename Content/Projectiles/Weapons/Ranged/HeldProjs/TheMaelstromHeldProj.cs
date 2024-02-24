@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Projectile.rotation = ToMouseA;
                     Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 12;
                     armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
-                    if (HaveAmmo) {
+                    if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                         onFire = true;
                         Projectile.ai[1]++;
                         armRotSengsFront += MathF.Sin(Time * 0.5f) * 0.7f;
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Projectile.rotation = ToMouseA;
                     Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 12;
                     armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
-                    if (HaveAmmo) {
+                    if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                         onFireR = true;
                         Projectile.ai[1]++;
                     }

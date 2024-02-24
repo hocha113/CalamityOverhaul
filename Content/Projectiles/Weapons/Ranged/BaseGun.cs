@@ -1,11 +1,11 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System;
-using Terraria.Audio;
-using Terraria;
-using Terraria.ModLoader;
+﻿using CalamityMod;
 using CalamityMod.Projectiles.Ranged;
-using CalamityMod;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using Terraria;
+using Terraria.Audio;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.rotation = GunOnFireRot;
                 Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
-                if (HaveAmmo) {
+                if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     onFire = true;
                     Projectile.ai[1]++;
                 }
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.rotation = GunOnFireRot;
                 Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
-                if (HaveAmmo) {
+                if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     onFireR = true;
                     Projectile.ai[1]++;
                 }

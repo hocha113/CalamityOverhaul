@@ -38,6 +38,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Arrow;
             item.Calamity().canFirePointBlankShots = true;
+            item.SetHeldProj<DeathwindHeldProj>();
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {

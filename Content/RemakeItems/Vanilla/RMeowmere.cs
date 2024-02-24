@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Meowmere;
         public override bool FormulaSubstitution => false;
-        public override void On_PostSetDefaults(Item item) {
+        public override void SetDefaults(Item item) {
             item.rare = ItemRarityID.Red;
             item.UseSound = SoundID.Item58;
             item.useStyle = ItemUseStyleID.Swing;

@@ -1211,10 +1211,10 @@ Projectiles: {
 	}
 
 	// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
-	// CosmicRay_0.DisplayName: Cosmic Ray
-	// CosmicRay.DisplayName: Cosmic Ray
-	// RemakeCosmicShivBall.DisplayName: Remake Cosmic Shiv Ball
-	// MightyStar.DisplayName: Mighty Star
+	CosmicRay_0.DisplayName: 宇宙射线
+	CosmicRay.DisplayName: 宇宙射线
+	RemakeCosmicShivBall.DisplayName: 寰宇球
+	MightyStar.DisplayName: 宇宙之火
 	// StarDust.DisplayName: Star Dust
 	// RenderDistort.DisplayName: Render Distort
 	// RenderGap.DisplayName: Render Gap
@@ -1385,14 +1385,14 @@ Projectiles: {
 	// DarkIceZeros.DisplayName: Dark Ice Zeros
 	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade Held Proj
 	// WaningMoonLight.DisplayName: Waning Moon Light
-	// MurasamaHeldProj.DisplayName: Murasama Held Proj
-	// MurasamaBreakOut.DisplayName: Murasama Break Out
-	// MurasamaBreakSwing.DisplayName: Murasama Break Swing
-	// MurasamaEndSilkOrb.DisplayName: Murasama End Silk Orb
-	// MurasamaEndSilkOrbOnSpan.DisplayName: Murasama End Silk Orb On Span
-	// MurasamaDownSkill.DisplayName: Murasama Down Skill
-	// MurasamaEndSkillOrb.DisplayName: Murasama End Skill Orb
-	// MurasamaEndSkillOrbOnSpan.DisplayName: Murasama End Skill Orb On Span
+	MurasamaHeldProj.DisplayName: 高分子斩切刃
+	MurasamaBreakOut.DisplayName: 高分子斩切刃
+	MurasamaBreakSwing.DisplayName: 升龙半月
+	MurasamaEndSilkOrb.DisplayName: 次元斩-终
+	MurasamaEndSilkOrbOnSpan.DisplayName: 次元斩-始
+	MurasamaDownSkill.DisplayName: 坠地
+	MurasamaEndSkillOrb.DisplayName: 次元斩-终
+	MurasamaEndSkillOrbOnSpan.DisplayName: 次元斩-始
 	// ExaProj.DisplayName: Exa Proj
 	// MOnSound.DisplayName: MonSound
 	// EndSkillEffectStart.DisplayName: End Skill Effect Start
@@ -1559,6 +1559,11 @@ Configs: {
 				设置这个来适应您喜好的Ui大小，一般保持为100%大小即可
 				拉动这个滑块调节百分比数据，最大为200%，为原大小的两倍体积，最小为50%
 				'''
+		}
+
+		LensEasing: {
+			Label: 镜头缓动
+			Tooltip: 启用后，长距离快速位移会让镜头具有缓动，这避免了移动过快所带来的违和感
 		}
 	}
 }

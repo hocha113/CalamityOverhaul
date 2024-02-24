@@ -47,6 +47,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             if (player.altFunctionUse == 2) {
                 Main.projectile[proj].ai[0] = 2;
+                Main.projectile[proj].DamageType = DamageClass.Ranged;
                 for (int i = 0; i <= 360; i += 3) {
                     Vector2 vr = new Vector2(3f, 3f).RotatedBy(MathHelper.ToRadians(i));
                     int num = Dust.NewDust(player.Center, player.width, player.height, DustID.Smoke, vr.X, vr.Y, 200, new Color(232, 251, 250, 200), 1.4f);
@@ -65,8 +66,8 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.useTime = 12;
             Item.useAnimation = 12;
             if (player.altFunctionUse == 2) {
-                Item.useTime = 18;
-                Item.useAnimation = 18;
+                Item.useTime = 25;
+                Item.useAnimation = 25;
                 type = ModContent.ProjectileType<Feathers>();
             }
         }
