@@ -86,6 +86,10 @@ namespace CalamityOverhaul
         /// 鬼妖，Calamity
         /// </summary>
         public static int MurasamaItem2;
+        /// <summary>
+        /// 升龙半月
+        /// </summary>
+        public static int MurasamaBreakSwing;
 
         /// <summary>
         /// 物块对应掉落物的词典
@@ -273,6 +277,7 @@ namespace CalamityOverhaul
 
             MurasamaItem = ItemType<Murasama>();
             MurasamaItem2 = ItemType<CalamityMod.Items.Weapons.Melee.Murasama>();
+            MurasamaBreakSwing = ProjectileType<MurasamaBreakSwing>();
 
             Androomba = NPCType<Androomba>();
             Polterghast = NPCType<Polterghast>();

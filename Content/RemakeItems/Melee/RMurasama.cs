@@ -116,8 +116,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override bool On_PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
             Texture2D texture;
             if (Main.LocalPlayer.CWR().HeldMurasamaBool) {
-                texture = ModContent.Request<Texture2D>(CWRConstant.Cay_Wap_Melee + "Murasama").Value;
-                spriteBatch.Draw(texture, position, item.GetCurrentFrame(ref this.frame, ref frameCounter, 2, 13), Color.White, 0f, origin, scale, SpriteEffects.None, 0);
+                return true;
             }
             else {
                 texture = ModContent.Request<Texture2D>("CalamityMod/Items/Weapons/Melee/MurasamaSheathed").Value;

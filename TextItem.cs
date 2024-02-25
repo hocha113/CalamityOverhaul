@@ -1,4 +1,6 @@
 ﻿using CalamityMod.Items;
+using CalamityOverhaul.Content.Projectiles;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -10,7 +12,7 @@ namespace CalamityOverhaul
         public override string Texture => "CalamityOverhaul/icon";
 
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         public override void SetDefaults() {
@@ -38,6 +40,8 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
+            Projectile.NewProjectile(player.parent(), player.position, Vector2.Zero
+                , ModContent.ProjectileType<YharonOreProj>(), 0, 0, player.whoAmI);
             return true;
         }
     }

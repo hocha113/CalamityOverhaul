@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Summon.Extras;
 using CalamityOverhaul.Content.NPCs.OverhaulBehavior;
+using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -124,6 +125,15 @@ namespace CalamityOverhaul.Content
                     int type = Item.NewItem(npc.parent(), npc.Hitbox, ModContent.ItemType<TerminusOver>());
                     if (CWRUtils.isClient) {
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+                    }
+                }
+                if (npc.type == CWRIDs.Yharon && InWorldBossPhase.Instance.Level() >= 13 && Main.zenithWorld && !CWRUtils.isClient) {
+                    Player target = CWRUtils.GetPlayerInstance(npc.target);
+                    if (target.Alives()) {
+                        float dir = npc.Center.To(target.Center).X;
+                        int dirs = dir < 0 ? 1 : 0;
+                        Projectile.NewProjectile(npc.parent(), npc.position, Vector2.Zero
+                        , ModContent.ProjectileType<YharonOreProj>(), 0, 0, -1, dirs);
                     }
                 }
             }

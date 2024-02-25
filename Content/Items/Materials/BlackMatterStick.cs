@@ -1,14 +1,12 @@
-﻿using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Tiles;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
+using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using System;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 
 namespace CalamityOverhaul.Content.Items.Materials
 {

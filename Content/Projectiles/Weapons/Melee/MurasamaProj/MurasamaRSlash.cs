@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 0.5f;
             }
             if (target.type == NPCID.WallofFleshEye || target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 0.25f;
+                modifiers.FinalDamage *= 0.2f;
             }
             if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
                 modifiers.FinalDamage *= 0.75f;
@@ -157,7 +157,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 0.5f;
             }
             if (target.type == ModContent.NPCType<SplitEbonianPaladin>() || target.type == ModContent.NPCType<SplitCrimulanPaladin>()) {
-                modifiers.FinalDamage *= 0.3f;
+                modifiers.FinalDamage *= 0.2f;
+            }
+            if (target.type == CWRIDs.PlaguebringerGoliath) {
+                modifiers.FinalDamage *= 0.8f;
+            }
+            if (target.boss) {
+                float sengsValue = 0.75f + InWorldBossPhase.Instance.Level() * 0.05f;
+                modifiers.FinalDamage *= sengsValue;
             }
         }
 

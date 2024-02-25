@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             {11, 1370 },
             {12, 1580 },
             {13, 1980 },
-            {14, 2520 }
+            {14, 22520 }
         };
         /// <summary>
         /// 每个时期阶段对应的挥舞范围大小，这个成员一般不需要直接访问，而是使用<see cref="GetOnScale"/>
@@ -88,21 +88,21 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// 每个时期阶段对应的升龙冷却的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnRDCD"/>
         /// </summary>
         static Dictionary<int, int> RDCDDictionary => new Dictionary<int, int>(){
-            {0, 120 },
-            {1, 110 },
-            {2, 105 },
-            {3, 100 },
-            {4, 95 },
-            {5, 90 },
-            {6, 85 },
-            {7, 75 },
-            {8, 70 },
-            {9, 65 },
-            {10, 60 },
-            {11, 55 },
-            {12, 50 },
-            {13, 45 },
-            {14, 40 }
+            {0, 110 },
+            {1, 100 },
+            {2, 95 },
+            {3, 90 },
+            {4, 85 },
+            {5, 80 },
+            {6, 75 },
+            {7, 70 },
+            {8, 65 },
+            {9, 60 },
+            {10, 55 },
+            {11, 50 },
+            {12, 45 },
+            {13, 40 },
+            {14, 30 }
         };
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
         /// <summary>
@@ -245,8 +245,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frameI, Color drawColor, Color itemColor, Vector2 origin, float scale) {
             Texture2D texture;
             if (Main.LocalPlayer.CWR().HeldMurasamaBool) {
-                texture = ModContent.Request<Texture2D>(Texture).Value;
-                spriteBatch.Draw(texture, position, Item.GetCurrentFrame(ref frame, ref frameCounter, 2, 13), Color.White, 0f, origin, scale, SpriteEffects.None, 0);
+                //texture = ModContent.Request<Texture2D>(Texture).Value;
+                //spriteBatch.Draw(texture, position, Item.GetCurrentFrame(ref frame, ref frameCounter, 2, 13), Color.White, 0f, origin, scale, SpriteEffects.None, 0);
+                return true;//老实说，我不清楚灾厄的制作组为什么要自定义绘制这个，因为他们自定义的方法除了会出现更多的异常之外，没有什么优势
             }
             else {
                 texture = ModContent.Request<Texture2D>("CalamityMod/Items/Weapons/Melee/MurasamaSheathed").Value;

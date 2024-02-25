@@ -102,7 +102,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     }
                     if (projToOwnerLeng < 33) {
                         //murasama.CWR().ai[0]表示充能值，这里让其充能值越高，升龙斩造成的伤害便越高
-                        float sengs = 2 + murasama.CWR().ai[0] * 0.1f + level * 0.3f;
+                        float sengs = 2 + murasama.CWR().ai[0] * 0.1f + level * 0.2f;
+                        
                         //如果此时爆发没有击中敌人，那么判断是否有Boss在场
                         foreach (NPC n in Main.npc) {//如果Boss在场，不进行升龙，而是飞回玩家身上
                             if (n.boss && n.active && n.position.To(Owner.position).LengthSquared() < 9000000) {
@@ -110,7 +111,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                                     sengs = 2;
                                 }
                                 else {
-                                    sengs *= 2;
+                                    sengs *= 1.2f;
                                 }
                             }
                         }
@@ -120,7 +121,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         murasama.initialize();
                         
                         //sengs.Domp();
-                        int sengsDmg = (int)(Murasama.GetOnDamage * sengs);
+                        int sengsDmg = (int)(Murasama.ActualTrueMeleeDamage * sengs);
                         int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
                         , ModContent.ProjectileType<MurasamaBreakSwing>(), sengsDmg, 0, Owner.whoAmI);
                         Main.projectile[proj].scale = 0.5f + level * 0.0f;
@@ -177,16 +178,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override bool? CanHitNPC(NPC target) {
-            if (target.type == CWRIDs.AquaticScourgeBody) {
-                return false;
-            }
-            if (target.type == CWRIDs.DevourerofGodsBody) {
-                return false;
-            }
-            if (target.type == CWRIDs.StormWeaverBody) {
-                return false;
-            }
-            if (target.type == CWRIDs.ThanatosBody1 || target.type == CWRIDs.ThanatosBody2) {
+            if (CWRIDs.WormBodys.Contains(target.type) || target.type == CWRIDs.Apollo || target.type == CWRIDs.Artemis || target.type == CWRIDs.AresBody) {
                 return false;
             }
             return base.CanHitNPC(target);

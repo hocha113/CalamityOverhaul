@@ -464,9 +464,11 @@ Items: {
 		DisplayName: Murasama
 		Tooltip:
 			'''
-			Right-click to aim, press the trigger key [KEY1] to launch the blade, and press the left key to execute the rising dragon strike during the blade flight [Lang1]
+			Right-click to aim, press the trigger key [KEY1] to launch the blade, 
+			and press the left key to execute the rising dragon strike during the blade flight [Lang1]
 			Press [KEY2] to consume two points of charge and perform a punch [Lang2]
-			When you hit an enemy, you will give your weapon 1 recharge. When you hit the maximum 10 recharge, you will trigger the end of the enemy when you lift the dragon again. [Lang3]
+			When you hit an enemy, you will give your weapon 1 recharge. 
+			When you hit the maximum 10 recharge, you will trigger the end of the enemy when you lift the dragon again. [Lang3]
 			[c/fff08c: Stronger with the distance of the journey]
 			[c/ff4500:" It would be better if this were a chainsaw sword "]
 			[Lang4]:
@@ -1491,6 +1493,7 @@ Projectiles: {
 	LeviatitanHeldProj.DisplayName: Leviatitan Held Proj
 	PetrifiedDiseaseHeldProj.DisplayName: Petrified Disease Held Proj
 	PetrifiedDiseaseAorrw.DisplayName: Petrified Disease Aorrw
+	YharonOreProj.DisplayName: Yharon Ore Proj
 }
 
 Configs: {

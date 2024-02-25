@@ -1,9 +1,12 @@
 ﻿using CalamityMod;
 using CalamityMod.Dusts;
+using CalamityMod.NPCs.ProfanedGuardians;
+using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.VanillaNPCOverrides.Bosses;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Melee;
 using Humanizer;
 using Microsoft.Xna.Framework;
@@ -115,15 +118,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 spanDust(33, DustID.Electric);
                 return;
             }
-
+            if (npc.type == ModContent.NPCType<ProfanedRocks>()) {
+                spanDust(33, (int)CalamityDusts.ProfanedFire);
+                return;
+            }
             npc.CWR().MurasamabrBeatBackBool = true;
             npc.CWR().oldNPCPos = npc.position;
             npc.CWR().MurasamabrBeatBackVr = flyVr;
             npc.CWR().MurasamabrBeatBackAttenuationForce = 0.99f;
-        }
-
-        public override bool? CanHitNPC(NPC target) {
-            return null;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -201,6 +203,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            int level = InWorldBossPhase.Instance.Level();
             if (target.type == NPCID.SkeletronHand) {
                  modifiers.FinalDamage /= 2;
             }
@@ -217,8 +220,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
                  modifiers.FinalDamage *= 0.1f;
             }
+            if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
+                modifiers.FinalDamage *= 0.7f;
+                modifiers.SetMaxDamage((int)(target.lifeMax * (0.3f + level * 0.1f)));
+            }
+            if (target.type == ModContent.NPCType<SplitEbonianPaladin>() || target.type == ModContent.NPCType<SplitCrimulanPaladin>()) {
+                modifiers.FinalDamage *= 0.65f;
+                modifiers.SetMaxDamage((int)(target.lifeMax * (0.2f + level * 0.1f)));
+            }
+            if (target.type == CWRIDs.PlaguebringerGoliath) {
+                modifiers.FinalDamage *= 0.75f;
+            }
+            if (target.type == CWRIDs.AstrumDeusBody) {
+                modifiers.FinalDamage *= 1.75f;
+            }
             if (CWRIDs.targetNpcTypes7_1.Contains(target.type)) {
                 modifiers.SetMaxDamage(target.lifeMax / 4);
+            }
+            if (target.type == CWRIDs.Apollo || target.type == CWRIDs.Artemis) {
+                modifiers.FinalDamage *= 1.5f;
             }
             modifiers.DefenseEffectiveness *= 0.25f;
         }

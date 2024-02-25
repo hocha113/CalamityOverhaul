@@ -41,7 +41,6 @@ namespace CalamityOverhaul.Content
 
         public int Level() {
             int level = 0;
-
             if (level0) {
                 level = 1;
             }
