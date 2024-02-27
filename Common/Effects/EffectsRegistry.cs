@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Common.Effects
         public static Effect ColourModulationShader;
         public static Effect PowerSFShader;
         public static MiscShaderData FlowColorShader;
-        public static MiscShaderData StretchShapeTrail;
 
         public static void LoadEffects() {
             var assets = CWRMod.Instance.Assets;
@@ -31,9 +30,6 @@ namespace CalamityOverhaul.Common.Effects
             Ref<Effect> flowColorShader = new(assets.Request<Effect>(CWRConstant.noEffects + "FlowColorShader", AssetRequestMode.ImmediateLoad).Value);
             GameShaders.Misc["CWRMod:FlowColorShader"] = new MiscShaderData(flowColorShader, "PiercePass");
 
-            Ref<Effect> stretchShapeTrailShader = new(assets.Request<Effect>(CWRConstant.noEffects + "StretchShapeTrailShader", AssetRequestMode.ImmediateLoad).Value);
-            GameShaders.Misc["CWRMod:StretchShapeTrail"] = new MiscShaderData(stretchShapeTrailShader, "TrailPass");
-
             Ref<Effect> powerSFShader = new(assets.Request<Effect>(CWRConstant.noEffects + "PowerSFShader", AssetRequestMode.ImmediateLoad).Value);
             Filters.Scene["CWRMod:powerSFShader"] = new Filter(new(powerSFShader, "Offset"), EffectPriority.VeryHigh);
 
@@ -41,7 +37,6 @@ namespace CalamityOverhaul.Common.Effects
             ColourModulationShader = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "ColourModulation", AssetRequestMode.ImmediateLoad).Value;
             PowerSFShader = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "PowerSFShader", AssetRequestMode.ImmediateLoad).Value;
             FlowColorShader = GameShaders.Misc["CWRMod:FlowColorShader"];
-            StretchShapeTrail = GameShaders.Misc["CWRMod:StretchShapeTrail"];
         }
     }
 }

@@ -120,10 +120,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
         public override bool PreDraw(ref Color lightColor) {
             if (LightningDrawer is null)
-                LightningDrawer = new PrimitiveTrail(PrimitiveWidthFunction, PrimitiveColorFunction, PrimitiveTrail.RigidPointRetreivalFunction, GameShaders.Misc["CWRMod:StretchShapeTrail"]);
+                LightningDrawer = new PrimitiveTrail(PrimitiveWidthFunction, PrimitiveColorFunction, PrimitiveTrail.RigidPointRetreivalFunction, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]);
 
-            GameShaders.Misc["CWRMod:StretchShapeTrail"].UseImage1("Images/Misc/Perlin");
-            GameShaders.Misc["CWRMod:StretchShapeTrail"].Apply();
+            GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
+            GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
 
             LightningDrawer.Draw(Projectile.oldPos, Projectile.Size * 0.5f - Main.screenPosition, 50);
             return false;

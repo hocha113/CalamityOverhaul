@@ -1,15 +1,10 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod;
+﻿using CalamityMod;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System;
-using Terraria.Audio;
-using Terraria.Graphics.Shaders;
+using System.IO;
 using Terraria;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
@@ -21,16 +16,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override string Texture => CWRConstant.Placeholder;
         internal PrimitiveTrail LightningDrawer;
 
-        public bool HasPlayedSound;
-
-        public const int Lifetime = 45;
-        public ref float InitialVelocityAngle => ref Projectile.ai[0];
+        public const int BaseProjTime = 45;
+        public ref float OrigVelocityAngle => ref Projectile.ai[0];
 
         public ref float BaseTurnAngleRatio => ref Projectile.ai[1];
         public ref float AccumulatedXMovementSpeeds => ref Projectile.localAI[0];
         public ref float BranchingIteration => ref Projectile.localAI[1];
 
-        public virtual float LightningTurnRandomnessFactor { get; } = 2f;
+        public virtual float TurnRandomnessFactor { get; } = 2f;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 7000;
@@ -49,8 +42,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.DamageType = DamageClass.Default;
             Projectile.MaxUpdates = 15;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = Projectile.MaxUpdates * 13;
-            Projectile.timeLeft = Projectile.MaxUpdates * Lifetime;
+            Projectile.localNPCHitCooldown = 13 * Projectile.MaxUpdates;
+            Projectile.timeLeft = BaseProjTime * Projectile.MaxUpdates;
         }
 
         public override void SendExtraAI(BinaryWriter writer) {
@@ -63,12 +56,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             BranchingIteration = reader.ReadSingle();
         }
 
-        public override void AI() {
+        public override bool PreAI() {
             Projectile.frameCounter++;
             Projectile.oldPos[1] = Projectile.oldPos[0];
+            return true;
+        }
 
+        public override void AI() {
             float adjustedTimeLife = Projectile.timeLeft / Projectile.MaxUpdates;
-            Projectile.Opacity = Utils.GetLerpValue(0f, 9f, adjustedTimeLife, true) * Utils.GetLerpValue(Lifetime, Lifetime - 3f, adjustedTimeLife, true);
+            Projectile.Opacity = Utils.GetLerpValue(0f, 9f, adjustedTimeLife, true) * Utils.GetLerpValue(BaseProjTime, BaseProjTime - 3f, adjustedTimeLife, true);
             Projectile.scale = Projectile.Opacity;
 
             Lighting.AddLight(Projectile.Center, Color.White.ToVector3());
@@ -92,7 +88,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     if (potentialBaseDirection.Y > -0.02f)
                         canChangeLightningDirection = false;
 
-                    if (Math.Abs(potentialBaseDirection.X * (Projectile.extraUpdates + 1) * 2f * originalSpeed + AccumulatedXMovementSpeeds) > Projectile.MaxUpdates * LightningTurnRandomnessFactor)
+                    if (Math.Abs(potentialBaseDirection.X * (Projectile.extraUpdates + 1) * 2f * originalSpeed + AccumulatedXMovementSpeeds) > Projectile.MaxUpdates * TurnRandomnessFactor)
                         canChangeLightningDirection = false;
 
                     if (canChangeLightningDirection)
@@ -104,7 +100,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
                 if (Projectile.velocity != Vector2.Zero) {
                     AccumulatedXMovementSpeeds += newBaseDirection.X * (Projectile.extraUpdates + 1) * 2f * originalSpeed;
-                    Projectile.velocity = newBaseDirection.RotatedBy(InitialVelocityAngle + MathHelper.PiOver2) * originalSpeed;
+                    Projectile.velocity = newBaseDirection.RotatedBy(OrigVelocityAngle + MathHelper.PiOver2) * originalSpeed;
                     Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
                 }
             }
@@ -140,10 +136,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override bool PreDraw(ref Color lightColor) {
             if (LightningDrawer is null)
-                LightningDrawer = new PrimitiveTrail(PrimitiveWidthFunction, PrimitiveColorFunction, PrimitiveTrail.RigidPointRetreivalFunction, GameShaders.Misc["CWRMod:StretchShapeTrail"]);
+                LightningDrawer = new PrimitiveTrail(PrimitiveWidthFunction, PrimitiveColorFunction, PrimitiveTrail.RigidPointRetreivalFunction, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]);
 
-            GameShaders.Misc["CWRMod:StretchShapeTrail"].SetShaderTexture(CWRUtils.GetT2DAsset(CWRConstant.Masking + "WavyNoise"));
-            GameShaders.Misc["CWRMod:StretchShapeTrail"].Apply();
+            GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].SetShaderTexture(CWRUtils.GetT2DAsset(CWRConstant.Masking + "WavyNoise"));
+            GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
 
             LightningDrawer.Draw(Projectile.oldPos, Projectile.Size * 0.5f - Main.screenPosition, 28);
             return false;
