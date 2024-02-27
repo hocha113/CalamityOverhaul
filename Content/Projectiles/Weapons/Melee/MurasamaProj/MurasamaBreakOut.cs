@@ -93,6 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
                 if (Projectile.IsOwnedByLocalPlayer()) {//发射衍生弹幕和进行位移的代码只能交由主人玩家执行
                     Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.1f);
+                    Owner.velocity = breakOutVector;
                     if (ContentConfig.Instance.LensEasing) {
                         Main.SetCameraLerp(0.1f, 10);
                     }
@@ -113,14 +114,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                                 else {
                                     sengs *= 1.2f;
                                 }
+                                break;//不管如何，执行一次伤害二次调整后都需要跳出
                             }
                         }
                         if (Murasama.NameIsVergil(Owner)) {
                             SoundEngine.PlaySound(CWRSound.V_Hooaaa with { Volume = 0.6f }, Projectile.Center);
                         }
                         murasama.initialize();
-                        
-                        //sengs.Domp();
+
                         int sengsDmg = (int)(Murasama.ActualTrueMeleeDamage * sengs);
                         int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
                         , ModContent.ProjectileType<MurasamaBreakSwing>(), sengsDmg, 0, Owner.whoAmI);
@@ -175,13 +176,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     breakOutVector = Owner.Center.To(Projectile.Center).UnitVector();
                 }
             }
-        }
-
-        public override bool? CanHitNPC(NPC target) {
-            if (CWRIDs.WormBodys.Contains(target.type) || target.type == CWRIDs.Apollo || target.type == CWRIDs.Artemis || target.type == CWRIDs.AresBody) {
-                return false;
-            }
-            return base.CanHitNPC(target);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

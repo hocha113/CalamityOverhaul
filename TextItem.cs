@@ -1,5 +1,5 @@
 ﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -40,8 +40,8 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            Projectile.NewProjectile(player.parent(), player.position, Vector2.Zero
-                , ModContent.ProjectileType<YharonOreProj>(), 0, 0, player.whoAmI);
+            Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero,
+                ModContent.ProjectileType<EndSkillEffectStart>(), 1000, 0, player.whoAmI, 0, player.Center.X, player.Center.Y);
             return true;
         }
     }

@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 PunchCameraModifier modifier2 = new PunchCameraModifier(Projectile.Center, new Vector2(0, Main.rand.NextFloat(-2, 2)), 10f, 30f, 20, 1000f, FullName);
                 Main.instance.CameraModifiers.Add(modifier2);
             }
-
+            Owner.GivePlayerImmuneState(25);
             if (Projectile.IsOwnedByLocalPlayer() && Owner.velocity.Y > -33) {//需要增加一个速度上限，否则在同时击中极多数量目标的情况下会让玩家飞的极其之高
                 Owner.velocity += new Vector2(Projectile.velocity.X, -13);
             }

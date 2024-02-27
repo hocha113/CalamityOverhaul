@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public void InOwner() {
             bool noHasDownSkillProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaDownSkill>()] == 0;
             bool noHasBreakOutProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] == 0;
-
+            int level = InWorldBossPhase.Instance.Level();
             Projectile.Center = Owner.Center + new Vector2(0, 5);
             Projectile.timeLeft = 2;
             Projectile.scale = 0.7f;
@@ -107,8 +107,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
                         if (Projectile.IsOwnedByLocalPlayer()) {
                             Owner.velocity += UnitToMouseV * -3;
-                            Projectile.NewProjectile(Owner.parent(), Projectile.Center, UnitToMouseV * (7 + InWorldBossPhase.Instance.Level() * 0.2f)
-                            , breakOutType, Murasama.ActualTrueMeleeDamage / 2, 0, Owner.whoAmI);
+                            Projectile.NewProjectile(Owner.parent(), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
+                            , breakOutType, (int)(Murasama.ActualTrueMeleeDamage * (0.45f + level * 0.05f)), 0, Owner.whoAmI);
                         }
 
                         SpanTriggerEffDust();
@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         Projectile.NewProjectile(Owner.parent(), Projectile.Center, new Vector2(0, 5)
-                        , ModContent.ProjectileType<MurasamaDownSkill>(), Murasama.ActualTrueMeleeDamage * 2, 0, Owner.whoAmI);
+                        , ModContent.ProjectileType<MurasamaDownSkill>(), (int)(Murasama.ActualTrueMeleeDamage * (2 + level * 1f)), 0, Owner.whoAmI);
 
                         murasama.CWR().ai[0] -= 2;
                     }

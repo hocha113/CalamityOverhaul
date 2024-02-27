@@ -44,10 +44,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override bool? CanDamage() => false;
 
-        private Dictionary<int, Vector2> endPosDic;
-        private Dictionary<int, float> endRotDic;
-        private Dictionary<int, Vector2> endProjPosDic;
-        private Dictionary<int, float> endProjRotDic;
+        private struct EntityStart
+        {
+            public Vector2 origPos;
+            public float rot;
+        }
+
+        private Dictionary<Projectile, EntityStart> ProjDic = new Dictionary<Projectile, EntityStart>();
+        private Dictionary<NPC, EntityStart> NPCDic = new Dictionary<NPC, EntityStart>();
 
         public Vector2 OrigPos {
             get => new Vector2(Projectile.ai[1], Projectile.ai[2]);
@@ -58,78 +62,39 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override void AI() {
-            foreach(Player p in Main.player) {
-                if (p?.active == true) {
-                    p.CWR().EndSkillEffectStartBool = true;
-                }
-            }
-
-            int breakoutProjType = ModContent.ProjectileType<MurasamaBreakOut>();
-            int heldProjType = ModContent.ProjectileType<MurasamaHeldProj>();
-            int orbType = ModContent.ProjectileType<MurasamaEndSkillOrb>();
-
-            bool projIsSafe(Projectile proj) {
-                return proj.type != ModContent.ProjectileType<MurasamaBreakOut>() 
-                    && proj.type != ModContent.ProjectileType<MurasamaHeldProj>() 
-                    && proj.type != ModContent.ProjectileType<MurasamaEndSkillOrb>()
-                    && !proj.hide;
-            }
-
+            Main.LocalPlayer.CWR().EndSkillEffectStartBool = true;
             Projectile.Center = Main.player[Projectile.owner].Center;
-            if (Time == 0) {
-                endPosDic = new Dictionary<int, Vector2>();
-                endRotDic = new Dictionary<int, float>();
-                endProjPosDic = new Dictionary<int, Vector2>();
-                endProjRotDic = new Dictionary<int, float>();
 
-                foreach (NPC npc in Main.npc) {
-                    if (npc.Alives()) {
-                        endPosDic.Add(npc.whoAmI, npc.position);
-                        endRotDic.Add(npc.whoAmI, npc.rotation);
-                    }
+            foreach (Projectile p in Main.projectile) {
+                if (!ProjDic.ContainsKey(p) && !p.friendly) {
+                    ProjDic.Add(p, new EntityStart { origPos = p.position, rot = p.rotation });
                 }
-                foreach (Projectile proj in Main.projectile) {
-                    //弹幕对象必须活跃，同时不能是相关的刀体弹幕
-                    if (proj.Alives() && projIsSafe(proj)) {
-                        endProjPosDic.Add(proj.whoAmI, proj.position);
-                        endProjRotDic.Add(proj.whoAmI, proj.rotation);
-                    }
-                }
-
-                if ((Murasama.NameIsVergil(player) || Main.zenithWorld) && Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.NewProjectile(Projectile.parent(), OrigPos, Vector2.Zero
-                        , ModContent.ProjectileType<PowerSoundEgg>(), Projectile.damage, 0, Projectile.owner);
+            }
+            foreach (NPC n in Main.npc) {
+                if (!NPCDic.ContainsKey(n) && !n.friendly) {
+                    NPCDic.Add(n, new EntityStart { origPos = n.position, rot = n.rotation });
                 }
             }
 
-            foreach (int index in endPosDic.Keys) {
-                if (index >= 0 && index < Main.maxNPCs) {
-                    NPC overNpc = Main.npc[index];
-                    if (overNpc == null) {
-                        continue;
-                    }
-                    if (overNpc.active) {
-                        overNpc.position = endPosDic[index];
-                        overNpc.rotation = endRotDic[index];
-                    }
+            foreach (Projectile p in ProjDic.Keys) {
+                if (p.Alives()) {
+                    p.rotation = ProjDic[p].rot;
+                    p.position = ProjDic[p].origPos;
+                }
+                else {
+                    ProjDic.Remove(p);
                 }
             }
-            
-            foreach (int index in endProjPosDic.Keys) {
-                if (index >= 0 && index < Main.maxProjectiles) {
-                    Projectile overProj = Main.projectile[index];
-                    if (overProj == null) {
-                        continue;
-                    }
-                    if (!projIsSafe(overProj)) {
-                        continue;
-                    }
-                    if (overProj.active) {
-                        overProj.position = endProjPosDic[index];
-                        overProj.rotation = endProjRotDic[index];
-                    }
+            foreach (NPC n in NPCDic.Keys) {
+                if (n.Alives()) {
+                    n.rotation = NPCDic[n].rot;
+                    n.position = NPCDic[n].origPos;
+                }
+                else {
+                    NPCDic.Remove(n);
                 }
             }
+
             if (Time == CanDamageTime) {
                 if (!CanDealDamageToNPCs() && Projectile.IsOwnedByLocalPlayer()) {
                     Projectile.NewProjectile(Projectile.parent(), OrigPos, Vector2.Zero

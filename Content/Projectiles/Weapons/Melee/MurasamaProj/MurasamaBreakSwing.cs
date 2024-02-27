@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Dusts;
 using CalamityMod.NPCs.ProfanedGuardians;
+using CalamityMod.NPCs.Providence;
 using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.VanillaNPCOverrides.Bosses;
@@ -119,6 +120,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 return;
             }
             if (npc.type == ModContent.NPCType<ProfanedRocks>()) {
+                spanDust(33, (int)CalamityDusts.ProfanedFire);
+                return;
+            }
+            if (npc.type == ModContent.NPCType<Providence>()) {
                 spanDust(33, (int)CalamityDusts.ProfanedFire);
                 return;
             }
