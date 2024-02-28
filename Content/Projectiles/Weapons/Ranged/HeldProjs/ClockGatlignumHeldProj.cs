@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
@@ -20,11 +19,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 15;
             HandDistanceY = 0;
             HandFireDistance = 20;
-            HandFireDistanceY = - 3;
+            HandFireDistanceY = -8;
         }
 
         public override void FiringShoot() {
-            SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
             Vector2 gundir = Projectile.rotation.ToRotationVector2();
 
             if (Main.rand.NextBool()) {

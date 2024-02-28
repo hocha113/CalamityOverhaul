@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -11,8 +12,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public ref float Time => ref Projectile.ai[0];
 
         public Item heldItem => Owner.ActiveItem();
-        public virtual int targetCayItem => 0;
-        public virtual int targetCWRItem => 0;
+        public virtual int targetCayItem => ItemID.None;
+        public virtual int targetCWRItem => ItemID.None;
         public int AmmoTypes;
         public float ScaleFactor = 11f;
         public int WeaponDamage;

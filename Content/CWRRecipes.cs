@@ -1,19 +1,19 @@
-﻿using CalamityMod.Items.Materials;
+﻿using CalamityMod.Items.DraedonMisc;
+using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
-using System;
-using System.Linq;
+using CalamityOverhaul.Content.Tiles;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using CalamityMod.Items.DraedonMisc;
 
 namespace CalamityOverhaul.Content
 {
@@ -287,6 +287,23 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(ItemID.FossilOre, 5)
                     .AddIngredient(ItemType<PearlShard>(), 12)
                     .AddTile(TileID.Anvils)
+                    .Register();
+            }
+            //添加苍穹破晓合成
+            {
+                Recipe.Create(ItemType<DawnshatterAzure>())
+                    .AddIngredient(ItemID.FragmentSolar, 17)
+                    .AddIngredient(ItemID.DayBreak, 1)
+                    .AddIngredient<CalamityMod.Items.Weapons.Melee.RedSun>(1)
+                    .AddIngredient<CalamityMod.Items.Weapons.Melee.DraconicDestruction>(1)
+                    .AddIngredient<CalamityMod.Items.Weapons.Melee.DragonPow>(1)
+                    .AddIngredient<CalamityMod.Items.Weapons.Melee.DragonRage>(1)
+                    .AddIngredient<BlackMatterStick>(3)
+                    .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                        amount = 0;
+                    })
+                    .AddOnCraftCallback(SpawnAction)
+                    .AddTile(TileType<TransmutationOfMatter>())
                     .Register();
             }
             //添加万变之星的相关配方，为了防止被额外修改或者再次被增删改动，这个部分的代码实现应该放在最后面

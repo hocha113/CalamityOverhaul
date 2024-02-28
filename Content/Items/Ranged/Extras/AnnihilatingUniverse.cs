@@ -3,6 +3,7 @@ using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniverseProj;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -75,12 +76,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                 .AddIngredient<CalamityMod.Items.Weapons.Ranged.Alluvion>()
                 .AddIngredient<CalamityMod.Items.Weapons.Magic.Apotheosis>()
                 .AddIngredient<Rock>()
-                .AddIngredient<CosmiliteBar>(150)//宇宙锭
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    if (CWRIDs.MaterialsTypes2.Contains(type)) {
-                        amount = 0;
-                    }
-                })
+                .AddIngredient<CosmiliteBar>(11)//宇宙锭
+                .AddIngredient<ShadowspecBar>(16)
+                .AddIngredient<DarkMatterBall>(11)
                 .AddOnCraftCallback(CWRRecipes.SpawnAction)
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();

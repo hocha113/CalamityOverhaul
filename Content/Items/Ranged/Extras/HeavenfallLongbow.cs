@@ -5,6 +5,7 @@ using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
@@ -247,9 +248,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                 .AddIngredient<CalamityMod.Items.Weapons.Ranged.Drataliornus>()
                 .AddIngredient<CalamityMod.Items.Weapons.Ranged.HeavenlyGale>()
                 .AddIngredient<CalamityMod.Items.Weapons.Magic.Eternity>()
-                .AddIngredient<InfiniteIngot>(15)
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) =>
-                {
+                .AddIngredient<DarkMatterBall>(7)
+                .AddIngredient<InfiniteIngot>(19)
+                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
                     amount = 0;
                 })
                 .AddOnCraftCallback(CWRRecipes.SpawnAction)

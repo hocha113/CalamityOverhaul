@@ -447,7 +447,7 @@ Items: {
 		Tooltip:
 			'''
 			右键进行瞄准，按下扳机键[KEY1]发射刀身，在刀身飞行过程中按下左键执行升龙斩击 [Lang1]
-			按下[KEY2]消耗两点充能值，进行一次下砸 [Lang2]
+			按下[KEY2]消耗1点充能值，进行一次下砸 [Lang2]
 			升龙斩击中敌人后将给予武器1充能值，充能达到最大值10点后再次升龙斩中敌人将触发终结技 [Lang3]
 			[c/fff08c:随着旅途的遥远而变强]
 			[c/ff4500:"如果有链锯剑会更好"]
@@ -1197,6 +1197,17 @@ Items: {
 			"想知道引发呕吐的诀窍吗？" 利维坦眯起了眼睛，"皮蛋加奶酪，保准你秒变呕吐专家。"
 			'''
 	}
+
+	GoldenEagle: {
+		DisplayName: 黄金波洛克
+		Tooltip:
+			'''
+			一般的后坐力
+			一次发射五颗子弹
+			右键进行速射，在鼠标处生成大量伴生弹
+			"你不会想知道这把枪是怎么制作的"
+			'''
+	}
 }
 
 Projectiles: {
@@ -1471,6 +1482,7 @@ Projectiles: {
 	// PetrifiedDiseaseHeldProj.DisplayName: Petrified Disease Held Proj
 	// PetrifiedDiseaseAorrw.DisplayName: Petrified Disease Aorrw
 	// YharonOreProj.DisplayName: Yharon Ore Proj
+	// GoldenEagleHelProj.DisplayName: Golden Eagle Hel Proj
 }
 
 Configs: {

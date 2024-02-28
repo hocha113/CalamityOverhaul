@@ -382,7 +382,7 @@ namespace CalamityOverhaul
             //targetNpcTypes16 = new List<int> { HEHead, HEBody, HEBodyAlt, HETail };
             targetNpcTypes17 = new List<int> { RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight };
             WormBodys = new int[] { AquaticScourgeBody, ArmoredDiggerBody, StormWeaverBody, ArmoredDiggerBody
-                , PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
+                , CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
                 , AquaticScourgeBody, NPCID.TheDestroyerBody};
 
             MaterialsTypes = new int[]{

@@ -11,6 +11,8 @@ using Terraria.DataStructures;
 using System.Collections.Generic;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Common;
+using CalamityMod.Items;
+using CalamityOverhaul.Content.Tiles;
 
 namespace CalamityOverhaul.Content.Items.Materials
 {

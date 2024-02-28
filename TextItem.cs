@@ -12,7 +12,7 @@ namespace CalamityOverhaul
         public override string Texture => "CalamityOverhaul/icon";
 
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;
+            return false;
         }
 
         public override void SetDefaults() {
@@ -33,7 +33,10 @@ namespace CalamityOverhaul
         }
 
         public override void UpdateInventory(Player player) {
-            base.UpdateInventory(player);
+            //Main.HoverItem?.ModItem?.FullName?.Domp();
+            if (player.PressKey(false) && Main.GameUpdateCount % 10 == 0) {
+                player.QuickSpawnItem(player.parent(), Main.HoverItem, 1);
+            }
         }
 
         public override void HoldItem(Player player) {

@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -167,6 +168,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
             if (target.type == CWRIDs.PlaguebringerGoliath) {
                 modifiers.FinalDamage *= 0.8f;
+            }
+            if (CWRIDs.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.5f;
             }
             if (target.boss) {
                 float sengsValue = 0.75f + InWorldBossPhase.Instance.Level() * 0.05f;

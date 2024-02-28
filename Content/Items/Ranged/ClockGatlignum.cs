@@ -33,8 +33,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shootSpeed = 20f;
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.CWR().heldProjType = ModContent.ProjectileType<ClockGatlignumHeldProj>();
-            Item.CWR().hasHeldNoCanUseBool = true;
+            Item.SetHeldProj<ClockGatlignumHeldProj>();
         }
     }
 }

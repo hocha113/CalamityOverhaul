@@ -18,6 +18,11 @@ using CalamityMod.Rarities;
 using System;
 using Terraria.GameContent;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Tiles;
+using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Rogue;
 
 namespace CalamityOverhaul.Content.Items.Rogue.Extras
 {
@@ -82,6 +87,22 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
                 return false;
             }
             return base.Shoot(player, source, position, velocity, type, damage, knockback);
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<ShadowspecBar>(17)
+                .AddIngredient<Rock>(1)
+                .AddIngredient<ScarletDevil>(1)
+                .AddIngredient<CosmicCalamity>(1)
+                .AddIngredient(ItemID.Gungnir, 1)
+                .AddIngredient<BlackMatterStick>(3)
+                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                    amount = 0;
+                })
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
+                .Register();
         }
     }
 }

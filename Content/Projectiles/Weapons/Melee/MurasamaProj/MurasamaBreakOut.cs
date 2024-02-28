@@ -43,6 +43,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override void PostAI() => CWRUtils.ClockFrame(ref Projectile.frame, 5, 12);
 
         public override void AI() {
+            if (ContentConfig.Instance.ForceReplaceResetContent) {
+                if (murasama.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>()) {
+                    Projectile.Kill();
+                    return;
+                }
+            }
+            else {
+                if (murasama.type != ModContent.ItemType<Murasama>()) {
+                    Projectile.Kill();
+                    return;
+                }
+            }
+
             Lighting.AddLight(Projectile.Center, (Main.rand.NextBool(3) ? Color.Red : Color.IndianRed).ToVector3());
 
             int level = InWorldBossPhase.Instance.Level();
@@ -165,7 +178,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     if (!Murasama.UnlockSkill1) {//在击败初期Boss之前不能使用这个技能
                         return;
                     }
-                    if (Projectile.ai[1] > 30 || Projectile.numHits > 0) {
+                    if (Projectile.ai[1] > 0) {
                         SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.1f }, Projectile.Center);
                         Projectile.ai[0] = 3;
                     }

@@ -122,14 +122,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
             if (CWRKeySystem.Murasama_DownKey.JustPressed && Murasama.UnlockSkill2 && noHasDownSkillProj && noHasBreakOutProj) {//下砸技能键被按下，同时技能以及解锁，那么发射执行下砸技能的弹幕
                 murasama.initialize();
-                if (murasama.CWR().ai[0] >= 2) {
+                if (murasama.CWR().ai[0] >= 1) {
                     SoundEngine.PlaySound(Murasama.BigSwing with { Pitch = -0.1f }, Projectile.Center);
 
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         Projectile.NewProjectile(Owner.parent(), Projectile.Center, new Vector2(0, 5)
                         , ModContent.ProjectileType<MurasamaDownSkill>(), (int)(Murasama.ActualTrueMeleeDamage * (2 + level * 1f)), 0, Owner.whoAmI);
 
-                        murasama.CWR().ai[0] -= 2;
+                        murasama.CWR().ai[0] -= 1;//消耗一点能量
                     }
                 }
             }

@@ -154,35 +154,17 @@ namespace CalamityOverhaul.Content.Items.Tools
             CWRParticleHandler.AddParticle(spark);
         }
 
-        //public override void AddRecipes() {
-        //    CreateRecipe()
-        //        .AddIngredient<CrystylCrusher>()
-        //        .AddIngredient<AbyssalWarhammer>()
-        //        .AddIngredient<AerialHamaxe>()
-        //        .AddIngredient<AstralHamaxe>()
-        //        .AddIngredient<AstralPickaxe>()
-        //        .AddIngredient<AxeofPurity>()
-        //        .AddIngredient<BeastialPickaxe>()
-        //        .AddIngredient<BerserkerWaraxe>()
-        //        .AddIngredient<BlossomPickaxe>()
-        //        .AddIngredient<FellerofEvergreens>()
-        //        .AddIngredient<Gelpick>()
-        //        .AddIngredient<GenesisPickaxe>()
-        //        .AddIngredient<Grax>()
-        //        .AddIngredient<GreatbayPickaxe>()
-        //        .AddIngredient<InfernaCutter>()
-        //        .AddIngredient<ReefclawHamaxe>()
-        //        .AddIngredient<SeismicHampick>()
-        //        .AddIngredient<ShardlightPickaxe>()
-        //        .AddIngredient<SkyfringePickaxe>()
-        //        .AddIngredient<TectonicTruncator>()
-        //        .AddIngredient<InfiniteIngot>(5)
-        //        .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-        //            amount = 0;
-        //        })
-        //        .AddOnCraftCallback(CWRRecipes.SpawnAction)
-        //        .AddTile(ModContent.TileType<TransmutationOfMatter>())
-        //        .Register();
-        //}
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<CrystylCrusher>()
+                .AddIngredient<DarkMatterBall>(12)
+                .AddIngredient<InfiniteIngot>(18)
+                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                    amount = 0;
+                })
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
+                .Register();
+        }
     }
 }

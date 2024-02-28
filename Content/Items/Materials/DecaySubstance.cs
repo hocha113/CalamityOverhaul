@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using CalamityOverhaul.Content.Tiles;
 
 namespace CalamityOverhaul.Content.Items.Materials
 {
@@ -33,6 +34,22 @@ namespace CalamityOverhaul.Content.Items.Materials
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
             spriteBatch.Draw(TextureAssets.Item[Type].Value, Item.Center - Main.screenPosition, null, lightColor, Main.GameUpdateCount * 0.1f, TextureAssets.Item[Type].Value.Size() / 2, 1, SpriteEffects.None, 0);
             return false;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient(ItemID.FragmentVortex, 1)
+                .AddIngredient(ItemID.FragmentNebula, 1)
+                .AddIngredient(ItemID.FragmentSolar, 1)
+                .AddIngredient(ItemID.FragmentStardust, 1)
+                .AddIngredient(ItemID.LunarBar, 4)
+                .AddIngredient<DecayParticles>(1)
+                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                    amount = 0;
+                })
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
+                .Register();
         }
     }
 }

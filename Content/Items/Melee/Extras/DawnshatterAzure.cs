@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
     internal class DawnshatterAzure : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
-        public override void SetDefaults()
-        {
+        public override void SetDefaults() {
             Item.height = Item.width = 54;
             Item.damage = 2709;
             Item.DamageType = DamageClass.Melee;
@@ -33,16 +32,16 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems10;
         }
 
-        public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 11;
+        public override void ModifyWeaponCrit(Player player, ref float crit) {
+            crit += 11;
+        }
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-        {
-            int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            _ = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
         }
 
-        public override bool CanUseItem(Player player)
-        {
+        public override bool CanUseItem(Player player) {
             return player.ownedProjectileCounts[Item.shoot] <= 0;
         }
     }

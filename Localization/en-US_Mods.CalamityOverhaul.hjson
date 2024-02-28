@@ -466,7 +466,7 @@ Items: {
 			'''
 			Right-click to aim, press the trigger key [KEY1] to launch the blade, 
 			and press the left key to execute the rising dragon strike during the blade flight [Lang1]
-			Press [KEY2] to consume two points of charge and perform a punch [Lang2]
+			Press [KEY2] to consume one points of charge and perform a punch [Lang2]
 			When you hit an enemy, you will give your weapon 1 recharge. 
 			When you hit the maximum 10 recharge, you will trigger the end of the enemy when you lift the dragon again. [Lang3]
 			[c/fff08c: Stronger with the distance of the journey]
@@ -1220,6 +1220,11 @@ Items: {
 			"Wanna know the trick to induce vomiting?" Leviathan squinted, "Century egg with cheese, guaranteed to turn you into a vomit connoisseur."
 			'''
 	}
+
+	GoldenEagle: {
+		DisplayName: Golden Eagle
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1494,6 +1499,7 @@ Projectiles: {
 	PetrifiedDiseaseHeldProj.DisplayName: Petrified Disease Held Proj
 	PetrifiedDiseaseAorrw.DisplayName: Petrified Disease Aorrw
 	YharonOreProj.DisplayName: Yharon Ore Proj
+	GoldenEagleHelProj.DisplayName: Golden Eagle Hel Proj
 }
 
 Configs: {

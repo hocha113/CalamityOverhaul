@@ -73,7 +73,6 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Item.useAnimation = 26;
                 Item.useTime = 26;
             }
-
             UpdateBar();
         }
 

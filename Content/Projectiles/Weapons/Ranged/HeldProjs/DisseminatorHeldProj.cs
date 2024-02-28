@@ -1,9 +1,8 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Common;
-using Terraria.ModLoader;
-using Terraria;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -16,11 +15,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.1f;
             GunPressure = 0.2f;
             Recoil = 2;
-            HandDistance = 27;
+            HandDistance = 20;
             HandDistanceY = 5;
-            HandFireDistance = 27;
+            HandFireDistance = 20;
             HandFireDistanceY = -8;
-            CanRightClick = true;
+            CanRightClick = true;//可以右键使用
         }
 
         public override void FiringIncident() {
@@ -56,8 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Vector2 pos = Owner.Center + new Vector2(MathHelper.Lerp(Main.MouseWorld.To(Owner.Center).X, 0, 0.9f), -780);
             Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ScaleFactor;
             Projectile.NewProjectile(Owner.parent(), pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

@@ -13,6 +13,7 @@ using Humanizer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
@@ -47,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override void AI() {
             Lighting.AddLight(Projectile.Center, Color.IndianRed.ToVector3() * 2.2f);
             
-            Projectile.scale += (0.05f + level * 0.002f);
+            Projectile.scale += (0.05f + level * 0.003f);
             Projectile.position += Owner.velocity;
             Projectile.rotation = Projectile.velocity.ToRotation();
             //Projectile.position.Y -= (0.02f + level * 0.005f);
@@ -125,6 +126,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
             if (npc.type == ModContent.NPCType<Providence>()) {
                 spanDust(33, (int)CalamityDusts.ProfanedFire);
+                return;
+            }
+            if (npc.ModNPC?.FullName == "CatalystMod/Astrageldon") {
+                spanDust(33, (int)CalamityDusts.Nightwither);
                 return;
             }
             npc.CWR().MurasamabrBeatBackBool = true;
@@ -236,14 +241,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == CWRIDs.PlaguebringerGoliath) {
                 modifiers.FinalDamage *= 0.75f;
             }
-            if (target.type == CWRIDs.AstrumDeusBody) {
-                modifiers.FinalDamage *= 1.75f;
-            }
             if (CWRIDs.targetNpcTypes7_1.Contains(target.type)) {
                 modifiers.SetMaxDamage(target.lifeMax / 4);
             }
             if (target.type == CWRIDs.Apollo || target.type == CWRIDs.Artemis) {
                 modifiers.FinalDamage *= 1.5f;
+            }
+            if (CWRIDs.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.5f;
             }
             modifiers.DefenseEffectiveness *= 0.25f;
         }

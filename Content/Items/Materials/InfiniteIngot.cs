@@ -1,10 +1,13 @@
-﻿using CalamityMod.Rarities;
+﻿using CalamityMod.Items.Materials;
+using CalamityMod.Items;
+using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Buffers;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -12,6 +15,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI.Chat;
 using static Terraria.ModLoader.ModContent;
+using CalamityMod.Items.PermanentBoosters;
 
 namespace CalamityOverhaul.Content.Items.Materials
 {
@@ -94,6 +98,24 @@ namespace CalamityOverhaul.Content.Items.Materials
             //sb.End();
             //sb.Begin(SpriteSortMode.Deferred, sb.GraphicsDevice.BlendState, sb.GraphicsDevice.SamplerStates[0],
             //    sb.GraphicsDevice.DepthStencilState, sb.GraphicsDevice.RasterizerState, null, Main.UIScaleMatrix);
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<MiracleFruit>(1)
+                .AddIngredient<Elderberry>(1)
+                .AddIngredient<BloodOrange>(1)
+                .AddIngredient<Dragonfruit>(1)
+                .AddIngredient<MiracleMatter>(4)
+                .AddIngredient<ShadowspecBar>(10)
+                .AddIngredient<ShadowspecBar>(10)
+                .AddIngredient<BlackMatterStick>(12)
+                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                    amount = 0;
+                })
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(TileType<TransmutationOfMatter>())
+                .Register();
         }
     }
 }
