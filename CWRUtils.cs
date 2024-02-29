@@ -186,7 +186,6 @@ namespace CalamityOverhaul
 
         public static List<Type> GetSubclasses(Type baseType) {
             List<Type> subclasses = new();
-
             Assembly assembly = Assembly.GetExecutingAssembly();
             Type[] allTypes = assembly.GetTypes();
 

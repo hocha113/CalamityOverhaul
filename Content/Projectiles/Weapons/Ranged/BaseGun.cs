@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float ArmRotSengsBack;
         /// <summary>
-        /// 是否可以右键
+        /// 是否可以右键，默认为<see langword="false"/>
         /// </summary>
         public bool CanRightClick;
         /// <summary>
@@ -39,47 +39,47 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected bool onFireR;
         /// <summary>
-        /// 是否在<see cref="InOwner"/>执行后自动更新手臂参数
+        /// 是否在<see cref="InOwner"/>执行后自动更新手臂参数，默认为<see langword="true"/>
         /// </summary>
         public bool SetArmRotBool = true;
         /// <summary>
-        /// 枪械是否受到应力缩放
+        /// 枪械是否受到应力缩放，默认为<see langword="true"/>
         /// </summary>
         public bool PressureWhetherIncrease = true;
         /// <summary>
-        /// 开火时是否默认播放手持物品的使用音效<see cref="Item.UseSound"/>，但如果准备重写<see cref="SpanProj"/>，这个属性将失去作用
+        /// 开火时是否默认播放手持物品的使用音效<see cref="Item.UseSound"/>，但如果准备重写<see cref="SpanProj"/>，这个属性将失去作用，默认为<see langword="true"/>
         /// </summary>
         public bool FiringDefaultSound = true;
         /// <summary>
-        /// 这个角度用于设置枪体在玩家非开火阶段的仰角，这个角度是周角而非弧度角
+        /// 这个角度用于设置枪体在玩家非开火阶段的仰角，这个角度是周角而非弧度角，默认为20f
         /// </summary>
         public float AngleFirearmRest = 20f;
         /// <summary>
-        /// 枪压，决定开火时的上抬力度
+        /// 枪压，决定开火时的上抬力度，默认为0
         /// </summary>
         public float GunPressure = 0;
         /// <summary>
-        /// 控制力度，决定压枪的力度
+        /// 控制力度，决定压枪的力度，默认为0.01f
         /// </summary>
         public float ControlForce = 0.01f;
         /// <summary>
-        /// 手持距离，生效于非开火状态下
+        /// 手持距离，生效于非开火状态下，默认为15
         /// </summary>
         public float HandDistance = 15;
         /// <summary>
-        /// 手持距离，生效于非开火状态下
+        /// 手持距离，生效于非开火状态下，默认为0
         /// </summary>
         public float HandDistanceY = 0;
         /// <summary>
-        /// 手持距离，生效于开火状态下
+        /// 手持距离，生效于开火状态下，默认为20
         /// </summary>
         public float HandFireDistance = 20;
         /// <summary>
-        /// 手持距离，生效于开火状态下
+        /// 手持距离，生效于开火状态下，默认为-3
         /// </summary>
         public float HandFireDistanceY = -3;
         /// <summary>
-        /// 应力范围
+        /// 应力范围，默认为5
         /// </summary>
         public float RangeOfStress = 5;
         /// <summary>
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float OwnerPressureIncrease => PressureWhetherIncrease ? Owner.CWR().PressureIncrease : 1;
         /// <summary>
-        /// 开火时会制造的后坐力模长
+        /// 开火时会制造的后坐力模长，默认为5
         /// </summary>
         public float Recoil = 5;
         /// <summary>
@@ -95,9 +95,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual float GunOnFireRot => ToMouseA - OffsetRot * DirSign;
         /// <summary>
+        /// 发射口的长度矫正值，默认为0
+        /// </summary>
+        public float ShootPosToMouLengValue = 0;
+        /// <summary>
+        /// 发射口的竖直方向长度矫正值，默认为0
+        /// </summary>
+        public float ShootPosNorlLengValue = 0;
+        /// <summary>
+        /// 快捷获取该枪械的发射口位置
+        /// </summary>
+        public Vector2 GunShootPos => GetShootPos(ShootPosToMouLengValue, ShootPosNorlLengValue);
+        /// <summary>
         /// 玩家是否正在行走
         /// </summary>
         public virtual bool WalkDetection => Owner.velocity.Y == 0 && Math.Abs(Owner.velocity.X) > 0;
+        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
 
         /// <summary>
         /// 更新后座力的作用状态，这个函数只应该由弹幕主人调用
@@ -172,7 +185,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
         /// </summary>
         public virtual void FiringShoot() {
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
         }
@@ -182,7 +195,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
         /// </summary>
         public virtual void FiringShootR() {
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
         }
@@ -203,8 +216,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public virtual int SpanLuxirProj(int luxirDamage) {
-            return Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+            return Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
                 , ModContent.ProjectileType<LuxorsGiftRanged>(), luxirDamage, WeaponKnockback / 2, Owner.whoAmI, 0);
+        }
+
+        public virtual Vector2 GetShootPos(float toMouLeng, float norlLeng) {
+            Vector2 norlVr = (Projectile.rotation + (DirSign > 0 ? MathHelper.PiOver2 : -MathHelper.PiOver2)).ToRotationVector2();
+            return Projectile.Center + Projectile.rotation.ToRotationVector2() * toMouLeng + norlVr * norlLeng;
         }
 
         public virtual void CaseEjection(float slp = 1) {
@@ -248,9 +266,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
-                , Projectile.rotation, value.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
+                , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             return false;
         }
     }

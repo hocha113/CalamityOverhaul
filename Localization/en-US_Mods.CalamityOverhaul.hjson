@@ -1503,6 +1503,7 @@ Projectiles: {
 	DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
 	TheDaybreak3.DisplayName: The Daybreak3
 	DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
+	HandgunHeldProj.DisplayName: Handgun Held Proj
 }
 
 Configs: {
@@ -1803,6 +1804,11 @@ TextContent: {
 			However, much like its .20 caliber, it's just an ordinary member of the fish firearm family.
 			Perhaps it needs a sarcastic fishing rod to catch a bit of self-awareness, after all, in the ocean, 
 			caliber might be better suited to measure humility rather than truth.
+			'''
+		Wap_HandGun_Text:
+			'''
+			Weak recoil
+			Baaaah! Daaaaaa! Bang!!
 			'''
 	}
 }

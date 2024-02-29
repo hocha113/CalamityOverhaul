@@ -1488,6 +1488,7 @@ Projectiles: {
 	// DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
 	// TheDaybreak3.DisplayName: The Daybreak3
 	// DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
+	// HandgunHeldProj.DisplayName: Handgun Held Proj
 }
 
 Configs: {
@@ -1782,6 +1783,11 @@ TextContent: {
 			"口径是真理"鲨鱼侃侃而谈，仿佛自己就是火力至上的代言人
 			然而，就像它的.20口径一样，属于鱼类枪械家族中的平凡之辈
 			或许它需要一支嘲讽的钓竿来捕捉一点自我认知，毕竟在海洋中，口径也许更适合测量谦逊而非真理
+			'''
+		Wap_HandGun_Text:
+			'''
+			弱的后坐力
+			砰！砰！！砰！！！
 			'''
 	}
 }
