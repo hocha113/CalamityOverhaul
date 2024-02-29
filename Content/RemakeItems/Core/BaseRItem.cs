@@ -658,12 +658,33 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         }
         /// <summary>
+        /// 当物品的使用动画开始时会执行的函数，这个钩子的优先级大于TML的默认钩子
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="player"></param>
+        /// <returns>返回默认值<see langword="null"/>会继续执行TML的默认行为，
+        /// 返回<see langword="true"/>将只会原物品的<see cref="ModItem.UseAnimation(Player)"/>
+        /// 而阻断<see cref="GlobalItem.UseAnimation(Item, Player)"/>的运行，
+        /// 返回<see langword="false"/>将会直接阻断后续所有修改的运行</returns>
+        public virtual bool? On_UseAnimation(Item item, Player player) {
+            return null;
+        }
+        /// <summary>
         /// 使用物品时会调用的函数
         /// </summary>
         /// <param name="item"></param>
         /// <param name="player"></param>
         /// <returns>返回默认值<see langword="null"/>会继续执行该物品的原默认方法</returns>
         public virtual bool? UseItem(Item item, Player player) {
+            return null;
+        }
+        /// <summary>
+        /// 使用物品时会调用的函数，该方法执行优先级大于TML的装载钩子
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="player"></param>
+        /// <returns>返回默认值<see langword="null"/>会继续执行TML的默认行为，返回非空值将会直接阻断后续所有修改的运行</returns>
+        public virtual bool? On_UseItem(Item item, Player player) {
             return null;
         }
         /// <summary>

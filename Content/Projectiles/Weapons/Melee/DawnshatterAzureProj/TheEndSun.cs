@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
 {
     internal class TheEndSun : ModProjectile
     {
-        public override string Texture => CWRConstant.Projectile_Melee + "TheEndSun";
+        public override string Texture => CWRConstant.Projectile_Melee + "DawnshatterAzureBeam";
         internal PrimitiveTrail TailDrawer;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 13;
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                 SoundEngine.PlaySound(Yharon.ShortRoarSound, target.position);
                 for (int i = 0; i < 3; i++) {
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + new Vector2(Main.rand.Next(-260, 260), -520 + Main.rand.Next(-160, 160)), new Vector2(0, 26)
-                    , ModContent.ProjectileType<TheDaybreak>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                    , ModContent.ProjectileType<TheDaybreak>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0, 32);
                 }
             }
         }

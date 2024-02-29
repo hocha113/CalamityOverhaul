@@ -1,15 +1,13 @@
-﻿using CalamityMod.Items;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Items;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework.Input;
-using Terraria.Localization;
-using CalamityOverhaul.Content.Items.Melee;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
@@ -48,10 +46,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             return player.altFunctionUse != 2;
         }
 
-        public override bool? UseItem(Item item, Player player) {
-            item.DamageType = DamageClass.Melee;
-            item.noMelee = false;
-            return base.UseItem(item, player);
+        public override bool? On_UseItem(Item item, Player player) {
+            return false;
         }
 
         public override void ModifyShootStats(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
@@ -59,8 +55,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void UseAnimation(Item item, Player player) {
-            item.noUseGraphic = false;
             base.UseAnimation(item, player);
+        }
+
+        public override bool? On_UseAnimation(Item item, Player player) {
+            return false;
         }
     }
 }

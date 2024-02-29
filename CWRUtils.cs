@@ -46,12 +46,14 @@ namespace CalamityOverhaul
         /// 一个额外的跳字方法，向游戏内打印对象的ToString内容
         /// </summary>
         /// <param name="obj"></param>
-        public static void Domp(this object obj) {
+        public static void Domp(this object obj, Color color = default) {
+            if (color == default) 
+                color = Color.White;
             if (obj == null) {
-                Text("ERROR Is Null");
+                Text("ERROR Is Null", Color.Red);
                 return;
             }
-            Text(obj.ToString());
+            Text(obj.ToString(), color);
         }
 
         /// <summary>
@@ -91,19 +93,19 @@ namespace CalamityOverhaul
                 sw.Write("};");
             }
             catch (UnauthorizedAccessException) {
-                Console.WriteLine($"UnauthorizedAccessException: 无法访问文件路径 '{path}'. 权限不足");
+                ($"UnauthorizedAccessException: 无法访问文件路径 '{path}'. 权限不足").DompInConsole();
             }
             catch (DirectoryNotFoundException) {
-                Console.WriteLine($"DirectoryNotFoundException: 文件路径 '{path}' 中的目录不存在");
+                ($"DirectoryNotFoundException: 文件路径 '{path}' 中的目录不存在").DompInConsole();
             }
             catch (PathTooLongException) {
-                Console.WriteLine($"PathTooLongException: 文件路径 '{path}' 太长");
+                ($"PathTooLongException: 文件路径 '{path}' 太长").DompInConsole();
             }
             catch (IOException) {
-                Console.WriteLine($"IOException: 无法打开文件 '{path}' 进行写入");
+                ($"IOException: 无法打开文件 '{path}' 进行写入").DompInConsole();
             }
             catch (Exception e) {
-                Console.WriteLine($"An error occurred: {e.Message}");
+                ($"An error occurred: {e.Message}").DompInConsole();
             }
         }
 

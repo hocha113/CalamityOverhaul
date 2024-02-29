@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
     {
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DawnshatterAzure>();
 
-        public override string Texture => CWRConstant.Projectile_Melee + "DawnshatterAzureProj";
+        public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
 
         public Player Owner => Main.player[Projectile.owner];
 
@@ -43,6 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
         }
 
         public override void AI() {
+            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
             Player player = Main.player[Projectile.owner];
             player.heldProj = Projectile.whoAmI;
             int duration = player.itemAnimationMax;
@@ -79,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                     Vector2 spanPos = target.Center + new Vector2(maxX * (i < 3 ? -1 : 1), Main.rand.Next(-maxY, maxY));
                     Vector2 vr = spanPos.To(target.Center).UnitVector() * 25;
                     int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), spanPos, vr
-                    , ModContent.ProjectileType<TheDaybreak2>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                    , ModContent.ProjectileType<TheDaybreak2>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0, 32);
                     Main.projectile[proj].timeLeft = 120;
                 }
             }
@@ -87,10 +88,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
-            float rot = Projectile.rotation + MathHelper.PiOver4;
+            float rot = Projectile.rotation + MathHelper.PiOver4 + (Owner.direction > 0 ? 0 : MathHelper.PiOver2);
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            Vector2 origin = texture.Size() / 2;
-            Main.EntitySpriteDraw(texture, drawPosition, null, Projectile.GetAlpha(lightColor), rot, origin, Projectile.scale * 0.7f, 0, 0);
+            Vector2 origin = CWRUtils.GetOrig(texture, 4);
+            Main.EntitySpriteDraw(texture, drawPosition, CWRUtils.GetRec(texture, Projectile.frame, 4), Projectile.GetAlpha(lightColor)
+                , rot, origin, Projectile.scale * 0.7f, Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             return false;
         }
     }

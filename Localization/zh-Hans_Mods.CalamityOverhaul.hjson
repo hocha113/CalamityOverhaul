@@ -544,6 +544,8 @@ Items: {
 		DisplayName: 苍穹破晓
 		Tooltip:
 			'''
+			射出日冕之影，击中敌人后召唤爆炸龙焰
+			长按右键举枪冲刺
 			烈火净化灵魂，将你的敌人彻底掠夺干净
 			[c/fff08c:-击杀敌人后会掉落多倍物品-]
 			'''
@@ -1483,6 +1485,9 @@ Projectiles: {
 	// PetrifiedDiseaseAorrw.DisplayName: Petrified Disease Aorrw
 	// YharonOreProj.DisplayName: Yharon Ore Proj
 	// GoldenEagleHelProj.DisplayName: Golden Eagle Hel Proj
+	// DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
+	// TheDaybreak3.DisplayName: The Daybreak3
+	// DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
 }
 
 Configs: {

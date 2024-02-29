@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Reflection;
-using System.Security.Policy;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -18,6 +17,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
     public delegate void On_ModifyHitNPC_Delegate(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers);
     public delegate bool On_CanUseItem_Delegate(Item item, Player player);
     public delegate bool On_PreDrawInInventory_Delegate(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale);
+    public delegate bool? On_UseItem_Delegate(Item item, Player player);
+    public delegate void On_UseAnimation_Delegate(Item item, Player player);
 
     internal class RItemSystem : ModSystem
     {
@@ -30,6 +31,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onModifyHitNPCMethod;
         public static MethodBase onCanUseItemMethod;
         public static MethodBase onPreDrawInInventoryMethod;
+        public static MethodBase onUseItemMethod;
+        public static MethodBase onUseAnimationMethod;
 
         public override void Load() {
             itemLoaderType = typeof(ItemLoader);
@@ -40,9 +43,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onModifyHitNPCMethod = itemLoaderType.GetMethod("ModifyHitNPC", BindingFlags.Public | BindingFlags.Static);
             onCanUseItemMethod = itemLoaderType.GetMethod("CanUseItem", BindingFlags.Public | BindingFlags.Static);
             onPreDrawInInventoryMethod = itemLoaderType.GetMethod("PreDrawInInventory", BindingFlags.Public | BindingFlags.Static);
+            onUseItemMethod = itemLoaderType.GetMethod("UseItem", BindingFlags.Public | BindingFlags.Static);
+            onUseAnimationMethod = itemLoaderType.GetMethod("UseAnimation", BindingFlags.Public | BindingFlags.Static);
 
             if (onSetDefaultsMethod != null && !ModLoader.HasMod("MagicBuilder")) {
-                //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发送严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
+                //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发生严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
                 //MonoModHooks.Add(onSetDefaultsMethod, OnSetDefaultsHook);
             }
             if (onShootMethod != null) {
@@ -63,8 +68,56 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (onPreDrawInInventoryMethod != null) {
                 MonoModHooks.Add(onPreDrawInInventoryMethod, OnPreDrawInInventoryHook);
             }
+            if (onUseItemMethod != null) {
+                MonoModHooks.Add(onUseItemMethod, OnUseItemHook);
+            }
+            if (onUseAnimationMethod != null) {
+                MonoModHooks.Add(onUseAnimationMethod, OnUseAnimationHook);
+            }
         }
-        
+
+        /// <summary>
+        /// 这个钩子用于挂载一个提前于TML方法的<see cref="ItemLoader.UseAnimation(Item, Player)"/>，以此来进行一些高级的修改
+        /// </summary>
+        /// <param name="orig"></param>
+        /// <param name="item"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public void OnUseAnimationHook(On_UseAnimation_Delegate orig, Item item, Player player) {
+            bool? result = null;
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
+                result = RItemIndsDict[item.type].On_UseAnimation(item, player);
+            }
+            if (result.HasValue) {
+                if (result.Value) {
+                    item.ModItem?.UseAnimation(player);
+                    return;
+                }
+                else {
+                    return;
+                }
+            }
+            orig.Invoke(item, player);
+        }
+        /// <summary>
+        /// 这个钩子用于挂载一个提前于TML方法的<see cref="ItemLoader.UseItem(Item, Player)"/>，以此来进行一些高级的修改
+        /// </summary>
+        /// <param name="orig"></param>
+        /// <param name="item"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public bool? OnUseItemHook(On_UseItem_Delegate orig, Item item, Player player) {
+            bool? result = null;
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
+                result = RItemIndsDict[item.type].On_UseItem(item, player);
+            }
+            if (result.HasValue) {
+                return result.Value;
+            }
+            else {
+                return orig(item, player);
+            }
+        }
         /// <summary>
         /// 这个钩子用于挂载一个提前于TML方法的SetDefaults，以此来进行一些高级的修改
         /// </summary>

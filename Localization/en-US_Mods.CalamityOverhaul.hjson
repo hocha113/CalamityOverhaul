@@ -1500,6 +1500,9 @@ Projectiles: {
 	PetrifiedDiseaseAorrw.DisplayName: Petrified Disease Aorrw
 	YharonOreProj.DisplayName: Yharon Ore Proj
 	GoldenEagleHelProj.DisplayName: Golden Eagle Hel Proj
+	DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
+	TheDaybreak3.DisplayName: The Daybreak3
+	DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
 }
 
 Configs: {
