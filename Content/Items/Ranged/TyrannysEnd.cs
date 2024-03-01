@@ -37,6 +37,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.Calamity().canFirePointBlankShots = true;
             Item.CWR().hasHeldNoCanUseBool = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<TyrannysEndHeldProj>();
+            Item.CWR().HasCartridgeHolder = true;
+            Item.CWR().AmmoCapacity = 6;
         }
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             tooltips.ReplaceTooltip("[KEY]", CWRKeySystem.ADS_Key.TooltipHotkeyString(), CWRMod.Instance.Name);
