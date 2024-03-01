@@ -1504,6 +1504,17 @@ Projectiles: {
 	TheDaybreak3.DisplayName: The Daybreak3
 	DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
 	HandgunHeldProj.DisplayName: Handgun Held Proj
+	FlintlockpistolHeldProj.DisplayName: Flintlockpistol Held Proj
+	MusketHeldProj.DisplayName: Musket Held Proj
+	TheUndertakerHeldProj.DisplayName: The Undertaker Held Proj
+	RedRyderHeldProj.DisplayName: Red Ryder Held Proj
+	FlareGunHeldProj.DisplayName: Flare Gun Held Proj
+	PhoenixBlasterHeldProj.DisplayName: Phoenix Blaster Held Proj
+	SandgunHeldProj.DisplayName: Sandgun Held Proj
+	StarCannonHeldProj.DisplayName: Star Cannon Held Proj
+	SuperStarCannonHeldProj.DisplayName: Super Star Cannon Held Proj
+	ZapinatorGrayHeldProj.DisplayName: Zapinator Gray Held Proj
+	ZapinatorOrangeHeldProj.DisplayName: Zapinator Orange Held Proj
 }
 
 Configs: {
@@ -1810,5 +1821,33 @@ TextContent: {
 			Weak recoil
 			Baaaah! Daaaaaa! Bang!!
 			'''
+		Wap_Flintlockpistol_Text:
+			'''
+			Weak recoil
+			an old handgun, it might explode
+			"Trust the wisdom of the ancients."
+			'''
+		Wap_Musket_Text:
+			'''
+			Medium recoil
+			"The militia said, 'I must be ready.'"
+			'''
+		Wap_TheUndertaker_Text:
+			'''
+			Weak recoil
+			"When the undertakers find their clients uncooperative, they often use this this to calm them down"
+			'''
+		Wap_RedRyder_Text:
+			'''
+			Weak recoil
+			“Don't shoot your own eyeballs out！”
+			'''
+		Wap_FlareGun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_FlareGun_Text
+		Wap_PhoenixBlaster_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_PhoenixBlaster_Text
+		Wap_Sandgun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_Sandgun_Text
+		Wap_StarCannon_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_StarCannon_Text
+		Wap_SuperStarCannon_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_SuperStarCannon_Text
+		Wap_ZapinatorGray_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ZapinatorGray_Text
+		Wap_ZapinatorOrange_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ZapinatorOrange_Text
 	}
 }

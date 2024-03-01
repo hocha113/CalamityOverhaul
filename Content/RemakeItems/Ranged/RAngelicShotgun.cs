@@ -38,6 +38,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<AngelicShotgunHeldProj>();
+            item.EasySetLocalTextNameOverride("AngelicShotgun");
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {

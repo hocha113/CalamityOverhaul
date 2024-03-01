@@ -1489,6 +1489,17 @@ Projectiles: {
 	// TheDaybreak3.DisplayName: The Daybreak3
 	// DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
 	// HandgunHeldProj.DisplayName: Handgun Held Proj
+	// FlintlockpistolHeldProj.DisplayName: Flintlockpistol Held Proj
+	// MusketHeldProj.DisplayName: Musket Held Proj
+	// TheUndertakerHeldProj.DisplayName: The Undertaker Held Proj
+	// RedRyderHeldProj.DisplayName: Red Ryder Held Proj
+	// FlareGunHeldProj.DisplayName: Flare Gun Held Proj
+	// PhoenixBlasterHeldProj.DisplayName: Phoenix Blaster Held Proj
+	// SandgunHeldProj.DisplayName: Sandgun Held Proj
+	// StarCannonHeldProj.DisplayName: Star Cannon Held Proj
+	// SuperStarCannonHeldProj.DisplayName: Super Star Cannon Held Proj
+	// ZapinatorGrayHeldProj.DisplayName: Zapinator Gray Held Proj
+	// ZapinatorOrangeHeldProj.DisplayName: Zapinator Orange Held Proj
 }
 
 Configs: {
@@ -1779,7 +1790,7 @@ TextContent: {
 			'''
 		Wap_Megashark_Text:
 			'''
-			中等的后坐力
+			一般的后坐力
 			"口径是真理"鲨鱼侃侃而谈，仿佛自己就是火力至上的代言人
 			然而，就像它的.20口径一样，属于鱼类枪械家族中的平凡之辈
 			或许它需要一支嘲讽的钓竿来捕捉一点自我认知，毕竟在海洋中，口径也许更适合测量谦逊而非真理
@@ -1788,6 +1799,55 @@ TextContent: {
 			'''
 			弱的后坐力
 			砰！砰！！砰！！！
+			'''
+		Wap_Flintlockpistol_Text:
+			'''
+			弱的后座力
+			老式的手枪，它也许会炸膛
+			"相信古人的智慧"
+			'''
+		Wap_Musket_Text:
+			'''
+			一般的后坐力
+			“民兵说，我必须做好准备”
+			'''
+		Wap_TheUndertaker_Text:
+			'''
+			弱的后坐力
+			“当入殓师发现他们的客户不配合时，他们往往会使用这个让他们安静下来”
+			'''
+		Wap_RedRyder_Text:
+			'''
+			弱的后坐力
+			“别把自己的眼球射出来了！”
+			'''
+		Wap_FlareGun_Text:
+			'''
+
+			'''
+		Wap_PhoenixBlaster_Text:
+			'''
+
+			'''
+		Wap_Sandgun_Text:
+			'''
+
+			'''
+		Wap_StarCannon_Text:
+			'''
+
+			'''
+		Wap_SuperStarCannon_Text:
+			'''
+
+			'''
+		Wap_ZapinatorGray_Text:
+			'''
+
+			'''
+		Wap_ZapinatorOrange_Text:
+			'''
+
 			'''
 	}
 }
