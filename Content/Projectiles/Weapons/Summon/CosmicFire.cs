@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
         }
 
         public override void AI() {
-            target = Projectile.Center.InPosClosestNPC(1600);
+            target = Projectile.Center.FindClosestNPC(1600);
             if (target != null && Projectile.timeLeft <= 150) {
                 if (Projectile.timeLeft == 150)
                     Projectile.velocity = Projectile.Center.To(target.Center).UnitVector() * 3;

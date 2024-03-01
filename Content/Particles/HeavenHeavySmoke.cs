@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Particles
         public override string Texture => "CalamityMod/Particles/HeavySmoke";
 
         Color[] rainbowColors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet };
-        Color rainColor => CWRUtils.MultiLerpColor(sengs % 30 / 30f, rainbowColors);
+        Color rainColor => CWRUtils.MultiStepColorLerp(sengs % 30 / 30f, rainbowColors);
         private float Opacity;
         private float Spin;
         private int MaxTime;

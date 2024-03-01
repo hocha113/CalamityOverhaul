@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override void AI() {
             Lighting.AddLight(Projectile.Center, 0.6f, 0f, 0f);
             Projectile.rotation += 0.4f;
-            NPC target = Projectile.Center.InPosClosestNPC(900);
+            NPC target = Projectile.Center.FindClosestNPC(900);
             if (Projectile.ai[0] == 0) {
                 if (Projectile.ai[1] == 0) {
                     Projectile.velocity *= 0.98f;

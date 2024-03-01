@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
             Projectile.velocity *= 1.01f;
-            NPC target = Projectile.Center.InPosClosestNPC(1600);
+            NPC target = Projectile.Center.FindClosestNPC(1600);
             if (target != null && Projectile.timeLeft < 130 && Projectile.timeLeft > 30) {
                 Vector2 toTarget = Projectile.Center.To(target.Center);
                 Projectile.EntityToRot(toTarget.ToRotation(), 0.17f);

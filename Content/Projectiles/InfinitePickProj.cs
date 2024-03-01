@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 for (int i = 0; i < 8; i++) {
                     HeavenHeavySmoke spark = new HeavenHeavySmoke(Projectile.Center
                         , Main.rand.NextVector2Unit() * Main.rand.Next(3, 7)
-                        , CWRUtils.MultiLerpColor(Main.rand.NextFloat()
+                        , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat()
                         , HeavenfallLongbow.rainbowColors)
                         , Main.rand.Next(3, 7), Main.rand.NextFloat(0.5f, 1.2f), 1, 0.1f, player:null);
                     CWRParticleHandler.AddParticle(spark);
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 Projectile.NewProjectile(Projectile.parent(), target.position + new Vector2(Main.rand.Next(-160, 160), -420), new Vector2(0, 13), ModContent.ProjectileType<InfiniteEnmgs>(), Projectile.damage / 2, 0, Projectile.owner);
             }
             for (int i = 0; i < 36; i++) {
-                Color outerSparkColor = CWRUtils.MultiLerpColor(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors);
+                Color outerSparkColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors);
                 Vector2 vector = Main.rand.NextVector2Unit() * Main.rand.Next(77);
                 float slp = Main.rand.NextFloat(0.5f, 0.9f);
                 GeneralParticleHandler.SpawnParticle(new FlareShine(Projectile.Center + Main.rand.NextVector2Unit() * 13, vector, Color.White, outerSparkColor
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 HeavenfallStarParticle spark = new HeavenfallStarParticle(Projectile.Center, vector, false, 7, outerSparkScale, outerSparkColor);
                 CWRParticleHandler.AddParticle(spark);
 
-                Color innerSparkColor = CWRUtils.MultiLerpColor(Projectile.ai[1] % 30 / 30f, HeavenfallLongbow.rainbowColors);
+                Color innerSparkColor = CWRUtils.MultiStepColorLerp(Projectile.ai[1] % 30 / 30f, HeavenfallLongbow.rainbowColors);
                 float innerSparkScale = 0.6f + scaleBoost;
                 HeavenfallStarParticle spark2 = new HeavenfallStarParticle(Projectile.Center, vector, false, 7, innerSparkScale, innerSparkColor);
                 CWRParticleHandler.AddParticle(spark2);

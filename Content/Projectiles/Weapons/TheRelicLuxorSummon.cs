@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
-            NPC target = Projectile.Center.InPosClosestNPC(900);
+            NPC target = Projectile.Center.FindClosestNPC(900);
             if (target != null) {
                 Vector2 toTargetVr = Projectile.Center.To(target.Center);
                 if (status == 0) {

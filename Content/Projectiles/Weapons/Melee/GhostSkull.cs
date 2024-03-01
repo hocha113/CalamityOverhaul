@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
 
             if (Time > 60) {
-                NPC target = Projectile.Center.InPosClosestNPC(1300);
+                NPC target = Projectile.Center.FindClosestNPC(1300);
                 if (target != null) {
                     Projectile.ChasingBehavior2(target.Center, 1, 0.25f);
                 }

@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
             }
             if (Status == 1) {
-                NPC newTarget = Projectile.Center.InPosClosestNPC(9900);
+                NPC newTarget = Projectile.Center.FindClosestNPC(9900);
                 if (newTarget != null) {
                     Projectile.ChasingBehavior(newTarget.Center, 27f, 16);
                 }

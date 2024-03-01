@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.ChasingBehavior(Main.player[Projectile.owner].Center, toO);
             }
             else {
-                NPC npc = Projectile.Center.InPosClosestNPC(300);
+                NPC npc = Projectile.Center.FindClosestNPC(300);
                 if (npc != null) {
                     Projectile.velocity *= 1.01f;
                     Projectile.ChasingBehavior(npc.Center, Projectile.velocity.Length());

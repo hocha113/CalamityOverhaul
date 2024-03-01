@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             CWRParticle particle = new LightParticle(Projectile.Center, Projectile.velocity, Main.rand.NextFloat(0.3f, 0.7f), Color.Red, 22, 0.2f);
             CWRParticleHandler.AddParticle(particle);
             CWRParticle particle2 = new SmokeParticle(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), Projectile.velocity
-                , CWRUtils.MultiLerpColor(Main.rand.NextFloat(), Color.Red, Color.Gold)
+                , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Gold)
                 , 32, Main.rand.NextFloat(0.2f, 1.1f), 0.5f, 0.1f);
             CWRParticleHandler.AddParticle(particle2);
             if (Main.rand.NextBool(Projectile.timeLeft / 3 + 1)) {
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     , Projectile.velocity, Main.rand.NextFloat(0.3f, 0.7f), Color.Red, 22, 0.2f);
                 CWRParticleHandler.AddParticle(particle3);
                 CWRParticle particle4 = new SmokeParticle(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3.3f, 15.7f)
-                    , Projectile.velocity, CWRUtils.MultiLerpColor(Main.rand.NextFloat(), Color.Red, Color.Gold)
+                    , Projectile.velocity, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Gold)
                     , 32, Main.rand.NextFloat(0.2f, 1.1f) * slp, 0.5f, 0.1f);
                 CWRParticleHandler.AddParticle(particle4);
             }

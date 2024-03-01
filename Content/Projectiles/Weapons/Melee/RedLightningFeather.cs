@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             if (Status == 0) {
                 if (Projectile.timeLeft < 60) {
-                    NPC target = Projectile.Center.InPosClosestNPC(900, false);
+                    NPC target = Projectile.Center.FindClosestNPC(900, false);
                     if (target != null && Behavior == 0) {
                         Behavior = 1;
                     }

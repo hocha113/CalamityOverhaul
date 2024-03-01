@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
             Projectile.velocity *= 0.99f;
             Projectile.scale += 0.01f;
             if (Projectile.timeLeft < 30) {
-                NPC target = Projectile.Center.InPosClosestNPC(900);
+                NPC target = Projectile.Center.FindClosestNPC(900);
                 if (target != null) {
                     Projectile.ChasingBehavior(target.Center, 22);
                 }

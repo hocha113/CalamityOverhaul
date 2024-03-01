@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                     Vector2 spanPos = pos + Main.rand.NextVector2Unit() * Main.rand.Next(56);
                     Vector2 vr = new Vector2((Main.rand.NextBool() ? -1 : 1) * Main.rand.Next(7, 51), 0);
                     LightParticle light = new LightParticle(spanPos
-                        , vr, 0.3f, CWRUtils.MultiLerpColor(Main.rand.NextFloat(), colors), 30);
+                        , vr, 0.3f, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), colors), 30);
                     CWRParticleHandler.AddParticle(light);
                 }
                 Projectile.ai[0] = 1;
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             if (Projectile.IsOwnedByLocalPlayer()) {
                 foreach (Vector2 pos in RayPoint) {
                     LightParticle light = new LightParticle(pos + Main.rand.NextVector2Unit() * Main.rand.Next(56)
-                        , new Vector2(0, Main.rand.Next(7, 51)), 0.3f, CWRUtils.MultiLerpColor(Main.rand.NextFloat(), colors), 30);
+                        , new Vector2(0, Main.rand.Next(7, 51)), 0.3f, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), colors), 30);
                     CWRParticleHandler.AddParticle(light);
                 }
             }

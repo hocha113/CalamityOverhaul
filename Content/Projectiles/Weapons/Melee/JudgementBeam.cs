@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 ProjColorDate = CWRUtils.GetColorDate(CWRUtils.GetT2DValue(Texture));
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-            Color color = CWRUtils.MultiLerpColor(Projectile.timeLeft / 120f, ProjColorDate);
+            Color color = CWRUtils.MultiStepColorLerp(Projectile.timeLeft / 120f, ProjColorDate);
             if (Main.netMode != NetmodeID.Server) {
                 for (int i = 0; i < 5; i++) {
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(6);
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Main.dust[shinyDust].velocity += Projectile.velocity * 0.1f;
             }
 
-            NPC target = Projectile.Center.InPosClosestNPC(300);
+            NPC target = Projectile.Center.FindClosestNPC(300);
             if (target != null) {
                 Projectile.ChasingBehavior2(target.Center, 1, 0.1f);
             }

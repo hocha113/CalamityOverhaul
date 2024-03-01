@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Projectile.Kill();
             }
 
-            NPC target = Projectile.Center.InPosClosestNPC(600);
+            NPC target = Projectile.Center.FindClosestNPC(600);
             int types = ModContent.ProjectileType<Feathers>();
             if (target != null && Time % 30 == 0 && Projectile.IsOwnedByLocalPlayer() && CWRUtils.GetPlayerInstance(Projectile.owner)?.ownedProjectileCounts[types] < 12) {
                 Time2++;

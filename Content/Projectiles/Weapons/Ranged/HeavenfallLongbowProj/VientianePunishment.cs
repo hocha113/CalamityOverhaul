@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
         public Color[] VientianeColors;
 
-        public Color vientianeColor => CWRUtils.MultiLerpColor(Time % 90 / 90f, VientianeColors);
+        public Color vientianeColor => CWRUtils.MultiStepColorLerp(Time % 90 / 90f, VientianeColors);
 
         public int Index;
 
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 if (Main.rand.NextBool(2) && !CWRUtils.isServer) {
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * 120;
                     Vector2 particleSpeed = pos.To(Projectile.Center).UnitVector() * 3;
-                    Color color = CWRUtils.MultiLerpColor(Main.rand.NextFloat(), VientianeColors);
+                    Color color = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), VientianeColors);
                     CWRParticle energyLeak = new LightParticle(pos, particleSpeed
                         , 0.5f, color, 60, 1, 1.5f, hueShift: 0.0f, _entity: Owner, _followingRateRatio: 1);
                     CWRParticleHandler.AddParticle(energyLeak);
@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                     Vector2 lemniscateOffset = scale * new Vector2((float)Math.Cos(rot), (float)Math.Sin(2f * rot) / 2f);
                     Vector2 pos = orig + lemniscateOffset * outwardMultiplier;
                     Vector2 particleSpeed = Vector2.Zero;
-                    Color color = CWRUtils.MultiLerpColor(j / maxNum, colors);
+                    Color color = CWRUtils.MultiStepColorLerp(j / maxNum, colors);
                     CWRParticle energyLeak = new LightParticle(pos, particleSpeed
                         , prtslp, color, 120, 1, 1.5f, hueShift: 0.0f, _entity: null, _followingRateRatio: 1);
                     CWRParticleHandler.AddParticle(energyLeak);

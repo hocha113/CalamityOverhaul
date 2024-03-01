@@ -137,9 +137,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         public override bool PreDraw(ref Color lightColor) {
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 4);
             Texture2D mainValue = CWRUtils.GetT2DValue(Texture);
-            Color drawColor2 = CWRUtils.MultiLerpColor(Projectile.ai[0] % 15 / 15f, HeavenfallLongbow.rainbowColors);
+            Color drawColor2 = CWRUtils.MultiStepColorLerp(Projectile.ai[0] % 15 / 15f, HeavenfallLongbow.rainbowColors);
             if (HFBow.ChargeValue < 200)
-                drawColor2 = CWRUtils.MultiLerpColor(HFBow.ChargeValue / 200f, HeavenfallLongbow.rainbowColors);
+                drawColor2 = CWRUtils.MultiStepColorLerp(HFBow.ChargeValue / 200f, HeavenfallLongbow.rainbowColors);
             float slp2 = HFBow.ChargeValue / 300f;
             if (slp2 > 1)
                 slp2 = 1;

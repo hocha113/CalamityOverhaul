@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content
                 TooltipLine line = new TooltipLine(CWRMod.Instance, "CalamityOverhaul",
                     CalamityUtils.ColorMessage(
                         CWRLocText.GetTextValue("CWRItem_IsInfiniteItem_TextContent")
-                        , CWRUtils.MultiLerpColor(Main.GameUpdateCount % 120 / 120f, Color.DarkRed, Color.Red, Color.DarkGoldenrod, Color.Gold, Color.Red))
+                        , CWRUtils.MultiStepColorLerp(Main.GameUpdateCount % 120 / 120f, Color.DarkRed, Color.Red, Color.DarkGoldenrod, Color.Gold, Color.Red))
                     );
                 tooltips.Add(line);
             }

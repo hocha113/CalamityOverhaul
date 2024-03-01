@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void AI() {
             CWRParticle particle = new SoulLight(Projectile.Center, Projectile.velocity, Main.rand.NextFloat(0.2f, 0.8f), Color.White, 23, _flowerProj: Projectile);
             CWRParticleHandler.AddParticle(particle);
-            NPC target = Projectile.Center.InPosClosestNPC(600);
+            NPC target = Projectile.Center.FindClosestNPC(600);
             if (target != null && Projectile.timeLeft < 480) {
                 if (Projectile.Center.To(target.Center).LengthSquared() > 20000) {
                     Projectile.ChasingBehavior2(target.Center, 1.005f, 0.2f);

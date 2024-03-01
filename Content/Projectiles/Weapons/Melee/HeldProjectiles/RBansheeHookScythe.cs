@@ -34,7 +34,7 @@ public class RBansheeHookScythe : ModProjectile
     public override void AI() {
         Lighting.AddLight(Projectile.Center, (255 - Projectile.alpha) * 0.6f / 255f, 0f, 0f);
         Projectile.ai[0] += MathHelper.ToRadians(35);
-        NPC target = Projectile.Center.InPosClosestNPC(600);
+        NPC target = Projectile.Center.FindClosestNPC(600);
         if (Projectile.timeLeft < 65 && target != null) {
             Vector2 toTarget = Projectile.Center.To(target.Center).UnitVector();
             Projectile.EntityToRot(toTarget.ToRotation(), 0.07f);

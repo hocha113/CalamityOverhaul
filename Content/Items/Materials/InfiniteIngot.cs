@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Items.Materials
 
         public static void drawColorText(SpriteBatch sb, DrawableTooltipLine line, string text, Vector2 basePosition) {
             ChatManager.DrawColorCodedStringWithShadow(sb, line.Font, line.Text, basePosition
-                , CWRUtils.MultiLerpColor(Main.GameUpdateCount % 120 / 120f, HeavenfallLongbow.rainbowColors)
+                , CWRUtils.MultiStepColorLerp(Main.GameUpdateCount % 120 / 120f, HeavenfallLongbow.rainbowColors)
                 , line.Rotation, line.Origin, line.BaseScale * 1.05f, line.MaxWidth, line.Spread);
             //ChatManager.DrawColorCodedString(sb, line.Font, line.Text, basePosition, 
             //    CWRUtils.MultiLerpColor(Main.GameUpdateCount  % 90 / 90f, HeavenfallLongbow.rainbowColors), 0f, Vector2.Zero, new Vector2(1.1f, 1.1f));

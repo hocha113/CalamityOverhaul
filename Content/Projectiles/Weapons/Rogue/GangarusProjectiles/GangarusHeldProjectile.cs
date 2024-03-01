@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 StickToOwner();
                 Charge();
             }
-            NPC npc = Projectile.Center.InPosClosestNPC(1900);
+            NPC npc = Projectile.Center.FindClosestNPC(1900);
             int slp = Time;
             if (slp > 600)
                 slp = 600;

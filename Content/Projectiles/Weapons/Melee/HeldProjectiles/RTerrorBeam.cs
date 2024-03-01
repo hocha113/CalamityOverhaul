@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Projectile.Kill();
                 }
 
-                NPC target = Projectile.Center.InPosClosestNPC(600);
+                NPC target = Projectile.Center.FindClosestNPC(600);
                 if (target != null && Projectile.timeLeft < 470) {
                     Projectile.ChasingBehavior(target.Center, Projectile.velocity.Length());
                     Projectile.velocity *= 1.007f;

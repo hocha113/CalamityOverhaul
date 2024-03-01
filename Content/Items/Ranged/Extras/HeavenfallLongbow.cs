@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             TooltipLine cumstops = tooltips.FirstOrDefault((TooltipLine x) => x.Name == "Damage" && x.Mod == "Terraria");
             if (cumstops != null) {
                 Color baseDamageTextColor = Color.White;
-                Color baseDamageTypeColor = CWRUtils.MultiLerpColor(Main.GameUpdateCount % 660 / 660f, rainbowColors);
+                Color baseDamageTypeColor = CWRUtils.MultiStepColorLerp(Main.GameUpdateCount % 660 / 660f, rainbowColors);
                 cumstops.Text = CalamityUtils.ColorMessage(Item.damage.ToString(), baseDamageTextColor) + " " + CalamityUtils.ColorMessage(Item.DamageType.DisplayName.Value, baseDamageTypeColor);
                 /*
                 //System.Numerics.BigInteger bigNum = System.Numerics.BigInteger.Parse("14757395258967641292848719592134");
@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                     Vector2 lemniscateOffset = scale * new Vector2((float)Math.Cos(rot), (float)Math.Sin(2f * rot) / 2f);
                     Vector2 pos = player.Center + lemniscateOffset * outwardMultiplier;
                     Vector2 particleSpeed = Vector2.Zero;
-                    Color color = CWRUtils.MultiLerpColor(j / 500f, rainbowColors);
+                    Color color = CWRUtils.MultiStepColorLerp(j / 500f, rainbowColors);
                     CWRParticle energyLeak = new LightParticle(pos, particleSpeed
                         , 1.5f, color, 120, 1, 1.5f, hueShift: 0.0f, _entity: player, _followingRateRatio: 1);
                     CWRParticleHandler.AddParticle(energyLeak);

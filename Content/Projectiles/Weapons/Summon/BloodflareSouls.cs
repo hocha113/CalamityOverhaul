@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
             Projectile.alpha += 15;
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             if (Projectile.timeLeft < 60) {
-                NPC target = Projectile.Center.InPosClosestNPC(600);
+                NPC target = Projectile.Center.FindClosestNPC(600);
                 if (target != null) {
                     Projectile.ChasingBehavior2(target.Center, 1.01f, 0.1f);
                 }

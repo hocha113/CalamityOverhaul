@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void AI() {
             ThisTimeValue++;
-            NPC target = Projectile.Center.InPosClosestNPC(360);
+            NPC target = Projectile.Center.FindClosestNPC(360);
 
             if (target != null) {
                 Vector2 toTarget = Projectile.Center.To(target.Center);

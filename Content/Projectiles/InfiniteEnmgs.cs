@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles
         public override void AI() {
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3());
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-            NPC target = Projectile.Center.InPosClosestNPC(1300);
+            NPC target = Projectile.Center.FindClosestNPC(1300);
             if (target != null) {
                 Projectile.ChasingBehavior2(target.Center, 1, 0.1f);
             }
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles
                     Vector2 vector = Projectile.velocity * 1.05f;
                     float slp = Main.rand.NextFloat(0.5f, 0.9f);
                     CWRParticleHandler.AddParticle(new HeavenStarParticle(Projectile.Center, vector, Color.White
-                        , CWRUtils.MultiLerpColor(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 0f, new Vector2(0.6f, 1f) * slp
+                        , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 0f, new Vector2(0.6f, 1f) * slp
                         , new Vector2(1.5f, 2.7f) * slp, 20 + Main.rand.Next(6), 0f, 3f, 0f, Main.rand.Next(7) * 2, Main.rand.NextFloat(-0.3f, 0.3f)));
                 }               
             }
