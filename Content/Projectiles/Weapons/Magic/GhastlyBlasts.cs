@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             if (Projectile.alpha < 0) {
                 Projectile.alpha = 0;
             }
-            NPC target = Projectile.Center.InPosClosestNPC(1600);
+            NPC target = Projectile.Center.FindClosestNPC(1600);
             Projectile.rotation -= MathF.PI / 30f;
             if (Projectile.numHits == 0) {
                 SpanDust();

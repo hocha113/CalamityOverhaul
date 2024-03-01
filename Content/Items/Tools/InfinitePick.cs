@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 if (!IsPick) {
                     for (int i = 0; i < 78; i++) {
                         HeavenHeavySmoke spark = new HeavenHeavySmoke(Main.MouseWorld, Main.rand.NextVector2Unit() * Main.rand.Next(3, 57)
-                            , CWRUtils.MultiLerpColor(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors)
+                            , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors)
                             , Main.rand.Next(30, 75), Main.rand.NextFloat(1.5f, 6.2f), 1, 0.1f);
                         CWRParticleHandler.AddParticle(spark);
                     }
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override void MeleeEffects(Player player, Rectangle hitbox) {
-            HeavenHeavySmoke spark = new HeavenHeavySmoke(player.Center, Main.rand.NextVector2Unit() * Main.rand.Next(13, 17), CWRUtils.MultiLerpColor(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 30, 1, 1, 0.1f);
+            HeavenHeavySmoke spark = new HeavenHeavySmoke(player.Center, Main.rand.NextVector2Unit() * Main.rand.Next(13, 17), CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 30, 1, 1, 0.1f);
             CWRParticleHandler.AddParticle(spark);
         }
 

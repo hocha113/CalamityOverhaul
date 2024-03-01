@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void AI() {
-            NPC target = Projectile.position.InPosClosestNPC(300);
+            NPC target = Projectile.position.FindClosestNPC(300);
             if (target != null) {
                 Projectile.ChasingBehavior2(target.Center, 1, 0.05f);
             }

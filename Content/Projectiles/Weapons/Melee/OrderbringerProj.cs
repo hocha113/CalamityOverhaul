@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
             }
             if (Projectile.ai[1] == 2) {
-                NPC npc = Projectile.Center.InPosClosestNPC(6000);
+                NPC npc = Projectile.Center.FindClosestNPC(6000);
                 if (npc != null) {
                     Projectile.ChasingBehavior(npc.Center, 36);
                     if (Projectile.Center.To(npc.Center).LengthSquared() < 16 * 16) {
@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
                 // 在(x, y)处生成粒子或执行其他操作
                 CWRParticle energyLeak = new LightParticle(new Vector2(x, y), Vector2.Zero
-                        , 1.5f, CWRUtils.MultiLerpColor(angleStep % 1, Color.MediumPurple, Color.White), 120, 1, 1.5f, hueShift: 0.0f);
+                        , 1.5f, CWRUtils.MultiStepColorLerp(angleStep % 1, Color.MediumPurple, Color.White), 120, 1, 1.5f, hueShift: 0.0f);
                 CWRParticleHandler.AddParticle(energyLeak);
             }
 

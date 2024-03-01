@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 float yOffset = 50f;
                 Vector2 drawPos = Projectile.Center + Vector2.UnitY * scale * (barFG.Height - yOffset) - Main.screenPosition + new Vector2(0, -33) * scale * 2;
                 Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / (float)Murasama.GetOnRDCD * barFG.Width), barFG.Height);
-                Color color = CWRUtils.MultiLerpColor(Main.GameUpdateCount % 120 / 120f, Color.Red, Color.IndianRed, Color.Gold, Color.OrangeRed, Color.DarkRed);
+                Color color = CWRUtils.MultiStepColorLerp(Main.GameUpdateCount % 120 / 120f, Color.Red, Color.IndianRed, Color.Gold, Color.OrangeRed, Color.DarkRed);
                 Main.spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale * barScale, 0, 0f);
                 Main.spriteBatch.Draw(barFG, drawPos, frameCrop, color * 0.8f, 0f, barOrigin, scale * barScale, 0, 0f);
             }

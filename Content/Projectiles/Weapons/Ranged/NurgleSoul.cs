@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             
             Projectile.rotation = Projectile.velocity.ToRotation();
-            NPC npc = Projectile.Center.InPosClosestNPC(1900);
+            NPC npc = Projectile.Center.FindClosestNPC(1900);
             if (npc != null) {
                 if (Projectile.timeLeft == 110) {
                     Projectile.velocity = Projectile.velocity.UnitVector() * 23;

@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void MeleeEffects(Player player, Rectangle hitbox) {
             if (Main.rand.NextBool(4)) {
-                Color color = CWRUtils.MultiLerpColor(Main.rand.NextFloat(), richColors);
+                Color color = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), richColors);
                 Dust swingDust = Main.dust[Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.RainbowMk2, 0f, 0f, alpha, color, 1.2f)];
                 swingDust.noGravity = true;
             }

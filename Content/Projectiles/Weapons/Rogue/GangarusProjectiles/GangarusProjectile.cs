@@ -102,14 +102,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                             CWRParticleHandler.AddParticle(energyLeak);
                         }
                         for (int i = 0; i < 136; i++) {
-                            Color outerSparkColor = CWRUtils.MultiLerpColor(Main.rand.NextFloat(), Color.Red, Color.Gold);
+                            Color outerSparkColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Gold);
                             Vector2 vector = Main.rand.NextVector2Unit() * Main.rand.Next(77);
                             float scaleBoost = MathHelper.Clamp(Main.rand.NextFloat(), 0f, 2f);
                             float outerSparkScale = 3.2f + scaleBoost;
                             HeavenfallStarParticle spark = new HeavenfallStarParticle(Projectile.Center, vector, false, 27, outerSparkScale, outerSparkColor);
                             CWRParticleHandler.AddParticle(spark);
 
-                            Color innerSparkColor = CWRUtils.MultiLerpColor(Main.rand.NextFloat(), Color.Goldenrod, Color.Red);
+                            Color innerSparkColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Goldenrod, Color.Red);
                             float innerSparkScale = 0.6f + scaleBoost;
                             HeavenfallStarParticle spark2 = new HeavenfallStarParticle(Projectile.Center, vector, false, 37, innerSparkScale, innerSparkColor);
                             CWRParticleHandler.AddParticle(spark2);

@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 }
                 Projectile.ai[0] = 1;
             }
-            NPC target = Projectile.Center.InPosClosestNPC(1900);
+            NPC target = Projectile.Center.FindClosestNPC(1900);
             if (target != null) {
                 Projectile.ChasingBehavior2(target.Center, 1, 0.2f);
             }

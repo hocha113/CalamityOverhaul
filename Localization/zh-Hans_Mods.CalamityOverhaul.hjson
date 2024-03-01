@@ -1210,6 +1210,11 @@ Items: {
 			"你不会想知道这把枪是怎么制作的"
 			'''
 	}
+
+	SurgeDriverEcType: {
+		// DisplayName: Surge Driver Ec Type
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

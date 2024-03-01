@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void AI() {
             if (++Projectile.ai[0] > 12) {
-                NPC target = Projectile.Center.InPosClosestNPC(1900);
+                NPC target = Projectile.Center.FindClosestNPC(1900);
                 Vector2 vr = Main.player[Projectile.owner].Center.To(Projectile.Center).UnitVector() * 5;
                 if (target != null) {
                     vr = Projectile.Center.To(target.Center).UnitVector() * 5;

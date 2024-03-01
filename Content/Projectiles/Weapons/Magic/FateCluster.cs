@@ -35,14 +35,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, 3);
             Projectile.rotation = Projectile.velocity.ToRotation();
             if (Projectile.ai[0] == 0) {
-                NPC target = Projectile.Center.InPosClosestNPC(300);
+                NPC target = Projectile.Center.FindClosestNPC(300);
 
                 if (target != null) {
                     Projectile.ChasingBehavior2(target.Center, 1.01f, 0.25f);
                 }
             }
             if (Projectile.ai[0] == 1) {
-                NPC target = Projectile.Center.InPosClosestNPC(600);
+                NPC target = Projectile.Center.FindClosestNPC(600);
 
                 if (target != null) {
                     Projectile.ChasingBehavior2(target.Center, 1, 0.05f);

@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
 
                 if (Projectile.timeLeft <= Projectile.ai[1] + 30) {
 
-                    NPC target = Projectile.Center.InPosClosestNPC(1900);
+                    NPC target = Projectile.Center.FindClosestNPC(1900);
                     if (target != null) {
                         Projectile.ChasingBehavior2(target.Center, 1, 0.1f);
                     }

@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Projectile.ai[0] == 1) {
                 Projectile.localAI[0]++;
                 Projectile.scale = 0.7f + MathF.Abs(MathF.Sin(MathHelper.ToRadians(Projectile.localAI[0] * 2)) * 0.5f);
-                NPC target = Projectile.Center.InPosClosestNPC(300);
+                NPC target = Projectile.Center.FindClosestNPC(300);
                 if (target != null) {
                     Projectile.ChasingBehavior2(target.Center, 1, 0.1f);
                 }

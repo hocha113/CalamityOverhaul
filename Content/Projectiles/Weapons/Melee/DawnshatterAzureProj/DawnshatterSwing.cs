@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             Projectile.rotation += 0.1f;
             Projectile.scale += 0.01f;
             CWRParticle particle2 = new SmokeParticle(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), CWRUtils.randVr(3, (int)(26 * Projectile.scale))
-                    , CWRUtils.MultiLerpColor(Main.rand.NextFloat(), Color.Red, Color.DarkRed)
+                    , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.DarkRed)
                     , 23, Main.rand.NextFloat(0.2f, 1.1f), 0.5f, 0.1f);
             CWRParticleHandler.AddParticle(particle2);
         }
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                 CWRParticle particle = new LightParticle(Projectile.Center, CWRUtils.randVr(3, 116), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 12, 0.2f);
                 CWRParticleHandler.AddParticle(particle);
                 CWRParticle particle2 = new SmokeParticle(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), CWRUtils.randVr(3, 16)
-                    , CWRUtils.MultiLerpColor(Main.rand.NextFloat(), Color.Red, Color.DarkRed)
+                    , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.DarkRed)
                     , 15, Main.rand.NextFloat(0.2f, 1.1f), 0.5f, 0.1f);
                 CWRParticleHandler.AddParticle(particle2);
             }

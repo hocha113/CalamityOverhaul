@@ -35,13 +35,13 @@ namespace CalamityOverhaul.Content.Projectiles
                 for (int i = 0; i < 33; i++) {
                     float slp = Main.rand.NextFloat(0.5f, 1.2f);
                     CWRParticleHandler.AddParticle(new StarPulseRing(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(13, 330)
-                        , Vector2.Zero, CWRUtils.MultiLerpColor(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 0.05f * slp, 0.8f * slp, 8));
+                        , Vector2.Zero, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 0.05f * slp, 0.8f * slp, 8));
                 }
                 List<int> rands = CWRUtils.GenerateUniqueNumbers(16, 0, Text.Length - 1);
                 for (int i = 0; i < rands.Count; i++) {
                     Vector2 topL = Projectile.Hitbox.TopLeft() + new Vector2(Main.rand.Next(-500, 500), Main.rand.Next(-300, 300));
                     Rectangle rectangle = new Rectangle((int)topL.X, (int)topL.Y, 30, 30);
-                    CombatText.NewText(rectangle, CWRUtils.MultiLerpColor(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), Text[rands[i]], true);
+                    CombatText.NewText(rectangle, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), Text[rands[i]], true);
                 }
                 SoundEngine.PlaySound(SoundID.Lavafall);
                 SoundEngine.PlaySound(CWRSound.BlackHole);

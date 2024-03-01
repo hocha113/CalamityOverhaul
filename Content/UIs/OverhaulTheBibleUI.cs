@@ -133,13 +133,6 @@ namespace CalamityOverhaul.Content.UIs
                 Item item = ecTypeItemList[i];
                 Main.instance.LoadItem(item.type);
                 Vector2 drawPos = inCellPos + new Vector2(0, LCCoffsetY) + inIndexGetPos(i) * cellSlpV;
-                //if (item.type == ModContent.ItemType<Murasama>()) {
-                //    Texture2D value = TextureAssets.Item[item.type].Value;
-                //    spriteBatch.Draw(value, drawPos, CWRUtils.GetRec(value, (time / 5) % 12, 13), Color.White, 0f, CWRUtils.GetOrig(value, 13), 0.35f, SpriteEffects.None, 0);
-                //}
-                //else {
-                //    SupertableUI.DrawItemIcons(spriteBatch, item, drawPos);
-                //}
                 SupertableUI.DrawItemIcons(spriteBatch, item, drawPos);
             }
             //恢复画布

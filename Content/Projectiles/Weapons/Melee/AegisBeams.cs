@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Main.dust[num458].velocity *= 0.5f;
             Main.dust[num458].velocity += Projectile.velocity * 0.1f;
             if (Projectile.timeLeft < 90) {
-                NPC npc = Projectile.Center.InPosClosestNPC(250);
+                NPC npc = Projectile.Center.FindClosestNPC(250);
                 if (npc != null)
                     Projectile.ChasingBehavior2(npc.Center, 1.001f, 0.045f);
             }

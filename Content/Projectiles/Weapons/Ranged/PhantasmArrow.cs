@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.ChasingBehavior(target.Center, 23);
             }
             else {
-                target = Projectile.Center.InPosClosestNPC(1600);
+                target = Projectile.Center.FindClosestNPC(1600);
                 if (target != null) {
                     Projectile.ChasingBehavior2(target.Center, 1, 0.06f);
                 }

@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
             }
             if (Projectile.ai[1] == 2) {
-                NPC npc = Projectile.Center.InPosClosestNPC(6000);
+                NPC npc = Projectile.Center.FindClosestNPC(6000);
                 if (npc != null) {
                     Projectile.ChasingBehavior(npc.Center, 56);
                     Projectile.penetrate = 1;

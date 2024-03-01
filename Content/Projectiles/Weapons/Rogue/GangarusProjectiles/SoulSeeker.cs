@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             else {
                 NPC npc = Target;
                 if (!Target.Alives()) {
-                    npc = Projectile.Center.InPosClosestNPC(1900);
+                    npc = Projectile.Center.FindClosestNPC(1900);
                 }
                 if (npc != null) {
                     if (Projectile.timeLeft == 110) {

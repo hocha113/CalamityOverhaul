@@ -1225,6 +1225,11 @@ Items: {
 		DisplayName: Golden Eagle
 		Tooltip: ""
 	}
+
+	SurgeDriverEcType: {
+		DisplayName: Surge Driver Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

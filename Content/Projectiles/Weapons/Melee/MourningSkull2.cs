@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
 
             if (Projectile.timeLeft < 570) {
-                NPC target = Projectile.Center.InPosClosestNPC(600);
+                NPC target = Projectile.Center.FindClosestNPC(600);
                 if (target != null) {
                     int npcTracker = target.whoAmI;
                     if (Main.npc[npcTracker].active) {

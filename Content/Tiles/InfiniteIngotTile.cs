@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Tiles
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
-            Color drawColor = CWRUtils.MultiLerpColor(Main.GameUpdateCount % 60 / 60f, HeavenfallLongbow.rainbowColors);
+            Color drawColor = CWRUtils.MultiStepColorLerp(Main.GameUpdateCount % 60 / 60f, HeavenfallLongbow.rainbowColors);
 
             if (!t.IsHalfBlock && t.Slope == 0)
                 spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)

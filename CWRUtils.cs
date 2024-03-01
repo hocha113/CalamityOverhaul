@@ -796,7 +796,7 @@ namespace CalamityOverhaul
         /// <param name="ignoreTiles">在检查障碍物时是否忽略瓦片</param>
         /// <param name="bossPriority">是否优先选择Boss</param>
         /// <returns>距离最近的NPC。</returns>
-        public static NPC InPosClosestNPC(this Vector2 origin, float maxDistanceToCheck, bool ignoreTiles = true, bool bossPriority = false) {
+        public static NPC FindClosestNPC(this Vector2 origin, float maxDistanceToCheck, bool ignoreTiles = true, bool bossPriority = false) {
             NPC closestTarget = null;
             float distance = maxDistanceToCheck;
             if (bossPriority) {
@@ -835,29 +835,6 @@ namespace CalamityOverhaul
                 }
             }
             return closestTarget;
-        }
-
-        /// <summary>
-        /// 从一组NPC中寻找距离指定位置最近的NPC或者玩家拥有的召唤物攻击的目标NPC
-        /// </summary>
-        /// <param name="origin">开始搜索的位置</param>
-        /// <param name="maxDistanceToCheck">搜索NPC的最大距离</param>
-        /// <param name="owner">拥有这个召唤物的玩家</param>
-        /// <param name="ignoreTiles">在检查障碍物时是否忽略瓦片</param>
-        /// <param name="checksRange">是否检查召唤物的攻击范围</param>
-        /// <returns>距离最近的NPC</returns>
-        public static NPC MinionHoming(this Vector2 origin, float maxDistanceToCheck, Player owner, bool ignoreTiles = true, bool checksRange = false) {
-            if (owner == null || !owner.whoAmI.ValidateIndex(Main.player.Length) || !owner.MinionAttackTargetNPC.ValidateIndex(Main.maxNPCs)) {
-                return origin.InPosClosestNPC(maxDistanceToCheck, ignoreTiles);
-            }
-            NPC npc = Main.npc[owner.MinionAttackTargetNPC];
-            bool canHit = true;
-            if (!ignoreTiles) {
-                canHit = Collision.CanHit(origin, 1, 1, npc.Center, 1, 1);
-            }
-            float extraDistance = (npc.width / 2) + (npc.height / 2);
-            bool distCheck = Vector2.Distance(origin, npc.Center) < maxDistanceToCheck + extraDistance || !checksRange;
-            return owner.HasMinionAttackTargetNPC && canHit && distCheck ? npc : origin.InPosClosestNPC(maxDistanceToCheck, ignoreTiles);
         }
 
         /// <summary>
@@ -1109,7 +1086,6 @@ namespace CalamityOverhaul
             else {
                 text = Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Spanish ? Spanish : English;
             }
-
             if (text is null or default(string)) {
                 text = "Invalid Character";
             }
@@ -1117,9 +1093,9 @@ namespace CalamityOverhaul
             return text;
         }
 
-        public static Color MultiLerpColor(float percent, params Color[] colors) {
+        public static Color MultiStepColorLerp(float percent, params Color[] colors) {
             if (colors == null) {
-                "MultiLerpColor: 空的颜色数组!".Domp();
+                "MultiLerpColor: 空的颜色数组!".Domp(Color.Red);
                 return Color.White;
             }
             float per = 1f / (colors.Length - 1f);
@@ -2060,12 +2036,12 @@ namespace CalamityOverhaul
         /// 获取与纹理大小对应的矩形框
         /// </summary>
         /// <param name="value">纹理对象</param>
-        /// <param name="frameCounter">帧索引</param>
+        /// <param name="frame">帧索引</param>
         /// <param name="frameCounterMax">总帧数，该值默认为1</param>
         /// <returns></returns>
-        public static Rectangle GetRec(Texture2D value, int frameCounter, int frameCounterMax = 1) {
+        public static Rectangle GetRec(Texture2D value, int frame, int frameCounterMax = 1) {
             int singleFrameY = value.Height / frameCounterMax;
-            return new Rectangle(0, singleFrameY * frameCounter, value.Width, singleFrameY);
+            return new Rectangle(0, singleFrameY * frame, value.Width, singleFrameY);
         }
         /// <summary>
         /// 获取与纹理大小对应的缩放中心
@@ -2109,7 +2085,7 @@ namespace CalamityOverhaul
         /// <param name="Maxframe"></param>
         /// <param name="startCounter"></param>
         public static void ClockFrame(ref double frameCounter, int intervalFrame, int maxFrame, int startCounter = 0) {
-            if (Main.fpsCount % intervalFrame == 0) {
+            if (Main.GameUpdateCount % intervalFrame == 0) {
                 frameCounter++;
             }
 
@@ -2143,7 +2119,7 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 获取纹理实例，类型为 Asset<Texture2D>
+        /// 获取纹理实例，类型为 AssetTexture2D
         /// </summary>
         /// <param name="texture">纹理路径</param>
         /// <returns></returns>
