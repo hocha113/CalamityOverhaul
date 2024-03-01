@@ -1520,6 +1520,7 @@ Projectiles: {
 	SuperStarCannonHeldProj.DisplayName: Super Star Cannon Held Proj
 	ZapinatorGrayHeldProj.DisplayName: Zapinator Gray Held Proj
 	ZapinatorOrangeHeldProj.DisplayName: Zapinator Orange Held Proj
+	SurgeDriverHeldProj.DisplayName: Surge Driver Held Proj
 }
 
 Configs: {

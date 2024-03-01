@@ -1505,6 +1505,7 @@ Projectiles: {
 	// SuperStarCannonHeldProj.DisplayName: Super Star Cannon Held Proj
 	// ZapinatorGrayHeldProj.DisplayName: Zapinator Gray Held Proj
 	// ZapinatorOrangeHeldProj.DisplayName: Zapinator Orange Held Proj
+	// SurgeDriverHeldProj.DisplayName: Surge Driver Held Proj
 }
 
 Configs: {
@@ -1826,33 +1827,12 @@ TextContent: {
 			弱的后坐力
 			“别把自己的眼球射出来了！”
 			'''
-		Wap_FlareGun_Text:
-			'''
-
-			'''
-		Wap_PhoenixBlaster_Text:
-			'''
-
-			'''
-		Wap_Sandgun_Text:
-			'''
-
-			'''
-		Wap_StarCannon_Text:
-			'''
-
-			'''
-		Wap_SuperStarCannon_Text:
-			'''
-
-			'''
-		Wap_ZapinatorGray_Text:
-			'''
-
-			'''
-		Wap_ZapinatorOrange_Text:
-			'''
-
-			'''
+		Wap_FlareGun_Text: ""
+		Wap_PhoenixBlaster_Text: ""
+		Wap_Sandgun_Text: ""
+		Wap_StarCannon_Text: ""
+		Wap_SuperStarCannon_Text: ""
+		Wap_ZapinatorGray_Text: ""
+		Wap_ZapinatorOrange_Text: ""
 	}
 }
