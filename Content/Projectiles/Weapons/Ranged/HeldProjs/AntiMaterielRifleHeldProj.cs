@@ -12,10 +12,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.AntiMaterielRifle>();
         public override int targetCWRItem => ModContent.ItemType<AntiMaterielRifle>();
         public override void SetRangedProperty() {
+            kreloadMaxTime = 120;
+            fireTime = 40;
             ControlForce = 0.04f;
-            GunPressure = 0.75f;
-            Recoil = 10f;
+            GunPressure = 0.25f;
+            Recoil = 4.5f;
             HandDistance = 35;
+            RangeOfStress = 25;
+            RepeatedCartridgeChange = true;
         }
         public override void OnSpanProjFunc() {
             SoundEngine.PlaySound(heldItem.UseSound.Value with { Pitch = 0.3f }, Projectile.Center);

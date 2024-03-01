@@ -41,13 +41,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected bool RepeatedCartridgeChange;
 
+        protected int BulletNum {
+            get => heldItem.CWR().NumberBullets;
+            set => heldItem.CWR().NumberBullets = value;
+        }
+
         protected SoundStyle loadTheRounds = CWRSound.CaseEjection2;
 
         public override void SetRangedProperty() {
             base.SetRangedProperty();
             kreloadMaxTime = heldItem.useTime;
         }
-
+        /// <summary>
+        /// 抛壳的简易实现
+        /// </summary>
         public virtual void EjectionCase() {
             Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
             Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
@@ -63,6 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void KreloadSoundloadTheRounds() {
             SoundEngine.PlaySound(loadTheRounds, Projectile.Center);
+            EjectionCase();
         }
         /// <summary>
         /// 额外的弹药消耗事件，返回<see langword="false"/>禁用默认弹药消耗逻辑的运行
@@ -82,11 +90,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 装弹完成后会执行一次改方法
         /// </summary>
         public virtual void OnKreLoad() {
-
+            BulletNum = heldItem.CWR().AmmoCapacity;
         }
 
         public virtual bool WhetherStartChangingAmmunition() {
-            return Owner.PressKey(false) && kreloadTimeValue == 0 && (!isKreload || RepeatedCartridgeChange);
+            return Owner.PressKey(false) && kreloadTimeValue == 0 && (!isKreload || RepeatedCartridgeChange) && BulletNum < heldItem.CWR().AmmoCapacity && !onFire;
         }
 
         public override void InOwner() {
@@ -129,7 +137,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                     if (kreloadTimeValue == kreloadMaxTime / 2) {
                         KreloadSoundloadTheRounds();
-                        EjectionCase();
                     }
                     if (kreloadTimeValue == kreloadMaxTime / 3) {
                         if (PreConsumeAmmoEvent()) {
@@ -174,7 +181,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <returns></returns>
         public virtual void PostSpanProjFunc() {
-
+            if (BulletNum > 0) {
+                BulletNum--;
+            }
         }
         /// <summary>
         /// 单次开火事件
@@ -193,7 +202,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void SpanProj() {
-            if (onFire && Projectile.ai[1] > fireTime) {
+            if (onFire && Projectile.ai[1] > fireTime && kreloadTimeValue <= 0) {
                 if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
                     LuxirEvent();
                 }

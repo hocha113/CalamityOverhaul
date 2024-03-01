@@ -27,9 +27,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float ArmRotSengsFront;
         /// <summary>
-        /// 左手角度值
+        /// 右手角度值
         /// </summary>
         public float ArmRotSengsBack;
+        /// <summary>
+        /// 右手角度值矫正
+        /// </summary>
+        public float ArmRotSengsFrontNoFireOffset;
+        /// <summary>
+        /// 左手角度值矫正
+        /// </summary>
+        public float ArmRotSengsBackNoFireOffset;
         /// <summary>
         /// 是否可以右键，默认为<see langword="false"/>
         /// </summary>
@@ -169,8 +177,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void InOwner() {
-            ArmRotSengsFront = 60 * CWRUtils.atoR;
-            ArmRotSengsBack = 110 * CWRUtils.atoR;
+            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR;
+            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR;
             Projectile.Center = Owner.Center + new Vector2(DirSign * HandDistance, HandDistanceY);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
             Projectile.timeLeft = 2;

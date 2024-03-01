@@ -1,6 +1,9 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Projectiles.Ranged;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -11,23 +14,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SurgeDriver";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.SurgeDriver>();
         public override int targetCWRItem => ModContent.ItemType<SurgeDriverEcType>();
-        private int bulletNum {
-            get => heldItem.CWR().NumberBullets;
-            set => heldItem.CWR().NumberBullets = value;
-        }
 
         public override void SetRangedProperty() {
             loadTheRounds = CWRSound.CaseEjection2 with { Pitch = -0.2f };
-            kreloadMaxTime = 90;
-            fireTime = 10;
+            kreloadMaxTime = 120;
+            fireTime = 20;
             HandDistance = 52;
-            ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            HandFireDistance = 52;
+            HandFireDistanceY = -13;
+            ShootPosNorlLengValue = -4;
+            ShootPosToMouLengValue = 35;
             RepeatedCartridgeChange = true;
-        }
-
-        public override bool WhetherStartChangingAmmunition() {
-            return base.WhetherStartChangingAmmunition() && bulletNum < heldItem.CWR().AmmoCapacity;
         }
 
         public override void KreloadSoundCaseEjection() {
@@ -35,11 +32,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void KreloadSoundloadTheRounds() {
-            base.KreloadSoundloadTheRounds();
+            SoundEngine.PlaySound(loadTheRounds with { Pitch = - 0.3f }, Projectile.Center);
         }
 
         public override bool PreFireReloadKreLoad() {
-            if (bulletNum <= 0) {
+            if (BulletNum <= 0) {
                 
                 loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
                 isKreload = false;
@@ -47,21 +44,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     heldItem.CWR().IsKreload = false;
                 }
 
-                bulletNum = 0;
+                BulletNum = 0;
             }
             return false;
         }
 
-        public override void OnKreLoad() {
-            bulletNum = heldItem.CWR().AmmoCapacity;
-        }
-
         public override void OnSpanProjFunc() {
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-        }
-
-        public override void PostSpanProjFunc() {
-            bulletNum--;
+            SpawnGunDust();
+            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
+                , ModContent.ProjectileType<PrismaticEnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }
