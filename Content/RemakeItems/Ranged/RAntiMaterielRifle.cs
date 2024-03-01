@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.AntiMaterielRifle>();
         public override int ProtogenesisID => ModContent.ItemType<AntiMaterielRifle>();
         public override void SetDefaults(Item item) {
-            item.damage = 1860;
+            item.damage = 1260;
             item.DamageType = DamageClass.Ranged;
             item.width = 154;
             item.height = 40;
@@ -39,6 +39,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.Calamity().canFirePointBlankShots = true;
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = ModContent.ProjectileType<AntiMaterielRifleHeldProj>();
+            item.CWR().HasCartridgeHolder = true;
+            item.CWR().AmmoCapacity = 9;
             CWRUtils.EasySetLocalTextNameOverride(item, "AntiMaterielRifle");
         }
 

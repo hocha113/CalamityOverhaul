@@ -27,9 +27,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float ArmRotSengsFront;
         /// <summary>
-        /// 左手角度值
+        /// 右手角度值
         /// </summary>
         public float ArmRotSengsBack;
+        /// <summary>
+        /// 右手角度值矫正
+        /// </summary>
+        public float ArmRotSengsFrontNoFireOffset;
+        /// <summary>
+        /// 左手角度值矫正
+        /// </summary>
+        public float ArmRotSengsBackNoFireOffset;
         /// <summary>
         /// 是否可以右键，默认为<see langword="false"/>
         /// </summary>
@@ -169,8 +177,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void InOwner() {
-            ArmRotSengsFront = 60 * CWRUtils.atoR;
-            ArmRotSengsBack = 110 * CWRUtils.atoR;
+            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR;
+            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR;
             Projectile.Center = Owner.Center + new Vector2(DirSign * HandDistance, HandDistanceY);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
             Projectile.timeLeft = 2;
@@ -231,7 +239,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Main.projectile[proj].scale = slp;
         }
 
-        public virtual void SpawnGunDust(Vector2 pos = default, Vector2 velocity = default, int splNum = 1) {
+        public virtual void SpawnGunDust(Vector2 pos = default, Vector2 velocity = default, int splNum = 1, int dustID1 = 262, int dustID2 = 54, int dustID3 = 53) {
             if (Main.myPlayer != Projectile.owner) return;
             if (pos == default) {
                 pos = GunShootPos;
@@ -244,14 +252,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 int dustID;
                 switch (Main.rand.Next(6)) {
                     case 0:
-                        dustID = 262;
+                        dustID = dustID1;
                         break;
                     case 1:
                     case 2:
-                        dustID = 54;
+                        dustID = dustID2;
                         break;
                     default:
-                        dustID = 53;
+                        dustID = dustID3;
                         break;
                 }
                 float num = Main.rand.NextFloat(3f, 13f) * splNum;

@@ -12,14 +12,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TyrannysEnd";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TyrannysEnd>();
         public override int targetCWRItem => ModContent.ItemType<TyrannysEnd>();
-        private int bulletNum {
-            get => heldItem.CWR().NumberBullets;
-            set => heldItem.CWR().NumberBullets = value;
-        }
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
-            fireTime = 20;
+            fireTime = 30;
             HandDistance = 45;
             HandDistanceY = 5;
             HandFireDistance = 45;
@@ -29,12 +25,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
             GunPressure = 0.5f;
             ControlForce = 0.05f;
-            Recoil = 13;
-            RangeOfStress = 50;
-        }
-
-        public override bool WhetherStartChangingAmmunition() {
-            return base.WhetherStartChangingAmmunition() && bulletNum < heldItem.CWR().AmmoCapacity && !onFire;
+            Recoil = 6;
+            RangeOfStress = 25;
         }
 
         public override void KreloadSoundCaseEjection() {
@@ -46,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override bool PreFireReloadKreLoad() {
-            if (bulletNum <= 0) {
+            if (BulletNum <= 0) {
 
                 loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
                 isKreload = false;
@@ -54,13 +46,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     heldItem.CWR().IsKreload = false;
                 }
 
-                bulletNum = 0;
+                BulletNum = 0;
             }
             return false;
-        }
-
-        public override void OnKreLoad() {
-            bulletNum = heldItem.CWR().AmmoCapacity;
         }
 
         public override void OnSpanProjFunc() {
@@ -71,7 +59,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostSpanProjFunc() {
-            bulletNum--;
+            base.PostSpanProjFunc();
+            EjectionCase();
         }
     }
 }
