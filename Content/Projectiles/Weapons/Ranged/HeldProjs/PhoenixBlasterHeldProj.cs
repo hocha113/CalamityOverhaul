@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class PhoenixBlasterHeldProj : BaseFeederGun
+    internal class PhoenixBlasterHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.PhoenixBlaster].Value;
@@ -17,10 +17,30 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0.8f;
+            GunPressure = 0.2f;
             ControlForce = 0.05f;
-            Recoil = 4.8f;
-            RangeOfStress = 48;
+            Recoil = 1.2f;
+            RangeOfStress = 8;
+            CanRightClick = true;
+        }
+
+        public override void FiringIncident() {
+            base.FiringIncident();
+            if (onFireR) {
+                heldItem.useTime = 10;
+            }
+            else {
+                heldItem.useTime = 14;
+            }
+        }
+
+        public override void FiringShoot() {
+            base.FiringShoot();
+            SpawnGunDust(GunShootPos, ShootVelocity, dustID1: 174, dustID2: 213, dustID3: 270);
+        }
+
+        public override void FiringShootR() {
+            base.FiringShootR();
         }
     }
 }
