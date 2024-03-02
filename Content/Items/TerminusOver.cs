@@ -33,6 +33,7 @@ namespace CalamityOverhaul.Content.Items
             Item.noUseGraphic = true;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.consumable = false;
+            ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<Terminus>();
         }
 
         public override bool? UseItem(Player player) {

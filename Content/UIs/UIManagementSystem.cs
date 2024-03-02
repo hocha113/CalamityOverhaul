@@ -23,7 +23,6 @@ namespace CalamityOverhaul.Content.UIs
             new ResetItemReminderUI().Load();
             new OverhaulTheBibleUI().Load();
             new CartridgeHolderUI().Load();
-            new MagazinesUI().Load();
 
             OverhaulTheBibleUI.Instance.ecTypeItemList = new List<Item>();
             foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
@@ -84,9 +83,6 @@ namespace CalamityOverhaul.Content.UIs
                 layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("CH UI", delegate {
                     if (CartridgeHolderUI.Instance.Active) {
                         CartridgeHolderUI.Instance.Draw(Main.spriteBatch);
-                    }
-                    if (MagazinesUI.Instance.Active) {
-                        MagazinesUI.Instance.Draw(Main.spriteBatch);
                     }
                     return true;
                 }, InterfaceScaleType.UI));

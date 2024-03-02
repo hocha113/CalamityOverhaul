@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Items.Materials;
+using CalamityMod.Items.SummonItems;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.UIs;
 using Microsoft.Xna.Framework;
@@ -25,6 +26,7 @@ namespace CalamityOverhaul.Content.Items
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.value = Item.buyPrice(0, 0, 0, 1);
             Item.UseSound = SoundID.Item30 with { Volume = SoundID.Item30.Volume * 0.75f };
+            ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.Book;
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {

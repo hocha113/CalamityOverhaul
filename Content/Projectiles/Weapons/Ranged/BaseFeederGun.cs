@@ -40,6 +40,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 是否可以重复换弹
         /// </summary>
         protected bool RepeatedCartridgeChange;
+        /// <summary>
+        /// 一个额外的枪体旋转角度矫正值，默认在<see cref="Recover"/>中恢复为0
+        /// </summary>
+        protected float FeederOffsetRot;
+        /// <summary>
+        /// 一个额外的枪体中心位置矫正向量，默认在<see cref="Recover"/>中恢复为<see cref="Vector2.Zero"/>，
+        /// </summary>
+        protected Vector2 FeederOffsetPos;
 
         protected int BulletNum {
             get => heldItem.CWR().NumberBullets;
@@ -87,30 +95,69 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return true;
         }
         /// <summary>
-        /// 装弹完成后会执行一次改方法
+        /// 装弹完成后会执行一次该方法
         /// </summary>
         public virtual void OnKreLoad() {
             BulletNum = heldItem.CWR().AmmoCapacity;
         }
 
         public virtual bool WhetherStartChangingAmmunition() {
-            return Owner.PressKey(false) && kreloadTimeValue == 0 && (!isKreload || RepeatedCartridgeChange) && BulletNum < heldItem.CWR().AmmoCapacity && !onFire;
+            return Owner.PressKey(false) && kreloadTimeValue == 0 && (!isKreload || RepeatedCartridgeChange) && BulletNum < heldItem.CWR().AmmoCapacity && !onFire && HaveAmmo;
+        }
+
+        public override void Recover() {
+            FeederOffsetRot = 0;
+            FeederOffsetPos = Vector2.Zero;
+        }
+        /// <summary>
+        /// 统一获取枪体在开火时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
+        /// </summary>
+        /// <returns></returns>
+        public virtual float GetGunInFireRot() {
+            return GunOnFireRot;
+        }
+        /// <summary>
+        /// 统一获取枪体在开火时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
+        /// </summary>
+        /// <returns></returns>
+        public virtual Vector2 GetGunInFirePos() {
+            return Owner.Center + Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY);
+        }
+        /// <summary>
+        /// 统一获取枪体在静置时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
+        /// </summary>
+        /// <returns></returns>
+        public virtual float GetGunBodyRotation() {
+            return (DirSign > 0 ? MathHelper.ToRadians(10) : MathHelper.ToRadians(170)) + FeederOffsetRot;
+        }
+        /// <summary>
+        /// 统一获取枪体在静置时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
+        /// </summary>
+        /// <returns></returns>
+        public virtual Vector2 GetGunBodyPostion() {
+            return Owner.Center + new Vector2(DirSign * HandDistance, HandDistanceY) + FeederOffsetPos;
+        }
+        /// <summary>
+        /// 先行调用，重写它以设置一些特殊状态
+        /// </summary>
+        public virtual void PreInOwnerUpdate() {
+            
         }
 
         public override void InOwner() {
+            PreInOwnerUpdate();
             ArmRotSengsFront = 30 * CWRUtils.atoR;
             ArmRotSengsBack = 150 * CWRUtils.atoR;
-
-            Projectile.Center = Owner.Center + new Vector2(DirSign * HandDistance, HandDistanceY);
-            Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(10) : MathHelper.ToRadians(170);
+            Projectile.Center = GetGunBodyPostion();
+            Projectile.rotation = GetGunBodyRotation();
             Projectile.timeLeft = 2;
             SetHeld();
 
             if (!Owner.mouseInterface) {
                 if (Owner.PressKey()) {
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
-                    Projectile.rotation = GunOnFireRot;
-                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY);
+                    Projectile.rotation = GetGunInFireRot();
+                    Projectile.Center = GetGunInFirePos();
                     ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign;
                     if (HaveAmmo && isKreload) {//需要子弹，还需要判断是否已经装弹
                         onFire = true;
@@ -140,7 +187,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                     if (kreloadTimeValue == kreloadMaxTime / 3) {
                         if (PreConsumeAmmoEvent()) {
-                            UpdateConsumeAmmo();
+                            for (int i = 0; i < heldItem.CWR().AmmoCapacity; i++) {
+                                UpdateConsumeAmmo();
+                            }
                         }
                     }
                     if (kreloadTimeValue <= 0) {//时间完成后设置装弹状态并准备下一次发射
@@ -189,7 +238,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 单次开火事件
         /// </summary>
         public virtual void OnSpanProjFunc() {
-            SpawnGunDust(GunShootPos, ShootVelocity);
+            SpawnGunFireDust(GunShootPos, ShootVelocity);
             Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
         /// <summary>

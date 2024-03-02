@@ -1230,6 +1230,15 @@ Items: {
 		DisplayName: Surge Driver Ec Type
 		Tooltip: ""
 	}
+
+	MuzzleBrake: {
+		DisplayName: Muzzle Brake
+		Tooltip:
+			'''
+			Greatly reduces the recoil and chamber pressure of the firearm
+			But it significantly reduces the bullet's power
+			'''
+	}
 }
 
 Projectiles: {
@@ -1620,6 +1629,16 @@ Configs: {
 		LensEasing: {
 			Label: Lens Easing
 			Tooltip: When enabled, long distance rapid displacement will slow the lens, which avoids the feeling of being moved too fast
+		}
+
+		CartridgeUI_Offset_X_Value: {
+			Label: Magazine UI landscape deviation value
+			Tooltip: ""
+		}
+
+		CartridgeUI_Offset_Y_Value: {
+			Label: Magazine UI deviates vertically value
+			Tooltip: ""
 		}
 	}
 }

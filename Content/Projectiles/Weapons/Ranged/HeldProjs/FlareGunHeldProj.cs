@@ -15,8 +15,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
-            HandDistance = 15;
+            HandDistance = 17;
             HandDistanceY = 0;
+            HandFireDistance = 17;
             GunPressure = 0.8f;
             ControlForce = 0.05f;
             Recoil = 4.8f;

@@ -1212,8 +1212,17 @@ Items: {
 	}
 
 	SurgeDriverEcType: {
-		// DisplayName: Surge Driver Ec Type
-		// Tooltip: ""
+		DisplayName: 星流御火
+		Tooltip: ""
+	}
+
+	MuzzleBrake: {
+		DisplayName: 枪口制动器
+		Tooltip:
+			'''
+			大大减轻枪械的后坐力和膛压
+			但会大幅度降低子弹威力
+			'''
 	}
 }
 
@@ -1602,6 +1611,16 @@ Configs: {
 		LensEasing: {
 			Label: 镜头缓动
 			Tooltip: 启用后，长距离快速位移会让镜头具有缓动，这避免了移动过快所带来的违和感
+		}
+
+		CartridgeUI_Offset_X_Value: {
+			Label: 弹匣UI横向偏离值
+			Tooltip: ""
+		}
+
+		CartridgeUI_Offset_Y_Value: {
+			Label: 弹匣UI纵向偏离值
+			Tooltip: ""
 		}
 	}
 }

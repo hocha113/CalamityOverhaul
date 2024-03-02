@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 应力范围，默认为5
         /// </summary>
-        public float RangeOfStress = 5;
+        public float RangeOfStress = 8;
         /// <summary>
         /// 应力缩放系数
         /// </summary>
@@ -118,10 +118,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 玩家是否正在行走
         /// </summary>
         public virtual bool WalkDetection => Owner.velocity.Y == 0 && Math.Abs(Owner.velocity.X) > 0;
-        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
-
         /// <summary>
-        /// 更新后座力的作用状态，这个函数只应该由弹幕主人调用
+        /// 该枪体使用的实际纹理
+        /// </summary>
+        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
+        /// <summary>
+        /// 更新枪压的作用状态，这个函数只应该由弹幕主人调用
         /// </summary>
         public virtual void UpdateRecoil() {
             OffsetRot -= ControlForce;
@@ -142,7 +144,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             return recoilVr;
         }
-
+        /// <summary>
+        /// 在枪械的更新周期中的最后被调用，用于复原一些数据
+        /// </summary>
+        public virtual void Recover() {
+        }
         /// <summary>
         /// 一个快捷创建手持事件的方法，在<see cref="InOwner"/>中被调用，值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="InOwner"/>的
         /// </summary>
@@ -187,7 +193,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 FiringIncident();
             }
         }
-
         /// <summary>
         /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="BaseHeldRanged.onFire"/>为<see cref="true"/>才可能调用。
         /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
@@ -197,7 +202,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
         }
-
         /// <summary>
         /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="onFireR"/>为<see cref="true"/>才可能调用。
         /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
@@ -207,7 +211,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
         }
-
         /// <summary>
         /// 一个快捷创建属于卢克索饰品的发射事件，如果luxorsGift为<see langword="true"/>,
         /// 或者<see cref="CWRPlayer.theRelicLuxor"/>大于0，便会调用该方法，在Firing方法之后调用
@@ -222,24 +225,44 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 SpanLuxirProj(luxirDamage);
             }
         }
-
+        /// <summary>
+        /// 快速创建一个卢克索发射事件的方法，默认在<see cref="LuxirEvent"/>中调用
+        /// </summary>
+        /// <param name="luxirDamage"></param>
+        /// <returns></returns>
         public virtual int SpanLuxirProj(int luxirDamage) {
             return Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
                 , ModContent.ProjectileType<LuxorsGiftRanged>(), luxirDamage, WeaponKnockback / 2, Owner.whoAmI, 0);
         }
-
+        /// <summary>
+        /// 获取枪口位置，一般用于发射口的矫正
+        /// </summary>
+        /// <param name="toMouLeng"></param>
+        /// <param name="norlLeng"></param>
+        /// <returns></returns>
         public virtual Vector2 GetShootPos(float toMouLeng, float norlLeng) {
             Vector2 norlVr = (Projectile.rotation + (DirSign > 0 ? MathHelper.PiOver2 : -MathHelper.PiOver2)).ToRotationVector2();
             return Projectile.Center + Projectile.rotation.ToRotationVector2() * toMouLeng + norlVr * norlLeng;
         }
-
+        /// <summary>
+        /// 一个快捷的抛壳方法，需要自行调用
+        /// </summary>
+        /// <param name="slp"></param>
         public virtual void CaseEjection(float slp = 1) {
             Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
             int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
             Main.projectile[proj].scale = slp;
         }
-
-        public virtual void SpawnGunDust(Vector2 pos = default, Vector2 velocity = default, int splNum = 1, int dustID1 = 262, int dustID2 = 54, int dustID3 = 53) {
+        /// <summary>
+        /// 一个快捷的创造开火烟尘粒子效果的方法
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="velocity"></param>
+        /// <param name="splNum"></param>
+        /// <param name="dustID1"></param>
+        /// <param name="dustID2"></param>
+        /// <param name="dustID3"></param>
+        public virtual void SpawnGunFireDust(Vector2 pos = default, Vector2 velocity = default, int splNum = 1, int dustID1 = 262, int dustID2 = 54, int dustID3 = 53) {
             if (Main.myPlayer != Projectile.owner) return;
             if (pos == default) {
                 pos = GunShootPos;
@@ -309,6 +332,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 SpanProj();
             }
             Time++;
+            Recover();
         }
 
         public override bool PreDraw(ref Color lightColor) {

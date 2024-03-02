@@ -1,9 +1,9 @@
 ﻿using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -35,6 +35,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SoundEngine.PlaySound(loadTheRounds with { Pitch = - 0.3f }, Projectile.Center);
         }
 
+        public override void PreInOwnerUpdate() {
+            if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
+                FeederOffsetRot = -MathHelper.ToRadians(30) * DirSign;
+                FeederOffsetPos = new Vector2(0, -23);
+            }
+        }
+
+        public override Vector2 GetGunInFirePos() {
+            return kreloadTimeValue == 0 ? base.GetGunInFirePos() : GetGunBodyPostion();//避免玩家试图在装弹时开火而引发动画冲突
+        }
+
+        public override float GetGunInFireRot() {
+            return kreloadTimeValue == 0 ? base.GetGunInFireRot() : GetGunBodyRotation();//避免玩家试图在装弹时开火而引发动画冲突
+        }
+
         public override bool PreFireReloadKreLoad() {
             if (BulletNum <= 0) {
                 
@@ -50,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void OnSpanProjFunc() {
-            SpawnGunDust();
+            SpawnGunFireDust();
             Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
                 , ModContent.ProjectileType<PrismaticEnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
