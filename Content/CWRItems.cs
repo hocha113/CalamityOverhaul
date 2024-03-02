@@ -139,13 +139,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void HoldItem(Item item, Player player) {
-            //item.ModItem?.FullName.Domp();
-            if (player.HeldItem.type != CWRIDs.FoodStallChair) {
-                OwnerByDir(item, player);
-            }
-            else {
-                player.direction = -1;
-            }
+            OwnerByDir(item, player);
             if (heldProjType > 0) {
                 if (player.ownedProjectileCounts[heldProjType] == 0 && Main.myPlayer == player.whoAmI) {
                     Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, heldProjType, item.damage, item.knockBack, player.whoAmI);
