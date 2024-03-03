@@ -55,6 +55,10 @@ namespace CalamityOverhaul.Common
         public LocalizedText Wap_SuperStarCannon_Text { get; private set; }
         public LocalizedText Wap_ZapinatorGray_Text { get; private set; }
         public LocalizedText Wap_ZapinatorOrange_Text { get; private set; }
+        public LocalizedText Wap_QuadBarrelShotgun_Text { get; private set; }
+        public LocalizedText Wap_TacticalShotgun_Text { get; private set; }
+        public LocalizedText Wap_Shotgun_Text { get; private set; }
+        public LocalizedText Wap_ZBoomstick_Text { get; private set; }
         #endregion
         public override void Load() {
             //使用反射进行属性的自动加载

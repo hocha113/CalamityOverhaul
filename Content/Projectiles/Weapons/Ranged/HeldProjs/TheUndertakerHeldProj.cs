@@ -1,6 +1,9 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -55,8 +58,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             return false;
         }
 
-        public override void SpawnGunFireDust(Vector2 pos = default, Vector2 velocity = default, int splNum = 1, int dustID1 = 262, int dustID2 = 54, int dustID3 = 53) {
-            base.SpawnGunFireDust(pos, velocity, splNum, dustID1, dustID2, dustID3);
+        public override void OnSpanProjFunc() {
+            SpawnGunDust(GunShootPos, ShootVelocity, dustID1: DustID.Blood, dustID2: DustID.Blood, dustID3: DustID.Blood);
+            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void OnKreLoad() {
