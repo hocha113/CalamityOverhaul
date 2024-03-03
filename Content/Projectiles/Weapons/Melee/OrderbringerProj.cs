@@ -8,6 +8,7 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Graphics.CameraModifiers;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
@@ -138,6 +139,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
 
             Projectile.Explode(300);
+            PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 30f, 6f, 20, 1000f, FullName);
+            Main.instance.CameraModifiers.Add(modifier);
         }
 
         public override bool PreDraw(ref Color lightColor) {

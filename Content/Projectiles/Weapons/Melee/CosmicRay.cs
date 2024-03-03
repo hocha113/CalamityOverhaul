@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             ThisTimeValue++;
             if (ThisTimeValue > 30) SterDust = true;
 
-            if (ThisTimeValue % 10 == 0 && Projectile.timeLeft <= 60 && Projectile.IsOwnedByLocalPlayer()) {
+            if (ThisTimeValue % 20 == 0 && Projectile.timeLeft <= 60 && Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 17
                     , ModContent.ProjectileType<GalaxyStar>(), Projectile.damage / 2, Projectile.knockBack * 0.5f, Projectile.owner);
             }

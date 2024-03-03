@@ -60,9 +60,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Main.dust[shinyDust].velocity += Projectile.velocity * 0.1f;
             }
 
-            NPC target = Projectile.Center.FindClosestNPC(300);
+            NPC target = Projectile.Center.FindClosestNPC(320);
             if (target != null) {
-                Projectile.ChasingBehavior2(target.Center, 1, 0.1f);
+                Projectile.ChasingBehavior2(target.Center, 1.01f, 0.15f);
             }
         }
 
@@ -82,8 +82,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 float randNum = Main.rand.NextFloat(MathHelper.TwoPi);
                 for (int i = 0; i < 3; i++) {
                     Vector2 vr = (MathHelper.TwoPi / 3f * i + randNum).ToRotationVector2() * 3;
-                    int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vr
-                        , ModContent.ProjectileType<OrderbringerWhiteOrbs>(), Projectile.damage / 3, Projectile.knockBack, Projectile.owner);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vr
+                        , ModContent.ProjectileType<OrderbringerWhiteOrbs>(), Projectile.damage / 4, Projectile.knockBack, Projectile.owner);
 
                 }
             }

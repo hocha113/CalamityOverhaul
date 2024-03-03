@@ -76,12 +76,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             else {
                 _ = player.RotatedRelativePoint(player.MountedCenter, true);
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 4; i++) {
                     Vector2 realPlayerPos = new Vector2(player.position.X + (player.width * 0.5f) + (float)(Main.rand.Next(1358) * -(float)player.direction)
                         + (Main.mouseX + Main.screenPosition.X - player.position.X), player.MountedCenter.Y);
                     realPlayerPos.X = ((realPlayerPos.X + player.Center.X) / 2f) + Main.rand.Next(-350, 351);
                     realPlayerPos.Y -= 100 * i;
-                    Projectile.NewProjectile(source, realPlayerPos.X, realPlayerPos.Y, 0f, 0f, type, damage / 5, knockback, player.whoAmI, 0f, Main.rand.Next(3));
+                    Projectile.NewProjectile(source, realPlayerPos.X, realPlayerPos.Y, 0f, 0f, type, damage / 4, knockback, player.whoAmI, 0f, Main.rand.Next(3));
                 }
             }
             return false;
@@ -92,49 +92,11 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void OnHitPvp(Player player, Player target, Player.HurtInfo hurtInfo) {
-            var source = player.GetSource_ItemUse(Item);
-            SoundEngine.PlaySound(SoundID.Item73, player.Center);
-            int j = Main.myPlayer;
-            float flameSpeed = 3f;
-            player.itemTime = Item.useTime;
-            Vector2 realPlayerPos = player.RotatedRelativePoint(player.MountedCenter, true);
-            float mouseXDist = Main.mouseX + Main.screenPosition.X + realPlayerPos.X;
-            float mouseYDist = Main.mouseY + Main.screenPosition.Y + realPlayerPos.Y;
-            if (player.gravDir == -1f) {
-                mouseYDist = Main.screenPosition.Y + Main.screenHeight + Main.mouseY + realPlayerPos.Y;
-            }
-            float mouseDistance = (float)Math.Sqrt(mouseXDist * mouseXDist + mouseYDist * mouseYDist);
-            if ((float.IsNaN(mouseXDist) && float.IsNaN(mouseYDist)) || (mouseXDist == 0f && mouseYDist == 0f)) {
-                mouseXDist = player.direction;
-                mouseYDist = 0f;
-                mouseDistance = flameSpeed;
-            }
-            else {
-                mouseDistance = flameSpeed / mouseDistance;
-            }
-
-            int essenceDamage = player.CalcIntDamage<MeleeDamageClass>(0.25f * Item.damage);
-            for (int i = 0; i < 5; i++) {
-                realPlayerPos = new Vector2(player.position.X + player.width * 0.5f + (Main.rand.Next(401) * -(float)player.direction) + (Main.mouseX + Main.screenPosition.X - player.position.X), player.MountedCenter.Y);
-                realPlayerPos.X = (realPlayerPos.X + player.Center.X) / 2f + Main.rand.Next(-400, 401);
-                realPlayerPos.Y -= 100 * i;
-                mouseXDist = Main.mouseX + Main.screenPosition.X - realPlayerPos.X;
-                mouseYDist = Main.mouseY + Main.screenPosition.Y - realPlayerPos.Y;
-                if (mouseYDist < 0f) {
-                    mouseYDist *= -1f;
-                }
-                if (mouseYDist < 20f) {
-                    mouseYDist = 20f;
-                }
-                mouseDistance = (float)Math.Sqrt(mouseXDist * mouseXDist + mouseYDist * mouseYDist);
-                mouseDistance = flameSpeed / mouseDistance;
-                Projectile.NewProjectile(source, realPlayerPos, Vector2.Zero, ModContent.ProjectileType<EssenceFlame2>(), essenceDamage, 0f, i, 0f, Main.rand.Next(3));
-            }
         }
 
         public override void MeleeEffects(Player player, Rectangle hitbox) {
             if (Main.rand.NextBool(3))
-                Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, 173);
+                Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.ShadowbeamStaff);
         }
     }
 }

@@ -42,17 +42,15 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shootSpeed = 12f;
         }
 
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            if (CWRUtils.RemakeByItem<CalamityMod.Items.Weapons.Melee.Excelsus>(item)) {
-                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Excelsus");
-            }
-        }
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Excelsus");
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
+                item.useTime = 10;
                 Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<ExcelsusBomb>(), damage * 3, knockback, player.whoAmI);
             }
             else {
+                item.useTime = 15;
                 for (int i = 0; i < 3; i++) {
                     float speedX = velocity.X + Main.rand.NextFloat(-1.5f, 1.5f);
                     float speedY = velocity.Y + Main.rand.NextFloat(-1.5f, 1.5f);
@@ -78,14 +76,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             return true;
         }
 
-        public override void OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) {
+        public override bool? On_OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.NewProjectile(player.GetSource_ItemUse(item), target.Center, Vector2.Zero, ModContent.ProjectileType<LaserFountains>()
                     , item.damage, 0f, player.whoAmI, target.whoAmI);
+            return false;
         }
 
-        public override void OnHitPvp(Item item, Player player, Player target, Player.HurtInfo hurtInfo) {
+        public override bool? On_OnHitPvp(Item item, Player player, Player target, Player.HurtInfo hurtInfo) {
             Projectile.NewProjectile(player.GetSource_ItemUse(item), target.Center, Vector2.Zero, ModContent.ProjectileType<LaserFountains>()
-                     , item.damage / 2, 0f, player.whoAmI, target.whoAmI);
+                    , item.damage, 0f, player.whoAmI, target.whoAmI);
+            return false;
         }
     }
 }

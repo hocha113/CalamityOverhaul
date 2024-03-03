@@ -208,10 +208,12 @@ namespace CalamityOverhaul.Content
         }
 
         private void OwnerByDir(Item item, Player player) {
-            if (player.whoAmI == Main.myPlayer && item.useStyle == ItemUseStyleID.Swing
+            if (player.PressKey() || player.PressKey(false)) {
+                if (player.whoAmI == Main.myPlayer && item.useStyle == ItemUseStyleID.Swing
                 && (item.createTile == -1 && item.createWall == -1)
-                && (player.PressKey() || player.PressKey(false)) && !player.mouseInterface) {
-                player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);
+                && !player.mouseInterface && !player.cursorItemIconEnabled) {
+                    player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);
+                }
             }
         }
 

@@ -29,6 +29,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.penetrate = 3;
             Projectile.timeLeft = 180;
             Projectile.DamageType = DamageClass.Melee;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 20;
         }
 
         public override void AI() {
