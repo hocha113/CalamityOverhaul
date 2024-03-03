@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             RepeatedCartridgeChange = true;
         }
-        public override void OnSpanProjFunc() {
+        public override void FiringShoot() {
             SoundEngine.PlaySound(heldItem.UseSound.Value with { Pitch = 0.3f }, Projectile.Center);
             DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
             Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity

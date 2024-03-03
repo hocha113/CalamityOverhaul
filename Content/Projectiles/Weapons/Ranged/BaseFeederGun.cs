@@ -219,17 +219,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 isKreload = heldItem.CWR().IsKreload;
         }
         /// <summary>
-        /// 在单次开火时运行，优先于<see cref="OnSpanProjFunc"/>运行，返回<see langword="false"/>禁用<see cref="OnSpanProjFunc"/>的运行
+        /// 在单次开火时运行，优先于<see cref="FiringShoot"/>运行，返回<see langword="false"/>禁用<see cref="FiringShoot"/>的运行
         /// </summary>
         /// <returns></returns>
-        public virtual bool PreSpanProjFunc() {
+        public virtual bool PreFiringShoot() {
             return true;
         }
         /// <summary>
-        /// 在单次开火时运行，在<see cref="OnSpanProjFunc"/>运行后运行，无论<see cref="PreSpanProjFunc"/>返回什么都会运行
+        /// 在单次开火时运行，在<see cref="FiringShoot"/>运行后运行，无论<see cref="PreFiringShoot"/>返回什么都会运行
         /// </summary>
         /// <returns></returns>
-        public virtual void PostSpanProjFunc() {
+        public virtual void PostFiringShoot() {
             if (BulletNum > 0) {
                 BulletNum--;
             }
@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 单次开火事件
         /// </summary>
-        public virtual void OnSpanProjFunc() {
+        public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
             Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
@@ -255,13 +255,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
                     LuxirEvent();
                 }
-                if (PreSpanProjFunc()) {
-                    OnSpanProjFunc();
+                if (PreFiringShoot()) {
+                    FiringShoot();
                     if (FiringDefaultSound) {
                         SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
                     }
                 }
-                PostSpanProjFunc();
+                PostFiringShoot();
                 CreateRecoil();
                 if (PreFireReloadKreLoad()) {
                     loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示

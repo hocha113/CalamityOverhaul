@@ -69,15 +69,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             return false;
         }
 
-        public override void OnSpanProjFunc() {
+        public override void FiringShoot() {
             SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
             SpawnGunFireDust();
             Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
                     , ModContent.ProjectileType<BMGBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
-        public override void PostSpanProjFunc() {
-            base.PostSpanProjFunc();
+        public override void PostFiringShoot() {
+            base.PostFiringShoot();
             EjectionCase();
         }
     }

@@ -193,28 +193,28 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public void DrawTameBar(SpriteBatch spriteBatch, NPC npc) {
-            Texture2D top = CWRUtils.GetT2DValue(CWRConstant.UI + "TameBarTop");
-            Texture2D bar = CWRUtils.GetT2DValue(CWRConstant.UI + "TameBar");
-            Texture2D whi = WhipHitDate.Tex((WhipHitTypeEnum)WhipHitType);
+        //public void DrawTameBar(SpriteBatch spriteBatch, NPC npc) {
+        //    Texture2D top = CWRUtils.GetT2DValue(CWRConstant.UI + "TameBarTop");
+        //    Texture2D bar = CWRUtils.GetT2DValue(CWRConstant.UI + "TameBar");
+        //    Texture2D whi = WhipHitDate.Tex((WhipHitTypeEnum)WhipHitType);
 
-            float slp = 0.75f;
-            float alp = 1 - (npc.velocity.Length() / 15f);
-            if (alp < 0.3f) {
-                alp = 0.3f;
-            }
+        //    float slp = 0.75f;
+        //    float alp = 1 - (npc.velocity.Length() / 15f);
+        //    if (alp < 0.3f) {
+        //        alp = 0.3f;
+        //    }
 
-            int sengs = (int)((1 - (WhipHitNum / 10f)) * bar.Height);
-            Rectangle barRec = new(sengs, 0, bar.Width, bar.Height - sengs);
-            Color color = Color.White * alp;
+        //    int sengs = (int)((1 - (WhipHitNum / 10f)) * bar.Height);
+        //    Rectangle barRec = new(sengs, 0, bar.Width, bar.Height - sengs);
+        //    Color color = Color.White * alp;
 
-            Vector2 drawPos = new Vector2(npc.position.X + (npc.width / 2), npc.Bottom.Y + top.Height) - Main.screenPosition;
+        //    Vector2 drawPos = new Vector2(npc.position.X + (npc.width / 2), npc.Bottom.Y + top.Height) - Main.screenPosition;
 
-            spriteBatch.Draw(top, drawPos, null, color, 0, bar.Size() / 2, slp, SpriteEffects.None, 0);
+        //    spriteBatch.Draw(top, drawPos, null, color, 0, bar.Size() / 2, slp, SpriteEffects.None, 0);
 
-            spriteBatch.Draw(bar, drawPos + (new Vector2(14, sengs + 18) * slp), barRec, color, 0, bar.Size() / 2, slp, SpriteEffects.None, 0);
+        //    spriteBatch.Draw(bar, drawPos + (new Vector2(14, sengs + 18) * slp), barRec, color, 0, bar.Size() / 2, slp, SpriteEffects.None, 0);
 
-            spriteBatch.Draw(whi, drawPos + (new Vector2(0, whi.Height) * slp), null, color, 0, bar.Size() / 2, slp / 2, SpriteEffects.None, 0);
-        }
+        //    spriteBatch.Draw(whi, drawPos + (new Vector2(0, whi.Height) * slp), null, color, 0, bar.Size() / 2, slp / 2, SpriteEffects.None, 0);
+        //}
     }
 }

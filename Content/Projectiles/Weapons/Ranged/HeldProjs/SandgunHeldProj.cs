@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             base.FiringShoot();
-            SpawnGunDust(GunShootPos, ShootVelocity, dustID1: 124, dustID2: 53, dustID3: 51);
+            SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 124, dustID2: 53, dustID3: 51);
         }
 
         public override void FiringShootR() {

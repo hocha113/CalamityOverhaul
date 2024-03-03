@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             loadTheRounds = CWRSound.CaseEjection2 with { Pitch = -0.2f };
         }
-        public override void OnSpanProjFunc() {
+        public override void FiringShoot() {
             SoundEngine.PlaySound(heldItem.UseSound.Value, Projectile.Center);
             DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
             Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity

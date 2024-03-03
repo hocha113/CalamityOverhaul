@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             return false;
         }
 
-        public override void OnSpanProjFunc() {
+        public override void FiringShoot() {
             SpawnGunFireDust();
             Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
                 , ModContent.ProjectileType<PrismaticEnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
