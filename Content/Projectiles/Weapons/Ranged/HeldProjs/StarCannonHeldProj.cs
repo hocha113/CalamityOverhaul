@@ -49,8 +49,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             return false;
         }
 
-        public override void OnSpanProjFunc() {
-            SpawnGunDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
+        public override void FiringShoot() {
+            SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
             Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             UpdateConsumeAmmo();
             fireTime -= 10;
