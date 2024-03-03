@@ -17,6 +17,12 @@ namespace CalamityOverhaul.Common
             internal const float M_RDCD_BarSize_MinValue = 0.5f;
             internal const float M_RDCD_BarSize_MaxValue = 2f;
             public static float M_RDCD_BarSizeValue;
+            public static int CartridgeUI_Offset_X;
+            internal const int CartridgeUI_Offset_X_MinValue = 0;
+            internal const int CartridgeUI_Offset_X_MaxValue = 1900;
+            public static int CartridgeUI_Offset_Y;
+            internal const int CartridgeUI_Offset_Y_MinValue = 0;
+            internal const int CartridgeUI_Offset_Y_MaxValue = 800;
         }
 
         public float GetDateMScaleOffsetValue() => Date.MScaleOffsetValue;
@@ -111,6 +117,46 @@ namespace CalamityOverhaul.Common
                 return Date.M_RDCD_BarSizeValue;
             }
             set => Date.M_RDCD_BarSizeValue = value;
+        }
+
+        /// <summary>
+        /// 弹夹UI位置调节_X
+        /// </summary>
+        [BackgroundColor(182, 24, 64, 192)]
+        [SliderColor(224, 165, 56, 128)]
+        [Range(Date.CartridgeUI_Offset_X_MinValue, Date.CartridgeUI_Offset_X_MaxValue)]
+        [DefaultValue(1)]
+        public int CartridgeUI_Offset_X_Value {
+            get {
+                if (Date.CartridgeUI_Offset_X < Date.CartridgeUI_Offset_X_MinValue) {
+                    Date.CartridgeUI_Offset_X = Date.CartridgeUI_Offset_X_MinValue;
+                }
+                if (Date.CartridgeUI_Offset_X > Date.CartridgeUI_Offset_X_MaxValue) {
+                    Date.CartridgeUI_Offset_X = Date.CartridgeUI_Offset_X_MaxValue;
+                }
+                return Date.CartridgeUI_Offset_X;
+            }
+            set => Date.CartridgeUI_Offset_X = value;
+        }
+
+        /// <summary>
+        /// 弹夹UI位置调节_Y
+        /// </summary>
+        [BackgroundColor(182, 24, 64, 192)]
+        [SliderColor(224, 165, 56, 128)]
+        [Range(Date.CartridgeUI_Offset_Y_MinValue, Date.CartridgeUI_Offset_Y_MaxValue)]
+        [DefaultValue(1)]
+        public int CartridgeUI_Offset_Y_Value {
+            get {
+                if (Date.CartridgeUI_Offset_Y < Date.CartridgeUI_Offset_Y_MinValue) {
+                    Date.CartridgeUI_Offset_Y = Date.CartridgeUI_Offset_Y_MinValue;
+                }
+                if (Date.CartridgeUI_Offset_Y > Date.CartridgeUI_Offset_Y_MaxValue) {
+                    Date.CartridgeUI_Offset_Y = Date.CartridgeUI_Offset_Y_MaxValue;
+                }
+                return Date.CartridgeUI_Offset_Y;
+            }
+            set => Date.CartridgeUI_Offset_Y = value;
         }
 
         public override void OnLoaded() => Instance = this;

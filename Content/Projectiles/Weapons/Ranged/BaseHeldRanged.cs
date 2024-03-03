@@ -23,6 +23,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool HaveAmmo => Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out _, out _, out _, true);
         protected bool onFire;
 
+        public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
+
         protected bool UpdateConsumeAmmo() {
             bool canConsume = Owner.IsRangedAmmoFreeThisShot(new Item(Owner.GetShootState().UseAmmoItemType));
             Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out _, out _, out _, canConsume);

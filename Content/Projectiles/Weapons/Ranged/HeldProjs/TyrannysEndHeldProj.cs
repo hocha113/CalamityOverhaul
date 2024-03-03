@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -35,6 +36,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void KreloadSoundloadTheRounds() {
             base.KreloadSoundloadTheRounds();
+        }
+
+        public override void PreInOwnerUpdate() {
+            if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
+                Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向
+                FeederOffsetRot = -MathHelper.ToRadians(30) * DirSign;
+                FeederOffsetPos = new Vector2(0, -23);
+            }
+        }
+
+        public override Vector2 GetGunInFirePos() {
+            return kreloadTimeValue == 0 ? base.GetGunInFirePos() : GetGunBodyPostion();//避免玩家试图在装弹时开火而引发动画冲突
+        }
+
+        public override float GetGunInFireRot() {
+            return kreloadTimeValue == 0 ? base.GetGunInFireRot() : GetGunBodyRotation();//避免玩家试图在装弹时开火而引发动画冲突
         }
 
         public override bool PreFireReloadKreLoad() {

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShoot() {
             base.FiringShoot();
             CaseEjection();
-            SpawnGunDust();
+            SpawnGunFireDust();
         }
     }
 }

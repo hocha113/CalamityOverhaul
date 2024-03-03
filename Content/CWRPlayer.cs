@@ -1,10 +1,8 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
-using CalamityOverhaul.Content.UIs;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content
@@ -15,10 +13,16 @@ namespace CalamityOverhaul.Content
         /// 圣物的装备等级，这个字段决定了玩家会拥有什么样的弹幕效果
         /// </summary>
         public int theRelicLuxor = 0;
-
+        /// <summary>
+        /// 是否装备制动器
+        /// </summary>
+        public bool LoadMuzzleBrake;
+        /// <summary>
+        /// 应力缩放
+        /// </summary>
         public float PressureIncrease;
-
-        public int CompressorPanelID = -1;//未使用的，这个属性属于一个未完成的UI
+        //未使用的，这个属性属于一个未完成的UI
+        public int CompressorPanelID = -1;
         /// <summary>
         /// 玩家是否坐在大排档塑料椅子之上
         /// </summary>
@@ -45,19 +49,21 @@ namespace CalamityOverhaul.Content
         public bool onHit;
 
         public override void Initialize() {
+            onHit = false;
             theRelicLuxor = 0;
             PressureIncrease = 1;
-            onHit = false;
+            LoadMuzzleBrake = false;
         }
 
         public override void ResetEffects() {
+            onHit = false;
             theRelicLuxor = 0;
             PressureIncrease = 1;
             inFoodStallChair = false;
             EndlessStabilizerBool = false;
             HeldMurasamaBool = false;
             EndSkillEffectStartBool = false;
-            onHit = false;
+            LoadMuzzleBrake = false;
         }
 
         public override void OnEnterWorld() {
@@ -68,6 +74,14 @@ namespace CalamityOverhaul.Content
 
         public override void OnHurt(Player.HurtInfo info) {
             onHit = true;
+        }
+
+        public override void ModifyWeaponDamage(Item item, ref StatModifier damage) {
+            if (LoadMuzzleBrake) {
+                if (item.DamageType == DamageClass.Ranged) {
+                    damage *= 0.75f;
+                }
+            }
         }
 
         public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers) {

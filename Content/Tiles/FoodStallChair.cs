@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) {//如果返回了true，那么这个物块项目就能够被玩家交互，这里判定距离来防止发生无限距离交互的情况
-            return settings.player.IsWithinSnappngRangeToTile(i, j, 180);                                                                                                        // 避免能够从远处触发它
+            return settings.player.IsWithinSnappngRangeToTile(i, j, 180);// 避免能够从远处触发它
         }
 
         public override void ModifySittingTargetInfo(int i, int j, ref TileRestingInfo info) {
