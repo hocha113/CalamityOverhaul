@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.UseSound = CommonCalamitySounds.LaserCannonSound;
             item.SetHeldProj<SurgeDriverHeldProj>();
             item.CWR().HasCartridgeHolder = true;
-            item.CWR().AmmoCapacity = 30;
+            item.CWR().AmmoCapacity = 98;
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {

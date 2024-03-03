@@ -1239,6 +1239,26 @@ Items: {
 			But it significantly reduces the bullet's power
 			'''
 	}
+
+	DeepcoreGK2EcType: {
+		DisplayName: Deepcore G K2 Ec Type
+		Tooltip: ""
+	}
+
+	DodusHandcannonEcType: {
+		DisplayName: Dodus Handcannon Ec Type
+		Tooltip: ""
+	}
+
+	P90EcType: {
+		DisplayName: P90 Ec Type
+		Tooltip: ""
+	}
+
+	PearlGodEcType: {
+		DisplayName: Pearl God Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1534,6 +1554,10 @@ Projectiles: {
 	BoomstickHeldProj.DisplayName: Boomstick Held Proj
 	ShotgunHeldProj.DisplayName: Shotgun Held Proj
 	TacticalShotgunHeldProj.DisplayName: Tactical Shotgun Held Proj
+	DeepcoreGK2HeldProj.DisplayName: Deepcore G K2 Held Proj
+	DodusHandcannonHeldProj.DisplayName: Dodus Handcannon Held Proj
+	P90HeldProj.DisplayName: P90 Held Proj
+	PearlGodHeldProj.DisplayName: Pearl God Held Proj
 }
 
 Configs: {

@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.UseSound = CommonCalamitySounds.LaserCannonSound;
             Item.SetHeldProj<SurgeDriverHeldProj>();
             Item.CWR().HasCartridgeHolder = true;
-            Item.CWR().AmmoCapacity = 30;
+            Item.CWR().AmmoCapacity = 98;
         }
     }
 }

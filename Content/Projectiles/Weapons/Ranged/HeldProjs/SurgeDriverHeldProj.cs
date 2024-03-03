@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -4;
             ShootPosToMouLengValue = 35;
             RepeatedCartridgeChange = true;
+            Recoil = 0;
         }
 
         public override void KreloadSoundCaseEjection() {
@@ -44,32 +45,47 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override Vector2 GetGunInFirePos() {
-            return kreloadTimeValue == 0 ? base.GetGunInFirePos() : GetGunBodyPostion();//避免玩家试图在装弹时开火而引发动画冲突
-        }
-
-        public override float GetGunInFireRot() {
-            return kreloadTimeValue == 0 ? base.GetGunInFireRot() : GetGunBodyRotation();//避免玩家试图在装弹时开火而引发动画冲突
-        }
-
         public override bool PreFireReloadKreLoad() {
             if (BulletNum <= 0) {
-                
                 loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
                 isKreload = false;
                 if (heldItem.type != ItemID.None) {
                     heldItem.CWR().IsKreload = false;
                 }
-
                 BulletNum = 0;
+            }
+            fireTime--;
+            if (fireTime < 6) {
+                fireTime = 6;
             }
             return false;
         }
 
+        public override void OnKreLoad() {
+            base.OnKreLoad();
+            fireTime = 20;
+        }
+
         public override void FiringShoot() {
-            SpawnGunFireDust();
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
-                , ModContent.ProjectileType<PrismaticEnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            if (BulletNum > 40) {
+                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
+                    , ModContent.ProjectileType<PrismEnergyBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            }
+            else {
+                if (BulletNum == 1) {
+                    Vector2 vr = ShootVelocity.UnitVector();
+                    float lengValue = 16;
+                    float lengInXValue = 80;
+                    for (int i = 0; i < 16; i++) {
+                        Vector2 vr2 = vr * lengValue + vr.GetNormalVector() * Main.rand.NextFloat(-lengInXValue, lengInXValue);
+                        lengValue += Main.rand.Next(80, 120);
+                        lengInXValue += 12;
+                        Projectile.NewProjectile(Owner.GetSource_FromThis(), vr2 + Projectile.Center, Vector2.Zero, ModContent.ProjectileType<PrismExplosionLarge>(), Projectile.damage, 0f, Projectile.owner);
+                    }
+                }
+                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
+                    , ModContent.ProjectileType<PrismaticEnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            }
         }
     }
 }
