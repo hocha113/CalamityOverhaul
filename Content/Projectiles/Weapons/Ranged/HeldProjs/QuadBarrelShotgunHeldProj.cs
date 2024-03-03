@@ -7,9 +7,10 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class QuadBarrelShotgunHeldProj : BaseGun
+    internal class QuadBarrelShotgunHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
+        public override Texture2D TextureValue => TextureAssets.Item[ItemID.QuadBarrelShotgun].Value;
         public override int targetCayItem => ItemID.QuadBarrelShotgun;
         public override int targetCWRItem => ItemID.QuadBarrelShotgun;
         public override void SetRangedProperty() {
@@ -22,9 +23,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistanceY = -9;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
+        //public override void FiringIncident() {
+        //    base.FiringIncident();
+        //}
 
         public override void FiringShoot() {
             for (int i = 0; i < 4; i++) {
@@ -32,16 +33,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.13f, 0.13f)) * Main.rand.NextFloat(0.75f, 1.05f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
         }
-
-        public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = TextureAssets.Item[ItemID.QuadBarrelShotgun].Value;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
-                , Projectile.rotation, value.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
-            return false;
-        }
+        //public override bool PreDraw(ref Color lightColor) {
+        //    Texture2D value = TextureAssets.Item[ItemID.QuadBarrelShotgun].Value;
+        //    Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
+        //        , Projectile.rotation, value.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+        //    return false;
+        //}
     }
 }

@@ -1521,6 +1521,10 @@ Projectiles: {
 	ZapinatorGrayHeldProj.DisplayName: Zapinator Gray Held Proj
 	ZapinatorOrangeHeldProj.DisplayName: Zapinator Orange Held Proj
 	SurgeDriverHeldProj.DisplayName: Surge Driver Held Proj
+	HellfireBullet.DisplayName: Hellfire Bullet
+	BoomstickHeldProj.DisplayName: Boomstick Held Proj
+	ShotgunHeldProj.DisplayName: Shotgun Held Proj
+	TacticalShotgunHeldProj.DisplayName: Tactical Shotgun Held Proj
 }
 
 Configs: {
@@ -1849,11 +1853,26 @@ TextContent: {
 			“Don't shoot your own eyeballs out！”
 			'''
 		Wap_FlareGun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_FlareGun_Text
-		Wap_PhoenixBlaster_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_PhoenixBlaster_Text
-		Wap_Sandgun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_Sandgun_Text
+		Wap_PhoenixBlaster_Text:
+			'''
+			Weak recoil
+			Right click to fire the fragment of bullet 
+			""
+			"Hellstone weapons can't control fire? In fact, the bullet cannot withstand the heat."
+			'''
+		Wap_Sandgun_Text:
+			'''
+			Weak recoil
+			Right click to scatter more sand bombs
+			"Take it and bury yourself in the sand so you can pretend to be an antlion."
+			'''
 		Wap_StarCannon_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_StarCannon_Text
 		Wap_SuperStarCannon_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_SuperStarCannon_Text
 		Wap_ZapinatorGray_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ZapinatorGray_Text
 		Wap_ZapinatorOrange_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ZapinatorOrange_Text
+		Wap_QuadBarrelShotgun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_QuadBarrelShotgun_Text
+		Wap_TacticalShotgun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_TacticalShotgun_Text
+		Wap_Shotgun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_Shotgun_Text
+		Wap_ZBoomstick_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ZBoomstick_Text
 	}
 }

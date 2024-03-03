@@ -26,11 +26,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringIncident() {
             base.FiringIncident();
             if (onFireR) {
-                heldItem.useTime = 72;
+                heldItem.useTime = 64;
                 Recoil = 2.4f;
                 RangeOfStress = 5;
             } else {
-                heldItem.useTime = 18;
+                heldItem.useTime = 16;
                 Recoil = 2.4f;
                 RangeOfStress = 5;
             }
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShootR() {
             Vector2 gundir = Projectile.rotation.ToRotationVector2();
             for (int i = 0; i < 6; i++) {
-                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 0.3f, AmmoTypes, WeaponDamage/2, WeaponKnockback, Owner.whoAmI, 0);
+                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 0.3f, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
                 _ = UpdateConsumeAmmo();
                 _ = CreateRecoil();
             }

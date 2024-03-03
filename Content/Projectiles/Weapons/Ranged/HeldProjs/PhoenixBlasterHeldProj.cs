@@ -1,8 +1,10 @@
 ﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -27,20 +29,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringIncident() {
             base.FiringIncident();
             if (onFireR) {
-                heldItem.useTime = 10;
+                heldItem.useTime = 36;
             }
             else {
-                heldItem.useTime = 14;
+                heldItem.useTime = 12;
             }
         }
 
         public override void FiringShoot() {
             base.FiringShoot();
-            SpawnGunDust(GunShootPos, ShootVelocity, dustID1: 174, dustID2: 213, dustID3: 270);
+            SpawnGunDust(GunShootPos, ShootVelocity, dustID1: 174, dustID2: 213, dustID3: 213);
         }
 
         public override void FiringShootR() {
-            base.FiringShootR();
+            for (int i = 0; i < 3; i++) {
+                SpawnGunDust(GunShootPos, ShootVelocity, dustID1: 174, dustID2: 213, dustID3: 213);
+                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.05f, 0.05f, i / 2f)) * 2f, ModContent.ProjectileType<HellfireBullet>(), WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
+                _ = UpdateConsumeAmmo();
+                _ = CreateRecoil();
+            }
         }
     }
 }
