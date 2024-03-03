@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.UIs
         public override void Draw(SpriteBatch spriteBatch) {
             Initialize();
             if (handItem.CWR().CartridgeEnum == CartridgeUIEnum.CartridgeHolder) {
-                spriteBatch.Draw(Texture, DrawPos, null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);//绘制UI主体
+                spriteBatch.Draw(Texture, DrawPos, null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制UI主体
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, bulletNum.ToString()
                     , DrawPos.X + 90, DrawPos.Y + 0, Color.AliceBlue, Color.Black, Vector2.Zero, 1.5f);
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, player.ActiveItem().CWR().AmmoCapacity.ToString()

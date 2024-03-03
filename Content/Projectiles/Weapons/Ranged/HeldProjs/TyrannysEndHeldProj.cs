@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -70,7 +71,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void OnSpanProjFunc() {
             SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
-            DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
+            SpawnGunFireDust();
             Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
                     , ModContent.ProjectileType<BMGBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
