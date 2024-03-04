@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -4;
             ShootPosToMouLengValue = 35;
             RepeatedCartridgeChange = true;
+            FiringDefaultSound = false;
             Recoil = 0;
         }
 
@@ -67,22 +68,35 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
+            Recoil = 0;
+            GunPressure = 0;
+            ControlForce = 0.01f;
+            RangeOfStress = 5;
             if (BulletNum > 40) {
-                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
+                float sengs = (98 - BulletNum) * 0.05f;
+                SoundEngine.PlaySound(heldItem.UseSound.Value with { Pitch = sengs > 0.95f ? 0.95f : sengs }, Projectile.Center);
+                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity * (1 + sengs)
                     , ModContent.ProjectileType<PrismEnergyBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
             else {
                 if (BulletNum == 1) {
+                    Recoil = 7;
+                    GunPressure = 0.8f;
+                    ControlForce = 0.03f;
+                    RangeOfStress = 55;
                     Vector2 vr = ShootVelocity.UnitVector();
                     float lengValue = 16;
                     float lengInXValue = 80;
-                    for (int i = 0; i < 16; i++) {
+                    for (int i = 0; i < 26; i++) {
                         Vector2 vr2 = vr * lengValue + vr.GetNormalVector() * Main.rand.NextFloat(-lengInXValue, lengInXValue);
-                        lengValue += Main.rand.Next(80, 120);
-                        lengInXValue += 12;
+                        lengValue += Main.rand.Next(60, 90);
+                        lengInXValue += 7;
                         Projectile.NewProjectile(Owner.GetSource_FromThis(), vr2 + Projectile.Center, Vector2.Zero, ModContent.ProjectileType<PrismExplosionLarge>(), Projectile.damage, 0f, Projectile.owner);
                     }
+                    SoundEngine.PlaySound(heldItem.UseSound.Value with { Pitch = -0.3f, Volume = 1.5f, MaxInstances = 3 }, Projectile.Center);
+                    return;
                 }
+                SoundEngine.PlaySound(heldItem.UseSound.Value with { Pitch = 1f }, Projectile.Center);
                 Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<PrismaticEnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override bool CheckAlive() {
             bool heldBool1 = heldItem.type != ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.BlossomFlux>();
             bool heldBool2 = heldItem.type != ModContent.ItemType<BlossomFlux>();
-            if (ContentConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换
+            if (CWRServerConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换
                 if (heldBool1) {//只需要判断原版的物品
                     return false;
                 }

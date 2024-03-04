@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// <summary>
         /// 大小百分比例
         /// </summary>
-        public static float ScaleOffset_PercentageValue => ContentConfig.Instance.MurasamaScaleOffset;
+        public static float ScaleOffset_PercentageValue => CWRServerConfig.Instance.MurasamaScaleOffset;
         /// <summary>
         /// 用于存储手持弹幕的ID，这个成员在<see cref="CWRIDs.Load"/>中被加载，不需要进行手动的赋值
         /// </summary>

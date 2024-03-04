@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.timeLeft = 600;
             Projectile.Center = Owner.Center + (Projectile.rotation.ToRotationVector2() * 32);
             if (Owner.PressKey(false)) {
-                if (ContentConfig.Instance.ForceReplaceResetContent) {
+                if (CWRServerConfig.Instance.ForceReplaceResetContent) {
                     if (balefulHarvester.type != ItemType<CalamityMod.Items.Weapons.Melee.BalefulHarvester>()) {
                         Projectile.Kill();
                     }

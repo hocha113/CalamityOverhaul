@@ -1259,6 +1259,56 @@ Items: {
 		DisplayName: Pearl God Ec Type
 		Tooltip: ""
 	}
+
+	Flint: {
+		DisplayName: Flint
+		Tooltip: ""
+	}
+
+	FlintAxe: {
+		DisplayName: Flint Axe
+		Tooltip: ""
+	}
+
+	FlintPick: {
+		DisplayName: Flint Pick
+		Tooltip: ""
+	}
+
+	FlintSpear: {
+		DisplayName: Flint Spear
+		Tooltip: ""
+	}
+
+	TheUpiStele: {
+		DisplayName: The Upi Stele
+		Tooltip: ""
+	}
+
+	TheSpiritFlint: {
+		DisplayName: The Spirit Flint
+		Tooltip: ""
+	}
+
+	Pebble: {
+		DisplayName: Pebble
+		Tooltip: ""
+	}
+
+	PebbleAxe: {
+		DisplayName: Pebble Axe
+		Tooltip: ""
+	}
+
+	PebblePick: {
+		DisplayName: Pebble Pick
+		Tooltip: ""
+	}
+
+	PebbleSpear: {
+		DisplayName: Pebble Spear
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1558,10 +1608,18 @@ Projectiles: {
 	DodusHandcannonHeldProj.DisplayName: Dodus Handcannon Held Proj
 	P90HeldProj.DisplayName: P90 Held Proj
 	PearlGodHeldProj.DisplayName: Pearl God Held Proj
+	FlintProj.DisplayName: Flint Proj
+	FlintSpearProj.DisplayName: Flint Spear Proj
+	TheUpiSteleHeldProj.DisplayName: The Upi Stele Held Proj
+	MagicStar.DisplayName: Magic Star
+	TheSpiritFlintProjL.DisplayName: The Spirit Flint Proj L
+	TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
+	PebbleSpearProj.DisplayName: Pebble Spear Proj
+	PebbleProj.DisplayName: Pebble Proj
 }
 
 Configs: {
-	ContentConfig: {
+	CWRServerConfig: {
 		DisplayName: Content Config
 
 		ForceReplaceResetContent: {

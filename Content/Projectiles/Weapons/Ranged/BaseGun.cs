@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -23,11 +24,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public Vector2 OffsetPos;
         /// <summary>
-        /// 右手角度值
+        /// 右手角度值，这个值被自动设置，不要手动给它赋值
         /// </summary>
         public float ArmRotSengsFront;
         /// <summary>
-        /// 右手角度值
+        /// 右手角度值，这个值被自动设置，不要手动给它赋值
         /// </summary>
         public float ArmRotSengsBack;
         /// <summary>
@@ -156,7 +157,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Owner.PressKey()) {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = GunOnFireRot;
-                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
+                Projectile.Center = Owner.MountedCenter + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
                 if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     onFire = true;
@@ -170,7 +171,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Owner.PressKey(false) && !onFire && CanRightClick) {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = GunOnFireRot;
-                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
+                Projectile.Center = Owner.MountedCenter + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
                 if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     onFireR = true;

@@ -39,7 +39,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public Rectangle closeRec;
 
-        public bool Active;
+        public bool Active {
+            get => player.CWR().SupertableUIStartBool;
+            set => player.CWR().SupertableUIStartBool = value;
+        }
 
         public bool loadOrUnLoadZenithWorldAsset = true;
 
@@ -74,6 +77,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public bool onInputP;
 
         public bool onCloseP;
+
+        private bool ContinuousAcquisition;
 
         public static List<RecipeData> AllRecipes = new List<RecipeData>();
 
@@ -180,7 +185,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public override void Update(GameTime gameTime) {
-            if (Main.myPlayer != Main.LocalPlayer.whoAmI || CWRUtils.isServer) {//不要在服务器上运行更新数据的代码，UI只面向本地玩家，服务器不会进行终焉合成
+            if (!player.CWR().SupertableUIStartBool || CWRUtils.isServer) {//不要在服务器上运行更新数据的代码，UI只面向本地玩家，服务器不会进行终焉合成
                 return;
             }
 
@@ -192,9 +197,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (onCloseP) {
                 player.mouseInterface = true;
                 if (museS == 1) {
-                    SoundEngine.PlaySound(SoundID.MenuClose);
+                    SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.2f });
                     Active = false;
-                }               
+                }
             }
             if (onMainP) {
                 player.mouseInterface = true;
@@ -243,7 +248,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             if (onInputP) {
                 player.mouseInterface = true;
-                if (museS == 1) {
+                if (museS == 3 || museS == 1) {
                     GetResult(ref inputItem, ref Main.mouseItem, ref items);
                     OutItem();
                 }
@@ -434,19 +439,37 @@ End:;
         /// <param name="holdItem">正在拖拽的物品</param>
         /// <param name="arg">用于配方的字符串数组</param>
         private void GetResult(ref Item onitem, ref Item holdItem, ref Item[] arg) {
-            if (holdItem.type == ItemID.None && onitem.type != ItemID.None && StaticFullItemTypes != null) {
-                PlayGrabSound();
-                SoundEngine.PlaySound(SoundID.Research);
-                for (int i = 0; i < items.Length; i++) {
-                    if (items[i].type == StaticFullItemTypes[i]) {
-                        items[i].stack -= 1;
-                        if (items[i].stack <= 0)
-                            items[i] = new Item();
-                    }    
+            if (onitem.type != ItemID.None && StaticFullItemTypes != null) {
+                if (holdItem.type == ItemID.None) {
+                    PlayGrabSound();
+                    SoundEngine.PlaySound(SoundID.Research);
+                    for (int i = 0; i < items.Length; i++) {
+                        if (items[i].type == StaticFullItemTypes[i]) {
+                            items[i].stack -= 1;
+                            if (items[i].stack <= 0)
+                                items[i] = new Item();
+                        }
+                    }
+
+                    holdItem = onitem;
+                    onitem = new Item();
                 }
-                
-                holdItem = onitem;
-                onitem = new Item();
+                else {
+                    if (holdItem.type == onitem.type && holdItem.stack < holdItem.maxStack) {
+                        PlayGrabSound();
+                        SoundEngine.PlaySound(SoundID.Research);
+                        for (int i = 0; i < items.Length; i++) {
+                            if (items[i].type == StaticFullItemTypes[i]) {
+                                items[i].stack -= 1;
+                                if (items[i].stack <= 0)
+                                    items[i] = new Item();
+                            }
+                        }
+
+                        holdItem.stack++;
+                        onitem = new Item();
+                    }
+                }
             }
         }
 
@@ -471,8 +494,16 @@ End:;
             // 同种物品堆叠逻辑
             if (onitem.type == holdItem.type && holdItem.type != ItemID.None) {
                 PlayGrabSound();
-                onitem.stack += holdItem.stack;
-                holdItem = new Item();
+                //也需要注意物品的最大堆叠上限
+                if (onitem.stack + holdItem.stack <= onitem.maxStack) {
+                    onitem.stack += holdItem.stack;
+                    holdItem = new Item();
+                }
+                else {
+                    int fillUpNum = onitem.maxStack - onitem.stack;
+                    onitem.stack = onitem.maxStack;
+                    holdItem.stack -= fillUpNum;
+                }
                 return;
             }
             // 不同种物品交换逻辑

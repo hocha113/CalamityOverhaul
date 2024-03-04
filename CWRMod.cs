@@ -127,8 +127,8 @@ namespace CalamityOverhaul
             if (Main.dedServ)
                 return;
 
-            MusicLoader.AddMusicBox(Instance, MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/BuryTheLight")
-                , Find<ModItem>("FoodStallChair").Type, Find<ModTile>("FoodStallChair").Type, 0);
+            //MusicLoader.AddMusicBox(Instance, MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/BuryTheLight")
+            //    , Find<ModItem>("FoodStallChair").Type, Find<ModTile>("FoodStallChair").Type, 0);
         }
     }
 }

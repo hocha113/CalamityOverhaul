@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.CalPlayer;
-using CalamityMod.Items.Placeables.DraedonStructures;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

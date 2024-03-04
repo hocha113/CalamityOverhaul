@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Common
         public const string noItem = "Assets/Items/";
         public const string noProjectile = "Assets/Projectiles/";
 
-        public static bool ForceReplaceResetContent => ModContent.GetInstance<ContentConfig>().ForceReplaceResetContent;
-        public static bool WeaponEnhancementSystem => ModContent.GetInstance<ContentConfig>().WeaponEnhancementSystem;
+        public static bool ForceReplaceResetContent => ModContent.GetInstance<CWRServerConfig>().ForceReplaceResetContent;
+        public static bool WeaponEnhancementSystem => ModContent.GetInstance<CWRServerConfig>().WeaponEnhancementSystem;
     }
 }

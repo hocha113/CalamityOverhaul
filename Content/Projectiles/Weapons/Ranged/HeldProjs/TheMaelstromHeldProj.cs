@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (Owner.PressKey()) {
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = ToMouseA;
-                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 12;
+                    Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 22;
                     armRotSengsBack = armRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
                     if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                         onFire = true;

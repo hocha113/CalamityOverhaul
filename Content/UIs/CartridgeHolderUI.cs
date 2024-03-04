@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.UIs
             if (handItem.CWR().CartridgeEnum == CartridgeUIEnum.Magazines)
                 DrawPos = new Vector2(60, Main.screenHeight - 100);
 
-            DrawPos += new Vector2(ContentConfig.Instance.CartridgeUI_Offset_X_Value, ContentConfig.Instance.CartridgeUI_Offset_Y_Value);
+            DrawPos += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value, CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {

@@ -38,12 +38,12 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.CoordinateHeights = new[] { 16, 16 };
             TileObjectData.newTile.CoordinatePaddingFix = new Point16(0, 2);
-            TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
-
+            //我不明白为什么要设置这个
+            //TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
             // 如果决定添加更多样式的垂直堆叠，则需要设置这三行代码以下3行代码
-            TileObjectData.newTile.StyleWrapLimit = 2;
-            TileObjectData.newTile.StyleMultiplier = 2;
-            TileObjectData.newTile.StyleHorizontal = true;
+            //TileObjectData.newTile.StyleWrapLimit = 2;
+            //TileObjectData.newTile.StyleMultiplier = 2;
+            //TileObjectData.newTile.StyleHorizontal = true;
 
             TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
             TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
@@ -86,42 +86,12 @@ namespace CalamityOverhaul.Content.Tiles
             if (Main.tile[i, j].TileFrameX / 18 < 1) {
                 player.cursorItemIconReversed = true;
             }
-
-            if (Main.tile[i, j].TileFrameX >= 36) {
-                Main.raining = true;
-                Main.maxRaining = 0.99f;
-                Main.cloudAlpha = 0.99f;
-                Main.windSpeedTarget = 0.8f;
-                PunchCameraModifier modifier2 = new PunchCameraModifier(new Vector2(i, j) * 16, new Vector2(0, Main.rand.NextFloat(-2, 2)), 2f, 3f, 2, 1000f, FullName);
-                Main.instance.CameraModifiers.Add(modifier2);
-            }
-            else {
-                Main.raining = false;
-                Main.maxRaining = 0;
-                Main.cloudAlpha = 0;
-                Main.windSpeedTarget = 0;
-            }
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;
             int frameYPos = t.TileFrameY;
-            if (frameXPos == 36) {//第一列
-                frameXPos = 0;
-            }
-            if (frameXPos == 54) {//第二列
-                frameXPos = 18;
-            }
-            if (t.TileFrameX >= 36) {
-                if (frameYPos == 0) {
-                    frameYPos = 36;
-                }
-                if (frameYPos == 18) {
-                    frameYPos = 54;
-                }
-            }
-
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;

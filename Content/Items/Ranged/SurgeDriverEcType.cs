@@ -9,6 +9,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
+    /// <summary>
+    /// 煌辉御流炮
+    /// </summary>
     internal class SurgeDriverEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SurgeDriver";
