@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
     internal class RedRyderHeldProj : BaseFeederGun
     {
@@ -12,7 +12,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.RedRyder].Value;
         public override int targetCayItem => ItemID.RedRyder;
         public override int targetCWRItem => ItemID.RedRyder;
-        public override void SetRangedProperty() {
+        public override void SetRangedProperty()
+        {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
