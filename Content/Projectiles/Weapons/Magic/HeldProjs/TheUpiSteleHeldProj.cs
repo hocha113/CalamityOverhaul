@@ -50,13 +50,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 if (npcs.Count > 0) {
                     foreach (NPC n in npcs) {
                         Vector2 vr = Projectile.Center.To(n.Center).RotatedByRandom(0.056).UnitVector() * Main.rand.Next(11, 13);
-                        Projectile.NewProjectile(heldItem.GetSource_FromThis(), Projectile.Center, vr, heldItem.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                        Projectile.NewProjectile(Source, Projectile.Center, vr, heldItem.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                     }
                 }
                 else {
                     for (int i = 0; i < 5; i++) {
                         Vector2 vr = CWRUtils.randVr(7, 13);
-                        Projectile.NewProjectile(heldItem.GetSource_FromThis(), Projectile.Center, vr, heldItem.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                        Projectile.NewProjectile(Source, Projectile.Center, vr, heldItem.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                     }
                 }
 

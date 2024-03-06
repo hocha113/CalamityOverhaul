@@ -50,6 +50,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             {
                 BulletNum = 180;
             }
+            if (heldItem.CWR().AmmoCapacityInFire) {
+                heldItem.CWR().AmmoCapacityInFire = false;
+            }
         }
 
         public override void PostFiringShoot()

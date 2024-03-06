@@ -1401,10 +1401,7 @@ Items: {
 
 	KarasawaEcType: {
 		DisplayName: 卡拉萨瓦重炮
-		Tooltip:
-			'''
-
-			'''
+		Tooltip: ""
 	}
 
 	KingsbaneEctype: {
@@ -1733,6 +1730,8 @@ Projectiles: {
 	// KarasawaHeldProj.DisplayName: Karasawa Held Proj
 	// KingsbaneHeldProj.DisplayName: Kingsbane Held Proj
 	// MegalodonHeldProj.DisplayName: Megalodon Held Proj
+	// ClockworkAssaultRifleHeldProj.DisplayName: Clockwork Assault Rifle Held Proj
+	// SnowballCannonHeldProj.DisplayName: Snowball Cannon Held Proj
 }
 
 Configs: {
@@ -2106,5 +2105,6 @@ TextContent: {
 			一次射出一片子弹
 			“我可没时间胡闹”
 			'''
+		// Wap_ClockworkAssaultRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ClockworkAssaultRifle_Text
 	}
 }
