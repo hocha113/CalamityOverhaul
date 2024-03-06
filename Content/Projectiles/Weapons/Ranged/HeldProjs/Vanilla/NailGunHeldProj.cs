@@ -2,27 +2,27 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
-    internal class StakeLauncherHeldProj : BaseFeederGun
+    internal class NailGunHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
-        public override Texture2D TextureValue => TextureAssets.Item[ItemID.StakeLauncher].Value;
-        public override int targetCayItem => ItemID.StakeLauncher;
-        public override int targetCWRItem => ItemID.StakeLauncher;
+        public override Texture2D TextureValue => TextureAssets.Item[ItemID.NailGun].Value;
+        public override int targetCayItem => ItemID.NailGun;
+        public override int targetCWRItem => ItemID.NailGun;
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0f;
-            ControlForce = 0f;
-            Recoil = 0f;
+            GunPressure = 0.2f;
+            ControlForce = 0.05f;
+            Recoil = 1f;
+            RangeOfStress = 48;
+            RepeatedCartridgeChange = true;
             kreloadMaxTime = 45;
         }
 
@@ -34,18 +34,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
         }
 
-        public override bool PreKreloadSoundEffcet(int time, int maxTime) {
-            return false;
-        }
-
-        public override void NoCaseEjectionEvent() {
-            CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("CaseEjection_TextContent"));
+        public override void OnKreLoad() {
+            if (BulletNum < 15) {
+                BulletNum += 15;
+            } else {
+                BulletNum = 30;
+            }
+            if (heldItem.CWR().AmmoCapacityInFire) {
+                heldItem.CWR().AmmoCapacityInFire = false;
+            }
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
+            base.FiringShoot();
         }
     }
 }

@@ -1706,6 +1706,10 @@ Projectiles: {
 	StakeLauncherHeldProj.DisplayName: Stake Launcher Held Proj
 	UziHeldProj.DisplayName: Uzi Held Proj
 	VenusMagnumHeldProj.DisplayName: Venus Magnum Held Proj
+	DartPistolHeldProj.DisplayName: Dart Pistol Held Proj
+	DartRifleHeldProj.DisplayName: Dart Rifle Held Proj
+	NailGunHeldProj.DisplayName: Nail Gun Held Proj
+	SniperRifleHeldProj.DisplayName: Sniper Rifle Held Proj
 }
 
 Configs: {
@@ -2091,5 +2095,9 @@ TextContent: {
 		Wap_Uzi_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_Uzi_Text
 		Wap_VenusMagnum_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_VenusMagnum_Text
 		Wap_StakeLauncher_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_StakeLauncher_Text
+		Wap_SniperRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_SniperRifle_Text
+		Wap_NailGun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_NailGun_Text
+		Wap_DartPistol_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DartPistol_Text
+		Wap_DartRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DartRifle_Text
 	}
 }
