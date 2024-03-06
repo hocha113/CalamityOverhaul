@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 关于装弹过程中的具体效果实现，返回<see langword="false"/>禁用默认的效果行为
         /// </summary>
-        public virtual bool PreKreloadSoundEffcet(int time, int maxItem) {
+        public virtual bool PreKreloadSoundEffcet(int time, int maxTime) {
             return true;
         }
         /// <summary>
@@ -227,11 +227,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         if (kreloadTimeValue == kreloadMaxTime / 2) {
                             KreloadSoundloadTheRounds();
                         }
-                        if (kreloadTimeValue == kreloadMaxTime / 3) {
-                            if (PreConsumeAmmoEvent()) {
-                                for (int i = 0; i < heldItem.CWR().AmmoCapacity; i++) {
-                                    UpdateConsumeAmmo();
-                                }
+                    }
+                    if (kreloadTimeValue == kreloadMaxTime / 3) {
+                        if (PreConsumeAmmoEvent()) {
+                            for (int i = 0; i < heldItem.CWR().AmmoCapacity; i++) {
+                                UpdateConsumeAmmo();
                             }
                         }
                     }
