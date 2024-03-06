@@ -47,9 +47,10 @@ namespace CalamityOverhaul.Content.Tiles
 
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.newTile.LavaDeath = false;
-            ModTileEntity te = ModContent.GetInstance<TransmutationOfMatterEntity>();
-            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(te.Hook_AfterPlacement, -1, 0, true);
-            TileObjectData.newTile.UsesCustomCanPlace = true;
+
+            //ModTileEntity te = ModContent.GetInstance<TransmutationOfMatterEntity>();
+            //TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(te.Hook_AfterPlacement, -1, 0, true);
+            //TileObjectData.newTile.UsesCustomCanPlace = true;
             TileObjectData.addTile(Type);
             AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<TransmutationOfMatterItem>());
             AnimationFrameHeight = 68;
@@ -93,7 +94,7 @@ namespace CalamityOverhaul.Content.Tiles
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {
             SupertableUI.Instance.Active = false;
-            ModContent.GetInstance<TransmutationOfMatterEntity>().Kill(i, j);
+            //ModContent.GetInstance<TransmutationOfMatterEntity>().Kill(i, j);
         }
 
         public override bool RightClick(int i, int j) {
@@ -102,19 +103,18 @@ namespace CalamityOverhaul.Content.Tiles
             if (SupertableUI.Instance.Active && !Main.playerInventory) {//如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
                 Main.playerInventory = true;
             }
-            SoundEngine.PlaySound(SoundID.Chat);
+            SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });
             Recipe.FindRecipes();
             return true;
         }
-
+        int frameIndex = 1;
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;
             int frameYPos = t.TileFrameY;
-            TransmutationOfMatterEntity transmutationOfMatterEntity = CalamityUtils.FindTileEntity<TransmutationOfMatterEntity>(i, j, Width, Height, SheetSquare);
-            if(transmutationOfMatterEntity != null)
-                frameYPos += transmutationOfMatterEntity.frameIndex % 4 * (Height * SheetSquare);
-
+            frameIndex = (int)(Main.GameUpdateCount / 10 % 4);
+            //TransmutationOfMatterEntity transmutationOfMatterEntity = CalamityUtils.FindTileEntity<TransmutationOfMatterEntity>(i, j, Width, Height, SheetSquare);
+            frameYPos += frameIndex % 4 * (Height * SheetSquare);
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;

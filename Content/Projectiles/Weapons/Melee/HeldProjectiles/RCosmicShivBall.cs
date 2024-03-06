@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public void ShootCosmicShivBlade(NPC target) {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 4; i++) {
                 Vector2 spanPos = target.Center + CWRUtils.GetRandomVevtor(0, 360, CWRUtils.rands.Next(220, 300));
                 Vector2 vr = spanPos.To(Main.MouseWorld).SafeNormalize(Vector2.Zero) * 38f;
                 int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), spanPos, vr, ModContent.ProjectileType<CosmicShivBlade>(), Projectile.damage, Projectile.knockBack * 0.1f, Projectile.owner);

@@ -33,9 +33,7 @@ namespace CalamityOverhaul
         }
 
         public override void UpdateInventory(Player player) {
-            
-            //Main.HoverItem?.ModItem?.FullName?.Domp();
-            if (player.PressKey(false) && Main.GameUpdateCount % 10 == 0) {
+            if (player.PressKey(false)) {
                 player.QuickSpawnItem(player.parent(), Main.HoverItem, 1);
             }
         }

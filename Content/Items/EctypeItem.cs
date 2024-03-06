@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items
     {
         protected virtual bool isload => false;
         public sealed override bool IsLoadingEnabled(Mod mod) {
-            if (ContentConfig.Instance.ForceReplaceResetContent && !isload) {
+            if (CWRServerConfig.Instance.ForceReplaceResetContent && !isload) {
                 return false;
             }
             return base.IsLoadingEnabled(mod);

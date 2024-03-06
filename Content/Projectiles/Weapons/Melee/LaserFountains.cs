@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.tileCollide = false;
             Projectile.timeLeft = 60;
             Projectile.DamageType = DamageClass.Melee;
+            Projectile.usesIDStaticNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 10;
         }
 
         public ref float Time => ref Projectile.ai[0];

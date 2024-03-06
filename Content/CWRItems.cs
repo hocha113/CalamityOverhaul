@@ -208,10 +208,12 @@ namespace CalamityOverhaul.Content
         }
 
         private void OwnerByDir(Item item, Player player) {
-            if (player.whoAmI == Main.myPlayer && item.useStyle == ItemUseStyleID.Swing
+            if (player.PressKey() || player.PressKey(false)) {
+                if (player.whoAmI == Main.myPlayer && item.useStyle == ItemUseStyleID.Swing
                 && (item.createTile == -1 && item.createWall == -1)
-                && (player.PressKey() || player.PressKey(false)) && !player.mouseInterface) {
-                player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);
+                && !player.mouseInterface && !player.cursorItemIconEnabled) {
+                    player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);
+                }
             }
         }
 
@@ -281,7 +283,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
-            if (ContentConfig.Instance.ForceReplaceResetContent) {
+            if (CWRServerConfig.Instance.ForceReplaceResetContent) {
                 foreach (BaseRItem rItem in CWRMod.RItemInstances) {
                     if (rItem.SetReadonlyTargetID == item.type) {
                         Texture2D value = CWRUtils.GetT2DValue("CalamityOverhaul/icon_small");
@@ -293,15 +295,16 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y) {
+            int offsetX = SupertableUI.Instance.Active ? 0 : 600;
             if (OmigaSnyContent != null && InItemDrawRecipe.Instance != null && SupertableUI.Instance != null) {
-                MouseTextContactPanel.Instance.DrawPos = new Vector2(700, 100);
+                MouseTextContactPanel.Instance.DrawPos = new Vector2(offsetX + 100, 100);
                 MouseTextContactPanel.Instance.UpdateSets();
                 MouseTextContactPanel.Instance.Draw(Main.spriteBatch);
-                InItemDrawRecipe.Instance.Draw(Main.spriteBatch, new Vector2(700, 100), OmigaSnyContent);
+                InItemDrawRecipe.Instance.Draw(Main.spriteBatch, new Vector2(offsetX + 100, 100), OmigaSnyContent);
             }
-            if (ContentConfig.Instance.ResetItemReminder && item.CWR().remakeItem) {
+            if (CWRServerConfig.Instance.ResetItemReminder && item.CWR().remakeItem) {
                 if (ResetItemReminderUI.Instance != null) {
-                    ResetItemReminderUI.Instance.Draw(Main.spriteBatch, new Vector2(600, 100));
+                    ResetItemReminderUI.Instance.Draw(Main.spriteBatch, new Vector2(offsetX, 100));
                 }
             }
             return base.PreDrawTooltip(item, lines, ref x, ref y);

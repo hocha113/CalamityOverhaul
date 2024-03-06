@@ -42,6 +42,7 @@ namespace CalamityOverhaul
         public static int EndlessStabilizer;
         public static int DubiousPlating;
         public static int FoodStallChair;
+        public static int FoodStallChairTile;
         public static int Gangarus;
         public static int StarMyriadChanges;
 
@@ -265,13 +266,13 @@ namespace CalamityOverhaul
             ParadiseArrow = ProjectileType<InfiniteArrow>();
             HeavenLightning = ProjectileType<InfiniteArrow>();
 
-
             DubiousPlating = ItemType<DubiousPlating>();
             DarkMatterBall = ItemType<DarkMatterBall>();
             EndlessStabilizer = ItemType<EndlessStabilizer>();
             InfiniteStick = ItemType<InfiniteStick>();
             BlackMatterStick = ItemType<BlackMatterStick>();
             FoodStallChair = ItemType<FoodStallChair>();
+            FoodStallChairTile = TileType<Content.Tiles.FoodStallChair>();
             Gangarus = ItemType<Gangarus>();
             StarMyriadChanges = ItemType<StarMyriadChanges>();
 
@@ -362,7 +363,7 @@ namespace CalamityOverhaul
             AresPlasmaFlamethrower = NPCType<AresPlasmaFlamethrower>();
             AresTeslaCannon = NPCType<AresTeslaCannon>();
             AresGaussNuke = NPCType<AresGaussNuke>();
-
+            
             targetNpcTypes = new List<int> { SepulcherHead, SepulcherBody, SepulcherTail };
             targetNpcTypes2 = new List<int> { StormWeaverHead, StormWeaverBody, StormWeaverTail };
             targetNpcTypes3 = new List<int> { PrimordialWyrmHead, PrimordialWyrmBody, PrimordialWyrmTail };

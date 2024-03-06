@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
     internal class PowerSpaceFragmentation
     {
         internal static void DrawPowerProjEff(SpriteBatch sb, ref float twistStrength) {
-            if (!ContentConfig.Instance.MurasamaSpaceFragmentationBool) {//这里，如果配置文件关闭了碎屏效果，那么就不执行这里的特效渲染绘制
+            if (!CWRServerConfig.Instance.MurasamaSpaceFragmentationBool) {//这里，如果配置文件关闭了碎屏效果，那么就不执行这里的特效渲染绘制
                 return;
             }
             if (!Main.LocalPlayer.CWR().EndSkillEffectStartBool) {

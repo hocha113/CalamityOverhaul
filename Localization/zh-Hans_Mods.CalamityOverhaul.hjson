@@ -1212,8 +1212,14 @@ Items: {
 	}
 
 	SurgeDriverEcType: {
-		DisplayName: 星流御火
-		Tooltip: ""
+		DisplayName: 煌辉御流炮
+		Tooltip:
+			'''
+			无后坐力
+			右键进行换弹
+			发射大量解离射线，弹药量越少火力越发猛烈
+			最高时转为发射伽马射线爆
+			'''
 	}
 
 	MuzzleBrake: {
@@ -1223,6 +1229,101 @@ Items: {
 			大大减轻枪械的后坐力和膛压
 			但会大幅度降低子弹威力
 			'''
+	}
+
+	DeepcoreGK2EcType: {
+		DisplayName: 深核GK2
+		Tooltip:
+			'''
+			较弱的后坐力
+			右键进行全自动扫射
+			"完美的制动设计，内置一台微型电脑。它不仅能自动换弹，还能帮你烤好早餐的面包"
+			'''
+	}
+
+	DodusHandcannonEcType: {
+		DisplayName: Dodu的手炮
+		Tooltip:
+			'''
+			一般的后坐力
+			右键进行换弹
+			发射一颗高爆坚果仁，没错，就是坚果仁儿
+			"我一直尝试用这个东西召唤高坚果，但从没成功过"
+			'''
+	}
+
+	P90EcType: {
+		DisplayName: P90
+		Tooltip:
+			'''
+			微弱的后坐力
+			右键进行换弹
+			以极高的频率发射穿甲子弹
+			子弹将无视敌人15点防御
+			"其实能看到的都是拽光弹的拖尾，所以你需要额外支付一笔2685美元的军火账单"
+			'''
+	}
+
+	PearlGodEcType: {
+		DisplayName: 珍珠之神
+		Tooltip:
+			'''
+			较强的后坐力
+			右键进行换弹
+			一次发射五发子弹
+			打空弹匣时发射一枚强力冲击波榴弹
+			"汝命归我"
+			'''
+	}
+
+	Flint: {
+		DisplayName: 燧石
+		Tooltip: ""
+	}
+
+	FlintAxe: {
+		DisplayName: 燧石斧
+		Tooltip: ""
+	}
+
+	FlintPick: {
+		DisplayName: 燧石镐
+		Tooltip: ""
+	}
+
+	FlintSpear: {
+		DisplayName: 燧石矛
+		Tooltip: ""
+	}
+
+	TheUpiStele: {
+		DisplayName: 奥术石碑
+		Tooltip: ""
+	}
+
+	TheSpiritFlint: {
+		DisplayName: 火石之灵
+		Tooltip: ""
+	}
+
+	Pebble: {
+		DisplayName: 卵石
+		Tooltip: ""
+	}
+
+	PebbleAxe: {
+		DisplayName: 卵石斧
+		Tooltip: ""
+	}
+
+	PebblePick: {
+		DisplayName: 卵石镐
+		Tooltip: ""
+	}
+
+	PebbleSpear: {
+		DisplayName: 卵石矛
+		Tooltip: ""
 	}
 }
 
@@ -1519,10 +1620,22 @@ Projectiles: {
 	// BoomstickHeldProj.DisplayName: Boomstick Held Proj
 	// ShotgunHeldProj.DisplayName: Shotgun Held Proj
 	// TacticalShotgunHeldProj.DisplayName: Tactical Shotgun Held Proj
+	// DeepcoreGK2HeldProj.DisplayName: Deepcore G K2 Held Proj
+	// DodusHandcannonHeldProj.DisplayName: Dodus Handcannon Held Proj
+	// P90HeldProj.DisplayName: P90 Held Proj
+	// PearlGodHeldProj.DisplayName: Pearl God Held Proj
+	// FlintProj.DisplayName: Flint Proj
+	// FlintSpearProj.DisplayName: Flint Spear Proj
+	// TheUpiSteleHeldProj.DisplayName: The Upi Stele Held Proj
+	// MagicStar.DisplayName: Magic Star
+	// TheSpiritFlintProjL.DisplayName: The Spirit Flint Proj L
+	// TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
+	// PebbleSpearProj.DisplayName: Pebble Spear Proj
+	// PebbleProj.DisplayName: Pebble Proj
 }
 
 Configs: {
-	ContentConfig: {
+	CWRServerConfig: {
 		DisplayName: 内容设置
 
 		ForceReplaceResetContent: {

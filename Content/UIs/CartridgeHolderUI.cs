@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.UIs
             if (handItem.CWR().CartridgeEnum == CartridgeUIEnum.Magazines)
                 DrawPos = new Vector2(60, Main.screenHeight - 100);
 
-            DrawPos += new Vector2(ContentConfig.Instance.CartridgeUI_Offset_X_Value, ContentConfig.Instance.CartridgeUI_Offset_Y_Value);
+            DrawPos += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value, CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -40,9 +40,11 @@ namespace CalamityOverhaul.Content.UIs
             if (handItem.CWR().CartridgeEnum == CartridgeUIEnum.CartridgeHolder) {
                 spriteBatch.Draw(Texture, DrawPos, null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制UI主体
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, bulletNum.ToString()
-                    , DrawPos.X + 90, DrawPos.Y + 0, Color.AliceBlue, Color.Black, Vector2.Zero, 1.5f);
+                    , DrawPos.X + 50, DrawPos.Y + 0, Color.AliceBlue, Color.Black, Vector2.Zero, 1.3f);
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "Max"
+                    , DrawPos.X + 50, DrawPos.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1f);
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, player.ActiveItem().CWR().AmmoCapacity.ToString()
-                    , DrawPos.X + 90, DrawPos.Y + 30, Color.Gold, Color.Black, Vector2.Zero, 1.5f);
+                    , DrawPos.X + 85, DrawPos.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1.05f);
             }
             if (handItem.CWR().CartridgeEnum == CartridgeUIEnum.Magazines) {
                 Texture2D texture2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/Magazines");

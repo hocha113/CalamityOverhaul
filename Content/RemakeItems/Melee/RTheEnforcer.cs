@@ -72,12 +72,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
             else {
                 _ = player.RotatedRelativePoint(player.MountedCenter, true);
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 4; i++) {
                     Vector2 realPlayerPos = new Vector2(player.position.X + (player.width * 0.5f) + (float)(Main.rand.Next(1358) * -(float)player.direction)
                         + (Main.mouseX + Main.screenPosition.X - player.position.X), player.MountedCenter.Y);
                     realPlayerPos.X = ((realPlayerPos.X + player.Center.X) / 2f) + Main.rand.Next(-350, 351);
                     realPlayerPos.Y -= 100 * i;
-                    Projectile.NewProjectile(source, realPlayerPos.X, realPlayerPos.Y, 0f, 0f, type, damage / 5, knockback, player.whoAmI, 0f, Main.rand.Next(3));
+                    Projectile.NewProjectile(source, realPlayerPos.X, realPlayerPos.Y, 0f, 0f, type, damage / 4, knockback, player.whoAmI, 0f, Main.rand.Next(3));
                 }
             }
             return false;

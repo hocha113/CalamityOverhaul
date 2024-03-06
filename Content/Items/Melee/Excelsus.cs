@@ -52,9 +52,11 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
+                Item.useTime = 10;
                 Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<ExcelsusBomb>(), damage * 3, knockback, player.whoAmI);
             }
             else {
+                Item.useTime = 15;
                 for (int i = 0; i < 3; i++) {
                     float speedX = velocity.X + Main.rand.NextFloat(-1.5f, 1.5f);
                     float speedY = velocity.Y + Main.rand.NextFloat(-1.5f, 1.5f);

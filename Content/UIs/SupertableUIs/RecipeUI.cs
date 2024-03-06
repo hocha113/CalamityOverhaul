@@ -86,11 +86,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             int museS = DownStartL();
             if (museS == 1) {
                 if (onR) {
-                    SoundEngine.PlaySound(SoundID.Chat);
+                    SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.5f });
                     index += 1;
                 }
                 if (onL) {
-                    SoundEngine.PlaySound(SoundID.Chat);
+                    SoundEngine.PlaySound(SoundID.Chat with { Pitch = -0.5f });
                     index -= 1;
                 }
                 if (index < 0) {

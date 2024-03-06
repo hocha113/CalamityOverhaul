@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -4;
             ShootPosToMouLengValue = 35;
             RepeatedCartridgeChange = true;
+            FiringDefaultSound = false;
+            Recoil = 0;
         }
 
         public override void KreloadSoundCaseEjection() {
@@ -44,32 +46,60 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override Vector2 GetGunInFirePos() {
-            return kreloadTimeValue == 0 ? base.GetGunInFirePos() : GetGunBodyPostion();//避免玩家试图在装弹时开火而引发动画冲突
-        }
-
-        public override float GetGunInFireRot() {
-            return kreloadTimeValue == 0 ? base.GetGunInFireRot() : GetGunBodyRotation();//避免玩家试图在装弹时开火而引发动画冲突
-        }
-
         public override bool PreFireReloadKreLoad() {
             if (BulletNum <= 0) {
-                
                 loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
                 isKreload = false;
                 if (heldItem.type != ItemID.None) {
                     heldItem.CWR().IsKreload = false;
                 }
-
                 BulletNum = 0;
+            }
+            fireTime--;
+            if (fireTime < 6) {
+                fireTime = 6;
             }
             return false;
         }
 
+        public override void OnKreLoad() {
+            base.OnKreLoad();
+            fireTime = 20;
+        }
+
         public override void FiringShoot() {
-            SpawnGunFireDust();
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
-                , ModContent.ProjectileType<PrismaticEnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Recoil = 0;
+            GunPressure = 0;
+            ControlForce = 0.01f;
+            RangeOfStress = 5;
+            if (BulletNum > 40) {
+                float sengs = (98 - BulletNum) * 0.05f;
+                SoundEngine.PlaySound(heldItem.UseSound.Value with { Pitch = sengs > 0.95f ? 0.95f : sengs }, Projectile.Center);
+                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity * (1 + sengs)
+                    , ModContent.ProjectileType<PrismEnergyBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            }
+            else {
+                if (BulletNum == 1) {
+                    Recoil = 7;
+                    GunPressure = 0.8f;
+                    ControlForce = 0.03f;
+                    RangeOfStress = 55;
+                    Vector2 vr = ShootVelocity.UnitVector();
+                    float lengValue = 16;
+                    float lengInXValue = 80;
+                    for (int i = 0; i < 26; i++) {
+                        Vector2 vr2 = vr * lengValue + vr.GetNormalVector() * Main.rand.NextFloat(-lengInXValue, lengInXValue);
+                        lengValue += Main.rand.Next(60, 90);
+                        lengInXValue += 7;
+                        Projectile.NewProjectile(Owner.GetSource_FromThis(), vr2 + Projectile.Center, Vector2.Zero, ModContent.ProjectileType<PrismExplosionLarge>(), Projectile.damage, 0f, Projectile.owner);
+                    }
+                    SoundEngine.PlaySound(heldItem.UseSound.Value with { Pitch = -0.3f, Volume = 1.5f, MaxInstances = 3 }, Projectile.Center);
+                    return;
+                }
+                SoundEngine.PlaySound(heldItem.UseSound.Value with { Pitch = 1f }, Projectile.Center);
+                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
+                    , ModContent.ProjectileType<PrismaticEnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            }
         }
     }
 }

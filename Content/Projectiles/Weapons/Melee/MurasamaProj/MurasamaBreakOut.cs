@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override void PostAI() => CWRUtils.ClockFrame(ref Projectile.frame, 5, 12);
 
         public override void AI() {
-            if (ContentConfig.Instance.ForceReplaceResetContent) {
+            if (CWRServerConfig.Instance.ForceReplaceResetContent) {
                 if (murasama.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>()) {
                     Projectile.Kill();
                     return;
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 if (Projectile.IsOwnedByLocalPlayer()) {//发射衍生弹幕和进行位移的代码只能交由主人玩家执行
                     Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.1f);
                     Owner.velocity = breakOutVector;
-                    if (ContentConfig.Instance.LensEasing) {
+                    if (CWRServerConfig.Instance.LensEasing) {
                         Main.SetCameraLerp(0.1f, 10);
                     }
                     float projToOwnerLeng = Projectile.Center.Distance(Owner.Center);

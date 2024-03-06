@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             if (Projectile.IsOwnedByLocalPlayer()) {//发射衍生弹幕和进行位移的代码只能交由主人玩家执行
                 Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.1f);
                 Owner.velocity = Projectile.velocity.UnitVector();
-                if (ContentConfig.Instance.LensEasing) {
+                if (CWRServerConfig.Instance.LensEasing) {
                     Main.SetCameraLerp(0.1f, 10);
                 }
                 float projToOwnerLeng = Projectile.Center.Distance(Owner.Center);

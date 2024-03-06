@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -101,6 +102,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.timeLeft = 600;
             Projectile.Center = Owner.Center + (Projectile.rotation.ToRotationVector2() * 32);
             if (Owner.PressKey(false)) {
+                if (CWRServerConfig.Instance.ForceReplaceResetContent) {
+                    if (balefulHarvester.type != ItemType<CalamityMod.Items.Weapons.Melee.BalefulHarvester>()) {
+                        Projectile.Kill();
+                    }
+                }
+                else {
+                    if (balefulHarvester.type != ItemType<BalefulHarvester>()) {
+                        Projectile.Kill();
+                    }
+                }
+
                 float rotSpeed = 0.01f + (Projectile.ai[1] * 0.001f);
                 if (rotSpeed > 0.3f) {
                     rotSpeed = 0.3f;

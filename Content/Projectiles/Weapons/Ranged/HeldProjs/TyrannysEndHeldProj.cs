@@ -47,14 +47,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override Vector2 GetGunInFirePos() {
-            return kreloadTimeValue == 0 ? base.GetGunInFirePos() : GetGunBodyPostion();//避免玩家试图在装弹时开火而引发动画冲突
-        }
-
-        public override float GetGunInFireRot() {
-            return kreloadTimeValue == 0 ? base.GetGunInFireRot() : GetGunBodyRotation();//避免玩家试图在装弹时开火而引发动画冲突
-        }
-
         public override bool PreFireReloadKreLoad() {
             if (BulletNum <= 0) {
 

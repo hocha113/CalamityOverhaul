@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             SpanDust();
             Projectile.Explode();
 
-            if (ContentConfig.Instance.MurasamaScreenVibration) {
+            if (CWRServerConfig.Instance.MurasamaScreenVibration) {
                 PunchCameraModifier modifier2 = new PunchCameraModifier(Projectile.Center, new Vector2(0, Main.rand.NextFloat(-2, 2)), 10f, 30f, 20, 1000f, FullName);
                 Main.instance.CameraModifiers.Add(modifier2);
             }

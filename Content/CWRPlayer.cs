@@ -1,14 +1,22 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
+using CalamityOverhaul.Content.Items.Magic.Extras;
+using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Summon.Extras;
+using CalamityOverhaul.Content.Items.Tools;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Graphics.CameraModifiers;
+using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
 {
     public class CWRPlayer : ModPlayer
     {
+        public bool InitialCreation;
         /// <summary>
         /// 圣物的装备等级，这个字段决定了玩家会拥有什么样的弹幕效果
         /// </summary>
@@ -23,6 +31,10 @@ namespace CalamityOverhaul.Content
         public float PressureIncrease;
         //未使用的，这个属性属于一个未完成的UI
         public int CompressorPanelID = -1;
+        /// <summary>
+        /// 是否开启超级合成台
+        /// </summary>
+        public bool SupertableUIStartBool;
         /// <summary>
         /// 玩家是否坐在大排档塑料椅子之上
         /// </summary>
@@ -53,6 +65,7 @@ namespace CalamityOverhaul.Content
             theRelicLuxor = 0;
             PressureIncrease = 1;
             LoadMuzzleBrake = false;
+            InitialCreation = true;
         }
 
         public override void ResetEffects() {
@@ -66,14 +79,51 @@ namespace CalamityOverhaul.Content
             LoadMuzzleBrake = false;
         }
 
+        public override void SaveData(TagCompound tag) {
+            tag.Add("_InitialCreation", InitialCreation);
+        }
+
+        public override void LoadData(TagCompound tag) {
+            InitialCreation = tag.GetBool("_InitialCreation");
+        }
+
         public override void OnEnterWorld() {
-            if (ContentConfig.Instance.ForceReplaceResetContent) {
+            if (CWRServerConfig.Instance.ForceReplaceResetContent) {
                 CWRUtils.Text(CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent"), Color.GreenYellow);
+            }
+            if (InitialCreation) {
+                for (int i = 0; i < Player.inventory.Length; i++) {
+                    if (Player.inventory[i].type == ItemID.CopperAxe) {
+                        Player.inventory[i] = new Item(ModContent.ItemType<PebbleAxe>());
+                    }
+                    if (Player.inventory[i].type == ItemID.CopperPickaxe) {
+                        Player.inventory[i] = new Item(ModContent.ItemType<PebblePick>());
+                    }
+                    if (Player.inventory[i].type == ItemID.CopperBroadsword 
+                        || Player.inventory[i].type == ItemID.CopperShortsword) {
+                        Player.inventory[i] = new Item(ModContent.ItemType<PebbleSpear>());
+                    }
+                }
+                InitialCreation = false;
             }
         }
 
         public override void OnHurt(Player.HurtInfo info) {
             onHit = true;
+        }
+
+        public override void PostUpdate() {
+            if (Player.sitting.TryGetSittingBlock(Player, out Tile t)) {
+                if (t.TileType == CWRIDs.FoodStallChairTile) {
+                    inFoodStallChair = true;
+                    Main.raining = true;
+                    Main.maxRaining = 0.99f;
+                    Main.cloudAlpha = 0.99f;
+                    Main.windSpeedTarget = 0.8f;
+                    PunchCameraModifier modifier2 = new PunchCameraModifier(Player.Center, new Vector2(0, Main.rand.NextFloat(-2, 2)), 2f, 3f, 2, 1000f, FullName);
+                    Main.instance.CameraModifiers.Add(modifier2);
+                }
+            }
         }
 
         public override void ModifyWeaponDamage(Item item, ref StatModifier damage) {
@@ -101,6 +151,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) {
+            yield return new Item(ModContent.ItemType<TheSpiritFlint>());
+            yield return new Item(ModContent.ItemType<TheUpiStele>());
+            yield return new Item(ModContent.ItemType<Pebble>(), 999);
             yield return new Item(ModContent.ItemType<OverhaulTheBibleBook>());
         }
     }

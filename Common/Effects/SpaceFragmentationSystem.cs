@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Common.Effects
             GraphicsDevice gd = Main.instance.GraphicsDevice;
             SpriteBatch sb = Main.spriteBatch;
 
-            gd.SetRenderTarget(Main.screenTargetSwap);//
+            gd.SetRenderTarget(Main.screenTargetSwap);
             gd.Clear(Color.Transparent);//用透明清除
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);

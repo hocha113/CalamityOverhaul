@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override bool PreAI() {
             bool heldBool1 = murasama.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>();
             bool heldBool2 = murasama.type != ModContent.ItemType<Murasama>();
-            if (ContentConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换
+            if (CWRServerConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换
                 if (heldBool1) {//只需要判断原版的物品
                     Projectile.Kill();
                     return false;
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override void PostDraw(Color lightColor) {
-            float scale = 0.5f * ContentConfig.Instance.MurasamaRisingDragonCoolDownBarSize;//综合计算UI大小
+            float scale = 0.5f * CWRServerConfig.Instance.MurasamaRisingDragonCoolDownBarSize;//综合计算UI大小
             if (!(risingDragon <= 0f)) {//这是一个通用的进度条绘制，用于判断冷却进度
                 Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;
                 Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;

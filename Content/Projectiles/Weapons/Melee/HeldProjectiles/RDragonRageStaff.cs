@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
             if (Projectile.ai[1] == 1) {
                 SamsAI();
-                if (Projectile.ai[2] % 30 == 0) {
+                if (Projectile.ai[2] % 10 == 0) {
                     SoundEngine.PlaySound(SoundID.DD2_BetsyFlameBreath, Projectile.Center);
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                         Projectile.Center,

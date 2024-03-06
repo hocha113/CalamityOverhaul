@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.friendly = true;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
-            Projectile.penetrate = 13;
+            Projectile.penetrate = 7;
             Projectile.timeLeft = 600;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;

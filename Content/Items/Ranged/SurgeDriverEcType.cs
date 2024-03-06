@@ -9,6 +9,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
+    /// <summary>
+    /// 煌辉御流炮
+    /// </summary>
     internal class SurgeDriverEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SurgeDriver";
@@ -31,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.UseSound = CommonCalamitySounds.LaserCannonSound;
             Item.SetHeldProj<SurgeDriverHeldProj>();
             Item.CWR().HasCartridgeHolder = true;
-            Item.CWR().AmmoCapacity = 30;
+            Item.CWR().AmmoCapacity = 98;
         }
     }
 }
