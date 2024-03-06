@@ -1401,10 +1401,7 @@ Items: {
 
 	KarasawaEcType: {
 		DisplayName: 卡拉萨瓦重炮
-		Tooltip:
-			'''
-
-			'''
+		Tooltip: ""
 	}
 
 	KingsbaneEctype: {
@@ -1414,6 +1411,26 @@ Items: {
 
 	MegalodonEcType: {
 		// DisplayName: Megalodon Ec Type
+		// Tooltip: ""
+	}
+
+	MidasPrimeEcType: {
+		// DisplayName: Midas Prime Ec Type
+		// Tooltip: ""
+	}
+
+	NeedlerEcType: {
+		// DisplayName: Needler Ec Type
+		// Tooltip: ""
+	}
+
+	PlagueTaintedSMGEcType: {
+		// DisplayName: Plague Tainted S M G Ec Type
+		// Tooltip: ""
+	}
+
+	PumplerEcType: {
+		// DisplayName: Pumpler Ec Type
 		// Tooltip: ""
 	}
 }
@@ -1733,6 +1750,10 @@ Projectiles: {
 	// KarasawaHeldProj.DisplayName: Karasawa Held Proj
 	// KingsbaneHeldProj.DisplayName: Kingsbane Held Proj
 	// MegalodonHeldProj.DisplayName: Megalodon Held Proj
+	// MidasPrimeHeldProj.DisplayName: Midas Prime Held Proj
+	// NeedlerHeldProj.DisplayName: Needler Held Proj
+	// PlagueTaintedSMGHeldProj.DisplayName: Plague Tainted S M G Held Proj
+	// PumplerHeldProj.DisplayName: Pumpler Held Proj
 }
 
 Configs: {

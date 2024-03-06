@@ -240,14 +240,17 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += GetOnCrit;
 
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage *= GetOnDamage / (float)GetStartDamage;
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
+            //damage.Base *= GetOnDamage / (float)GetStartDamage;
+            damage *= GetOnDamage / (float)GetStartDamage;
+        }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frameI, Color drawColor, Color itemColor, Vector2 origin, float scale) {
             Texture2D texture;
             if (Main.LocalPlayer.CWR().HeldMurasamaBool) {
-                //texture = ModContent.Request<Texture2D>(Texture).Value;
-                //spriteBatch.Draw(texture, position, Item.GetCurrentFrame(ref frame, ref frameCounter, 2, 13), Color.White, 0f, origin, scale, SpriteEffects.None, 0);
-                return true;//老实说，我不清楚灾厄的制作组为什么要自定义绘制这个，因为他们自定义的方法除了会出现更多的异常之外，没有什么优势
+                texture = ModContent.Request<Texture2D>(Texture).Value;
+                spriteBatch.Draw(texture, position, Item.GetCurrentFrame(ref frame, ref frameCounter, 2, 13), Color.White, 0f, origin, scale, SpriteEffects.None, 0);
+                return false;//老实说，我不清楚灾厄的制作组为什么要自定义绘制这个，因为他们自定义的方法除了会出现更多的异常之外，没有什么优势
             }
             else {
                 texture = ModContent.Request<Texture2D>("CalamityMod/Items/Weapons/Melee/MurasamaSheathed").Value;
