@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -196,6 +197,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             ProcessRemakeAction(item, (inds) => inds.ModifyTooltips(item, tooltips));
+            if (CWRServerConfig.Instance.ForceReplaceResetContent && item.CWR().HasCartridgeHolder) {
+                tooltips.ReplaceTooltip("[KL]", CWRKeySystem.KreLoad_Key.TooltipHotkeyString(), CWRMod.Instance.Name);
+            }
         }
 
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit) {

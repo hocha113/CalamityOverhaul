@@ -109,9 +109,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 heldItem.CWR().AmmoCapacityInFire = false;
             }
         }
-
+        /// <summary>
+        /// 是否可以进行换弹操作，返回<see langword="false"/>阻止玩家进行换弹操作
+        /// </summary>
+        /// <returns></returns>
         public virtual bool WhetherStartChangingAmmunition() {
-            return Owner.PressKey(false) && kreloadTimeValue == 0 
+            return CWRKeySystem.KreLoad_Key.JustPressed && kreloadTimeValue == 0 
                 && (!isKreload || RepeatedCartridgeChange) 
                 && BulletNum < heldItem.CWR().AmmoCapacity 
                 && !onFire && HaveAmmo && heldItem.CWR().NoKreLoadTime == 0;
