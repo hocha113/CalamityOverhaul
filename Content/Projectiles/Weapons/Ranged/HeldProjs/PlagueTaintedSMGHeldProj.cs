@@ -1,8 +1,13 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
+using Mono.Cecil;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -15,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            fireTime = 15;
+            fireTime = 10;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -23,11 +28,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.3f;
-            ControlForce = 0.05f;
-            Recoil = 1.2f;
+            GunPressure = 0.1f;
+            ControlForce = 0.03f;
+            Recoil = 0.2f;
             RangeOfStress = 25;
             CanRightClick = true;
+            FiringDefaultSound = false;
         }
 
         public override void PreInOwnerUpdate() {
@@ -39,12 +45,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
+            fireTime = 10;
+            GunPressure = 0.1f;
+            Recoil = 0.2f;
             SpawnGunFireDust();
-            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            OffsetPos -= ShootVelocity.UnitVector() * 4;
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {
-            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            fireTime = 45;
+            GunPressure = 0.5f;
+            Recoil = 1.2f;
+            SoundEngine.PlaySound(SoundID.Item61, Projectile.Center);
+            OffsetPos -= ShootVelocity.UnitVector() * 6;
+            for (int i = 0; i < 3; i++) {
+                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(-0.15f * (i + 1))
+                    , ModContent.ProjectileType<PlagueTaintedDrone>(), WeaponDamage, WeaponKnockback
+                    , Owner.whoAmI, 1f, Owner.Calamity().alchFlask || Owner.Calamity().spiritOrigin ? 1f : 0f);
+                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(0.15f * (i + 1))
+                    , ModContent.ProjectileType<PlagueTaintedDrone>(), WeaponDamage, WeaponKnockback
+                    , Owner.whoAmI, 1f, Owner.Calamity().alchFlask || Owner.Calamity().spiritOrigin ? 1f : 0f);
+            }
         }
 
         public override void PostFiringShoot() {

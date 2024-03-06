@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.SetHeldProj<InfinityHeldProj>();
             Item.CWR().HasCartridgeHolder = true;
             Item.CWR().AmmoCapacity = 72;
-            Item.SetCartridgeGun<KarasawaHeldProj>();
+            Item.SetCartridgeGun<KarasawaHeldProj>(6);
         }
     }
 }
