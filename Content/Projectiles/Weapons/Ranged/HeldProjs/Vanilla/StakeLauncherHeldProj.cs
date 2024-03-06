@@ -8,23 +8,21 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
-    internal class SnowballCannonHeldProj : BaseFeederGun
+    internal class StakeLauncherHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
-        public override Texture2D TextureValue => TextureAssets.Item[ItemID.SnowballCannon].Value;
-        public override int targetCayItem => ItemID.SnowballCannon;
-        public override int targetCWRItem => ItemID.SnowballCannon;
+        public override Texture2D TextureValue => TextureAssets.Item[ItemID.StakeLauncher].Value;
+        public override int targetCayItem => ItemID.StakeLauncher;
+        public override int targetCWRItem => ItemID.StakeLauncher;
         public override void SetRangedProperty() {
-            fireTime = 30;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0.2f;
-            ControlForce = 0.05f;
-            Recoil = 5f;
-            RepeatedCartridgeChange = true;
-            kreloadMaxTime = 20;
+            GunPressure = 0f;
+            ControlForce = 0f;
+            Recoil = 0f;
+            kreloadMaxTime = 45;
         }
 
         public override void PreInOwnerUpdate() {
@@ -32,17 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向
                 FeederOffsetRot = -MathHelper.ToRadians(30) * DirSign;
                 FeederOffsetPos = new Vector2(0, -13);
-            }
-        }
-
-        public override void OnKreLoad() {
-            if (BulletNum < 16) {
-                BulletNum += 4;
-            } else {
-                BulletNum = 20;
-            }
-            if (heldItem.CWR().AmmoCapacityInFire) {
-                heldItem.CWR().AmmoCapacityInFire = false;
+                loadingReminder = false;
             }
         }
 
@@ -51,11 +39,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 76, dustID2: 149, dustID3: 76);
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
+            if (BulletNum == 0) {
+                CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("CaseEjection_TextContent"));
+                return;
+            }
+            else {
+                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                _ = UpdateConsumeAmmo();
+                _ = CreateRecoil();
+            }
         }
     }
 }
-
