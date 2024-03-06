@@ -912,6 +912,7 @@ Items: {
 		Tooltip:
 			'''
 			Converts wooden arrows into Typhoon Arrows and Sharkrons
+			Right click to summon the wrath of the ocean
 			"The power of the ocean is in your hands."
 			'''
 	}
@@ -1978,9 +1979,29 @@ TextContent: {
 		Wap_SuperStarCannon_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_SuperStarCannon_Text
 		Wap_ZapinatorGray_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ZapinatorGray_Text
 		Wap_ZapinatorOrange_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ZapinatorOrange_Text
-		Wap_QuadBarrelShotgun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_QuadBarrelShotgun_Text
-		Wap_TacticalShotgun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_TacticalShotgun_Text
-		Wap_Shotgun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_Shotgun_Text
-		Wap_ZBoomstick_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ZBoomstick_Text
+		Wap_QuadBarrelShotgun_Text:
+			'''
+			Medium recoil
+			Fires a spread of bullets
+			"Stick the barrel in the monster's eye so you don't need to aim."
+			'''
+		Wap_TacticalShotgun_Text:
+			'''
+			Strong Recoil
+			Fires a spread of bullets
+			"All fear comes from insufficient firepower, if not, it must be insufficient firepower."
+			'''
+		Wap_Shotgun_Text:
+			'''
+			Strong Recoil
+			Fires a spread of bullets
+			"The arms dealer wanted these guns to have more barrels so that his bullets would sell better."
+			'''
+		Wap_Boomstick_Text:
+			'''
+			Medium recoil
+			Fires a spread of bullets
+			"I have no time."
+			'''
 	}
 }
