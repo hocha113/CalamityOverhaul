@@ -1754,6 +1754,7 @@ Projectiles: {
 	// NeedlerHeldProj.DisplayName: Needler Held Proj
 	// PlagueTaintedSMGHeldProj.DisplayName: Plague Tainted S M G Held Proj
 	// PumplerHeldProj.DisplayName: Pumpler Held Proj
+	// ClockworkAssaultRifleHeldProj.DisplayName: Clockwork Assault Rifle Held Proj
 }
 
 Configs: {
@@ -2127,5 +2128,6 @@ TextContent: {
 			一次射出一片子弹
 			“我可没时间胡闹”
 			'''
+		// Wap_ClockworkAssaultRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ClockworkAssaultRifle_Text
 	}
 }

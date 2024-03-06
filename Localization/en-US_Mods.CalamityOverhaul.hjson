@@ -1697,6 +1697,7 @@ Projectiles: {
 	KarasawaHeldProj.DisplayName: Karasawa Held Proj
 	KingsbaneHeldProj.DisplayName: Kingsbane Held Proj
 	MegalodonHeldProj.DisplayName: Megalodon Held Proj
+	ClockworkAssaultRifleHeldProj.DisplayName: Clockwork Assault Rifle Held Proj
 	MidasPrimeHeldProj.DisplayName: Midas Prime Held Proj
 	NeedlerHeldProj.DisplayName: Needler Held Proj
 	PlagueTaintedSMGHeldProj.DisplayName: Plague Tainted S M G Held Proj
@@ -2081,5 +2082,6 @@ TextContent: {
 			Fires a spread of bullets
 			"I have no time."
 			'''
+		Wap_ClockworkAssaultRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ClockworkAssaultRifle_Text
 	}
 }
