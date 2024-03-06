@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Shotgun].Value;
         public override int targetCayItem => ItemID.Shotgun;
         public override int targetCWRItem => ItemID.Shotgun;
-        public override void SetRangedProperty()
-        {
+        public override void SetRangedProperty(){
             fireTime = 45;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
@@ -46,10 +45,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             {
                 BulletNum += 16;
             }
-
             else
             {
                 BulletNum = 48;
+            }
+            if (heldItem.CWR().AmmoCapacityInFire) {
+                heldItem.CWR().AmmoCapacityInFire = false;
             }
         }
 
