@@ -889,7 +889,7 @@ Items: {
 		Tooltip:
 			'''
 			将木箭转化为海洋箭矢
-			以海洋之千钧力摧毁敌人
+			右键蓄力以海洋之千钧力摧毁敌人
 			'''
 	}
 
@@ -1980,9 +1980,29 @@ TextContent: {
 		Wap_SuperStarCannon_Text: ""
 		Wap_ZapinatorGray_Text: ""
 		Wap_ZapinatorOrange_Text: ""
-		// Wap_QuadBarrelShotgun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_QuadBarrelShotgun_Text
-		// Wap_TacticalShotgun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_TacticalShotgun_Text
-		// Wap_Shotgun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_Shotgun_Text
-		// Wap_ZBoomstick_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ZBoomstick_Text
+		Wap_QuadBarrelShotgun_Text:
+			'''
+			一般的后坐力
+			一次射出6颗不准确的子弹
+			“把枪管戳到那些怪物的眼睛上，这样就不需要瞄准了”
+			'''
+		Wap_TacticalShotgun_Text:
+			'''
+			很强的后坐力
+			一次射出12颗子弹
+			“一切恐惧都来源于火力不足，如果不是，那一定是火力还不够”
+			'''
+		Wap_Shotgun_Text:
+			'''
+			很强的后坐力
+			一次射出8颗子弹
+			“军火商希望这些枪有更多的枪管，这样他的子弹会更加畅销”
+			'''
+		Wap_Boomstick_Text:
+			'''
+			一般的后坐力
+			一次射出一片子弹
+			“我可没时间胡闹”
+			'''
 	}
 }

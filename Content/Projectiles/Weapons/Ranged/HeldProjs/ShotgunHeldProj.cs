@@ -14,17 +14,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ItemID.Shotgun;
         public override int targetCWRItem => ItemID.Shotgun;
         public override void SetRangedProperty() {
-            fireTime = 20;
+            fireTime = 45;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 17;
             HandDistanceY = 4;
             ShootPosNorlLengValue = -20;
             ShootPosToMouLengValue = 15;
-            GunPressure = 0.4f;
+            GunPressure = 0.1f;
             ControlForce = 0.05f;
-            Recoil = 2.8f;
-            RangeOfStress = 8;
+            Recoil = 2.0f;
+            RangeOfStress = 12;
+            RepeatedCartridgeChange = true;
+            kreloadMaxTime = 45;
         }
 
         public override void PreInOwnerUpdate() {
@@ -58,19 +60,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void OnKreLoad() {
-            base.OnKreLoad();
+            if (BulletNum < 32) {
+                BulletNum += 16;
+            }
+
+            else {
+                BulletNum = 48;
+            }
         }
 
         public override void PostFiringShoot() {
-            if (BulletNum >= 3) {
-                BulletNum -= 3;
+            if (BulletNum >= 8) {
+                BulletNum -= 8;
             }
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust();
-            for (int i = 0; i < 5; i++) {
-                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 0.3f, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
+            for (int i = 0; i < 7; i++) {
+                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.24f, 0.24f)) * Main.rand.NextFloat(0.7f, 1.4f), AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
                 _ = CreateRecoil();
             }
         }
