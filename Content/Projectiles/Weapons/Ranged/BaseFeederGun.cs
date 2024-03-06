@@ -248,8 +248,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                 if (Owner.PressKey()) {
                     if (!isKreload && loadingReminder) {
-                        SoundEngine.PlaySound(CWRSound.Ejection, Projectile.Center);
-                        CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("CaseEjection_TextContent"));
+                        NoCaseEjectionEvent();
                         loadingReminder = false;
                     }
                 }
@@ -262,6 +261,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 isKreload = heldItem.CWR().IsKreload;
 
             PostInOwnerUpdate();
+        }
+        /// <summary>
+        /// 空弹时试图开火会发生的事情
+        /// </summary>
+        public virtual void NoCaseEjectionEvent() {
+            SoundEngine.PlaySound(CWRSound.Ejection, Projectile.Center);
+            CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("CaseEjection_TextContent"));
         }
         /// <summary>
         /// 在单次开火时运行，优先于<see cref="FiringShoot"/>运行，返回<see langword="false"/>禁用<see cref="FiringShoot"/>的运行

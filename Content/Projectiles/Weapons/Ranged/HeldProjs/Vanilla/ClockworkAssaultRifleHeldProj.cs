@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ClockworkAssaultRifle].Value;
         public override int targetCayItem => ItemID.ClockworkAssaultRifle;
         public override int targetCWRItem => ItemID.ClockworkAssaultRifle;
-        int thisTime;
         int thisNeedsTime;
         int chargeAmmoNum;
         public override void SetRangedProperty() {
