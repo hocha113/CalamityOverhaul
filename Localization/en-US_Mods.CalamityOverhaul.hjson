@@ -1380,6 +1380,11 @@ Items: {
 		DisplayName: Pumpler Ec Type
 		Tooltip: ""
 	}
+
+	ScorpioEcType: {
+		DisplayName: Scorpio Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1702,6 +1707,8 @@ Projectiles: {
 	NeedlerHeldProj.DisplayName: Needler Held Proj
 	PlagueTaintedSMGHeldProj.DisplayName: Plague Tainted S M G Held Proj
 	PumplerHeldProj.DisplayName: Pumpler Held Proj
+	ScorpioHeldProj.DisplayName: Scorpio Held Proj
+	ScorpioOnSpan.DisplayName: Scorpio On Span
 }
 
 Configs: {
