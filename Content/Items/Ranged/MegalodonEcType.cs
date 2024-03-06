@@ -4,6 +4,7 @@ using CalamityMod;
 using Terraria.ID;
 using Terraria.ModLoader;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
@@ -28,6 +29,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shootSpeed = 16f;
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
+            Item.CWR().HasCartridgeHolder = true;
+            Item.CWR().AmmoCapacity = 220;
+            Item.SetHeldProj<MegalodonHeldProj>();
         }
     }
 }

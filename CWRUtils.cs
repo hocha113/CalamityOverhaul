@@ -935,6 +935,17 @@ namespace CalamityOverhaul
             item.CWR().heldProjType = ModContent.ProjectileType<T>();
         }
 
+        /// <summary>
+        /// 快捷的将一个物品实例设置为手持对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        public static void SetCartridgeGun<T>(this Item item, int ammoCapacity = 1) where T : ModProjectile {
+            item.SetHeldProj<T>();
+            item.CWR().HasCartridgeHolder = true;
+            item.CWR().AmmoCapacity = ammoCapacity;
+        }
+
         public static ShootState GetShootState(this Player player) {
             ShootState shootState = new();
             _ = player.PickAmmo(player.ActiveItem(), out shootState.AmmoTypes, out shootState.ScaleFactor

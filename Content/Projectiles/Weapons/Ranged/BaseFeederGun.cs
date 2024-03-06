@@ -303,7 +303,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void SpanProj() {
-            if (onFire && Projectile.ai[1] > fireTime && kreloadTimeValue <= 0) {
+            if ((onFire || onFireR) && Projectile.ai[1] > fireTime && kreloadTimeValue <= 0) {
                 if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();
                 }

@@ -3,25 +3,26 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class MegalodonHeldProj : BaseFeederGun
+    internal class NeedlerHeldProj : BaseFeederGun
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Megalodon";
-        public override int targetCayItem => ModContent.ItemType<Megalodon>();
-        public override int targetCWRItem => ModContent.ItemType<MegalodonEcType>();
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Needler";
+        public override int targetCayItem => ModContent.ItemType<Needler>();
+        public override int targetCWRItem => ModContent.ItemType<NeedlerEcType>();
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             fireTime = 15;
-            HandDistance = 25;
+            HandDistance = 15;
             HandDistanceY = 5;
-            HandFireDistance = 25;
+            HandFireDistance = 15;
             HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            ShootPosNorlLengValue = -7;
+            ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;
             GunPressure = 0.3f;
             ControlForce = 0.05f;
@@ -38,7 +39,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust();
+            SpawnGunFireDust(dustID1: DustID.GreenTorch, dustID2: DustID.GreenMoss);
+            if (AmmoTypes == ProjectileID.Bullet) {
+                AmmoTypes = heldItem.shoot;
+            }
             Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 

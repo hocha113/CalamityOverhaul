@@ -7,19 +7,19 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class MegalodonHeldProj : BaseFeederGun
+    internal class MidasPrimeHeldProj : BaseFeederGun
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Megalodon";
-        public override int targetCayItem => ModContent.ItemType<Megalodon>();
-        public override int targetCWRItem => ModContent.ItemType<MegalodonEcType>();
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "MidasPrime";
+        public override int targetCayItem => ModContent.ItemType<MidasPrime>();
+        public override int targetCWRItem => ModContent.ItemType<MidasPrimeEcType>();
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            fireTime = 15;
+            fireTime = 22;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
-            HandFireDistanceY = -10;
+            HandFireDistanceY = -5;
             ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;
+            CanRightClick = true;
         }
 
         public override void PreInOwnerUpdate() {
@@ -39,6 +40,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust();
+            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+        }
+
+        public override void FiringShootR() {
             Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
