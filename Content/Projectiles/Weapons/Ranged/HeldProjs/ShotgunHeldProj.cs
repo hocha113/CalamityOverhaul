@@ -37,28 +37,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override Vector2 GetGunInFirePos() {
-            return kreloadTimeValue == 0 ? base.GetGunInFirePos() : GetGunBodyPostion();//避免玩家试图在装弹时开火而引发动画冲突
-        }
-
-        public override float GetGunInFireRot() {
-            return kreloadTimeValue == 0 ? base.GetGunInFireRot() : GetGunBodyRotation();//避免玩家试图在装弹时开火而引发动画冲突
-        }
-
-        public override bool PreFireReloadKreLoad() {
-            if (BulletNum <= 0) {
-
-                loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
-                isKreload = false;
-                if (heldItem.type != ItemID.None) {
-                    heldItem.CWR().IsKreload = false;
-                }
-
-                BulletNum = 0;
-            }
-            return false;
-        }
-
         public override void OnKreLoad() {
             if (BulletNum < 32) {
                 BulletNum += 16;

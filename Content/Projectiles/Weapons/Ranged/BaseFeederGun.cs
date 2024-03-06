@@ -1,15 +1,17 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using System;
-using Terraria.Audio;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
-using CalamityMod;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
+    /// <summary>
+    /// 比<see cref="BaseGun"/>更为复杂的枪基类，用于更加快速且模板化的实现关于弹匣系统的联动
+    /// </summary>
     internal abstract class BaseFeederGun : BaseGun
     {
         /// <summary>
@@ -40,6 +42,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 是否可以重复换弹
         /// </summary>
         protected bool RepeatedCartridgeChange;
+        /// <summary>
+        /// 是否是一个多发装填，一般来讲应用于弹容量大于1的枪类，开启后影响<see cref="PreFireReloadKreLoad"/>
+        /// </summary>
+        protected bool MultipleCartridgeLoading;
         /// <summary>
         /// 一个额外的枪体旋转角度矫正值，默认在<see cref="Recover"/>中恢复为0
         /// </summary>
@@ -136,7 +142,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <returns></returns>
         public virtual Vector2 GetGunInFirePos() {
-            return kreloadTimeValue == 0 ? (Owner.Center + Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY)) : GetGunBodyPostion();
+            return kreloadTimeValue == 0 ? Owner.Center + Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY) + OffsetPos : GetGunBodyPostion();
         }
         /// <summary>
         /// 统一获取枪体在静置时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
@@ -158,11 +164,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual void PreInOwnerUpdate() {
             
         }
+        /// <summary>
+        /// 最后调用，重写它以设置一些特殊状态
+        /// </summary>
+        public virtual void PostInOwnerUpdate() {
 
-        public override void InOwner() {
+        }
+
+        public sealed override void InOwner() {
             PreInOwnerUpdate();
-            ArmRotSengsFront = 30 * CWRUtils.atoR;
-            ArmRotSengsBack = 150 * CWRUtils.atoR;
+            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR;
+            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR;
             Projectile.Center = GetGunBodyPostion();
             Projectile.rotation = GetGunBodyRotation();
             Projectile.timeLeft = 2;
@@ -174,13 +186,27 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Projectile.rotation = GetGunInFireRot();
                     Projectile.Center = GetGunInFirePos();
                     ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign;
-                    if (HaveAmmo && isKreload) {//需要子弹，还需要判断是否已经装弹
+                    if (HaveAmmo && isKreload && Projectile.IsOwnedByLocalPlayer()) {//需要子弹，还需要判断是否已经装弹
                         onFire = true;
                         Projectile.ai[1]++;
                     }
                 }
                 else {
                     onFire = false;
+                }
+
+                if (Owner.Calamity().mouseRight && !onFire && CanRightClick) {//Owner.PressKey()
+                    Owner.direction = ToMouse.X > 0 ? 1 : -1;
+                    Projectile.rotation = GunOnFireRot;
+                    Projectile.Center = Owner.MountedCenter + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
+                    ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
+                    if (HaveAmmo && isKreload && Projectile.IsOwnedByLocalPlayer()) {// 
+                        onFireR = true;
+                        Projectile.ai[1]++;
+                    }
+                }
+                else {
+                    onFireR = false;
                 }
 
                 if (WhetherStartChangingAmmunition()) {
@@ -215,8 +241,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         if (heldItem.type != ItemID.None) {
                             heldItem.CWR().IsKreload = true;
                         }
-                        OnKreLoad();
                         kreloadTimeValue = 0;
+                        OnKreLoad();
                     }
                 }
 
@@ -234,6 +260,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             if (heldItem.type != ItemID.None)
                 isKreload = heldItem.CWR().IsKreload;
+
+            PostInOwnerUpdate();
         }
         /// <summary>
         /// 在单次开火时运行，优先于<see cref="FiringShoot"/>运行，返回<see langword="false"/>禁用<see cref="FiringShoot"/>的运行
@@ -252,9 +280,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
         /// <summary>
-        /// 单次开火事件
+        /// 左键单次开火事件
         /// </summary>
         public override void FiringShoot() {
+            SpawnGunFireDust(GunShootPos, ShootVelocity);
+            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+        }
+        /// <summary>
+        /// 右键单次开火事件
+        /// </summary>
+        public override void FiringShootR() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
             Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
@@ -273,7 +308,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     LuxirEvent();
                 }
                 if (PreFiringShoot()) {
-                    FiringShoot();
+                    if (onFire) {
+                        FiringShoot();
+                    }
+                    if (onFireR) {
+                        FiringShootR();
+                    }
                     if (FiringDefaultSound) {
                         SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
                     }
@@ -281,10 +321,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 PostFiringShoot();
                 CreateRecoil();
                 if (PreFireReloadKreLoad()) {
-                    loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
-                    isKreload = false;
-                    if (heldItem.type != ItemID.None) {
-                        heldItem.CWR().IsKreload = false;
+                    if (BulletNum <= 0) {
+                        loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
+                        isKreload = false;
+                        if (heldItem.type != ItemID.None) {
+                            heldItem.CWR().IsKreload = false;
+                        }
+                        BulletNum = 0;
                     }
                 }
                 Projectile.ai[1] = 0;

@@ -1,5 +1,6 @@
 ﻿public enum CartridgeUIEnum : uint
 {
     CartridgeHolder,
-    Magazines
+    Magazines,
+    JAR
 }

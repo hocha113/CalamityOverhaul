@@ -2,7 +2,9 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
+using Mono.Cecil;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -21,11 +23,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 4;
             ShootPosNorlLengValue = -20;
             ShootPosToMouLengValue = 15;
-            GunPressure = 0.4f;
+            GunPressure = 0.1f;
             ControlForce = 0.05f;
-            Recoil = 2.8f;
-            RangeOfStress = 48;
+            Recoil = 0.8f;
+            RangeOfStress = 28;
             RepeatedCartridgeChange = true;
+            kreloadMaxTime = 30;
         }
 
         public override void PreInOwnerUpdate() {
@@ -36,21 +39,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override bool PreFireReloadKreLoad() {
-            if (BulletNum <= 0) {
-                loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
-                isKreload = false;
-                if (heldItem.type != ItemID.None) {
-                    heldItem.CWR().IsKreload = false;
-                }
-                BulletNum = 0;
+        public override bool PreKreloadSoundEffcet(int time, int maxItem) {
+            if (kreloadTimeValue == kreloadMaxTime - 1) {
+                SoundEngine.PlaySound(CWRSound.CaseEjection with { Volume = 0.6f }, Projectile.Center);
+                UpdateConsumeAmmo();
             }
             return false;
         }
 
         public override void OnKreLoad() {
-            if (BulletNum < heldItem.CWR().AmmoCapacity - 1) {
-                onKreload = true;
+            if (BulletNum < heldItem.CWR().AmmoCapacity) {
+                if (!onFire) {
+                    onKreload = true;
+                    kreloadTimeValue = kreloadMaxTime;
+                }
                 BulletNum++;
             }
             if (heldItem.CWR().AmmoCapacityInFire) {
@@ -60,10 +62,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust();
-            for (int i = 0; i < 3; i++) {
-                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 0.3f, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
-                _ = CreateRecoil();
+            int bulletAmt = Main.rand.Next(25, 35);
+            for (int i = 0; i < bulletAmt; i++) {
+                float newSpeedX = ShootVelocity.X + Main.rand.NextFloat(-15f, 15f);
+                float newSpeedY = ShootVelocity.Y + Main.rand.NextFloat(-15f, 15f);
+                Projectile.NewProjectile(Source, GunShootPos, new Vector2(newSpeedX, newSpeedY), heldItem.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
             }
+            _ = CreateRecoil();
         }
     }
 }

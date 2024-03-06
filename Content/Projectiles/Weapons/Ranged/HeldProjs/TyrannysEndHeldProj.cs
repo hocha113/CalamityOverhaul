@@ -1,10 +1,8 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
-using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -45,20 +43,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 FeederOffsetRot = -MathHelper.ToRadians(30) * DirSign;
                 FeederOffsetPos = new Vector2(0, -23);
             }
-        }
-
-        public override bool PreFireReloadKreLoad() {
-            if (BulletNum <= 0) {
-
-                loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
-                isKreload = false;
-                if (heldItem.type != ItemID.None) {
-                    heldItem.CWR().IsKreload = false;
-                }
-
-                BulletNum = 0;
-            }
-            return false;
         }
 
         public override void FiringShoot() {

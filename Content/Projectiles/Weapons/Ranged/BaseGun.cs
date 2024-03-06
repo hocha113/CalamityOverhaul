@@ -135,6 +135,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (OffsetRot <= 0) {
                 OffsetRot = 0;
             }
+            if (OffsetPos != Vector2.Zero) {
+                OffsetPos *= 0.5f;
+            }
         }
         /// <summary>
         /// 制造后坐力，这个函数只应该由弹幕主人调用，它不会自动调用，需要重写时在合适的代码片段中调用这个函数

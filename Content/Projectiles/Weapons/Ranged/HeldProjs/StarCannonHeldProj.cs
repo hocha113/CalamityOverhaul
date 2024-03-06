@@ -35,20 +35,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             base.KreloadSoundloadTheRounds();
         }
 
-        public override bool PreFireReloadKreLoad() {
-            if (BulletNum <= 0) {
-
-                loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
-                isKreload = false;
-                if (heldItem.type != ItemID.None) {
-                    heldItem.CWR().IsKreload = false;
-                }
-
-                BulletNum = 0;
-            }
-            return false;
-        }
-
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
             Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

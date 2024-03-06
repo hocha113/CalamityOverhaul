@@ -987,7 +987,7 @@ Items: {
 		Tooltip:
 			'''
 			极强的后坐力
-			[KL]进行换弹
+			按下[KL]键进行换弹
 			一把发射.70BMG子弹的重型反器材步枪
 			按下[KEY]键开镜
 			'''
@@ -999,7 +999,7 @@ Items: {
 			'''
 			非常强的后坐力
 			一把发射.50BMG子弹的重型反器材步枪
-			发射后需要按下[KL]进行换弹
+			发射后需要按下按下[KL]键进行换弹
 			按下[KEY]键开镜
 			'''
 	}
@@ -1216,7 +1216,7 @@ Items: {
 		Tooltip:
 			'''
 			无后坐力
-			[KL]进行换弹
+			按下[KL]键进行换弹
 			发射大量解离射线，弹药量越少火力越发猛烈
 			最高时转为发射伽马射线爆
 			'''
@@ -1246,7 +1246,7 @@ Items: {
 		Tooltip:
 			'''
 			一般的后坐力
-			[KL]进行换弹
+			按下[KL]键进行换弹
 			发射一颗高爆坚果仁，没错，就是坚果仁儿
 			"我一直尝试用这个东西召唤高坚果，但从没成功过"
 			'''
@@ -1257,7 +1257,7 @@ Items: {
 		Tooltip:
 			'''
 			微弱的后坐力
-			[KL]进行换弹
+			按下[KL]键进行换弹
 			以极高的频率发射穿甲子弹
 			子弹将无视敌人15点防御
 			"其实能看到的都是拽光弹的拖尾，所以你需要额外支付一笔2685美元的军火账单"
@@ -1269,7 +1269,7 @@ Items: {
 		Tooltip:
 			'''
 			较强的后坐力
-			[KL]进行换弹
+			按下[KL]键进行换弹
 			一次发射五发子弹
 			打空弹匣时发射一枚强力冲击波榴弹
 			"汝命归我"
@@ -1329,6 +1329,77 @@ Items: {
 	AmmoBox: {
 		DisplayName: 弹药箱
 		Tooltip: ""
+	}
+
+	BulletFilledShotgunEcType: {
+		DisplayName: 满弹霰弹枪
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			发射出一大片弹跳子弹
+			每次使用消耗五颗子弹
+			“瞄准？那是啥？”
+			'''
+	}
+
+	ButcherEcType: {
+		DisplayName: 屠夫
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			剩余子弹越少，发射速度和精确度越高
+			25%几率节省弹药
+			'''
+	}
+
+	FungicideEcType: {
+		DisplayName: 真菌枪
+		Tooltip:
+			'''
+			较弱的后坐力
+			按下[KL]键进行换弹
+			发射命中后分裂的真菌弹
+			'''
+	}
+
+	HalleysInfernoEcType: {
+		DisplayName: 哈雷彗星炮
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键装填凝胶
+			射出一连串高压月耀喷流
+			使用凝胶作为弹药
+			50%几率节省弹药
+			“哈雷彗星比想象中来得早”
+			'''
+	}
+
+	HandheldTankEcType: {
+		DisplayName: 手持坦克
+		Tooltip:
+			'''
+			荒谬的后坐力
+			按下[KL]键进行换弹
+			"嘿，伙计！看看，我在推着一辆坦克走"
+			'''
+	}
+
+	InfinityEcType: {
+		// DisplayName: Infinity Ec Type
+		// Tooltip: ""
+	}
+
+	KarasawaEcType: {
+		// DisplayName: Karasawa Ec Type
+		// Tooltip: ""
+	}
+
+	KingsbaneEctype: {
+		// DisplayName: Kingsbane Ectype
+		// Tooltip: ""
 	}
 }
 
@@ -1638,6 +1709,14 @@ Projectiles: {
 	// PebbleSpearProj.DisplayName: Pebble Spear Proj
 	// PebbleProj.DisplayName: Pebble Proj
 	// AmmoBoxProj.DisplayName: Ammo Box Proj
+	// BulletFilledShotgunHeldProj.DisplayName: Bullet Filled Shotgun Held Proj
+	// ButcherHeldProj.DisplayName: Butcher Held Proj
+	// FungicideHeldProj.DisplayName: Fungicide Held Proj
+	// HalleysInfernoHeldProj.DisplayName: Halleys Inferno Held Proj
+	// HandheldTankHeldProj.DisplayName: Handheld Tank Held Proj
+	// InfinityHeldProj.DisplayName: Infinity Held Proj
+	// KarasawaHeldProj.DisplayName: Karasawa Held Proj
+	// KingsbaneHeldProj.DisplayName: Kingsbane Held Proj
 }
 
 Configs: {

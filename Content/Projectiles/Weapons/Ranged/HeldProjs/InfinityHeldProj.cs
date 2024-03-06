@@ -3,17 +3,15 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class DodusHandcannonHeldProj : BaseFeederGun
+    internal class InfinityHeldProj : BaseFeederGun
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "DodusHandcannon";
-        public override int targetCayItem => ModContent.ItemType<DodusHandcannon>();
-        public override int targetCWRItem => ModContent.ItemType<DodusHandcannonEcType>();
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Infinity";
+        public override int targetCayItem => ModContent.ItemType<Infinity>();
+        public override int targetCWRItem => ModContent.ItemType<InfinityEcType>();
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;

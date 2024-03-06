@@ -1,32 +1,32 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using Terraria.ModLoader;
 using Terraria;
-using Terraria.GameContent;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class QuadBarrelShotgunHeldProj : BaseFeederGun
+    internal class ButcherHeldProj : BaseFeederGun
     {
-        public override string Texture => CWRConstant.Placeholder;
-        public override Texture2D TextureValue => TextureAssets.Item[ItemID.QuadBarrelShotgun].Value;
-        public override int targetCayItem => ItemID.QuadBarrelShotgun;
-        public override int targetCWRItem => ItemID.QuadBarrelShotgun;
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Butcher";
+        public override int targetCayItem => ModContent.ItemType<Butcher>();
+        public override int targetCWRItem => ModContent.ItemType<ButcherEcType>();
         public override void SetRangedProperty() {
-            fireTime = 35;
+            fireTime = 30;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 17;
             HandDistanceY = 4;
-            ShootPosNorlLengValue = -20;
+            HandFireDistance = 15;
+            ShootPosNorlLengValue = -18;
             ShootPosToMouLengValue = 15;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
-            Recoil = 1.6f;
-            RangeOfStress = 10;
+            Recoil = 0.5f;
+            RangeOfStress = 28;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 75;
+            kreloadMaxTime = 60;
         }
 
         public override void PreInOwnerUpdate() {
@@ -38,24 +38,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void OnKreLoad() {
-            BulletNum += 6;
+            BulletNum = heldItem.CWR().AmmoCapacity;
             if (heldItem.CWR().AmmoCapacityInFire) {
                 heldItem.CWR().AmmoCapacityInFire = false;
             }
-        }
-
-        public override void PostFiringShoot() {
-            if (BulletNum >= 6) {
-                BulletNum -= 6;
-            }
+            fireTime = 30;
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust();
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
-            for (int i = 0; i < 5; i++) {
-                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.36f, 0.36f)) * Main.rand.NextFloat(0.7f, 1.3f), AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
+            float randomMode = fireTime * 0.006f;
+            for (int i = 0; i < 3; i++) {
+                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-randomMode, randomMode)) * Main.rand.NextFloat(0.6f, 1.52f) * 0.3f, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
                 _ = CreateRecoil();
+            }
+            fireTime--;
+            if (fireTime < 12) {
+                fireTime = 12;
             }
         }
     }

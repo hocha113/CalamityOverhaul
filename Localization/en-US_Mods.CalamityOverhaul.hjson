@@ -1315,6 +1315,46 @@ Items: {
 		DisplayName: Ammo Box
 		Tooltip: ""
 	}
+
+	BulletFilledShotgunEcType: {
+		DisplayName: Bullet Filled Shotgun Ec Type
+		Tooltip: ""
+	}
+
+	ButcherEcType: {
+		DisplayName: Butcher Ec Type
+		Tooltip: ""
+	}
+
+	FungicideEcType: {
+		DisplayName: Fungicide Ec Type
+		Tooltip: ""
+	}
+
+	HalleysInfernoEcType: {
+		DisplayName: Halleys Inferno Ec Type
+		Tooltip: ""
+	}
+
+	HandheldTankEcType: {
+		DisplayName: Handheld Tank Ec Type
+		Tooltip: ""
+	}
+
+	InfinityEcType: {
+		DisplayName: Infinity Ec Type
+		Tooltip: ""
+	}
+
+	KarasawaEcType: {
+		DisplayName: Karasawa Ec Type
+		Tooltip: ""
+	}
+
+	KingsbaneEctype: {
+		DisplayName: Kingsbane Ectype
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1623,6 +1663,14 @@ Projectiles: {
 	PebbleSpearProj.DisplayName: Pebble Spear Proj
 	PebbleProj.DisplayName: Pebble Proj
 	AmmoBoxProj.DisplayName: Ammo Box Proj
+	BulletFilledShotgunHeldProj.DisplayName: Bullet Filled Shotgun Held Proj
+	ButcherHeldProj.DisplayName: Butcher Held Proj
+	FungicideHeldProj.DisplayName: Fungicide Held Proj
+	HalleysInfernoHeldProj.DisplayName: Halleys Inferno Held Proj
+	HandheldTankHeldProj.DisplayName: Handheld Tank Held Proj
+	InfinityHeldProj.DisplayName: Infinity Held Proj
+	KarasawaHeldProj.DisplayName: Karasawa Held Proj
+	KingsbaneHeldProj.DisplayName: Kingsbane Held Proj
 }
 
 Configs: {
