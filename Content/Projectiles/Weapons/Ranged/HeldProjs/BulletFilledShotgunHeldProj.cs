@@ -1,18 +1,18 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class BoomstickHeldProj : BaseFeederGun
+    internal class BulletFilledShotgunHeldProj : BaseFeederGun
     {
-        public override string Texture => CWRConstant.Placeholder;
-        public override Texture2D TextureValue => TextureAssets.Item[ItemID.Boomstick].Value;
-        public override int targetCayItem => ItemID.Boomstick;
-        public override int targetCWRItem => ItemID.Boomstick;
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "BulletFilledShotgun";
+        public override int targetCayItem => ModContent.ItemType<BulletFilledShotgun>();
+        public override int targetCWRItem => ModContent.ItemType<BulletFilledShotgunEcType>();
         public override void SetRangedProperty() {
             fireTime = 20;
             ShootPosToMouLengValue = 0;
@@ -38,32 +38,30 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override bool PreFireReloadKreLoad() {
             if (BulletNum <= 0) {
-
                 loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
                 isKreload = false;
                 if (heldItem.type != ItemID.None) {
                     heldItem.CWR().IsKreload = false;
                 }
-
                 BulletNum = 0;
             }
             return false;
         }
 
         public override void OnKreLoad() {
-            base.OnKreLoad();
-        }
-
-        public override void PostFiringShoot() {
-            if (BulletNum >= 3) {
-                BulletNum-=3;
+            if (BulletNum < heldItem.CWR().AmmoCapacity - 1) {
+                onKreload = true;
+                BulletNum++;
+            }
+            if (heldItem.CWR().AmmoCapacityInFire) {
+                heldItem.CWR().AmmoCapacityInFire = false;
             }
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust();
             for (int i = 0; i < 3; i++) {
-                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 0.3f, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0); 
+                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 0.3f, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
                 _ = CreateRecoil();
             }
         }
