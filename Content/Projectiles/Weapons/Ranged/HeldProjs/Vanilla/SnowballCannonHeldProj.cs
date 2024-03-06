@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.SnowballCannon;
         public override int targetCWRItem => ItemID.SnowballCannon;
         public override void SetRangedProperty() {
-            fireTime = 30;
+            FireTime = 30;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -41,12 +41,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             } else {
                 BulletNum = 20;
             }
-            if (heldItem.CWR().AmmoCapacityInFire) {
-                heldItem.CWR().AmmoCapacityInFire = false;
+            if (Item.CWR().AmmoCapacityInFire) {
+                Item.CWR().AmmoCapacityInFire = false;
             }
         }
 
-        public override bool PreKreloadSoundEffcet(int time, int maxTime) {
+        public override bool PreReloadEffects(int time, int maxTime) {
             return false;
         }
 

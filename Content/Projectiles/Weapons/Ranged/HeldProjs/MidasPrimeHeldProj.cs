@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         bool nextShotGoldCoin = false;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            fireTime = 22;
+            FireTime = 22;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust();
-            SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PostFiringShoot() {
             base.PostFiringShoot();
-            EjectionCase();
+            EjectCasing();
         }
     }
 }

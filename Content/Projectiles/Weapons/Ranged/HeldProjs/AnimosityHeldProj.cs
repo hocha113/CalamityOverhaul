@@ -27,13 +27,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringIncident() {
             base.FiringIncident();
             if (onFireR) {
-                heldItem.useTime = 50;
+                Item.useTime = 50;
                 GunPressure = 0.6f;
                 Recoil = 5;
                 RangeOfStress = 25;
             }
             else {
-                heldItem.useTime = 4;
+                Item.useTime = 4;
                 GunPressure = 0.2f;
                 Recoil = 2;
                 RangeOfStress = 5;

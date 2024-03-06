@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         bool thisOnFire;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            fireTime = 3;
+            FireTime = 3;
             HandDistance = 40;
             HandDistanceY = 5;
             HandFireDistance = 40;
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 FeederOffsetPos = new Vector2(DirSign * -3, -25);
             }
             thisTime++;
-            if (Owner.PressKey() && isKreload) {
+            if (Owner.PressKey() && IsKreload) {
                 if (thisTime % 2 == 0)
                     chargeSoundSpanTimer++;
                 Projectile.frameCounter++;
@@ -95,13 +95,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             float setPitchVarianceValue = 0.4f;
             if (chargeValue > 90) {
                 AmmoTypes = ModContent.ProjectileType<AuricBullet>();
-                fireTime = 2;
+                FireTime = 2;
                 Recoil = 0.5f;
                 setPitchVarianceValue = 0.6f;
                 ShootPosNorlLengValue = -8;
                 chargeAmmo++;
                 if (chargeAmmo > 90) {
-                    fireTime = 3;
+                    FireTime = 3;
                     chargeAmmo = chargeValue = 0;
                     Recoil = 0.2f;
                     ShootPosNorlLengValue = -13;
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 return;
             }
             base.PostFiringShoot();
-            EjectionCase();
+            EjectCasing();
         }
 
         public override bool PreDraw(ref Color lightColor) {

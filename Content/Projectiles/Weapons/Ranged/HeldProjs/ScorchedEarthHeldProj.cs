@@ -65,23 +65,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
                 if (Owner.PressKey(false) && !isKreload && kreloadTime == 0) {//如果没有装弹，那么按下右键时开始装弹
                     onKreload = true;
-                    kreloadTime = heldItem.useTime;
+                    kreloadTime = Item.useTime;
                 }
 
                 if (onKreload) {//装弹过程
                     ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign + 0.3f;
                     ArmRotSengsFront += MathF.Sin(Time * 0.3f) * 0.7f;
                     kreloadTime--;
-                    if (kreloadTime == heldItem.useTime - 1) {
+                    if (kreloadTime == Item.useTime - 1) {
                         SoundEngine.PlaySound(CWRSound.CaseEjection with { Volume = 0.7f, Pitch = -0.3f }, Projectile.Center);
                     }
-                    if (kreloadTime == heldItem.useTime / 2) {
+                    if (kreloadTime == Item.useTime / 2) {
                         SoundEngine.PlaySound(loadTheRounds with { Volume = 1.2f, Pitch = -0.5f }, Projectile.Center);
                         Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
                         int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
                         Main.projectile[proj].scale = 5;
                     }
-                    if (kreloadTime == heldItem.useTime / 3) {
+                    if (kreloadTime == Item.useTime / 3) {
                         for(int i = 0; i < 8; i++)//因为会射出八颗导弹
                             UpdateConsumeAmmo();
                     }

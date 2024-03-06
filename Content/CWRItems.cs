@@ -71,9 +71,13 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool HasCartridgeHolder;
         /// <summary>
-        /// 使用的弹夹UI类型
+        /// 使用的弹匣UI类型
         /// </summary>
         public CartridgeUIEnum CartridgeEnum;
+        /// <summary>
+        /// 弹匣内容，管理装填后的弹药部分
+        /// </summary>
+        internal Item[] MagazineContents;
         /// <summary>
         /// 该物品对应的剩余子弹数量，一般用于给手持枪械弹幕访问
         /// </summary>

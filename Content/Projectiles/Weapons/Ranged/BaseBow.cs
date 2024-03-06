@@ -125,8 +125,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void LuxirEvent() {
             float damageMult = 1f;
-            if (heldItem.useTime < 10) {
-                damageMult -= (10 - heldItem.useTime) / 10f;
+            if (Item.useTime < 10) {
+                damageMult -= (10 - Item.useTime) / 10f;
             }
             int luxirDamage = Owner.ApplyArmorAccDamageBonusesTo(WeaponDamage * damageMult * 0.15f);
             if (luxirDamage > 1) {
@@ -140,8 +140,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void SpanProj() {
-            if (Projectile.ai[1] > heldItem.useTime) {
-                SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            if (Projectile.ai[1] > Item.useTime) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 if (onFire) {
                     BowShoot();
                 }

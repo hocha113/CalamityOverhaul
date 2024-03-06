@@ -23,8 +23,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         internal float onFireCooldSmogTime2;
 
         public override bool CheckAlive() {
-            bool heldBool1 = heldItem.type != ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.BlossomFlux>();
-            bool heldBool2 = heldItem.type != ModContent.ItemType<BlossomFlux>();
+            bool heldBool1 = Item.type != ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.BlossomFlux>();
+            bool heldBool2 = Item.type != ModContent.ItemType<BlossomFlux>();
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换
                 if (heldBool1) {//只需要判断原版的物品
                     return false;
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
 
             if (Owner.CWR().OnHit) {
-                if (onFireCooldSmogTime <= heldItem.useTime) {
+                if (onFireCooldSmogTime <= Item.useTime) {
                     SoundEngine.PlaySound(CWRSound.Peuncharge with { Volume = 0.3f }, Projectile.Center);
                 }
                 onFireCooldSmogTime = 60;
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (onFire) {
                 WeaponKnockback = Owner.GetWeaponKnockback(Owner.ActiveItem(), WeaponKnockback);
                 if (onFireSmogTime > onFireCooldSmogTime && HaveAmmo) {
-                    SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+                    SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                     Projectile.NewProjectile(Owner.parent(), Projectile.Center, UnitToMouseV * 13
                         , ModContent.ProjectileType<LeafArrows>(), WeaponDamage, WeaponKnockback, Owner.whoAmI);
                     Owner.PickAmmo(Owner.ActiveItem(), out AmmoTypes, out ScaleFactor, out WeaponDamage, out WeaponKnockback, out _);
@@ -106,8 +106,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
                 if (Time % 10 == 0) {
                     onFireCooldSmogTime -= 1;
-                    if (onFireCooldSmogTime < heldItem.useTime) {
-                        onFireCooldSmogTime = heldItem.useTime;
+                    if (onFireCooldSmogTime < Item.useTime) {
+                        onFireCooldSmogTime = Item.useTime;
                     }
                 }
             }

@@ -34,11 +34,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
 
             Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                    , heldItem.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
 
             CreateRecoil();
 
-            Owner.statMana -= heldItem.mana;
+            Owner.statMana -= Item.mana;
             if (Owner.statMana < 0) {
                 Owner.statMana = 0;
             }

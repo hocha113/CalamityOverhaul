@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         int thisNeedsTime;
         int chargeAmmoNum;
         public override void SetRangedProperty() {
-            fireTime = 5;
+            FireTime = 5;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -38,15 +38,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void OnKreLoad() {
-            if (BulletNum < heldItem.CWR().AmmoCapacity) {
+            if (BulletNum < Item.CWR().AmmoCapacity) {
                 if (!onFire) {
                     BulletNum += 10;
-                    onKreload = true;
+                    OnKreload = true;
                     kreloadTimeValue = kreloadMaxTime;
                 }
             }
-            if (heldItem.CWR().AmmoCapacityInFire) {
-                heldItem.CWR().AmmoCapacityInFire = false;
+            if (Item.CWR().AmmoCapacityInFire) {
+                Item.CWR().AmmoCapacityInFire = false;
             }
         }
 

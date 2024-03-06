@@ -953,7 +953,7 @@ namespace CalamityOverhaul
             return shootState;
         }
 
-        public static AmmoState GetAmmoState(this Player player, int assignAmooType = 0) {
+        public static AmmoState GetAmmoState(this Player player, int assignAmooType = 0, bool numSort = false) {
             AmmoState ammoState = new();
             int num = 0;
             List<Item> itemInds = new List<Item>();
@@ -964,16 +964,31 @@ namespace CalamityOverhaul
                     continue;
                 }
                 if (assignAmooType != 0) {
-                    if (item.ammo == assignAmooType) {
+                    if (item.ammo != assignAmooType) {
                         continue;
                     }
                 }
                 itemTypes.Add(item.type);
                 itemShootTypes.Add(item.shoot);
-                itemInds.Add(item);
                 num += item.stack;
             }
-            itemInds = itemInds.OrderByDescending(item => item.stack).ToList();
+            for (int i = 54; i < 58; i++) {
+                Item item = player.inventory[i];
+                if ((assignAmooType != 0 && item.ammo != assignAmooType) || item.ammo == AmmoID.None) {
+                    continue;
+                }
+                itemInds.Add(player.inventory[i]);
+            }
+            for (int i = 0; i < 54; i++) {
+                Item item = player.inventory[i];
+                if ((assignAmooType != 0 && item.ammo != assignAmooType) || item.ammo == AmmoID.None) {
+                    continue;
+                }
+                itemInds.Add(player.inventory[i]);
+            }
+            if (numSort) {
+                itemInds = itemInds.OrderByDescending(item => item.stack).ToList();
+            }
             ammoState.InProjIDs = itemShootTypes.ToArray();
             ammoState.InItemInds = itemInds.ToArray();
             ammoState.InItemIDs = itemTypes.ToArray();

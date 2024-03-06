@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
-            fireTime = 30;
+            FireTime = 30;
             HandDistance = 45;
             HandDistanceY = 5;
             HandFireDistance = 45;
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             SpawnGunFireDust();
             Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
                     , ModContent.ProjectileType<BMGBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PostFiringShoot() {
             base.PostFiringShoot();
-            EjectionCase();
+            EjectCasing();
         }
     }
 }

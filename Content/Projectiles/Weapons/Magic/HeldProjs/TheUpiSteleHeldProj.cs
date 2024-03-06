@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void FiringShoot() {
-            if (Owner.CheckMana(heldItem)) {
+            if (Owner.CheckMana(Item)) {
                 List<NPC> npcs = new List<NPC>();
                 int dot = 0;
                 while (npcs.Count < 5 && dot < 10) {
@@ -50,17 +50,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 if (npcs.Count > 0) {
                     foreach (NPC n in npcs) {
                         Vector2 vr = Projectile.Center.To(n.Center).RotatedByRandom(0.056).UnitVector() * Main.rand.Next(11, 13);
-                        Projectile.NewProjectile(Source, Projectile.Center, vr, heldItem.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                        Projectile.NewProjectile(Source, Projectile.Center, vr, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                     }
                 }
                 else {
                     for (int i = 0; i < 5; i++) {
                         Vector2 vr = CWRUtils.randVr(7, 13);
-                        Projectile.NewProjectile(Source, Projectile.Center, vr, heldItem.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                        Projectile.NewProjectile(Source, Projectile.Center, vr, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                     }
                 }
 
-                Owner.statMana -= heldItem.mana;
+                Owner.statMana -= Item.mana;
             }
         }
     }

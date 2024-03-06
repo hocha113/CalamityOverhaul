@@ -29,12 +29,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (onFireR) {
                 GunPressure = 0.2f;
                 Recoil = 1.1f;
-                heldItem.useTime = 4;
+                Item.useTime = 4;
             }
             else {
                 GunPressure = 0.5f;
                 Recoil = 2;
-                heldItem.useTime = 24;
+                Item.useTime = 24;
             }
         }
 

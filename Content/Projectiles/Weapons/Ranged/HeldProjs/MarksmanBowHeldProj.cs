@@ -46,8 +46,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void SpanProj() {
-            if (onFire && Projectile.ai[1] > heldItem.useTime) {
-                SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            if (onFire && Projectile.ai[1] > Item.useTime) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 for (int i = 0; i < 3; i++) {
                     int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity * (0.7f + i * 0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj].MaxUpdates = 6;

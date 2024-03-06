@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void SpanProj() {
-            if (onFire && Projectile.ai[1] > heldItem.useTime) {
+            if (onFire && Projectile.ai[1] > Item.useTime) {
                 SoundEngine.PlaySound(SoundID.Item5, Projectile.Center);
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center, UnitToMouseV * 13
                     , ModContent.ProjectileType<TheMaelstromTheArrow>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

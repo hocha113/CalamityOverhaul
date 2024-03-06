@@ -20,9 +20,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                    , heldItem.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
         }
     }

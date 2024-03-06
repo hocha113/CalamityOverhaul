@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<AntiMaterielRifle>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
-            fireTime = 40;
+            FireTime = 40;
             ControlForce = 0.04f;
             GunPressure = 0.25f;
             Recoil = 4.5f;
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
         }
         public override void FiringShoot() {
-            SoundEngine.PlaySound(heldItem.UseSound.Value with { Pitch = 0.3f }, Projectile.Center);
+            SoundEngine.PlaySound(Item.UseSound.Value with { Pitch = 0.3f }, Projectile.Center);
             DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
             Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
                     , ModContent.ProjectileType<BMGBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);

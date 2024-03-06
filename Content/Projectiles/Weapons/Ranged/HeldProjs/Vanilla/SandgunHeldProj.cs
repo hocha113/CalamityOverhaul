@@ -29,13 +29,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             base.FiringIncident();
             if (onFireR)
             {
-                heldItem.useTime = 64;
+                Item.useTime = 64;
                 Recoil = 2.4f;
                 RangeOfStress = 5;
             }
             else
             {
-                heldItem.useTime = 16;
+                Item.useTime = 16;
                 Recoil = 2.4f;
                 RangeOfStress = 5;
             }

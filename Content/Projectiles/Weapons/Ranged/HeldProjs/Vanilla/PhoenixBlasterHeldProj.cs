@@ -32,11 +32,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             base.FiringIncident();
             if (onFireR)
             {
-                heldItem.useTime = 24;
+                Item.useTime = 24;
             }
             else
             {
-                heldItem.useTime = 12;
+                Item.useTime = 12;
             }
         }
 

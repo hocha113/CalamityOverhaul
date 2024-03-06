@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
-            fireTime = 60;
+            FireTime = 60;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -39,15 +39,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
             Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             UpdateConsumeAmmo();
-            fireTime -= 10;
-            if (fireTime < 6) {
-                fireTime = 6;
+            FireTime -= 10;
+            if (FireTime < 6) {
+                FireTime = 6;
             }
         }
 
         public override void OnKreLoad() {
             base.OnKreLoad();//装弹
-            fireTime = 60;
+            FireTime = 60;
         }
     }
 }

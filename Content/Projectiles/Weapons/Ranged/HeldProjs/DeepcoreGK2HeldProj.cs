@@ -28,15 +28,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringIncident() {
             base.FiringIncident();
-            if (!heldItem.CWR().IsKreload) {
+            if (!Item.CWR().IsKreload) {
                 kreLoadTime++;
                 if (kreLoadTime == 10) {
                     SoundEngine.PlaySound(CWRSound.CaseEjection with { Volume = 0.6f }, Projectile.Center);
                 }
                 if (kreLoadTime > 60) {
-                    heldItem.CWR().NumberBullets = heldItem.CWR().AmmoCapacity;
-                    heldItem.CWR().IsKreload = true;
-                    heldItem.CWR().AmmoCapacityInFire = false;
+                    Item.CWR().NumberBullets = Item.CWR().AmmoCapacity;
+                    Item.CWR().IsKreload = true;
+                    Item.CWR().AmmoCapacityInFire = false;
                 }
             }
             else {
@@ -44,18 +44,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             if (onFireR) {
                 Recoil = 0.3f;
-                heldItem.useTime = 7;
-                heldItem.UseSound = CommonCalamitySounds.LargeWeaponFireSound with { Volume = 0.3f, Pitch = 0.2f };
+                Item.useTime = 7;
+                Item.UseSound = CommonCalamitySounds.LargeWeaponFireSound with { Volume = 0.3f, Pitch = 0.2f };
             }
             else {
                 Recoil = 1.2f;
-                heldItem.useTime = 14;
-                heldItem.UseSound = SoundID.Item38;
+                Item.useTime = 14;
+                Item.UseSound = SoundID.Item38;
             }
         }
 
         public override void FiringShoot() {
-            if (heldItem.CWR().NumberBullets <= 0) {
+            if (Item.CWR().NumberBullets <= 0) {
                 return;
             }
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -63,30 +63,30 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Main.projectile[proj].extraUpdates += 1;
             SpawnGunFireDust(GunShootPos, dustID1: DustID.YellowStarDust, dustID2: DustID.FireworksRGB, dustID3: DustID.FireworksRGB);
             CaseEjection(2);
-            SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
-            heldItem.CWR().NumberBullets--;
-            if (heldItem.CWR().NumberBullets <= 0) {
-                heldItem.CWR().IsKreload = false;
-                heldItem.CWR().NumberBullets = 0;
+            Item.CWR().NumberBullets--;
+            if (Item.CWR().NumberBullets <= 0) {
+                Item.CWR().IsKreload = false;
+                Item.CWR().NumberBullets = 0;
             }
         }
 
         public override void FiringShootR() {
-            if (heldItem.CWR().NumberBullets <= 0) {
+            if (Item.CWR().NumberBullets <= 0) {
                 return;
             }
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             SpawnGunFireDust(GunShootPos + ShootVelocity, dustID1: DustID.YellowStarDust, dustID2: DustID.FireworkFountain_Red, dustID3: DustID.FireworkFountain_Red);
             CaseEjection();
-            SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
-            heldItem.CWR().NumberBullets--;
-            if (heldItem.CWR().NumberBullets <= 0) {
-                heldItem.CWR().IsKreload = false;
-                heldItem.CWR().NumberBullets = 0;
+            Item.CWR().NumberBullets--;
+            if (Item.CWR().NumberBullets <= 0) {
+                Item.CWR().IsKreload = false;
+                Item.CWR().NumberBullets = 0;
             }
         }
     }

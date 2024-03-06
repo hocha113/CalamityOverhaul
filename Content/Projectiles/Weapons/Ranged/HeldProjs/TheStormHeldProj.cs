@@ -54,8 +54,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void SpanProj() {
-            if (onFire && Projectile.ai[1] > heldItem.useTime) {
-                SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            if (onFire && Projectile.ai[1] > Item.useTime) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 for (int i = 0; i < 5; i++) {
                     if (CalamityUtils.CheckWoodenAmmo(AmmoTypes, Owner)) {
                         AmmoTypes = ModContent.ProjectileType<Bolt>();

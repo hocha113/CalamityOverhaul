@@ -47,8 +47,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void SpanProj() {
-            if (onFire && Projectile.ai[1] > heldItem.useTime) {
-                SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            if (onFire && Projectile.ai[1] > Item.useTime) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.NettlevineGreat;
 

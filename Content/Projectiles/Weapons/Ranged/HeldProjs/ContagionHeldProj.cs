@@ -67,8 +67,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void SpanProj() {
-            if (onFire && Projectile.ai[1] > heldItem.useTime) {
-                SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            if (onFire && Projectile.ai[1] > Item.useTime) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 for (int i = 0; i < 2; i++) {
                     Projectile.NewProjectile(Owner.parent(), Projectile.Center
                         , UnitToMouseV.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 13
@@ -77,8 +77,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.ai[1] = 0;
                 onFire = false;
             }
-            if (onFireR && Projectile.ai[1] > heldItem.useTime) {
-                SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            if (onFireR && Projectile.ai[1] > Item.useTime) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 for (int i = 0; i < 5; i++) {
                     Vector2 spanPos = Projectile.Center + new Vector2(Main.rand.Next(-520, 520), Main.rand.Next(-732, -623));
                     Vector2 vr = spanPos.To(Main.MouseWorld).UnitVector().RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 13;

@@ -29,13 +29,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 GunPressure = 0.7f;
                 Recoil = 6;
                 RangeOfStress = 25;
-                heldItem.useTime = 60;
+                Item.useTime = 60;
             }
             else {
                 GunPressure = 0.2f;
                 Recoil = 2;
                 RangeOfStress = 5;
-                heldItem.useTime = 20;
+                Item.useTime = 20;
             }
         }
 

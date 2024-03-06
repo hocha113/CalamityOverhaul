@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<HandheldTank>();
         public override int targetCWRItem => ModContent.ItemType<HandheldTankEcType>();
         public override void SetRangedProperty() {
-            fireTime = 30;
+            FireTime = 30;
             kreloadMaxTime = 60;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

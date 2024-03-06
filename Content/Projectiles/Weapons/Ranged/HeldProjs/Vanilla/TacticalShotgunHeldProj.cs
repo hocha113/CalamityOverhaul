@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.TacticalShotgun;
         public override void SetRangedProperty()
         {
-            fireTime = 60;
+            FireTime = 60;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 17;
@@ -50,8 +50,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             {
                 BulletNum = 180;
             }
-            if (heldItem.CWR().AmmoCapacityInFire) {
-                heldItem.CWR().AmmoCapacityInFire = false;
+            if (Item.CWR().AmmoCapacityInFire) {
+                Item.CWR().AmmoCapacityInFire = false;
             }
         }
 

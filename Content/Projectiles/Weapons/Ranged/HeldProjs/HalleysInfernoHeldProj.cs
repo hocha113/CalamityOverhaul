@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<HalleysInferno>();
         public override int targetCWRItem => ModContent.ItemType<HalleysInfernoEcType>();
         public override void SetRangedProperty() {
-            fireTime = 10;
+            FireTime = 10;
             HandDistance = 20;
             HandDistanceY = 4;
             HandFireDistance = 20;

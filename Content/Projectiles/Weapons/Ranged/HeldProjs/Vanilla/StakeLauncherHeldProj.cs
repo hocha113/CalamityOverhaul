@@ -34,11 +34,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
         }
 
-        public override bool PreKreloadSoundEffcet(int time, int maxTime) {
+        public override bool PreReloadEffects(int time, int maxTime) {
             return false;
         }
 
-        public override void NoCaseEjectionEvent() {
+        public override void HandleEmptyAmmoEjection() {
             CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("CaseEjection_TextContent"));
         }
 

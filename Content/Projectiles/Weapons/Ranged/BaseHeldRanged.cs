@@ -9,9 +9,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal abstract class BaseHeldRanged : BaseHeldProj
     {
+        /// <summary>
+        /// 一个通用的计时器
+        /// </summary>
         public ref float Time => ref Projectile.ai[0];
-
-        public Item heldItem => Owner.ActiveItem();
+        /// <summary>
+        /// 手持物品实例
+        /// </summary>
+        public Item Item => Owner.ActiveItem();
         public virtual int targetCayItem => ItemID.None;
         public virtual int targetCWRItem => ItemID.None;
         public int AmmoTypes;
@@ -25,9 +30,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
 
-        protected bool UpdateConsumeAmmo() {
+        protected bool UpdateConsumeAmmo(bool preCanConsumeAmmo = true) {
             bool canConsume = Owner.IsRangedAmmoFreeThisShot(new Item(Owner.GetShootState().UseAmmoItemType));
-            Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out _, out _, out _, canConsume);
+            Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out _, out _, out _, canConsume && preCanConsumeAmmo);
             return canConsume;
         }
 
@@ -74,8 +79,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public virtual bool CheckAlive() {
-            bool heldBool1 = heldItem.type != targetCayItem;
-            bool heldBool2 = heldItem.type != targetCWRItem;
+            bool heldBool1 = Item.type != targetCayItem;
+            bool heldBool2 = Item.type != targetCWRItem;
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换
                 if (heldBool1) {//只需要判断原版的物品
                     return false;

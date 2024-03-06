@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<BulletFilledShotgun>();
         public override int targetCWRItem => ModContent.ItemType<BulletFilledShotgunEcType>();
         public override void SetRangedProperty() {
-            fireTime = 20;
+            FireTime = 20;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 17;
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override bool PreKreloadSoundEffcet(int time, int maxItem) {
+        public override bool PreReloadEffects(int time, int maxItem) {
             if (kreloadTimeValue == kreloadMaxTime - 1) {
                 SoundEngine.PlaySound(CWRSound.CaseEjection with { Volume = 0.6f }, Projectile.Center);
                 UpdateConsumeAmmo();
@@ -48,15 +48,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void OnKreLoad() {
-            if (BulletNum < heldItem.CWR().AmmoCapacity) {
+            if (BulletNum < Item.CWR().AmmoCapacity) {
                 if (!onFire) {
-                    onKreload = true;
+                    OnKreload = true;
                     kreloadTimeValue = kreloadMaxTime;
                 }
                 BulletNum++;
             }
-            if (heldItem.CWR().AmmoCapacityInFire) {
-                heldItem.CWR().AmmoCapacityInFire = false;
+            if (Item.CWR().AmmoCapacityInFire) {
+                Item.CWR().AmmoCapacityInFire = false;
             }
         }
 
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             for (int i = 0; i < bulletAmt; i++) {
                 float newSpeedX = ShootVelocity.X + Main.rand.NextFloat(-15f, 15f);
                 float newSpeedY = ShootVelocity.Y + Main.rand.NextFloat(-15f, 15f);
-                Projectile.NewProjectile(Source, GunShootPos, new Vector2(newSpeedX, newSpeedY), heldItem.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                Projectile.NewProjectile(Source, GunShootPos, new Vector2(newSpeedX, newSpeedY), Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
             }
             _ = CreateRecoil();
         }

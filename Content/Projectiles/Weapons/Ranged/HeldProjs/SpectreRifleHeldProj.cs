@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Item_Ranged + "SpectreRifle";
         public override bool CheckAlive() {
-            return heldItem.type == ModContent.ItemType<SpectreRifle>();
+            return Item.type == ModContent.ItemType<SpectreRifle>();
         }
 
         public override void SetRangedProperty() {

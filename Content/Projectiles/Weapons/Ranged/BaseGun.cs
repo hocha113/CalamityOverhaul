@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 获取来自物品的生成源
         /// </summary>
-        protected IEntitySource Source => heldItem.GetSource_FromThis("CWRGun");
+        protected IEntitySource Source => Item.GetSource_FromThis("CWRGun");
         /// <summary>
         /// 该枪体使用的实际纹理
         /// </summary>
@@ -225,8 +225,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void LuxirEvent() {
             float damageMult = 1f;
-            if (heldItem.useTime < 10) {
-                damageMult -= (10 - heldItem.useTime) / 10f;
+            if (Item.useTime < 10) {
+                damageMult -= (10 - Item.useTime) / 10f;
             }   
             int luxirDamage = Owner.ApplyArmorAccDamageBonusesTo(WeaponDamage * damageMult * 0.15f);
             if (luxirDamage > 1) {
@@ -309,9 +309,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void SpanProj() {
-            if (Projectile.ai[1] > heldItem.useTime) {
+            if (Projectile.ai[1] > Item.useTime) {
                 if (FiringDefaultSound) {
-                    SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+                    SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 }
 
                 if (onFire) {

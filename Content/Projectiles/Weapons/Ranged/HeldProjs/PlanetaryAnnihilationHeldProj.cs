@@ -51,9 +51,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void SpanProj() {
-            if (onFire && Projectile.ai[1] > heldItem.useTime) {
+            if (onFire && Projectile.ai[1] > Item.useTime) {
                 if (CalamityUtils.CheckWoodenAmmo(AmmoTypes, Owner)) {
-                    SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+                    SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                     for (int i = 0; i < 5; i++) {
                         Vector2 spanPos = Projectile.Center + new Vector2(Main.rand.Next(-520, 520), Main.rand.Next(-732, -623));
                         Vector2 vr = spanPos.To(Main.MouseWorld).UnitVector().RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 6;

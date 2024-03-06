@@ -78,8 +78,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void SpanProj() {
-            if (onFire && Projectile.ai[1] > heldItem.useTime && Projectile.ai[2] == 0) {
-                SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            if (onFire && Projectile.ai[1] > Item.useTime && Projectile.ai[2] == 0) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 Vector2 gundir = Projectile.rotation.ToRotationVector2();
 
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
@@ -100,8 +100,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 onFire = false;
             }
 
-            if (onFireR && Projectile.ai[1] > heldItem.useTime * 4) {
-                SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+            if (onFireR && Projectile.ai[1] > Item.useTime * 4) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 Vector2 gundir = Projectile.rotation.ToRotationVector2();
 
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity

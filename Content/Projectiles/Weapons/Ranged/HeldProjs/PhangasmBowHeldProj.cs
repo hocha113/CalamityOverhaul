@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SpanProj() {
             if (onFire && Index == maxIndex / 2) {
-                SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 for (int i = 0; i < 5; i++) {
                     int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center
                         , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.03f, 0.03f)) * Main.rand.NextFloat(0.8f, 1.12f)

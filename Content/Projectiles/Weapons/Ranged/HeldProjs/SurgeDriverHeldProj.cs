@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             loadTheRounds = CWRSound.CaseEjection2 with { Pitch = -0.2f };
             kreloadMaxTime = 120;
-            fireTime = 20;
+            FireTime = 20;
             HandDistance = 52;
             HandFireDistance = 52;
             HandFireDistanceY = -13;
@@ -48,23 +48,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override bool PreFireReloadKreLoad() {
             if (BulletNum <= 0) {
-                loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
-                isKreload = false;
-                if (heldItem.type != ItemID.None) {
-                    heldItem.CWR().IsKreload = false;
+                LoadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
+                IsKreload = false;
+                if (Item.type != ItemID.None) {
+                    Item.CWR().IsKreload = false;
                 }
                 BulletNum = 0;
             }
-            fireTime--;
-            if (fireTime < 6) {
-                fireTime = 6;
+            FireTime--;
+            if (FireTime < 6) {
+                FireTime = 6;
             }
             return false;
         }
 
         public override void OnKreLoad() {
             base.OnKreLoad();
-            fireTime = 20;
+            FireTime = 20;
         }
 
         public override void FiringShoot() {
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 5;
             if (BulletNum > 40) {
                 float sengs = (98 - BulletNum) * 0.05f;
-                SoundEngine.PlaySound(heldItem.UseSound.Value with { Pitch = sengs > 0.95f ? 0.95f : sengs }, Projectile.Center);
+                SoundEngine.PlaySound(Item.UseSound.Value with { Pitch = sengs > 0.95f ? 0.95f : sengs }, Projectile.Center);
                 Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity * (1 + sengs)
                     , ModContent.ProjectileType<PrismEnergyBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
@@ -93,10 +93,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                         lengInXValue += 7;
                         Projectile.NewProjectile(Owner.GetSource_FromThis(), vr2 + Projectile.Center, Vector2.Zero, ModContent.ProjectileType<PrismExplosionLarge>(), Projectile.damage, 0f, Projectile.owner);
                     }
-                    SoundEngine.PlaySound(heldItem.UseSound.Value with { Pitch = -0.3f, Volume = 1.5f, MaxInstances = 3 }, Projectile.Center);
+                    SoundEngine.PlaySound(Item.UseSound.Value with { Pitch = -0.3f, Volume = 1.5f, MaxInstances = 3 }, Projectile.Center);
                     return;
                 }
-                SoundEngine.PlaySound(heldItem.UseSound.Value with { Pitch = 1f }, Projectile.Center);
+                SoundEngine.PlaySound(Item.UseSound.Value with { Pitch = 1f }, Projectile.Center);
                 Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<PrismaticEnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }

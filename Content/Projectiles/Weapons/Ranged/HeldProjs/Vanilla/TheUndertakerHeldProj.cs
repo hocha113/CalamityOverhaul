@@ -14,13 +14,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.TheUndertaker;
         private int bulletNum
         {
-            get => heldItem.CWR().NumberBullets;
-            set => heldItem.CWR().NumberBullets = value;
+            get => Item.CWR().NumberBullets;
+            set => Item.CWR().NumberBullets = value;
         }
         public override void SetRangedProperty()
         {
             kreloadMaxTime = 40;
-            fireTime = 20;
+            FireTime = 20;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -33,15 +33,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override bool WhetherStartChangingAmmunition()
         {
-            return base.WhetherStartChangingAmmunition() && bulletNum < heldItem.CWR().AmmoCapacity && !onFire;
+            return base.WhetherStartChangingAmmunition() && bulletNum < Item.CWR().AmmoCapacity && !onFire;
         }
 
         public override void OnKreLoad()
         {
-            bulletNum = heldItem.CWR().AmmoCapacity;
-            if (heldItem.CWR().AmmoCapacityInFire)
+            bulletNum = Item.CWR().AmmoCapacity;
+            if (Item.CWR().AmmoCapacityInFire)
             {
-                heldItem.CWR().AmmoCapacityInFire = false;
+                Item.CWR().AmmoCapacityInFire = false;
             }
         }
 
