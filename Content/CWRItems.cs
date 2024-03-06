@@ -83,6 +83,14 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int AmmoCapacity;
         /// <summary>
+        /// 是否装载了燃烧弹，这个字段在换弹时应该回归默认值false
+        /// </summary>
+        public bool AmmoCapacityInFire;
+        /// <summary>
+        /// 大于0时不可以装弹
+        /// </summary>
+        public int NoKreLoadTime;
+        /// <summary>
         /// 是否是一个无尽物品，这个的设置决定物品是否会受到湮灭机制的影响
         /// </summary>
         internal bool isInfiniteItem;
@@ -141,6 +149,9 @@ namespace CalamityOverhaul.Content
 
         public override void HoldItem(Item item, Player player) {
             OwnerByDir(item, player);
+            if (NoKreLoadTime > 0) {
+                NoKreLoadTime--;
+            }
             if (heldProjType > 0) {
                 if (player.ownedProjectileCounts[heldProjType] == 0 && Main.myPlayer == player.whoAmI) {
                     Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, heldProjType, item.damage, item.knockBack, player.whoAmI);
@@ -225,7 +236,7 @@ namespace CalamityOverhaul.Content
             Vector2 vr = player.Center.To(Main.MouseWorld).UnitVector() * 13;
 
             if (player.whoAmI == Main.myPlayer) {
-                if (modPlayer.theRelicLuxor == 1) {
+                if (modPlayer.TheRelicLuxor == 1) {
                     if (item.CountsAsClass<MeleeDamageClass>() || item.CountsAsClass<TrueMeleeNoSpeedDamageClass>()) {
                         Projectile.NewProjectile(source, position, vr, ModContent.ProjectileType<TheRelicLuxorMelee>(), theReLdamags, 0f, player.whoAmI, 1);
                     }
@@ -243,7 +254,7 @@ namespace CalamityOverhaul.Content
                         Projectile.NewProjectile(source, position, vr, ModContent.ProjectileType<TheRelicLuxorSummon>(), theReLdamags, 0f, player.whoAmI, 0);
                     }
                 }
-                if (modPlayer.theRelicLuxor == 2) {
+                if (modPlayer.TheRelicLuxor == 2) {
                     theReLdamags += 15;
 
                     if (item.CountsAsClass<MeleeDamageClass>()) {

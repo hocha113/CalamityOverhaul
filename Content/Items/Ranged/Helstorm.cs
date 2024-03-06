@@ -7,6 +7,9 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
+    /// <summary>
+    /// 地狱风暴
+    /// </summary>
     internal class Helstorm : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Helstorm";

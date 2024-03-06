@@ -1325,6 +1325,11 @@ Items: {
 		DisplayName: 卵石矛
 		Tooltip: ""
 	}
+
+	AmmoBox: {
+		DisplayName: 弹药箱
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1632,6 +1637,7 @@ Projectiles: {
 	// TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
 	// PebbleSpearProj.DisplayName: Pebble Spear Proj
 	// PebbleProj.DisplayName: Pebble Proj
+	// AmmoBoxProj.DisplayName: Ammo Box Proj
 }
 
 Configs: {

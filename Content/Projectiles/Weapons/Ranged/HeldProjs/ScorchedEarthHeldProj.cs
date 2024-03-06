@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (onFire && Projectile.ai[1] > 10) {
                 OnSpanProjFunc();
                 CreateRecoil();
-                if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
+                if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();//因为重写了SpanProj,所以这里需要手动调用
                 }
                 loadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示

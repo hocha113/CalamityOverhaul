@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 圣物的装备等级，这个字段决定了玩家会拥有什么样的弹幕效果
         /// </summary>
-        public int theRelicLuxor = 0;
+        public int TheRelicLuxor = 0;
         /// <summary>
         /// 是否装备制动器
         /// </summary>
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 玩家是否坐在大排档塑料椅子之上
         /// </summary>
-        public bool inFoodStallChair;
+        public bool InFoodStallChair;
         /// <summary>
         /// 玩家是否装备休谟稳定器
         /// </summary>
@@ -58,21 +58,21 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 是否受伤
         /// </summary>
-        public bool onHit;
+        public bool OnHit;
 
         public override void Initialize() {
-            onHit = false;
-            theRelicLuxor = 0;
+            OnHit = false;
+            TheRelicLuxor = 0;
             PressureIncrease = 1;
             LoadMuzzleBrake = false;
             InitialCreation = true;
         }
 
         public override void ResetEffects() {
-            onHit = false;
-            theRelicLuxor = 0;
+            OnHit = false;
+            TheRelicLuxor = 0;
             PressureIncrease = 1;
-            inFoodStallChair = false;
+            InFoodStallChair = false;
             EndlessStabilizerBool = false;
             HeldMurasamaBool = false;
             EndSkillEffectStartBool = false;
@@ -109,13 +109,13 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnHurt(Player.HurtInfo info) {
-            onHit = true;
+            OnHit = true;
         }
 
         public override void PostUpdate() {
             if (Player.sitting.TryGetSittingBlock(Player, out Tile t)) {
                 if (t.TileType == CWRIDs.FoodStallChairTile) {
-                    inFoodStallChair = true;
+                    InFoodStallChair = true;
                     Main.raining = true;
                     Main.maxRaining = 0.99f;
                     Main.cloudAlpha = 0.99f;
