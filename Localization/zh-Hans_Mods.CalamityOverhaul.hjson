@@ -987,8 +987,8 @@ Items: {
 		Tooltip:
 			'''
 			极强的后坐力
+			[KL]进行换弹
 			一把发射.70BMG子弹的重型反器材步枪
-			发射后需要按下右键进行换弹
 			按下[KEY]键开镜
 			'''
 	}
@@ -999,7 +999,7 @@ Items: {
 			'''
 			非常强的后坐力
 			一把发射.50BMG子弹的重型反器材步枪
-			发射后需要按下右键进行换弹
+			发射后需要按下[KL]进行换弹
 			按下[KEY]键开镜
 			'''
 	}
@@ -1216,7 +1216,7 @@ Items: {
 		Tooltip:
 			'''
 			无后坐力
-			右键进行换弹
+			[KL]进行换弹
 			发射大量解离射线，弹药量越少火力越发猛烈
 			最高时转为发射伽马射线爆
 			'''
@@ -1246,7 +1246,7 @@ Items: {
 		Tooltip:
 			'''
 			一般的后坐力
-			右键进行换弹
+			[KL]进行换弹
 			发射一颗高爆坚果仁，没错，就是坚果仁儿
 			"我一直尝试用这个东西召唤高坚果，但从没成功过"
 			'''
@@ -1257,7 +1257,7 @@ Items: {
 		Tooltip:
 			'''
 			微弱的后坐力
-			右键进行换弹
+			[KL]进行换弹
 			以极高的频率发射穿甲子弹
 			子弹将无视敌人15点防御
 			"其实能看到的都是拽光弹的拖尾，所以你需要额外支付一笔2685美元的军火账单"
@@ -1269,7 +1269,7 @@ Items: {
 		Tooltip:
 			'''
 			较强的后坐力
-			右键进行换弹
+			[KL]进行换弹
 			一次发射五发子弹
 			打空弹匣时发射一枚强力冲击波榴弹
 			"汝命归我"
@@ -1323,6 +1323,11 @@ Items: {
 
 	PebbleSpear: {
 		DisplayName: 卵石矛
+		Tooltip: ""
+	}
+
+	AmmoBox: {
+		DisplayName: 弹药箱
 		Tooltip: ""
 	}
 }
@@ -1632,6 +1637,7 @@ Projectiles: {
 	// TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
 	// PebbleSpearProj.DisplayName: Pebble Spear Proj
 	// PebbleProj.DisplayName: Pebble Proj
+	// AmmoBoxProj.DisplayName: Ammo Box Proj
 }
 
 Configs: {
@@ -1796,6 +1802,7 @@ Keybinds: {
 	Murasama_TriggerKey.DisplayName: 高分子斩切刃:扳机键
 	Murasama_DownKey.DisplayName: 高分子斩切刃:下砸
 	ADS_Key.DisplayName: 打开瞄准镜
+	KreLoad_Key.DisplayName: 换弹
 }
 
 TextContent: {

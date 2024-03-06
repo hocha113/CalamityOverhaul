@@ -19,6 +19,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => false;
 
-        public override void AI() => Main.player[Projectile.owner].CWR().inFoodStallChair = true;
+        public override void AI() => Main.player[Projectile.owner].CWR().InFoodStallChair = true;
     }
 }

@@ -12,7 +12,6 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +21,6 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.UI.Chat;
-using static Humanizer.In;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Extras
 {
@@ -39,18 +36,16 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public LocalizedText Legend { get; private set; }
 
-        public override void SetStaticDefaults(){
+        public override void SetStaticDefaults() {
             Legend = this.GetLocalization(nameof(Legend));
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         }
 
-        public override bool AltFunctionUse(Player player)
-        {
+        public override bool AltFunctionUse(Player player) {
             return true;
         }
 
-        public override void SetDefaults()
-        {
+        public override void SetDefaults() {
             Item.damage = 9999;
             Item.width = 62;
             Item.height = 128;
@@ -71,35 +66,36 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems2;
         }
 
-        public override void ModifyWeaponCrit(Player player, ref float crit) => crit = 9999;
+        public override void ModifyWeaponCrit(Player player, ref float crit) {
+            crit = 9999;
+        }
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
             damage = damage.Scale(0);
         }
 
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
+        public override bool CanUseItem(Player player) {
+            return player.ownedProjectileCounts[Item.shoot] <= 0;
+        }
 
-        public override void HoldItem(Player player)
-        {
+        public override void HoldItem(Player player) {
             if (ChargeValue >= 200 && Main.myPlayer == player.whoAmI)//当充能达到阈值时，会释放一次无尽符文，此时可以按下技能键触发技能
             {
                 SpanInfiniteRune(player);
 
-                if (CWRKeySystem.HeavenfallLongbowSkillKey.JustPressed)
-                {
+                if (CWRKeySystem.HeavenfallLongbowSkillKey.JustPressed) {
                     int types = ModContent.ProjectileType<VientianePunishment>();
-                    if (player.ownedProjectileCounts[types] < MaxVientNum)
-                    {
+                    if (player.ownedProjectileCounts[types] < MaxVientNum) {
                         int randomOffset = Main.rand.Next(MaxVientNum);//生成一个随机的偏移值，这样可以让所有的弓都有机会出现
                         int frmer = 0;
-                        for (int i = 0; i < MaxVientNum; i++)
-                        {
+                        for (int i = 0; i < MaxVientNum; i++) {
                             int proj = Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, types, Item.damage, 0, player.whoAmI, i + randomOffset);//给予ai[0]一个可排序的索引量，这决定了该万象弹幕使用什么样的贴图
                             if (i == 0)//让第一个万象弹幕作为主弹幕，负责多数代码执行
+{
                                 frmer = proj;//将首号弹幕的索引储存起来
-                            VientianePunishment vientianePunishment = Main.projectile[proj].ModProjectile as VientianePunishment;
-                            if (vientianePunishment != null)
-                            {
+                            }
+
+                            if (Main.projectile[proj].ModProjectile is VientianePunishment vientianePunishment) {
                                 vientianePunishment.Index = i;//给每个万象弹幕分配合适索引，这决定了它们能否正确排序
                                 vientianePunishment.FemerProjIndex = frmer;
                                 vientianePunishment.Projectile.netUpdate = true;
@@ -113,10 +109,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             }
         }
 
-        public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset){
-            if (line.Name == "ItemName" && line.Mod == "Terraria")
-            {
-                Color rarityColor = Main.DiscoColor;
+        public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
+            if (line.Name == "ItemName" && line.Mod == "Terraria") {
+                _ = Main.DiscoColor;
                 Vector2 basePosition = Main.MouseWorld - Main.screenPosition + new Vector2(23, 23);
                 string text = Language.GetTextValue("Mods.CalamityOverhaul.Items.HeavenfallLongbow.DisplayName");
                 InfiniteIngot.drawColorText(Main.spriteBatch, line, text, basePosition);
@@ -146,28 +141,26 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             }
         }
 
-        public override bool CanConsumeAmmo(Item ammo, Player player) => Main.rand.NextBool(3) && player.ownedProjectileCounts[Item.shoot] > 0;
+        public override bool CanConsumeAmmo(Item ammo, Player player) {
+            return Main.rand.NextBool(3) && player.ownedProjectileCounts[Item.shoot] > 0;
+        }
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-        {
-            Projectile.NewProjectile(source, position.X, position.Y, velocity.X, velocity.Y
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            _ = Projectile.NewProjectile(source, position.X, position.Y, velocity.X, velocity.Y
                 , ModContent.ProjectileType<HeavenfallLongbowHeldProj>(), damage, knockback, player.whoAmI, ai2: player.altFunctionUse == 0 ? 0 : 1);
             return false;
         }
 
-        public void SpanInfiniteRune(Player player)
-        {
-            if (spanInfiniteRuneBool)
-            {
-                SoundEngine.PlaySound(CommonCalamitySounds.PlasmaBoltSound, player.Center);
+        public void SpanInfiniteRune(Player player) {
+            if (spanInfiniteRuneBool) {
+                _ = SoundEngine.PlaySound(CommonCalamitySounds.PlasmaBoltSound, player.Center);
                 float rot = 0;
-                for (int j = 0; j < 500; j++)
-                {
+                for (int j = 0; j < 500; j++) {
                     rot += MathHelper.TwoPi / 500f;
                     float scale = 2f / (3f - (float)Math.Cos(2 * rot)) * 25;
                     float outwardMultiplier = MathHelper.Lerp(4f, 220f, Utils.GetLerpValue(0f, 120f, 13, true));
                     Vector2 lemniscateOffset = scale * new Vector2((float)Math.Cos(rot), (float)Math.Sin(2f * rot) / 2f);
-                    Vector2 pos = player.Center + lemniscateOffset * outwardMultiplier;
+                    Vector2 pos = player.Center + (lemniscateOffset * outwardMultiplier);
                     Vector2 particleSpeed = Vector2.Zero;
                     Color color = CWRUtils.MultiStepColorLerp(j / 500f, rainbowColors);
                     CWRParticle energyLeak = new LightParticle(pos, particleSpeed
@@ -175,23 +168,21 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                     CWRParticleHandler.AddParticle(energyLeak);
                 }
 
-                if (player.ownedProjectileCounts[ModContent.ProjectileType<InfiniteRune>()] == 0)
-                    Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, ModContent.ProjectileType<InfiniteRune>(), 99999, 0, player.whoAmI);
+                if (player.ownedProjectileCounts[ModContent.ProjectileType<InfiniteRune>()] == 0) {
+                    _ = Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, ModContent.ProjectileType<InfiniteRune>(), 99999, 0, player.whoAmI);
+                }
 
                 spanInfiniteRuneBool = false;
             }
         }
 
-        public static void Obliterate(Vector2 origPos)
-        {
-            const int strikeDamage = 999999;
+        public static void Obliterate(Vector2 origPos) {
             const int maxLengthSquared = 90000;
 
-            void killAction(NPC npc)
-            {
+            static void killAction(NPC npc) {
                 npc.CWR().ObliterateBool = true;
                 npc.dontTakeDamage = true;
-                npc.SimpleStrikeNPC(npc.lifeMax, 0);
+                _ = npc.SimpleStrikeNPC(npc.lifeMax, 0);
                 npc.life = 0;
                 npc.checkDead();
                 npc.HitEffect();
@@ -200,7 +191,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                 npc.netUpdate2 = true;
                 npc.active = false;
             }
-            var allTargetNpcTypes = new List<List<int>>{
+            List<List<int>> allTargetNpcTypes = new() {
                  CWRIDs.targetNpcTypes,
                  CWRIDs.targetNpcTypes2,
                  CWRIDs.targetNpcTypes3,
@@ -217,22 +208,19 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                  CWRIDs.targetNpcTypes14,
                  CWRIDs.targetNpcTypes15
             };
-            foreach (NPC npc in Main.npc)
-            {
-                if (npc.Center.To(origPos).LengthSquared() > maxLengthSquared)
+            foreach (NPC npc in Main.npc) {
+                if (npc.Center.To(origPos).LengthSquared() > maxLengthSquared) {
                     continue;
-                if (npc.active)
-                {
+                }
+
+                if (npc.active) {
                     //if (CWRIDs.targetNpcTypes16.Contains(npc.type)) {
                     //    npc.SimpleStrikeNPC(strikeDamage, 0);
                     //    continue;//如果对象属于天堂吞噬者，那么只会造成高伤害
                     //}
-                    foreach (var targetNpcTypes in allTargetNpcTypes)
-                    {
-                        if (targetNpcTypes.Contains(npc.type))
-                        {
-                            foreach (NPC npcToKill in Main.npc.Where(n => targetNpcTypes.Contains(n.type)))
-                            {
+                    foreach (List<int> targetNpcTypes in allTargetNpcTypes) {
+                        if (targetNpcTypes.Contains(npc.type)) {
+                            foreach (NPC npcToKill in Main.npc.Where(n => targetNpcTypes.Contains(n.type))) {
                                 killAction(npcToKill);
                             }
                             break;
@@ -243,8 +231,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             }
         }
 
-        public override void AddRecipes(){
-            CreateRecipe()
+        public override void AddRecipes() {
+            _ = CreateRecipe()
                 .AddIngredient<CalamityMod.Items.Weapons.Ranged.Drataliornus>()
                 .AddIngredient<CalamityMod.Items.Weapons.Ranged.HeavenlyGale>()
                 .AddIngredient<CalamityMod.Items.Weapons.Magic.Eternity>()

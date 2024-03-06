@@ -7,13 +7,16 @@ using CalamityMod.Projectiles.Magic;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Humanizer.In;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
 namespace CalamityOverhaul.Content
@@ -239,6 +242,31 @@ namespace CalamityOverhaul.Content
 
             if (projectile.type == ModContent.ProjectileType<ExoVortex>()) {
                 ExoVortexOnHitDeBug(target);
+            }
+
+            Item heldItem = player.ActiveItem();
+            if (heldItem.type != ItemID.None) {
+                if (heldItem.CWR().AmmoCapacityInFire) {
+                    target.AddBuff(BuffID.OnFire3, 60);
+                    HitFunc(player, target);
+                }
+            }
+        }
+
+        public void HitFunc(Player player, NPC target) {
+            player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage, 0f, 0, false);
+            float thirdDustScale = Main.rand.NextFloat(2, 4);
+            Vector2 dustRotation = (target.rotation - MathHelper.PiOver2).ToRotationVector2();
+            Vector2 dustVelocity = dustRotation * target.velocity.Length();
+            _ = SoundEngine.PlaySound(SoundID.Item14, target.Center);
+            for (int j = 0; j < 40; j++) {
+                int contactDust2 = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.InfernoFork, 0f, 0f, 0, default, thirdDustScale);
+                Dust dust = Main.dust[contactDust2];
+                dust.position = target.Center + (Vector2.UnitX.RotatedByRandom(MathHelper.Pi).RotatedBy(target.velocity.ToRotation()) * target.width / 3f);
+                dust.noGravity = true;
+                dust.velocity.Y -= 6f;
+                dust.velocity *= 0.5f;
+                dust.velocity += dustVelocity * (0.6f + (0.6f * Main.rand.NextFloat()));
             }
         }
 

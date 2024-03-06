@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 onFireR = false;
             }
 
-            if (Owner.CWR().onHit) {
+            if (Owner.CWR().OnHit) {
                 if (onFireCooldSmogTime <= heldItem.useTime) {
                     SoundEngine.PlaySound(CWRSound.Peuncharge with { Volume = 0.3f }, Projectile.Center);
                 }

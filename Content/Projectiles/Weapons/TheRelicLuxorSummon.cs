@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
                     Projectile.localAI[0] = 0f;
                 }
             }
-            if (Projectile.type == ModContent.ProjectileType<TheRelicLuxorSummon>() && (modPlayer.theRelicLuxor == 0 || player.dead)) {
+            if (Projectile.type == ModContent.ProjectileType<TheRelicLuxorSummon>() && (modPlayer.TheRelicLuxor == 0 || player.dead)) {
                 Projectile.Kill();
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;

@@ -92,10 +92,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float RangeOfStress = 8;
         /// <summary>
-        /// 应力缩放系数
-        /// </summary>
-        public float OwnerPressureIncrease => PressureWhetherIncrease ? Owner.CWR().PressureIncrease : 1;
-        /// <summary>
         /// 开火时会制造的后坐力模长，默认为5
         /// </summary>
         public float Recoil = 5;
@@ -119,6 +115,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 玩家是否正在行走
         /// </summary>
         public virtual bool WalkDetection => Owner.velocity.Y == 0 && Math.Abs(Owner.velocity.X) > 0;
+        /// <summary>
+        /// 应力缩放系数
+        /// </summary>
+        public float OwnerPressureIncrease => PressureWhetherIncrease ? Owner.CWR().PressureIncrease : 1;
+        /// <summary>
+        /// 获取来自物品的生成源
+        /// </summary>
+        protected IEntitySource Source => heldItem.GetSource_FromThis("CWRGun");
         /// <summary>
         /// 该枪体使用的实际纹理
         /// </summary>
@@ -168,7 +172,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 onFire = false;
             }
 
-            if (Owner.PressKey(false) && !onFire && CanRightClick) {
+            if (Owner.Calamity().mouseRight && !onFire && CanRightClick) {//Owner.PressKey()
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = GunOnFireRot;
                 Projectile.Center = Owner.MountedCenter + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
@@ -199,7 +203,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
         /// </summary>
         public virtual void FiringShoot() {
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
         }
@@ -208,13 +212,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
         /// </summary>
         public virtual void FiringShootR() {
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
         }
         /// <summary>
         /// 一个快捷创建属于卢克索饰品的发射事件，如果luxorsGift为<see langword="true"/>,
-        /// 或者<see cref="CWRPlayer.theRelicLuxor"/>大于0，便会调用该方法，在Firing方法之后调用
+        /// 或者<see cref="CWRPlayer.TheRelicLuxor"/>大于0，便会调用该方法，在Firing方法之后调用
         /// </summary>
         public virtual void LuxirEvent() {
             float damageMult = 1f;
@@ -232,7 +236,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <param name="luxirDamage"></param>
         /// <returns></returns>
         public virtual int SpanLuxirProj(int luxirDamage) {
-            return Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
+            return Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , ModContent.ProjectileType<LuxorsGiftRanged>(), luxirDamage, WeaponKnockback / 2, Owner.whoAmI, 0);
         }
         /// <summary>
@@ -251,7 +255,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <param name="slp"></param>
         public virtual void CaseEjection(float slp = 1) {
             Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
-            int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
+            int proj = Projectile.NewProjectile(Source, Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
             Main.projectile[proj].scale = slp;
         }
         /// <summary>
@@ -313,7 +317,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (onFireR) {
                     FiringShootR();
                 }
-                if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
+                if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
 

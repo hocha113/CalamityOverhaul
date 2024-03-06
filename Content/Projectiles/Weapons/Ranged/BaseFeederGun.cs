@@ -68,6 +68,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
         }
         /// <summary>
+        /// 关于装弹过程中的具体效果实现，返回<see langword="false"/>禁用默认的效果行为
+        /// </summary>
+        public virtual bool PreKreloadSoundEffcet(int time, int maxItem) {
+            return true;
+        }
+        /// <summary>
         /// 关于装弹过程中的第一部分音效的执行
         /// </summary>
         public virtual void KreloadSoundCaseEjection() {
@@ -99,10 +105,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void OnKreLoad() {
             BulletNum = heldItem.CWR().AmmoCapacity;
+            if (heldItem.CWR().AmmoCapacityInFire) {
+                heldItem.CWR().AmmoCapacityInFire = false;
+            }
         }
-
+        /// <summary>
+        /// 是否可以进行换弹操作，返回<see langword="false"/>阻止玩家进行换弹操作
+        /// </summary>
+        /// <returns></returns>
         public virtual bool WhetherStartChangingAmmunition() {
-            return Owner.PressKey(false) && kreloadTimeValue == 0 && (!isKreload || RepeatedCartridgeChange) && BulletNum < heldItem.CWR().AmmoCapacity && !onFire && HaveAmmo;
+            return CWRKeySystem.KreLoad_Key.JustPressed && kreloadTimeValue == 0 
+                && (!isKreload || RepeatedCartridgeChange) 
+                && BulletNum < heldItem.CWR().AmmoCapacity 
+                && !onFire && HaveAmmo && heldItem.CWR().NoKreLoadTime == 0;
         }
 
         public override void Recover() {
@@ -179,16 +194,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         ArmRotSengsFront += MathF.Sin(Time * 0.3f) * 0.7f;
                     }
                     kreloadTimeValue--;
-                    if (kreloadTimeValue == kreloadMaxTime - 1) {
-                        KreloadSoundCaseEjection();
-                    }
-                    if (kreloadTimeValue == kreloadMaxTime / 2) {
-                        KreloadSoundloadTheRounds();
-                    }
-                    if (kreloadTimeValue == kreloadMaxTime / 3) {
-                        if (PreConsumeAmmoEvent()) {
-                            for (int i = 0; i < heldItem.CWR().AmmoCapacity; i++) {
-                                UpdateConsumeAmmo();
+                    if (PreKreloadSoundEffcet(kreloadTimeValue, kreloadMaxTime)) {
+                        if (kreloadTimeValue == kreloadMaxTime - 1) {
+                            KreloadSoundCaseEjection();
+                        }
+                        if (kreloadTimeValue == kreloadMaxTime / 2) {
+                            KreloadSoundloadTheRounds();
+                        }
+                        if (kreloadTimeValue == kreloadMaxTime / 3) {
+                            if (PreConsumeAmmoEvent()) {
+                                for (int i = 0; i < heldItem.CWR().AmmoCapacity; i++) {
+                                    UpdateConsumeAmmo();
+                                }
                             }
                         }
                     }
@@ -252,7 +269,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void SpanProj() {
             if (onFire && Projectile.ai[1] > fireTime && kreloadTimeValue <= 0) {
-                if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
+                if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
                 if (PreFiringShoot()) {

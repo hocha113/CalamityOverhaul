@@ -1310,6 +1310,11 @@ Items: {
 		DisplayName: Pebble Spear
 		Tooltip: ""
 	}
+
+	AmmoBox: {
+		DisplayName: Ammo Box
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1617,6 +1622,7 @@ Projectiles: {
 	TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
 	PebbleSpearProj.DisplayName: Pebble Spear Proj
 	PebbleProj.DisplayName: Pebble Proj
+	AmmoBoxProj.DisplayName: Ammo Box Proj
 }
 
 Configs: {
@@ -1784,6 +1790,7 @@ Keybinds: {
 	Murasama_TriggerKey.DisplayName: Murasama: Trigger Key
 	Murasama_DownKey.DisplayName: Murasama:Down Key
 	ADS_Key.DisplayName: A D S_ Key
+	KreLoad_Key.DisplayName: Kre Load_ Key
 }
 
 TextContent: {

@@ -1,7 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
-using CalamityMod.Items.Weapons.Summon;
-using CalamityMod.Projectiles.Summon;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using System;
@@ -21,6 +19,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.DamageType = DamageClass.Summon;
+            Projectile.minionSlots = 1;
+            Projectile.minion = true;
             Projectile.friendly = true;
             Projectile.timeLeft = 660;
             Projectile.tileCollide = false;

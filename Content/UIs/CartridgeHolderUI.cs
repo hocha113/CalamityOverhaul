@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.UIs
     internal class CartridgeHolderUI : CWRUIPanel
     {
         public static CartridgeHolderUI Instance;
-        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/BulletCard");
+        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/BulletCard" + (handItem.CWR().AmmoCapacityInFire ? "_Fire" : ""));
         private Item handItem => player.ActiveItem();
         private int bulletNum => player.ActiveItem().CWR().NumberBullets;
         public bool Active {
