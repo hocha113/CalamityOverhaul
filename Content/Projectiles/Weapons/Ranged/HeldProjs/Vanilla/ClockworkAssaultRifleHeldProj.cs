@@ -13,8 +13,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ClockworkAssaultRifle].Value;
         public override int targetCayItem => ItemID.ClockworkAssaultRifle;
         public override int targetCWRItem => ItemID.ClockworkAssaultRifle;
+        int thisTime;
+        int thisNeedsTime;
+        int chargeAmmoNum;
         public override void SetRangedProperty() {
-            //fireTime = 10;
+            fireTime = 5;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -36,10 +39,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void OnKreLoad() {
-            if (BulletNum < 15) {
-                BulletNum += 15;
-            } else {
-                BulletNum = 30;
+            if (BulletNum < heldItem.CWR().AmmoCapacity) {
+                if (!onFire) {
+                    BulletNum += 10;
+                    onKreload = true;
+                    kreloadTimeValue = kreloadMaxTime;
+                }
             }
             if (heldItem.CWR().AmmoCapacityInFire) {
                 heldItem.CWR().AmmoCapacityInFire = false;
@@ -52,23 +57,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
         }
 
-        int cdcount = 0;
-        public override void FiringShoot() {
-            heldItem.useTime.Domp();
-            SpawnGunFireDust();
-            cdcount ++;
-            if (cdcount == 3) {
-                heldItem.useTime = 600;
-                cdcount = 0;
+        public override void PostInOwnerUpdate() {
+            if (thisNeedsTime > 0) {
+                onFire = false;
+                thisNeedsTime--;
             }
-            else if (cdcount == 4) {
-                heldItem.useTime = 12;
-                cdcount = 0;
-            } 
-            //else {
-            //    heldItem.useTime = 4;
-            //}
+        }
+
+        public override void FiringShoot() {
+            SpawnGunFireDust();
             Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
+            chargeAmmoNum++;
+            if (chargeAmmoNum >= 3) {
+                thisNeedsTime += 30;
+                chargeAmmoNum = 0;
+            }
             _ = CreateRecoil();
         }
     }

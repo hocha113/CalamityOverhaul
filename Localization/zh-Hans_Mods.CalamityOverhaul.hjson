@@ -1750,11 +1750,11 @@ Projectiles: {
 	// KarasawaHeldProj.DisplayName: Karasawa Held Proj
 	// KingsbaneHeldProj.DisplayName: Kingsbane Held Proj
 	// MegalodonHeldProj.DisplayName: Megalodon Held Proj
+	// ClockworkAssaultRifleHeldProj.DisplayName: Clockwork Assault Rifle Held Proj
 	// MidasPrimeHeldProj.DisplayName: Midas Prime Held Proj
 	// NeedlerHeldProj.DisplayName: Needler Held Proj
 	// PlagueTaintedSMGHeldProj.DisplayName: Plague Tainted S M G Held Proj
 	// PumplerHeldProj.DisplayName: Pumpler Held Proj
-	// ClockworkAssaultRifleHeldProj.DisplayName: Clockwork Assault Rifle Held Proj
 }
 
 Configs: {
