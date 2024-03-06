@@ -1309,6 +1309,11 @@ Items: {
 		DisplayName: Pebble Spear
 		Tooltip: ""
 	}
+
+	AmmoBox: {
+		DisplayName: Ammo Box
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1616,6 +1621,7 @@ Projectiles: {
 	TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
 	PebbleSpearProj.DisplayName: Pebble Spear Proj
 	PebbleProj.DisplayName: Pebble Proj
+	AmmoBoxProj.DisplayName: Ammo Box Proj
 }
 
 Configs: {

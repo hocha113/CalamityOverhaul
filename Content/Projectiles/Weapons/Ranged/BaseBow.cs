@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         /// <summary>
         /// 一个快捷创建属于卢克索饰品的发射事件，如果luxorsGift为<see langword="true"/>,
-        /// 或者<see cref="CWRPlayer.theRelicLuxor"/>大于0，便会调用该方法，在Firing方法之后调用
+        /// 或者<see cref="CWRPlayer.TheRelicLuxor"/>大于0，便会调用该方法，在Firing方法之后调用
         /// </summary>
         public virtual void LuxirEvent() {
             float damageMult = 1f;
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (onFireR) {
                     BowShootR();
                 }
-                if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
+                if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
                 Projectile.ai[1] = 0;

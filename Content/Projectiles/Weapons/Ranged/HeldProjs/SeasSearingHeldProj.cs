@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
                     , ModContent.ProjectileType<SeasSearingBubble>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
 
-                if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
+                if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();//因为重写了SpanProj,所以这里需要手动调用
                 }
 
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
                     , ModContent.ProjectileType<SeasSearingSecondary>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
 
-                if (Owner.Calamity().luxorsGift || Owner.CWR().theRelicLuxor > 0) {
+                if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();//因为重写了SpanProj,所以这里需要手动调用
                 }
 

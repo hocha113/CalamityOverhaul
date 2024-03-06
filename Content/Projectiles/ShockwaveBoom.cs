@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Bosses
+namespace CalamityOverhaul.Content.Projectiles
 {
     internal class ShockwaveBoom : ModProjectile
     {

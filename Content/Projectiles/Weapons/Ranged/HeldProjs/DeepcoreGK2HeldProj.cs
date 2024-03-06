@@ -2,6 +2,7 @@
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -36,6 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (kreLoadTime > 60) {
                     heldItem.CWR().NumberBullets = heldItem.CWR().AmmoCapacity;
                     heldItem.CWR().IsKreload = true;
+                    heldItem.CWR().AmmoCapacityInFire = false;
                 }
             }
             else {
@@ -57,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (heldItem.CWR().NumberBullets <= 0) {
                 return;
             }
-            int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].scale *= 3;
             Main.projectile[proj].extraUpdates += 1;
             SpawnGunFireDust(GunShootPos, dustID1: DustID.YellowStarDust, dustID2: DustID.FireworksRGB, dustID3: DustID.FireworksRGB);
@@ -76,7 +78,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (heldItem.CWR().NumberBullets <= 0) {
                 return;
             }
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             SpawnGunFireDust(GunShootPos + ShootVelocity, dustID1: DustID.YellowStarDust, dustID2: DustID.FireworkFountain_Red, dustID3: DustID.FireworkFountain_Red);
             CaseEjection();
             SoundEngine.PlaySound(heldItem.UseSound, Projectile.Center);
