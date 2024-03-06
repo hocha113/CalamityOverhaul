@@ -24,8 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             GunPressure = 0.4f;
             ControlForce = 0.05f;
             Recoil = 2.8f;
-            RangeOfStress = 48;
-            RepeatedCartridgeChange = true;
+            RangeOfStress = 8;
         }
 
         public override void PreInOwnerUpdate() {
