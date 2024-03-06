@@ -151,10 +151,21 @@ namespace CalamityOverhaul.Content
         }
 
         public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) {
+            yield return new Item(ModContent.ItemType<PebbleSpear>());
+            yield return new Item(ModContent.ItemType<PebblePick>());
+            yield return new Item(ModContent.ItemType<PebbleAxe>());
             yield return new Item(ModContent.ItemType<TheSpiritFlint>());
             yield return new Item(ModContent.ItemType<TheUpiStele>());
             yield return new Item(ModContent.ItemType<Pebble>(), 999);
             yield return new Item(ModContent.ItemType<OverhaulTheBibleBook>());
+        }
+
+        public override void ModifyStartingInventory(IReadOnlyDictionary<string, List<Item>> itemsByMod, bool mediumCoreDeath) {
+            if (!mediumCoreDeath) {
+                itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperAxe);
+                itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperShortsword);
+                itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperPickaxe);
+            }
         }
     }
 }

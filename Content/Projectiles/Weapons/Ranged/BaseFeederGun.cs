@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Projectile.rotation = GunOnFireRot;
                     Projectile.Center = Owner.MountedCenter + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
                     ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
-                    if (HaveAmmo && isKreload && Projectile.IsOwnedByLocalPlayer()) {// 
+                    if (HaveAmmo && isKreload && Projectile.IsOwnedByLocalPlayer()) {
                         onFireR = true;
                         Projectile.ai[1]++;
                     }

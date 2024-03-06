@@ -98,11 +98,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 fireTime = 2;
                 Recoil = 0.5f;
                 setPitchVarianceValue = 0.6f;
+                ShootPosNorlLengValue = -8;
                 chargeAmmo++;
                 if (chargeAmmo > 90) {
                     fireTime = 3;
                     chargeAmmo = chargeValue = 0;
                     Recoil = 0.2f;
+                    ShootPosNorlLengValue = -13;
                 }
             }
             SoundEngine.PlaySound(SoundID.Item40 with { PitchVariance = setPitchVarianceValue }, Projectile.Center);

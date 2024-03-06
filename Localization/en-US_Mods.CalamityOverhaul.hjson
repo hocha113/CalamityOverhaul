@@ -1355,6 +1355,11 @@ Items: {
 		DisplayName: Kingsbane Ectype
 		Tooltip: ""
 	}
+
+	MegalodonEcType: {
+		DisplayName: Megalodon Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1671,6 +1676,7 @@ Projectiles: {
 	InfinityHeldProj.DisplayName: Infinity Held Proj
 	KarasawaHeldProj.DisplayName: Karasawa Held Proj
 	KingsbaneHeldProj.DisplayName: Kingsbane Held Proj
+	MegalodonHeldProj.DisplayName: Megalodon Held Proj
 }
 
 Configs: {

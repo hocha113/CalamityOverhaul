@@ -1388,17 +1388,32 @@ Items: {
 	}
 
 	InfinityEcType: {
-		// DisplayName: Infinity Ec Type
-		// Tooltip: ""
+		DisplayName: 无穷
+		Tooltip:
+			'''
+			微弱的后坐力
+			按下[KL]键进行换弹
+			发射一团会分裂弹射的能量子弹
+			右键发射一团火枪子弹
+			“只要你把它握在手中，无限的解离就不会停止”
+			'''
 	}
 
 	KarasawaEcType: {
-		// DisplayName: Karasawa Ec Type
-		// Tooltip: ""
+		DisplayName: 卡拉萨瓦重炮
+		Tooltip:
+			'''
+
+			'''
 	}
 
 	KingsbaneEctype: {
 		// DisplayName: Kingsbane Ectype
+		// Tooltip: ""
+	}
+
+	MegalodonEcType: {
+		// DisplayName: Megalodon Ec Type
 		// Tooltip: ""
 	}
 }
@@ -1717,6 +1732,7 @@ Projectiles: {
 	// InfinityHeldProj.DisplayName: Infinity Held Proj
 	// KarasawaHeldProj.DisplayName: Karasawa Held Proj
 	// KingsbaneHeldProj.DisplayName: Kingsbane Held Proj
+	// MegalodonHeldProj.DisplayName: Megalodon Held Proj
 }
 
 Configs: {
