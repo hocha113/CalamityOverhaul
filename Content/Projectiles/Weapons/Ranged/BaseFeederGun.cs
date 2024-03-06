@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     /// </summary>
     internal abstract class BaseFeederGun : BaseGun
     {
+        internal AmmoState AmmoState;
         /// <summary>
         /// 装弹提醒，一般来讲会依赖左键的按键事件进行更新
         /// </summary>

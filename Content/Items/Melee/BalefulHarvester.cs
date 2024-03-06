@@ -44,7 +44,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<BalefulHarvesterHeldProj>();
             Item.shootSpeed = 15;
-            
         }
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<BalefulHarvesterHeldProj>()] == 0;

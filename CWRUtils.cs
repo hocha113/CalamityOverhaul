@@ -936,7 +936,7 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 快捷的将一个物品实例设置为手持对象
+        /// 快捷的将一个物品实例设置为填装枪类实例
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="item"></param>
@@ -951,6 +951,36 @@ namespace CalamityOverhaul
             _ = player.PickAmmo(player.ActiveItem(), out shootState.AmmoTypes, out shootState.ScaleFactor
                 , out shootState.WeaponDamage, out shootState.WeaponKnockback, out shootState.UseAmmoItemType, true);
             return shootState;
+        }
+
+        public static AmmoState GetAmmoState(this Player player, int assignAmooType = 0) {
+            AmmoState ammoState = new();
+            int num = 0;
+            List<Item> itemInds = new List<Item>();
+            List<int> itemTypes = new List<int>();
+            List<int> itemShootTypes = new List<int>();
+            foreach (Item item in player.inventory) {
+                if (item.ammo == AmmoID.None) {
+                    continue;
+                }
+                if (assignAmooType != 0) {
+                    if (item.ammo == assignAmooType) {
+                        continue;
+                    }
+                }
+                itemTypes.Add(item.type);
+                itemShootTypes.Add(item.shoot);
+                itemInds.Add(item);
+                num += item.stack;
+            }
+            itemInds = itemInds.OrderByDescending(item => item.stack).ToList();
+            ammoState.InProjIDs = itemShootTypes.ToArray();
+            ammoState.InItemInds = itemInds.ToArray();
+            ammoState.InItemIDs = itemTypes.ToArray();
+            ammoState.Amount = num;
+            ammoState.MaxAmountToItem = itemInds[0];
+            ammoState.MinAmountToItem = itemInds[itemInds.Count - 1];
+            return ammoState;
         }
 
         public static bool IsRectangleIntersectingFan(Rectangle targetHitbox, Vector2 fanOrigin, float fanRadius, float startAngle, float endAngle) {
