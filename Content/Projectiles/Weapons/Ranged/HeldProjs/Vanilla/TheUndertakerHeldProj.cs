@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
     internal class TheUndertakerHeldProj : BaseFeederGun
     {
@@ -12,11 +12,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.TheUndertaker].Value;
         public override int targetCayItem => ItemID.TheUndertaker;
         public override int targetCWRItem => ItemID.TheUndertaker;
-        private int bulletNum {
+        private int bulletNum
+        {
             get => heldItem.CWR().NumberBullets;
             set => heldItem.CWR().NumberBullets = value;
         }
-        public override void SetRangedProperty() {
+        public override void SetRangedProperty()
+        {
             kreloadMaxTime = 40;
             fireTime = 20;
             ShootPosToMouLengValue = 0;
@@ -29,18 +31,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 1.2f;
         }
 
-        public override bool WhetherStartChangingAmmunition() {
+        public override bool WhetherStartChangingAmmunition()
+        {
             return base.WhetherStartChangingAmmunition() && bulletNum < heldItem.CWR().AmmoCapacity && !onFire;
         }
 
-        public override void OnKreLoad() {
+        public override void OnKreLoad()
+        {
             bulletNum = heldItem.CWR().AmmoCapacity;
-            if (heldItem.CWR().AmmoCapacityInFire) {
+            if (heldItem.CWR().AmmoCapacityInFire)
+            {
                 heldItem.CWR().AmmoCapacityInFire = false;
             }
         }
 
-        public override void PostFiringShoot() {
+        public override void PostFiringShoot()
+        {
             bulletNum--;
         }
     }

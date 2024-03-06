@@ -4,15 +4,16 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
-    internal class ZapinatorGrayHeldProj : BaseFeederGun
+    internal class ZapinatorOrangeHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
-        public override Texture2D TextureValue => TextureAssets.Item[ItemID.ZapinatorGray].Value;
-        public override int targetCayItem => ItemID.ZapinatorGray;
-        public override int targetCWRItem => ItemID.ZapinatorGray;
-        public override void SetRangedProperty() {
+        public override Texture2D TextureValue => TextureAssets.Item[ItemID.ZapinatorOrange].Value;
+        public override int targetCayItem => ItemID.ZapinatorOrange;
+        public override int targetCWRItem => ItemID.ZapinatorOrange;
+        public override void SetRangedProperty()
+        {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;

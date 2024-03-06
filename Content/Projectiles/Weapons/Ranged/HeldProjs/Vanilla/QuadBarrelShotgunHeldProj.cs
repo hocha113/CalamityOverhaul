@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
     internal class QuadBarrelShotgunHeldProj : BaseFeederGun
     {
@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.QuadBarrelShotgun].Value;
         public override int targetCayItem => ItemID.QuadBarrelShotgun;
         public override int targetCWRItem => ItemID.QuadBarrelShotgun;
-        public override void SetRangedProperty() {
+        public override void SetRangedProperty()
+        {
             fireTime = 35;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
@@ -29,31 +30,39 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             kreloadMaxTime = 75;
         }
 
-        public override void PreInOwnerUpdate() {
-            if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
+        public override void PreInOwnerUpdate()
+        {
+            if (kreloadTimeValue > 0)
+            {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向
                 FeederOffsetRot = -MathHelper.ToRadians(30) * DirSign;
                 FeederOffsetPos = new Vector2(0, -13);
             }
         }
 
-        public override void OnKreLoad() {
+        public override void OnKreLoad()
+        {
             BulletNum += 6;
-            if (heldItem.CWR().AmmoCapacityInFire) {
+            if (heldItem.CWR().AmmoCapacityInFire)
+            {
                 heldItem.CWR().AmmoCapacityInFire = false;
             }
         }
 
-        public override void PostFiringShoot() {
-            if (BulletNum >= 6) {
+        public override void PostFiringShoot()
+        {
+            if (BulletNum >= 6)
+            {
                 BulletNum -= 6;
             }
         }
 
-        public override void FiringShoot() {
+        public override void FiringShoot()
+        {
             SpawnGunFireDust();
             Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 5; i++)
+            {
                 Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.36f, 0.36f)) * Main.rand.NextFloat(0.7f, 1.3f), AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
                 _ = CreateRecoil();
             }
