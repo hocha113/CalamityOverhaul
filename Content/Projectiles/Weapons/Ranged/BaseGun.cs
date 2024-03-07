@@ -298,9 +298,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Vector2 dustVel = new Vector2(num, 0f).RotatedBy((double)velocity.ToRotation(), default);
                 dustVel = dustVel.RotatedBy(0f - angleRandom);
                 dustVel = dustVel.RotatedByRandom(2f * angleRandom);
-                if (Main.rand.NextBool(4)) {
-                    dustVel = Vector2.Lerp(dustVel, -Vector2.UnitY * dustVel.Length(), Main.rand.NextFloat(0.6f, 0.85f)) * 0.9f;
-                }
+                //if (Main.rand.NextBool(4)) {
+                //    dustVel = Vector2.Lerp(dustVel, -Vector2.UnitY * dustVel.Length(), Main.rand.NextFloat(0.6f, 0.85f)) * 0.9f;
+                //}
                 float scale = Main.rand.NextFloat(0.5f, 1.5f);
                 int idx = Dust.NewDust(pos, 1, 1, dustID, dustVel.X, dustVel.Y, 0, default, scale);
                 Main.dust[idx].noGravity = true;

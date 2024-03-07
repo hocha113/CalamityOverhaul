@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            FireTime = 10;
+            FireTime = 30;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -34,8 +34,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PreInOwnerUpdate() {
             if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向
-                FeederOffsetRot = -MathHelper.ToRadians(50) * DirSign;
-                FeederOffsetPos = new Vector2(DirSign * -3, -25);
+                FeederOffsetRot = MathHelper.ToRadians(50) * DirSign;
+                FeederOffsetPos = new Vector2(DirSign * -3, 0);
             }
         }
 

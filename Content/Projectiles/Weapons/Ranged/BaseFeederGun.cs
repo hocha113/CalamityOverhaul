@@ -57,6 +57,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected bool RepeatedCartridgeChange;
         /// <summary>
+        /// 是否启用后坐力枪体反向制推效果，默认为<see langword="false"/>
+        /// </summary>
+        protected bool EnableRecoilRetroEffect;
+        /// <summary>
+        /// 后坐力制推力度模长，推送方向为<see cref="BaseHeldRanged.ShootVelocity"/>的反向，在<see cref="EnableRecoilRetroEffect"/>为<see langword="true"/>时生效，默认为5f
+        /// </summary>
+        protected float RecoilRetroForceMagnitude = 5;
+        /// <summary>
         /// 是否是一个多发装填，一般来讲应用于弹容量大于1的枪类，开启后影响<see cref="PreFireReloadKreLoad"/>
         /// </summary>
         protected bool MultipleCartridgeLoading;
@@ -185,11 +193,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         }
 
-        public sealed override void InOwner() {
-            if (Item.CWR().MagazineContents == null) {
+        public void InitializeMagazine() {
+            CWRItems cwrItem = Item.CWR();
+            if (cwrItem.MagazineContents == null) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
-                LoadBulletsIntoMagazine();//这一次更新弹匣内容，压入子弹
+                //LoadBulletsIntoMagazine();//这一次更新弹匣内容，压入子弹
+                cwrItem.MagazineContents = new Item[cwrItem.AmmoCapacity];
+                for (int i = 0; i < cwrItem.MagazineContents.Length; i++) {
+                    cwrItem.MagazineContents[i] = new Item();
+                }
             }
+        }
+
+        public sealed override void InOwner() {
+            InitializeMagazine();
             PreInOwnerUpdate();
             ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR;
             ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR;
@@ -338,14 +355,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
         /// <summary>
         /// 右键单次开火事件
         /// </summary>
         public override void FiringShootR() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
         /// <summary>
         /// 在开火后执行默认的装弹处理逻辑之前执行，返回<see langword="false"/>禁止对
@@ -383,6 +400,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
                 UpdateMagazineContents();
                 if (PreFiringShoot()) {
+                    if (EnableRecoilRetroEffect) {
+                        OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
+                    }
                     if (onFire) {
                         FiringShoot();
                     }

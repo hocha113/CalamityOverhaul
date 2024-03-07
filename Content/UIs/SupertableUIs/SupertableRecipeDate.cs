@@ -59,15 +59,15 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <summary>
         /// 暗物质杆
         /// </summary>
-        public static string[] FullItems5 = new string[] {"0", "0", "0", "0", "0", "0", "0", "0", "CalamityOverhaul/DarkMatterBall",
-            "0", "0", "0", "0", "0", "0", "0", "CalamityOverhaul/DarkMatterBall", "0",
-            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/DarkMatterBall", "0", "0",
-            "0", "0", "0", "0", "0", "CalamityOverhaul/DarkMatterBall", "0", "0", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/DarkMatterBall", "0", "0", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/DarkMatterBall", "0", "0", "0", "0", "0",
-            "0", "0", "CalamityOverhaul/DarkMatterBall", "0", "0", "0", "0", "0", "0",
-            "0", "CalamityOverhaul/DarkMatterBall", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/DarkMatterBall", "0", "0", "0", "0", "0", "0", "0", "0",
+        public static string[] FullItems5 = new string[] {"CalamityOverhaul/SpectralMatter", "CalamityMod/ExoPrism", "CalamityMod/AshesofAnnihilation", "CalamityMod/AscendantSpiritEssence", "117", "706", "CalamityMod/AerialiteBar", "CalamityOverhaul/DarkMatterBall", "0",
+            "175", "CalamityMod/CryonicBar", "1006", "3261", "CalamityMod/PerennialBar", "1552", "3467", "CalamityOverhaul/DarkMatterBall", "0",
+            "CalamityMod/AstralBar", "CalamityMod/ScoriaBar", "CalamityOverhaul/PestilenceIngot", "CalamityMod/UelibloomBar", "CalamityMod/CosmiliteBar", "CalamityMod/AuricBar", "CalamityMod/ShadowspecBar", "CalamityOverhaul/DarkMatterBall", "0",
+            "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/BlackMatterStick"
         };
         /// <summary>

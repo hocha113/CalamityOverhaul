@@ -526,7 +526,7 @@ Items: {
 	}
 
 	BlackMatterStick: {
-		DisplayName: 超密质中子星聚合杆
+		DisplayName: 超密质中子星聚合锭
 		Tooltip: ""
 	}
 
@@ -1438,6 +1438,145 @@ Items: {
 		// DisplayName: Scorpio Ec Type
 		// Tooltip: ""
 	}
+
+	ArbalestEcType: {
+		// DisplayName: Arbalest Ec Type
+		// Tooltip: ""
+	}
+
+	ArcherfishEcType: {
+		// DisplayName: Archerfish Ec Type
+		// Tooltip: ""
+	}
+
+	ArcNovaDiffuserEcType: {
+		// DisplayName: Arc Nova Diffuser Ec Type
+		// Tooltip: ""
+	}
+
+	AstralBlasterEcType: {
+		// DisplayName: Astral Blaster Ec Type
+		// Tooltip: ""
+	}
+
+	AuralisEcType: {
+		// DisplayName: Auralis Ec Type
+		// Tooltip: ""
+	}
+
+	AuroraBlazerEcType: {
+		// DisplayName: Aurora Blazer Ec Type
+		// Tooltip: ""
+	}
+
+	BarracudaGunEcType: {
+		// DisplayName: Barracuda Gun Ec Type
+		// Tooltip: ""
+	}
+
+	BlissfulBombardierEcType: {
+		// DisplayName: Blissful Bombardier Ec Type
+		// Tooltip: ""
+	}
+
+	ChickenCannonEcType: {
+		// DisplayName: Chicken Cannon Ec Type
+		// Tooltip: ""
+	}
+
+	ClamorRifleEcType: {
+		// DisplayName: Clamor Rifle Ec Type
+		// Tooltip: ""
+	}
+
+	ClaretCannonEcType: {
+		DisplayName: 深红手炮
+		Tooltip:
+			'''
+			一次发射三发子弹
+			将火枪子弹转化为吸血的血泪弹
+			'''
+	}
+
+	GunkShotEcType: {
+		DisplayName: 胶泥散弹枪
+		Tooltip:
+			'''
+			发射数颗子弹
+			'''
+	}
+
+	MagnaCannonEcType: {
+		DisplayName: 麦格纳炮
+		Tooltip:
+			'''
+			充能发射一阵快速的水晶矢冲击波
+			随着充能时间的增长，会提升发射的水晶矢数量
+			满充能会发射一阵持续时间更长，速度更快的冲击波
+			'''
+	}
+
+	NorfleetEcType: {
+		DisplayName: 诺法雷
+		Tooltip:
+			'''
+			完美平衡，万物皆宜......
+			'''
+	}
+
+	ShroomerEcType: {
+		DisplayName: 蘑菇狙击枪
+		Tooltip:
+			'''
+			发射子弹以及强大的追踪蘑菇
+			'''
+	}
+
+	StarfleetEcType: {
+		DisplayName: 星辰冲击波
+		Tooltip:
+			'''
+			发射数个等离子星弹
+			'''
+	}
+
+	StarmadaEcType: {
+		DisplayName: 群星大炮
+		Tooltip:
+			'''
+			发射星辰与等离子星弹
+			66%几率节省弹药
+			'''
+	}
+
+	SulphuricAcidCannonEcType: {
+		DisplayName: 硫酸炮
+		Tooltip:
+			'''
+			发射一个能黏在敌人身上的硫酸弹幕并溶解它们
+			'''
+	}
+
+	UniversalGenesisEcType: {
+		DisplayName: 宇宙之源
+		Tooltip:
+			'''
+			从枪口发射一簇子弹，令一簇坠星朝鼠标位置降落
+			将火枪子弹转化为击中后召唤额外坠星的唤星弹
+			50%概率节省弹药
+			“令星空坠落到敌人头上”
+			'''
+	}
+
+	VoidragonEcType: {
+		DisplayName: 太虚星龙炮
+		Tooltip:
+			'''
+			每隔一发就会发射虚空爆破弹
+			每一发都会射出魔火之触
+			75%几率节省弹药
+			'''
+	}
 }
 
 Projectiles: {
@@ -1770,6 +1909,24 @@ Projectiles: {
 	// DartRifleHeldProj.DisplayName: Dart Rifle Held Proj
 	// NailGunHeldProj.DisplayName: Nail Gun Held Proj
 	// SniperRifleHeldProj.DisplayName: Sniper Rifle Held Proj
+	// ArcherfishHeldProj.DisplayName: Archerfish Held Proj
+	// ArcNovaDiffuserHeldProj.DisplayName: Arc Nova Diffuser Held Proj
+	// AstralBlasterHeldProj.DisplayName: Astral Blaster Held Proj
+	// AuralisHeldProj.DisplayName: Auralis Held Proj
+	// AuroraBlazerHeldProj.DisplayName: Aurora Blazer Held Proj
+	// BarracudaGunHeldProj.DisplayName: Barracuda Gun Held Proj
+	// BlissfulBombardierHeldProj.DisplayName: Blissful Bombardier Held Proj
+	// ChickenCannonHeldProj.DisplayName: Chicken Cannon Held Proj
+	// ClamorRifleHeldProj.DisplayName: Clamor Rifle Held Proj
+	// GunkShotHeldProj.DisplayName: Gunk Shot Held Proj
+	// MagnaCannonHeldProj.DisplayName: Magna Cannon Held Proj
+	// NorfleetHeldProj.DisplayName: Norfleet Held Proj
+	// ShroomerHeldProj.DisplayName: Shroomer Held Proj
+	// StarfleetHeldProj.DisplayName: Starfleet Held Proj
+	// StarmadaHeldProj.DisplayName: Starmada Held Proj
+	// SulphuricAcidCannonHeldProj.DisplayName: Sulphuric Acid Cannon Held Proj
+	// UniversalGenesisHeldProj.DisplayName: Universal Genesis Held Proj
+	// VoidragonHeldProj.DisplayName: Voidragon Held Proj
 }
 
 Configs: {

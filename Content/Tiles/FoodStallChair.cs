@@ -80,6 +80,7 @@ namespace CalamityOverhaul.Content.Tiles
             }
 
             player.noThrow = 2;
+            player.mouseInterface = true;
             player.cursorItemIconEnabled = true;
             player.cursorItemIconID = ModContent.ItemType<Items.Placeable.FoodStallChair>();//当玩家鼠标悬停在物块之上时，显示该物品的材质
 

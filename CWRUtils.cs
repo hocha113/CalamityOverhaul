@@ -946,6 +946,10 @@ namespace CalamityOverhaul
             item.CWR().AmmoCapacity = ammoCapacity;
         }
 
+        public static void SetCalamityGunSD<T>(this Item item) where T : ModItem {
+            item.CloneDefaults(ModContent.ItemType<T>());
+        }
+
         public static ShootState GetShootState(this Player player) {
             ShootState shootState = new();
             _ = player.PickAmmo(player.ActiveItem(), out shootState.AmmoTypes, out shootState.ScaleFactor

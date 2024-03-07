@@ -546,7 +546,7 @@ Items: {
 	}
 
 	BlackMatterStick: {
-		DisplayName: Black Matter Stick
+		DisplayName: Dense Neutron Star Ingot
 		Tooltip: ""
 	}
 
@@ -1385,6 +1385,106 @@ Items: {
 		DisplayName: Scorpio Ec Type
 		Tooltip: ""
 	}
+
+	ArbalestEcType: {
+		DisplayName: Arbalest Ec Type
+		Tooltip: ""
+	}
+
+	ArcherfishEcType: {
+		DisplayName: Archerfish Ec Type
+		Tooltip: ""
+	}
+
+	ArcNovaDiffuserEcType: {
+		DisplayName: Arc Nova Diffuser Ec Type
+		Tooltip: ""
+	}
+
+	AstralBlasterEcType: {
+		DisplayName: Astral Blaster Ec Type
+		Tooltip: ""
+	}
+
+	AuralisEcType: {
+		DisplayName: Auralis Ec Type
+		Tooltip: ""
+	}
+
+	AuroraBlazerEcType: {
+		DisplayName: Aurora Blazer Ec Type
+		Tooltip: ""
+	}
+
+	BarracudaGunEcType: {
+		DisplayName: Barracuda Gun Ec Type
+		Tooltip: ""
+	}
+
+	BlissfulBombardierEcType: {
+		DisplayName: Blissful Bombardier Ec Type
+		Tooltip: ""
+	}
+
+	ChickenCannonEcType: {
+		DisplayName: Chicken Cannon Ec Type
+		Tooltip: ""
+	}
+
+	ClamorRifleEcType: {
+		DisplayName: Clamor Rifle Ec Type
+		Tooltip: ""
+	}
+
+	ClaretCannonEcType: {
+		DisplayName: Claret Cannon Ec Type
+		Tooltip: ""
+	}
+
+	GunkShotEcType: {
+		DisplayName: Gunk Shot Ec Type
+		Tooltip: ""
+	}
+
+	MagnaCannonEcType: {
+		DisplayName: Magna Cannon Ec Type
+		Tooltip: ""
+	}
+
+	NorfleetEcType: {
+		DisplayName: Norfleet Ec Type
+		Tooltip: ""
+	}
+
+	ShroomerEcType: {
+		DisplayName: Shroomer Ec Type
+		Tooltip: ""
+	}
+
+	StarfleetEcType: {
+		DisplayName: Starfleet Ec Type
+		Tooltip: ""
+	}
+
+	StarmadaEcType: {
+		DisplayName: Starmada Ec Type
+		Tooltip: ""
+	}
+
+	SulphuricAcidCannonEcType: {
+		DisplayName: Sulphuric Acid Cannon Ec Type
+		Tooltip: ""
+	}
+
+	UniversalGenesisEcType: {
+		DisplayName: Universal Genesis Ec Type
+		Tooltip: ""
+	}
+
+	VoidragonEcType: {
+		DisplayName: Voidragon Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1717,6 +1817,24 @@ Projectiles: {
 	DartRifleHeldProj.DisplayName: Dart Rifle Held Proj
 	NailGunHeldProj.DisplayName: Nail Gun Held Proj
 	SniperRifleHeldProj.DisplayName: Sniper Rifle Held Proj
+	ArcherfishHeldProj.DisplayName: Archerfish Held Proj
+	ArcNovaDiffuserHeldProj.DisplayName: Arc Nova Diffuser Held Proj
+	AstralBlasterHeldProj.DisplayName: Astral Blaster Held Proj
+	AuralisHeldProj.DisplayName: Auralis Held Proj
+	AuroraBlazerHeldProj.DisplayName: Aurora Blazer Held Proj
+	BarracudaGunHeldProj.DisplayName: Barracuda Gun Held Proj
+	BlissfulBombardierHeldProj.DisplayName: Blissful Bombardier Held Proj
+	ChickenCannonHeldProj.DisplayName: Chicken Cannon Held Proj
+	ClamorRifleHeldProj.DisplayName: Clamor Rifle Held Proj
+	GunkShotHeldProj.DisplayName: Gunk Shot Held Proj
+	MagnaCannonHeldProj.DisplayName: Magna Cannon Held Proj
+	NorfleetHeldProj.DisplayName: Norfleet Held Proj
+	ShroomerHeldProj.DisplayName: Shroomer Held Proj
+	StarfleetHeldProj.DisplayName: Starfleet Held Proj
+	StarmadaHeldProj.DisplayName: Starmada Held Proj
+	SulphuricAcidCannonHeldProj.DisplayName: Sulphuric Acid Cannon Held Proj
+	UniversalGenesisHeldProj.DisplayName: Universal Genesis Held Proj
+	VoidragonHeldProj.DisplayName: Voidragon Held Proj
 }
 
 Configs: {

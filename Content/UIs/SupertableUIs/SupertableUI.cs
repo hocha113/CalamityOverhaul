@@ -253,6 +253,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     OutItem();
                 }
             }
+
+            //if (player.PressKey(false)) {
+            //    CWRUtils.ExportItemTypesToFile(items);
+            //}
         }
 
         /// <summary>
@@ -663,9 +667,9 @@ End:;
                 if (item.type == CWRIDs.DarkMatterBall) {
                     DarkMatterBall.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
                 }
-                else if (item.type == CWRIDs.BlackMatterStick) {
-                    BlackMatterStick.DrawItemIcon(spriteBatch, drawpos + offset, Color.White, item.type, alp);
-                }
+                //else if (item.type == CWRIDs.BlackMatterStick) {
+                //    BlackMatterStick.DrawItemIcon(spriteBatch, drawpos + offset, Color.White, item.type, alp);
+                //}
                 else if (item.type == CWRIDs.InfiniteStick) {
                     InfiniteStick.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
                 }

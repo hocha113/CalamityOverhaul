@@ -102,12 +102,12 @@ namespace CalamityOverhaul.Content.Items.Materials
 
         public override void AddRecipes() {
             CreateRecipe()
+                .AddIngredient<InfinityCatalyst>(1)
                 .AddIngredient<MiracleFruit>(1)
                 .AddIngredient<Elderberry>(1)
                 .AddIngredient<BloodOrange>(1)
                 .AddIngredient<Dragonfruit>(1)
                 .AddIngredient<MiracleMatter>(4)
-                .AddIngredient<ShadowspecBar>(10)
                 .AddIngredient<ShadowspecBar>(10)
                 .AddIngredient<BlackMatterStick>(12)
                 .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {

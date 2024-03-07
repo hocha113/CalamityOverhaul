@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Summon.Extras;
 using CalamityOverhaul.Content.Items.Tools;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Graphics.CameraModifiers;
@@ -120,6 +121,8 @@ namespace CalamityOverhaul.Content
                     Main.maxRaining = 0.99f;
                     Main.cloudAlpha = 0.99f;
                     Main.windSpeedTarget = 0.8f;
+                    float sengs = Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f));
+                    Lighting.AddLight(Player.Center, new Color(Main.DiscoB, Main.DiscoG, 220 + sengs * 30).ToVector3() * sengs * 113);
                     PunchCameraModifier modifier2 = new PunchCameraModifier(Player.Center, new Vector2(0, Main.rand.NextFloat(-2, 2)), 2f, 3f, 2, 1000f, FullName);
                     Main.instance.CameraModifiers.Add(modifier2);
                 }

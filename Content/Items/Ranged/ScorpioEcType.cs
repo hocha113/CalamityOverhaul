@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shootSpeed = 20f;
             Item.shoot = ModContent.ProjectileType<MiniRocket>();
             Item.useAmmo = AmmoID.Rocket;
-            Item.SetCartridgeGun<ScorpioHeldProj>();
+            Item.SetCartridgeGun<ScorpioHeldProj>(5);
         }
     }
 }

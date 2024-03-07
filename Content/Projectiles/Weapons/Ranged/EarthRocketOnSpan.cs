@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.alpha = 255;
             Projectile.extraUpdates = 1;
             Projectile.penetrate = 1;
-            Projectile.timeLeft = 40;
+            Projectile.timeLeft = 21;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.light = 1.2f;
         }
@@ -36,7 +36,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 for (int i = 0; i < 100; i++) {
                     Vector2 dustVel = (Projectile.rotation + Main.rand.NextFloat(-0.1f, 0.1f)).ToRotationVector2() * -Main.rand.Next(26, 117);
                     float scale = Main.rand.NextFloat(0.5f, 1.5f);
-                    Dust.NewDust(pos, 5, 5, DustID.CopperCoin, dustVel.X, dustVel.Y, 0, default, scale);
+                    int type = DustID.CopperCoin;
+                    Vector2 pos2 = pos;
+                    if (Main.rand.NextBool()) {
+                        type = DustID.FireworkFountain_Red;
+                        pos2 += dustVel * 6;
+                    }
+                    if (Main.rand.NextBool(5)) {
+                        type = DustID.FireworkFountain_Pink;
+                        pos2 += dustVel * 6;
+                    }
+                    Dust.NewDust(pos2, 5, 5, type, dustVel.X, dustVel.Y, 0, default, scale);
                 }
             }
         }

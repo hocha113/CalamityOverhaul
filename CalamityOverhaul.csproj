@@ -18,6 +18,7 @@
     <None Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="0.351.txt" />
     <None Remove="Assets\Items\Replace\TODO.txt" />
     <None Remove="Assets\NPCs\TODOs.txt" />
     <None Remove="Assets\UIs\ScrollbarInner.png" />

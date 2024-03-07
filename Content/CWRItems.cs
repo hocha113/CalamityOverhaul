@@ -130,7 +130,18 @@ namespace CalamityOverhaul.Content
             if (AmmoCapacity == 0) {
                 AmmoCapacity = 1;
             }
+            InitializeMagazine();
             remakeItem = (item.ModItem as EctypeItem) != null;
+        }
+
+        public void InitializeMagazine() {
+            IsKreload = false;
+            NumberBullets = 0;
+            NoKreLoadTime += 10;
+            MagazineContents = new Item[AmmoCapacity];
+            for (int i = 0; i < MagazineContents.Length; i++) {
+                MagazineContents[i] = new Item();
+            }
         }
 
         public override void NetSend(Item item, BinaryWriter writer) {

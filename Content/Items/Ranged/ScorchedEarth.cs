@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ModContent.ProjectileType<ScorchedEarthRocket>();
             Item.useAmmo = AmmoID.Rocket;
             Item.Calamity().donorItem = true;
-            Item.SetHeldProj<ScorchedEarthHeldProj>();
+            Item.SetCartridgeGun<ScorchedEarthHeldProj>(4);
         }
     }
 }

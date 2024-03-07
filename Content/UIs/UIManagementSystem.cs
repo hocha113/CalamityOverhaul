@@ -90,7 +90,6 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         public override void UpdateUI(GameTime gameTime) {
-            base.UpdateUI(gameTime);
             if (Main.LocalPlayer.CWR().CompressorPanelID != -1) {
                 CompressorUI.Instance.Update();
             }  
@@ -101,6 +100,9 @@ namespace CalamityOverhaul.Content.UIs
             }  
             if (OverhaulTheBibleUI.Instance.Active) {
                 OverhaulTheBibleUI.Instance.Update(gameTime);
+            }
+            if (CartridgeHolderUI.Instance.Active) {
+                CartridgeHolderUI.Instance.Update(gameTime);
             }
         }
     }
