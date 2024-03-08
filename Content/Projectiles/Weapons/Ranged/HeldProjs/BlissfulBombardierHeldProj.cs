@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -13,8 +14,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<BlissfulBombardierEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
-            FireTime = 15;
+            kreloadMaxTime = 150;
+            FireTime = 10;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -26,6 +27,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 23;
         }
 
         public override void PreInOwnerUpdate() {
@@ -45,7 +48,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            base.FiringShoot();
+            SpawnGunFireDust(GunShootPos, ShootVelocity);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {

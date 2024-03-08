@@ -114,6 +114,8 @@ namespace CalamityOverhaul.Content.UIs
 
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, text
                     , MouPos.X + 0, MouPos.Y - 30 - value * 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "右键卸弹"
+                    , MouPos.X + 0, MouPos.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1.1f);
             }
         }
     }

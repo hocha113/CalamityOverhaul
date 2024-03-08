@@ -1465,28 +1465,46 @@ Items: {
 	}
 
 	AuroraBlazerEcType: {
-		// DisplayName: Aurora Blazer Ec Type
-		// Tooltip: ""
+		DisplayName: 极光烈焰
+		Tooltip:
+			'''
+			喷出以星形轨迹运动的星云烈焰
+			使用凝胶作为弹药
+			'''
 	}
 
 	BarracudaGunEcType: {
-		// DisplayName: Barracuda Gun Ec Type
-		// Tooltip: ""
+		DisplayName: 梭鱼枪
+		Tooltip:
+			'''
+			发射两只梭鱼咬住敌人并撕碎它们
+			'''
 	}
 
 	BlissfulBombardierEcType: {
-		// DisplayName: Blissful Bombardier Ec Type
-		// Tooltip: ""
+		DisplayName: 极乐升天炮
+		Tooltip:	
+			'''
+			发射圣火火箭
+			使用可摧毁物块的弹药时火箭会破坏物块
+			'''
 	}
 
 	ChickenCannonEcType: {
-		// DisplayName: Chicken Cannon Ec Type
-		// Tooltip: ""
+		DisplayName: 小鸡大炮
+		Tooltip:
+			'''
+			发射小鸡火箭，产生巨大燃爆
+			右键引爆所有飞行中的火箭
+			'''
 	}
 
 	ClamorRifleEcType: {
-		// DisplayName: Clamor Rifle Ec Type
-		// Tooltip: ""
+		DisplayName: 音波步枪
+		Tooltip:
+			'''
+			将火枪子弹转化为追踪能量束
+			'''
 	}
 
 	ClaretCannonEcType: {
@@ -1500,10 +1518,7 @@ Items: {
 
 	GunkShotEcType: {
 		DisplayName: 胶泥散弹枪
-		Tooltip:
-			'''
-			发射数颗子弹
-			'''
+		Tooltip: 发射数颗子弹
 	}
 
 	MagnaCannonEcType: {
@@ -1518,26 +1533,17 @@ Items: {
 
 	NorfleetEcType: {
 		DisplayName: 诺法雷
-		Tooltip:
-			'''
-			完美平衡，万物皆宜......
-			'''
+		Tooltip: 完美平衡，万物皆宜......
 	}
 
 	ShroomerEcType: {
 		DisplayName: 蘑菇狙击枪
-		Tooltip:
-			'''
-			发射子弹以及强大的追踪蘑菇
-			'''
+		Tooltip: 发射子弹以及强大的追踪蘑菇
 	}
 
 	StarfleetEcType: {
 		DisplayName: 星辰冲击波
-		Tooltip:
-			'''
-			发射数个等离子星弹
-			'''
+		Tooltip: 发射数个等离子星弹
 	}
 
 	StarmadaEcType: {
@@ -1551,10 +1557,7 @@ Items: {
 
 	SulphuricAcidCannonEcType: {
 		DisplayName: 硫酸炮
-		Tooltip:
-			'''
-			发射一个能黏在敌人身上的硫酸弹幕并溶解它们
-			'''
+		Tooltip: 发射一个能黏在敌人身上的硫酸弹幕并溶解它们
 	}
 
 	UniversalGenesisEcType: {

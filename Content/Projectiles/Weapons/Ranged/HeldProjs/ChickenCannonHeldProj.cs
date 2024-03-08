@@ -2,6 +2,9 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -13,8 +16,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<ChickenCannonEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
-            FireTime = 15;
+            kreloadMaxTime = 120;
+            FireTime = 20;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -26,6 +29,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;
+            CanRightClick = true;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 13;
+            FiringDefaultSound = false;
         }
 
         public override void PreInOwnerUpdate() {
@@ -45,11 +52,32 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            base.FiringShoot();
+            GunPressure = 0.3f;
+            ControlForce = 0.05f;
+            RecoilRetroForceMagnitude = 13;
+            SoundEngine.PlaySound(SoundID.Item61, Owner.Center);
+            SpawnGunFireDust(GunShootPos, ShootVelocity);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {
-            base.FiringShootR();
+            GunPressure = 0;
+            ControlForce = 0;
+            RecoilRetroForceMagnitude = 0;
+            bool spanSound = false;
+            for (int i = 0; i < Main.maxProjectiles; ++i) {
+                Projectile p = Main.projectile[i];
+                if (!p.active || p.owner != Owner.whoAmI || p.type != Item.shoot)
+                    continue;
+                p.timeLeft = 1;
+                p.netUpdate = true;
+                p.netSpam = 0;
+                spanSound = true;
+            }
+            if (spanSound) {
+                RecoilRetroForceMagnitude = 22;
+                SoundEngine.PlaySound(SoundID.Item110, Owner.Center);
+            }
         }
 
         public override void PostFiringShoot() {

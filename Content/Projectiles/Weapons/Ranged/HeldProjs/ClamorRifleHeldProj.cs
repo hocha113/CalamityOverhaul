@@ -1,9 +1,9 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
-using static Humanizer.In;
+using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -15,19 +15,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<ClamorRifleEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
-            FireTime = 15;
+            kreloadMaxTime = 50;
+            FireTime = 12;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
             HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -12;
+            ShootPosNorlLengValue = -0;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.3f;
-            ControlForce = 0.05f;
-            Recoil = 1.2f;
+            GunPressure = 0;
+            ControlForce = 0;
+            Recoil = 0.6f;
             RangeOfStress = 25;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 7;
         }
 
         public override void PreInOwnerUpdate() {
@@ -43,7 +45,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            base.FiringShoot();
+            if (AmmoTypes == ProjectileID.Bullet) {
+                AmmoTypes = Item.shoot;
+            }
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {
