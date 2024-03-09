@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Starfleet";
         public override void SetDefaults() {
-            Item.SetCalamityGunSD<Starfleet>();
+            Item.SetCalamitySD<Starfleet>();
             Item.SetCartridgeGun<StarfleetHeldProj>(60);
         }
     }

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Starmada";
         public override void SetDefaults() {
-            Item.SetCalamityGunSD<Starmada>();
+            Item.SetCalamitySD<Starmada>();
             Item.SetCartridgeGun<StarmadaHeldProj>(180);
         }
     }

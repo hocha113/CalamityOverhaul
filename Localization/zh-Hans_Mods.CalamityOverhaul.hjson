@@ -277,7 +277,11 @@ Items: {
 
 	DaemonsFlame: {
 		DisplayName: 鬼火弓
-		Tooltip: ""
+		Tooltip:
+			'''
+			将木箭转化为鬼火簇
+			发射其余箭矢时会额外发射恶魔火球
+			'''
 	}
 
 	ClaretCannon: {
@@ -1401,13 +1405,20 @@ Items: {
 
 	KarasawaEcType: {
 		DisplayName: 卡拉萨瓦重炮
-		Tooltip: ""
+		Tooltip:
+			'''
+			很强的后坐力
+			按下[KL]键进行换弹
+			……这把枪太沉了……太沉了
+			'''
 	}
 
 	KingsbaneEctype: {
 		DisplayName: 弑君
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			启动完毕后，迅速发射子弹
 			当你停止开火时会继续倾泻大量金源弹
 			金源弹会迅速追踪附近的敌人，并无视50点防御
@@ -1420,6 +1431,8 @@ Items: {
 		DisplayName: 巨舰鲨
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			快速交替发射子弹和加压水流
 			水流不消耗弹药
 			'''
@@ -1429,6 +1442,8 @@ Items: {
 		DisplayName: 迈达斯统帅
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			右键将一枚金币或银币抛向空中
 			击中硬币的子弹会向着最近的敌人瞄准
 			至多可抛出4枚硬币，在可能的情况下，子弹会在多枚硬币之间反弹
@@ -1438,13 +1453,20 @@ Items: {
 
 	NeedlerEcType: {
 		DisplayName: 叶针枪
-		Tooltip: 将火枪子弹转化为钉在敌人身上并爆炸的叶针
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			将火枪子弹转化为钉在敌人身上并爆炸的叶针
+			'''
 	}
 
 	PlagueTaintedSMGEcType: {
 		DisplayName: 玷污之疫SMG
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			发射瘟疫子弹，在暴击时生成瘟疫自爆无人机
 			敌怪越近，子弹的伤害和击退更高
 			无人机命中受瘟疫感染的敌怪时有极高的暴击率
@@ -1459,7 +1481,12 @@ Items: {
 
 	ScorpioEcType: {
 		DisplayName: 天蝎座
-		Tooltip: “BOOM”
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			“BOOM”
+			'''
 	}
 
 	ArbalestEcType: {
@@ -1474,7 +1501,12 @@ Items: {
 
 	ArcherfishEcType: {
 		DisplayName: 射水鱼
-		Tooltip: 将火枪子弹转化为一束水流
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			将火枪子弹转化为一束水流
+			'''
 	}
 
 	ArcNovaDiffuserEcType: {
@@ -1484,13 +1516,20 @@ Items: {
 
 	AstralBlasterEcType: {
 		DisplayName: 幻星冲击炮
-		Tooltip: 将火枪子弹转化为追踪幻星弹
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			将火枪子弹转化为追踪幻星弹
+			'''
 	}
 
 	AuralisEcType: {
 		DisplayName: 极光
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			发射可以削减敌人防线的高速闪光子弹
 			右键扩大视野
 			不移动时提供伤害加成，至多可达25%
@@ -1505,6 +1544,8 @@ Items: {
 		DisplayName: 极光烈焰
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			喷出以星形轨迹运动的星云烈焰
 			使用凝胶作为弹药
 			'''
@@ -1519,6 +1560,8 @@ Items: {
 		DisplayName: 极乐升天炮
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			发射圣火火箭
 			使用可摧毁物块的弹药时火箭会破坏物块
 			'''
@@ -1528,6 +1571,8 @@ Items: {
 		DisplayName: 小鸡大炮
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			发射小鸡火箭，产生巨大燃爆
 			右键引爆所有飞行中的火箭
 			'''
@@ -1535,13 +1580,20 @@ Items: {
 
 	ClamorRifleEcType: {
 		DisplayName: 音波步枪
-		Tooltip: 将火枪子弹转化为追踪能量束
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			将火枪子弹转化为追踪能量束
+			'''
 	}
 
 	ClaretCannonEcType: {
 		DisplayName: 深红手炮
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			一次发射三发子弹
 			将火枪子弹转化为吸血的血泪弹
 			'''
@@ -1549,38 +1601,55 @@ Items: {
 
 	GunkShotEcType: {
 		DisplayName: 胶泥散弹枪
-		Tooltip: 发射数颗子弹
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			发射数颗子弹
+			'''
 	}
 
 	MagnaCannonEcType: {
-		DisplayName: 麦格纳炮
-		Tooltip:
-			'''
-			充能发射一阵快速的水晶矢冲击波
-			随着充能时间的增长，会提升发射的水晶矢数量
-			满充能会发射一阵持续时间更长，速度更快的冲击波
-			'''
+		// DisplayName: Magna Cannon Ec Type
+		// Tooltip: ""
 	}
 
 	NorfleetEcType: {
 		DisplayName: 诺法雷
-		Tooltip: 完美平衡，万物皆宜......
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			完美平衡，万物皆宜......
+			'''
 	}
 
 	ShroomerEcType: {
 		DisplayName: 蘑菇狙击枪
-		Tooltip: 发射子弹以及强大的追踪蘑菇
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			发射子弹以及强大的追踪蘑菇
+			'''
 	}
 
 	StarfleetEcType: {
 		DisplayName: 星辰冲击波
-		Tooltip: 发射数个等离子星弹
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			发射数个等离子星弹
+			'''
 	}
 
 	StarmadaEcType: {
 		DisplayName: 群星大炮
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			发射星辰与等离子星弹
 			66%几率节省弹药
 			'''
@@ -1588,13 +1657,20 @@ Items: {
 
 	SulphuricAcidCannonEcType: {
 		DisplayName: 硫酸炮
-		Tooltip: 发射一个能黏在敌人身上的硫酸弹幕并溶解它们
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			发射一个能黏在敌人身上的硫酸弹幕并溶解它们
+			'''
 	}
 
 	UniversalGenesisEcType: {
 		DisplayName: 宇宙之源
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			从枪口发射一簇子弹，令一簇坠星朝鼠标位置降落
 			将火枪子弹转化为击中后召唤额外坠星的唤星弹
 			50%概率节省弹药
@@ -1606,6 +1682,8 @@ Items: {
 		DisplayName: 太虚星龙炮
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			每隔一发就会发射虚空爆破弹
 			每一发都会射出魔火之触
 			75%几率节省弹药
@@ -1962,6 +2040,7 @@ Projectiles: {
 	// UniversalGenesisHeldProj.DisplayName: Universal Genesis Held Proj
 	// VoidragonHeldProj.DisplayName: Voidragon Held Proj
 	// BarracudaProj.DisplayName: Barracuda Proj
+	// ArcNovaDiffuserOnSpan.DisplayName: Arc Nova Diffuser On Span
 }
 
 Configs: {
@@ -2344,5 +2423,9 @@ TextContent: {
 		// Wap_NailGun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_NailGun_Text
 		// Wap_DartPistol_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DartPistol_Text
 		// Wap_DartRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DartRifle_Text
+		CartridgeHolderUI_Text1: 弹匣填充内容
+		CartridgeHolderUI_Text2: 剩余
+		CartridgeHolderUI_Text3: 空
+		CartridgeHolderUI_Text4: 右键卸弹
 	}
 }

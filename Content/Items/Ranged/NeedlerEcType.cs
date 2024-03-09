@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ModContent.ProjectileType<NeedlerProj>();
             Item.useAmmo = AmmoID.Bullet;
             Item.CWR().HasCartridgeHolder = true;
-            Item.CWR().AmmoCapacity = 220;
+            Item.CWR().AmmoCapacity = 50;
             Item.SetHeldProj<NeedlerHeldProj>();
         }
     }

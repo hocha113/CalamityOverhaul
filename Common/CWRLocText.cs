@@ -41,6 +41,10 @@ namespace CalamityOverhaul.Common
         public LocalizedText SupertableUI_Text2 { get; private set; }
         public LocalizedText SupertableUI_Text3 { get; private set; }
         public LocalizedText OverhaulTheBibleUI_Text { get; private set; }
+        public LocalizedText CartridgeHolderUI_Text1 { get; private set; }
+        public LocalizedText CartridgeHolderUI_Text2 { get; private set; }
+        public LocalizedText CartridgeHolderUI_Text3 { get; private set; }
+        public LocalizedText CartridgeHolderUI_Text4 { get; private set; }
         public LocalizedText Wap_Minishark_Text { get; private set; }
         public LocalizedText Wap_Megashark_Text { get; private set; }
         public LocalizedText Wap_HandGun_Text { get; private set; }

@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -59,6 +60,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 一个开火周期中手臂动画的播放幅度
         /// </summary>
         public float HandRotRange = 0.7f;
+        /// <summary>
+        /// 获取来自物品的生成源
+        /// </summary>
+        protected IEntitySource Source => Item.GetSource_FromThis("CWRBow");
 
         public virtual void HandEvent() {
             if (Owner.PressKey()) {

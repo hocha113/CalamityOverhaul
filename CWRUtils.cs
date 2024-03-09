@@ -946,7 +946,7 @@ namespace CalamityOverhaul
             item.CWR().AmmoCapacity = ammoCapacity;
         }
 
-        public static void SetCalamityGunSD<T>(this Item item) where T : ModItem {
+        public static void SetCalamitySD<T>(this Item item) where T : ModItem {
             item.CloneDefaults(ModContent.ItemType<T>());
         }
 

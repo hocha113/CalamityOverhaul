@@ -1836,6 +1836,7 @@ Projectiles: {
 	UniversalGenesisHeldProj.DisplayName: Universal Genesis Held Proj
 	VoidragonHeldProj.DisplayName: Voidragon Held Proj
 	BarracudaProj.DisplayName: Barracuda Proj
+	ArcNovaDiffuserOnSpan.DisplayName: Arc Nova Diffuser On Span
 }
 
 Configs: {
@@ -2225,5 +2226,9 @@ TextContent: {
 		Wap_NailGun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_NailGun_Text
 		Wap_DartPistol_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DartPistol_Text
 		Wap_DartRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DartRifle_Text
+		CartridgeHolderUI_Text1: 弹匣填充内容
+		CartridgeHolderUI_Text2: 剩余
+		CartridgeHolderUI_Text3: 空
+		CartridgeHolderUI_Text4: 右键卸弹
 	}
 }

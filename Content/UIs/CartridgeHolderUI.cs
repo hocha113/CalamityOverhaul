@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.UIs
                 spriteBatch.Draw(TextureValue, DrawPos, null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             }
             if (onMainP) {
-                string text = "弹匣填充内容\n";
+                string text = $"{CWRLocText.GetTextValue("CartridgeHolderUI_Text1")}\n";
                 int value = 0;
                 if (cwrItem.MagazineContents != null && cwrItem.MagazineContents.Length > 0) {
                     foreach (Item i in cwrItem.MagazineContents) {
@@ -102,19 +102,19 @@ namespace CalamityOverhaul.Content.UIs
                             continue;
                         }
                         if (i.type != ItemID.None && i.ammo != AmmoID.None) {
-                            text += $"{i.Name} 剩余: {i.stack}\n";
+                            text += $"{i.Name} {CWRLocText.GetTextValue("CartridgeHolderUI_Text2")}: {i.stack}\n";
                             value++;
                         }
                     }
                 }
                 if (value == 0) {
-                    text += "空";
+                    text += CWRLocText.GetTextValue("CartridgeHolderUI_Text3");
                     value = 1;
                 }
 
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, text
                     , MouPos.X + 0, MouPos.Y - 30 - value * 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "右键卸弹"
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("CartridgeHolderUI_Text4")
                     , MouPos.X + 0, MouPos.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1.1f);
             }
         }

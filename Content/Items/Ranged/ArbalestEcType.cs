@@ -8,9 +8,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Arbalest";
         public override void SetDefaults() {
-            Item.SetCalamityGunSD<Arbalest>();
-            Item.SetCartridgeGun<ArbalestHeldProj>();
-            Item.CWR().HasCartridgeHolder = false;
+            Item.SetCalamitySD<Arbalest>();
+            Item.SetHeldProj<ArbalestHeldProj>();
         }
     }
 }

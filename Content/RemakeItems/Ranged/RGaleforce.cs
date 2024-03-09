@@ -3,10 +3,8 @@ using CalamityMod.Items;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -16,9 +14,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Galeforce>();
         public override int ProtogenesisID => ModContent.ItemType<Galeforce>();
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.damage = 18;
             item.DamageType = DamageClass.Ranged;
@@ -38,24 +33,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Arrow;
             item.Calamity().canFirePointBlankShots = true;
+            item.SetHeldProj<GaleforceHeldProj>();
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Galeforce");
-        }
-
-        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            int heldType = ModContent.ProjectileType<GaleforceHeldProj>();
-            if (player.ownedProjectileCounts[heldType] <= 0) {
-                Projectile.NewProjectile(source, position, Vector2.Zero
-                , heldType
-                , damage, knockback, player.whoAmI);
-            }
-            return false;
-        }
-
-        public override bool? AltFunctionUse(Item item, Player player) {
-            return true;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ClamorRifle";
         public override void SetDefaults() {
-            Item.SetCalamityGunSD<ClamorRifle>();
+            Item.SetCalamitySD<ClamorRifle>();
             Item.SetCartridgeGun<ClamorRifleHeldProj>(45);
         }
     }

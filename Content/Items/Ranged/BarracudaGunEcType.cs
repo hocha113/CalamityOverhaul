@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BarracudaGun";
         public override void SetDefaults() {
-            Item.SetCalamityGunSD<BarracudaGun>();
+            Item.SetCalamitySD<BarracudaGun>();
             Item.SetHeldProj<BarracudaGunHeldProj>();
         }
     }
