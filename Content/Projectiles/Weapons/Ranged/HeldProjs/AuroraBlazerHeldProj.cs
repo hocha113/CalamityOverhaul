@@ -2,6 +2,8 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.Audio;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -11,21 +13,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AuroraBlazer";
         public override int targetCayItem => ModContent.ItemType<AuroraBlazer>();
         public override int targetCWRItem => ModContent.ItemType<AuroraBlazerEcType>();
-
+        int soundPma;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            FireTime = 15;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
             HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -12;
-            ShootPosToMouLengValue = 30;
+            ShootPosNorlLengValue = 0;
+            ShootPosToMouLengValue = 0;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.3f;
-            ControlForce = 0.05f;
-            Recoil = 1.2f;
             RangeOfStress = 25;
+            GunPressure = 0;
+            ControlForce = 0;
+            Recoil = 0.2f;
+            FireTime = 5;
+            FiringDefaultSound = false;
         }
 
         public override void PreInOwnerUpdate() {
@@ -45,7 +48,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            base.FiringShoot();
+            soundPma++;
+            if (soundPma > 5) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+                soundPma = 0;
+            }
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {

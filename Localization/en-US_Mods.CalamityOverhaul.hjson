@@ -1835,6 +1835,7 @@ Projectiles: {
 	SulphuricAcidCannonHeldProj.DisplayName: Sulphuric Acid Cannon Held Proj
 	UniversalGenesisHeldProj.DisplayName: Universal Genesis Held Proj
 	VoidragonHeldProj.DisplayName: Voidragon Held Proj
+	BarracudaProj.DisplayName: Barracuda Proj
 }
 
 Configs: {

@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetCalamityGunSD<Arbalest>();
             Item.SetCartridgeGun<ArbalestHeldProj>();
+            Item.CWR().HasCartridgeHolder = false;
         }
     }
 }

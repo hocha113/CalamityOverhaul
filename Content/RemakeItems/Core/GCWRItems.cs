@@ -197,6 +197,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             ProcessRemakeAction(item, (inds) => inds.ModifyTooltips(item, tooltips));
+            if (CWRConstant.ForceReplaceResetContent && CWRMod.RItemIndsDict.ContainsKey(item.type)) {
+                string key = CWRMod.RItemIndsDict[item.type].TargetToolTipItemName;
+                if (key != "") {
+                    CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, key);
+                }
+            }
             if (item.CWR().HasCartridgeHolder) {//这个钩子的挂载大于CWR的全局物品，所以必须将这部分写在此处
                 string modName = "Terraria";
                 if (CWRServerConfig.Instance.ForceReplaceResetContent) {

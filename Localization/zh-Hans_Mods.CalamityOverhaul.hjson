@@ -1405,28 +1405,51 @@ Items: {
 	}
 
 	KingsbaneEctype: {
-		// DisplayName: Kingsbane Ectype
-		// Tooltip: ""
+		DisplayName: 弑君
+		Tooltip:
+			'''
+			启动完毕后，迅速发射子弹
+			当你停止开火时会继续倾泻大量金源弹
+			金源弹会迅速追踪附近的敌人，并无视50点防御
+			使用时不断消耗弹药
+			90%几率节省弹药
+			'''
 	}
 
 	MegalodonEcType: {
-		// DisplayName: Megalodon Ec Type
-		// Tooltip: ""
+		DisplayName: 巨舰鲨
+		Tooltip:
+			'''
+			快速交替发射子弹和加压水流
+			水流不消耗弹药
+			'''
 	}
 
 	MidasPrimeEcType: {
-		// DisplayName: Midas Prime Ec Type
-		// Tooltip: ""
+		DisplayName: 迈达斯统帅
+		Tooltip:
+			'''
+			右键将一枚金币或银币抛向空中
+			击中硬币的子弹会向着最近的敌人瞄准
+			至多可抛出4枚硬币，在可能的情况下，子弹会在多枚硬币之间反弹
+			反弹的子弹必定暴击，并且会基于反弹的次数增加伤害
+			'''
 	}
 
 	NeedlerEcType: {
-		// DisplayName: Needler Ec Type
-		// Tooltip: ""
+		DisplayName: 叶针枪
+		Tooltip: 将火枪子弹转化为钉在敌人身上并爆炸的叶针
 	}
 
 	PlagueTaintedSMGEcType: {
-		// DisplayName: Plague Tainted S M G Ec Type
-		// Tooltip: ""
+		DisplayName: 玷污之疫SMG
+		Tooltip:
+			'''
+			发射瘟疫子弹，在暴击时生成瘟疫自爆无人机
+			敌怪越近，子弹的伤害和击退更高
+			无人机命中受瘟疫感染的敌怪时有极高的暴击率
+			右键发射无人机群
+			'''
 	}
 
 	PumplerEcType: {
@@ -1435,18 +1458,23 @@ Items: {
 	}
 
 	ScorpioEcType: {
-		// DisplayName: Scorpio Ec Type
-		// Tooltip: ""
+		DisplayName: 天蝎座
+		Tooltip: “BOOM”
 	}
 
 	ArbalestEcType: {
-		// DisplayName: Arbalest Ec Type
-		// Tooltip: ""
+		DisplayName: 劲弩
+		Tooltip:
+			'''
+			发射6支高速箭
+			箭矢随着持续发射时间增大体积
+			箭矢体积越大，伤害和击退越高，但扩散范围更大
+			'''
 	}
 
 	ArcherfishEcType: {
-		// DisplayName: Archerfish Ec Type
-		// Tooltip: ""
+		DisplayName: 射水鱼
+		Tooltip: 将火枪子弹转化为一束水流
 	}
 
 	ArcNovaDiffuserEcType: {
@@ -1455,13 +1483,22 @@ Items: {
 	}
 
 	AstralBlasterEcType: {
-		// DisplayName: Astral Blaster Ec Type
-		// Tooltip: ""
+		DisplayName: 幻星冲击炮
+		Tooltip: 将火枪子弹转化为追踪幻星弹
 	}
 
 	AuralisEcType: {
-		// DisplayName: Auralis Ec Type
-		// Tooltip: ""
+		DisplayName: 极光
+		Tooltip:
+			'''
+			发射可以削减敌人防线的高速闪光子弹
+			右键扩大视野
+			不移动时提供伤害加成，至多可达25%
+			不移动且使用右键瞄准5秒以上在你周围产生极光
+			极光会降低你下一次所受弹幕伤害中的100点
+			此效果至多持续20秒，且拥有30秒冷却时间
+			50%几率节省弹药
+			'''
 	}
 
 	AuroraBlazerEcType: {
@@ -1475,15 +1512,12 @@ Items: {
 
 	BarracudaGunEcType: {
 		DisplayName: 梭鱼枪
-		Tooltip:
-			'''
-			发射两只梭鱼咬住敌人并撕碎它们
-			'''
+		Tooltip: 发射两只梭鱼咬住敌人并撕碎它们
 	}
 
 	BlissfulBombardierEcType: {
 		DisplayName: 极乐升天炮
-		Tooltip:	
+		Tooltip:
 			'''
 			发射圣火火箭
 			使用可摧毁物块的弹药时火箭会破坏物块
@@ -1501,10 +1535,7 @@ Items: {
 
 	ClamorRifleEcType: {
 		DisplayName: 音波步枪
-		Tooltip:
-			'''
-			将火枪子弹转化为追踪能量束
-			'''
+		Tooltip: 将火枪子弹转化为追踪能量束
 	}
 
 	ClaretCannonEcType: {
@@ -1930,6 +1961,7 @@ Projectiles: {
 	// SulphuricAcidCannonHeldProj.DisplayName: Sulphuric Acid Cannon Held Proj
 	// UniversalGenesisHeldProj.DisplayName: Universal Genesis Held Proj
 	// VoidragonHeldProj.DisplayName: Voidragon Held Proj
+	// BarracudaProj.DisplayName: Barracuda Proj
 }
 
 Configs: {

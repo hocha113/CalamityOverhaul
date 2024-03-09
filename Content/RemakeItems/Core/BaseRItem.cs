@@ -20,6 +20,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual int TargetID => SetReadonlyTargetID;
         /// <summary>
+        /// 用于在本地化中拉取描述，如果为默认的空字符串则不会其余拉取功能
+        /// </summary>
+        public virtual string TargetToolTipItemName => "";
+        /// <summary>
         /// 本模组自身对于的物品副本ID，这个字段一般用于重写后指向本模组程序集内的物品ID，默认指向<see cref="SetReadonlyTargetID"/>，而非0值，
         /// <br/>当重写值为0后，该物品将不参与配方替换，但不建议重写该属性为0来达到这个效果，而是重写<see cref="FormulaSubstitution"/>为<see langword="false"/>来实现想要的
         /// </summary>
