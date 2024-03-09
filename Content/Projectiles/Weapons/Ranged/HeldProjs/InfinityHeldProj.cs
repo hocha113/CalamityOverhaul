@@ -1,9 +1,11 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -41,8 +43,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShoot() {
             OffsetPos += ShootVelocity.UnitVector() * 3;
             float sengs = MathF.Sin(Time * 0.1f) * 0.2f;
-            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(sengs), Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(-sengs), Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            if (AmmoTypes == ProjectileID.Bullet) {
+                AmmoTypes = ModContent.ProjectileType<ChargedBlast>();
+            }
+            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(sengs), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(-sengs), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void PostFiringShoot() {

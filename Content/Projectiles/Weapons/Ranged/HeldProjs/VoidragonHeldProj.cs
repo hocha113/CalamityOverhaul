@@ -56,8 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundEngine.PlaySound(SoundID.Item92 with { MaxInstances = 100 }, Projectile.position);
                 for (int i = 0; i < 33; i++) {
                     Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1.2f)
-                    , ModContent.ProjectileType<CalamityMod.Projectiles.Ranged.Voidragon>()
-                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                        , ModContent.ProjectileType<VoidragonOrb>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 }
                 chargeIndex = 0;
             }

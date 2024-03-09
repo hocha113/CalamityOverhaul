@@ -35,7 +35,9 @@ namespace CalamityOverhaul.Content.UIs
 
         public override void Update(GameTime gameTime) {
             CWRItems cwrItem = handItem.CWR();
-            onMainP = new Rectangle((int)DrawPos.X, (int)DrawPos.Y, TextureValue.Width, TextureValue.Height).Intersects(new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1));
+            if (TextureValue != null) {
+                onMainP = new Rectangle((int)DrawPos.X, (int)DrawPos.Y, TextureValue.Width, TextureValue.Height).Intersects(new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1));
+            }
             if (onMainP) {
                 int mr = DownStartR();
                 if (mr == 1) {

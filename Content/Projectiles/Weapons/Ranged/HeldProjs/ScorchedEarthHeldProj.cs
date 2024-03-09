@@ -27,6 +27,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0;
             Recoil = 3.2f;
             RangeOfStress = 25;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 22;
         }
 
         public override void PreInOwnerUpdate() {

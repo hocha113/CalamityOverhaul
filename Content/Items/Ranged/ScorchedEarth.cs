@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ScorchedEarth";
         public static SoundStyle ShootSound = new("CalamityMod/Sounds/Item/ScorchedEarthShot", 3);
         public override void SetDefaults() {
-            Item.damage = 800;
+            Item.damage = 350;
             Item.DamageType = DamageClass.Ranged;
             Item.useTime = 88;
             Item.useAnimation = 32;

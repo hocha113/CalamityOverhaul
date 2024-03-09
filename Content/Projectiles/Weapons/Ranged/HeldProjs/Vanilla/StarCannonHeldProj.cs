@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
     internal class StarCannonHeldProj : BaseFeederGun
     {
@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ItemID.StarCannon;
         public override int targetCWRItem => ItemID.StarCannon;
 
-        public override void SetRangedProperty() {
+        public override void SetRangedProperty()
+        {
             kreloadMaxTime = 120;
             FireTime = 60;
             ShootPosToMouLengValue = 0;
@@ -27,25 +28,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 8;
         }
 
-        public override void KreloadSoundCaseEjection() {
-            base.KreloadSoundCaseEjection();
-        }
-
-        public override void KreloadSoundloadTheRounds() {
-            base.KreloadSoundloadTheRounds();
-        }
-
-        public override void FiringShoot() {
+        public override void FiringShoot()
+        {
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             UpdateConsumeAmmo();
             FireTime -= 10;
-            if (FireTime < 6) {
+            if (FireTime < 6)
+            {
                 FireTime = 6;
             }
         }
 
-        public override void OnKreLoad() {
+        public override void OnKreLoad()
+        {
             base.OnKreLoad();//装弹
             FireTime = 60;
         }

@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ScorchedEarth>();
         public override int ProtogenesisID => ModContent.ItemType<ScorchedEarth>();
         public override void SetDefaults(Item item) {
-            item.damage = 800;
+            item.damage = 350;
             item.DamageType = DamageClass.Ranged;
             item.useTime = 88;
             item.useAnimation = 32;
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ModContent.ProjectileType<ScorchedEarthRocket>();
             item.useAmmo = AmmoID.Rocket;
             item.Calamity().donorItem = true;
-            item.SetHeldProj<ScorchedEarthHeldProj>();
+            item.SetCartridgeGun<ScorchedEarthHeldProj>(4);
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "ScorchedEarth");

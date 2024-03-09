@@ -27,8 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
 
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
-                , ModContent.ProjectileType<ArcherfishShot>(), WeaponDamage * 5, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity, ModContent.ProjectileType<ArcherfishShot>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
 
             Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3
                 , ShootVelocity.RotatedByRandom(MathHelper.ToRadians(5f)) * Main.rand.NextFloat(1.45f, 1.65f)

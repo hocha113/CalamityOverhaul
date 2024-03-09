@@ -1,7 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Common.Interfaces;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -9,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class StarDust : CustomProjectiles
+    internal class StarDust : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
 
@@ -29,9 +27,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.localNPCHitCooldown = 10;
         }
 
-        public override int Status { get => (int)Projectile.ai[0]; set => Projectile.ai[0] = value; }
-        public override int Behavior { get => (int)Projectile.ai[1]; set => Projectile.ai[1] = value; }
-        public override int ThisTimeValue { get => (int)Projectile.ai[2]; set => Projectile.ai[2] = value; }
+        public int Status { get => (int)Projectile.ai[0]; set => Projectile.ai[0] = value; }
+        public int Behavior { get => (int)Projectile.ai[1]; set => Projectile.ai[1] = value; }
+        public int ThisTimeValue { get => (int)Projectile.ai[2]; set => Projectile.ai[2] = value; }
 
         public override void OnKill(int timeLeft) {
             Lighting.AddLight(Projectile.Center, new Vector3(92, 58, 156));
@@ -67,10 +65,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override bool PreDraw(ref Color lightColor) {
             return false;
-        }
-
-        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) {
-
         }
     }
 }

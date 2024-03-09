@@ -37,6 +37,7 @@ namespace CalamityOverhaul
             //if (player.PressKey(false)) {
             //    player.QuickSpawnItem(player.parent(), Main.HoverItem, 1);
             //}
+            //Main.HoverItem.type.Domp();
         }
 
         public override void HoldItem(Player player) {

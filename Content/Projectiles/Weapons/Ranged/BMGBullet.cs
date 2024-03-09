@@ -1,12 +1,11 @@
-﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod;
+using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Projectiles;
-using CalamityMod;
+using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -66,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     for (int i = 0; i < 24; i++) {
                         Vector2 vr = Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.6f, 1.7f);
                         Projectile.NewProjectile(Projectile.parent(), targetPos + Projectile.velocity * -3, vr
-                            , ModContent.ProjectileType<BMGFIRE2>(), (int)(Projectile.damage * (crit ? 0.3f : 0.2f)), 0, Projectile.owner, Main.rand.Next(23));
+                            , ModContent.ProjectileType<BMGFIRE2>(), (int)(Projectile.damage * (crit ? 0.3f : 0.2f)), 0, Projectile.owner, Main.rand.Next(13));
                     }
                 }
             }

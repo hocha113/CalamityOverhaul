@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 5;
             HandFireDistance = 25;
             HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -12;
+            ShootPosNorlLengValue = -3;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
             GunPressure = 0.2f;
@@ -44,6 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
+            AmmoTypes = Item.shoot;
             base.FiringShoot();
         }
 

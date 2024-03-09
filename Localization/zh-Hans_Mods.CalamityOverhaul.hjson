@@ -2041,6 +2041,7 @@ Projectiles: {
 	// VoidragonHeldProj.DisplayName: Voidragon Held Proj
 	// BarracudaProj.DisplayName: Barracuda Proj
 	// ArcNovaDiffuserOnSpan.DisplayName: Arc Nova Diffuser On Span
+	// VoidragonOrb.DisplayName: Voidragon Orb
 }
 
 Configs: {
