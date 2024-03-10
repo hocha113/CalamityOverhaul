@@ -87,6 +87,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
+        public override void PostInOwnerUpdate() => onFire = thisOnFire;
+
         public override void FiringShoot() {
             if (!thisOnFire) {
                 return;

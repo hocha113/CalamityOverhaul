@@ -1,3 +1,4 @@
+using CalamityMod.Items;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
@@ -16,6 +17,7 @@ namespace CalamityOverhaul
     {
         internal static CWRMod Instance;
         internal static int GameLoadCount;
+        internal static CalamityGlobalItem CalamityGlobalItemInstance;
         internal Mod musicMod = null;
         internal Mod betterWaveSkipper = null;
         internal Mod fargowiltasSouls = null;
@@ -82,7 +84,7 @@ namespace CalamityOverhaul
                     RItemIndsDict.Add(ritem.SetReadonlyTargetID, ritem);
                 }
             }
-
+            CalamityGlobalItemInstance = ModContent.GetInstance<CalamityGlobalItem>();
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
             CWRIDs.Load();
         }

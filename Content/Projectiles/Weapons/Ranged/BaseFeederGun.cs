@@ -1,10 +1,12 @@
 ﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Humanizer.In;
@@ -131,11 +133,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 装弹完成后会执行一次该方法
         /// </summary>
-        public virtual void OnKreLoad() {
-            BulletNum = Item.CWR().AmmoCapacity;
-            if (Item.CWR().AmmoCapacityInFire) {
-                Item.CWR().AmmoCapacityInFire = false;
-            }
+        public virtual bool KreLoadFulfill() {
+            return true;
         }
         /// <summary>
         /// 是否可以进行换弹操作，返回<see langword="false"/>阻止玩家进行换弹操作
@@ -221,7 +220,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Projectile.rotation = GetGunInFireRot();
                     Projectile.Center = GetGunInFirePos();
                     ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign;
-                    if (HaveAmmo && IsKreload && Projectile.IsOwnedByLocalPlayer()) {//需要子弹，还需要判断是否已经装弹
+                    if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {//需要子弹，还需要判断是否已经装弹//HaveAmmo && 
                         onFire = true;
                         Projectile.ai[1]++;
                     }
@@ -235,7 +234,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Projectile.rotation = GunOnFireRot;
                     Projectile.Center = Owner.MountedCenter + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
                     ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
-                    if (HaveAmmo && IsKreload && Projectile.IsOwnedByLocalPlayer()) {
+                    if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {//HaveAmmo && 
                         onFireR = true;
                         Projectile.ai[1]++;
                     }
@@ -251,54 +250,86 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         kreloadTimeValue = kreloadMaxTime;
                     }
                 }
+            }
 
-                if (OnKreload) {//装弹过程
-                    if (PreOnKreloadEvent()) {
-                        ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign + 0.3f;
-                        ArmRotSengsFront += MathF.Sin(Time * 0.3f) * 0.7f;
+            if (OnKreload) {//装弹过程
+                if (PreOnKreloadEvent()) {
+                    ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign + 0.3f;
+                    ArmRotSengsFront += MathF.Sin(Time * 0.3f) * 0.7f;
+                }
+                kreloadTimeValue--;
+                if (PreReloadEffects(kreloadTimeValue, kreloadMaxTime)) {
+                    if (kreloadTimeValue == kreloadMaxTime - 1) {
+                        KreloadSoundCaseEjection();
                     }
-                    kreloadTimeValue--;
-                    if (PreReloadEffects(kreloadTimeValue, kreloadMaxTime)) {
-                        if (kreloadTimeValue == kreloadMaxTime - 1) {
-                            KreloadSoundCaseEjection();
-                        }
-                        if (kreloadTimeValue == kreloadMaxTime / 2) {
-                            KreloadSoundloadTheRounds();
-                        }
+                    if (kreloadTimeValue == kreloadMaxTime / 2) {
+                        KreloadSoundloadTheRounds();
                     }
-                    if (kreloadTimeValue == kreloadMaxTime / 3) {
-                        AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
-                        LoadBulletsIntoMagazine();//这一次更新弹匣内容，压入子弹
-                        if (PreConsumeAmmoEvent()) {
-                            for (int i = 0; i < Item.CWR().AmmoCapacity; i++) {
-                                UpdateConsumeAmmo();
+                }
+                if (kreloadTimeValue == kreloadMaxTime / 3) {
+                    AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
+                    LoadBulletsIntoMagazine();//这一次更新弹匣内容，压入子弹
+                    if (PreConsumeAmmoEvent()) {
+                        //for (int i = 0; i < Item.CWR().AmmoCapacity; i++) {
+                        //    //UpdateConsumeAmmo();
+                        //    //Owner.PickAmmo(Item, out _, out _, out _, out _, out _, false);
+                        //}
+                        int ammo = 0;
+                        int maxAmmo = Item.CWR().AmmoCapacity;
+                        foreach (Item inds in AmmoState.InItemInds) {
+                            if (ammo >= maxAmmo) {
+                                break;
+                            }
+                            if (inds.stack <= 0) {
+                                continue;
+                            }
+                            if (inds.stack >= maxAmmo) {
+                                inds.stack -= maxAmmo - ammo;
+                                ammo += maxAmmo;
+                            }
+                            else {
+                                ammo += inds.stack;
+                                inds.stack = 0;
                             }
                         }
                     }
-                    if (kreloadTimeValue <= 0) {//时间完成后设置装弹状态并准备下一次发射
-                        OnKreload = false;
-                        IsKreload = true;
-                        if (Item.type != ItemID.None) {
-                            Item.CWR().IsKreload = true;
+                }
+                if (kreloadTimeValue <= 0) {//时间完成后设置装弹状态并准备下一次发射
+                    CWRItems wRItems = Item.CWR();
+                    OnKreload = false;
+                    IsKreload = true;
+                    if (Item.type != ItemID.None) {
+                        wRItems.IsKreload = true;
+                    }
+                    kreloadTimeValue = 0;
+                    if (KreLoadFulfill()) {
+                        int value = AmmoState.Amount;
+                        if (value > wRItems.AmmoCapacity) {
+                            value = wRItems.AmmoCapacity;
                         }
-                        kreloadTimeValue = 0;
-                        OnKreLoad();
+                        BulletNum = value;
+                        if (wRItems.AmmoCapacityInFire) {
+                            wRItems.AmmoCapacityInFire = false;
+                        }
                     }
-                }
-
-                if (Owner.PressKey()) {
-                    if (!IsKreload && LoadingReminder) {
-                        HandleEmptyAmmoEjection();
-                        LoadingReminder = false;
-                    }
-                }
-                else {
-                    LoadingReminder = true;
                 }
             }
 
-            if (Item.type != ItemID.None)
+            if (Owner.PressKey()) {
+                if (!IsKreload && LoadingReminder) {
+                    if (!Owner.mouseInterface) {
+                        HandleEmptyAmmoEjection();
+                    }
+                    LoadingReminder = false;
+                }
+            }
+            else {
+                LoadingReminder = true;
+            }
+
+            if (Item.type != ItemID.None) {
                 IsKreload = Item.CWR().IsKreload;
+            }
 
             PostInOwnerUpdate();
         }
@@ -381,12 +412,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
                 if (cwritem.MagazineContents[0].stack <= 0) {
                     cwritem.MagazineContents[0].TurnToAir();
-                    // 使用循环逐个赋值，避免使用 Array.Copy 导致的重复元素问题
-                    for (int i = 1; i < cwritem.MagazineContents.Length; i++) {
-                        cwritem.MagazineContents[i - 1] = cwritem.MagazineContents[i];
+                    //// 使用循环逐个赋值，避免使用 Array.Copy 导致的重复元素问题
+                    //for (int i = 1; i < cwritem.MagazineContents.Length; i++) {
+                    //    cwritem.MagazineContents[i - 1] = cwritem.MagazineContents[i];
+                    //}
+                    //// 最后一个元素设为新的 Item
+                    //cwritem.MagazineContents[cwritem.MagazineContents.Length - 1] = new Item();
+                    List<Item> items = new List<Item>();
+                    foreach(Item i in  cwritem.MagazineContents) {
+                        if (i.type != ItemID.None && i.stack > 0) {
+                            items.Add(i);
+                        }
                     }
-                    // 最后一个元素设为新的 Item
-                    cwritem.MagazineContents[cwritem.MagazineContents.Length - 1] = new Item();
+                    cwritem.MagazineContents = items.ToArray();
+                }
+                if (cwritem.MagazineContents[0].stack <= 0 && cwritem.MagazineContents[cwritem.MagazineContents.Length - 1].stack <= 0) {
+                    IsKreload = false;
+                    BulletNum = 0;
                 }
                 AmmoTypes = cwritem.MagazineContents[0].shoot;
                 cwritem.MagazineContents[0].stack--;
@@ -411,6 +453,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                     if (FiringDefaultSound) {
                         SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+                    }
+                    if (CGItemBehavior) {
+                        CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner
+                            , (EntitySource_ItemUse_WithAmmo)Source
+                            , GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
                     }
                 }
                 PostFiringShoot();

@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
         }
 
-        public override void OnKreLoad() {
+        public override bool KreLoadFulfill() {
             if (BulletNum < Item.CWR().AmmoCapacity) {
                 if (!onFire) {
                     BulletNum += 10;
@@ -48,6 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (Item.CWR().AmmoCapacityInFire) {
                 Item.CWR().AmmoCapacityInFire = false;
             }
+            return true;
         }
 
         public override void PostFiringShoot() {

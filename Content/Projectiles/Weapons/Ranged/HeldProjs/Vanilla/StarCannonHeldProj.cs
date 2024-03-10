@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.StarCannon;
         public override int targetCWRItem => ItemID.StarCannon;
 
-        public override void SetRangedProperty()
-        {
+        public override void SetRangedProperty() {
             kreloadMaxTime = 120;
             FireTime = 60;
             ShootPosToMouLengValue = 0;
@@ -28,22 +27,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 8;
         }
 
-        public override void FiringShoot()
-        {
+        public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            UpdateConsumeAmmo();
+            _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            _ = UpdateConsumeAmmo();
             FireTime -= 10;
-            if (FireTime < 6)
-            {
+            if (FireTime < 6) {
                 FireTime = 6;
             }
         }
 
-        public override void OnKreLoad()
-        {
-            base.OnKreLoad();//装弹
+        public override bool KreLoadFulfill() {
             FireTime = 60;
+            return true;
         }
     }
 }

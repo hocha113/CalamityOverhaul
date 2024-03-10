@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityMod.Projectiles.Ranged;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,6 +16,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     /// </summary>
     internal abstract class BaseGun : BaseHeldRanged
     {
+        /// <summary>
+        /// 每次发射事件是否运行原灾厄的全局物品行为，默认为<see cref="true"/>
+        /// </summary>
+        public bool CGItemBehavior = true;
         /// <summary>
         /// 枪械旋转角矫正
         /// </summary>
@@ -122,7 +127,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 获取来自物品的生成源
         /// </summary>
-        protected IEntitySource Source => Item.GetSource_FromThis("CWRGun");
+        protected IEntitySource Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType);
         /// <summary>
         /// 该枪体使用的实际纹理
         /// </summary>
@@ -239,8 +244,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <param name="luxirDamage"></param>
         /// <returns></returns>
         public virtual int SpanLuxirProj(int luxirDamage) {
-            return Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
-                , ModContent.ProjectileType<LuxorsGiftRanged>(), luxirDamage, WeaponKnockback / 2, Owner.whoAmI, 0);
+            //return Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<LuxorsGiftRanged>(), luxirDamage, WeaponKnockback / 2, Owner.whoAmI, 0);
+            return 0;
         }
         /// <summary>
         /// 获取枪口位置，一般用于发射口的矫正
@@ -322,6 +327,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
                 if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();
+                }
+                if (CGItemBehavior) {
+                    CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner, (EntitySource_ItemUse_WithAmmo)Source
+                        , GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
                 }
 
                 Projectile.ai[1] = 0;

@@ -57,7 +57,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         private void strikeToFly(NPC npc) {
             Vector2 flyVr = new Vector2(Projectile.velocity.X, -16 + (InWorldBossPhase.Instance.Level() * 0.3f));
-
             void spanDust(int maxdustNum, int dustID) {
                 for (int i = 0; i < maxdustNum; i++) {
                     Dust.NewDust(npc.position, npc.width, npc.height, dustID
@@ -215,7 +214,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             int level = InWorldBossPhase.Instance.Level();
             if (target.type == NPCID.SkeletronHand) {
-                 modifiers.FinalDamage /= 2;
+                 modifiers.FinalDamage *= 0.5f;
             }
             if (target.type == NPCID.WallofFleshEye || target.type == NPCID.WallofFlesh) {
                  modifiers.FinalDamage *= 0.25f;
@@ -249,6 +248,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
             if (CWRIDs.WormBodys.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.5f;
+            }
+            if (target.type == ModContent.NPCType<BrimstoneHeart>()) {
+                modifiers.FinalDamage *= 2.5f;
+            }
+            if (target.type == ModContent.NPCType<SupremeCataclysm>()) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == ModContent.NPCType<SupremeCatastrophe>()) {
+                modifiers.FinalDamage *= 1.5f;
             }
             modifiers.DefenseEffectiveness *= 0.25f;
         }

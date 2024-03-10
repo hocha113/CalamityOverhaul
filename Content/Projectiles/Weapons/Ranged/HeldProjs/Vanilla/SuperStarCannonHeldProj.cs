@@ -35,9 +35,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
         }
 
-        public override void OnKreLoad() {
-            base.OnKreLoad();//装弹
+        public override bool KreLoadFulfill() {
             FireTime = 60;
+            return true;
         }
     }
 }

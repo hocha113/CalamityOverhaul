@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -12,13 +11,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.TheUndertaker].Value;
         public override int targetCayItem => ItemID.TheUndertaker;
         public override int targetCWRItem => ItemID.TheUndertaker;
-        private int bulletNum
-        {
+        private int bulletNum {
             get => Item.CWR().NumberBullets;
             set => Item.CWR().NumberBullets = value;
         }
-        public override void SetRangedProperty()
-        {
+        public override void SetRangedProperty() {
             kreloadMaxTime = 40;
             FireTime = 20;
             ShootPosToMouLengValue = 0;
@@ -31,22 +28,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 1.2f;
         }
 
-        public override bool WhetherStartChangingAmmunition()
-        {
+        public override bool WhetherStartChangingAmmunition() {
             return base.WhetherStartChangingAmmunition() && bulletNum < Item.CWR().AmmoCapacity && !onFire;
         }
 
-        public override void OnKreLoad()
-        {
+        public override bool KreLoadFulfill() {
             bulletNum = Item.CWR().AmmoCapacity;
-            if (Item.CWR().AmmoCapacityInFire)
-            {
+            if (Item.CWR().AmmoCapacityInFire) {
                 Item.CWR().AmmoCapacityInFire = false;
             }
+            return true;
         }
 
-        public override void PostFiringShoot()
-        {
+        public override void PostFiringShoot() {
             bulletNum--;
         }
     }
