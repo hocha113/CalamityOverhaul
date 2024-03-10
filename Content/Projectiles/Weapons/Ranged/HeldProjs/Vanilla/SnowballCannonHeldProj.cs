@@ -22,9 +22,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             HandDistanceY = 0;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
-            Recoil = 5f;
+            Recoil = 1.6f;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 20;
+            kreloadMaxTime = 60;
         }
 
         public override void PreInOwnerUpdate() {
