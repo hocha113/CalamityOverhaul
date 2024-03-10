@@ -23,7 +23,6 @@
     <None Remove="Assets\NPCs\TODOs.txt" />
     <None Remove="Assets\UIs\ScrollbarInner.png" />
     <None Remove="Assets\UIs\SliderBar.png" />
-    <None Remove="TODOs.txt" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
