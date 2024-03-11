@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// <summary>
         /// 不应该设置这个值，这个值用于在联机同步中使用，一般来讲，我们应该使用<see cref="ToMouse"/>
         /// </summary>
-        private Vector2 toMouseVecterDate;
+        protected Vector2 toMouseVecterDate;
         /// <summary>
         /// 获取玩家到鼠标的向量
         /// </summary>

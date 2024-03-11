@@ -62,9 +62,12 @@ namespace CalamityOverhaul.Content
         /// 是否受伤
         /// </summary>
         public bool OnHit;
+
+        #region 网络同步
         public bool DompBool;
         public bool RecoilAccelerationAddBool;
         public Vector2 RecoilAccelerationValue;
+        #endregion
 
         public override void Initialize() {
             OnHit = false;

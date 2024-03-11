@@ -4,6 +4,7 @@ using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -215,7 +216,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             SetHeld();
 
             if (!Owner.mouseInterface) {
-                if (Owner.PressKey()) {
+                if (DownLeft) {
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = GetGunInFireRot();
                     Projectile.Center = GetGunInFirePos();

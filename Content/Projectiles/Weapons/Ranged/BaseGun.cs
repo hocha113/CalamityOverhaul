@@ -4,6 +4,7 @@ using CalamityMod.Projectiles.Ranged;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -16,6 +17,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     /// </summary>
     internal abstract class BaseGun : BaseHeldRanged
     {
+        //private int netUpdateCooldingTime;
+        ///// <summary>
+        ///// 网络更新冷却，默认为15
+        ///// </summary>
+        //public int netUpdateCoold = 15;
+        private bool old_downLeftValue;
+        private bool downLeftValue;
+        protected bool DownLeft {
+            get {
+                downLeftValue = Owner.PressKey();
+                if (old_downLeftValue != downLeftValue) {
+                    Projectile.netUpdate = true;
+                }
+                old_downLeftValue = downLeftValue;
+                return downLeftValue;
+            }
+        }
         /// <summary>
         /// 每次发射事件是否运行原灾厄的全局物品行为，默认为<see cref="true"/>
         /// </summary>
@@ -132,6 +150,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 该枪体使用的实际纹理
         /// </summary>
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
+
+        public override void SendExtraAI(BinaryWriter writer) {
+            base.SendExtraAI(writer);
+            writer.Write(downLeftValue);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            base.ReceiveExtraAI(reader);
+            downLeftValue = reader.ReadBoolean();
+        }
+
         /// <summary>
         /// 更新枪压的作用状态
         /// </summary>
@@ -154,7 +183,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Vector2 recoilVr = ShootVelocity.UnitVector() * (Recoil * -OwnerPressureIncrease);
             if (Math.Abs(Owner.velocity.X) < RangeOfStress && Math.Abs(Owner.velocity.Y) < RangeOfStress) {
                 Owner.velocity += recoilVr;
-                if (!CWRUtils.isSinglePlayer) {
+                if (!CWRUtils.isSinglePlayer) {//&& netUpdateCooldingTime <= 0
+                    //netUpdateCooldingTime += netUpdateCoold;
                     var msg = Mod.GetPacket();
                     msg.Write((byte)CWRMessageType.RecoilAcceleration);
                     msg.Write(Owner.whoAmI);
@@ -175,7 +205,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 一个快捷创建手持事件的方法，在<see cref="InOwner"/>中被调用，值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="InOwner"/>的
         /// </summary>
         public virtual void FiringIncident() {
-            if (Owner.PressKey()) {
+            if (DownLeft) {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = GunOnFireRot;
                 Projectile.Center = Owner.MountedCenter + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
@@ -210,6 +240,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.Center = Owner.Center + new Vector2(DirSign * HandDistance, HandDistanceY);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
             Projectile.timeLeft = 2;
+            //if (netUpdateCooldingTime > 0) {
+            //    netUpdateCooldingTime--;
+            //}
             SetHeld();
             if (!Owner.mouseInterface) {
                 FiringIncident();

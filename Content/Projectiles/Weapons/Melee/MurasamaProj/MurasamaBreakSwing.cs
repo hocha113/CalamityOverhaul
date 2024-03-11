@@ -19,6 +19,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
+    /// <summary>
+    /// 升龙斩的爆发弹幕刀刃效果
+    /// </summary>
     internal class MurasamaBreakSwing : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "MurasamaBreakSwing";
