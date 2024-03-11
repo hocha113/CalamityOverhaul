@@ -341,7 +341,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             CWRItems cwrItem = Item.CWR();
             if (cwrItem.MagazineContents != null && cwrItem.MagazineContents.Length > 0) {
                 foreach (Item i in cwrItem.MagazineContents) {
-                    if (i.stack > 0 && i.type > ItemID.None) {
+                    if (i.stack > 0 && i.type != ItemID.None) {
                         Owner.QuickSpawnItem(Source, new Item(i.type), i.stack);
                     }
                 }
@@ -414,41 +414,40 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public virtual void UpdateMagazineContents() {
-            if (AmmoTypeAffectedByMagazine) {
-                CWRItems cwritem = Item.CWR();
-                if (cwritem.MagazineContents.Length <= 0) {
-                    cwritem.MagazineContents = new Item[] {new Item() };
-                    IsKreload = false;
-                    BulletNum = 0;
-                    return;
-                }
-                if (cwritem.MagazineContents[0].stack <= 0) {
-                    cwritem.MagazineContents[0].TurnToAir();
-                    //// 使用循环逐个赋值，避免使用 Array.Copy 导致的重复元素问题
-                    //for (int i = 1; i < cwritem.MagazineContents.Length; i++) {
-                    //    cwritem.MagazineContents[i - 1] = cwritem.MagazineContents[i];
-                    //}
-                    //// 最后一个元素设为新的 Item
-                    //cwritem.MagazineContents[cwritem.MagazineContents.Length - 1] = new Item();
-                    List<Item> items = new List<Item>();
-                    foreach(Item i in  cwritem.MagazineContents) {
-                        if (i.type != ItemID.None && i.stack > 0) {
-                            items.Add(i);
-                        }
-                    }
-                    cwritem.MagazineContents = items.ToArray();
-                }
-                if (cwritem.MagazineContents.Length <= 0) {
-                    IsKreload = false;
-                    BulletNum = 0;
-                    return;
-                }
-                if (cwritem.MagazineContents[0] == null) {
-                    cwritem.MagazineContents[0] = new Item();
-                }
-                AmmoTypes = cwritem.MagazineContents[0].shoot;
-                cwritem.MagazineContents[0].stack--;
+            CWRItems cwritem = Item.CWR();
+            if (cwritem.MagazineContents.Length <= 0) {
+                cwritem.MagazineContents = new Item[] { new Item() };
+                IsKreload = false;
+                BulletNum = 0;
             }
+            if (cwritem.MagazineContents[0].stack <= 0) {
+                cwritem.MagazineContents[0].TurnToAir();
+                //// 使用循环逐个赋值，避免使用 Array.Copy 导致的重复元素问题
+                //for (int i = 1; i < cwritem.MagazineContents.Length; i++) {
+                //    cwritem.MagazineContents[i - 1] = cwritem.MagazineContents[i];
+                //}
+                //// 最后一个元素设为新的 Item
+                //cwritem.MagazineContents[cwritem.MagazineContents.Length - 1] = new Item();
+                List<Item> items = new List<Item>();
+                foreach (Item i in cwritem.MagazineContents) {
+                    if (i.type != ItemID.None && i.stack > 0) {
+                        items.Add(i);
+                    }
+                }
+                cwritem.MagazineContents = items.ToArray();
+            }
+            if (cwritem.MagazineContents.Length <= 0) {
+                IsKreload = false;
+                BulletNum = 0;
+                return;
+            }
+            if (cwritem.MagazineContents[0] == null) {
+                cwritem.MagazineContents[0] = new Item();
+            }
+            if (AmmoTypeAffectedByMagazine) {
+                AmmoTypes = cwritem.MagazineContents[0].shoot;
+            }
+            cwritem.MagazineContents[0].stack--;
         }
 
         public override void SpanProj() {
@@ -456,6 +455,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
+                
                 UpdateMagazineContents();
                 if (PreFiringShoot()) {
                     if (EnableRecoilRetroEffect) {

@@ -1485,6 +1485,116 @@ Items: {
 		DisplayName: Voidragon Ec Type
 		Tooltip: ""
 	}
+
+	AcesHighEcType: {
+		DisplayName: Aces High Ec Type
+		Tooltip: ""
+	}
+
+	ConferenceCallEcType: {
+		DisplayName: Conference Call Ec Type
+		Tooltip: ""
+	}
+
+	MineralMortarEcType: {
+		DisplayName: Mineral Mortar Ec Type
+		Tooltip: ""
+	}
+
+	MolecularManipulatorEcType: {
+		DisplayName: Molecular Manipulator Ec Type
+		Tooltip: ""
+	}
+
+	NullificationRifleEcType: {
+		DisplayName: Nullification Rifle Ec Type
+		Tooltip: ""
+	}
+
+	OnyxChainBlasterEcType: {
+		DisplayName: Onyx Chain Blaster Ec Type
+		Tooltip: ""
+	}
+
+	OnyxiaEcType: {
+		DisplayName: Onyxia Ec Type
+		Tooltip: ""
+	}
+
+	PestilentDefilerEcType: {
+		DisplayName: Pestilent Defiler Ec Type
+		Tooltip: ""
+	}
+
+	RealmRavagerEcType: {
+		DisplayName: Realm Ravager Ec Type
+		Tooltip: ""
+	}
+
+	RubicoPrimeEcType: {
+		DisplayName: Rubico Prime Ec Type
+		Tooltip: ""
+	}
+
+	SandstormGunEcType: {
+		DisplayName: Sandstorm Gun Ec Type
+		Tooltip: ""
+	}
+
+	SepticSkewerEcType: {
+		DisplayName: Septic Skewer Ec Type
+		Tooltip: ""
+	}
+
+	ShredderEcType: {
+		DisplayName: Shredder Ec Type
+		Tooltip: ""
+	}
+
+	SomaPrimeEcType: {
+		DisplayName: Soma Prime Ec Type
+		Tooltip: ""
+	}
+
+	SpectralstormCannonEcType: {
+		DisplayName: Spectralstorm Cannon Ec Type
+		Tooltip: ""
+	}
+
+	SpeedBlasterEcType: {
+		DisplayName: Speed Blaster Ec Type
+		Tooltip: ""
+	}
+
+	SpykerEcType: {
+		DisplayName: Spyker Ec Type
+		Tooltip: ""
+	}
+
+	StarSputterEcType: {
+		DisplayName: Star Sputter Ec Type
+		Tooltip: ""
+	}
+
+	StellarCannonEcType: {
+		DisplayName: Stellar Cannon Ec Type
+		Tooltip: ""
+	}
+
+	SvantechnicalEcType: {
+		DisplayName: Svantechnical Ec Type
+		Tooltip: ""
+	}
+
+	TheHiveEcType: {
+		DisplayName: The Hive Ec Type
+		Tooltip: ""
+	}
+
+	ThePackEcType: {
+		DisplayName: The Pack Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1842,6 +1952,28 @@ Projectiles: {
 	OnyxBlasterHeldProj.DisplayName: Onyx Blaster Held Proj
 	SDMGHeldProj.DisplayName: S D M G Held Proj
 	VortexBeaterHeldProj.DisplayName: Vortex Beater Held Proj
+	AcesHighHeldProj.DisplayName: Aces High Held Proj
+	ConferenceCallHeldProj.DisplayName: Conference Call Held Proj
+	MineralMortarHeldProj.DisplayName: Mineral Mortar Held Proj
+	MolecularManipulatorHeldProj.DisplayName: Molecular Manipulator Held Proj
+	NullificationRifleHeldProj.DisplayName: Nullification Rifle Held Proj
+	OnyxChainBlasterHeldProj.DisplayName: Onyx Chain Blaster Held Proj
+	OnyxiaHeldProj.DisplayName: Onyxia Held Proj
+	RealmRavagerHeldProj.DisplayName: Realm Ravager Held Proj
+	RubicoPrimeHeldProj.DisplayName: Rubico Prime Held Proj
+	SandstormGunHeldProj.DisplayName: Sandstorm Gun Held Proj
+	SepticSkewerHeldProj.DisplayName: Septic Skewer Held Proj
+	ShredderHeldProj.DisplayName: Shredder Held Proj
+	SomaPrimeHeldProj.DisplayName: Soma Prime Held Proj
+	SpectralstormCannonHeldProj.DisplayName: Spectralstorm Cannon Held Proj
+	SpeedBlasterHeldProj.DisplayName: Speed Blaster Held Proj
+	SpykerHeldProj.DisplayName: Spyker Held Proj
+	StarSputterHeldProj.DisplayName: Star Sputter Held Proj
+	StellarCannonHeldProj.DisplayName: Stellar Cannon Held Proj
+	SvantechnicalHeldProj.DisplayName: Svantechnical Held Proj
+	TheHiveHeldProj.DisplayName: The Hive Held Proj
+	ThePackHeldProj.DisplayName: The Pack Held Proj
+	PestilentDefilerHeldProj.DisplayName: Pestilent Defiler Held Proj
 }
 
 Configs: {

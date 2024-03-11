@@ -1689,6 +1689,156 @@ Items: {
 			75%几率节省弹药
 			'''
 	}
+
+	AcesHighEcType: {
+		// DisplayName: Aces High Ec Type
+		// Tooltip: ""
+	}
+
+	ConferenceCallEcType: {
+		// DisplayName: Conference Call Ec Type
+		// Tooltip: ""
+	}
+
+	MineralMortarEcType: {
+		// DisplayName: Mineral Mortar Ec Type
+		// Tooltip: ""
+	}
+
+	MolecularManipulatorEcType: {
+		// DisplayName: Molecular Manipulator Ec Type
+		// Tooltip: ""
+	}
+
+	NullificationRifleEcType: {
+		// DisplayName: Nullification Rifle Ec Type
+		// Tooltip: ""
+	}
+
+	OnyxChainBlasterEcType: {
+		// DisplayName: Onyx Chain Blaster Ec Type
+		// Tooltip: ""
+	}
+
+	OnyxiaEcType: {
+		// DisplayName: Onyxia Ec Type
+		// Tooltip: ""
+	}
+
+	PestilentDefilerEcType: {
+		// DisplayName: Pestilent Defiler Ec Type
+		// Tooltip: ""
+	}
+
+	RealmRavagerEcType: {
+		// DisplayName: Realm Ravager Ec Type
+		// Tooltip: ""
+	}
+
+	RubicoPrimeEcType: {
+		// DisplayName: Rubico Prime Ec Type
+		// Tooltip: ""
+	}
+
+	SandstormGunEcType: {
+		// DisplayName: Sandstorm Gun Ec Type
+		// Tooltip: ""
+	}
+
+	SepticSkewerEcType: {
+		DisplayName: 剧毒叉枪
+		Tooltip:
+			'''
+			发射一个黏性剧毒鱼叉
+			飞回玩家时释放细菌
+			'''
+	}
+
+	ShredderEcType: {
+		DisplayName: 解离者
+		Tooltip:
+			'''
+			发射一团会分裂弹射的能量子弹
+			右键发射一团火枪子弹
+			“神话，传说，这把枪能让你的电脑爆炸”
+			'''
+	}
+
+	SomaPrimeEcType: {
+		DisplayName: 月神Prime
+		Tooltip:
+			'''
+			如果这把武器的暴击率超过了100%，它可以造成超暴击
+			所有发射的弹幕都会造成解离和可堆叠的流血减益
+			解离减益每秒造成150点伤害，该伤害受到你远程属性的影响。
+			解离减益每次造成伤害时，都有几率触发暴击或者超暴击
+			将火枪子弹转化为高速子弹
+			80%几率节省弹药
+			'''
+	}
+
+	SpectralstormCannonEcType: {
+		DisplayName: 光谱风暴
+		Tooltip:
+			'''
+			发射失落之魂与信号弹
+			70%几率节省弹药
+			'''
+	}
+
+	SpeedBlasterEcType: {
+		DisplayName: 彩弹冲锋枪
+		Tooltip:
+			'''
+			快速发射磷光彩弹
+			按下右键发射一束强力彩弹，在移动时使用会推动你冲刺
+			这个技能有{0}秒冷却时间
+			冷却期间，你可以更快、更精准地射击
+			'''
+	}
+
+	SpykerEcType: {
+		DisplayName: 叶针霰弹炮
+		Tooltip: 将火枪子弹转化为会钉在敌人身上并爆炸的叶针
+	}
+
+	StarSputterEcType: {
+		DisplayName: 星辰溅散
+		Tooltip:
+			'''
+			发射一束陨星
+			每四次攻击发射一个更大的陨星
+			“眺望遥远星系的闪烁群星”
+			'''
+	}
+
+	StellarCannonEcType: {
+		DisplayName: 新星炮
+		Tooltip: 发射一个爆炸幻星水晶
+	}
+
+	SvantechnicalEcType: {
+		DisplayName: 斯万科技枪
+		Tooltip:
+			'''
+			发射出巨量子弹
+			右击以扩大视野
+			'''
+	}
+
+	TheHiveEcType: {
+		DisplayName: 蜂巢发射器
+		Tooltip:
+			'''
+			发射多种瘟疫火箭，爆炸时会生成友好的蜜蜂
+			当使用可摧毁物块的弹药时火箭会破坏物块
+			'''
+	}
+
+	ThePackEcType: {
+		DisplayName: 集束火箭
+		Tooltip: 发射一个大的追踪火箭，接近敌人时爆炸出小的追踪火箭
+	}
 }
 
 Projectiles: {
@@ -2046,6 +2196,28 @@ Projectiles: {
 	// OnyxBlasterHeldProj.DisplayName: Onyx Blaster Held Proj
 	// SDMGHeldProj.DisplayName: S D M G Held Proj
 	// VortexBeaterHeldProj.DisplayName: Vortex Beater Held Proj
+	// AcesHighHeldProj.DisplayName: Aces High Held Proj
+	// ConferenceCallHeldProj.DisplayName: Conference Call Held Proj
+	// MineralMortarHeldProj.DisplayName: Mineral Mortar Held Proj
+	// MolecularManipulatorHeldProj.DisplayName: Molecular Manipulator Held Proj
+	// NullificationRifleHeldProj.DisplayName: Nullification Rifle Held Proj
+	// OnyxChainBlasterHeldProj.DisplayName: Onyx Chain Blaster Held Proj
+	// OnyxiaHeldProj.DisplayName: Onyxia Held Proj
+	// RealmRavagerHeldProj.DisplayName: Realm Ravager Held Proj
+	// RubicoPrimeHeldProj.DisplayName: Rubico Prime Held Proj
+	// SandstormGunHeldProj.DisplayName: Sandstorm Gun Held Proj
+	// SepticSkewerHeldProj.DisplayName: Septic Skewer Held Proj
+	// ShredderHeldProj.DisplayName: Shredder Held Proj
+	// SomaPrimeHeldProj.DisplayName: Soma Prime Held Proj
+	// SpectralstormCannonHeldProj.DisplayName: Spectralstorm Cannon Held Proj
+	// SpeedBlasterHeldProj.DisplayName: Speed Blaster Held Proj
+	// SpykerHeldProj.DisplayName: Spyker Held Proj
+	// StarSputterHeldProj.DisplayName: Star Sputter Held Proj
+	// StellarCannonHeldProj.DisplayName: Stellar Cannon Held Proj
+	// SvantechnicalHeldProj.DisplayName: Svantechnical Held Proj
+	// TheHiveHeldProj.DisplayName: The Hive Held Proj
+	// ThePackHeldProj.DisplayName: The Pack Held Proj
+	// PestilentDefilerHeldProj.DisplayName: Pestilent Defiler Held Proj
 }
 
 Configs: {
