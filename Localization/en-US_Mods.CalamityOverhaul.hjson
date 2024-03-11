@@ -2222,18 +2222,84 @@ TextContent: {
 			Fires a spread of bullets
 			"I have no time."
 			'''
-		Wap_ClockworkAssaultRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ClockworkAssaultRifle_Text
-		Wap_SnowballCannon_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_SnowballCannon_Text
-		Wap_Uzi_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_Uzi_Text
-		Wap_VenusMagnum_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_VenusMagnum_Text
-		Wap_StakeLauncher_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_StakeLauncher_Text
-		Wap_SniperRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_SniperRifle_Text
-		Wap_NailGun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_NailGun_Text
-		Wap_DartPistol_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DartPistol_Text
-		Wap_DartRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DartRifle_Text
-		CartridgeHolderUI_Text1: 弹匣填充内容
-		CartridgeHolderUI_Text2: 剩余
-		CartridgeHolderUI_Text3: 空
-		CartridgeHolderUI_Text4: 右键卸弹
+		Wap_ClockworkAssaultRifle_Text:
+			'''
+			Weak recoil
+			Fires three bullets were at once
+			"I know why they're ticking, and I know how to make them stop."
+			'''
+		Wap_SnowballCannon_Text:
+			'''
+			Weak recoil
+			Use snowballs as ammunition
+			"It's freezing to put snowballs in there, so I can only put a little at a time."
+			'''
+		Wap_Uzi_Text:
+			'''
+			Weak recoil
+			Converting ordinary bullets into high-speed bullets
+			"Lightweight and lethal, not holding it double is simply a waste of it."
+			'''
+		Wap_VenusMagnum_Text:
+			'''
+			Weak recoil
+			Converting ordinary bullets into high-speed bullets
+			"Turn love into the kinetic energy of a bullet, says Venus."
+			'''
+		Wap_StakeLauncher_Text:
+			'''
+			Weak recoil
+			Launch penetrating pickets
+			Pickets are considered bows, but that doesn't mean you can't fit a scope
+			"The only way to kill a vampire once and for all is to put a wooden picket through its heart, but you can't live if you are not a vampire."
+			'''
+		Wap_SniperRifle_Text:
+			'''
+			Strong recoil
+			Converting ordinary bullets into high-speed bullets
+			Right-click and use the sniper mirror to expand the field of view
+			“When the cross locks you, Death will kiss your forehead.”
+			'''
+		Wap_NailGun_Text:
+			'''
+			Weak recoil
+			Fire nails that stick to the enemy and then explode
+			"The nails pulled from the head of the nail head, the effect pulled out of the group, in addition to reinforcing your house"
+			'''
+		Wap_DartPistol_Text:
+			'''
+			Weak recoil
+			Fire the dart at a faster speed
+			"Shoot darts from a blowgun? Jesus, you want me to put gunpowder in my mouth?"
+			'''
+		Wap_DartRifle_Text:
+			'''
+			Weak recoil
+			Fire the dart at a faster speed
+			"Shoot darts from a blowgun? Jesus, you want me to put gunpowder in my mouth?"
+			'''
+		CartridgeHolderUI_Text1: Magazine stuffing
+		CartridgeHolderUI_Text2: Residue
+		CartridgeHolderUI_Text3: Empty
+		CartridgeHolderUI_Text4: Right-click discharge
+		Wap_SDMG_Text:
+			'''
+			Weak recoil
+			Firing bullets at great speed
+			66% chance not to consume ammo
+			"It came from the Starbound."
+			'''
+		Wap_OnyxBlaster_Text:
+			'''
+			Medium recoil
+			Turn a bullet into a blackbolt
+			"Dark energy bursts from the gun"
+			'''
+		Wap_LaserRifle_Text:
+			'''
+			Weak recoil
+			Firing a laser from the eyes of one of the vanquished
+			"I can't believe the monster's massive eyes were stuffed into this gun."
+			'''
 	}
 }

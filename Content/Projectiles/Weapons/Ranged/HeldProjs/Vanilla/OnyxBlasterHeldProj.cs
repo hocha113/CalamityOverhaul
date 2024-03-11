@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -47,12 +48,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity * 1.5f, ProjectileID.BlackBolt, (int)(WeaponDamage * 0.9f), WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, ProjectileID.BlackBolt, (int)(WeaponDamage * 0.9f), WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].timeLeft += 25;
             for (int i = 0; i < 4; i++) {
                 _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.8f, 1.2f) * 1f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 _ = CreateRecoil();
             }
-            _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
         }
     }

@@ -46,6 +46,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
+            if(AmmoTypes == ProjectileID.Bullet) {
+                AmmoTypes = ProjectileID.BulletHighVelocity;
+            }
             base.FiringShoot();
         }
     }

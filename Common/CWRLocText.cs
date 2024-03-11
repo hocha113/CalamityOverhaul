@@ -72,6 +72,9 @@ namespace CalamityOverhaul.Common
         public LocalizedText Wap_NailGun_Text { get; private set; }
         public LocalizedText Wap_DartPistol_Text { get; private set; }
         public LocalizedText Wap_DartRifle_Text { get; private set; }
+        public LocalizedText Wap_SDMG_Text { get; private set; }
+        public LocalizedText Wap_OnyxBlaster_Text { get; private set; }
+        public LocalizedText Wap_LaserRifle_Text { get; private set; }
 
         #endregion
         public override void Load() {
