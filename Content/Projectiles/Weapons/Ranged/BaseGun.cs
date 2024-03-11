@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         /// <summary>
-        /// 更新枪压的作用状态，这个函数只应该由弹幕主人调用
+        /// 更新枪压的作用状态
         /// </summary>
         public virtual void UpdateRecoil() {
             OffsetRot -= ControlForce;
@@ -154,6 +154,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Vector2 recoilVr = ShootVelocity.UnitVector() * (Recoil * -OwnerPressureIncrease);
             if (Math.Abs(Owner.velocity.X) < RangeOfStress && Math.Abs(Owner.velocity.Y) < RangeOfStress) {
                 Owner.velocity += recoilVr;
+                if (!CWRUtils.isSinglePlayer) {
+                    var msg = Mod.GetPacket();
+                    msg.Write((byte)CWRMessageType.RecoilAcceleration);
+                    msg.Write(Owner.whoAmI);
+                    msg.Write(true);
+                    msg.Write(recoilVr.X);
+                    msg.Write(recoilVr.Y);
+                    msg.Send();
+                }
             }
             return recoilVr;
         }
@@ -344,8 +353,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
                 Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
             }
+            UpdateRecoil();
             if (Projectile.IsOwnedByLocalPlayer()) {
-                UpdateRecoil();
                 SpanProj();
             }
             Time++;

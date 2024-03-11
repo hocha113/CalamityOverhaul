@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.penetrate = -1;
             Projectile.timeLeft = 20;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = InWorldBossPhase.Instance.Level() >= 5 ? 5 : -1;
+            Projectile.localNPCHitCooldown = -1;//InWorldBossPhase.Instance.Level() >= 5 ? 5 : 
         }
 
         int level => InWorldBossPhase.Instance.Level();

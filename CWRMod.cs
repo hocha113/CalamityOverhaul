@@ -1,3 +1,4 @@
+using CalamityMod;
 using CalamityMod.Items;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
@@ -8,6 +9,7 @@ using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -114,6 +116,8 @@ namespace CalamityOverhaul
             On_Main.DrawInfernoRings -= PeSystem.CWRDrawForegroundParticles;
             base.Unload();
         }
+
+        public override void HandlePacket(BinaryReader reader, int whoAmI) => CWRNetCode.HandlePacket(this, reader, whoAmI);
 
         public void FindMod() {
             ModLoader.TryGetMod("CalamityModMusic", out musicMod);

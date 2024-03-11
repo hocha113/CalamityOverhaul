@@ -2,6 +2,7 @@
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
+using log4net.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -35,6 +36,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override void PostAI() => CWRUtils.ClockFrame(ref Projectile.frame, 5, 12);
+
+        float getBrakSwingDamageSengsValue(int level) {
+            float overValue = 0;
+            if (level >= 5) {
+                overValue = level * 0.1f;
+            }
+            return 2 + murasama.CWR().ai[0] * 0.1f + level * 0.2f + overValue;
+        }
 
         public override void AI() {
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {
@@ -110,8 +119,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     }
                     if (projToOwnerLeng < 33) {
                         //murasama.CWR().ai[0]表示充能值，这里让其充能值越高，升龙斩造成的伤害便越高
-                        float sengs = 2 + murasama.CWR().ai[0] * 0.1f + level * 0.2f;
-                        
+                        float sengs = getBrakSwingDamageSengsValue(level);
+
                         //如果此时爆发没有击中敌人，那么判断是否有Boss在场
                         foreach (NPC n in Main.npc) {//如果Boss在场，不进行升龙，而是飞回玩家身上
                             if (n.boss && n.active && n.position.To(Owner.position).LengthSquared() < 9000000) {

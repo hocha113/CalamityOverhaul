@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Magic.Extras;
 using CalamityOverhaul.Content.Items.Materials;
@@ -7,6 +8,7 @@ using CalamityOverhaul.Content.Items.Tools;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
@@ -60,6 +62,9 @@ namespace CalamityOverhaul.Content
         /// 是否受伤
         /// </summary>
         public bool OnHit;
+        public bool DompBool;
+        public bool RecoilAccelerationAddBool;
+        public Vector2 RecoilAccelerationValue;
 
         public override void Initialize() {
             OnHit = false;
@@ -127,6 +132,46 @@ namespace CalamityOverhaul.Content
                     Main.instance.CameraModifiers.Add(modifier2);
                 }
             }
+            if (DompBool) {
+                $"{Player.name}成功进行网络同步".Domp();
+                DompBool = false;
+            }
+            if (RecoilAccelerationAddBool) {
+                Player.velocity += RecoilAccelerationValue;
+                RecoilAccelerationAddBool = false;
+            }
+        }
+
+        internal void HandleRecoilAcceleration(BinaryReader reader) {
+            RecoilAccelerationAddBool = reader.ReadBoolean();
+            RecoilAccelerationValue.X = reader.ReadSingle();
+            RecoilAccelerationValue.Y = reader.ReadSingle();
+            if (Main.netMode == NetmodeID.Server)
+                SyncRecoilAcceleration(true);
+        }
+
+        public void SyncRecoilAcceleration(bool server) {
+            ModPacket packet = Mod.GetPacket(256);
+            packet.Write((byte)CWRMessageType.RecoilAcceleration);
+            packet.Write(Player.whoAmI);
+            packet.Write(RecoilAccelerationAddBool);
+            packet.Write(RecoilAccelerationValue.X);
+            packet.Write(RecoilAccelerationValue.Y);
+            Player.SendPacket(packet, server);
+        }
+
+        internal void HandleDomp(BinaryReader reader) {
+            DompBool = reader.ReadBoolean();
+            if (Main.netMode == NetmodeID.Server)
+                SyncDomp(true);
+        }
+
+        public void SyncDomp(bool server) {
+            ModPacket packet = Mod.GetPacket(256);
+            packet.Write((byte)CWRMessageType.DompBool);
+            packet.Write(Player.whoAmI);
+            packet.Write(DompBool);
+            Player.SendPacket(packet, server);
         }
 
         public override void ModifyWeaponDamage(Item item, ref StatModifier damage) {

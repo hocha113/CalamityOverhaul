@@ -337,8 +337,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 向弹匣中装入子弹的函数
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
+            CWRItems cwrItem = Item.CWR();
+            if (cwrItem.MagazineContents != null && cwrItem.MagazineContents.Length > 0) {
+                foreach (Item i in cwrItem.MagazineContents) {
+                    if (i.stack > 0 && i.type > ItemID.None) {
+                        Owner.QuickSpawnItem(Source, new Item(i.type), i.stack);
+                    }
+                }
+            }
             List<Item> loadedItems = new List<Item>();
-            int magazineCapacity = Item.CWR().AmmoCapacity;
+            int magazineCapacity = cwrItem.AmmoCapacity;
             int accumulatedAmount = 0;
 
             foreach (Item ammoItem in AmmoState.InItemInds) {
@@ -356,7 +364,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
             }
 
-            Item.CWR().MagazineContents = loadedItems.ToArray();
+            cwrItem.MagazineContents = loadedItems.ToArray();
         }
         /// <summary>
         /// 空弹时试图开火会发生的事情
@@ -407,8 +415,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual void UpdateMagazineContents() {
             if (AmmoTypeAffectedByMagazine) {
                 CWRItems cwritem = Item.CWR();
-                if (cwritem.MagazineContents[0] == null) {
-                    cwritem.MagazineContents[0] = new Item();
+                if (cwritem.MagazineContents.Length <= 0) {
+                    cwritem.MagazineContents = new Item[] {new Item() };
+                    IsKreload = false;
+                    BulletNum = 0;
+                    return;
                 }
                 if (cwritem.MagazineContents[0].stack <= 0) {
                     cwritem.MagazineContents[0].TurnToAir();
@@ -426,9 +437,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                     cwritem.MagazineContents = items.ToArray();
                 }
-                if (cwritem.MagazineContents[0].stack <= 0 && cwritem.MagazineContents[cwritem.MagazineContents.Length - 1].stack <= 0) {
+                if (cwritem.MagazineContents.Length <= 0) {
                     IsKreload = false;
                     BulletNum = 0;
+                    return;
+                }
+                if (cwritem.MagazineContents[0] == null) {
+                    cwritem.MagazineContents[0] = new Item();
                 }
                 AmmoTypes = cwritem.MagazineContents[0].shoot;
                 cwritem.MagazineContents[0].stack--;

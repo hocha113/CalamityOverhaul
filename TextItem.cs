@@ -34,10 +34,7 @@ namespace CalamityOverhaul
         }
 
         public override void UpdateInventory(Player player) {
-            //if (player.PressKey(false)) {
-            //    player.QuickSpawnItem(player.parent(), Main.HoverItem, 1);
-            //}
-            //Main.HoverItem.type.Domp();
+            
         }
 
         public override void HoldItem(Player player) {
@@ -70,13 +67,14 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            //Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero,
-            //    ModContent.ProjectileType<EndSkillEffectStart>(), 1000, 0, player.whoAmI, 0, player.Center.X, player.Center.Y);
-            AmmoState ammoState = player.GetAmmoState(AmmoID.Bullet);
-            foreach (Item i in LoadBulletsIntoMagazine(player)) {
-                i.Domp();
+            if (player.whoAmI == Main.myPlayer) {
+                var msg = Mod.GetPacket();
+                msg.Write((byte)CWRMessageType.DompBool);
+                msg.Write(1);
+                msg.Write(true);
+                msg.Send();
             }
-            ammoState.Amount.Domp();
+            
             return true;
         }
     }
