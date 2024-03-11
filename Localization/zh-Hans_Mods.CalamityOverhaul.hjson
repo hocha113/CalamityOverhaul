@@ -2042,6 +2042,10 @@ Projectiles: {
 	// BarracudaProj.DisplayName: Barracuda Proj
 	// ArcNovaDiffuserOnSpan.DisplayName: Arc Nova Diffuser On Span
 	// VoidragonOrb.DisplayName: Voidragon Orb
+	// LaserRifleHeldProj.DisplayName: Laser Rifle Held Proj
+	// OnyxBlasterHeldProj.DisplayName: Onyx Blaster Held Proj
+	// SDMGHeldProj.DisplayName: S D M G Held Proj
+	// VortexBeaterHeldProj.DisplayName: Vortex Beater Held Proj
 }
 
 Configs: {
