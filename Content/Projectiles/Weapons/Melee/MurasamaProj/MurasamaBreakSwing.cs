@@ -4,12 +4,9 @@ using CalamityMod.NPCs.ProfanedGuardians;
 using CalamityMod.NPCs.Providence;
 using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod.NPCs.VanillaNPCOverrides.Bosses;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Melee;
-using Humanizer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -19,7 +16,6 @@ using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
@@ -131,6 +127,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 spanDust(33, (int)CalamityDusts.Nightwither);
                 return;
             }
+            //执行击飞效果的具体代码
             npc.CWR().MurasamabrBeatBackBool = true;
             npc.CWR().oldNPCPos = npc.position;
             npc.CWR().MurasamabrBeatBackVr = flyVr;
@@ -252,10 +249,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == ModContent.NPCType<BrimstoneHeart>()) {
                 modifiers.FinalDamage *= 2.5f;
             }
-            if (target.type == ModContent.NPCType<SupremeCataclysm>()) {
-                modifiers.FinalDamage *= 1.5f;
-            }
-            if (target.type == ModContent.NPCType<SupremeCatastrophe>()) {
+            if (target.type == ModContent.NPCType<SupremeCataclysm>() || target.type == ModContent.NPCType<SupremeCatastrophe>()) {
                 modifiers.FinalDamage *= 1.5f;
             }
             modifiers.DefenseEffectiveness *= 0.25f;

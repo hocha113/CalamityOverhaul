@@ -29,14 +29,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
         }
 
-        public override void KreloadSoundCaseEjection() {
-            base.KreloadSoundCaseEjection();
-        }
-
-        public override void KreloadSoundloadTheRounds() {
-            base.KreloadSoundloadTheRounds();
-        }
-
         public override void PreInOwnerUpdate() {
             if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向
