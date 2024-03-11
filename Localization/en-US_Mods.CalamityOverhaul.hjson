@@ -1842,6 +1842,19 @@ Projectiles: {
 	OnyxBlasterHeldProj.DisplayName: Onyx Blaster Held Proj
 	SDMGHeldProj.DisplayName: S D M G Held Proj
 	VortexBeaterHeldProj.DisplayName: Vortex Beater Held Proj
+	AdamantiteRepeaterHeldProj.DisplayName: Adamantite Repeater Held Proj
+	ChlorophyteShotbowHeldProj.DisplayName: Chlorophyte Shotbow Held Proj
+	CobaltRepeaterHeldProj.DisplayName: Cobalt Repeater Held Proj
+	ElectrosphereLauncherHeldProj.DisplayName: Electrosphere Launcher Held Proj
+	GrenadeLauncherHeldProj.DisplayName: Grenade Launcher Held Proj
+	HallowedRepeaterHeldProj.DisplayName: Hallowed Repeater Held Proj
+	MythrilRepeaterHeldProj.DisplayName: Mythril Repeater Held Proj
+	OrichalcumRepeaterHeldProj.DisplayName: Orichalcum Repeater Held Proj
+	PalladiumRepeaterHeldProj.DisplayName: Palladium Repeater Held Proj
+	ProximityMineLauncherHeldProj.DisplayName: Proximity Mine Launcher Held Proj
+	RocketLauncherHeldProj.DisplayName: Rocket Launcher Held Proj
+	SnowmanCannonHeldProj.DisplayName: Snowman Cannon Held Proj
+	TitaniumRepeaterHeldProj.DisplayName: Titanium Repeater Held Proj
 }
 
 Configs: {
@@ -2301,5 +2314,18 @@ TextContent: {
 			Firing a laser from the eyes of one of the vanquished
 			"I can't believe the monster's massive eyes were stuffed into this gun."
 			'''
+		Wap_CobaltRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_CobaltRepeater_Text
+		Wap_PalladiumRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_PalladiumRepeater_Text
+		Wap_MythrilRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_MythrilRepeater_Text
+		Wap_OrichalcumRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_OrichalcumRepeater_Text
+		Wap_AdamantiteRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_AdamantiteRepeater_Text
+		Wap_TitaniumRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_TitaniumRepeater_Text
+		Wap_ChlorophyteShotbow_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ChlorophyteShotbow_Text
+		Wap_HallowedRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_HallowedRepeater_Text
+		Wap_GrenadeLauncher_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_GrenadeLauncher_Text
+		Wap_RocketLauncher_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_RocketLauncher_Text
+		Wap_ElectrosphereLauncher_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ElectrosphereLauncher_Text
+		Wap_ProximityMineLauncher_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ProximityMineLauncher_Text
+		Wap_SnowmanCannon_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_SnowmanCannon_Text
 	}
 }
