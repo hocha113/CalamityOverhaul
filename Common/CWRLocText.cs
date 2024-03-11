@@ -75,7 +75,19 @@ namespace CalamityOverhaul.Common
         public LocalizedText Wap_SDMG_Text { get; private set; }
         public LocalizedText Wap_OnyxBlaster_Text { get; private set; }
         public LocalizedText Wap_LaserRifle_Text { get; private set; }
-
+        public LocalizedText Wap_CobaltRepeater_Text { get; private set; }
+        public LocalizedText Wap_PalladiumRepeater_Text { get; private set; }
+        public LocalizedText Wap_MythrilRepeater_Text { get; private set; }
+        public LocalizedText Wap_OrichalcumRepeater_Text { get; private set; }
+        public LocalizedText Wap_AdamantiteRepeater_Text { get; private set; }
+        public LocalizedText Wap_TitaniumRepeater_Text { get; private set; }
+        public LocalizedText Wap_ChlorophyteShotbow_Text { get; private set; }
+        public LocalizedText Wap_HallowedRepeater_Text { get; private set; }
+        public LocalizedText Wap_GrenadeLauncher_Text { get; private set; }
+        public LocalizedText Wap_RocketLauncher_Text { get; private set; }
+        public LocalizedText Wap_ElectrosphereLauncher_Text { get; private set; }
+        public LocalizedText Wap_ProximityMineLauncher_Text { get; private set; }
+        public LocalizedText Wap_SnowmanCannon_Text { get; private set; }
         #endregion
         public override void Load() {
             //使用反射进行属性的自动加载

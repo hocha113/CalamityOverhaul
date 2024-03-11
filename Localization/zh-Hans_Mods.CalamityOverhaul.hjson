@@ -2218,6 +2218,19 @@ Projectiles: {
 	// TheHiveHeldProj.DisplayName: The Hive Held Proj
 	// ThePackHeldProj.DisplayName: The Pack Held Proj
 	// PestilentDefilerHeldProj.DisplayName: Pestilent Defiler Held Proj
+	// AdamantiteRepeaterHeldProj.DisplayName: Adamantite Repeater Held Proj
+	// ChlorophyteShotbowHeldProj.DisplayName: Chlorophyte Shotbow Held Proj
+	// CobaltRepeaterHeldProj.DisplayName: Cobalt Repeater Held Proj
+	// ElectrosphereLauncherHeldProj.DisplayName: Electrosphere Launcher Held Proj
+	// GrenadeLauncherHeldProj.DisplayName: Grenade Launcher Held Proj
+	// HallowedRepeaterHeldProj.DisplayName: Hallowed Repeater Held Proj
+	// MythrilRepeaterHeldProj.DisplayName: Mythril Repeater Held Proj
+	// OrichalcumRepeaterHeldProj.DisplayName: Orichalcum Repeater Held Proj
+	// PalladiumRepeaterHeldProj.DisplayName: Palladium Repeater Held Proj
+	// ProximityMineLauncherHeldProj.DisplayName: Proximity Mine Launcher Held Proj
+	// RocketLauncherHeldProj.DisplayName: Rocket Launcher Held Proj
+	// SnowmanCannonHeldProj.DisplayName: Snowman Cannon Held Proj
+	// TitaniumRepeaterHeldProj.DisplayName: Titanium Repeater Held Proj
 }
 
 Configs: {
@@ -2670,5 +2683,71 @@ TextContent: {
 			发射某个战败者眼中的激光
 			“难以置信，那个怪物庞大的眼睛被塞进了这把枪里”
 			'''
+		Wap_CobaltRepeater_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
+			'''
+		Wap_PalladiumRepeater_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
+		Wap_MythrilRepeater_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
+		Wap_OrichalcumRepeater_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
+		Wap_AdamantiteRepeater_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
+		Wap_TitaniumRepeater_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
+		Wap_ChlorophyteShotbow_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
+		Wap_HallowedRepeater_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
+		Wap_GrenadeLauncher_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
+		Wap_RocketLauncher_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
+		Wap_ElectrosphereLauncher_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
+		Wap_ProximityMineLauncher_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
+		Wap_SnowmanCannon_Text:
+			'''
+			弱的后坐力
+			todo
+			“”
 	}
 }
