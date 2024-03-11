@@ -2042,6 +2042,10 @@ Projectiles: {
 	// BarracudaProj.DisplayName: Barracuda Proj
 	// ArcNovaDiffuserOnSpan.DisplayName: Arc Nova Diffuser On Span
 	// VoidragonOrb.DisplayName: Voidragon Orb
+	// LaserRifleHeldProj.DisplayName: Laser Rifle Held Proj
+	// OnyxBlasterHeldProj.DisplayName: Onyx Blaster Held Proj
+	// SDMGHeldProj.DisplayName: S D M G Held Proj
+	// VortexBeaterHeldProj.DisplayName: Vortex Beater Held Proj
 }
 
 Configs: {
@@ -2394,19 +2398,19 @@ TextContent: {
 		Wap_QuadBarrelShotgun_Text:
 			'''
 			一般的后坐力
-			一次射出6颗不准确的子弹
+			一次射出6发不准确的子弹
 			“把枪管戳到那些怪物的眼睛上，这样就不需要瞄准了”
 			'''
 		Wap_TacticalShotgun_Text:
 			'''
 			很强的后坐力
-			一次射出12颗子弹
+			一次射出12发子弹
 			“一切恐惧都来源于火力不足，如果不是，那一定是火力还不够”
 			'''
 		Wap_Shotgun_Text:
 			'''
 			很强的后坐力
-			一次射出8颗子弹
+			一次射出8发子弹
 			“军火商希望这些枪有更多的枪管，这样他的子弹会更加畅销”
 			'''
 		Wap_Boomstick_Text:
@@ -2415,18 +2419,84 @@ TextContent: {
 			一次射出一片子弹
 			“我可没时间胡闹”
 			'''
-		// Wap_ClockworkAssaultRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ClockworkAssaultRifle_Text
-		// Wap_SnowballCannon_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_SnowballCannon_Text
-		// Wap_Uzi_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_Uzi_Text
-		// Wap_VenusMagnum_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_VenusMagnum_Text
-		// Wap_StakeLauncher_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_StakeLauncher_Text
-		// Wap_SniperRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_SniperRifle_Text
-		// Wap_NailGun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_NailGun_Text
-		// Wap_DartPistol_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DartPistol_Text
-		// Wap_DartRifle_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DartRifle_Text
+		Wap_ClockworkAssaultRifle_Text:
+			'''
+			弱的后坐力
+			一次射出3发子弹
+			“我知道它们为什么发出滴答滴答的声音了，我也知道怎样让它们停下来”
+			'''
+		Wap_SnowballCannon_Text:
+			'''
+			弱的后坐力
+			用雪球作为弹药
+			“你知道，往里面装雪球很冻手，所以我一次只能装一点”
+			'''
+		Wap_Uzi_Text:
+			'''
+			弱的后坐力
+			将普通子弹转化为高速子弹
+			“轻便而充满杀伤力，不双持简直是对它的浪费”
+			'''
+		Wap_VenusMagnum_Text:
+			'''
+			弱的后坐力
+			将普通子弹转化为高速子弹
+			“将爱转化为子弹的动能，维纳斯是这样说的”
+			'''
+		Wap_StakeLauncher_Text:
+			'''
+			弱的后坐力
+			发射具有穿透性的尖桩
+			尖桩被视为弓，但是这不意味着你不能装上瞄准镜
+			“彻底杀死吸血鬼的唯一方法就是将木制尖桩穿过它的心脏，但是不是吸血鬼也活不了”
+			'''
+		Wap_SniperRifle_Text:
+			'''
+			很强的后坐力
+			将火枪子弹转化为高速子弹
+			右键可以使用狙击镜拉远视野
+			“当十字线把你锁定，死神将亲吻你的额头。When the cross locks you, Death will kiss your forehead.”
+			'''
+		Wap_NailGun_Text:
+			'''
+			弱的后坐力
+			发射粘住敌人随后爆炸的钉子
+			“从钉子头的头上拔下来的钉子，效果拔群，除了加固你的房子”
+			'''
+		Wap_DartPistol_Text:
+			'''
+			弱的后坐力
+			以较快的速度发射飞镖
+			“用吹箭筒发射飞镖？老天，你是要我把火药含进嘴里吗”
+			'''
+		Wap_DartRifle_Text:
+			'''
+			弱的后坐力
+			以较高的伤害发射飞镖
+			“用吹箭筒发射飞镖？老天，你是要我把火药含进嘴里吗”
+			'''
 		CartridgeHolderUI_Text1: 弹匣填充内容
 		CartridgeHolderUI_Text2: 剩余
 		CartridgeHolderUI_Text3: 空
 		CartridgeHolderUI_Text4: 右键卸弹
+		Wap_SDMG_Text:
+			'''
+			弱的后坐力
+			以极快的速度发射子弹
+			66%几率不消耗弹药
+			“它来自星界边境”
+			'''
+		Wap_OnyxBlaster_Text:
+			'''
+			一般的后坐力
+			将一发子弹转化为玛瑙爆破弹
+			“黑暗的能量从枪中迸发”
+			'''
+		Wap_LaserRifle_Text:
+			'''
+			弱的后坐力
+			发射某个战败者眼中的激光
+			“难以置信，那个怪物庞大的眼睛被塞进了这把枪里”
+			'''
 	}
 }

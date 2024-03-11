@@ -30,7 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
             _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            _ = UpdateConsumeAmmo();
             FireTime -= 10;
             if (FireTime < 6) {
                 FireTime = 6;
