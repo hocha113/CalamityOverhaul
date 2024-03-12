@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AcesHigh";
         public override void SetDefaults() {
             Item.SetCalamitySD<AcesHigh>();
-            Item.SetCartridgeGun<AcesHighHeldProj>(480);
+            Item.SetCartridgeGun<AcesHighHeldProj>(160);
         }
     }
 }

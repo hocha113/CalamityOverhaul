@@ -24,6 +24,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         internal AmmoState AmmoState;
         /// <summary>
+        /// 是否自动在一次单次射击后调用后坐力函数
+        /// </summary>
+        internal bool CanCreateRecoilBool = true;
+        /// <summary>
+        /// 是否自动在一次单次射击后调用弹匣更新函数，这负责弹药消耗逻辑，如果设置为<see langword="false"/>就需要手动调用<see cref="UpdateMagazineContents"/>以正常执行弹药逻辑
+        /// </summary>
+        internal bool CanUpdateMagazineContentsInShootBool = true;
+        /// <summary>
         /// 枪械的射弹类型是否被弹匣内容强行影响，默认为<see langword="true"/>
         /// </summary>
         protected bool AmmoTypeAffectedByMagazine = true;
@@ -386,9 +394,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <returns></returns>
         public virtual void PostFiringShoot() {
-            if (BulletNum > 0) {
-                BulletNum--;
-            }
         }
         /// <summary>
         /// 左键单次开火事件
@@ -422,12 +427,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             if (cwritem.MagazineContents[0].stack <= 0) {
                 cwritem.MagazineContents[0].TurnToAir();
-                //// 使用循环逐个赋值，避免使用 Array.Copy 导致的重复元素问题
-                //for (int i = 1; i < cwritem.MagazineContents.Length; i++) {
-                //    cwritem.MagazineContents[i - 1] = cwritem.MagazineContents[i];
-                //}
-                //// 最后一个元素设为新的 Item
-                //cwritem.MagazineContents[cwritem.MagazineContents.Length - 1] = new Item();
                 List<Item> items = new List<Item>();
                 foreach (Item i in cwritem.MagazineContents) {
                     if (i.type != ItemID.None && i.stack > 0) {
@@ -448,6 +447,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 AmmoTypes = cwritem.MagazineContents[0].shoot;
             }
             cwritem.MagazineContents[0].stack--;
+            if (BulletNum > 0) {
+                BulletNum--;
+            }
         }
 
         public override void SpanProj() {
@@ -455,29 +457,32 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
-                
-                UpdateMagazineContents();
+                if (CanUpdateMagazineContentsInShootBool) {
+                    UpdateMagazineContents();
+                }
                 if (PreFiringShoot()) {
-                    if (EnableRecoilRetroEffect) {
-                        OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
-                    }
                     if (onFire) {
                         FiringShoot();
                     }
                     if (onFireR) {
                         FiringShootR();
                     }
-                    if (FiringDefaultSound) {
-                        SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
-                    }
                     if (CGItemBehavior) {
                         CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner
                             , (EntitySource_ItemUse_WithAmmo)Source
                             , GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
                     }
+                    if (EnableRecoilRetroEffect) {
+                        OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
+                    }
+                    if (FiringDefaultSound) {
+                        SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+                    }
                 }
                 PostFiringShoot();
-                CreateRecoil();
+                if (CanCreateRecoilBool) {
+                    CreateRecoil();
+                }
                 if (PreFireReloadKreLoad()) {
                     if (BulletNum <= 0) {
                         LoadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示

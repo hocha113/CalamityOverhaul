@@ -38,6 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
             CanRightClick = true;
+            CanUpdateMagazineContentsInShootBool = false;
         }
 
         public override void PreInOwnerUpdate() {
@@ -53,15 +54,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             base.PostInOwnerUpdate();
         }
 
-        public override void FiringShoot() {
+        public override void FiringShoot() {           
+            FiringDefaultSound = true;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
             Vector2 newVel = ShootVelocity.RotatedByRandom(MathHelper.ToRadians(Owner.Calamity().SpeedBlasterDashDelayCooldown > 0 ? 3f : 15f));
             float ShotMode = Owner.Calamity().SpeedBlasterDashDelayCooldown > 0 ? 2f : 0f;
+            UpdateMagazineContents();
             Projectile.NewProjectile(Source, GunShootPos, newVel, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, ColorValue, ShotMode);
         }
 
         public override void FiringShootR() {
+            FiringDefaultSound = true;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
             if (Owner.Calamity().SpeedBlasterDashDelayCooldown == 0) {
@@ -70,6 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 else
                     ColorValue++;
 
+                UpdateMagazineContents();
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, (int)(WeaponDamage * DashShotDamageMult), WeaponKnockback, Owner.whoAmI, ColorValue, 3f);
 
                 Owner.Calamity().SpeedBlasterDashDelayCooldown = DashCooldown;
@@ -84,6 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
             }
             else {
+                FiringDefaultSound = false;
                 GunPressure = 0;
                 ControlForce = 0;
                 SoundEngine.PlaySound(SpeedBlaster.Empty, Owner.Center);

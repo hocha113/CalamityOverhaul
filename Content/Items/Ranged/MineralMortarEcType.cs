@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MineralMortar";
         public override void SetDefaults() {
             Item.SetCalamitySD<MineralMortar>();
-            Item.SetCartridgeGun<MineralMortarHeldProj>(480);
+            Item.SetCartridgeGun<MineralMortarHeldProj>(8);
         }
     }
 }

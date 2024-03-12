@@ -1595,6 +1595,26 @@ Items: {
 		DisplayName: The Pack Ec Type
 		Tooltip: ""
 	}
+
+	ElementMuzzleBrake: {
+		DisplayName: Element Muzzle Brake
+		Tooltip: ""
+	}
+
+	NeutronStarMuzzleBrake: {
+		DisplayName: Neutron Star Muzzle Brake
+		Tooltip: ""
+	}
+
+	PrecisionMuzzleBrake: {
+		DisplayName: Precision Muzzle Brake
+		Tooltip: ""
+	}
+
+	SimpleMuzzleBrake: {
+		DisplayName: Simple Muzzle Brake
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -1987,6 +2007,7 @@ Projectiles: {
 	RocketLauncherHeldProj.DisplayName: Rocket Launcher Held Proj
 	SnowmanCannonHeldProj.DisplayName: Snowman Cannon Held Proj
 	TitaniumRepeaterHeldProj.DisplayName: Titanium Repeater Held Proj
+	SandnadoOnSpan.DisplayName: Sandnado On Span
 }
 
 Configs: {

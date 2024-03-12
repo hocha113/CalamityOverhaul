@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetCalamitySD<Svantechnical>();
             Item.SetCartridgeGun<SvantechnicalHeldProj>(280);
+            Item.CWR().Scope = true;
         }
     }
 }

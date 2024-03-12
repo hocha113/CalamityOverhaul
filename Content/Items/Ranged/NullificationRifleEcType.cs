@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "NullificationRifle";
         public override void SetDefaults() {
             Item.SetCalamitySD<NullificationRifle>();
-            Item.SetCartridgeGun<NullificationRifleHeldProj>(480);
+            Item.SetCartridgeGun<NullificationRifleHeldProj>(80);
         }
     }
 }

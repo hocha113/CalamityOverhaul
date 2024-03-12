@@ -4,6 +4,9 @@ using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 using Terraria;
+using CalamityMod.Projectiles.Ranged;
+using CalamityMod.Sounds;
+using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -12,22 +15,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "RubicoPrime";
         public override int targetCayItem => ModContent.ItemType<RubicoPrime>();
         public override int targetCWRItem => ModContent.ItemType<RubicoPrimeEcType>();
-
+        int fireIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 15;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
-            HandFireDistanceY = -10;
+            HandFireDistanceY = -5;
             ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            ShootPosToMouLengValue = 20;
             RepeatedCartridgeChange = true;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;
-            AmmoTypeAffectedByMagazine = false;
+            AmmoTypeAffectedByMagazine = true;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
         }
@@ -41,17 +44,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
+            if (!onFire && IsKreload) {
+                if (++fireIndex > 50) {
+                    NPC target = Projectile.Center.FindClosestNPC(1900, false, true);
+                    if (target != null) {
+                        UpdateMagazineContents();
+                        SoundEngine.PlaySound(CommonCalamitySounds.LargeWeaponFireSound with { Volume = CommonCalamitySounds.LargeWeaponFireSound.Volume * 0.45f, Pitch = 0.2f }, Projectile.Center);
+                        Vector2 vr = GunShootPos.To(target.Center).UnitVector() * ScaleFactor;
+                        Projectile.NewProjectile(Source, GunShootPos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                        SpawnGunFireDust(GunShootPos, vr);
+                    }
+                    fireIndex = 0;
+                }
+            }
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            for (int index = 0; index < 5; ++index) {
-                Vector2 velocity = ShootVelocity;
-                velocity.X += Main.rand.Next(-40, 41) * 0.05f;
-                velocity.Y += Main.rand.Next(-40, 41) * 0.05f;
-                Projectile.NewProjectile(Source, GunShootPos, velocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            }
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<ImpactRound>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {

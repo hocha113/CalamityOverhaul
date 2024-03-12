@@ -203,12 +203,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                     CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, key);
                 }
             }
-            if (item.CWR().HasCartridgeHolder) {//这个钩子的挂载大于CWR的全局物品，所以必须将这部分写在此处
-                string modName = "Terraria";
-                if (CWRServerConfig.Instance.ForceReplaceResetContent) {
-                    modName = CWRMod.Instance.Name;
-                }
+            string modName = CWRServerConfig.Instance.ForceReplaceResetContent ? CWRMod.Instance.Name : "Terraria";
+            //这个钩子的挂载大于CWR的全局物品，所以必须将这部分写在此处
+            if (item.CWR().HasCartridgeHolder) {
                 tooltips.ReplaceTooltip("[KL]", CWRKeySystem.KreLoad_Key.TooltipHotkeyString(), modName);
+            }
+            if (item.CWR().Scope) {
+                tooltips.ReplaceTooltip("[Scope]", CWRKeySystem.ADS_Key.TooltipHotkeyString(), modName);
             }
         }
 

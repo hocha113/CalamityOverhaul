@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetCalamitySD<StellarCannon>();
             Item.useAmmo = AmmoID.Bullet;
-            Item.SetCartridgeGun<StellarCannonHeldProj>(80);
+            Item.SetCartridgeGun<StellarCannonHeldProj>(30);
         }
     }
 }

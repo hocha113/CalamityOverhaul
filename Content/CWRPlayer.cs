@@ -29,9 +29,17 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool LoadMuzzleBrake;
         /// <summary>
+        /// 装备的制动器等级
+        /// </summary>
+        public int LoadMuzzleBrakeLevel;
+        /// <summary>
         /// 应力缩放
         /// </summary>
         public float PressureIncrease;
+        /// <summary>
+        /// 摄像头位置额外矫正值
+        /// </summary>
+        public Vector2 OffsetScreenPos;
         //未使用的，这个属性属于一个未完成的UI
         public int CompressorPanelID = -1;
         /// <summary>
@@ -78,14 +86,16 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ResetEffects() {
-            OnHit = false;
             TheRelicLuxor = 0;
+            LoadMuzzleBrakeLevel = 0;
             PressureIncrease = 1;
+            OnHit = false;
             InFoodStallChair = false;
             EndlessStabilizerBool = false;
             HeldMurasamaBool = false;
             EndSkillEffectStartBool = false;
             LoadMuzzleBrake = false;
+            OffsetScreenPos = Vector2.Zero;
         }
 
         public override void SaveData(TagCompound tag) {
@@ -180,25 +190,24 @@ namespace CalamityOverhaul.Content
         public override void ModifyWeaponDamage(Item item, ref StatModifier damage) {
             if (LoadMuzzleBrake) {
                 if (item.DamageType == DamageClass.Ranged) {
-                    damage *= 0.75f;
+                    if (LoadMuzzleBrakeLevel == 1) {
+                        damage *= 0.75f;
+                    }
+                    else if (LoadMuzzleBrakeLevel == 2) {
+                        damage *= 0.8f;
+                    }
+                    else if (LoadMuzzleBrakeLevel == 3) {
+                        damage *= 0.85f;
+                    }
+                    else if (LoadMuzzleBrakeLevel == 4) {
+                        damage *= 2;
+                    }
                 }
             }
         }
 
-        public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers) {
-            base.ModifyHitByNPC(npc, ref modifiers);
-        }
-
-        public override void ModifyHitByProjectile(Projectile proj, ref Player.HurtModifiers modifiers) {
-            base.ModifyHitByProjectile(proj, ref modifiers);
-        }
-
-        public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot) {
-            return base.CanBeHitByNPC(npc, ref cooldownSlot);
-        }
-
-        public override bool CanBeHitByProjectile(Projectile proj) {
-            return base.CanBeHitByProjectile(proj);
+        public override void ModifyScreenPosition() {
+            Main.screenPosition += OffsetScreenPos;
         }
 
         public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) {

@@ -111,7 +111,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
         }
 
-        public override void ModifyWeaponCrit(Item item, Player player, ref float crit) => crit += Murasama.GetOnCrit;
+        public override void ModifyWeaponCrit(Item item, Player player, ref float crit) {
+            crit += Murasama.GetOnCrit;
+        }
 
         public override bool On_PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
             Texture2D texture;

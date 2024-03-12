@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 5;
             HandFireDistance = 25;
             HandFireDistanceY = -10;
-            ShootPosNorlLengValue = 0;
+            ShootPosNorlLengValue = 2;
             ShootPosToMouLengValue = 20;
             RepeatedCartridgeChange = true;
             GunPressure = 0.1f;

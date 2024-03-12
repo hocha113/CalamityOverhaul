@@ -15,19 +15,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            FireTime = 15;
-            HandDistance = 25;
+            FireTime = 25;
+            HandDistance = 20;
             HandDistanceY = 5;
-            HandFireDistance = 25;
-            HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            HandFireDistance = 20;
+            HandFireDistanceY = -6;
+            ShootPosNorlLengValue = -0;
+            ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.1f;
+            GunPressure = 0.2f;
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;
-            AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
         }
@@ -48,9 +47,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SpawnGunFireDust(GunShootPos, ShootVelocity);
             for (int index = 0; index < 5; ++index) {
                 Vector2 velocity = ShootVelocity;
-                velocity.X += Main.rand.Next(-40, 41) * 0.05f;
-                velocity.Y += Main.rand.Next(-40, 41) * 0.05f;
+                velocity.X += Main.rand.Next(-20, 21) * 0.05f;
+                velocity.Y += Main.rand.Next(-20, 21) * 0.05f;
                 Projectile.NewProjectile(Source, GunShootPos, velocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            }
+            NPC target = Projectile.Center.FindClosestNPC(1200, false, true);
+            if (target != null) {
+                for (int index = 0; index < 5; ++index) {
+                    Vector2 spanPos = new Vector2(Main.rand.Next(500) * (ShootVelocity.X < 0 ? 1 : -1), -900) + Projectile.Center;
+                    Vector2 velocity = spanPos.To(target.Center).UnitVector() * ScaleFactor;
+                    Projectile.NewProjectile(Source, spanPos, velocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                }
             }
         }
 

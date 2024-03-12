@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ConferenceCall";
         public override void SetDefaults() {
             Item.SetCalamitySD<ConferenceCall>();
-            Item.SetCartridgeGun<ConferenceCallHeldProj>(480);
+            Item.SetCartridgeGun<ConferenceCallHeldProj>(220);
         }
     }
 }

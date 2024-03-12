@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SomaPrime";
         public override void SetDefaults() {
             Item.SetCalamitySD<SomaPrime>();
-            Item.SetCartridgeGun<SomaPrimeHeldProj>(480);
+            Item.SetCartridgeGun<SomaPrimeHeldProj>(700);
         }
     }
 }

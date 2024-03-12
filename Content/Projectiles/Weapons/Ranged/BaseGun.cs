@@ -118,6 +118,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 开火时会制造的后坐力模长，默认为5
         /// </summary>
         public float Recoil = 5;
+        protected float RecoilOffsetRecoverValue = 0.5f;
         /// <summary>
         /// 该枪械在开火时的一个转动角，用于快捷获取
         /// </summary>
@@ -170,7 +171,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 OffsetRot = 0;
             }
             if (OffsetPos != Vector2.Zero) {
-                OffsetPos *= 0.5f;
+                OffsetPos *= RecoilOffsetRecoverValue;
             }
         }
         /// <summary>
