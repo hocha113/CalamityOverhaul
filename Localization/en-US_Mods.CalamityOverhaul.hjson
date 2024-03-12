@@ -1615,6 +1615,31 @@ Items: {
 		DisplayName: Simple Muzzle Brake
 		Tooltip: ""
 	}
+
+	BladedgeGreatbowEcType: {
+		DisplayName: Bladedge Greatbow Ec Type
+		Tooltip: ""
+	}
+
+	CleansingBlazeEcType: {
+		DisplayName: Cleansing Blaze Ec Type
+		Tooltip: ""
+	}
+
+	FirestormCannonEcType: {
+		DisplayName: Firestorm Cannon Ec Type
+		Tooltip: ""
+	}
+
+	FlakToxicannonEcType: {
+		DisplayName: Flak Toxicannon Ec Type
+		Tooltip: ""
+	}
+
+	FreedomStarEcType: {
+		DisplayName: Freedom Star Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2008,6 +2033,11 @@ Projectiles: {
 	SnowmanCannonHeldProj.DisplayName: Snowman Cannon Held Proj
 	TitaniumRepeaterHeldProj.DisplayName: Titanium Repeater Held Proj
 	SandnadoOnSpan.DisplayName: Sandnado On Span
+	BladedgeGreatbowHeldProj.DisplayName: Bladedge Greatbow Held Proj
+	CleansingBlazeHeldProj.DisplayName: Cleansing Blaze Held Proj
+	FirestormCannonHeldProj.DisplayName: Firestorm Cannon Held Proj
+	FlakToxicannonHeldProj.DisplayName: Flak Toxicannon Held Proj
+	FreedomStarHeldProj.DisplayName: Freedom Star Held Proj
 }
 
 Configs: {
