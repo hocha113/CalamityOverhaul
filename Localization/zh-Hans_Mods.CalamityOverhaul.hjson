@@ -1736,8 +1736,12 @@ Items: {
 	}
 
 	RubicoPrimeEcType: {
-		// DisplayName: Rubico Prime Ec Type
-		// Tooltip: ""
+		DisplayName: 绝路Prime
+		Tooltip:
+			'''
+			半自动狙击枪，连续发射5秒弹幕
+			射出的弹药有更高的暴击倍率
+			'''
 	}
 
 	SandstormGunEcType: {

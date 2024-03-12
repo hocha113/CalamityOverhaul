@@ -37,24 +37,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.Kill();
                 return;
             }
-            ShootState shootState = player.GetShootState();
-            if (Projectile.timeLeft == 40) {
-                SoundEngine.PlaySound(SoundID.Item108 with { Volume = 0.6f, Pitch = -0.8f }, Projectile.Center);
-                Projectile.NewProjectile(player.parent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 7
-                    , ModContent.ProjectileType<TarragonArrow>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
-            }
-            if (Projectile.timeLeft == 20) {
-                SoundEngine.PlaySound(SoundID.Item108 with { Volume = 0.9f, Pitch = -0.5f }, Projectile.Center);
-                for (int i = 0; i < 3; i++) {
-                    Projectile.NewProjectile(player.parent(), Projectile.Center, (Projectile.rotation + (-1 + i) * 0.1f).ToRotationVector2() * 12
-                    , ModContent.ProjectileType<TarragonArrow>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 1);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                ShootState shootState = player.GetShootState();
+                if (Projectile.timeLeft == 40) {
+                    SoundEngine.PlaySound(SoundID.Item108 with { Volume = 0.6f, Pitch = -0.8f }, Projectile.Center);
+                    Projectile.NewProjectile(player.parent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 7
+                        , ModContent.ProjectileType<TarragonArrow>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
                 }
-            }
-            if (Projectile.timeLeft == 1) {
-                SoundEngine.PlaySound(SoundID.Item108 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
-                for (int i = 0; i < 5; i++) {
-                    Projectile.NewProjectile(player.parent(), Projectile.Center, (Projectile.rotation + (-2 + i) * 0.1f).ToRotationVector2() * 15
-                    , ModContent.ProjectileType<TarragonArrow>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 2);
+                if (Projectile.timeLeft == 20) {
+                    SoundEngine.PlaySound(SoundID.Item108 with { Volume = 0.9f, Pitch = -0.5f }, Projectile.Center);
+                    for (int i = 0; i < 3; i++) {
+                        Projectile.NewProjectile(player.parent(), Projectile.Center, (Projectile.rotation + (-1 + i) * 0.1f).ToRotationVector2() * 12
+                        , ModContent.ProjectileType<TarragonArrow>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 1);
+                    }
+                }
+                if (Projectile.timeLeft == 1) {
+                    SoundEngine.PlaySound(SoundID.Item108 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
+                    for (int i = 0; i < 5; i++) {
+                        Projectile.NewProjectile(player.parent(), Projectile.Center, (Projectile.rotation + (-2 + i) * 0.1f).ToRotationVector2() * 15
+                        , ModContent.ProjectileType<TarragonArrow>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 2);
+                    }
                 }
             }
         }

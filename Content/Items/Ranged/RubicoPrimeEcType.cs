@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "RubicoPrime";
         public override void SetDefaults() {
             Item.SetCalamitySD<RubicoPrime>();
-            Item.SetCartridgeGun<RubicoPrimeHeldProj>(480);
+            Item.SetCartridgeGun<RubicoPrimeHeldProj>(80);
         }
     }
 }

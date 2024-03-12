@@ -30,7 +30,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void AI() {
             BaseOnSpanProj.FlowerAI(Projectile);
-            SpanProj();
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                SpanProj();
+            }
         }
     }
 }

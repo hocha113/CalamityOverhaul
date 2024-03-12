@@ -42,8 +42,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             ShootState shootState = player.GetShootState();
             if (Projectile.timeLeft == 40) {
                 SoundEngine.PlaySound(SoundID.NPCDeath13 with { Volume = 0.6f, Pitch = -0.8f }, Projectile.Center);
-                Projectile.NewProjectile(player.parent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 7
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    Projectile.NewProjectile(player.parent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 7
                     , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
+                }
                 for (int i = 0; i < 5; i++) {
                     Dust dust = Dust.NewDustDirect(Projectile.Center, 10, 10, DustID.Shadowflame);
                     dust.velocity = Vector2.Normalize(owner.rotation.ToRotationVector2() * 7).RotatedByRandom(MathHelper.ToRadians(15f));
@@ -51,10 +53,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
             }
             if (Projectile.timeLeft == 20) {
-                for (int i = 0; i < 3; i++) {
-                    Projectile.NewProjectile(player.parent(), Projectile.Center, (Projectile.rotation + (-1 + i) * 0.1f).ToRotationVector2() * 12
-                    , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    for (int i = 0; i < 3; i++) {
+                        Projectile.NewProjectile(player.parent(), Projectile.Center, (Projectile.rotation + (-1 + i) * 0.1f).ToRotationVector2() * 12
+                        , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
+                    }
                 }
+                
                 for (int i = 0; i < 10; i++) {
                     Dust dust = Dust.NewDustDirect(Projectile.Center, 10, 10, DustID.Shadowflame);
                     dust.velocity = Vector2.Normalize(owner.rotation.ToRotationVector2() * 7).RotatedByRandom(MathHelper.ToRadians(15f));
@@ -64,9 +69,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             if (Projectile.timeLeft == 1) {
                 SoundEngine.PlaySound(SoundID.NPCDeath13 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
-                for (int i = 0; i < (Main.zenithWorld ? 115 : 5); i++) {
-                    Projectile.NewProjectile(player.parent(), Projectile.Center, (Projectile.rotation + (-2 + i) * 0.1f).ToRotationVector2() * 15
-                    , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    for (int i = 0; i < (Main.zenithWorld ? 115 : 5); i++) {
+                        Projectile.NewProjectile(player.parent(), Projectile.Center, (Projectile.rotation + (-2 + i) * 0.1f).ToRotationVector2() * 15
+                        , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
+                    }
                 }
                 for (int i = 0; i < 15; i++) {
                     Dust dust = Dust.NewDustDirect(Projectile.Center, 10, 10, DustID.Shadowflame);

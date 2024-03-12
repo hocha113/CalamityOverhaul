@@ -30,8 +30,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.timeLeft % 5 == 0 && Owner.PressKey()) {
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * 7;
                 DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, vr);
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, vr, ModContent.ProjectileType<ScorchedEarthRocket>()
-                        , Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    Projectile.NewProjectile(Owner.parent(), Projectile.Center, vr, ModContent.ProjectileType<ScorchedEarthRocket>(), Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
+                }
                 Vector2 pos = Projectile.Center - vr * 3 + vr.GetNormalVector() * 10 * Owner.direction;
                 for (int i = 0; i < 100; i++) {
                     Vector2 dustVel = (Projectile.rotation + Main.rand.NextFloat(-0.1f, 0.1f)).ToRotationVector2() * -Main.rand.Next(26, 117);
