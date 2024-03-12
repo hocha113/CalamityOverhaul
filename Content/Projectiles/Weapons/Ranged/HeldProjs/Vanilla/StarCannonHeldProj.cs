@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
@@ -14,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.StarCannon;
 
         public override void SetRangedProperty() {
-            ShootPosToMouLengValue = 0;
+            ShootPosToMouLengValue = 30;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 5;
@@ -26,11 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
-            _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            //FireTime -= 10;
-            //if (FireTime < 6) {
-            //    FireTime = 6;
-            //}
+            _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity * 0.3f, ModContent.ProjectileType<Star>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

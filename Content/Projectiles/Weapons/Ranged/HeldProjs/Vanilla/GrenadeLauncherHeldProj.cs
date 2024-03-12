@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 AmmoTypes = ProjectileID.MiniNukeGrenadeII;
             }
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.5f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0) ;
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.2f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0) ;
         }
     }
 }

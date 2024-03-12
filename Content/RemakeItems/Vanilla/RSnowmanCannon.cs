@@ -17,8 +17,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override void SetDefaults(Item item) {
             item.SetHeldProj<SnowmanCannonHeldProj>();
             item.CWR().HasCartridgeHolder = true;
-            item.CWR().AmmoCapacity = 20;
-            item.useTime = 30;
+            item.CWR().AmmoCapacity = 12;
+            item.useTime = 45;
             item.damage = 40;
         }
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;

@@ -1,10 +1,12 @@
 ﻿using CalamityMod.Tiles.FurnitureVoid;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Reflection.Metadata;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -18,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.SnowmanCannon;
         public override void SetRangedProperty()
         {
-            FireTime = 30;
+            FireTime = 75;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -40,15 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override bool KreLoadFulfill() {
-            if (BulletNum < 16) {
-                BulletNum += 4;
-            } else {
-                BulletNum = 20;
-            }
-            if (Item.CWR().AmmoCapacityInFire) {
-                Item.CWR().AmmoCapacityInFire = false;
-            }
-            return true;
+            return base.KreLoadFulfill();
         }
 
         public override void FiringShoot() {
@@ -90,11 +84,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (ammoItem.type == ItemID.MiniNukeII) {
                 AmmoTypes = ProjectileID.MiniNukeSnowmanRocketII;
             }
+            SpawnGunFireDust();
+            SoundEngine.PlaySound(ScorchedEarth.ShootSound, Projectile.Center);
+            DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 76, dustID2: 149, dustID3: 76);
             _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             for (int i = 0; i < 2; i++) {
                 _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.1f, 0.1f, i)) * 0.7f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 _ = UpdateConsumeAmmo();
+            }
+        }
+
+        public override void PostFiringShoot() {
+            base.PostFiringShoot();
+            EjectCasing();
+        }
+
+        public override void PostDraw(Color lightColor) {
+            if (BulletNum > 0 && BulletNum <= 4 && IsKreload) {
+                string path = CWRConstant.Item_Ranged + "ScorchedEarth_PrimedForAction_" + BulletNum;
+                Texture2D value = CWRUtils.GetT2DValue(path);
+                Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
+                    , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             }
         }
     }

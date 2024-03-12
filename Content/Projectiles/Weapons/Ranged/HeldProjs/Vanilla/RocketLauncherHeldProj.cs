@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.RocketLauncher;
         public override int targetCWRItem => ItemID.RocketLauncher;
         public override void SetRangedProperty() {
-            FireTime = 60;
+            FireTime = 30;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -90,6 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             SpawnGunFireDust(GunShootPos, ShootVelocity);
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].extraUpdates += 2;
+            Main.projectile[proj].scale *= 1.2f;
         }
     }
 }
