@@ -17,20 +17,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0.2f;
-            ControlForce = 0.05f;
-            Recoil = 4.8f;
-            RangeOfStress = 48;
-            Recoil = 1.5f;
+            GunPressure = 0;
+            ControlForce = 0;
+            Recoil = 0;
         }
 
         public override void FiringShoot() {
-            _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            for (int i = 0; i < 2; i++) {
-                _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(9.98f, 1.02f), AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
-                _ = CreateRecoil();
-                _ = UpdateConsumeAmmo();
+            var value = Owner.GetShootState().UseAmmoItemType;
+            if (value == ItemID.WoodenArrow) {
+                AmmoTypes = ProjectileID.ChlorophyteArrow;
             }
+            _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            for (int i = 0; i < 4; i++) {
+                _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.07f, 0.07f)) * Main.rand.NextFloat(0.8f, 1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            }
+            _ = UpdateConsumeAmmo();
         }
     }
 }

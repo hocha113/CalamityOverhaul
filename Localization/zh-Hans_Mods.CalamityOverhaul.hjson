@@ -2694,68 +2694,79 @@ TextContent: {
 			'''
 		Wap_CobaltRepeater_Text:
 			'''
-			弱的后坐力
-			todo
+			蓄势发射快速的箭矢
+			“由钴制成的连弩，强而有力”
 			'''
 		Wap_PalladiumRepeater_Text:
 			'''
-			弱的后坐力
-			todo
+			概率发射两支散射的箭矢
+			“由钯金制成的连弩，能够使你初步掌握两箭散射的技艺”
 			'''
 		Wap_MythrilRepeater_Text:
 			'''
-			弱的后坐力
-			todo
+			蓄势发射快速的箭矢
+			将使箭矢额外穿透一个敌人
+			“由秘银制成的连弩，更加强而有力”
 			'''
 		Wap_OrichalcumRepeater_Text:
 			'''
-			弱的后坐力
-			todo
+			稳定发射两支散射的箭矢
+			“由山铜制成的连弩，能够使你完全掌握两箭散射的技艺”
 			'''
 		Wap_AdamantiteRepeater_Text:
 			'''
-			弱的后坐力
+			蓄势发射快速的箭矢
+			将使箭矢额外穿透两个敌人
+			“由秘银制成的连弩，强而有力，强而有力啊！”
 			todo
 			'''
 		Wap_TitaniumRepeater_Text:
 			'''
-			弱的后坐力
-			todo
+			发射两支或三支散射的箭矢
+			“由钛金制成的连弩，你发现两箭散射很容易脱靶，于是你尝试三个”
 			'''
 		Wap_ChlorophyteShotbow_Text:
 			'''
-			弱的后坐力
-			todo
+			快速散射数发箭矢
+			将木箭转化为叶绿箭
+			“在经过了充分的光合作用之后，虽然还不能发射豌豆，但是已经是一把优秀的多头弓了”
 			'''
 		Wap_HallowedRepeater_Text:
 			'''
-			弱的后坐力
+			蓄势发射快速的箭矢
+			将使箭矢额外穿透两个敌人
+			同时额外发射两支双倍伤害的圣箭
+			“来自天堂的坠星为这支箭开道”
 			todo
 			'''
 		Wap_GrenadeLauncher_Text:
 			'''
 			弱的后坐力
-			todo
+			以榴弹形式弧线发射火箭弹
+			“我们终于有了一种省力的方式来发射这些炸弹，虽然还是可能伤到自己”
 			'''
 		Wap_RocketLauncher_Text:
 			'''
-			弱的后坐力
-			todo
+			中等的后坐力
+			蓄力发射高速火箭弹
+			“我打赌它不会被床板挡下”
 			'''
 		Wap_ElectrosphereLauncher_Text:
 			'''
-			弱的后坐力
-			todo
+			发射装载着电圈装置的火箭弹，击中目标后释放电圈
+			“外星烧烤技术！”
 			'''
 		Wap_ProximityMineLauncher_Text:
 			'''
 			弱的后坐力
-			todo
+			发射感应地雷火箭弹，感应地雷会自行伪装并提高伤害
+			“我们来玩扫雷吧”
 			'''
 		Wap_SnowmanCannon_Text:
 			'''
-			弱的后坐力
-			todo
+			中等的后坐力
+			发射三发追踪的雪人火箭
+			“伙计，这是你的圣诞礼物”
 			'''
 	}
 }

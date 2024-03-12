@@ -2446,18 +2446,79 @@ TextContent: {
 			Firing a laser from the eyes of one of the vanquished
 			"I can't believe the monster's massive eyes were stuffed into this gun."
 			'''
-		Wap_CobaltRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_CobaltRepeater_Text
-		Wap_PalladiumRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_PalladiumRepeater_Text
-		Wap_MythrilRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_MythrilRepeater_Text
-		Wap_OrichalcumRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_OrichalcumRepeater_Text
-		Wap_AdamantiteRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_AdamantiteRepeater_Text
-		Wap_TitaniumRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_TitaniumRepeater_Text
-		Wap_ChlorophyteShotbow_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ChlorophyteShotbow_Text
-		Wap_HallowedRepeater_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_HallowedRepeater_Text
-		Wap_GrenadeLauncher_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_GrenadeLauncher_Text
-		Wap_RocketLauncher_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_RocketLauncher_Text
-		Wap_ElectrosphereLauncher_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ElectrosphereLauncher_Text
-		Wap_ProximityMineLauncher_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ProximityMineLauncher_Text
-		Wap_SnowmanCannon_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_SnowmanCannon_Text
+		Wap_CobaltRepeater_Text:
+			'''
+			Fire a fast arrow
+			"A crossbow made of cobalt, powerful."
+			'''
+		Wap_PalladiumRepeater_Text:
+			'''
+			Fire one or two scattered arrows
+			"A crossbow made of palladium will give you a rudimentary grasp of the art of two-arrow scattering."
+			'''
+		Wap_MythrilRepeater_Text:
+			'''
+			Fire a fast arrow
+			Will cause the arrow to penetrate an enemy additionally
+			"A crossbow made of mithril, stronger and more powerful."
+			'''
+		Wap_OrichalcumRepeater_Text:
+			'''
+			Firing two scattered arrows
+			"A crossbow made of orichalcum enables you to fully master the art of two-arrow scattering."
+			'''
+		Wap_AdamantiteRepeater_Text:
+			'''
+			Fire a fast arrow
+			Will allow arrows to penetrate two enemies additionally
+			"A crossbow made of adamant, powerful, powerful!"
+			'''
+		Wap_TitaniumRepeater_Text:
+			'''
+			Firing two or three scattered arrows
+			"With a crossbow made of titanium, you find that two arrows can easily miss the target, so you try three."
+			'''
+		Wap_ChlorophyteShotbow_Text:
+			'''
+			Fast scattering of several arrows
+			Convert woodarrows into chlorophytearrow
+			"After sufficient photosynthesis, although it can not shoot peas, it is already an excellent multi-head bow."
+			'''
+		Wap_HallowedRepeater_Text:
+			'''
+			Fire a fast arrow
+			With two extra arrows with double damage
+			Will allow arrows to penetrate two additional enemies
+			"Falling stars from heaven clears the way for this arrow."
+			'''
+		Wap_GrenadeLauncher_Text:
+			'''
+			Weak recoil
+			Launched rocket in an arc in the form of a grenade
+			"We finally have a way to launch these bombs with less effort, even though we could still hurt ourselves."
+			'''
+		Wap_RocketLauncher_Text:
+			'''
+			Medium recoil
+			High velocity rockets fired with power
+			"I bet it won't get caught in the bed."
+			'''
+		Wap_ElectrosphereLauncher_Text:
+			'''
+			Launch a rocket loaded with a galvanic device, which releases the galvanic when it hits the target
+			"Alien barbecue technology!"
+			'''
+		Wap_ProximityMineLauncher_Text:
+			'''
+			Weak recoil
+			Launch mine sensing rockets, which camouflage themselves and increase damage
+			"Let's play minesweeper."
+			'''
+		Wap_SnowmanCannon_Text:
+			'''
+			Medium recoil
+			Fire three tracking Yeti rockets
+			"Dude, this is your Christmas present."
+			'''
 	}
 }

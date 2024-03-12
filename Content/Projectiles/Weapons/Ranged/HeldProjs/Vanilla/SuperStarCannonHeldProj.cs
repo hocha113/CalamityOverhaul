@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
-    internal class SuperStarCannonHeldProj : BaseFeederGun
+    internal class SuperStarCannonHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.SuperStarCannon].Value;
@@ -17,26 +17,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0.1f;
-            ControlForce = 0.02f;
-            Recoil = 0.8f;
+            GunPressure = 0;
+            ControlForce = 0;
+            Recoil = 0;
             RangeOfStress = 48;
-            EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 7;
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
             _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            FireTime -= 10;
-            if (FireTime < 6) {
-                FireTime = 6;
-            }
-        }
-
-        public override bool KreLoadFulfill() {
-            FireTime = 60;
-            return true;
         }
     }
 }

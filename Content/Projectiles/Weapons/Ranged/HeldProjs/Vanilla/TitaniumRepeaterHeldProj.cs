@@ -18,13 +18,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0.2f;
-            ControlForce = 0.05f;
-            Recoil = 1.5f;
+            GunPressure = 0;
+            ControlForce = 0;
+            Recoil = 0;
         }
 
         public override void FiringShoot() {
-            base.FiringShoot();
+            int ammonum = Main.rand.Next(3);
+            if (ammonum == 0) {
+                for (int i = 0; i < 2; i++) {
+                    _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.07f, 0.07f, i)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    _ = UpdateConsumeAmmo();
+                }
+            } 
+            else {
+                for (int i = 0; i < 3; i++) {
+                    _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.07f, 0.07f, i/2f)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    _ = UpdateConsumeAmmo();
+                }
+            }
         }
     }
 }

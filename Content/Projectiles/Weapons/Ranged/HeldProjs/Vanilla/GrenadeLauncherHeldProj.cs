@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.GrenadeLauncher;
         public override int targetCWRItem => ItemID.GrenadeLauncher;
         public override void SetRangedProperty() {
-            FireTime = 30;
+            FireTime = 20;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -22,8 +22,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0.8f;
             ControlForce = 0.05f;
             RepeatedCartridgeChange = true;
-            Recoil = 4.8f;
-            RangeOfStress = 48;
+            Recoil = 3.2f;
+            RangeOfStress = 5;
             kreloadMaxTime = 60;
         }
 
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 AmmoTypes = ProjectileID.MiniNukeGrenadeII;
             }
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.5f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0) ;
         }
     }
 }

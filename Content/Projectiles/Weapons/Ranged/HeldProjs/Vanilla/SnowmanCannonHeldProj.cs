@@ -3,6 +3,7 @@ using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Reflection.Metadata;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -90,7 +91,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 AmmoTypes = ProjectileID.MiniNukeSnowmanRocketII;
             }
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 76, dustID2: 149, dustID3: 76);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            for (int i = 0; i < 2; i++) {
+                _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.1f, 0.1f, i)) * 0.7f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                _ = UpdateConsumeAmmo();
+            }
         }
     }
 }

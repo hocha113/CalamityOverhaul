@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             item.SetHeldProj<ProximityMineLauncherHeldProj>();
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 20;
+            item.useTime = 120;
+            item.damage = 160;
         }
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRLocText.GetText("Wap_ProximityMineLauncher_Text"));
