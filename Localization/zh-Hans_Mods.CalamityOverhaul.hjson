@@ -1741,12 +1741,17 @@ Items: {
 	}
 
 	SandstormGunEcType: {
-		// DisplayName: Sandstorm Gun Ec Type
-		// Tooltip: ""
+		DisplayName: 沙尘暴
+		Tooltip:
+			'''
+			发射沙弹，击中敌人后爆炸并减速它们
+			使用沙块作为弹药
+			50%几率节省弹药
+			'''
 	}
 
 	SepticSkewerEcType: {
-		DisplayName: 剧毒叉枪
+		DisplayName: 剧毒鱼叉枪
 		Tooltip:
 			'''
 			发射一个黏性剧毒鱼叉
@@ -2687,67 +2692,66 @@ TextContent: {
 			'''
 			弱的后坐力
 			todo
-			“”
 			'''
 		Wap_PalladiumRepeater_Text:
 			'''
 			弱的后坐力
 			todo
-			“”
+			'''
 		Wap_MythrilRepeater_Text:
 			'''
 			弱的后坐力
 			todo
-			“”
+			'''
 		Wap_OrichalcumRepeater_Text:
 			'''
 			弱的后坐力
 			todo
-			“”
+			'''
 		Wap_AdamantiteRepeater_Text:
 			'''
 			弱的后坐力
 			todo
-			“”
+			'''
 		Wap_TitaniumRepeater_Text:
 			'''
 			弱的后坐力
 			todo
-			“”
+			'''
 		Wap_ChlorophyteShotbow_Text:
 			'''
 			弱的后坐力
 			todo
-			“”
+			'''
 		Wap_HallowedRepeater_Text:
 			'''
 			弱的后坐力
 			todo
-			“”
+			'''
 		Wap_GrenadeLauncher_Text:
 			'''
 			弱的后坐力
 			todo
-			“”
+			'''
 		Wap_RocketLauncher_Text:
 			'''
 			弱的后坐力
 			todo
-			“”
+			'''
 		Wap_ElectrosphereLauncher_Text:
 			'''
 			弱的后坐力
 			todo
-			“”
+			'''
 		Wap_ProximityMineLauncher_Text:
 			'''
 			弱的后坐力
 			todo
-			“”
+			'''
 		Wap_SnowmanCannon_Text:
 			'''
 			弱的后坐力
 			todo
-			“”
+			'''
 	}
 }
