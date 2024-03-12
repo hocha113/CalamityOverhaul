@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.ProximityMineLauncher;
         public override int targetCWRItem => ItemID.ProximityMineLauncher;
         public override void SetRangedProperty() {
-            FireTime = 30;
+            FireTime = 120;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;

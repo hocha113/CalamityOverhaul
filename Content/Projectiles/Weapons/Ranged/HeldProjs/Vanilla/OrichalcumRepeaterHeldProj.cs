@@ -18,13 +18,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0.2f;
-            ControlForce = 0.05f;
-            Recoil = 1.5f;
+            GunPressure = 0;
+            ControlForce = 0;
+            Recoil = 0;
         }
 
         public override void FiringShoot() {
-            base.FiringShoot();
+            float angle = Main.rand.NextFloat(0.05f, 0.09f);
+            for (int i = 0; i < 2; i++) {
+                _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-angle, angle, i)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                _ = UpdateConsumeAmmo();
+            }
         }
     }
 }

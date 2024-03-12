@@ -14,16 +14,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.ElectrosphereLauncher;
         public override int targetCWRItem => ItemID.ElectrosphereLauncher;
         public override void SetRangedProperty() {
-            FireTime = 30;
+            FireTime = 48;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0.8f;
-            ControlForce = 0.05f;
+            GunPressure = 0f;
+            ControlForce = 0f;
             RepeatedCartridgeChange = true;
-            Recoil = 4.8f;
-            RangeOfStress = 48;
+            Recoil = 0f;
             kreloadMaxTime = 60;
         }
 
@@ -51,8 +50,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             //火箭弹药特判，电圈特判
             Item ammoItem = Item.CWR().MagazineContents[0];
             AmmoTypes = ProjectileID.ElectrosphereMissile;
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].extraUpdates += 5;
         }
     }
 }
