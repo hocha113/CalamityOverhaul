@@ -290,8 +290,8 @@ Items: {
 	}
 
 	CleansingBlaze: {
-		DisplayName: 净神者之焰
-		Tooltip: ""
+		// DisplayName: Cleansing Blaze
+		// Tooltip: ""
 	}
 
 	AnnihilatingUniverse: {
@@ -1938,23 +1938,86 @@ Items: {
 	}
 
 	ElementMuzzleBrake: {
-		// DisplayName: Element Muzzle Brake
-		// Tooltip: ""
+		DisplayName: 元素消音器
+		Tooltip:
+			'''
+			减少65%后坐力与膛压
+			远程伤害降低15%
+			'''
 	}
 
 	NeutronStarMuzzleBrake: {
-		// DisplayName: Neutron Star Muzzle Brake
-		// Tooltip: ""
+		DisplayName: 中子态素消音器
+		Tooltip:
+			'''
+			完全抵消后坐力与膛压
+			远程伤害增加100%
+			'''
 	}
 
 	PrecisionMuzzleBrake: {
-		// DisplayName: Precision Muzzle Brake
-		// Tooltip: ""
+		DisplayName: 高精密消音器
+		Tooltip:
+			'''
+			减少55%后坐力与膛压
+			远程伤害降低20%
+			'''
 	}
 
 	SimpleMuzzleBrake: {
-		// DisplayName: Simple Muzzle Brake
-		// Tooltip: ""
+		DisplayName: 简陋消音器
+		Tooltip:
+			'''
+			减少40%后坐力与膛压
+			远程伤害降低25%
+			'''
+	}
+
+	BladedgeGreatbowEcType: {
+		DisplayName: 锋叶十字弩
+		Tooltip: 一次发射四支箭和两片锋叶
+	}
+
+	CleansingBlazeEcType: {
+		DisplayName: 净化怒焰
+		Tooltip:
+			'''
+			释放一束可以穿过物块的火焰
+			使用凝胶作为弹药
+			'''
+	}
+
+	FirestormCannonEcType: {
+		DisplayName: 烈焰风暴
+		Tooltip:
+			'''
+			较弱的后坐力
+			按下[KL]键进行换弹
+			持续释放武器化的信号弹
+			右键以发射密集的信号弹
+			70%几率节省弹药
+			'''
+	}
+
+	FlakToxicannonEcType: {
+		DisplayName: 剧毒高射炮
+		Tooltip:
+			'''
+			较强的后坐力
+			按下[KL]键进行换弹
+			以一定的角度向光标处射击
+			仅能朝着玩家头顶的一定仰角范围内开火
+			“要求：智商高”
+			'''
+	}
+
+	FreedomStarEcType: {
+		DisplayName: 自由之星
+		Tooltip:
+			'''
+			点击左键以发射能量球
+			按住左键进行充能并发射在命中时会爆炸的光束
+			'''
 	}
 }
 
@@ -2350,6 +2413,11 @@ Projectiles: {
 	// SnowmanCannonHeldProj.DisplayName: Snowman Cannon Held Proj
 	// TitaniumRepeaterHeldProj.DisplayName: Titanium Repeater Held Proj
 	// SandnadoOnSpan.DisplayName: Sandnado On Span
+	// BladedgeGreatbowHeldProj.DisplayName: Bladedge Greatbow Held Proj
+	// CleansingBlazeHeldProj.DisplayName: Cleansing Blaze Held Proj
+	// FirestormCannonHeldProj.DisplayName: Firestorm Cannon Held Proj
+	// FlakToxicannonHeldProj.DisplayName: Flak Toxicannon Held Proj
+	// FreedomStarHeldProj.DisplayName: Freedom Star Held Proj
 }
 
 Configs: {

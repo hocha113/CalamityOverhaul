@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override int targetCayItem => ModContent.ItemType<TheUpiStele>();
         public override int targetCWRItem => ModContent.ItemType<TheUpiStele>();
         public override void SetRangedProperty() {
+            Projectile.DamageType = DamageClass.Magic;
             GunPressure = 0;
             HandDistance = 25;
             HandDistanceY = -5;
