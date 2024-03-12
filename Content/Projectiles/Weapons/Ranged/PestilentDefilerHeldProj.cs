@@ -4,6 +4,8 @@ using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 using Terraria;
+using Terraria.ID;
+using CalamityMod.Projectiles.Ranged;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -15,21 +17,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            FireTime = 15;
+            FireTime = 20;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
             HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            ShootPosNorlLengValue = -6;
+            ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.1f;
+            GunPressure = 0.2f;
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 6;
+            RecoilRetroForceMagnitude = 9;
         }
 
         public override void PreInOwnerUpdate() {
@@ -46,12 +48,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            for (int index = 0; index < 5; ++index) {
-                Vector2 velocity = ShootVelocity;
-                velocity.X += Main.rand.Next(-40, 41) * 0.05f;
-                velocity.Y += Main.rand.Next(-40, 41) * 0.05f;
-                Projectile.NewProjectile(Source, GunShootPos, velocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            if (AmmoTypes == ProjectileID.Bullet) {
+                AmmoTypes = ModContent.ProjectileType<SicknessRound>();
             }
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {

@@ -95,6 +95,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int NoKreLoadTime;
         /// <summary>
+        /// 该物品是否可以开启侦察
+        /// </summary>
+        public bool Scope;
+        /// <summary>
         /// 是否是一个无尽物品，这个的设置决定物品是否会受到湮灭机制的影响
         /// </summary>
         internal bool isInfiniteItem;

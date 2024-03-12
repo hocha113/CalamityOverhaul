@@ -17,16 +17,48 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 手持物品实例
         /// </summary>
         public Item Item => Owner.ActiveItem();
+        /// <summary>
+        /// 对源灾厄的物品对象
+        /// </summary>
         public virtual int targetCayItem => ItemID.None;
+        /// <summary>
+        /// 对本身模组的物品对象
+        /// </summary>
         public virtual int targetCWRItem => ItemID.None;
+        /// <summary>
+        /// 远程武器本身是否具有碰撞伤害
+        /// </summary>
+        public bool CanMelee;
+        /// <summary>
+        /// 弹药类型
+        /// </summary>
         public int AmmoTypes;
+        /// <summary>
+        /// 射弹速度
+        /// </summary>
         public float ScaleFactor = 11f;
+        /// <summary>
+        /// 获取一个实时的远程伤害
+        /// </summary>
         public int WeaponDamage;
+        /// <summary>
+        /// 获取一个实时的远程击退
+        /// </summary>
         public float WeaponKnockback;
+        /// <summary>
+        /// 获取射击向量
+        /// </summary>
         public Vector2 ShootVelocity => ScaleFactor * UnitToMouseV;
+        /// <summary>
+        /// 获取射击向量，该属性以远程武器本身的选择角度为基准
+        /// </summary>
         public Vector2 ShootVelocityInProjRot => ScaleFactor * Projectile.rotation.ToRotationVector2();
-        public bool HaveAmmo => Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out _, out _, out _, true);
+        /// <summary>
+        /// 使用者是否拥有弹药
+        /// </summary>
+        public bool HaveAmmo;
         protected bool onFire;
+        protected float ScopeLeng;
 
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
 
@@ -36,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return canConsume;
         }
 
-        protected void UpdateShootState() => Owner.PickAmmo(Owner.ActiveItem(), out AmmoTypes, out ScaleFactor, out WeaponDamage, out WeaponKnockback, out _, true);
+        protected void UpdateShootState() => HaveAmmo = Owner.PickAmmo(Owner.ActiveItem(), out AmmoTypes, out ScaleFactor, out WeaponDamage, out WeaponKnockback, out _, true);
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
@@ -56,7 +88,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         }
 
-        public override bool? CanDamage() => false;
+        public override bool? CanDamage() => CanMelee;
+
+        protected void ScopeSrecen() {
+            Owner.scope = false;
+            if (CWRKeySystem.ADS_Key.Old) {
+                ScopeLeng += 4f;
+                if (ScopeLeng > 30) {
+                    ScopeLeng = 30;
+                }
+                Main.SetCameraLerp(0.05f, 10);
+                Owner.CWR().OffsetScreenPos = ToMouse.UnitVector() * ScopeLeng;
+            }
+            else {
+                ScopeLeng = 0;
+            }
+        }
 
         public override bool PreAI() {
             if (!CheckAlive()) {
@@ -65,6 +112,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             if (Owner.PressKey() && !Owner.mouseInterface) {
                 Owner.itemTime = 2;
+            }
+            if (Item.CWR().Scope) {
+                ScopeSrecen();
+            }
+            else {
+                ScopeLeng = 0;
             }
             UpdateShootState();
             return true;

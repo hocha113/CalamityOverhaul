@@ -92,8 +92,8 @@ namespace CalamityOverhaul.Content.UIs
                 Date.JARSengs = MathHelper.Lerp(Date.JARSengs, bulletNum / (float)cwrItem.AmmoCapacity, 0.05f);
                 float sengs = jar2.Height * (1 - Date.JARSengs);
                 Rectangle rectangle = new(0, (int)sengs, jar2.Width, (int)(jar2.Height - sengs));
-                spriteBatch.Draw(jar2, DrawPos + new Vector2(0, sengs + 4), rectangle, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
                 spriteBatch.Draw(TextureValue, DrawPos, null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(jar2, DrawPos + new Vector2(29, sengs + 27), rectangle, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             }
             if (onMainP) {
                 string text = $"{CWRLocText.GetTextValue("CartridgeHolderUI_Text1")}\n";

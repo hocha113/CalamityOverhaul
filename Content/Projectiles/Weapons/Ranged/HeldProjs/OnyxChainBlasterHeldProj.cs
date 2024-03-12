@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -14,18 +15,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<OnyxChainBlasterEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
-            FireTime = 15;
-            HandDistance = 25;
+            kreloadMaxTime = 220;
+            FireTime = 5;
+            HandDistance = 22;
             HandDistanceY = 5;
-            HandFireDistance = 25;
-            HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            HandFireDistance = 22;
+            HandFireDistanceY = -3;
+            ShootPosNorlLengValue = -0;
+            ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
-            Recoil = 1.2f;
+            Recoil = 0.5f;
             RangeOfStress = 25;
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
@@ -46,11 +47,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            for (int index = 0; index < 5; ++index) {
-                Vector2 velocity = ShootVelocity;
-                velocity.X += Main.rand.Next(-40, 41) * 0.05f;
-                velocity.Y += Main.rand.Next(-40, 41) * 0.05f;
-                Projectile.NewProjectile(Source, GunShootPos, velocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int shardDamage = (int)(1.05f * WeaponKnockback);
+            float shardKB = 1f * WeaponKnockback;
+            Projectile shard = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity, ProjectileID.BlackBolt, shardDamage, shardKB, Owner.whoAmI, 0f, 0f);
+            shard.timeLeft = (int)(shard.timeLeft * 2.4f);
+            shard.MaxUpdates *= 2;
+
+            for (int i = 0; i < 2; i++) {
+                float randAngle = Main.rand.NextFloat(0.015f);
+                float randVelMultiplier = Main.rand.NextFloat(0.72f, 1.08f);
+                Vector2 ccwVelocity = ShootVelocity.RotatedBy(-randAngle) * randVelMultiplier;
+                Vector2 cwVelocity = ShootVelocity.RotatedBy(randAngle) * randVelMultiplier;
+                Projectile.NewProjectile(Source, GunShootPos, ccwVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0f, 0f);
+                Projectile.NewProjectile(Source, GunShootPos, cwVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0f, 0f);
             }
         }
 

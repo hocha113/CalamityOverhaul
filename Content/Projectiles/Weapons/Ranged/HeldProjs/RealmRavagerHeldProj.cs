@@ -4,32 +4,33 @@ using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 using Terraria;
+using Terraria.ID;
+using CalamityMod.Projectiles.Ranged;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class RealmRavagerHeldProj : BaseFeederGun
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "SomaPrime";
-        public override int targetCayItem => ModContent.ItemType<SomaPrime>();
-        public override int targetCWRItem => ModContent.ItemType<SomaPrimeEcType>();
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "RealmRavager";
+        public override int targetCayItem => ModContent.ItemType<RealmRavager>();
+        public override int targetCWRItem => ModContent.ItemType<RealmRavagerEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
-            FireTime = 15;
+            kreloadMaxTime = 122;
+            FireTime = 20;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
-            HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            HandFireDistanceY = -5;
+            ShootPosNorlLengValue = 0;
+            ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.1f;
+            GunPressure = 0.2f;
             ControlForce = 0.05f;
-            Recoil = 1.2f;
+            Recoil = 3.2f;
             RangeOfStress = 25;
-            AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 6;
+            RecoilRetroForceMagnitude = 9;
         }
 
         public override void PreInOwnerUpdate() {
@@ -46,6 +47,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
+            if (AmmoTypes == ProjectileID.Bullet) {
+                AmmoTypes = ModContent.ProjectileType<RealmRavagerBullet>();
+            }
             for (int index = 0; index < 5; ++index) {
                 Vector2 velocity = ShootVelocity;
                 velocity.X += Main.rand.Next(-40, 41) * 0.05f;

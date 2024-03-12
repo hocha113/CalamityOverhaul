@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
-            Recoil = 1.2f;
+            Recoil = 3.5f;
             RangeOfStress = 25;
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;

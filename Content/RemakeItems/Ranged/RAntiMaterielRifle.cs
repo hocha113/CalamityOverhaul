@@ -1,17 +1,15 @@
-﻿using CalamityMod.Items;
+﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityMod.Rarities;
+using CalamityMod.Sounds;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityOverhaul.Content.Items.Ranged;
-using CalamityMod.Sounds;
-using CalamityMod;
-using Microsoft.Xna.Framework;
-using CalamityOverhaul.Common;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
@@ -19,6 +17,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.AntiMaterielRifle>();
         public override int ProtogenesisID => ModContent.ItemType<AntiMaterielRifle>();
+        public override string TargetToolTipItemName => "AntiMaterielRifle";
         public override void SetDefaults(Item item) {
             item.damage = 1260;
             item.DamageType = DamageClass.Ranged;
@@ -41,12 +40,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().heldProjType = ModContent.ProjectileType<AntiMaterielRifleHeldProj>();
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 9;
+            item.CWR().Scope = true;
             CWRUtils.EasySetLocalTextNameOverride(item, "AntiMaterielRifle");
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "AntiMaterielRifle");
-            tooltips.ReplaceTooltip("[KEY]", CWRKeySystem.ADS_Key.TooltipHotkeyString(), CWRMod.Instance.Name);
         }
 
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source

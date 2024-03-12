@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
-            HandFireDistanceY = -10;
+            HandFireDistanceY = -5;
             ShootPosNorlLengValue = -5;
             ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;

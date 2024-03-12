@@ -1589,6 +1589,14 @@ namespace CalamityOverhaul
             return Main.rand.NextVector2Unit() * Main.rand.Next(0, max);
         }
 
+        public static Vector2 randVr(float min, float max) {
+            return Main.rand.NextVector2Unit() * Main.rand.NextFloat(min, max);
+        }
+
+        public static Vector2 randVr(float max) {
+            return Main.rand.NextVector2Unit() * Main.rand.NextFloat(0, max);
+        }
+
         public static Vector3 Vr2ToVr3(this Vector2 vector) {
             return new Vector3(vector.X, vector.Y, 0);
         }

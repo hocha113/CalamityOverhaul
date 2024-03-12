@@ -992,8 +992,8 @@ Items: {
 			'''
 			极强的后坐力
 			按下[KL]键进行换弹
+			按下[Scope]键开镜
 			一把发射.70BMG子弹的重型反器材步枪
-			按下[KEY]键开镜
 			'''
 	}
 
@@ -1002,9 +1002,9 @@ Items: {
 		Tooltip:
 			'''
 			非常强的后坐力
-			一把发射.50BMG子弹的重型反器材步枪
 			发射后需要按下按下[KL]键进行换弹
-			按下[KEY]键开镜
+			按下[Scope]键开镜
+			一把发射.50BMG子弹的重型反器材步枪
 			'''
 	}
 
@@ -1691,56 +1691,107 @@ Items: {
 	}
 
 	AcesHighEcType: {
-		// DisplayName: Aces High Ec Type
-		// Tooltip: ""
+		DisplayName: 极魂符枪
+		Tooltip:
+			'''
+			较弱的后坐力
+			按下[KL]键进行换弹
+			发射出一串扑克，不同扑克牌有不同效果
+			红心会有汲血效果
+			黑桃能无限穿透且无视敌人的无敌帧
+			方块会产生爆炸
+			梅花能分裂为三个小扑克
+			'''
 	}
 
 	ConferenceCallEcType: {
-		// DisplayName: Conference Call Ec Type
-		// Tooltip: ""
+		DisplayName: 电话会议
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			发射密集的子弹，同时从空中召唤更多的子弹
+			50%几率节省弹药
+			[c/768EE6:@全体成员]
+			'''
 	}
 
 	MineralMortarEcType: {
-		// DisplayName: Mineral Mortar Ec Type
-		// Tooltip: ""
+		DisplayName: 矿砂碎岩炮
+		Tooltip:
+			'''
+			较强的后坐力
+			按下[KL]键进行换弹
+			发射一个玛瑙火箭，爆炸时造成大范围杀伤
+			"它不能掀起沙尘暴，但能把所有人都炸上天"
+			'''
 	}
 
 	MolecularManipulatorEcType: {
-		// DisplayName: Molecular Manipulator Ec Type
-		// Tooltip: ""
+		DisplayName: 分子操纵器
+		Tooltip:
+			'''
+			发射一个“空弹”扭曲怪物的属性
+			“Object reference not set to an instance of an object”
+			'''
 	}
 
 	NullificationRifleEcType: {
-		// DisplayName: Nullification Rifle Ec Type
-		// Tooltip: ""
+		DisplayName: Null
+		Tooltip:
+			'''
+			发射一个“空弹”扭曲怪物的属性
+			“Object reference not set to an instance of an object”
+			'''
 	}
 
 	OnyxChainBlasterEcType: {
-		// DisplayName: Onyx Chain Blaster Ec Type
-		// Tooltip: ""
+		DisplayName: 玛瑙链炮
+		Tooltip:
+			'''
+			弱的后坐力
+			按下[KL]键进行换弹
+			发射数颗子弹和一枚玛瑙榴弹
+			50%几率节省弹药
+			"这把家伙，弹匣比笑话还要短，但至少能让人在弹尽粮绝时笑一笑。"
+			'''
 	}
 
 	OnyxiaEcType: {
-		// DisplayName: Onyxia Ec Type
-		// Tooltip: ""
+		DisplayName: 奥妮克希亚
+		Tooltip:
+			'''
+			向敌人倾泻弹雨与玛瑙碎片
+			50%几率节省弹药
+			'''
 	}
 
 	PestilentDefilerEcType: {
-		// DisplayName: Pestilent Defiler Ec Type
-		// Tooltip: ""
+		DisplayName: 疫病污染者
+		Tooltip: 将火枪子弹转化为会爆裂成瘟疫碎片的瘟疫子弹
 	}
 
 	RealmRavagerEcType: {
-		// DisplayName: Realm Ravager Ec Type
-		// Tooltip: ""
+		DisplayName: 灭域者
+		Tooltip:
+			'''
+			强的后坐力
+			按下[KL]键进行换弹
+			一次发射三到四颗子弹
+			将火枪子弹转化为爆炸弹
+			"埋着上一任使用者的秘密，可别指望它说出来，不然连鬼都会笑掉大牙"
+			'''
 	}
 
 	RubicoPrimeEcType: {
 		DisplayName: 绝路Prime
 		Tooltip:
 			'''
-			半自动狙击枪，连续发射5秒弹幕
+			一般的后坐力
+			按下[KL]键进行换弹
+			手持闲置时会自动向周围的敌人射击
 			射出的弹药有更高的暴击倍率
+			"一把真正的自动步枪，应该懂得自己射杀敌人"
 			'''
 	}
 
@@ -1748,7 +1799,9 @@ Items: {
 		DisplayName: 沙尘暴
 		Tooltip:
 			'''
-			发射沙弹，击中敌人后爆炸并减速它们
+			一般的后坐力
+			按下[KL]键进行换弹
+			在光标高度发射沙精灵，向天空抛出大量沙球
 			使用沙块作为弹药
 			50%几率节省弹药
 			'''
@@ -1758,7 +1811,9 @@ Items: {
 		DisplayName: 剧毒鱼叉枪
 		Tooltip:
 			'''
-			发射一个黏性剧毒鱼叉
+			无后坐力
+			按下[KL]键进行换弹
+			一下发射出所有黏性剧毒鱼叉
 			飞回玩家时释放细菌
 			'''
 	}
@@ -1767,9 +1822,11 @@ Items: {
 		DisplayName: 解离者
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			发射一团会分裂弹射的能量子弹
-			右键发射一团火枪子弹
-			“神话，传说，这把枪能让你的电脑爆炸”
+			右键发射一团子弹
+			“我们应该庆幸绝大部分的子弹都是凭空出现的，不然将会有一笔天价的军火账单等着我们”
 			'''
 	}
 
@@ -1777,9 +1834,11 @@ Items: {
 		DisplayName: 月神Prime
 		Tooltip:
 			'''
+			微弱的后坐力
+			按下[KL]键进行换弹
 			如果这把武器的暴击率超过了100%，它可以造成超暴击
 			所有发射的弹幕都会造成解离和可堆叠的流血减益
-			解离减益每秒造成150点伤害，该伤害受到你远程属性的影响。
+			解离减益每秒造成150点伤害，该伤害受到你远程属性的影响
 			解离减益每次造成伤害时，都有几率触发暴击或者超暴击
 			将火枪子弹转化为高速子弹
 			80%几率节省弹药
@@ -1790,8 +1849,11 @@ Items: {
 		DisplayName: 光谱风暴
 		Tooltip:
 			'''
+			较弱的后坐力
+			按下[KL]键进行换弹
 			发射失落之魂与信号弹
 			70%几率节省弹药
+			"他们想绕过公约，于是拿信号弹儿当凝固汽油弹使，结果搞出了这么个笑话。"
 			'''
 	}
 
@@ -1799,22 +1861,33 @@ Items: {
 		DisplayName: 彩弹冲锋枪
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			快速发射磷光彩弹
 			按下右键发射一束强力彩弹，在移动时使用会推动你冲刺
 			这个技能有{0}秒冷却时间
 			冷却期间，你可以更快、更精准地射击
+			"对着自己的脸来一发，你就能欢快地洗一整天的脸了"
 			'''
 	}
 
 	SpykerEcType: {
 		DisplayName: 叶针霰弹炮
-		Tooltip: 将火枪子弹转化为会钉在敌人身上并爆炸的叶针
+		Tooltip:
+			'''
+			较弱的后坐力
+			按下[KL]键进行换弹
+			将火枪子弹转化为会钉在敌人身上并爆炸的叶针
+			"案例证明，用它来翻新家居可能不是个好主意"
+			'''
 	}
 
 	StarSputterEcType: {
 		DisplayName: 星辰溅散
 		Tooltip:
 			'''
+			一般的后坐力
+			按下[KL]键进行换弹
 			发射一束陨星
 			每四次攻击发射一个更大的陨星
 			“眺望遥远星系的闪烁群星”
@@ -1823,15 +1896,22 @@ Items: {
 
 	StellarCannonEcType: {
 		DisplayName: 新星炮
-		Tooltip: 发射一个爆炸幻星水晶
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			发射一个爆炸幻星水晶
+			'''
 	}
 
 	SvantechnicalEcType: {
 		DisplayName: 斯万科技枪
 		Tooltip:
 			'''
+			按下[KL]键进行换弹
+			按下[Scope]键开镜
 			发射出巨量子弹
-			右击以扩大视野
+			"科技改变生活"
 			'''
 	}
 
@@ -1839,14 +1919,42 @@ Items: {
 		DisplayName: 蜂巢发射器
 		Tooltip:
 			'''
+			较强的后坐力
+			按下[KL]键进行换弹
 			发射多种瘟疫火箭，爆炸时会生成友好的蜜蜂
 			当使用可摧毁物块的弹药时火箭会破坏物块
+			"这些蜜蜂被塞到了火箭弹头里，真是可耻的行为"
 			'''
 	}
 
 	ThePackEcType: {
 		DisplayName: 集束火箭
-		Tooltip: 发射一个大的追踪火箭，接近敌人时爆炸出小的追踪火箭
+		Tooltip:
+			'''
+			较强的后坐力
+			按下[KL]键进行换弹
+			发射一个大的追踪火箭，接近敌人时爆炸出小的追踪火箭
+			'''
+	}
+
+	ElementMuzzleBrake: {
+		// DisplayName: Element Muzzle Brake
+		// Tooltip: ""
+	}
+
+	NeutronStarMuzzleBrake: {
+		// DisplayName: Neutron Star Muzzle Brake
+		// Tooltip: ""
+	}
+
+	PrecisionMuzzleBrake: {
+		// DisplayName: Precision Muzzle Brake
+		// Tooltip: ""
+	}
+
+	SimpleMuzzleBrake: {
+		// DisplayName: Simple Muzzle Brake
+		// Tooltip: ""
 	}
 }
 
@@ -2240,6 +2348,7 @@ Projectiles: {
 	// RocketLauncherHeldProj.DisplayName: Rocket Launcher Held Proj
 	// SnowmanCannonHeldProj.DisplayName: Snowman Cannon Held Proj
 	// TitaniumRepeaterHeldProj.DisplayName: Titanium Repeater Held Proj
+	// SandnadoOnSpan.DisplayName: Sandnado On Span
 }
 
 Configs: {

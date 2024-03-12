@@ -23,13 +23,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.1f;
-            ControlForce = 0.05f;
-            Recoil = 1.2f;
-            RangeOfStress = 25;
+            GunPressure = 0;
+            ControlForce = 0;
+            Recoil = 0;
+            RangeOfStress = 0;
             AmmoTypeAffectedByMagazine = false;
-            EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 6;
+            EnableRecoilRetroEffect = false;
         }
 
         public override void PreInOwnerUpdate() {
@@ -45,13 +44,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
-            for (int index = 0; index < 5; ++index) {
-                Vector2 velocity = ShootVelocity;
-                velocity.X += Main.rand.Next(-40, 41) * 0.05f;
-                velocity.Y += Main.rand.Next(-40, 41) * 0.05f;
-                Projectile.NewProjectile(Source, GunShootPos, velocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            }
+            Projectile.NewProjectile(Source, new Vector2(GunShootPos.X, Main.MouseWorld.Y), new Vector2(ShootVelocity.X, 0)
+                , ModContent.ProjectileType<SandnadoOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {

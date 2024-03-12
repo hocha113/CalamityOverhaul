@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "OnyxChainBlaster";
         public override void SetDefaults() {
             Item.SetCalamitySD<OnyxChainBlaster>();
-            Item.SetCartridgeGun<OnyxChainBlasterHeldProj>(480);
+            Item.SetCartridgeGun<OnyxChainBlasterHeldProj>(120);
         }
     }
 }
