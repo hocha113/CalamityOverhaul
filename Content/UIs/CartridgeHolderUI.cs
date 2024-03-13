@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -49,6 +50,9 @@ namespace CalamityOverhaul.Content.UIs
                         player.QuickSpawnItem(player.parent(), new Item(i.type), i.stack);
                     }
                     cwrItem.InitializeMagazine();
+                    if (cwrItem.AmmoCapacityInFire) {
+                        cwrItem.AmmoCapacityInFire = false;
+                    }
                 }
             }
             time++;

@@ -43,6 +43,7 @@ namespace CalamityOverhaul.Content
         public override bool InstancePerEntity => true;
 
         public byte SpanTypes;
+        public IEntitySource Source;
 
         public override void SetDefaults(Projectile projectile) {
             if (projectile.type == ProjectileID.Meowmere) {
@@ -52,7 +53,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
-            base.OnSpawn(projectile, source);
+            Source = source;
         }
 
         public override void AI(Projectile projectile) {
@@ -182,6 +183,9 @@ namespace CalamityOverhaul.Content
                 Projectile.NewProjectile(projectile.parent(), player.Center
                     , projectile.velocity, ModContent.ProjectileType<DeepSeaSharks>()
                     , projectile.damage, projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
+                //Projectile.NewProjectile(projectile.parent(), target.Center + new Vector2(0, -900)
+                //    , new Vector2(0, 15), ModContent.ProjectileType<Tornado>()
+                //    , projectile.damage, projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
             }
 
             if (projectile.DamageType == DamageClass.Summon && target.CWR().WhipHitNum > 0) {
@@ -246,9 +250,11 @@ namespace CalamityOverhaul.Content
 
             Item heldItem = player.ActiveItem();
             if (heldItem.type != ItemID.None) {
-                if (heldItem.CWR().AmmoCapacityInFire) {
-                    target.AddBuff(BuffID.OnFire3, 60);
-                    HitFunc(player, target);
+                if (heldItem.CWR().AmmoCapacityInFire && Source != null) {
+                    if (Source.Context == "CWRGunShoot") {
+                        target.AddBuff(BuffID.OnFire3, 60);
+                        HitFunc(player, target);
+                    }
                 }
             }
         }

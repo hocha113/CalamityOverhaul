@@ -59,6 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                         }
                     }
                 }
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<MakeDamage>(), Projectile.damage, 0f, Projectile.owner);
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero
                         , ModContent.ProjectileType<DawnshatterEndOrb2>(), Projectile.damage, 0f, Projectile.owner);
             }

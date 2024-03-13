@@ -39,6 +39,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.Calamity().canFirePointBlankShots = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<SpectreRifleHeldProj>();
             Item.CWR().hasHeldNoCanUseBool = true;
+            Item.CWR().Scope = true;
         }
 
         public override void AddRecipes() {

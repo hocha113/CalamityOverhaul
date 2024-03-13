@@ -31,7 +31,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ProjectileID.Leaf, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].DamageType = DamageClass.Ranged;
             }
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            for (int i = 0; i < 4; i++) {
+                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.03f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            }
         }
 
         public override void FiringShootR() {

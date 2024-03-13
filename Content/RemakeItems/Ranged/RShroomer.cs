@@ -12,6 +12,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<Shroomer>();
         public override int ProtogenesisID => ModContent.ItemType<ShroomerEcType>();
         public override string TargetToolTipItemName => "ShroomerEcType";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<ShroomerHeldProj>(12);
+        public override void SetDefaults(Item item) {
+            item.SetCartridgeGun<ShroomerHeldProj>(12);
+            item.CWR().Scope = true;
+        }
     }
 }

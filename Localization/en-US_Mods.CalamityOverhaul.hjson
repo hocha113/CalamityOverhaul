@@ -1640,6 +1640,26 @@ Items: {
 		DisplayName: Freedom Star Ec Type
 		Tooltip: ""
 	}
+
+	ClockGatlignumEcType: {
+		DisplayName: Clock Gatlignum Ec Type
+		Tooltip: ""
+	}
+
+	StormDragoonEcType: {
+		DisplayName: Storm Dragoon Ec Type
+		Tooltip: ""
+	}
+
+	StormSurgeEcType: {
+		DisplayName: Storm Surge Ec Type
+		Tooltip: ""
+	}
+
+	AmmoBoxFire: {
+		DisplayName: Ammo Box Fire
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2039,6 +2059,9 @@ Projectiles: {
 	FirestormCannonHeldProj.DisplayName: Firestorm Cannon Held Proj
 	FlakToxicannonHeldProj.DisplayName: Flak Toxicannon Held Proj
 	FreedomStarHeldProj.DisplayName: Freedom Star Held Proj
+	MakeDamage.DisplayName: Make Damage
+	StormSurgeHeldProj.DisplayName: Storm Surge Held Proj
+	Tornado.DisplayName: Tornado
 }
 
 Configs: {

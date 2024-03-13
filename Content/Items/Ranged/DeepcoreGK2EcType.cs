@@ -32,6 +32,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.SetHeldProj<DeepcoreGK2HeldProj>();
             Item.CWR().HasCartridgeHolder = true;
             Item.CWR().AmmoCapacity = 220;
+            Item.CWR().Scope = true;
         }
     }
 }

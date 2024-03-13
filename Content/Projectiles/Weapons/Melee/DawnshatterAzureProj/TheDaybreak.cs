@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             Projectile.localNPCHitCooldown = 20;
         }
 
+        public override bool? CanDamage() => false;
+
         public override void AI() {
             CWRUtils.ClockFrame(ref Projectile.frame, 6, 3);
             Lighting.AddLight(Projectile.Center, Color.Red.ToVector3() * 1.7f);

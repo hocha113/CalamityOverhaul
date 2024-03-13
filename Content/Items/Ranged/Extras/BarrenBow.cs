@@ -1,7 +1,8 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
@@ -32,6 +33,16 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.rare = ModContent.RarityType<PureGreen>();
             Item.CWR().hasHeldNoCanUseBool = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<BarrenBowHeldProj>();
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient(ItemID.LightShard, 2)
+                .AddIngredient(ItemID.AntlionMandible, 5)
+                .AddIngredient(ItemID.HellwingBow)
+                .AddIngredient<LunarianBow>()
+                .AddTile(TileID.Anvils)
+                .Register();
         }
     }
 }

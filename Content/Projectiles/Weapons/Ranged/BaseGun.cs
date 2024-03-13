@@ -146,7 +146,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 获取来自物品的生成源
         /// </summary>
-        protected IEntitySource Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType);
+        protected IEntitySource Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType, "CWRGunShoot");
         /// <summary>
         /// 该枪体使用的实际纹理
         /// </summary>

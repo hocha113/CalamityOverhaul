@@ -1,6 +1,8 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using Terraria.ID;
+using Terraria;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
@@ -10,6 +12,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetCalamitySD<FlakToxicannon>();
             Item.SetCartridgeGun<FlakToxicannonHeldProj>(160);
+            Item.useAmmo = AmmoID.Bullet;
+            Item.CWR().Scope = true;
         }
     }
 }

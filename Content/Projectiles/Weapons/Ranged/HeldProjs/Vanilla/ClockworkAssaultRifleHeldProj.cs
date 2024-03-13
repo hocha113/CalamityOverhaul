@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -15,18 +16,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.ClockworkAssaultRifle;
         int thisNeedsTime;
         int chargeAmmoNum;
+        int thisBulletNum;
         public override void SetRangedProperty() {
             FireTime = 5;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0.2f;
+            GunPressure = 0.1f;
             ControlForce = 0.05f;
-            Recoil = 1f;
+            Recoil = 0.8f;
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
             kreloadMaxTime = 45;
+            ReturnRemainingBullets = false;
         }
 
         public override void PreInOwnerUpdate() {
@@ -38,23 +41,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override bool KreLoadFulfill() {
+            ReturnRemainingBullets = true;
             if (BulletNum < Item.CWR().AmmoCapacity) {
                 if (!onFire) {
-                    BulletNum += 10;
+                    thisBulletNum += 10;
+                    BulletNum = thisBulletNum;
+                    CutOutMagazine(Item, thisBulletNum);
                     OnKreload = true;
-                    kreloadTimeValue = kreloadMaxTime;
+                    ReturnRemainingBullets = false;
+                    kreloadTimeValue = kreloadMaxTime;                    
                 }
             }
-            if (Item.CWR().AmmoCapacityInFire) {
-                Item.CWR().AmmoCapacityInFire = false;
+            if (thisBulletNum >= Item.CWR().AmmoCapacity) {
+                thisBulletNum = 0;
             }
-            return true;
+            return false;
         }
 
         public override void PostFiringShoot() {
-            if (BulletNum >= 1) {
-                BulletNum -= 1;
-            }
         }
 
         public override void PostInOwnerUpdate() {
@@ -72,7 +76,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 thisNeedsTime += 30;
                 chargeAmmoNum = 0;
             }
-            _ = CreateRecoil();
         }
     }
 }
