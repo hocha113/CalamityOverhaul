@@ -12,6 +12,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<Shredder>();
         public override int ProtogenesisID => ModContent.ItemType<ShredderEcType>();
         public override string TargetToolTipItemName => "ShredderEcType";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<ShredderHeldProj>(300);
+        public override void SetDefaults(Item item) {
+            item.SetCartridgeGun<ShredderHeldProj>(300);
+            item.CWR().Scope = true;
+        }
     }
 }

@@ -68,7 +68,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return canConsume;
         }
 
-        protected void UpdateShootState() => HaveAmmo = Owner.PickAmmo(Owner.ActiveItem(), out AmmoTypes, out ScaleFactor, out WeaponDamage, out WeaponKnockback, out _, true);
+        protected void UpdateShootState() {
+            HaveAmmo = Owner.PickAmmo(Item, out AmmoTypes, out ScaleFactor, out WeaponDamage, out WeaponKnockback, out _, true);
+            if (Item.useAmmo == AmmoID.None) {
+                WeaponDamage = Owner.GetWeaponDamage(Item);
+                AmmoTypes = Item.shoot;
+            }
+        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;

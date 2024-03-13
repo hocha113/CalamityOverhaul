@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetCalamitySD<Shroomer>();
             Item.SetCartridgeGun<ShroomerHeldProj>(12);
+            Item.CWR().Scope = true;
         }
     }
 }

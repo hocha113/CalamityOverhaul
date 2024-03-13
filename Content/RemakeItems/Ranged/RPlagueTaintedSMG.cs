@@ -12,6 +12,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<PlagueTaintedSMG>();
         public override int ProtogenesisID => ModContent.ItemType<PlagueTaintedSMGEcType>();
         public override string TargetToolTipItemName => "PlagueTaintedSMGEcType";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<PlagueTaintedSMGHeldProj>(45);
+        public override void SetDefaults(Item item) {
+            item.SetCartridgeGun<PlagueTaintedSMGHeldProj>(45);
+            item.CWR().Scope = true;
+        }
     }
 }

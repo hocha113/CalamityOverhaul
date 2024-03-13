@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -8,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Placeable
 {
-    internal class AmmoBox : ModItem
+    internal class AmmoBoxFire : ModItem
     {
         public override string Texture => CWRConstant.Item + "Placeable/AmmoBox";
         public override void SetStaticDefaults() {
@@ -30,6 +31,15 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Vector2 pos = new Vector2((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)) * 16;
             Projectile.NewProjectile(Item.GetSource_FromThis(), pos, Vector2.Zero, type, 0, 0, player.whoAmI);
             return false;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient(ItemID.AmmoBox)
+                .AddIngredient(ItemID.EmptyBullet, 100)
+                .AddIngredient(ItemID.LivingFireBlock, 5)
+                .AddTile(TileID.Anvils)
+                .Register();
         }
     }
 }

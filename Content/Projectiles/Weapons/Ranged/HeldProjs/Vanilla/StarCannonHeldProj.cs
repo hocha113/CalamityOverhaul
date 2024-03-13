@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
-    internal class StarCannonHeldProj : BaseGun
+    internal class StarCannonHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.StarCannon].Value;
@@ -15,19 +15,32 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.StarCannon;
 
         public override void SetRangedProperty() {
+            kreloadMaxTime = 60;
+            FireTime = 15;
             ShootPosToMouLengValue = 30;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 5;
-            GunPressure = 0;
-            ControlForce = 0;
-            Recoil = 0;
+            GunPressure = 0.2f;
+            ControlForce = 0.05f;
+            Recoil = 0.9f;
             RangeOfStress = 8;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 6;
+            RepeatedCartridgeChange = true;
+        }
+
+        public override bool KreLoadFulfill() {
+            FireTime = 15;
+            return true;
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
-            _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity * 0.3f, ModContent.ProjectileType<Star>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            if (FireTime > 6) {
+                FireTime--;
+            }
+            _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

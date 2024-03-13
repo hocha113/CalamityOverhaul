@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -12,8 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.FlareGun].Value;
         public override int targetCayItem => ItemID.FlareGun;
         public override int targetCWRItem => ItemID.FlareGun;
-        public override void SetRangedProperty()
-        {
+        public override void SetRangedProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 17;

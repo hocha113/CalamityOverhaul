@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -29,15 +30,32 @@ namespace CalamityOverhaul.Content.Projectiles
             if (onProj) {
                 player.noThrow = 2;
                 player.cursorItemIconEnabled = true;
-                player.cursorItemIconID = ModContent.ItemType<Items.Placeable.AmmoBox>();
+                player.cursorItemIconID = ModContent.ItemType<Items.Placeable.AmmoBoxFire>();
                 if (player.PressKey(false)) {
                     Item item = player.ActiveItem();
                     if (item.type != ItemID.None && item.CWR().HasCartridgeHolder) {
                         SoundEngine.PlaySound(CWRSound.loadTheRounds, Projectile.Center);
-                        item.CWR().NumberBullets = item.CWR().AmmoCapacity;
-                        item.CWR().IsKreload = true;
-                        item.CWR().NoKreLoadTime += 30;
-                        item.CWR().AmmoCapacityInFire = true;
+                        CWRItems cWR = item.CWR();
+                        cWR.NumberBullets = cWR.AmmoCapacity;
+                        cWR.IsKreload = true;
+                        cWR.NoKreLoadTime += 30;
+                        int num = 0;
+                        List<Item> list = new List<Item>();
+                        foreach (Item i in cWR.MagazineContents) {
+                            if (i.type != ItemID.None && i.stack > 0) {
+                                list.Add(i);
+                            }
+                        }
+                        foreach(Item i in list) {
+                            if (i.type != ItemID.None && i.stack > 0) {
+                                num += i.stack;
+                            }
+                        }
+                        if (num < cWR.AmmoCapacity) {
+                            list.Add(new Item(ItemID.MusketBall, cWR.AmmoCapacity - num));
+                        }
+                        cWR.MagazineContents = list.ToArray();
+                        cWR.AmmoCapacityInFire = true;
                         Projectile.Kill();
                     }
                 }

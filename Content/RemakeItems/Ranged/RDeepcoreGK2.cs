@@ -39,6 +39,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.SetHeldProj<DeepcoreGK2HeldProj>();
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 220;
+            item.CWR().Scope = true;
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {

@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -7,37 +8,42 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class ClockGatlignumHeldProj : BaseGun
+    internal class ClockGatlignumHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ClockGatlignum";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ClockGatlignum>();
-        public override int targetCWRItem => ModContent.ItemType<ClockGatlignum>();
+        public override int targetCayItem => ModContent.ItemType<ClockGatlignum>();
+        public override int targetCWRItem => ModContent.ItemType<ClockGatlignumEcType>();
         public override void SetRangedProperty() {
-            ControlForce = 0.1f;
-            GunPressure = 0.25f;
-            Recoil = 1.5f;
-            HandDistance = 15;
+            kreloadMaxTime = 90;
+            FireTime = 6;
+            HandDistance = 18;
             HandDistanceY = 0;
-            HandFireDistance = 20;
-            HandFireDistanceY = -8;
+            HandFireDistance = 18;
+            HandFireDistanceY = -10;
+            ShootPosNorlLengValue = -2;
+            ShootPosToMouLengValue = 10;
+            RepeatedCartridgeChange = true;
+            GunPressure = 0.1f;
+            ControlForce = 0.05f;
+            Recoil = 1.3f;
+            RangeOfStress = 25;
+        }
+
+        public override void PreInOwnerUpdate() {
+            if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
+                Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向
+                FeederOffsetRot = -MathHelper.ToRadians(50) * DirSign;
+                FeederOffsetPos = new Vector2(DirSign * -3, -25);
+            }
         }
 
         public override void FiringShoot() {
-            Vector2 gundir = Projectile.rotation.ToRotationVector2();
-
-            if (Main.rand.NextBool()) {
-                DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, gundir);
-                Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
-                Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
-            }
-
+            SpawnGunFireDust();
             for (int i = 0; i < 3; i++) {
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3
-                    , gundir.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 13
+                Projectile.NewProjectile(Source, GunShootPos
+                    , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
     }
 }

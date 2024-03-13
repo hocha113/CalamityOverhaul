@@ -31,6 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ModContent.ProjectileType<PlagueTaintedProjectile>();
             Item.Calamity().canFirePointBlankShots = true;
             Item.SetCartridgeGun<PlagueTaintedSMGHeldProj>(45);
+            Item.CWR().Scope = true;
         }
     }
 }

@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
     public delegate bool On_PreDrawInInventory_Delegate(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale);
     public delegate bool? On_UseItem_Delegate(Item item, Player player);
     public delegate void On_UseAnimation_Delegate(Item item, Player player);
+    public delegate void On_ModifyWeaponCrit_Delegate(Item item, Player player, ref float crit);
 
     internal class RItemSystem : ModSystem
     {
@@ -33,6 +34,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onPreDrawInInventoryMethod;
         public static MethodBase onUseItemMethod;
         public static MethodBase onUseAnimationMethod;
+        public static MethodBase onModifyWeaponCritMethod;
 
         public override void Load() {
             itemLoaderType = typeof(ItemLoader);
@@ -45,6 +47,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onPreDrawInInventoryMethod = itemLoaderType.GetMethod("PreDrawInInventory", BindingFlags.Public | BindingFlags.Static);
             onUseItemMethod = itemLoaderType.GetMethod("UseItem", BindingFlags.Public | BindingFlags.Static);
             onUseAnimationMethod = itemLoaderType.GetMethod("UseAnimation", BindingFlags.Public | BindingFlags.Static);
+            onModifyWeaponCritMethod = itemLoaderType.GetMethod("ModifyWeaponCrit", BindingFlags.Public | BindingFlags.Static);
 
             if (onSetDefaultsMethod != null && !ModLoader.HasMod("MagicBuilder")) {
                 //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发生严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
@@ -74,8 +77,34 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (onUseAnimationMethod != null) {
                 MonoModHooks.Add(onUseAnimationMethod, OnUseAnimationHook);
             }
+            if (onModifyWeaponCritMethod != null) {
+                MonoModHooks.Add(onModifyWeaponCritMethod, OnModifyWeaponCritHook);
+            }
         }
 
+        /// <summary>
+        /// 这个钩子用于挂载一个提前于TML方法的<see cref="ItemLoader.ModifyWeaponCrit"/>，以此来进行一些高级的修改
+        /// </summary>
+        /// <param name="orig"></param>
+        /// <param name="item"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public void OnModifyWeaponCritHook(On_ModifyWeaponCrit_Delegate orig, Item item, Player player, ref float crit) {
+            bool? result = null;
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
+                result = RItemIndsDict[item.type].On_ModifyWeaponCrit(item, player, ref crit);
+            }
+            if (result.HasValue) {
+                if (result.Value) {
+                    item.ModItem?.ModifyWeaponCrit(player, ref crit);
+                    return;
+                }
+                else {
+                    return;
+                }
+            }
+            orig.Invoke(item, player, ref crit);
+        }
         /// <summary>
         /// 这个钩子用于挂载一个提前于TML方法的<see cref="ItemLoader.UseAnimation(Item, Player)"/>，以此来进行一些高级的修改
         /// </summary>

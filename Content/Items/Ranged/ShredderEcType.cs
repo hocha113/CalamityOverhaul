@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetCalamitySD<Shredder>();
             Item.SetCartridgeGun<ShredderHeldProj>(300);
+            Item.CWR().Scope = true;
         }
     }
 }

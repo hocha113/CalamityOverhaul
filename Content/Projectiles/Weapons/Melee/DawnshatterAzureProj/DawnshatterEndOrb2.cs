@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj
 {
@@ -14,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
 
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer()) {
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<MakeDamage>(), Projectile.damage * 5, 0f, Projectile.owner);
                 for (int i = 0; i < 4; i++) {
                     float rot = MathHelper.PiOver2 * i;
                     Vector2 vr = rot.ToRotationVector2() * 10;

@@ -66,21 +66,21 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// 每个时期阶段对应的额外暴击振幅的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnCrit"/>
         /// </summary>
         static Dictionary<int, int> SetLevelCritDictionary => new Dictionary<int, int>(){
-            {0, -45 },
-            {1, -39 },
-            {2, -30 },
-            {3, -25 },
-            {4, -20 },
-            {5, -15 },
-            {6, -5 },
-            {7, 5 },
-            {8, 10 },
-            {9, 15 },
-            {10, 20 },
-            {11, 25 },
-            {12, 30 },
-            {13, 40 },
-            {14, 70 }
+            {0, 1 },
+            {1, 3 },
+            {2, 7 },
+            {3, 12 },
+            {4, 15 },
+            {5, 22 },
+            {6, 25 },
+            {7, 30 },
+            {8, 45 },
+            {9, 55 },
+            {10, 70 },
+            {11, 85 },
+            {12, 95 },
+            {13, 100 },
+            {14, 100 }
         };
         /// <summary>
         /// 每个时期阶段对应的升龙冷却的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnRDCD"/>
@@ -198,6 +198,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 24f;
             Item.rare = ModContent.RarityType<Violet>();
             Item.CWR().isHeldItem = true;
+            Item.CWR().isHeldItem = true;
         }
 
         public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {
@@ -296,7 +297,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 0f, 0f);
+            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MurasamaRSlash>(), damage, knockback, player.whoAmI, 0f, 0f);
             return false;
         }
     }

@@ -54,6 +54,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                         Projectile.NewProjectile(Source, GunShootPos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                         SpawnGunFireDust(GunShootPos, vr);
                     }
+                    if (BulletNum <= 0) {
+                        Item.CWR().IsKreload = false;
+                        IsKreload = false;
+                        BulletNum = 0;
+                    }
+                    
                     fireIndex = 0;
                 }
             }

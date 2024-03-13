@@ -148,14 +148,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override void NetSend(Item item, BinaryWriter writer) {
-            base.NetSend(item, writer);
-        }
-
-        public override void NetReceive(Item item, BinaryReader reader) {
-            base.NetReceive(item, reader);
-        }
-
         public override void SaveData(Item item, TagCompound tag) {
             tag.Add("_MeleeCharge", MeleeCharge);
             tag.Add("_noDestruct", noDestruct);
@@ -233,10 +225,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override GlobalItem Clone(Item from, Item to) {
-            return base.Clone(from, to);
-        }
-
         private void OwnerByDir(Item item, Player player) {
             if (player.PressKey() || player.PressKey(false)) {
                 if (player.whoAmI == Main.myPlayer && item.useStyle == ItemUseStyleID.Swing
@@ -297,19 +285,11 @@ namespace CalamityOverhaul.Content
             return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }
 
-        public override void OnConsumeItem(Item item, Player player) {
-            RWaterBottle.OnUse(item, player);
-        }
-
         public override bool CanUseItem(Item item, Player player) {
             if (heldProjType > 0 && hasHeldNoCanUseBool) {
                 return false;
             }
             return base.CanUseItem(item, player);
-        }
-
-        public override bool? UseItem(Item item, Player player) {
-            return base.UseItem(item, player);
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
@@ -338,10 +318,6 @@ namespace CalamityOverhaul.Content
                 }
             }
             return base.PreDrawTooltip(item, lines, ref x, ref y);
-        }
-
-        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            
         }
     }
 }

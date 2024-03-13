@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 using Terraria;
+using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -30,6 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 16;
+            FiringDefaultSound = false;
         }
 
         public override void PreInOwnerUpdate() {
@@ -45,6 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
+            SoundEngine.PlaySound(CalamityMod.Items.Weapons.Ranged.ScorchedEarth.ShootSound with { Volume = 0.6f, Pitch = 0.2f, PitchRange = (-0.1f, 0.1f)}, Projectile.Center);
             SpawnGunFireDust(GunShootPos, ShootVelocity);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }

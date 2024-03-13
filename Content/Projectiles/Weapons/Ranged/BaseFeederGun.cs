@@ -48,9 +48,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected bool IsKreload;
         /// <summary>
+        /// 换弹时是否退还剩余子弹
+        /// </summary>
+        protected bool ReturnRemainingBullets = true;
+        /// <summary>
         /// 单次弹药装填最小数量，默认为一发
         /// </summary>
         protected int MinimumAmmoPerReload = 1;
+        /// <summary>
+        /// 换弹延迟计时器
+        /// </summary>
+        protected int AutomaticCartridgeChangeDelayTime;
         /// <summary>
         /// 装弹计时器
         /// </summary>
@@ -116,13 +124,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 关于装弹过程中的第一部分音效的执行
         /// </summary>
         public virtual void KreloadSoundCaseEjection() {
-            SoundEngine.PlaySound(CWRSound.CaseEjection with { Volume = 0.6f }, Projectile.Center);
+            SoundEngine.PlaySound(CWRSound.CaseEjection with { Volume = 0.5f, PitchRange = (-0.05f, 0.05f) }, Projectile.Center);
         }
         /// <summary>
         /// 关于装弹过程中的第二部分音效的执行
         /// </summary>
         public virtual void KreloadSoundloadTheRounds() {
-            SoundEngine.PlaySound(loadTheRounds, Projectile.Center);
+            SoundEngine.PlaySound(loadTheRounds with { Volume = 0.65f, PitchRange = (-0.1f, 0) }, Projectile.Center);
             EjectCasing();
         }
         /// <summary>
@@ -140,7 +148,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return true;
         }
         /// <summary>
-        /// 装弹完成后会执行一次该方法
+        /// 装弹完成后会执行一次该方法，返回默认值<see langword="true"/>以继续执行后续默认的换弹逻辑
         /// </summary>
         public virtual bool KreLoadFulfill() {
             return true;
@@ -213,6 +221,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
+        protected void SetAutomaticCartridgeChange() {
+            if (!IsKreload && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0) {
+                OnKreload = true;
+                kreloadTimeValue = kreloadMaxTime;
+            }
+            if (AutomaticCartridgeChangeDelayTime > 0) {
+                AutomaticCartridgeChangeDelayTime--;
+            }
+        }
+
         public sealed override void InOwner() {
             InitializeMagazine();
             PreInOwnerUpdate();
@@ -233,6 +251,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         onFire = true;
                         Projectile.ai[1]++;
                     }
+                    SetAutomaticCartridgeChange();
                 }
                 else {
                     onFire = false;
@@ -247,6 +266,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         onFireR = true;
                         Projectile.ai[1]++;
                     }
+                    SetAutomaticCartridgeChange();
                 }
                 else {
                     onFireR = false;
@@ -277,12 +297,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
                 if (kreloadTimeValue == kreloadMaxTime / 3) {
                     AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
-                    LoadBulletsIntoMagazine();//这一次更新弹匣内容，压入子弹
                     if (PreConsumeAmmoEvent()) {
-                        //for (int i = 0; i < Item.CWR().AmmoCapacity; i++) {
-                        //    //UpdateConsumeAmmo();
-                        //    //Owner.PickAmmo(Item, out _, out _, out _, out _, out _, false);
-                        //}
+                        LoadBulletsIntoMagazine();//这一次更新弹匣内容，压入子弹
                         int ammo = 0;
                         int maxAmmo = Item.CWR().AmmoCapacity;
                         foreach (Item inds in AmmoState.InItemInds) {
@@ -347,7 +363,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
             CWRItems cwrItem = Item.CWR();
-            if (cwrItem.MagazineContents != null && cwrItem.MagazineContents.Length > 0) {
+            if (cwrItem.MagazineContents != null && cwrItem.MagazineContents.Length > 0 && ReturnRemainingBullets) {
                 foreach (Item i in cwrItem.MagazineContents) {
                     if (i.stack > 0 && i.type != ItemID.None) {
                         Owner.QuickSpawnItem(Source, new Item(i.type), i.stack);
@@ -454,6 +470,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void SpanProj() {
             if ((onFire || onFireR) && Projectile.ai[1] > FireTime && kreloadTimeValue <= 0) {
+                if (BulletNum <= 0) {
+                    SetEmptyMagazine();
+                    return;
+                }
                 if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
@@ -485,12 +505,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
                 if (PreFireReloadKreLoad()) {
                     if (BulletNum <= 0) {
-                        LoadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
-                        IsKreload = false;
-                        if (Item.type != ItemID.None) {
-                            Item.CWR().IsKreload = false;
-                        }
-                        BulletNum = 0;
+                        SetEmptyMagazine();
+                        AutomaticCartridgeChangeDelayTime += 30 + FireTime;
                     }
                 }
                 
@@ -498,5 +514,42 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 onFire = false;
             }
         }
+
+        public void SetEmptyMagazine() {
+            LoadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
+            IsKreload = false;
+            if (Item.type != ItemID.None) {
+                Item.CWR().IsKreload = false;
+            }
+            BulletNum = 0;
+        }
+
+        #region Utils
+
+        public void CutOutMagazine(Item item, int cutOutNum) {
+            int cumulativeQuantity = 0;
+            List<Item> list = new List<Item>();
+            foreach (Item i in item.CWR().MagazineContents) {
+                if (cumulativeQuantity >= cutOutNum) {
+                    break;
+                }
+                if (i == null) {
+                    continue;
+                }
+                if (i.type == ItemID.None || i.stack <= 0) {
+                    continue;
+                }
+                int stack = i.stack;
+                if (stack > cutOutNum - cumulativeQuantity) {
+                    stack = cutOutNum - cumulativeQuantity;
+                }
+                Item ammo = new Item(i.type, stack);
+                cumulativeQuantity += stack;
+                list.Add(ammo);
+            }
+            item.CWR().MagazineContents = list.ToArray();
+        }
+
+        #endregion
     }
 }

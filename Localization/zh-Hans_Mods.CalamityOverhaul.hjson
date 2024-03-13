@@ -912,13 +912,13 @@ Items: {
 	}
 
 	ClockGatlignum: {
-		DisplayName: 发条鳄鱼枪
-		Tooltip:
+		// DisplayName: Clock Gatlignum
+		/* Tooltip:
 			'''
-			较弱的后坐力
-			以不太理想的精准度进行扫射
-			"它并不能射出鳄鱼，令人失望"
-			'''
+			Has Strong Recoil
+			Has Less than Ideal Accuracy but shoots out a barrage of bullets.
+			"Any attempts to fit crocodiles in it has unfortunately failed."
+			''' */
 	}
 
 	ElementalBlaster: {
@@ -953,19 +953,20 @@ Items: {
 		Tooltip:
 			'''
 			很强的后坐力
+			按下[Scope]键开镜
 			发射亡魂追杀敌人
 			"这玩意儿都不使用助推剂发射弹头，它哪里来的后坐力？！"
 			'''
 	}
 
 	StormDragoon: {
-		DisplayName: 风暴龙骑士
-		Tooltip:
+		// DisplayName: Storm Dragoon
+		/* Tooltip:
 			'''
-			一般的后坐力
-			让弹药如狂风骤雨般倾泻出去
-			"我是即将迫近的风暴"
-			'''
+			Has Obscene Recoil
+			Uncontrollably lets out a hail of bullets like a storm.
+			"Tests have shown that flying was not intended by the manufacturer, yet still is possible."
+			''' */
 	}
 
 	TheStorm: {
@@ -994,6 +995,7 @@ Items: {
 			按下[KL]键进行换弹
 			按下[Scope]键开镜
 			一把发射.70BMG子弹的重型反器材步枪
+			击中后爆发出剧烈的金属射流杀伤大面积的敌人
 			'''
 	}
 
@@ -1005,6 +1007,7 @@ Items: {
 			发射后需要按下按下[KL]键进行换弹
 			按下[Scope]键开镜
 			一把发射.50BMG子弹的重型反器材步枪
+			击中后爆发出剧烈的金属射流杀伤大面积的敌人
 			'''
 	}
 
@@ -1190,6 +1193,8 @@ Items: {
 		Tooltip:
 			'''
 			弱的后坐力
+			一把非常炽热的霰弹枪
+			开火时枪身将可以对敌人造成巨大伤害
 			"比地狱降临更好"
 			'''
 	}
@@ -1200,7 +1205,7 @@ Items: {
 			'''
 			弱的后坐力
 			将火枪子弹转化为水球或者海洋弹
-			"想知道引发呕吐的诀窍吗？" 利维坦眯起了眼睛，"皮蛋加奶酪，保准你秒变呕吐专家。"
+			"想知道引发呕吐的诀窍吗？" 利维坦眯起了眼睛，"皮蛋加奶酪，保准你秒变呕吐专家"
 			'''
 	}
 
@@ -1240,6 +1245,7 @@ Items: {
 		Tooltip:
 			'''
 			较弱的后坐力
+			按下[Scope]键开镜
 			右键进行全自动扫射
 			"完美的制动设计，内置一台微型电脑。它不仅能自动换弹，还能帮你烤好早餐的面包"
 			'''
@@ -1331,8 +1337,8 @@ Items: {
 	}
 
 	AmmoBox: {
-		DisplayName: 弹药箱
-		Tooltip: ""
+		// DisplayName: Ammo Box
+		// Tooltip: ""
 	}
 
 	BulletFilledShotgunEcType: {
@@ -1397,6 +1403,7 @@ Items: {
 			'''
 			微弱的后坐力
 			按下[KL]键进行换弹
+			按下[Scope]键开镜
 			发射一团会分裂弹射的能量子弹
 			右键发射一团火枪子弹
 			“只要你把它握在手中，无限的解离就不会停止”
@@ -1467,6 +1474,7 @@ Items: {
 			'''
 			一般的后坐力
 			按下[KL]键进行换弹
+			按下[Scope]键开镜
 			发射瘟疫子弹，在暴击时生成瘟疫自爆无人机
 			敌怪越近，子弹的伤害和击退更高
 			无人机命中受瘟疫感染的敌怪时有极高的暴击率
@@ -1530,8 +1538,8 @@ Items: {
 			'''
 			一般的后坐力
 			按下[KL]键进行换弹
+			按下[Scope]键开镜
 			发射可以削减敌人防线的高速闪光子弹
-			右键扩大视野
 			不移动时提供伤害加成，至多可达25%
 			不移动且使用右键瞄准5秒以上在你周围产生极光
 			极光会降低你下一次所受弹幕伤害中的100点
@@ -1630,6 +1638,7 @@ Items: {
 			'''
 			一般的后坐力
 			按下[KL]键进行换弹
+			按下[Scope]键开镜
 			发射子弹以及强大的追踪蘑菇
 			'''
 	}
@@ -1731,6 +1740,8 @@ Items: {
 		DisplayName: 分子操纵器
 		Tooltip:
 			'''
+			较弱的后坐力
+			按下[KL]键进行换弹
 			发射一个“空弹”扭曲怪物的属性
 			“Object reference not set to an instance of an object”
 			'''
@@ -1740,6 +1751,8 @@ Items: {
 		DisplayName: Null
 		Tooltip:
 			'''
+			较弱的后坐力
+			按下[KL]键进行换弹
 			发射一个“空弹”扭曲怪物的属性
 			“Object reference not set to an instance of an object”
 			'''
@@ -1761,6 +1774,8 @@ Items: {
 		DisplayName: 奥妮克希亚
 		Tooltip:
 			'''
+			较弱的后坐力
+			按下[KL]键进行换弹
 			向敌人倾泻弹雨与玛瑙碎片
 			50%几率节省弹药
 			'''
@@ -1824,6 +1839,7 @@ Items: {
 			'''
 			一般的后坐力
 			按下[KL]键进行换弹
+			按下[Scope]键开镜
 			发射一团会分裂弹射的能量子弹
 			右键发射一团子弹
 			“我们应该庆幸绝大部分的子弹都是凭空出现的，不然将会有一笔天价的军火账单等着我们”
@@ -1853,7 +1869,7 @@ Items: {
 			按下[KL]键进行换弹
 			发射失落之魂与信号弹
 			70%几率节省弹药
-			"他们想绕过公约，于是拿信号弹儿当凝固汽油弹使，结果搞出了这么个笑话。"
+			"他们想绕过公约，于是拿信号弹儿当凝固汽油弹使，结果搞出了这么个笑话"
 			'''
 	}
 
@@ -1943,6 +1959,7 @@ Items: {
 			'''
 			减少65%后坐力与膛压
 			远程伤害降低15%
+			远程暴击率增加25%
 			'''
 	}
 
@@ -1952,6 +1969,7 @@ Items: {
 			'''
 			完全抵消后坐力与膛压
 			远程伤害增加100%
+			远程暴击率增加100%
 			'''
 	}
 
@@ -1961,6 +1979,7 @@ Items: {
 			'''
 			减少55%后坐力与膛压
 			远程伤害降低20%
+			远程暴击率增加15%
 			'''
 	}
 
@@ -1970,12 +1989,13 @@ Items: {
 			'''
 			减少40%后坐力与膛压
 			远程伤害降低25%
+			远程暴击率增加5%
 			'''
 	}
 
 	BladedgeGreatbowEcType: {
 		DisplayName: 锋叶十字弩
-		Tooltip: 一次发射四支箭和两片锋叶
+		Tooltip: 一次发射四支箭和三片锋叶
 	}
 
 	CleansingBlazeEcType: {
@@ -2005,6 +2025,7 @@ Items: {
 			'''
 			较强的后坐力
 			按下[KL]键进行换弹
+			按下[Scope]键开镜
 			以一定的角度向光标处射击
 			仅能朝着玩家头顶的一定仰角范围内开火
 			“要求：智商高”
@@ -2018,6 +2039,43 @@ Items: {
 			点击左键以发射能量球
 			按住左键进行充能并发射在命中时会爆炸的光束
 			'''
+	}
+
+	ClockGatlignumEcType: {
+		DisplayName: 发条鳄鱼枪
+		Tooltip:
+			'''
+			较强的后坐力
+			按下[KL]键进行换弹
+			如狂风暴雨般倾泻子弹
+			"它并不能发射鳄鱼，令人失望"
+			'''
+	}
+
+	StormDragoonEcType: {
+		DisplayName: 风暴龙骑士
+		Tooltip:
+			'''
+			较强的后坐力
+			按下[KL]键进行换弹
+			如狂风暴雨般倾泻子弹
+			"我是即将到来的风暴"
+			'''
+	}
+
+	StormSurgeEcType: {
+		DisplayName: 旋风发射器
+		Tooltip:
+			'''
+			无后坐力
+			发射可以穿透物块的蓝色旋风
+			"在风暴中恐惧并臣服"
+			'''
+	}
+
+	AmmoBoxFire: {
+		DisplayName: 燃烧弹药箱
+		Tooltip: 使用以部署，右键将燃烧弹装入弹匣
 	}
 }
 
@@ -2418,6 +2476,9 @@ Projectiles: {
 	// FirestormCannonHeldProj.DisplayName: Firestorm Cannon Held Proj
 	// FlakToxicannonHeldProj.DisplayName: Flak Toxicannon Held Proj
 	// FreedomStarHeldProj.DisplayName: Freedom Star Held Proj
+	// MakeDamage.DisplayName: Make Damage
+	// StormSurgeHeldProj.DisplayName: Storm Surge Held Proj
+	// Tornado.DisplayName: Tornado
 }
 
 Configs: {
@@ -2675,10 +2736,10 @@ TextContent: {
 			'''
 			你们这群愚蠢的虚构者，以为通过欺诈手段便能窃取力量？
 			堂而皇之地嘲弄规则，狂妄地以为能逃脱混沌的审判？
-			荒谬！在混沌的风暴中，你们不过是微不足道的尘埃，而混沌会吞噬你们的肆意妄为。
-			试图通过欺诈获得力量，你们只能成为混沌熔炉中的牺牲品，毫无例外。
-			混沌不欢迎懦夫，更何况是那些试图颠覆规则的可笑存在。
-			你们的荒谬之举只会让混沌更为强大，让你们最终沦为无尽黑暗的牺牲品。
+			荒谬！在混沌的风暴中，你们不过是微不足道的尘埃，而混沌会吞噬你们的肆意妄为
+			试图通过欺诈获得力量，你们只能成为混沌熔炉中的牺牲品，毫无例外
+			混沌不欢迎懦夫，更何况是那些试图颠覆规则的可笑存在
+			你们的荒谬之举只会让混沌更为强大，让你们最终沦为无尽黑暗的牺牲品
 			欺诈者啊，你的计谋不过是小丑在混沌马戏团的笑谈
 			规则是宇宙的交响乐，而你们只是不知节拍的乌鸦
 			想通过作弊夺得力量？混沌将把你们的招数当成儿戏
@@ -2750,7 +2811,11 @@ TextContent: {
 			弱的后坐力
 			“别把自己的眼球射出来了！”
 			'''
-		Wap_FlareGun_Text: ""
+		Wap_FlareGun_Text:
+			'''
+			弱的后坐力
+			"别把它和发令枪搞混了"
+			'''
 		Wap_PhoenixBlaster_Text:
 			'''
 			弱的后坐力
@@ -2763,8 +2828,20 @@ TextContent: {
 			右键喷出更多沙弹
 			“带着它把自己埋进沙子里，这样就可以假装成一个蚁狮”
 			'''
-		Wap_StarCannon_Text: ""
-		Wap_SuperStarCannon_Text: ""
+		Wap_StarCannon_Text:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			发射星辰
+			"星光将会照亮前方"
+			'''
+		Wap_SuperStarCannon_Text:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			发射星辰
+			"星光将会照亮前方"
+			'''
 		Wap_ZapinatorGray_Text: ""
 		Wap_ZapinatorOrange_Text: ""
 		Wap_QuadBarrelShotgun_Text:
@@ -2817,7 +2894,7 @@ TextContent: {
 			'''
 		Wap_StakeLauncher_Text:
 			'''
-			弱的后坐力
+			按下[KL]键上弦
 			发射具有穿透性的尖桩
 			尖桩被视为弓，但是这不意味着你不能装上瞄准镜
 			“彻底杀死吸血鬼的唯一方法就是将木制尖桩穿过它的心脏，但是不是吸血鬼也活不了”
@@ -2896,7 +2973,6 @@ TextContent: {
 			蓄势发射快速的箭矢
 			将使箭矢额外穿透两个敌人
 			“由秘银制成的连弩，强而有力，强而有力啊！”
-			todo
 			'''
 		Wap_TitaniumRepeater_Text:
 			'''
@@ -2915,7 +2991,6 @@ TextContent: {
 			将使箭矢额外穿透两个敌人
 			同时额外发射两支双倍伤害的圣箭
 			“来自天堂的坠星为这支箭开道”
-			todo
 			'''
 		Wap_GrenadeLauncher_Text:
 			'''

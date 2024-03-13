@@ -206,6 +206,25 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        public override void ModifyWeaponCrit(Item item, ref float crit) {
+            if (LoadMuzzleBrake) {
+                if (item.DamageType == DamageClass.Ranged) {
+                    if (LoadMuzzleBrakeLevel == 1) {
+                        crit += 5;
+                    }
+                    else if (LoadMuzzleBrakeLevel == 2) {
+                        crit += 15;
+                    }
+                    else if (LoadMuzzleBrakeLevel == 3) {
+                        crit += 25;
+                    }
+                    else if (LoadMuzzleBrakeLevel == 4) {
+                        crit += 100;
+                    }
+                }
+            }
+        }
+
         public override void ModifyScreenPosition() {
             Main.screenPosition += OffsetScreenPos;
         }

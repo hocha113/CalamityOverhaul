@@ -312,8 +312,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <param name="player"></param>
         /// <param name="target"></param>
         /// <param name="modifiers"></param>  
-        /// <returns>返回<see langword="null"/>会继续执行原来的方法，包括原ModNPC方法与G方法。
-        /// 返回<see langword="true"/>仅仅会继续执行原ModNPC方法而阻止全局NPC类的额外修改运行。
+        /// <returns>返回<see langword="null"/>会继续执行原来的方法，包括原ModItem方法与G方法。
+        /// 返回<see langword="true"/>仅仅会继续执行原ModItem方法而阻止全局Item类的额外修改运行。
         /// 返回<see langword="false"/>阻止后续所有修改的运行</returns>
         public virtual bool? On_ModifyHitNPC(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers) {
             return null;
@@ -406,6 +406,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <param name="crit"></param>
         public virtual void ModifyWeaponCrit(Item item, Player player, ref float crit) {
 
+        }
+        /// <summary>
+        /// 修改物品暴击
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="player"></param>
+        /// <param name="crit"></param>
+        /// <returns>返回<see langword="null"/>会继续执行原来的方法，包括原ModItem方法与G方法。
+        /// 返回<see langword="true"/>仅仅会继续执行原ModItem方法而阻止全局Item类的额外修改运行。
+        /// 返回<see langword="false"/>阻止后续所有修改的运行</returns>
+        public virtual bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
+            return null;
         }
         /// <summary>
         /// 修改物品伤害数据
