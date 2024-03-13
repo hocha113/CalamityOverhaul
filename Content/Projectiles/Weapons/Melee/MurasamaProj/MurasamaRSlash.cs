@@ -1,5 +1,8 @@
 ﻿using CalamityMod;
+using CalamityMod.NPCs.Crabulon;
+using CalamityMod.NPCs.ProfanedGuardians;
 using CalamityMod.NPCs.SlimeGod;
+using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
@@ -150,32 +153,84 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (target.type == NPCID.SkeletronHand) {
+            if (target.type == ModContent.NPCType<Crabulon>()|| target.type == ModContent.NPCType<CrabShroom>()) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == NPCID.Creeper) {
                 modifiers.FinalDamage *= 0.5f;
             }
+            if (target.type == NPCID.QueenBee) {
+                modifiers.FinalDamage *= 0.6f;
+            }
+            if (target.type == NPCID.SkeletronHand) {
+                modifiers.FinalDamage *= 0.6f;
+            }
             if (target.type == NPCID.WallofFleshEye || target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 0.2f;
+                modifiers.FinalDamage *= 0.3f;
+            }
+            if (target.type == NPCID.QueenSlimeBoss || target.type == CWRIDs.AquaticScourgeBody) {
+                modifiers.FinalDamage *= 0.75f;
             }
             if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
                 modifiers.FinalDamage *= 0.75f;
             }
-            if (target.type == CWRIDs.AquaticScourgeBody || target.type == CWRIDs.PerforatorBodyLarge
-                 || target.type == CWRIDs.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == NPCID.TheDestroyerBody) {
+            if (target.type == CWRIDs.PerforatorBodyLarge || target.type == CWRIDs.DevourerofGodsBody || target.type == CWRIDs.CosmicGuardianBody
+                || target.type == CWRIDs.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == CWRIDs.PerforatorBodySmall) {
                 modifiers.FinalDamage *= 0.5f;
+            }
+            if (target.type == NPCID.TheDestroyerBody || target.type == CWRIDs.AstrumDeusBody || target.type == CWRIDs.CosmicGuardianTail 
+                || target.type == CWRIDs.CosmicGuardianHead || target.type == CWRIDs.DevourerofGodsHead || target.type == CWRIDs.DevourerofGodsTail) {
+                modifiers.FinalDamage *= 1.33f;
+            }
+            if (target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerTail || target.type == CWRIDs.AstrumDeusHead
+                || target.type == CWRIDs.AstrumDeusTail) {
+                modifiers.FinalDamage *= 3.5f;
+            }
+            if (target.type == NPCID.Probe) {
+                modifiers.FinalDamage *= 1.75f;
             }
             if (target.type == ModContent.NPCType<SplitEbonianPaladin>() || target.type == ModContent.NPCType<SplitCrimulanPaladin>()) {
-                modifiers.FinalDamage *= 0.2f;
+                modifiers.FinalDamage *= 0.3f;
             }
             if (target.type == CWRIDs.PlaguebringerGoliath) {
+                modifiers.FinalDamage *= 1.25f;
+            }
+            if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
+                modifiers.FinalDamage *= 0.9f;
+            }
+            if (target.type == ModContent.NPCType<ProfanedGuardianHealer>() || target.type == ModContent.NPCType<ProfanedGuardianDefender>()) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == ModContent.NPCType<ProfanedGuardianCommander>()) {
+                modifiers.FinalDamage *= 2f;
+            }
+            if (target.type == CWRIDs.Polterghast) {
                 modifiers.FinalDamage *= 0.8f;
             }
-            if (CWRIDs.WormBodys.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.5f;
+            if (target.type == CWRIDs.Yharon) {
+                modifiers.FinalDamage *= 0.9f;
+            }
+            if (target.type == CWRIDs.ThanatosBody1 || target.type == CWRIDs.ThanatosBody2) {
+                modifiers.FinalDamage *= 1.25f;
+            }
+            if (target.type == CWRIDs.ThanatosHead) {
+                modifiers.FinalDamage *= 2.86f;
+            }
+            if (target.type == CWRIDs.Apollo || target.type == CWRIDs.Artemis) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == CWRIDs.AresBody || target.type == CWRIDs.AresGaussNuke || target.type == CWRIDs.AresLaserCannon
+                || target.type == CWRIDs.AresPlasmaFlamethrower || target.type == CWRIDs.AresTeslaCannon) {
+                modifiers.FinalDamage *= 0.85f;
+            }
+            if (target.type == ModContent.NPCType<SupremeCataclysm>() || target.type == ModContent.NPCType<SupremeCatastrophe>()) {
+                modifiers.FinalDamage *= 1.5f;
             }
             if (target.boss) {
-                float sengsValue = 0.75f + InWorldBossPhase.Instance.Level() * 0.05f;
+                float sengsValue = 0.5f + InWorldBossPhase.Instance.Level() * 0.03f;
                 modifiers.FinalDamage *= sengsValue;
             }
+            modifiers.DefenseEffectiveness *= 0.5f;
         }
 
         public void HandleChannelMovement(Player player, Vector2 playerRotatedPoint) {

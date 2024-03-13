@@ -117,7 +117,7 @@ namespace CalamityOverhaul
         /// </summary>
         public static int Yharon;
         /// <summary>
-        /// 坟墓灾虫
+        /// 灾坟虫
         /// </summary>
         public static List<int> targetNpcTypes;
         public static int SepulcherHead;
@@ -159,6 +159,13 @@ namespace CalamityOverhaul
         public static int PerforatorHeadMedium;
         public static int PerforatorBodyMedium;
         public static int PerforatorTailMedium;
+        /// <summary>
+        /// 血肉蠕虫3
+        /// </summary>
+        public static List<int> targetNpcTypes18;
+        public static int PerforatorHeadSmall;
+        public static int PerforatorBodySmall;
+        public static int PerforatorTailSmall;
         /// <summary>
         /// 装甲掘地虫 
         /// </summary>
