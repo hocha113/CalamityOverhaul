@@ -25,6 +25,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         internal bool CanCreateRecoilBool = true;
         /// <summary>
+        /// 换弹是否消耗弹药
+        /// </summary>
+        internal bool BulletConsumption = true;
+        /// <summary>
         /// 是否自动在一次单次射击后调用弹匣更新函数，这负责弹药消耗逻辑，如果设置为<see langword="false"/>就需要手动调用<see cref="UpdateMagazineContents"/>以正常执行弹药逻辑
         /// </summary>
         internal bool CanUpdateMagazineContentsInShootBool = true;
@@ -52,6 +56,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 单次弹药装填最小数量，默认为一发
         /// </summary>
         protected int MinimumAmmoPerReload = 1;
+        /// <summary>
+        /// 单次弹药装填最大数量，默认为<see cref="CWRItems.AmmoCapacity"/>的值
+        /// </summary>
+        protected int LoadingQuantity = 0;
         /// <summary>
         /// 换弹延迟计时器
         /// </summary>
@@ -304,22 +312,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
                     if (PreConsumeAmmoEvent()) {
                         LoadBulletsIntoMagazine();//这一次更新弹匣内容，压入子弹
-                        int ammo = 0;
-                        int maxAmmo = Item.CWR().AmmoCapacity;
-                        foreach (Item inds in AmmoState.InItemInds) {
-                            if (ammo >= maxAmmo) {
-                                break;
-                            }
-                            if (inds.stack <= 0) {
-                                continue;
-                            }
-                            if (inds.stack >= maxAmmo) {
-                                inds.stack -= maxAmmo - ammo;
-                                ammo += maxAmmo;
-                            }
-                            else {
-                                ammo += inds.stack;
-                                inds.stack = 0;
+                        if (BulletConsumption) {
+                            int ammo = 0;
+                            int maxAmmo = Item.CWR().AmmoCapacity;
+                            foreach (Item inds in AmmoState.InItemInds) {
+                                if (ammo >= maxAmmo) {
+                                    break;
+                                }
+                                if (inds.stack <= 0) {
+                                    continue;
+                                }
+                                if (inds.stack >= maxAmmo) {
+                                    inds.stack -= maxAmmo - ammo;
+                                    ammo += maxAmmo;
+                                } else {
+                                    ammo += inds.stack;
+                                    inds.stack = 0;
+                                }
                             }
                         }
                     }
@@ -380,8 +389,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             List<Item> loadedItems = new List<Item>();
             int magazineCapacity = cwrItem.AmmoCapacity;
+            if (LoadingQuantity > 0) {
+                magazineCapacity = LoadingQuantity;
+            }
             int accumulatedAmount = 0;
-
+            
             foreach (Item ammoItem in AmmoState.InItemInds) {
                 int stack = ammoItem.stack;
 
@@ -538,11 +550,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             int cumulativeQuantity = 0;
             List<Item> list = new List<Item>();
             foreach (Item i in item.CWR().MagazineContents) {
-                if (cumulativeQuantity >= cutOutNum) {
+                if (cumulativeQuantity >= cutOutNum || i == null) {
                     break;
-                }
-                if (i == null) {
-                    continue;
                 }
                 if (i.type == ItemID.None || i.stack <= 0) {
                     continue;

@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.ClockworkAssaultRifle;
         int thisNeedsTime;
         int chargeAmmoNum;
-        int thisBulletNum;
         public override void SetRangedProperty() {
             FireTime = 5;
             ShootPosToMouLengValue = 0;
@@ -29,7 +28,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
             kreloadMaxTime = 45;
-            ReturnRemainingBullets = false;
         }
 
         public override void PreInOwnerUpdate() {
@@ -37,21 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override bool KreLoadFulfill() {
-            ReturnRemainingBullets = true;
-            if (BulletNum < Item.CWR().AmmoCapacity) {
-                if (!onFire) {
-                    thisBulletNum += 10;
-                    BulletNum = thisBulletNum;
-                    CutOutMagazine(Item, thisBulletNum);
-                    OnKreload = true;
-                    ReturnRemainingBullets = false;
-                    kreloadTimeValue = kreloadMaxTime;                    
-                }
-            }
-            if (thisBulletNum >= Item.CWR().AmmoCapacity) {
-                thisBulletNum = 0;
-            }
-            return false;
+            return true;
         }
 
         public override void PostFiringShoot() {

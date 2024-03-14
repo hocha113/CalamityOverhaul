@@ -34,7 +34,9 @@ namespace CalamityOverhaul
         }
 
         public override void UpdateInventory(Player player) {
-            
+            if (player.PressKey(false)) {
+                //Main.mouseItem = new Item(Main.HoverItem.type, Main.HoverItem.maxStack);
+            }
         }
 
         public override void HoldItem(Player player) {

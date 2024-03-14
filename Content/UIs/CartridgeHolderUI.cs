@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,6 +21,7 @@ namespace CalamityOverhaul.Content.UIs
         public static Texture2D TextureValue;
         private Item handItem => player.ActiveItem();
         private int bulletNum => player.ActiveItem().CWR().NumberBullets;
+        private Rectangle mainRec;
         private bool onMainP;
         public bool Active {
             get {
@@ -37,7 +37,10 @@ namespace CalamityOverhaul.Content.UIs
         public override void Update(GameTime gameTime) {
             CWRItems cwrItem = handItem.CWR();
             if (TextureValue != null) {
-                onMainP = new Rectangle((int)DrawPos.X, (int)DrawPos.Y, TextureValue.Width, TextureValue.Height).Intersects(new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1));
+                mainRec = new Rectangle((int)DrawPos.X, (int)DrawPos.Y, TextureValue.Width, TextureValue.Height);
+                if (cwrItem.CartridgeEnum == CartridgeUIEnum.Magazines)
+                    mainRec = new Rectangle((int)DrawPos.X, (int)DrawPos.Y, TextureValue.Width, TextureValue.Height / 6);
+                onMainP = mainRec.Intersects(new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1));
             }
             if (onMainP) {
                 int mr = DownStartR();
@@ -62,7 +65,11 @@ namespace CalamityOverhaul.Content.UIs
             CWRItems cwrItem = handItem.CWR();
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.CartridgeHolder) {
                 DrawPos = new Vector2(20, Main.screenHeight - 100);
-                TextureValue = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/BulletCard" + (handItem.CWR().AmmoCapacityInFire ? "_Fire" : ""));
+                string key = "BulletCard";
+                if (handItem.useAmmo == AmmoID.Rocket) {
+                    key = "GrenadeRound";
+                }
+                TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + (handItem.CWR().AmmoCapacityInFire ? "_Fire" : ""));
             }  
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.Magazines) {
                 DrawPos = new Vector2(60, Main.screenHeight - 100);

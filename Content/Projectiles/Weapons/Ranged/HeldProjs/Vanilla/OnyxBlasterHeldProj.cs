@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0.2f;
+            GunPressure = 0.1f;
             ControlForce = 0.05f;
             Recoil = 1f;
             RangeOfStress = 48;
@@ -37,18 +37,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void PostFiringShoot() {
-            if (BulletNum >= 5) {
-                BulletNum -= 5;
-            }
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, ProjectileID.BlackBolt, (int)(WeaponDamage * 0.9f), WeaponKnockback, Owner.whoAmI, 0);
-            Main.projectile[proj].timeLeft += 25;
             for (int i = 0; i < 4; i++) {
-                _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.8f, 1.2f) * 1f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.8f, 1.2f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.22f, 0.22f)) * Main.rand.NextFloat(0.9f, 1.5f), ProjectileID.BlackBolt, (int)(WeaponDamage * 0.9f), WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj].timeLeft += 25;
                 _ = CreateRecoil();
+                UpdateMagazineContents();
             }
             _ = CreateRecoil();
         }

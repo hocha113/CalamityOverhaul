@@ -11,37 +11,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.TheUndertaker].Value;
         public override int targetCayItem => ItemID.TheUndertaker;
         public override int targetCWRItem => ItemID.TheUndertaker;
-        private int bulletNum {
-            get => Item.CWR().NumberBullets;
-            set => Item.CWR().NumberBullets = value;
-        }
         public override void SetRangedProperty() {
-            kreloadMaxTime = 40;
+            kreloadMaxTime = 60;
             FireTime = 20;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.8f;
+            GunPressure = 0.3f;
             ControlForce = 0.05f;
-            Recoil = 1.2f;
-        }
-
-        public override bool WhetherStartChangingAmmunition() {
-            return base.WhetherStartChangingAmmunition() && bulletNum < Item.CWR().AmmoCapacity && !onFire;
-        }
-
-        public override bool KreLoadFulfill() {
-            bulletNum = Item.CWR().AmmoCapacity;
-            if (Item.CWR().AmmoCapacityInFire) {
-                Item.CWR().AmmoCapacityInFire = false;
-            }
-            return true;
-        }
-
-        public override void PostFiringShoot() {
-            bulletNum--;
+            Recoil = 0.6f;
         }
     }
 }

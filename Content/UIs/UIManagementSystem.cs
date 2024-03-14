@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.UIs
             new ResetItemReminderUI().Load();
             new OverhaulTheBibleUI().Load();
             new CartridgeHolderUI().Load();
+            new RecipeErrorFullUI().Load();
 
             OverhaulTheBibleUI.Instance.ecTypeItemList = new List<Item>();
             foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
@@ -70,7 +71,8 @@ namespace CalamityOverhaul.Content.UIs
                     if (SupertableUI.Instance.Active) {
                         SupertableUI.Instance.Draw(Main.spriteBatch);
                         RecipeUI.Instance.Draw(Main.spriteBatch);
-                        DragButton.instance.Draw(Main.spriteBatch);
+                        DragButton.Instance.Draw(Main.spriteBatch);
+                        RecipeErrorFullUI.Instance.Draw(Main.spriteBatch);
                     }  
                     return true;
                 }, InterfaceScaleType.UI));
@@ -96,7 +98,8 @@ namespace CalamityOverhaul.Content.UIs
             if (SupertableUI.Instance.Active) {
                 SupertableUI.Instance.Update(gameTime);
                 RecipeUI.Instance.Update(gameTime);
-                DragButton.instance.Update(gameTime);
+                DragButton.Instance.Update(gameTime);
+                RecipeErrorFullUI.Instance.Update(gameTime);
             }  
             if (OverhaulTheBibleUI.Instance.Active) {
                 OverhaulTheBibleUI.Instance.Update(gameTime);

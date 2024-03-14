@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     internal class DragButton : CWRUIPanel
     {
-        public static DragButton instance { get; private set; }
+        public static DragButton Instance { get; private set; }
 
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/HotbarRadial_0");
 
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public Vector2 InSupPosOffset => new Vector2(550, 380);
 
         public override void Load() {
-            instance = this;
+            Instance = this;
         }
 
         public override void Initialize() {

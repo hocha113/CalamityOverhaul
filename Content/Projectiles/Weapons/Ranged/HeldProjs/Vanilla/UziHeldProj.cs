@@ -14,13 +14,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.Uzi;
         public override int targetCWRItem => ItemID.Uzi;
         public override void SetRangedProperty() {
+            FireTime = 6;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -8;
-            HandDistance = 5;
-            HandDistanceY = 0;
-            GunPressure = 0.05f;
+            HandDistance = 20;
+            HandDistanceY = 5;
+            GunPressure = 0.15f;
             ControlForce = 0.05f;
-            Recoil = 2f;
+            Recoil = 0.22f;
             RepeatedCartridgeChange = true;
             kreloadMaxTime = 45;
         }
@@ -30,14 +31,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override bool KreLoadFulfill() {
-            if (BulletNum < 30) {
-                BulletNum += 30;
-            } else {
-                BulletNum = 60;
-            }
-            if (Item.CWR().AmmoCapacityInFire) {
-                Item.CWR().AmmoCapacityInFire = false;
-            }
             return true;
         }
 

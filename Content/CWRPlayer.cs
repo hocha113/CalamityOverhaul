@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Items.Magic.Extras;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Summon.Extras;
 using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -132,6 +133,7 @@ namespace CalamityOverhaul.Content
                 }
                 InitialCreation = false;
             }
+            RecipeErrorFullUI.Instance.eyEBool = true;
         }
 
         public override void OnHurt(Player.HurtInfo info) {

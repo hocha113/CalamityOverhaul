@@ -44,16 +44,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override bool KreLoadFulfill() {
-            if (BulletNum < Item.CWR().AmmoCapacity) {
-                if (!onFire) {
-                    OnKreload = true;
-                    kreloadTimeValue = kreloadMaxTime;
-                }
-                BulletNum++;
-            }
-            if (Item.CWR().AmmoCapacityInFire) {
-                Item.CWR().AmmoCapacityInFire = false;
-            }
             return true;
         }
 
