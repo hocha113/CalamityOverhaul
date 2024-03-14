@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<Fungicide>();
         public override int targetCWRItem => ModContent.ItemType<FungicideEcType>();
         public override void SetRangedProperty() {
-            FireTime = 30;
+            FireTime = 20;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 17;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.5f;
             RangeOfStress = 28;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 60;
+            kreloadMaxTime = 30;
         }
 
         public override void PreInOwnerUpdate() {

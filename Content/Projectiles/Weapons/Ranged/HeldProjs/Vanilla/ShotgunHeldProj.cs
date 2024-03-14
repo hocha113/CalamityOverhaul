@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ShootPosToMouLengValue = 15;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
-            Recoil = 2.0f;
+            Recoil = 2.4f;
             RangeOfStress = 12;
             RepeatedCartridgeChange = true;
             kreloadMaxTime = 45;
@@ -34,30 +34,30 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override bool KreLoadFulfill() {
-            if (BulletNum < 32) {
-                BulletNum += 16;
-            }
-            else {
-                BulletNum = 48;
-            }
-            if (Item.CWR().AmmoCapacityInFire) {
-                Item.CWR().AmmoCapacityInFire = false;
-            }
+            //if (BulletNum < 32) {
+            //    BulletNum += 16;
+            //}
+            //else {
+            //    BulletNum = 48;
+            //}
+            //if (Item.CWR().AmmoCapacityInFire) {
+            //    Item.CWR().AmmoCapacityInFire = false;
+            //}
             return true;
         }
 
         public override void PostFiringShoot() {
-            if (BulletNum >= 8) {
-                BulletNum -= 8;
-            }
+            //if (BulletNum >= 8) {
+            //    BulletNum -= 8;
+            //}
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust();
             _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
             for (int i = 0; i < 7; i++) {
+                UpdateMagazineContents();
                 _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.24f, 0.24f)) * Main.rand.NextFloat(0.7f, 1.4f), AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
-                _ = CreateRecoil();
             }
         }
     }

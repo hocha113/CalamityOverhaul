@@ -1224,12 +1224,24 @@ Items: {
 
 	GoldenEagle: {
 		DisplayName: Golden Eagle
-		Tooltip: ""
+		Tooltip: 
+			'''
+			Medium recoil
+			Fires five bullets at once
+			Right-click for rapid fire, generating a large number of accompanying bullets at the mouse cursor
+			"You don't want to know how this gun is made"
+			'''
 	}
 
 	SurgeDriverEcType: {
 		DisplayName: Surge Driver Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+			No recoil
+			Press the [KL] key to reload
+			Fires a large number of dissociative rays, with the firepower becoming more intense as the ammunition decreases
+			At its peak, it switches to firing gamma ray explosions
+			'''
 	}
 
 	MuzzleBrake: {
@@ -1242,423 +1254,681 @@ Items: {
 	}
 
 	DeepcoreGK2EcType: {
-		DisplayName: Deepcore G K2 Ec Type
-		Tooltip: ""
+		DisplayName: Deepcore GK2
+		Tooltip:
+			'''
+			Weak recoil
+			Press the [Scope] key to aim
+			Right click to zoom out
+			"Perfect braking design, with a built-in microcomputer. It can not only automatically reload, but also help you toast your breakfast bread."
+			'''
 	}
 
 	DodusHandcannonEcType: {
-		DisplayName: Dodus Handcannon Ec Type
-		Tooltip: ""
+		DisplayName: Dodus Handcannon
+		Tooltip:
+			'''
+			Medium recoil
+			Press the [KL] key to reload
+			Fires a high-explosive nut kernel, yes, that's right, a nut kernel
+			"I've always tried to summon Tall-nut with this thing, but I've never succeeded."
+			'''
 	}
 
 	P90EcType: {
-		DisplayName: P90 Ec Type
-		Tooltip: ""
+		DisplayName: P90
+		Tooltip:
+			'''
+			Weak recoil
+			Press the [KL] key to reload
+			Fires armor-piercing bullets at extremely high frequencies
+			Bullets will ignore the enemy's 15 points of defense
+			"Actually, what you can see is the tracer trail, so you'll need to pay an extra $2,685 for the ammunition bill."
+			'''
 	}
 
 	PearlGodEcType: {
-		DisplayName: Pearl God Ec Type
-		Tooltip: ""
+		DisplayName: Pearl God
+		Tooltip:
+			'''
+			Strong recoil
+			Press the [KL] key to reload
+			Fires five bullets at once
+			When the magazine is empty, it fires a powerful shockwave grenade
+			"Your life belongs to me."
+			'''
 	}
 
 	Flint: {
 		DisplayName: Flint
-		Tooltip: ""
+		Tooltip:
+			'''
+			A rather hard stone, it can be used to make better tools.
+			'''
 	}
 
 	FlintAxe: {
 		DisplayName: Flint Axe
-		Tooltip: ""
+		Tooltip:
+			'''
+			"Advanced tools from the Stone Age, powerful enough to fell a tree and get away unscathed!"
+			'''
 	}
 
 	FlintPick: {
 		DisplayName: Flint Pick
-		Tooltip: ""
+		Tooltip:
+			'''
+			"Advanced tools from the Stone Age, powerful enough to capture those sparkling ores!"
+			'''
 	}
 
 	FlintSpear: {
 		DisplayName: Flint Spear
-		Tooltip: ""
+		Tooltip:
+			'''
+			"Advanced weapons from the Stone Age, with spearheads capable of easily killing rabbits!"
+			'''
 	}
 
 	TheUpiStele: {
 		DisplayName: The Upi Stele
-		Tooltip: ""
+		Tooltip:
+			'''
+			"Here lies a fallen star that once accompanied dreams"
+			'''
 	}
 
 	TheSpiritFlint: {
 		DisplayName: The Spirit Flint
-		Tooltip: ""
+		Tooltip:
+			'''
+			“Embodied with the advanced stone manipulation techniques of the ancient people of the Stone Age”
+			'''
 	}
 
 	Pebble: {
 		DisplayName: Pebble
-		Tooltip: ""
+		Tooltip:
+			'''
+			Smooth stone, with medium hardness and easy to grind.
+			'''
 	}
 
 	PebbleAxe: {
 		DisplayName: Pebble Axe
-		Tooltip: ""
+		Tooltip:
+			'''"Basic tools from the Stone Age, powerful enough to destroy trees along with yourself!"
+
+			'''
 	}
 
 	PebblePick: {
 		DisplayName: Pebble Pick
-		Tooltip: ""
+		Tooltip:
+			'''
+			"Basic tools from the Stone Age, although it seems foolish to dig stones with stones!"
+			'''
 	}
 
 	PebbleSpear: {
 		DisplayName: Pebble Spear
-		Tooltip: ""
-	}
-
-	AmmoBox: {
-		DisplayName: Ammo Box
-		Tooltip: ""
+		Tooltip:
+			'''
+			"Basic weapons from the Stone Age, but they're not even as hard as animal bones!"
+			'''
 	}
 
 	BulletFilledShotgunEcType: {
 		DisplayName: Bullet Filled Shotgun Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ButcherEcType: {
 		DisplayName: Butcher Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	FungicideEcType: {
 		DisplayName: Fungicide Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	HalleysInfernoEcType: {
 		DisplayName: Halleys Inferno Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	HandheldTankEcType: {
 		DisplayName: Handheld Tank Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	InfinityEcType: {
 		DisplayName: Infinity Ec Type
-		Tooltip: ""
+		Tooltip:
+			'''
+
+			'''
 	}
 
 	KarasawaEcType: {
 		DisplayName: Karasawa Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	KingsbaneEctype: {
 		DisplayName: Kingsbane Ectype
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	MegalodonEcType: {
 		DisplayName: Megalodon Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	MidasPrimeEcType: {
 		DisplayName: Midas Prime Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	NeedlerEcType: {
 		DisplayName: Needler Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	PlagueTaintedSMGEcType: {
 		DisplayName: Plague Tainted S M G Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	PumplerEcType: {
 		DisplayName: Pumpler Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ScorpioEcType: {
 		DisplayName: Scorpio Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ArbalestEcType: {
 		DisplayName: Arbalest Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ArcherfishEcType: {
 		DisplayName: Archerfish Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ArcNovaDiffuserEcType: {
 		DisplayName: Arc Nova Diffuser Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	AstralBlasterEcType: {
 		DisplayName: Astral Blaster Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	AuralisEcType: {
 		DisplayName: Auralis Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	AuroraBlazerEcType: {
 		DisplayName: Aurora Blazer Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	BarracudaGunEcType: {
 		DisplayName: Barracuda Gun Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	BlissfulBombardierEcType: {
 		DisplayName: Blissful Bombardier Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ChickenCannonEcType: {
 		DisplayName: Chicken Cannon Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ClamorRifleEcType: {
 		DisplayName: Clamor Rifle Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ClaretCannonEcType: {
 		DisplayName: Claret Cannon Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	GunkShotEcType: {
 		DisplayName: Gunk Shot Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	MagnaCannonEcType: {
 		DisplayName: Magna Cannon Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	NorfleetEcType: {
 		DisplayName: Norfleet Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ShroomerEcType: {
 		DisplayName: Shroomer Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	StarfleetEcType: {
 		DisplayName: Starfleet Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	StarmadaEcType: {
 		DisplayName: Starmada Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	SulphuricAcidCannonEcType: {
 		DisplayName: Sulphuric Acid Cannon Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	UniversalGenesisEcType: {
 		DisplayName: Universal Genesis Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	VoidragonEcType: {
 		DisplayName: Voidragon Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	AcesHighEcType: {
 		DisplayName: Aces High Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ConferenceCallEcType: {
 		DisplayName: Conference Call Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	MineralMortarEcType: {
 		DisplayName: Mineral Mortar Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	MolecularManipulatorEcType: {
 		DisplayName: Molecular Manipulator Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	NullificationRifleEcType: {
 		DisplayName: Nullification Rifle Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	OnyxChainBlasterEcType: {
 		DisplayName: Onyx Chain Blaster Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	OnyxiaEcType: {
 		DisplayName: Onyxia Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	PestilentDefilerEcType: {
 		DisplayName: Pestilent Defiler Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	RealmRavagerEcType: {
 		DisplayName: Realm Ravager Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	RubicoPrimeEcType: {
 		DisplayName: Rubico Prime Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	SandstormGunEcType: {
 		DisplayName: Sandstorm Gun Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	SepticSkewerEcType: {
 		DisplayName: Septic Skewer Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ShredderEcType: {
 		DisplayName: Shredder Ec Type
-		Tooltip: ""
+		Tooltip:
+			'''
+
+			'''
 	}
 
 	SomaPrimeEcType: {
 		DisplayName: Soma Prime Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	SpectralstormCannonEcType: {
 		DisplayName: Spectralstorm Cannon Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	SpeedBlasterEcType: {
 		DisplayName: Speed Blaster Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	SpykerEcType: {
 		DisplayName: Spyker Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	StarSputterEcType: {
 		DisplayName: Star Sputter Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	StellarCannonEcType: {
 		DisplayName: Stellar Cannon Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	SvantechnicalEcType: {
 		DisplayName: Svantechnical Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	TheHiveEcType: {
 		DisplayName: The Hive Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ThePackEcType: {
 		DisplayName: The Pack Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ElementMuzzleBrake: {
 		DisplayName: Element Muzzle Brake
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	NeutronStarMuzzleBrake: {
 		DisplayName: Neutron Star Muzzle Brake
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	PrecisionMuzzleBrake: {
 		DisplayName: Precision Muzzle Brake
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	SimpleMuzzleBrake: {
 		DisplayName: Simple Muzzle Brake
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	BladedgeGreatbowEcType: {
 		DisplayName: Bladedge Greatbow Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	CleansingBlazeEcType: {
 		DisplayName: Cleansing Blaze Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	FirestormCannonEcType: {
 		DisplayName: Firestorm Cannon Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	FlakToxicannonEcType: {
 		DisplayName: Flak Toxicannon Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	FreedomStarEcType: {
 		DisplayName: Freedom Star Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	ClockGatlignumEcType: {
 		DisplayName: Clock Gatlignum Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	StormDragoonEcType: {
 		DisplayName: Storm Dragoon Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	StormSurgeEcType: {
 		DisplayName: Storm Surge Ec Type
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 
 	AmmoBoxFire: {
 		DisplayName: Ammo Box Fire
-		Tooltip: ""
+		Tooltip: 
+			'''
+
+			'''
 	}
 }
 

@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SpawnGunFireDust();
             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             OffsetPos -= ShootVelocity.UnitVector() * 4;
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<BubonicRoundProj>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {

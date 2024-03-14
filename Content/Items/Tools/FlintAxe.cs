@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.knockBack = 1f;
             Item.useTime = 22;
             Item.useAnimation = 22;
-            Item.axe = 8;
+            Item.axe = 10;
             Item.tileBoost -= 1;
             Item.DamageType = DamageClass.Melee;
             Item.width = 30;
