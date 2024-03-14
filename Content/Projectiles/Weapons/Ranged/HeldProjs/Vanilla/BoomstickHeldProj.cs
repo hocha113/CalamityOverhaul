@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ShootPosToMouLengValue = 15;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
-            Recoil = 1.2f;
+            Recoil = 2.0f;
             RangeOfStress = 8;
             RepeatedCartridgeChange = true;
             kreloadMaxTime = 45;
@@ -48,7 +48,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
             for (int i = 0; i < 4; i++) {
                 _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.24f, 0.24f)) * Main.rand.NextFloat(0.7f, 1.2f) * 1.0f, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
-                _ = CreateRecoil();
             }
         }
     }
