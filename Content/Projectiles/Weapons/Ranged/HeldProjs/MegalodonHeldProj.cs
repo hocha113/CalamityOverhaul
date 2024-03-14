@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Megalodon";
         public override int targetCayItem => ModContent.ItemType<Megalodon>();
         public override int targetCWRItem => ModContent.ItemType<MegalodonEcType>();
-
+        int fireIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 6;
@@ -41,6 +42,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SpawnGunFireDust();
             OffsetPos -= ShootVelocity.UnitVector() * 4;
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            if (fireIndex > 2) {
+                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<MiniSharkron>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj].MaxUpdates *= 2;
+                fireIndex = 0;
+            }
+            fireIndex++;
         }
 
         public override void PostFiringShoot() {

@@ -13,9 +13,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// </summary>
         internal virtual Player Owner => Main.player[Projectile.owner];
         /// <summary>
-        /// 弹幕的理论朝向，这里考虑到了<see cref="Player.gravDir"/>属性，防止玩家在重力反转的情况下出现问题
+        /// 安全的获取一个重力倒转值
         /// </summary>
-        internal virtual int DirSign => Math.Sign(Owner.gravDir) * Owner.direction;
+        internal int SafeGravDir => Math.Sign(Owner.gravDir);
+        /// <summary>
+        /// 弹幕的理论朝向，这里考虑并没有到<see cref="Player.gravDir"/>属性，为了防止玩家在重力反转的情况下出现问题，可能需要额外编写代码
+        /// </summary>
+        internal virtual int DirSign => Owner.direction * SafeGravDir;
         /// <summary>
         /// 不应该设置这个值，这个值用于在联机同步中使用，一般来讲，我们应该使用<see cref="ToMouse"/>
         /// </summary>

@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Buffs.Summon;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
@@ -9,12 +10,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
 {
-    internal class TheSpiritFlintProjL : ModProjectile
+    internal class TheSpiritFlintProj : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Summon + "TheSpiritFlintProj";
         Player Owner => Main.player[Projectile.owner];
         ref float Time => ref Projectile.ai[0];
-        ref float State => ref Projectile.ai[1];
         public NPC Target { get; set; }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -26,16 +26,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
             Projectile.tileCollide = false;
         }
 
-        public override bool? CanDamage() {
-            return false;
-        }
+        public override bool? CanDamage() => false;
 
         public override void OnKill(int timeLeft) {
             base.OnKill(timeLeft);
         }
 
         public override void AI() {
-            Projectile.timeLeft = 5;
             Target = Owner.Center.MinionHoming(1600, Owner, false || CalamityPlayer.areThereAnyDamnBosses);
 
             if (Projectile.WithinRange(Owner.Center, 1200) && !Projectile.WithinRange(Owner.Center, 300f)) {
@@ -64,6 +61,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
                     proj.MaxUpdates = 2;
                     Time = 0f;
                 }
+            }
+
+            Owner.AddBuff(ModContent.BuffType<SummonInFlint>(), 3600);
+            if (Owner.dead) {
+                Owner.CWR().FlintSummonBool = false;
+            }
+            if (Owner.CWR().FlintSummonBool) {
+                Projectile.timeLeft = 2;
             }
 
             Projectile.MinionAntiClump();

@@ -997,8 +997,14 @@ namespace CalamityOverhaul
             ammoState.InItemInds = itemInds.ToArray();
             ammoState.InItemIDs = itemTypes.ToArray();
             ammoState.Amount = num;
-            ammoState.MaxAmountToItem = itemInds[0];
-            ammoState.MinAmountToItem = itemInds[itemInds.Count - 1];
+            if (itemInds.Count > 0) {
+                ammoState.MaxAmountToItem = itemInds[0];
+                ammoState.MinAmountToItem = itemInds[itemInds.Count - 1];
+            }
+            else {
+                ammoState.MaxAmountToItem = new Item();
+                ammoState.MinAmountToItem = new Item();
+            }
             return ammoState;
         }
 

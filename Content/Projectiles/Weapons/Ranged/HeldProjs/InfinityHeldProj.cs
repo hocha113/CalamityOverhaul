@@ -46,6 +46,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ModContent.ProjectileType<ChargedBlast>();
             }
+            else {
+                Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            }
             Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(sengs), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(-sengs), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }

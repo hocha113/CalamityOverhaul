@@ -38,6 +38,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ModContent.ProjectileType<ThunderstormShot>();
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = ModContent.ProjectileType<ThunderstormHeldProj>();
+            item.CWR().Scope = true;
             CWRUtils.EasySetLocalTextNameOverride(item, "Thunderstorm");
         }
 

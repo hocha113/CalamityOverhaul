@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetCalamitySD<Arbalest>();
             Item.SetHeldProj<ArbalestHeldProj>();
+            Item.CWR().Scope = true;
         }
     }
 }

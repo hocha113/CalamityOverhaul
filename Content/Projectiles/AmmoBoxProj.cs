@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles
                             }
                         }
                         if (num < cWR.AmmoCapacity) {
-                            list.Add(new Item(ItemID.MusketBall, cWR.AmmoCapacity - num));
+                            list.Add(new Item(item.useAmmo == AmmoID.Rocket ? ItemID.RocketI : ItemID.MusketBall, cWR.AmmoCapacity - num));
                         }
                         cWR.MagazineContents = list.ToArray();
                         cWR.AmmoCapacityInFire = true;

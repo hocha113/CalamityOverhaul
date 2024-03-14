@@ -337,6 +337,17 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         }
         /// <summary>
+        /// 用于添加该物品的战利品池内容
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="itemLoot"></param>
+        /// <returns>返回<see langword="null"/>会继续执行原来的方法，包括原ModItem方法与G方法。
+        /// 返回<see langword="true"/>仅仅会继续执行原ModItem方法而阻止全局Item类的额外修改运行。
+        /// 返回<see langword="false"/>阻止后续所有修改的运行</returns>
+        public virtual bool? On_ModifyItemLoot(Item item, ItemLoot itemLoot) {
+            return null;
+        }
+        /// <summary>
         /// 用于动态修改该物品的体积大小，这一般直接关联影响其碰撞箱体
         /// </summary>
         /// <param name="item"></param>

@@ -77,6 +77,11 @@ namespace CalamityOverhaul.Content
         public Vector2 RecoilAccelerationValue;
         #endregion
 
+        #region Buff
+        public bool TyrantsFuryBuffBool;
+        public bool FlintSummonBool;
+        #endregion
+
         public override void Initialize() {
             OnHit = false;
             TheRelicLuxor = 0;
@@ -86,6 +91,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ResetEffects() {
+            OffsetScreenPos = Vector2.Zero;
             TheRelicLuxor = 0;
             LoadMuzzleBrakeLevel = 0;
             PressureIncrease = 1;
@@ -95,7 +101,8 @@ namespace CalamityOverhaul.Content
             HeldMurasamaBool = false;
             EndSkillEffectStartBool = false;
             LoadMuzzleBrake = false;
-            OffsetScreenPos = Vector2.Zero;
+            TyrantsFuryBuffBool = false;
+            FlintSummonBool = false;
         }
 
         public override void SaveData(TagCompound tag) {
@@ -204,6 +211,29 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
+            if (TyrantsFuryBuffBool) {
+                if (item.DamageType == DamageClass.Melee 
+                    || item.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()) {
+                    damage *= 1.05f;
+                }
+                if (item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>() 
+                    || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
+                    damage *= 1.1f;
+                }
+            }
+        }
+
+        public override void ModifyWeaponKnockback(Item item, ref StatModifier knockback) {
+            if (TyrantsFuryBuffBool) {
+                if (item.DamageType == DamageClass.Melee
+                    || item.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()) {
+                    knockback *= 0.9f;
+                }
+                if (item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
+                    || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
+                    knockback *= 0.8f;
+                }
+            }
         }
 
         public override void ModifyWeaponCrit(Item item, ref float crit) {
@@ -233,10 +263,10 @@ namespace CalamityOverhaul.Content
             yield return new Item(ModContent.ItemType<PebbleSpear>());
             yield return new Item(ModContent.ItemType<PebblePick>());
             yield return new Item(ModContent.ItemType<PebbleAxe>());
-            yield return new Item(ModContent.ItemType<TheSpiritFlint>());
-            yield return new Item(ModContent.ItemType<TheUpiStele>());
-            yield return new Item(ModContent.ItemType<Pebble>(), 999);
-            yield return new Item(ModContent.ItemType<OverhaulTheBibleBook>());
+            //yield return new Item(ModContent.ItemType<TheSpiritFlint>());
+            //yield return new Item(ModContent.ItemType<TheUpiStele>());
+            //yield return new Item(ModContent.ItemType<Pebble>(), 999);
+            //yield return new Item(ModContent.ItemType<OverhaulTheBibleBook>());
         }
 
         public override void ModifyStartingInventory(IReadOnlyDictionary<string, List<Item>> itemsByMod, bool mediumCoreDeath) {

@@ -1965,6 +1965,7 @@ Projectiles: {
 	MagicStar.DisplayName: Magic Star
 	TheSpiritFlintProjL.DisplayName: The Spirit Flint Proj L
 	TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
+	TheSpiritFlintProj.DisplayName: The Spirit Flint Proj
 	PebbleSpearProj.DisplayName: Pebble Spear Proj
 	PebbleProj.DisplayName: Pebble Proj
 	AmmoBoxProj.DisplayName: Ammo Box Proj
@@ -2194,6 +2195,11 @@ Buffs: {
 	TyrantsFury: {
 		DisplayName: Tyrants Fury
 		Description: You were furious
+	}
+
+	SummonInFlint: {
+		DisplayName: Summon In Flint
+		Description: Mods.CalamityOverhaul.Buffs.SummonInFlint.Description
 	}
 }
 

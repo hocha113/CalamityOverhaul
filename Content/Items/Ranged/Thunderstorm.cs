@@ -31,6 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ModContent.ProjectileType<ThunderstormShot>();
             Item.CWR().hasHeldNoCanUseBool = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<ThunderstormHeldProj>();
+            Item.CWR().Scope = true;
         }
     }
 }

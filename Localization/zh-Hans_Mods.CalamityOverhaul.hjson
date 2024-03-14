@@ -531,7 +531,7 @@ Items: {
 
 	BlackMatterStick: {
 		DisplayName: 超密质中子星聚合锭
-		Tooltip: ""
+		Tooltip: 万物之重，聚合指尖
 	}
 
 	InfiniteStick: {
@@ -613,7 +613,11 @@ Items: {
 
 	CosmicCalamity: {
 		DisplayName: 银河之灾
-		Tooltip: ""
+		Tooltip:
+			'''
+			掷出追踪的银河灾虫
+			潜伏攻击造成一次热射十字爆
+			'''
 	}
 
 	Weapons: {
@@ -983,6 +987,7 @@ Items: {
 		Tooltip:
 			'''
 			微弱的后坐力
+			按下[Scope]键开镜
 			发射一发拉德尔电磁冲击，以魔力作为弹药
 			'''
 	}
@@ -1079,7 +1084,8 @@ Items: {
 		Tooltip:
 			'''
 			荒诞的后坐力
-			右键可以装填八颗地狱火子母弹，火箭在发射出去后会自动导航向敌人
+			按下[KL]键进行换弹
+			装填八颗地狱火子母弹，火箭在发射出去后会自动导航向敌人
 			击中后引发大爆炸并分裂出多枚子火箭
 			"这玩意儿一定违反了好几项国际公约"
 			'''
@@ -1102,7 +1108,7 @@ Items: {
 			较强的后坐力
 			一把有着不小威力的老式手炮
 			右键装填弹药
-			"枪膛一直是潮湿的，火药很可能点不燃....等等？它不用火药？"
+			"枪膛一直是潮湿的，火药很可能点不燃....等等，它不用火药？"
 			'''
 	}
 
@@ -1404,8 +1410,8 @@ Items: {
 			微弱的后坐力
 			按下[KL]键进行换弹
 			按下[Scope]键开镜
-			发射一团会分裂弹射的能量子弹
-			右键发射一团火枪子弹
+			螺旋状的发射大量子弹
+			将火枪子弹转化成会分裂弹射的能量子弹
 			“只要你把它握在手中，无限的解离就不会停止”
 			'''
 	}
@@ -1416,7 +1422,7 @@ Items: {
 			'''
 			很强的后坐力
 			按下[KL]键进行换弹
-			……这把枪太沉了……太沉了
+			"……这把枪太沉了……太沉了"
 			'''
 	}
 
@@ -1440,8 +1446,8 @@ Items: {
 			'''
 			一般的后坐力
 			按下[KL]键进行换弹
-			快速交替发射子弹和加压水流
-			水流不消耗弹药
+			每射击三次会额外发射一条鲨鱼
+			"我们成功将鲨鱼塞了进去，注意别被咬掉手指"
 			'''
 	}
 
@@ -1501,6 +1507,7 @@ Items: {
 		DisplayName: 劲弩
 		Tooltip:
 			'''
+			按下[Scope]键开镜
 			发射6支高速箭
 			箭矢随着持续发射时间增大体积
 			箭矢体积越大，伤害和击退越高，但扩散范围更大
@@ -1858,6 +1865,7 @@ Items: {
 			解离减益每次造成伤害时，都有几率触发暴击或者超暴击
 			将火枪子弹转化为高速子弹
 			80%几率节省弹药
+			"Market forces dictate that you need to evolve or die."
 			'''
 	}
 
@@ -2382,6 +2390,7 @@ Projectiles: {
 	// MagicStar.DisplayName: Magic Star
 	// TheSpiritFlintProjL.DisplayName: The Spirit Flint Proj L
 	// TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
+	// TheSpiritFlintProj.DisplayName: The Spirit Flint Proj
 	// PebbleSpearProj.DisplayName: Pebble Spear Proj
 	// PebbleProj.DisplayName: Pebble Proj
 	// AmmoBoxProj.DisplayName: Ammo Box Proj
@@ -2608,6 +2617,11 @@ Buffs: {
 	TyrantsFury: {
 		DisplayName: 暴君之怒
 		Description: 你怒不可遏
+	}
+
+	SummonInFlint: {
+		DisplayName: 火石之灵
+		Description: 这个小家伙曾经是一名消防顾问
 	}
 }
 

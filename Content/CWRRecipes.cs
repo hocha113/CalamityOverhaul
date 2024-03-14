@@ -215,6 +215,24 @@ namespace CalamityOverhaul.Content
                     .Register();
 
             }
+            //修改月神P的合成
+            {
+                for (int i = 0; i < Recipe.numRecipes; i++) {
+                    Recipe recipe = Main.recipe[i];
+                    if (recipe.HasResult(ItemType<CalamityMod.Items.Weapons.Ranged.SomaPrime>())) {
+                        recipe.AddIngredient(ItemType<CalamityMod.Items.Weapons.Ranged.Infinity>());//添加无穷
+                    }
+                }
+            }
+            //修改鹅卵石冲击波的合成
+            {
+                for (int i = 0; i < Recipe.numRecipes; i++) {
+                    Recipe recipe = Main.recipe[i];
+                    if (recipe.HasResult(ItemType<CalamityMod.Items.Weapons.Ranged.OpalStriker>())) {
+                        recipe.AddIngredient(ItemType<Pebble>());//添加鹅卵石
+                    }
+                }
+            }
             //添加闪光皇后鱼的配方
             {
                 Recipe.Create(ItemType<CalamityMod.Items.Fishing.SunkenSeaCatches.SparklingEmpress>())

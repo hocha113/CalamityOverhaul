@@ -9,22 +9,19 @@ namespace CalamityOverhaul.Common.DrawTools
         public Color Color;
         public Vector3 TexCoord;
 
-        private static VertexDeclaration _vertexDeclaration = new VertexDeclaration(new VertexElement[3]
-        {
-                new VertexElement(0,VertexElementFormat.Vector2,VertexElementUsage.Position,0),
-                new VertexElement(8,VertexElementFormat.Color,VertexElementUsage.Color,0),
-                new VertexElement(12,VertexElementFormat.Vector3,VertexElementUsage.TextureCoordinate,0)
+        private static readonly VertexDeclaration _vertexDeclaration = new(new VertexElement[3]{
+            new VertexElement(0,VertexElementFormat.Vector2,VertexElementUsage.Position,0),
+            new VertexElement(8,VertexElementFormat.Color,VertexElementUsage.Color,0),
+            new VertexElement(12,VertexElementFormat.Vector3,VertexElementUsage.TextureCoordinate,0)
         });
 
         public CustomVertexInfo(Vector2 position, Color color, Vector3 texCoord) {
-            this.Position = position;
-            this.Color = color;
-            this.TexCoord = texCoord;
+            Position = position;
+            Color = color;
+            TexCoord = texCoord;
         }
 
-        public VertexDeclaration VertexDeclaration {
-            get { return _vertexDeclaration; }
-        }
+        public VertexDeclaration VertexDeclaration => _vertexDeclaration;
     }
 
     public struct VertexInfo : IVertexType
@@ -37,14 +34,11 @@ namespace CalamityOverhaul.Common.DrawTools
             TexCoord = texCoord;
         }
 
-        public VertexDeclaration VertexDeclaration {
-            get { return _vertexDeclaration; }
-        }
+        public VertexDeclaration VertexDeclaration => _vertexDeclaration;
 
-        private static VertexDeclaration _vertexDeclaration = new VertexDeclaration(new VertexElement[]
-        {
-                new VertexElement(0,VertexElementFormat.Vector2,VertexElementUsage.Position,0),
-                new VertexElement(8,VertexElementFormat.Color,VertexElementUsage.Color,0),
+        private static readonly VertexDeclaration _vertexDeclaration = new(new VertexElement[]{
+            new VertexElement(0,VertexElementFormat.Vector2,VertexElementUsage.Position,0),
+            new VertexElement(8,VertexElementFormat.Color,VertexElementUsage.Color,0),
         });
     }
 }

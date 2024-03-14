@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
             Item.noUseGraphic = true;
             Item.shootSpeed = 7;
             Item.mana = 20;
-            Item.shoot = ModContent.ProjectileType<TheSpiritFlintProjL>();
+            Item.shoot = ModContent.ProjectileType<TheSpiritFlintProj>();
         }
 
         public override void AddRecipes() {

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
-            Recoil = 3.5f;
+            Recoil = 1.5f;
             RangeOfStress = 25;
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {

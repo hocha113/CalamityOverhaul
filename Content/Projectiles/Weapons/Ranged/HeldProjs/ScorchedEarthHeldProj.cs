@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 22;
+            EjectCasingProjSize = 3;
         }
 
         public override void PreInOwnerUpdate() {

@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -14,8 +13,6 @@ namespace CalamityOverhaul.Content.Buffs
             Main.buffNoSave[Type] = true;
         }
 
-        public override void Update(Player player, ref int buffIndex) {
-            //player.Calamity().tFury = true;
-        }
+        public override void Update(Player player, ref int buffIndex) => player.CWR().TyrantsFuryBuffBool = true;
     }
 }

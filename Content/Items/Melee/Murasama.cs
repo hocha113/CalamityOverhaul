@@ -86,10 +86,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// 每个时期阶段对应的升龙冷却的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnRDCD"/>
         /// </summary>
         static Dictionary<int, int> RDCDDictionary => new Dictionary<int, int>(){
-            {0, 90 },
-            {1, 90 },
+            {0, 110 },
+            {1, 100 },
             {2, 90 },
-            {3, 90 },
+            {3, 80 },
             {4, 75 },
             {5, 75 },
             {6, 70 },

@@ -34,20 +34,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Projectile.NewProjectile(Owner.parent(), Projectile.Center, vr, ModContent.ProjectileType<ScorchedEarthRocket>(), Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
                 }
                 Vector2 pos = Projectile.Center - vr * 3 + vr.GetNormalVector() * 10 * Owner.direction;
-                for (int i = 0; i < 100; i++) {
-                    Vector2 dustVel = (Projectile.rotation + Main.rand.NextFloat(-0.1f, 0.1f)).ToRotationVector2() * -Main.rand.Next(26, 117);
-                    float scale = Main.rand.NextFloat(0.5f, 1.5f);
-                    int type = DustID.CopperCoin;
-                    Vector2 pos2 = pos;
-                    if (Main.rand.NextBool()) {
-                        type = DustID.FireworkFountain_Red;
-                        pos2 += dustVel * 6;
+                if (Projectile.rotation != 0) {
+                    for (int i = 0; i < 100; i++) {
+                        Vector2 dustVel = (Projectile.rotation + Main.rand.NextFloat(-0.1f, 0.1f)).ToRotationVector2() * -Main.rand.Next(26, 117);
+                        float scale = Main.rand.NextFloat(0.5f, 1.5f);
+                        int type = DustID.CopperCoin;
+                        Vector2 pos2 = pos;
+                        if (Main.rand.NextBool()) {
+                            type = DustID.FireworkFountain_Red;
+                            pos2 += dustVel * 6;
+                        }
+                        if (Main.rand.NextBool(5)) {
+                            type = DustID.FireworkFountain_Pink;
+                            pos2 += dustVel * 6;
+                        }
+                        Dust.NewDust(pos2, 5, 5, type, dustVel.X, dustVel.Y, 0, default, scale);
                     }
-                    if (Main.rand.NextBool(5)) {
-                        type = DustID.FireworkFountain_Pink;
-                        pos2 += dustVel * 6;
-                    }
-                    Dust.NewDust(pos2, 5, 5, type, dustVel.X, dustVel.Y, 0, default, scale);
                 }
             }
         }

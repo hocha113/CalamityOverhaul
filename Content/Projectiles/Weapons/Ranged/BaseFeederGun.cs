@@ -84,6 +84,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected float RecoilRetroForceMagnitude = 5;
         /// <summary>
+        /// 快速设置抛壳大小，默认为1
+        /// </summary>
+        protected float EjectCasingProjSize = 1;
+        /// <summary>
         /// 是否是一个多发装填，一般来讲应用于弹容量大于1的枪类，开启后影响<see cref="PreFireReloadKreLoad"/>
         /// </summary>
         protected bool MultipleCartridgeLoading;
@@ -112,7 +116,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void EjectCasing() {
             Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
-            Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
+            int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
+            if (EjectCasingProjSize != 1) {
+                Main.projectile[proj].scale = EjectCasingProjSize;
+            }
         }
         /// <summary>
         /// 关于装弹过程中的具体效果实现，返回<see langword="false"/>禁用默认的效果行为
@@ -154,7 +161,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return true;
         }
         /// <summary>
-        /// 是否可以进行换弹操作，返回<see langword="false"/>阻止玩家进行换弹操作
+        /// 是否可以进行手动换弹操作，返回<see langword="false"/>阻止玩家进行换弹操作
         /// </summary>
         /// <returns></returns>
         public virtual bool WhetherStartChangingAmmunition() {
@@ -180,21 +187,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <returns></returns>
         public virtual Vector2 GetGunInFirePos() {
-            return kreloadTimeValue == 0 ? Owner.Center + Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY) + OffsetPos : GetGunBodyPostion();
+            return kreloadTimeValue == 0 ? Owner.Center + Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY * Math.Sign(Owner.gravDir)) + OffsetPos : GetGunBodyPostion();
         }
         /// <summary>
         /// 统一获取枪体在静置时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
         /// </summary>
         /// <returns></returns>
         public virtual float GetGunBodyRotation() {
-            return (DirSign > 0 ? MathHelper.ToRadians(10) : MathHelper.ToRadians(170)) + FeederOffsetRot;
+            return (Owner.direction > 0 ? MathHelper.ToRadians(10) : MathHelper.ToRadians(170)) + FeederOffsetRot;
         }
         /// <summary>
         /// 统一获取枪体在静置时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
         /// </summary>
         /// <returns></returns>
         public virtual Vector2 GetGunBodyPostion() {
-            return Owner.Center + new Vector2(DirSign * HandDistance, HandDistanceY) + FeederOffsetPos;
+            return Owner.Center + new Vector2(Owner.direction * HandDistance, HandDistanceY) + FeederOffsetPos;
         }
         /// <summary>
         /// 先行调用，重写它以设置一些特殊状态
@@ -222,7 +229,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         protected void SetAutomaticCartridgeChange() {
-            if (!IsKreload && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0) {
+            if (!IsKreload && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0 && AmmoState.Amount > 0) {
                 OnKreload = true;
                 kreloadTimeValue = kreloadMaxTime;
             }
@@ -232,10 +239,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public sealed override void InOwner() {
+            int gravDir = Math.Sign(Owner.gravDir);
             InitializeMagazine();
             PreInOwnerUpdate();
-            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR;
-            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR;
+            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * gravDir;
+            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * gravDir;
             Projectile.Center = GetGunBodyPostion();
             Projectile.rotation = GetGunBodyRotation();
             Projectile.timeLeft = 2;
@@ -246,7 +254,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = GetGunInFireRot();
                     Projectile.Center = GetGunInFirePos();
-                    ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign;
+                    ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
                     if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {//需要子弹，还需要判断是否已经装弹//HaveAmmo && 
                         onFire = true;
                         Projectile.ai[1]++;
@@ -283,8 +291,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             if (OnKreload) {//装弹过程
                 if (PreOnKreloadEvent()) {
-                    ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation)) * DirSign + 0.3f;
-                    ArmRotSengsFront += MathF.Sin(Time * 0.3f) * 0.7f;
+                    ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - (Projectile.rotation)) * DirSign * SafeGravDir + 0.3f;
+                    ArmRotSengsFront += MathF.Sin(Time * 0.3f) * 0.7f * SafeGravDir;
                 }
                 kreloadTimeValue--;
                 if (PreReloadEffects(kreloadTimeValue, kreloadMaxTime)) {
@@ -343,7 +351,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Owner.PressKey()) {
                 if (!IsKreload && LoadingReminder) {
                     if (!Owner.mouseInterface) {
-                        HandleEmptyAmmoEjection();
+                        AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态
+                        if (AmmoState.Amount <= 0) {
+                            HandleEmptyAmmoEjection();
+                        }
                     }
                     LoadingReminder = false;
                 }
@@ -548,6 +559,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 list.Add(ammo);
             }
             item.CWR().MagazineContents = list.ToArray();
+        }
+
+        public void LoadingAnimation(int rot, int xl, int yl) {
+            if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
+                Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向
+                FeederOffsetRot = -MathHelper.ToRadians(rot) * DirSign;
+                FeederOffsetPos = new Vector2(DirSign * -xl, -yl) * SafeGravDir;
+            }
         }
 
         #endregion

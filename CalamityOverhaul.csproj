@@ -20,6 +20,14 @@
   <ItemGroup>
     <None Remove="0.351.txt" />
     <None Remove="Assets\Items\Replace\TODO.txt" />
+    <None Remove="Assets\Masking\Extra_193.png" />
+    <None Remove="Assets\Masking\Extra_193_White.png" />
+    <None Remove="Assets\Masking\MotionTrail2.png" />
+    <None Remove="Assets\Masking\StarTexture.png" />
+    <None Remove="Assets\Masking\StarTexture_White.png" />
+    <None Remove="Assets\Masking\Streak3.png" />
+    <None Remove="Assets\Masking\Wave.png" />
+    <None Remove="Assets\Masking\WavyNoise.png" />
     <None Remove="Assets\NPCs\TODOs.txt" />
     <None Remove="Assets\UIs\ScrollbarInner.png" />
     <None Remove="Assets\UIs\SliderBar.png" />
