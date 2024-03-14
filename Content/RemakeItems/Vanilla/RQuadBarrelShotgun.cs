@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             item.SetHeldProj<QuadBarrelShotgunHeldProj>();
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 24;
+            item.damage = 12;
         }
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRLocText.GetText("Wap_QuadBarrelShotgun_Text"));

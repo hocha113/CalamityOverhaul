@@ -1294,57 +1294,52 @@ Items: {
 
 	Flint: {
 		DisplayName: 燧石
-		Tooltip: ""
+		Tooltip: 相当硬的石头，可以做成更好一些的工具
 	}
 
 	FlintAxe: {
 		DisplayName: 燧石斧
-		Tooltip: ""
+		Tooltip: “石器时代的高等工具，足以干掉一棵树然后全身而退！”
 	}
 
 	FlintPick: {
 		DisplayName: 燧石镐
-		Tooltip: ""
+		Tooltip: “石器时代的高等工具，足以俘获那些闪闪发光的矿石！”
 	}
 
 	FlintSpear: {
 		DisplayName: 燧石矛
-		Tooltip: ""
+		Tooltip: “石器时代的高等武器，有着能轻易杀死兔兔的矛头！”
 	}
 
 	TheUpiStele: {
 		DisplayName: 奥术石碑
-		Tooltip: ""
+		Tooltip: “这里沉睡着以前随梦想落下的坠星”
 	}
 
 	TheSpiritFlint: {
 		DisplayName: 火石之灵
-		Tooltip: ""
+		Tooltip: “凝聚着石器时代古代人先进的驾驭石头的技术”
 	}
 
 	Pebble: {
 		DisplayName: 卵石
-		Tooltip: ""
+		Tooltip: 圆滑的石头，硬度中等，易于打磨
 	}
 
 	PebbleAxe: {
 		DisplayName: 卵石斧
-		Tooltip: ""
+		Tooltip: “石器时代的初等工具，足以和树木同归于尽！”
 	}
 
 	PebblePick: {
 		DisplayName: 卵石镐
-		Tooltip: ""
+		Tooltip: “石器时代的初等工具，虽然用石头挖石头看上去很愚蠢！”
 	}
 
 	PebbleSpear: {
 		DisplayName: 卵石矛
-		Tooltip: ""
-	}
-
-	AmmoBox: {
-		// DisplayName: Ammo Box
-		// Tooltip: ""
+		Tooltip: “石器时代的初等武器，但是它还没有动物的骨头硬！”
 	}
 
 	BulletFilledShotgunEcType: {
@@ -1397,7 +1392,7 @@ Items: {
 		DisplayName: 手持坦克
 		Tooltip:
 			'''
-			荒谬的后坐力
+			疯狂的后坐力
 			按下[KL]键进行换弹
 			"嘿，伙计！看看，我在推着一辆坦克走"
 			'''
@@ -1437,6 +1432,7 @@ Items: {
 			金源弹会迅速追踪附近的敌人，并无视50点防御
 			使用时不断消耗弹药
 			90%几率节省弹药
+			“世袭的权柄让你跪下，而现在，我们让你站起来”
 			'''
 	}
 
@@ -1461,6 +1457,7 @@ Items: {
 			击中硬币的子弹会向着最近的敌人瞄准
 			至多可抛出4枚硬币，在可能的情况下，子弹会在多枚硬币之间反弹
 			反弹的子弹必定暴击，并且会基于反弹的次数增加伤害
+			“金钱就是力量”
 			'''
 	}
 
@@ -1471,6 +1468,7 @@ Items: {
 			一般的后坐力
 			按下[KL]键进行换弹
 			将火枪子弹转化为钉在敌人身上并爆炸的叶针
+			“暴雨梨花针？”
 			'''
 	}
 
@@ -1481,16 +1479,14 @@ Items: {
 			一般的后坐力
 			按下[KL]键进行换弹
 			按下[Scope]键开镜
-			发射瘟疫子弹，在暴击时生成瘟疫自爆无人机
-			敌怪越近，子弹的伤害和击退更高
+			左键发射瘟疫子弹，在暴击时生成瘟疫自爆无人机
 			无人机命中受瘟疫感染的敌怪时有极高的暴击率
 			右键发射无人机群
+			“瞄准然后射击，瞄准然后射击”
 			'''
 	}
 
 	PumplerEcType: {
-		// DisplayName: Pumpler Ec Type
-		// Tooltip: ""
 	}
 
 	ScorpioEcType: {
@@ -1525,8 +1521,6 @@ Items: {
 	}
 
 	ArcNovaDiffuserEcType: {
-		// DisplayName: Arc Nova Diffuser Ec Type
-		// Tooltip: ""
 	}
 
 	AstralBlasterEcType: {
@@ -1563,6 +1557,7 @@ Items: {
 			按下[KL]键进行换弹
 			喷出以星形轨迹运动的星云烈焰
 			使用凝胶作为弹药
+			“星辉中的怒火在燃烧”
 			'''
 	}
 
@@ -1621,12 +1616,11 @@ Items: {
 			一般的后坐力
 			按下[KL]键进行换弹
 			发射数颗子弹
+			“胶泥座人”
 			'''
 	}
 
 	MagnaCannonEcType: {
-		// DisplayName: Magna Cannon Ec Type
-		// Tooltip: ""
 	}
 
 	NorfleetEcType: {
@@ -1769,7 +1763,7 @@ Items: {
 		DisplayName: 玛瑙链炮
 		Tooltip:
 			'''
-			弱的后坐力
+			较弱的后坐力
 			按下[KL]键进行换弹
 			发射数颗子弹和一枚玛瑙榴弹
 			50%几率节省弹药
@@ -1785,6 +1779,7 @@ Items: {
 			按下[KL]键进行换弹
 			向敌人倾泻弹雨与玛瑙碎片
 			50%几率节省弹药
+			“那头黑龙的化身”
 			'''
 	}
 
@@ -1833,7 +1828,6 @@ Items: {
 		DisplayName: 剧毒鱼叉枪
 		Tooltip:
 			'''
-			无后坐力
 			按下[KL]键进行换弹
 			一下发射出所有黏性剧毒鱼叉
 			飞回玩家时释放细菌
@@ -2075,7 +2069,6 @@ Items: {
 		DisplayName: 旋风发射器
 		Tooltip:
 			'''
-			无后坐力
 			发射可以穿透物块的蓝色旋风
 			"在风暴中恐惧并臣服"
 			'''
