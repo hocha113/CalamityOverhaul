@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -21,8 +20,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 35;
             HandDistanceY = 5;
             HandFireDistance = 35;
-            HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -12;
+            HandFireDistanceY = -6;
+            ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
             GunPressure = 0;
@@ -34,11 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PreInOwnerUpdate() {
-            if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
-                Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向
-                FeederOffsetRot = -MathHelper.ToRadians(50) * DirSign;
-                FeederOffsetPos = new Vector2(DirSign * -3, -25);
-            }
+            LoadingAnimation(30, 0, 13);
         }
 
         public override void PostInOwnerUpdate() {
@@ -47,12 +42,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, 1, 173, 173, 173);
-            ShootPosNorlLengValue = -12;
             Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             chargeIndex++;
             if (chargeIndex > 5) {
-                ShootPosNorlLengValue = -10;
                 SoundEngine.PlaySound(SoundID.Item92 with { MaxInstances = 100 }, Projectile.position);
                 for (int i = 0; i < 33; i++) {
                     Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1.2f)

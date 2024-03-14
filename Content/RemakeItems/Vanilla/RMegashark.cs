@@ -12,12 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Megashark;
         public override bool FormulaSubstitution => false;
-        public override void SetDefaults(Item item) {
-            item.useTime = 5;
-            item.CWR().hasHeldNoCanUseBool = true;
-            item.CWR().heldProjType = ModContent.ProjectileType<MegasharkHeldProj>();
-        }
-
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<MegasharkHeldProj>(260);
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) 
             => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRLocText.GetText("Wap_Megashark_Text"));
     }

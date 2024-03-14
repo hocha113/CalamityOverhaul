@@ -16,31 +16,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         int fireIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            FireTime = 6;
-            HandDistance = 25;
+            FireTime = 4;
+            HandDistance = 22;
             HandDistanceY = 5;
-            HandFireDistance = 25;
-            HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            HandFireDistance = 22;
+            HandFireDistanceY = -8;
+            ShootPosNorlLengValue = -5;
+            ShootPosToMouLengValue = 20;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.1f;
+            GunPressure = 0.06f;
             ControlForce = 0.05f;
-            Recoil = 0.2f;
+            Recoil = 0.22f;
             RangeOfStress = 25;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 4;
         }
 
         public override void PreInOwnerUpdate() {
-            if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
-                Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向
-                FeederOffsetRot = -MathHelper.ToRadians(50) * DirSign;
-                FeederOffsetPos = new Vector2(DirSign * -3, -25);
-            }
+            LoadingAnimation(50, 3, 25);
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust();
-            OffsetPos -= ShootVelocity.UnitVector() * 4;
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             if (fireIndex > 2) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<MiniSharkron>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
