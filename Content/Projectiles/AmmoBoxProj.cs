@@ -19,10 +19,12 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.height = 46;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
+            Projectile.MaxUpdates = 8;
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 38);
+            CWRUtils.ClockFrame(ref Projectile.frame, 10, 38);
+            Projectile.timeLeft = 2;
             Player player = Main.player[Projectile.owner];
             float inPlayer = player.Distance(Projectile.Center);
             bool inMouse = Projectile.Hitbox.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
@@ -62,13 +64,14 @@ namespace CalamityOverhaul.Content.Projectiles
             }
             Tile tile = CWRUtils.GetTile(Projectile.Bottom / 16);
             if (!(tile.HasTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]))) {
-                for (int i = 0; i < 8; i++) {
-                    Projectile.position.Y += 1;
-                    tile = CWRUtils.GetTile(Projectile.Bottom / 16);
-                    if (tile.HasSolidTile()) {
-                        break;
-                    }
-                }
+                //for (int i = 0; i < 8; i++) {
+                //    Projectile.position.Y += 1;
+                //    tile = CWRUtils.GetTile(Projectile.Bottom / 16);
+                //    if (tile.HasSolidTile()) {
+                //        break;
+                //    }
+                //}
+                Projectile.position.Y += 1;
             }
         }
 

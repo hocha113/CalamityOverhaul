@@ -20,6 +20,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual int TargetID => SetReadonlyTargetID;
         /// <summary>
+        /// 是否是一个关于原版物品的重制节点
+        /// </summary>
+        public virtual bool IsVanilla => false;
+        /// <summary>
         /// 用于在本地化中拉取描述，如果为默认的空字符串则不会其余拉取功能
         /// </summary>
         public virtual string TargetToolTipItemName => "";
@@ -29,9 +33,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual int ProtogenesisID => SetReadonlyTargetID;
         /// <summary>
-        /// 是否参与配方替换，默认为<see langword="true"/>
+        /// 是否参与配方替换，默认为<see langword="true"/>，如果<see cref="IsVanilla"/>为<see langword="true"/>，那么该属性自动返回<see langword="false"/>
         /// </summary>
-        public virtual bool FormulaSubstitution => true;
+        public virtual bool FormulaSubstitution {
+             get {
+                if (IsVanilla) {
+                    return false;
+                }
+                return true;
+            }
+        }
 
         public virtual void Load() {
             SetReadonlyTargetID = TargetID;//这里默认加载一次，在多数情况使其下不用重写Load()方法

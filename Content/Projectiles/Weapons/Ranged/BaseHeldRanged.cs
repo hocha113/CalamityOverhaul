@@ -72,7 +72,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             HaveAmmo = Owner.PickAmmo(Item, out AmmoTypes, out ScaleFactor, out WeaponDamage, out WeaponKnockback, out _, true);
             if (Item.useAmmo == AmmoID.None) {
                 WeaponDamage = Owner.GetWeaponDamage(Item);
+                WeaponKnockback = Item.knockBack;
                 AmmoTypes = Item.shoot;
+                if (AmmoTypes == 0 || AmmoTypes == 10) {
+                    AmmoTypes = ProjectileID.Bullet;
+                }
             }
         }
 

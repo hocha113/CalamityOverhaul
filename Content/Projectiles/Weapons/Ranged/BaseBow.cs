@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal abstract class BaseBow : BaseHeldRanged
     {
+        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         /// <summary>
         /// 右手角度值
         /// </summary>
@@ -29,37 +30,45 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected bool onFireR;
         /// <summary>
-        /// 是否在<see cref="InOwner"/>执行后自动更新手臂参数
+        /// 是否在<see cref="InOwner"/>执行后自动更新手臂参数，默认为<see langword="true"/>
         /// </summary>
         public bool SetArmRotBool = true;
         /// <summary>
-        /// 手持距离，生效于非开火状态下
+        /// 手持距离，生效于非开火状态下，默认为15
         /// </summary>
         public float HandDistance = 15;
         /// <summary>
-        /// 手持距离，生效于非开火状态下
+        /// 手持距离，生效于非开火状态下，默认为0
         /// </summary>
         public float HandDistanceY = 0;
         /// <summary>
-        /// 手持距离，生效于开火状态下
+        /// 手持距离，生效于开火状态下，默认为12
         /// </summary>
         public float HandFireDistance = 12;
         /// <summary>
-        /// 手持距离，生效于开火状态下
+        /// 手持距离，生效于开火状态下，默认为0
         /// </summary>
         public float HandFireDistanceY = 0;
         /// <summary>
-        /// 一个开火周期中手臂动画开始的时间
+        /// 一个开火周期中手臂动画开始的时间，默认为0
         /// </summary>
         public float HandRotStartTime = 0;
         /// <summary>
-        /// 一个开火周期中手臂动画的播放速度
+        /// 一个开火周期中手臂动画的播放速度，默认为0.4f
         /// </summary>
         public float HandRotSpeedSengs = 0.4f;
         /// <summary>
-        /// 一个开火周期中手臂动画的播放幅度
+        /// 一个开火周期中手臂动画的播放幅度，默认为0.7f
         /// </summary>
         public float HandRotRange = 0.7f;
+        /// <summary>
+        /// 是否启用开火动画，默认为<see langword="true"/>
+        /// </summary>
+        public bool CanFireMotion = true;
+        /// <summary>
+        /// 开火时是否默认播放手持物品的使用音效<see cref="Item.UseSound"/>，但如果准备重写<see cref="SpanProj"/>，这个属性将失去作用，默认为<see langword="true"/>
+        /// </summary>
+        public bool FiringDefaultSound = true;
         /// <summary>
         /// 获取来自物品的生成源
         /// </summary>
@@ -74,7 +83,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (HaveAmmo) {
                     onFire = true;
                     Projectile.ai[1]++;
-                    if (Projectile.ai[1] > HandRotStartTime)
+                    if (Projectile.ai[1] > HandRotStartTime && CanFireMotion)
                         ArmRotSengsFront += MathF.Sin(Time * HandRotSpeedSengs) * HandRotRange;
                 }
             }
@@ -90,7 +99,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (HaveAmmo) {
                     onFireR = true;
                     Projectile.ai[1]++;
-                    if (Projectile.ai[1] > HandRotStartTime)
+                    if (Projectile.ai[1] > HandRotStartTime && CanFireMotion)
                         ArmRotSengsFront += MathF.Sin(Time * HandRotSpeedSengs) * HandRotRange;
                 }
             }
@@ -99,7 +108,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
+        public virtual void PreInOwner() {
+
+        }
+
         public override void InOwner() {
+            PreInOwner();
+
             ArmRotSengsFront = 60 * CWRUtils.atoR;
             ArmRotSengsBack = 110 * CWRUtils.atoR;
 
@@ -114,6 +129,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+
+            PostInOwner();
+        }
+
+        public virtual void PostInOwner() {
+
         }
 
         public virtual void BowShoot() {
@@ -146,7 +167,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void SpanProj() {
             if (Projectile.ai[1] > Item.useTime) {
-                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+                if (FiringDefaultSound) {
+                    SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+                }                
                 if (onFire) {
                     BowShoot();
                 }
@@ -162,9 +185,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
-                , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None);
+            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
+                , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, SpriteEffects.None);
             return false;
         }
     }

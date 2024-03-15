@@ -28,6 +28,10 @@ namespace CalamityOverhaul.Content.Items.Placeable
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
             , Vector2 velocity, int type, int damage, float knockback) {
+            if (player.ownedProjectileCounts[Item.shoot] > 20) {
+                CombatText.NewText(player.Hitbox, Color.Gold, CWRLocText.GetTextValue("AmmoBox_Text"));
+                return false;
+            }
             Vector2 pos = new Vector2((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)) * 16;
             Projectile.NewProjectile(Item.GetSource_FromThis(), pos, Vector2.Zero, type, 0, 0, player.whoAmI);
             return false;

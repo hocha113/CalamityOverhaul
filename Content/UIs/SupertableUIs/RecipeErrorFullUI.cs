@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.UIs.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.UIs.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -50,7 +51,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
             if (onMainP) {
                 Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
-                , eyEBool ? "关闭摆放监视" : "开启摆放监视"
+                , eyEBool ? CWRLocText.GetTextValue("SupertableUI_Text4") : CWRLocText.GetTextValue("SupertableUI_Text5")
                 , DrawPos.X - 30, DrawPos.Y - 20, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
             }
         }

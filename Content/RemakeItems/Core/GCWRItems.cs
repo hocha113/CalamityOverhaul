@@ -179,8 +179,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public override void ModifyShootStats(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
-            ShootStats stats = new ShootStats
-            {
+            ShootStats stats = new() {
                 Position = position,
                 Velocity = velocity,
                 Type = type,
@@ -200,7 +199,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (CWRConstant.ForceReplaceResetContent && CWRMod.RItemIndsDict.ContainsKey(item.type)) {
                 string key = CWRMod.RItemIndsDict[item.type].TargetToolTipItemName;
                 if (key != "") {
-                    CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, key);
+                    if (CWRMod.RItemIndsDict[item.type].IsVanilla) {
+                        CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRLocText.GetText(key));
+                    } else {
+                        CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, key);
+                    }
                 }
             }
             string modName = CWRServerConfig.Instance.ForceReplaceResetContent ? CWRMod.Instance.Name : "Terraria";

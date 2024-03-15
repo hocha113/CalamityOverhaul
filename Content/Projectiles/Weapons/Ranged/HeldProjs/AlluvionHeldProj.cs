@@ -57,6 +57,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
             }
 
+            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<TyphoonOnSpan>()] == 0) {
+                if (SoundEngine.TryGetActiveSound(accumulator, out var sound)) {
+                    sound.Stop();
+                    accumulator = SlotId.Invalid;
+                }
+            }
+
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotSengsFront * -DirSign);
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotSengsBack * -DirSign);
         }
@@ -89,14 +96,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 accumulator = SoundEngine.PlaySound(CWRSound.Accumulator with { Pitch = -0.7f }, Projectile.Center);
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<TyphoonOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
-            }
-            else {
-                if (Owner.ownedProjectileCounts[ModContent.ProjectileType<TyphoonOnSpan>()] == 0) {
-                    if (SoundEngine.TryGetActiveSound(accumulator, out var sound)) {
-                        sound.Stop();
-                        accumulator = SlotId.Invalid;
-                    }
-                }
             }
         }
 
