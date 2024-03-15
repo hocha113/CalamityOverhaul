@@ -2,6 +2,7 @@
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
+using Humanizer;
 using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Terraria;
@@ -56,8 +57,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = Item.shoot;
             }
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<ArcherfishRing>(), WeaponDamage / 2, WeaponKnockback + 5, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].penetrate += 1;
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.6f, ModContent.ProjectileType<ArcherfishRing>(), WeaponDamage / 2, WeaponKnockback + 5, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {

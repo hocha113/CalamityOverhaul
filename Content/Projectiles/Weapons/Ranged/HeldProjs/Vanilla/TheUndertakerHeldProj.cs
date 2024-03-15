@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0.8f;
             ControlForce = 0.05f;
             Recoil = 1.2f;
+            kreloadMaxTime = 20;
         }
 
         public override bool WhetherStartChangingAmmunition() {
@@ -41,7 +42,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void PostFiringShoot() {
-            bulletNum--;
         }
     }
 }

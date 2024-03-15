@@ -73,6 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             base.Projectile.usesLocalNPCImmunity = false;
             base.Projectile.usesIDStaticNPCImmunity = true;
             base.Projectile.idStaticNPCHitCooldown = 0;
+            Projectile.damage /= 2;//爆炸伤害倍数调整
             base.Projectile.Damage();
             //for (int i = 0; i < 10; i++) {
             //    int num = Dust.NewDust(new Vector2(base.Projectile.position.X, base.Projectile.position.Y), base.Projectile.width, base.Projectile.height, 174, 0f, 0f, 10, Color.White, 0.2f);
