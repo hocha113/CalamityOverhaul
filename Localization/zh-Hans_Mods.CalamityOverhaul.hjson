@@ -1294,82 +1294,52 @@ Items: {
 
 	Flint: {
 		DisplayName: 燧石
-		Tooltip:
-			'''
-			相当硬的石头，可以做成更好一些的工具
-			'''
+		Tooltip: 相当硬的石头，可以做成更好一些的工具
 	}
 
 	FlintAxe: {
 		DisplayName: 燧石斧
-		Tooltip:
-			'''
-			“石器时代的高等工具，足以干掉一棵树然后全身而退！”
-			'''
+		Tooltip: “石器时代的高等工具，足以干掉一棵树然后全身而退！”
 	}
 
 	FlintPick: {
 		DisplayName: 燧石镐
-		Tooltip:
-			'''
-			“石器时代的高等工具，足以俘获那些闪闪发光的矿石！”
-			'''
+		Tooltip: “石器时代的高等工具，足以俘获那些闪闪发光的矿石！”
 	}
 
 	FlintSpear: {
 		DisplayName: 燧石矛
-		Tooltip:
-			'''
-			“石器时代的高等武器，有着能轻易杀死兔兔的矛头！”
-			'''
+		Tooltip: “石器时代的高等武器，有着能轻易杀死兔兔的矛头！”
 	}
 
 	TheUpiStele: {
 		DisplayName: 奥术石碑
-		Tooltip:
-			'''
-			“这里沉睡着以前随梦想落下的坠星”
-			'''
+		Tooltip: “这里沉睡着以前随梦想落下的坠星”
 	}
 
 	TheSpiritFlint: {
 		DisplayName: 火石之灵
-		Tooltip:
-			'''
-			“凝聚着石器时代古代人先进的驾驭石头的技术”
-			'''
+		Tooltip: “凝聚着石器时代古代人先进的驾驭石头的技术”
 	}
 
 	Pebble: {
 		DisplayName: 卵石
-		Tooltip:
-			'''
-			圆滑的石头，硬度中等，易于打磨
-			'''
+		Tooltip: 圆滑的石头，硬度中等，易于打磨
 	}
 
 	PebbleAxe: {
 		DisplayName: 卵石斧
-		Tooltip:
-			'''
-			“石器时代的初等工具，足以和树木同归于尽！”
-			'''
+		Tooltip: “石器时代的初等工具，足以和树木同归于尽！”
 	}
 
 	PebblePick: {
 		DisplayName: 卵石镐
-		Tooltip:
-			'''
-			“石器时代的初等工具，虽然用石头挖石头看上去很愚蠢！”
-			'''
+		Tooltip: “石器时代的初等工具，虽然用石头挖石头看上去很愚蠢！”
 	}
 
 	PebbleSpear: {
 		DisplayName: 卵石矛
-		Tooltip:
-			'''
-			“石器时代的初等武器，但是它还没有动物的骨头硬！”
-			'''
+		Tooltip: “石器时代的初等武器，但是它还没有动物的骨头硬！”
 	}
 
 	BulletFilledShotgunEcType: {
