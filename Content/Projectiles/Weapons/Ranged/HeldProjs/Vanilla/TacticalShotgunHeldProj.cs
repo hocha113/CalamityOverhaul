@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void SetRangedProperty() {
             FireTime = 35;
             ShootPosToMouLengValue = 0;
-            ShootPosNorlLengValue = 0;
+            ShootPosNorlLengValue = -4;
             HandDistance = 17;
             HandDistanceY = 4;
             ShootPosNorlLengValue = -20;
@@ -46,6 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             SpawnGunFireDust();
             _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
             for (int i = 0; i < 11; i++) {
+                UpdateMagazineContents();
                 _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.7f, 1.5f), AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
             }
         }

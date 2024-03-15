@@ -16,11 +16,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void SetRangedProperty() {
             FireTime = 45;
             ShootPosToMouLengValue = 0;
-            ShootPosNorlLengValue = 0;
+            ShootPosNorlLengValue = -4;
             HandDistance = 17;
             HandDistanceY = 4;
-            ShootPosNorlLengValue = -20;
-            ShootPosToMouLengValue = 15;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
             Recoil = 2.4f;
@@ -34,22 +32,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override bool KreLoadFulfill() {
-            //if (BulletNum < 32) {
-            //    BulletNum += 16;
-            //}
-            //else {
-            //    BulletNum = 48;
-            //}
-            //if (Item.CWR().AmmoCapacityInFire) {
-            //    Item.CWR().AmmoCapacityInFire = false;
-            //}
             return true;
         }
 
         public override void PostFiringShoot() {
-            //if (BulletNum >= 8) {
-            //    BulletNum -= 8;
-            //}
+
         }
 
         public override void FiringShoot() {

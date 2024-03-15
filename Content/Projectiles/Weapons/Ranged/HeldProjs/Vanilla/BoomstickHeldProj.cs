@@ -14,13 +14,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.Boomstick;
         public override int targetCWRItem => ItemID.Boomstick;
         public override void SetRangedProperty() {
-            FireTime = 25;
+            FireTime = 40;
             ShootPosToMouLengValue = 0;
-            ShootPosNorlLengValue = 0;
+            ShootPosNorlLengValue = -6;
             HandDistance = 17;
             HandDistanceY = 4;
-            ShootPosNorlLengValue = -20;
-            ShootPosToMouLengValue = 15;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
             Recoil = 2.0f;
@@ -38,15 +36,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void PostFiringShoot() {
-            if (BulletNum >= 4) {
-                BulletNum -= 4;
-            }
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust();
             _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 2; i++) {
+                UpdateMagazineContents();
                 _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.24f, 0.24f)) * Main.rand.NextFloat(0.7f, 1.2f) * 1.0f, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
             }
         }
