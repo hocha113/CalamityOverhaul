@@ -28,8 +28,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.width = 88;
             item.damage = 560;
             item.DamageType = DamageClass.Melee;
-            item.useAnimation = 18;
-            item.useTime = 18;
+            item.useAnimation = 20;
+            item.useTime = 20;
             item.useTurn = true;
             item.useStyle = ItemUseStyleID.Swing;
             item.knockBack = 8.5f;
@@ -74,14 +74,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             UpdateBar(item);
             if (item.CWR().MeleeCharge > 0) {
                 item.shootSpeed = 20f;
-                item.useAnimation = 10;
-                item.useTime = 10;
+                item.useAnimation = 15;
+                item.useTime = 15;
                 InCharge = true;
             }
             else {
                 item.shootSpeed = 15f;
-                item.useAnimation = 18;
-                item.useTime = 18;
+                item.useAnimation = 20;
+                item.useTime = 20;
                 InCharge = false;
             }
         }
@@ -92,16 +92,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 bool olduseup = item.CWR().MeleeCharge > 0;//这里使用到了效差的流程思想，用于判断能量耗尽的那一刻            
                 if (item.CWR().MeleeCharge > 0) {
                     item.CWR().MeleeCharge -= damage / 10;
-                    Projectile.NewProjectileDirect(
-                        source,
-                        position,
-                        velocity,
-                        type,
-                        damage,
-                        knockback,
-                        player.whoAmI,
-                        1
-                        );
+                    Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI, 1);
                     shootBool = false;
                 }
                 else {

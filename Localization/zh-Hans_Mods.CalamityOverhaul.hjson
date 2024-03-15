@@ -2883,7 +2883,7 @@ TextContent: {
 		Wap_QuadBarrelShotgun_Text:
 			'''
 			一般的后坐力
-			一次射出6发不准确的子弹
+			一次射出5发不准确的子弹
 			“把枪管戳到那些怪物的眼睛上，这样就不需要瞄准了”
 			'''
 		Wap_TacticalShotgun_Text:

@@ -24,8 +24,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         int thisTime;
         bool thisOnFire;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
-            FireTime = 3;
+            kreloadMaxTime = 110;
+            FireTime = 1;
             HandDistance = 40;
             HandDistanceY = 5;
             HandFireDistance = 40;
@@ -93,6 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             float setPitchVarianceValue = 0.4f;
             if (chargeValue > 90) {
                 AmmoTypes = ModContent.ProjectileType<AuricBullet>();
+                WeaponDamage += 16;
                 FireTime = 2;
                 Recoil = 0.5f;
                 setPitchVarianceValue = 0.6f;

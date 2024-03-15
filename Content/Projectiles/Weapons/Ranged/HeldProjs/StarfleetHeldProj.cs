@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            FireTime = 15;
+            FireTime = 16;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            for (int index = 0; index < 5; ++index) {
+            for (int index = 0; index < 3; ++index) {
                 Vector2 velocity = ShootVelocity;
                 velocity.X += Main.rand.Next(-40, 41) * 0.05f;
                 velocity.Y += Main.rand.Next(-40, 41) * 0.05f;

@@ -14,8 +14,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<BlissfulBombardierEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 150;
-            FireTime = 20;
+            kreloadMaxTime = 130;
+            FireTime = 12;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -12;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.2f;
+            GunPressure = 0.25f;
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;

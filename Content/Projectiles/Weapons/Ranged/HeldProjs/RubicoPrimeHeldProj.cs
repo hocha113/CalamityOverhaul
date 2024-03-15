@@ -17,8 +17,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<RubicoPrimeEcType>();
         int fireIndex;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
-            FireTime = 15;
+            kreloadMaxTime = 110;
+            FireTime = 20;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -63,7 +63,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<ImpactRound>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , ModContent.ProjectileType<ImpactRound>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].penetrate = 6;
         }
 
         public override void FiringShootR() {

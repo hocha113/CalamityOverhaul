@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<InfinityEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            kreloadMaxTime = 95;
             FireTime = 2;
             HandDistance = 25;
             HandDistanceY = 5;
@@ -40,14 +40,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             float sengs = MathF.Sin(Time * 0.1f) * 0.2f;
+            int value = 1;
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ModContent.ProjectileType<ChargedBlast>();
             }
             else {
                 Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                value = 2;
             }
-            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(sengs), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(-sengs), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(sengs), AmmoTypes, WeaponDamage / value, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(-sengs), AmmoTypes, WeaponDamage / value, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void PostFiringShoot() {
