@@ -1,5 +1,7 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.NPCs.Crabulon;
+using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.ProfanedGuardians;
 using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.NPCs.SupremeCalamitas;
@@ -153,7 +155,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (target.type == ModContent.NPCType<Crabulon>()|| target.type == ModContent.NPCType<CrabShroom>()) {
+            if (target.type == ModContent.NPCType<Crabulon>()) {
+                modifiers.FinalDamage *= 3f;
+            }
+            if (target.type == ModContent.NPCType<CrabShroom>()) {
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == NPCID.Creeper) {
@@ -178,13 +183,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 || target.type == CWRIDs.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == CWRIDs.PerforatorBodySmall) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            if (target.type == NPCID.TheDestroyerBody || target.type == CWRIDs.AstrumDeusBody || target.type == CWRIDs.CosmicGuardianTail 
-                || target.type == CWRIDs.CosmicGuardianHead || target.type == CWRIDs.DevourerofGodsHead || target.type == CWRIDs.DevourerofGodsTail) {
+            if (target.type == CWRIDs.AstrumDeusBody || target.type == CWRIDs.CosmicGuardianTail || target.type == CWRIDs.CosmicGuardianHead 
+                || target.type == CWRIDs.DevourerofGodsHead || target.type == CWRIDs.DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.33f;
             }
-            if (target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerTail || target.type == CWRIDs.AstrumDeusHead
-                || target.type == CWRIDs.AstrumDeusTail) {
+            if (target.type == CWRIDs.AstrumDeusHead || target.type == CWRIDs.AstrumDeusTail) {
                 modifiers.FinalDamage *= 3.5f;
+            }
+            if (target.type == NPCID.TheDestroyerBody) {
+                modifiers.FinalDamage *= 0.75f;
+            }
+            if (target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerTail) {
+                modifiers.FinalDamage *= 2.5f;
             }
             if (target.type == NPCID.Probe) {
                 modifiers.FinalDamage *= 1.75f;
@@ -195,8 +205,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == CWRIDs.PlaguebringerGoliath) {
                 modifiers.FinalDamage *= 1.25f;
             }
+            if (target.type == CWRIDs.RavagerBody) {
+                modifiers.FinalDamage *= 2f;
+            }
             if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
-                modifiers.FinalDamage *= 0.9f;
+                modifiers.FinalDamage *= 1.1f;
             }
             if (target.type == ModContent.NPCType<ProfanedGuardianHealer>() || target.type == ModContent.NPCType<ProfanedGuardianDefender>()) {
                 modifiers.FinalDamage *= 1.5f;
@@ -206,6 +219,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
             if (target.type == CWRIDs.Polterghast) {
                 modifiers.FinalDamage *= 0.8f;
+            }
+            if (target.type == ModContent.NPCType<OldDukeToothBall>() || target.type == ModContent.NPCType<SulphurousSharkron>()) {
+                modifiers.FinalDamage *= 2f;
             }
             if (target.type == CWRIDs.Yharon) {
                 modifiers.FinalDamage *= 0.9f;
@@ -224,7 +240,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 0.85f;
             }
             if (target.type == ModContent.NPCType<SupremeCataclysm>() || target.type == ModContent.NPCType<SupremeCatastrophe>()) {
-                modifiers.FinalDamage *= 1.5f;
+                modifiers.FinalDamage *= 1.25f;
             }
             if (target.boss) {
                 float sengsValue = 0.5f + InWorldBossPhase.Instance.Level() * 0.03f;

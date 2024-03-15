@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Dusts;
 using CalamityMod.NPCs.Crabulon;
+using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.ProfanedGuardians;
 using CalamityMod.NPCs.Providence;
 using CalamityMod.NPCs.SlimeGod;
@@ -273,6 +274,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == CWRIDs.PlaguebringerGoliath) {
                 modifiers.FinalDamage *= 2f;
             }
+            if (target.type == CWRIDs.RavagerBody) {
+                modifiers.FinalDamage *= 2f;
+            }
             if (CWRIDs.targetNpcTypes7_1.Contains(target.type)) {
                 modifiers.SetMaxDamage(target.lifeMax / 4);
             }
@@ -287,6 +291,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
             if (target.type == CWRIDs.Polterghast) {
                 modifiers.FinalDamage *= 0.8f;
+            }
+            if (target.type == ModContent.NPCType<OldDukeToothBall>() || target.type == ModContent.NPCType<SulphurousSharkron>()) {
+                modifiers.FinalDamage *= 2f;
             }
             if (target.type == CWRIDs.Yharon || target.type == CWRIDs.Apollo || target.type == CWRIDs.Artemis) {
                 modifiers.FinalDamage *= 0.5f;

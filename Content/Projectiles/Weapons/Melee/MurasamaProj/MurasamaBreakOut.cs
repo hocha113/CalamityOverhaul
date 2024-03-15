@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         float getBrakSwingDamageSengsValue(int level) {
             float overValue = 0;
             if (level >= 5) {
-                overValue = level * 0.5f;
+                overValue = level * 0.25f;
             }
             return 3 + murasama.CWR().ai[0] * 0.1f + level * 0.2f + overValue;
         }
