@@ -12,6 +12,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<Kingsbane>();
         public override int ProtogenesisID => ModContent.ItemType<KingsbaneEctype>();
         public override string TargetToolTipItemName => "KingsbaneEctype";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<KingsbaneHeldProj>(1200);
+        public override void SetDefaults(Item item) {
+            item.damage = 185;
+            item.SetCartridgeGun<KingsbaneHeldProj>(1200);
+        }
     }
 }

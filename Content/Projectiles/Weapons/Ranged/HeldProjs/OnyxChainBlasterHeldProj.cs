@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<OnyxChainBlasterEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 220;
-            FireTime = 5;
+            kreloadMaxTime = 160;
+            FireTime = 6;
             HandDistance = 22;
             HandDistanceY = 5;
             HandFireDistance = 22;
@@ -53,8 +53,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 float randVelMultiplier = Main.rand.NextFloat(0.72f, 1.08f);
                 Vector2 ccwVelocity = ShootVelocity.RotatedBy(-randAngle) * randVelMultiplier;
                 Vector2 cwVelocity = ShootVelocity.RotatedBy(randAngle) * randVelMultiplier;
-                Projectile.NewProjectile(Source, GunShootPos, ccwVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0f, 0f);
-                Projectile.NewProjectile(Source, GunShootPos, cwVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0f, 0f);
+                Projectile.NewProjectile(Source, GunShootPos, ccwVelocity, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0f, 0f);
+                Projectile.NewProjectile(Source, GunShootPos, cwVelocity, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0f, 0f);
             }
         }
 

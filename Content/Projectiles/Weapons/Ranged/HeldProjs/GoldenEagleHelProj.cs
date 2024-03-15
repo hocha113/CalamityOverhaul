@@ -59,13 +59,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Vector2 pos2 = shoot2Vr.RotatedBy((-3 + i) * 0.15f) * 1230 + toMouVr;
                 Vector2 vr = pos2.To(Main.MouseWorld);
                 Projectile.NewProjectile(Owner.parent(), pos2, vr.UnitVector() * 13
-                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                    , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI);
             }
             for (int i = 0; i < 7; i++) {
                 Vector2 pos4 = shoot2Vr.RotatedBy((-3 + i) * 0.15f) * -1230 + toMouVr;
                 Vector2 vr2 = pos4.To(Main.MouseWorld);
                 Projectile.NewProjectile(Owner.parent(), pos4, vr2.UnitVector() * 13
-                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                    , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI);
             }
         }
 

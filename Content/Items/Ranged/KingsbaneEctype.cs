@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Kingsbane";
         public override void SetDefaults() {
-            Item.damage = 245;
+            Item.damage = 185;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 92;
             Item.height = 44;

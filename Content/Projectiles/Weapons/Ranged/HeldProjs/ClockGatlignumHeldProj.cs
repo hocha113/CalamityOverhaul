@@ -14,8 +14,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<ClockGatlignum>();
         public override int targetCWRItem => ModContent.ItemType<ClockGatlignumEcType>();
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
-            FireTime = 6;
+            kreloadMaxTime = 100;
+            FireTime = 8;
             HandDistance = 18;
             HandDistanceY = 0;
             HandFireDistance = 18;
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
-            Recoil = 1.3f;
+            Recoil = 0.9f;
             RangeOfStress = 25;
         }
 

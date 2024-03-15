@@ -34,21 +34,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
         }
 
-        public override void KreloadSoundCaseEjection() {
-            base.KreloadSoundCaseEjection();
-        }
-
-        public override void KreloadSoundloadTheRounds() {
-            base.KreloadSoundloadTheRounds();
-        }
-
         public override void PreInOwnerUpdate() {
             LoadingAnimation(50, 3, 25);
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust();
-            if (BulletNum - 1 > 0) {
+            if (BulletNum > 0) {
                 GunPressure = 0.3f;
                 Recoil = 1.2f;
                 for (int i = 0; i < 5; i++) {

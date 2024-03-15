@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.damage = 560;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = 18;
-            Item.useTime = 18;
+            Item.useTime = 20;
             Item.useTurn = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 8.5f;
@@ -46,7 +46,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 20f;
             Item.value = CalamityGlobalItem.Rarity13BuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
-            
         }
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI) {
@@ -76,14 +75,14 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             if (rageEnergy > 0) {
                 Item.shootSpeed = 20f;
-                Item.useAnimation = 10;
-                Item.useTime = 10;
+                Item.useAnimation = 15;
+                Item.useTime = 15;
                 InCharge = true;
             }
             else {
                 Item.shootSpeed = 15f;
-                Item.useAnimation = 18;
-                Item.useTime = 18;
+                Item.useAnimation = 20;
+                Item.useTime = 20;
                 InCharge = false;
             }
         }

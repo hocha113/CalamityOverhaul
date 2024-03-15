@@ -16,9 +16,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<OnyxiaEcType>();
         int fireIndex;
         int chargeIndex;
+        const int maxfireD = 15;
+        const int minfireD = 6;
         public override void SetRangedProperty() {
             kreloadMaxTime = 150;
-            FireTime = 10;
+            FireTime = maxfireD;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -40,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PostInOwnerUpdate() {
             if (!onFire) {
-                FireTime = 10;
+                FireTime = maxfireD;
                 fireIndex = 0;
                 chargeIndex = 0;
             }
@@ -71,8 +73,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             chargeIndex++;
             if (chargeIndex > 3) {
                 FireTime--;
-                if (FireTime < 4) {
-                    FireTime = 4;
+                if (FireTime < minfireD) {
+                    FireTime = minfireD;
                 }
                 fireIndex++;
                 chargeIndex = 0;
