@@ -32,11 +32,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             base.FiringIncident();
             if (onFireR)
             {
-                Item.useTime = 32;
+                Item.useTime = 36;
             }
             else
             {
-                Item.useTime = 16;
+                Item.useTime = 12;
             }
         }
 
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             for (int i = 0; i < 4; i++)
             {
                 SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 174, dustID2: 213, dustID3: 213);
-                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.02f, 0.02f, i / 2f)) * Main.rand.NextFloat(0.7f, 1.5f) * 2f, ModContent.ProjectileType<HellfireBullet>(), WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
+                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.02f, 0.02f, i / 2f)) * Main.rand.NextFloat(0.7f, 1.5f) * 2f, ModContent.ProjectileType<HellfireBullet>(), WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
                 _ = UpdateConsumeAmmo();
                 _ = CreateRecoil();
             }
