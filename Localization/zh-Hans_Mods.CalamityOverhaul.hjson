@@ -2079,17 +2079,11 @@ Items: {
 		Tooltip: 使用以部署，右键将燃烧弹装入弹匣
 	}
 
-	Marshmallow: {
-		// DisplayName: Marshmallow
-		// Tooltip: ""
-	}
-
 	Marshmallows: {
 		DisplayName: 棉花糖
 		Tooltip:
 			'''
 			发射可以追踪敌人的棉花糖，击中后会黏在敌人身上持续造成伤害
-			右键可以食用
 			"云彩面包生成器！"
 			'''
 	}

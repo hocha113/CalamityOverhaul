@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
     {
         public override string Texture => CWRConstant.Item_Magic + "TheUpiStele";
         public override void SetDefaults() {
-            Item.damage = 8;
+            Item.damage = 6;
             Item.knockBack = 1f;
             Item.useTime = 32;
             Item.useAnimation = 32;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.shootSpeed = 7;
-            Item.mana = 2;
+            Item.mana = 20;
             Item.shoot = ModContent.ProjectileType<MagicStar>();
             Item.SetHeldProj<TheUpiSteleHeldProj>();
         }

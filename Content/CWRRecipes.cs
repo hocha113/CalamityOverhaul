@@ -324,6 +324,15 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileType<TransmutationOfMatter>())
                     .Register();
             }
+            //修改凤凰爆破枪的合成
+            {
+                for (int i = 0; i < Recipe.numRecipes; i++) {
+                    Recipe recipe = Main.recipe[i];
+                    if (recipe.HasResult(ItemID.PhoenixBlaster)) {
+                        recipe.AddIngredient(ItemType<PurifiedGel>(), 10);//添加纯净凝胶
+                    }
+                }
+            }
             //添加万变之星的相关配方，为了防止被额外修改或者再次被增删改动，这个部分的代码实现应该放在最后面
             /*
             {

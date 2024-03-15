@@ -1,19 +1,17 @@
-﻿using CalamityMod.Items.Accessories.Vanity;
+﻿using CalamityMod;
+using CalamityMod.Items.Accessories.Vanity;
 using CalamityMod.Items.LoreItems;
 using CalamityMod.Items.Pets;
-using CalamityMod;
 using CalamityMod.Items.TreasureBags.MiscGrabBags;
-using CalamityMod.Items.Weapons.Rogue;
-using CalamityMod.Items.Weapons.Summon;
+using CalamityOverhaul.Content.Items;
+using CalamityOverhaul.Content.Items.Magic.Extras;
+using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Summon.Extras;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Items.Magic.Extras;
-using CalamityOverhaul.Content.Items.Summon.Extras;
-using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Items;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {

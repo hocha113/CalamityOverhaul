@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             GunPressure = 0.25f;
             Recoil = 4.5f;
             HandDistance = 35;
+            HandFireDistance = 30;
+            HandFireDistanceY = -8;
             RangeOfStress = 25;
             RepeatedCartridgeChange = true;
         }

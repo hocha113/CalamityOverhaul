@@ -2089,14 +2089,13 @@ Items: {
 		Tooltip: Use to deploy, right-click to load incendiary rounds into the magazine
 	}
 
-	Marshmallow: {
-		DisplayName: Marshmallow
-		Tooltip: ""
-	}
-
 	Marshmallows: {
 		DisplayName: Marshmallows
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fire marshmallows that track enemies and stick to them for sustained damage after hitting them
+			"Cloud Bread Generator!"
+			'''
 	}
 
 	RainbowMarshmallows: {
