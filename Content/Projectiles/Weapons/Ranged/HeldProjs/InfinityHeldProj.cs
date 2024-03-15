@@ -30,6 +30,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0;
             Recoil = 0.1f;
             RangeOfStress = 25;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 3;
         }
 
         public override void PreInOwnerUpdate() {
@@ -37,7 +39,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            OffsetPos += ShootVelocity.UnitVector() * 3;
             float sengs = MathF.Sin(Time * 0.1f) * 0.2f;
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ModContent.ProjectileType<ChargedBlast>();

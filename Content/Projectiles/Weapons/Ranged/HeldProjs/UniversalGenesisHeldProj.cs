@@ -18,8 +18,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<UniversalGenesisEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
-            FireTime = 15;
+            kreloadMaxTime = 120;
+            FireTime = 16;
             HandDistance = 20;
             HandDistanceY = 0;
             HandFireDistance = 18;

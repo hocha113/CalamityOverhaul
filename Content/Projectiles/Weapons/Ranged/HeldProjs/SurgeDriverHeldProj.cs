@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.01f;
             RangeOfStress = 5;
             if (BulletNum > 40) {
-                float sengs = (98 - BulletNum) * 0.05f;
+                float sengs = (98 - BulletNum) * 0.015f;
                 SoundEngine.PlaySound(Item.UseSound.Value with { Pitch = sengs > 0.95f ? 0.95f : sengs }, Projectile.Center);
                 Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity * (1 + sengs)
                     , ModContent.ProjectileType<PrismEnergyBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

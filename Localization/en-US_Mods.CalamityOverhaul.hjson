@@ -1012,10 +1012,11 @@ Items: {
 		Tooltip:
 			'''
 			Has Extreme Amounts of Recoil
+			Press the [KL] key to reload
+			Press the [Scope] key to aim
 			An Extremely Heavy Anti-Materiel rifle that converts Musket Balls to high Velocity .70 Caliber Rounds, ripping through enemies and inflicting them with Marked for Death
 			After every shot, Right clicking causes the player to reload the rifle for the next shot.
 			Shots split into a swarm of several additional bullets along with an auric blast.
-			Press [KEY] to open the mirror
 			"Pierce the heart of even the most heavily-armored foe." 
 			'''
 	}
@@ -1025,6 +1026,8 @@ Items: {
 		Tooltip:
 			'''
 			Has Extreme Amounts of Recoil
+			Press the [KL] key to reload
+			Press the [Scope] key to aim
 			A Heavy Anti-Materiel Rifle that converts musket balls to high velocity .50 Caliber Rounds, Ripping through enemies and inflicting them with Marked for death.
 			After every shot, Right clicking causes the player to reload the rifle for the next shot.
 			Shots Split into a swarm of several aditional bullets.
@@ -2085,6 +2088,21 @@ Items: {
 		DisplayName: Ammo Box Fire
 		Tooltip: Use to deploy, right-click to load incendiary rounds into the magazine
 	}
+
+	Marshmallow: {
+		DisplayName: Marshmallow
+		Tooltip: ""
+	}
+
+	Marshmallows: {
+		DisplayName: Marshmallows
+		Tooltip: ""
+	}
+
+	RainbowMarshmallows: {
+		DisplayName: Rainbow Marshmallows
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2488,6 +2506,16 @@ Projectiles: {
 	MakeDamage.DisplayName: Make Damage
 	StormSurgeHeldProj.DisplayName: Storm Surge Held Proj
 	Tornado.DisplayName: Tornado
+	BubbleGunHeldProj.DisplayName: Bubble Gun Held Proj
+	MonsoonHeldProj.DisplayName: Monsoon Held Proj
+	MonsoonOnSpan.DisplayName: Monsoon On Span
+	TsunamiHeldProj.DisplayName: Tsunami Held Proj
+	TsunamiOnSpan.DisplayName: Tsunami On Span
+	MarshmallowHeldProj.DisplayName: Marshmallow Held Proj
+	MarshmallowProj.DisplayName: Marshmallow Proj
+	MarshmallowsHeldProj.DisplayName: Marshmallows Held Proj
+	RainbowMarshmallowsHeldProj.DisplayName: Rainbow Marshmallows Held Proj
+	MarshmallowProj2.DisplayName: Marshmallow Proj2
 }
 
 Configs: {
@@ -3025,6 +3053,19 @@ TextContent: {
 			Medium recoil
 			Fire three tracking Yeti rockets
 			"Dude, this is your Christmas present."
+			'''
+		SupertableUI_Text4: Close display monitor
+		SupertableUI_Text5: Open display monitor
+		AmmoBox_Text: The deployment upper limit has been reached
+		Wap_BubbleGun_Text:
+			'''
+			Exploding ocean bubbles
+			Who doesn't like to play with bubbles?
+			'''
+		Wap_Tsunami_Text:
+			'''
+			Fire five side-by-side arrows
+			Right - button power unleashes a barrage of arrows
 			'''
 	}
 }

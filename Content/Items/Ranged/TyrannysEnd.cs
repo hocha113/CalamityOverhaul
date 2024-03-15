@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TyrannysEnd";
         public override void SetDefaults() {
-            Item.damage = 2000;
+            Item.damage = 1500;
             Item.knockBack = 9.5f;
             Item.DamageType = DamageClass.Ranged;
             Item.useTime = 60;
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.CWR().hasHeldNoCanUseBool = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<TyrannysEndHeldProj>();
             Item.CWR().HasCartridgeHolder = true;
-            Item.CWR().AmmoCapacity = 6;
+            Item.CWR().AmmoCapacity = 5;
             Item.CWR().Scope = true;
         }
     }

@@ -27,6 +27,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     , 32, Main.rand.NextFloat(0.2f, 1.1f) * slp, 0.5f, 0.1f);
                 CWRParticleHandler.AddParticle(particle4);
             }
+
+            Projectile.ai[0]--;
         }
     }
 }

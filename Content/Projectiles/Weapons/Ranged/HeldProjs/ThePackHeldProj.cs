@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -16,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 130;
-            FireTime = 22;
+            FireTime = 28;
             HandDistance = 12;
             HandDistanceY = 5;
             HandFireDistance = 12;

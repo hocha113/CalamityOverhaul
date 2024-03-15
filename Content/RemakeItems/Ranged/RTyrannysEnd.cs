@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int ProtogenesisID => ModContent.ItemType<TyrannysEnd>();
         public override string TargetToolTipItemName => "TyrannysEnd";
         public override void SetDefaults(Item item) {
-            item.damage = 2000;
+            item.damage = 1500;
             item.knockBack = 9.5f;
             item.DamageType = DamageClass.Ranged;
             item.useTime = 60;
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = ModContent.ProjectileType<TyrannysEndHeldProj>();
             item.CWR().HasCartridgeHolder = true;
-            item.CWR().AmmoCapacity = 6;
+            item.CWR().AmmoCapacity = 5;
             item.CWR().Scope = true;
         }
 

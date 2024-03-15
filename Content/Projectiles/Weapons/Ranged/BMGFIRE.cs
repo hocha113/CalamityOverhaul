@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
+using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -28,6 +29,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 return false;
             }
             return base.CanDamage();
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (CWRIDs.targetNpcTypes7.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.6f;
+                modifiers.SetMaxDamage(1000);
+            }
+            if (CWRIDs.WormBodys.Contains(target.target)) {
+                modifiers.FinalDamage *= 0.5f;
+            }
         }
 
         public override void AI() {

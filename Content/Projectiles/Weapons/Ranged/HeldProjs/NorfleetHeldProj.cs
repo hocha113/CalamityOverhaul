@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<NorfleetEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            kreloadMaxTime = 110;
             FireTime = 30;
             HandDistance = 0;
             HandDistanceY = -6;
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, -13, -15);
+            LoadingAnimation(-50, -13, -15);
         }
 
         public override void PostInOwnerUpdate() {
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             base.FiringShoot();
             Vector2 vr = ShootVelocity;
             AmmoTypes = ModContent.ProjectileType<NorfleetComet>();
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 3; i++) {
                 vr.X += Main.rand.NextFloat(-1.5f, 1.5f);
                 vr.Y += Main.rand.NextFloat(-1.5f, 1.5f);
                 Projectile.NewProjectile(Source, GunShootPos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ThePack";
         public override void SetDefaults() {
             Item.SetCalamitySD<ThePack>();
-            Item.SetCartridgeGun<ThePackHeldProj>(13);
+            Item.SetCartridgeGun<ThePackHeldProj>(12);
         }
     }
 }

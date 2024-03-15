@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AntiMaterielRifle";
         public override void SetDefaults() {
-            Item.damage = 1860;
+            Item.damage = 1060;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 154;
             Item.height = 40;

@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int ProtogenesisID => ModContent.ItemType<AntiMaterielRifle>();
         public override string TargetToolTipItemName => "AntiMaterielRifle";
         public override void SetDefaults(Item item) {
-            item.damage = 1260;
+            item.damage = 1060;
             item.DamageType = DamageClass.Ranged;
             item.width = 154;
             item.height = 40;
