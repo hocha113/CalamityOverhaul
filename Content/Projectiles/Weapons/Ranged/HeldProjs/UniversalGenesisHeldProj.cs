@@ -1,11 +1,8 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
-using Mono.Cecil;
-using System;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -19,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
-            FireTime = 16;
+            FireTime = 18;
             HandDistance = 20;
             HandDistanceY = 0;
             HandFireDistance = 18;
@@ -45,8 +42,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, 2, 173, 173, 173);
-            for (int i = 0; i < 7; i++) {
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy((-3 + i) * 0.03f)
+            for (int i = 0; i < 5; i++) {
+                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy((-2 + i) * 0.03f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
             Vector2 pos = GunShootPos + new Vector2(Owner.Center.To(Main.MouseWorld).X * 0.3f, -700);

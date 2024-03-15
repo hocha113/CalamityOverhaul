@@ -94,13 +94,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (chargeValue > 90) {
                 AmmoTypes = ModContent.ProjectileType<AuricBullet>();
                 WeaponDamage += 16;
-                FireTime = 2;
                 Recoil = 0.5f;
                 setPitchVarianceValue = 0.6f;
                 ShootPosNorlLengValue = -8;
                 chargeAmmo++;
                 if (chargeAmmo > 90) {
-                    FireTime = 3;
                     chargeAmmo = chargeValue = 0;
                     Recoil = 0.2f;
                     ShootPosNorlLengValue = -13;
