@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 else if (i == 2) {
                     AmmoTypes = ProjectileID.CursedArrow;
                 }
-                int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.08f, 0.08f)) * Main.rand.NextFloat(0.8f, 1f), AmmoTypes, WeaponDamage/2, WeaponKnockback, Owner.whoAmI, 0);
+                int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.08f, 0.08f)) * Main.rand.NextFloat(0.8f, 1f), AmmoTypes, 2 * WeaponDamage/3, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj1].extraUpdates += 2;
             }
         }
