@@ -28,15 +28,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Main.projectile[proj].extraUpdates += 2;
+            Main.projectile[proj].extraUpdates += 1;
             if (Main.projectile[proj].penetrate == 1) {
                 Main.projectile[proj].maxPenetrate += 2;
                 Main.projectile[proj].penetrate += 2;
             }
-            for (int i = 0; i < 2; i++) {
-                int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.04f, 0.04f)) * Main.rand.NextFloat(0.8f, 1f), ProjectileID.HolyArrow, WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 0);
-                Main.projectile[proj1].extraUpdates += 1;
-                _ = UpdateConsumeAmmo();
+            for (int i = 0; i < 3; i++) {
+                if (i == 0) {
+                    AmmoTypes = ProjectileID.IchorArrow;
+                }
+                else if (i == 1) {
+                    AmmoTypes = ProjectileID.HolyArrow;
+                }
+                else if (i == 2) {
+                    AmmoTypes = ProjectileID.CursedArrow;
+                }
+                int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.08f, 0.08f)) * Main.rand.NextFloat(0.8f, 1f), AmmoTypes, WeaponDamage/2, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj1].extraUpdates += 2;
             }
         }
     }

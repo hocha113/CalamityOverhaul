@@ -2883,7 +2883,7 @@ TextContent: {
 		Wap_QuadBarrelShotgun_Text:
 			'''
 			一般的后坐力
-			一次射出6发不准确的子弹
+			一次射出5发不准确的子弹
 			“把枪管戳到那些怪物的眼睛上，这样就不需要瞄准了”
 			'''
 		Wap_TacticalShotgun_Text:
@@ -3025,8 +3025,8 @@ TextContent: {
 			'''
 			蓄势发射快速的箭矢
 			将使箭矢额外穿透两个敌人
-			同时额外发射两支双倍伤害的圣箭
-			“来自天堂的坠星为这支箭开道”
+			同时额外发射灵液箭、圣箭和咒火箭
+			“善恶的力量都为这支箭开道”
 			'''
 		Wap_GrenadeLauncher_Text:
 			'''

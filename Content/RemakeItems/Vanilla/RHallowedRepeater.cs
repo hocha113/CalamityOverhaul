@@ -16,8 +16,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override bool FormulaSubstitution => false;
         public override void SetDefaults(Item item) {
             item.SetHeldProj<HallowedRepeaterHeldProj>();
-            item.useTime = 16;
-            item.damage = 60;
+            item.useTime = 18;
+            item.damage = 50;
         }
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRLocText.GetText("Wap_HallowedRepeater_Text"));

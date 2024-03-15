@@ -3019,10 +3019,10 @@ TextContent: {
 			'''
 		Wap_HallowedRepeater_Text:
 			'''
-			Fire a fast arrow
-			With two extra arrows with double damage
-			Will allow arrows to penetrate two additional enemies
-			"Falling stars from heaven clears the way for this arrow."
+			Gather momentum to fire fast arrows
+			Causes arrows to pierce two additional enemies
+			Simultaneously fires additional Spirit arrows, Holy arrows, and cursed fire arrows
+			"The forces of good and evil both clear the path for this arrow"
 			'''
 		Wap_GrenadeLauncher_Text:
 			'''
