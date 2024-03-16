@@ -1968,12 +1968,13 @@ Items: {
 	}
 
 	NeutronStarMuzzleBrake: {
-		DisplayName: 中子态素消音器
+		DisplayName: 中子素态消音器
 		Tooltip:
 			'''
 			完全抵消后坐力与膛压
 			远程伤害增加100%
 			远程暴击率增加100%
+			极大的增强远程射弹
 			'''
 	}
 

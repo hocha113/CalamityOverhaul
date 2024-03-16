@@ -54,6 +54,17 @@ namespace CalamityOverhaul.Content
 
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             Source = source;
+            if (!projectile.hide && projectile.friendly) {
+                CWRPlayer modPlayer = Main.player[projectile.owner].CWR();
+                if (projectile.DamageType == DamageClass.Ranged) {
+                    if (modPlayer.LoadMuzzleBrake && modPlayer.LoadMuzzleBrakeLevel == 4) {
+                        projectile.extraUpdates += 2;
+                        if (Main.rand.NextBool(5)) {
+                            projectile.scale *= 2.25f;
+                        }
+                    }
+                }
+            }
         }
 
         public override void AI(Projectile projectile) {
@@ -131,8 +142,9 @@ namespace CalamityOverhaul.Content
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
             RMeowmere.SpanDust(projectile);
-
+            
             Player player = Main.player[projectile.owner];
+
             if (SpanTypes == (byte)SpanTypesEnum.DeadWing) {
                 int types = ModContent.ProjectileType<DeadWave>();
 
@@ -183,9 +195,6 @@ namespace CalamityOverhaul.Content
                 Projectile.NewProjectile(projectile.parent(), player.Center
                     , projectile.velocity, ModContent.ProjectileType<DeepSeaSharks>()
                     , projectile.damage, projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
-                //Projectile.NewProjectile(projectile.parent(), target.Center + new Vector2(0, -900)
-                //    , new Vector2(0, 15), ModContent.ProjectileType<Tornado>()
-                //    , projectile.damage, projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
             }
 
             if (projectile.DamageType == DamageClass.Summon && target.CWR().WhipHitNum > 0) {

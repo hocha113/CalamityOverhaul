@@ -82,8 +82,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 Vector2 gundir = Projectile.rotation.ToRotationVector2();
 
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
-                    , ModContent.ProjectileType<SeasSearingBubble>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Projectile.NewProjectile(Source, Projectile.Center + gundir * 3, ShootVelocity
+                    , ModContent.ProjectileType<SeasSearingBubble>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 1);
 
                 if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();//因为重写了SpanProj,所以这里需要手动调用

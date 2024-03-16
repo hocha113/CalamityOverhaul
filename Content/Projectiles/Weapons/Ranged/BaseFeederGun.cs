@@ -106,8 +106,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         protected Vector2 FeederOffsetPos;
 
         protected int BulletNum {
-            get => Item.CWR().NumberBullets;
-            set => Item.CWR().NumberBullets = value;
+            get => ModItem.NumberBullets;
+            set => ModItem.NumberBullets = value;
         }
 
         protected SoundStyle loadTheRounds = CWRSound.CaseEjection2;
@@ -172,8 +172,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual bool WhetherStartChangingAmmunition() {
             return CWRKeySystem.KreLoad_Key.JustPressed && kreloadTimeValue == 0 
                 && (!IsKreload || RepeatedCartridgeChange) 
-                && BulletNum < Item.CWR().AmmoCapacity 
-                && !onFire && HaveAmmo && Item.CWR().NoKreLoadTime == 0;
+                && BulletNum < ModItem.AmmoCapacity 
+                && !onFire && HaveAmmo && ModItem.NoKreLoadTime == 0;
         }
 
         public override void Recover() {
@@ -220,19 +220,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual void PostInOwnerUpdate() {
 
         }
-
-        public void InitializeMagazine() {
-            CWRItems cwrItem = Item.CWR();
+        /// <summary>
+        /// 初始化弹匣状态
+        /// </summary>
+        protected void InitializeMagazine() {
+            CWRItems cwrItem = ModItem;
             if (cwrItem.MagazineContents == null) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
-                //LoadBulletsIntoMagazine();//这一次更新弹匣内容，压入子弹
                 cwrItem.MagazineContents = new Item[cwrItem.AmmoCapacity];
                 for (int i = 0; i < cwrItem.MagazineContents.Length; i++) {
                     cwrItem.MagazineContents[i] = new Item();
                 }
             }
         }
-
+        /// <summary>
+        /// 设置自动换弹，在一定条件下让玩家开始换弹，这个方法一般不需要手动调用，枪械会在合适的时候自行调用该逻辑
+        /// </summary>
         protected void SetAutomaticCartridgeChange() {
             if (!IsKreload && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0 && AmmoState.Amount > 0) {
                 OnKreload = true;
@@ -244,11 +247,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public sealed override void InOwner() {
-            int gravDir = Math.Sign(Owner.gravDir);
             InitializeMagazine();
             PreInOwnerUpdate();
-            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * gravDir;
-            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * gravDir;
+            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
+            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             Projectile.Center = GetGunBodyPostion();
             Projectile.rotation = GetGunBodyRotation();
             Projectile.timeLeft = 2;
@@ -318,7 +320,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
                 if (kreloadTimeValue <= 0) {//时间完成后设置装弹状态并准备下一次发射
-                    CWRItems wRItems = Item.CWR();
+                    CWRItems wRItems = ModItem;
                     OnKreload = false;
                     IsKreload = true;
                     if (Item.type != ItemID.None) {
@@ -353,7 +355,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
 
             if (Item.type != ItemID.None) {
-                IsKreload = Item.CWR().IsKreload;
+                IsKreload = ModItem.IsKreload;
             }
 
             PostInOwnerUpdate();
@@ -362,7 +364,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 向弹匣中装入子弹的函数，这个函数并不负责消耗逻辑
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
-            CWRItems cwrItem = Item.CWR();//获取模组物品实例
+            CWRItems cwrItem = ModItem;//获取模组物品实例
             if (cwrItem.MagazineContents != null && cwrItem.MagazineContents.Length > 0 && ReturnRemainingBullets) {
                 foreach (Item i in cwrItem.MagazineContents) {//在装弹之前返回玩家弹匣中剩余的弹药
                     if (i.stack > 0 && i.type != ItemID.None) {
@@ -416,7 +418,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public void ExpendedAmmunition() {
             int ammo = 0;
-            int maxAmmo = Item.CWR().AmmoCapacity;
+            int maxAmmo = ModItem.AmmoCapacity;
             foreach (Item inds in AmmoState.InItemInds) {
                 if (ammo >= maxAmmo) {
                     break;
@@ -478,9 +480,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual bool PreFireReloadKreLoad() {
             return true;
         }
-
+        /// <summary>
+        /// 更新弹匣内容，该逻辑负责弹药的消耗，以及后续的弹药排列处理。如果多次调用，可以制造类似多发消耗的效果
+        /// </summary>
         public virtual void UpdateMagazineContents() {
-            CWRItems cwritem = Item.CWR();
+            CWRItems cwritem = ModItem;
             if (cwritem.MagazineContents.Length <= 0) {
                 cwritem.MagazineContents = new Item[] { new Item() };
                 IsKreload = false;
@@ -513,13 +517,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        public override void SpanProj() {
+        public sealed override void SpanProj() {
             if ((onFire || onFireR) && Projectile.ai[1] > FireTime && kreloadTimeValue <= 0) {
                 if (BulletNum <= 0) {
                     SetEmptyMagazine();
                     return;
                 }
-                if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
+                if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
                 if (CanUpdateMagazineContentsInShootBool) {
@@ -533,8 +537,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         FiringShootR();
                     }
                     if (CGItemBehavior) {
-                        CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner
-                            , (EntitySource_ItemUse_WithAmmo)Source
+                        CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner, Source
                             , GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
                     }
                     if (EnableRecoilRetroEffect) {
@@ -559,22 +562,27 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 onFire = false;
             }
         }
-
+        /// <summary>
+        /// 设置弹匣打空的后续状态，但如果想完整的将枪械设置为空弹，还需要设置<see cref="CWRItems.MagazineContents"/>的内容
+        /// </summary>
         public void SetEmptyMagazine() {
             LoadingReminder = false;//在发射后设置一下装弹提醒开关，防止进行一次有效射击后仍旧弹出提示
             IsKreload = false;
             if (Item.type != ItemID.None) {
-                Item.CWR().IsKreload = false;
+                ModItem.IsKreload = false;
             }
             BulletNum = 0;
         }
 
         #region Utils
-
-        public void CutOutMagazine(Item item, int cutOutNum) {
+        /// <summary>
+        /// 截取弹匣的内容，并将弹匣更新为指定的截取内容
+        /// </summary>
+        /// <param name="cutOutNum"></param>
+        public void CutOutMagazine(int cutOutNum) {
             int cumulativeQuantity = 0;
             List<Item> list = new List<Item>();
-            foreach (Item i in item.CWR().MagazineContents) {
+            foreach (Item i in ModItem.MagazineContents) {
                 if (cumulativeQuantity >= cutOutNum || i == null) {
                     break;
                 }
@@ -589,9 +597,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 cumulativeQuantity += stack;
                 list.Add(ammo);
             }
-            item.CWR().MagazineContents = list.ToArray();
+            ModItem.MagazineContents = list.ToArray();
         }
-
+        /// <summary>
+        /// 一个通用的装弹动作逻辑，一般在<see cref="PostInOwnerUpdate"/>中调用
+        /// </summary>
+        /// <param name="rot"></param>
+        /// <param name="xl"></param>
+        /// <param name="yl"></param>
         public void LoadingAnimation(int rot, int xl, int yl) {
             if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向

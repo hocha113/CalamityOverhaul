@@ -17,11 +17,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     /// </summary>
     internal abstract class BaseGun : BaseHeldRanged
     {
-        //private int netUpdateCooldingTime;
-        ///// <summary>
-        ///// 网络更新冷却，默认为15
-        ///// </summary>
-        //public int netUpdateCoold = 15;
         private bool old_downLeftValue;
         private bool downLeftValue;
         protected bool DownLeft {
@@ -118,6 +113,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 开火时会制造的后坐力模长，默认为5
         /// </summary>
         public float Recoil = 5;
+        /// <summary>
+        /// 止推模长恢复系数，值越接近1恢复的越加缓慢
+        /// </summary>
         protected float RecoilOffsetRecoverValue = 0.5f;
         /// <summary>
         /// 该枪械在开火时的一个转动角，用于快捷获取
@@ -142,11 +140,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 应力缩放系数
         /// </summary>
-        public float OwnerPressureIncrease => PressureWhetherIncrease ? Owner.CWR().PressureIncrease : 1;
+        public float OwnerPressureIncrease => PressureWhetherIncrease ? ModOwner.PressureIncrease : 1;
         /// <summary>
-        /// 获取来自物品的生成源
+        /// 获取来自物品的生成源，该生成源实例会附加CWRGun标签，用于特殊识别
         /// </summary>
-        protected IEntitySource Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType, "CWRGunShoot");
+        internal EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType, "CWRGunShoot");
+        /// <summary>
+        /// 获取来自物品的生成源，该生成源仅仅用于派生于物品关系，如果不想发射的弹幕被识别为枪械类射弹并受到特殊加成，使用这个
+        /// </summary>
+        internal EntitySource_ItemUse_WithAmmo Source2 => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType);
         /// <summary>
         /// 该枪体使用的实际纹理
         /// </summary>
@@ -241,9 +243,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.Center = Owner.Center + new Vector2(DirSign * HandDistance, HandDistanceY);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
             Projectile.timeLeft = 2;
-            //if (netUpdateCooldingTime > 0) {
-            //    netUpdateCooldingTime--;
-            //}
             SetHeld();
             if (!Owner.mouseInterface) {
                 FiringIncident();
@@ -287,7 +286,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <param name="luxirDamage"></param>
         /// <returns></returns>
         public virtual int SpanLuxirProj(int luxirDamage) {
-            //return Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<LuxorsGiftRanged>(), luxirDamage, WeaponKnockback / 2, Owner.whoAmI, 0);
             return 0;
         }
         /// <summary>
@@ -346,9 +344,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Vector2 dustVel = new Vector2(num, 0f).RotatedBy((double)velocity.ToRotation(), default);
                 dustVel = dustVel.RotatedBy(0f - angleRandom);
                 dustVel = dustVel.RotatedByRandom(2f * angleRandom);
-                //if (Main.rand.NextBool(4)) {
-                //    dustVel = Vector2.Lerp(dustVel, -Vector2.UnitY * dustVel.Length(), Main.rand.NextFloat(0.6f, 0.85f)) * 0.9f;
-                //}
                 float scale = Main.rand.NextFloat(0.5f, 1.5f);
                 int idx = Dust.NewDust(pos, 1, 1, dustID, dustVel.X, dustVel.Y, 0, default, scale);
                 Main.dust[idx].noGravity = true;
@@ -368,17 +363,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (onFireR) {
                     FiringShootR();
                 }
-                if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
+                if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
                 if (CGItemBehavior) {
-                    CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner, (EntitySource_ItemUse_WithAmmo)Source
-                        , GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
+                    CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner, Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
                 }
 
                 Projectile.ai[1] = 0;
                 onFire = false;
             }
+        }
+
+        public override bool PreAI() {
+            bool reset = base.PreAI();
+            ModOwner.HeldGunBool = true;
+            return reset;
         }
 
         public override void AI() {
