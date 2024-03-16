@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
@@ -13,14 +12,12 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using static Humanizer.In;
 
 namespace CalamityOverhaul.Content
 {
@@ -99,6 +96,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool Scope;
         /// <summary>
+        /// 退弹时，该物品是否返还
+        /// </summary>
+        public bool AmmoProjectileReturn;
+        /// <summary>
         /// 是否是一个无尽物品，这个的设置决定物品是否会受到湮灭机制的影响
         /// </summary>
         internal bool isInfiniteItem;
@@ -139,6 +140,7 @@ namespace CalamityOverhaul.Content
         }
 
         public void InitializeMagazine() {
+            AmmoProjectileReturn = true;
             IsKreload = false;
             NumberBullets = 0;
             NoKreLoadTime += 10;
@@ -159,7 +161,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void HoldItem(Item item, Player player) {
-            OwnerByDir(item, player);
             if (NoKreLoadTime > 0) {
                 NoKreLoadTime--;
             }
@@ -168,6 +169,8 @@ namespace CalamityOverhaul.Content
                     Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, heldProjType, item.damage, item.knockBack, player.whoAmI);
                 }
             }
+
+            OwnerByDir(item, player);
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
@@ -233,6 +236,10 @@ namespace CalamityOverhaul.Content
                     player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);
                 }
             }
+        }
+
+        public static bool BuyItemInitialize(On_Player.orig_BuyItem orig, Player self, long price, int customCurrency) {
+            return orig(self, price, customCurrency);
         }
 
         private void ApplyNameLineColor(Color color, TooltipLine nameLine) => nameLine.OverrideColor = color;

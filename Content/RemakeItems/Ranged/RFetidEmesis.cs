@@ -35,8 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.value = CalamityGlobalItem.Rarity13BuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
             item.Calamity().canFirePointBlankShots = true;
-            item.CWR().hasHeldNoCanUseBool = true;
-            item.CWR().heldProjType = ModContent.ProjectileType<FetidEmesisHeldProj>();
+            item.SetCartridgeGun<FetidEmesisHeldProj>(120);
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "FetidEmesis");

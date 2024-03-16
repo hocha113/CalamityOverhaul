@@ -28,8 +28,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.value = CalamityGlobalItem.Rarity13BuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
             Item.Calamity().canFirePointBlankShots = true;
-            Item.CWR().hasHeldNoCanUseBool = true;
-            Item.CWR().heldProjType = ModContent.ProjectileType<FetidEmesisHeldProj>();
+            Item.SetCartridgeGun<FetidEmesisHeldProj>(120);
         }
     }
 }

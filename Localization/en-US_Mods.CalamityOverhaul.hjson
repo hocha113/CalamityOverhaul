@@ -1067,8 +1067,10 @@ Items: {
 		Tooltip:
 			'''
 			Weak recoil
+			Press the [KL] key to reload
 			It will infect the bullet with sodium and poison
 			Every eight bullets fired triggers a vomit attack of contaminants
+			Right click to switch to semi-automatic and fire Dirty meat ball
 			"That was one hell of a pandemic..." Old Pig Shark reminisces about the past, muttering to himself.
 			"I used to be a professor at Ocean University; that big flounder there was my student. 
 			Until the pandemic hit, and Ocean University transformed into the Sulfur Sea Exploitation Department, 

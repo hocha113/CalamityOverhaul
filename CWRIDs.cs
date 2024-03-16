@@ -25,7 +25,9 @@ using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
+using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -100,6 +102,10 @@ namespace CalamityOverhaul
         /// 墙体对应掉落物的词典
         /// </summary>
         public static Dictionary<int, int> WallToItem = new();
+        /// <summary>
+        /// 物品对应射弹的词典
+        /// </summary>
+        public static Dictionary<int, int> ItemToShootID = new();
         /// <summary>
         /// 扫地机器人
         /// </summary>
@@ -478,6 +484,18 @@ namespace CalamityOverhaul
 
             Murasama.heldProjType = ProjectileType<MurasamaHeldProj>();
 
+            for (int i = 0; i < ItemLoader.ItemCount; i++) {
+                Item item = new Item(i);
+                if (item != null && item.type != ItemID.None) {//验证物品是否有效
+                    if (!ItemToShootID.ContainsKey(item.type)) {
+                        ("添加射弹与物品对应词典: ItemID" + i + "-----" + item + "----- shootID:" + item.shoot).DompInConsole();
+                        ItemToShootID.Add(item.type, item.shoot);
+                    }
+                }
+            }
+            "————————————————————————————————————————————————————".DompInConsole();
+            $"装载完毕，ItemToShootID共装填入 {ItemToShootID.Count} 个对照索引".DompInConsole();
+            "————————————————————————————————————————————————————".DompInConsole();
             OnLoadContentBool = false;
         }
     }

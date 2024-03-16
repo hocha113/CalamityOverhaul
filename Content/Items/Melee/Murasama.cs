@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             {11, 1780 },
             {12, 2222 },
             {13, 2581 },
-            {14, 30001 }
+            {14, 18001 }
         };
         /// <summary>
         /// 每个时期阶段对应的挥舞范围大小，这个成员一般不需要直接访问，而是使用<see cref="GetOnScale"/>
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             {11, 45 },
             {12, 40 },
             {13, 35 },
-            {14, 30 }
+            {14, 20 }
         };
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
         /// <summary>

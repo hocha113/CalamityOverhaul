@@ -2,7 +2,6 @@
 using CalamityMod.Events;
 using CalamityMod.Items;
 using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Summon.Extras;
@@ -11,10 +10,7 @@ using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Security.Policy;
 using Terraria;
-using Terraria.GameContent.Animations;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -178,6 +174,15 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        public override void ModifyShop(NPCShop shop) {
+            foreach (AbstractNPCShop.Entry i in shop.Entries) {
+                Item item = i.Item;
+                if (item?.type != ItemID.None) {
+                    item.SetDefaults(item.type);
+                }
+            }
+        }
+
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             base.PostDraw(npc, spriteBatch, screenPos, drawColor);
             if (WhipHitNum > 0) {
@@ -192,7 +197,7 @@ namespace CalamityOverhaul.Content
                 }
             }
         }
-
+        /*
         //public void DrawTameBar(SpriteBatch spriteBatch, NPC npc) {
         //    Texture2D top = CWRUtils.GetT2DValue(CWRConstant.UI + "TameBarTop");
         //    Texture2D bar = CWRUtils.GetT2DValue(CWRConstant.UI + "TameBar");
@@ -216,5 +221,6 @@ namespace CalamityOverhaul.Content
 
         //    spriteBatch.Draw(whi, drawPos + (new Vector2(0, whi.Height) * slp), null, color, 0, bar.Size() / 2, slp / 2, SpriteEffects.None, 0);
         //}
+        */
     }
 }

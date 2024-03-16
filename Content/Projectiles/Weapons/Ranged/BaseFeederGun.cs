@@ -313,23 +313,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     if (PreConsumeAmmoEvent()) {
                         LoadBulletsIntoMagazine();//这一次更新弹匣内容，压入子弹
                         if (BulletConsumption) {
-                            int ammo = 0;
-                            int maxAmmo = Item.CWR().AmmoCapacity;
-                            foreach (Item inds in AmmoState.InItemInds) {
-                                if (ammo >= maxAmmo) {
-                                    break;
-                                }
-                                if (inds.stack <= 0) {
-                                    continue;
-                                }
-                                if (inds.stack >= maxAmmo) {
-                                    inds.stack -= maxAmmo - ammo;
-                                    ammo += maxAmmo;
-                                } else {
-                                    ammo += inds.stack;
-                                    inds.stack = 0;
-                                }
-                            }
+                            ExpendedAmmunition();
                         }
                     }
                 }
@@ -353,7 +337,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
             }
-
             if (Owner.PressKey()) {
                 if (!IsKreload && LoadingReminder) {
                     if (!Owner.mouseInterface) {
@@ -376,14 +359,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             PostInOwnerUpdate();
         }
         /// <summary>
-        /// 向弹匣中装入子弹的函数
+        /// 向弹匣中装入子弹的函数，这个函数并不负责消耗逻辑
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
-            CWRItems cwrItem = Item.CWR();
+            CWRItems cwrItem = Item.CWR();//获取模组物品实例
             if (cwrItem.MagazineContents != null && cwrItem.MagazineContents.Length > 0 && ReturnRemainingBullets) {
-                foreach (Item i in cwrItem.MagazineContents) {
+                foreach (Item i in cwrItem.MagazineContents) {//在装弹之前返回玩家弹匣中剩余的弹药
                     if (i.stack > 0 && i.type != ItemID.None) {
-                        Owner.QuickSpawnItem(Source, new Item(i.type), i.stack);
+                        if (i.CWR().AmmoProjectileReturn) {
+                            Owner.QuickSpawnItem(Source, new Item(i.type), i.stack);
+                        }
                     }
                 }
             }
@@ -401,6 +386,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     stack = magazineCapacity - accumulatedAmount;
                 }
 
+                if (!ammoItem.consumable) {//如果该物品不消耗，那么可能是一个无限弹药类型的物品，这里进行特别处理
+                    if (CWRIDs.ItemToShootID.ContainsKey(ammoItem.type)) {
+                        int newAmmoType = ammoItem.type;
+                        if (CWRIDs.ItemToShootID[ammoItem.type] == ProjectileID.Bullet) {
+                            newAmmoType = ItemID.MusketBall;
+                        }
+                        Item newAmmoItem = new Item(newAmmoType, magazineCapacity - accumulatedAmount);
+                        newAmmoItem.CWR().AmmoProjectileReturn = false;//因为是无尽弹药类提供的弹药，所以不应该在之后的退弹中被返还
+                        loadedItems.Add(newAmmoItem);
+                        accumulatedAmount = magazineCapacity;
+                        AmmoState.Amount = magazineCapacity;
+                        break;
+                    }
+                }
+
                 loadedItems.Add(new Item(ammoItem.type, stack));
                 accumulatedAmount += stack;
 
@@ -410,6 +410,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
 
             cwrItem.MagazineContents = loadedItems.ToArray();
+        }
+        /// <summary>
+        /// 在压入弹药后执行，用于处理消耗逻辑
+        /// </summary>
+        public void ExpendedAmmunition() {
+            int ammo = 0;
+            int maxAmmo = Item.CWR().AmmoCapacity;
+            foreach (Item inds in AmmoState.InItemInds) {
+                if (ammo >= maxAmmo) {
+                    break;
+                }
+                if (inds.stack <= 0) {
+                    continue;
+                }
+                if (!inds.consumable) {
+                    break;
+                }
+                if (inds.stack >= maxAmmo) {
+                    inds.stack -= maxAmmo - ammo;
+                    ammo += maxAmmo;
+                } else {
+                    ammo += inds.stack;
+                    inds.stack = 0;
+                }
+            }
         }
         /// <summary>
         /// 空弹时试图开火会发生的事情

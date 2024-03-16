@@ -50,6 +50,9 @@ namespace CalamityOverhaul.Content.UIs
                         if (i.type == ItemID.None || i.stack <= 0) {
                             continue;
                         }
+                        if (!i.CWR().AmmoProjectileReturn) {
+                            continue;
+                        }
                         player.QuickSpawnItem(player.parent(), new Item(i.type), i.stack);
                     }
                     cwrItem.InitializeMagazine();
