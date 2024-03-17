@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 宇宙暗流
     /// </summary>
-    internal class StreamGouge : EctypeItem
+    internal class StreamGougeEcType : EctypeItem
     {
         public const int SpinTime = 45;
 

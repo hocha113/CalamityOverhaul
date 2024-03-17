@@ -16,7 +16,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RBrinyBaron : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BrinyBaron>();
-        public override int ProtogenesisID => ModContent.ItemType<BrinyBaron>();
+        public override int ProtogenesisID => ModContent.ItemType<BrinyBaronEcType>();
+        public override string TargetToolTipItemName => "BrinyBaronEcType";
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -35,11 +36,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.UseSound = SoundID.Item1;
             item.value = CalamityGlobalItem.Rarity8BuyPrice;
             item.rare = ItemRarityID.Yellow;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "BrinyBaron");
-        }
+        } 
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             player.AddBuff(BuffID.Wet, 180);

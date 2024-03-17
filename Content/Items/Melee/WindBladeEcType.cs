@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 风之刃
     /// </summary>
-    internal class WindBlade : EctypeItem
+    internal class WindBladeEcType : EctypeItem
     {
         public new string LocalizationCategory => "Items.Weapons.Melee";
 

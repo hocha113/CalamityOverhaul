@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 女妖之爪
     /// </summary>
-    internal class BansheeHook : EctypeItem
+    internal class BansheeHookEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BansheeHook";
 

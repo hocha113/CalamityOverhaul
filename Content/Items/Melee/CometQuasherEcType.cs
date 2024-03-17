@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 彗星陨刃
     /// </summary>
-    internal class CometQuasher : EctypeItem
+    internal class CometQuasherEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "CometQuasher";
 

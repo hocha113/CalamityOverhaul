@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 暴政
     /// </summary>
-    internal class TheEnforcer : EctypeItem
+    internal class TheEnforcerEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheEnforcer";
         public new string LocalizationCategory => "Items.Weapons.Melee";

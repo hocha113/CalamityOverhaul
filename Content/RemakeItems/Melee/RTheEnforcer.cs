@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
+        public override string TargetToolTipItemName => "TheEnforcerEcType";
 
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
@@ -40,10 +41,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ModContent.RarityType<DarkBlue>();
             item.shoot = ModContent.ProjectileType<EssenceFlames>();
             item.shootSpeed = 2;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "TheEnforcer");
         }
 
         public override void UseAnimation(Item item, Player player) {

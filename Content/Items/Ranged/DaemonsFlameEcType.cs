@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>
     /// 鬼火弓
     /// </summary>
-    internal class DaemonsFlame : EctypeItem
+    internal class DaemonsFlameEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "DaemonsFlame";
         public override void SetDefaults() {

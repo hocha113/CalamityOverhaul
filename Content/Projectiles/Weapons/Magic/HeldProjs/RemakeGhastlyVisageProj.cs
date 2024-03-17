@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 
         private ref float Time => ref Projectile.ai[0];
 
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<GhastlyVisage>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<GhastlyVisageEcType>();
 
         public override string Texture => CWRConstant.Item_Magic + "GhastlyVisage";
 

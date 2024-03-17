@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class RStarnightLanceProjectile : BaseSpearProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Spears/" + "StarnightLanceProjectile";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<StarnightLance>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<StarnightLanceEcType>();
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;
             Projectile.DamageType = DamageClass.Melee;  //Dictates whether projectile is a melee-class weapon.

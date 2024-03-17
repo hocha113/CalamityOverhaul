@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RGildedProboscis : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.GildedProboscis>();
-        public override int ProtogenesisID => ModContent.ItemType<GildedProboscis>();
+        public override int ProtogenesisID => ModContent.ItemType<GildedProboscisEcType>();
+        public override string TargetToolTipItemName => "GildedProboscisEcType";
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -44,12 +45,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Purple;
             item.shoot = ModContent.ProjectileType<RGildedProboscisProj>();
             item.shootSpeed = 13f;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            if (CWRUtils.RemakeByItem<CalamityMod.Items.Weapons.Melee.GildedProboscis>(item)) {
-                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "GildedProboscis");
-            }
         }
 
         public override bool? AltFunctionUse(Item item, Player player) {

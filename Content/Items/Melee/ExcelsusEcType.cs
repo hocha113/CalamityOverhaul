@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 宙宇波能刃
     /// </summary>
-    internal class Excelsus : EctypeItem
+    internal class ExcelsusEcType : EctypeItem
     {
         public new string LocalizationCategory => "Items.Weapons.Melee";
 

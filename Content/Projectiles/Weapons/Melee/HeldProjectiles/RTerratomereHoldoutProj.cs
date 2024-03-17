@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public void CreateProjectiles() {
             if (Time == (int)(83f * (SwingCompletionRatio + 0.15f))) {
-                SoundEngine.PlaySound(in Terratomere.SwingSound, Projectile.Center);
+                SoundEngine.PlaySound(in TerratomereEcType.SwingSound, Projectile.Center);
             }
 
             if (Main.myPlayer == Projectile.owner && Time == (int)(83f * (SwingCompletionRatio + 0.34f))) {
@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Vector2 position = Projectile.Center + (GetSwingOffsetAngle(SwingCompletion) * Direction + InitialRotation).ToRotationVector2() * Main.rand.NextFloat(8f, 66f) + vector * 76f;
             int type = Main.rand.NextBool() ? 267 : 264;
             Dust dust = Dust.NewDustPerfect(position, type, Vector2.Zero);
-            dust.color = Color.Lerp(Terratomere.TerraColor1, Terratomere.TerraColor2, Main.rand.NextFloat());
+            dust.color = Color.Lerp(TerratomereEcType.TerraColor1, TerratomereEcType.TerraColor2, Main.rand.NextFloat());
             dust.color = Color.Lerp(dust.color, Color.Yellow, (float)Math.Pow(Main.rand.NextFloat(), 1.63));
             dust.fadeIn = Main.rand.NextFloat(1f, 2f);
             dust.scale = 0.4f;

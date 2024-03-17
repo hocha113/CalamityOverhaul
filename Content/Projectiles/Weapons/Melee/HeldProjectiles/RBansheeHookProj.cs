@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class RBansheeHookProj : BaseSpearProjectile
     {
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<BansheeHook>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<BansheeHookEcType>();
 
         public override SpearType SpearAiType => SpearType.GhastlyGlaiveSpear;
 
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Projectile.Kill();
                     return;
                 }
-                if (bansheeHook == null || bansheeHook.type != ModContent.ItemType<BansheeHook>()
+                if (bansheeHook == null || bansheeHook.type != ModContent.ItemType<BansheeHookEcType>()
                     && bansheeHook.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BansheeHook>()) {
                     Projectile.Kill();
                     return;

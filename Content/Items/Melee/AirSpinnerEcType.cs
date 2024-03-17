@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 天蓝悠悠球
     /// </summary>
-    internal class AirSpinner : EctypeItem
+    internal class AirSpinnerEcType : EctypeItem
     {
         public new string LocalizationCategory => "Items.Weapons.Melee";
 

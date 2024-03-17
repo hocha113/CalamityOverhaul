@@ -18,7 +18,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RDragonRage : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.DragonRage>();
-        public override int ProtogenesisID => ModContent.ItemType<DragonRage>();
+        public override int ProtogenesisID => ModContent.ItemType<DragonRageEcType>();
+        public override string TargetToolTipItemName => "DragonRageEcType";
+
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -43,10 +45,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.UseSound = SoundID.DD2_SkyDragonsFurySwing;
             item.value = CalamityGlobalItem.Rarity15BuyPrice;
             item.rare = ModContent.RarityType<Violet>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "DragonRage");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

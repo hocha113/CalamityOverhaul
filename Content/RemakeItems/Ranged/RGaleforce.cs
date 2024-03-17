@@ -13,7 +13,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RGaleforce : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Galeforce>();
-        public override int ProtogenesisID => ModContent.ItemType<Galeforce>();
+        public override int ProtogenesisID => ModContent.ItemType<GaleforceEcType>();
+        public override string TargetToolTipItemName => "GaleforceEcType";
+
         public override void SetDefaults(Item item) {
             item.damage = 18;
             item.DamageType = DamageClass.Ranged;
@@ -34,10 +36,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Arrow;
             item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<GaleforceHeldProj>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Galeforce");
         }
     }
 }

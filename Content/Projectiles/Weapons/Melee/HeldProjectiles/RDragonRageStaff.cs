@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class RDragonRageStaff : ModProjectile
     {
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DragonRage>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DragonRageEcType>();
 
         public override string Texture => CWRConstant.Cay_Proj_Melee + "DragonRageStaff";
 

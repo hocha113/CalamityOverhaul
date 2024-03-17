@@ -333,6 +333,17 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
+            //修改神圣连弩的合成
+            {
+                for (int i = 0; i < Recipe.numRecipes; i++) {
+                    Recipe recipe = Main.recipe[i];
+                    if (recipe.HasResult(ItemID.PhoenixBlaster)) {
+                        recipe.AddIngredient(ItemID.Ichor, 1);//添加灵液
+                        recipe.AddIngredient(ItemID.CursedFlame, 1);//添加诅咒焰
+                        recipe.AddIngredient(ItemID.UnicornHorn, 1);//添加独角兽角
+                    }
+                }
+            }
             //添加万变之星的相关配方，为了防止被额外修改或者再次被增删改动，这个部分的代码实现应该放在最后面
             /*
             {

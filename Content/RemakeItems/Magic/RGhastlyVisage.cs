@@ -15,7 +15,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class RGhastlyVisage : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Magic.GhastlyVisage>();
-        public override int ProtogenesisID => ModContent.ItemType<GhastlyVisage>();
+        public override int ProtogenesisID => ModContent.ItemType<GhastlyVisageEcType>();
+        public override string TargetToolTipItemName => "GhastlyVisageEcType";
+
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -36,10 +38,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
             item.shoot = ModContent.ProjectileType<RemakeGhastlyVisageProj>();
             item.value = CalamityGlobalItem.Rarity13BuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "GhastlyVisage");
         }
 
         public override void OnConsumeMana(Item item, Player player, int manaConsumed) {

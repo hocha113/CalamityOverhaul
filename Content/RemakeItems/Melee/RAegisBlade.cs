@@ -14,7 +14,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RAegisBlade : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.AegisBlade>();
-        public override int ProtogenesisID => ModContent.ItemType<AegisBlade>();
+        public override int ProtogenesisID => ModContent.ItemType<AegisBladeEcType>();
+        public override string TargetToolTipItemName => "AegisBladeEcType";
+
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 制裁大剑
     /// </summary>
-    internal class GreatswordofJudgement : EctypeItem
+    internal class GreatswordofJudgementEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "GreatswordofJudgement";
         public override void SetDefaults() {
