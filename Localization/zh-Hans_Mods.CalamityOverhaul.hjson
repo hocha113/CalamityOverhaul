@@ -160,7 +160,7 @@ Items: {
 	}
 
 	DragonRageEcType: {
-		DisplayName: Dragon Rage
+		DisplayName: 巨龙之怒
 		Tooltip:
 			'''
 			刀锋旋转之间灭杀周围的敌人
@@ -2945,6 +2945,10 @@ TextContent: {
 			很强的后坐力
 			将火枪子弹转化为高速子弹
 			右键可以使用狙击镜拉远视野
+			精准度随着瞄准时间的增长而增加
+			弹匣中装有四发子弹，前三发无法暴击，第四发必定暴击
+			这把枪射出的子弹无法穿透
+			坐骑会影响这把精密武器的准确度
 			“当十字线把你锁定，死神将亲吻你的额头。”
 			'''
 		Wap_NailGun_Text:
@@ -3036,13 +3040,15 @@ TextContent: {
 		Wap_GrenadeLauncher_Text:
 			'''
 			弱的后坐力
-			以榴弹形式弧线发射火箭弹
+			以弧线形式发射榴弹
+			概率额外抛射一枚或两枚榴弹
 			“我们终于有了一种省力的方式来发射这些炸弹，虽然还是可能伤到自己”
 			'''
 		Wap_RocketLauncher_Text:
 			'''
 			中等的后坐力
-			蓄力发射高速火箭弹
+			蓄力发射一枚高速火箭弹
+			概率额外发射一枚或两枚普通火箭弹
 			“我打赌它不会被床板挡下”
 			'''
 		Wap_ElectrosphereLauncher_Text:
@@ -3053,13 +3059,14 @@ TextContent: {
 		Wap_ProximityMineLauncher_Text:
 			'''
 			弱的后坐力
-			发射感应地雷火箭弹，感应地雷会自行伪装并提高伤害
+			发射感高伤害应地雷，会自行伪装并提高伤害
 			“我们来玩扫雷吧”
 			'''
 		Wap_SnowmanCannon_Text:
 			'''
 			中等的后坐力
-			发射三发追踪的雪人火箭
+			发射雪人导弹一家
+			概率发射一枚缓慢的超大雪人导弹
 			“伙计，这是你的圣诞礼物”
 			'''
 		SupertableUI_Text4: 关闭摆放监视

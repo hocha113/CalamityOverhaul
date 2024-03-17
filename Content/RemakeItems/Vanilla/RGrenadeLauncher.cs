@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override void SetDefaults(Item item) {
             item.SetHeldProj<GrenadeLauncherHeldProj>();
             item.CWR().HasCartridgeHolder = true;
-            item.CWR().AmmoCapacity = 12;
+            item.CWR().AmmoCapacity = 60;
             item.useTime = 20;
-            item.damage = 90;
+            item.damage = 60;
         }
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRLocText.GetText("Wap_GrenadeLauncher_Text"));

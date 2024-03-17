@@ -75,7 +75,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 AmmoTypes = ProjectileID.MiniNukeGrenadeII;
             }
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.2f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0) ;
+            int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0) ;
+            Main.projectile[proj1].timeLeft += 120;
+            int ammonum = Main.rand.Next(6);
+            if (ammonum <= 3) {
+                int proj2 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocity + new Vector2(0, -5)) * 0.8f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj2].timeLeft += 120;
+                int proj3 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocity + new Vector2(0, -10)) * 0.6f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj3].timeLeft += 120;
+            }
+            if (ammonum <= 1) {
+                int proj4 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocity + new Vector2(0, -15)) * 0.4f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj4].timeLeft += 120;
+            }
         }
     }
 }

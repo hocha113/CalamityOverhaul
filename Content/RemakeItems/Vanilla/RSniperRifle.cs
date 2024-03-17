@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             item.CWR().AmmoCapacity = 4;
             item.crit = -1000;
             item.useTime = 60;
-            item.damage = 1444;
+            item.damage = 4444;
             item.Calamity().canFirePointBlankShots = true;
             item.CWR().hasHeldNoCanUseBool = true;
         }
