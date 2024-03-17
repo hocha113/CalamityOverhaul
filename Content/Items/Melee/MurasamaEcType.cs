@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 妖刀
     /// </summary>
-    internal class Murasama : EctypeItem
+    internal class MurasamaEcType : EctypeItem
     {
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>

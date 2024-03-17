@@ -21,10 +21,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RBansheeHook : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BansheeHook>();
-        public override int ProtogenesisID => ModContent.ItemType<BansheeHook>();
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
+        public override int ProtogenesisID => ModContent.ItemType<BansheeHookEcType>();
+        public override string TargetToolTipItemName => "BansheeHookEcType";
         public override void SetStaticDefaults() {
             ItemID.Sets.Spears[TargetID] = true;
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
@@ -48,10 +46,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shootSpeed = 42f;
             item.value = CalamityGlobalItem.Rarity13BuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "BansheeHook");
         }
 
         public override bool? AltFunctionUse(Item item, Player player) {

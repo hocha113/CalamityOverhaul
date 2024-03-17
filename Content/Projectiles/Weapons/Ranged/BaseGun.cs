@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
 using CalamityMod.Projectiles.Ranged;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -8,6 +9,7 @@ using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -184,6 +186,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual Vector2 CreateRecoil() {
             OffsetRot += GunPressure * OwnerPressureIncrease;
             Vector2 recoilVr = ShootVelocity.UnitVector() * (Recoil * -OwnerPressureIncrease);
+            //if (CWRServerConfig.Instance.MurasamaScreenVibration) {
+            //    PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, recoilVr, 6, 1, 2, 1000f, FullName);
+            //    Main.instance.CameraModifiers.Add(modifier);
+            //}
             if (Math.Abs(Owner.velocity.X) < RangeOfStress && Math.Abs(Owner.velocity.Y) < RangeOfStress) {
                 Owner.velocity += recoilVr;
                 if (!CWRUtils.isSinglePlayer) {//&& netUpdateCooldingTime <= 0

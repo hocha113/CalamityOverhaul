@@ -289,7 +289,7 @@ namespace CalamityOverhaul
             Gangarus = ItemType<Gangarus>();
             StarMyriadChanges = ItemType<StarMyriadChanges>();
 
-            MurasamaItem = ItemType<Murasama>();
+            MurasamaItem = ItemType<MurasamaEcType>();
             MurasamaItem2 = ItemType<CalamityMod.Items.Weapons.Melee.Murasama>();
             MurasamaBreakSwing = ProjectileType<MurasamaBreakSwing>();
 
@@ -482,7 +482,7 @@ namespace CalamityOverhaul
                 MetanovaBar = CWRMod.Instance.catalystMod.Find<ModItem>("MetanovaBar").Type;
             }
 
-            Murasama.heldProjType = ProjectileType<MurasamaHeldProj>();
+            MurasamaEcType.heldProjType = ProjectileType<MurasamaHeldProj>();
 
             for (int i = 0; i < ItemLoader.ItemCount; i++) {
                 Item item = new Item(i);

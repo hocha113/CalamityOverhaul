@@ -153,11 +153,40 @@ namespace CalamityOverhaul.Content
         public override void SaveData(Item item, TagCompound tag) {
             tag.Add("_MeleeCharge", MeleeCharge);
             tag.Add("_noDestruct", noDestruct);
+            if (HasCartridgeHolder) {
+                if (MagazineContents != null && MagazineContents.Length > 0) {
+                    for (int i = 0; i < MagazineContents.Length; i++) {
+                        if (MagazineContents[i] == null) {
+                            MagazineContents[i] = new Item(ItemID.None);
+                        }
+                    }
+                    tag.Add("_MagazineContents", MagazineContents);
+                }
+                tag.Add("_NumberBullets", NumberBullets);
+                tag.Add("_IsKreload", IsKreload);
+            }
         }
 
         public override void LoadData(Item item, TagCompound tag) {
             MeleeCharge = tag.GetFloat("_MeleeCharge");
             noDestruct = tag.GetBool("_noDestruct");
+            if (HasCartridgeHolder) {
+                if (tag.ContainsKey("_MagazineContents")) {
+                    Item[] magazineContents = tag.Get<Item[]>("_MagazineContents");
+                    for (int i = 0; i < magazineContents.Length; i++) {
+                        if (magazineContents[i] == null) {
+                            magazineContents[i] = new Item(ItemID.None);
+                        }
+                    }
+                    MagazineContents = tag.Get<Item[]>("_MagazineContents");
+                }
+                if (tag.ContainsKey("_NumberBullets")) {
+                    NumberBullets = tag.GetInt("_NumberBullets");
+                }   
+                if (tag.ContainsKey("_IsKreload")) {
+                    IsKreload = tag.GetBool("_IsKreload");
+                }    
+            }
         }
 
         public override void HoldItem(Item item, Player player) {

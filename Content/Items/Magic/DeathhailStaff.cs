@@ -18,8 +18,6 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// </summary>
     internal class DeathhailStaff : EctypeItem
     {
-        public new string LocalizationCategory => "Items.Weapons.Magic";
-
         public override string Texture => CWRConstant.Cay_Wap_Magic + "DeathhailStaff";
 
         public override void SetStaticDefaults() {

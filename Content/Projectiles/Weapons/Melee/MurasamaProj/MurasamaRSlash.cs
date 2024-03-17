@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
     internal class MurasamaRSlash : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "MurasamaSlash";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<Murasama>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<MurasamaEcType>();
         private Player Owner => Main.player[Projectile.owner];
         public ref int hitCooldown => ref Main.player[Projectile.owner].Calamity().murasamaHitCooldown;
         public int time = 0;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Vector2 origin = frame.Size() * 0.5f;
             SpriteEffects spriteEffects = Projectile.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition + (Projectile.velocity * 0.3f) + new Vector2(0, -32).RotatedBy(Projectile.rotation), frame
-                , Murasama.NameIsVergil(Owner) ? Color.Blue : Color.White, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+                , MurasamaEcType.NameIsVergil(Owner) ? Color.Blue : Color.White, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             return false;
         }
 
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override void AI() {
             Player player = Main.player[Projectile.owner];
             if (time == 0) {
-                Projectile.scale = (Murasama.NameIsSam(player) ? 1.65f : Murasama.GetOnScale) * Murasama.ScaleOffset_PercentageValue;
+                Projectile.scale = (MurasamaEcType.NameIsSam(player) ? 1.65f : MurasamaEcType.GetOnScale) * MurasamaEcType.ScaleOffset_PercentageValue;
                 if (Main.zenithWorld) {
                     Projectile.scale = 1;
                 }
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 time++;
             }
             if (Slash2) {
-                _ = SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.1f }, Projectile.Center);
+                _ = SoundEngine.PlaySound(MurasamaEcType.Swing with { Pitch = -0.1f }, Projectile.Center);
                 if (hitCooldown == 0) {
                     Slashing = true;
                 }
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 Projectile.numHits = 0;
             }
             else if (Slash3) {
-                _ = SoundEngine.PlaySound(Murasama.BigSwing with { Pitch = 0f }, Projectile.Center);
+                _ = SoundEngine.PlaySound(MurasamaEcType.BigSwing with { Pitch = 0f }, Projectile.Center);
                 if (hitCooldown == 0) {
                     Slashing = true;
                 }
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 Projectile.numHits = 0;
             }
             else if (Slash1) {
-                _ = SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.05f }, Projectile.Center);
+                _ = SoundEngine.PlaySound(MurasamaEcType.Swing with { Pitch = -0.05f }, Projectile.Center);
                 if (hitCooldown == 0) {
                     Slashing = true;
                 }
@@ -276,10 +276,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
             }
             if (target.Organic()) {
-                _ = SoundEngine.PlaySound(Murasama.OrganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center);
+                _ = SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center);
             }
             else {
-                _ = SoundEngine.PlaySound(Murasama.InorganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center);
+                _ = SoundEngine.PlaySound(MurasamaEcType.InorganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center);
             }
 
             for (int i = 0; i < 3; i++) {

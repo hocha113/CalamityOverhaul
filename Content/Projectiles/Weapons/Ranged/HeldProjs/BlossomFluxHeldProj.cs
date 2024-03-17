@@ -1,8 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -17,7 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BlossomFlux";
 
         private bool onFireR;
-
         internal int onFireSmogTime;
         internal int onFireCooldSmogTime;
         internal float onFireCooldSmogTime2;

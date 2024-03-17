@@ -155,12 +155,14 @@ namespace CalamityOverhaul.Content
 
         public override void OnHurt(Player.HurtInfo info) {
             OnHit = true;
-            foreach (PlayerHitDelegate del in PlayerHitEvent.GetInvocationList()) {
-                if (del.Target == null) {
-                    PlayerHitEvent -= del;
+            if (PlayerHitEvent != null) {
+                foreach (PlayerHitDelegate del in PlayerHitEvent.GetInvocationList()) {
+                    if (del.Target == null) {
+                        PlayerHitEvent -= del;
+                    }
                 }
+                PlayerHitEvent.Invoke(Player, info);
             }
-            PlayerHitEvent.Invoke(Player, info);
         }
 
         public override void PostUpdate() {

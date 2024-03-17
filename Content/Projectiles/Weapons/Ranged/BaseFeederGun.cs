@@ -537,8 +537,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         FiringShootR();
                     }
                     if (CGItemBehavior) {
-                        CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner, Source
-                            , GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
+                        CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
                     }
                     if (EnableRecoilRetroEffect) {
                         OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
