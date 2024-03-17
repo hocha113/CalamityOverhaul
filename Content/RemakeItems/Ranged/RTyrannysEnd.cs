@@ -16,8 +16,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RTyrannysEnd : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TyrannysEnd>();
-        public override int ProtogenesisID => ModContent.ItemType<TyrannysEnd>();
-        public override string TargetToolTipItemName => "TyrannysEnd";
+        public override int ProtogenesisID => ModContent.ItemType<TyrannysEndEcType>();
+        public override string TargetToolTipItemName => "TyrannysEndEcType";
         public override void SetDefaults(Item item) {
             item.damage = 1500;
             item.knockBack = 9.5f;
@@ -43,8 +43,5 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().AmmoCapacity = 5;
             item.CWR().Scope = true;
         }
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
     }
 }

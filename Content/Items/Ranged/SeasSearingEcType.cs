@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class SeasSearing : EctypeItem
+    internal class SeasSearingEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SeasSearing";
         public override void SetDefaults() {

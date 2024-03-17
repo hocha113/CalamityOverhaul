@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ElementalBlaster";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ElementalBlaster>();
-        public override int targetCWRItem => ModContent.ItemType<ElementalBlaster>();
+        public override int targetCWRItem => ModContent.ItemType<ElementalBlasterEcType>();
         public override void SetRangedProperty() {
             ControlForce = 0f;
             GunPressure = 0f;

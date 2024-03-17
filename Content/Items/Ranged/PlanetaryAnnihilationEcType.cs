@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class PlanetaryAnnihilation : EctypeItem
+    internal class PlanetaryAnnihilationEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PlanetaryAnnihilation";
         public override void SetDefaults() {

@@ -139,12 +139,13 @@ Items: {
 	}
 
 	ArbalestEcType: {
-		DisplayName: 机械强弩
+		DisplayName: 劲弩
 		Tooltip:
 			'''
-			发射大量箭矢，箭矢会随时间愈发巨大
-			右键进行单发速射
-			“它的齿轮咔哧咔哧的转个不停”
+			按下[Scope]键开镜
+			发射6支高速箭
+			箭矢随着持续发射时间增大体积
+			箭矢体积越大，伤害和击退越高，但扩散范围更大
 			'''
 	}
 
@@ -158,13 +159,14 @@ Items: {
 			'''
 	}
 
-	DragonRageEcType: {
-		DisplayName: 巨龙之怒
-		Tooltip:
+	DragonRageWhiplashGalacticaEcType: {
+		// DisplayName: Dragon Rage
+		/* Tooltip:
 			'''
-			刀锋旋转之间灭杀周围的敌人
-			右键发射龙火球
-			'''
+			Spins a baton that causes explosions on enemy hits. The 10th hit will cause a ring of draconic fireballs to seek enemies that inflict Dragonfire.
+			Right click to spin the baton closer to you that summons fireballs at a slower pace, but without the need to hit enemies.
+			                     [c/ff8c1a:"This is my message to my master."]
+			''' */
 	}
 
 	WhiplashGalactica: {
@@ -286,8 +288,14 @@ Items: {
 	}
 
 	ClaretCannonEcType: {
-		DisplayName: 真红手炮
-		Tooltip: ""
+		DisplayName: 深红手炮
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			一次发射三发子弹
+			将火枪子弹转化为吸血的血泪弹
+			'''
 	}
 
 	CleansingBlaze: {
@@ -864,7 +872,7 @@ Items: {
 			'''
 	}
 
-	BlossomFlux: {
+	BlossomFluxEcType: {
 		DisplayName: 叶流
 		Tooltip:
 			'''
@@ -873,7 +881,7 @@ Items: {
 			'''
 	}
 
-	Phangasm: {
+	PhangasmEcType: {
 		DisplayName: 幻魔
 		Tooltip: 击中敌人后额外生成影流射弹
 	}
@@ -883,7 +891,7 @@ Items: {
 		Tooltip: 使用以查看 Calamity Overhaul Mod 相关教程....这里以后可能会包含更多内容
 	}
 
-	Contagion: {
+	ContagionEcType: {
 		DisplayName: 瘟疫
 		Tooltip:
 			'''
@@ -893,7 +901,7 @@ Items: {
 			'''
 	}
 
-	Alluvion: {
+	AlluvionEcType: {
 		DisplayName: 啸流
 		Tooltip:
 			'''
@@ -902,12 +910,12 @@ Items: {
 			'''
 	}
 
-	PlanetaryAnnihilation: {
+	PlanetaryAnnihilationEcType: {
 		DisplayName: 湮灭千星
 		Tooltip: 可以将木箭转化为能量冲击
 	}
 
-	TheMaelstrom: {
+	TheMaelstromEcType: {
 		DisplayName: 幽漩风暴
 		Tooltip:
 			'''
@@ -916,17 +924,18 @@ Items: {
 			'''
 	}
 
-	ClockGatlignum: {
-		// DisplayName: Clock Gatlignum
-		/* Tooltip:
+	ClockGatlignumEcType: {
+		DisplayName: 发条鳄鱼枪
+		Tooltip:
 			'''
-			Has Strong Recoil
-			Has Less than Ideal Accuracy but shoots out a barrage of bullets.
-			"Any attempts to fit crocodiles in it has unfortunately failed."
-			''' */
+			较强的后坐力
+			按下[KL]键进行换弹
+			如狂风暴雨般倾泻子弹
+			"它并不能发射鳄鱼，令人失望"
+			'''
 	}
 
-	ElementalBlaster: {
+	ElementalBlasterEcType: {
 		DisplayName: 元素冲击波
 		Tooltip:
 			'''
@@ -935,7 +944,7 @@ Items: {
 			'''
 	}
 
-	MarksmanBow: {
+	MarksmanBowEcType: {
 		DisplayName: 猎人长弓
 		Tooltip:
 			'''
@@ -944,13 +953,23 @@ Items: {
 			'''
 	}
 
-	NettlevineGreatbow: {
+	NettlevineGreatbowEcType: {
 		DisplayName: 荆棘藤
 		Tooltip:
 			'''
 			射出的箭矢会被染上剧毒
 			每射击四次会触发一轮青蒿扫射
 			'''
+	}
+
+	SpectreRifleEcType: {
+		// DisplayName: Spectre Rifle
+		/* Tooltip:
+			'''
+			Has Strong Recoil
+			Launches out several spirit to latch onto foes, dealing continous damage
+			"The recoil is simply just because the spirits are really angry."
+			''' */
 	}
 
 	SpectreRifle: {
@@ -964,17 +983,18 @@ Items: {
 			'''
 	}
 
-	StormDragoon: {
-		// DisplayName: Storm Dragoon
-		/* Tooltip:
+	StormDragoonEcType: {
+		DisplayName: 风暴龙骑士
+		Tooltip:
 			'''
-			Has Obscene Recoil
-			Uncontrollably lets out a hail of bullets like a storm.
-			"Tests have shown that flying was not intended by the manufacturer, yet still is possible."
-			''' */
+			较强的后坐力
+			按下[KL]键进行换弹
+			如狂风暴雨般倾泻子弹
+			"我是即将到来的风暴"
+			'''
 	}
 
-	TheStorm: {
+	TheStormEcType: {
 		DisplayName: 风暴
 		Tooltip:
 			'''
@@ -983,7 +1003,7 @@ Items: {
 			'''
 	}
 
-	Thunderstorm: {
+	ThunderstormEcType: {
 		DisplayName: 虚灵步枪
 		Tooltip:
 			'''
@@ -993,7 +1013,7 @@ Items: {
 			'''
 	}
 
-	TyrannysEnd: {
+	TyrannysEndEcType: {
 		DisplayName: 暴政之终
 		Tooltip:
 			'''
@@ -1005,7 +1025,7 @@ Items: {
 			'''
 	}
 
-	AntiMaterielRifle: {
+	AntiMaterielRifleEcType: {
 		DisplayName: 巴雷特
 		Tooltip:
 			'''
@@ -1017,7 +1037,7 @@ Items: {
 			'''
 	}
 
-	HalibutCannon: {
+	HalibutCannonEcType: {
 		DisplayName: 大比目鱼炮
 		Tooltip:
 			'''
@@ -1029,7 +1049,7 @@ Items: {
 			'''
 	}
 
-	SDFMG: {
+	SDFMGEcType: {
 		DisplayName: SDFMG
 		Tooltip:
 			'''
@@ -1039,7 +1059,7 @@ Items: {
 			'''
 	}
 
-	DeadSunsWind: {
+	DeadSunsWindEcType: {
 		DisplayName: 薄冥之风
 		Tooltip:
 			'''
@@ -1052,7 +1072,7 @@ Items: {
 			'''
 	}
 
-	FetidEmesis: {
+	FetidEmesisEcType: {
 		DisplayName: 腐臭倾泻者
 		Tooltip:
 			'''
@@ -1067,7 +1087,7 @@ Items: {
 			'''
 	}
 
-	Seadragon: {
+	SeadragonEcType: {
 		DisplayName: 海龙
 		Tooltip:
 			'''
@@ -1082,7 +1102,7 @@ Items: {
 		Tooltip: 发射出的箭矢在击中敌人时会爆发出荒芜电流
 	}
 
-	ScorchedEarth: {
+	ScorchedEarthEcType: {
 		DisplayName: 焦土
 		Tooltip:
 			'''
@@ -1094,7 +1114,7 @@ Items: {
 			'''
 	}
 
-	SeasSearing: {
+	SeasSearingEcType: {
 		DisplayName: 海之烧灼
 		Tooltip:
 			'''
@@ -1104,7 +1124,7 @@ Items: {
 			'''
 	}
 
-	CoralCannon: {
+	CoralCannonEcType: {
 		DisplayName: 珊瑚手炮
 		Tooltip:
 			'''
@@ -1115,7 +1135,7 @@ Items: {
 			'''
 	}
 
-	AngelicShotgun: {
+	AngelicShotgunEcType: {
 		DisplayName: 圣天耀火炮
 		Tooltip:
 			'''
@@ -1126,7 +1146,7 @@ Items: {
 			'''
 	}
 
-	AquashardShotgun: {
+	AquashardShotgunEcType: {
 		DisplayName: 碎水霰弹枪
 		Tooltip:
 			'''
@@ -1135,7 +1155,7 @@ Items: {
 			'''
 	}
 
-	Animosity: {
+	AnimosityEcType: {
 		DisplayName: 憎恶
 		Tooltip:
 			'''
@@ -1145,7 +1165,7 @@ Items: {
 			'''
 	}
 
-	CorinthPrime: {
+	CorinthPrimeEcType: {
 		DisplayName: 科林斯Prime
 		Tooltip:
 			'''
@@ -1157,7 +1177,7 @@ Items: {
 			'''
 	}
 
-	CursedCapper: {
+	CursedCapperEcType: {
 		DisplayName: 诅咒手枪
 		Tooltip:
 			'''
@@ -1167,7 +1187,7 @@ Items: {
 			'''
 	}
 
-	Disseminator: {
+	DisseminatorEcType: {
 		DisplayName: 散播者
 		Tooltip:
 			'''
@@ -1178,7 +1198,7 @@ Items: {
 			'''
 	}
 
-	Hellborn: {
+	HellbornEcType: {
 		DisplayName: 地狱降临
 		Tooltip:
 			'''
@@ -1186,6 +1206,15 @@ Items: {
 			一把炽热的霰弹枪
 			开火时枪身将可以对敌人造成巨大伤害
 			'''
+	}
+
+	PetrifiedDiseaseEcType: {
+		// DisplayName: Petrified Disease
+		/* Tooltip:
+			'''
+			Fire a giant stone poison arrow
+			"A strange disease, whether biological or plant, that gradually turns to stone upon infection."
+			''' */
 	}
 
 	PetrifiedDisease: {
@@ -1197,7 +1226,7 @@ Items: {
 			'''
 	}
 
-	Helstorm: {
+	HelstormEcType: {
 		DisplayName: 地狱风暴
 		Tooltip:
 			'''
@@ -1208,7 +1237,7 @@ Items: {
 			'''
 	}
 
-	Leviatitan: {
+	LeviatitanEcType: {
 		DisplayName: 利维坦海潮枪
 		Tooltip:
 			'''
@@ -1218,7 +1247,7 @@ Items: {
 			'''
 	}
 
-	GoldenEagle: {
+	GoldenEagleEcType: {
 		DisplayName: 黄金波洛克
 		Tooltip:
 			'''
@@ -1230,34 +1259,34 @@ Items: {
 	}
 
 	SurgeDriverEcType: {
-		DisplayName: 煌辉御流炮
-		Tooltip:
+		// DisplayName: Surge Driver
+		/* Tooltip:
 			'''
-			无后坐力
-			按下[KL]键进行换弹
-			发射大量解离射线，弹药量越少火力越发猛烈
-			最高时转为发射伽马射线爆
-			'''
+			No recoil
+			Press the [KL] key to reload
+			Fires a large number of dissociative rays, with the firepower becoming more intense as the ammunition decreases
+			At its peak, it switches to firing gamma ray explosions
+			''' */
 	}
 
-	MuzzleBrake: {
-		DisplayName: 枪口制动器
-		Tooltip:
+	MuzzleBrakeEcType: {
+		// DisplayName: Muzzle Brake
+		/* Tooltip:
 			'''
-			大大减轻枪械的后坐力和膛压
-			但会大幅度降低子弹威力
-			'''
+			Greatly reduces the recoil and chamber pressure of the firearm
+			But it significantly reduces the bullet's power
+			''' */
 	}
 
 	DeepcoreGK2EcType: {
-		DisplayName: 深核GK2
-		Tooltip:
+		// DisplayName: Deepcore GK2
+		/* Tooltip:
 			'''
-			较弱的后坐力
-			按下[Scope]键开镜
-			右键进行全自动扫射
-			"完美的制动设计，内置一台微型电脑。它不仅能自动换弹，还能帮你烤好早餐的面包"
-			'''
+			Weak recoil
+			Press the [Scope] key to aim
+			Right click to zoom out
+			"Perfect braking design, with a built-in microcomputer. It can not only automatically reload, but also help you toast your breakfast bread."
+			''' */
 	}
 
 	DodusHandcannonEcType: {
@@ -1502,17 +1531,6 @@ Items: {
 			'''
 	}
 
-	ArbalestEcType: {
-		DisplayName: 劲弩
-		Tooltip:
-			'''
-			按下[Scope]键开镜
-			发射6支高速箭
-			箭矢随着持续发射时间增大体积
-			箭矢体积越大，伤害和击退越高，但扩散范围更大
-			'''
-	}
-
 	ArcherfishEcType: {
 		DisplayName: 射水鱼
 		Tooltip:
@@ -1600,17 +1618,6 @@ Items: {
 			一般的后坐力
 			按下[KL]键进行换弹
 			将火枪子弹转化为追踪能量束
-			'''
-	}
-
-	ClaretCannonEcType: {
-		DisplayName: 深红手炮
-		Tooltip:
-			'''
-			一般的后坐力
-			按下[KL]键进行换弹
-			一次发射三发子弹
-			将火枪子弹转化为吸血的血泪弹
 			'''
 	}
 
@@ -2046,28 +2053,6 @@ Items: {
 			'''
 			点击左键以发射能量球
 			按住左键进行充能并发射在命中时会爆炸的光束
-			'''
-	}
-
-	ClockGatlignumEcType: {
-		DisplayName: 发条鳄鱼枪
-		Tooltip:
-			'''
-			较强的后坐力
-			按下[KL]键进行换弹
-			如狂风暴雨般倾泻子弹
-			"它并不能发射鳄鱼，令人失望"
-			'''
-	}
-
-	StormDragoonEcType: {
-		DisplayName: 风暴龙骑士
-		Tooltip:
-			'''
-			较强的后坐力
-			按下[KL]键进行换弹
-			如狂风暴雨般倾泻子弹
-			"我是即将到来的风暴"
 			'''
 	}
 

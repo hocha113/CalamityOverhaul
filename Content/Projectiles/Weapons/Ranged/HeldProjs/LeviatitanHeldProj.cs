@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Leviatitan";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Leviatitan>();
-        public override int targetCWRItem => ModContent.ItemType<Leviatitan>();
+        public override int targetCWRItem => ModContent.ItemType<LeviatitanEcType>();
 
         public override void SetRangedProperty() {
             ControlForce = 0.1f;

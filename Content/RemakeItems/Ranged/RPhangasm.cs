@@ -16,7 +16,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RPhangasm : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Phangasm>();
-        public override int ProtogenesisID => ModContent.ItemType<Phangasm>();
+        public override int ProtogenesisID => ModContent.ItemType<PhangasmEcType>();
+        public override string TargetToolTipItemName => "PhangasmEcType";
         public override void SetDefaults(Item item) {
             item.damage = 160;
             item.width = 48;
@@ -39,10 +40,5 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().heldProjType = ModContent.ProjectileType<PhangasmBowHeldProj>();
             item.CWR().hasHeldNoCanUseBool = true;
         }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Phangasm");
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
     }
 }

@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RBansheeHook : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BansheeHook>();
-        public override int ProtogenesisID => ModContent.ItemType<BansheeHook>();
+        public override int ProtogenesisID => ModContent.ItemType<BansheeHookEcType>();
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }

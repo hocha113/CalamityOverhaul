@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RGoldenEagle : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.GoldenEagle>();
-        public override int ProtogenesisID => ModContent.ItemType<GoldenEagle>();
+        public override int ProtogenesisID => ModContent.ItemType<GoldenEagleEcType>();
+        public override string TargetToolTipItemName => "GoldenEagleEcType";
         public override void SetDefaults(Item item) {
             item.damage = 85;
             item.DamageType = DamageClass.Ranged;
@@ -35,13 +36,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<GoldenEagleHelProj>();//非常重要，关联手持弹幕
-            item.EasySetLocalTextNameOverride("GoldenEagle");
+            item.EasySetLocalTextNameOverride("GoldenEagleEcType");
         }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) 
-            => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "GoldenEagle");
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
     }
 }

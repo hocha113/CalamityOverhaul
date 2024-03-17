@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RFetidEmesis : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.FetidEmesis>();
-        public override int ProtogenesisID => ModContent.ItemType<FetidEmesis>();
+        public override int ProtogenesisID => ModContent.ItemType<FetidEmesisEcType>();
+        public override string TargetToolTipItemName => "FetidEmesisEcType";
         public override void SetDefaults(Item item) {
             item.damage = 129;
             item.DamageType = DamageClass.Ranged;
@@ -37,10 +38,5 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.Calamity().canFirePointBlankShots = true;
             item.SetCartridgeGun<FetidEmesisHeldProj>(120);
         }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "FetidEmesis");
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
     }
 }

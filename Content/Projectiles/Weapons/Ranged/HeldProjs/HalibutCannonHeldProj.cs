@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.HalibutCannon>();
-        public override int targetCWRItem => ModContent.ItemType<HalibutCannon>();
+        public override int targetCWRItem => ModContent.ItemType<HalibutCannonEcType>();
         public override void SetRangedProperty() {
             ControlForce = 0.1f;
             GunPressure = 0.3f;

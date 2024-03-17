@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class AquashardShotgun : EctypeItem
+    internal class AquashardShotgunEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AquashardShotgun";
         public override void SetDefaults() {

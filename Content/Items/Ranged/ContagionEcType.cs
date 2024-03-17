@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>
     /// 瘟疫
     /// </summary>
-    internal class Contagion : EctypeItem
+    internal class ContagionEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Contagion";
         public override void SetDefaults() {

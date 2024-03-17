@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RSeadragon : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Seadragon>();
-        public override int ProtogenesisID => ModContent.ItemType<Seadragon>();
+        public override int ProtogenesisID => ModContent.ItemType<SeadragonEcType>();
+        public override string TargetToolTipItemName => "SeadragonEcType";
         public override void SetDefaults(Item item) {
             item.damage = 60;
             item.DamageType = DamageClass.Ranged;
@@ -39,10 +40,5 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = ModContent.ProjectileType<SeadragonHeldProj>();
         }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Seadragon");
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
     }
 }

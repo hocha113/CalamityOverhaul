@@ -16,7 +16,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RLeviatitan : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Leviatitan>();
-        public override int ProtogenesisID => ModContent.ItemType<Leviatitan>();
+        public override int ProtogenesisID => ModContent.ItemType<LeviatitanEcType>();
+        public override string TargetToolTipItemName => "LeviatitanEcType";
         public override void SetDefaults(Item item) {
             item.damage = 80;
             item.DamageType = DamageClass.Ranged;
@@ -36,15 +37,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<LeviatitanHeldProj>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Leviatitan");
-        }
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return false;
         }
     }
 }

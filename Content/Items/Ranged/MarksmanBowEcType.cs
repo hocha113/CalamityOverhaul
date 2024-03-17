@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>
     /// 猎人长弓
     /// </summary>
-    internal class MarksmanBow : EctypeItem
+    internal class MarksmanBowEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MarksmanBow";
         public override void SetDefaults() {           

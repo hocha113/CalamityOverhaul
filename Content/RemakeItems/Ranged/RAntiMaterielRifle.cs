@@ -16,8 +16,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RAntiMaterielRifle : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.AntiMaterielRifle>();
-        public override int ProtogenesisID => ModContent.ItemType<AntiMaterielRifle>();
-        public override string TargetToolTipItemName => "AntiMaterielRifle";
+        public override int ProtogenesisID => ModContent.ItemType<AntiMaterielRifleEcType>();
+        public override string TargetToolTipItemName => "AntiMaterielRifleEcType";
         public override void SetDefaults(Item item) {
             item.damage = 1060;
             item.DamageType = DamageClass.Ranged;
@@ -41,10 +41,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 9;
             item.CWR().Scope = true;
-            CWRUtils.EasySetLocalTextNameOverride(item, "AntiMaterielRifle");
+            CWRUtils.EasySetLocalTextNameOverride(item, "AntiMaterielRifleEcType");
         }
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
     }
 }

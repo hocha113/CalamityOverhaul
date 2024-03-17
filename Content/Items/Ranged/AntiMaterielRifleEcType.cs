@@ -10,35 +10,31 @@ using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// <summary>
-    /// 暴政之终
-    /// </summary>
-    internal class TyrannysEnd : EctypeItem
+    internal class AntiMaterielRifleEcType : EctypeItem
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "TyrannysEnd";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "AntiMaterielRifle";
         public override void SetDefaults() {
-            Item.damage = 1500;
-            Item.knockBack = 9.5f;
+            Item.damage = 1060;
             Item.DamageType = DamageClass.Ranged;
+            Item.width = 154;
+            Item.height = 40;
             Item.useTime = 60;
             Item.useAnimation = 60;
-            Item.shoot = ProjectileID.BulletHighVelocity;
-            Item.shootSpeed = 12f;
-            Item.useAmmo = AmmoID.Bullet;
-            Item.autoReuse = true;
-            Item.width = 150;
-            Item.height = 48;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
+            Item.knockBack = 9.5f;
+            Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             Item.UseSound = CommonCalamitySounds.LargeWeaponFireSound;
-            Item.value = CalamityGlobalItem.Rarity15BuyPrice;
-            Item.rare = ModContent.RarityType<Violet>();
-            Item.Calamity().donorItem = true;
+            Item.autoReuse = true;
+            Item.shoot = ProjectileID.Bullet;
+            Item.shootSpeed = 12f;
+            Item.useAmmo = AmmoID.Bullet;
+            Item.rare = ModContent.RarityType<DarkBlue>();
             Item.Calamity().canFirePointBlankShots = true;
             Item.CWR().hasHeldNoCanUseBool = true;
-            Item.CWR().heldProjType = ModContent.ProjectileType<TyrannysEndHeldProj>();
+            Item.CWR().heldProjType = ModContent.ProjectileType<AntiMaterielRifleHeldProj>();
             Item.CWR().HasCartridgeHolder = true;
-            Item.CWR().AmmoCapacity = 5;
+            Item.CWR().AmmoCapacity = 6;
             Item.CWR().Scope = true;
         }
     }

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>
     /// 黄金之鹰
     /// </summary>
-    internal class GoldenEagle : EctypeItem
+    internal class GoldenEagleEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "GoldenEagle";
         public override void SetDefaults() {
