@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class REarthenPikeSpear : BaseSpearProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "REarthenPikeSpear";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<EarthenPike>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<EarthenPikeEcType>();
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;
             Projectile.DamageType = DamageClass.Melee;  //Dictates whether projectile is a melee-class weapon.

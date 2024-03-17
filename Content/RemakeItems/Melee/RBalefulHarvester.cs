@@ -16,10 +16,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RBalefulHarvester : BaseRItem 
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BalefulHarvester>();
-        public override int ProtogenesisID => ModContent.ItemType<BalefulHarvester>();
+        public override int ProtogenesisID => ModContent.ItemType<BalefulHarvesterEcType>();
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         }
+        public override string TargetToolTipItemName => "BalefulHarvesterEcType";
 
         public override void SetDefaults(Item item) {
             item.damage = 90;
@@ -39,10 +40,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Red;
             item.shoot = ModContent.ProjectileType<BalefulHarvesterHeldProj>();
             item.shootSpeed = 15;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "BalefulHarvester");
         }
 
         public override bool? CanUseItem(Item item, Player player) 
@@ -73,7 +70,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void MeleeEffects(Item item, Player player, Rectangle hitbox) {
             if (Main.rand.NextBool(3))
-                BalefulHarvester.SpanDust(hitbox.TopLeft() + new Vector2(Main.rand.Next(hitbox.Width), Main.rand.Next(hitbox.Height)), 6, 0.3f, 0.5f);
+                BalefulHarvesterEcType.SpanDust(hitbox.TopLeft() + new Vector2(Main.rand.Next(hitbox.Width), Main.rand.Next(hitbox.Height)), 6, 0.3f, 0.5f);
         }
     }
 }

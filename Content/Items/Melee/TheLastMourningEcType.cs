@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 末晓之殇
     /// </summary>
-    internal class TheLastMourning : EctypeItem
+    internal class TheLastMourningEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheLastMourning";
         public new string LocalizationCategory => "Items.Weapons.Melee";

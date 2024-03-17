@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class RSubmarineShockerProj : BaseShortswordProjectile
     {
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<SubmarineShocker>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<SubmarineShockerEcType>();
         public override string Texture => "CalamityMod/Items/Weapons/Melee/SubmarineShocker";
         private bool trueMelee;
         public override void SetDefaults() {

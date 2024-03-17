@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.IridescentExcalibur
 
         public override void AI() {
             if (projColor == Color.White) {
-                projColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), IridescentExcalibur.richColors);
+                projColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), IridescentExcaliburEcType.richColors);
             }
             if (owner != null)
                 Projectile.position += owner.velocity;

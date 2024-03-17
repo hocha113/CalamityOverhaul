@@ -22,10 +22,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public const int ShootPeriod = 3;
         public int ShootCount;
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.AnarchyBlade>();
-        public override int ProtogenesisID => ModContent.ItemType<AnarchyBlade>();
+        public override int ProtogenesisID => ModContent.ItemType<AnarchyBladeEcType>();
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         }
+        public override string TargetToolTipItemName => "AnarchyBladeEcType";
 
         public override void SetDefaults(Item item) {
             item.width = 114;
@@ -43,10 +44,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Yellow;
             item.shoot = ModContent.ProjectileType<AnarchyBeam>();
             item.shootSpeed = 15;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "AnarchyBlade");
         }
 
         public override bool? AltFunctionUse(Item item, Player player) => true;

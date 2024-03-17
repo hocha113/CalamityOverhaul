@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 混乱之刃
     /// </summary>
-    internal class AnarchyBlade : EctypeItem
+    internal class AnarchyBladeEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AnarchyBlade";
         public override void SetStaticDefaults() {

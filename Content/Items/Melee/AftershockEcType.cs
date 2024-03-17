@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 地炎阔刃
     /// </summary>
-    internal class Aftershock : EctypeItem
+    internal class AftershockEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Aftershock";
         public new string LocalizationCategory => "Items.Weapons.Melee";

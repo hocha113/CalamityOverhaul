@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 幻星刃
     /// </summary>
-    internal class AstralBlade : EctypeItem
+    internal class AstralBladeEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AstralBlade";
         public new string LocalizationCategory => "Items.Weapons.Melee";

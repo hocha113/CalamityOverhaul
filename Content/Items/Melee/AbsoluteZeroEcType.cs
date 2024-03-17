@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 绝对零度
     /// </summary>
-    internal class AbsoluteZero : EctypeItem
+    internal class AbsoluteZeroEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AbsoluteZero";
         public override void SetDefaults() {

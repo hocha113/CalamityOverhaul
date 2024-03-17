@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 邪恶收割者
     /// </summary>
-    internal class BalefulHarvester : EctypeItem
+    internal class BalefulHarvesterEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BalefulHarvester";
         public new string LocalizationCategory => "Items.Weapons.Melee";

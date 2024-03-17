@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 磷光拳套
     /// </summary>
-    internal class PhosphorescentGauntlet : EctypeItem
+    internal class PhosphorescentGauntletEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "PhosphorescentGauntlet";
         public new string LocalizationCategory => "Items.Weapons.Melee";

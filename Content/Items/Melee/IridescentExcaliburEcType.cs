@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 光辉圣剑
     /// </summary>
-    internal class IridescentExcalibur : EctypeItem
+    internal class IridescentExcaliburEcType : EctypeItem
     {
         public static Color[] richColors = new Color[]{
             new Color(255, 0, 0),

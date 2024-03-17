@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 翡翠之潮
     /// </summary>
-    internal class Greentide : EctypeItem
+    internal class GreentideEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Greentide";
         public new string LocalizationCategory => "Items.Weapons.Melee";

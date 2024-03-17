@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 携序之剑
     /// </summary>
-    internal class Orderbringer : EctypeItem
+    internal class OrderbringerEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Orderbringer";
         public override void SetDefaults() {

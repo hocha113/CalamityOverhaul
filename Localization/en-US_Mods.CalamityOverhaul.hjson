@@ -541,12 +541,12 @@ Items: {
 		Tooltip: ""
 	}
 
-	Orderbringer: {
+	OrderbringerEcType: {
 		DisplayName: Orderbringer
 		Tooltip: ""
 	}
 
-	IridescentExcalibur: {
+	IridescentExcaliburEcType: {
 		DisplayName: Iridescent Excalibur
 		Tooltip: ""
 	}
@@ -642,7 +642,7 @@ Items: {
 
 	Weapons: {
 		Rogue: {
-			WaveSkipper: {
+			WaveSkipperEcType: {
 				DisplayName: Wave Skipper
 				Tooltip: Throws a Javelin that Buries itself into the earth. Stealth Strikes throws 3 Javelins at once.
 			}
@@ -680,12 +680,12 @@ Items: {
 			'''
 	}
 
-	SubmarineShocker: {
+	SubmarineShockerEcType: {
 		DisplayName: Submarine Shocker
 		Tooltip: A Fast pair of daggers that shoots out Electrically charged ions. Upon hitting enemies, it will cause a lightning chain to bounce off any enemy nearby.
 	}
 
-	BrimstoneSword: {
+	BrimstoneSwordEcType: {
 		DisplayName: Brimstone Sword
 		Tooltip:
 			'''
@@ -714,7 +714,7 @@ Items: {
 		Tooltip: The final battle awaits, however there is a price to pay.
 	}
 
-	PhosphorescentGauntlet: {
+	PhosphorescentGauntletEcType: {
 		DisplayName: Phosphorescent Gauntlet
 		Tooltip:
 			'''
@@ -723,7 +723,7 @@ Items: {
 			'''
 	}
 
-	StellarStriker: {
+	StellarStrikerEcType: {
 		DisplayName: Stellar Striker
 		Tooltip:
 			'''
@@ -732,7 +732,7 @@ Items: {
 			'''
 	}
 
-	TheLastMourning: {
+	TheLastMourningEcType: {
 		DisplayName: The Last Mourning
 		Tooltip:
 			'''
@@ -741,7 +741,7 @@ Items: {
 			'''
 	}
 
-	Greentide: {
+	GreentideEcType: {
 		DisplayName: Greentide
 		Tooltip:
 			'''
@@ -750,7 +750,7 @@ Items: {
 			'''
 	}
 
-	DiseasedPike: {
+	DiseasedPikeEcType: {
 		DisplayName: Diseased Pike
 		Tooltip:
 			'''
@@ -759,12 +759,12 @@ Items: {
 			'''
 	}
 
-	PlagueKeeper: {
+	PlagueKeeperEcType: {
 		DisplayName: Plague Keeper
 		Tooltip: Launches a Myriad of homing bee swarms that inflict the plague
 	}
 
-	BalefulHarvester: {
+	BalefulHarvesterEcType: {
 		DisplayName: Baleful Harvester
 		Tooltip:
 			'''
@@ -774,7 +774,7 @@ Items: {
 			'''
 	}
 
-	VulcaniteLance: {
+	VulcaniteLanceEcType: {
 		DisplayName: Vulcanite Lance
 		Tooltip:
 			'''
@@ -783,7 +783,7 @@ Items: {
 			'''
 	}
 
-	AstralBlade: {
+	AstralBladeEcType: {
 		DisplayName: Astral Blade
 		Tooltip:
 			'''
@@ -792,7 +792,7 @@ Items: {
 			'''
 	}
 
-	AstralPike: {
+	AstralPikeEcType: {
 		DisplayName: Astral Pike
 		Tooltip:
 			'''
@@ -801,7 +801,7 @@ Items: {
 			'''
 	}
 
-	AnarchyBlade: {
+	AnarchyBladeEcType: {
 		DisplayName: Anarchy Blade
 		Tooltip:
 			'''
@@ -810,7 +810,7 @@ Items: {
 			'''
 	}
 
-	Aftershock: {
+	AftershockEcType: {
 		DisplayName: Aftershock
 		Tooltip:
 			'''
@@ -820,7 +820,7 @@ Items: {
 			'''
 	}
 
-	Brimlash: {
+	BrimlashEcType: {
 		DisplayName: Brimlash
 		Tooltip:
 			'''
@@ -830,7 +830,7 @@ Items: {
 			'''
 	}
 
-	EarthenPike: {
+	EarthenPikeEcType: {
 		DisplayName: Earthen Pike
 		Tooltip:
 			'''
@@ -840,12 +840,12 @@ Items: {
 			'''
 	}
 
-	TeardropCleaver: {
+	TeardropCleaverEcType: {
 		DisplayName: Teardrop Cleaver
 		Tooltip: Torrential rain of tears
 	}
 
-	SausageMaker: {
+	SausageMakerEcType: {
 		DisplayName: Sausage Maker
 		Tooltip:
 			'''
@@ -864,7 +864,7 @@ Items: {
 		Tooltip: Reminisence on the Journey you've had and how far you have come.
 	}
 
-	AbsoluteZero: {
+	AbsoluteZeroEcType: {
 		DisplayName: Absolute Zero
 		Tooltip: Emitter ice bomb
 	}
@@ -879,7 +879,7 @@ Items: {
 		Tooltip: A Material from seemingly another plain of existence. Its warm and electrifying to the touch and it seems to seek for bloodshed.
 	}
 
-	WaveSkipper: {
+	WaveSkipperEcType: {
 		DisplayName: Wave Skipper
 		Tooltip:
 			'''

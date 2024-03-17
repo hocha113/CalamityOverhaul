@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 地炎长矛
     /// </summary>
-    internal class EarthenPike : EctypeItem
+    internal class EarthenPikeEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "EarthenPike";
         public new string LocalizationCategory => "Items.Weapons.Melee";

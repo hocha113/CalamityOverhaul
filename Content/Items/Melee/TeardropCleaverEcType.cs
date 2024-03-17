@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 泪刃
     /// </summary>
-    internal class TeardropCleaver : EctypeItem
+    internal class TeardropCleaverEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TeardropCleaver";
         public new string LocalizationCategory => "Items.Weapons.Melee";

@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 硫火鞭
     /// </summary>
-    internal class Brimlash : EctypeItem
+    internal class BrimlashEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Brimlash";
         public new string LocalizationCategory => "Items.Weapons.Melee";

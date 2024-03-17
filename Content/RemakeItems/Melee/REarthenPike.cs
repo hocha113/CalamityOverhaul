@@ -15,10 +15,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class REarthenPike : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.EarthenPike>();
-        public override int ProtogenesisID => ModContent.ItemType<EarthenPike>();
+        public override int ProtogenesisID => ModContent.ItemType<EarthenPikeEcType>();
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         }
+        public override string TargetToolTipItemName => "EarthenPikeEcType";
 
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
@@ -41,10 +42,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ModContent.ProjectileType<REarthenPikeSpear>();
             item.shootSpeed = 8f;
             CWRUtils.EasySetLocalTextNameOverride(item, "EarthenPike");
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "EarthenPike");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

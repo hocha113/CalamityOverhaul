@@ -523,12 +523,12 @@ Items: {
 		Tooltip: ""
 	}
 
-	Orderbringer: {
+	OrderbringerEcType: {
 		DisplayName: 携序之刃
 		Tooltip: ""
 	}
 
-	IridescentExcalibur: {
+	IridescentExcaliburEcType: {
 		DisplayName: 元素圣剑
 		Tooltip: ""
 	}
@@ -631,7 +631,7 @@ Items: {
 
 	Weapons: {
 		Rogue: {
-			WaveSkipper: {
+			WaveSkipperEcType: {
 				DisplayName: 越浪蛟
 				Tooltip:
 					'''
@@ -666,12 +666,12 @@ Items: {
 			'''
 	}
 
-	SubmarineShocker: {
+	SubmarineShockerEcType: {
 		DisplayName: 渊海短剑
 		Tooltip: 发射电离子火花
 	}
 
-	BrimstoneSword: {
+	BrimstoneSwordEcType: {
 		DisplayName: 硫火短剑
 		Tooltip:
 			'''
@@ -700,7 +700,7 @@ Items: {
 		Tooltip: 允许你随意开关终焉之战，但需要付出一些代价
 	}
 
-	PhosphorescentGauntlet: {
+	PhosphorescentGauntletEcType: {
 		DisplayName: 磷光拳套
 		Tooltip:
 			'''
@@ -709,7 +709,7 @@ Items: {
 			'''
 	}
 
-	StellarStriker: {
+	StellarStrikerEcType: {
 		DisplayName: 月炎之锋
 		Tooltip:
 			'''
@@ -718,7 +718,7 @@ Items: {
 			'''
 	}
 
-	TheLastMourning: {
+	TheLastMourningEcType: {
 		DisplayName: 末晓之殇
 		Tooltip:
 			'''
@@ -727,7 +727,7 @@ Items: {
 			'''
 	}
 
-	Greentide: {
+	GreentideEcType: {
 		DisplayName: 翡翠之潮
 		Tooltip:
 			'''
@@ -736,7 +736,7 @@ Items: {
 			'''
 	}
 
-	DiseasedPike: {
+	DiseasedPikeEcType: {
 		DisplayName: 瘟疫长枪
 		Tooltip:
 			'''
@@ -745,12 +745,12 @@ Items: {
 			'''
 	}
 
-	PlagueKeeper: {
+	PlagueKeeperEcType: {
 		DisplayName: 瘟疫大剑
 		Tooltip: 发射瘟疫蜂群
 	}
 
-	BalefulHarvester: {
+	BalefulHarvesterEcType: {
 		DisplayName: 邪恶收割者
 		Tooltip:
 			'''
@@ -760,7 +760,7 @@ Items: {
 			'''
 	}
 
-	VulcaniteLance: {
+	VulcaniteLanceEcType: {
 		DisplayName: 火山长矛
 		Tooltip:
 			'''
@@ -769,7 +769,7 @@ Items: {
 			'''
 	}
 
-	AstralBlade: {
+	AstralBladeEcType: {
 		DisplayName: 星幻刃
 		Tooltip:
 			'''
@@ -778,7 +778,7 @@ Items: {
 			'''
 	}
 
-	AstralPike: {
+	AstralPikeEcType: {
 		DisplayName: 幻星长矛
 		Tooltip:
 			'''
@@ -787,7 +787,7 @@ Items: {
 			'''
 	}
 
-	AnarchyBlade: {
+	AnarchyBladeEcType: {
 		DisplayName: 混乱之刃
 		Tooltip:
 			'''
@@ -796,7 +796,7 @@ Items: {
 			'''
 	}
 
-	Aftershock: {
+	AftershockEcType: {
 		DisplayName: 地炎阔刃
 		Tooltip:
 			'''
@@ -805,7 +805,7 @@ Items: {
 			'''
 	}
 
-	Brimlash: {
+	BrimlashEcType: {
 		DisplayName: 硫火鞭
 		Tooltip:
 			'''
@@ -814,7 +814,7 @@ Items: {
 			'''
 	}
 
-	EarthenPike: {
+	EarthenPikeEcType: {
 		DisplayName: 地炎长矛
 		Tooltip:
 			'''
@@ -824,12 +824,12 @@ Items: {
 			'''
 	}
 
-	TeardropCleaver: {
+	TeardropCleaverEcType: {
 		DisplayName: 泪刃
 		Tooltip: 泪雨倾盆
 	}
 
-	SausageMaker: {
+	SausageMakerEcType: {
 		DisplayName: 香肠矛
 		Tooltip:
 			'''
@@ -848,7 +848,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	AbsoluteZero: {
+	AbsoluteZeroEcType: {
 		DisplayName: 绝对零度
 		Tooltip: 发射极寒冰弹
 	}
@@ -863,7 +863,7 @@ Items: {
 		Tooltip: 用于制作一些高精度的东西，合成时不会直接消耗而是损耗耐久
 	}
 
-	WaveSkipper: {
+	WaveSkipperEcType: {
 		DisplayName: 越浪蛟
 		Tooltip:
 			'''

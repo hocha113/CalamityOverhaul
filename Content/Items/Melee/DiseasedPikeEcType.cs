@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 瘟疫长枪
     /// </summary>
-    internal class DiseasedPike : EctypeItem
+    internal class DiseasedPikeEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DiseasedPike";
 

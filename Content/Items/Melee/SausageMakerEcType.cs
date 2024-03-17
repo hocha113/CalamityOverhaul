@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 香肠矛
     /// </summary>
-    internal class SausageMaker : EctypeItem
+    internal class SausageMakerEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "SausageMaker";
         public new string LocalizationCategory => "Items.Weapons.Melee";

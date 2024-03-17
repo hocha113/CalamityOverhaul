@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 月炎之锋
     /// </summary>
-    internal class StellarStriker : EctypeItem
+    internal class StellarStrikerEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "StellarStriker";
         public new string LocalizationCategory => "Items.Weapons.Melee";

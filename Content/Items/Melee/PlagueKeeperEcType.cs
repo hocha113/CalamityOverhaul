@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 瘟疫大剑
     /// </summary>
-    internal class PlagueKeeper : EctypeItem
+    internal class PlagueKeeperEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "PlagueKeeper";
         public new string LocalizationCategory => "Items.Weapons.Melee";
