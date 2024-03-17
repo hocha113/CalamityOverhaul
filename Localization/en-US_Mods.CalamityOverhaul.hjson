@@ -183,7 +183,7 @@ Items: {
 			'''
 			Spins a baton that causes explosions on enemy hits. The 10th hit will cause a ring of draconic fireballs to seek enemies that inflict Dragonfire.
 			Right click to spin the baton closer to you that summons fireballs at a slower pace, but without the need to hit enemies.
-			                     [c/ff8c1a:"This is my message to my master."]
+			[c/ff8c1a:"This is my message to my master."]
 			'''
 	}
 

@@ -160,7 +160,7 @@ Items: {
 	}
 
 	DragonRageEcType: {
-		DisplayName: Dragon Rage
+		DisplayName: 巨龙之怒
 		Tooltip:
 			'''
 			刀锋旋转之间灭杀周围的敌人
