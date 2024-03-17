@@ -8,12 +8,10 @@ using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
@@ -21,8 +19,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RBansheeHook : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BansheeHook>();
-        public override int ProtogenesisID => ModContent.ItemType<BansheeHookEcType>();
-        public override string TargetToolTipItemName => "BansheeHookEcType";
+        public override int ProtogenesisID => ModContent.ItemType<BansheeHook>();
+        public override void Load() {
+            SetReadonlyTargetID = TargetID;
+        }
         public override void SetStaticDefaults() {
             ItemID.Sets.Spears[TargetID] = true;
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;

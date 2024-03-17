@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 泰拉巨刃
     /// </summary>
-    internal class Terratomere : EctypeItem
+    internal class TerratomereEcType : EctypeItem
     {
         public const int SwingTime = 83;
 

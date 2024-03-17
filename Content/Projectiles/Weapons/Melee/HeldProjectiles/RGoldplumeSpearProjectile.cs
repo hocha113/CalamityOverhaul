@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class RGoldplumeSpearProjectile : BaseSpearProjectile
     {
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<GoldplumeSpear>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<GoldplumeSpearEcType>();
 
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Spears/" + "GoldplumeSpearProjectile";
 

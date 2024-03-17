@@ -7,7 +7,7 @@ EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
-	BrinyBaron: {
+	BrinyBaronEcType: {
 		DisplayName: Briny Baron
 		Tooltip:
 			'''
@@ -16,7 +16,7 @@ Items: {
 			'''
 	}
 
-	CosmicShiv: {
+	CosmicShivEcType: {
 		DisplayName: Cosmic Shiv
 		Tooltip:
 			'''
@@ -44,7 +44,7 @@ Items: {
 			'''
 	}
 
-	BlightedCleaver: {
+	BlightedCleaverEcType: {
 		DisplayName: Blighted Cleaver
 		Tooltip:
 			'''
@@ -53,17 +53,17 @@ Items: {
 			'''
 	}
 
-	BurntSienna: {
+	BurntSiennaEcType: {
 		DisplayName: Burnt Sienna
 		Tooltip: Swinging will sometimes throw 3 Sand blocks in an arc towards your enemies. Killing enemies summon healing orbs that float.
 	}
 
-	CometQuasher: {
+	CometQuasherEcType: {
 		DisplayName: Comet Quasher
 		Tooltip: Swings a Heavy blade that sends a barrage of meteors at your foes and cursor.
 	}
 
-	DefiledGreatsword: {
+	DefiledGreatswordEcType: {
 		DisplayName: Defiled Greatsword
 		Tooltip:
 			'''
@@ -72,7 +72,7 @@ Items: {
 			'''
 	}
 
-	EntropicClaymore: {
+	EntropicClaymoreEcType: {
 		DisplayName: Entropic Claymore
 		Tooltip:
 			'''
@@ -81,7 +81,7 @@ Items: {
 			'''
 	}
 
-	GildedProboscis: {
+	GildedProboscisEcType: {
 		DisplayName: Gilded Proboscis
 		Tooltip:
 			'''
@@ -90,7 +90,7 @@ Items: {
 			'''
 	}
 
-	Terratomere: {
+	TerratomereEcType: {
 		DisplayName: Terratomere
 		Tooltip:
 			'''
@@ -100,7 +100,7 @@ Items: {
 			'''
 	}
 
-	TerrorBlade: {
+	TerrorBladeEcType: {
 		DisplayName: Terror Blade
 		Tooltip:
 			'''
@@ -109,12 +109,12 @@ Items: {
 			'''
 	}
 
-	ArkoftheCosmos: {
+	ArkoftheCosmosEcType: {
 		DisplayName: Arkofthe Cosmos
 		Tooltip: Um... You shouldn't have it
 	}
 
-	StreamGouge: {
+	StreamGougeEcType: {
 		DisplayName: Stream Gouge
 		Tooltip:
 			'''
@@ -124,7 +124,7 @@ Items: {
 			'''
 	}
 
-	ElementalLance: {
+	ElementalLanceEcType: {
 		DisplayName: Elemental Lance
 		Tooltip:
 			'''
@@ -133,7 +133,7 @@ Items: {
 			'''
 	}
 
-	AirSpinner: {
+	AirSpinnerEcType: {
 		DisplayName: Air Spinner
 		Tooltip:
 			'''
@@ -143,12 +143,12 @@ Items: {
 			'''
 	}
 
-	GoldplumeSpear: {
+	GoldplumeSpearEcType: {
 		DisplayName: Goldplume Spear
 		Tooltip: Fires quick bursts of feathers upon swinging
 	}
 
-	WindBlade: {
+	WindBladeEcType: {
 		DisplayName: Wind Blade
 		Tooltip:
 			'''
@@ -157,7 +157,7 @@ Items: {
 			'''
 	}
 
-	Arbalest: {
+	ArbalestEcType: {
 		DisplayName: Arbalest
 		Tooltip:
 			'''
@@ -167,12 +167,16 @@ Items: {
 			'''
 	}
 
-	Deathwind: {
+	DeathwindEcType: {
 		DisplayName: Deathwind
-		Tooltip: Wooden arrows turn into 3 Nebula Beams that pierce infinitely and go through walls.
+		Tooltip:
+		'''
+		Wooden arrows turn into 3 Nebula Beams that pierce infinitely and go through walls.
+		"Death is like the wind;always by my side."
+		'''
 	}
 
-	DragonRage: {
+	DragonRageWhiplashGalacticaEcType: {
 		DisplayName: Dragon Rage
 		Tooltip:
 			'''
@@ -187,7 +191,7 @@ Items: {
 		Tooltip: Whip your enemies with the tenacity of the Devourer.
 	}
 
-	Tradewinds: {
+	TradewindsEcType: {
 		DisplayName: Tradewinds
 		Tooltip:
 			'''
@@ -196,12 +200,12 @@ Items: {
 			'''
 	}
 
-	DeathhailStaff: {
+	DeathhailStaffEcType: {
 		DisplayName: Deathhail Staff
 		Tooltip: Raining hail of death from the sky
 	}
 
-	Excelsus: {
+	ExcelsusEcType: {
 		DisplayName: Excelsus
 		Tooltip:
 			'''
@@ -210,12 +214,12 @@ Items: {
 			'''
 	}
 
-	GhastlyVisage: {
+	GhastlyVisageEcType: {
 		DisplayName: Ghastly Visage
 		Tooltip: Fires out 3 Homing Ghastly Energy bolts to seek out enemies before exploding in anguish.
 	}
 
-	Galeforce: {
+	GaleforceEcType: {
 		DisplayName: Galeforce
 		Tooltip:
 			'''
@@ -229,7 +233,7 @@ Items: {
 		Tooltip: A Whip infused with the energy of the Moon and the Elements.
 	}
 
-	ElementalShiv: {
+	ElementalShivEcType: {
 		DisplayName: Elemental Shiv
 		Tooltip: ""
 	}
@@ -281,7 +285,7 @@ Items: {
 		Tooltip: Swinging causes a high velocity blade that slashes the first enemy it pierces through into ribbons.
 	}
 
-	FatesReveal: {
+	FatesRevealEcType: {
 		DisplayName: Fates Reveal
 		Tooltip: Summons Ghastly Fireballs that after a short time seeks out enemies
 	}
@@ -291,12 +295,12 @@ Items: {
 		Tooltip: I AM THE CHAIR THAT IS APPROACHING!
 	}
 
-	DaemonsFlame: {
+	DaemonsFlameEcType: {
 		DisplayName: Daemons Flame
 		Tooltip: Fires Homing Daemon Flames that explode upon impact
 	}
 
-	ClaretCannon: {
+	ClaretCannonEcType: {
 		DisplayName: Claret Cannon
 		Tooltip: ""
 	}
@@ -336,7 +340,7 @@ Items: {
 			'''
 	}
 
-	AegisBlade: {
+	AegisBladeEcType: {
 		DisplayName: Aegis Blade
 		Tooltip:
 			'''
@@ -496,12 +500,12 @@ Items: {
 		Tooltip: ""
 	}
 
-	CelestialClaymore: {
+	CelestialClaymoreEcType: {
 		DisplayName: Celestial Claymore
 		Tooltip: Spawns cosmic energy flames near the player that seek out enemies after a short while.
 	}
 
-	TheEnforcer: {
+	TheEnforcerEcType: {
 		DisplayName: The Enforcer
 		Tooltip: Spawns Flames directly from the Devourer's Homeworld near the player that explode after a short while.
 	}
@@ -525,7 +529,7 @@ Items: {
 			'''
 	}
 
-	GreatswordofJudgement: {
+	GreatswordofJudgementEcType: {
 		DisplayName: Greatswordof Judgement
 		Tooltip: ""
 	}

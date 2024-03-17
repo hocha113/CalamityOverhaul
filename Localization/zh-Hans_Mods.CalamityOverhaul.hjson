@@ -7,7 +7,7 @@ EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作这个东西
 
 Items: {
-	BrinyBaron: {
+	BrinyBaronEcType: {
 		DisplayName: 海爵剑
 		Tooltip:
 			'''
@@ -16,7 +16,7 @@ Items: {
 			'''
 	}
 
-	CosmicShiv: {
+	CosmicShivEcType: {
 		DisplayName: 宇宙短剑
 		Tooltip:
 			'''
@@ -44,32 +44,32 @@ Items: {
 			'''
 	}
 
-	BlightedCleaver: {
+	BlightedCleaverEcType: {
 		DisplayName: 暴君之刃
 		Tooltip: 刀刃击中敌人会积攒暴君能量，并生成大量的屠杀之镰
 	}
 
-	BurntSienna: {
+	BurntSiennaEcType: {
 		DisplayName: 沙之刃
 		Tooltip: 挥舞会抛舞出三个沙球
 	}
 
-	CometQuasher: {
+	CometQuasherEcType: {
 		DisplayName: 彗星陨刃
 		Tooltip: 让大量流星从天而降
 	}
 
-	DefiledGreatsword: {
+	DefiledGreatswordEcType: {
 		DisplayName: 真暴君之刃
 		Tooltip: 刀刃击中敌人会积攒暴君能量，并生成大量的丛林之镰
 	}
 
-	EntropicClaymore: {
+	EntropicClaymoreEcType: {
 		DisplayName: 熵之舞
 		Tooltip: 刀光之间群星可见
 	}
 
-	GildedProboscis: {
+	GildedProboscisEcType: {
 		DisplayName: 镀金鸟喙
 		Tooltip:
 			'''
@@ -78,12 +78,12 @@ Items: {
 			'''
 	}
 
-	Terratomere: {
+	TerratomereEcType: {
 		DisplayName: 泰拉巨刃
 		Tooltip: 挥舞释放金源之力
 	}
 
-	TerrorBlade: {
+	TerrorBladeEcType: {
 		DisplayName: 惊惧魂刃
 		Tooltip:
 			'''
@@ -92,12 +92,12 @@ Items: {
 			'''
 	}
 
-	ArkoftheCosmos: {
+	ArkoftheCosmosEcType: {
 		DisplayName: 鸿蒙方舟
 		Tooltip: 嗯...你不应该拥有它
 	}
 
-	StreamGouge: {
+	StreamGougeEcType: {
 		DisplayName: 宇宙暗流
 		Tooltip:
 			'''
@@ -106,7 +106,7 @@ Items: {
 			'''
 	}
 
-	ElementalLance: {
+	ElementalLanceEcType: {
 		DisplayName: 元素长枪
 		Tooltip:
 			'''
@@ -115,12 +115,12 @@ Items: {
 			'''
 	}
 
-	AirSpinner: {
+	AirSpinnerEcType: {
 		DisplayName: 天蓝悠悠球
 		Tooltip: 向附近的敌人发射散射的羽毛
 	}
 
-	GoldplumeSpear: {
+	GoldplumeSpearEcType: {
 		DisplayName: 金羽
 		Tooltip:
 			'''
@@ -129,7 +129,7 @@ Items: {
 			'''
 	}
 
-	WindBlade: {
+	WindBladeEcType: {
 		DisplayName: 风之流
 		Tooltip:
 			'''
@@ -138,7 +138,7 @@ Items: {
 			'''
 	}
 
-	Arbalest: {
+	ArbalestEcType: {
 		DisplayName: 机械强弩
 		Tooltip:
 			'''
@@ -148,16 +148,17 @@ Items: {
 			'''
 	}
 
-	Deathwind: {
+	DeathwindEcType: {
 		DisplayName: 死亡之风
 		Tooltip:
 			'''
 			木箭会被转化为死亡激光束
 			近距离击中敌人会吹出死亡气流
+			“死亡如风，常伴吾身”
 			'''
 	}
 
-	DragonRage: {
+	DragonRageEcType: {
 		DisplayName: 巨龙之怒
 		Tooltip:
 			'''
@@ -171,7 +172,7 @@ Items: {
 		Tooltip: 击中敌人后进行死亡标记，并发射宇宙火球
 	}
 
-	Tradewinds: {
+	TradewindsEcType: {
 		DisplayName: 信风
 		Tooltip:
 			'''
@@ -180,12 +181,12 @@ Items: {
 			'''
 	}
 
-	DeathhailStaff: {
+	DeathhailStaffEcType: {
 		DisplayName: 死亡冰雹
 		Tooltip: 令大量的死亡冰雹从天而降
 	}
 
-	Excelsus: {
+	ExcelsusEcType: {
 		DisplayName: 宙宇波能刃
 		Tooltip:
 			'''
@@ -194,12 +195,12 @@ Items: {
 			'''
 	}
 
-	GhastlyVisage: {
+	GhastlyVisageEcType: {
 		DisplayName: 鬼之形
 		Tooltip: 发射数个怨魂爆弹
 	}
 
-	Galeforce: {
+	GaleforceEcType: {
 		DisplayName: 烈风
 		Tooltip:
 			'''
@@ -213,7 +214,7 @@ Items: {
 		Tooltip: 让敌人被元素之火灼烧
 	}
 
-	ElementalShiv: {
+	ElementalShivEcType: {
 		DisplayName: 元素短剑
 		Tooltip: ""
 	}
@@ -265,7 +266,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	FatesReveal: {
+	FatesRevealEcType: {
 		DisplayName: 命运神启
 		Tooltip: 生成数个哀怨灵火攻击敌人
 	}
@@ -275,7 +276,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	DaemonsFlame: {
+	DaemonsFlameEcType: {
 		DisplayName: 鬼火弓
 		Tooltip:
 			'''
@@ -284,7 +285,7 @@ Items: {
 			'''
 	}
 
-	ClaretCannon: {
+	ClaretCannonEcType: {
 		DisplayName: 真红手炮
 		Tooltip: ""
 	}
@@ -323,7 +324,7 @@ Items: {
 			'''
 	}
 
-	AegisBlade: {
+	AegisBladeEcType: {
 		DisplayName: 庇护之刃
 		Tooltip:
 			'''
@@ -480,12 +481,12 @@ Items: {
 		Tooltip: 令人通体生寒
 	}
 
-	CelestialClaymore: {
+	CelestialClaymoreEcType: {
 		DisplayName: 天神之剑
 		Tooltip: 挥舞时在周围生成爆炸烁星
 	}
 
-	TheEnforcer: {
+	TheEnforcerEcType: {
 		DisplayName: 暴政
 		Tooltip: 挥舞时在周围生成宇宙之火
 	}
@@ -509,7 +510,7 @@ Items: {
 			'''
 	}
 
-	GreatswordofJudgement: {
+	GreatswordofJudgementEcType: {
 		DisplayName: 制裁大剑
 		Tooltip: ""
 	}

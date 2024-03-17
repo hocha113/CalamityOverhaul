@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BurntSienna>();
         public override int ProtogenesisID => ModContent.ItemType<BurntSienna>();
+        public override string TargetToolTipItemName => "BurntSiennaEcType";
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -56,10 +57,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 item.CWR().ai[0] = 0;
             }
             return false;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "BurntSienna");
         }
     }
 }

@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 元素短剑
     /// </summary>
-    internal class ElementalShiv : EctypeItem
+    internal class ElementalShivEcType : EctypeItem
     {
         public new string LocalizationCategory => "Items.Weapons.Melee";
 

@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// <summary>
     /// 信风
     /// </summary>
-    internal class Tradewinds : EctypeItem
+    internal class TradewindsEcType : EctypeItem
     {
         public new string LocalizationCategory => "Items.Weapons.Magic";
 

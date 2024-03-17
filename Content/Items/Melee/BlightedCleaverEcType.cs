@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 暴君之刃
     /// </summary>
-    internal class BlightedCleaver : EctypeItem
+    internal class BlightedCleaverEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BlightedCleaver";
 

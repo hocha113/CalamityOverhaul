@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 庇护之刃
     /// </summary>
-    internal class AegisBlade : EctypeItem
+    internal class AegisBladeEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AegisBlade";
         public new string LocalizationCategory => "Items.Weapons.Melee";

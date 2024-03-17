@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 元素长枪
     /// </summary>
-    internal class ElementalLance : EctypeItem
+    internal class ElementalLanceEcType : EctypeItem
     {
         public new string LocalizationCategory => "Items.Weapons.Melee";
 

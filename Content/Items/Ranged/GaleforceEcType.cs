@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>
     /// 烈风
     /// </summary>
-    internal class Galeforce : EctypeItem
+    internal class GaleforceEcType : EctypeItem
     {
         public new string LocalizationCategory => "Items.Weapons.Ranged";
 

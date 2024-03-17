@@ -15,7 +15,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class RFatesReveal : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Magic.FatesReveal>();
-        public override int ProtogenesisID => ModContent.ItemType<FatesReveal>();
+        public override int ProtogenesisID => ModContent.ItemType<FatesRevealEcType>();
+        public override string TargetToolTipItemName => "FatesRevealEcType";
+
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -37,10 +39,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
             item.shootSpeed = 1f;
             item.value = CalamityGlobalItem.Rarity13BuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "FatesReveal");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

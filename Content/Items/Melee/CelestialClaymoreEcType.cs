@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 天神之剑
     /// </summary>
-    internal class CelestialClaymore : EctypeItem
+    internal class CelestialClaymoreEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "CelestialClaymore";
         public new string LocalizationCategory => "Items.Weapons.Melee";

@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 暴君巨刃
     /// </summary>
-    internal class DefiledGreatsword : EctypeItem
+    internal class DefiledGreatswordEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DefiledGreatsword";
 

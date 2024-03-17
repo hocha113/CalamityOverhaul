@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 巨龙之怒
     /// </summary>
-    internal class DragonRage : EctypeItem
+    internal class DragonRageEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DragonRage";
 

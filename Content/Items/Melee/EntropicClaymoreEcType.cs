@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 熵之舞
     /// </summary>
-    internal class EntropicClaymore : EctypeItem
+    internal class EntropicClaymoreEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "EntropicClaymore";
 

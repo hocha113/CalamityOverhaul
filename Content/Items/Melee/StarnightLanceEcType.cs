@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 寒夜长枪
     /// </summary>
-    internal class StarnightLance : EctypeItem
+    internal class StarnightLanceEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "StarnightLance";
         public new string LocalizationCategory => "Items.Weapons.Melee";

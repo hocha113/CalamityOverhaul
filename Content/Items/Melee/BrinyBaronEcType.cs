@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 海爵剑
     /// </summary>
-    internal class BrinyBaron : EctypeItem
+    internal class BrinyBaronEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BrinyBaron";
 

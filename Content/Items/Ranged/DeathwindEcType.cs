@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>
     /// 死亡之风
     /// </summary>
-    internal class Deathwind : EctypeItem
+    internal class DeathwindEcType : EctypeItem
     {
         public new string LocalizationCategory => "Items.Weapons.Ranged";
 

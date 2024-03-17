@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 惊惧魂刃
     /// </summary>
-    internal class TerrorBlade : EctypeItem
+    internal class TerrorBladeEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TerrorBlade";
 

@@ -14,7 +14,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RCelestialClaymore : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.CelestialClaymore>();
-        public override int ProtogenesisID => ModContent.ItemType<CelestialClaymore>();
+        public override int ProtogenesisID => ModContent.ItemType<CelestialClaymoreEcType>();
+        public override string TargetToolTipItemName => "CelestialClaymoreEcType";
+
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -35,10 +37,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ModContent.ProjectileType<CosmicSpiritBombs>();
             item.shootSpeed = 0.1f;
             CWRUtils.EasySetLocalTextNameOverride(item, "CelestialClaymore");
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "CelestialClaymore");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

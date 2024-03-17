@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RCometQuasher : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.CometQuasher>();
-        public override int ProtogenesisID => ModContent.ItemType<CometQuasher>();
+        public override int ProtogenesisID => ModContent.ItemType<CometQuasherEcType>();
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -81,12 +81,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
             damage = (int)(item.damage * 0.4f);
             return null;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            if (CWRUtils.RemakeByItem<CalamityMod.Items.Weapons.Melee.CometQuasher>(item)) {
-                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "CometQuasher");
-            }
         }
 
         public override void OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) {
