@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RStreamGouge : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.StreamGouge>();
-        public override int ProtogenesisID => ModContent.ItemType<StreamGouge>();
+        public override int ProtogenesisID => ModContent.ItemType<StreamGougeEcType>();
+        public override string TargetToolTipItemName => "StreamGougeEcType";
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -42,10 +43,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ModContent.ProjectileType<RStreamGougeProj>();
             item.shootSpeed = 15f;
             item.rare = ModContent.RarityType<DarkBlue>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "StreamGouge");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

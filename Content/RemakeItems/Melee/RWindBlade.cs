@@ -14,7 +14,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RWindBlade : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.WindBlade>();
-        public override int ProtogenesisID => ModContent.ItemType<WindBlade>();
+        public override int ProtogenesisID => ModContent.ItemType<WindBladeEcType>();
+        public override string TargetToolTipItemName => "WindBladeEcType";
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -39,10 +40,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ModContent.ProjectileType<Cyclones>();
             item.shootSpeed = 3f;
             CWRUtils.EasySetLocalTextNameOverride(item, "WindBlade");
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "WindBlade");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

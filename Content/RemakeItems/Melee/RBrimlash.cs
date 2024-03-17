@@ -16,10 +16,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RBrimlash : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Brimlash>();
-        public override int ProtogenesisID => ModContent.ItemType<Brimlash>();
+        public override int ProtogenesisID => ModContent.ItemType<BrimlashEcType>();
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         }
+        public override string TargetToolTipItemName => "BrimlashEcType";
 
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
@@ -38,10 +39,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Lime;
             item.shoot = ModContent.ProjectileType<BrimlashProj>();
             item.shootSpeed = 10f;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Brimlash");
         }
 
         public override void ModifyShootStats(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {

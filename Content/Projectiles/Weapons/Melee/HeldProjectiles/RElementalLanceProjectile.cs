@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class RElementalLanceProjectile : BaseSpearProjectile
     {
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<Items.Melee.ElementalLance>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<Items.Melee.ElementalLanceEcType>();
 
         public override string Texture => CWRConstant.Projectile_Melee + "ElementalLanceProjectile";
 
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Projectile.Kill();
                     return;
                 }
-                if (elementalLance == null || elementalLance.type != ModContent.ItemType<Items.Melee.ElementalLance>()
+                if (elementalLance == null || elementalLance.type != ModContent.ItemType<Items.Melee.ElementalLanceEcType>()
                     && elementalLance.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.ElementalLance>()) {
                     Projectile.Kill();
                     return;

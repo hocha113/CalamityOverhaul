@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     }
                 }
                 else {
-                    if (balefulHarvester.type != ItemType<BalefulHarvester>()) {
+                    if (balefulHarvester.type != ItemType<BalefulHarvesterEcType>()) {
                         Projectile.Kill();
                     }
                 }

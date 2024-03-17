@@ -7,7 +7,7 @@ EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作这个东西
 
 Items: {
-	BrinyBaron: {
+	BrinyBaronEcType: {
 		DisplayName: 海爵剑
 		Tooltip:
 			'''
@@ -16,7 +16,7 @@ Items: {
 			'''
 	}
 
-	CosmicShiv: {
+	CosmicShivEcType: {
 		DisplayName: 宇宙短剑
 		Tooltip:
 			'''
@@ -34,7 +34,7 @@ Items: {
 			'''
 	}
 
-	BansheeHook: {
+	BansheeHookEcType: {
 		DisplayName: 女妖之爪
 		Tooltip:
 			'''
@@ -44,32 +44,32 @@ Items: {
 			'''
 	}
 
-	BlightedCleaver: {
+	BlightedCleaverEcType: {
 		DisplayName: 暴君之刃
 		Tooltip: 刀刃击中敌人会积攒暴君能量，并生成大量的屠杀之镰
 	}
 
-	BurntSienna: {
+	BurntSiennaEcType: {
 		DisplayName: 沙之刃
 		Tooltip: 挥舞会抛舞出三个沙球
 	}
 
-	CometQuasher: {
+	CometQuasherEcType: {
 		DisplayName: 彗星陨刃
 		Tooltip: 让大量流星从天而降
 	}
 
-	DefiledGreatsword: {
+	DefiledGreatswordEcType: {
 		DisplayName: 真暴君之刃
 		Tooltip: 刀刃击中敌人会积攒暴君能量，并生成大量的丛林之镰
 	}
 
-	EntropicClaymore: {
+	EntropicClaymoreEcType: {
 		DisplayName: 熵之舞
 		Tooltip: 刀光之间群星可见
 	}
 
-	GildedProboscis: {
+	GildedProboscisEcType: {
 		DisplayName: 镀金鸟喙
 		Tooltip:
 			'''
@@ -78,12 +78,12 @@ Items: {
 			'''
 	}
 
-	Terratomere: {
+	TerratomereEcType: {
 		DisplayName: 泰拉巨刃
 		Tooltip: 挥舞释放金源之力
 	}
 
-	TerrorBlade: {
+	TerrorBladeEcType: {
 		DisplayName: 惊惧魂刃
 		Tooltip:
 			'''
@@ -92,12 +92,12 @@ Items: {
 			'''
 	}
 
-	ArkoftheCosmos: {
+	ArkoftheCosmosEcType: {
 		DisplayName: 鸿蒙方舟
 		Tooltip: 嗯...你不应该拥有它
 	}
 
-	StreamGouge: {
+	StreamGougeEcType: {
 		DisplayName: 宇宙暗流
 		Tooltip:
 			'''
@@ -106,7 +106,7 @@ Items: {
 			'''
 	}
 
-	ElementalLance: {
+	ElementalLanceEcType: {
 		DisplayName: 元素长枪
 		Tooltip:
 			'''
@@ -115,12 +115,12 @@ Items: {
 			'''
 	}
 
-	AirSpinner: {
+	AirSpinnerEcType: {
 		DisplayName: 天蓝悠悠球
 		Tooltip: 向附近的敌人发射散射的羽毛
 	}
 
-	GoldplumeSpear: {
+	GoldplumeSpearEcType: {
 		DisplayName: 金羽
 		Tooltip:
 			'''
@@ -129,7 +129,7 @@ Items: {
 			'''
 	}
 
-	WindBlade: {
+	WindBladeEcType: {
 		DisplayName: 风之流
 		Tooltip:
 			'''
@@ -138,7 +138,7 @@ Items: {
 			'''
 	}
 
-	Arbalest: {
+	ArbalestEcType: {
 		DisplayName: 机械强弩
 		Tooltip:
 			'''
@@ -148,16 +148,17 @@ Items: {
 			'''
 	}
 
-	Deathwind: {
+	DeathwindEcType: {
 		DisplayName: 死亡之风
 		Tooltip:
 			'''
 			木箭会被转化为死亡激光束
 			近距离击中敌人会吹出死亡气流
+			“死亡如风，常伴吾身”
 			'''
 	}
 
-	DragonRage: {
+	DragonRageEcType: {
 		DisplayName: 巨龙之怒
 		Tooltip:
 			'''
@@ -171,7 +172,7 @@ Items: {
 		Tooltip: 击中敌人后进行死亡标记，并发射宇宙火球
 	}
 
-	Tradewinds: {
+	TradewindsEcType: {
 		DisplayName: 信风
 		Tooltip:
 			'''
@@ -180,12 +181,12 @@ Items: {
 			'''
 	}
 
-	DeathhailStaff: {
+	DeathhailStaffEcType: {
 		DisplayName: 死亡冰雹
 		Tooltip: 令大量的死亡冰雹从天而降
 	}
 
-	Excelsus: {
+	ExcelsusEcType: {
 		DisplayName: 宙宇波能刃
 		Tooltip:
 			'''
@@ -194,12 +195,12 @@ Items: {
 			'''
 	}
 
-	GhastlyVisage: {
+	GhastlyVisageEcType: {
 		DisplayName: 鬼之形
 		Tooltip: 发射数个怨魂爆弹
 	}
 
-	Galeforce: {
+	GaleforceEcType: {
 		DisplayName: 烈风
 		Tooltip:
 			'''
@@ -213,7 +214,7 @@ Items: {
 		Tooltip: 让敌人被元素之火灼烧
 	}
 
-	ElementalShiv: {
+	ElementalShivEcType: {
 		DisplayName: 元素短剑
 		Tooltip: ""
 	}
@@ -265,7 +266,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	FatesReveal: {
+	FatesRevealEcType: {
 		DisplayName: 命运神启
 		Tooltip: 生成数个哀怨灵火攻击敌人
 	}
@@ -275,7 +276,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	DaemonsFlame: {
+	DaemonsFlameEcType: {
 		DisplayName: 鬼火弓
 		Tooltip:
 			'''
@@ -284,7 +285,7 @@ Items: {
 			'''
 	}
 
-	ClaretCannon: {
+	ClaretCannonEcType: {
 		DisplayName: 真红手炮
 		Tooltip: ""
 	}
@@ -323,7 +324,7 @@ Items: {
 			'''
 	}
 
-	AegisBlade: {
+	AegisBladeEcType: {
 		DisplayName: 庇护之刃
 		Tooltip:
 			'''
@@ -480,12 +481,12 @@ Items: {
 		Tooltip: 令人通体生寒
 	}
 
-	CelestialClaymore: {
+	CelestialClaymoreEcType: {
 		DisplayName: 天神之剑
 		Tooltip: 挥舞时在周围生成爆炸烁星
 	}
 
-	TheEnforcer: {
+	TheEnforcerEcType: {
 		DisplayName: 暴政
 		Tooltip: 挥舞时在周围生成宇宙之火
 	}
@@ -509,17 +510,17 @@ Items: {
 			'''
 	}
 
-	GreatswordofJudgement: {
+	GreatswordofJudgementEcType: {
 		DisplayName: 制裁大剑
 		Tooltip: ""
 	}
 
-	Orderbringer: {
+	OrderbringerEcType: {
 		DisplayName: 携序之刃
 		Tooltip: ""
 	}
 
-	IridescentExcalibur: {
+	IridescentExcaliburEcType: {
 		DisplayName: 元素圣剑
 		Tooltip: ""
 	}
@@ -622,7 +623,7 @@ Items: {
 
 	Weapons: {
 		Rogue: {
-			WaveSkipper: {
+			WaveSkipperEcType: {
 				DisplayName: 越浪蛟
 				Tooltip:
 					'''
@@ -657,12 +658,12 @@ Items: {
 			'''
 	}
 
-	SubmarineShocker: {
+	SubmarineShockerEcType: {
 		DisplayName: 渊海短剑
 		Tooltip: 发射电离子火花
 	}
 
-	BrimstoneSword: {
+	BrimstoneSwordEcType: {
 		DisplayName: 硫火短剑
 		Tooltip:
 			'''
@@ -691,7 +692,7 @@ Items: {
 		Tooltip: 允许你随意开关终焉之战，但需要付出一些代价
 	}
 
-	PhosphorescentGauntlet: {
+	PhosphorescentGauntletEcType: {
 		DisplayName: 磷光拳套
 		Tooltip:
 			'''
@@ -700,7 +701,7 @@ Items: {
 			'''
 	}
 
-	StellarStriker: {
+	StellarStrikerEcType: {
 		DisplayName: 月炎之锋
 		Tooltip:
 			'''
@@ -709,7 +710,7 @@ Items: {
 			'''
 	}
 
-	TheLastMourning: {
+	TheLastMourningEcType: {
 		DisplayName: 末晓之殇
 		Tooltip:
 			'''
@@ -718,7 +719,7 @@ Items: {
 			'''
 	}
 
-	Greentide: {
+	GreentideEcType: {
 		DisplayName: 翡翠之潮
 		Tooltip:
 			'''
@@ -727,7 +728,7 @@ Items: {
 			'''
 	}
 
-	DiseasedPike: {
+	DiseasedPikeEcType: {
 		DisplayName: 瘟疫长枪
 		Tooltip:
 			'''
@@ -736,12 +737,12 @@ Items: {
 			'''
 	}
 
-	PlagueKeeper: {
+	PlagueKeeperEcType: {
 		DisplayName: 瘟疫大剑
 		Tooltip: 发射瘟疫蜂群
 	}
 
-	BalefulHarvester: {
+	BalefulHarvesterEcType: {
 		DisplayName: 邪恶收割者
 		Tooltip:
 			'''
@@ -751,7 +752,7 @@ Items: {
 			'''
 	}
 
-	VulcaniteLance: {
+	VulcaniteLanceEcType: {
 		DisplayName: 火山长矛
 		Tooltip:
 			'''
@@ -760,7 +761,7 @@ Items: {
 			'''
 	}
 
-	AstralBlade: {
+	AstralBladeEcType: {
 		DisplayName: 星幻刃
 		Tooltip:
 			'''
@@ -769,7 +770,7 @@ Items: {
 			'''
 	}
 
-	AstralPike: {
+	AstralPikeEcType: {
 		DisplayName: 幻星长矛
 		Tooltip:
 			'''
@@ -778,7 +779,7 @@ Items: {
 			'''
 	}
 
-	AnarchyBlade: {
+	AnarchyBladeEcType: {
 		DisplayName: 混乱之刃
 		Tooltip:
 			'''
@@ -787,7 +788,7 @@ Items: {
 			'''
 	}
 
-	Aftershock: {
+	AftershockEcType: {
 		DisplayName: 地炎阔刃
 		Tooltip:
 			'''
@@ -796,7 +797,7 @@ Items: {
 			'''
 	}
 
-	Brimlash: {
+	BrimlashEcType: {
 		DisplayName: 硫火鞭
 		Tooltip:
 			'''
@@ -805,7 +806,7 @@ Items: {
 			'''
 	}
 
-	EarthenPike: {
+	EarthenPikeEcType: {
 		DisplayName: 地炎长矛
 		Tooltip:
 			'''
@@ -815,12 +816,12 @@ Items: {
 			'''
 	}
 
-	TeardropCleaver: {
+	TeardropCleaverEcType: {
 		DisplayName: 泪刃
 		Tooltip: 泪雨倾盆
 	}
 
-	SausageMaker: {
+	SausageMakerEcType: {
 		DisplayName: 香肠矛
 		Tooltip:
 			'''
@@ -839,7 +840,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	AbsoluteZero: {
+	AbsoluteZeroEcType: {
 		DisplayName: 绝对零度
 		Tooltip: 发射极寒冰弹
 	}
@@ -854,7 +855,7 @@ Items: {
 		Tooltip: 用于制作一些高精度的东西，合成时不会直接消耗而是损耗耐久
 	}
 
-	WaveSkipper: {
+	WaveSkipperEcType: {
 		DisplayName: 越浪蛟
 		Tooltip:
 			'''

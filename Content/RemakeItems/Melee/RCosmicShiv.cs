@@ -14,7 +14,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RCosmicShiv : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.CosmicShiv>();
-        public override int ProtogenesisID => ModContent.ItemType<CosmicShiv>();
+        public override int ProtogenesisID => ModContent.ItemType<CosmicShivEctype>();
+        public override string TargetToolTipItemName => "CosmicShivEcType";
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -35,10 +36,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shootSpeed = 2.4f;
             item.value = CalamityGlobalItem.Rarity14BuyPrice;
             item.rare = ModContent.RarityType<DarkBlue>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "CosmicShiv");
         }
     }
 }

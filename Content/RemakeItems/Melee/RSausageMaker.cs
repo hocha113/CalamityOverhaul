@@ -10,8 +10,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RSausageMaker : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.SausageMaker>();
-        public override int ProtogenesisID => ModContent.ItemType<SausageMaker>();
+        public override int ProtogenesisID => ModContent.ItemType<SausageMakerEcType>();
         public override void SetDefaults(Item item) => item.shoot = ModContent.ProjectileType<RSausageMakerSpear>();
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "SausageMaker");
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "SausageMakerEcType");
     }
 }

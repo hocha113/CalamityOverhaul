@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class RGildedProboscisProj : BaseSpearProjectile
     {
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<Items.Melee.GildedProboscis>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<Items.Melee.GildedProboscisEcType>();
 
         public override float InitialSpeed => 3f;
 

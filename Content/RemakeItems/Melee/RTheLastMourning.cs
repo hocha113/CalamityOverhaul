@@ -19,7 +19,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RTheLastMourning : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.TheLastMourning>();
-        public override int ProtogenesisID => ModContent.ItemType<TheLastMourning>();
+        public override int ProtogenesisID => ModContent.ItemType<TheLastMourningEcType>();
+        public override string TargetToolTipItemName => "TheLastMourningEcType";
+
         private bool InTureMelee;
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
@@ -43,10 +45,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.Calamity().donorItem = true;
             item.shoot = ModContent.ProjectileType<MourningSkull>();
             item.shootSpeed = 15;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "TheLastMourning");
         }
 
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {

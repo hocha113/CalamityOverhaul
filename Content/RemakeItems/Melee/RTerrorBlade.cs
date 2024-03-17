@@ -19,7 +19,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RTerrorBlade : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.TerrorBlade>();
-        public override int ProtogenesisID => ModContent.ItemType<TerrorBlade>();
+        public override int ProtogenesisID => ModContent.ItemType<TerrorBladeEcType>();
+        public override string TargetToolTipItemName => "TerrorBladeEcType";
         private bool InCharge;
         public override void Load() {
             SetReadonlyTargetID = TargetID;
@@ -48,12 +49,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback) {
             knockback *= InCharge ? 1.25f : 1;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            if (CWRUtils.RemakeByItem<CalamityMod.Items.Weapons.Melee.TerrorBlade>(item)) {
-                CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "TerrorBlade");
-            }
         }
 
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
@@ -121,8 +116,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         private static void UpdateBar(Item item) {
-            if (item.CWR().MeleeCharge > TerrorBlade.TerrorBladeMaxRageEnergy)
-                item.CWR().MeleeCharge = TerrorBlade.TerrorBladeMaxRageEnergy;
+            if (item.CWR().MeleeCharge > TerrorBladeEcType.TerrorBladeMaxRageEnergy)
+                item.CWR().MeleeCharge = TerrorBladeEcType.TerrorBladeMaxRageEnergy;
         }
 
         public static void DrawRageEnergyChargeBar(Player player, Item item) {
@@ -133,7 +128,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             float slp = 3;
             int offsetwid = 4;
             Vector2 drawPos = CWRUtils.WDEpos(player.Center + new Vector2(rageEnergyBar.Width / -2 * slp, 135));
-            Rectangle backRec = new Rectangle(offsetwid, 0, (int)((rageEnergyBar.Width - offsetwid * 2) * (item.CWR().MeleeCharge / TerrorBlade.TerrorBladeMaxRageEnergy)), rageEnergyBar.Height);
+            Rectangle backRec = new Rectangle(offsetwid, 0, (int)((rageEnergyBar.Width - offsetwid * 2) * (item.CWR().MeleeCharge / TerrorBladeEcType.TerrorBladeMaxRageEnergy)), rageEnergyBar.Height);
 
             Main.spriteBatch.ResetBlendState();
             Main.EntitySpriteDraw(

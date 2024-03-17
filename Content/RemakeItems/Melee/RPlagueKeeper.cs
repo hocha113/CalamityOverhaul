@@ -14,7 +14,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RPlagueKeeper : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.PlagueKeeper>();
-        public override int ProtogenesisID => ModContent.ItemType<PlagueKeeper>();
+        public override int ProtogenesisID => ModContent.ItemType<PlagueKeeperEcType>();
+        public override string TargetToolTipItemName => "PlagueKeeperEcType";
+
 
         public override void SetDefaults(Item item) {
             item.width = 74;
@@ -32,10 +34,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Red;
             item.shoot = ModContent.ProjectileType<PlagueBeeWave>();
             item.shootSpeed = 9f;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "PlagueKeeper");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

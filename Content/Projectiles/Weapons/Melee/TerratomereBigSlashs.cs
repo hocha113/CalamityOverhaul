@@ -84,8 +84,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             GameShaders.Misc["CalamityMod:ExobladePierce"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/BlobbyNoise"));
             GameShaders.Misc["CalamityMod:ExobladePierce"].UseImage2("Images/Extra_189");
-            GameShaders.Misc["CalamityMod:ExobladePierce"].UseColor(Terratomere.TerraColor1);
-            GameShaders.Misc["CalamityMod:ExobladePierce"].UseSecondaryColor(Terratomere.TerraColor2);
+            GameShaders.Misc["CalamityMod:ExobladePierce"].UseColor(TerratomereEcType.TerraColor1);
+            GameShaders.Misc["CalamityMod:ExobladePierce"].UseSecondaryColor(TerratomereEcType.TerraColor2);
             for (int i = 0; i < 4; i++) {
                 SlashDrawer.Draw(Projectile.oldPos, Projectile.Size * 0.5f - Main.screenPosition, 30);
             }

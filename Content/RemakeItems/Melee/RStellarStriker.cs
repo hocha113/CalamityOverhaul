@@ -15,7 +15,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RStellarStriker : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.StellarStriker>();
-        public override int ProtogenesisID => ModContent.ItemType<StellarStriker>();
+        public override int ProtogenesisID => ModContent.ItemType<StellarStrikerEcType>();
+        public override string TargetToolTipItemName => "StellarStrikerEcType";
+
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         }
@@ -38,9 +40,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ProjectileID.LunarFlare;
             item.shootSpeed = 12f;
         }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "StellarStriker");
-
+        
         public override bool? AltFunctionUse(Item item, Player player) {
             return true;
         }
@@ -67,14 +67,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override bool? On_OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) {
             if (player.altFunctionUse == 2) {
-                StellarStriker.SpawnFlares(item, player, item.knockBack, item.damage, hit.Crit);
+                StellarStrikerEcType.SpawnFlares(item, player, item.knockBack, item.damage, hit.Crit);
             }   
             return false;
         }
 
         public override bool? On_OnHitPvp(Item item, Player player, Player target, Player.HurtInfo hurtInfo) {
             if (player.whoAmI == Main.myPlayer && player.altFunctionUse == 2) {
-                StellarStriker.SpawnFlares(item, player, item.knockBack, item.damage, true);
+                StellarStrikerEcType.SpawnFlares(item, player, item.knockBack, item.damage, true);
             }
             return false;
         }

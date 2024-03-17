@@ -14,7 +14,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RBrimstoneSword : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BrimstoneSword>();
-        public override int ProtogenesisID => ModContent.ItemType<BrimstoneSword>();
+        public override int ProtogenesisID => ModContent.ItemType<BrimstoneSwordEcType>();
+        public override string TargetToolTipItemName => "BrimstoneSwordEcType";
+
         public override void SetDefaults(Item item) {
             item.width = 32;
             item.height = 32;
@@ -32,10 +34,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.value = CalamityGlobalItem.Rarity5BuyPrice;
             item.rare = ItemRarityID.Pink;
             item.EasySetLocalTextNameOverride("BrimstoneSword");
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "BrimstoneSword");
         }
 
         public override bool? AltFunctionUse(Item item, Player player) {

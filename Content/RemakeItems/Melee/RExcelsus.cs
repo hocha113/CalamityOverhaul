@@ -16,7 +16,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RExcelsus : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Excelsus>();
-        public override int ProtogenesisID => ModContent.ItemType<Excelsus>();
+        public override int ProtogenesisID => ModContent.ItemType<ExcelsusEcType>();
+        public override string TargetToolTipItemName => "ExcelsusEcType";
+
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -41,8 +43,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ModContent.ProjectileType<ExcelsusMain>();
             item.shootSpeed = 12f;
         }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Excelsus");
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {

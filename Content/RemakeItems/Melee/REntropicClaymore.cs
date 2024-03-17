@@ -14,7 +14,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class REntropicClaymore : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.EntropicClaymore>();
-        public override int ProtogenesisID => ModContent.ItemType<EntropicClaymore>();
+        public override int ProtogenesisID => ModContent.ItemType<EntropicClaymoreEcType>();
+        public override string TargetToolTipItemName => "EntropicClaymoreEcType";
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -35,10 +36,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ModContent.ProjectileType<EntropicClaymoreHoldoutProj>();
             item.shootSpeed = 12f;
             CWRUtils.EasySetLocalTextNameOverride(item, "EntropicClaymore");
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "EntropicClaymore");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RTerratomere : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Terratomere>();
-        public override int ProtogenesisID => ModContent.ItemType<Terratomere>();
+        public override int ProtogenesisID => ModContent.ItemType<TerratomereEcType>();
+        public override string TargetToolTipItemName => "TerratomereEcType";
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -35,10 +36,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ModContent.ProjectileType<RTerratomereHoldoutProj>();
             item.shootSpeed = 60f;
             CWRUtils.EasySetLocalTextNameOverride(item, "Terratomere");
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Terratomere");
         }
 
         public override bool? UseItem(Item item, Player player) {

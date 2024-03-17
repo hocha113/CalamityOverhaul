@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class RVulcaniteLanceProj : BaseSpearProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Spears/VulcaniteLanceProj";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<VulcaniteLance>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<VulcaniteLanceEcType>();
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 44;
             Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
