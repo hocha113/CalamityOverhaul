@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override bool PreAI() {
             bool heldBool1 = murasama.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>();
-            bool heldBool2 = murasama.type != ModContent.ItemType<Murasama>();
+            bool heldBool2 = murasama.type != ModContent.ItemType<MurasamaEcType>();
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换
                 if (heldBool1) {//只需要判断原版的物品
                     Projectile.Kill();
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     if (CWRKeySystem.Murasama_TriggerKey.JustPressed && risingDragon <= 0 && noHasDownSkillProj) {//扳机键被按下，并且升龙冷却已经完成，那么将刀发射出去
                         SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
                         SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.1f, Volume = 0.5f }, Projectile.Center);
-                        if (Murasama.NameIsVergil(Owner) && Main.rand.NextBool()) {
+                        if (MurasamaEcType.NameIsVergil(Owner) && Main.rand.NextBool()) {
                             SoundStyle sound = Main.rand.NextBool() ? CWRSound.V_Kengms : CWRSound.V_Heen;
                             SoundEngine.PlaySound(sound with { Volume = 0.5f }, Projectile.Center);
                         }
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         if (Projectile.IsOwnedByLocalPlayer()) {
                             Owner.velocity += UnitToMouseV * -3;
                             Projectile.NewProjectile(Owner.parent(), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
-                            , breakOutType, (int)(Murasama.ActualTrueMeleeDamage * (0.45f + level * 0.05f)), 0, Owner.whoAmI);
+                            , breakOutType, (int)(MurasamaEcType.ActualTrueMeleeDamage * (0.45f + level * 0.05f)), 0, Owner.whoAmI);
                         }
 
                         SpanTriggerEffDust();
@@ -120,14 +120,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
             }
 
-            if (CWRKeySystem.Murasama_DownKey.JustPressed && Murasama.UnlockSkill2 && noHasDownSkillProj && noHasBreakOutProj) {//下砸技能键被按下，同时技能以及解锁，那么发射执行下砸技能的弹幕
+            if (CWRKeySystem.Murasama_DownKey.JustPressed && MurasamaEcType.UnlockSkill2 && noHasDownSkillProj && noHasBreakOutProj) {//下砸技能键被按下，同时技能以及解锁，那么发射执行下砸技能的弹幕
                 murasama.initialize();
                 if (murasama.CWR().ai[0] >= 1) {
-                    SoundEngine.PlaySound(Murasama.BigSwing with { Pitch = -0.1f }, Projectile.Center);
+                    SoundEngine.PlaySound(MurasamaEcType.BigSwing with { Pitch = -0.1f }, Projectile.Center);
 
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         Projectile.NewProjectile(Owner.parent(), Projectile.Center, new Vector2(0, 5)
-                        , ModContent.ProjectileType<MurasamaDownSkill>(), (int)(Murasama.ActualTrueMeleeDamage * (2 + level * 1f)), 0, Owner.whoAmI);
+                        , ModContent.ProjectileType<MurasamaDownSkill>(), (int)(MurasamaEcType.ActualTrueMeleeDamage * (2 + level * 1f)), 0, Owner.whoAmI);
 
                         murasama.CWR().ai[0] -= 1;//消耗一点能量
                     }
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 Vector2 barOrigin = barBG.Size() * 0.5f;
                 float yOffset = 50f;
                 Vector2 drawPos = Projectile.Center + Vector2.UnitY * scale * (barFG.Height - yOffset) - Main.screenPosition + new Vector2(0, -33) * scale * 2;
-                Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / (float)Murasama.GetOnRDCD * barFG.Width), barFG.Height);
+                Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / (float)MurasamaEcType.GetOnRDCD * barFG.Width), barFG.Height);
                 Color color = CWRUtils.MultiStepColorLerp(Main.GameUpdateCount % 120 / 120f, Color.Red, Color.IndianRed, Color.Gold, Color.OrangeRed, Color.DarkRed);
                 Main.spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale * barScale, 0, 0f);
                 Main.spriteBatch.Draw(barFG, drawPos, frameCrop, color * 0.8f, 0f, barOrigin, scale * barScale, 0, 0f);

@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         private void SpanDust() {
-            SoundEngine.PlaySound(Murasama.BigSwing with { Volume = 0.1f }, Projectile.Center);
+            SoundEngine.PlaySound(MurasamaEcType.BigSwing with { Volume = 0.1f }, Projectile.Center);
             for (int i = 0; i < 133; i++) {
                 AltSparkParticle spark = new AltSparkParticle(
                     Projectile.Center + Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f) + Projectile.velocity * 1.2f
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         private void OnHit() {
-            SoundEngine.PlaySound(Murasama.InorganicHit, Projectile.Center);
+            SoundEngine.PlaySound(MurasamaEcType.InorganicHit, Projectile.Center);
             SpanDust();
             Projectile.Explode();
 

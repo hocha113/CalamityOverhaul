@@ -57,10 +57,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SoundEngine.PlaySound(SoundID.Item61, Projectile.Center);
             OffsetPos -= ShootVelocity.UnitVector() * 6;
             for (int i = 0; i < 3; i++) {
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(-0.15f * (i + 1))
+                Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedBy(-0.15f * (i + 1))
                     , ModContent.ProjectileType<PlagueTaintedDrone>(), WeaponDamage, WeaponKnockback
                     , Owner.whoAmI, 1f, Owner.Calamity().alchFlask || Owner.Calamity().spiritOrigin ? 1f : 0f);
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(0.15f * (i + 1))
+                Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedBy(0.15f * (i + 1))
                     , ModContent.ProjectileType<PlagueTaintedDrone>(), WeaponDamage, WeaponKnockback
                     , Owner.whoAmI, 1f, Owner.Calamity().alchFlask || Owner.Calamity().spiritOrigin ? 1f : 0f);
             }

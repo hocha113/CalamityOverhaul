@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System.IO;
+using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 

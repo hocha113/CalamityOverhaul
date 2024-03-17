@@ -168,13 +168,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
             
             if (Projectile.numHits == 0) {
-                SoundEngine.PlaySound(Murasama.OrganicHit with { Pitch = 0.15f }, Projectile.Center);
+                SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 0.15f }, Projectile.Center);
                 strikeToFly(target);
 
                 //设置玩家的不可击退性并给予玩家短暂的无敌帧
                 Owner.GivePlayerImmuneState(30);
                 //设置时期对应的升龙冷却
-                Owner.CWR().RisingDragonCoolDownTime = Murasama.GetOnRDCD;
+                Owner.CWR().RisingDragonCoolDownTime = MurasamaEcType.GetOnRDCD;
 
                 Vector2 ver = target.Center.To(Owner.Center).UnitVector();
 
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
 
                 //如果充能已经满了10点，并且该技能已经解锁，那么进行处决技的释放
-                if (murasama.CWR().ai[0] == 10 && Murasama.UnlockSkill3) {
+                if (murasama.CWR().ai[0] == 10 && MurasamaEcType.UnlockSkill3) {
                     SoundEngine.PlaySound(CWRSound.EndSilkOrbSpanSound with {Volume = 0.7f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {//同样的，释放衍生弹幕和进行自我充能清零的操作只能交由主人玩家执行
                         int maxSpanNum = 13 + level;
@@ -310,7 +310,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 6)
-            , Murasama.NameIsVergil(Owner) ? Color.Blue : Color.White, Projectile.rotation
+            , MurasamaEcType.NameIsVergil(Owner) ? Color.Blue : Color.White, Projectile.rotation
             , CWRUtils.GetOrig(value, 6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
             return false;
         }

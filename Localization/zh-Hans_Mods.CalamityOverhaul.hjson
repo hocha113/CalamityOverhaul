@@ -447,7 +447,7 @@ Items: {
 		// Tooltip: ""
 	}
 
-	Murasama: {
+	MurasamaEcType: {
 		DisplayName: 高分子斩切刃
 		Tooltip:
 			'''
@@ -1524,6 +1524,8 @@ Items: {
 	}
 
 	ArcNovaDiffuserEcType: {
+		// DisplayName: Arc Nova Diffuser Ec Type
+		// Tooltip: ""
 	}
 
 	AstralBlasterEcType: {
@@ -2101,6 +2103,16 @@ Items: {
 			"大号云彩面包生成器！"
 			'''
 	}
+
+	MonsoonEcType: {
+		// DisplayName: Monsoon Ec Type
+		// Tooltip: ""
+	}
+
+	AethersWhisperEcType: {
+		// DisplayName: Aethers Whisper Ec Type
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2514,6 +2526,10 @@ Projectiles: {
 	// MarshmallowsHeldProj.DisplayName: Marshmallows Held Proj
 	// RainbowMarshmallowsHeldProj.DisplayName: Rainbow Marshmallows Held Proj
 	// MarshmallowProj2.DisplayName: Marshmallow Proj2
+	// AethersWhisperHeldProj.DisplayName: Aethers Whisper Held Proj
+	// AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
+	// AetherOrb.DisplayName: Aether Orb
+	// AetherOrb2.DisplayName: Aether Orb2
 }
 
 Configs: {

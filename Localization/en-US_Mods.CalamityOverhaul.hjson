@@ -464,7 +464,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	Murasama: {
+	MurasamaEcType: {
 		DisplayName: Murasama
 		Tooltip:
 			'''
@@ -1538,6 +1538,8 @@ Items: {
 	}
 
 	ArcNovaDiffuserEcType: {
+		DisplayName: Arc Nova Diffuser Ec Type
+		Tooltip: ""
 	}
 
 	AstralBlasterEcType: {
@@ -2108,6 +2110,16 @@ Items: {
 		DisplayName: Rainbow Marshmallows
 		Tooltip: ""
 	}
+
+	MonsoonEcType: {
+		DisplayName: Monsoon Ec Type
+		Tooltip: ""
+	}
+
+	AethersWhisperEcType: {
+		DisplayName: Aethers Whisper Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2521,6 +2533,10 @@ Projectiles: {
 	MarshmallowsHeldProj.DisplayName: Marshmallows Held Proj
 	RainbowMarshmallowsHeldProj.DisplayName: Rainbow Marshmallows Held Proj
 	MarshmallowProj2.DisplayName: Marshmallow Proj2
+	AethersWhisperHeldProj.DisplayName: Aethers Whisper Held Proj
+	AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
+	AetherOrb.DisplayName: Aether Orb
+	AetherOrb2.DisplayName: Aether Orb2
 }
 
 Configs: {
