@@ -139,12 +139,13 @@ Items: {
 	}
 
 	ArbalestEcType: {
-		DisplayName: 机械强弩
+		DisplayName: 劲弩
 		Tooltip:
 			'''
-			发射大量箭矢，箭矢会随时间愈发巨大
-			右键进行单发速射
-			“它的齿轮咔哧咔哧的转个不停”
+			按下[Scope]键开镜
+			发射6支高速箭
+			箭矢随着持续发射时间增大体积
+			箭矢体积越大，伤害和击退越高，但扩散范围更大
 			'''
 	}
 
@@ -158,13 +159,14 @@ Items: {
 			'''
 	}
 
-	DragonRageEcType: {
-		DisplayName: 巨龙之怒
-		Tooltip:
+	DragonRageWhiplashGalacticaEcType: {
+		// DisplayName: Dragon Rage
+		/* Tooltip:
 			'''
-			刀锋旋转之间灭杀周围的敌人
-			右键发射龙火球
-			'''
+			Spins a baton that causes explosions on enemy hits. The 10th hit will cause a ring of draconic fireballs to seek enemies that inflict Dragonfire.
+			Right click to spin the baton closer to you that summons fireballs at a slower pace, but without the need to hit enemies.
+			                     [c/ff8c1a:"This is my message to my master."]
+			''' */
 	}
 
 	WhiplashGalactica: {
@@ -286,8 +288,14 @@ Items: {
 	}
 
 	ClaretCannonEcType: {
-		DisplayName: 真红手炮
-		Tooltip: ""
+		DisplayName: 深红手炮
+		Tooltip:
+			'''
+			一般的后坐力
+			按下[KL]键进行换弹
+			一次发射三发子弹
+			将火枪子弹转化为吸血的血泪弹
+			'''
 	}
 
 	CleansingBlaze: {
@@ -1502,17 +1510,6 @@ Items: {
 			'''
 	}
 
-	ArbalestEcType: {
-		DisplayName: 劲弩
-		Tooltip:
-			'''
-			按下[Scope]键开镜
-			发射6支高速箭
-			箭矢随着持续发射时间增大体积
-			箭矢体积越大，伤害和击退越高，但扩散范围更大
-			'''
-	}
-
 	ArcherfishEcType: {
 		DisplayName: 射水鱼
 		Tooltip:
@@ -1600,17 +1597,6 @@ Items: {
 			一般的后坐力
 			按下[KL]键进行换弹
 			将火枪子弹转化为追踪能量束
-			'''
-	}
-
-	ClaretCannonEcType: {
-		DisplayName: 深红手炮
-		Tooltip:
-			'''
-			一般的后坐力
-			按下[KL]键进行换弹
-			一次发射三发子弹
-			将火枪子弹转化为吸血的血泪弹
 			'''
 	}
 
@@ -2530,6 +2516,7 @@ Projectiles: {
 	// AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
 	// AetherOrb.DisplayName: Aether Orb
 	// AetherOrb2.DisplayName: Aether Orb2
+	// SniperRifleOnSpan.DisplayName: Sniper Rifle On Span
 }
 
 Configs: {

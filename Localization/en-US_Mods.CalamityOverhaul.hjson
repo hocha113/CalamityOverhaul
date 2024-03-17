@@ -161,19 +161,20 @@ Items: {
 		DisplayName: Arbalest
 		Tooltip:
 			'''
-			Fires a volley of 6 high speed arrows, arrows start small but grow in size with continous fire.
-			Right click to fire a high speed volley of arrows after a short delay
-			"Salvaged from the inner workings of the Twins, the gears show age yet still churn."
+			Press the [Scope] key to aim
+			Fires 6 high-speed arrows
+			Arrow size increases with continuous firing time
+			Larger arrows deal higher damage and knockback, but have a wider spread
 			'''
 	}
 
 	DeathwindEcType: {
 		DisplayName: Deathwind
 		Tooltip:
-		'''
-		Wooden arrows turn into 3 Nebula Beams that pierce infinitely and go through walls.
-		"Death is like the wind;always by my side."
-		'''
+			'''
+			Wooden arrows turn into 3 Nebula Beams that pierce infinitely and go through walls.
+			"Death is like the wind;always by my side."
+			'''
 	}
 
 	DragonRageWhiplashGalacticaEcType: {
@@ -302,7 +303,13 @@ Items: {
 
 	ClaretCannonEcType: {
 		DisplayName: Claret Cannon
-		Tooltip: ""
+		Tooltip:
+			'''
+			Medium recoil
+			Press the [KL] key to reload
+			Fires three bullets at once
+			Converts musket bullets into vampiric blood-tear bullets
+			'''
 	}
 
 	CleansingBlaze: {
@@ -1516,17 +1523,6 @@ Items: {
 			'''
 	}
 
-	ArbalestEcType: {
-		DisplayName: Arbalest
-		Tooltip:
-			'''
-			Press the [Scope] key to aim
-			Fires 6 high-speed arrows
-			Arrow size increases with continuous firing time
-			Larger arrows deal higher damage and knockback, but have a wider spread
-			'''
-	}
-
 	ArcherfishEcType: {
 		DisplayName: Archerfish
 		Tooltip:
@@ -1614,17 +1610,6 @@ Items: {
 			Medium recoil
 			Press the [KL] key to reload
 			Converts musket bullets into tracking energy beam
-			'''
-	}
-
-	ClaretCannonEcType: {
-		DisplayName: Claret Cannon
-		Tooltip:
-			'''
-			Medium recoil
-			Press the [KL] key to reload
-			Fires three bullets at once
-			Converts musket bullets into vampiric blood-tear bullets
 			'''
 	}
 
@@ -2537,6 +2522,7 @@ Projectiles: {
 	AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
 	AetherOrb.DisplayName: Aether Orb
 	AetherOrb2.DisplayName: Aether Orb2
+	SniperRifleOnSpan.DisplayName: Sniper Rifle On Span
 }
 
 Configs: {

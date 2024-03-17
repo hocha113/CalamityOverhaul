@@ -8,6 +8,8 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using CalamityMod.Projectiles.Melee;
+using Terraria.ModLoader;
+using ReLogic.Utilities;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
@@ -18,6 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.SniperRifle;
         public override int targetCWRItem => ItemID.SniperRifle;
         public static SoundStyle ShootSound = new("CalamityMod/Sounds/Item/TankCannon") { PitchVariance = 0.5f };
+        private SlotId accumulator;
         public override void SetRangedProperty() {
             FireTime = 60;
             ShootPosToMouLengValue = 0;
@@ -37,34 +40,41 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            SoundEngine.PlaySound(ShootSound, Projectile.Center);
-            if (AmmoTypes == ProjectileID.Bullet) {
-                AmmoTypes = ProjectileID.BulletHighVelocity;
-            }
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            if (BulletNum == 3 | BulletNum == 2) {
-                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                if (Main.projectile[proj].penetrate > 1) {
-                    Main.projectile[proj].penetrate = 1;
-                }
+            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<SniperRifleOnSpan>()] == 0) {
+                accumulator = SoundEngine.PlaySound(CWRSound.Accumulator with { Pitch = 0.3f }, Projectile.Center);
+                Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
+                    , ModContent.ProjectileType<SniperRifleOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
             }
-            if (BulletNum == 1) {
-                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                if (Main.projectile[proj].penetrate > 1) {
-                    Main.projectile[proj].penetrate = 1;
-                }
-                FireTime = 90;
-                Item.crit = 100;
-            }
-            if (BulletNum == 0) {
-                int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage * 2, WeaponKnockback * 2, Owner.whoAmI, 0);
-                Main.projectile[proj1].extraUpdates += 3;
-                if (Main.projectile[proj1].penetrate > 1) {
-                    Main.projectile[proj1].penetrate = 1;
-                    Item.crit = -1000;
-                    FireTime = 60;
-                }
-            }
+            return;
+            //SoundEngine.PlaySound(ShootSound, Projectile.Center);
+            //if (AmmoTypes == ProjectileID.Bullet) {
+            //    AmmoTypes = ProjectileID.BulletHighVelocity;
+            //}
+            //SpawnGunFireDust(GunShootPos, ShootVelocity);
+            //if (BulletNum == 3 | BulletNum == 2) {
+            //    int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            //    if (Main.projectile[proj].penetrate > 1) {
+            //        Main.projectile[proj].penetrate = 1;
+            //    }
+            //}
+            //if (BulletNum == 1) {
+            //    int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            //    if (Main.projectile[proj].penetrate > 1) {
+            //        Main.projectile[proj].penetrate = 1;
+            //    }
+            //    FireTime = 90;
+            //    Item.crit = 100;
+            //}
+            //if (BulletNum == 0) {
+            //    int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage * 2, WeaponKnockback * 2, Owner.whoAmI, 0);
+            //    Main.projectile[proj1].extraUpdates += 3;
+            //    if (Main.projectile[proj1].penetrate > 1) {
+            //        Main.projectile[proj1].penetrate = 1;
+            //        Item.crit = -1000;
+            //        FireTime = 60;
+            //    }
+            //}
         }
     }
 }
