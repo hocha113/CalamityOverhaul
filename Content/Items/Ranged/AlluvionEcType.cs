@@ -3,34 +3,37 @@ using CalamityMod.Rarities;
 using CalamityMod;
 using Terraria.ID;
 using Terraria.ModLoader;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class Phangasm : EctypeItem
+    /// <summary>
+    /// 啸流
+    /// </summary>
+    internal class AlluvionEcType : EctypeItem
     {
-        public override string Texture => "CalamityMod/Items/Weapons/Ranged/Phangasm";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Alluvion";
         public override void SetDefaults() {
-            Item.damage = 160;
-            Item.width = 48;
-            Item.height = 82;
-            Item.useTime = 12;
-            Item.useAnimation = 12;
+            Item.damage = 165;
+            Item.DamageType = DamageClass.Ranged;
+            Item.width = 62;
+            Item.height = 90;
+            Item.useTime = 15;
+            Item.useAnimation = 30;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.knockBack = 3f;
+            Item.noMelee = true;
+            Item.knockBack = 4f;
             Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             Item.UseSound = SoundID.Item5;
-            Item.noMelee = true;
-            Item.noUseGraphic = true;
-            Item.DamageType = DamageClass.Ranged;
-            Item.channel = true;
             Item.autoReuse = true;
-            Item.shootSpeed = 20f;
+            Item.shoot = ProjectileID.WoodenArrowFriendly;
+            Item.shootSpeed = 12f;
             Item.useAmmo = AmmoID.Arrow;
             Item.rare = ModContent.RarityType<DarkBlue>();
             Item.Calamity().canFirePointBlankShots = true;
-            Item.CWR().heldProjType = ModContent.ProjectileType<PhangasmBowHeldProj>();
             Item.CWR().hasHeldNoCanUseBool = true;
+            Item.CWR().heldProjType = ModContent.ProjectileType<AlluvionHeldProj>();
         }
     }
 }

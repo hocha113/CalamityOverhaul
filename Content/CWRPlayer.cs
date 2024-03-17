@@ -20,10 +20,6 @@ namespace CalamityOverhaul.Content
     public class CWRPlayer : ModPlayer
     {
         /// <summary>
-        /// 玩家受伤事件，用于实例动态订阅，不能使用静态目标订阅该事件
-        /// </summary>
-        public event PlayerHitDelegate PlayerHitEvent;
-        /// <summary>
         /// 是否初始化加载，用于角色文件的第一次创建
         /// </summary>
         public bool InitialCreation;
@@ -155,14 +151,6 @@ namespace CalamityOverhaul.Content
 
         public override void OnHurt(Player.HurtInfo info) {
             OnHit = true;
-            if (PlayerHitEvent != null) {
-                foreach (PlayerHitDelegate del in PlayerHitEvent.GetInvocationList()) {
-                    if (del.Target == null) {
-                        PlayerHitEvent -= del;
-                    }
-                }
-                PlayerHitEvent.Invoke(Player, info);
-            }
         }
 
         public override void PostUpdate() {

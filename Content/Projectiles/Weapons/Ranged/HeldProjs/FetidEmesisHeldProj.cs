@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "FetidEmesis";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.FetidEmesis>();
-        public override int targetCWRItem => ModContent.ItemType<FetidEmesis>();
+        public override int targetCWRItem => ModContent.ItemType<FetidEmesisEcType>();
         public override void SetRangedProperty() {
             FireTime = 7;
             ControlForce = 0.06f;

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>
     /// 地狱风暴
     /// </summary>
-    internal class Helstorm : EctypeItem
+    internal class HelstormEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Helstorm";
         public override void SetDefaults() {

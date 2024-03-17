@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class Thunderstorm : EctypeItem
+    internal class ThunderstormEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Thunderstorm";
         public override void SetDefaults() {

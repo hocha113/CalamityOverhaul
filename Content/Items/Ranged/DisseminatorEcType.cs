@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class Disseminator : EctypeItem
+    internal class DisseminatorEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Disseminator";
         public override void SetDefaults() {

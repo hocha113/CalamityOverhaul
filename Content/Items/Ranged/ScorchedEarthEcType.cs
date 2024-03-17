@@ -10,7 +10,7 @@ using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class ScorchedEarth : EctypeItem
+    internal class ScorchedEarthEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ScorchedEarth";
         public static SoundStyle ShootSound = new("CalamityMod/Sounds/Item/ScorchedEarthShot", 3);

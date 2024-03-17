@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>
     /// 元素爆破
     /// </summary>
-    internal class ElementalBlaster : EctypeItem
+    internal class ElementalBlasterEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ElementalBlaster";
         public override void SetDefaults() {

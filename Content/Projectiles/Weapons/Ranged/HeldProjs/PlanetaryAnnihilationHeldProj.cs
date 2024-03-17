@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PlanetaryAnnihilation";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.PlanetaryAnnihilation>();
-        public override int targetCWRItem => ModContent.ItemType<PlanetaryAnnihilation>();
+        public override int targetCWRItem => ModContent.ItemType<PlanetaryAnnihilationEcType>();
         public override void InOwner() {
             float armRotSengsFront = 60 * CWRUtils.atoR;
             float armRotSengsBack = 110 * CWRUtils.atoR;

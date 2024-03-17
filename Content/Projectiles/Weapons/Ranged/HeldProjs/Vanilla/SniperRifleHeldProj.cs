@@ -1,15 +1,13 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Vanilla;
-using CalamityMod.Sounds;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Utilities;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
-using CalamityMod.Projectiles.Melee;
 using Terraria.ModLoader;
-using ReLogic.Utilities;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {

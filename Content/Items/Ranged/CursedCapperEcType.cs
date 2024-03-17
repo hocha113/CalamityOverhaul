@@ -7,7 +7,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class CursedCapper : EctypeItem
+    internal class CursedCapperEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CursedCapper";
         public override void SetDefaults() {

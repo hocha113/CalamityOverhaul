@@ -128,12 +128,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.Kill();
                 return false;
             }
-            if (ModItem == null) {
-                ModItem = Item.CWR();
-            }
-            if (ModOwner == null) {
-                ModOwner = Owner.CWR();
-            }
+            ModItem = Item.CWR();
+            ModOwner = Owner.CWR();
             ModOwner.HeldRangedBool = true;
             if (Owner.PressKey() && !Owner.mouseInterface) {
                 Owner.itemTime = 2;

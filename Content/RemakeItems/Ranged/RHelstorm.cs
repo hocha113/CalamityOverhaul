@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RHelstorm : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Helstorm>();
-        public override int ProtogenesisID => ModContent.ItemType<Helstorm>();
+        public override int ProtogenesisID => ModContent.ItemType<HelstormEcType>();
+        public override string TargetToolTipItemName => "HelstormEcType";
         public override void SetDefaults(Item item) {
             item.damage = 31;
             item.DamageType = DamageClass.Ranged;
@@ -35,15 +36,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<HelstormHeldProj>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Helstorm");
-        }
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return false;
         }
     }
 }

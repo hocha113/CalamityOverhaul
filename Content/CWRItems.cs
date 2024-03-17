@@ -182,10 +182,10 @@ namespace CalamityOverhaul.Content
                 }
                 if (tag.ContainsKey("_NumberBullets")) {
                     NumberBullets = tag.GetInt("_NumberBullets");
-                }   
+                }
                 if (tag.ContainsKey("_IsKreload")) {
                     IsKreload = tag.GetBool("_IsKreload");
-                }    
+                }
             }
         }
 

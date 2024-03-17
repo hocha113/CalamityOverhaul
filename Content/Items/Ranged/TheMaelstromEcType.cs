@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>
     /// 幽漩风暴
     /// </summary>
-    internal class TheMaelstrom : EctypeItem
+    internal class TheMaelstromEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TheMaelstrom";
         public override void SetDefaults() {

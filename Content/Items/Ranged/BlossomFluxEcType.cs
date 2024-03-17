@@ -11,7 +11,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class BlossomFlux : EctypeItem
+    internal class BlossomFluxEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BlossomFlux";
         public override void SetDefaults() {

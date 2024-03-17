@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CursedCapper";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.CursedCapper>();
-        public override int targetCWRItem => ModContent.ItemType<CursedCapper>();
+        public override int targetCWRItem => ModContent.ItemType<CursedCapperEcType>();
         public override void SetRangedProperty() {
             ControlForce = 0.1f;
             GunPressure = 0.2f;

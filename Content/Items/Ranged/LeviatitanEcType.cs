@@ -8,7 +8,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class Leviatitan : EctypeItem
+    internal class LeviatitanEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Leviatitan";
         public override void SetDefaults() {

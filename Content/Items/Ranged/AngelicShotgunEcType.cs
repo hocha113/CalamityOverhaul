@@ -9,29 +9,29 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class Seadragon : EctypeItem
+    internal class AngelicShotgunEcType : EctypeItem
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Seadragon";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "AngelicShotgun";
         public override void SetDefaults() {
-            Item.damage = 60;
+            Item.damage = 136;
+            Item.knockBack = 3f;
             Item.DamageType = DamageClass.Ranged;
-            Item.width = 90;
-            Item.height = 38;
-            Item.useTime = 5;
-            Item.useAnimation = 5;
-            Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
-            Item.knockBack = 2.5f;
+            Item.autoReuse = true;
+            Item.width = 86;
+            Item.height = 38;
+            Item.useTime = 24;
+            Item.useAnimation = 24;
+            Item.UseSound = SoundID.Item38;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.value = CalamityGlobalItem.Rarity12BuyPrice;
             Item.rare = ModContent.RarityType<Turquoise>();
-            Item.UseSound = SoundID.Item11;
-            Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<ArcherfishShot>();
-            Item.shootSpeed = 16f;
+            Item.Calamity().donorItem = true;
+            Item.shootSpeed = 12;
+            Item.shoot = ModContent.ProjectileType<IlluminatedBullet>();
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.CWR().hasHeldNoCanUseBool = true;
-            Item.CWR().heldProjType = ModContent.ProjectileType<SeadragonHeldProj>();
+            Item.SetHeldProj<AngelicShotgunHeldProj>();
         }
     }
 }

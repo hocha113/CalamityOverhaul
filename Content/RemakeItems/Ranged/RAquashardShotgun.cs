@@ -16,7 +16,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RAquashardShotgun : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.AquashardShotgun>();
-        public override int ProtogenesisID => ModContent.ItemType<AquashardShotgun>();
+        public override int ProtogenesisID => ModContent.ItemType<AquashardShotgunEcType>();
+        public override string TargetToolTipItemName => "AquashardShotgunEcType";
         public override void SetDefaults(Item item) {
             item.damage = 9;
             item.DamageType = DamageClass.Ranged;
@@ -36,15 +37,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<AquashardShotgunHeldProj>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "AquashardShotgun");
-        }
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return false;
         }
     }
 }

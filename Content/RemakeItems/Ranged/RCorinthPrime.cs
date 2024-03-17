@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RCorinthPrime : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.CorinthPrime>();
-        public override int ProtogenesisID => ModContent.ItemType<CorinthPrime>();
+        public override int ProtogenesisID => ModContent.ItemType<CorinthPrimeEcType>();
+        public override string TargetToolTipItemName => "CorinthPrimeEcType";
         public override void SetDefaults(Item item) {
             item.damage = 140;
             item.DamageType = DamageClass.Ranged;
@@ -39,19 +40,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ModContent.ProjectileType<RealmRavagerBullet>();
             item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<CorinthPrimeHeldProj>();
-        }
-
-        public override bool? On_CanUseItem(Item item, Player player) {
-            return false;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "CorinthPrime");
-        }
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return false;
         }
     }
 }

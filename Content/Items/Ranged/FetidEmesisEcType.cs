@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Rarities;
 using CalamityMod;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -7,26 +8,27 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class Hellborn : EctypeItem
+    internal class FetidEmesisEcType : EctypeItem
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Hellborn";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "FetidEmesis";
         public override void SetDefaults() {
-            Item.damage = 20;
+            Item.damage = 129;
             Item.DamageType = DamageClass.Ranged;
-            Item.width = 62;
-            Item.height = 34;
-            Item.useAnimation = Item.useTime = 20;
+            Item.width = 76;
+            Item.height = 46;
+            Item.useTime = Item.useAnimation = 6;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.knockBack = 2f;
-            Item.value = CalamityGlobalItem.Rarity5BuyPrice;
-            Item.rare = ItemRarityID.Pink;
+            Item.noMelee = true;
+            Item.knockBack = 3f;
             Item.UseSound = SoundID.Item11;
             Item.autoReuse = true;
             Item.shoot = ProjectileID.PurificationPowder;
-            Item.shootSpeed = 12f;
+            Item.shootSpeed = 16f;
             Item.useAmmo = AmmoID.Bullet;
+            Item.value = CalamityGlobalItem.Rarity13BuyPrice;
+            Item.rare = ModContent.RarityType<PureGreen>();
             Item.Calamity().canFirePointBlankShots = true;
-            Item.SetHeldProj<HellbornHeldProj>();
+            Item.SetCartridgeGun<FetidEmesisHeldProj>(120);
         }
     }
 }

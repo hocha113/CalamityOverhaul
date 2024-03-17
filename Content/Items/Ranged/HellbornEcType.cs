@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items;
-using CalamityMod.Rarities;
 using CalamityMod;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,29 +7,26 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class SDFMG : EctypeItem
+    internal class HellbornEcType : EctypeItem
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "SDFMG";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Hellborn";
         public override void SetDefaults() {
-            Item.damage = 100;
+            Item.damage = 20;
             Item.DamageType = DamageClass.Ranged;
-            Item.width = 74;
+            Item.width = 62;
             Item.height = 34;
-            Item.useTime = 2;
-            Item.useAnimation = 2;
+            Item.useAnimation = Item.useTime = 20;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.noMelee = true;
-            Item.knockBack = 2.75f;
-            Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
+            Item.knockBack = 2f;
+            Item.value = CalamityGlobalItem.Rarity5BuyPrice;
+            Item.rare = ItemRarityID.Pink;
             Item.UseSound = SoundID.Item11;
             Item.autoReuse = true;
             Item.shoot = ProjectileID.PurificationPowder;
-            Item.shootSpeed = 16f;
+            Item.shootSpeed = 12f;
             Item.useAmmo = AmmoID.Bullet;
-            Item.rare = ModContent.RarityType<DarkBlue>();
             Item.Calamity().canFirePointBlankShots = true;
-            Item.CWR().hasHeldNoCanUseBool = true;
-            Item.CWR().heldProjType = ModContent.ProjectileType<SDFMGHeldProj>();
+            Item.SetHeldProj<HellbornHeldProj>();
         }
     }
 }

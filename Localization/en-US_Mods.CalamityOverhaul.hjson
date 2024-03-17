@@ -177,7 +177,7 @@ Items: {
 			'''
 	}
 
-	DragonRageWhiplashGalacticaEcType: {
+	DragonRageEcType: {
 		DisplayName: Dragon Rage
 		Tooltip:
 			'''
@@ -888,7 +888,7 @@ Items: {
 			'''
 	}
 
-	BlossomFlux: {
+	BlossomFluxEcType: {
 		DisplayName: Blossom Flux
 		Tooltip:
 			'''
@@ -898,7 +898,7 @@ Items: {
 			'''
 	}
 
-	Phangasm: {
+	PhangasmEcType: {
 		DisplayName: Phangasm
 		Tooltip: Arrows fired will be accompanied by several shadow stream projectiles to hit the first enemy it passed through
 	}
@@ -908,7 +908,7 @@ Items: {
 		Tooltip: Use to see Calamity Overhaul Mod related tutorials.... There may be more to come here later
 	}
 
-	Contagion: {
+	ContagionEcType: {
 		DisplayName: Contagion
 		Tooltip:
 			'''
@@ -918,7 +918,7 @@ Items: {
 			'''
 	}
 
-	Alluvion: {
+	AlluvionEcType: {
 		DisplayName: Alluvion
 		Tooltip:
 			'''
@@ -928,12 +928,12 @@ Items: {
 			'''
 	}
 
-	PlanetaryAnnihilation: {
+	PlanetaryAnnihilationEcType: {
 		DisplayName: Planetary Annihilation
 		Tooltip: Calls down Arrows from the sky to rain on your enemies. Converts Wooden arrows to homing rainbow bolts.
 	}
 
-	TheMaelstrom: {
+	TheMaelstromEcType: {
 		DisplayName: The Maelstrom
 		Tooltip:
 			'''
@@ -942,17 +942,18 @@ Items: {
 			'''
 	}
 
-	ClockGatlignum: {
+	ClockGatlignumEcType: {
 		DisplayName: Clock Gatlignum
 		Tooltip:
 			'''
-			Has Strong Recoil
-			Has Less than Ideal Accuracy but shoots out a barrage of bullets.
-			"Any attempts to fit crocodiles in it has unfortunately failed."
+			Strong recoil
+			Press the [KL] key to reload
+			Unleash a hailstorm of bullets
+			"Disappointingly, it doesn't shoot crocodiles."
 			'''
 	}
 
-	ElementalBlaster: {
+	ElementalBlasterEcType: {
 		DisplayName: Elemental Blaster
 		Tooltip:
 			'''
@@ -961,7 +962,7 @@ Items: {
 			'''
 	}
 
-	MarksmanBow: {
+	MarksmanBowEcType: {
 		DisplayName: Marksman Bow
 		Tooltip:
 			'''
@@ -970,7 +971,7 @@ Items: {
 			'''
 	}
 
-	NettlevineGreatbow: {
+	NettlevineGreatbowEcType: {
 		DisplayName: Nettlevine Greatbow
 		Tooltip:
 			'''
@@ -979,7 +980,7 @@ Items: {
 			'''
 	}
 
-	SpectreRifle: {
+	SpectreRifleEcType: {
 		DisplayName: Spectre Rifle
 		Tooltip:
 			'''
@@ -989,17 +990,23 @@ Items: {
 			'''
 	}
 
-	StormDragoon: {
+	SpectreRifle: {
+		DisplayName: Spectre Rifle
+		Tooltip: ""
+	}
+
+	StormDragoonEcType: {
 		DisplayName: Storm Dragoon
 		Tooltip:
 			'''
-			Has Obscene Recoil
-			Uncontrollably lets out a hail of bullets like a storm.
-			"Tests have shown that flying was not intended by the manufacturer, yet still is possible."
+			Strong recoil
+			Press the [KL] key to reload
+			Unleash bullets like a hailstorm
+			"I am the storm that is approaching."
 			'''
 	}
 
-	TheStorm: {
+	TheStormEcType: {
 		DisplayName: The Storm
 		Tooltip:
 			'''
@@ -1008,7 +1015,7 @@ Items: {
 			'''
 	}
 
-	Thunderstorm: {
+	ThunderstormEcType: {
 		DisplayName: Thunderstorm
 		Tooltip:
 			'''
@@ -1018,7 +1025,7 @@ Items: {
 			'''
 	}
 
-	TyrannysEnd: {
+	TyrannysEndEcType: {
 		DisplayName: Tyranny's End
 		Tooltip:
 			'''
@@ -1032,7 +1039,7 @@ Items: {
 			'''
 	}
 
-	AntiMaterielRifle: {
+	AntiMaterielRifleEcType: {
 		DisplayName: Barrett sniper rifle
 		Tooltip:
 			'''
@@ -1046,7 +1053,7 @@ Items: {
 			'''
 	}
 
-	HalibutCannon: {
+	HalibutCannonEcType: {
 		DisplayName: Halibut Cannon
 		Tooltip:
 			'''
@@ -1058,7 +1065,7 @@ Items: {
 			'''
 	}
 
-	SDFMG: {
+	SDFMGEcType: {
 		DisplayName: SDFMG
 		Tooltip:
 			'''
@@ -1068,12 +1075,12 @@ Items: {
 			'''
 	}
 
-	DeadSunsWind: {
+	DeadSunsWindEcType: {
 		DisplayName: Dead Suns Wind
 		Tooltip: ""
 	}
 
-	FetidEmesis: {
+	FetidEmesisEcType: {
 		DisplayName: Fetid Emesis
 		Tooltip:
 			'''
@@ -1089,7 +1096,7 @@ Items: {
 			'''
 	}
 
-	Seadragon: {
+	SeadragonEcType: {
 		DisplayName: Seadragon
 		Tooltip:
 			'''
@@ -1104,7 +1111,7 @@ Items: {
 		Tooltip: The arrows fired will burst out a barren current when they hit the enemy
 	}
 
-	ScorchedEarth: {
+	ScorchedEarthEcType: {
 		DisplayName: Scorched Earth
 		Tooltip:
 			'''
@@ -1116,7 +1123,7 @@ Items: {
 			'''
 	}
 
-	SeasSearing: {
+	SeasSearingEcType: {
 		DisplayName: Seas Searing
 		Tooltip:
 			'''
@@ -1126,7 +1133,7 @@ Items: {
 			'''
 	}
 
-	CoralCannon: {
+	CoralCannonEcType: {
 		DisplayName: Coral Cannon
 		Tooltip:
 			'''
@@ -1137,7 +1144,7 @@ Items: {
 			'''
 	}
 
-	AngelicShotgun: {
+	AngelicShotgunEcType: {
 		DisplayName: Angelic Shotgun
 		Tooltip:
 			'''
@@ -1148,7 +1155,7 @@ Items: {
 			'''
 	}
 
-	AquashardShotgun: {
+	AquashardShotgunEcType: {
 		DisplayName: Aquashard Shotgun
 		Tooltip:
 			'''
@@ -1157,7 +1164,7 @@ Items: {
 			'''
 	}
 
-	Animosity: {
+	AnimosityEcType: {
 		DisplayName: Animosity
 		Tooltip:
 			'''
@@ -1167,7 +1174,7 @@ Items: {
 			'''
 	}
 
-	CorinthPrime: {
+	CorinthPrimeEcType: {
 		DisplayName: Corinth Prime
 		Tooltip:
 			'''
@@ -1179,7 +1186,7 @@ Items: {
 			'''
 	}
 
-	CursedCapper: {
+	CursedCapperEcType: {
 		DisplayName: Cursed Capper
 		Tooltip:
 			'''
@@ -1189,7 +1196,7 @@ Items: {
 			'''
 	}
 
-	Disseminator: {
+	DisseminatorEcType: {
 		DisplayName: Disseminator
 		Tooltip:
 			'''
@@ -1200,7 +1207,7 @@ Items: {
 			'''
 	}
 
-	Hellborn: {
+	HellbornEcType: {
 		DisplayName: Hellborn
 		Tooltip:
 			'''
@@ -1210,7 +1217,7 @@ Items: {
 			'''
 	}
 
-	PetrifiedDisease: {
+	PetrifiedDiseaseEcType: {
 		DisplayName: Petrified Disease
 		Tooltip:
 			'''
@@ -1219,7 +1226,12 @@ Items: {
 			'''
 	}
 
-	Helstorm: {
+	PetrifiedDisease: {
+		DisplayName: Petrified Disease
+		Tooltip: ""
+	}
+
+	HelstormEcType: {
 		DisplayName: Helstorm
 		Tooltip:
 			'''
@@ -1228,7 +1240,7 @@ Items: {
 			'''
 	}
 
-	Leviatitan: {
+	LeviatitanEcType: {
 		DisplayName: Leviatitan
 		Tooltip:
 			'''
@@ -1238,7 +1250,7 @@ Items: {
 			'''
 	}
 
-	GoldenEagle: {
+	GoldenEagleEcType: {
 		DisplayName: Golden Eagle
 		Tooltip:
 			'''
@@ -1260,7 +1272,7 @@ Items: {
 			'''
 	}
 
-	MuzzleBrake: {
+	MuzzleBrakeEcType: {
 		DisplayName: Muzzle Brake
 		Tooltip:
 			'''
@@ -2043,28 +2055,6 @@ Items: {
 			'''
 			Click the left mouse button to fire an energy ball
 			Hold down the left mouse button to charge and fire a beam that explodes upon impact
-			'''
-	}
-
-	ClockGatlignumEcType: {
-		DisplayName: Clock Gatlignum
-		Tooltip:
-			'''
-			Strong recoil
-			Press the [KL] key to reload
-			Unleash a hailstorm of bullets
-			"Disappointingly, it doesn't shoot crocodiles."
-			'''
-	}
-
-	StormDragoonEcType: {
-		DisplayName: Storm Dragoon
-		Tooltip:
-			'''
-			Strong recoil
-			Press the [KL] key to reload
-			Unleash bullets like a hailstorm
-			"I am the storm that is approaching."
 			'''
 	}
 

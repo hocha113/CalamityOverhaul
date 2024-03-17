@@ -8,7 +8,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class CoralCannon : EctypeItem
+    internal class CoralCannonEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CoralCannon";
         public override void SetDefaults() {

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AngelicShotgun";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.AngelicShotgun>();
-        public override int targetCWRItem => ModContent.ItemType<AngelicShotgun>();
+        public override int targetCWRItem => ModContent.ItemType<AngelicShotgunEcType>();
         public override void SetRangedProperty() {
             ControlForce = 0.1f;
             GunPressure = 0.3f;

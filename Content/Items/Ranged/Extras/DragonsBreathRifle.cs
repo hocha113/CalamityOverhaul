@@ -10,11 +10,10 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static CalamityOverhaul.CWRUtils;
 
-namespace CalamityOverhaul.Content.Items.Ranged
+namespace CalamityOverhaul.Content.Items.Ranged.Extras
 {
-    internal class DragonsBreathRifle : EctypeItem
+    internal class DragonsBreathRifle : ModItem
     {
         public override string Texture => CWRConstant.Item + "Ranged/" + "DragonsBreathRifle";
 
@@ -43,17 +42,17 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.rare = ModContent.RarityType<Violet>();
             Item.value = CalamityGlobalItem.Rarity15BuyPrice;
             Item.CWR().isHeldItem = true;
-            
+
         }
 
         public override bool AltFunctionUse(Player player) {
             return true;
         }
 
-        int dbpType => ModContent.ProjectileType<DragonsBreathRifleHeldProj>();
+        private int dbpType => ModContent.ProjectileType<DragonsBreathRifleHeldProj>();
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.ownedProjectileCounts[dbpType] == 0) {
-                int proj = Projectile.NewProjectile(CWRUtils.parent(player), position, velocity, dbpType, damage, knockback, player.whoAmI);
+                int proj = Projectile.NewProjectile(player.parent(), position, velocity, dbpType, damage, knockback, player.whoAmI);
                 if (player.altFunctionUse == 2) {
                     Main.projectile[proj].ai[0] = 1;
                 }
@@ -62,7 +61,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
-            CreateRecipe().
+            _ = CreateRecipe().
                 AddIngredient<AuricBar>(5).
                 AddIngredient<CalamityMod.Items.Weapons.Ranged.TheSevensStriker>().
                 AddTile(ModContent.TileType<CosmicAnvil>()).

@@ -16,7 +16,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RElementalBlaster : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ElementalBlaster>();
-        public override int ProtogenesisID => ModContent.ItemType<ElementalBlaster>();
+        public override int ProtogenesisID => ModContent.ItemType<ElementalBlasterEcType>();
+        public override string TargetToolTipItemName => "ElementalBlasterEcType";
         public override void SetDefaults(Item item) {
             item.damage = 67;
             item.DamageType = DamageClass.Ranged;
@@ -36,15 +37,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Bullet;
             item.CWR().heldProjType = ModContent.ProjectileType<ElementalBlasterHeldProj>();
             item.CWR().hasHeldNoCanUseBool = true;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "ElementalBlaster");
-        }
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return false;
         }
     }
 }

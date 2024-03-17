@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RMarksmanBow : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.MarksmanBow>();
-        public override int ProtogenesisID => ModContent.ItemType<MarksmanBow>();
+        public override int ProtogenesisID => ModContent.ItemType<MarksmanBowEcType>();
+        public override string TargetToolTipItemName => "MarksmanBowEcType";
         public override void SetDefaults(Item item) {
             item.damage = 35;
             item.DamageType = DamageClass.Ranged;
@@ -39,15 +40,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.Calamity().canFirePointBlankShots = true;
             item.CWR().heldProjType = ModContent.ProjectileType<MarksmanBowHeldProj>();
             item.CWR().hasHeldNoCanUseBool = true;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "MarksmanBow");
-        }
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return false;
         }
     }
 }

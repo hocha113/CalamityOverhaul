@@ -16,8 +16,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RBlossomFlux : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.BlossomFlux>();
-        public override int ProtogenesisID => ModContent.ItemType<BlossomFlux>();
-        public override string TargetToolTipItemName => "BlossomFlux";
+        public override int ProtogenesisID => ModContent.ItemType<BlossomFluxEcType>();
+        public override string TargetToolTipItemName => "BlossomFluxEcType";
         public override void SetDefaults(Item item) {
             item.damage = 50;
             item.DamageType = DamageClass.Ranged;

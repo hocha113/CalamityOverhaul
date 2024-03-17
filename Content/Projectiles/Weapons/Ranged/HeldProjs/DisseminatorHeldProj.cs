@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Disseminator";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Disseminator>();
-        public override int targetCWRItem => ModContent.ItemType<Disseminator>();
+        public override int targetCWRItem => ModContent.ItemType<DisseminatorEcType>();
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 16;
             ShootPosNorlLengValue = -13;

@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items;
-using CalamityMod.Rarities;
 using CalamityMod;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,27 +7,30 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class FetidEmesis : EctypeItem
+    internal class AnimosityEcType : EctypeItem
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "FetidEmesis";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "Animosity";
         public override void SetDefaults() {
-            Item.damage = 129;
+            Item.damage = 33;
             Item.DamageType = DamageClass.Ranged;
-            Item.width = 76;
-            Item.height = 46;
-            Item.useTime = Item.useAnimation = 6;
+            Item.width = 70;
+            Item.height = 18;
+            Item.useTime = 4;
+            Item.useAnimation = 12;
+            Item.reuseDelay = 15;
+            Item.useLimitPerAnimation = 3;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
-            Item.knockBack = 3f;
-            Item.UseSound = SoundID.Item11;
+            Item.knockBack = 2f;
+            Item.value = CalamityGlobalItem.Rarity7BuyPrice;
+            Item.rare = ItemRarityID.Lime;
+            Item.UseSound = SoundID.Item31;
             Item.autoReuse = true;
             Item.shoot = ProjectileID.PurificationPowder;
-            Item.shootSpeed = 16f;
+            Item.shootSpeed = 11f;
             Item.useAmmo = AmmoID.Bullet;
-            Item.value = CalamityGlobalItem.Rarity13BuyPrice;
-            Item.rare = ModContent.RarityType<PureGreen>();
             Item.Calamity().canFirePointBlankShots = true;
-            Item.SetCartridgeGun<FetidEmesisHeldProj>(120);
+            Item.SetHeldProj<AnimosityHeldProj>();
         }
     }
 }

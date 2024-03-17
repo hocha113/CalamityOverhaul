@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TheMaelstrom";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TheMaelstrom>();
-        public override int targetCWRItem => ModContent.ItemType<TheMaelstrom>();
+        public override int targetCWRItem => ModContent.ItemType<TheMaelstromEcType>();
         private bool onFireR;
         public override void InOwner() {
             float armRotSengsFront = 60 * CWRUtils.atoR;

@@ -9,29 +9,30 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class AngelicShotgun : EctypeItem
+    internal class CorinthPrimeEcType : EctypeItem
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "AngelicShotgun";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "CorinthPrime";
         public override void SetDefaults() {
-            Item.damage = 136;
-            Item.knockBack = 3f;
+            Item.damage = 140;
             Item.DamageType = DamageClass.Ranged;
-            Item.noMelee = true;
-            Item.autoReuse = true;
-            Item.width = 86;
-            Item.height = 38;
+            Item.width = 106;
+            Item.height = 42;
             Item.useTime = 24;
             Item.useAnimation = 24;
-            Item.UseSound = SoundID.Item38;
             Item.useStyle = ItemUseStyleID.Shoot;
+            Item.noMelee = true;
+            Item.knockBack = 8f;
             Item.value = CalamityGlobalItem.Rarity12BuyPrice;
             Item.rare = ModContent.RarityType<Turquoise>();
             Item.Calamity().donorItem = true;
-            Item.shootSpeed = 12;
-            Item.shoot = ModContent.ProjectileType<IlluminatedBullet>();
+            Item.UseSound = SoundID.Item38;
+            Item.autoReuse = true;
+            Item.shoot = ProjectileID.PurificationPowder;
+            Item.shootSpeed = 12f;
             Item.useAmmo = AmmoID.Bullet;
+            Item.shoot = ModContent.ProjectileType<RealmRavagerBullet>();
             Item.Calamity().canFirePointBlankShots = true;
-            Item.SetHeldProj<AngelicShotgunHeldProj>();
+            Item.SetHeldProj<CorinthPrimeHeldProj>();
         }
     }
 }
