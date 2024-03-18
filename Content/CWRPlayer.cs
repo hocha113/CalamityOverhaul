@@ -211,18 +211,6 @@ namespace CalamityOverhaul.Content
             Player.SendPacket(packet, server);
         }
 
-        public override void ModifyWeaponDamage(Item item, ref StatModifier damage) {
-            
-        }
-
-        public override void ModifyWeaponKnockback(Item item, ref StatModifier knockback) {
-            
-        }
-
-        public override void ModifyWeaponCrit(Item item, ref float crit) {
-
-        }
-
         public override void ModifyScreenPosition() {
             Main.screenPosition += OffsetScreenPos;
         }
@@ -231,10 +219,6 @@ namespace CalamityOverhaul.Content
             yield return new Item(ModContent.ItemType<PebbleSpear>());
             yield return new Item(ModContent.ItemType<PebblePick>());
             yield return new Item(ModContent.ItemType<PebbleAxe>());
-            //yield return new Item(ModContent.ItemType<TheSpiritFlint>());
-            //yield return new Item(ModContent.ItemType<TheUpiStele>());
-            //yield return new Item(ModContent.ItemType<Pebble>(), 999);
-            //yield return new Item(ModContent.ItemType<OverhaulTheBibleBook>());
         }
 
         public override void ModifyStartingInventory(IReadOnlyDictionary<string, List<Item>> itemsByMod, bool mediumCoreDeath) {
