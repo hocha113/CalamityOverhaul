@@ -212,10 +212,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 1.1f;
             }
             if (target.type == ModContent.NPCType<ProfanedGuardianHealer>() || target.type == ModContent.NPCType<ProfanedGuardianDefender>()) {
-                modifiers.FinalDamage *= 1.5f;
+                modifiers.FinalDamage *= 1.25f;
             }
             if (target.type == ModContent.NPCType<ProfanedGuardianCommander>()) {
-                modifiers.FinalDamage *= 2f;
+                modifiers.FinalDamage *= 1.75f;
             }
             if (target.type == CWRIDs.Polterghast) {
                 modifiers.FinalDamage *= 0.8f;
@@ -243,7 +243,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 1.25f;
             }
             if (target.boss) {
-                float sengsValue = 0.5f + InWorldBossPhase.Instance.Level() * 0.025f;
+                float sengsValue = 0.5f + InWorldBossPhase.Instance.Level() * 0.03f;
                 modifiers.FinalDamage *= sengsValue;
             }
             modifiers.DefenseEffectiveness *= 0.75f;

@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override void AI() {
             Lighting.AddLight(Projectile.Center, Color.IndianRed.ToVector3() * 2.2f);
             
-            Projectile.scale += (0.05f + level * 0.003f);
+            Projectile.scale += (0.05f + level * 0.005f);
             Projectile.position += Owner.velocity;
             Projectile.rotation = Projectile.velocity.ToRotation();
             //Projectile.position.Y -= (0.02f + level * 0.005f);
@@ -304,7 +304,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == CWRIDs.ThanatosHead) {
                 modifiers.FinalDamage *= 5.71f;
             }
-            modifiers.DefenseEffectiveness *= 0;
+            modifiers.DefenseEffectiveness *= 0.5f;
         }
 
         public override bool PreDraw(ref Color lightColor) {
