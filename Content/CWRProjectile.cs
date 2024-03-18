@@ -35,7 +35,8 @@ namespace CalamityOverhaul.Content
         TheStorm,
         BarrenBow,
         FetidEmesis,
-        AngelicShotgun
+        AngelicShotgun,
+        RocketLauncher
     }
 
     public class CWRProjectile : GlobalProjectile
@@ -195,6 +196,14 @@ namespace CalamityOverhaul.Content
                 Projectile.NewProjectile(projectile.parent(), player.Center
                     , projectile.velocity, ModContent.ProjectileType<DeepSeaSharks>()
                     , projectile.damage, projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
+            }
+
+            if (SpanTypes == (byte)SpanTypesEnum.RocketLauncher && projectile.numHits == 0) {
+                for (int i = 0; i < 3; i++) {
+                    int proj = Projectile.NewProjectile(projectile.parent(), player.Center
+                    , projectile.velocity.RotatedBy(MathHelper.Lerp(-0.07f, 0.07f, i / 2f)) * 2f, projectile.type
+                    , projectile.damage/2, projectile.knockBack, player.whoAmI, 0, target.whoAmI);
+                }
             }
 
             if (projectile.DamageType == DamageClass.Summon && target.CWR().WhipHitNum > 0) {

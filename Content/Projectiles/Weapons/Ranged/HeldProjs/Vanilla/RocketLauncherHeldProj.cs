@@ -1,8 +1,11 @@
 ﻿using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -15,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.RocketLauncher;
         public override int targetCWRItem => ItemID.RocketLauncher;
         public override void SetRangedProperty() {
-            FireTime = 60;
+            FireTime = 90;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -84,21 +87,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 AmmoTypes = ProjectileID.MiniNukeRocketII;
             }
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            int ammonum1 = Main.rand.Next(6);
-            int ammonum2 = Main.rand.Next(6);
+            _ = SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = -0.6f }, Projectile.Center);
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].extraUpdates += 2;
             Main.projectile[proj].scale *= 1.6f;
-            if (ammonum1 <= 2) {
-                int proj1 = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.03f, 0.03f, ammonum1)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                Main.projectile[proj1].extraUpdates += 0;
-                Main.projectile[proj1].scale *= 1f;
-            }
-            if (ammonum2 <= 2) {
-                int proj2 = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.03f, 0.03f, ammonum2)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                Main.projectile[proj2].extraUpdates += 0;
-                Main.projectile[proj2].scale *= 1f;
-            }
+            Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.RocketLauncher;
         }
     }
 }

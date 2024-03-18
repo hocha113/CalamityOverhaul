@@ -75,7 +75,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 , AmmoType, Main.player[Projectile.owner].HeldItem.damage, 0, Projectile.owner);
                 if (Main.projectile[proj].penetrate > 1) {
                     Main.projectile[proj].penetrate = 1;
-                    Main.projectile[proj].penetrate.Domp();
                 }
                 if (Owner.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun)) {
                     baseFeederGun.Recoil = 3;
