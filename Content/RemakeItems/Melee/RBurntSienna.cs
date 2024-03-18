@@ -3,7 +3,6 @@ using CalamityMod.Projectiles.Healing;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -16,9 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BurntSienna>();
         public override int ProtogenesisID => ModContent.ItemType<BurntSienna>();
         public override string TargetToolTipItemName => "BurntSiennaEcType";
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.width = 42;
             item.damage = 32;

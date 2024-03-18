@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            int shardDamage = (int)(1.45f * WeaponKnockback);
+            int shardDamage = (int)(2.45f * WeaponDamage);
             float shardKB = 2f * WeaponKnockback;
             float randomMode = 0.25f - fireIndex * 0.03f;
             if (randomMode < 0) {
@@ -67,8 +67,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 float randVelMultiplier = Main.rand.NextFloat(0.92f, 1.08f);
                 Vector2 ccwVelocity = ShootVelocity.RotatedBy(-randAngle) * randVelMultiplier;
                 Vector2 cwVelocity = ShootVelocity.RotatedBy(randAngle) * randVelMultiplier;
-                Projectile.NewProjectile(Source, GunShootPos, ccwVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0f, 0f);
-                Projectile.NewProjectile(Source, GunShootPos, cwVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0f, 0f);
+                Projectile.NewProjectile(Source, GunShootPos, ccwVelocity, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0f, 0f);
+                Projectile.NewProjectile(Source, GunShootPos, cwVelocity, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0f, 0f);
             }
             chargeIndex++;
             if (chargeIndex > 3) {

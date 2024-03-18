@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "NettlevineGreatbow";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.NettlevineGreatbow>();
-        public override int targetCWRItem => ModContent.ItemType<NettlevineGreatbow>();
+        public override int targetCWRItem => ModContent.ItemType<NettlevineGreatbowEcType>();
         private int nettlevineIndex;
         public override void InOwner() {
             float armRotSengsFront = 60 * CWRUtils.atoR;

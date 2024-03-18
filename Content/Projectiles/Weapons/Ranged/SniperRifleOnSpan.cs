@@ -2,7 +2,6 @@
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -61,28 +60,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnKill(int timeLeft) {
-            int AmmoType = 0;
-            if (Owner.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun0)) {
-                AmmoType = baseFeederGun0.AmmoTypes;
+            if (Owner.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun)) {
+                int AmmoType = baseFeederGun.AmmoTypes;
                 if (AmmoType == ProjectileID.Bullet) {
                     AmmoType = ProjectileID.BulletHighVelocity;
                 }
-            }
-            if (Projectile.IsOwnedByLocalPlayer() && onFire && AmmoType != 0) {
-                SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/TankCannon") { PitchVariance = 0f }, Projectile.Center);
-                int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center + new Vector2(0, -5), 
-                    (toMou.SafeNormalize(Vector2.Zero) * 15).RotatedBy(Main.rand.NextFloat(rot * -0.01f, rot * 0.01f))
-                , AmmoType, Main.player[Projectile.owner].HeldItem.damage, 0, Projectile.owner);
-                if (Main.projectile[proj].penetrate > 1) {
-                    Main.projectile[proj].penetrate = 1;
-                }
-                if (Owner.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun)) {
+                if (Projectile.IsOwnedByLocalPlayer() && onFire && AmmoType != 0) {
+                    SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/TankCannon") { PitchVariance = 0f }, Projectile.Center);
+                    int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center + new Vector2(0, -5),
+                        (toMou.SafeNormalize(Vector2.Zero) * 15).RotatedBy(Main.rand.NextFloat(rot * -0.01f, rot * 0.01f))
+                    , AmmoType, Main.player[Projectile.owner].HeldItem.damage, 0, Projectile.owner);
+                    if (Main.projectile[proj].penetrate > 1) {
+                        Main.projectile[proj].penetrate = 1;
+                    }
                     baseFeederGun.Recoil = 3;
                     baseFeederGun.GunPressure = 0.5f;
                     baseFeederGun.ControlForce = 0.05f;
                     baseFeederGun.CreateRecoil();
                     baseFeederGun.UpdateMagazineContents();
-                    baseFeederGun.SpawnGunFireDust(Owner.Center, Projectile.rotation.ToRotationVector2());
+                    baseFeederGun.SpawnGunFireDust(Owner.Center, baseFeederGun.ShootVelocity);
                 }
             }
         }

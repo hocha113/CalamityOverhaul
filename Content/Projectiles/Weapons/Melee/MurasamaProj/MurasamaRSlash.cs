@@ -246,6 +246,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 float sengsValue = 0.5f + InWorldBossPhase.Instance.Level() * 0.025f;
                 modifiers.FinalDamage *= sengsValue;
             }
+            modifiers.DefenseEffectiveness *= 0.75f;
         }
 
         public void HandleChannelMovement(Player player, Vector2 playerRotatedPoint) {

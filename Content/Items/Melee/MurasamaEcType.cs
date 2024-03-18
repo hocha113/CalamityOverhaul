@@ -49,28 +49,28 @@ namespace CalamityOverhaul.Content.Items.Melee
             {0, 0.5f },
             {1, 0.55f },
             {2, 0.6f },
-            {3, 0.7f },
-            {4, 0.8f },
-            {5, 0.9f },
-            {6, 1f },
-            {7, 1.1f },
-            {8, 1.2f },
-            {9, 1.3f },
-            {10, 1.4f },
-            {11, 1.5f },
-            {12, 1.55f },
-            {13, 1.6f },
-            {14, 2f }
+            {3, 0.65f },
+            {4, 0.7f },
+            {5, 0.8f },
+            {6, 0.9f },
+            {7, 1f },
+            {8, 1.1f },
+            {9, 1.2f },
+            {10, 1.3f },
+            {11, 1.35f },
+            {12, 1.4f },
+            {13, 1.45f },
+            {14, 1.5f }
         };
         /// <summary>
         /// 每个时期阶段对应的额外暴击振幅的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnCrit"/>
         /// </summary>
         static Dictionary<int, int> SetLevelCritDictionary => new Dictionary<int, int>(){
             {0, 1 },
-            {1, 6 },
-            {2, 11 },
-            {3, 16 },
-            {4, 21 },
+            {1, 5 },
+            {2, 10 },
+            {3, 15 },
+            {4, 20 },
             {5, 21 },
             {6, 26 },
             {7, 26 },
@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             player.CWR().HeldMurasamaBool = true;
             //这个代码实现了玩家手持时的动画，生成一个对玩家来说唯一的弹幕来实现这些
             if (player.ownedProjectileCounts[heldProjType] == 0 && player.whoAmI == Main.myPlayer) {
-                Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, heldProjType, Item.damage, 0, player.whoAmI);
+                Projectile.NewProjectile(Item.GetSource_FromThis(), player.Center, Vector2.Zero, heldProjType, Item.damage, 0, player.whoAmI);
             }
         }
 

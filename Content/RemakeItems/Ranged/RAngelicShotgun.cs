@@ -1,16 +1,13 @@
-﻿using CalamityMod.Items;
+﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Terraria.ID;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityMod;
-using System.Collections.Generic;
-using Terraria.DataStructures;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
@@ -39,16 +36,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<AngelicShotgunHeldProj>();
-            item.EasySetLocalTextNameOverride("AngelicShotgun");
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "AngelicShotgun");
-        }
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return false;
+            item.EasySetLocalTextNameOverride("AngelicShotgunEcType");
         }
     }
 }

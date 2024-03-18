@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content
             return base.CheckDead(npc);
         }
 
-        public override void PostAI(NPC npc) {
+        public override bool PreAI(NPC npc) {
             if (MurasamabrBeatBackBool) {
                 npc.position += MurasamabrBeatBackVr;
                 if (oldNPCPos.Y - npc.position.Y < 0) {
@@ -83,6 +83,10 @@ namespace CalamityOverhaul.Content
                     MurasamabrBeatBackBool = false;
                 }
             }
+            return base.PreAI(npc);
+        }
+
+        public override void PostAI(NPC npc) {
             if (!CWRUtils.isClient) {
                 if (WhipHitNum > 10) {
                     WhipHitNum = 10;

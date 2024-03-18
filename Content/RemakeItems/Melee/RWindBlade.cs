@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Orange;
             item.shoot = ModContent.ProjectileType<Cyclones>();
             item.shootSpeed = 3f;
-            CWRUtils.EasySetLocalTextNameOverride(item, "WindBlade");
+            CWRUtils.EasySetLocalTextNameOverride(item, "WindBladeEcType");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

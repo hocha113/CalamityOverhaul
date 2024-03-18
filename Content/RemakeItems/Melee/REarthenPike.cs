@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Pink;
             item.shoot = ModContent.ProjectileType<REarthenPikeSpear>();
             item.shootSpeed = 8f;
-            CWRUtils.EasySetLocalTextNameOverride(item, "EarthenPike");
+            CWRUtils.EasySetLocalTextNameOverride(item, "EarthenPikeEcType");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

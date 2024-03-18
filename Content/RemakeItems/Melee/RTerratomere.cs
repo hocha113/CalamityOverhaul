@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ModContent.RarityType<Turquoise>();
             item.shoot = ModContent.ProjectileType<RTerratomereHoldoutProj>();
             item.shootSpeed = 60f;
-            CWRUtils.EasySetLocalTextNameOverride(item, "Terratomere");
+            CWRUtils.EasySetLocalTextNameOverride(item, "TerratomereEcType");
         }
 
         public override bool? UseItem(Item item, Player player) {

@@ -7,6 +7,7 @@ using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -107,7 +108,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
                         if (Projectile.IsOwnedByLocalPlayer()) {
                             Owner.velocity += UnitToMouseV * -3;
-                            Projectile.NewProjectile(Owner.parent(), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
+                            Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
                             , breakOutType, (int)(MurasamaEcType.ActualTrueMeleeDamage * (0.45f + level * 0.05f)), 0, Owner.whoAmI);
                         }
 
@@ -126,7 +127,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     SoundEngine.PlaySound(MurasamaEcType.BigSwing with { Pitch = -0.1f }, Projectile.Center);
 
                     if (Projectile.IsOwnedByLocalPlayer()) {
-                        Projectile.NewProjectile(Owner.parent(), Projectile.Center, new Vector2(0, 5)
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 5)
                         , ModContent.ProjectileType<MurasamaDownSkill>(), (int)(MurasamaEcType.ActualTrueMeleeDamage * (2 + level * 1f)), 0, Owner.whoAmI);
 
                         murasama.CWR().ai[0] -= 1;//消耗一点能量

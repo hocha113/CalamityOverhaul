@@ -383,6 +383,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override bool PreAI() {
             bool reset = base.PreAI();
+            if (ModOwner == null) {
+                ModOwner = Owner.CWR();
+            }
             ModOwner.HeldGunBool = true;
             return reset;
         }

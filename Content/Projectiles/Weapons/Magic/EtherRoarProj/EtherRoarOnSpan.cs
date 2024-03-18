@@ -1,12 +1,12 @@
 ﻿using CalamityMod.Particles;
 using CalamityOverhaul.Content.Items.Magic;
 using Microsoft.Xna.Framework;
-using Terraria;
 using Terraria.ModLoader;
+using Terraria;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.EtherRoarProj
 {
-    internal class AethersWhisperOnSpan : BaseBloomOnSpan
+    internal class EtherRoarOnSpan : BaseBloomOnSpan
     {
         public override void SetBloom() {
             color1 = Color.Blue;
@@ -15,6 +15,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             toMouLeng = 65;
             norlLeng = -2;
             MaxCharge = 30;
+        }
+
+        public override void SpanProjFunc(int time) {
+            base.SpanProjFunc(time);
         }
 
         public override void SpanProjFuncInKill() {
@@ -26,8 +30,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             }
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center
                 , Projectile.rotation.ToRotationVector2() * Owner.GetShootState().ScaleFactor
-                , ModContent.ProjectileType<AetherOrb>()
-                , Projectile.damage, Projectile.knockBack, Owner.whoAmI, 0);
+                , ModContent.ProjectileType<EtherRoarOrb>()
+                , Projectile.damage, Projectile.knockBack, Owner.whoAmI, 0, Projectile.whoAmI);
         }
     }
 }

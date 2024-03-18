@@ -39,7 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CalamityMod">
-      <HintPath>..\..\ModReader\CalamityMod\CalamityMod.dll</HintPath>
+      <HintPath>C:\Users\z\Documents\My Games\Terraria\tModLoader\ModReader\CalamityMod\CalamityMod.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content
         public bool level13 => Downed31.Invoke() || Downed32.Invoke();
 
         public int Level() {
-            //return 13;
+            //return 3;
             int level = 0;
             if (level0) {
                 level = 1;

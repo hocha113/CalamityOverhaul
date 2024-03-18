@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     for (int i = 0; i < 34; i++) {
                         Vector2 vr = Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.6f, 1.7f);
                         Projectile.NewProjectile(Projectile.parent(), targetPos + Projectile.velocity * -3, vr
-                            , ModContent.ProjectileType<BMGFIRE>(), (int)(Projectile.damage * (crit ? 0.5f : 0.3f)), 0, Projectile.owner, Main.rand.Next(23));
+                            , ModContent.ProjectileType<BMGFIRE>(), (int)(Projectile.damage * (crit ? 0.35f : 0.2f)), 0, Projectile.owner, Main.rand.Next(23));
                     }
                 }
                 else {

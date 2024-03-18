@@ -52,7 +52,6 @@ namespace CalamityOverhaul.Content.Projectiles
 
             UpdateInPos();
 
-            // Turn off boss rush mode.
             if (BossRushEvent.BossRushActive || BossRushEvent.StartTimer > 0) {
                 if (Time == 2f)
                     SoundEngine.PlaySound(BossRushEvent.TerminusDeactivationSound, Main.LocalPlayer.Center);

@@ -961,16 +961,6 @@ Items: {
 			'''
 	}
 
-	SpectreRifleEcType: {
-		// DisplayName: Spectre Rifle
-		/* Tooltip:
-			'''
-			Has Strong Recoil
-			Launches out several spirit to latch onto foes, dealing continous damage
-			"The recoil is simply just because the spirits are really angry."
-			''' */
-	}
-
 	SpectreRifle: {
 		DisplayName: 幽灵狙击枪
 		Tooltip:
@@ -1063,6 +1053,7 @@ Items: {
 		Tooltip:
 			'''
 			无后座力
+			按下[KL]键进行换弹
 			发射一束聚焦的高温等离子体，触碰物块后反弹
 			等离子射线反弹后会追踪最近的敌人
 			连续命中时引发巨大爆炸
@@ -1207,15 +1198,6 @@ Items: {
 			'''
 	}
 
-	PetrifiedDiseaseEcType: {
-		// DisplayName: Petrified Disease
-		/* Tooltip:
-			'''
-			Fire a giant stone poison arrow
-			"A strange disease, whether biological or plant, that gradually turns to stone upon infection."
-			''' */
-	}
-
 	PetrifiedDisease: {
 		DisplayName: 化石病
 		Tooltip:
@@ -1258,34 +1240,25 @@ Items: {
 	}
 
 	SurgeDriverEcType: {
-		// DisplayName: Surge Driver
-		/* Tooltip:
+		DisplayName: Surge Driver
+		Tooltip:
 			'''
-			No recoil
-			Press the [KL] key to reload
-			Fires a large number of dissociative rays, with the firepower becoming more intense as the ammunition decreases
-			At its peak, it switches to firing gamma ray explosions
-			''' */
-	}
-
-	MuzzleBrakeEcType: {
-		// DisplayName: Muzzle Brake
-		/* Tooltip:
+			无后坐力
+			按下[KL]键进行换弹
+			发射大量的解离射线，随着弹药的减少火力变得更强
+			在峰值时，它会转向发射伽马射线爆炸
 			'''
-			Greatly reduces the recoil and chamber pressure of the firearm
-			But it significantly reduces the bullet's power
-			''' */
 	}
 
 	DeepcoreGK2EcType: {
-		// DisplayName: Deepcore GK2
-		/* Tooltip:
+		DisplayName: 深核GK2
+		Tooltip:
 			'''
-			Weak recoil
-			Press the [Scope] key to aim
-			Right click to zoom out
-			"Perfect braking design, with a built-in microcomputer. It can not only automatically reload, but also help you toast your breakfast bread."
-			''' */
+			较弱的后坐力
+			按下[KL]键进行换弹
+			右键进行全自动扫射
+			"完美的制动设计，内置微型电脑。它不仅可以自动换弹，还可以帮你烤早餐面包"
+			'''
 	}
 
 	DodusHandcannonEcType: {
@@ -1894,7 +1867,7 @@ Items: {
 			按下[KL]键进行换弹
 			快速发射磷光彩弹
 			按下右键发射一束强力彩弹，在移动时使用会推动你冲刺
-			这个技能有{0}秒冷却时间
+			这个技能有5秒冷却时间
 			冷却期间，你可以更快、更精准地射击
 			"对着自己的脸来一发，你就能欢快地洗一整天的脸了"
 			'''
@@ -2089,12 +2062,21 @@ Items: {
 	}
 
 	MonsoonEcType: {
-		// DisplayName: Monsoon Ec Type
-		// Tooltip: ""
+		DisplayName: 季风
+		Tooltip:
+			'''
+			发射五发并排的箭矢，有概率射出鲨鱼或者海洋箭矢
+			右键需要爆发出大量箭矢
+			'''
 	}
 
 	AethersWhisperEcType: {
-		// DisplayName: Aethers Whisper Ec Type
+		DisplayName: 以太之低语
+		Tooltip: 发射会多次分裂的拉德尔灵能冲击，距离越远伤害越高
+	}
+
+	EtherRoar: {
+		// DisplayName: Ether Roar
 		// Tooltip: ""
 	}
 }
@@ -2515,6 +2497,10 @@ Projectiles: {
 	// AetherOrb.DisplayName: Aether Orb
 	// AetherOrb2.DisplayName: Aether Orb2
 	// SniperRifleOnSpan.DisplayName: Sniper Rifle On Span
+	// EtherRoarHeldProj.DisplayName: Ether Roar Held Proj
+	// EtherRoarOnSpan.DisplayName: Ether Roar On Span
+	// EtherRoarOrb.DisplayName: Ether Roar Orb
+	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
 }
 
 Configs: {

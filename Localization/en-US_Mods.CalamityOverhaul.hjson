@@ -980,7 +980,7 @@ Items: {
 			'''
 	}
 
-	SpectreRifleEcType: {
+	SpectreRifle: {
 		DisplayName: Spectre Rifle
 		Tooltip:
 			'''
@@ -988,11 +988,6 @@ Items: {
 			Launches out several spirit to latch onto foes, dealing continous damage
 			"The recoil is simply just because the spirits are really angry."
 			'''
-	}
-
-	SpectreRifle: {
-		DisplayName: Spectre Rifle
-		Tooltip: ""
 	}
 
 	StormDragoonEcType: {
@@ -1077,7 +1072,16 @@ Items: {
 
 	DeadSunsWindEcType: {
 		DisplayName: Dead Suns Wind
-		Tooltip: ""
+		Tooltip:
+			'''
+			No recoil
+			Press the [KL] key to reload
+			It fires a focused beam of hot plasma that bounces off the object after touching it
+			The plasma rays bounce back and track the nearest enemy
+			A huge explosion when it hits in succession
+			Using gel as ammunition
+			"How did it turn the gel into this?"
+			'''
 	}
 
 	FetidEmesisEcType: {
@@ -1217,18 +1221,13 @@ Items: {
 			'''
 	}
 
-	PetrifiedDiseaseEcType: {
+	PetrifiedDisease: {
 		DisplayName: Petrified Disease
 		Tooltip:
 			'''
 			Fire a giant stone poison arrow
 			"A strange disease, whether biological or plant, that gradually turns to stone upon infection."
 			'''
-	}
-
-	PetrifiedDisease: {
-		DisplayName: Petrified Disease
-		Tooltip: ""
 	}
 
 	HelstormEcType: {
@@ -1269,15 +1268,6 @@ Items: {
 			Press the [KL] key to reload
 			Fires a large number of dissociative rays, with the firepower becoming more intense as the ammunition decreases
 			At its peak, it switches to firing gamma ray explosions
-			'''
-	}
-
-	MuzzleBrakeEcType: {
-		DisplayName: Muzzle Brake
-		Tooltip:
-			'''
-			Greatly reduces the recoil and chamber pressure of the firearm
-			But it significantly reduces the bullet's power
 			'''
 	}
 
@@ -1898,7 +1888,7 @@ Items: {
 			Press the [KL] key to reload
 			Rapidly fires phosphorescent rounds
 			Right-click to fire a powerful burst of colored rounds that propels you forward while moving
-			This ability has a {0} second cooldown
+			This ability has a 5 second cooldown
 			During the cooldown, you can shoot faster and more accurately
 			"Give yourself a faceful, and you'll be cheerfully washing your face for the whole day"
 			'''
@@ -2087,12 +2077,21 @@ Items: {
 	}
 
 	MonsoonEcType: {
-		DisplayName: Monsoon Ec Type
-		Tooltip: ""
+		DisplayName: Monsoon
+		Tooltip:
+			'''
+			Fire five side-by-side arrows, with a chance of a shark or ocean arrow
+			The right button needs to explode a lot of arrows
+			'''
 	}
 
 	AethersWhisperEcType: {
-		DisplayName: Aethers Whisper Ec Type
+		DisplayName: Aethers Whisper
+		Tooltip: Fire multiple splintered Radelenergy shocks, the greater the distance the damage
+	}
+
+	EtherRoar: {
+		DisplayName: Ether Roar
 		Tooltip: ""
 	}
 }
@@ -2513,6 +2512,10 @@ Projectiles: {
 	AetherOrb.DisplayName: Aether Orb
 	AetherOrb2.DisplayName: Aether Orb2
 	SniperRifleOnSpan.DisplayName: Sniper Rifle On Span
+	EtherRoarHeldProj.DisplayName: Ether Roar Held Proj
+	EtherRoarOnSpan.DisplayName: Ether Roar On Span
+	EtherRoarOrb.DisplayName: Ether Roar Orb
+	EtherRoarOrb2.DisplayName: Ether Roar Orb2
 }
 
 Configs: {

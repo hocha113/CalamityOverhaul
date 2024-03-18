@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.autoReuse = true;
             item.shoot = ModContent.ProjectileType<MeleeFossilShard>();
             item.shootSpeed = 12f;
-            CWRUtils.EasySetLocalTextNameOverride(item, "Aftershock");
+            CWRUtils.EasySetLocalTextNameOverride(item, "AftershockEcType");
         }
 
         public override void ModifyShootStats(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {

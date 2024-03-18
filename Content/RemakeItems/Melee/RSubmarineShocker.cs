@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.UseSound = SoundID.Item1;
             item.value = CalamityGlobalItem.Rarity5BuyPrice;
             item.rare = ItemRarityID.Pink;
-            item.EasySetLocalTextNameOverride("SubmarineShocker");
+            item.EasySetLocalTextNameOverride("SubmarineShockerEcType");
         }
 
     }

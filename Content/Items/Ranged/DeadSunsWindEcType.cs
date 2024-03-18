@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ModContent.ProjectileType<CosmicFire>();
             Item.shootSpeed = 9f;
             Item.useAmmo = AmmoID.Gel;
-            Item.CWR().hasHeldNoCanUseBool = true;
-            Item.CWR().heldProjType = ModContent.ProjectileType<DeadSunsWindHeldProj>();
+            Item.SetCartridgeGun<DeadSunsWindHeldProj>(120);
+            Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
         }
     }
 }

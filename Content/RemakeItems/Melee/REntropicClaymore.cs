@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Cyan;
             item.shoot = ModContent.ProjectileType<EntropicClaymoreHoldoutProj>();
             item.shootSpeed = 12f;
-            CWRUtils.EasySetLocalTextNameOverride(item, "EntropicClaymore");
+            CWRUtils.EasySetLocalTextNameOverride(item, "EntropicClaymoreEcType");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

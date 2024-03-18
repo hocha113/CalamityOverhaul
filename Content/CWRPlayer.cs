@@ -12,11 +12,10 @@ using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using static Humanizer.In;
 
 namespace CalamityOverhaul.Content
 {
-    public delegate void PlayerHitDelegate(Player player, Player.HurtInfo info);
-
     public class CWRPlayer : ModPlayer
     {
         /// <summary>
@@ -69,6 +68,7 @@ namespace CalamityOverhaul.Content
         /// 升龙技冷却时间
         /// </summary>
         public int RisingDragonCoolDownTime;
+        public int SafeHeldProjIndex;
         /// <summary>
         /// 是否受伤
         /// </summary>
@@ -91,6 +91,7 @@ namespace CalamityOverhaul.Content
         public override void Initialize() {
             TheRelicLuxor = 0;
             PressureIncrease = 1;
+            SafeHeldProjIndex = -1;
             OnHit = false;           
             LoadMuzzleBrake = false;
             InitialCreation = true;
@@ -105,6 +106,7 @@ namespace CalamityOverhaul.Content
             TheRelicLuxor = 0;
             LoadMuzzleBrakeLevel = 0;
             PressureIncrease = 1;
+            SafeHeldProjIndex = -1;
             OnHit = false;
             InFoodStallChair = false;
             EndlessStabilizerBool = false;
@@ -229,18 +231,30 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        /// <summary>
+        /// 尝试获取玩家当前持有的类型为 T 的投射物实例。
+        /// </summary>
+        /// <typeparam name="T">要获取的投射物实例的类型。</typeparam>
+        /// <param name="result">方法返回时，如果找到且成功获取到类型为 T 的投射物实例，则包含该实例；否则为 null。</param>
+        /// <returns>如果找到并成功获取到类型为 T 的投射物实例，则为 true；否则为 false。</returns>
         internal bool TryGetHeldProjInds<T>(out T result) where T : class {
-            if (Player.heldProj < 0 || Player.heldProj >= Main.projectile.Length) {
-                result = null;
-                return false;
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile p = Main.projectile[i];
+                // 检查投射物是否处于激活状态，是否属于玩家所有，并且是否隐藏
+                if (!p.active || p.owner != Player.whoAmI || !p.hide) {
+                    continue; // 如果当前投射物不符合条件，则跳过并检查下一个投射物
+                }
+                if (p.ModProjectile as T != null) {
+                    Player.heldProj = p.whoAmI;
+                    T instance = p.ModProjectile as T;
+                    if (instance != null) {
+                        result = instance;
+                        return true;
+                    }
+                }
             }
-            T instance = Main.projectile[Player.heldProj]?.ModProjectile as T;
-            if (instance == null) {
-                result = null;
-                return false;
-            }
-            result = instance;
-            return true;
+            result = null;
+            return false;
         }
         /// <summary>
         /// 获取玩家所手持的BaseHeldRanged实例

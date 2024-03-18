@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>
     /// 龙蒿大弓
     /// </summary>
-    internal class NettlevineGreatbow : EctypeItem
+    internal class NettlevineGreatbowEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "NettlevineGreatbow";
         public override void SetDefaults() {

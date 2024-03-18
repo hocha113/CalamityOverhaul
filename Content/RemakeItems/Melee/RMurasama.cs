@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             player.CWR().HeldMurasamaBool = true;
             //这个代码实现了玩家手持时的动画，生成一个对玩家来说唯一的弹幕来实现这些
             if (player.ownedProjectileCounts[MurasamaEcType.heldProjType] == 0 && player.whoAmI == Main.myPlayer) {
-                Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, MurasamaEcType.heldProjType, item.damage, 0, player.whoAmI);
+                Projectile.NewProjectile(item.GetSource_FromThis(), player.Center, Vector2.Zero, MurasamaEcType.heldProjType, item.damage, 0, player.whoAmI);
             }
         }
 
