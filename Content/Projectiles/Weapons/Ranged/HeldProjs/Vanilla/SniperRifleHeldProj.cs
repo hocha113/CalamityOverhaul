@@ -17,20 +17,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.SniperRifle].Value;
         public override int targetCayItem => ItemID.SniperRifle;
         public override int targetCWRItem => ItemID.SniperRifle;
-        public static SoundStyle ShootSound = new("CalamityMod/Sounds/Item/TankCannon") { PitchVariance = 0.5f };
         private SlotId accumulator;
         public override void SetRangedProperty() {
-            FireTime = 60;
+            FiringDefaultSound = false;
+            CanUpdateMagazineContentsInShootBool = false;
             ShootPosToMouLengValue = 0;
-            ShootPosNorlLengValue = -2;
+            ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0.2f;
-            ControlForce = 0.05f;
-            Recoil = 1f;
+            GunPressure = 0f;
+            ControlForce = 0f;
+            Recoil = 0f;
             RangeOfStress = 48;
             kreloadMaxTime = 120;
-            ShootSound = new("CalamityMod/Sounds/Item/TankCannon") { Pitch = 0.5f };
         }
 
         public override void PreInOwnerUpdate() {
@@ -38,41 +37,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
+            GunPressure = 0f;
+            ControlForce = 0f;
+            Recoil = 0f;
+            if (BulletNum == 1) {
+                FireTime = 90;
+                Item.crit = 100;
+            }
+            if (BulletNum == 4) {
+                Item.crit = -1000;
+                FireTime = 60;
+            }
+
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<SniperRifleOnSpan>()] == 0) {
-                accumulator = SoundEngine.PlaySound(CWRSound.Accumulator with { Pitch = 0.3f }, Projectile.Center);
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
+                //accumulator = SoundEngine.PlaySound(CWRSound.Accumulator with { Pitch = 0.3f }, Projectile.Center);
+                Projectile.NewProjectile(Source, GunShootPos, Vector2.Zero
                     , ModContent.ProjectileType<SniperRifleOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
             }
             return;
-            //SoundEngine.PlaySound(ShootSound, Projectile.Center);
-            //if (AmmoTypes == ProjectileID.Bullet) {
-            //    AmmoTypes = ProjectileID.BulletHighVelocity;
-            //}
-            //SpawnGunFireDust(GunShootPos, ShootVelocity);
-            //if (BulletNum == 3 | BulletNum == 2) {
-            //    int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            //    if (Main.projectile[proj].penetrate > 1) {
-            //        Main.projectile[proj].penetrate = 1;
-            //    }
-            //}
-            //if (BulletNum == 1) {
-            //    int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            //    if (Main.projectile[proj].penetrate > 1) {
-            //        Main.projectile[proj].penetrate = 1;
-            //    }
-            //    FireTime = 90;
-            //    Item.crit = 100;
-            //}
-            //if (BulletNum == 0) {
-            //    int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage * 2, WeaponKnockback * 2, Owner.whoAmI, 0);
-            //    Main.projectile[proj1].extraUpdates += 3;
-            //    if (Main.projectile[proj1].penetrate > 1) {
-            //        Main.projectile[proj1].penetrate = 1;
-            //        Item.crit = -1000;
-            //        FireTime = 60;
-            //    }
-            //}
         }
     }
 }
