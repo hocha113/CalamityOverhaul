@@ -10,6 +10,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal abstract class BaseHeldRanged : BaseHeldProj
     {
         /// <summary>
+        /// 获取对应的<see cref="CWRPlayer"/>实例，在弹幕初始化时更新这个值
+        /// </summary>
+        public CWRPlayer ModOwner = null;
+        /// <summary>
+        /// 获取对应的<see cref="CWRItems"/>实例，在弹幕初始化时更新这个值
+        /// </summary>
+        public CWRItems ModItem = null;
+        /// <summary>
         /// 一个通用的计时器
         /// </summary>
         public ref float Time => ref Projectile.ai[0];
@@ -80,7 +88,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        public override void SetDefaults() {
+        public sealed override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
@@ -120,10 +128,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.Kill();
                 return false;
             }
+            ModItem = Item.CWR();
+            ModOwner = Owner.CWR();
+            ModOwner.HeldRangedBool = true;
             if (Owner.PressKey() && !Owner.mouseInterface) {
                 Owner.itemTime = 2;
             }
-            if (Item.CWR().Scope) {
+            if (ModItem.Scope) {
                 ScopeSrecen();
             }
             else {

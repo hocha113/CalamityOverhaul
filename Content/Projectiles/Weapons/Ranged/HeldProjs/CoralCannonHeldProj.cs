@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => IsKreload ? CWRConstant.Item_Ranged + "CoralCannon_PrimedForAction" : CWRConstant.Cay_Wap_Ranged + "CoralCannon";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.CoralCannon>();
-        public override int targetCWRItem => ModContent.ItemType<CoralCannon>();
+        public override int targetCWRItem => ModContent.ItemType<CoralCannonEcType>();
         public override void SetRangedProperty() {
             loadTheRounds = CWRSound.CaseEjection2 with { Pitch = -0.2f };
         }

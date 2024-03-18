@@ -19,7 +19,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RBlightedCleaver : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BlightedCleaver>();
-        public override int ProtogenesisID => ModContent.ItemType<BlightedCleaver>();
+        public override int ProtogenesisID => ModContent.ItemType<BlightedCleaverEcType>();
+        public override string TargetToolTipItemName => "BlightedCleaverEcType";
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -39,10 +40,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Yellow;
             item.shoot = ModContent.ProjectileType<RBlazingPhantomBlade>();
             item.shootSpeed = 12f;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "BlightedCleaver");
         }
 
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
@@ -119,8 +116,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         private static void UpdateBar(Item item) {
-            if (item.CWR().MeleeCharge > BlightedCleaver.BlightedCleaverMaxRageEnergy)
-                item.CWR().MeleeCharge = BlightedCleaver.BlightedCleaverMaxRageEnergy;
+            if (item.CWR().MeleeCharge > BlightedCleaverEcType.BlightedCleaverMaxRageEnergy)
+                item.CWR().MeleeCharge = BlightedCleaverEcType.BlightedCleaverMaxRageEnergy;
         }
 
         public void DrawRageEnergyChargeBar(Player player, Item item) {
@@ -131,7 +128,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             float slp = 3;
             int offsetwid = 4;
             Vector2 drawPos = CWRUtils.WDEpos(player.Center + new Vector2(rageEnergyBar.Width / -2 * slp, 135));
-            Rectangle backRec = new Rectangle(offsetwid, 0, (int)((rageEnergyBar.Width - offsetwid * 2) * (item.CWR().MeleeCharge / BlightedCleaver.BlightedCleaverMaxRageEnergy)), rageEnergyBar.Height);
+            Rectangle backRec = new Rectangle(offsetwid, 0, (int)((rageEnergyBar.Width - offsetwid * 2) * (item.CWR().MeleeCharge / BlightedCleaverEcType.BlightedCleaverMaxRageEnergy)), rageEnergyBar.Height);
 
             Main.spriteBatch.ResetBlendState();
             Main.EntitySpriteDraw(

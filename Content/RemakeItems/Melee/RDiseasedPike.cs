@@ -17,10 +17,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RDiseasedPike : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.DiseasedPike>();
-        public override int ProtogenesisID => ModContent.ItemType<DiseasedPike>();
+        public override int ProtogenesisID => ModContent.ItemType<DiseasedPikeEcType>();
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         }
+        public override string TargetToolTipItemName => "DiseasedPikeEcType";
 
         public override void SetDefaults(Item item) {
             item.width = 62;
@@ -40,10 +41,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Yellow;
             item.shoot = ModContent.ProjectileType<RDiseasedPikeSpear>();
             item.shootSpeed = 10f;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "DiseasedPike");
         }
 
         public override bool? AltFunctionUse(Item item, Player player) => true;

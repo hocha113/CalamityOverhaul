@@ -107,6 +107,7 @@ namespace CalamityOverhaul
             CWRParticleHandler.Load();
             EffectsRegistry.LoadEffects();
             On_Main.DrawInfernoRings += PeSystem.CWRDrawForegroundParticles;
+            On_Player.BuyItem += CWRItems.BuyItemInitialize;
 
             base.Load();
         }
@@ -114,6 +115,7 @@ namespace CalamityOverhaul
         public override void Unload() {
             CWRParticleHandler.Unload();
             On_Main.DrawInfernoRings -= PeSystem.CWRDrawForegroundParticles;
+            On_Player.BuyItem -= CWRItems.BuyItemInitialize;
             base.Unload();
         }
 

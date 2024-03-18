@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "PhangasmBow";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Phangasm>();
-        public override int targetCWRItem => ModContent.ItemType<Phangasm>();
+        public override int targetCWRItem => ModContent.ItemType<PhangasmEcType>();
         private const int maxIndex = 8;
         private int Index {
             get => (int)Projectile.ai[1];

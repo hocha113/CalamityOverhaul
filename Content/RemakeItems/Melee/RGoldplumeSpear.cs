@@ -14,7 +14,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RGoldplumeSpear : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.GoldplumeSpear>();
-        public override int ProtogenesisID => ModContent.ItemType<GoldplumeSpear>();
+        public override int ProtogenesisID => ModContent.ItemType<GoldplumeSpearEcType>();
+        public override string TargetToolTipItemName => "GoldplumeSpearEcType";
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -40,10 +41,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Orange;
             item.shoot = ModContent.ProjectileType<RGoldplumeSpearProjectile>();
             item.shootSpeed = 8f;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "GoldplumeSpear");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

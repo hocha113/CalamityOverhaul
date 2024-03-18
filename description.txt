@@ -1,8 +1,11 @@
-CalamityOverhaul Mod is designed to comprehensively optimize various aspects of the CalamityMod. 
-The current version has undergone a redesign of over a hundred CalamityMod weapons, making them more refined, practical, and visually striking. 
+The Calamity Overhaul Mod aims to comprehensively optimize various aspects of the Calamity Mod. 
 
-Additionally, adjustments have been made to hundreds of elements in the CalamityMod, 
-introducing more craftable recipes and implementing extensive numerical balancing to enhance the overall smoothness of the gaming experience.
+The current version has undergone redesigns for hundreds of Calamity Mod weapons, making them more refined, practical, and eye-catching. 
 
-The mod introduces several new extended weapons along with a brand-new crafting system to further enrich the gameplay flow. 
-Future updates will continue to reset a substantial number of weapons and mechanics within the CalamityMod, offering players a fresh and novel Calamity experience.
+Additionally, adjustments have been made to hundreds of aspects of the Calamity Mod, including the addition of more craftable recipes and extensive numerical balancing to provide a smoother gaming experience. 
+
+This mod introduces multiple new expanded weapons along with a brand-new crafting system to further enrich the gameplay progression. 
+
+Future updates will continue to reset a significant number of Calamity Mod weapons and mechanics, bringing players a fresh Calamity experience.
+
+The mod is open-source on Github, and you can search for CalamityOverhaul to find the mod's repository.

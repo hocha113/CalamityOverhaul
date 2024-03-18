@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
             }
             else {
-                if (murasama.type != ModContent.ItemType<Murasama>()) {
+                if (murasama.type != ModContent.ItemType<MurasamaEcType>()) {
                     Projectile.Kill();
                     return;
                 }
@@ -133,17 +133,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                                 break;//不管如何，执行一次伤害二次调整后都需要跳出
                             }
                         }
-                        if (Murasama.NameIsVergil(Owner)) {
+                        if (MurasamaEcType.NameIsVergil(Owner)) {
                             SoundEngine.PlaySound(CWRSound.V_Hooaaa with { Volume = 0.6f }, Projectile.Center);
                         }
                         murasama.initialize();
 
-                        int sengsDmg = (int)(Murasama.ActualTrueMeleeDamage * sengs);
+                        int sengsDmg = (int)(MurasamaEcType.ActualTrueMeleeDamage * sengs);
                         int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
                         , ModContent.ProjectileType<MurasamaBreakSwing>(), sengsDmg, 0, Owner.whoAmI);
                         Main.projectile[proj].scale = 0.5f + level * 0.0f;
 
-                        Owner.CWR().RisingDragonCoolDownTime += Murasama.GetOnRDCD / 2;//添加升龙冷却
+                        Owner.CWR().RisingDragonCoolDownTime += MurasamaEcType.GetOnRDCD / 2;//添加升龙冷却
                         Projectile.Kill();
                     }
                 }
@@ -162,12 +162,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
             if (Projectile.ai[0] != 2 && Projectile.ai[0] != 3) {
                 if (CWRKeySystem.Murasama_DownKey.JustPressed) {//触发下砸技能
-                    if (!Murasama.UnlockSkill2) {//在击败史莱姆之神前不能使用这个技能
+                    if (!MurasamaEcType.UnlockSkill2) {//在击败史莱姆之神前不能使用这个技能
                         return;
                     }
                     murasama.initialize();
                     if (murasama.CWR().ai[0] >= 2) {
-                        SoundEngine.PlaySound(Murasama.BigSwing with { Pitch = -0.1f }, Projectile.Center);
+                        SoundEngine.PlaySound(MurasamaEcType.BigSwing with { Pitch = -0.1f }, Projectile.Center);
 
                         Projectile.NewProjectile(Owner.parent(), Projectile.Center, new Vector2(0, 5)
                             , ModContent.ProjectileType<MurasamaDownSkill>(), murasama.damage, 0, Owner.whoAmI);
@@ -178,15 +178,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     }
                 }
                 if (Owner.PressKey()) {//如果按下的是左键，那么切换到3状态进行升龙斩的相关代码的执行
-                    if (!Murasama.UnlockSkill1) {//在击败初期Boss之前不能使用这个技能
+                    if (!MurasamaEcType.UnlockSkill1) {//在击败初期Boss之前不能使用这个技能
                         return;
                     }
                     if (Projectile.ai[1] > 0) {
-                        SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.1f }, Projectile.Center);
+                        SoundEngine.PlaySound(MurasamaEcType.Swing with { Pitch = -0.1f }, Projectile.Center);
                         Projectile.ai[0] = 3;
                     }
                     else {
-                        SoundEngine.PlaySound(Murasama.Swing with { Pitch = -0.3f }, Projectile.Center);
+                        SoundEngine.PlaySound(MurasamaEcType.Swing with { Pitch = -0.3f }, Projectile.Center);
                         Projectile.ai[0] = 2;
                     }
                     breakOutVector = Owner.Center.To(Projectile.Center).UnitVector();
@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 Projectile.ai[1] = 0;
                 Projectile.netUpdate = true;
 
-                if (target.boss && Murasama.UnlockSkill1) {//如果击中的目标是个Boss级生物，额外给予玩家无敌帧
+                if (target.boss && MurasamaEcType.UnlockSkill1) {//如果击中的目标是个Boss级生物，额外给予玩家无敌帧
                     //Owner.GivePlayerImmuneState(35 + InWorldBossPhase.Instance.Level() * 2, true);//这个部分存在争议，暂时取消
                 }
             }

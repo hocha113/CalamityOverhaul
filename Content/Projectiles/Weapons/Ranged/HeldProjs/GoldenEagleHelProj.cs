@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "GoldenEagle";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.GoldenEagle>();
-        public override int targetCWRItem => ModContent.ItemType<GoldenEagle>();
+        public override int targetCWRItem => ModContent.ItemType<GoldenEagleEcType>();
         public override void SetRangedProperty() {
             HandDistance = 18;
             HandFireDistance = 18;

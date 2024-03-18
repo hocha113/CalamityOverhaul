@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RTheMaelstrom : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TheMaelstrom>();
-        public override int ProtogenesisID => ModContent.ItemType<TheMaelstrom>();
+        public override int ProtogenesisID => ModContent.ItemType<TheMaelstromEcType>();
+        public override string TargetToolTipItemName => "TheMaelstromEcType";
         public override void SetDefaults(Item item) {
             item.damage = 530;
             item.width = 20;
@@ -41,10 +42,5 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().heldProjType = ModContent.ProjectileType<TheMaelstromHeldProj>();
             item.CWR().hasHeldNoCanUseBool = true;
         }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "TheMaelstrom");
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
     }
 }

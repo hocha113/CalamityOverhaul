@@ -18,7 +18,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RPhosphorescentGauntlet : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.PhosphorescentGauntlet>();
-        public override int ProtogenesisID => ModContent.ItemType<PhosphorescentGauntlet>();
+        public override int ProtogenesisID => ModContent.ItemType<PhosphorescentGauntletEcType>();
+        public override string TargetToolTipItemName => "PhosphorescentGauntletEcType";
+
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         }
@@ -40,10 +42,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ModContent.ProjectileType<PhosphorescentGauntletPunches>();
             item.shootSpeed = 1f;
             item.rare = ModContent.RarityType<PureGreen>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "PhosphorescentGauntlet");
         }
 
         public override bool? AltFunctionUse(Item item, Player player) => true;

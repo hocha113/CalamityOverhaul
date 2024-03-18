@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RMurasama : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>();
-        public override int ProtogenesisID => ModContent.ItemType<Murasama>();
+        public override int ProtogenesisID => ModContent.ItemType<MurasamaEcType>();
         public int frameCounter = 0;
         public int frame = 0;
 
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetDefaults(Item item) {
             item.height = 134;
             item.width = 90;
-            item.damage = Murasama.GetStartDamage;
+            item.damage = MurasamaEcType.GetStartDamage;
             item.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
             item.noMelee = true;
             item.noUseGraphic = true;
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shootSpeed = 24f;
             item.rare = ModContent.RarityType<Violet>();
             item.CWR().isHeldItem = true;
-            CWRUtils.EasySetLocalTextNameOverride(item, "Murasama");
+            CWRUtils.EasySetLocalTextNameOverride(item, "MurasamaEcType");
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 }
             }
             // 获取自定义的文本内容
-            string textContent = Language.GetText("Mods.CalamityOverhaul.Items.Murasama.Tooltip").Value;
+            string textContent = Language.GetText("Mods.CalamityOverhaul.Items.MurasamaEcType.Tooltip").Value;
             // 拆分传奇提示行的文本内容
             string[] legendtopsList = textContent.Split("\n");
             // 遍历传奇提示行并添加新的提示行
@@ -94,25 +94,25 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 newTooltips.Add(newLine);
             }
 
-            Murasama.SetTooltip(ref newTooltips, CWRMod.Instance.Name);
+            MurasamaEcType.SetTooltip(ref newTooltips, CWRMod.Instance.Name);
             // 清空原 tooltips 集合并添加修改后的新Tooltips集合
             tooltips.Clear();
             tooltips.AddRange(newTooltips);
             tooltips.AddRange(prefixTooltips);
         }
 
-        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) => damage *= Murasama.GetOnDamage / (float)Murasama.GetStartDamage;
+        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) => damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
 
         public override void HoldItem(Item item, Player player) {
             player.CWR().HeldMurasamaBool = true;
             //这个代码实现了玩家手持时的动画，生成一个对玩家来说唯一的弹幕来实现这些
-            if (player.ownedProjectileCounts[Murasama.heldProjType] == 0 && player.whoAmI == Main.myPlayer) {
-                Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, Murasama.heldProjType, item.damage, 0, player.whoAmI);
+            if (player.ownedProjectileCounts[MurasamaEcType.heldProjType] == 0 && player.whoAmI == Main.myPlayer) {
+                Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, MurasamaEcType.heldProjType, item.damage, 0, player.whoAmI);
             }
         }
 
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
-            crit += Murasama.GetOnCrit;
+            crit += MurasamaEcType.GetOnCrit;
             return false;
         }
 

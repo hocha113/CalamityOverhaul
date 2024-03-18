@@ -14,7 +14,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RElementalLance : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.ElementalLance>();
-        public override int ProtogenesisID => ModContent.ItemType<ElementalLance>();
+        public override int ProtogenesisID => ModContent.ItemType<ElementalLanceEcType>();
+        public override string TargetToolTipItemName => "ElementalLanceEcType";
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -40,10 +41,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Purple;
             item.shoot = ModContent.ProjectileType<RElementalLanceProjectile>();
             item.shootSpeed = 12f;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "ElementalLance");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

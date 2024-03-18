@@ -1,8 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -17,14 +15,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BlossomFlux";
 
         private bool onFireR;
-
         internal int onFireSmogTime;
         internal int onFireCooldSmogTime;
         internal float onFireCooldSmogTime2;
 
         public override bool CheckAlive() {
             bool heldBool1 = Item.type != ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.BlossomFlux>();
-            bool heldBool2 = Item.type != ModContent.ItemType<BlossomFlux>();
+            bool heldBool2 = Item.type != ModContent.ItemType<BlossomFluxEcType>();
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换
                 if (heldBool1) {//只需要判断原版的物品
                     return false;

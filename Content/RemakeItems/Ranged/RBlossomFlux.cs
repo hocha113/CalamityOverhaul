@@ -16,7 +16,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RBlossomFlux : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.BlossomFlux>();
-        public override int ProtogenesisID => ModContent.ItemType<BlossomFlux>();
+        public override int ProtogenesisID => ModContent.ItemType<BlossomFluxEcType>();
+        public override string TargetToolTipItemName => "BlossomFluxEcType";
         public override void SetDefaults(Item item) {
             item.damage = 50;
             item.DamageType = DamageClass.Ranged;
@@ -38,10 +39,5 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().heldProjType = ModContent.ProjectileType<BlossomFluxHeldProj>();
             item.CWR().hasHeldNoCanUseBool = true;
         }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "BlossomFlux");
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
     }
 }

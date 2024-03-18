@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
@@ -13,14 +12,12 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using static Humanizer.In;
 
 namespace CalamityOverhaul.Content
 {
@@ -99,6 +96,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool Scope;
         /// <summary>
+        /// 退弹时，该物品是否返还
+        /// </summary>
+        public bool AmmoProjectileReturn;
+        /// <summary>
         /// 是否是一个无尽物品，这个的设置决定物品是否会受到湮灭机制的影响
         /// </summary>
         internal bool isInfiniteItem;
@@ -139,6 +140,7 @@ namespace CalamityOverhaul.Content
         }
 
         public void InitializeMagazine() {
+            AmmoProjectileReturn = true;
             IsKreload = false;
             NumberBullets = 0;
             NoKreLoadTime += 10;
@@ -151,15 +153,43 @@ namespace CalamityOverhaul.Content
         public override void SaveData(Item item, TagCompound tag) {
             tag.Add("_MeleeCharge", MeleeCharge);
             tag.Add("_noDestruct", noDestruct);
+            if (HasCartridgeHolder) {
+                if (MagazineContents != null && MagazineContents.Length > 0) {
+                    for (int i = 0; i < MagazineContents.Length; i++) {
+                        if (MagazineContents[i] == null) {
+                            MagazineContents[i] = new Item(ItemID.None);
+                        }
+                    }
+                    tag.Add("_MagazineContents", MagazineContents);
+                }
+                tag.Add("_NumberBullets", NumberBullets);
+                tag.Add("_IsKreload", IsKreload);
+            }
         }
 
         public override void LoadData(Item item, TagCompound tag) {
             MeleeCharge = tag.GetFloat("_MeleeCharge");
             noDestruct = tag.GetBool("_noDestruct");
+            if (HasCartridgeHolder) {
+                if (tag.ContainsKey("_MagazineContents")) {
+                    Item[] magazineContents = tag.Get<Item[]>("_MagazineContents");
+                    for (int i = 0; i < magazineContents.Length; i++) {
+                        if (magazineContents[i] == null) {
+                            magazineContents[i] = new Item(ItemID.None);
+                        }
+                    }
+                    MagazineContents = tag.Get<Item[]>("_MagazineContents");
+                }
+                if (tag.ContainsKey("_NumberBullets")) {
+                    NumberBullets = tag.GetInt("_NumberBullets");
+                }
+                if (tag.ContainsKey("_IsKreload")) {
+                    IsKreload = tag.GetBool("_IsKreload");
+                }
+            }
         }
 
         public override void HoldItem(Item item, Player player) {
-            OwnerByDir(item, player);
             if (NoKreLoadTime > 0) {
                 NoKreLoadTime--;
             }
@@ -168,6 +198,8 @@ namespace CalamityOverhaul.Content
                     Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, heldProjType, item.damage, item.knockBack, player.whoAmI);
                 }
             }
+
+            OwnerByDir(item, player);
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
@@ -196,13 +228,13 @@ namespace CalamityOverhaul.Content
 
         public override void PostUpdate(Item item) {
             if (isInfiniteItem) {
-                Destruct(item, item.position, CWRUtils.InPosFindPlayer(item.position, 9999));
+                //Destruct(item, item.position, CWRUtils.InPosFindPlayer(item.position, 9999));
             }
         }
 
         public override void UpdateInventory(Item item, Player player) {
             if (isInfiniteItem) {
-                Destruct(item, player.position, player);
+                //Destruct(item, player.position, player);
             }
         }
 
@@ -225,6 +257,68 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        //////////////////////////////////////////////////
+        //我不知道为什么CWRPlayer 里面的Modify方法          //
+        //所修改的值无法作用到枪械射弹上，上帝，让这些东西去死吧//                                        
+        //////////////////////////////////////////////////
+        public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback) {
+            CWRPlayer modPlayer = player.CWR();
+            if (modPlayer.TyrantsFuryBuffBool) {
+                if (item.DamageType == DamageClass.Melee
+                    || item.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()) {
+                    knockback *= 0.9f;
+                }
+                if (item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
+                    || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
+                    knockback *= 0.8f;
+                }
+            }
+        }
+
+        public override void ModifyWeaponCrit(Item item, Player player, ref float crit) {
+            CWRPlayer modPlayer = player.CWR();
+            if (modPlayer.LoadMuzzleBrake) {
+                if (item.DamageType == DamageClass.Ranged) {
+                    if (modPlayer.LoadMuzzleBrakeLevel == 1) {
+                        crit += 5;
+                    } else if (modPlayer.LoadMuzzleBrakeLevel == 2) {
+                        crit += 15;
+                    } else if (modPlayer.LoadMuzzleBrakeLevel == 3) {
+                        crit += 25;
+                    } else if (modPlayer.LoadMuzzleBrakeLevel == 4) {
+                        crit += 100;
+                    }
+                }
+            }
+        }
+
+        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+            CWRPlayer modPlayer = player.CWR();
+            if (modPlayer.LoadMuzzleBrake) {
+                if (item.DamageType == DamageClass.Ranged) {
+                    if (modPlayer.LoadMuzzleBrakeLevel == 1) {
+                        damage *= 0.75f;
+                    } else if (modPlayer.LoadMuzzleBrakeLevel == 2) {
+                        damage *= 0.8f;
+                    } else if (modPlayer.LoadMuzzleBrakeLevel == 3) {
+                        damage *= 0.85f;
+                    } else if (modPlayer.LoadMuzzleBrakeLevel == 4) {
+                        damage *= 2;
+                    }
+                }
+            }
+            if (modPlayer.TyrantsFuryBuffBool) {
+                if (item.DamageType == DamageClass.Melee
+                    || item.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()) {
+                    damage *= 1.05f;
+                }
+                if (item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
+                    || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
+                    damage *= 1.1f;
+                }
+            }
+        }
+
         private void OwnerByDir(Item item, Player player) {
             if (player.PressKey() || player.PressKey(false)) {
                 if (player.whoAmI == Main.myPlayer && item.useStyle == ItemUseStyleID.Swing
@@ -233,6 +327,10 @@ namespace CalamityOverhaul.Content
                     player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);
                 }
             }
+        }
+
+        public static bool BuyItemInitialize(On_Player.orig_BuyItem orig, Player self, long price, int customCurrency) {
+            return orig(self, price, customCurrency);
         }
 
         private void ApplyNameLineColor(Color color, TooltipLine nameLine) => nameLine.OverrideColor = color;

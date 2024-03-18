@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Contagion";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Contagion>();
-        public override int targetCWRItem => ModContent.ItemType<Contagion>();
+        public override int targetCWRItem => ModContent.ItemType<ContagionEcType>();
         private bool onFireR;
         public override void InOwner() {
             float armRotSengsFront = 60 * CWRUtils.atoR;

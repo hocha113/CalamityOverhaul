@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TyrannysEnd";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TyrannysEnd>();
-        public override int targetCWRItem => ModContent.ItemType<TyrannysEnd>();
+        public override int targetCWRItem => ModContent.ItemType<TyrannysEndEcType>();
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;

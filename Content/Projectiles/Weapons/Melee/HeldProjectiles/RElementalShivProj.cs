@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class RElementalShivProj : BaseShortswordProjectile
     {
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<ElementalShiv>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<ElementalShivEcType>();
 
         public override string Texture => "CalamityMod/Items/Weapons/Melee/ElementalShiv";
 

@@ -15,7 +15,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RVulcaniteLance : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.VulcaniteLance>();
-        public override int ProtogenesisID => ModContent.ItemType<VulcaniteLance>();
+        public override int ProtogenesisID => ModContent.ItemType<VulcaniteLanceEcType>();
+        public override string TargetToolTipItemName => "VulcaniteLanceEcType";
+
         public override void SetDefaults(Item item) {
             item.width = 44;
             item.damage = 90;
@@ -34,10 +36,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Yellow;
             item.shoot = ModContent.ProjectileType<RVulcaniteLanceProj>();
             item.shootSpeed = 10f;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "VulcaniteLance");
         }
 
         public override void HoldItem(Item item, Player player) {

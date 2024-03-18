@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.OnFire3, 240);
-            BalefulHarvester.SpanDust(Projectile.Center, 13, 0.7f, 1.2f);
+            BalefulHarvesterEcType.SpanDust(Projectile.Center, 13, 0.7f, 1.2f);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {

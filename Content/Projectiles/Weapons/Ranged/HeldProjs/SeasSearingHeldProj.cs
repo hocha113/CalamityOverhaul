@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SeasSearing";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.SeasSearing>();
-        public override int targetCWRItem => ModContent.ItemType<SeasSearing>();
+        public override int targetCWRItem => ModContent.ItemType<SeasSearingEcType>();
         private const int maxFireCount = 7;
         private int indexFire;
         public override void SetRangedProperty() {
@@ -82,8 +82,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 Vector2 gundir = Projectile.rotation.ToRotationVector2();
 
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
-                    , ModContent.ProjectileType<SeasSearingBubble>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Projectile.NewProjectile(Source, Projectile.Center + gundir * 3, ShootVelocity
+                    , ModContent.ProjectileType<SeasSearingBubble>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 1);
 
                 if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();//因为重写了SpanProj,所以这里需要手动调用

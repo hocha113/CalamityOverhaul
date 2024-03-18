@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Alluvion";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Alluvion>();
-        public override int targetCWRItem => ModContent.ItemType<Alluvion>();
+        public override int targetCWRItem => ModContent.ItemType<AlluvionEcType>();
         private bool onFireR;
         private SlotId accumulator;
         public override void InOwner() {

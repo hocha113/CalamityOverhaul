@@ -1,10 +1,7 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items;
-using CalamityOverhaul.Content.Items.Magic.Extras;
-using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Items.Summon.Extras;
 using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using System;
@@ -18,8 +15,13 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
 {
+    public delegate void PlayerHitDelegate(Player player, Player.HurtInfo info);
+
     public class CWRPlayer : ModPlayer
     {
+        /// <summary>
+        /// 是否初始化加载，用于角色文件的第一次创建
+        /// </summary>
         public bool InitialCreation;
         /// <summary>
         /// 圣物的装备等级，这个字段决定了玩家会拥有什么样的弹幕效果
@@ -71,7 +73,10 @@ namespace CalamityOverhaul.Content
         /// 是否受伤
         /// </summary>
         public bool OnHit;
-
+        public bool HeldRangedBool;
+        public bool HeldFeederGunBool;
+        public bool HeldGunBool;
+        public bool HeldBowBool;
         #region 网络同步
         public bool DompBool;
         public bool RecoilAccelerationAddBool;
@@ -84,11 +89,15 @@ namespace CalamityOverhaul.Content
         #endregion
 
         public override void Initialize() {
-            OnHit = false;
             TheRelicLuxor = 0;
             PressureIncrease = 1;
+            OnHit = false;           
             LoadMuzzleBrake = false;
             InitialCreation = true;
+            HeldRangedBool = false;
+            HeldFeederGunBool = false;
+            HeldGunBool = false;
+            HeldBowBool = false;
         }
 
         public override void ResetEffects() {
@@ -104,6 +113,10 @@ namespace CalamityOverhaul.Content
             LoadMuzzleBrake = false;
             TyrantsFuryBuffBool = false;
             FlintSummonBool = false;
+            HeldRangedBool = false;
+            HeldFeederGunBool = false;
+            HeldGunBool = false;
+            HeldBowBool = false;
         }
 
         public override void SaveData(TagCompound tag) {
@@ -126,8 +139,8 @@ namespace CalamityOverhaul.Content
                     if (Player.inventory[i].type == ItemID.CopperPickaxe) {
                         Player.inventory[i] = new Item(ModContent.ItemType<PebblePick>());
                     }
-                    if (Player.inventory[i].type == ItemID.CopperBroadsword 
-                        || Player.inventory[i].type == ItemID.CopperShortsword) {
+                    if (Player.inventory[i].type is ItemID.CopperBroadsword
+                        or ItemID.CopperShortsword) {
                         Player.inventory[i] = new Item(ModContent.ItemType<PebbleSpear>());
                     }
                 }
@@ -149,8 +162,8 @@ namespace CalamityOverhaul.Content
                     Main.cloudAlpha = 0.99f;
                     Main.windSpeedTarget = 0.8f;
                     float sengs = Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f));
-                    Lighting.AddLight(Player.Center, new Color(Main.DiscoB, Main.DiscoG, 220 + sengs * 30).ToVector3() * sengs * 113);
-                    PunchCameraModifier modifier2 = new PunchCameraModifier(Player.Center, new Vector2(0, Main.rand.NextFloat(-2, 2)), 2f, 3f, 2, 1000f, FullName);
+                    Lighting.AddLight(Player.Center, new Color(Main.DiscoB, Main.DiscoG, 220 + (sengs * 30)).ToVector3() * sengs * 113);
+                    PunchCameraModifier modifier2 = new(Player.Center, new Vector2(0, Main.rand.NextFloat(-2, 2)), 2f, 3f, 2, 1000f, FullName);
                     Main.instance.CameraModifiers.Add(modifier2);
                 }
             }
@@ -168,8 +181,9 @@ namespace CalamityOverhaul.Content
             RecoilAccelerationAddBool = reader.ReadBoolean();
             RecoilAccelerationValue.X = reader.ReadSingle();
             RecoilAccelerationValue.Y = reader.ReadSingle();
-            if (Main.netMode == NetmodeID.Server)
+            if (Main.netMode == NetmodeID.Server) {
                 SyncRecoilAcceleration(true);
+            }
         }
 
         public void SyncRecoilAcceleration(bool server) {
@@ -184,8 +198,9 @@ namespace CalamityOverhaul.Content
 
         internal void HandleDomp(BinaryReader reader) {
             DompBool = reader.ReadBoolean();
-            if (Main.netMode == NetmodeID.Server)
+            if (Main.netMode == NetmodeID.Server) {
                 SyncDomp(true);
+            }
         }
 
         public void SyncDomp(bool server) {
@@ -197,64 +212,15 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ModifyWeaponDamage(Item item, ref StatModifier damage) {
-            if (LoadMuzzleBrake) {
-                if (item.DamageType == DamageClass.Ranged) {
-                    if (LoadMuzzleBrakeLevel == 1) {
-                        damage *= 0.75f;
-                    }
-                    else if (LoadMuzzleBrakeLevel == 2) {
-                        damage *= 0.8f;
-                    }
-                    else if (LoadMuzzleBrakeLevel == 3) {
-                        damage *= 0.85f;
-                    }
-                    else if (LoadMuzzleBrakeLevel == 4) {
-                        damage *= 2;
-                    }
-                }
-            }
-            if (TyrantsFuryBuffBool) {
-                if (item.DamageType == DamageClass.Melee 
-                    || item.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()) {
-                    damage *= 1.05f;
-                }
-                if (item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>() 
-                    || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
-                    damage *= 1.1f;
-                }
-            }
+            
         }
 
         public override void ModifyWeaponKnockback(Item item, ref StatModifier knockback) {
-            if (TyrantsFuryBuffBool) {
-                if (item.DamageType == DamageClass.Melee
-                    || item.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()) {
-                    knockback *= 0.9f;
-                }
-                if (item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
-                    || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
-                    knockback *= 0.8f;
-                }
-            }
+            
         }
 
         public override void ModifyWeaponCrit(Item item, ref float crit) {
-            if (LoadMuzzleBrake) {
-                if (item.DamageType == DamageClass.Ranged) {
-                    if (LoadMuzzleBrakeLevel == 1) {
-                        crit += 5;
-                    }
-                    else if (LoadMuzzleBrakeLevel == 2) {
-                        crit += 15;
-                    }
-                    else if (LoadMuzzleBrakeLevel == 3) {
-                        crit += 25;
-                    }
-                    else if (LoadMuzzleBrakeLevel == 4) {
-                        crit += 100;
-                    }
-                }
-            }
+
         }
 
         public override void ModifyScreenPosition() {
@@ -273,10 +239,48 @@ namespace CalamityOverhaul.Content
 
         public override void ModifyStartingInventory(IReadOnlyDictionary<string, List<Item>> itemsByMod, bool mediumCoreDeath) {
             if (!mediumCoreDeath) {
-                itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperAxe);
-                itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperShortsword);
-                itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperPickaxe);
+                _ = itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperAxe);
+                _ = itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperShortsword);
+                _ = itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperPickaxe);
             }
+        }
+
+        internal bool TryGetHeldProjInds<T>(out T result) where T : class {
+            if (Player.heldProj < 0 || Player.heldProj >= Main.projectile.Length) {
+                result = null;
+                return false;
+            }
+            T instance = Main.projectile[Player.heldProj]?.ModProjectile as T;
+            if (instance == null) {
+                result = null;
+                return false;
+            }
+            result = instance;
+            return true;
+        }
+        /// <summary>
+        /// 获取玩家所手持的BaseHeldRanged实例
+        /// </summary>
+        /// <param name="baseGun"></param>
+        /// <returns>如果玩家没有手持BaseGun或者发生了其他非法情况，返回<see langword="false"/></returns>
+        internal bool TryGetInds_BaseHeldRanged(out BaseHeldRanged baseranged) {
+            return TryGetHeldProjInds(out baseranged);
+        }
+        /// <summary>
+        /// 获取玩家所手持的<see cref="BaseGun"/>实例
+        /// </summary>
+        /// <param name="baseGun"></param>
+        /// <returns>如果玩家没有手持<see cref="BaseGun"/>或者发生了其他非法情况，返回<see langword="false"/></returns>
+        internal bool TryGetInds_BaseGun(out BaseGun baseGun) {
+            return TryGetHeldProjInds(out baseGun);
+        }
+        /// <summary>
+        /// 获取玩家所手持的<see cref="BaseFeederGun"/>实例
+        /// </summary>
+        /// <param name="baseGun"></param>
+        /// <returns>如果玩家没有手持<see cref="BaseFeederGun"/>或者发生了其他非法情况，返回<see langword="false"/></returns>
+        internal bool TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun) {
+            return TryGetHeldProjInds(out baseFeederGun);
         }
     }
 }

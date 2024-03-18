@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class RDiseasedPikeSpear : BaseSpearProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Spears/DiseasedPikeSpear";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DiseasedPike>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DiseasedPikeEcType>();
         Player Owner => CWRUtils.GetPlayerInstance(Projectile.owner);
         Item diseasedPike => Owner.ActiveItem();
 
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Projectile.Kill();
                     return;
                 }
-                if (diseasedPike == null || diseasedPike?.type != ModContent.ItemType<DiseasedPike>()
+                if (diseasedPike == null || diseasedPike?.type != ModContent.ItemType<DiseasedPikeEcType>()
                     && diseasedPike.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.DiseasedPike>()) {
                     Projectile.Kill();
                     return;

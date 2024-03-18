@@ -12,7 +12,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RGreatswordofJudgement : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.GreatswordofJudgement>();
-        public override int ProtogenesisID => ModContent.ItemType<GreatswordofJudgement>();
+        public override int ProtogenesisID => ModContent.ItemType<GreatswordofJudgementEcType>();
+
         public override void SetDefaults(Item item) {
             item.width = 78;
             item.damage = 40;

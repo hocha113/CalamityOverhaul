@@ -12,7 +12,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RAirSpinner : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.AirSpinner>();
-        public override int ProtogenesisID => ModContent.ItemType<AirSpinner>();
+        public override int ProtogenesisID => ModContent.ItemType<AirSpinnerEcType>();
+        public override string TargetToolTipItemName => "AirSpinnerEcType";
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -34,10 +35,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shootSpeed = 14f;
             item.rare = ItemRarityID.Orange;
             item.value = CalamityGlobalItem.Rarity3BuyPrice;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "AirSpinner");
         }
     }
 }

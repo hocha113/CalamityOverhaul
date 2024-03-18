@@ -16,10 +16,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RAftershock : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Aftershock>();
-        public override int ProtogenesisID => ModContent.ItemType<Aftershock>();
+        public override int ProtogenesisID => ModContent.ItemType<AftershockEcType>();
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         }
+        public override string TargetToolTipItemName => "AftershockEcType";
 
         public override bool? AltFunctionUse(Item item, Player player) => true;
 
@@ -40,10 +41,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ModContent.ProjectileType<MeleeFossilShard>();
             item.shootSpeed = 12f;
             CWRUtils.EasySetLocalTextNameOverride(item, "Aftershock");
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Aftershock");
         }
 
         public override void ModifyShootStats(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
@@ -78,7 +75,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override bool? On_OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) {
             if (player.altFunctionUse == 2) {
                 target.AddBuff(ModContent.BuffType<ArmorCrunch>(), 300);
-                Aftershock.OnHitSpanProjFunc(item, player, hit.Knockback);
+                AftershockEcType.OnHitSpanProjFunc(item, player, hit.Knockback);
             }
             return false;
         }
@@ -86,7 +83,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override bool? On_OnHitPvp(Item item, Player player, Player target, Player.HurtInfo hurtInfo) {
             if (player.altFunctionUse == 2) {
                 target.AddBuff(ModContent.BuffType<ArmorCrunch>(), 100);
-                Aftershock.OnHitSpanProjFunc(item, player, hurtInfo.Knockback);
+                AftershockEcType.OnHitSpanProjFunc(item, player, hurtInfo.Knockback);
             }
             return false;
         }

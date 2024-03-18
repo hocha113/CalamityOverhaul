@@ -13,7 +13,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RAbsoluteZero : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.AbsoluteZero>();
-        public override int ProtogenesisID => ModContent.ItemType<AbsoluteZero>();
+        public override int ProtogenesisID => ModContent.ItemType<AbsoluteZeroEcType>();
+        public override string TargetToolTipItemName => "AbsoluteZeroEcType";
+
         public override void SetDefaults(Item item) {
             item.damage = 75;
             item.DamageType = DamageClass.Melee;

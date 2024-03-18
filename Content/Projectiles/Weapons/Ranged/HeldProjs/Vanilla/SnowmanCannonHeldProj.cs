@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 AmmoTypes = ProjectileID.MiniNukeSnowmanRocketII;
             }
             SpawnGunFireDust();
-            _ = SoundEngine.PlaySound(ScorchedEarth.ShootSound, Projectile.Center);
+            _ = SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound, Projectile.Center);
             DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 76, dustID2: 149, dustID3: 76);
             _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

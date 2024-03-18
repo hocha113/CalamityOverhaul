@@ -11,7 +11,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RDisseminator : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Disseminator>();
-        public override int ProtogenesisID => ModContent.ItemType<Disseminator>();
+        public override int ProtogenesisID => ModContent.ItemType<DisseminatorEcType>();
+        public override string TargetToolTipItemName => "DisseminatorEcType";
         public override void SetDefaults(Item item) {
             item.damage = 48;
             item.DamageType = DamageClass.Ranged;

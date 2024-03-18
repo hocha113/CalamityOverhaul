@@ -7,7 +7,7 @@ EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
 Items: {
-	BrinyBaron: {
+	BrinyBaronEcType: {
 		DisplayName: Briny Baron
 		Tooltip:
 			'''
@@ -16,7 +16,7 @@ Items: {
 			'''
 	}
 
-	CosmicShiv: {
+	CosmicShivEcType: {
 		DisplayName: Cosmic Shiv
 		Tooltip:
 			'''
@@ -34,7 +34,7 @@ Items: {
 			'''
 	}
 
-	BansheeHook: {
+	BansheeHookEcType: {
 		DisplayName: Banshee Hook
 		Tooltip:
 			'''
@@ -44,7 +44,7 @@ Items: {
 			'''
 	}
 
-	BlightedCleaver: {
+	BlightedCleaverEcType: {
 		DisplayName: Blighted Cleaver
 		Tooltip:
 			'''
@@ -53,17 +53,17 @@ Items: {
 			'''
 	}
 
-	BurntSienna: {
+	BurntSiennaEcType: {
 		DisplayName: Burnt Sienna
 		Tooltip: Swinging will sometimes throw 3 Sand blocks in an arc towards your enemies. Killing enemies summon healing orbs that float.
 	}
 
-	CometQuasher: {
+	CometQuasherEcType: {
 		DisplayName: Comet Quasher
 		Tooltip: Swings a Heavy blade that sends a barrage of meteors at your foes and cursor.
 	}
 
-	DefiledGreatsword: {
+	DefiledGreatswordEcType: {
 		DisplayName: Defiled Greatsword
 		Tooltip:
 			'''
@@ -72,7 +72,7 @@ Items: {
 			'''
 	}
 
-	EntropicClaymore: {
+	EntropicClaymoreEcType: {
 		DisplayName: Entropic Claymore
 		Tooltip:
 			'''
@@ -81,7 +81,7 @@ Items: {
 			'''
 	}
 
-	GildedProboscis: {
+	GildedProboscisEcType: {
 		DisplayName: Gilded Proboscis
 		Tooltip:
 			'''
@@ -90,7 +90,7 @@ Items: {
 			'''
 	}
 
-	Terratomere: {
+	TerratomereEcType: {
 		DisplayName: Terratomere
 		Tooltip:
 			'''
@@ -100,7 +100,7 @@ Items: {
 			'''
 	}
 
-	TerrorBlade: {
+	TerrorBladeEcType: {
 		DisplayName: Terror Blade
 		Tooltip:
 			'''
@@ -109,12 +109,12 @@ Items: {
 			'''
 	}
 
-	ArkoftheCosmos: {
+	ArkoftheCosmosEcType: {
 		DisplayName: Arkofthe Cosmos
 		Tooltip: Um... You shouldn't have it
 	}
 
-	StreamGouge: {
+	StreamGougeEcType: {
 		DisplayName: Stream Gouge
 		Tooltip:
 			'''
@@ -124,7 +124,7 @@ Items: {
 			'''
 	}
 
-	ElementalLance: {
+	ElementalLanceEcType: {
 		DisplayName: Elemental Lance
 		Tooltip:
 			'''
@@ -133,7 +133,7 @@ Items: {
 			'''
 	}
 
-	AirSpinner: {
+	AirSpinnerEcType: {
 		DisplayName: Air Spinner
 		Tooltip:
 			'''
@@ -143,12 +143,12 @@ Items: {
 			'''
 	}
 
-	GoldplumeSpear: {
+	GoldplumeSpearEcType: {
 		DisplayName: Goldplume Spear
 		Tooltip: Fires quick bursts of feathers upon swinging
 	}
 
-	WindBlade: {
+	WindBladeEcType: {
 		DisplayName: Wind Blade
 		Tooltip:
 			'''
@@ -157,28 +157,33 @@ Items: {
 			'''
 	}
 
-	Arbalest: {
+	ArbalestEcType: {
 		DisplayName: Arbalest
 		Tooltip:
 			'''
-			Fires a volley of 6 high speed arrows, arrows start small but grow in size with continous fire.
-			Right click to fire a high speed volley of arrows after a short delay
-			"Salvaged from the inner workings of the Twins, the gears show age yet still churn."
+			Press the [Scope] key to aim
+			Fires 6 high-speed arrows
+			Arrow size increases with continuous firing time
+			Larger arrows deal higher damage and knockback, but have a wider spread
 			'''
 	}
 
-	Deathwind: {
+	DeathwindEcType: {
 		DisplayName: Deathwind
-		Tooltip: Wooden arrows turn into 3 Nebula Beams that pierce infinitely and go through walls.
+		Tooltip:
+			'''
+			Wooden arrows turn into 3 Nebula Beams that pierce infinitely and go through walls.
+			"Death is like the wind;always by my side."
+			'''
 	}
 
-	DragonRage: {
+	DragonRageEcType: {
 		DisplayName: Dragon Rage
 		Tooltip:
 			'''
 			Spins a baton that causes explosions on enemy hits. The 10th hit will cause a ring of draconic fireballs to seek enemies that inflict Dragonfire.
 			Right click to spin the baton closer to you that summons fireballs at a slower pace, but without the need to hit enemies.
-			                     [c/ff8c1a:"This is my message to my master."]
+			[c/ff8c1a:"This is my message to my master."]
 			'''
 	}
 
@@ -187,7 +192,7 @@ Items: {
 		Tooltip: Whip your enemies with the tenacity of the Devourer.
 	}
 
-	Tradewinds: {
+	TradewindsEcType: {
 		DisplayName: Tradewinds
 		Tooltip:
 			'''
@@ -196,12 +201,12 @@ Items: {
 			'''
 	}
 
-	DeathhailStaff: {
+	DeathhailStaffEcType: {
 		DisplayName: Deathhail Staff
 		Tooltip: Raining hail of death from the sky
 	}
 
-	Excelsus: {
+	ExcelsusEcType: {
 		DisplayName: Excelsus
 		Tooltip:
 			'''
@@ -210,12 +215,12 @@ Items: {
 			'''
 	}
 
-	GhastlyVisage: {
+	GhastlyVisageEcType: {
 		DisplayName: Ghastly Visage
 		Tooltip: Fires out 3 Homing Ghastly Energy bolts to seek out enemies before exploding in anguish.
 	}
 
-	Galeforce: {
+	GaleforceEcType: {
 		DisplayName: Galeforce
 		Tooltip:
 			'''
@@ -229,7 +234,7 @@ Items: {
 		Tooltip: A Whip infused with the energy of the Moon and the Elements.
 	}
 
-	ElementalShiv: {
+	ElementalShivEcType: {
 		DisplayName: Elemental Shiv
 		Tooltip: ""
 	}
@@ -281,7 +286,7 @@ Items: {
 		Tooltip: Swinging causes a high velocity blade that slashes the first enemy it pierces through into ribbons.
 	}
 
-	FatesReveal: {
+	FatesRevealEcType: {
 		DisplayName: Fates Reveal
 		Tooltip: Summons Ghastly Fireballs that after a short time seeks out enemies
 	}
@@ -291,14 +296,20 @@ Items: {
 		Tooltip: I AM THE CHAIR THAT IS APPROACHING!
 	}
 
-	DaemonsFlame: {
+	DaemonsFlameEcType: {
 		DisplayName: Daemons Flame
 		Tooltip: Fires Homing Daemon Flames that explode upon impact
 	}
 
-	ClaretCannon: {
+	ClaretCannonEcType: {
 		DisplayName: Claret Cannon
-		Tooltip: ""
+		Tooltip:
+			'''
+			Medium recoil
+			Press the [KL] key to reload
+			Fires three bullets at once
+			Converts musket bullets into vampiric blood-tear bullets
+			'''
 	}
 
 	CleansingBlaze: {
@@ -336,7 +347,7 @@ Items: {
 			'''
 	}
 
-	AegisBlade: {
+	AegisBladeEcType: {
 		DisplayName: Aegis Blade
 		Tooltip:
 			'''
@@ -460,7 +471,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	Murasama: {
+	MurasamaEcType: {
 		DisplayName: Murasama
 		Tooltip:
 			'''
@@ -496,12 +507,12 @@ Items: {
 		Tooltip: ""
 	}
 
-	CelestialClaymore: {
+	CelestialClaymoreEcType: {
 		DisplayName: Celestial Claymore
 		Tooltip: Spawns cosmic energy flames near the player that seek out enemies after a short while.
 	}
 
-	TheEnforcer: {
+	TheEnforcerEcType: {
 		DisplayName: The Enforcer
 		Tooltip: Spawns Flames directly from the Devourer's Homeworld near the player that explode after a short while.
 	}
@@ -525,17 +536,17 @@ Items: {
 			'''
 	}
 
-	GreatswordofJudgement: {
+	GreatswordofJudgementEcType: {
 		DisplayName: Greatswordof Judgement
 		Tooltip: ""
 	}
 
-	Orderbringer: {
+	OrderbringerEcType: {
 		DisplayName: Orderbringer
 		Tooltip: ""
 	}
 
-	IridescentExcalibur: {
+	IridescentExcaliburEcType: {
 		DisplayName: Iridescent Excalibur
 		Tooltip: ""
 	}
@@ -631,7 +642,7 @@ Items: {
 
 	Weapons: {
 		Rogue: {
-			WaveSkipper: {
+			WaveSkipperEcType: {
 				DisplayName: Wave Skipper
 				Tooltip: Throws a Javelin that Buries itself into the earth. Stealth Strikes throws 3 Javelins at once.
 			}
@@ -669,12 +680,12 @@ Items: {
 			'''
 	}
 
-	SubmarineShocker: {
+	SubmarineShockerEcType: {
 		DisplayName: Submarine Shocker
 		Tooltip: A Fast pair of daggers that shoots out Electrically charged ions. Upon hitting enemies, it will cause a lightning chain to bounce off any enemy nearby.
 	}
 
-	BrimstoneSword: {
+	BrimstoneSwordEcType: {
 		DisplayName: Brimstone Sword
 		Tooltip:
 			'''
@@ -703,7 +714,7 @@ Items: {
 		Tooltip: The final battle awaits, however there is a price to pay.
 	}
 
-	PhosphorescentGauntlet: {
+	PhosphorescentGauntletEcType: {
 		DisplayName: Phosphorescent Gauntlet
 		Tooltip:
 			'''
@@ -712,7 +723,7 @@ Items: {
 			'''
 	}
 
-	StellarStriker: {
+	StellarStrikerEcType: {
 		DisplayName: Stellar Striker
 		Tooltip:
 			'''
@@ -721,7 +732,7 @@ Items: {
 			'''
 	}
 
-	TheLastMourning: {
+	TheLastMourningEcType: {
 		DisplayName: The Last Mourning
 		Tooltip:
 			'''
@@ -730,7 +741,7 @@ Items: {
 			'''
 	}
 
-	Greentide: {
+	GreentideEcType: {
 		DisplayName: Greentide
 		Tooltip:
 			'''
@@ -739,7 +750,7 @@ Items: {
 			'''
 	}
 
-	DiseasedPike: {
+	DiseasedPikeEcType: {
 		DisplayName: Diseased Pike
 		Tooltip:
 			'''
@@ -748,12 +759,12 @@ Items: {
 			'''
 	}
 
-	PlagueKeeper: {
+	PlagueKeeperEcType: {
 		DisplayName: Plague Keeper
 		Tooltip: Launches a Myriad of homing bee swarms that inflict the plague
 	}
 
-	BalefulHarvester: {
+	BalefulHarvesterEcType: {
 		DisplayName: Baleful Harvester
 		Tooltip:
 			'''
@@ -763,7 +774,7 @@ Items: {
 			'''
 	}
 
-	VulcaniteLance: {
+	VulcaniteLanceEcType: {
 		DisplayName: Vulcanite Lance
 		Tooltip:
 			'''
@@ -772,7 +783,7 @@ Items: {
 			'''
 	}
 
-	AstralBlade: {
+	AstralBladeEcType: {
 		DisplayName: Astral Blade
 		Tooltip:
 			'''
@@ -781,7 +792,7 @@ Items: {
 			'''
 	}
 
-	AstralPike: {
+	AstralPikeEcType: {
 		DisplayName: Astral Pike
 		Tooltip:
 			'''
@@ -790,7 +801,7 @@ Items: {
 			'''
 	}
 
-	AnarchyBlade: {
+	AnarchyBladeEcType: {
 		DisplayName: Anarchy Blade
 		Tooltip:
 			'''
@@ -799,7 +810,7 @@ Items: {
 			'''
 	}
 
-	Aftershock: {
+	AftershockEcType: {
 		DisplayName: Aftershock
 		Tooltip:
 			'''
@@ -809,7 +820,7 @@ Items: {
 			'''
 	}
 
-	Brimlash: {
+	BrimlashEcType: {
 		DisplayName: Brimlash
 		Tooltip:
 			'''
@@ -819,7 +830,7 @@ Items: {
 			'''
 	}
 
-	EarthenPike: {
+	EarthenPikeEcType: {
 		DisplayName: Earthen Pike
 		Tooltip:
 			'''
@@ -829,12 +840,12 @@ Items: {
 			'''
 	}
 
-	TeardropCleaver: {
+	TeardropCleaverEcType: {
 		DisplayName: Teardrop Cleaver
 		Tooltip: Torrential rain of tears
 	}
 
-	SausageMaker: {
+	SausageMakerEcType: {
 		DisplayName: Sausage Maker
 		Tooltip:
 			'''
@@ -853,7 +864,7 @@ Items: {
 		Tooltip: Reminisence on the Journey you've had and how far you have come.
 	}
 
-	AbsoluteZero: {
+	AbsoluteZeroEcType: {
 		DisplayName: Absolute Zero
 		Tooltip: Emitter ice bomb
 	}
@@ -868,7 +879,7 @@ Items: {
 		Tooltip: A Material from seemingly another plain of existence. Its warm and electrifying to the touch and it seems to seek for bloodshed.
 	}
 
-	WaveSkipper: {
+	WaveSkipperEcType: {
 		DisplayName: Wave Skipper
 		Tooltip:
 			'''
@@ -877,7 +888,7 @@ Items: {
 			'''
 	}
 
-	BlossomFlux: {
+	BlossomFluxEcType: {
 		DisplayName: Blossom Flux
 		Tooltip:
 			'''
@@ -887,7 +898,7 @@ Items: {
 			'''
 	}
 
-	Phangasm: {
+	PhangasmEcType: {
 		DisplayName: Phangasm
 		Tooltip: Arrows fired will be accompanied by several shadow stream projectiles to hit the first enemy it passed through
 	}
@@ -897,7 +908,7 @@ Items: {
 		Tooltip: Use to see Calamity Overhaul Mod related tutorials.... There may be more to come here later
 	}
 
-	Contagion: {
+	ContagionEcType: {
 		DisplayName: Contagion
 		Tooltip:
 			'''
@@ -907,7 +918,7 @@ Items: {
 			'''
 	}
 
-	Alluvion: {
+	AlluvionEcType: {
 		DisplayName: Alluvion
 		Tooltip:
 			'''
@@ -917,12 +928,12 @@ Items: {
 			'''
 	}
 
-	PlanetaryAnnihilation: {
+	PlanetaryAnnihilationEcType: {
 		DisplayName: Planetary Annihilation
 		Tooltip: Calls down Arrows from the sky to rain on your enemies. Converts Wooden arrows to homing rainbow bolts.
 	}
 
-	TheMaelstrom: {
+	TheMaelstromEcType: {
 		DisplayName: The Maelstrom
 		Tooltip:
 			'''
@@ -931,17 +942,18 @@ Items: {
 			'''
 	}
 
-	ClockGatlignum: {
+	ClockGatlignumEcType: {
 		DisplayName: Clock Gatlignum
 		Tooltip:
 			'''
-			Has Strong Recoil
-			Has Less than Ideal Accuracy but shoots out a barrage of bullets.
-			"Any attempts to fit crocodiles in it has unfortunately failed."
+			Strong recoil
+			Press the [KL] key to reload
+			Unleash a hailstorm of bullets
+			"Disappointingly, it doesn't shoot crocodiles."
 			'''
 	}
 
-	ElementalBlaster: {
+	ElementalBlasterEcType: {
 		DisplayName: Elemental Blaster
 		Tooltip:
 			'''
@@ -950,7 +962,7 @@ Items: {
 			'''
 	}
 
-	MarksmanBow: {
+	MarksmanBowEcType: {
 		DisplayName: Marksman Bow
 		Tooltip:
 			'''
@@ -959,7 +971,7 @@ Items: {
 			'''
 	}
 
-	NettlevineGreatbow: {
+	NettlevineGreatbowEcType: {
 		DisplayName: Nettlevine Greatbow
 		Tooltip:
 			'''
@@ -968,7 +980,7 @@ Items: {
 			'''
 	}
 
-	SpectreRifle: {
+	SpectreRifleEcType: {
 		DisplayName: Spectre Rifle
 		Tooltip:
 			'''
@@ -978,17 +990,23 @@ Items: {
 			'''
 	}
 
-	StormDragoon: {
+	SpectreRifle: {
+		DisplayName: Spectre Rifle
+		Tooltip: ""
+	}
+
+	StormDragoonEcType: {
 		DisplayName: Storm Dragoon
 		Tooltip:
 			'''
-			Has Obscene Recoil
-			Uncontrollably lets out a hail of bullets like a storm.
-			"Tests have shown that flying was not intended by the manufacturer, yet still is possible."
+			Strong recoil
+			Press the [KL] key to reload
+			Unleash bullets like a hailstorm
+			"I am the storm that is approaching."
 			'''
 	}
 
-	TheStorm: {
+	TheStormEcType: {
 		DisplayName: The Storm
 		Tooltip:
 			'''
@@ -997,7 +1015,7 @@ Items: {
 			'''
 	}
 
-	Thunderstorm: {
+	ThunderstormEcType: {
 		DisplayName: Thunderstorm
 		Tooltip:
 			'''
@@ -1007,7 +1025,7 @@ Items: {
 			'''
 	}
 
-	TyrannysEnd: {
+	TyrannysEndEcType: {
 		DisplayName: Tyranny's End
 		Tooltip:
 			'''
@@ -1021,7 +1039,7 @@ Items: {
 			'''
 	}
 
-	AntiMaterielRifle: {
+	AntiMaterielRifleEcType: {
 		DisplayName: Barrett sniper rifle
 		Tooltip:
 			'''
@@ -1035,7 +1053,7 @@ Items: {
 			'''
 	}
 
-	HalibutCannon: {
+	HalibutCannonEcType: {
 		DisplayName: Halibut Cannon
 		Tooltip:
 			'''
@@ -1047,7 +1065,7 @@ Items: {
 			'''
 	}
 
-	SDFMG: {
+	SDFMGEcType: {
 		DisplayName: SDFMG
 		Tooltip:
 			'''
@@ -1057,18 +1075,20 @@ Items: {
 			'''
 	}
 
-	DeadSunsWind: {
+	DeadSunsWindEcType: {
 		DisplayName: Dead Suns Wind
 		Tooltip: ""
 	}
 
-	FetidEmesis: {
+	FetidEmesisEcType: {
 		DisplayName: Fetid Emesis
 		Tooltip:
 			'''
 			Weak recoil
+			Press the [KL] key to reload
 			It will infect the bullet with sodium and poison
 			Every eight bullets fired triggers a vomit attack of contaminants
+			Right click to switch to semi-automatic and fire Dirty meat ball
 			"That was one hell of a pandemic..." Old Pig Shark reminisces about the past, muttering to himself.
 			"I used to be a professor at Ocean University; that big flounder there was my student. 
 			Until the pandemic hit, and Ocean University transformed into the Sulfur Sea Exploitation Department, 
@@ -1076,7 +1096,7 @@ Items: {
 			'''
 	}
 
-	Seadragon: {
+	SeadragonEcType: {
 		DisplayName: Seadragon
 		Tooltip:
 			'''
@@ -1091,7 +1111,7 @@ Items: {
 		Tooltip: The arrows fired will burst out a barren current when they hit the enemy
 	}
 
-	ScorchedEarth: {
+	ScorchedEarthEcType: {
 		DisplayName: Scorched Earth
 		Tooltip:
 			'''
@@ -1103,7 +1123,7 @@ Items: {
 			'''
 	}
 
-	SeasSearing: {
+	SeasSearingEcType: {
 		DisplayName: Seas Searing
 		Tooltip:
 			'''
@@ -1113,7 +1133,7 @@ Items: {
 			'''
 	}
 
-	CoralCannon: {
+	CoralCannonEcType: {
 		DisplayName: Coral Cannon
 		Tooltip:
 			'''
@@ -1124,7 +1144,7 @@ Items: {
 			'''
 	}
 
-	AngelicShotgun: {
+	AngelicShotgunEcType: {
 		DisplayName: Angelic Shotgun
 		Tooltip:
 			'''
@@ -1135,7 +1155,7 @@ Items: {
 			'''
 	}
 
-	AquashardShotgun: {
+	AquashardShotgunEcType: {
 		DisplayName: Aquashard Shotgun
 		Tooltip:
 			'''
@@ -1144,7 +1164,7 @@ Items: {
 			'''
 	}
 
-	Animosity: {
+	AnimosityEcType: {
 		DisplayName: Animosity
 		Tooltip:
 			'''
@@ -1154,7 +1174,7 @@ Items: {
 			'''
 	}
 
-	CorinthPrime: {
+	CorinthPrimeEcType: {
 		DisplayName: Corinth Prime
 		Tooltip:
 			'''
@@ -1166,7 +1186,7 @@ Items: {
 			'''
 	}
 
-	CursedCapper: {
+	CursedCapperEcType: {
 		DisplayName: Cursed Capper
 		Tooltip:
 			'''
@@ -1176,7 +1196,7 @@ Items: {
 			'''
 	}
 
-	Disseminator: {
+	DisseminatorEcType: {
 		DisplayName: Disseminator
 		Tooltip:
 			'''
@@ -1187,7 +1207,7 @@ Items: {
 			'''
 	}
 
-	Hellborn: {
+	HellbornEcType: {
 		DisplayName: Hellborn
 		Tooltip:
 			'''
@@ -1197,7 +1217,7 @@ Items: {
 			'''
 	}
 
-	PetrifiedDisease: {
+	PetrifiedDiseaseEcType: {
 		DisplayName: Petrified Disease
 		Tooltip:
 			'''
@@ -1206,7 +1226,12 @@ Items: {
 			'''
 	}
 
-	Helstorm: {
+	PetrifiedDisease: {
+		DisplayName: Petrified Disease
+		Tooltip: ""
+	}
+
+	HelstormEcType: {
 		DisplayName: Helstorm
 		Tooltip:
 			'''
@@ -1215,7 +1240,7 @@ Items: {
 			'''
 	}
 
-	Leviatitan: {
+	LeviatitanEcType: {
 		DisplayName: Leviatitan
 		Tooltip:
 			'''
@@ -1225,7 +1250,7 @@ Items: {
 			'''
 	}
 
-	GoldenEagle: {
+	GoldenEagleEcType: {
 		DisplayName: Golden Eagle
 		Tooltip:
 			'''
@@ -1247,7 +1272,7 @@ Items: {
 			'''
 	}
 
-	MuzzleBrake: {
+	MuzzleBrakeEcType: {
 		DisplayName: Muzzle Brake
 		Tooltip:
 			'''
@@ -1510,17 +1535,6 @@ Items: {
 			'''
 	}
 
-	ArbalestEcType: {
-		DisplayName: Arbalest
-		Tooltip:
-			'''
-			Press the [Scope] key to aim
-			Fires 6 high-speed arrows
-			Arrow size increases with continuous firing time
-			Larger arrows deal higher damage and knockback, but have a wider spread
-			'''
-	}
-
 	ArcherfishEcType: {
 		DisplayName: Archerfish
 		Tooltip:
@@ -1532,6 +1546,8 @@ Items: {
 	}
 
 	ArcNovaDiffuserEcType: {
+		DisplayName: Arc Nova Diffuser Ec Type
+		Tooltip: ""
 	}
 
 	AstralBlasterEcType: {
@@ -1606,17 +1622,6 @@ Items: {
 			Medium recoil
 			Press the [KL] key to reload
 			Converts musket bullets into tracking energy beam
-			'''
-	}
-
-	ClaretCannonEcType: {
-		DisplayName: Claret Cannon
-		Tooltip:
-			'''
-			Medium recoil
-			Press the [KL] key to reload
-			Fires three bullets at once
-			Converts musket bullets into vampiric blood-tear bullets
 			'''
 	}
 
@@ -2053,28 +2058,6 @@ Items: {
 			'''
 	}
 
-	ClockGatlignumEcType: {
-		DisplayName: Clock Gatlignum
-		Tooltip:
-			'''
-			Strong recoil
-			Press the [KL] key to reload
-			Unleash a hailstorm of bullets
-			"Disappointingly, it doesn't shoot crocodiles."
-			'''
-	}
-
-	StormDragoonEcType: {
-		DisplayName: Storm Dragoon
-		Tooltip:
-			'''
-			Strong recoil
-			Press the [KL] key to reload
-			Unleash bullets like a hailstorm
-			"I am the storm that is approaching."
-			'''
-	}
-
 	StormSurgeEcType: {
 		DisplayName: Storm Surge
 		Tooltip:
@@ -2100,6 +2083,16 @@ Items: {
 
 	RainbowMarshmallows: {
 		DisplayName: Rainbow Marshmallows
+		Tooltip: ""
+	}
+
+	MonsoonEcType: {
+		DisplayName: Monsoon Ec Type
+		Tooltip: ""
+	}
+
+	AethersWhisperEcType: {
+		DisplayName: Aethers Whisper Ec Type
 		Tooltip: ""
 	}
 }
@@ -2515,6 +2508,11 @@ Projectiles: {
 	MarshmallowsHeldProj.DisplayName: Marshmallows Held Proj
 	RainbowMarshmallowsHeldProj.DisplayName: Rainbow Marshmallows Held Proj
 	MarshmallowProj2.DisplayName: Marshmallow Proj2
+	AethersWhisperHeldProj.DisplayName: Aethers Whisper Held Proj
+	AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
+	AetherOrb.DisplayName: Aether Orb
+	AetherOrb2.DisplayName: Aether Orb2
+	SniperRifleOnSpan.DisplayName: Sniper Rifle On Span
 }
 
 Configs: {

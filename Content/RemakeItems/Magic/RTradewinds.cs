@@ -15,7 +15,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
     internal class RTradewinds : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Magic.Tradewinds>();
-        public override int ProtogenesisID => ModContent.ItemType<Tradewinds>();
+        public override int ProtogenesisID => ModContent.ItemType<TradewindsEcType>();
+        public override string TargetToolTipItemName => "TradewindsEcType";
+
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }
@@ -40,10 +42,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
             item.autoReuse = true;
             item.shoot = ModContent.ProjectileType<TradewindsProjectile>();
             item.shootSpeed = 20f;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Tradewinds");
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

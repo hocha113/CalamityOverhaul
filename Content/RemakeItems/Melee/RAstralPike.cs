@@ -13,7 +13,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RAstralPike : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.AstralPike>();
-        public override int ProtogenesisID => ModContent.ItemType<AstralPike>();
+        public override int ProtogenesisID => ModContent.ItemType<AstralPikeEcType>();
+        public override string TargetToolTipItemName => "AstralPikeEcType";
+
 
         public override void SetDefaults(Item item) {
             item.width = 44;
@@ -33,10 +35,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ItemRarityID.Cyan;
             item.shoot = ModContent.ProjectileType<RAstralPikeProj>();
             item.shootSpeed = 13f;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "AstralPike");
         }
     }
 }

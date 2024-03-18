@@ -924,7 +924,7 @@ namespace CalamityOverhaul
         #endregion
 
         #region GameUtils
-        
+
         /// <summary>
         /// 快捷的将一个物品实例设置为手持对象
         /// </summary>

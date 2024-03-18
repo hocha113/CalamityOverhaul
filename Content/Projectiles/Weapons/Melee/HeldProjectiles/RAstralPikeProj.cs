@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class RAstralPikeProj : BaseSpearProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Spears/AstralPikeProj";
-        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<AstralPike>();
+        public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<AstralPikeEcType>();
         private Item astralPike => Main.player[Projectile.owner].ActiveItem();
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;
@@ -41,10 +41,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (astralPike != null) {
                 astralPike.initialize();
                 astralPike.CWR().ai[0]++;
-                if (astralPike.CWR().ai[0] > AstralPike.ShootPeriod) {
+                if (astralPike.CWR().ai[0] > AstralPikeEcType.ShootPeriod) {
                     const float sengs = 0.25f;
                     Vector2 spanPos = Projectile.Center + Projectile.velocity * 0.5f;
-                    Vector2 targetPos = Projectile.velocity.UnitVector() * AstralPike.InTargetProjToLang + Projectile.Center;
+                    Vector2 targetPos = Projectile.velocity.UnitVector() * AstralPikeEcType.InTargetProjToLang + Projectile.Center;
                     for (int i = 0; i < 3; i++)
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), spanPos, Projectile.velocity.RotatedBy(sengs - sengs * i)
                             , ModContent.ProjectileType<AstralPikeBeam>(), Projectile.damage, Projectile.knockBack * 0.25f, Projectile.owner, targetPos.X, targetPos.Y);
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         };
 
         public override void ExtraBehavior() {
-            if (astralPike.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.AstralPike>() && astralPike.type != ModContent.ItemType<AstralPike>()) {
+            if (astralPike.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.AstralPike>() && astralPike.type != ModContent.ItemType<AstralPikeEcType>()) {
                 Projectile.Kill();
                 return;
             }

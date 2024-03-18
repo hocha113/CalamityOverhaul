@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PreInOwnerUpdate() {
-            LoadingAnimation(20, 3, 15);
+            LoadingAnimation(20, 3, 5);
         }
 
         public override Vector2 GetGunInFirePos() {

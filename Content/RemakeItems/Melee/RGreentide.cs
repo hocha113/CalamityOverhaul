@@ -14,10 +14,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RGreentide : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Greentide>();
-        public override int ProtogenesisID => ModContent.ItemType<Greentide>();
+        public override int ProtogenesisID => ModContent.ItemType<GreentideEcType>();
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         }
+        public override string TargetToolTipItemName => "GreentideEcType";
+
 
         public override void SetDefaults(Item item) {
             item.damage = 95;
@@ -36,10 +38,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.autoReuse = true;
             item.shoot = ModContent.ProjectileType<GreenWater>();
             item.shootSpeed = 18f;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "Greentide");
         }
 
         public override bool? AltFunctionUse(Item item, Player player) => true;
@@ -68,13 +66,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override bool? On_OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) {
             if (player.altFunctionUse == 2)
-                Greentide.OnHitSpanProj(item, player, hit.Knockback);
+                GreentideEcType.OnHitSpanProj(item, player, hit.Knockback);
             return false;
         }
 
         public override bool? On_OnHitPvp(Item item, Player player, Player target, Player.HurtInfo hurtInfo) {
             if (player.altFunctionUse == 2)
-                Greentide.OnHitSpanProj(item, player, hurtInfo.Knockback);
+                GreentideEcType.OnHitSpanProj(item, player, hurtInfo.Knockback);
             return false;
         }
     }

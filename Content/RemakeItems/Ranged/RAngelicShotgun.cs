@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RAngelicShotgun : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.AngelicShotgun>();
-        public override int ProtogenesisID => ModContent.ItemType<AngelicShotgun>();
+        public override int ProtogenesisID => ModContent.ItemType<AngelicShotgunEcType>();
+        public override string TargetToolTipItemName => "AngelicShotgunEcType";
         public override void SetDefaults(Item item) {
             item.damage = 136;
             item.knockBack = 3f;

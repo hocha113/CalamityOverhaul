@@ -19,10 +19,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
     internal class RWaveSkipper : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Rogue.WaveSkipper>();
-        public override int ProtogenesisID => ModContent.ItemType<WaveSkipper>();
+        public override int ProtogenesisID => ModContent.ItemType<WaveSkipperEcType>();
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<CalamityMod.Items.Weapons.Rogue.WaveSkipper>()] = true;
         }
+        public override string TargetToolTipItemName => "WaveSkipperEcType";
 
         public override void SetDefaults(Item item) {
             item.width = 44;
@@ -40,23 +41,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             item.shoot = ModContent.ProjectileType<RWaveSkipperProjectile>();
             item.shootSpeed = 12f;
             item.DamageType = ModContent.GetInstance<RogueDamageClass>();
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            if (CWRMod.Instance.betterWaveSkipper == null) {
-                List<TooltipLine> newTooltips = new List<TooltipLine>(tooltips);
-                foreach (TooltipLine line in tooltips.ToList()) {
-                    if (line.Name == "Tooltip0")
-                        line.Hide();
-                    if (line.Name == "Tooltip1")
-                        line.Hide();
-                }
-                TooltipLine newLine = new TooltipLine(CWRMod.Instance, "GCWRText"
-                    , Language.GetText($"Mods.CalamityOverhaul.Items.Weapons.Rogue.WaveSkipper.Tooltip").Value);
-                newTooltips.Add(newLine);
-                tooltips.Clear(); // 清空原 tooltips 集合
-                tooltips.AddRange(newTooltips); // 添加修改后的 newTooltips 集合
-            }
         }
 
         public override bool? AltFunctionUse(Item item, Player player) {
@@ -86,7 +70,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             }
             else {
                 if (player.Calamity().StealthStrikeAvailable()) {
-                    for (int i = -WaveSkipper.SpreadAngle; i < WaveSkipper.SpreadAngle * 2; i += WaveSkipper.SpreadAngle) {
+                    for (int i = -WaveSkipperEcType.SpreadAngle; i < WaveSkipperEcType.SpreadAngle * 2; i += WaveSkipperEcType.SpreadAngle) {
                         Vector2 spreadVelocity = player.SafeDirectionTo(Main.MouseWorld).RotatedBy(MathHelper.ToRadians(i)) * item.shootSpeed;
                         int stealth = Projectile.NewProjectile(source, position, spreadVelocity, ModContent.ProjectileType<RWaveSkipperProjectile>(), damage, knockback, player.whoAmI);
                         if (stealth.WithinBounds(Main.maxProjectiles))

@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Hellborn";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Hellborn>();
-        public override int targetCWRItem => ModContent.ItemType<Hellborn>();
+        public override int targetCWRItem => ModContent.ItemType<HellbornEcType>();
         public override void SetRangedProperty() {
             ControlForce = 0.1f;
             GunPressure = 0.2f;

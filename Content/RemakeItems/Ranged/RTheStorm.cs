@@ -16,7 +16,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     internal class RTheStorm : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TheStorm>();
-        public override int ProtogenesisID => ModContent.ItemType<TheStorm>();
+        public override int ProtogenesisID => ModContent.ItemType<TheStormEcType>();
+        public override string TargetToolTipItemName => "TheStormEcType";
         public override void SetDefaults(Item item) {
             item.damage = 35;
             item.DamageType = DamageClass.Ranged;
@@ -37,10 +38,5 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = ModContent.ProjectileType<TheStormHeldProj>();
         }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "TheStorm");
-
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
     }
 }

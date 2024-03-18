@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TheStorm";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TheStorm>();
-        public override int targetCWRItem => ModContent.ItemType<TheStorm>();
+        public override int targetCWRItem => ModContent.ItemType<TheStormEcType>();
         public override void InOwner() {
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 8);
 

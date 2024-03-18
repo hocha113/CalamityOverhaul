@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "DeadSunsWind";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.DeadSunsWind>();
-        public override int targetCWRItem => ModContent.ItemType<DeadSunsWind>();
+        public override int targetCWRItem => ModContent.ItemType<DeadSunsWindEcType>();
 
         public override void SetRangedProperty() {
             HandDistance = 30;
