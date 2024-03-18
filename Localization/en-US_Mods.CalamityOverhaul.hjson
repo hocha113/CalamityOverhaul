@@ -597,7 +597,7 @@ Items: {
 	}
 
 	InfiniteToiletItem: {
-		DisplayName: Infinite Toilet Item
+		DisplayName: Infinite Toilet
 		Tooltip: The power of the universe, of the galaxies above and the space inbetween.. Now just reduced to a toilet.
 	}
 

@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
-            item.SetHeldProj<GoldenEagleHelProj>();//非常重要，关联手持弹幕
+            item.SetCartridgeGun<GoldenEagleHelProj>(38);
             item.EasySetLocalTextNameOverride("GoldenEagleEcType");
         }
     }

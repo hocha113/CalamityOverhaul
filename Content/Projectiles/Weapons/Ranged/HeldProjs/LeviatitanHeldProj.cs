@@ -7,13 +7,15 @@ using CalamityMod.Projectiles.Ranged;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class LeviatitanHeldProj : BaseGun
+    internal class LeviatitanHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Leviatitan";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Leviatitan>();
         public override int targetCWRItem => ModContent.ItemType<LeviatitanEcType>();
 
         public override void SetRangedProperty() {
+            kreloadMaxTime = 100;
+            FireTime = 9;
             ControlForce = 0.1f;
             GunPressure = 0.2f;
             Recoil = 1;
@@ -33,8 +35,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, AmmoTypes
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             CaseEjection();
-            _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
     }
 }

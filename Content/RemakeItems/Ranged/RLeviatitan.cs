@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 12f;
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
-            item.SetHeldProj<LeviatitanHeldProj>();
+            item.SetCartridgeGun<LeviatitanHeldProj>(280);
         }
     }
 }

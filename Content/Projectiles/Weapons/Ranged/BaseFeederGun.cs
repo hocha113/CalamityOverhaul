@@ -361,6 +361,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             PostInOwnerUpdate();
         }
         /// <summary>
+        /// 该弹药物品是否应该判定为一个无限弹药
+        /// </summary>
+        /// <param name="ammoItem"></param>
+        /// <returns></returns>
+        public bool AmmunitionIsunlimited(Item ammoItem) {
+            bool result = !ammoItem.consumable;
+            if (CWRMod.Instance.luiafk != null || CWRMod.Instance.improveGame != null) {
+                if (ammoItem.stack >= 3996) {
+                    result = true;
+                }
+            }
+            return result;
+        }
+        /// <summary>
         /// 向弹匣中装入子弹的函数，这个函数并不负责消耗逻辑
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
@@ -388,7 +402,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     stack = magazineCapacity - accumulatedAmount;
                 }
 
-                if (!ammoItem.consumable) {//如果该物品不消耗，那么可能是一个无限弹药类型的物品，这里进行特别处理
+                if (AmmunitionIsunlimited(ammoItem)) {//如果该物品不消耗，那么可能是一个无限弹药类型的物品，这里进行特别处理
                     if (CWRIDs.ItemToShootID.ContainsKey(ammoItem.type)) {
                         int newAmmoType = ammoItem.type;
                         if (CWRIDs.ItemToShootID[ammoItem.type] == ProjectileID.Bullet) {
@@ -426,7 +440,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (inds.stack <= 0) {
                     continue;
                 }
-                if (!inds.consumable) {
+                if (AmmunitionIsunlimited(inds)) {
                     break;
                 }
                 if (inds.stack >= maxAmmo) {
@@ -436,6 +450,42 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     ammo += inds.stack;
                     inds.stack = 0;
                 }
+            }
+        }
+        /// <summary>
+        /// 更新弹匣内容，该逻辑负责弹药的消耗，以及后续的弹药排列处理。如果多次调用，可以制造类似多发消耗的效果
+        /// </summary>
+        public virtual void UpdateMagazineContents() {
+            CWRItems cwritem = ModItem;
+            if (cwritem.MagazineContents.Length <= 0) {
+                cwritem.MagazineContents = new Item[] { new Item() };
+                IsKreload = false;
+                BulletNum = 0;
+            }
+            if (cwritem.MagazineContents[0].stack <= 0) {
+                cwritem.MagazineContents[0].TurnToAir();
+                List<Item> items = new List<Item>();
+                foreach (Item i in cwritem.MagazineContents) {
+                    if (i.type != ItemID.None && i.stack > 0) {
+                        items.Add(i);
+                    }
+                }
+                cwritem.MagazineContents = items.ToArray();
+            }
+            if (cwritem.MagazineContents.Length <= 0) {
+                IsKreload = false;
+                BulletNum = 0;
+                return;
+            }
+            if (cwritem.MagazineContents[0] == null) {
+                cwritem.MagazineContents[0] = new Item();
+            }
+            if (AmmoTypeAffectedByMagazine) {
+                AmmoTypes = cwritem.MagazineContents[0].shoot;
+            }
+            cwritem.MagazineContents[0].stack--;
+            if (BulletNum > 0) {
+                BulletNum--;
             }
         }
         /// <summary>
@@ -479,42 +529,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <returns></returns>
         public virtual bool PreFireReloadKreLoad() {
             return true;
-        }
-        /// <summary>
-        /// 更新弹匣内容，该逻辑负责弹药的消耗，以及后续的弹药排列处理。如果多次调用，可以制造类似多发消耗的效果
-        /// </summary>
-        public virtual void UpdateMagazineContents() {
-            CWRItems cwritem = ModItem;
-            if (cwritem.MagazineContents.Length <= 0) {
-                cwritem.MagazineContents = new Item[] { new Item() };
-                IsKreload = false;
-                BulletNum = 0;
-            }
-            if (cwritem.MagazineContents[0].stack <= 0) {
-                cwritem.MagazineContents[0].TurnToAir();
-                List<Item> items = new List<Item>();
-                foreach (Item i in cwritem.MagazineContents) {
-                    if (i.type != ItemID.None && i.stack > 0) {
-                        items.Add(i);
-                    }
-                }
-                cwritem.MagazineContents = items.ToArray();
-            }
-            if (cwritem.MagazineContents.Length <= 0) {
-                IsKreload = false;
-                BulletNum = 0;
-                return;
-            }
-            if (cwritem.MagazineContents[0] == null) {
-                cwritem.MagazineContents[0] = new Item();
-            }
-            if (AmmoTypeAffectedByMagazine) {
-                AmmoTypes = cwritem.MagazineContents[0].shoot;
-            }
-            cwritem.MagazineContents[0].stack--;
-            if (BulletNum > 0) {
-                BulletNum--;
-            }
         }
 
         public sealed override void SpanProj() {

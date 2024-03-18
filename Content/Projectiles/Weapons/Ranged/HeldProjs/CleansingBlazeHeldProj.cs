@@ -1,8 +1,8 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CleansingBlaze";
         public override int targetCayItem => ModContent.ItemType<CleansingBlaze>();
         public override int targetCWRItem => ModContent.ItemType<CleansingBlazeEcType>();
+        int fireIndex;
         public override void SetRangedProperty() {
             FireTime = 3;
             HandDistance = 25;
@@ -25,6 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.5f;
             RangeOfStress = 28;
             RepeatedCartridgeChange = true;
+            FiringDefaultSound = false;
             kreloadMaxTime = 90;
             loadTheRounds = CWRSound.Liquids_Fill_0 with { Pitch = -0.8f };
         }
@@ -34,6 +36,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
+            if (++fireIndex > 5) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+                fireIndex = 0;
+            }
             int num6 = Main.rand.Next(2, 4);
             for (int index = 0; index < num6; ++index) {
                 float SpeedX = ShootVelocity.X + (Main.rand.Next(-15, 16) * 0.05f);
