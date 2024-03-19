@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content
         public bool HeldFeederGunBool;
         public bool HeldGunBool;
         public bool HeldBowBool;
-        #region 网络同步
+        #region NetCode
         public bool DompBool;
         public bool RecoilAccelerationAddBool;
         public Vector2 RecoilAccelerationValue;

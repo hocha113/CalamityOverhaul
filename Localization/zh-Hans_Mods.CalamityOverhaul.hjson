@@ -1434,9 +1434,8 @@ Items: {
 			一般的后坐力
 			按下[KL]键进行换弹
 			启动完毕后，迅速发射子弹
-			当你停止开火时会继续倾泻大量金源弹
+			过热时会倾泻大量金源弹
 			金源弹会迅速追踪附近的敌人，并无视50点防御
-			使用时不断消耗弹药
 			90%几率节省弹药
 			“世袭的权柄让你跪下，而现在，我们让你站起来”
 			'''
@@ -2503,6 +2502,8 @@ Projectiles: {
 	// EtherRoarOnSpan.DisplayName: Ether Roar On Span
 	// EtherRoarOrb.DisplayName: Ether Roar Orb
 	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
+	// GhastlyVisageBall.DisplayName: Ghastly Visage Ball
+	// GhastlyVisageHeldProj.DisplayName: Ghastly Visage Held Proj
 }
 
 Configs: {

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Kingsbane";
         public override void SetDefaults() {
-            Item.damage = 185;
+            Item.damage = 175;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 92;
             Item.height = 44;
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.UseSound = null;
             Item.autoReuse = true;
             Item.noUseGraphic = true;
-            Item.shoot = ModContent.ProjectileType<KingsbaneHoldout>();
+            Item.shoot = ModContent.ProjectileType<KingsbaneHeldProj>();
             Item.shootSpeed = 2f;
             Item.useAmmo = AmmoID.Bullet;
             Item.rare = ModContent.RarityType<Violet>();

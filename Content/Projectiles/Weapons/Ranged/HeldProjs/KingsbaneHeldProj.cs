@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             float setPitchVarianceValue = 0.4f;
             if (chargeValue > 90) {
                 AmmoTypes = ModContent.ProjectileType<AuricBullet>();
-                WeaponDamage += 16;
+                WeaponDamage *= 2;
                 Recoil = 0.5f;
                 setPitchVarianceValue = 0.6f;
                 ShootPosNorlLengValue = -8;
@@ -102,6 +102,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     chargeAmmo = chargeValue = 0;
                     Recoil = 0.2f;
                     ShootPosNorlLengValue = -13;
+                    SpawnGunFireDust(GunShootPos, ShootVelocity / 2, 13, dustID1: DustID.Smoke, dustID2: DustID.Smoke, dustID3: DustID.Smoke);
                 }
             }
             SoundEngine.PlaySound(SoundID.Item40 with { PitchVariance = setPitchVarianceValue }, Projectile.Center);
@@ -119,10 +120,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            Color drawColor = onFire ? Color.White : lightColor;
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition
-                , CWRUtils.GetRec(TextureValue, Projectile.frame, 10)
-                , onFire ? Color.White : lightColor
+                , CWRUtils.GetRec(TextureValue, Projectile.frame, 10), drawColor
                 , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 10)
+                , Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+
+            Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Item_Ranged + "Kingsbane_barrel");
+            Color drawColor2 = CWRUtils.MultiStepColorLerp(chargeValue / 90f, drawColor, Color.Red);
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition
+                , CWRUtils.GetRec(value, Projectile.frame, 10), drawColor2
+                , Projectile.rotation, CWRUtils.GetOrig(value, 10)
                 , Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             return false;
         }

@@ -17,6 +17,10 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
     {
         public override string Texture => CWRConstant.Item + "Ranged/" + "DragonsBreathRifle";
 
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;
+        }
+
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         }

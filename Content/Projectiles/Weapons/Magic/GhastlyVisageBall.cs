@@ -1,117 +1,97 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Humanizer.In;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 {
-    internal class GhastlyBlasts : ModProjectile
+    internal class GhastlyVisageBall : ModProjectile
     {
-        private const float DriftVelocity = 10f;
-
-        private const float FramesBeforeSlowing = 8f;
-
-        private const float MaximumWaitFrames = 360f;
-
-        public new string LocalizationCategory => "Projectiles.Magic";
-
-        public override string Texture => CWRConstant.Cay_Proj_Magic + "GhastlyBlast";
-
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
-        }
-
+        public override string Texture => CWRConstant.Projectile_Magic + "GhastlyVisageBall";
+        public Vector2 SavedOldVelocity;
+        public Vector2 NPCDestination;
         public override void SetDefaults() {
             Projectile.width = 32;
             Projectile.height = 32;
             Projectile.friendly = true;
             Projectile.alpha = 255;
-            Projectile.penetrate = 6;
+            Projectile.penetrate = 3;
             Projectile.MaxUpdates = 3;
             Projectile.timeLeft = 300;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Magic;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 20;
+            Projectile.localNPCHitCooldown = 8;
         }
 
         public override void AI() {
-            Projectile.ai[0] += 1f;
-            Projectile.alpha -= 15;
-            if (Projectile.alpha < 0) {
-                Projectile.alpha = 0;
+            CWRUtils.ClockFrame(ref Projectile.frame, 5, 6);
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Pi;
+            Projectile.scale += 0.01f;
+            Color color = Color.Lerp(Color.Red, Color.OrangeRed, Main.rand.NextFloat(0.3f, 0.64f));
+            CWRParticle spark = new SparkParticle(Projectile.Center - Projectile.velocity * 8f, -Projectile.velocity * 0.1f, false, 19, 2.3f, color * 0.1f);
+            CWRParticleHandler.AddParticle(spark);
+            if (Projectile.scale > 1.15f) {
+                Projectile.scale = 1.15f;
             }
-            NPC target = Projectile.Center.FindClosestNPC(1600);
-            Projectile.rotation -= MathF.PI / 30f;
-            if (Projectile.numHits == 0) {
-                SpanDust();
-
-                if (Projectile.timeLeft < 200) {
-
-                    if (target != null) {
-                        if (Projectile.timeLeft > 100) {
-                            _ = Projectile.ChasingBehavior2(target.Center);
-                        } else {
-                            _ = Projectile.ChasingBehavior(target.Center, 16);
-                        }
+            if (Projectile.timeLeft > 200) {
+                Projectile.velocity.X *= 0.99f;
+                Projectile.velocity.Y *= 0.995f;
+            }
+            else {
+                CWRDust.SpanCycleDust(Projectile, DustID.RedTorch, DustID.RedTorch);
+                for (int i = 0; i < Main.maxNPCs; i++) {
+                    if (Main.npc[i].CanBeChasedBy(Projectile.GetSource_FromThis(), false))
+                        NPCDestination = Main.npc[i].Center + Main.npc[i].velocity * 5f;
+                }
+                float returnSpeed = 10;
+                float acceleration = 0.2f;
+                float xDist = NPCDestination.X - Projectile.Center.X;
+                float yDist = NPCDestination.Y - Projectile.Center.Y;
+                float dist = (float)Math.Sqrt(xDist * xDist + yDist * yDist);
+                dist = returnSpeed / dist;
+                xDist *= dist;
+                yDist *= dist;
+                float targetDist = Vector2.Distance(NPCDestination, Projectile.Center);
+                if (targetDist < 1800) {
+                    if (Projectile.velocity.X < xDist) {
+                        Projectile.velocity.X = Projectile.velocity.X + acceleration;
+                        if (Projectile.velocity.X < 0f && xDist > 0f)
+                            Projectile.velocity.X += acceleration;
+                    } else if (Projectile.velocity.X > xDist) {
+                        Projectile.velocity.X = Projectile.velocity.X - acceleration;
+                        if (Projectile.velocity.X > 0f && xDist < 0f)
+                            Projectile.velocity.X -= acceleration;
                     }
-                }
-            } else {
-                if (target != null) {
-                    _ = Projectile.ChasingBehavior2(target.Center, 1, 0.5f);
-                }
-            }
-
-            if (Projectile.alpha < 150) {
-                Lighting.AddLight(Projectile.Center, 0.9f, 0f, 0.1f);
-            }
-
-            if (Projectile.ai[0] >= 360f * Projectile.MaxUpdates) {
-                Projectile.Kill();
-            }
-        }
-
-        public void SpanDust() {
-            for (int i = 0; i < 1; i++) {
-                if (Main.rand.NextBool()) {
-                    Vector2 vector3 = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
-                    Dust dust = Main.dust[Dust.NewDust(Projectile.Center - (vector3 * 30f), 0, 0, DustID.RedTorch)];
-                    dust.noGravity = true;
-                    dust.position = Projectile.Center - (vector3 * Main.rand.Next(10, 21));
-                    dust.velocity = vector3.RotatedBy(1.5707963705062866) * 6f;
-                    dust.scale = 0.9f + Main.rand.NextFloat();
-                    dust.fadeIn = 0.5f;
-                    dust.customData = Projectile;
-                    vector3 = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
-                    dust.noGravity = true;
-                    dust.position = Projectile.Center - (vector3 * Main.rand.Next(10, 21));
-                    dust.velocity = vector3.RotatedBy(1.5707963705062866) * 6f;
-                    dust.scale = 0.9f + Main.rand.NextFloat();
-                    dust.fadeIn = 0.5f;
-                    dust.customData = Projectile;
-                    dust.color = Color.Crimson;
-                } else {
-                    Vector2 vector4 = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
-                    Dust dust = Main.dust[Dust.NewDust(Projectile.Center - (vector4 * 30f), 0, 0, DustID.RedTorch)];
-                    dust.noGravity = true;
-                    dust.position = Projectile.Center - (vector4 * Main.rand.Next(20, 31));
-                    dust.velocity = vector4.RotatedBy(-1.5707963705062866) * 5f;
-                    dust.scale = 0.9f + Main.rand.NextFloat();
-                    dust.fadeIn = 0.5f;
-                    dust.customData = Projectile;
+                    if (Projectile.velocity.Y < yDist) {
+                        Projectile.velocity.Y = Projectile.velocity.Y + acceleration;
+                        if (Projectile.velocity.Y < 0f && yDist > 0f)
+                            Projectile.velocity.Y += acceleration;
+                    } else if (Projectile.velocity.Y > yDist) {
+                        Projectile.velocity.Y = Projectile.velocity.Y - acceleration;
+                        if (Projectile.velocity.Y > 0f && yDist < 0f)
+                            Projectile.velocity.Y -= acceleration;
+                    }
                 }
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CalamityUtils.DrawAfterimagesCentered(Projectile, ProjectileID.Sets.TrailingMode[Projectile.type], lightColor);
+            Texture2D value = CWRUtils.GetT2DValue(Texture);
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition
+                , CWRUtils.GetRec(value, Projectile.frame, 7), Color.White
+                , Projectile.rotation, CWRUtils.GetOrig(value, 7)
+                , Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.FlipVertically : SpriteEffects.None);
             return false;
         }
 
@@ -127,6 +107,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.penetrate = -1;
             Projectile.Damage();
             _ = SoundEngine.PlaySound(in SoundID.Item14, Projectile.position);
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center,
+                new Vector2(0, 13), ModContent.ProjectileType<GhastlyBlasts>(), Projectile.damage, 2, Projectile.owner);
             for (int i = 0; i < 4; i++) {
                 int dust = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, DustID.RedTorch, 0f, 0f, 100, default, 1.5f);
                 Main.dust[dust].position = Projectile.Center + (Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float)Main.rand.NextDouble() * Projectile.width / 2f);

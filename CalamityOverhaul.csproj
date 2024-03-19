@@ -18,6 +18,9 @@
     <None Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
   </ItemGroup>
   <ItemGroup>
+    <AdditionalFiles Remove="Assets\Projectiles\Magic\GhastlyVisageBall.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Assets\Items\Replace\TODO.txt" />
     <None Remove="Assets\Masking\Extra_193.png" />
     <None Remove="Assets\Masking\Extra_193_White.png" />

@@ -2,7 +2,7 @@
 
 namespace CalamityOverhaul.Content.NPCs.Core
 {
-    internal class NPCCustomizer
+    internal abstract class NPCCustomizer
     {
         /// <summary>
         /// 这个属性用于<see cref="On_OnHitByProjectile"/>的实现，编辑方法生效的条件，一般判断会生效在那些目标弹幕ID之上

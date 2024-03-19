@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     /// </summary>
     internal abstract class BaseGun : BaseHeldRanged
     {
+        #region Date
         private bool old_downLeftValue;
         private bool downLeftValue;
         protected bool DownLeft {
@@ -155,6 +156,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 该枪体使用的实际纹理
         /// </summary>
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
+        #endregion
 
         public override void SendExtraAI(BinaryWriter writer) {
             base.SendExtraAI(writer);

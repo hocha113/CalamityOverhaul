@@ -25,6 +25,7 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.UI;
 using Terraria.WorldBuilding;
+using static Humanizer.In;
 
 namespace CalamityOverhaul
 {
@@ -948,6 +949,29 @@ namespace CalamityOverhaul
 
         public static void SetCalamitySD<T>(this Item item) where T : ModItem {
             item.CloneDefaults(ModContent.ItemType<T>());
+        }
+
+        /// <summary>
+        /// 弹药是否应该被消耗，先行判断武器自带的消耗抵消比率，再在该基础上计算玩家的额外消耗抵消比率，比如弹药箱加成或者药水
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="weapon"></param>
+        /// <returns></returns>
+        public static bool CanUseAmmoInWeaponShoot(this Player player, Item weapon) {
+            bool result = true;
+            if (weapon.type != ItemID.None) {
+                Item[] magazineContents = weapon.CWR().MagazineContents;
+                if (magazineContents.Length <= 0) {
+                    return true;
+                }
+                if (weapon.ModItem != null) {
+                    result = weapon.ModItem.CanConsumeAmmo(magazineContents[0], player);
+                }
+                if (result) {
+                    result = !player.IsRangedAmmoFreeThisShot(magazineContents[0]);
+                }
+            }
+            return result;
         }
 
         public static ShootState GetShootState(this Player player) {
