@@ -29,6 +29,7 @@ namespace CalamityOverhaul
         internal Mod magicBuilder = null;
         internal Mod improveGame = null;
         internal Mod luiafk = null;
+        internal Mod terrariaOverhaul = null;
 
         internal List<Mod> LoadMods = new List<Mod>();
         internal static List<BaseRItem> RItemInstances = new List<BaseRItem>();
@@ -133,6 +134,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("MagicBuilder", out magicBuilder);
             ModLoader.TryGetMod("ImproveGame", out improveGame);
             ModLoader.TryGetMod("miningcracks_take_on_luiafk", out luiafk);
+            ModLoader.TryGetMod("TerrariaOverhaul", out terrariaOverhaul);
         }
 
         public void LoadClient() {

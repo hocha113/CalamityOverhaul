@@ -16,7 +16,7 @@ Items: {
 			'''
 	}
 
-	CosmicShivEcType: {
+	CosmicShivEctype: {
 		DisplayName: Cosmic Shiv
 		Tooltip:
 			'''
@@ -56,6 +56,11 @@ Items: {
 	BurntSiennaEcType: {
 		DisplayName: Burnt Sienna
 		Tooltip: Swinging will sometimes throw 3 Sand blocks in an arc towards your enemies. Killing enemies summon healing orbs that float.
+	}
+
+	BurntSienna: {
+		DisplayName: Burnt Sienna
+		Tooltip: ""
 	}
 
 	CometQuasherEcType: {
@@ -1173,8 +1178,10 @@ Items: {
 		Tooltip:
 			'''
 			Medium recoil
+			Press the [KL] key to reload
 			Converting musket bullets into kinetic energy bullets
 			The right shot is scattered and the number of shots is fired
+			"Let my crippled body become raging flames."
 			'''
 	}
 
@@ -2093,6 +2100,27 @@ Items: {
 		DisplayName: Ether Roar
 		Tooltip: ""
 	}
+
+	StarnightLanceEcType: {
+		DisplayName: Starnight Lance Ec Type
+		Tooltip: ""
+	}
+
+	PridefulHuntersPlanarRipperEcType: {
+		DisplayName: Prideful Hunters Planar Ripper
+		Tooltip:
+			'''
+			Weak recoil
+			Press the [KL] key to reload
+			Turning musket bullets into lightning rounds
+			The lightning barrage is fast and explodes when it kills an enemy
+			Lightning Critical Strikes give you a stackable speed bonus
+			Gain up to 20% movement speed and acceleration bonus
+			Switching between handheld items resets the bonus
+			There will be a burst of bullets every 15 shots fired
+			33% chance to save ammunition
+			'''
+	}
 }
 
 Projectiles: {
@@ -2517,6 +2545,7 @@ Projectiles: {
 	EtherRoarOrb2.DisplayName: Ether Roar Orb2
 	GhastlyVisageBall.DisplayName: Ghastly Visage Ball
 	GhastlyVisageHeldProj.DisplayName: Ghastly Visage Held Proj
+	PridefulHuntersPlanarRipperHeldProj.DisplayName: Prideful Hunters Planar Ripper Held Proj
 }
 
 Configs: {
@@ -2627,6 +2656,11 @@ Configs: {
 			Label: Magazine UI deviates vertically value
 			Tooltip: ""
 		}
+
+		WeaponHandheldDisplay: {
+			Label: Weapon Handheld Display
+			Tooltip: ""
+		}
 	}
 }
 
@@ -2688,8 +2722,8 @@ Keybinds: {
 	TOM_GlobalRecall.DisplayName: Omega synthesis: Global recall
 	Murasama_TriggerKey.DisplayName: Murasama: Trigger Key
 	Murasama_DownKey.DisplayName: Murasama:Down Key
-	ADS_Key.DisplayName: A D S_ Key
-	KreLoad_Key.DisplayName: Kre Load_ Key
+	ADS_Key.DisplayName: Firearms:Open the scope
+	KreLoad_Key.DisplayName: Firearms:Change the ammunition
 }
 
 TextContent: {

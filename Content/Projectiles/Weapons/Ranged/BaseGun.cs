@@ -133,6 +133,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float ShootPosNorlLengValue = 0;
         /// <summary>
+        /// 光照强度，默认为1，用于控制在开火时制造光火效果的强度，为0时表示关闭
+        /// </summary>
+        public float fireLight = 1;
+        /// <summary>
         /// 快捷获取该枪械的发射口位置
         /// </summary>
         public Vector2 GunShootPos => GetShootPos(ShootPosToMouLengValue, ShootPosNorlLengValue);
@@ -377,6 +381,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (CGItemBehavior) {
                     CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner, Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
                 }
+                if (fireLight > 0) {
+                    Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * fireLight);
+                }
 
                 Projectile.ai[1] = 0;
                 onFire = false;
@@ -395,8 +402,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void AI() {
             InOwner();
             if (SetArmRotBool) {
-                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
-                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+                SetCompositeArm();
             }
             UpdateRecoil();
             if (Projectile.IsOwnedByLocalPlayer()) {
@@ -404,6 +410,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             Time++;
             Recover();
+        }
+
+        public void SetCompositeArm() {
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
         }
 
         public override bool PreDraw(ref Color lightColor) {

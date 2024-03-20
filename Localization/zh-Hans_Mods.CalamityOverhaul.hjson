@@ -16,7 +16,7 @@ Items: {
 			'''
 	}
 
-	CosmicShivEcType: {
+	CosmicShivEctype: {
 		DisplayName: 宇宙短剑
 		Tooltip:
 			'''
@@ -52,6 +52,11 @@ Items: {
 	BurntSiennaEcType: {
 		DisplayName: 沙之刃
 		Tooltip: 挥舞会抛舞出三个沙球
+	}
+
+	BurntSienna: {
+		// DisplayName: Burnt Sienna
+		// Tooltip: ""
 	}
 
 	CometQuasherEcType: {
@@ -1146,12 +1151,14 @@ Items: {
 	}
 
 	AnimosityEcType: {
-		DisplayName: 憎恶
+		DisplayName: 憎恨
 		Tooltip:
 			'''
 			一般的后坐力
+			按下[KL]键进行换弹
 			将火枪子弹转化为动能子弹
 			右键呈散射状发射数发动能子弹
+			"以我残躯化烈火"
 			'''
 	}
 
@@ -2080,6 +2087,27 @@ Items: {
 		// DisplayName: Ether Roar
 		// Tooltip: ""
 	}
+
+	StarnightLanceEcType: {
+		// DisplayName: Starnight Lance Ec Type
+		// Tooltip: ""
+	}
+
+	PridefulHuntersPlanarRipperEcType: {
+		DisplayName: 雷空猎影
+		Tooltip:
+			'''
+			较弱的后坐力
+			按下[KL]键进行换弹
+			将火枪子弹转化为闪电弹
+			闪电弹的弹幕速度很快，并在击杀敌人时产生爆炸
+			闪电弹暴击时会使你获得可堆叠的速度加成
+			至多获得20%移动速度和加速度加成
+			切换手持的物品会重置加成
+			每间隔十五次开火会进行一次子弹喷发
+			33%几率节省弹药
+			'''
+	}
 }
 
 Projectiles: {
@@ -2504,6 +2532,7 @@ Projectiles: {
 	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
 	// GhastlyVisageBall.DisplayName: Ghastly Visage Ball
 	// GhastlyVisageHeldProj.DisplayName: Ghastly Visage Held Proj
+	// PridefulHuntersPlanarRipperHeldProj.DisplayName: Prideful Hunters Planar Ripper Held Proj
 }
 
 Configs: {
@@ -2609,6 +2638,11 @@ Configs: {
 
 		CartridgeUI_Offset_Y_Value: {
 			Label: 弹匣UI纵向偏离值
+			Tooltip: ""
+		}
+
+		WeaponHandheldDisplay: {
+			Label: 武器手持显示
 			Tooltip: ""
 		}
 	}
