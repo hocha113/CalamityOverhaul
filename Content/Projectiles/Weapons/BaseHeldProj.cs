@@ -13,6 +13,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// </summary>
         internal virtual Player Owner => Main.player[Projectile.owner];
         /// <summary>
+        /// 来源物品，在弹幕被生成时赋值
+        /// </summary>
+        internal Item SpawnItem;
+        /// <summary>
         /// 安全的获取一个重力倒转值
         /// </summary>
         internal int SafeGravDir => Math.Sign(Owner.gravDir);

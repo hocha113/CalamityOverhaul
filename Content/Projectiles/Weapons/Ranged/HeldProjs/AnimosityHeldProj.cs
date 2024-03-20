@@ -1,19 +1,19 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Common;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class AnimosityHeldProj : BaseGun
+    internal class AnimosityHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Animosity";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Animosity>();
         public override int targetCWRItem => ModContent.ItemType<AnimosityEcType>();
         public override void SetRangedProperty() {
+            FireTime = 6;
             ControlForce = 0.1f;
             GunPressure = 0.2f;
             Recoil = 2;
@@ -24,23 +24,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-            if (onFireR) {
-                Item.useTime = 50;
-                GunPressure = 0.6f;
-                Recoil = 5;
-                RangeOfStress = 25;
-            }
-            else {
-                Item.useTime = 4;
-                GunPressure = 0.2f;
-                Recoil = 2;
-                RangeOfStress = 5;
-            }
-        }
-
         public override void FiringShoot() {
+            FireTime = 6;
+            GunPressure = 0.2f;
+            Recoil = 2;
+            RangeOfStress = 5;
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ProjectileID.BulletHighVelocity;
             }
@@ -49,18 +37,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
             CaseEjection();
-            _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
 
         public override void FiringShootR() {
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
+            FireTime = 50;
+            GunPressure = 0.6f;
+            Recoil = 5;
+            RangeOfStress = 25;
+            Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<AnimosityOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < 5; i++) {
                 CaseEjection();
-                _ = UpdateConsumeAmmo();
+                UpdateMagazineContents();
             }
-            _ = CreateRecoil();
         }
     }
 }

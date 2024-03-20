@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0.8f;
-            ControlForce = 0.05f;
+            GunPressure = 1.2f;
+            ControlForce = 0.1f;
             RepeatedCartridgeChange = true;
             Recoil = 3.2f;
             RangeOfStress = 5;
@@ -36,6 +36,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
+            //仰角开火特判
+            float angle = ShootVelocity.ToRotation() + MathHelper.PiOver2;
+            if (angle <= -(MathHelper.Pi / 2) || angle >= (MathHelper.Pi / 3)) {
+                return;
+            }
             //火箭弹药特判，榴弹特判
             Item ammoItem = Item.CWR().MagazineContents[0];
             if (ammoItem.type == ItemID.RocketI) {
@@ -75,17 +80,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 AmmoTypes = ProjectileID.MiniNukeGrenadeII;
             }
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0) ;
+            int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity + new Vector2(0, -4), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0) ;
             Main.projectile[proj1].timeLeft += 120;
-            int proj2 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocity + new Vector2(0, -5)) * 0.8f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj2 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocity + new Vector2(0, -8)) * 0.8f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj2].timeLeft += 120;
-            int ammonum = Main.rand.Next(6);
-            if (ammonum <= 3) {
-                int proj3 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocity + new Vector2(0, -10)) * 0.6f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int ammonum = Main.rand.Next(4);
+            if (ammonum <= 1) {
+                int proj3 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocity + new Vector2(0, -12)) * 0.6f, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj3].timeLeft += 120;
             }
-            if (ammonum <= 1) {
-                int proj4 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocity + new Vector2(0, -15)) * 0.4f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            if (ammonum == 0) {
+                int proj4 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocity + new Vector2(0, -16)) * 0.4f, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj4].timeLeft += 120;
             }
         }

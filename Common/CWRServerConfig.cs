@@ -36,6 +36,7 @@ namespace CalamityOverhaul.Common
         [ReloadRequired]
         [DefaultValue(true)]
         public bool ForceReplaceResetContent { get; set; }
+
         /// <summary>
         /// 传奇武器系统
         /// </summary>
@@ -43,13 +44,7 @@ namespace CalamityOverhaul.Common
         [ReloadRequired]
         [DefaultValue(true)]
         public bool WeaponEnhancementSystem { get; set; }
-        ///// <summary>
-        ///// 纹理资源替换
-        ///// </summary>
-        //[BackgroundColor(192, 54, 64, 192)]
-        //[ReloadRequired]
-        //[DefaultValue(true)]
-        //public bool ReplaceAsset { get; set; }
+
         /// <summary>
         /// 重置物品的温馨提示
         /// </summary>
@@ -65,12 +60,14 @@ namespace CalamityOverhaul.Common
         [BackgroundColor(182, 24, 64, 192)]
         [DefaultValue(false)]
         public bool MurasamaScreenVibration { get; set; }
+
         /// <summary>
         /// 鬼妖终结技碎屏效果
         /// </summary>
         [BackgroundColor(182, 24, 64, 192)]
         [DefaultValue(true)]
         public bool MurasamaSpaceFragmentationBool { get; set; }
+
         /// <summary>
         /// 鬼妖刀刃大小调节
         /// </summary>
@@ -90,6 +87,7 @@ namespace CalamityOverhaul.Common
             }
             set => Date.MScaleOffsetValue = value;
         }
+        
         /// <summary>
         /// 镜头缓动
         /// </summary>

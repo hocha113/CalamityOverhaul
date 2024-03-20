@@ -16,7 +16,7 @@ Items: {
 			'''
 	}
 
-	CosmicShivEcType: {
+	CosmicShivEctype: {
 		DisplayName: 宇宙短剑
 		Tooltip:
 			'''
@@ -52,6 +52,11 @@ Items: {
 	BurntSiennaEcType: {
 		DisplayName: 沙之刃
 		Tooltip: 挥舞会抛舞出三个沙球
+	}
+
+	BurntSienna: {
+		// DisplayName: Burnt Sienna
+		// Tooltip: ""
 	}
 
 	CometQuasherEcType: {
@@ -1146,12 +1151,14 @@ Items: {
 	}
 
 	AnimosityEcType: {
-		DisplayName: 憎恶
+		DisplayName: 憎恨
 		Tooltip:
 			'''
 			一般的后坐力
+			按下[KL]键进行换弹
 			将火枪子弹转化为动能子弹
 			右键呈散射状发射数发动能子弹
+			"以我残躯化烈火"
 			'''
 	}
 
@@ -2080,6 +2087,27 @@ Items: {
 		// DisplayName: Ether Roar
 		// Tooltip: ""
 	}
+
+	StarnightLanceEcType: {
+		// DisplayName: Starnight Lance Ec Type
+		// Tooltip: ""
+	}
+
+	PridefulHuntersPlanarRipperEcType: {
+		DisplayName: 雷空猎影
+		Tooltip:
+			'''
+			较弱的后坐力
+			按下[KL]键进行换弹
+			将火枪子弹转化为闪电弹
+			闪电弹的弹幕速度很快，并在击杀敌人时产生爆炸
+			闪电弹暴击时会使你获得可堆叠的速度加成
+			至多获得20%移动速度和加速度加成
+			切换手持的物品会重置加成
+			每间隔十五次开火会进行一次子弹喷发
+			33%几率节省弹药
+			'''
+	}
 }
 
 Projectiles: {
@@ -2504,6 +2532,7 @@ Projectiles: {
 	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
 	// GhastlyVisageBall.DisplayName: Ghastly Visage Ball
 	// GhastlyVisageHeldProj.DisplayName: Ghastly Visage Held Proj
+	// PridefulHuntersPlanarRipperHeldProj.DisplayName: Prideful Hunters Planar Ripper Held Proj
 }
 
 Configs: {
@@ -2609,6 +2638,11 @@ Configs: {
 
 		CartridgeUI_Offset_Y_Value: {
 			Label: 弹匣UI纵向偏离值
+			Tooltip: ""
+		}
+
+		WeaponHandheldDisplay: {
+			Label: 武器手持显示
 			Tooltip: ""
 		}
 	}
@@ -2932,12 +2966,13 @@ TextContent: {
 		Wap_SniperRifle_Text:
 			'''
 			很强的后坐力
-			将火枪子弹转化为高速子弹
+			将所有子弹转化为狙击子弹
 			右键可以使用狙击镜拉远视野
-			精准度随着瞄准时间的增长而增加
+			精准度和伤害随着瞄准时间的增长而增加
 			弹匣中装有四发子弹，前三发无法暴击，第四发必定暴击
 			这把枪射出的子弹无法穿透
 			坐骑会影响这把精密武器的准确度
+			——久远的时间削弱了这把武器一半的力量
 			“当十字线把你锁定，死神将亲吻你的额头。”
 			'''
 		Wap_NailGun_Text:
@@ -3029,26 +3064,30 @@ TextContent: {
 		Wap_GrenadeLauncher_Text:
 			'''
 			弱的后坐力
+			只能仰角开火
 			以弧线形式发射两枚榴弹
-			概率额外抛射一枚或两枚榴弹
+			概率额外抛射一枚或两枚小型榴弹
 			“我们终于有了一种省力的方式来发射这些炸弹，虽然还是可能伤到自己”
 			'''
 		Wap_RocketLauncher_Text:
 			'''
 			中等的后坐力
 			蓄力发射一枚高速火箭弹
-			弹体直接击中敌人时发射额外的辅助火箭
+			火箭击中时会发射额外的辅助火箭
 			“我打赌它不会被床板挡下”
 			'''
 		Wap_ElectrosphereLauncher_Text:
 			'''
-			发射装载着电圈装置的火箭弹，击中目标后释放电圈
+			三发散射装载着电圈装置的火箭弹
+			火箭弹爆炸后产生持续伤害的电圈
+			电圈之间会生成电弧
 			“外星烧烤技术！”
 			'''
 		Wap_ProximityMineLauncher_Text:
 			'''
 			弱的后坐力
 			发射感高伤害应地雷，会自行伪装并提高伤害
+			右键发射悬浮的感应雷
 			“我们来玩扫雷吧”
 			'''
 		Wap_SnowmanCannon_Text:

@@ -60,16 +60,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void OnKill(int timeLeft) {
+            float lastdamage = 0;
+            if (timenum > 972) {
+                lastdamage = 0.1f;
+            } 
+            else if (timenum < 972 && timenum > 942) {
+                lastdamage = ((972 - timenum) * 20 + 444) / 4444f;
+            }
+            else if (timenum < 942) {
+                lastdamage = ((942 - timenum) * 340 + 1044) / 4444f;
+            }
             if (Owner.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun)) {
                 int AmmoType = baseFeederGun.AmmoTypes;
                 if (AmmoType == ProjectileID.Bullet) {
                     AmmoType = ProjectileID.BulletHighVelocity;
                 }
                 if (Projectile.IsOwnedByLocalPlayer() && onFire && AmmoType != 0) {
-                    SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/TankCannon") { PitchVariance = 0f }, Projectile.Center);
+                    SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/TankCannon") { Pitch = Projectile.ai[2] }, Projectile.Center);
                     int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center + new Vector2(0, -5),
                         (toMou.SafeNormalize(Vector2.Zero) * 15).RotatedBy(Main.rand.NextFloat(rot * -0.01f, rot * 0.01f))
-                    , AmmoType, Owner.GetShootState().WeaponDamage, 0, Projectile.owner);
+                    , AmmoType, (int)(Owner.GetShootState().WeaponDamage * lastdamage)/2, 0, Projectile.owner);
                     if (Main.projectile[proj].penetrate > 1) {
                         Main.projectile[proj].penetrate = 1;
                     }
@@ -92,7 +102,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Effect effect = Filters.Scene["CalamityMod:SpreadTelegraph"].GetShader().Shader;
             effect.Parameters["centerOpacity"].SetValue(ChargeProgress + 0.1f);
             effect.Parameters["mainOpacity"].SetValue((float)Math.Sqrt((300 - Projectile.timeLeft)) * 0.15f);
-            effect.Parameters["halfSpreadAngle"].SetValue(Spread / 2f);
+            effect.Parameters["halfSpreadAngle"].SetValue(Spread / 3f);
             effect.Parameters["edgeColor"].SetValue(Color.Lerp(Color.Red, Color.Red, blinkage).ToVector3());
             effect.Parameters["centerColor"].SetValue(Color.Lerp(Color.DarkRed, Color.DarkRed, blinkage).ToVector3());
             effect.Parameters["edgeBlendLength"].SetValue(0.0007f);
@@ -107,7 +117,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-
             return false;
         }
     }

@@ -195,7 +195,11 @@ namespace CalamityOverhaul.Content
             }
             if (heldProjType > 0) {
                 if (player.ownedProjectileCounts[heldProjType] == 0 && Main.myPlayer == player.whoAmI) {
-                    Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, heldProjType, item.damage, item.knockBack, player.whoAmI);
+                    Projectile heldProj = Projectile.NewProjectileDirect(player.parent(), player.Center, Vector2.Zero, heldProjType, item.damage, item.knockBack, player.whoAmI);
+                    BaseHeldProj baseHeldProj = heldProj.ModProjectile as BaseHeldProj;
+                    if (baseHeldProj != null) {
+                        baseHeldProj.SpawnItem = item;
+                    }
                 }
             }
 

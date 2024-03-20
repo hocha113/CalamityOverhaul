@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CalamityMod.Graphics.Renderers;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
@@ -14,6 +15,7 @@ namespace CalamityOverhaul.Common
         public delegate void On_ModPlayerDraw_Dalegate(object obj, ref PlayerDrawSet drawInfo);
         public delegate void On_VoidFunc_Dalegate(ref PlayerDrawSet drawInfo, bool drawOnBack);
         public delegate void On_VoidFunc_Instance_Dalegate(object inds);
+        public delegate bool On_ShouldForceUseAnim_Dalegate(Player player, Item item);
 
         public static Type[] weaponOutCodeTypes;
 
@@ -27,9 +29,16 @@ namespace CalamityOverhaul.Common
         public static MethodBase weaponOut_WeaponLayer_2_Method;
 
         public static Type[] weaponDisplayCodeTypes;
-
         public static Type weaponDisplay_ModifyDrawInfo_Type;
         public static MethodBase weaponDisplay_ModifyDrawInfo_Method;
+
+        public static Type[] trOCodeTypes;
+        public static Type trO_MuzzleflashPlayerDL_Type;
+        public static Type trO_ArrowPlayerDL_Type;
+        public static Type trO_PlayerHoldOutAnimation_Type;
+        public static MethodBase trO_MuzzleflashPlayerDL_Draw_Method;
+        public static MethodBase trO_ArrowPlayerDL_Draw_Method;
+        public static MethodBase trO_PlayerHoldOutAnimation_Method;
 
         public static void Load() {
             #region weaponOut
@@ -66,8 +75,7 @@ namespace CalamityOverhaul.Common
                 else {
                     "未成功加载 weaponOut_WeaponLayer_2_Method 是否是WeaponLayer12.Draw已经改动?".DompInConsole();
                 }
-            }
-            else {
+            } else {
                 "未加载模组 WeaponOut".DompInConsole();
             }
             #endregion
@@ -90,10 +98,58 @@ namespace CalamityOverhaul.Common
                 if (weaponDisplay_ModifyDrawInfo_Method != null) {
                     MonoModHooks.Add(weaponDisplay_ModifyDrawInfo_Method, On_MP_Draw_3_Hook);
                 }
-            }
-            else {
+            } else {
                 "未加载模组 WeaponDisplay".DompInConsole();
             }
+            #endregion
+
+            #region terrariaOverhaul
+
+            if (CWRMod.Instance.terrariaOverhaul != null) {
+                trOCodeTypes = AssemblyManager.GetLoadableTypes(CWRMod.Instance.terrariaOverhaul.Code);
+                foreach (Type type in trOCodeTypes) {
+                    if (type.Name == "MuzzleflashPlayerDrawLayer") {
+                        trO_MuzzleflashPlayerDL_Type = type;
+                    }
+                    if (type.Name == "ArrowPlayerDrawLayer") {
+                        trO_ArrowPlayerDL_Type = type;
+                    }
+                    if (type.Name == "PlayerHoldOutAnimation") {
+                        trO_PlayerHoldOutAnimation_Type = type;
+                    }
+                }
+                /*
+                if (trO_MuzzleflashPlayerDL_Type != null) {
+                    trO_MuzzleflashPlayerDL_Draw_Method = trO_MuzzleflashPlayerDL_Type.GetMethod("Draw", BindingFlags.Instance | BindingFlags.NonPublic);
+                }
+                if (trO_MuzzleflashPlayerDL_Draw_Method != null) {
+                    MonoModHooks.Add(trO_MuzzleflashPlayerDL_Draw_Method, On_MP_Draw_4_Hook);
+                } 
+                else {
+                    "未成功加载 trO_MuzzleflashPlayerDL_Draw_Method 是否是MuzzleflashPlayerDrawLayer.Draw已经改动?".DompInConsole();
+                }
+                if (trO_ArrowPlayerDL_Type != null) {
+                    trO_ArrowPlayerDL_Draw_Method = trO_ArrowPlayerDL_Type.GetMethod("Draw", BindingFlags.Instance | BindingFlags.NonPublic);
+                }
+                if (trO_ArrowPlayerDL_Draw_Method != null) {
+                    MonoModHooks.Add(trO_ArrowPlayerDL_Draw_Method, On_MP_Draw_5_Hook);
+                } 
+                else {
+                    "未成功加载 trO_ArrowPlayerDL_Draw_Method 是否是ArrowPlayerDrawLayer.Draw已经改动?".DompInConsole();
+                }
+                */
+                if (trO_PlayerHoldOutAnimation_Type != null) {
+                    trO_PlayerHoldOutAnimation_Method = trO_PlayerHoldOutAnimation_Type.GetMethod("ShouldForceUseAnim", BindingFlags.Static | BindingFlags.NonPublic);
+                }
+                if (trO_PlayerHoldOutAnimation_Method != null) {
+                    MonoModHooks.Add(trO_PlayerHoldOutAnimation_Method, On_ShouldForceUseAnim_Hook);
+                } else {
+                    "未成功加载 trO_PlayerHoldOutAnimation_Method 是否是PlayerHoldOutAnimation.ShouldForceUseAnim已经改动?".DompInConsole();
+                }
+            } else {
+                "未加载模组 TerrariaOverhaul".DompInConsole();
+            }
+
             #endregion
         }
 
@@ -144,6 +200,20 @@ namespace CalamityOverhaul.Common
                 return;
             }
             orig.Invoke(obj, ref drawInfo);
+        }
+
+        public static bool On_ShouldForceUseAnim_Hook(On_ShouldForceUseAnim_Dalegate orig, Player player, Item item) {
+            if (item == null) {
+                return false;
+            }
+            if (item.type == ItemID.None) {
+                return false;
+            }
+            bool isHeld = item.CWR().isHeldItem || item.CWR().heldProjType > 0;
+            if (isHeld) {
+                return false;
+            }
+            return orig.Invoke(player, item);
         }
     }
 }

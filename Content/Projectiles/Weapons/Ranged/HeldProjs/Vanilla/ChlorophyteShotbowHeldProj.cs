@@ -23,12 +23,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            var value = Owner.GetShootState().UseAmmoItemType;
-            if (value == ItemID.WoodenArrow) {
+            if (AmmoTypes == ItemID.WoodenArrow) {
                 AmmoTypes = ProjectileID.ChlorophyteArrow;
             }
             _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 3; i++) {
                 _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.07f, 0.07f)) * Main.rand.NextFloat(0.8f, 1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
             _ = UpdateConsumeAmmo();

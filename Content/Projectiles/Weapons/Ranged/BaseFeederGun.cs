@@ -78,9 +78,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected int FireTime = 10;
         /// <summary>
-        /// 是否可以重复换弹
+        /// 是否可以重复换弹，默认为<see cref="true"/>
         /// </summary>
-        protected bool RepeatedCartridgeChange;
+        protected bool RepeatedCartridgeChange = true;
         /// <summary>
         /// 是否启用后坐力枪体反向制推效果，默认为<see langword="false"/>
         /// </summary>
@@ -562,6 +562,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                     if (FiringDefaultSound) {
                         SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+                    }
+                    if (fireLight > 0) {
+                        Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * Main.rand.NextFloat(0.1f, fireLight));
                     }
                 }
                 PostFiringShoot();
