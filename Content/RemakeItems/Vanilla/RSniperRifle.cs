@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 4;
             item.crit = -1000;
-            item.useTime = 60;
+            item.useTime = 0;
             item.damage = 4444;
             item.Calamity().canFirePointBlankShots = true;
             item.CWR().hasHeldNoCanUseBool = true;

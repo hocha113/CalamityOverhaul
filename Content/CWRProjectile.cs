@@ -198,11 +198,21 @@ namespace CalamityOverhaul.Content
                     , projectile.damage, projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
             }
 
-            if (SpanTypes == (byte)SpanTypesEnum.RocketLauncher && projectile.numHits == 0) {
-                for (int i = 0; i < 3; i++) {
+            if (SpanTypes == (byte)SpanTypesEnum.RocketLauncher && projectile.numHits == 0 && projectile.ai[2] > 0) {
+                projectile.ai[2] -= 1;
+                Vector2 velocity0;
+                if (target != null) {
+                    velocity0 = (target.Center - player.Center).SafeNormalize(Vector2.Zero) * 30f;
+                }
+                else {
+                    velocity0 = projectile.velocity;
+                }
+                for (int i = 0; i < 2; i++) {
                     int proj = Projectile.NewProjectile(projectile.parent(), player.Center
-                    , projectile.velocity.RotatedBy(MathHelper.Lerp(-0.07f, 0.07f, i / 2f)) * 2f, projectile.type
-                    , projectile.damage/2, projectile.knockBack, player.whoAmI, 0, target.whoAmI);
+                                    , velocity0.RotatedBy(MathHelper.Lerp(-0.07f, 0.07f, i)), projectile.type
+                                    , projectile.damage/2, projectile.knockBack, player.whoAmI, 0, target.whoAmI, projectile.ai[2]);
+                    Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.RocketLauncher;
+                    Main.projectile[proj].scale *= 0.5f;
                 }
             }
 
