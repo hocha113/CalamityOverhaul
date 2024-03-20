@@ -38,8 +38,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             //火箭弹药特判，电圈特判
             Item ammoItem = Item.CWR().MagazineContents[0];
             AmmoTypes = ProjectileID.ElectrosphereMissile;
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Main.projectile[proj].extraUpdates += 5;
+            for (int i = 0; i < 3; i++) {
+                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.2f, 0.2f, i / 2f)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj].extraUpdates += 5;
+            }
         }
     }
 }

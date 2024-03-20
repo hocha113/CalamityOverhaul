@@ -38,12 +38,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
+            float soundtype = 0f;
             GunPressure = 0f;
             ControlForce = 0f;
             Recoil = 0f;
             if (BulletNum == 1) {
                 FireTime = 90;
                 Item.crit = 100;
+                soundtype = 0.2f;
             }
             if (BulletNum == 4) {
                 Item.crit = -1000;
@@ -53,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<SniperRifleOnSpan>()] == 0) {
                 //accumulator = SoundEngine.PlaySound(CWRSound.Accumulator with { Pitch = 0.3f }, Projectile.Center);
                 Projectile.NewProjectile(Source, GunShootPos, Vector2.Zero
-                    , ModContent.ProjectileType<SniperRifleOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
+                    , ModContent.ProjectileType<SniperRifleOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI, soundtype);
             }
             return;
         }
