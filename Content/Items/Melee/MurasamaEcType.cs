@@ -96,11 +96,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             {7, 80 },
             {8, 75 },
             {9, 70 },
-            {10, 55 },
-            {11, 45 },
-            {12, 40 },
-            {13, 35 },
-            {14, 20 }
+            {10, 60 },
+            {11, 50 },
+            {12, 45 },
+            {13, 40 },
+            {14, 30 }
         };
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
         /// <summary>

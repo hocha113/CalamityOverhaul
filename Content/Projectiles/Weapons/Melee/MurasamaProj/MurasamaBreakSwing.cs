@@ -256,8 +256,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 || target.type == CWRIDs.CosmicGuardianHead || target.type == CWRIDs.DevourerofGodsHead || target.type == CWRIDs.DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.25f;
             }
-            if (target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerTail || target.type == CWRIDs.AstrumDeusHead
-                || target.type == CWRIDs.AstrumDeusTail) {
+            if (target.type == NPCID.TheDestroyer || target.type == CWRIDs.AstrumDeusHead || target.type == CWRIDs.AstrumDeusTail) {
                 modifiers.FinalDamage *= 3f;
             }
             if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
