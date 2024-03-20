@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         if (Projectile.IsOwnedByLocalPlayer()) {
                             Owner.velocity += UnitToMouseV * -3;
                             Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
-                            , breakOutType, (int)(MurasamaEcType.ActualTrueMeleeDamage * (0.45f + level * 0.05f)), 0, Owner.whoAmI);
+                            , breakOutType, (int)(MurasamaEcType.ActualTrueMeleeDamage * (0.35f + level * 0.05f)), 0, Owner.whoAmI);
                         }
 
                         SpanTriggerEffDust();

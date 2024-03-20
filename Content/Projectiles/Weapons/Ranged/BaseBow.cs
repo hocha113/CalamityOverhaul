@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 onFire = false;
             }
 
-            if (Owner.PressKey(false) && CanRightClick) {
+            if (Owner.PressKey(false) && CanRightClick && !onFire) {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = ToMouseA;
                 Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY);

@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.NPCs.Crabulon;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.ProfanedGuardians;
@@ -8,11 +7,9 @@ using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
-using Microsoft.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

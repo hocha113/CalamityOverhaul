@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/TankCannon") { PitchVariance = 0f }, Projectile.Center);
                     int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center + new Vector2(0, -5),
                         (toMou.SafeNormalize(Vector2.Zero) * 15).RotatedBy(Main.rand.NextFloat(rot * -0.01f, rot * 0.01f))
-                    , AmmoType, Main.player[Projectile.owner].HeldItem.damage, 0, Projectile.owner);
+                    , AmmoType, Owner.GetShootState().WeaponDamage, 0, Projectile.owner);
                     if (Main.projectile[proj].penetrate > 1) {
                         Main.projectile[proj].penetrate = 1;
                     }

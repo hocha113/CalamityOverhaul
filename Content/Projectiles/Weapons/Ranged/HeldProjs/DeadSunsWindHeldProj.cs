@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
-using Terraria.Audio;
-using Terraria.ModLoader;
-using Terraria;
 using CalamityOverhaul.Content.Items.Ranged;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -17,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 30;
             HandFireDistance = 30;
             HandFireDistanceY = -10;
+            Recoil = 0;
         }
 
         public override void FiringShoot() {

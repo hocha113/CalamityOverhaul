@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Magic;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
@@ -35,18 +36,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
             item.noMelee = true;
             item.knockBack = 5f;
             item.shootSpeed = 9f;
-            item.shoot = ModContent.ProjectileType<RemakeGhastlyVisageProj>();
+            item.shoot = ModContent.ProjectileType<GhastlyBlasts>();
             item.value = CalamityGlobalItem.Rarity13BuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
+            item.SetHeldProj<GhastlyVisageHeldProj>();
         }
 
         public override void OnConsumeMana(Item item, Player player, int manaConsumed) {
             player.statMana += manaConsumed;
-        }
-
-        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<RemakeGhastlyVisageProj>(), damage, knockback, player.whoAmI);
-            return false;
         }
     }
 }

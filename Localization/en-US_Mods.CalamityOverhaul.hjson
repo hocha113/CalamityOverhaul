@@ -597,7 +597,7 @@ Items: {
 	}
 
 	InfiniteToiletItem: {
-		DisplayName: Infinite Toilet Item
+		DisplayName: Infinite Toilet
 		Tooltip: The power of the universe, of the galaxies above and the space inbetween.. Now just reduced to a toilet.
 	}
 
@@ -1453,10 +1453,9 @@ Items: {
 			'''
 			Medium recoil
 			Press the [KL] key to reload
-			Once activated, rapidly fire bullets
-			When you stop firing, it will continue to unleash a torrent of golden bullets
-			The golden bullets will quickly track nearby enemies and ignore 50 points of defense
-			Consumes ammunition continuously while in use
+			Once activated, fire quickly
+			When it overheats, it pours out Auric Bullet
+			Auric Bullet will quickly track nearby enemies and ignore 50 points of defense
 			90% chance to conserve ammunition
 			"The hereditary power once forced you to kneel, but now, we lift you up."
 			'''
@@ -2516,6 +2515,8 @@ Projectiles: {
 	EtherRoarOnSpan.DisplayName: Ether Roar On Span
 	EtherRoarOrb.DisplayName: Ether Roar Orb
 	EtherRoarOrb2.DisplayName: Ether Roar Orb2
+	GhastlyVisageBall.DisplayName: Ghastly Visage Ball
+	GhastlyVisageHeldProj.DisplayName: Ghastly Visage Held Proj
 }
 
 Configs: {

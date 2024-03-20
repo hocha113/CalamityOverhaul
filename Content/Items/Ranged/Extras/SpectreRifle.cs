@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
     {
         public override string Texture => CWRConstant.Item_Ranged + "SpectreRifle";
         public override void SetDefaults() {
-            Item.damage = 228;
+            Item.damage = 158;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 124;
             Item.height = 78;

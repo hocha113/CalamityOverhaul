@@ -1223,6 +1223,7 @@ Items: {
 		Tooltip:
 			'''
 			弱的后坐力
+			按下[KL]键进行换弹
 			将火枪子弹转化为水球或者海洋弹
 			"想知道引发呕吐的诀窍吗？" 利维坦眯起了眼睛，"皮蛋加奶酪，保准你秒变呕吐专家"
 			'''
@@ -1233,6 +1234,7 @@ Items: {
 		Tooltip:
 			'''
 			一般的后坐力
+			按下[KL]键进行换弹
 			一次发射五颗子弹
 			右键进行速射，在鼠标处生成大量伴生弹
 			"你不会想知道这把枪是怎么制作的"
@@ -1240,7 +1242,7 @@ Items: {
 	}
 
 	SurgeDriverEcType: {
-		DisplayName: Surge Driver
+		DisplayName: 辉煌御流炮
 		Tooltip:
 			'''
 			无后坐力
@@ -1432,9 +1434,8 @@ Items: {
 			一般的后坐力
 			按下[KL]键进行换弹
 			启动完毕后，迅速发射子弹
-			当你停止开火时会继续倾泻大量金源弹
+			过热时会倾泻大量金源弹
 			金源弹会迅速追踪附近的敌人，并无视50点防御
-			使用时不断消耗弹药
 			90%几率节省弹药
 			“世袭的权柄让你跪下，而现在，我们让你站起来”
 			'''
@@ -2501,6 +2502,8 @@ Projectiles: {
 	// EtherRoarOnSpan.DisplayName: Ether Roar On Span
 	// EtherRoarOrb.DisplayName: Ether Roar Orb
 	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
+	// GhastlyVisageBall.DisplayName: Ghastly Visage Ball
+	// GhastlyVisageHeldProj.DisplayName: Ghastly Visage Held Proj
 }
 
 Configs: {

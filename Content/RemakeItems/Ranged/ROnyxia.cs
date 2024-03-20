@@ -12,6 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<Onyxia>();
         public override int ProtogenesisID => ModContent.ItemType<OnyxiaEcType>();
         public override string TargetToolTipItemName => "OnyxiaEcType";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<OnyxiaHeldProj>(180);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<OnyxiaHeldProj>(220);
     }
 }

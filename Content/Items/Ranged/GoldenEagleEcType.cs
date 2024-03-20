@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shootSpeed = 20f;
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.SetHeldProj<GoldenEagleHelProj>();//非常重要，关联手持弹幕
+            Item.SetCartridgeGun<GoldenEagleHelProj>(38);
         }
     }
 }

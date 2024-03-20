@@ -6,35 +6,29 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class GoldenEagleHelProj : BaseGun
+    internal class GoldenEagleHelProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "GoldenEagle";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.GoldenEagle>();
         public override int targetCWRItem => ModContent.ItemType<GoldenEagleEcType>();
         public override void SetRangedProperty() {
+            kreloadMaxTime = 60;
+            FireTime = 19;
             HandDistance = 18;
             HandFireDistance = 18;
             HandFireDistanceY = -6;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
             CanRightClick = true;
-        }
-
-        public override void FiringIncident() {
-            base.FiringIncident();
-            if (onFireR) {
-                RangeOfStress = 25;
-                GunPressure = 0.8f;
-                ControlForce = 0.07f;
-            }
-            else {
-                RangeOfStress = 5;
-                GunPressure = 0.2f;
-                ControlForce = 0.05f;
-            }
+            RepeatedCartridgeChange = true;
+            Recoil = 0.8f;
         }
 
         public override void FiringShoot() {
+            RangeOfStress = 5;
+            GunPressure = 0.2f;
+            ControlForce = 0.05f;
+            Recoil = 0.8f;
             base.FiringShoot();
             const float spread = 0.0425f;
             for (int o = 0; o < 5; o++) {
@@ -47,6 +41,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
+            RangeOfStress = 25;
+            GunPressure = 0.8f;
+            ControlForce = 0.07f;
+            Recoil = 1.8f;
             base.FiringShootR();
             CaseEjection();
 
@@ -67,10 +65,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.NewProjectile(Owner.parent(), pos4, vr2.UnitVector() * 13
                     , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI);
             }
-        }
-
-        public override int SpanLuxirProj(int luxirDamage) {
-            return base.SpanLuxirProj(luxirDamage);
         }
     }
 }

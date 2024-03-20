@@ -27,6 +27,8 @@ namespace CalamityOverhaul
         internal Mod weaponOut = null;
         internal Mod weaponDisplay = null;
         internal Mod magicBuilder = null;
+        internal Mod improveGame = null;
+        internal Mod luiafk = null;
 
         internal List<Mod> LoadMods = new List<Mod>();
         internal static List<BaseRItem> RItemInstances = new List<BaseRItem>();
@@ -129,6 +131,8 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("WeaponOut", out weaponOut);
             ModLoader.TryGetMod("WeaponDisplay", out weaponDisplay);
             ModLoader.TryGetMod("MagicBuilder", out magicBuilder);
+            ModLoader.TryGetMod("ImproveGame", out improveGame);
+            ModLoader.TryGetMod("miningcracks_take_on_luiafk", out luiafk);
         }
 
         public void LoadClient() {

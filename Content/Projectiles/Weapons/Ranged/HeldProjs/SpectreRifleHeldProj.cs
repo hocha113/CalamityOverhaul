@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void SetRangedProperty() {
+            
             ControlForce = 0.035f;
             GunPressure = 0.75f;
             Recoil = 7f;
