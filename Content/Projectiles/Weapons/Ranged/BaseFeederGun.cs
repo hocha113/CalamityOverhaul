@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     /// </summary>
     internal abstract class BaseFeederGun : BaseGun
     {
+        #region Date
         /// <summary>
         /// 子弹状态，对应枪械的弹匣内容
         /// </summary>
@@ -104,6 +105,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 一个额外的枪体中心位置矫正向量，默认在<see cref="Recover"/>中恢复为<see cref="Vector2.Zero"/>，
         /// </summary>
         protected Vector2 FeederOffsetPos;
+        #endregion
 
         protected int BulletNum {
             get => ModItem.NumberBullets;
@@ -541,7 +543,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     LuxirEvent();
                 }
                 if (CanUpdateMagazineContentsInShootBool) {
-                    UpdateMagazineContents();
+                    if (Owner.CanUseAmmoInWeaponShoot(Item)) {
+                        UpdateMagazineContents();
+                    }
                 }
                 if (PreFiringShoot()) {
                     if (onFire) {
