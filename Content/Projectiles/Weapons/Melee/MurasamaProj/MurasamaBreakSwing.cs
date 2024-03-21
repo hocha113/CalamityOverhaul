@@ -178,7 +178,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
                 Vector2 ver = target.Center.To(Owner.Center).UnitVector();
 
-                if (CWRServerConfig.Instance.MurasamaScreenVibration) {
+                if (CWRServerConfig.Instance.ScreenVibration) {
                     PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, Projectile.velocity.UnitVector(), 12f, 10, 20, -1, FullName);
                     Main.instance.CameraModifiers.Add(modifier);
                 }
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         CombatText.NewText(target.Hitbox, Color.Gold, "Finishing Blow!!!", true);
                     }
 
-                    if (CWRServerConfig.Instance.MurasamaScreenVibration) {
+                    if (CWRServerConfig.Instance.ScreenVibration) {
                         PunchCameraModifier modifier2 = new PunchCameraModifier(Projectile.Center, new Vector2(0, Main.rand.NextFloat(-2, 2)), 10f, 30f, 20, 1000f, FullName);
                         Main.instance.CameraModifiers.Add(modifier2);
                     }

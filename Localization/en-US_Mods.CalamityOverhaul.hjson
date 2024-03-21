@@ -2611,8 +2611,8 @@ Configs: {
 				'''
 		}
 
-		MurasamaScreenVibration: {
-			Label: Murasama Screen Vibration
+		ScreenVibration: {
+			Label: Weapon Screen Vibration
 			Tooltip: If turned on, the screen will vibrate during some attacks, which may make the hit feel more intense
 		}
 
@@ -2659,7 +2659,12 @@ Configs: {
 
 		WeaponHandheldDisplay: {
 			Label: Weapon Handheld Display
-			Tooltip: ""
+			Tooltip:
+				'''
+				When turned on, most weapons have handheld animations and special use actions
+				This effect has a very high priority and will override most of the handheld animations from third-party mods
+				It is turned on by default, and for visual reasons, the authors do not recommend turning it off
+				'''
 		}
 	}
 }

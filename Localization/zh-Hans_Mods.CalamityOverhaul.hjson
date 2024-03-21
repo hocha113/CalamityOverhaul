@@ -2596,8 +2596,8 @@ Configs: {
 				'''
 		}
 
-		MurasamaScreenVibration: {
-			Label: 高分子斩切刃屏幕振动效果
+		ScreenVibration: {
+			Label: 武器特殊攻击屏幕振动效果
 			Tooltip: 如果开启，在进行一些攻击时会让屏幕发生振动，这或许可以让打击感更加强烈
 		}
 
@@ -2643,7 +2643,12 @@ Configs: {
 
 		WeaponHandheldDisplay: {
 			Label: 武器手持显示
-			Tooltip: ""
+			Tooltip:
+				'''
+				开启后，多数武器会拥有手持动画和特殊使用动作
+				这个效果的优先级非常高，会覆盖掉绝大多数第三方模组的手持动画
+				默认开启，并且出于视觉体验考虑，作者不建议关闭
+				'''
 		}
 	}
 }

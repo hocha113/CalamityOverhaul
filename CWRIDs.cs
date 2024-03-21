@@ -24,6 +24,7 @@ using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
 using System;
 using System.Collections.Generic;
@@ -106,6 +107,9 @@ namespace CalamityOverhaul
         /// 物品对应射弹的词典
         /// </summary>
         public static Dictionary<int, int> ItemToShootID = new();
+        public static Dictionary<int, int> ItemToHeldProjID = new();
+        public static Dictionary<int, Projectile> ItemToHeldProj = new();
+        internal static Dictionary<int, BaseGun> ItemToBaseGun = new();
         /// <summary>
         /// 扫地机器人
         /// </summary>
@@ -487,6 +491,23 @@ namespace CalamityOverhaul
             for (int i = 0; i < ItemLoader.ItemCount; i++) {
                 Item item = new Item(i);
                 if (item != null && item.type != ItemID.None) {//验证物品是否有效
+                    if (!ItemToHeldProjID.ContainsKey(item.type)) {
+                        ItemToHeldProjID.Add(item.type, item.CWR().heldProjType);
+                    }
+
+                    if (!ItemToHeldProj.ContainsKey(item.type) && ItemToHeldProjID.ContainsKey(item.type)) {
+                        Projectile projectile = new Projectile();
+                        projectile.SetDefaults(ItemToHeldProjID[item.type]);
+                        ItemToHeldProj.Add(item.type, projectile);
+
+                        if (!ItemToBaseGun.ContainsKey(item.type)) {
+                            BaseGun baseGun = projectile.ModProjectile as BaseGun;
+                            if (baseGun != null) {
+                                ItemToBaseGun.Add(item.type, baseGun);
+                            }
+                        }
+                    }
+
                     if (!ItemToShootID.ContainsKey(item.type)) {
                         ("添加射弹与物品对应词典: ItemID" + i + "-----" + item + "----- shootID:" + item.shoot).DompInConsole();
                         ItemToShootID.Add(item.type, item.shoot);
@@ -496,6 +517,7 @@ namespace CalamityOverhaul
             "————————————————————————————————————————————————————".DompInConsole();
             $"装载完毕，ItemToShootID共装填入 {ItemToShootID.Count} 个对照索引".DompInConsole();
             "————————————————————————————————————————————————————".DompInConsole();
+
             OnLoadContentBool = false;
         }
     }

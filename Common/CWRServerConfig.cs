@@ -54,12 +54,16 @@ namespace CalamityOverhaul.Common
 
         [Header("CWRWeapon")]
 
+        [BackgroundColor(182, 24, 64, 192)]
+        [DefaultValue(true)]
+        public bool WeaponHandheldDisplay { get; set; }
+
         /// <summary>
-        /// 鬼妖屏幕振动
+        /// 武器屏幕振动
         /// </summary>
         [BackgroundColor(182, 24, 64, 192)]
         [DefaultValue(false)]
-        public bool MurasamaScreenVibration { get; set; }
+        public bool ScreenVibration { get; set; }
 
         /// <summary>
         /// 鬼妖终结技碎屏效果

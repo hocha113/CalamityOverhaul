@@ -11,7 +11,7 @@ namespace CalamityOverhaul
         public override string Texture => "CalamityOverhaul/icon";
 
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         public override void SetDefaults() {
@@ -32,9 +32,6 @@ namespace CalamityOverhaul
         }
 
         public override void UpdateInventory(Player player) {
-            if (player.PressKey(false)) {
-                //Main.mouseItem = new Item(Main.HoverItem.type, Main.HoverItem.maxStack);
-            }
         }
 
         public override void HoldItem(Player player) {
@@ -67,13 +64,7 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            if (player.whoAmI == Main.myPlayer) {
-                var msg = Mod.GetPacket();
-                msg.Write((byte)CWRMessageType.DompBool);
-                msg.Write(1);
-                msg.Write(true);
-                msg.Send();
-            }
+            CWRIDs.ItemToBaseGun.Count.Domp();
             
             return true;
         }
