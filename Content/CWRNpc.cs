@@ -179,10 +179,12 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ModifyShop(NPCShop shop) {
-            foreach (AbstractNPCShop.Entry i in shop.Entries) {
-                Item item = i.Item;
-                if (item?.type != ItemID.None) {
-                    item.SetDefaults(item.type);
+            if (NPCLoader.GetNPC(shop.NpcType) == null) {
+                foreach (AbstractNPCShop.Entry i in shop.Entries) {
+                    Item item = i.Item;
+                    if (item?.type != ItemID.None) {
+                        item.SetDefaults(item.type);
+                    }
                 }
             }
         }

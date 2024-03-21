@@ -478,6 +478,19 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         }
         /// <summary>
+        /// 该次射击是否消耗弹药
+        /// </summary>
+        /// <param name="weapon"></param>
+        /// <param name="ammo"></param>
+        /// <param name="player"></param>
+        /// <returns>返回<see langword="null"/>会继续执行原来的方法，包括原ModItem方法与G方法。
+        /// 返回<see langword="true"/>阻断后续香草代码的判定并让该次射击消耗弹药。
+        /// 返回<see langword="false"/>阻断后续香草代码的判定并让该次射击不会消耗弹药</returns>
+        /// <returns></returns>
+        public virtual bool? On_CanConsumeAmmo(Item weapon, Item ammo, Player player) {
+            return null;
+        }
+        /// <summary>
         /// 让这个物品被消耗时让一些事情发生
         /// </summary>
         /// <param name="item"></param>

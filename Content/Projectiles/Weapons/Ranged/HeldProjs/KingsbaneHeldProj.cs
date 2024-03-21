@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         int chargeSoundSpanTimer = 0;
         int chargeValue;
         int chargeAmmo;
+        int maxChargeValue = 130;
+        int maxChargeAmmo = 90;
         int thisTime;
         bool thisOnFire;
         public override void SetRangedProperty() {
@@ -30,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 5;
             HandFireDistance = 40;
             HandFireDistanceY = 0;
-            ShootPosNorlLengValue = -13;
+            ShootPosNorlLengValue = 0;
             ShootPosToMouLengValue = 40;
             RepeatedCartridgeChange = true;
             GunPressure = 0;
@@ -91,17 +93,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             OffsetPos += ShootVelocity.UnitVector() * 3;
             float setPitchVarianceValue = 0.4f;
-            if (chargeValue > 90) {
+            if (chargeValue > maxChargeValue) {
                 AmmoTypes = ModContent.ProjectileType<AuricBullet>();
                 WeaponDamage *= 2;
                 Recoil = 0.5f;
                 setPitchVarianceValue = 0.6f;
-                ShootPosNorlLengValue = -8;
                 chargeAmmo++;
-                if (chargeAmmo > 90) {
+                if (chargeAmmo > maxChargeAmmo) {
                     chargeAmmo = chargeValue = 0;
                     Recoil = 0.2f;
-                    ShootPosNorlLengValue = -13;
                     SpawnGunFireDust(GunShootPos, ShootVelocity / 2, 13, dustID1: DustID.Smoke, dustID2: DustID.Smoke, dustID3: DustID.Smoke);
                 }
             }
@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 , Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
 
             Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Item_Ranged + "Kingsbane_barrel");
-            Color drawColor2 = CWRUtils.MultiStepColorLerp(chargeValue / 90f, drawColor, Color.Red);
+            Color drawColor2 = CWRUtils.MultiStepColorLerp(chargeValue / (float)maxChargeValue, drawColor, Color.Red);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition
                 , CWRUtils.GetRec(value, Projectile.frame, 10), drawColor2
                 , Projectile.rotation, CWRUtils.GetOrig(value, 10)

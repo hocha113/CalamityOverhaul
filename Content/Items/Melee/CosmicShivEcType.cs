@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 宇宙短剑
     /// </summary>
-    internal class CosmicShivEctype : EctypeItem
+    internal class CosmicShivEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "CosmicShiv";
 

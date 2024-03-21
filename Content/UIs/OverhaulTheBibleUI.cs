@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -12,8 +11,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.UIs
 {
@@ -29,7 +26,7 @@ namespace CalamityOverhaul.Content.UIs
         public Vector2 inCellPos => DrawPos + new Vector2(35, 32);
         public Vector2 cellSlpV => new Vector2(55, 50);
         public int maxXNum => 4;
-        int snegValue => (ecTypeItemList.Count / 4 + 1) * 42;
+        int snegValue => (ecTypeItemList.Count / 4 - 1) * 50;
         float SliderValueSengs {
             get {
                 if (LCCoffsetY == 0) {
@@ -105,10 +102,11 @@ namespace CalamityOverhaul.Content.UIs
                 if (mouseInCellPos.Y > 198) {
                     mouseInCellPos.Y = 198;
                 }
-                int mouseCellX = (int)(mouseInCellPos.X / 50);
-                int mouseCellY = (int)((mouseInCellPos.Y - LCCoffsetY) / 50);
+                int mouseCellX = (int)(mouseInCellPos.X / 50f);
+                int mouseCellY = (int)((mouseInCellPos.Y - LCCoffsetY) / 50f);
                 onIndex = (mouseCellY) * maxXNum + mouseCellX;
             }
+            
             time++;
         }
         private Vector2 inIndexGetPos(int index) {

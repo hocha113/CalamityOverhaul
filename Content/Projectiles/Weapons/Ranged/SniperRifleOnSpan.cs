@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -72,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             if (Owner.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun)) {
                 int AmmoType = baseFeederGun.AmmoTypes;
-                if (AmmoType == ProjectileID.Bullet) {
+                if (AmmoType == ProjectileID.Bullet || AmmoType == ModContent.ProjectileType<MarksmanShot>()) {
                     AmmoType = ProjectileID.BulletHighVelocity;
                 }
                 if (Projectile.IsOwnedByLocalPlayer() && onFire && AmmoType != 0) {
@@ -80,9 +81,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center + new Vector2(0, -5),
                         (toMou.SafeNormalize(Vector2.Zero) * 15).RotatedBy(Main.rand.NextFloat(rot * -0.01f, rot * 0.01f))
                     , AmmoType, (int)(Owner.GetShootState().WeaponDamage * lastdamage)/2, 0, Projectile.owner);
-                    if (Main.projectile[proj].penetrate > 1) {
-                        Main.projectile[proj].penetrate = 1;
-                    }
+                    Main.projectile[proj].penetrate = 1;
                     baseFeederGun.Recoil = 3;
                     baseFeederGun.GunPressure = 0.5f;
                     baseFeederGun.ControlForce = 0.05f;

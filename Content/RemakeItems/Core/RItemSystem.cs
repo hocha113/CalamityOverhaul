@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
     public delegate void On_UseAnimation_Delegate(Item item, Player player);
     public delegate void On_ModifyWeaponCrit_Delegate(Item item, Player player, ref float crit);
     public delegate void On_ModifyItemLoot_Delegate(Item item, ItemLoot itemLoot);
+    public delegate bool On_CanConsumeAmmo_Delegate(Item weapon, Item ammo, Player player);
 
     internal class RItemSystem : ModSystem
     {
@@ -37,6 +38,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onUseAnimationMethod;
         public static MethodBase onModifyWeaponCritMethod;
         public static MethodBase onModifyItemLootMethod;
+        public static MethodBase onCanConsumeAmmoMethod;
 
         public override void Load() {
             itemLoaderType = typeof(ItemLoader);
@@ -51,6 +53,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onUseAnimationMethod = itemLoaderType.GetMethod("UseAnimation", BindingFlags.Public | BindingFlags.Static);
             onModifyWeaponCritMethod = itemLoaderType.GetMethod("ModifyWeaponCrit", BindingFlags.Public | BindingFlags.Static);
             onModifyItemLootMethod = itemLoaderType.GetMethod("ModifyItemLoot", BindingFlags.Public | BindingFlags.Static);
+            onCanConsumeAmmoMethod = itemLoaderType.GetMethod("CanConsumeAmmo", BindingFlags.Public | BindingFlags.Static);
 
             if (onSetDefaultsMethod != null && !ModLoader.HasMod("MagicBuilder")) {
                 //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发生严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
@@ -86,8 +89,24 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (onModifyItemLootMethod != null) {
                 MonoModHooks.Add(onModifyItemLootMethod, OnModifyItemLootHook);
             }
+            if (onCanConsumeAmmoMethod != null) {
+                MonoModHooks.Add(onCanConsumeAmmoMethod, OnCanConsumeAmmoHook);
+            }
         }
 
+        /// <summary>
+        /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_CanConsumeAmmo"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
+        /// </summary>
+        public bool OnCanConsumeAmmoHook(On_CanConsumeAmmo_Delegate orig, Item item, Item ammo, Player player) {
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
+                bool? rasg = RItemIndsDict[item.type].On_CanConsumeAmmo(item, ammo, player);
+                if (rasg.HasValue) {
+                    return rasg.Value;
+                }
+            }
+
+            return orig.Invoke(item, ammo, player);
+        }
         /// <summary>
         /// 这个钩子用于挂载一个提前于TML方法的<see cref="ItemLoader.ModifyItemLoot"/>，以此来进行一些高级的修改
         /// </summary>

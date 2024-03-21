@@ -185,10 +185,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public override void Update(GameTime gameTime) {
-            if (!player.CWR().SupertableUIStartBool || CWRUtils.isServer) {//不要在服务器上运行更新数据的代码，UI只面向本地玩家，服务器不会进行终焉合成
-                return;
-            }
-
             Initialize();
 
             int museS = DownStartL();

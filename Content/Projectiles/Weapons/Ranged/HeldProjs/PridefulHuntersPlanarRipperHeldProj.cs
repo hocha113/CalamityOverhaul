@@ -61,10 +61,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 RecoilRetroForceMagnitude = 8;
                 fireIndex = 0;
                 SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = 0.8f, Volume = 0.5f });
-                for (int i = 0; i < 9; i++) {
+                for (int i = 0; i < 13; i++) {
                     CaseEjection();
                     UpdateMagazineContents();
-                    Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    Main.projectile[proj].usesLocalNPCImmunity = true;
+                    Main.projectile[proj].localNPCHitCooldown = 10;
                 }
             }
 

@@ -4,9 +4,11 @@ using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
@@ -14,7 +16,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RCosmicShiv : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.CosmicShiv>();
-        public override int ProtogenesisID => ModContent.ItemType<CosmicShivEctype>();
+        public override int ProtogenesisID => ModContent.ItemType<CosmicShivEcType>();
         public override string TargetToolTipItemName => "CosmicShivEcType";
         public override void SetDefaults(Item item) {
             item.useStyle = ItemUseStyleID.Rapier;

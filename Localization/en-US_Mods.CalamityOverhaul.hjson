@@ -16,7 +16,7 @@ Items: {
 			'''
 	}
 
-	CosmicShivEctype: {
+	CosmicShivEcType: {
 		DisplayName: Cosmic Shiv
 		Tooltip:
 			'''
@@ -1463,7 +1463,7 @@ Items: {
 			Once activated, fire quickly
 			When it overheats, it pours out Auric Bullet
 			Auric Bullet will quickly track nearby enemies and ignore 50 points of defense
-			90% chance to conserve ammunition
+			35% chance to conserve ammunition
 			"The hereditary power once forced you to kneel, but now, we lift you up."
 			'''
 	}

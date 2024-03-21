@@ -965,7 +965,7 @@ namespace CalamityOverhaul
                     return true;
                 }
                 if (weapon.ModItem != null) {
-                    result = weapon.ModItem.CanConsumeAmmo(magazineContents[0], player);
+                    result = ItemLoader.CanConsumeAmmo(weapon, magazineContents[0], player);
                 }
                 if (result) {
                     result = !player.IsRangedAmmoFreeThisShot(magazineContents[0]);

@@ -17,5 +17,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ModContent.ProjectileType<KingsbaneHeldProj>();
             item.SetCartridgeGun<KingsbaneHeldProj>(1200);
         }
+
+        public override bool? On_CanConsumeAmmo(Item weapon, Item ammo, Player player) => Main.rand.NextFloat() > 0.35f && player.ownedProjectileCounts[weapon.shoot] > 0;
     }
 }

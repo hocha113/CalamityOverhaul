@@ -96,10 +96,13 @@ namespace CalamityOverhaul.Content.UIs
                 CompressorUI.Instance.Update();
             }  
             if (SupertableUI.Instance.Active) {
-                SupertableUI.Instance.Update(gameTime);
-                RecipeUI.Instance.Update(gameTime);
-                DragButton.Instance.Update(gameTime);
-                RecipeErrorFullUI.Instance.Update(gameTime);
+                //不要在服务器上运行更新数据的代码，UI只面向本地玩家，服务器不会进行终焉合成
+                if (Main.LocalPlayer.CWR().SupertableUIStartBool && !CWRUtils.isServer) {
+                    SupertableUI.Instance.Update(gameTime);
+                    RecipeUI.Instance.Update(gameTime);
+                    DragButton.Instance.Update(gameTime);
+                    RecipeErrorFullUI.Instance.Update(gameTime);
+                }
             }  
             if (OverhaulTheBibleUI.Instance.Active) {
                 OverhaulTheBibleUI.Instance.Update(gameTime);
