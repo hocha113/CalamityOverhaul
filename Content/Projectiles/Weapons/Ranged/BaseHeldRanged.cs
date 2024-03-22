@@ -38,9 +38,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public bool CanMelee;
         /// <summary>
-        /// 是否必定消耗弹药，默认为<see langword="false"/>
+        /// 是否必定消耗弹药，默认为<see langword="true"/>
         /// </summary>
-        public bool MustConsumeAmmunition;
+        public bool MustConsumeAmmunition = true;
         /// <summary>
         /// 弹药类型
         /// </summary>
