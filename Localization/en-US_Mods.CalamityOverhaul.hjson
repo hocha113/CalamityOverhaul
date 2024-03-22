@@ -166,7 +166,6 @@ Items: {
 		DisplayName: Arbalest
 		Tooltip:
 			'''
-			Press the [Scope] key to aim
 			Fires 6 high-speed arrows
 			Arrow size increases with continuous firing time
 			Larger arrows deal higher damage and knockback, but have a wider spread
@@ -310,8 +309,6 @@ Items: {
 		DisplayName: Claret Cannon
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires three bullets at once
 			Converts musket bullets into vampiric blood-tear bullets
 			'''
@@ -951,8 +948,6 @@ Items: {
 		DisplayName: Clock Gatlignum
 		Tooltip:
 			'''
-			Strong recoil
-			Press the [KL] key to reload
 			Unleash a hailstorm of bullets
 			"Disappointingly, it doesn't shoot crocodiles."
 			'''
@@ -962,7 +957,6 @@ Items: {
 		DisplayName: Elemental Blaster
 		Tooltip:
 			'''
-			Has No Recoil
 			Emits an Elemental Helix Stream that causes foes hit to shower in colorful elemental light. 
 			'''
 	}
@@ -989,7 +983,6 @@ Items: {
 		DisplayName: Spectre Rifle
 		Tooltip:
 			'''
-			Has Strong Recoil
 			Launches out several spirit to latch onto foes, dealing continous damage
 			"The recoil is simply just because the spirits are really angry."
 			'''
@@ -999,8 +992,6 @@ Items: {
 		DisplayName: Storm Dragoon
 		Tooltip:
 			'''
-			Strong recoil
-			Press the [KL] key to reload
 			Unleash bullets like a hailstorm
 			"I am the storm that is approaching."
 			'''
@@ -1019,7 +1010,6 @@ Items: {
 		DisplayName: Thunderstorm
 		Tooltip:
 			'''
-			Has very weak recoil
 			Fires out an plasma beam that rains down extra plasma on hit. Uses Mana as Ammunition.
 			"Make it rain."
 			'''
@@ -1029,9 +1019,6 @@ Items: {
 		DisplayName: Tyranny's End
 		Tooltip:
 			'''
-			Has Extreme Amounts of Recoil
-			Press the [KL] key to reload
-			Press the [Scope] key to aim
 			An Extremely Heavy Anti-Materiel rifle that converts Musket Balls to high Velocity .70 Caliber Rounds, ripping through enemies and inflicting them with Marked for Death
 			After every shot, Right clicking causes the player to reload the rifle for the next shot.
 			Shots split into a swarm of several additional bullets along with an auric blast.
@@ -1043,9 +1030,6 @@ Items: {
 		DisplayName: Barrett sniper rifle
 		Tooltip:
 			'''
-			Has Extreme Amounts of Recoil
-			Press the [KL] key to reload
-			Press the [Scope] key to aim
 			A Heavy Anti-Materiel Rifle that converts musket balls to high velocity .50 Caliber Rounds, Ripping through enemies and inflicting them with Marked for death.
 			After every shot, Right clicking causes the player to reload the rifle for the next shot.
 			Shots Split into a swarm of several aditional bullets.
@@ -1057,7 +1041,6 @@ Items: {
 		DisplayName: Halibut Cannon
 		Tooltip:
 			'''
-			Has Recoil that pushes you back upon every shot
 			Converts Musket balls into a stream of sea bullets
 			"Look at this fish with a monocle and a top hat on his head. Can you believe he went to college?"
 			"The truth is, Sir, I have a PhD in Oceanography and Abyssal Botany, and I won the Sulphurous Sea University Fishing Competition twice.
@@ -1069,7 +1052,6 @@ Items: {
 		DisplayName: SDFMG
 		Tooltip:
 			'''
-			Has Very Little Recoil
 			There is a slight chance to launch a water missile that homes in on enemies.
 			"The wonder of Fishy Gun Dynamics."
 			'''
@@ -1079,8 +1061,6 @@ Items: {
 		DisplayName: Dead Suns Wind
 		Tooltip:
 			'''
-			No recoil
-			Press the [KL] key to reload
 			It fires a focused beam of hot plasma that bounces off the object after touching it
 			The plasma rays bounce back and track the nearest enemy
 			A huge explosion when it hits in succession
@@ -1093,8 +1073,6 @@ Items: {
 		DisplayName: Fetid Emesis
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			It will infect the bullet with sodium and poison
 			Every eight bullets fired triggers a vomit attack of contaminants
 			Right click to switch to semi-automatic and fire Dirty meat ball
@@ -1109,7 +1087,6 @@ Items: {
 		DisplayName: Seadragon
 		Tooltip:
 			'''
-			Weak recoil
 			The fire was accompanied by a steady stream of ocean bubbles
 			Water bombs will be unleashed with ammunition
 			'''
@@ -1124,7 +1101,6 @@ Items: {
 		DisplayName: Scorched Earth
 		Tooltip:
 			'''
-			Ridiculous recoil
 			Right-clicking allows the loading of eight Hellfire Mother missiles. 
 			The rockets, once launched, automatically navigate towards the enemy. 
 			Upon impact, they trigger a massive explosion and split into multiple sub-rockets.
@@ -1136,7 +1112,6 @@ Items: {
 		DisplayName: Seas Searing
 		Tooltip:
 			'''
-			Weak recoil
 			After the loading is complete, a round of rapid fire is carried out to convert the bullet into a sea shell
 			Right click to launch Ocean Vortex
 			'''
@@ -1146,7 +1121,6 @@ Items: {
 		DisplayName: Coral Cannon
 		Tooltip:
 			'''
-			Strong recoil
 			An old handgun with quite a bit of power
 			Right click reload
 			"The chamber had been damp, and the powder probably would not ignite.... Wait a minute? It doesn't use gunpowder?"
@@ -1157,7 +1131,6 @@ Items: {
 		DisplayName: Angelic Shotgun
 		Tooltip:
 			'''
-			Strong recoil
 			Blessed the shot with the Holy Spirit
 			It turns musket bullets into torch rounds
 			A large caliber shotgun, which, in its own way, reeks of the Holy spirit
@@ -1168,7 +1141,6 @@ Items: {
 		DisplayName: Aquashard Shotgun
 		Tooltip:
 			'''
-			Strong recoil
 			It turns musket bullets into Marine prisms
 			'''
 	}
@@ -1177,8 +1149,6 @@ Items: {
 		DisplayName: Animosity
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Converting musket bullets into kinetic energy bullets
 			The right shot is scattered and the number of shots is fired
 			"Let my crippled body become raging flames."
@@ -1189,7 +1159,6 @@ Items: {
 		DisplayName: Corinth Prime
 		Tooltip:
 			'''
-			Medium recoil
 			Fire six high-velocity rounds
 			Right-click and fire a small grenade
 			If the grenade does not touch the enemy within two seconds, it will cause a huge explosion
@@ -1201,7 +1170,6 @@ Items: {
 		DisplayName: Cursed Capper
 		Tooltip:
 			'''
-			Weak recoil
 			Fire the liquid bullet
 			"You don't want to know where it came from."
 			'''
@@ -1211,7 +1179,6 @@ Items: {
 		DisplayName: Disseminator
 		Tooltip:
 			'''
-			Medium recoil
 			A hail of gunfire
 			Right click for rapid point shot
 			"Textbook crossfire."
@@ -1222,7 +1189,6 @@ Items: {
 		DisplayName: Hellborn
 		Tooltip:
 			'''
-			Weak recoil
 			A red-hot shotgun
 			When fired, the gun body will deal great damage to enemies
 			'''
@@ -1241,7 +1207,6 @@ Items: {
 		DisplayName: Helstorm
 		Tooltip:
 			'''
-			Weak recoil
 			"Better than Hellborn."
 			'''
 	}
@@ -1250,7 +1215,6 @@ Items: {
 		DisplayName: Leviatitan
 		Tooltip:
 			'''
-			Weak recoil
 			Convert musket bullets into water balloons or ocean bullets
 			"Wanna know the trick to induce vomiting?" Leviathan squinted, "Century egg with cheese, guaranteed to turn you into a vomit connoisseur."
 			'''
@@ -1260,7 +1224,6 @@ Items: {
 		DisplayName: Golden Eagle
 		Tooltip:
 			'''
-			Medium recoil
 			Fires five bullets at once
 			Right-click for rapid fire, generating a large number of accompanying bullets at the mouse cursor
 			"You don't want to know how this gun is made"
@@ -1271,8 +1234,6 @@ Items: {
 		DisplayName: Surge Driver
 		Tooltip:
 			'''
-			No recoil
-			Press the [KL] key to reload
 			Fires a large number of dissociative rays, with the firepower becoming more intense as the ammunition decreases
 			At its peak, it switches to firing gamma ray explosions
 			'''
@@ -1282,8 +1243,6 @@ Items: {
 		DisplayName: Deepcore GK2
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [Scope] key to aim
 			Right click to zoom out
 			"Perfect braking design, with a built-in microcomputer. It can not only automatically reload, but also help you toast your breakfast bread."
 			'''
@@ -1293,8 +1252,6 @@ Items: {
 		DisplayName: Dodus Handcannon
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires a high-explosive nut kernel, yes, that's right, a nut kernel
 			"I've always tried to summon Tall-nut with this thing, but I've never succeeded."
 			'''
@@ -1304,8 +1261,6 @@ Items: {
 		DisplayName: P90
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			Fires armor-piercing bullets at extremely high frequencies
 			Bullets will ignore the enemy's 15 points of defense
 			"Actually, what you can see is the tracer trail, so you'll need to pay an extra $2,685 for the ammunition bill."
@@ -1316,8 +1271,6 @@ Items: {
 		DisplayName: Pearl God
 		Tooltip:
 			'''
-			Strong recoil
-			Press the [KL] key to reload
 			Fires five bullets at once
 			When the magazine is empty, it fires a powerful shockwave grenade
 			"Your life belongs to me."
@@ -1378,8 +1331,6 @@ Items: {
 		DisplayName: Bullet Filled Shotgun
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires a large swarm of bouncing bullets
 			Consumes five bullets per use
 			"Aiming? What's that?"
@@ -1390,8 +1341,6 @@ Items: {
 		DisplayName: Butcher
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			The fewer bullets remaining, the higher the firing rate and accuracy
 			25% chance to conserve ammunition
 			'''
@@ -1401,8 +1350,6 @@ Items: {
 		DisplayName: Fungicide
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			Fires fungi bullets that split upon impact
 			'''
 	}
@@ -1411,8 +1358,6 @@ Items: {
 		DisplayName: Halleys Inferno
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to load gel
 			Fires a series of high-pressure lunar jets
 			Uses gel as ammunition
 			50% chance to conserve ammunition
@@ -1424,9 +1369,6 @@ Items: {
 		DisplayName: Handheld Tank
 		Tooltip:
 			'''
-			Insane recoil
-			Ridiculous recoil
-			Press the [KL] key to reload
 			"Hey, buddy! Look at me, I'm pushing a tank!"
 			'''
 	}
@@ -1435,9 +1377,6 @@ Items: {
 		DisplayName: Infinity
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
-			Press the [Scope] key to aim
 			Fires a spiral of bullets in large quantities
 			Converts musket bullets into energy bullets that ricochet and split
 			"As long as you hold it in your hand, the infinite dissociation will never stop"
@@ -1448,8 +1387,6 @@ Items: {
 		DisplayName: Karasawa
 		Tooltip:
 			'''
-			Strong recoil
-			Press the [KL] key to reload
 			"...This gun is too heavy... Too heavy..."
 			'''
 	}
@@ -1458,8 +1395,6 @@ Items: {
 		DisplayName: Kingsbane
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Once activated, fire quickly
 			When it overheats, it pours out Auric Bullet
 			Auric Bullet will quickly track nearby enemies and ignore 50 points of defense
@@ -1472,8 +1407,6 @@ Items: {
 		DisplayName: Megalodon
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			Every third shot will launch an additional shark
 			"We successfully fit a shark in there, just be careful not to get your finger bitten off"
 			'''
@@ -1483,8 +1416,6 @@ Items: {
 		DisplayName: Midas Prime
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Right-click to toss a gold or silver coin into the air
 			Bullets that hit the coin will aim towards the nearest enemy
 			You can throw up to 4 coins, and bullets will bounce between multiple coins if possible
@@ -1497,8 +1428,6 @@ Items: {
 		DisplayName: Needler
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Converts musket bullets into needle-like leaves that stick to enemies and explode
 			"Pine Needle Rainstorm?"
 			'''
@@ -1508,9 +1437,6 @@ Items: {
 		DisplayName: Plague Tainted SMG
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
-			Press the [Scope] key to aim
 			Left-click to fire plague bullets that spawn plague self-destruct drones on critical hits
 			Drones have a high critical hit rate when hitting enemies infected with plague
 			Right-click to launch a swarm of drones
@@ -1525,8 +1451,6 @@ Items: {
 		DisplayName: Scorpio
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			“BOOM”
 			'''
 	}
@@ -1535,8 +1459,6 @@ Items: {
 		DisplayName: Archerfish
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Converts musket bullets into a jet of water
 			'''
 	}
@@ -1550,8 +1472,6 @@ Items: {
 		DisplayName: Astral Blaster
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Converts musket bullets into tracking phantom star bullets
 			'''
 	}
@@ -1560,9 +1480,6 @@ Items: {
 		DisplayName: Auralis
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
-			Press the [Scope] key to aim
 			Fires high-speed flash bullets that reduce enemy defenses
 			Standing still provides a damage bonus, up to 25%
 			Standing still and aiming with the right-click for 5 seconds or more will generate auroras around you
@@ -1576,8 +1493,6 @@ Items: {
 		DisplayName: Aurora Blazer
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Sprays nebula flames that move in a star-shaped trajectory
 			Uses gel as ammunition
 			"The fury within the starlight burns"
@@ -1593,8 +1508,6 @@ Items: {
 		DisplayName: Blissful Bombardier
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires holy fire rockets
 			Rockets will destroy blocks when using ammunition capable of doing so
 			'''
@@ -1604,8 +1517,6 @@ Items: {
 		DisplayName: Chicken Cannon
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires chicken rockets that create huge explosions
 			Right-click to detonate all flying rockets
 			'''
@@ -1615,8 +1526,6 @@ Items: {
 		DisplayName: Clamor Rifle
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Converts musket bullets into tracking energy beam
 			'''
 	}
@@ -1625,8 +1534,6 @@ Items: {
 		DisplayName: Gunk Shot
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires several bullets
 			'''
 	}
@@ -1638,8 +1545,6 @@ Items: {
 		DisplayName: Norfleet
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Perfect balance, suitable for all...
 			'''
 	}
@@ -1648,9 +1553,6 @@ Items: {
 		DisplayName: Shroomer
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
-			Press the [Scope] key to aim
 			Fires bullets along with powerful tracking mushrooms
 			'''
 	}
@@ -1659,8 +1561,6 @@ Items: {
 		DisplayName: Starfleet
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires several plasma star bullets
 			'''
 	}
@@ -1669,8 +1569,6 @@ Items: {
 		DisplayName: Starmada
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires stars and plasma star bullets
 			66% chance to conserve ammunition
 			'''
@@ -1680,8 +1578,6 @@ Items: {
 		DisplayName: Sulphuric Acid Cannon
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires a sulfuric acid barrage that sticks to enemies and dissolves them
 			'''
 	}
@@ -1690,8 +1586,6 @@ Items: {
 		DisplayName: Universal Genesis
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires a cluster of bullets from the muzzle, causing a shower of falling stars to descend towards the mouse cursor
 			Converts musket bullets into star-summoning bullets that summon additional falling stars upon impact
 			50% chance to conserve ammunition
@@ -1703,8 +1597,6 @@ Items: {
 		DisplayName: Voidragon
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Every other bullet fired will be a void detonation bullet
 			Each bullet also emits a touch of demonic flame
 			75% chance to conserve ammunition
@@ -1715,8 +1607,6 @@ Items: {
 		DisplayName: Aces High
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			Fires a string of playing cards, each with different effects
 			Hearts have a blood-sucking effect
 			Spades can penetrate infinitely and ignore enemy invincibility frames
@@ -1729,8 +1619,6 @@ Items: {
 		DisplayName: Conference Call
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires dense bullets while summoning even more bullets from the sky
 			50% chance to conserve ammunition
 			[c/768EE6:@All]
@@ -1741,8 +1629,6 @@ Items: {
 		DisplayName: Mineral Mortar
 		Tooltip:
 			'''
-			Strong recoil
-			Press the [KL] key to reload
 			Fires a onyx rocket that causes widespread damage when it explodes
 			"It can't create a sandstorm, but it can blast everyone into the sky"
 			'''
@@ -1752,8 +1638,6 @@ Items: {
 		DisplayName: Molecular Manipulatore
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			Fires a "blank" round that twists the properties of monsters
 			“Object reference not set to an instance of an object”
 			'''
@@ -1763,8 +1647,6 @@ Items: {
 		DisplayName: Nullification Rifle
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			Fires a "blank" round that twists the properties of monsters
 			“Object reference not set to an instance of an object”
 			'''
@@ -1774,8 +1656,6 @@ Items: {
 		DisplayName: Onyx Chain Blaster
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			Fires several bullets and a onyxgrenade
 			50% chance to conserve ammunition
 			"This thing has a magazine shorter than a joke, but at least it can make you laugh when you're out of ammo."
@@ -1786,8 +1666,6 @@ Items: {
 		DisplayName: Onyxia
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			Unleash a hail of bullets and onyx shards upon your enemies
 			50% chance to conserve ammunition
 			"The incarnation of the Black Dragon"
@@ -1803,8 +1681,6 @@ Items: {
 		DisplayName: Realm Ravager
 		Tooltip:
 			'''
-			Strong recoil
-			Press the [KL] key to reload
 			Fires three to four bullets at once
 			Converts musket bullets into explosive rounds
 			"Beware of the secrets buried within this weapon, as the previous owner would never reveal them. Even ghosts would laugh if they knew."
@@ -1815,8 +1691,6 @@ Items: {
 		DisplayName: Rubico Prime
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			When held idle, it automatically shoots at nearby enemies
 			The ammunition fired has a higher critical hit multiplier
 			"A true automatic rifle should know how to shoot enemies by itself."
@@ -1827,8 +1701,6 @@ Items: {
 		DisplayName: Sandstorm Gune
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires Sand Sprites at the cursor's height, throwing numerous sandballs into the air
 			Uses sand blocks as ammunition
 			50% chance to conserve ammunition
@@ -1839,7 +1711,6 @@ Items: {
 		DisplayName: Septic Skewer
 		Tooltip:
 			'''
-			Press the [KL] key to reload
 			Fires all sticky venomous harpoons at once
 			Releases bacteria when they fly back to the player
 			'''
@@ -1849,9 +1720,6 @@ Items: {
 		DisplayName: Shredder
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
-			Press the [Scope] key to aim
 			Fires a cluster of energy bullets that ricochet and split
 			Right-click to fire a volley of bullets
 			"We should be grateful that most bullets appear out of nowhere, otherwise we'd have a hefty arms bill to pay."
@@ -1862,8 +1730,6 @@ Items: {
 		DisplayName: Soma Prime
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			If this weapon's critical hit rate exceeds 100%, it can cause overkill
 			All fired bullets cause dissociative and stackable bleeding debuffs
 			The dissociative debuff causes 150 points of damage per second, which is affected by your ranged attribute
@@ -1878,8 +1744,6 @@ Items: {
 		DisplayName: Spectralstorm Cannon
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			Fires lost souls and flare rounds
 			70% chance to conserve ammunition
 			"They tried to circumvent the convention by using flare rounds as napalm, only to end up with this joke."
@@ -1890,8 +1754,6 @@ Items: {
 		DisplayName: Speed Blaster
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Rapidly fires phosphorescent rounds
 			Right-click to fire a powerful burst of colored rounds that propels you forward while moving
 			This ability has a 5 second cooldown
@@ -1904,8 +1766,6 @@ Items: {
 		DisplayName: Spyker
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			Converts musket bullets into leaf needles that stick to enemies and explode
 			"Evidence suggests that using this to renovate your home may not be a good idea."
 			'''
@@ -1915,8 +1775,6 @@ Items: {
 		DisplayName: Star Sputter
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires a beam of falling stars
 			Every fourth attack launches a larger falling star
 			"Gazing at the twinkling stars of distant galaxies"
@@ -1927,8 +1785,6 @@ Items: {
 		DisplayName: Stellar Cannon
 		Tooltip:
 			'''
-			Medium recoil
-			Press the [KL] key to reload
 			Fires an explosive phantom star crystal
 			'''
 	}
@@ -1937,8 +1793,6 @@ Items: {
 		DisplayName: Svantechnical
 		Tooltip:
 			'''
-			Press the [KL] key to reload
-			Press the [Scope] key to aim
 			Fires giant quantum bullets
 			"Technology changes lives"
 			"Perhaps this is a contemporary product of the Hextech Gun."
@@ -1949,8 +1803,6 @@ Items: {
 		DisplayName: The Hive
 		Tooltip:
 			'''
-			Strong recoil
-			Press the [KL] key to reload
 			Fires various plague rockets that spawn friendly bees upon explosion
 			The rockets will destroy blocks when using ammunition that can destroy blocks
 			"It's shameful to stuff these bees into rocket warheads."
@@ -1961,8 +1813,6 @@ Items: {
 		DisplayName: The Pack
 		Tooltip:
 			'''
-			Strong recoil
-			Press the [KL] key to reload
 			Fires a large tracking rocket that explodes into smaller tracking rockets upon approaching enemies
 			'''
 	}
@@ -2024,8 +1874,6 @@ Items: {
 		DisplayName: Firestorm Cannon
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			Continuously releases weaponized flare rounds
 			Right-click to fire a dense volley of flare rounds
 			70% chance to conserve ammunition
@@ -2036,9 +1884,6 @@ Items: {
 		DisplayName: Flak Toxicannon
 		Tooltip:
 			'''
-			Strong recoil
-			Press the [KL] key to reload
-			Press the [Scope] key to aim
 			Fires at the cursor at a certain angle
 			Can only fire within a certain elevation range above the player's head
 			"Requirement: High IQ"
@@ -2110,8 +1955,6 @@ Items: {
 		DisplayName: Prideful Hunters Planar Ripper
 		Tooltip:
 			'''
-			Weak recoil
-			Press the [KL] key to reload
 			Turning musket bullets into lightning rounds
 			The lightning barrage is fast and explodes when it kills an enemy
 			Lightning Critical Strikes give you a stackable speed bonus
@@ -2860,14 +2703,12 @@ TextContent: {
 			'''
 		Wap_Minishark_Text:
 			'''
-			Weak recoil
 			Whenever someone asks about the baby shark, he always laughs.
 			"Back in the day, woke up on a random morning only to find a bunch of gun barrels sticking out of this mouth."
 			Worth mentioning, little sharky has a gig at the shooting range, playing the role of a "firearms consultant."
 			'''
 		Wap_Megashark_Text:
 			'''
-			Medium recoil
 			"Caliber is the truth," Sharky confidently declares, as if it were the spokesperson for firepower supremacy.
 			However, much like its .20 caliber, it's just an ordinary member of the fish firearm family.
 			Perhaps it needs a sarcastic fishing rod to catch a bit of self-awareness, after all, in the ocean, 
@@ -2875,41 +2716,34 @@ TextContent: {
 			'''
 		Wap_HandGun_Text:
 			'''
-			Weak recoil
 			Baaaah! Daaaaaa! Bang!!
 			'''
 		Wap_Flintlockpistol_Text:
 			'''
-			Weak recoil
 			an old handgun, it might explode
 			"Trust the wisdom of the ancients."
 			'''
 		Wap_Musket_Text:
 			'''
-			Medium recoil
 			"The militia said, 'I must be ready.'"
 			'''
 		Wap_TheUndertaker_Text:
 			'''
-			Weak recoil
 			"When the undertakers find their clients uncooperative, they often use this this to calm them down"
 			'''
 		Wap_RedRyder_Text:
 			'''
-			Weak recoil
 			“Don't shoot your own eyeballs out！”
 			'''
 		Wap_FlareGun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_FlareGun_Text
 		Wap_PhoenixBlaster_Text:
 			'''
-			Weak recoil
 			Right click to fire the fragment of bullet 
 			""
 			"Hellstone weapons can't control fire? In fact, the bullet cannot withstand the heat."
 			'''
 		Wap_Sandgun_Text:
 			'''
-			Weak recoil
 			Right click to scatter more sand bombs
 			"Take it and bury yourself in the sand so you can pretend to be an antlion."
 			'''
@@ -2919,81 +2753,68 @@ TextContent: {
 		Wap_ZapinatorOrange_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ZapinatorOrange_Text
 		Wap_QuadBarrelShotgun_Text:
 			'''
-			Medium recoil
 			Fires a spread of bullets
 			"Stick the barrel in the monster's eye so you don't need to aim."
 			'''
 		Wap_TacticalShotgun_Text:
 			'''
-			Strong Recoil
 			Fires a spread of bullets
 			"All fear comes from insufficient firepower, if not, it must be insufficient firepower."
 			'''
 		Wap_Shotgun_Text:
 			'''
-			Strong Recoil
 			Fires a spread of bullets
 			"The arms dealer wanted these guns to have more barrels so that his bullets would sell better."
 			'''
 		Wap_Boomstick_Text:
 			'''
-			Medium recoil
 			Fires a spread of bullets
 			"I have no time."
 			'''
 		Wap_ClockworkAssaultRifle_Text:
 			'''
-			Weak recoil
 			Fires three bullets were at once
 			"I know why they're ticking, and I know how to make them stop."
 			'''
 		Wap_SnowballCannon_Text:
 			'''
-			Weak recoil
 			Use snowballs as ammunition
 			"It's freezing to put snowballs in there, so I can only put a little at a time."
 			'''
 		Wap_Uzi_Text:
 			'''
-			Weak recoil
 			Converting ordinary bullets into high-speed bullets
 			"Lightweight and lethal, not holding it double is simply a waste of it."
 			'''
 		Wap_VenusMagnum_Text:
 			'''
-			Weak recoil
 			Converting ordinary bullets into high-speed bullets
 			"Turn love into the kinetic energy of a bullet, says Venus."
 			'''
 		Wap_StakeLauncher_Text:
 			'''
-			Weak recoil
 			Launch penetrating pickets
 			Pickets are considered bows, but that doesn't mean you can't fit a scope
 			"The only way to kill a vampire once and for all is to put a wooden picket through its heart, but you can't live if you are not a vampire."
 			'''
 		Wap_SniperRifle_Text:
 			'''
-			Strong recoil
 			Converting ordinary bullets into high-speed bullets
 			Right-click and use the sniper mirror to expand the field of view
 			“When the cross locks you, Death will kiss your forehead.”
 			'''
 		Wap_NailGun_Text:
 			'''
-			Weak recoil
 			Fire nails that stick to the enemy and then explode
 			"The nails pulled from the head of the nail head, the effect pulled out of the group, in addition to reinforcing your house"
 			'''
 		Wap_DartPistol_Text:
 			'''
-			Weak recoil
 			Fire the dart at a faster speed
 			"Shoot darts from a blowgun? Jesus, you want me to put gunpowder in my mouth?"
 			'''
 		Wap_DartRifle_Text:
 			'''
-			Weak recoil
 			Fire the dart at a faster speed
 			"Shoot darts from a blowgun? Jesus, you want me to put gunpowder in my mouth?"
 			'''
@@ -3003,20 +2824,17 @@ TextContent: {
 		CartridgeHolderUI_Text4: Right-click discharge
 		Wap_SDMG_Text:
 			'''
-			Weak recoil
 			Firing bullets at great speed
 			66% chance not to consume ammo
 			"It came from the Starbound."
 			'''
 		Wap_OnyxBlaster_Text:
 			'''
-			Medium recoil
 			Turn a bullet into a blackbolt
 			"Dark energy bursts from the gun"
 			'''
 		Wap_LaserRifle_Text:
 			'''
-			Weak recoil
 			Firing a laser from the eyes of one of the vanquished
 			"I can't believe the monster's massive eyes were stuffed into this gun."
 			'''
@@ -3067,13 +2885,11 @@ TextContent: {
 			'''
 		Wap_GrenadeLauncher_Text:
 			'''
-			Weak recoil
 			Launched rocket in an arc in the form of a grenade
 			"We finally have a way to launch these bombs with less effort, even though we could still hurt ourselves."
 			'''
 		Wap_RocketLauncher_Text:
 			'''
-			Medium recoil
 			High velocity rockets fired with power
 			"I bet it won't get caught in the bed."
 			'''
@@ -3084,13 +2900,11 @@ TextContent: {
 			'''
 		Wap_ProximityMineLauncher_Text:
 			'''
-			Weak recoil
 			Launch mine sensing rockets, which camouflage themselves and increase damage
 			"Let's play minesweeper."
 			'''
 		Wap_SnowmanCannon_Text:
 			'''
-			Medium recoil
 			Fire three tracking Yeti rockets
 			"Dude, this is your Christmas present."
 			'''
