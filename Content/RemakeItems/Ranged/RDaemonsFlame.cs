@@ -39,9 +39,5 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<DaemonsFlameHeldProj>();
         }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "DaemonsFlame");
-        }
     }
 }

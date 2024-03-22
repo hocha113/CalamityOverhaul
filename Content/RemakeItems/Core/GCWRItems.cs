@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -196,8 +197,22 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            ProcessRemakeAction(item, (inds) => inds.ModifyTooltips(item, tooltips));
             if (CWRConstant.ForceReplaceResetContent && CWRMod.RItemIndsDict.ContainsKey(item.type)) {
+                if (CWRIDs.ItemToBaseGun.TryGetValue(item.type, out BaseGun gun)) {
+                    if (gun.MustConsumeAmmunition) {
+                        tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_MustCA", CWRLocText.GetTextValue("CWRGun_MustCA_Text")));
+                    }
+                    if (item.CWR().HasCartridgeHolder) {
+                        string newText = CWRLocText.GetTextValue("CWRGun_KL_Text").Replace("[KL]", CWRKeySystem.KreLoad_Key.TooltipHotkeyString());
+                        tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_KL", newText));
+                    }
+                    if (item.CWR().Scope) {
+                        string newText = CWRLocText.GetTextValue("CWRGun_Scope_Text").Replace("[Scope]", CWRKeySystem.ADS_Key.TooltipHotkeyString());
+                        tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Scope", newText));
+                    }
+                    string newText3 = CWRLocText.GetTextValue("CWRGun_Recoil_Text").Replace("[Recoil]", CWRLocText.GetTextValue(gun.GetLckRecoilKey()));
+                    tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Recoil", newText3));
+                }
                 string key = CWRMod.RItemIndsDict[item.type].TargetToolTipItemName;
                 if (key != "") {
                     if (CWRMod.RItemIndsDict[item.type].IsVanilla) {
@@ -207,14 +222,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                     }
                 }
             }
-            string modName = CWRServerConfig.Instance.ForceReplaceResetContent ? CWRMod.Instance.Name : "Terraria";
-            //这个钩子的挂载大于CWR的全局物品，所以必须将这部分写在此处
-            if (item.CWR().HasCartridgeHolder) {
-                tooltips.ReplaceTooltip("[KL]", CWRKeySystem.KreLoad_Key.TooltipHotkeyString(), modName);
-            }
-            if (item.CWR().Scope) {
-                tooltips.ReplaceTooltip("[Scope]", CWRKeySystem.ADS_Key.TooltipHotkeyString(), modName);
-            }
+            ProcessRemakeAction(item, (inds) => inds.ModifyTooltips(item, tooltips));
         }
 
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit) {

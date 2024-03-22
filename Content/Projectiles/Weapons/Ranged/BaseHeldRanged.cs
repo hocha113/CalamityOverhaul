@@ -38,6 +38,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public bool CanMelee;
         /// <summary>
+        /// 是否必定消耗弹药，默认为<see langword="false"/>
+        /// </summary>
+        public bool MustConsumeAmmunition;
+        /// <summary>
         /// 弹药类型
         /// </summary>
         public int AmmoTypes;
@@ -72,6 +76,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         protected bool UpdateConsumeAmmo(bool preCanConsumeAmmo = true) {
             bool canConsume = Owner.IsRangedAmmoFreeThisShot(new Item(Owner.GetShootState().UseAmmoItemType));
+            if (MustConsumeAmmunition) {
+                canConsume = false;
+            }
             Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out _, out _, out _, canConsume && preCanConsumeAmmo);
             return canConsume;
         }

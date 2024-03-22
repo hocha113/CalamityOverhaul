@@ -533,6 +533,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return true;
         }
 
+        public bool GetMagazineCanUseAmmoProbability() {
+            bool result;
+            result = Owner.CanUseAmmoInWeaponShoot(Item);
+            if (!result) {
+                result = Main.rand.NextBool(5);
+            }
+            return result;
+        }
+
         public sealed override void SpanProj() {
             if ((onFire || onFireR) && Projectile.ai[1] > FireTime && kreloadTimeValue <= 0) {
                 if (BulletNum <= 0) {
@@ -543,7 +552,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     LuxirEvent();
                 }
                 if (CanUpdateMagazineContentsInShootBool) {
-                    if (Owner.CanUseAmmoInWeaponShoot(Item)) {
+                    if (GetMagazineCanUseAmmoProbability() || MustConsumeAmmunition) {
                         UpdateMagazineContents();
                     }
                 }

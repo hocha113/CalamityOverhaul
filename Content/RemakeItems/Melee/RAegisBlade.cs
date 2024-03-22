@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -16,10 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.AegisBlade>();
         public override int ProtogenesisID => ModContent.ItemType<AegisBladeEcType>();
         public override string TargetToolTipItemName => "AegisBladeEcType";
-
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.width = 72;
             item.height = 72;
@@ -64,10 +59,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
             _ = Projectile.NewProjectile(source, position, velocity, item.shoot, damages, knockback, player.whoAmI);
             return false;
-        }
-
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, "AegisBlade");
         }
     }
 }

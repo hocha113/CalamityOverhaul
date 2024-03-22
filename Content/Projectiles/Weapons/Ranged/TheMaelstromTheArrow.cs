@@ -4,11 +4,12 @@ using Terraria.ModLoader;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Terraria;
-using CalamityMod.Particles;
 using static Humanizer.In;
 using CalamityMod.Projectiles.Ranged;
 using Terraria.Audio;
 using Terraria.ID;
+using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Content.Particles;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -33,8 +34,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             float sparkScale = Main.rand.NextFloat(1f, 1.3f);
             Color sparkColor = Color.Lerp(Color.Cyan, Color.AliceBlue, Main.rand.NextFloat(0.35f));
             Vector2 sparkVelocity = Projectile.velocity;
-            SparkParticle spark = new SparkParticle(Projectile.Center, sparkVelocity, false, sparkLifetime, sparkScale, sparkColor);
-            GeneralParticleHandler.SpawnParticle(spark);
+            CWRParticle spark = new SparkParticle(Projectile.Center, sparkVelocity, false, sparkLifetime, sparkScale, sparkColor);
+            CWRParticleHandler.AddParticle(spark);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

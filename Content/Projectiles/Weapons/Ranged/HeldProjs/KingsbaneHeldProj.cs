@@ -71,6 +71,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (thisTime >= 90) {
                     thisOnFire = true;
                 }
+
+                Projectile.damage = WeaponDamage * 2;
+                Projectile.usesLocalNPCImmunity = true;
+                Projectile.localNPCHitCooldown = 1;
             }
             else {
                 Projectile.frame = 0;
@@ -78,11 +82,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 upNeedsSengs = 11;
                 thisOnFire = false;
                 OffsetPos = Vector2.Zero;
+                if (Time % 3 == 0 && chargeValue > 0) {
+                    chargeValue--;
+                }
             }
 
             if (Projectile.frame >= 9) {
                 Projectile.frame = 2;
             }
+
+            CanMelee = chargeValue > maxChargeValue;
         }
 
         public override void PostInOwnerUpdate() => onFire = thisOnFire;

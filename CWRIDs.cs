@@ -108,6 +108,7 @@ namespace CalamityOverhaul
         /// </summary>
         public static Dictionary<int, int> ItemToShootID = new();
         public static Dictionary<int, int> ItemToHeldProjID = new();
+        //public static Dictionary<int, Item> HeldProjIDToItem = new();
         public static Dictionary<int, Projectile> ItemToHeldProj = new();
         internal static Dictionary<int, BaseGun> ItemToBaseGun = new();
         /// <summary>

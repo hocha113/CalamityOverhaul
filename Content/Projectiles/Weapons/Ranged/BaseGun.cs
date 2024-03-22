@@ -1,7 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -9,7 +6,6 @@ using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.Graphics.CameraModifiers;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -421,6 +417,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             return false;
+        }
+
+        public string GetLckRecoilKey() {
+            float recoilValue = Math.Abs(Recoil);
+            string recoilKey;
+            if (recoilValue == 0) {
+                return "CWRGun_Recoil_Level_0";
+            }
+            if (recoilValue < 0.2f) {
+                recoilKey = "CWRGun_Recoil_Level_1";
+            } else if (recoilValue < 0.5f) {
+                recoilKey = "CWRGun_Recoil_Level_2";
+            } else if (recoilValue < 1f) {
+                recoilKey = "CWRGun_Recoil_Level_3";
+            } else if (recoilValue < 1.5f) {
+                recoilKey = "CWRGun_Recoil_Level_4";
+            } else if (recoilValue < 2.2f) {
+                recoilKey = "CWRGun_Recoil_Level_5";
+            } else {
+                recoilKey = "CWRGun_Recoil_Level_6";
+            }
+            return recoilKey;
         }
     }
 }

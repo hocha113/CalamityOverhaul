@@ -1,12 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Content.UIs.Core;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using Terraria.GameContent;
 using Terraria;
-using Microsoft.Xna.Framework.Input;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
-using CalamityOverhaul.Content.UIs.Core;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {

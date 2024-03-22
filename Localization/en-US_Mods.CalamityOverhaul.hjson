@@ -58,11 +58,6 @@ Items: {
 		Tooltip: Swinging will sometimes throw 3 Sand blocks in an arc towards your enemies. Killing enemies summon healing orbs that float.
 	}
 
-	BurntSienna: {
-		DisplayName: Burnt Sienna
-		Tooltip: ""
-	}
-
 	CometQuasherEcType: {
 		DisplayName: Comet Quasher
 		Tooltip: Swings a Heavy blade that sends a barrage of meteors at your foes and cursor.
@@ -955,10 +950,7 @@ Items: {
 
 	ElementalBlasterEcType: {
 		DisplayName: Elemental Blaster
-		Tooltip:
-			'''
-			Emits an Elemental Helix Stream that causes foes hit to shower in colorful elemental light. 
-			'''
+		Tooltip: "Emits an Elemental Helix Stream that causes foes hit to shower in colorful elemental light. "
 	}
 
 	MarksmanBowEcType: {
@@ -1139,10 +1131,7 @@ Items: {
 
 	AquashardShotgunEcType: {
 		DisplayName: Aquashard Shotgun
-		Tooltip:
-			'''
-			It turns musket bullets into Marine prisms
-			'''
+		Tooltip: It turns musket bullets into Marine prisms
 	}
 
 	AnimosityEcType: {
@@ -1205,10 +1194,7 @@ Items: {
 
 	HelstormEcType: {
 		DisplayName: Helstorm
-		Tooltip:
-			'''
-			"Better than Hellborn."
-			'''
+		Tooltip: '''"Better than Hellborn."'''
 	}
 
 	LeviatitanEcType: {
@@ -1348,10 +1334,7 @@ Items: {
 
 	FungicideEcType: {
 		DisplayName: Fungicide
-		Tooltip:
-			'''
-			Fires fungi bullets that split upon impact
-			'''
+		Tooltip: Fires fungi bullets that split upon impact
 	}
 
 	HalleysInfernoEcType: {
@@ -1367,10 +1350,7 @@ Items: {
 
 	HandheldTankEcType: {
 		DisplayName: Handheld Tank
-		Tooltip:
-			'''
-			"Hey, buddy! Look at me, I'm pushing a tank!"
-			'''
+		Tooltip: '''"Hey, buddy! Look at me, I'm pushing a tank!"'''
 	}
 
 	InfinityEcType: {
@@ -1385,10 +1365,7 @@ Items: {
 
 	KarasawaEcType: {
 		DisplayName: Karasawa
-		Tooltip:
-			'''
-			"...This gun is too heavy... Too heavy..."
-			'''
+		Tooltip: '''"...This gun is too heavy... Too heavy..."'''
 	}
 
 	KingsbaneEctype: {
@@ -1449,18 +1426,12 @@ Items: {
 
 	ScorpioEcType: {
 		DisplayName: Scorpio
-		Tooltip:
-			'''
-			“BOOM”
-			'''
+		Tooltip: “BOOM”
 	}
 
 	ArcherfishEcType: {
 		DisplayName: Archerfish
-		Tooltip:
-			'''
-			Converts musket bullets into a jet of water
-			'''
+		Tooltip: Converts musket bullets into a jet of water
 	}
 
 	ArcNovaDiffuserEcType: {
@@ -1470,10 +1441,7 @@ Items: {
 
 	AstralBlasterEcType: {
 		DisplayName: Astral Blaster
-		Tooltip:
-			'''
-			Converts musket bullets into tracking phantom star bullets
-			'''
+		Tooltip: Converts musket bullets into tracking phantom star bullets
 	}
 
 	AuralisEcType: {
@@ -1524,18 +1492,12 @@ Items: {
 
 	ClamorRifleEcType: {
 		DisplayName: Clamor Rifle
-		Tooltip:
-			'''
-			Converts musket bullets into tracking energy beam
-			'''
+		Tooltip: Converts musket bullets into tracking energy beam
 	}
 
 	GunkShotEcType: {
 		DisplayName: Gunk Shot
-		Tooltip:
-			'''
-			Fires several bullets
-			'''
+		Tooltip: Fires several bullets
 	}
 
 	MagnaCannonEcType: {
@@ -1543,26 +1505,17 @@ Items: {
 
 	NorfleetEcType: {
 		DisplayName: Norfleet
-		Tooltip:
-			'''
-			Perfect balance, suitable for all...
-			'''
+		Tooltip: Perfect balance, suitable for all...
 	}
 
 	ShroomerEcType: {
 		DisplayName: Shroomer
-		Tooltip:
-			'''
-			Fires bullets along with powerful tracking mushrooms
-			'''
+		Tooltip: Fires bullets along with powerful tracking mushrooms
 	}
 
 	StarfleetEcType: {
 		DisplayName: Starfleet
-		Tooltip:
-			'''
-			Fires several plasma star bullets
-			'''
+		Tooltip: Fires several plasma star bullets
 	}
 
 	StarmadaEcType: {
@@ -1576,10 +1529,7 @@ Items: {
 
 	SulphuricAcidCannonEcType: {
 		DisplayName: Sulphuric Acid Cannon
-		Tooltip:
-			'''
-			Fires a sulfuric acid barrage that sticks to enemies and dissolves them
-			'''
+		Tooltip: Fires a sulfuric acid barrage that sticks to enemies and dissolves them
 	}
 
 	UniversalGenesisEcType: {
@@ -1783,10 +1733,7 @@ Items: {
 
 	StellarCannonEcType: {
 		DisplayName: Stellar Cannon
-		Tooltip:
-			'''
-			Fires an explosive phantom star crystal
-			'''
+		Tooltip: Fires an explosive phantom star crystal
 	}
 
 	SvantechnicalEcType: {
@@ -1811,10 +1758,7 @@ Items: {
 
 	ThePackEcType: {
 		DisplayName: The Pack
-		Tooltip:
-			'''
-			Fires a large tracking rocket that explodes into smaller tracking rockets upon approaching enemies
-			'''
+		Tooltip: Fires a large tracking rocket that explodes into smaller tracking rockets upon approaching enemies
 	}
 
 	ElementMuzzleBrake: {
@@ -2714,27 +2658,15 @@ TextContent: {
 			Perhaps it needs a sarcastic fishing rod to catch a bit of self-awareness, after all, in the ocean, 
 			caliber might be better suited to measure humility rather than truth.
 			'''
-		Wap_HandGun_Text:
-			'''
-			Baaaah! Daaaaaa! Bang!!
-			'''
+		Wap_HandGun_Text: Baaaah! Daaaaaa! Bang!!
 		Wap_Flintlockpistol_Text:
 			'''
 			an old handgun, it might explode
 			"Trust the wisdom of the ancients."
 			'''
-		Wap_Musket_Text:
-			'''
-			"The militia said, 'I must be ready.'"
-			'''
-		Wap_TheUndertaker_Text:
-			'''
-			"When the undertakers find their clients uncooperative, they often use this this to calm them down"
-			'''
-		Wap_RedRyder_Text:
-			'''
-			“Don't shoot your own eyeballs out！”
-			'''
+		Wap_Musket_Text: '''"The militia said, 'I must be ready.'"'''
+		Wap_TheUndertaker_Text: '''"When the undertakers find their clients uncooperative, they often use this this to calm them down"'''
+		Wap_RedRyder_Text: “Don't shoot your own eyeballs out！”
 		Wap_FlareGun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_FlareGun_Text
 		Wap_PhoenixBlaster_Text:
 			'''
@@ -2921,5 +2853,16 @@ TextContent: {
 			Fire five side-by-side arrows
 			Right - button power unleashes a barrage of arrows
 			'''
+		CWRGun_KL_Text: Press the [KL] key to change the cartridge
+		CWRGun_Scope_Text: Press [Scope] to open the lens
+		CWRGun_Recoil_Text: "[Recoil] Recoil"
+		CWRGun_MustCA_Text: Firing must consume ammunition
+		CWRGun_Recoil_Level_0: No
+		CWRGun_Recoil_Level_1: Slight
+		CWRGun_Recoil_Level_2: Weaker
+		CWRGun_Recoil_Level_3: Medium
+		CWRGun_Recoil_Level_4: Strong
+		CWRGun_Recoil_Level_5: Crazy
+		CWRGun_Recoil_Level_6: Ridiculous
 	}
 }

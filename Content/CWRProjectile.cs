@@ -288,7 +288,7 @@ namespace CalamityOverhaul.Content
         }
 
         public void HitFunc(Player player, NPC target) {
-            player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage, 0f, 0, false);
+            player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 2, 0f, 0, false, DamageClass.Ranged, true);
             float thirdDustScale = Main.rand.NextFloat(2, 4);
             Vector2 dustRotation = (target.rotation - MathHelper.PiOver2).ToRotationVector2();
             Vector2 dustVelocity = dustRotation * target.velocity.Length();

@@ -1,4 +1,6 @@
-﻿using CalamityMod.Items;
+﻿using CalamityMod;
+using CalamityMod.Items;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -32,6 +34,7 @@ namespace CalamityOverhaul
         }
 
         public override void UpdateInventory(Player player) {
+            //player.velocity.Domp();
         }
 
         public override void HoldItem(Player player) {

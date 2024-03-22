@@ -54,11 +54,6 @@ Items: {
 		Tooltip: 挥舞会抛舞出三个沙球
 	}
 
-	BurntSienna: {
-		// DisplayName: Burnt Sienna
-		// Tooltip: ""
-	}
-
 	CometQuasherEcType: {
 		DisplayName: 彗星陨刃
 		Tooltip: 让大量流星从天而降
@@ -936,10 +931,7 @@ Items: {
 
 	ElementalBlasterEcType: {
 		DisplayName: 元素冲击波
-		Tooltip:
-			'''
-			发射出元素状射流
-			'''
+		Tooltip: 发射出元素状射流
 	}
 
 	MarksmanBowEcType: {
@@ -989,10 +981,7 @@ Items: {
 
 	ThunderstormEcType: {
 		DisplayName: 虚灵步枪
-		Tooltip:
-			'''
-			发射一发拉德尔电磁冲击，以魔力作为弹药
-			'''
+		Tooltip: 发射一发拉德尔电磁冲击，以魔力作为弹药
 	}
 
 	TyrannysEndEcType: {
@@ -1113,10 +1102,7 @@ Items: {
 
 	AquashardShotgunEcType: {
 		DisplayName: 碎水霰弹枪
-		Tooltip:
-			'''
-			会将火枪子弹转化为海洋棱晶弹
-			'''
+		Tooltip: 会将火枪子弹转化为海洋棱晶弹
 	}
 
 	AnimosityEcType: {
@@ -1324,10 +1310,7 @@ Items: {
 
 	FungicideEcType: {
 		DisplayName: 真菌枪
-		Tooltip:
-			'''
-			发射命中后分裂的真菌弹
-			'''
+		Tooltip: 发射命中后分裂的真菌弹
 	}
 
 	HalleysInfernoEcType: {
@@ -1343,10 +1326,7 @@ Items: {
 
 	HandheldTankEcType: {
 		DisplayName: 手持坦克
-		Tooltip:
-			'''
-			"嘿，伙计！看看，我在推着一辆坦克走"
-			'''
+		Tooltip: '''"嘿，伙计！看看，我在推着一辆坦克走"'''
 	}
 
 	InfinityEcType: {
@@ -1361,10 +1341,7 @@ Items: {
 
 	KarasawaEcType: {
 		DisplayName: 卡拉萨瓦重炮
-		Tooltip:
-			'''
-			"……这把枪太沉了……太沉了"
-			'''
+		Tooltip: '''"……这把枪太沉了……太沉了"'''
 	}
 
 	KingsbaneEctype: {
@@ -1425,18 +1402,12 @@ Items: {
 
 	ScorpioEcType: {
 		DisplayName: 天蝎座
-		Tooltip:
-			'''
-			“BOOM”
-			'''
+		Tooltip: “BOOM”
 	}
 
 	ArcherfishEcType: {
 		DisplayName: 射水鱼
-		Tooltip:
-			'''
-			将火枪子弹转化为一束水流
-			'''
+		Tooltip: 将火枪子弹转化为一束水流
 	}
 
 	ArcNovaDiffuserEcType: {
@@ -1446,10 +1417,7 @@ Items: {
 
 	AstralBlasterEcType: {
 		DisplayName: 幻星冲击炮
-		Tooltip:
-			'''
-			将火枪子弹转化为追踪幻星弹
-			'''
+		Tooltip: 将火枪子弹转化为追踪幻星弹
 	}
 
 	AuralisEcType: {
@@ -1500,10 +1468,7 @@ Items: {
 
 	ClamorRifleEcType: {
 		DisplayName: 音波步枪
-		Tooltip:
-			'''
-			将火枪子弹转化为追踪能量束
-			'''
+		Tooltip: 将火枪子弹转化为追踪能量束
 	}
 
 	GunkShotEcType: {
@@ -1520,26 +1485,17 @@ Items: {
 
 	NorfleetEcType: {
 		DisplayName: 诺法雷
-		Tooltip:
-			'''
-			完美平衡，万物皆宜......
-			'''
+		Tooltip: 完美平衡，万物皆宜......
 	}
 
 	ShroomerEcType: {
 		DisplayName: 蘑菇狙击枪
-		Tooltip:
-			'''
-			发射子弹以及强大的追踪蘑菇
-			'''
+		Tooltip: 发射子弹以及强大的追踪蘑菇
 	}
 
 	StarfleetEcType: {
 		DisplayName: 星辰冲击波
-		Tooltip:
-			'''
-			发射数个等离子星弹
-			'''
+		Tooltip: 发射数个等离子星弹
 	}
 
 	StarmadaEcType: {
@@ -1553,10 +1509,7 @@ Items: {
 
 	SulphuricAcidCannonEcType: {
 		DisplayName: 硫酸炮
-		Tooltip:
-			'''
-			发射一个能黏在敌人身上的硫酸弹幕并溶解它们
-			'''
+		Tooltip: 发射一个能黏在敌人身上的硫酸弹幕并溶解它们
 	}
 
 	UniversalGenesisEcType: {
@@ -1760,10 +1713,7 @@ Items: {
 
 	StellarCannonEcType: {
 		DisplayName: 新星炮
-		Tooltip:
-			'''
-			发射一个爆炸幻星水晶
-			'''
+		Tooltip: 发射一个爆炸幻星水晶
 	}
 
 	SvantechnicalEcType: {
@@ -1787,10 +1737,7 @@ Items: {
 
 	ThePackEcType: {
 		DisplayName: 集束火箭
-		Tooltip:
-			'''
-			发射一个大的追踪火箭，接近敌人时爆炸出小的追踪火箭
-			'''
+		Tooltip: 发射一个大的追踪火箭，接近敌人时爆炸出小的追踪火箭
 	}
 
 	ElementMuzzleBrake: {
@@ -2691,32 +2638,17 @@ TextContent: {
 			然而，就像它的.20口径一样，属于鱼类枪械家族中的平凡之辈
 			或许它需要一支嘲讽的钓竿来捕捉一点自我认知，毕竟在海洋中，口径也许更适合测量谦逊而非真理
 			'''
-		Wap_HandGun_Text:
-			'''
-			砰！砰！！砰！！！
-			'''
+		Wap_HandGun_Text: 砰！砰！！砰！！！
 		Wap_Flintlockpistol_Text:
 			'''
 			弱的后座力
 			老式的手枪，它也许会炸膛
 			"相信古人的智慧"
 			'''
-		Wap_Musket_Text:
-			'''
-			“民兵说，我必须做好准备”
-			'''
-		Wap_TheUndertaker_Text:
-			'''
-			“当入殓师发现他们的客户不配合时，他们往往会使用这个让他们安静下来”
-			'''
-		Wap_RedRyder_Text:
-			'''
-			“别把自己的眼球射出来了！”
-			'''
-		Wap_FlareGun_Text:
-			'''
-			"别把它和发令枪搞混了"
-			'''
+		Wap_Musket_Text: “民兵说，我必须做好准备”
+		Wap_TheUndertaker_Text: “当入殓师发现他们的客户不配合时，他们往往会使用这个让他们安静下来”
+		Wap_RedRyder_Text: “别把自己的眼球射出来了！”
+		Wap_FlareGun_Text: '''"别把它和发令枪搞混了"'''
 		Wap_PhoenixBlaster_Text:
 			'''
 			右键发射燃烧的子弹碎片
@@ -2921,5 +2853,16 @@ TextContent: {
 			发射五发并排箭矢
 			右键蓄力爆发出大量箭矢
 			'''
+		CWRGun_KL_Text: 按下[KL]键进行换弹
+		CWRGun_Scope_Text: 按下[Scope]开镜
+		CWRGun_Recoil_Text: "[Recoil]后坐力"
+		CWRGun_MustCA_Text: 开火必定消耗弹药
+		CWRGun_Recoil_Level_0: 无
+		CWRGun_Recoil_Level_1: 微弱的
+		CWRGun_Recoil_Level_2: 较弱的
+		CWRGun_Recoil_Level_3: 一般的
+		CWRGun_Recoil_Level_4: 较强的
+		CWRGun_Recoil_Level_5: 疯狂的
+		CWRGun_Recoil_Level_6: 荒诞的
 	}
 }
