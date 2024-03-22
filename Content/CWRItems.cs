@@ -159,10 +159,14 @@ namespace CalamityOverhaul.Content
                         if (MagazineContents[i] == null) {
                             MagazineContents[i] = new Item(ItemID.None);
                         }
+                        if (MagazineContents[i].type != ItemID.None) {
+                            if (!MagazineContents[i].CWR().AmmoProjectileReturn) {
+                                MagazineContents[i] = new Item(ItemID.None);
+                            }
+                        }
                     }
                     tag.Add("_MagazineContents", MagazineContents);
                 }
-                tag.Add("_NumberBullets", NumberBullets);
                 tag.Add("_IsKreload", IsKreload);
             }
         }
@@ -180,9 +184,13 @@ namespace CalamityOverhaul.Content
                     }
                     MagazineContents = tag.Get<Item[]>("_MagazineContents");
                 }
-                if (tag.ContainsKey("_NumberBullets")) {
-                    NumberBullets = tag.GetInt("_NumberBullets");
+                int ammoValue = 0;
+                foreach (Item i in MagazineContents) {
+                    if (i.type != ItemID.None) {
+                        ammoValue += i.stack;
+                    }
                 }
+                NumberBullets = ammoValue;
                 if (tag.ContainsKey("_IsKreload")) {
                     IsKreload = tag.GetBool("_IsKreload");
                 }

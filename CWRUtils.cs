@@ -968,7 +968,7 @@ namespace CalamityOverhaul
                     result = ItemLoader.CanConsumeAmmo(weapon, magazineContents[0], player);
                 }
                 if (result) {
-                    result = !player.IsRangedAmmoFreeThisShot(magazineContents[0]);
+                    result = player.IsRangedAmmoFreeThisShot(magazineContents[0]);
                 }
             }
             return result;

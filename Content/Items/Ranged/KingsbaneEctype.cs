@@ -36,6 +36,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.CWR().AmmoCapacity = 1200;
         }
 
-        public override bool CanConsumeAmmo(Item ammo, Player player) => Main.rand.NextFloat() > 0.35f && player.ownedProjectileCounts[Item.shoot] > 0;
+        public override bool CanConsumeAmmo(Item ammo, Player player) 
+            => Main.rand.NextFloat() > 0.35f && player.ownedProjectileCounts[Item.shoot] > 0;
     }
 }
