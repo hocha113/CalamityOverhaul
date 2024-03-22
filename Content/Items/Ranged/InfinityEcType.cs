@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityMod.Projectiles.Ranged;
+using Terraria;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
@@ -37,5 +38,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.CWR().AmmoCapacity = 900;
             Item.CWR().Scope = true;
         }
+        public override bool CanConsumeAmmo(Item ammo, Player player) => true;
     }
 }

@@ -16,5 +16,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.damage = 68;
             Item.SetCartridgeGun<StormDragoonHeldProj>(225);
         }
+        public override bool CanConsumeAmmo(Item ammo, Player player) => Main.rand.NextFloat() > 0.2f;
     }
 }

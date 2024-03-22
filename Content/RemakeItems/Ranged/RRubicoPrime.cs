@@ -12,6 +12,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<RubicoPrime>();
         public override int ProtogenesisID => ModContent.ItemType<RubicoPrimeEcType>();
         public override string TargetToolTipItemName => "RubicoPrimeEcType";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<RubicoPrimeHeldProj>(80);
+        public override void SetDefaults(Item item) {
+            item.useTime = 20;
+            item.SetCartridgeGun<RubicoPrimeHeldProj>(80);
+        }
+        
     }
 }
