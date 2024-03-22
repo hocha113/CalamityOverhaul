@@ -537,7 +537,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             bool result;
             result = Owner.CanUseAmmoInWeaponShoot(Item);
             if (!result) {
-                result = Main.rand.NextBool(5);
+                result = Main.rand.NextBool(2);
             }
             return result;
         }

@@ -16,5 +16,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.SetCartridgeGun<InfinityHeldProj>(900);
             item.CWR().Scope = true;
         }
+        public override bool? On_CanConsumeAmmo(Item weapon, Item ammo, Player player) => true;
     }
 }

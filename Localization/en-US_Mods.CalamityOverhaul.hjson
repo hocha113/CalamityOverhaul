@@ -985,6 +985,7 @@ Items: {
 		Tooltip:
 			'''
 			Unleash bullets like a hailstorm
+			20% chance to conserve ammunition
 			"I am the storm that is approaching."
 			'''
 	}
@@ -1617,7 +1618,7 @@ Items: {
 		Tooltip:
 			'''
 			Unleash a hail of bullets and onyx shards upon your enemies
-			50% chance to conserve ammunition
+			15% chance to conserve ammunition
 			"The incarnation of the Black Dragon"
 			'''
 	}
