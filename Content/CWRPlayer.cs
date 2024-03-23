@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using System;
@@ -153,6 +154,12 @@ namespace CalamityOverhaul.Content
 
         public override void OnHurt(Player.HurtInfo info) {
             OnHit = true;
+            if (TryGetInds_BaseHeldRanged(out BaseHeldRanged ranged)) {
+                BlossomFluxHeldProj blossom = ranged as BlossomFluxHeldProj;
+                if (blossom != null) {
+                    blossom.SetCharge();
+                }
+            }
         }
 
         public override void PostUpdate() {

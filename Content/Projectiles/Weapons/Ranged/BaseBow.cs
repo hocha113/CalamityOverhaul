@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -70,10 +69,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 开火时是否默认播放手持物品的使用音效<see cref="Item.UseSound"/>，但如果准备重写<see cref="SpanProj"/>，这个属性将失去作用，默认为<see langword="true"/>
         /// </summary>
         public bool FiringDefaultSound = true;
+        public bool CanFire => Owner.PressKey() || (Owner.PressKey(false) && CanRightClick && !onFire);
+        /// <summary>
+        /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
+        /// </summary>
+        public virtual bool OnHandheldDisplayBool {
+            get {
+                if (WeaponHandheldDisplay) {
+                    return true;
+                }
+                return CanFire;
+            }
+        }
         /// <summary>
         /// 获取来自物品的生成源
         /// </summary>
-        protected IEntitySource Source => Item.GetSource_FromThis("CWRBow");
+        protected IEntitySource Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType, "CWRBow");
 
         public virtual void HandEvent() {
             if (Owner.PressKey()) {
@@ -134,8 +145,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public void SetCompositeArm() {
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
-            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+            if (OnHandheldDisplayBool) {
+                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
+                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+            }
         }
 
         public virtual void PostInOwner() {
@@ -143,11 +156,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public virtual void BowShoot() {
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public virtual void BowShootR() {
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         /// <summary>
@@ -166,15 +179,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public virtual int SpanLuxirProj(int luxirDamage) {
-            return Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+            return Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
                 , ModContent.ProjectileType<LuxorsGiftRanged>(), luxirDamage, WeaponKnockback / 2, Owner.whoAmI, 0);
         }
 
         public override void SpanProj() {
-            if (Projectile.ai[1] > Item.useTime) {
-                if (FiringDefaultSound) {
-                    SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
-                }                
+            if (Projectile.ai[1] > Item.useTime) {             
                 if (onFire) {
                     BowShoot();
                 }
@@ -184,15 +194,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
+                if (FiringDefaultSound) {
+                    SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+                }
                 Projectile.ai[1] = 0;
                 onFire = false;
             }
         }
 
-        public override bool PreDraw(ref Color lightColor) {
+        public sealed override bool PreDraw(ref Color lightColor) {
+            if (OnHandheldDisplayBool) {
+                BowDraw(ref lightColor);
+            }
+            return false;
+        }
+
+        public virtual void BowDraw(ref Color lightColor) {
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, SpriteEffects.None);
-            return false;
         }
     }
 }

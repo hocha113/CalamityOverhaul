@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -25,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
         }
 
-        public override bool PreDraw(ref Color lightColor) {
+        public override void BowDraw(ref Color lightColor) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 4)
                 , onFire ? Color.White : lightColor, Projectile.rotation, CWRUtils.GetOrig(value, 4), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
@@ -36,7 +37,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Vector2 offset = Projectile.rotation.ToRotationVector2() * 20;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition + offset, CWRUtils.GetRec(value, Projectile.frame, 4)
                 , Color.White, 0, new Vector2(value.Width / 2, value.Height / 4), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
-            return false;
         }
 
         public override void BowShoot() {
@@ -45,15 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 for (int i = 0; i < 4; i++) {
                     Vector2 vr = (Projectile.rotation + Main.rand.NextFloat(-0.1f, 0.1f)).ToRotationVector2() * Main.rand.Next(8, 18);
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * 8;
-                    int doms = Projectile.NewProjectile(
-                        Projectile.parent(),
-                        pos,
-                        vr,
-                        types,
-                        WeaponDamage,
-                        WeaponKnockback,
-                        Owner.whoAmI
-                        );
+                    int doms = Projectile.NewProjectile(Projectile.parent(), pos, vr, types, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                     Projectile newDoms = Main.projectile[doms];
                     newDoms.DamageType = DamageClass.Ranged;
                     newDoms.timeLeft = 120;
@@ -64,26 +56,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 for (int i = 0; i < 4; i++) {
                     Vector2 vr = Projectile.rotation.ToRotationVector2() * Main.rand.Next(20, 30);
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * 8;
-                    Projectile.NewProjectile(
-                        Projectile.parent(),
-                        pos,
-                        vr,
-                        AmmoTypes,
-                        WeaponDamage,
-                        WeaponKnockback,
-                        Owner.whoAmI
-                        );
+                    Projectile.NewProjectile(Projectile.parent(),pos,vr,AmmoTypes,WeaponDamage,WeaponKnockback,Owner.whoAmI);
                 }
-
-                Projectile.NewProjectile(
-                        Projectile.parent(),
-                        Projectile.Center,
-                        Projectile.rotation.ToRotationVector2() * 18,
-                        ModContent.ProjectileType<DaemonsFlameArrow>(),
-                        WeaponDamage * 2,
-                        WeaponKnockback,
-                        Owner.whoAmI
-                        );
+                Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 18
+                    , ModContent.ProjectileType<DaemonsFlameArrow>(), WeaponDamage, WeaponKnockback, Owner.whoAmI);
             }
         }
     }

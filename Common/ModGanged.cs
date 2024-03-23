@@ -154,6 +154,9 @@ namespace CalamityOverhaul.Common
         }
 
         private static bool IFDrawHeld(On_ModPlayerDraw_Dalegate orig, PlayerDrawSet drawInfo) {
+            if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
+                return true;
+            }
             if (EqualityComparer<PlayerDrawSet>.Default.Equals(drawInfo, default(PlayerDrawSet))) {
                 return false;
             }
@@ -203,15 +206,17 @@ namespace CalamityOverhaul.Common
         }
 
         public static bool On_ShouldForceUseAnim_Hook(On_ShouldForceUseAnim_Dalegate orig, Player player, Item item) {
-            if (item == null) {
-                return false;
-            }
-            if (item.type == ItemID.None) {
-                return false;
-            }
-            bool isHeld = item.CWR().isHeldItem || item.CWR().heldProjType > 0;
-            if (isHeld) {
-                return false;
+            if (CWRServerConfig.Instance.WeaponHandheldDisplay) {
+                if (item == null) {
+                    return false;
+                }
+                if (item.type == ItemID.None) {
+                    return false;
+                }
+                bool isHeld = item.CWR().isHeldItem || item.CWR().heldProjType > 0;
+                if (isHeld) {
+                    return false;
+                }
             }
             return orig.Invoke(player, item);
         }

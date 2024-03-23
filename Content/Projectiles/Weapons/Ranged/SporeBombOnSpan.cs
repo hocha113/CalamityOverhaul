@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -58,9 +59,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.IsOwnedByLocalPlayer() && onFire) {
                 SoundEngine.PlaySound(SoundID.Item30 with { Volume = SoundID.Item30.Volume * 1.5f }, Owner.MountedCenter);
                 for (int i = 0; i < 3; i++) {
-                    Projectile.NewProjectile(Projectile.parent(), Projectile.Center, 
+                    Projectile.NewProjectile(new EntitySource_ItemUse_WithAmmo(Owner, Owner.ActiveItem(), Owner.GetShootState().UseAmmoItemType), Projectile.Center, 
                         Projectile.rotation.ToRotationVector2().RotatedBy((-15 + i * 15) * CWRUtils.atoR) * 15
-                    , ModContent.ProjectileType<SporeBombs>(), Main.player[Projectile.owner].HeldItem.damage * 5, 0, Projectile.owner);
+                    , ModContent.ProjectileType<SporeBombs>(), Owner.GetShootState().WeaponDamage * 3, Owner.GetShootState().WeaponKnockback, Projectile.owner);
                 }
             }
         }

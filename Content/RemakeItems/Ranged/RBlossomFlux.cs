@@ -39,5 +39,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().heldProjType = ModContent.ProjectileType<BlossomFluxHeldProj>();
             item.CWR().hasHeldNoCanUseBool = true;
         }
+
+        public override bool? On_CanUseItem(Item item, Player player) {
+            return false;
+        }
     }
 }
