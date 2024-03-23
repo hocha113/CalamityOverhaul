@@ -2454,6 +2454,19 @@ Configs: {
 				It is turned on by default, and for visual reasons, the authors do not recommend turning it off
 				'''
 		}
+
+		MagazineSystem: {
+			Label: Magazine System
+			Tooltip:
+				'''
+				A sprawling content system, when enabled, introduces magazine mechanisms to the majority of firearms, 
+				including features like reloading and mixing ammunition types.
+				Disabling it will deactivate these features, reverting firearms to their original ammunition mechanisms.
+				[c/fff08c:It's worth noting] that the game's major balance adjustments are made based on the [c/fff08c:enabled magazine system].
+				Opting to disable it may render some ranged weapons [c/de0808:overpowered].
+				Therefore, if this feature is disabled, the [c/de0808:balance of ranged weapons] in the game will no longer be meaningful for discussion.
+				'''
+		}
 	}
 }
 

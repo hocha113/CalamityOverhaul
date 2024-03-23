@@ -198,10 +198,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             if (CWRIDs.ItemToBaseGun.TryGetValue(item.type, out BaseGun gun)) {
-                if (gun.MustConsumeAmmunition) {
+                if (gun.MustConsumeAmmunition && CWRServerConfig.Instance.MagazineSystem) {
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_MustCA", CWRLocText.GetTextValue("CWRGun_MustCA_Text")));
                 }
-                if (item.CWR().HasCartridgeHolder) {
+                if (item.CWR().HasCartridgeHolder && CWRServerConfig.Instance.MagazineSystem) {
                     string newText = CWRLocText.GetTextValue("CWRGun_KL_Text").Replace("[KL]", CWRKeySystem.KreLoad_Key.TooltipHotkeyString());
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_KL", newText));
                 }

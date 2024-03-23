@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.RemakeItems.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
@@ -83,7 +84,7 @@ namespace CalamityOverhaul.Content.UIs
                     return true;
                 }, InterfaceScaleType.UI));
                 layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("CH UI", delegate {
-                    if (CartridgeHolderUI.Instance.Active) {
+                    if (CartridgeHolderUI.Instance.Active && CWRServerConfig.Instance.MagazineSystem) {
                         CartridgeHolderUI.Instance.Draw(Main.spriteBatch);
                     }
                     return true;
@@ -107,7 +108,7 @@ namespace CalamityOverhaul.Content.UIs
             if (OverhaulTheBibleUI.Instance.Active) {
                 OverhaulTheBibleUI.Instance.Update(gameTime);
             }
-            if (CartridgeHolderUI.Instance.Active) {
+            if (CartridgeHolderUI.Instance.Active && CWRServerConfig.Instance.MagazineSystem) {
                 CartridgeHolderUI.Instance.Update(gameTime);
             }
         }

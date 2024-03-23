@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -104,6 +105,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 一个额外的枪体中心位置矫正向量，默认在<see cref="Recover"/>中恢复为<see cref="Vector2.Zero"/>，
         /// </summary>
         protected Vector2 FeederOffsetPos;
+        /// <summary>
+        /// 快捷获取关于是否开启弹匣系统的设置值
+        /// </summary>
+        protected bool MagazineSystem => CWRServerConfig.Instance.MagazineSystem;
+
         public override bool OnHandheldDisplayBool {
             get {
                 if (WeaponHandheldDisplay) {
@@ -179,6 +185,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <returns></returns>
         public virtual bool WhetherStartChangingAmmunition() {
+            if (!MagazineSystem) {//如果关闭了弹匣系统，枪械将不再可以换弹，因为弹匣不会再发挥作用
+                return false;
+            }
             return CWRKeySystem.KreLoad_Key.JustPressed && kreloadTimeValue == 0 
                 && (!IsKreload || RepeatedCartridgeChange) 
                 && BulletNum < ModItem.AmmoCapacity 
@@ -465,6 +474,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 更新弹匣内容，该逻辑负责弹药的消耗，以及后续的弹药排列处理。如果多次调用，可以制造类似多发消耗的效果
         /// </summary>
         public virtual void UpdateMagazineContents() {
+            if (!MagazineSystem) {//如果关闭了弹匣系统，将使用原版的弹药更新机制，因为弹匣不会再发挥作用
+                UpdateConsumeAmmo();
+                return;
+            }
             CWRItems cwritem = ModItem;
             if (cwritem.MagazineContents.Length <= 0) {
                 cwritem.MagazineContents = new Item[] { new Item() };
@@ -488,9 +501,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             if (cwritem.MagazineContents[0] == null) {
                 cwritem.MagazineContents[0] = new Item();
-            }
-            if (AmmoTypeAffectedByMagazine) {
-                AmmoTypes = cwritem.MagazineContents[0].shoot;
             }
             cwritem.MagazineContents[0].stack--;
             if (BulletNum > 0) {
@@ -559,9 +569,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     LuxirEvent();
                 }
                 if (CanUpdateMagazineContentsInShootBool) {
-                    if (GetMagazineCanUseAmmoProbability() || MustConsumeAmmunition) {
+                    //如果关闭了弹匣系统，他将会必定调用一次UpdateMagazineContents，因为该方法将内置一次概率消耗
+                    if (GetMagazineCanUseAmmoProbability() || MustConsumeAmmunition || !MagazineSystem) {
                         UpdateMagazineContents();
                     }
+                }
+                //弹容替换在此处执行，将发射内容设置为弹匣第一位的弹药类型
+                if (AmmoTypeAffectedByMagazine && MagazineSystem && ModItem.MagazineContents.Length > 0) {
+                    if (ModItem.MagazineContents[0] == null) {
+                        ModItem.MagazineContents[0] = new Item();
+                    }
+                    AmmoTypes = ModItem.MagazineContents[0].shoot;
                 }
                 if (PreFiringShoot()) {
                     if (onFire) {
