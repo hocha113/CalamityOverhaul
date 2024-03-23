@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -144,6 +145,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 应力缩放系数
         /// </summary>
         public float OwnerPressureIncrease => PressureWhetherIncrease ? ModOwner.PressureIncrease : 1;
+        /// <summary>
+        /// 快速的获取该枪械是否正在进行开火尝试，包括左键或者右键的情况
+        /// </summary>
+        public bool CanFire => DownLeft && !(Owner.Calamity().mouseRight && !onFire && CanRightClick);
+        /// <summary>
+        /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
+        /// </summary>
+        public virtual bool OnHandheldDisplayBool {
+            get {
+                if (WeaponHandheldDisplay) {
+                    return true;
+                }
+                return CanFire;
+            }
+        }
         /// <summary>
         /// 获取来自物品的生成源，该生成源实例会附加CWRGun标签，用于特殊识别
         /// </summary>
@@ -409,14 +425,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public void SetCompositeArm() {
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
-            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+            if (OnHandheldDisplayBool) {
+                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
+                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+            }
         }
 
-        public override bool PreDraw(ref Color lightColor) {
+        public sealed override bool PreDraw(ref Color lightColor) {
+            if (OnHandheldDisplayBool) {
+                GunDraw(ref lightColor);
+            }
+            return false;
+        }
+
+        public virtual void GunDraw(ref Color lightColor) {
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
-            return false;
         }
 
         public string GetLckRecoilKey() {

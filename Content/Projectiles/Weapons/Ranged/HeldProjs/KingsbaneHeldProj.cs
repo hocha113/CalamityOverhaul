@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EjectCasing();
         }
 
-        public override bool PreDraw(ref Color lightColor) {
+        public override void GunDraw(ref Color lightColor) {
             Color drawColor = onFire ? Color.White : lightColor;
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition
                 , CWRUtils.GetRec(TextureValue, Projectile.frame, 10), drawColor
@@ -142,7 +142,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 , CWRUtils.GetRec(value, Projectile.frame, 10), drawColor2
                 , Projectile.rotation, CWRUtils.GetOrig(value, 10)
                 , Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
-            return false;
         }
     }
 }

@@ -58,6 +58,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float WeaponKnockback;
         /// <summary>
+        /// 是否启用手持开关
+        /// </summary>
+        public bool WeaponHandheldDisplay => CWRServerConfig.Instance.WeaponHandheldDisplay;
+        /// <summary>
         /// 获取射击向量
         /// </summary>
         public Vector2 ShootVelocity => ScaleFactor * UnitToMouseV;

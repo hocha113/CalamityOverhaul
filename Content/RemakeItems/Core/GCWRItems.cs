@@ -197,22 +197,22 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
-            if (CWRConstant.ForceReplaceResetContent && CWRMod.RItemIndsDict.ContainsKey(item.type)) {
-                if (CWRIDs.ItemToBaseGun.TryGetValue(item.type, out BaseGun gun)) {
-                    if (gun.MustConsumeAmmunition) {
-                        tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_MustCA", CWRLocText.GetTextValue("CWRGun_MustCA_Text")));
-                    }
-                    if (item.CWR().HasCartridgeHolder) {
-                        string newText = CWRLocText.GetTextValue("CWRGun_KL_Text").Replace("[KL]", CWRKeySystem.KreLoad_Key.TooltipHotkeyString());
-                        tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_KL", newText));
-                    }
-                    if (item.CWR().Scope) {
-                        string newText = CWRLocText.GetTextValue("CWRGun_Scope_Text").Replace("[Scope]", CWRKeySystem.ADS_Key.TooltipHotkeyString());
-                        tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Scope", newText));
-                    }
-                    string newText3 = CWRLocText.GetTextValue("CWRGun_Recoil_Text").Replace("[Recoil]", CWRLocText.GetTextValue(gun.GetLckRecoilKey()));
-                    tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Recoil", newText3));
+            if (CWRIDs.ItemToBaseGun.TryGetValue(item.type, out BaseGun gun)) {
+                if (gun.MustConsumeAmmunition) {
+                    tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_MustCA", CWRLocText.GetTextValue("CWRGun_MustCA_Text")));
                 }
+                if (item.CWR().HasCartridgeHolder) {
+                    string newText = CWRLocText.GetTextValue("CWRGun_KL_Text").Replace("[KL]", CWRKeySystem.KreLoad_Key.TooltipHotkeyString());
+                    tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_KL", newText));
+                }
+                if (item.CWR().Scope) {
+                    string newText = CWRLocText.GetTextValue("CWRGun_Scope_Text").Replace("[Scope]", CWRKeySystem.ADS_Key.TooltipHotkeyString());
+                    tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Scope", newText));
+                }
+                string newText3 = CWRLocText.GetTextValue("CWRGun_Recoil_Text").Replace("[Recoil]", CWRLocText.GetTextValue(gun.GetLckRecoilKey()));
+                tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Recoil", newText3));
+            }
+            if (CWRConstant.ForceReplaceResetContent && CWRMod.RItemIndsDict.ContainsKey(item.type)) {
                 string key = CWRMod.RItemIndsDict[item.type].TargetToolTipItemName;
                 if (key != "") {
                     if (CWRMod.RItemIndsDict[item.type].IsVanilla) {

@@ -50,7 +50,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EjectCasing();
         }
 
-        public override void PostDraw(Color lightColor) {
+        public override void GunDraw(ref Color lightColor) {
+            base.GunDraw(ref lightColor);
             if (BulletNum > 0 && BulletNum <= 4 && IsKreload) {
                 string path = CWRConstant.Item_Ranged + "ScorchedEarth_PrimedForAction_" + BulletNum;
                 Texture2D value = CWRUtils.GetT2DValue(path);

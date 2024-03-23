@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -105,6 +104,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 一个额外的枪体中心位置矫正向量，默认在<see cref="Recover"/>中恢复为<see cref="Vector2.Zero"/>，
         /// </summary>
         protected Vector2 FeederOffsetPos;
+        public override bool OnHandheldDisplayBool {
+            get {
+                if (WeaponHandheldDisplay) {
+                    return true;
+                }
+                return CanFire || kreloadTimeValue > 0;
+            }
+        }
         #endregion
 
         protected int BulletNum {
