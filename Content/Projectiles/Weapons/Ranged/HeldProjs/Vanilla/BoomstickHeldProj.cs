@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 2.0f;
             RangeOfStress = 8;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 45;
+            kreloadMaxTime = 35;
         }
 
         public override void PreInOwnerUpdate() {
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
             for (int i = 0; i < 2; i++) {
                 UpdateMagazineContents();
-                _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.24f, 0.24f)) * Main.rand.NextFloat(0.7f, 1.2f) * 1.0f, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
+                _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.32f, 0.32f)) * Main.rand.NextFloat(0.7f, 1.2f) * 1.0f, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
             }
         }
     }

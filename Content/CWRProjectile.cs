@@ -36,7 +36,8 @@ namespace CalamityOverhaul.Content
         BarrenBow,
         FetidEmesis,
         AngelicShotgun,
-        RocketLauncher
+        RocketLauncher,
+        NailGun
     }
 
     public class CWRProjectile : GlobalProjectile
@@ -199,6 +200,9 @@ namespace CalamityOverhaul.Content
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.RocketLauncher && projectile.numHits == 0 && projectile.ai[2] > 0) {
+                if(projectile.ai[2] == 3) {
+                    projectile.damage = (int)(projectile.damage * 0.8f);
+                }
                 projectile.ai[2] -= 1;
                 Vector2 velocity0;
                 if (target != null) {
@@ -207,12 +211,24 @@ namespace CalamityOverhaul.Content
                 else {
                     velocity0 = projectile.velocity;
                 }
-                for (int i = 0; i < 2; i++) {
-                    int proj = Projectile.NewProjectile(projectile.parent(), player.Center
-                                    , velocity0.RotatedBy(MathHelper.Lerp(-0.07f, 0.07f, i)), projectile.type
-                                    , projectile.damage/2, projectile.knockBack, player.whoAmI, 0, target.whoAmI, projectile.ai[2]);
+                if (player.PressKey()) {
+                    int proj = Projectile.NewProjectile(projectile.parent(), player.Center + (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero) * 40f
+                                    , velocity0, projectile.type
+                                    , projectile.damage, projectile.knockBack, player.whoAmI, 0, target.whoAmI, projectile.ai[2]);
+                    Main.projectile[proj].usesLocalNPCImmunity = true;
+                    Main.projectile[proj].localNPCHitCooldown = 5;
                     Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.RocketLauncher;
                     Main.projectile[proj].scale *= 0.5f;
+                }
+            }
+
+            if (SpanTypes == (byte)SpanTypesEnum.NailGun && projectile.numHits == 0) {
+                if (projectile.ai[2] == 1) {
+                    for (int i = 0; i < 8; i++) {
+                        int proj = Projectile.NewProjectile(Source, projectile.Center + new Vector2(0, -target.height), new Vector2(0, -5).RotatedBy(Main.rand.NextFloat(-0.48f, 0.48f)) * Main.rand.NextFloat(0.7f, 1.5f), projectile.type, projectile.damage, projectile.knockBack, player.whoAmI, 0);
+                        Main.projectile[proj].extraUpdates += 1;
+                    }
+                    projectile.active = false;
                 }
             }
 

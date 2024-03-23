@@ -2830,8 +2830,8 @@ TextContent: {
 			'''
 		Wap_RocketLauncher_Text:
 			'''
-			蓄力发射一枚高速火箭弹
-			火箭击中时会发射额外的辅助火箭
+			蓄力发射一枚火箭弹
+			火箭击中后持续按住会发射小型的辅助火箭
 			“我打赌它不会被床板挡下”
 			'''
 		Wap_ElectrosphereLauncher_Text:
