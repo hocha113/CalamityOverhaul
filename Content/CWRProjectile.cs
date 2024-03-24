@@ -224,7 +224,10 @@ namespace CalamityOverhaul.Content
 
             if (SpanTypes == (byte)SpanTypesEnum.NailGun && projectile.numHits == 0) {
                 if (projectile.ai[2] == 1) {
-                    for (int i = 0; i < 8; i++) {
+                    if (hit.Crit == true) {
+                        projectile.damage /= 2;
+                    }
+                    for (int i = 0; i < projectile.ai[2]; i++) {
                         int proj = Projectile.NewProjectile(Source, projectile.Center + new Vector2(0, -target.height), new Vector2(0, -5).RotatedBy(Main.rand.NextFloat(-0.48f, 0.48f)) * Main.rand.NextFloat(0.7f, 1.5f), projectile.type, projectile.damage, projectile.knockBack, player.whoAmI, 0);
                         Main.projectile[proj].extraUpdates += 1;
                     }

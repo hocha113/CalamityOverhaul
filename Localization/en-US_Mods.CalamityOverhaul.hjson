@@ -985,7 +985,6 @@ Items: {
 		Tooltip:
 			'''
 			Unleash bullets like a hailstorm
-			20% chance to conserve ammunition
 			"I am the storm that is approaching."
 			'''
 	}
@@ -1326,11 +1325,7 @@ Items: {
 
 	ButcherEcType: {
 		DisplayName: Butcher
-		Tooltip:
-			'''
-			The fewer bullets remaining, the higher the firing rate and accuracy
-			25% chance to conserve ammunition
-			'''
+		Tooltip: The fewer bullets remaining, the higher the firing rate and accuracy
 	}
 
 	FungicideEcType: {
@@ -1344,7 +1339,6 @@ Items: {
 			'''
 			Fires a series of high-pressure lunar jets
 			Uses gel as ammunition
-			50% chance to conserve ammunition
 			"The Halley's Comet came earlier than expected"
 			'''
 	}
@@ -1376,7 +1370,6 @@ Items: {
 			Once activated, fire quickly
 			When it overheats, it pours out Auric Bullet
 			Auric Bullet will quickly track nearby enemies and ignore 50 points of defense
-			35% chance to conserve ammunition
 			"The hereditary power once forced you to kneel, but now, we lift you up."
 			'''
 	}
@@ -1454,7 +1447,6 @@ Items: {
 			Standing still and aiming with the right-click for 5 seconds or more will generate auroras around you
 			The auroras will reduce the damage of your next incoming bullets by 100 points
 			This effect lasts for up to 20 seconds and has a 30-second cooldown
-			50% chance to conserve ammunition
 			'''
 	}
 
@@ -1521,11 +1513,7 @@ Items: {
 
 	StarmadaEcType: {
 		DisplayName: Starmada
-		Tooltip:
-			'''
-			Fires stars and plasma star bullets
-			66% chance to conserve ammunition
-			'''
+		Tooltip: Fires stars and plasma star bullets
 	}
 
 	SulphuricAcidCannonEcType: {
@@ -1539,7 +1527,6 @@ Items: {
 			'''
 			Fires a cluster of bullets from the muzzle, causing a shower of falling stars to descend towards the mouse cursor
 			Converts musket bullets into star-summoning bullets that summon additional falling stars upon impact
-			50% chance to conserve ammunition
 			"Let the stars fall upon our enemies"
 			'''
 	}
@@ -1550,7 +1537,6 @@ Items: {
 			'''
 			Every other bullet fired will be a void detonation bullet
 			Each bullet also emits a touch of demonic flame
-			75% chance to conserve ammunition
 			'''
 	}
 
@@ -1571,7 +1557,6 @@ Items: {
 		Tooltip:
 			'''
 			Fires dense bullets while summoning even more bullets from the sky
-			50% chance to conserve ammunition
 			[c/768EE6:@All]
 			'''
 	}
@@ -1608,7 +1593,6 @@ Items: {
 		Tooltip:
 			'''
 			Fires several bullets and a onyxgrenade
-			50% chance to conserve ammunition
 			"This thing has a magazine shorter than a joke, but at least it can make you laugh when you're out of ammo."
 			'''
 	}
@@ -1618,7 +1602,6 @@ Items: {
 		Tooltip:
 			'''
 			Unleash a hail of bullets and onyx shards upon your enemies
-			15% chance to conserve ammunition
 			"The incarnation of the Black Dragon"
 			'''
 	}
@@ -1654,7 +1637,6 @@ Items: {
 			'''
 			Fires Sand Sprites at the cursor's height, throwing numerous sandballs into the air
 			Uses sand blocks as ammunition
-			50% chance to conserve ammunition
 			'''
 	}
 
@@ -1686,7 +1668,6 @@ Items: {
 			The dissociative debuff causes 150 points of damage per second, which is affected by your ranged attribute
 			Each time the dissociative debuff causes damage, there is a chance for a critical hit or overkill to trigger
 			Converts musket bullets into high-speed bullets
-			80% chance to conserve ammunition
 			"Market forces dictate that you need to evolve or die."
 			'''
 	}
@@ -1696,7 +1677,6 @@ Items: {
 		Tooltip:
 			'''
 			Fires lost souls and flare rounds
-			70% chance to conserve ammunition
 			"They tried to circumvent the convention by using flare rounds as napalm, only to end up with this joke."
 			'''
 	}
@@ -1821,7 +1801,6 @@ Items: {
 			'''
 			Continuously releases weaponized flare rounds
 			Right-click to fire a dense volley of flare rounds
-			70% chance to conserve ammunition
 			'''
 	}
 
