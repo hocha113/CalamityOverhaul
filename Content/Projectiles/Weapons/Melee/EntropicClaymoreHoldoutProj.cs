@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -126,11 +127,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     switch (Projectile.localAI[0]) {
                         case 0:
                             type0 = ModContent.ProjectileType<EntropicFlechetteSmall>();
-                            damageOffset = 0.6f;
+                            damageOffset = 0.3f;
                             break;
                         case 1:
                             type0 = ModContent.ProjectileType<EntropicFlechette>();
-                            damageOffset = 0.8f;
+                            damageOffset = 0.5f;
                             break;
                         case 2:
                             type0 = ModContent.ProjectileType<EntropicFlechetteLarge>();
@@ -140,7 +141,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     for (int i = 0; i < 9; i++) {
                         float rot = toMou.ToRotation() + MathHelper.ToRadians(-70 + 140 / 9f * i);
                         pos = Projectile.Center + rot.ToRotationVector2() * 130;
-                        Projectile.NewProjectile(Projectile.parent(), pos, toMou.UnitVector() * 13
+                        Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Owner.ActiveItem()), pos, toMou.UnitVector() * 13
                             , type0, (int)(Projectile.damage * damageOffset), Projectile.knockBack, Projectile.owner);
                     }
                 }

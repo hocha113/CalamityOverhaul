@@ -4,6 +4,7 @@ using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -46,6 +47,7 @@ namespace CalamityOverhaul.Content.Items.Materials
 
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 9999;
+            ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(10, 6));
         }
 
@@ -57,7 +59,6 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.useAnimation = Item.useTime = 15;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.CWR().isInfiniteItem = true;
-            
         }
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
@@ -68,6 +69,10 @@ namespace CalamityOverhaul.Content.Items.Materials
                 return false;
             }
             return true;
+        }
+
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
+            return base.PreDrawInWorld(spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
         }
 
         public static int QFD(int num) => (int)(num * QFH);

@@ -36,12 +36,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void FiringShoot() {
-            float angle = ShootVelocity.ToRotation() + MathHelper.PiOver2;
-            if (angle <= -(MathHelper.Pi / 3) || angle >= (MathHelper.Pi / 3)) {
-                return;
+        public override void PostInOwnerUpdate() {
+            if (onFire && kreloadTimeValue <= 0) {
+                float minRot = MathHelper.ToRadians(50);
+                float maxRot = MathHelper.ToRadians(130);
+                Projectile.rotation = MathHelper.Clamp(ToMouseA + MathHelper.Pi, minRot, maxRot) - MathHelper.Pi;
+                if (ToMouseA + MathHelper.Pi > MathHelper.ToRadians(270)) {
+                    Projectile.rotation = minRot - MathHelper.Pi;
+                }
+                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance;
+                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
+                SetCompositeArm();
             }
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+        }
+
+        public override void FiringShoot() {
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocityInProjRot, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {
