@@ -1,4 +1,4 @@
-开发者：红茶
+负责以下内容的开发者：红茶
 
 重要的新配置：
 在模组设置中，
@@ -6,7 +6,7 @@
 设置‘武器手持显示’选项可以选择是否开关灾厄大修自带的手持动画，在目前版本，这个配置主要影响远程武器的视觉效果
 
 以下弓类被二次重做调整以适配新框架：
-啸流，荒芜弓，瘟疫，猎人长弓，龙蒿大弓，化石病，幻魔，湮灭千星，幽漩风暴，风暴
+啸流，荒芜弓，瘟疫，猎人长弓，荆棘藤，化石病，幻魔，湮灭千星，幽漩风暴，风暴
 特殊改动：移除幻魔的特殊拉弓动画转而使用通用拉弓动作，因为这个特殊的弓弦动画并不适合游戏风格
 
 绝大多数枪类武器不再受到弹药不消耗加成影响。相关的弹药不消耗加成机制，比如套装的加成或者药水的加成，会在后续更新中重制为新的内容
@@ -14,6 +14,8 @@
 荒芜弓使用新的纹理
 优化金源灭却刃的使用动画
 暂时移除金源长鞭，因为未完成的武器不适合存在于游戏中
+加强卵石工具与燧石工具
+毁灭魔像掉落化石病的概率由100%降低到20%
 
 问题修复：
 修复大量弓类暴击率继承问题
@@ -31,4 +33,47 @@
 ，充能发射的暴君之镰的穿透次数由3次降低到2次，略微调慢充能状态下的攻速
 神殇巨剑在充能状态下发射镰刀的数量由3个降低到2个
 熵之舞的伤害系数由0.6/0.8/1调整为0.3/0.5/1，但射弹可以完全继承武器的暴击加成
+彗星陨刃真近战召唤陨石的数量减少50%
+太虚星龙炮子弹喷发的伤害减少50%，发射出的子弹击中敌人后会原地生长出虚空之触
+蘑菇狙击枪的射速被减慢，武器面板由150降低至135，蘑菇追踪弹的基础面板由100%武器面板降低为70%武器面板
+
+
+Developer responsible for the following content: HoCha113
+
+Key New Configurations:
+In the mod settings,
+the 'Magazine System' option can be toggled to deactivate the magazine system for firearms. However, it's worth noting that opting to disable it renders the balance of ranged weapons meaningless for discussion.
+the 'Weapon Handheld Display' option allows toggling the default handheld animations provided by Calamity Overhaul. In the current version, this configuration primarily affects the visual effects of ranged weapons.
+
+The following bows have been revamped to fit the new framework:
+Alluvion, Barren Bow, Contagion, Marksman Bow, Nettlevine Great Bow, Petrified Disease, Phangasm, Planetary Annihilation, The Maelstrom, The Storm
+Special adjustment: Removed unique drawing animation for Phantasm, now using a generic drawing motion, as the unique bowstring animation didn't suit the game's style.
+
+The majority of firearms are no longer affected by ammo consumption bonuses. Related ammo consumption bonus mechanisms, such as set bonuses or potion effects, will be reworked into new content in future updates.
+Flak Toxi cannon now directly limits firing angles.
+Barren Bow utilizes new textures.
+Optimized Divine Source Blade's usage animation.
+Temporarily removed Allhallows Gold Whip, as unfinished weapons are not suitable for inclusion in the game.
+Enhanced cobblestone and flint tools.
+The chance of Petrified Disease dropping from the Destroyer has been reduced from 100% to 20%.
+
+Bug Fixes:
+Fixed numerous issues with crit rate inheritance for bows.
+Resolved abnormalities in some text descriptions.
+Fixed animation glitches for Neutron ingots in the world.
+Fixed Endless Catalyst not playing animations in the world.
+
+Balance Adjustments:
+Ataraxia's panel reduced from 432 to 305, moved to post-Divine Devourer era.
+Nadir's panel reduced from 365 to 180, moved to post-Divine Devourer era.
+Excelsus's panel reduced from 250 to 220, slightly increased attack speed.
+Divine Source Blade panel reduced back to 385 from 405, slightly increased blade size, sword beam penetration reduced from 7 to 5,
+Removed fixed 500 damage bonus for sword beam derivative slashes and reduced base damage by 50%, number of slashes reduced from 7 to 5, but now inherits blade crit bonuses at 100% rate.
+Blighted Cleaver's energy consumption rate increased by 200%, base panel reduced from 64 to 60, number of true melee summoned jungle sickles reduced from 8 to 4,
+number of penetrating sickles from Overloaded Cleaver reduced from 3 to 2, slightly slowed attack speed in overloaded state.
+Defiled Great Sword reduces number of sickles launched in charged state from 3 to 2.
+Entropic Claymore damage coefficient adjusted from 0.6/0.8/1 to 0.3/0.5/1, but projectiles can fully inherit weapon crit bonuses.
+Comet Quasher reduces number of true melee summoned meteors by 50%.
+Voidragon bullet eruption damage reduced by 50%. A shot that hits an enemy will grow a void touch in place
+Shroomer's firing rate decreased, weapon panel reduced from 150 to 135, base panel for mushroom homing projectiles reduced from 100% weapon panel to 70% weapon panel.
 

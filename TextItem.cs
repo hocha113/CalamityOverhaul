@@ -13,7 +13,7 @@ namespace CalamityOverhaul
         public override string Texture => "CalamityOverhaul/icon";
 
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;
+            return false;
         }
 
         public override void SetDefaults() {
@@ -67,8 +67,6 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            CWRIDs.ItemToBaseGun.Count.Domp();
-            
             return true;
         }
     }

@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<Nadir>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
             }
             if (npc.type == CWRIDs.RavagerBody) {
-                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<PetrifiedDisease>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
+                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<PetrifiedDisease>(), denominator: 5, minQuantity: 1, maxQuantity: 1));
             }
         }
 

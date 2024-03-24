@@ -36,7 +36,8 @@ namespace CalamityOverhaul.Content
         BarrenBow,
         FetidEmesis,
         AngelicShotgun,
-        RocketLauncher
+        RocketLauncher,
+        Voidragon
     }
 
     public class CWRProjectile : GlobalProjectile
@@ -270,6 +271,13 @@ namespace CalamityOverhaul.Content
 
             if (SpanTypes == (byte)SpanTypesEnum.FetidEmesis) {
                 target.AddBuff(ModContent.BuffType<Plague>(), 60);
+            }
+
+            if (SpanTypes == (byte)SpanTypesEnum.Voidragon) {
+                Projectile.NewProjectile(projectile.parent(), target.Center
+                    , CWRUtils.randVr(6, 13), ModContent.ProjectileType<VoidTentacle>()
+                    , projectile.damage, projectile.knockBack / 2, player.whoAmI
+                    , Main.rand.Next(-160, 160) * 0.001f, Main.rand.Next(-160, 160) * 0.001f);
             }
 
             if (projectile.type == ModContent.ProjectileType<ExoVortex>()) {
