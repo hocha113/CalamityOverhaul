@@ -66,6 +66,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public bool CanFireMotion = true;
         /// <summary>
+        /// 开火后是否自动执行弹药消耗逻辑，默认为<see langword="true"/>
+        /// </summary>
+        public bool CanUpdateConsumeAmmoInShootBool = true;
+        /// <summary>
         /// 开火时是否默认播放手持物品的使用音效<see cref="Item.UseSound"/>，但如果准备重写<see cref="SpanProj"/>，这个属性将失去作用，默认为<see langword="true"/>
         /// </summary>
         public bool FiringDefaultSound = true;
@@ -197,6 +201,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (FiringDefaultSound) {
                     SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 }
+                UpdateConsumeAmmo();
                 Projectile.ai[1] = 0;
                 onFire = false;
             }
@@ -211,7 +216,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public virtual void BowDraw(ref Color lightColor) {
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
-                , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, SpriteEffects.None);
+                , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+        }
+
+        public void LimitingAngle(int minrot = 50, int maxrot = 130) {
+            float minRot = MathHelper.ToRadians(minrot);
+            float maxRot = MathHelper.ToRadians(maxrot);
+            Projectile.rotation = MathHelper.Clamp(ToMouseA + MathHelper.Pi, minRot, maxRot) - MathHelper.Pi;
+            if (ToMouseA + MathHelper.Pi > MathHelper.ToRadians(270)) {
+                Projectile.rotation = minRot - MathHelper.Pi;
+            }
+            Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance;
+            ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
+            SetCompositeArm();
         }
     }
 }

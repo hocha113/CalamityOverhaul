@@ -96,8 +96,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
                 else {
 
-                    for (int i = 0; i < 3; i++) {
-                        float rot = MathHelper.ToRadians(-10 + (i * 10));
+                    for (int i = 0; i < 2; i++) {
+                        float rot = MathHelper.ToRadians(-10 + (i * 20));
                         _ = Projectile.NewProjectile(
                             source,
                             position,

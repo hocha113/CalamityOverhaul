@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.DraedonMisc;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
@@ -229,7 +230,7 @@ namespace CalamityOverhaul.Content
                 for (int i = 0; i < Recipe.numRecipes; i++) {
                     Recipe recipe = Main.recipe[i];
                     if (recipe.HasResult(ItemType<CalamityMod.Items.Weapons.Ranged.OpalStriker>())) {
-                        recipe.AddIngredient(ItemType<Pebble>());//添加鹅卵石
+                        recipe.AddIngredient(ItemType<Pebble>(), 8);//添加鹅卵石
                     }
                 }
             }
@@ -333,14 +334,29 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-            //修改神圣连弩的合成
             {
                 for (int i = 0; i < Recipe.numRecipes; i++) {
                     Recipe recipe = Main.recipe[i];
-                    if (recipe.HasResult(ItemID.PhoenixBlaster)) {
-                        recipe.AddIngredient(ItemID.Ichor, 1);//添加灵液
-                        recipe.AddIngredient(ItemID.CursedFlame, 1);//添加诅咒焰
-                        recipe.AddIngredient(ItemID.UnicornHorn, 1);//添加独角兽角
+                    //修改神圣连弩的合成
+                    {
+                        if (recipe.HasResult(ItemID.PhoenixBlaster)) {
+                            recipe.AddIngredient(ItemID.Ichor, 1);//添加灵液
+                            recipe.AddIngredient(ItemID.CursedFlame, 1);//添加诅咒焰
+                            recipe.AddIngredient(ItemID.UnicornHorn, 1);//添加独角兽角
+                        }
+                    }
+                    //修改禅心剑的合成
+                    {
+                        if (recipe.HasResult(ItemType<Ataraxia>())) {
+                            recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
+                        }
+                    }
+                    //修改天底的合成
+                    {
+                        if (recipe.HasResult(ItemType<Nadir>())) {
+                            recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
+                            recipe.AddIngredient(ItemType<CosmiliteBar>(), 5);//添加宇宙锭
+                        }
                     }
                 }
             }

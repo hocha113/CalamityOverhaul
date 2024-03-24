@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void BowShootR() {
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<TsunamiOnSpan>()] == 0) {
                 accumulator = SoundEngine.PlaySound(CWRSound.Accumulator with { Pitch = 0.3f }, Projectile.Center);
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
+                Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<TsunamiOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
             }
         }

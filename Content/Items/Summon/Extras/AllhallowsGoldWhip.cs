@@ -12,6 +12,10 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
     {
         public override string Texture => CWRConstant.Item_Summon + "AllhallowsGoldWhip";
 
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;
+        }
+
         public override void SetDefaults()
         {
             Item.DefaultToWhip(ModContent.ProjectileType<AllhallowsGoldWhipProjectile>(), 902, 0, 12, 45);

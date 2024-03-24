@@ -79,10 +79,15 @@ namespace CalamityOverhaul.Content.Items.Materials
             return true;
         }
 
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
+            return base.PreDrawInWorld(spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
+        }
+
         public static void drawColorText(SpriteBatch sb, DrawableTooltipLine line, string text, Vector2 basePosition) {
             ChatManager.DrawColorCodedStringWithShadow(sb, line.Font, line.Text, basePosition
                 , CWRUtils.MultiStepColorLerp(Main.GameUpdateCount % 120 / 120f, HeavenfallLongbow.rainbowColors)
                 , line.Rotation, line.Origin, line.BaseScale * 1.05f, line.MaxWidth, line.Spread);
+            /*
             //ChatManager.DrawColorCodedString(sb, line.Font, line.Text, basePosition, 
             //    CWRUtils.MultiLerpColor(Main.GameUpdateCount  % 90 / 90f, HeavenfallLongbow.rainbowColors), 0f, Vector2.Zero, new Vector2(1.1f, 1.1f));
             //EffectsRegistry.ColourModulationShader.Parameters["uTime"].SetValue(Main.GlobalTimeWrappedHourly * 0.25f);
@@ -98,6 +103,7 @@ namespace CalamityOverhaul.Content.Items.Materials
             //sb.End();
             //sb.Begin(SpriteSortMode.Deferred, sb.GraphicsDevice.BlendState, sb.GraphicsDevice.SamplerStates[0],
             //    sb.GraphicsDevice.DepthStencilState, sb.GraphicsDevice.RasterizerState, null, Main.UIScaleMatrix);
+            */
         }
 
         public override void AddRecipes() {

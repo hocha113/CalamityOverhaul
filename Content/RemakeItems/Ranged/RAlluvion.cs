@@ -33,8 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Arrow;
             item.rare = ModContent.RarityType<DarkBlue>();
             item.Calamity().canFirePointBlankShots = true;
-            item.CWR().hasHeldNoCanUseBool = true;
-            item.CWR().heldProjType = ModContent.ProjectileType<AlluvionHeldProj>();
+            item.SetHeldProj<AlluvionHeldProj>();
         }
     }
 }

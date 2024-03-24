@@ -28,8 +28,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void SetDefaults() {
-            Item.width = 88;
-            Item.damage = 64;
+            Item.width = 78;
+            Item.damage = 60;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = 26;
             Item.useStyle = ItemUseStyleID.Swing;
@@ -85,7 +85,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (!Item.CWR().closeCombat) {
                 if (rageEnergy > 0) {
-                    rageEnergy -= damage / 2;
+                    rageEnergy -= damage;
+                    if (rageEnergy < 0) {
+                        rageEnergy = 0;
+                    }
                     return true;
                 }
             }
@@ -110,8 +113,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             rageEnergy += addnum;
-
-            player.AddBuff(ModContent.BuffType<TyrantsFury>(), 180);
             target.AddBuff(70, 150);
 
             if (CWRIDs.WormBodys.Contains(target.type)) {
@@ -119,7 +120,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             int type = ModContent.ProjectileType<HyperBlade>();
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 4; i++) {
                 Vector2 offsetvr = CWRUtils.GetRandomVevtor(-127.5f, -52.5f, 360);
                 Vector2 spanPos = target.Center + offsetvr;
                 int proj = Projectile.NewProjectile(CWRUtils.parent(player), spanPos,
@@ -131,7 +132,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void OnHitPvp(Player player, Player target, Player.HurtInfo hurtInfo) {
-            player.AddBuff(ModContent.BuffType<TyrantsFury>(), 180);
             target.AddBuff(70, 150);
         }
 

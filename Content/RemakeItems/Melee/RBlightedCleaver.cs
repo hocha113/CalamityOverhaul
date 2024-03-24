@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
         public override void SetDefaults(Item item) {
             item.width = 88;
-            item.damage = 64;
+            item.damage = 60;
             item.DamageType = DamageClass.Melee;
             item.useAnimation = 26;
             item.useStyle = ItemUseStyleID.Swing;
@@ -57,8 +57,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 item.CWR().HoldOwner = player;
             }
             if (item.CWR().MeleeCharge > 0) {
-                item.useAnimation = 16;
-                item.useTime = 16;
+                item.useAnimation = 18;
+                item.useTime = 18;
             }
             else {
                 item.useAnimation = 26;
@@ -70,7 +70,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (!item.CWR().closeCombat) {
                 if (item.CWR().MeleeCharge > 0) {
-                    item.CWR().MeleeCharge -= damage / 2;
+                    item.CWR().MeleeCharge -= damage;
+                    if (item.CWR().MeleeCharge < 0) {
+                        item.CWR().MeleeCharge = 0;
+                    }
                     return true;
                 }
             }
@@ -94,24 +97,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
 
             int type = ModContent.ProjectileType<HyperBlade>();
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 4; i++) {
                 Vector2 offsetvr = CWRUtils.GetRandomVevtor(-127.5f, -52.5f, 360);
                 Vector2 spanPos = target.Center + offsetvr;
-                int proj = Projectile.NewProjectile(
-                    CWRUtils.parent(player),
-                    spanPos,
-                    CWRUtils.UnitVector(offsetvr) * -15,
-                    type,
-                    item.damage / 2,
-                    0,
-                    player.whoAmI
-                    );
+                int proj = Projectile.NewProjectile(CWRUtils.parent(player), spanPos, CWRUtils.UnitVector(offsetvr) * -15, type, item.damage / 2, 0, player.whoAmI);
                 Main.projectile[proj].timeLeft = 50;
                 Main.projectile[proj].usesLocalNPCImmunity = true;
                 Main.projectile[proj].localNPCHitCooldown = 15;
             }
-
-            player.AddBuff(ModContent.BuffType<TyrantsFury>(), 180);
             target.AddBuff(70, 150);
         }
 
