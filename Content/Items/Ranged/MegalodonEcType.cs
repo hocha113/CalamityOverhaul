@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using Terraria;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
@@ -33,5 +34,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.CWR().AmmoCapacity = 220;
             Item.SetHeldProj<MegalodonHeldProj>();
         }
+        public override bool CanConsumeAmmo(Item ammo, Player player) => Main.rand.NextFloat() > 0.1f;
     }
 }

@@ -13,5 +13,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int ProtogenesisID => ModContent.ItemType<OnyxChainBlasterEcType>();
         public override string TargetToolTipItemName => "OnyxChainBlasterEcType";
         public override void SetDefaults(Item item) => item.SetCartridgeGun<OnyxChainBlasterHeldProj>(120);
+        public override bool? On_CanConsumeAmmo(Item weapon, Item ammo, Player player) => Main.rand.NextFloat() > 0.1f;
     }
 }
