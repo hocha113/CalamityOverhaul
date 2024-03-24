@@ -944,6 +944,7 @@ Items: {
 		Tooltip:
 			'''
 			Unleash a hailstorm of bullets
+			10% chance to conserve ammunition
 			"Disappointingly, it doesn't shoot crocodiles."
 			'''
 	}
@@ -1249,6 +1250,7 @@ Items: {
 			'''
 			Fires armor-piercing bullets at extremely high frequencies
 			Bullets will ignore the enemy's 15 points of defense
+			35% chance to conserve ammunition
 			"Actually, what you can see is the tracer trail, so you'll need to pay an extra $2,685 for the ammunition bill."
 			'''
 	}
@@ -1369,6 +1371,7 @@ Items: {
 			'''
 			Once activated, fire quickly
 			When it overheats, it pours out Auric Bullet
+			When it overheats, the barrel deals high damage
 			Auric Bullet will quickly track nearby enemies and ignore 50 points of defense
 			35% chance to conserve ammunition
 			"The hereditary power once forced you to kneel, but now, we lift you up."
@@ -1380,6 +1383,7 @@ Items: {
 		Tooltip:
 			'''
 			Every third shot will launch an additional shark
+			10% chance to conserve ammunition
 			"We successfully fit a shark in there, just be careful not to get your finger bitten off"
 			'''
 	}
@@ -1594,6 +1598,7 @@ Items: {
 		Tooltip:
 			'''
 			Fires several bullets and a onyxgrenade
+			10% chance to conserve ammunition
 			"This thing has a magazine shorter than a joke, but at least it can make you laugh when you're out of ammo."
 			'''
 	}
@@ -1669,6 +1674,7 @@ Items: {
 			The dissociative debuff causes 150 points of damage per second, which is affected by your ranged attribute
 			Each time the dissociative debuff causes damage, there is a chance for a critical hit or overkill to trigger
 			Converts musket bullets into high-speed bullets
+			30%几率节省弹药
 			"Market forces dictate that you need to evolve or die."
 			'''
 	}
