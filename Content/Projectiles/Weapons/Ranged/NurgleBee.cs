@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void AI() {
             if (Time == 0) {
-                sound = SoundEngine.PlaySound(CWRSound.Bees with { MaxInstances = 6 }, Projectile.Center);
+                sound = SoundEngine.PlaySound(CWRSound.Bees with { MaxInstances = 60 }, Projectile.Center);
             }
             float toPlayerLeng = Projectile.Center.Distance(Main.player[Projectile.owner].Center);
             if (!CWRUtils.isServer) {//因为蜜蜂云是纯视觉效果，因此不需要在服务器上运行相关代码，因为服务器看不见这些
