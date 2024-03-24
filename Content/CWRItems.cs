@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Materials;
@@ -137,6 +138,14 @@ namespace CalamityOverhaul.Content
             }
             InitializeMagazine();
             remakeItem = (item.ModItem as EctypeItem) != null;
+
+            int type = item.type;
+            if (type == ModContent.ItemType<Ataraxia>()) {
+                item.damage = 305;
+            }
+            if (type == ModContent.ItemType<Nadir>()) {
+                item.damage = 180;
+            }
         }
 
         public void InitializeMagazine() {

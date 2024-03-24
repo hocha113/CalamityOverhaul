@@ -16,7 +16,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     {
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "ContagionArrow";
         private int addBallTimer = 10;
-
+        private float rot;
+        private Vector2 pos;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
@@ -31,23 +32,34 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.penetrate = 3;
             Projectile.MaxUpdates = 3;
             Projectile.DamageType = DamageClass.Ranged;
+            Projectile.timeLeft = 420;
             Projectile.Calamity().pointBlankShotDuration = CalamityGlobalProjectile.DefaultPointBlankDuration;
         }
 
         public override void AI() {
-            Projectile.rotation = (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X) + 1.57f;
-            addBallTimer--;
-            if (addBallTimer <= 0) {
-                if (Projectile.owner == Main.myPlayer && Main.player[Projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<NurgleTheOfBall>()] < 100 && Projectile.ai[1] == 0) {
-                    _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, 0f, 0f
-                        , ModContent.ProjectileType<NurgleTheOfBall>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0f, 0f);
+            if (Projectile.ai[2] == 0) {
+                Projectile.rotation = (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X) + 1.57f;
+                addBallTimer--;
+                if (addBallTimer <= 0) {
+                    if (Projectile.owner == Main.myPlayer && Main.player[Projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<NurgleTheOfBall>()] < 100 && Projectile.ai[1] == 0) {
+                        _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, 0f, 0f
+                            , ModContent.ProjectileType<NurgleTheOfBall>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0f, 0f);
+                    }
+                    addBallTimer = 10;
                 }
-                addBallTimer = 10;
+                Lighting.AddLight(Projectile.Center, (255 - Projectile.alpha) * 0.15f / 255f, (255 - Projectile.alpha) * 0.25f / 255f, (255 - Projectile.alpha) * 0f / 255f);
+                if (Projectile.ai[0] <= 60f) {
+                    Projectile.ai[0] += 1f;
+                    return;
+                }
             }
-            Lighting.AddLight(Projectile.Center, (255 - Projectile.alpha) * 0.15f / 255f, (255 - Projectile.alpha) * 0.25f / 255f, (255 - Projectile.alpha) * 0f / 255f);
-            if (Projectile.ai[0] <= 60f) {
-                Projectile.ai[0] += 1f;
-                return;
+            else {
+                Projectile.rotation = rot;
+                Projectile.position = pos;
+                if (Projectile.IsOwnedByLocalPlayer() && Main.player[Projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<NurgleTheOfBall>()] < 100 && Projectile.timeLeft % 30 == 0) {
+                    _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, CWRUtils.randVr(3, 5)
+                        , ModContent.ProjectileType<NurgleTheOfBall>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 1, 0f);
+                }
             }
         }
 
@@ -88,7 +100,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
                 _ = SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
                 Projectile.ai[1]++;
-                Projectile.velocity = oldVelocity;
+                Projectile.ai[2] = 1;
+                rot = Projectile.rotation;
+                pos = Projectile.position;
             }
             return false;
         }

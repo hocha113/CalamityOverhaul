@@ -1,10 +1,12 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Melee.Extras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -28,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.friendly = true;
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
-            Projectile.penetrate = 7;
+            Projectile.penetrate = 5;
             Projectile.timeLeft = 600;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
@@ -41,21 +43,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Projectile.numHits == 0) {
-                Projectile.NewProjectile(
-                Projectile.parent(),
-                Projectile.Center,
-                Vector2.Zero,
-                ModContent.ProjectileType<TerratomereSlashCreator>(),
-                Projectile.damage + 500,
-                0,
-                Projectile.owner,
-                target.whoAmI,
-                Main.rand.NextFloat(MathHelper.TwoPi)
-                );
-                //Projectile.timeLeft = 600;
-                //Projectile.usesLocalNPCImmunity = true;
-                //Projectile.localNPCHitCooldown = 10;
+            Player player = Main.player[Projectile.owner];
+            Item item = player.ActiveItem();
+            if (Projectile.numHits == 0 && item.type == ModContent.ItemType<DivineSourceBlade>()) {
+                int proj = Projectile.NewProjectile(new EntitySource_ItemUse(player, item), Projectile.Center, Vector2.Zero
+                    , ModContent.ProjectileType<TerratomereSlashCreator>(),
+                Projectile.damage, 0, Projectile.owner, target.whoAmI, Main.rand.NextFloat(MathHelper.TwoPi));
+                Main.projectile[proj].timeLeft = 30;
             }
         }
 

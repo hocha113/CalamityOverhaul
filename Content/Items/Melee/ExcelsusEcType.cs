@@ -28,11 +28,10 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void SetDefaults() {
             Item.width = 78;
-            Item.damage = 250;
+            Item.damage = 220;
             Item.DamageType = DamageClass.Melee;
-            Item.useAnimation = 15;
+            Item.useTime = Item.useAnimation = 14;
             Item.useStyle = ItemUseStyleID.Swing;
-            Item.useTime = 15;
             Item.useTurn = true;
             Item.knockBack = 8f;
             Item.UseSound = SoundID.Item1;
@@ -53,10 +52,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
                 Item.useTime = 10;
-                Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<ExcelsusBomb>(), damage * 3, knockback, player.whoAmI);
+                Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<ExcelsusBomb>(), damage * 2, knockback, player.whoAmI);
             }
             else {
-                Item.useTime = 15;
+                Item.useTime = 14;
                 for (int i = 0; i < 3; i++) {
                     float speedX = velocity.X + Main.rand.NextFloat(-1.5f, 1.5f);
                     float speedY = velocity.Y + Main.rand.NextFloat(-1.5f, 1.5f);

@@ -2,6 +2,7 @@
 using CalamityMod.Events;
 using CalamityMod.Items;
 using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Summon.Extras;
@@ -173,8 +174,12 @@ namespace CalamityOverhaul.Content
             if (npc.type == CWRIDs.Yharon) {
                 npcLoot.DefineConditionalDropSet(CWRDorp.GlodDragonDropRule).Add(CWRDorp.Quantity(ModContent.ItemType<AuricBar>(), 1, 36, 57, 77, 158));
             }
+            if (npc.type == CWRIDs.DevourerofGodsHead) {
+                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<Ataraxia>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
+                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<Nadir>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
+            }
             if (npc.type == CWRIDs.RavagerBody) {
-                npcLoot.Add(ModContent.ItemType<PetrifiedDisease>());
+                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<PetrifiedDisease>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
             }
         }
 
