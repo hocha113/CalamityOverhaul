@@ -72,15 +72,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 lastdamage = ((942 - timenum) * 340 + 1044) / 4444f;
             }
             if (Owner.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun)) {
-                int AmmoType = baseFeederGun.AmmoTypes;
-                if (AmmoType == ProjectileID.Bullet || AmmoType == ModContent.ProjectileType<MarksmanShot>()) {
-                    AmmoType = ProjectileID.BulletHighVelocity;
-                }
-                if (Projectile.IsOwnedByLocalPlayer() && onFire && AmmoType != 0) {
+                if (Projectile.IsOwnedByLocalPlayer() && onFire) {
                     SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/TankCannon") { Pitch = Projectile.ai[2] }, Projectile.Center);
                     int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center + new Vector2(0, -5),
                         (toMou.SafeNormalize(Vector2.Zero) * 15).RotatedBy(Main.rand.NextFloat(rot * -0.01f, rot * 0.01f))
-                    , AmmoType, (int)(Owner.GetShootState().WeaponDamage * lastdamage)/2, 0, Projectile.owner);
+                    , ProjectileID.BulletHighVelocity, (int)(Owner.GetShootState().WeaponDamage * lastdamage)/2, 0, Projectile.owner);
                     Main.projectile[proj].penetrate = 1;
                     baseFeederGun.Recoil = 3;
                     baseFeederGun.GunPressure = 0.5f;

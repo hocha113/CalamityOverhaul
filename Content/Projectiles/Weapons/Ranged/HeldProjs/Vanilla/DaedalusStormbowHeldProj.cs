@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
-    internal class BoomstickHeldProj : BaseFeederGun
+    internal class DaedalusStormbowHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Boomstick].Value;

@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.RocketLauncher;
         public override int targetCWRItem => ItemID.RocketLauncher;
         public override void SetRangedProperty() {
-            FireTime = 45;
+            FireTime = 90;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             //火箭弹药特判
-            Item ammoItem = Item.CWR().MagazineContents[0];
+            Item ammoItem = GetSelectedBullets();
             if (ammoItem.type == ItemID.RocketI) {
                 AmmoTypes = ProjectileID.RocketI;
             }
@@ -88,9 +88,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
             SpawnGunFireDust(GunShootPos, ShootVelocity);
             _ = SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = -0.6f }, Projectile.Center);
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0, 3);
-            Main.projectile[proj].extraUpdates += 2;
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 0.5f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0, 3);
             Main.projectile[proj].scale *= 1.6f;
+            Main.projectile[proj].usesLocalNPCImmunity = true;
+            Main.projectile[proj].localNPCHitCooldown = 5;
             Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.RocketLauncher;
         }
     }

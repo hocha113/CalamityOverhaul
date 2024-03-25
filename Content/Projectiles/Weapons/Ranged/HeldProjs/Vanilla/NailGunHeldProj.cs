@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using Microsoft.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -14,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.NailGun;
         public override int targetCWRItem => ItemID.NailGun;
         public override void SetRangedProperty() {
+            FireTime = 30;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -35,7 +37,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            base.FiringShoot();
+            SpawnGunFireDust(GunShootPos, ShootVelocity);
+            int num = (Projectile.CritChance + 16) / 20;
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0 , 1 + num);
+            Main.projectile[proj].extraUpdates += 1;
+            Main.projectile[proj].usesLocalNPCImmunity = true;
+            Main.projectile[proj].localNPCHitCooldown = 5;
+            Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.NailGun;
         }
     }
 }

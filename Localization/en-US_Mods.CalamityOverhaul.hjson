@@ -1378,7 +1378,6 @@ Items: {
 			When it overheats, it pours out Auric Bullet
 			When it overheats, the barrel deals high damage
 			Auric Bullet will quickly track nearby enemies and ignore 50 points of defense
-			35% chance to conserve ammunition
 			"The hereditary power once forced you to kneel, but now, we lift you up."
 			'''
 	}
@@ -2343,6 +2342,7 @@ Projectiles: {
 	XenopopperHeldProj.DisplayName: Xenopopper Held Proj
 	VortexpopperHeldProj.DisplayName: Vortexpopper Held Proj
 	XenopopperProj.DisplayName: Xenopopper Proj
+	DaedalusStormbowHeldProj.DisplayName: Daedalus Stormbow Held Proj
 }
 
 Configs: {
@@ -2754,23 +2754,34 @@ TextContent: {
 			'''
 		Wap_SniperRifle_Text:
 			'''
-			Converting ordinary bullets into high-speed bullets
-			Right-click and use the sniper mirror to expand the field of view
+			Converts all bullets into high-speed bullets.
+			Right-click to use the sniper scope to zoom in.
+			Accuracy and damage increase with the duration of aiming.
+			The magazine holds four bullets, with the first three unable to trigger critical hits, but the fourth is guaranteed to be a critical hit.
+			Bullets fired from this gun cannot penetrate enemies.
+			Mounted creatures will affect the accuracy of this precision weapon.
+			The weapon's power has been halved over time.
 			“When the cross locks you, Death will kiss your forehead.”
 			'''
 		Wap_NailGun_Text:
 			'''
-			Fire nails that stick to the enemy and then explode
-			"The nails pulled from the head of the nail head, the effect pulled out of the group, in addition to reinforcing your house"
+			Initially comes with a 20% critical hit chance.
+			Critical hits do not cause extra damage.
+			Fires a large nail that, upon hitting an enemy, explodes into a nail bomb above their head.
+			Large nails that miss the enemy will also explode after a certain period of time.
+			For every 20% critical hit chance, an additional nail bomb will be generated.
+			"Plucked from the of Nail Heads are incredibly effective. Now let's create more Nail Heads."
 			'''
 		Wap_DartPistol_Text:
 			'''
 			Fire the dart at a faster speed
+			CurseDarts only deal 70% damage
 			"Shoot darts from a blowgun? Jesus, you want me to put gunpowder in my mouth?"
 			'''
 		Wap_DartRifle_Text:
 			'''
 			Fire the dart at a faster speed
+			Dart will ignore the enemy's 15 points of defense
 			"Shoot darts from a blowgun? Jesus, you want me to put gunpowder in my mouth?"
 			'''
 		CartridgeHolderUI_Text1: Magazine stuffing
@@ -2845,7 +2856,8 @@ TextContent: {
 			'''
 		Wap_RocketLauncher_Text:
 			'''
-			High velocity rockets fired with power
+			Charge up to fire a rocket.
+			After the rocket hits, continue holding the button to launch several smaller auxiliary rockets.
 			"I bet it won't get caught in the bed."
 			'''
 		Wap_ElectrosphereLauncher_Text:
