@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int ProtogenesisID => ModContent.ItemType<ClockGatlignumEcType>();
         public override string TargetToolTipItemName => "ClockGatlignumEcType";
         public override void SetDefaults(Item item) {
-            item.SetCartridgeGun<ClockGatlignumHeldProj>(145);
+            item.SetCartridgeGun<ClockGatlignumHeldProj>(90);
         }
         public override bool? On_CanConsumeAmmo(Item weapon, Item ammo, Player player) => Main.rand.NextFloat() > 0.1f;
     }

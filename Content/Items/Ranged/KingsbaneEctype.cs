@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.rare = ModContent.RarityType<Violet>();
             Item.SetHeldProj<KingsbaneHeldProj>();
             Item.CWR().HasCartridgeHolder = true;
-            Item.CWR().AmmoCapacity = 1000;
+            Item.CWR().AmmoCapacity = 980;
         }
 
         public override bool CanConsumeAmmo(Item ammo, Player player) 
