@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.DartPistol;
         public override int targetCWRItem => ItemID.DartPistol;
         public override void SetRangedProperty() {
+            FireTime = 16;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -2;
             HandDistance = 15;
@@ -23,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 1f;
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 45;
+            kreloadMaxTime = 30;
         }
 
         public override void PreInOwnerUpdate() {
@@ -31,7 +32,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            base.FiringShoot();
+            SpawnGunFireDust(GunShootPos, ShootVelocity);
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

@@ -2299,6 +2299,7 @@ Projectiles: {
 	// GhastlyVisageBall.DisplayName: Ghastly Visage Ball
 	// GhastlyVisageHeldProj.DisplayName: Ghastly Visage Held Proj
 	// PridefulHuntersPlanarRipperHeldProj.DisplayName: Prideful Hunters Planar Ripper Held Proj
+	// DaedalusStormbowHeldProj.DisplayName: Daedalus Stormbow Held Proj
 }
 
 Configs: {
@@ -2711,7 +2712,7 @@ TextContent: {
 			'''
 		Wap_SniperRifle_Text:
 			'''
-			将所有子弹转化为狙击子弹
+			将所有子弹转化为高速子弹
 			右键可以使用狙击镜拉远视野
 			精准度和伤害随着瞄准时间的增长而增加
 			弹匣中装有四发子弹，前三发无法暴击，第四发必定暴击
@@ -2722,8 +2723,11 @@ TextContent: {
 			'''
 		Wap_NailGun_Text:
 			'''
-			发射粘住敌人随后爆炸的钉子
-			“从钉子头的头上拔下来的钉子，效果拔群，除了加固你的房子”
+			暴击不造成额外伤害
+			发射一颗大钉子，击中敌人时在敌人的头上爆出一颗爆炸钉子
+			未击中敌人的大钉子也会在一段时间之后爆炸
+			每有20%暴击几率将额外生成一颗爆炸钉子
+			“从钉子头的头上拔下来的钉子，效果拔群，现在让我们试试制造更多的钉子头”
 			'''
 		Wap_DartPistol_Text:
 			'''
@@ -2809,7 +2813,7 @@ TextContent: {
 		Wap_RocketLauncher_Text:
 			'''
 			蓄力发射一枚火箭弹
-			火箭击中后持续按住会发射小型的辅助火箭
+			火箭击中后持续按住会发射数发小型的辅助火箭
 			“我打赌它不会被床板挡下”
 			'''
 		Wap_ElectrosphereLauncher_Text:
@@ -2855,5 +2859,6 @@ TextContent: {
 		CWRGun_Recoil_Level_4: 较强的
 		CWRGun_Recoil_Level_5: 疯狂的
 		CWRGun_Recoil_Level_6: 荒诞的
+		// Wap_DaedalusStormbow_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DaedalusStormbow_Text
 	}
 }

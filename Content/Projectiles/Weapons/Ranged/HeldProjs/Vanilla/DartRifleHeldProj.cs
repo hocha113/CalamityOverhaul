@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.DartRifle;
         public override int targetCWRItem => ItemID.DartRifle;
         public override void SetRangedProperty() {
+            FireTime = 32;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -2;
             HandDistance = 15;
@@ -31,7 +32,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            base.FiringShoot();
+            SpawnGunFireDust(GunShootPos, ShootVelocity);
+            Item ammoItem = Item.CWR().MagazineContents[0];
+            if (ammoItem.type == ItemID.CursedDart) {
+                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj].velocity *= 2.5f;
+            }
+            else if (ammoItem.type == ItemID.IchorDart) {
+                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj].velocity *= 2.5f;
+            }
+            else {
+                13.Domp();
+            }
         }
     }
 }

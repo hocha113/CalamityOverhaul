@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             _ = SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = 0.3f }, Projectile.Center);
             DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 76, dustID2: 149, dustID3: 76);
-            int ammonum = Main.rand.Next(14);
+            int ammonum = Main.rand.Next(7);
             if (ammonum != 0) {
                 int proj1 = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity * 1.4f, AmmoTypes, WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj1].scale *= 2f;
