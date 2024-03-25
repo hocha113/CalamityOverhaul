@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;
+            MustConsumeAmmunition = false;
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0.2f;

@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
             Item.CWR().HasCartridgeHolder = true;
-            Item.CWR().AmmoCapacity = 220;
+            Item.CWR().AmmoCapacity = 200;
             Item.SetHeldProj<MegalodonHeldProj>();
         }
         public override bool CanConsumeAmmo(Item ammo, Player player) => Main.rand.NextFloat() > 0.1f;

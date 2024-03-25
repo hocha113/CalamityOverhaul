@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PreInOwnerUpdate() {
-            LoadingAnimation(10, 3, 25);
+            LoadingAnimation(30, 3, 20);
         }
 
         public override void FiringShoot() {

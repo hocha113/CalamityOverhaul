@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.ElectrosphereLauncher;
         public override int targetCWRItem => ItemID.ElectrosphereLauncher;
         public List<Projectile> Orbs = new List<Projectile>();
+        public const int MaxOrbNum = 4;
         public override void SetRangedProperty() {
             FireTime = 18;
             ShootPosToMouLengValue = 0;
@@ -45,6 +46,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Orbs.Add(orb);
             Orbs.RemoveAll((Projectile p) => p == null);
             Orbs.RemoveAll((Projectile p) => p.active == false || p.type != ModContent.ProjectileType<ElectrosphereLauncherOrb>());
+            if (Orbs.Count > MaxOrbNum) {
+                Orbs.RemoveRange(0, 1);
+            }
             ElectrosphereLauncherOrb newOrb = orb.ModProjectile as ElectrosphereLauncherOrb;
             if (newOrb != null) {
                 newOrb.orbList = Orbs.ToArray();
