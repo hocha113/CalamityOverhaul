@@ -1,9 +1,10 @@
 ﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
@@ -13,8 +14,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ElectrosphereLauncher].Value;
         public override int targetCayItem => ItemID.ElectrosphereLauncher;
         public override int targetCWRItem => ItemID.ElectrosphereLauncher;
+        public List<Projectile> Orbs = new List<Projectile>();
         public override void SetRangedProperty() {
-            FireTime = 48;
+            FireTime = 18;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -35,12 +37,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            //火箭弹药特判，电圈特判
-            Item ammoItem = Item.CWR().MagazineContents[0];
-            AmmoTypes = ProjectileID.ElectrosphereMissile;
-            for (int i = 0; i < 3; i++) {
-                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.2f, 0.2f, i / 2f)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                Main.projectile[proj].extraUpdates += 5;
+            Projectile orb = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f)
+                , ModContent.ProjectileType<ElectrosphereLauncherOrb>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            if (Orbs == null) {
+                Orbs = new List<Projectile>();
+            }
+            Orbs.Add(orb);
+            Orbs.RemoveAll((Projectile p) => p == null);
+            Orbs.RemoveAll((Projectile p) => p.active == false || p.type != ModContent.ProjectileType<ElectrosphereLauncherOrb>());
+            ElectrosphereLauncherOrb newOrb = orb.ModProjectile as ElectrosphereLauncherOrb;
+            if (newOrb != null) {
+                newOrb.orbList = Orbs.ToArray();
             }
         }
     }

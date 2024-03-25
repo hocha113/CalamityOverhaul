@@ -2300,6 +2300,7 @@ Projectiles: {
 	// GhastlyVisageHeldProj.DisplayName: Ghastly Visage Held Proj
 	// PridefulHuntersPlanarRipperHeldProj.DisplayName: Prideful Hunters Planar Ripper Held Proj
 	// VoidTentacle.DisplayName: Void Tentacle
+	// ElectrosphereLauncherOrb.DisplayName: Electrosphere Launcher Orb
 }
 
 Configs: {
@@ -2713,7 +2714,6 @@ TextContent: {
 		Wap_SniperRifle_Text:
 			'''
 			将所有子弹转化为狙击子弹
-			右键可以使用狙击镜拉远视野
 			精准度和伤害随着瞄准时间的增长而增加
 			弹匣中装有四发子弹，前三发无法暴击，第四发必定暴击
 			这把枪射出的子弹无法穿透

@@ -666,6 +666,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 FeederOffsetPos = new Vector2(DirSign * -xl, -yl) * SafeGravDir;
             }
         }
+        /// <summary>
+        /// 安全获取选定的弹匣弹药内容
+        /// </summary>
+        /// <returns></returns>
+        public Item GetSelectedBullets() {
+            if (ModItem.MagazineContents == null) {
+                return new Item();
+            }
+            if (ModItem.MagazineContents.Length <= 0) {
+                return new Item();
+            }
+            if (ModItem.MagazineContents[0] == null) {
+                return new Item();
+            }
+            return ModItem.MagazineContents[0];
+        }
 
         #endregion
     }

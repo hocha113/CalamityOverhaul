@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
-            HandFireDistanceY = -10;
+            HandFireDistanceY = -5;
             ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
+            FireTime = MagazineSystem ? 1 : 30;
         }
 
         public override void FiringShoot() {

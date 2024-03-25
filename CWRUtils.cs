@@ -325,6 +325,54 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
+        /// 雪人类弹药映射
+        /// </summary>
+        /// <param name="ammoItem"></param>
+        /// <returns></returns>
+        public static int SnowmanCannonAmmo(Item ammoItem) {
+            int AmmoTypes = ProjectileID.RocketSnowmanI;
+            switch (ammoItem.type) {
+                case ItemID.RocketI:
+                    AmmoTypes = ProjectileID.RocketSnowmanI;
+                    break;
+                case ItemID.RocketII:
+                    AmmoTypes = ProjectileID.RocketSnowmanII;
+                    break;
+                case ItemID.RocketIII:
+                    AmmoTypes = ProjectileID.RocketSnowmanIII;
+                    break;
+                case ItemID.RocketIV:
+                    AmmoTypes = ProjectileID.RocketSnowmanIV;
+                    break;
+                case ItemID.ClusterRocketI:
+                    AmmoTypes = ProjectileID.ClusterSnowmanRocketI;
+                    break;
+                case ItemID.ClusterRocketII:
+                    AmmoTypes = ProjectileID.ClusterSnowmanRocketII;
+                    break;
+                case ItemID.DryRocket:
+                    AmmoTypes = ProjectileID.DrySnowmanRocket;
+                    break;
+                case ItemID.WetRocket:
+                    AmmoTypes = ProjectileID.WetSnowmanRocket;
+                    break;
+                case ItemID.HoneyRocket:
+                    AmmoTypes = ProjectileID.HoneySnowmanRocket;
+                    break;
+                case ItemID.LavaRocket:
+                    AmmoTypes = ProjectileID.LavaSnowmanRocket;
+                    break;
+                case ItemID.MiniNukeI:
+                    AmmoTypes = ProjectileID.MiniNukeSnowmanRocketI;
+                    break;
+                case ItemID.MiniNukeII:
+                    AmmoTypes = ProjectileID.MiniNukeSnowmanRocketII;
+                    break;
+            }
+            return AmmoTypes;
+        }
+
+        /// <summary>
         /// 世界实体坐标转物块坐标
         /// </summary>
         /// <param name="wePos"></param>

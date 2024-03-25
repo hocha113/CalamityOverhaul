@@ -2315,6 +2315,7 @@ Projectiles: {
 	GhastlyVisageHeldProj.DisplayName: Ghastly Visage Held Proj
 	PridefulHuntersPlanarRipperHeldProj.DisplayName: Prideful Hunters Planar Ripper Held Proj
 	VoidTentacle.DisplayName: Void Tentacle
+	ElectrosphereLauncherOrb.DisplayName: Electrosphere Launcher Orb
 }
 
 Configs: {

@@ -1,32 +1,32 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
     internal class RSniperRifle : BaseRItem
     {
         public override int TargetID => ItemID.SniperRifle;
-        public override bool FormulaSubstitution => false;
+        public override bool IsVanilla => true;
+        public override string TargetToolTipItemName => "Wap_SniperRifle_Text";
         public override void SetDefaults(Item item) {
-            item.SetHeldProj<SniperRifleHeldProj>();
-            item.CWR().HasCartridgeHolder = true;
-            item.CWR().AmmoCapacity = 4;
-            item.crit = -1000;
             item.useTime = 0;
             item.damage = 4444;
+            item.CWR().Scope = true;
             item.Calamity().canFirePointBlankShots = true;
-            item.CWR().hasHeldNoCanUseBool = true;
+            item.SetCartridgeGun<SniperRifleHeldProj>(4);
         }
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRLocText.GetText("Wap_SniperRifle_Text"));
+
+        public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
+            if (player.CWR().TryGetInds_BaseFeederGun(out var gun)) {
+                SniperRifleHeldProj sniperRifle = gun as SniperRifleHeldProj;
+                if (sniperRifle != null) {
+                    crit = sniperRifle.criticalStrike ? 100 : 1;
+                }
+            }
+            return false;
+        }
     }
 }
