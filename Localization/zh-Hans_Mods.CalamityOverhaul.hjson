@@ -54,6 +54,11 @@ Items: {
 		Tooltip: 挥舞会抛舞出三个沙球
 	}
 
+	BurntSienna: {
+		// DisplayName: Burnt Sienna
+		// Tooltip: ""
+	}
+
 	CometQuasherEcType: {
 		DisplayName: 彗星陨刃
 		Tooltip: 让大量流星从天而降
@@ -1151,6 +1156,7 @@ Items: {
 		Tooltip:
 			'''
 			一把炽热的霰弹枪
+			右键进行全自动扫射
 			开火时枪身将可以对敌人造成巨大伤害
 			'''
 	}
@@ -1169,6 +1175,7 @@ Items: {
 		Tooltip:
 			'''
 			一把非常炽热的霰弹枪
+			右键进行全自动扫射
 			开火时枪身将可以对敌人造成巨大伤害
 			"比地狱降临更好"
 			'''
@@ -1880,6 +1887,16 @@ Items: {
 			每间隔十五次开火会进行一次子弹喷发
 			'''
 	}
+
+	VortexpopperEcType: {
+		DisplayName: 漩涡泡泡枪
+		Tooltip:
+			'''
+			左键发射泡泡子弹
+			右键进行全自动扫射，并在鼠标处生成大量泡泡
+			"没有什么是比把子弹塞进泡泡里面更好的了"
+			'''
+	}
 }
 
 Projectiles: {
@@ -2307,6 +2324,11 @@ Projectiles: {
 	// PridefulHuntersPlanarRipperHeldProj.DisplayName: Prideful Hunters Planar Ripper Held Proj
 	// VoidTentacle.DisplayName: Void Tentacle
 	// ElectrosphereLauncherOrb.DisplayName: Electrosphere Launcher Orb
+	// GatligatorHeldProj.DisplayName: Gatligator Held Proj
+	// RevolverHeldProj.DisplayName: Revolver Held Proj
+	// XenopopperHeldProj.DisplayName: Xenopopper Held Proj
+	// VortexpopperHeldProj.DisplayName: Vortexpopper Held Proj
+	// XenopopperProj.DisplayName: Xenopopper Proj
 }
 
 Configs: {
@@ -2863,5 +2885,13 @@ TextContent: {
 		CWRGun_Recoil_Level_4: 较强的
 		CWRGun_Recoil_Level_5: 疯狂的
 		CWRGun_Recoil_Level_6: 荒诞的
+		Wap_Revolver_Text: 伙计，这里不是西部电影，子弹是需要一颗一颗装的
+		Wap_Gatligator_Text: 我喜欢鲨鱼枪，但更爱鳄鱼。毕竟，它们都有一个共同特点：随时可能咬掉使用者的手指
+		Wap_Xenopopper_Text:
+			'''
+			左键发射泡泡子弹
+			右键进行全自动扫射
+			"没有什么是比把子弹塞进泡泡里面更好的了"
+			'''
 	}
 }

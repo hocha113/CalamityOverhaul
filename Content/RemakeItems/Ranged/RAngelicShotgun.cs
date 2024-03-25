@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ModContent.ProjectileType<IlluminatedBullet>();
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
-            item.SetHeldProj<AngelicShotgunHeldProj>();
+            item.SetCartridgeGun<AngelicShotgunHeldProj>(50);
             item.EasySetLocalTextNameOverride("AngelicShotgunEcType");
         }
     }

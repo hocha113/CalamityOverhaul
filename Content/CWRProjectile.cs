@@ -110,6 +110,7 @@ namespace CalamityOverhaul.Content
                 if (!projectile.friendly) {
                     return;
                 }
+
                 if (SpanTypes == (byte)SpanTypesEnum.Marksman) {
                     int proj = Projectile.NewProjectile(projectile.parent(), projectile.Center, projectile.velocity
                         , ProjectileID.LostSoulFriendly, projectile.damage / 2, projectile.knockBack / 2, projectile.owner, 0);
@@ -126,7 +127,7 @@ namespace CalamityOverhaul.Content
                         return;
                     }
                     int proj = Projectile.NewProjectile(projectile.parent(), projectile.Center + new Vector2(Main.rand.Next(-32, 32), 0), new Vector2(0, -7)
-                        , ModContent.ProjectileType<AngelicBeam>(), projectile.damage, 0, projectile.owner, 0);
+                        , ModContent.ProjectileType<AngelicBeam>(), projectile.damage / 2, 0, projectile.owner, 0);
                     Main.projectile[proj].timeLeft = 90;
                 }
             }

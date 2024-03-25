@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public new string LocalizationCategory => "Items.Weapons.Melee";
         public override void SetDefaults() {
             Item.width = 74;
-            Item.damage = 80;
+            Item.damage = 75;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = 20;
             Item.useStyle = ItemUseStyleID.Swing;

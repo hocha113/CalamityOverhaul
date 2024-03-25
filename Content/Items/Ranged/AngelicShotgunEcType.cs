@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ModContent.ProjectileType<IlluminatedBullet>();
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.SetHeldProj<AngelicShotgunHeldProj>();
+            Item.SetCartridgeGun<AngelicShotgunHeldProj>(50);
         }
     }
 }

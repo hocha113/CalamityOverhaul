@@ -1,28 +1,32 @@
 ﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
+using Terraria.ID;
+using Terraria;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
-using Terraria.ID;
+using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
-    internal class TheUndertakerHeldProj : BaseFeederGun
+    internal class RevolverHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
-        public override Texture2D TextureValue => TextureAssets.Item[ItemID.TheUndertaker].Value;
-        public override int targetCayItem => ItemID.TheUndertaker;
-        public override int targetCWRItem => ItemID.TheUndertaker;
+        public override Texture2D TextureValue => TextureAssets.Item[ItemID.Revolver].Value;
+        public override int targetCayItem => ItemID.Revolver;
+        public override int targetCWRItem => ItemID.Revolver;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 35;
-            FireTime = 12;
-            ShootPosToMouLengValue = 0;
-            ShootPosNorlLengValue = -3;
-            HandDistance = 15;
+            kreloadMaxTime = 30;
+            FireTime = 8;
+            HandDistance = 18;
             HandDistanceY = 0;
+            HandFireDistance = 18;
+            HandFireDistanceY = -5;
+            ShootPosNorlLengValue = -2;
+            ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.3f;
+            GunPressure = 0.1f;
             ControlForce = 0.05f;
-            Recoil = 0.6f;
+            Recoil = 0.9f;
+            RangeOfStress = 25;
         }
 
         public override void PreInOwnerUpdate() {
