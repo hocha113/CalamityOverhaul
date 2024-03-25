@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.DartPistol;
         public override int targetCWRItem => ItemID.DartPistol;
         public override void SetRangedProperty() {
-            FireTime = 16;
+            FireTime = 20;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -2;
             HandDistance = 15;
@@ -33,7 +33,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int damage = 0;
+            Item ammoItem = GetSelectedBullets();
+            if (ammoItem.type == ItemID.CursedDart) {
+                damage = (int)(WeaponDamage * 0.7f);
+            }
+            else {
+                damage = WeaponDamage;
+            }
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, damage, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].velocity *= 0.6f;
+            Main.projectile[proj].extraUpdates += 1;
+            Main.projectile[proj].timeLeft += 300;
         }
     }
 }

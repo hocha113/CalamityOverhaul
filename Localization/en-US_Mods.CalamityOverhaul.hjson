@@ -2341,6 +2341,7 @@ Projectiles: {
 	XenopopperHeldProj.DisplayName: Xenopopper Held Proj
 	VortexpopperHeldProj.DisplayName: Vortexpopper Held Proj
 	XenopopperProj.DisplayName: Xenopopper Proj
+	DaedalusStormbowHeldProj.DisplayName: Daedalus Stormbow Held Proj
 }
 
 Configs: {
@@ -2773,11 +2774,13 @@ TextContent: {
 		Wap_DartPistol_Text:
 			'''
 			Fire the dart at a faster speed
+			CurseDarts only deal 70% damage
 			"Shoot darts from a blowgun? Jesus, you want me to put gunpowder in my mouth?"
 			'''
 		Wap_DartRifle_Text:
 			'''
 			Fire the dart at a faster speed
+			Dart will ignore the enemy's 15 points of defense
 			"Shoot darts from a blowgun? Jesus, you want me to put gunpowder in my mouth?"
 			'''
 		CartridgeHolderUI_Text1: Magazine stuffing

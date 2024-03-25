@@ -2328,6 +2328,7 @@ Projectiles: {
 	// XenopopperHeldProj.DisplayName: Xenopopper Held Proj
 	// VortexpopperHeldProj.DisplayName: Vortexpopper Held Proj
 	// XenopopperProj.DisplayName: Xenopopper Proj
+	// DaedalusStormbowHeldProj.DisplayName: Daedalus Stormbow Held Proj
 }
 
 Configs: {
@@ -2760,11 +2761,13 @@ TextContent: {
 		Wap_DartPistol_Text:
 			'''
 			以较快的速度发射飞镖
+			以诅咒镖为弹药时只能造成70%伤害
 			“用吹箭筒发射飞镖？老天，你是要我把火药含进嘴里吗”
 			'''
 		Wap_DartRifle_Text:
 			'''
 			以较高的伤害发射飞镖
+			无视敌人至多20点护甲
 			“用吹箭筒发射飞镖？老天，你是要我把火药含进嘴里吗”
 			'''
 		CartridgeHolderUI_Text1: 弹匣填充内容

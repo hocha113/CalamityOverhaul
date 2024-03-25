@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             //火箭弹药特判
-            Item ammoItem = Item.CWR().MagazineContents[0];
+            Item ammoItem = GetSelectedBullets();
             if (ammoItem.type == ItemID.RocketI) {
                 AmmoTypes = ProjectileID.RocketI;
             }

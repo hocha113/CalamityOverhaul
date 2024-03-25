@@ -13,8 +13,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.DartRifle].Value;
         public override int targetCayItem => ItemID.DartRifle;
         public override int targetCWRItem => ItemID.DartRifle;
+
         public override void SetRangedProperty() {
-            FireTime = 32;
+            FireTime = 35;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -2;
             HandDistance = 15;
@@ -30,20 +31,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void PreInOwnerUpdate() {
             LoadingAnimation(30, 0, 13);
         }
-
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
             Item ammoItem = GetSelectedBullets();
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].velocity *= 3f;
+            Main.projectile[proj].ArmorPenetration += 15;
             if (ammoItem.type == ItemID.CursedDart) {
-                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                Main.projectile[proj].velocity *= 2.5f;
+                Main.projectile[proj].timeLeft = 30;
             }
-            else if (ammoItem.type == ItemID.IchorDart) {
-                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                Main.projectile[proj].velocity *= 2.5f;
-            }
-            else {
-                13.Domp();
+            if (ammoItem.type == ItemID.IchorDart) {
+                Main.projectile[proj].velocity *= 0.5f;
             }
         }
     }
