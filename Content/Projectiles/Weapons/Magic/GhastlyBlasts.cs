@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Magic;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 20;
+            Projectile.localNPCHitCooldown = 30;
         }
 
         public override void AI() {

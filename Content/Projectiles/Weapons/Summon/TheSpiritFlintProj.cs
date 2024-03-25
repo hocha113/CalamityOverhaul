@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
                     Vector2 vr = Projectile.Center.To(Target.Center).UnitVector().RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(5.2f, 7.1f);
                     Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, vr,
                         ProjectileID.WandOfSparkingSpark, Projectile.damage, Projectile.knockBack, Projectile.owner);
-                    proj.timeLeft *= 2;
+                    proj.timeLeft *= 3;
                     proj.DamageType = DamageClass.Summon;
                     proj.MaxUpdates = 2;
                     Time = 0f;

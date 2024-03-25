@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
+            CanUpdateMagazineContentsInShootBool = CanCreateRecoilBool = onFire;
         }
 
         public override void FiringIncident() {

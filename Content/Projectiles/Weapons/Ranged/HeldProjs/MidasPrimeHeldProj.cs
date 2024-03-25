@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -23,8 +24,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 5;
             HandFireDistance = 25;
             HandFireDistanceY = -5;
-            ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            ShootPosNorlLengValue = -10;
+            ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;
             GunPressure = 0.3f;
             ControlForce = 0.05f;
@@ -36,16 +37,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(50, 3, 25);
+            CanUpdateMagazineContentsInShootBool = CanCreateRecoilBool = onFire;
         }
 
         public override void FiringShoot() {
+            FireTime = 22;
             SpawnGunFireDust();
             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+            if (AmmoTypes == ProjectileID.Bullet) {
+                AmmoTypes = ModContent.ProjectileType<MarksmanShot>();
+            }
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {
+            FireTime = 12;
             long cashAvailable2 = Utils.CoinsCount(out bool overflow2, Owner.inventory);
             if (cashAvailable2 < 100 && !overflow2) {
                 return;
@@ -72,8 +79,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Projectile.NewProjectile(Source, GunShootPos, Owner.GetCoinTossVelocity()
                 , ModContent.ProjectileType<RicoshotCoin>()
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, coinAIVariable);
-
-            BulletNum += 1;
         }
 
         public override void PostFiringShoot() {

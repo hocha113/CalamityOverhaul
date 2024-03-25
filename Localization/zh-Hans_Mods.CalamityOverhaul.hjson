@@ -1375,6 +1375,7 @@ Items: {
 		DisplayName: 迈达斯统帅
 		Tooltip:
 			'''
+			将火枪子弹转化为神射手弹
 			右键将一枚金币或银币抛向空中
 			击中硬币的子弹会向着最近的敌人瞄准
 			至多可抛出4枚硬币，在可能的情况下，子弹会在多枚硬币之间反弹
@@ -2885,8 +2886,8 @@ TextContent: {
 		CWRGun_Recoil_Level_4: 较强的
 		CWRGun_Recoil_Level_5: 疯狂的
 		CWRGun_Recoil_Level_6: 荒诞的
-		Wap_Revolver_Text: 伙计，这里不是西部电影，子弹是需要一颗一颗装的
-		Wap_Gatligator_Text: 我喜欢鲨鱼枪，但更爱鳄鱼。毕竟，它们都有一个共同特点：随时可能咬掉使用者的手指
+		Wap_Revolver_Text: “伙计，这里不是西部电影，子弹是需要一颗一颗装的”
+		Wap_Gatligator_Text: “我喜欢鲨鱼枪，但更爱鳄鱼。毕竟，它们都有一个共同特点：随时可能咬掉使用者的手指”
 		Wap_Xenopopper_Text:
 			'''
 			左键发射泡泡子弹

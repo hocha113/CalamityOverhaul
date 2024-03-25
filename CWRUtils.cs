@@ -1012,11 +1012,9 @@ namespace CalamityOverhaul
                 if (magazineContents.Length <= 0) {
                     return true;
                 }
-                if (weapon.ModItem != null) {
-                    result = ItemLoader.CanConsumeAmmo(weapon, magazineContents[0], player);
-                }
-                if (result) {
-                    result = player.IsRangedAmmoFreeThisShot(magazineContents[0]);
+                result = ItemLoader.CanConsumeAmmo(weapon, magazineContents[0], player);
+                if (player.IsRangedAmmoFreeThisShot(magazineContents[0])) {
+                    result = false;
                 }
             }
             return result;

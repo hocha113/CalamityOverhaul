@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Magic;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 8;
+            Projectile.localNPCHitCooldown = 10;
         }
 
         public override void AI() {
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.Damage();
             _ = SoundEngine.PlaySound(in SoundID.Item14, Projectile.position);
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center,
-                new Vector2(0, 13), ModContent.ProjectileType<GhastlyBlasts>(), Projectile.damage, 2, Projectile.owner);
+                new Vector2(0, 13), ModContent.ProjectileType<GhastlyBlasts>(), Projectile.damage / 3, 2, Projectile.owner);
             for (int i = 0; i < 4; i++) {
                 int dust = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, DustID.RedTorch, 0f, 0f, 100, default, 1.5f);
                 Main.dust[dust].position = Projectile.Center + (Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float)Main.rand.NextDouble() * Projectile.width / 2f);

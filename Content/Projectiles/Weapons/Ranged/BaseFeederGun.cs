@@ -488,7 +488,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 BulletNum = 0;
             }
             if (cwritem.MagazineContents[0].stack <= 0) {
-                cwritem.MagazineContents[0].TurnToAir();
+                cwritem.MagazineContents[0] = new Item();
                 List<Item> items = new List<Item>();
                 foreach (Item i in cwritem.MagazineContents) {
                     if (i.type != ItemID.None && i.stack > 0) {
@@ -556,18 +556,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool GetMagazineCanUseAmmoProbability() {
             bool result;
             result = Owner.CanUseAmmoInWeaponShoot(Item);
-            if (!result) {
-                result = Main.rand.NextBool(5);
-            }
+            //if (!result) {
+            //    result = Main.rand.NextBool(5);
+            //}
             return result;
         }
 
         public sealed override void SpanProj() {
             if ((onFire || onFireR) && Projectile.ai[1] > FireTime && kreloadTimeValue <= 0) {
-                if (BulletNum <= 0) {
-                    SetEmptyMagazine();
-                    return;
-                }
                 if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
@@ -584,37 +580,40 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                     AmmoTypes = ModItem.MagazineContents[0].shoot;
                 }
-                if (PreFiringShoot()) {
-                    if (onFire) {
-                        FiringShoot();
+                if (BulletNum > 0) {
+                    if (PreFiringShoot()) {
+                        if (onFire) {
+                            FiringShoot();
+                        }
+                        if (onFireR) {
+                            FiringShootR();
+                        }
+                        if (CGItemBehavior) {
+                            CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
+                        }
+                        if (EnableRecoilRetroEffect) {
+                            OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
+                        }
+                        if (FiringDefaultSound) {
+                            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+                        }
+                        if (fireLight > 0) {
+                            Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * Main.rand.NextFloat(0.1f, fireLight));
+                        }
+                        if (CanCreateRecoilBool) {
+                            CreateRecoil();
+                        }
                     }
-                    if (onFireR) {
-                        FiringShootR();
-                    }
-                    if (CGItemBehavior) {
-                        CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
-                    }
-                    if (EnableRecoilRetroEffect) {
-                        OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
-                    }
-                    if (FiringDefaultSound) {
-                        SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
-                    }
-                    if (fireLight > 0) {
-                        Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * Main.rand.NextFloat(0.1f, fireLight));
-                    }
+                    PostFiringShoot();
                 }
-                PostFiringShoot();
-                if (CanCreateRecoilBool) {
-                    CreateRecoil();
-                }
+
                 if (PreFireReloadKreLoad()) {
                     if (BulletNum <= 0) {
                         SetEmptyMagazine();
-                        AutomaticCartridgeChangeDelayTime += 30 + FireTime;
+                        AutomaticCartridgeChangeDelayTime += FireTime;
                     }
                 }
-                
+
                 Projectile.ai[1] = 0;
                 onFire = false;
             }

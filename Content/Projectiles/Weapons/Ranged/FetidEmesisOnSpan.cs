@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     for (int i = 0; i < 3; i++) {
                         int proj = Projectile.NewProjectile(player.parent(), Projectile.Center, (Projectile.rotation + (-1 + i) * 0.1f).ToRotationVector2() * 12
                         , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
-                        Main.projectile[proj].penetrate = 4;
+                        Main.projectile[proj].penetrate = 3;
                     }
                 }
                 
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     for (int i = 0; i < (Main.zenithWorld ? 115 : 5); i++) {
                         int proj = Projectile.NewProjectile(player.parent(), Projectile.Center, (Projectile.rotation + (-2 + i) * 0.1f).ToRotationVector2() * 15
                         , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
-                        Main.projectile[proj].penetrate = 3;
+                        Main.projectile[proj].penetrate = 2;
                     }
                 }
                 for (int i = 0; i < 15; i++) {
