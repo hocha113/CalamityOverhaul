@@ -58,6 +58,11 @@ Items: {
 		Tooltip: Swinging will sometimes throw 3 Sand blocks in an arc towards your enemies. Killing enemies summon healing orbs that float.
 	}
 
+	BurntSienna: {
+		DisplayName: Burnt Sienna
+		Tooltip: ""
+	}
+
 	CometQuasherEcType: {
 		DisplayName: Comet Quasher
 		Tooltip: Swings a Heavy blade that sends a barrage of meteors at your foes and cursor.
@@ -944,6 +949,7 @@ Items: {
 		Tooltip:
 			'''
 			Unleash a hailstorm of bullets
+			10% chance to conserve ammunition
 			"Disappointingly, it doesn't shoot crocodiles."
 			'''
 	}
@@ -1249,6 +1255,7 @@ Items: {
 			'''
 			Fires armor-piercing bullets at extremely high frequencies
 			Bullets will ignore the enemy's 15 points of defense
+			35% chance to conserve ammunition
 			"Actually, what you can see is the tracer trail, so you'll need to pay an extra $2,685 for the ammunition bill."
 			'''
 	}
@@ -1369,6 +1376,7 @@ Items: {
 			'''
 			Once activated, fire quickly
 			When it overheats, it pours out Auric Bullet
+			When it overheats, the barrel deals high damage
 			Auric Bullet will quickly track nearby enemies and ignore 50 points of defense
 			"The hereditary power once forced you to kneel, but now, we lift you up."
 			'''
@@ -1379,6 +1387,7 @@ Items: {
 		Tooltip:
 			'''
 			Every third shot will launch an additional shark
+			10% chance to conserve ammunition
 			"We successfully fit a shark in there, just be careful not to get your finger bitten off"
 			'''
 	}
@@ -1593,6 +1602,7 @@ Items: {
 		Tooltip:
 			'''
 			Fires several bullets and a onyxgrenade
+			10% chance to conserve ammunition
 			"This thing has a magazine shorter than a joke, but at least it can make you laugh when you're out of ammo."
 			'''
 	}
@@ -1668,6 +1678,7 @@ Items: {
 			The dissociative debuff causes 150 points of damage per second, which is affected by your ranged attribute
 			Each time the dissociative debuff causes damage, there is a chance for a critical hit or overkill to trigger
 			Converts musket bullets into high-speed bullets
+			30%几率节省弹药
 			"Market forces dictate that you need to evolve or die."
 			'''
 	}
@@ -1886,6 +1897,16 @@ Items: {
 			Switching between handheld items resets the bonus
 			There will be a burst of bullets every 15 shots fired
 			33% chance to save ammunition
+			'''
+	}
+
+	VortexpopperEcType: {
+		DisplayName: Vortexpopper
+		Tooltip:
+			'''
+			Left click to fire the bubble bullet
+			Right-click for automatic strafing, and generate a lot of bubbles at the mouse
+			"There's nothing like putting a bullet in a bubble."
 			'''
 	}
 }
@@ -2313,7 +2334,13 @@ Projectiles: {
 	GhastlyVisageBall.DisplayName: Ghastly Visage Ball
 	GhastlyVisageHeldProj.DisplayName: Ghastly Visage Held Proj
 	PridefulHuntersPlanarRipperHeldProj.DisplayName: Prideful Hunters Planar Ripper Held Proj
-	DaedalusStormbowHeldProj.DisplayName: Daedalus Stormbow Held Proj
+	VoidTentacle.DisplayName: Void Tentacle
+	ElectrosphereLauncherOrb.DisplayName: Electrosphere Launcher Orb
+	GatligatorHeldProj.DisplayName: Gatligator Held Proj
+	RevolverHeldProj.DisplayName: Revolver Held Proj
+	XenopopperHeldProj.DisplayName: Xenopopper Held Proj
+	VortexpopperHeldProj.DisplayName: Vortexpopper Held Proj
+	XenopopperProj.DisplayName: Xenopopper Proj
 }
 
 Configs: {
@@ -2868,6 +2895,17 @@ TextContent: {
 		CWRGun_Recoil_Level_4: Strong
 		CWRGun_Recoil_Level_5: Crazy
 		CWRGun_Recoil_Level_6: Ridiculous
-		Wap_DaedalusStormbow_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DaedalusStormbow_Text
+		Wap_Revolver_Text: Hey buddy, this ain't no Wild West flick, bullets gotta be loaded one by one
+		Wap_Gatligator_Text:
+			'''
+			"I fancy the shark gun, but I'm head over heels for the gator. After all, 
+			they both share a charming trait: potentially biting off the user's fingers at any moment."
+			'''
+		Wap_Xenopopper_Text:
+			'''
+			Left-click to shoot bubble bullets.
+			Right-click for full-auto barrage.
+			"There's nothing quite like stuffing bullets into bubbles."
+			'''
 	}
 }

@@ -38,6 +38,8 @@ namespace CalamityOverhaul.Content
         AngelicShotgun,
         RocketLauncher,
         NailGun
+        RocketLauncher,
+        Voidragon
     }
 
     public class CWRProjectile : GlobalProjectile
@@ -110,6 +112,7 @@ namespace CalamityOverhaul.Content
                 if (!projectile.friendly) {
                     return;
                 }
+
                 if (SpanTypes == (byte)SpanTypesEnum.Marksman) {
                     int proj = Projectile.NewProjectile(projectile.parent(), projectile.Center, projectile.velocity
                         , ProjectileID.LostSoulFriendly, projectile.damage / 2, projectile.knockBack / 2, projectile.owner, 0);
@@ -126,7 +129,7 @@ namespace CalamityOverhaul.Content
                         return;
                     }
                     int proj = Projectile.NewProjectile(projectile.parent(), projectile.Center + new Vector2(Main.rand.Next(-32, 32), 0), new Vector2(0, -7)
-                        , ModContent.ProjectileType<AngelicBeam>(), projectile.damage, 0, projectile.owner, 0);
+                        , ModContent.ProjectileType<AngelicBeam>(), projectile.damage / 2, 0, projectile.owner, 0);
                     Main.projectile[proj].timeLeft = 90;
                 }
             }
@@ -289,6 +292,13 @@ namespace CalamityOverhaul.Content
 
             if (SpanTypes == (byte)SpanTypesEnum.FetidEmesis) {
                 target.AddBuff(ModContent.BuffType<Plague>(), 60);
+            }
+
+            if (SpanTypes == (byte)SpanTypesEnum.Voidragon) {
+                Projectile.NewProjectile(projectile.parent(), target.Center
+                    , CWRUtils.randVr(6, 13), ModContent.ProjectileType<VoidTentacle>()
+                    , projectile.damage, projectile.knockBack / 2, player.whoAmI
+                    , Main.rand.Next(-160, 160) * 0.001f, Main.rand.Next(-160, 160) * 0.001f);
             }
 
             if (projectile.type == ModContent.ProjectileType<ExoVortex>()) {

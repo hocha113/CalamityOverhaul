@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using Terraria;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
@@ -29,8 +30,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
             Item.CWR().HasCartridgeHolder = true;
-            Item.CWR().AmmoCapacity = 580;
+            Item.CWR().AmmoCapacity = 380;
             Item.SetHeldProj<P90HeldProj>();
         }
+        public override bool CanConsumeAmmo(Item ammo, Player player) => Main.rand.NextFloat() > 0.35f;
     }
 }

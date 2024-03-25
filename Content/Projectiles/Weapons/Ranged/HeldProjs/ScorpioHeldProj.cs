@@ -35,6 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(-50, 3, 0);
+            FireTime = MagazineSystem ? 30 : 75;
         }
 
         public override void FiringShoot() {

@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override void SetDefaults(Item item) {
             item.damage = 175;
             item.shoot = ModContent.ProjectileType<KingsbaneHeldProj>();
-            item.SetCartridgeGun<KingsbaneHeldProj>(1200);
+            item.SetCartridgeGun<KingsbaneHeldProj>(980);
         }
 
         public override bool? On_CanConsumeAmmo(Item weapon, Item ammo, Player player) => Main.rand.NextFloat() > 0.35f && player.ownedProjectileCounts[weapon.shoot] > 0;

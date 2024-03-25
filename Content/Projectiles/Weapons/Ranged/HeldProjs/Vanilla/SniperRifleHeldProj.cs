@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.SniperRifle].Value;
         public override int targetCayItem => ItemID.SniperRifle;
         public override int targetCWRItem => ItemID.SniperRifle;
-        private SlotId accumulator;
+        public bool criticalStrike;
         public override void SetRangedProperty() {
             FiringDefaultSound = false;
             CanUpdateMagazineContentsInShootBool = false;
@@ -35,6 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(30, 0, 13);
+            criticalStrike = BulletNum == 1;
         }
 
         public override void FiringShoot() {
@@ -44,11 +45,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 0f;
             if (BulletNum == 1) {
                 FireTime = 90;
-                Item.crit = 100;
                 soundtype = 0.2f;
             }
             if (BulletNum == 4) {
-                Item.crit = -1000;
                 FireTime = 60;
             }
 

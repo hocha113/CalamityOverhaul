@@ -41,44 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            //火箭弹药特判，且雪人炮特判
-            Item ammoItem = Item.CWR().MagazineContents[0];
-            if (ammoItem.type == ItemID.RocketI) {
-                AmmoTypes = ProjectileID.RocketSnowmanI;
-            }
-            if (ammoItem.type == ItemID.RocketII) {
-                AmmoTypes = ProjectileID.RocketSnowmanII;
-            }
-            if (ammoItem.type == ItemID.RocketIII) {
-                AmmoTypes = ProjectileID.RocketSnowmanIII;
-            }
-            if (ammoItem.type == ItemID.RocketIV) {
-                AmmoTypes = ProjectileID.RocketSnowmanIV;
-            }
-            if (ammoItem.type == ItemID.ClusterRocketI) {
-                AmmoTypes = ProjectileID.ClusterSnowmanRocketI;
-            }
-            if (ammoItem.type == ItemID.ClusterRocketII) {
-                AmmoTypes = ProjectileID.ClusterSnowmanRocketII;
-            }
-            if (ammoItem.type == ItemID.DryRocket) {
-                AmmoTypes = ProjectileID.DrySnowmanRocket;
-            }
-            if (ammoItem.type == ItemID.WetRocket) {
-                AmmoTypes = ProjectileID.WetSnowmanRocket;
-            }
-            if (ammoItem.type == ItemID.HoneyRocket) {
-                AmmoTypes = ProjectileID.HoneySnowmanRocket;
-            }
-            if (ammoItem.type == ItemID.LavaRocket) {
-                AmmoTypes = ProjectileID.LavaSnowmanRocket;
-            }
-            if (ammoItem.type == ItemID.MiniNukeI) {
-                AmmoTypes = ProjectileID.MiniNukeSnowmanRocketI;
-            }
-            if (ammoItem.type == ItemID.MiniNukeII) {
-                AmmoTypes = ProjectileID.MiniNukeSnowmanRocketII;
-            }
+            AmmoTypes = CWRUtils.SnowmanCannonAmmo(GetSelectedBullets());
             SpawnGunFireDust();
             _ = SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = 0.3f }, Projectile.Center);
             DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);

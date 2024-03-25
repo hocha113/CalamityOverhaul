@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
             item.CWR().HasCartridgeHolder = true;
-            item.CWR().AmmoCapacity = 580;
+            item.CWR().AmmoCapacity = 380;
             item.SetHeldProj<P90HeldProj>();
         }
 
@@ -48,5 +48,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             return false;
         }
+        public override bool? On_CanConsumeAmmo(Item weapon, Item ammo, Player player) => Main.rand.NextFloat() > 0.35f;
     }
 }

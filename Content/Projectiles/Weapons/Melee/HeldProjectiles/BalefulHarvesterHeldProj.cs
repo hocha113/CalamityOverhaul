@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework;
@@ -132,11 +133,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             else {
                 if (Projectile.ai[1] < 20) {
                     Projectile.Kill();
+                    return;
                 }
                 Projectile.ai[2] = 1;
                 Projectile.ai[1] = 0;
                 Dir = Math.Sign(Projectile.velocity.X);
                 IndsItem = balefulHarvester.Clone();
+                IndsItem.initialize();
+                balefulHarvester.initialize();
+                IndsItem.CWR().ai[0] = balefulHarvester.CWR().ai[0];
                 balefulHarvester.TurnToAir(true);
             }
         }

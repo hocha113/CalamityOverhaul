@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using Terraria;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
@@ -11,5 +12,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.SetCalamitySD<SomaPrime>();
             Item.SetCartridgeGun<SomaPrimeHeldProj>(600);
         }
+        public override bool CanConsumeAmmo(Item ammo, Player player) => Main.rand.NextFloat() > 0.3f;
     }
 }

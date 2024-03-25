@@ -84,6 +84,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override void OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) {
+            
+        }
+
+        public override bool? On_OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) {
             for (int i = 0; i < 3; i++) {
                 Vector2 offsetVr = CWRUtils.GetRandomVevtor(-75, -105, Main.rand.Next(500, 600));
                 Vector2 spanPos = target.Center + offsetVr;
@@ -92,6 +96,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     , ModContent.ProjectileType<CometQuasherMeteor>(), (int)((float)item.damage), item.knockBack, player.whoAmI, 0f, 0.5f + (float)Main.rand.NextDouble() * 0.3f);
                 Main.projectile[proj].Calamity().lineColor = Main.rand.Next(3);
             }
+            return false;
         }
     }
 }

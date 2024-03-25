@@ -42,14 +42,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, 1, 173, 173, 173);
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
+            int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.Voidragon;
             chargeIndex++;
             if (chargeIndex > 5) {
                 SoundEngine.PlaySound(SoundID.Item92 with { MaxInstances = 100 }, Projectile.position);
                 for (int i = 0; i < 23; i++) {
                     Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1.2f)
-                        , ModContent.ProjectileType<VoidragonOrb>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                        , ModContent.ProjectileType<VoidragonOrb>(), WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
                 }
                 chargeIndex = 0;
             }

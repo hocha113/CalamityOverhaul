@@ -24,7 +24,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
             MustConsumeAmmunition = true;
-            GunPressure = 0.5f;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 8;
+            GunPressure = 0.3f;
             ControlForce = 0.05f;
             Recoil = 6;
             RangeOfStress = 25;
@@ -32,13 +34,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(30, 0, 23);
+            FireTime = MagazineSystem ? 30 : 50;
         }
 
         public override void FiringShoot() {
             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             SpawnGunFireDust();
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                    , ModContent.ProjectileType<BMGBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<BMGBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void PostFiringShoot() {

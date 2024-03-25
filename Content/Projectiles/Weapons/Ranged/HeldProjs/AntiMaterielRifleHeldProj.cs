@@ -20,13 +20,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 35;
             HandFireDistance = 30;
             HandFireDistanceY = -8;
+            ShootPosToMouLengValue = 30;
+            ShootPosNorlLengValue = -5;
             RangeOfStress = 25;
             RepeatedCartridgeChange = true;
         }
         public override void FiringShoot() {
             SoundEngine.PlaySound(Item.UseSound.Value with { Pitch = 0.3f }, Projectile.Center);
-            DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+            DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, GunShootPos, ShootVelocity);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<BMGBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
         }
     }

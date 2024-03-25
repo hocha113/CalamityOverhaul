@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -21,8 +22,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 5;
             HandFireDistance = 25;
             HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -12;
-            ShootPosToMouLengValue = 30;
+            ShootPosNorlLengValue = -8;
+            ShootPosToMouLengValue = 7;
             RepeatedCartridgeChange = true;
             GunPressure = 0.3f;
             ControlForce = 0.05f;
@@ -47,6 +48,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 AmmoTypes = ModContent.ProjectileType<ClaretCannonProj>();
             }
             base.FiringShoot();
+            ScaleFactor *= 0.9f;
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.05f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            ScaleFactor *= 0.9f;
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.05f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {

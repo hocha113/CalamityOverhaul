@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content
 
         public bool level5 => Downed6.Invoke() || Downed7.Invoke() || Downed8.Invoke() || DownedV5.Invoke();
 
-        public bool level6 => (Downed10.Invoke() || Downed12.Invoke() || DownedV7.Invoke()) && DownedV6.Invoke();
+        public bool level6 => Downed10.Invoke() || Downed12.Invoke() || DownedV7.Invoke();
 
         public bool level7 => Downed14.Invoke() || Downed15.Invoke() || Downed16.Invoke();
 

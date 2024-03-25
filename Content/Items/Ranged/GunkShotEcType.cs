@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "GunkShot";
         public override void SetDefaults() {
             Item.SetCalamitySD<GunkShot>();
-            Item.SetCartridgeGun<GunkShotHeldProj>(22);
+            Item.SetCartridgeGun<GunkShotHeldProj>(32);
         }
     }
 }

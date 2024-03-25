@@ -255,6 +255,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 设置自动换弹，在一定条件下让玩家开始换弹，这个方法一般不需要手动调用，枪械会在合适的时候自行调用该逻辑
         /// </summary>
         protected void SetAutomaticCartridgeChange() {
+            if (AmmoState.Amount == 0) {
+                AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态以保证换弹流畅
+            }
             if (!IsKreload && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0 && AmmoState.Amount > 0) {
                 OnKreload = true;
                 kreloadTimeValue = kreloadMaxTime;
@@ -665,6 +668,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 FeederOffsetRot = -MathHelper.ToRadians(rot) * DirSign;
                 FeederOffsetPos = new Vector2(DirSign * -xl, -yl) * SafeGravDir;
             }
+        }
+        /// <summary>
+        /// 安全获取选定的弹匣弹药内容
+        /// </summary>
+        /// <returns></returns>
+        public Item GetSelectedBullets() {
+            if (ModItem.MagazineContents == null) {
+                return new Item();
+            }
+            if (ModItem.MagazineContents.Length <= 0) {
+                return new Item();
+            }
+            if (ModItem.MagazineContents[0] == null) {
+                return new Item();
+            }
+            return ModItem.MagazineContents[0];
         }
 
         #endregion

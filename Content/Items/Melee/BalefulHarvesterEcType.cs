@@ -12,6 +12,9 @@ using Terraria.Audio;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using System;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -22,6 +25,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BalefulHarvester";
         public new string LocalizationCategory => "Items.Weapons.Melee";
+        public static int maxCharge = 160;
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         }
@@ -49,7 +53,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<BalefulHarvesterHeldProj>()] == 0;
 
         public override bool AltFunctionUse(Player player) {
-            return true;
+            Item.initialize();
+            return Item.CWR().ai[0] <= 0;
         }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
@@ -63,6 +68,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
+                Item.CWR().ai[0] += maxCharge;
                 Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
                 return false;
             }
@@ -71,6 +77,29 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.NewProjectile(source, position, velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)), ModContent.ProjectileType<BalefulSickle>(), damage, knockback, player.whoAmI);
             }
             return false;
+        }
+
+        public override void HoldItem(Player player) {
+            Item.initialize();
+            if (Item.CWR().ai[0] > 0) {
+                Item.CWR().ai[0]--;
+            }
+        }
+
+        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
+            Item.initialize();
+            if (!(Item.CWR().ai[0] <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
+                Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;
+                Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;
+                float barScale = 3f;
+                Vector2 barOrigin = barBG.Size() * 0.5f;
+                float yOffset = 50f;
+                Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
+                Rectangle frameCrop = new Rectangle(0, 0, (int)(Item.CWR().ai[0] / maxCharge * barFG.Width), barFG.Height);
+                Color color = Main.hslToRgb(Main.GlobalTimeWrappedHourly * 0.6f % 1f, 1f, 0.75f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f);
+                spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale * barScale, 0, 0f);
+                spriteBatch.Draw(barFG, drawPos, frameCrop, color * 0.8f, 0f, barOrigin, scale * barScale, 0, 0f);
+            }
         }
 
         public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers) {

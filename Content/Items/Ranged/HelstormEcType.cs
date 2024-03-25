@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shootSpeed = 11.5f;
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.SetHeldProj<HelstormHeldProj>();
+            Item.SetCartridgeGun<HelstormHeldProj>(110);
         }
     }
 }

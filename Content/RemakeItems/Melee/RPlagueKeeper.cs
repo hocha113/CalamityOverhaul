@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void SetDefaults(Item item) {
             item.width = 74;
-            item.damage = 80;
+            item.damage = 75;
             item.DamageType = DamageClass.Melee;
             item.useAnimation = 20;
             item.useStyle = ItemUseStyleID.Swing;

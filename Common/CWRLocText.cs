@@ -104,7 +104,9 @@ namespace CalamityOverhaul.Common
         public LocalizedText Wap_SnowmanCannon_Text { get; private set; }
         public LocalizedText Wap_BubbleGun_Text { get; private set; }
         public LocalizedText Wap_Tsunami_Text { get; private set; }
-        public LocalizedText Wap_DaedalusStormbow_Text { get; private set; }
+        public LocalizedText Wap_Revolver_Text { get; private set; }
+        public LocalizedText Wap_Gatligator_Text { get; private set; }
+        public LocalizedText Wap_Xenopopper_Text { get; private set; }
         #endregion
         public override void Load() {
             //使用反射进行属性的自动加载

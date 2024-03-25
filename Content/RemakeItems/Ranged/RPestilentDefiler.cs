@@ -12,6 +12,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<PestilentDefiler>();
         public override int ProtogenesisID => ModContent.ItemType<PestilentDefilerEcType>();
         public override string TargetToolTipItemName => "PestilentDefilerEcType";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<PestilentDefilerHeldProj>(60);
+        public override void SetDefaults(Item item) {
+            item.damage = 90;
+            item.SetCartridgeGun<PestilentDefilerHeldProj>(65);
+        }
     }
 }

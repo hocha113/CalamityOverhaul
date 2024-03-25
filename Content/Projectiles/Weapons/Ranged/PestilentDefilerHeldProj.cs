@@ -45,6 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             SpawnGunFireDust(GunShootPos, ShootVelocity);
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ModContent.ProjectileType<SicknessRound>();
+                WeaponDamage = (int)(WeaponDamage * 0.6f);
             }
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }

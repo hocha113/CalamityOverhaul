@@ -67,19 +67,19 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// </summary>
         static Dictionary<int, int> SetLevelCritDictionary => new Dictionary<int, int>(){
             {0, 1 },
-            {1, 5 },
-            {2, 10 },
+            {1, 6 },
+            {2, 11 },
             {3, 13 },
             {4, 15 },
             {5, 18 },
-            {6, 20 },
-            {7, 23 },
+            {6, 21 },
+            {7, 24 },
             {8, 28 },
-            {9, 30 },
-            {10, 33 },
-            {11, 36 },
+            {9, 31 },
+            {10, 34 },
+            {11, 37 },
             {12, 41 },
-            {13, 45 },
+            {13, 46 },
             {14, 96 }
         };
         /// <summary>
@@ -90,16 +90,16 @@ namespace CalamityOverhaul.Content.Items.Melee
             {1, 120 },
             {2, 120 },
             {3, 110 },
-            {4, 100 },
-            {5, 90 },
-            {6, 85 },
-            {7, 80 },
+            {4, 105 },
+            {5, 100 },
+            {6, 90 },
+            {7, 85 },
             {8, 75 },
             {9, 70 },
-            {10, 60 },
-            {11, 50 },
-            {12, 45 },
-            {13, 40 },
+            {10, 65 },
+            {11, 55 },
+            {12, 50 },
+            {13, 45 },
             {14, 30 }
         };
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";

@@ -339,7 +339,7 @@ namespace CalamityOverhaul.Content
                     Recipe recipe = Main.recipe[i];
                     //修改神圣连弩的合成
                     {
-                        if (recipe.HasResult(ItemID.PhoenixBlaster)) {
+                        if (recipe.HasResult(ItemID.HallowedRepeater)) {
                             recipe.AddIngredient(ItemID.Ichor, 1);//添加灵液
                             recipe.AddIngredient(ItemID.CursedFlame, 1);//添加诅咒焰
                             recipe.AddIngredient(ItemID.UnicornHorn, 1);//添加独角兽角

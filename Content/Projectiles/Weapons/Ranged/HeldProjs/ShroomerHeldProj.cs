@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            FireTime = 15;
+            FireTime = 20;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             base.FiringShoot();
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<Shroom>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<Shroom>(), (int)(WeaponDamage * 0.7f), WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {

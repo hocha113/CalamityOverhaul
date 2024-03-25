@@ -9,10 +9,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class HellbornHeldProj : BaseGun
+    internal class HellbornHeldProj : BaseFeederGun
     {
         public override bool? CanDamage() {
-            return onFire ? null : base.CanDamage();
+            return (onFire || onFireR) && IsKreload ? null : base.CanDamage();
         }
 
         public static void HitFunc(Player player, NPC target) {
@@ -57,33 +57,42 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Hellborn>();
         public override int targetCWRItem => ModContent.ItemType<HellbornEcType>();
         public override void SetRangedProperty() {
-            ControlForce = 0.1f;
+            FireTime = 20;
+            ControlForce = 0.05f;
             GunPressure = 0.2f;
             Recoil = 1;
-            HandDistance = 27;
+            HandDistance = 25;
             HandDistanceY = 5;
-            HandFireDistance = 27;
-            HandFireDistanceY = -8;
-            CanRightClick = false;
+            HandFireDistance = 20;
+            HandFireDistanceY = -4;
+            ShootPosNorlLengValue = -3;
+            CanRightClick = true;
+        }
+
+        public override void PreInOwnerUpdate() {
+            LoadingAnimation(50, 3, 25);
         }
 
         public override void FiringShoot() {
+            SpawnGunFireDust();
+            FireTime = 20;
+            Recoil = 1;
+            GunPressure = 0.2f;
+            EnableRecoilRetroEffect = false;
             for (int i = 0; i < 6; i++) {
-                _ = Projectile.NewProjectile(Owner.parent(), Projectile.Center,
+                _ = Projectile.NewProjectile(Source, GunShootPos,
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.7f, 1.1f)
                     , ModContent.ProjectileType<RealmRavagerBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            CaseEjection();
-            _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
 
         public override void FiringShootR() {
-            _ = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
-                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            CaseEjection();
-            _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
+            SpawnGunFireDust();
+            FireTime = 5;
+            Recoil = 0.5f;
+            GunPressure = 0.1f;
+            EnableRecoilRetroEffect = true;
+            _ = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }
