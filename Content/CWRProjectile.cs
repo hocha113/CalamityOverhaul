@@ -36,8 +36,7 @@ namespace CalamityOverhaul.Content
         BarrenBow,
         FetidEmesis,
         AngelicShotgun,
-        RocketLauncher,
-        NailGun
+        NailGun,
         RocketLauncher,
         Voidragon
     }

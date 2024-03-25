@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            Item ammoItem = Item.CWR().MagazineContents[0];
+            Item ammoItem = GetSelectedBullets();
             if (ammoItem.type == ItemID.CursedDart) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].velocity *= 2.5f;
