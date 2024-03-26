@@ -2113,8 +2113,8 @@ Projectiles: {
 	MurasamaEndSkillOrbOnSpan.DisplayName: Dimensional chopping - beginning
 	ExaProj.DisplayName: Exa Proj
 	MOnSound.DisplayName: MonSound
-	EndSkillEffectStart.DisplayName: End Skill Effect Start
-	EndSkillMakeDamage.DisplayName: End Skill Make Damage
+	EndSkillEffectStart.DisplayName: Dimensional chopping - beginning
+	EndSkillMakeDamage.DisplayName: Dimensional chopping - end
 	PowerSoundEgg.DisplayName: Power Sound Egg
 	TitleMusicBoxEasterEggProj.DisplayName: Title Music Box Easter Egg Proj
 	BlossomFluxHeldProj.DisplayName: Blossom Flux Held Proj

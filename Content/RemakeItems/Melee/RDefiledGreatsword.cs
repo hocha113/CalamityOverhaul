@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             else addnum *= 2;
             item.CWR().MeleeCharge += addnum;
 
-            player.AddBuff(ModContent.BuffType<TyrantsFury>(), 300);
+            player.AddBuff(ModContent.BuffType<BrutalCarnage>(), 300);
             target.AddBuff(70, 150);
 
             if (CWRIDs.WormBodys.Contains(target.type) && !Main.rand.NextBool(3)) {

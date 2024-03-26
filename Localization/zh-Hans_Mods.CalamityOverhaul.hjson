@@ -2161,8 +2161,8 @@ Projectiles: {
 	MurasamaEndSkillOrbOnSpan.DisplayName: 次元斩-始
 	// ExaProj.DisplayName: Exa Proj
 	// MOnSound.DisplayName: MonSound
-	// EndSkillEffectStart.DisplayName: End Skill Effect Start
-	// EndSkillMakeDamage.DisplayName: End Skill Make Damage
+	EndSkillEffectStart.DisplayName: 次元斩-始
+	EndSkillMakeDamage.DisplayName: 次元斩-终
 	// PowerSoundEgg.DisplayName: Power Sound Egg
 	// TitleMusicBoxEasterEggProj.DisplayName: Title Music Box Easter Egg Proj
 	// BlossomFluxHeldProj.DisplayName: Blossom Flux Held Proj

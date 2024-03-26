@@ -3,6 +3,7 @@ using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using System;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -118,6 +119,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (CWRIDs.targetNpcTypes7_1.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.1f;
                 modifiers.SetMaxDamage(6000);
+            }
+            if (CWRIDs.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.5f;
             }
         }
 

@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
+﻿using CalamityMod.Items;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;

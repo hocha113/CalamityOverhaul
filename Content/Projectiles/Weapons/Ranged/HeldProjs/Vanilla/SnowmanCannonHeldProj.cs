@@ -24,16 +24,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0.3f;
             ControlForce = 0.02f;
             RepeatedCartridgeChange = true;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 22;
+            RecoilOffsetRecoverValue = 0.9f;
             Recoil = 4.8f;
             RangeOfStress = 48;
             kreloadMaxTime = 60;
-            EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 22;
-            RecoilOffsetRecoverValue = 0.8f;
+            EjectCasingProjSize = 2;
         }
 
         public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 13);
+            LoadingAnimation(-30, 3, -3);
         }
 
         public override bool KreLoadFulfill() {

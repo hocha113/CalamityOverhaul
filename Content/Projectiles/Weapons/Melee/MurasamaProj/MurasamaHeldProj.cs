@@ -75,25 +75,32 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private int breakOutType => ModContent.ProjectileType<MurasamaBreakOut>();
 
         public void InOwner() {
+            int safeGravDir = Math.Sign(Owner.gravDir);
             bool noHasDownSkillProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaDownSkill>()] == 0;
             bool noHasBreakOutProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] == 0;
             int level = InWorldBossPhase.Instance.Level();
-            Projectile.Center = Owner.Center + new Vector2(0, 5);
+            Projectile.Center = Owner.Center + new Vector2(0, 5) * safeGravDir;
             Projectile.timeLeft = 2;
             Projectile.scale = 0.7f;
 
             float heldRotSengs = Projectile.hide ? 70 : 110;
+            if (safeGravDir == -1) {
+                heldRotSengs = Projectile.hide ? 110 : 70;
+            }
             if (Math.Abs(Owner.velocity.X) > 0 && Owner.velocity.Y == 0) {
                 heldRotSengs += MathF.Sin(Time * CWRUtils.atoR * 35);
             }
             float armRotSengsFront = Projectile.hide ? 70 : 60;
+            if (safeGravDir == -1) {
+                armRotSengsFront = Projectile.hide ? 60 : 70;
+            }
             float armRotSengsBack = Projectile.hide ? 110 : 110 + MathF.Sin(Time * CWRUtils.atoR * 45) * 50;
-            Projectile.rotation = MathHelper.ToRadians(heldRotSengs * DirSign);
+            Projectile.rotation = MathHelper.ToRadians(heldRotSengs * DirSign * safeGravDir);
 
             if (Owner.PressKey(false) && !Owner.PressKey()) {//玩家按下右键触发这些技能，同时需要避免在左键按下的时候触发
                 Owner.direction = Math.Sign(ToMouse.X);
-                Projectile.Center += new Vector2(0, -5);
-                armRotSengsFront = (ToMouseA - MathHelper.PiOver2) / CWRUtils.atoR * -DirSign;
+                Projectile.Center += new Vector2(0, -5) * safeGravDir;
+                armRotSengsFront = (ToMouseA - MathHelper.PiOver2 * safeGravDir) / CWRUtils.atoR * -DirSign;
                 armRotSengsBack = 30;
                 Projectile.rotation = ToMouseA + MathHelper.ToRadians(75 + (DirSign > 0 ? 20 : 0));
 
@@ -139,8 +146,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 armRotSengsBack = 110;
             }
 
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsFront) * -DirSign);
-            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsBack) * -DirSign);
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsFront) * -DirSign * safeGravDir);
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsBack) * -DirSign * safeGravDir);
         }
 
         private void SpanTriggerEffDust() {

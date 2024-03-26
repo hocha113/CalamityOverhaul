@@ -1,4 +1,5 @@
-﻿using CalamityMod.Items;
+﻿using CalamityMod.Buffs.StatBuffs;
+using CalamityMod.Items;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
@@ -133,7 +134,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             rageEnergy += addnum;
 
-            player.AddBuff(ModContent.BuffType<TyrantsFury>(), 300);
+            player.AddBuff(ModContent.BuffType<BrutalCarnage>(), 300);
             target.AddBuff(70, 150);
 
             if (CWRIDs.WormBodys.Contains(target.type) && !Main.rand.NextBool(3)) {
@@ -197,7 +198,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                 offsety -= 20;
             }
-            player.AddBuff(ModContent.BuffType<TyrantsFury>(), 300);
+            player.AddBuff(ModContent.BuffType<BrutalCarnage>(), 300);
             target.AddBuff(70, 150);
         }
 

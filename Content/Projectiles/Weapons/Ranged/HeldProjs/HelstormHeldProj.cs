@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<HelstormEcType>();
 
         public override void SetRangedProperty() {
-            FireTime = 18;
+            FireTime = 20;
             ControlForce = 0.1f;
             GunPressure = 0.2f;
             Recoil = 1;
@@ -40,11 +40,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust();
-            FireTime = 18;
+            FireTime = 20;
             Recoil = 1;
             GunPressure = 0.2f;
             EnableRecoilRetroEffect = false;
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 5; i++) {
                 _ = Projectile.NewProjectile(Source, GunShootPos,
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.7f, 1.1f)
                     , ModContent.ProjectileType<RealmRavagerBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
