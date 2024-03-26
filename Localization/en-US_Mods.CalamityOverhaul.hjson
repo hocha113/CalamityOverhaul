@@ -2661,7 +2661,7 @@ TextContent: {
 		MouseTextContactPanel_TextContent: Right-click on the item icon switch to synthesize the recipe
 		CWRItem_IsInfiniteItem_TextContent: Only the ultimate combination can stabilize it, otherwise it will hit the moment that triggers the dreaded collapse of the black hole
 		CWRItem_IsRemakeItem_TextContent: -overhauls-
-		OnEnterWorld_TextContent:  weapon reset has been loaded
+		OnEnterWorld_TextContent: weapon reset has been loaded
 		CaseEjection_TextContent: Need to change ammunition
 		SupertableUI_Text1: close
 		SupertableUI_Text2: View recipe
@@ -2671,14 +2671,8 @@ TextContent: {
 			Swipe the mouse wheel to see the items that have been reset here
 			These are for reference only, as many partial changes do not appear in this list
 			'''
-		Wap_Minishark_Text:
-			'''
-			"Worth mentioning, little sharky has a gig at the shooting range, playing the role of a 'firearms consultant.'"
-			'''
-		Wap_Megashark_Text:
-			'''
-			"We need a bigger picture, don't we?"
-			'''
+		Wap_Minishark_Text: '''"Worth mentioning, little sharky has a gig at the shooting range, playing the role of a 'firearms consultant.'"'''
+		Wap_Megashark_Text: '''"We need a bigger picture, don't we?"'''
 		Wap_HandGun_Text: Baaaah! Daaaaaa! Bang!!
 		Wap_Flintlockpistol_Text:
 			'''

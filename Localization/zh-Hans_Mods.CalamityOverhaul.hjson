@@ -50,20 +50,20 @@ Items: {
 
 	BlightedCleaverEcType: {
 		DisplayName: 暴君之刃
-		Tooltip: 
-		'''
-		刀刃击中敌人会积攒暴君能量，并生成大量的屠杀之镰
-		"只有让这把刀痛饮鲜血，它才会会想起当年被魔君使用时的强大力量"
-		'''
+		Tooltip:
+			'''
+			刀刃击中敌人会积攒暴君能量，并生成大量的屠杀之镰
+			"只有让这把刀痛饮鲜血，它才会会想起当年被魔君使用时的强大力量"
+			'''
 	}
 
 	BurntSiennaEcType: {
 		DisplayName: 沙之刃
-		Tooltip: 
-		'''
-		挥舞会抛舞出三个沙球
-		"时间或许会让其它武器锈迹斑斑，但是这把刀永远不会改变"
-		'''
+		Tooltip:
+			'''
+			挥舞会抛舞出三个沙球
+			"时间或许会让其它武器锈迹斑斑，但是这把刀永远不会改变"
+			'''
 	}
 
 	BurntSienna: {
@@ -73,29 +73,29 @@ Items: {
 
 	CometQuasherEcType: {
 		DisplayName: 彗星陨刃
-		Tooltip: 
-		'''
-		让大量流星从天而降
-		"中国古代有个人能够不射出箭就让鸟掉下来，终于我们的刀也能做到类似的事了"
-		'''
+		Tooltip:
+			'''
+			让大量流星从天而降
+			"中国古代有个人能够不射出箭就让鸟掉下来，终于我们的刀也能做到类似的事了"
+			'''
 	}
 
 	DefiledGreatswordEcType: {
 		DisplayName: 真暴君之刃
-		Tooltip: 
-		'''
-		刀刃击中敌人会积攒暴君能量，并生成大量的丛林之镰
-		"鲜血，屠戮，征服，这把刀在慢慢苏醒。它到底是回忆起了当年的魔君，还是痴迷于现在的你？"
-		'''
+		Tooltip:
+			'''
+			刀刃击中敌人会积攒暴君能量，并生成大量的丛林之镰
+			"鲜血，屠戮，征服，这把刀在慢慢苏醒。它到底是回忆起了当年的魔君，还是痴迷于现在的你？"
+			'''
 	}
 
 	EntropicClaymoreEcType: {
 		DisplayName: 熵之舞
-		Tooltip: 
-		'''
-		刀光之间群星可见
-		"在熵的累积中，昔日再宏伟的星云也变成了刀中暗淡混沌的尘埃"
-		'''
+		Tooltip:
+			'''
+			刀光之间群星可见
+			"在熵的累积中，昔日再宏伟的星云也变成了刀中暗淡混沌的尘埃"
+			'''
 	}
 
 	GildedProboscisEcType: {
@@ -110,11 +110,11 @@ Items: {
 
 	TerratomereEcType: {
 		DisplayName: 泰拉巨刃
-		Tooltip: 
-		'''
-		挥舞释放生命洪流
-		“与泰拉瑞亚世界之精华相连”
-		'''
+		Tooltip:
+			'''
+			挥舞释放生命洪流
+			“与泰拉瑞亚世界之精华相连”
+			'''
 	}
 
 	TerrorBladeEcType: {
@@ -129,10 +129,7 @@ Items: {
 
 	ArkoftheCosmosEcType: {
 		DisplayName: 鸿蒙方舟
-		Tooltip: 
-		'''
-		"它还在沉睡"
-		'''
+		Tooltip: '''"它还在沉睡"'''
 	}
 
 	StreamGougeEcType: {
@@ -157,11 +154,11 @@ Items: {
 
 	AirSpinnerEcType: {
 		DisplayName: 天蓝悠悠球
-		Tooltip: 
-		'''
-		向附近的敌人发射散射的羽毛
-		"悠悠球道具赛！"
-		'''
+		Tooltip:
+			'''
+			向附近的敌人发射散射的羽毛
+			"悠悠球道具赛！"
+			'''
 	}
 
 	GoldplumeSpearEcType: {
@@ -255,7 +252,7 @@ Items: {
 
 	GhastlyVisageEcType: {
 		DisplayName: 鬼之形
-		Tooltip: 
+		Tooltip:
 			'''
 			发射数个怨魂爆弹
 			"那个畸形鬼魂体内未成形的躯壳"
@@ -274,7 +271,7 @@ Items: {
 
 	ElementWhip: {
 		DisplayName: 元素长鞭
-		Tooltip: 
+		Tooltip:
 			'''
 			让敌人被元素之火灼烧
 			"泰拉的本源连同宇宙的元素一同贯穿世界"
@@ -283,7 +280,7 @@ Items: {
 
 	ElementalShivEcType: {
 		DisplayName: 元素短剑
-		Tooltip: 
+		Tooltip:
 			'''
 
 			"很遗憾，即使结合了宇宙的能量，它也没有变长"
@@ -2716,14 +2713,8 @@ TextContent: {
 			滑动鼠标滚轮，在这里查看已经被重置过的物品
 			这些仅作为参考，因为许多局部改动并不会出现在这个名单中
 			'''
-		Wap_Minishark_Text:
-			'''
-			"小鲨鱼有一份在靶场的工作，它的职责是当一名“开火”顾问"
-			'''
-		Wap_Megashark_Text:
-			'''
-			"我们需要更大的口径，不是吗？"
-			'''
+		Wap_Minishark_Text: '''"小鲨鱼有一份在靶场的工作，它的职责是当一名“开火”顾问"'''
+		Wap_Megashark_Text: '''"我们需要更大的口径，不是吗？"'''
 		Wap_HandGun_Text: 砰！砰！！砰！！！
 		Wap_Flintlockpistol_Text:
 			'''

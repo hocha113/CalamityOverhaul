@@ -33,7 +33,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Green;
             Item.shoot = ModContent.ProjectileType<TeardropCleaverProj>();
             Item.shootSpeed = 1;
-            
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
