@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected int kreloadTimeValue;
         /// <summary>
-        /// 装弹所需要的时间，默认为手持物品对象的<see cref="Item.useTime"/>
+        /// 装弹所需要的时间，默认为60
         /// </summary>
         protected int kreloadMaxTime = 60;
         /// <summary>
@@ -129,7 +129,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void SetRangedProperty() {
             base.SetRangedProperty();
-            kreloadMaxTime = Item.useTime;
         }
         /// <summary>
         /// 抛壳的简易实现

@@ -26,13 +26,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 20;
             RepeatedCartridgeChange = true;
+            AmmoTypeAffectedByMagazine = true;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 6;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;
-            AmmoTypeAffectedByMagazine = true;
-            EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 6;
         }
 
         public override void PreInOwnerUpdate() {
@@ -45,10 +45,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     NPC target = Projectile.Center.FindClosestNPC(1900, false, true);
                     if (target != null) {
                         UpdateMagazineContents();
+                        Vector2 pos = GunShootPos;
+                        if (!WeaponHandheldDisplay) {
+                            pos = Owner.Center;
+                        }
                         SoundEngine.PlaySound(CommonCalamitySounds.LargeWeaponFireSound with { Volume = CommonCalamitySounds.LargeWeaponFireSound.Volume * 0.45f, Pitch = 0.2f }, Projectile.Center);
-                        Vector2 vr = GunShootPos.To(target.Center).UnitVector() * ScaleFactor;
-                        Projectile.NewProjectile(Source, GunShootPos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                        SpawnGunFireDust(GunShootPos, vr);
+                        Vector2 vr = pos.To(target.Center).UnitVector() * ScaleFactor;
+                        Projectile.NewProjectile(Source, pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                        SpawnGunFireDust(pos, vr);
                     }
                     if (BulletNum <= 0) {
                         Item.CWR().IsKreload = false;

@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void SetDefaults(Item item) {
             item.width = 56;
-            item.damage = 45;
+            item.damage = 25;
             item.DamageType = DamageClass.Melee;
             item.useAnimation = 24;
             item.useStyle = ItemUseStyleID.Swing;
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position + velocity * 15, velocity, type, damage, knockback, player.whoAmI);
+            Projectile.NewProjectile(source, position + velocity * 100, velocity, type, damage / 2, knockback, player.whoAmI);
             return false;
         }
     }

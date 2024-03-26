@@ -10,11 +10,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class TeardropCleaverProj : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile + "Teardrop";
+        const int maxFrme = 8;
         public override void SetDefaults() {
-            Projectile.width = 77;
-            Projectile.height = 52;
+            Projectile.width = 277;
+            Projectile.height = 252;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
+            Projectile.penetrate = -1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 30;
         }
 
         public override bool ShouldUpdatePosition() {
@@ -22,10 +26,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 6);
+            CWRUtils.ClockFrame(ref Projectile.frame, 5, maxFrme - 1);
             Projectile.rotation = Projectile.velocity.ToRotation();
             Projectile.scale += 0.02f;
-            if (Projectile.frame >= 6) {
+            if (Projectile.frame >= maxFrme - 1) {
                 Projectile.Kill();
             }
         }
@@ -40,8 +44,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 7), Color.White
-                , Projectile.rotation, new Vector2(0, Projectile.velocity.X > 0 ? 26 : 6)
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition + Projectile.rotation.ToRotationVector2() * -100, CWRUtils.GetRec(value, Projectile.frame, 8), Color.White
+                , Projectile.rotation, new Vector2(0, Projectile.velocity.X > 0 ? 45 : 100)
                 , Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             return false;
         }

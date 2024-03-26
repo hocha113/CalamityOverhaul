@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public new string LocalizationCategory => "Items.Weapons.Melee";
         public override void SetDefaults() {
             Item.width = 56;
-            Item.damage = 45;
+            Item.damage = 25;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = 24;
             Item.useStyle = ItemUseStyleID.Swing;
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position + velocity * 15, velocity, type, damage, knockback, player.whoAmI);
+            Projectile.NewProjectile(source, position + velocity * 100, velocity, type, damage / 2, knockback, player.whoAmI);
             return false;
         }
 
