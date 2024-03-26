@@ -1,4 +1,7 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Content.Particles;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
@@ -14,17 +17,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ElectrosphereLauncher].Value;
         public override int targetCayItem => ItemID.ElectrosphereLauncher;
         public override int targetCWRItem => ItemID.ElectrosphereLauncher;
-        public List<Projectile> Orbs = new List<Projectile>();
+        public List<ElectrosphereLauncherOrb> Orbs = new List<ElectrosphereLauncherOrb>();
         public const int MaxOrbNum = 4;
+        int fireIndex;
         public override void SetRangedProperty() {
-            FireTime = 18;
-            ShootPosToMouLengValue = 0;
+            FireTime = 3;
+            ShootPosToMouLengValue = 30;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
             GunPressure = 0f;
             ControlForce = 0f;
             RepeatedCartridgeChange = true;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 7;
             Recoil = 0f;
             kreloadMaxTime = 60;
         }
@@ -34,24 +40,35 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override bool KreLoadFulfill() {
+            fireIndex = 0;
+            Orbs = new List<ElectrosphereLauncherOrb>();
             return true;
         }
 
         public override void FiringShoot() {
-            Projectile orb = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f)
-                , ModContent.ProjectileType<ElectrosphereLauncherOrb>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            FireTime = 3;
             if (Orbs == null) {
-                Orbs = new List<Projectile>();
+                Orbs = new List<ElectrosphereLauncherOrb>();
             }
-            Orbs.Add(orb);
-            Orbs.RemoveAll((Projectile p) => p == null);
-            Orbs.RemoveAll((Projectile p) => p.active == false || p.type != ModContent.ProjectileType<ElectrosphereLauncherOrb>());
-            if (Orbs.Count > MaxOrbNum) {
-                Orbs.RemoveRange(0, 1);
-            }
+            SpawnGunFireDust(dustID1: DustID.UnusedWhiteBluePurple, dustID2: DustID.UnusedWhiteBluePurple, dustID3: DustID.UnusedWhiteBluePurple);
+            Projectile orb = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.52f) * Main.rand.NextFloat(0.9f, 1.5f)
+                , ModContent.ProjectileType<ElectrosphereLauncherOrb>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            
             ElectrosphereLauncherOrb newOrb = orb.ModProjectile as ElectrosphereLauncherOrb;
             if (newOrb != null) {
-                newOrb.orbList = Orbs.ToArray();
+                Orbs.Add(newOrb);
+                Orbs.RemoveAll((ElectrosphereLauncherOrb p) => p == null);
+                Orbs.RemoveAll((ElectrosphereLauncherOrb p) => p.Projectile.active == false || p.Projectile.type != ModContent.ProjectileType<ElectrosphereLauncherOrb>());
+                if (newOrb != null) {
+                    newOrb.orbList = Orbs.ToArray();
+                }
+            }
+
+            fireIndex++;
+            if (fireIndex >= MaxOrbNum) {
+                FireTime = 60;
+                fireIndex = 0;
+                Orbs = new List<ElectrosphereLauncherOrb>();
             }
         }
     }

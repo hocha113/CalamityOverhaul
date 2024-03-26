@@ -93,8 +93,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     return;
                 }
                 SoundEngine.PlaySound(Item.UseSound.Value with { Pitch = 1f }, Projectile.Center);
-                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
+                int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<PrismaticEnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj].usesIDStaticNPCImmunity = true;
+                Main.projectile[proj].localNPCHitCooldown = -1;
             }
         }
     }

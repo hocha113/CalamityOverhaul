@@ -323,9 +323,11 @@ Items: {
 		DisplayName: Annihilating Universe
 		Tooltip:
 			'''
-			Wooden Arrows turn into a spread of Cosmic Bolts. Hitting an enemy causes Galaxy Rifts to attack other foes and leaves behind a star close to death, eventually imploding.
-			Right click to summon Projections of the Devourer that grow stronger and bigger over time. Letting go of right click fires the portal used to home in on enemies before eventually dying out.
-			                     [c/9C27B0:The End is Nigh.]
+			Wooden Arrows turn into a spread of Cosmic Bolts. 
+			Hitting an enemy causes Galaxy Rifts to attack other foes and leaves behind a star close to death, eventually imploding.
+			Right click to summon Projections of the Devourer that grow stronger and bigger over time. 
+			Letting go of right click fires the portal used to home in on enemies before eventually dying out.
+			[c/9C27B0:The End is Nigh.]
 			'''
 	}
 
@@ -355,7 +357,7 @@ Items: {
 			'''
 			Swinging will cause a shard of sunlight to weakly home in before impacting the enemy, leaving damaging sparks below.
 			Right click to have the blade raise up into the sky. Holding Right click will charge the blade up, increasing in size. 
-			                     Letting go of right click hurls the blade at the enemy causing a massive explosion.
+			Letting go of right click hurls the blade at the enemy causing a massive explosion.
 			'''
 	}
 
@@ -1545,8 +1547,9 @@ Items: {
 		DisplayName: Voidragon
 		Tooltip:
 			'''
-			Every other bullet fired will be a void detonation bullet
-			Each bullet also emits a touch of demonic flame
+			Every six shots will trigger a Void Burst. 
+			Upon hitting an enemy, bullets will spawn Void Touches on the spot. 
+			"This fish comes from the stars, but it is neither Omnisiah nor Void Dragon. It is just a fish."
 			'''
 	}
 
@@ -2658,7 +2661,7 @@ TextContent: {
 		MouseTextContactPanel_TextContent: Right-click on the item icon switch to synthesize the recipe
 		CWRItem_IsInfiniteItem_TextContent: Only the ultimate combination can stabilize it, otherwise it will hit the moment that triggers the dreaded collapse of the black hole
 		CWRItem_IsRemakeItem_TextContent: -overhauls-
-		OnEnterWorld_TextContent: weapon reset has been loaded
+		OnEnterWorld_TextContent:  weapon reset has been loaded
 		CaseEjection_TextContent: Need to change ammunition
 		SupertableUI_Text1: close
 		SupertableUI_Text2: View recipe
@@ -2670,16 +2673,11 @@ TextContent: {
 			'''
 		Wap_Minishark_Text:
 			'''
-			Whenever someone asks about the baby shark, he always laughs.
-			"Back in the day, woke up on a random morning only to find a bunch of gun barrels sticking out of this mouth."
-			Worth mentioning, little sharky has a gig at the shooting range, playing the role of a "firearms consultant."
+			"Worth mentioning, little sharky has a gig at the shooting range, playing the role of a 'firearms consultant.'"
 			'''
 		Wap_Megashark_Text:
 			'''
-			"Caliber is the truth," Sharky confidently declares, as if it were the spokesperson for firepower supremacy.
-			However, much like its .20 caliber, it's just an ordinary member of the fish firearm family.
-			Perhaps it needs a sarcastic fishing rod to catch a bit of self-awareness, after all, in the ocean, 
-			caliber might be better suited to measure humility rather than truth.
+			"We need a bigger picture, don't we?"
 			'''
 		Wap_HandGun_Text: Baaaah! Daaaaaa! Bang!!
 		Wap_Flintlockpistol_Text:

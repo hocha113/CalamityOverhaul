@@ -567,12 +567,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
-                if (CanUpdateMagazineContentsInShootBool) {
-                    //如果关闭了弹匣系统，他将会必定调用一次UpdateMagazineContents，因为该方法将内置一次概率消耗
-                    if (GetMagazineCanUseAmmoProbability() || MustConsumeAmmunition || !MagazineSystem) {
-                        UpdateMagazineContents();
-                    }
-                }
                 //弹容替换在此处执行，将发射内容设置为弹匣第一位的弹药类型
                 if (AmmoTypeAffectedByMagazine && MagazineSystem && ModItem.MagazineContents.Length > 0) {
                     if (ModItem.MagazineContents[0] == null) {
@@ -606,7 +600,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                     PostFiringShoot();
                 }
-
+                if (CanUpdateMagazineContentsInShootBool) {
+                    //如果关闭了弹匣系统，他将会必定调用一次UpdateMagazineContents，因为该方法将内置一次概率消耗
+                    if (GetMagazineCanUseAmmoProbability() || MustConsumeAmmunition || !MagazineSystem) {
+                        UpdateMagazineContents();
+                    }
+                }
                 if (PreFireReloadKreLoad()) {
                     if (BulletNum <= 0) {
                         SetEmptyMagazine();
