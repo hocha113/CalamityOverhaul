@@ -2858,7 +2858,6 @@ TextContent: {
 		Wap_ProximityMineLauncher_Text:
 			'''
 			发射感高伤害应地雷，会自行伪装并提高伤害
-			右键发射悬浮的感应雷
 			“我们来玩扫雷吧”
 			'''
 		Wap_SnowmanCannon_Text:
