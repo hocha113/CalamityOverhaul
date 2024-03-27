@@ -207,7 +207,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             tooltips.ReplaceTooltip("[Lang1]", UnlockSkill1 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text1")}]", modName);
             tooltips.ReplaceTooltip("[Lang2]", UnlockSkill2 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text2")}]", modName);
             tooltips.ReplaceTooltip("[Lang3]", UnlockSkill3 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text3")}]", modName);
-            tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:试炼{InWorldBossPhase.Instance.Level() + 1}]", modName);
+            tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{InWorldBossPhase.Instance.Level() + 1}]", modName);
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
