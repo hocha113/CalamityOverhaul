@@ -2903,5 +2903,73 @@ TextContent: {
 			Right-click for full-auto barrage.
 			"There's nothing quite like stuffing bullets into bubbles."
 			'''
+		Wap_DaedalusStormbow_Text:
+			'''
+			Left click to scatter several arrows from the sky
+			Right-click for a fast and powerful single shot
+			"It has nothing to do with storms, it has nothing to do with angels."
+			'''
+		Murasama_TextDictionary_Content_0:
+			'''
+			Hey, recruit, ahead lies a creature known as a Blue Blob, 
+			or perhaps a Sandworm from the depths of the desert, 
+			or even a Zombie Crab lurking within mushroom caves.
+			Take down any one of them to prove yourself; this is your first step.
+			'''
+		Murasama_TextDictionary_Content_1:
+			'''
+			As night descends, the great eyeball prowls; stab it! 
+			Or the seashell beneath the desert sands, show no mercy.
+			'''
+		Murasama_TextDictionary_Content_2:
+			'''
+			The time has come, cleave through that mass of brain blooms, or that purple serpent. 
+			I want to see your blade dance amidst the chaos.
+			'''
+		Murasama_TextDictionary_Content_3:
+			'''
+			Deal with the foulness at the dungeon gate. 
+			And those corrupted heretics, silence them utterly.
+			'''
+		Murasama_TextDictionary_Content_4: Remember that Blue Blob? Now it's time to take down its god.
+		Murasama_TextDictionary_Content_5:
+			'''
+			Born within the cages of the snow plains, aberrations that wander amidst the fires of hell. 
+			Corrupted by the filth, the green sea worms... Do you know what I'm thinking?
+			Slice them apart!
+			'''
+		Murasama_TextDictionary_Content_6:
+			'''
+			The sulfurous inferno eyeball is glaring at us, we need to reduce it back to a misshapen mass of flesh.
+			By the shores, the heretical chants always echo, likely the depraved cultists at play, we must investigate.
+			In the temple lies a machine; shove a battery in it to temporarily power it up, then we'll ensure its complete malfunction!
+			'''
+		Murasama_TextDictionary_Content_7:
+			'''
+			Spreaders of the taint-corrupted aberrations, and its progeny roam the jungle! 
+			Seek them out, then drive your blade into their skulls.
+			That necrotech abomination, a statue crafted of flesh and blood, we must render it completely immobile.
+			The great serpent that roams the starry skies, let's hack it to pieces.
+			'''
+		Murasama_TextDictionary_Content_8:
+			'''
+			The apostles of the false sun god, they wander in sacred places or in hellish realms,
+			Or the foolish birds of the jungle, you choose one to deal with.
+			'''
+		Murasama_TextDictionary_Content_9:
+			'''
+			Choose wisely, recruit.
+			The false god of the sun, the cosmic emissaries, or the extradimensional remnants in the dungeon.
+			Let us meet them.
+			'''
+		Murasama_TextDictionary_Content_10: Slay the arrogant worm! Or go crush the fish highly corrupted by the filth.
+		Murasama_TextDictionary_Content_11: The fire-breathing dragon, show no mercy, crush it!
+		Murasama_TextDictionary_Content_12: Meet the heretic of the machine cult, or the fallen witch, deal with these spawn of heresy!
+		Murasama_TextDictionary_Content_13:
+			'''
+			The demon dragon emerges, and we shall engage in full-scale conflict with the alien abominations, 
+			wielding the stone obtained from the abyss. Recruit, this is the final battle!
+			'''
+		Murasama_TextDictionary_Content_14: Well done, recruit.
 	}
 }

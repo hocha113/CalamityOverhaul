@@ -49,19 +49,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 76, dustID2: 149, dustID3: 76);
             int ammonum = Main.rand.Next(7);
             if (ammonum != 0) {
-                int proj1 = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity * 1.4f, AmmoTypes, WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 0);
+                int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.4f, AmmoTypes, WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj1].scale *= 2f;
                 Main.projectile[proj1].usesLocalNPCImmunity = true;
                 Main.projectile[proj1].localNPCHitCooldown = 5;
                 for (int i = 0; i < 2; i++) {
-                    int proj2 = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.1f, 0.1f, i)) * 1f, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
+                    int proj2 = Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.1f, 0.1f, i)) * 1f, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj2].scale *= 1.5f;
                     Main.projectile[proj2].usesLocalNPCImmunity = true;
                     Main.projectile[proj2].localNPCHitCooldown = 5;
                     _ = UpdateConsumeAmmo();
                 }
                 for (int i = 0; i < 2; i++) {
-                    int proj3 = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.1f, 0.1f, i)) * 1.2f, AmmoTypes, WeaponDamage / 4, WeaponKnockback, Owner.whoAmI, 0);
+                    int proj3 = Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.1f, 0.1f, i)) * 1.2f, AmmoTypes, WeaponDamage / 4, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj3].extraUpdates += 1;
                     Main.projectile[proj3].scale *= 1f;
                     Main.projectile[proj3].usesLocalNPCImmunity = true;
@@ -69,21 +69,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                     _ = UpdateConsumeAmmo();
                 }
                 for (int i = 0; i < 2; i++) {
-                    int proj4 = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.2f, 0.2f, i)) * 0.2f, AmmoTypes, WeaponDamage / 4, WeaponKnockback, Owner.whoAmI, 0);
+                    int proj4 = Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.2f, 0.2f, i)) * 0.2f, AmmoTypes, WeaponDamage / 4, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj4].scale *= 1f;
                     Main.projectile[proj4].timeLeft += 3600;
                     Main.projectile[proj4].usesLocalNPCImmunity = true;
                     Main.projectile[proj4].localNPCHitCooldown = 5;
                     _ = UpdateConsumeAmmo();
                 }
+                ModOwner.SetScreenShake(3);
             }
             if (ammonum == 0) {
                 Item.crit = -1000;
-                int proj5 = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity * 0.00001f, AmmoTypes, WeaponDamage * 10, WeaponKnockback, Owner.whoAmI, 0);
+                int proj5 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 0.00001f, AmmoTypes, WeaponDamage * 10, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj5].scale *= 3f;
                 Main.projectile[proj5].usesLocalNPCImmunity = true;
                 Main.projectile[proj5].localNPCHitCooldown = 5;
                 Item.crit = 4;
+                ModOwner.SetScreenShake(3.5f);
             }
         }
 

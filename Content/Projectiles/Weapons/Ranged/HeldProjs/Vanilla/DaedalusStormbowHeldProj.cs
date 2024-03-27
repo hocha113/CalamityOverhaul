@@ -7,44 +7,37 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
-    internal class DaedalusStormbowHeldProj : BaseFeederGun
+    internal class DaedalusStormbowHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Placeholder;
-        public override Texture2D TextureValue => TextureAssets.Item[ItemID.Boomstick].Value;
-        public override int targetCayItem => ItemID.Boomstick;
-        public override int targetCWRItem => ItemID.Boomstick;
+        public override Texture2D TextureValue => TextureAssets.Item[ItemID.DaedalusStormbow].Value;
+        public override int targetCayItem => ItemID.DaedalusStormbow;
+        public override int targetCWRItem => ItemID.DaedalusStormbow;
         public override void SetRangedProperty() {
-            FireTime = 40;
-            ShootPosToMouLengValue = 0;
-            ShootPosNorlLengValue = -6;
-            HandDistance = 17;
-            HandDistanceY = 4;
-            GunPressure = 0.2f;
-            ControlForce = 0.05f;
-            Recoil = 2.0f;
-            RangeOfStress = 8;
-            RepeatedCartridgeChange = true;
-            kreloadMaxTime = 35;
+            CanRightClick = true;
         }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 13);
-        }
-
-        public override bool KreLoadFulfill() {
-            return true;
-        }
-
-        public override void PostFiringShoot() {
-        }
-
-        public override void FiringShoot() {
-            SpawnGunFireDust();
-            _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
-            for (int i = 0; i < 2; i++) {
-                UpdateMagazineContents();
-                _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.32f, 0.32f)) * Main.rand.NextFloat(0.7f, 1.2f) * 1.0f, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
+        public override void PostInOwner() {
+            if (onFire || onFireR) {
+                LimitingAngle();
             }
+        }
+
+        public override void BowShoot() {
+            Item.useTime = 19;
+            for (int i = 0; i < 5; i++) {
+                Vector2 spanPos = Projectile.Center + new Vector2(Main.rand.Next(-320, 320), Main.rand.Next(-632, -583));
+                Vector2 vr = spanPos.To(Main.MouseWorld).UnitVector().RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 13;
+                Projectile.NewProjectile(Source, spanPos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            }
+        }
+
+        public override void BowShootR() {
+            Item.useTime = 6;
+            Vector2 spanPos = Projectile.Center + new Vector2(Main.rand.Next(-20, 20), Main.rand.Next(-632, -583));
+            Vector2 vr = spanPos.To(Main.MouseWorld).UnitVector().RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 13;
+            Projectile p = Projectile.NewProjectileDirect(Source, spanPos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            p.tileCollide = false;
+            p.extraUpdates += 1;
         }
     }
 }

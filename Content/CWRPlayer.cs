@@ -43,6 +43,10 @@ namespace CalamityOverhaul.Content
         /// 摄像头位置额外矫正值
         /// </summary>
         public Vector2 OffsetScreenPos;
+        /// <summary>
+        /// 设置屏幕振动
+        /// </summary>
+        public float ScreenShakeValue;
         //未使用的，这个属性属于一个未完成的UI
         public int CompressorPanelID = -1;
         /// <summary>
@@ -222,6 +226,18 @@ namespace CalamityOverhaul.Content
 
         public override void ModifyScreenPosition() {
             Main.screenPosition += OffsetScreenPos;
+            if (ScreenShakeValue > 0f) {
+                Main.screenPosition += Main.rand.NextVector2Circular(ScreenShakeValue, ScreenShakeValue);
+                ScreenShakeValue = MathHelper.Clamp(ScreenShakeValue - 0.185f, 0f, 20f);
+            }
+        }
+        /// <summary>
+        /// 设置屏幕震荡模长
+        /// </summary>
+        /// <param name="mode"></param>
+        public void SetScreenShake(float mode) {
+            if (ScreenShakeValue < mode)
+                ScreenShakeValue = mode;
         }
 
         public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) {

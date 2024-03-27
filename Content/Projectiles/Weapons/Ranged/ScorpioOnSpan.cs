@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             base.SetDefaults();
         }
         public override void SpanProj() {
-            if (Projectile.timeLeft % 5 == 0 && Owner.PressKey()) {
+            if (Projectile.timeLeft % 6 == 0 && Owner.PressKey()) {
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * 17;
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Projectile.NewProjectile(Projectile.GetSource_FromThis()

@@ -510,6 +510,7 @@ namespace CalamityOverhaul
                     }
 
                     if (!ItemToShootID.ContainsKey(item.type)) {
+                        //int newShot = CWRUtils.RocketAmmo(item);
                         ("添加射弹与物品对应词典: ItemID" + i + "-----" + item + "----- shootID:" + item.shoot).DompInConsole();
                         ItemToShootID.Add(item.type, item.shoot);
                     }
@@ -520,6 +521,49 @@ namespace CalamityOverhaul
             "————————————————————————————————————————————————————".DompInConsole();
 
             OnLoadContentBool = false;
+        }
+        /// <summary>
+        /// 修改一些原弹药设定异常的物品的shoot值
+        /// </summary>
+        /// <param name="ammoItem"></param>
+        public static void SetAmmoItem(Item ammoItem) {
+            ref int ammoTypes = ref ammoItem.shoot;
+            if (ammoItem.type == ItemID.RocketI) {
+                ammoTypes = ProjectileID.RocketI;
+            }
+            if (ammoItem.type == ItemID.RocketII) {
+                ammoTypes = ProjectileID.RocketII;
+            }
+            if (ammoItem.type == ItemID.RocketIII) {
+                ammoTypes = ProjectileID.RocketIII;
+            }
+            if (ammoItem.type == ItemID.RocketIV) {
+                ammoTypes = ProjectileID.RocketIV;
+            }
+            if (ammoItem.type == ItemID.ClusterRocketI) {
+                ammoTypes = ProjectileID.ClusterRocketI;
+            }
+            if (ammoItem.type == ItemID.ClusterRocketII) {
+                ammoTypes = ProjectileID.ClusterRocketII;
+            }
+            if (ammoItem.type == ItemID.DryRocket) {
+                ammoTypes = ProjectileID.DryRocket;
+            }
+            if (ammoItem.type == ItemID.WetRocket) {
+                ammoTypes = ProjectileID.WetRocket;
+            }
+            if (ammoItem.type == ItemID.HoneyRocket) {
+                ammoTypes = ProjectileID.HoneyRocket;
+            }
+            if (ammoItem.type == ItemID.LavaRocket) {
+                ammoTypes = ProjectileID.LavaRocket;
+            }
+            if (ammoItem.type == ItemID.MiniNukeI) {
+                ammoTypes = ProjectileID.MiniNukeRocketI;
+            }
+            if (ammoItem.type == ItemID.MiniNukeII) {
+                ammoTypes = ProjectileID.MiniNukeRocketII;
+            }
         }
     }
 }

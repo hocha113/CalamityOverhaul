@@ -25,7 +25,6 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.UI;
 using Terraria.WorldBuilding;
-using static Humanizer.In;
 
 namespace CalamityOverhaul
 {
@@ -322,6 +321,52 @@ namespace CalamityOverhaul
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 关于火箭的弹药映射
+        /// </summary>
+        /// <param name="ammoItem"></param>
+        /// <returns></returns>
+        public static int RocketAmmo(Item ammoItem) {
+            int ammoTypes = ammoItem.shoot;
+            if (ammoItem.type == ItemID.RocketI) {
+                ammoTypes = ProjectileID.RocketI;
+            }
+            if (ammoItem.type == ItemID.RocketII) {
+                ammoTypes = ProjectileID.RocketII;
+            }
+            if (ammoItem.type == ItemID.RocketIII) {
+                ammoTypes = ProjectileID.RocketIII;
+            }
+            if (ammoItem.type == ItemID.RocketIV) {
+                ammoTypes = ProjectileID.RocketIV;
+            }
+            if (ammoItem.type == ItemID.ClusterRocketI) {
+                ammoTypes = ProjectileID.ClusterRocketI;
+            }
+            if (ammoItem.type == ItemID.ClusterRocketII) {
+                ammoTypes = ProjectileID.ClusterRocketII;
+            }
+            if (ammoItem.type == ItemID.DryRocket) {
+                ammoTypes = ProjectileID.DryRocket;
+            }
+            if (ammoItem.type == ItemID.WetRocket) {
+                ammoTypes = ProjectileID.WetRocket;
+            }
+            if (ammoItem.type == ItemID.HoneyRocket) {
+                ammoTypes = ProjectileID.HoneyRocket;
+            }
+            if (ammoItem.type == ItemID.LavaRocket) {
+                ammoTypes = ProjectileID.LavaRocket;
+            }
+            if (ammoItem.type == ItemID.MiniNukeI) {
+                ammoTypes = ProjectileID.MiniNukeRocketI;
+            }
+            if (ammoItem.type == ItemID.MiniNukeII) {
+                ammoTypes = ProjectileID.MiniNukeRocketII;
+            }
+            return ammoTypes;
         }
 
         /// <summary>

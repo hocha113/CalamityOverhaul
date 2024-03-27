@@ -137,8 +137,8 @@ namespace CalamityOverhaul.Content
                 AmmoCapacity = 1;
             }
             InitializeMagazine();
+            CWRIDs.SetAmmoItem(item);
             remakeItem = (item.ModItem as EctypeItem) != null;
-
             int type = item.type;
             if (type == ModContent.ItemType<Ataraxia>()) {
                 item.damage = 305;
@@ -159,22 +159,24 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，角色手持的物品的该函数会被加载一次
         public override void SaveData(Item item, TagCompound tag) {
             tag.Add("_MeleeCharge", MeleeCharge);
             tag.Add("_noDestruct", noDestruct);
             if (HasCartridgeHolder) {
                 if (MagazineContents != null && MagazineContents.Length > 0) {
-                    for (int i = 0; i < MagazineContents.Length; i++) {
-                        if (MagazineContents[i] == null) {
-                            MagazineContents[i] = new Item(ItemID.None);
+                    Item[] safe_MagazineContent = MagazineContents.ToArray();//这里需要一次安全的保存中转
+                    for (int i = 0; i < safe_MagazineContent.Length; i++) {
+                        if (safe_MagazineContent[i] == null) {
+                            safe_MagazineContent[i] = new Item(ItemID.None);
                         }
-                        if (MagazineContents[i].type != ItemID.None) {
-                            if (!MagazineContents[i].CWR().AmmoProjectileReturn) {
-                                MagazineContents[i] = new Item(ItemID.None);
+                        if (safe_MagazineContent[i].type != ItemID.None) {
+                            if (!safe_MagazineContent[i].CWR().AmmoProjectileReturn) {
+                                safe_MagazineContent[i] = new Item(ItemID.None);
                             }
                         }
                     }
-                    tag.Add("_MagazineContents", MagazineContents);
+                    tag.Add("_MagazineContents", safe_MagazineContent);
                 }
                 tag.Add("_IsKreload", IsKreload);
             }

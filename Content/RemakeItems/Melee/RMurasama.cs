@@ -79,11 +79,21 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 int index = InWorldBossPhase.Instance.Level();
                 TooltipLine newLine = new TooltipLine(CWRMod.Instance, "CWRText", text);
                 // 如果文本是 "[Text]"，则使用本地化语言替换
+                //if (newLine.Text == "[Text]") {
+                //    if (index >= 0 && index < langs.Length) {
+                //        text = langs[index];
+                //    }
+                //    else {
+                //        text = "ERROR";
+                //    }
+                //    newLine.Text = text;
+                //    // 使用颜色渐变以提高可读性
+                //    newLine.OverrideColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
+                //}
                 if (newLine.Text == "[Text]") {
-                    if (index >= 0 && index < langs.Length) {
-                        text = langs[index];
-                    }
-                    else {
+                    if (index >= 0 && index <= 14) {
+                        text = CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}");
+                    } else {
                         text = "ERROR";
                     }
                     newLine.Text = text;

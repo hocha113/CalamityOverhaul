@@ -22,6 +22,21 @@ namespace CalamityOverhaul.Common
         public LocalizedText Drop_Hell_RuleText { get; private set; }
         public LocalizedText Drop_GlodDragonDrop_RuleText { get; private set; }
         public LocalizedText Murasama_TextDictionary_Content { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_0 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_1 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_2 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_3 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_4 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_5 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_6 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_7 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_8 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_9 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_10 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_11 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_12 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_13 { get; private set; }
+        public LocalizedText Murasama_TextDictionary_Content_14 { get; private set; }
         public LocalizedText RemakeItem_Remind_TextContent { get; private set; }
         public LocalizedText StarMyriadChanges_TextContent { get; private set; }
         public LocalizedText Destruct_TextContent { get; private set; }
@@ -107,6 +122,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText Wap_Revolver_Text { get; private set; }
         public LocalizedText Wap_Gatligator_Text { get; private set; }
         public LocalizedText Wap_Xenopopper_Text { get; private set; }
+        public LocalizedText Wap_DaedalusStormbow_Text { get; private set; }
         #endregion
         public override void Load() {
             //使用反射进行属性的自动加载

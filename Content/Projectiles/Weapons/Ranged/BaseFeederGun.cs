@@ -395,12 +395,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return result;
         }
         /// <summary>
-        /// 向弹匣中装入子弹的函数，这个函数并不负责消耗逻辑
+        /// 退还弹匣内非空子弹
         /// </summary>
-        public virtual void LoadBulletsIntoMagazine() {
-            CWRItems cwrItem = ModItem;//获取模组物品实例
-            if (cwrItem.MagazineContents != null && cwrItem.MagazineContents.Length > 0 && ReturnRemainingBullets) {
-                foreach (Item i in cwrItem.MagazineContents) {//在装弹之前返回玩家弹匣中剩余的弹药
+        public void BulletReturn() {
+            if (ModItem.MagazineContents != null && ModItem.MagazineContents.Length > 0 && ReturnRemainingBullets) {
+                foreach (Item i in ModItem.MagazineContents) {//在装弹之前返回玩家弹匣中剩余的弹药
                     if (i.stack > 0 && i.type != ItemID.None) {
                         if (i.CWR().AmmoProjectileReturn) {
                             Owner.QuickSpawnItem(Source, new Item(i.type), i.stack);
@@ -408,6 +407,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
             }
+        }
+        /// <summary>
+        /// 向弹匣中装入子弹的函数，这个函数并不负责消耗逻辑
+        /// </summary>
+        public virtual void LoadBulletsIntoMagazine() {
+            CWRItems cwrItem = ModItem;//获取模组物品实例
+            BulletReturn();
             List<Item> loadedItems = new List<Item>();
             int magazineCapacity = cwrItem.AmmoCapacity;
             if (LoadingQuantity > 0) {
@@ -436,8 +442,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         break;
                     }
                 }
-
-                loadedItems.Add(new Item(ammoItem.type, stack));
+                if (ammoItem.type > ItemID.None && stack > 0) {
+                    loadedItems.Add(new Item(ammoItem.type, stack));
+                }
                 accumulatedAmount += stack;
 
                 if (accumulatedAmount >= magazineCapacity) {
@@ -555,9 +562,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool GetMagazineCanUseAmmoProbability() {
             bool result;
             result = Owner.CanUseAmmoInWeaponShoot(Item);
-            //if (!result) {
-            //    result = Main.rand.NextBool(5);
-            //}
             return result;
         }
 
@@ -571,9 +575,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     if (ModItem.MagazineContents[0] == null) {
                         ModItem.MagazineContents[0] = new Item();
                     }
+                    //if (ModItem.MagazineContents[0].type == ItemID.None) {//这里是额外的防御代码
+                    //    BulletReturn();
+                    //    InitializeMagazine();
+                    //    SetEmptyMagazine();//如果头弹检测为空，说明出现了预料之外的情况，为了防御，这里提前将弹匣清空
+                    //    return;
+                    //}
                     AmmoTypes = ModItem.MagazineContents[0].shoot;
                 }
-                if (BulletNum > 0) {
+                if (BulletNum > 0 && AmmoTypes > 0) {
                     if (PreFiringShoot()) {
                         if (onFire) {
                             FiringShoot();
@@ -600,7 +610,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     PostFiringShoot();
                 }
                 if (CanUpdateMagazineContentsInShootBool) {
-                    //如果关闭了弹匣系统，他将会必定调用一次UpdateMagazineContents，因为该方法将内置一次概率消耗
+                    //如果关闭了弹匣系统，他将会必定调用一次UpdateMagazineContents
                     if (GetMagazineCanUseAmmoProbability() || MustConsumeAmmunition || !MagazineSystem) {
                         UpdateMagazineContents();
                     }

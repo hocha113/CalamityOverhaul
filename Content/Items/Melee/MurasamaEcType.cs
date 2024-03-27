@@ -216,8 +216,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 string lang = CWRLocText.GetTextValue("Murasama_TextDictionary_Content");
                 string[] langs = lang.Split("\n");
                 int index = InWorldBossPhase.Instance.Level();
-                if (index >= 0 && index < langs.Length) {
-                    legendtops.Text = langs[index];
+                if (index >= 0 && index <= 14) {
+                    legendtops.Text = CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}");
                 }
                 else {
                     legendtops.Text = "ERROR";

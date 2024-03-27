@@ -1,4 +1,5 @@
-﻿using CalamityMod.Projectiles.Melee;
+﻿using CalamityMod;
+using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
@@ -52,12 +53,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
+            ModOwner.SetScreenShake(3);
             //火箭弹药特判
             float newDamg = WeaponDamage;
             Item ammoItem = GetSelectedBullets();
-            if (ammoItem.type == ItemID.RocketI) {
-                AmmoTypes = ProjectileID.RocketI;
-            }
+            AmmoTypes = ProjectileID.RocketI;
             if (ammoItem.type == ItemID.RocketII) {
                 AmmoTypes = ProjectileID.RocketII;
                 newDamg *= 0.9f;
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 newDamg *= 0.85f;
             }
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            _ = SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = -0.6f }, Projectile.Center);
+            _ = SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = -0.6f, Volume = 0.6f }, Projectile.Center);
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 0.5f, AmmoTypes, (int)newDamg, WeaponKnockback, Owner.whoAmI, 0, 0, 3);
             Main.projectile[proj].scale *= 1.6f;
             Main.projectile[proj].usesLocalNPCImmunity = true;

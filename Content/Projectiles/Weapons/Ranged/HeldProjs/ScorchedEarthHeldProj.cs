@@ -38,6 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
+            ModOwner.SetScreenShake(4);
             SpawnGunFireDust();
             SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound, Projectile.Center);
             DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);

@@ -106,9 +106,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float HandFireDistanceY = -3;
         /// <summary>
-        /// 应力范围，默认为5
+        /// 应力范围，默认为10
         /// </summary>
-        public float RangeOfStress = 8;
+        public float RangeOfStress = 10;
         /// <summary>
         /// 开火时会制造的后坐力模长，默认为5
         /// </summary>
@@ -204,10 +204,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual Vector2 CreateRecoil() {
             OffsetRot += GunPressure * OwnerPressureIncrease;
             Vector2 recoilVr = ShootVelocity.UnitVector() * (Recoil * -OwnerPressureIncrease);
-            //if (CWRServerConfig.Instance.MurasamaScreenVibration) {
-            //    PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, recoilVr, 6, 1, 2, 1000f, FullName);
-            //    Main.instance.CameraModifiers.Add(modifier);
-            //}
             if (Math.Abs(Owner.velocity.X) < RangeOfStress && Math.Abs(Owner.velocity.Y) < RangeOfStress) {
                 Owner.velocity += recoilVr;
                 if (!CWRUtils.isSinglePlayer) {//&& netUpdateCooldingTime <= 0
