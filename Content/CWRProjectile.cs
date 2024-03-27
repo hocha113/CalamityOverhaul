@@ -41,11 +41,24 @@ namespace CalamityOverhaul.Content
         Voidragon
     }
 
+    public struct HitAttributeStruct
+    {
+        /// <summary>
+        /// 设置为<see langword="true"/>必定暴击
+        /// </summary>
+        public bool CertainCrit;
+        /// <summary>
+        /// 设置为<see langword="true"/>必定不暴击，如果启用，会覆盖<see cref="CertainCrit"/>的设置
+        /// </summary>
+        public bool NeverCrit;
+    }
+
     public class CWRProjectile : GlobalProjectile
     {
         public override bool InstancePerEntity => true;
 
         public byte SpanTypes;
+        public HitAttributeStruct GetHitAttribute;
         public IEntitySource Source;
 
         public override void SetDefaults(Projectile projectile) {
@@ -68,13 +81,6 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-        }
-
-        public override void AI(Projectile projectile) {
-        }
-
-        public override bool PreAI(Projectile projectile) {
-            return base.PreAI(projectile);
         }
 
         public override void PostAI(Projectile projectile) {
@@ -144,6 +150,15 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
+            if (GetHitAttribute.CertainCrit) {
+                modifiers.SetCrit();
+            }
+            if (GetHitAttribute.NeverCrit) {
+                modifiers.DisableCrit();
+            }
+        }
+
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
             RMeowmere.SpanDust(projectile);
             
@@ -158,26 +173,14 @@ namespace CalamityOverhaul.Content
                     Vector2 vr = player.Center.To(Main.MouseWorld)
                         .RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-15, 15))).UnitVector() * Main.rand.Next(7, 9);
                     Vector2 pos = player.Center + vr * 10;
-                    Projectile.NewProjectileDirect(
-                        CWRUtils.parent(player), pos, vr,
-                        ModContent.ProjectileType<DeadWave>(),
-                        projectile.damage,
-                        projectile.knockBack,
-                        projectile.owner
-                        ).rotation = vr.ToRotation();
+                    Projectile.NewProjectileDirect(CWRUtils.parent(player), pos, vr, ModContent.ProjectileType<DeadWave>(),
+                        projectile.damage, projectile.knockBack, projectile.owner).rotation = vr.ToRotation();
                 }
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.ClaretCannon) {
-                Projectile projectile1 = Projectile.NewProjectileDirect(
-                        CWRUtils.parent(player),
-                        target.position,
-                        Vector2.Zero,
-                        ModContent.ProjectileType<BloodVerdict>(),
-                        projectile.damage,
-                        projectile.knockBack,
-                        projectile.owner
-                        );
+                Projectile projectile1 = Projectile.NewProjectileDirect(CWRUtils.parent(player), target.position, Vector2.Zero,
+                        ModContent.ProjectileType<BloodVerdict>(), projectile.damage, projectile.knockBack, projectile.owner);
                 BloodVerdict bloodVerdict = projectile1.ModProjectile as BloodVerdict;
                 if (bloodVerdict != null) {
                     bloodVerdict.offsetVr = new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height));
@@ -260,10 +263,7 @@ namespace CalamityOverhaul.Content
                         }
                         break;
                     case WhipHitTypeEnum.BleedingScourge:
-                        Projectile.NewProjectile(
-                                    CWRUtils.parent(projectile),
-                                    target.Center,
-                                    Vector2.Zero,
+                        Projectile.NewProjectile(CWRUtils.parent(projectile), target.Center, Vector2.Zero,
                                     ModContent.ProjectileType<Content.Projectiles.Weapons.Summon.BloodBlast>(),
                                     projectile.damage / 2, 0, projectile.owner);
                         break;

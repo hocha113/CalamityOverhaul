@@ -528,6 +528,9 @@ namespace CalamityOverhaul
         /// <param name="ammoItem"></param>
         public static void SetAmmoItem(Item ammoItem) {
             ref int ammoTypes = ref ammoItem.shoot;
+            if (ammoItem.type == ItemID.FallenStar) {
+                ammoTypes = ProjectileID.StarCannonStar;
+            }
             if (ammoItem.type == ItemID.RocketI) {
                 ammoTypes = ProjectileID.RocketI;
             }

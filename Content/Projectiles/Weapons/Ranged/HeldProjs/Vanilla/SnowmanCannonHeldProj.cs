@@ -79,12 +79,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 ModOwner.SetScreenShake(3);
             }
             if (ammonum == 0) {
-                Item.crit = -1000;
                 int proj5 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 0.00001f, AmmoTypes, WeaponDamage * 10, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj5].scale *= 3f;
                 Main.projectile[proj5].usesLocalNPCImmunity = true;
                 Main.projectile[proj5].localNPCHitCooldown = 5;
-                Item.crit = 4;
+                Main.projectile[proj5].CWR().GetHitAttribute.NeverCrit = true;
                 ModOwner.SetScreenShake(3.5f);
             }
         }
@@ -92,15 +91,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void PostFiringShoot() {
             base.PostFiringShoot();
             EjectCasing();
-        }
-
-        public override void PostDraw(Color lightColor) {
-            //if (BulletNum > 0 && BulletNum <= 4 && IsKreload) {
-            //    string path = CWRConstant.Item_Ranged + "ScorchedEarth_PrimedForAction_" + BulletNum;
-            //    Texture2D value = CWRUtils.GetT2DValue(path);
-            //    Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
-            //        , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
-            //}
         }
     }
 }

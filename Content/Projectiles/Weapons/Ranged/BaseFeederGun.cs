@@ -582,8 +582,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     //    return;
                     //}
                     AmmoTypes = ModItem.MagazineContents[0].shoot;
+                    if (AmmoTypes == 0) {
+                        AmmoTypes = ProjectileID.Bullet;
+                    }
                 }
-                if (BulletNum > 0 && AmmoTypes > 0) {
+                if (BulletNum > 0) {
                     if (PreFiringShoot()) {
                         if (onFire) {
                             FiringShoot();

@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria.ModLoader;
 using Terraria;
+using CalamityOverhaul.Common;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
@@ -14,6 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override string TargetToolTipItemName => "PlagueTaintedSMGEcType";
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<PlagueTaintedSMGHeldProj>(45);
+            item.UseSound = CWRSound.Gun_SMG_Shoot;
             item.CWR().Scope = true;
         }
     }

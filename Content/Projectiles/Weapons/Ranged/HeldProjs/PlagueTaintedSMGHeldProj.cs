@@ -20,15 +20,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            FireTime = 10;
+            FireTime = 6;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
-            HandFireDistanceY = -10;
+            HandFireDistanceY = -5;
             ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.1f;
+            GunPressure = 0.06f;
             ControlForce = 0.03f;
             Recoil = 0.2f;
             RangeOfStress = 25;
@@ -41,13 +41,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            FireTime = 10;
+            FireTime = 6;
             GunPressure = 0.1f;
             Recoil = 0.2f;
             SpawnGunFireDust();
-            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+            SoundEngine.PlaySound(CWRSound.Gun_SMG_Shoot with { Pitch = -0.2f, Volume = 0.7f }, Projectile.Center);
             OffsetPos -= ShootVelocity.UnitVector() * 4;
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<BubonicRoundProj>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<PlagueTaintedProjectile>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {
