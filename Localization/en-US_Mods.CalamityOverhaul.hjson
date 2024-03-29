@@ -2909,66 +2909,74 @@ TextContent: {
 			Right-click for a fast and powerful single shot
 			"It has nothing to do with storms, it has nothing to do with angels."
 			'''
+		Murasama_Text_Lang_0: Trial
 		Murasama_TextDictionary_Content_0:
 			'''
-			Hey, recruit, ahead lies a creature known as a Blue Blob, 
-			or perhaps a Sandworm from the depths of the desert, 
-			or even a Zombie Crab lurking within mushroom caves.
-			Take down any one of them to prove yourself; this is your first step.
+			Recruit, You need to prove yourself to me.
+			Those foolish slime aggregations, guardians of the pre-drought sea, decaying husks within the fungus,
+			Deal with one of them at your leisure, this is your first step.
 			'''
 		Murasama_TextDictionary_Content_1:
 			'''
-			As night descends, the great eyeball prowls; stab it! 
-			Or the seashell beneath the desert sands, show no mercy.
+			As the sun sets, I can feel it, the gaze of the fallen god not completely dissipated still watching this world, I dislike this feeling, kill it.
+			In the ruins of the front sea, I feel that certain ancient things are protected within the giant clams of the arid sea, set them free.
 			'''
 		Murasama_TextDictionary_Content_2:
 			'''
-			The time has come, cleave through that mass of brain blooms, or that purple serpent. 
-			I want to see your blade dance amidst the chaos.
+			The remnants of the old rulers still pollute the land here, flesh grows rampant, corruption abounds.
+			Crush the brain, sever the worm, let us send that pitiful evil god on his way.
 			'''
 		Murasama_TextDictionary_Content_3:
 			'''
-			Deal with the foulness at the dungeon gate. 
-			And those corrupted heretics, silence them utterly.
+			The flesh parasites are still active, the corrupt tumors begin to contemplate... 
+			you haven't completely wiped them out yet, go, root out the problem.
+			I hear cries coming from the dungeon, and the dungeon seems sealed by some force, 
+			break its seal, perhaps to find treasures of the old world.
 			'''
-		Murasama_TextDictionary_Content_4: Remember that Blue Blob? Now it's time to take down its god.
+		Murasama_TextDictionary_Content_4:
+			'''
+			Remember those foolish slime? I can feel that a special aggregation has appeared among them,
+			Take it out, to prevent future troubles.
+			'''
 		Murasama_TextDictionary_Content_5:
 			'''
-			Born within the cages of the snow plains, aberrations that wander amidst the fires of hell. 
-			Corrupted by the filth, the green sea worms... Do you know what I'm thinking?
-			Slice them apart!
+			In the prison within the ice barrier, the prisoners there may be useful, release him, let him serve us.
+			The abandoned offspring of the sulfur sea hinders our exploration of the treasures of the abyss, go, end its devouring and wandering.
+			I miss the flames tempered in the sulfur cliffs, go meet the guardians there.
 			'''
 		Murasama_TextDictionary_Content_6:
 			'''
-			The sulfurous inferno eyeball is glaring at us, we need to reduce it back to a misshapen mass of flesh.
-			By the shores, the heretical chants always echo, likely the depraved cultists at play, we must investigate.
-			In the temple lies a machine; shove a battery in it to temporarily power it up, then we'll ensure its complete malfunction!
+			That foolish escaping replica, dare to secretly spy. Kill that alien, with blood and flames to sacrifice the blade.
+			Enchanting songs come from the sea, those are the sirens' people, let us take the head of the sea monster, and establish our deeds on the sea.
+			The foolish lizard clan only worships these stubborn stones, let us crush it to pieces, destroy their faith, we are what they should worship.
 			'''
 		Murasama_TextDictionary_Content_7:
 			'''
-			Spreaders of the taint-corrupted aberrations, and its progeny roam the jungle! 
-			Seek them out, then drive your blade into their skulls.
-			That necrotech abomination, a statue crafted of flesh and blood, we must render it completely immobile.
-			The great serpent that roams the starry skies, let's hack it to pieces.
+			The intertwined flesh shell, the resentful souls of ancient battlefields, 
+			the relentless destruction golems, it destroys everything, and we destroy it.
+			In the jungle, someone's previous crude work is still wandering, as a failure, it should be like a pile of scrap iron.
+			The former star god wandering dragon has long fallen, now there is only a mere maggot, let us end the era of the star god completely.
 			'''
 		Murasama_TextDictionary_Content_8:
 			'''
-			The apostles of the false sun god, they wander in sacred places or in hellish realms,
-			Or the foolish birds of the jungle, you choose one to deal with.
+			Poor imitation, foolish clone, that stupid bird, wandering in the jungle, eliminate it.
+			Another sun appears underground, they seem to want to bring this sacred flame 
+			through the sacred land to the surface, expel its apostles.
 			'''
 		Murasama_TextDictionary_Content_9:
 			'''
-			Choose wisely, recruit.
-			The false god of the sun, the cosmic emissaries, or the extradimensional remnants in the dungeon.
-			Let us meet them.
+			The poor gods lingering from the sun.
+			The storm insects preying on the edge of the sky for the flying dragons, with decent armored shells.
+			In the dimension crack sealed in the dungeon, perhaps it is a good way to obtain dark matter.
+			The apostles from the exotic land, it seems to carry rare twisted voids.
 			'''
-		Murasama_TextDictionary_Content_10: Slay the arrogant worm! Or go crush the fish highly corrupted by the filth.
-		Murasama_TextDictionary_Content_11: The fire-breathing dragon, show no mercy, crush it!
-		Murasama_TextDictionary_Content_12: Meet the heretic of the machine cult, or the fallen witch, deal with these spawn of heresy!
+		Murasama_TextDictionary_Content_10: Take out that arrogant worm! Or go and smash that highly corrupted fish.
+		Murasama_TextDictionary_Content_11: Fire-breathing dragon, don't hold back, smash!
+		Murasama_TextDictionary_Content_12: Go meet the heretics of that mechanical doctrine, or that fallen witch, deal with these heretic brats!
 		Murasama_TextDictionary_Content_13:
 			'''
-			The demon dragon emerges, and we shall engage in full-scale conflict with the alien abominations, 
-			wielding the stone obtained from the abyss. Recruit, this is the final battle!
+			The demon dragon appears, we will engage in a full-scale conflict with the alien evil spirits, 
+			with that stone obtained from the trench. New recruit, this is the final battle!
 			'''
 		Murasama_TextDictionary_Content_14: Well done, recruit.
 	}

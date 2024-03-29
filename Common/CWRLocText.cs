@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText Drop_Hell_RuleText { get; private set; }
         public LocalizedText Drop_GlodDragonDrop_RuleText { get; private set; }
         public LocalizedText Murasama_TextDictionary_Content { get; private set; }
+        public LocalizedText Murasama_Text_Lang_0 { get; private set; }
         public LocalizedText Murasama_TextDictionary_Content_0 { get; private set; }
         public LocalizedText Murasama_TextDictionary_Content_1 { get; private set; }
         public LocalizedText Murasama_TextDictionary_Content_2 { get; private set; }

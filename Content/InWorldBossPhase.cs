@@ -40,6 +40,8 @@ namespace CalamityOverhaul.Content
         public bool level13 => Downed31.Invoke() || Downed32.Invoke();
 
         public int Level() {
+            //int a = (int)((Main.GameUpdateCount / 120) % 15);
+            //return a;
             int level = 0;
             if (level0) {
                 level = 1;
