@@ -3016,28 +3016,19 @@ TextContent: {
 			来自异域的异教使徒，它似乎携带着罕见的扭曲虚空
 			向神明展示你的力量
 			'''
-		Murasama_TextDictionary_Content_10: 
+		Murasama_TextDictionary_Content_10:
 			'''
 			那条傲慢的宇宙巨蟒在世界的帷幕后蠢蠢欲动，终结他的野望
 			硫磺之海中潜伏着的最古老的怪物随着那阵灵魂风暴而苏醒，让它成为我们荣耀的一环
 			'''
-		Murasama_TextDictionary_Content_11: 
-			'''
-			伟大的重生之龙，最后一条金源龙神。而我们，是弑神者
-			'''
+		Murasama_TextDictionary_Content_11: 伟大的重生之龙，最后一条金源龙神。而我们，是弑神者
 		Murasama_TextDictionary_Content_12:
 			'''
 			他曾鼓吹没有任何神明能够比肩他的造物,星流的战争机器，也该在锋刃下停止运作
 			古老的堕落魔法的最后传承者，灾厄与毁灭的代名词……
 			这场战争将会颠覆我们的世界，将会被后人所世代传颂。
 			'''
-		Murasama_TextDictionary_Content_13: 
-			'''
-			漆黑的深渊之下，妖龙守护的究竟是什么？已经没有任何存在可以阻拦我们，挥舞剑刃吧，这将是最后一战
-			'''
-		Murasama_TextDictionary_Content_14: 
-			'''
-			你已经站上了世界的顶峰，神与永恒，都拜倒在你的脚下
-			'''
+		Murasama_TextDictionary_Content_13: 漆黑的深渊之下，妖龙守护的究竟是什么？已经没有任何存在可以阻拦我们，挥舞剑刃吧，这将是最后一战
+		Murasama_TextDictionary_Content_14: 你已经站上了世界的顶峰，神与永恒，都拜倒在你的脚下
 	}
 }

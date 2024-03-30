@@ -325,23 +325,40 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileType<TransmutationOfMatter>())
                     .Register();
             }
-            //修改凤凰爆破枪的合成
+            
             {
                 for (int i = 0; i < Recipe.numRecipes; i++) {
                     Recipe recipe = Main.recipe[i];
-                    if (recipe.HasResult(ItemID.PhoenixBlaster)) {
-                        recipe.AddIngredient(ItemType<PurifiedGel>(), 10);//添加纯净凝胶
-                    }
-                }
-            }
-            {
-                for (int i = 0; i < Recipe.numRecipes; i++) {
-                    Recipe recipe = Main.recipe[i];
-                    //修改神圣连弩的合成
+                    //修改凤凰爆破枪的合成
                     {
+                        if (recipe.HasResult(ItemID.PhoenixBlaster)) {
+                            recipe.AddIngredient(ItemType<PurifiedGel>(), 10);//添加纯净凝胶
+                        }
+                    }
+                    //修改肉后矿弩的合成：添加前置弓以及同级转化
+                    {
+                        //秘银弓合成需要钴蓝弓
+                        if (recipe.HasResult(ItemID.MythrilRepeater)) {
+                            recipe.AddIngredient(ItemID.CobaltRepeater, 1);
+                        }
+                        //山铜弓合成需要钯金弓
+                        if (recipe.HasResult(ItemID.OrichalcumRepeater)) {
+                            recipe.AddIngredient(ItemID.PalladiumRepeater, 1);
+                        }
+                        //精金弓合成需要秘银弓
+                        if (recipe.HasResult(ItemID.AdamantiteRepeater)) {
+                            recipe.AddIngredient(ItemID.MythrilRepeater, 1);
+                        }
+                        //钛金弓合成需要山铜弓
+                        if (recipe.HasResult(ItemID.TitaniumRepeater)) {
+                            recipe.AddIngredient(ItemID.OrichalcumRepeater, 1);
+                        }
+                        //神圣连弩合成需要精金弩和钛金弩
                         if (recipe.HasResult(ItemID.HallowedRepeater)) {
-                            recipe.AddIngredient(ItemID.Ichor, 1);//添加灵液
-                            recipe.AddIngredient(ItemID.CursedFlame, 1);//添加诅咒焰
+                            recipe.AddIngredient(ItemID.AdamantiteRepeater, 1);
+                            recipe.AddIngredient(ItemID.TitaniumRepeater, 1);
+                            recipe.AddIngredient(ItemID.Ichor, 5);//添加灵液
+                            recipe.AddIngredient(ItemID.CursedFlame, 5);//添加诅咒焰
                             recipe.AddIngredient(ItemID.UnicornHorn, 1);//添加独角兽角
                         }
                     }
