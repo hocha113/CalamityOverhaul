@@ -30,7 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             for (int i = 0; i < 3; i++) {
                 _ = Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.07f, 0.07f)) * Main.rand.NextFloat(0.8f, 1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            _ = UpdateConsumeAmmo();
         }
     }
 }
