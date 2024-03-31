@@ -127,9 +127,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         protected SoundStyle loadTheRounds = CWRSound.CaseEjection2;
 
-        public override void SetRangedProperty() {
-            base.SetRangedProperty();
-        }
         /// <summary>
         /// 抛壳的简易实现
         /// </summary>
@@ -157,7 +154,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void KreloadSoundloadTheRounds() {
             SoundEngine.PlaySound(loadTheRounds with { Volume = 0.65f, PitchRange = (-0.1f, 0) }, Projectile.Center);
-            EjectCasing();
         }
         /// <summary>
         /// 额外的弹药消耗事件，返回<see langword="false"/>禁用默认弹药消耗逻辑的运行
@@ -216,7 +212,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <returns></returns>
         public virtual float GetGunBodyRotation() {
-            return (Owner.direction > 0 ? MathHelper.ToRadians(10) : MathHelper.ToRadians(170)) + FeederOffsetRot;
+            int value = (int)(10 + FeederOffsetRot);
+            return (Owner.direction > 0 ? MathHelper.ToRadians(value) : MathHelper.ToRadians(180 - value));
         }
         /// <summary>
         /// 统一获取枪体在静置时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
@@ -267,6 +264,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public sealed override void InOwner() {
+            SetHeld();
             InitializeMagazine();
             PreInOwnerUpdate();
             ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
@@ -274,8 +272,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.Center = GetGunBodyPostion();
             Projectile.rotation = GetGunBodyRotation();
             Projectile.timeLeft = 2;
-            SetHeld();
-
+            if (GunShootCoolingValue > 0) {
+                GunShootCoolingValue--;
+            }
             if (!Owner.mouseInterface) {
                 if (DownLeft) {
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
@@ -284,7 +283,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
                     if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {//需要子弹，还需要判断是否已经装弹//HaveAmmo && 
                         onFire = true;
-                        Projectile.ai[1]++;
                     }
                     SetAutomaticCartridgeChange();
                 }
@@ -299,7 +297,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
                     if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {//HaveAmmo && 
                         onFireR = true;
-                        Projectile.ai[1]++;
                     }
                     SetAutomaticCartridgeChange();
                 }
@@ -315,7 +312,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
             }
-
             if (OnKreload) {//装弹过程
                 if (PreOnKreloadEvent()) {
                     ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - (Projectile.rotation)) * DirSign * SafeGravDir + 0.3f;
@@ -333,6 +329,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (kreloadTimeValue == kreloadMaxTime / 3) {
                     AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
                     if (PreConsumeAmmoEvent()) {
+                        BulletReturn();
                         LoadBulletsIntoMagazine();//这一次更新弹匣内容，压入子弹
                         if (BulletConsumption) {
                             ExpendedAmmunition();
@@ -352,7 +349,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         if (value > wRItems.AmmoCapacity) {
                             value = wRItems.AmmoCapacity;
                         }
-                        BulletNum = value;
+                        if (LoadingQuantity > 0) {
+                            value = LoadingQuantity;
+                        }
+                        BulletNum += value;
+                        if (BulletNum > wRItems.AmmoCapacity) {
+                            BulletNum = wRItems.AmmoCapacity;
+                        }
                         if (wRItems.AmmoCapacityInFire) {
                             wRItems.AmmoCapacityInFire = false;
                         }
@@ -373,11 +376,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             else {
                 LoadingReminder = true;
             }
-
             if (Item.type != ItemID.None) {
                 IsKreload = ModItem.IsKreload;
             }
-
             PostInOwnerUpdate();
         }
         /// <summary>
@@ -413,7 +414,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
             CWRItems cwrItem = ModItem;//获取模组物品实例
-            BulletReturn();
             List<Item> loadedItems = new List<Item>();
             int magazineCapacity = cwrItem.AmmoCapacity;
             if (LoadingQuantity > 0) {
@@ -460,6 +460,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public void ExpendedAmmunition() {
             int ammo = 0;
             int maxAmmo = ModItem.AmmoCapacity;
+            if (LoadingQuantity > 0) {
+                maxAmmo = LoadingQuantity;
+            }
             foreach (Item inds in AmmoState.InItemInds) {
                 if (ammo >= maxAmmo) {
                     break;
@@ -566,7 +569,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public sealed override void SpanProj() {
-            if ((onFire || onFireR) && Projectile.ai[1] > FireTime && kreloadTimeValue <= 0) {
+            if ((onFire || onFireR) && GunShootCoolingValue <= 0 && kreloadTimeValue <= 0) {
                 if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
@@ -575,12 +578,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     if (ModItem.MagazineContents[0] == null) {
                         ModItem.MagazineContents[0] = new Item();
                     }
-                    //if (ModItem.MagazineContents[0].type == ItemID.None) {//这里是额外的防御代码
-                    //    BulletReturn();
-                    //    InitializeMagazine();
-                    //    SetEmptyMagazine();//如果头弹检测为空，说明出现了预料之外的情况，为了防御，这里提前将弹匣清空
-                    //    return;
-                    //}
                     AmmoTypes = ModItem.MagazineContents[0].shoot;
                     if (AmmoTypes == 0) {
                         AmmoTypes = ProjectileID.Bullet;
@@ -625,7 +622,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
 
-                Projectile.ai[1] = 0;
+                GunShootCoolingValue += FireTime + 1;
                 onFire = false;
             }
         }
@@ -675,7 +672,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public void LoadingAnimation(int rot, int xl, int yl) {
             if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向
-                FeederOffsetRot = -MathHelper.ToRadians(rot) * DirSign;
+                FeederOffsetRot = -rot;
                 FeederOffsetPos = new Vector2(DirSign * -xl, -yl) * SafeGravDir;
             }
         }

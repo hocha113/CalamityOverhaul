@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.UIs.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -43,14 +44,22 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (eyEBool) {
                 spriteBatch.Draw(eye1, DrawPos, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             }
-            for (int i = 0; i < mainUI.items.Length; i++) {
-                if (mainUI.items[i].type != mainUI.previewItems[i].type && mainUI.items[i].type != ItemID.None && eyEBool) {
-                    Vector2 pos = mainUI.ArcCellPos(i) + new Vector2(-1, -2);
-                    spriteBatch.Draw(Texture, pos, null, Color.White * 0.6f, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            if (mainUI.items != null) {
+                for (int i = 0; i < mainUI.items.Length; i++) {
+                    if (mainUI.items[i] == null) {
+                        mainUI.items[i] = new Item();
+                    }
+                    if (mainUI.previewItems[i] == null) {
+                        mainUI.previewItems[i] = new Item();
+                    }
+                    if (mainUI.items[i].type != mainUI.previewItems[i].type && mainUI.items[i].type != ItemID.None && eyEBool) {
+                        Vector2 pos = mainUI.ArcCellPos(i) + new Vector2(-1, -2);
+                        spriteBatch.Draw(Texture, pos, null, Color.White * 0.6f, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                    }
                 }
             }
             if (onMainP) {
-                Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
                 , eyEBool ? CWRLocText.GetTextValue("SupertableUI_Text4") : CWRLocText.GetTextValue("SupertableUI_Text5")
                 , DrawPos.X - 30, DrawPos.Y - 20, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
             }

@@ -31,13 +31,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             FireTime = 7;
             GunPressure = 0.12f;
             Recoil = 0.75f;
-            int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos
+            int proj = Projectile.NewProjectile(Source, GunShootPos
                 , ShootVelocityInProjRot.RotatedBy(Main.rand.NextFloat(-0.02f, 0.02f))
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.FetidEmesis;
 
             if (++Projectile.ai[2] > 8) {
-                Projectile.NewProjectile(Owner.parent(), GunShootPos, Vector2.Zero
+                Projectile.NewProjectile(Source2, GunShootPos, Vector2.Zero
                 , ModContent.ProjectileType<FetidEmesisOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
                 Projectile.ai[2] = 0;
                 _ = CreateRecoil();//执行两次，它会造成两倍的后坐力效果

@@ -99,8 +99,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (HaveAmmo) {
                     onFire = true;
                     Projectile.ai[1]++;
-                    if (Projectile.ai[1] > HandRotStartTime && CanFireMotion)
+                    if (Projectile.ai[1] > HandRotStartTime && CanFireMotion) {
                         ArmRotSengsFront += MathF.Sin(Time * HandRotSpeedSengs) * HandRotRange;
+                        //float backArmRotation = (Projectile.rotation * SafeGravDir + MathHelper.PiOver2) + MathHelper.Pi * DirSign;
+                        //Player.CompositeArmStretchAmount stretch = (MathF.Sin(Time * HandRotSpeedSengs)).ToStretchAmount();
+                        //Owner.SetCompositeArmFront(true, stretch, backArmRotation);
+                    } 
                 }
             }
             else {
@@ -138,7 +142,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(20) : MathHelper.ToRadians(160);
             Projectile.timeLeft = 2;
             SetHeld();
-
+            //SetCompositeArm();
             if (!Owner.mouseInterface) {
                 HandEvent();
             }

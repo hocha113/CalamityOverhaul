@@ -7,6 +7,7 @@ using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -77,6 +78,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 开火时是否默认播放手持物品的使用音效<see cref="Item.UseSound"/>，但如果准备重写<see cref="SpanProj"/>，这个属性将失去作用，默认为<see langword="true"/>
         /// </summary>
         public bool FiringDefaultSound = true;
+        /// <summary>
+        /// 枪械开火冷切计时器
+        /// </summary>
+        public float GunShootCoolingValue {
+            get => Projectile.ai[1];
+            set => Projectile.ai[1] = value;
+        }
         /// <summary>
         /// 这个角度用于设置枪体在玩家非开火阶段的仰角，这个角度是周角而非弧度角，默认为20f
         /// </summary>
@@ -187,7 +195,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 更新枪压的作用状态
         /// </summary>
-        public virtual void UpdateRecoil() {
+        public void UpdateRecoil() {
             OffsetRot -= ControlForce;
             if (OffsetRot <= 0) {
                 OffsetRot = 0;
@@ -235,7 +243,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
                 if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     onFire = true;
-                    Projectile.ai[1]++;
+                    //Projectile.ai[1]++;
                 }
             }
             else {
@@ -249,7 +257,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
                 if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     onFireR = true;
-                    Projectile.ai[1]++;
+                    //Projectile.ai[1]++;
                 }
             }
             else {
@@ -263,6 +271,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.Center = Owner.Center + new Vector2(DirSign * HandDistance, HandDistanceY);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
             Projectile.timeLeft = 2;
+            if (GunShootCoolingValue > 0) {
+                GunShootCoolingValue--;
+            }
             SetHeld();
             if (!Owner.mouseInterface) {
                 FiringIncident();
@@ -372,11 +383,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void SpanProj() {
-            if (Projectile.ai[1] > Item.useTime) {
+            if (GunShootCoolingValue <= 0 && (onFire || onFireR)) {
                 if (FiringDefaultSound) {
                     SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 }
-
                 if (onFire) {
                     FiringShoot();
                 }
@@ -393,7 +403,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * fireLight);
                 }
 
-                Projectile.ai[1] = 0;
+                GunShootCoolingValue += Item.useTime;
                 onFire = false;
             }
         }

@@ -11,7 +11,7 @@ using Terraria.UI;
 
 namespace CalamityOverhaul.Content.UIs
 {
-    internal class UIManagementSystem : ModSystem
+    internal class UISystem : ModSystem
     {
         public override void PostSetupContent() {
             //将自定义的UI放到最后加载，在这之前是确保物品、ID、生物等其他内容都加载完成后
@@ -70,6 +70,12 @@ namespace CalamityOverhaul.Content.UIs
                 }, InterfaceScaleType.UI));
                 layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("Sp UI", delegate {
                     if (SupertableUI.Instance.Active) {
+                        //上帝，必须得这么做？将逻辑更新和绘制更新放到同一个线程里面！这他妈的的逻辑更新将在绘制线程里面运行！这他妈的简直会是一场亵渎
+                        SupertableUI.Instance.Update(Main.gameTimeCache);
+                        RecipeUI.Instance.Update(Main.gameTimeCache);
+                        DragButton.Instance.Update(Main.gameTimeCache);
+                        RecipeErrorFullUI.Instance.Update(Main.gameTimeCache);
+                        //绘制更新将放置在逻辑更新之后
                         SupertableUI.Instance.Draw(Main.spriteBatch);
                         RecipeUI.Instance.Draw(Main.spriteBatch);
                         DragButton.Instance.Draw(Main.spriteBatch);
@@ -95,16 +101,7 @@ namespace CalamityOverhaul.Content.UIs
         public override void UpdateUI(GameTime gameTime) {
             if (Main.LocalPlayer.CWR().CompressorPanelID != -1) {
                 CompressorUI.Instance.Update();
-            }  
-            if (SupertableUI.Instance.Active) {
-                //不要在服务器上运行更新数据的代码，UI只面向本地玩家，服务器不会进行终焉合成
-                if (Main.LocalPlayer.CWR().SupertableUIStartBool && !CWRUtils.isServer) {
-                    SupertableUI.Instance.Update(gameTime);
-                    RecipeUI.Instance.Update(gameTime);
-                    DragButton.Instance.Update(gameTime);
-                    RecipeErrorFullUI.Instance.Update(gameTime);
-                }
-            }  
+            }
             if (OverhaulTheBibleUI.Instance.Active) {
                 OverhaulTheBibleUI.Instance.Update(gameTime);
             }
