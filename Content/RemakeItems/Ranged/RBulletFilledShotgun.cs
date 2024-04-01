@@ -7,6 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
+    /// <summary>
+    /// 满弹霰弹枪
+    /// </summary>
     internal class RBulletFilledShotgun : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<BulletFilledShotgun>();

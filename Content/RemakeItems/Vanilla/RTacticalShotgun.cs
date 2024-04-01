@@ -1,26 +1,23 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
+    /// <summary>
+    /// 战术霰弹枪
+    /// </summary>
     internal class RTacticalShotgun : BaseRItem
     {
         public override int TargetID => ItemID.TacticalShotgun;
-        public override bool FormulaSubstitution => false;
+        public override bool IsVanilla => true;
+        public override string TargetToolTipItemName => "Wap_TacticalShotgun_Text";
         public override void SetDefaults(Item item) {
-            item.damage = 55;
+            item.damage = 50;
             item.SetHeldProj<TacticalShotgunHeldProj>();
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 10;
         }
-        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, CWRLocText.GetText("Wap_TacticalShotgun_Text"));
     }
 }
