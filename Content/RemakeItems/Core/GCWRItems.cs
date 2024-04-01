@@ -17,15 +17,15 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
     internal class GCWRItems : GlobalItem
     {
         public static void ProcessRemakeAction(Item item, Action<BaseRItem> action) {
-            if (CWRConstant.ForceReplaceResetContent && CWRMod.RItemIndsDict.ContainsKey(item.type)) {
-                action(CWRMod.RItemIndsDict[item.type]);
+            if (CWRConstant.ForceReplaceResetContent && CWRMod.RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                action(ritem);
             }
         }
 
         public static bool? ProcessRemakeAction(Item item, Func<BaseRItem, bool?> action) {
             bool? result = null;
-            if (CWRConstant.ForceReplaceResetContent && CWRMod.RItemIndsDict.ContainsKey(item.type)) {
-                result = action(CWRMod.RItemIndsDict[item.type]);
+            if (CWRConstant.ForceReplaceResetContent && CWRMod.RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                result = action(ritem);
             }
             return result;
         }

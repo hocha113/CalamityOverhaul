@@ -42,9 +42,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override bool PreReloadEffects(int time, int maxTime) {
             if (time == 1) {
-                SoundEngine.PlaySound(CWRSound.Gun_Shotgun_LoadShell, Projectile.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_Shotgun_LoadShell with { Volume = 0.75f}, Projectile.Center);
                 if (BulletNum == ModItem.AmmoCapacity) {
-                    SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Pump, Projectile.Center);
+                    SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Pump with { Volume = 0.6f}, Projectile.Center);
                 }
             }
             return false;
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             SpawnGunFireDust();
-            SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot with { Volume = 0.6f, Pitch = -0.1f }, Projectile.Center);
+            SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot with { Volume = 0.4f, Pitch = -0.1f }, Projectile.Center);
             for (int i = 0; i < 12; i++) {
                 int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.07f, 0.07f)) * Main.rand.NextFloat(1f, 1.5f) * 0.8f

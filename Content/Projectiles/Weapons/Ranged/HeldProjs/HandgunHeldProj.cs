@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -28,8 +29,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override bool PreOnKreloadEvent() {
             ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir + 0.3f;
-            FeederOffsetRot = -30;
-            FeederOffsetPos = new Vector2(DirSign * 6, -12) * SafeGravDir;
+            FeederOffsetRot = -20;
+            FeederOffsetPos = new Vector2(DirSign * 6, -6) * SafeGravDir;
             Projectile.Center = GetGunBodyPostion();
             Projectile.rotation = GetGunBodyRotation();
             if (kreloadTimeValue >= 50) {
@@ -42,6 +43,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override bool PreReloadEffects(int time, int maxTime) {
+            if (time == 50) {
+                SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipOut with { Volume = 0.75f }, Projectile.Center);
+            }
+            if (time == 40) {
+                SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipLocked with { Volume = 0.75f }, Projectile.Center);
+            }
+            if (time == 10) {
+                SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot with { Volume = 0.75f }, Projectile.Center);
+            }
             return false;
         }
 

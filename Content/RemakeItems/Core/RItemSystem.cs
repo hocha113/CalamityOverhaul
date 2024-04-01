@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (onShootMethod != null) {
                 MonoModHooks.Add(onShootMethod, OnShootHook);
             }
-            if (onHitNPCMethod != null ) {
+            if (onHitNPCMethod != null) {
                 MonoModHooks.Add(onHitNPCMethod, OnHitNPCHook);
             }
             if (onHitPvpMethod != null) {
@@ -98,8 +98,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_CanConsumeAmmo"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
         /// </summary>
         public bool OnCanConsumeAmmoHook(On_CanConsumeAmmo_Delegate orig, Item item, Item ammo, Player player) {
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
-                bool? rasg = RItemIndsDict[item.type].On_CanConsumeAmmo(item, ammo, player);
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                bool? rasg = ritem.On_CanConsumeAmmo(item, ammo, player);
                 if (rasg.HasValue) {
                     return rasg.Value;
                 }
@@ -116,8 +116,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <returns></returns>
         public void OnModifyItemLootHook(On_ModifyItemLoot_Delegate orig, Item item, ItemLoot itemLoot) {
             bool? result = null;
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
-                result = RItemIndsDict[item.type].On_ModifyItemLoot(item, itemLoot);
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                result = ritem.On_ModifyItemLoot(item, itemLoot);
             }
             if (result.HasValue) {
                 if (result.Value) {
@@ -138,15 +138,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <returns></returns>
         public void OnModifyWeaponCritHook(On_ModifyWeaponCrit_Delegate orig, Item item, Player player, ref float crit) {
             bool? result = null;
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
                 result = RItemIndsDict[item.type].On_ModifyWeaponCrit(item, player, ref crit);
             }
             if (result.HasValue) {
                 if (result.Value) {
                     item.ModItem?.ModifyWeaponCrit(player, ref crit);
                     return;
-                }
-                else {
+                } else {
                     return;
                 }
             }
@@ -161,15 +160,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <returns></returns>
         public void OnUseAnimationHook(On_UseAnimation_Delegate orig, Item item, Player player) {
             bool? result = null;
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
                 result = RItemIndsDict[item.type].On_UseAnimation(item, player);
             }
             if (result.HasValue) {
                 if (result.Value) {
                     item.ModItem?.UseAnimation(player);
                     return;
-                }
-                else {
+                } else {
                     return;
                 }
             }
@@ -184,31 +182,28 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <returns></returns>
         public bool? OnUseItemHook(On_UseItem_Delegate orig, Item item, Player player) {
             bool? result = null;
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
-                result = RItemIndsDict[item.type].On_UseItem(item, player);
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                result = ritem.On_UseItem(item, player);
             }
-            if (result.HasValue) {
-                return result.Value;
-            }
-            else {
-                return orig(item, player);
-            }
+            return result.HasValue ? result.Value : orig(item, player);
         }
+
         /// <summary>
         /// 这个钩子用于挂载一个提前于TML方法的SetDefaults，以此来进行一些高级的修改
         /// </summary>
+        [Obsolete]
         public void OnSetDefaultsHook(On_SetDefaults_Dalegate orig, Item item, bool createModItem) {
             orig.Invoke(item, true);
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
-                RItemIndsDict[item.type].On_PostSetDefaults(item);
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                ritem.On_PostSetDefaults(item);
             }
         }
         /// <summary>
         /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_Shoot"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
         /// </summary>
         public bool OnShootHook(On_Shoot_Dalegate orig, Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, bool defaultResult) {//
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
-                bool? rasg = RItemIndsDict[item.type].On_Shoot(item, player, source, position, velocity, type, damage, knockback);
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                bool? rasg = ritem.On_Shoot(item, player, source, position, velocity, type, damage, knockback);
                 if (rasg.HasValue) {
                     return rasg.Value;
                 }
@@ -221,9 +216,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <br/>继承重写<see cref="BaseRItem.On_CanUseItem(Item, Player)"/>来达到这些目的，用于进行一些高级修改
         /// </summary>
         public bool OnCanUseItemHook(On_CanUseItem_Delegate orig, Item item, Player player) {
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
                 //这个钩子的运作原理有些不同，因为这个目标函数的返回值应该直接起到作用，而不是简单的返回Void类型
-                var rasg = RItemIndsDict[item.type].On_CanUseItem(item, player);//运行OnUseItem获得钩子函数的返回值，这应该起到传递的作用
+                bool? rasg = ritem.On_CanUseItem(item, player);//运行OnUseItem获得钩子函数的返回值，这应该起到传递的作用
                 if (rasg.HasValue) {//如果rasg不为空，那么直接返回这个值让钩子的传递起效
                     return rasg.Value;//如果rasg不包含实际值，那么在这次枚举中就什么都不做
                 }
@@ -233,41 +228,40 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public void OnHitNPCHook(On_HitNPC_Delegate orig, Item item, Player player, NPC target, in NPC.HitInfo hit, int damageDone) {
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
                 //这个钩子的运作原理有些不同，因为这个目标函数的返回值应该直接起到作用，而不是简单的返回Void类型
-                var rasg = RItemIndsDict[item.type].On_OnHitNPC(item, player, target, hit, damageDone);//运行OnUseItem获得钩子函数的返回值，这应该起到传递的作用
+                bool? rasg = ritem.On_OnHitNPC(item, player, target, hit, damageDone);//运行OnUseItem获得钩子函数的返回值，这应该起到传递的作用
                 if (rasg.HasValue) {//如果rasg不为空，那么直接返回这个值让钩子的传递起效
                     if (!rasg.Value) {
                         return;
                     }
                 }
             }
-            
+
             orig.Invoke(item, player, target, hit, damageDone);
         }
 
         public void OnHitPvpHook(On_HitPvp_Delegate orig, Item item, Player player, Player target, Player.HurtInfo hurtInfo) {
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
-                var rasg = RItemIndsDict[item.type].On_OnHitPvp(item, player, target, hurtInfo);
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                bool? rasg = ritem.On_OnHitPvp(item, player, target, hurtInfo);
                 if (rasg.HasValue) {
                     if (!rasg.Value) {
                         return;
                     }
                 }
             }
-            
+
             orig.Invoke(item, player, target, hurtInfo);
         }
 
         public void OnModifyHitNPCHook(On_ModifyHitNPC_Delegate orig, Item item, Player player, NPC target, ref NPC.HitModifiers modifiers) {
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
-                bool? rasg = RItemIndsDict[item.type].On_ModifyHitNPC(item, player, target, ref modifiers);
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                bool? rasg = ritem.On_ModifyHitNPC(item, player, target, ref modifiers);
                 if (rasg.HasValue) {
                     if (rasg.Value) {//如果返回了true，那么执行原物品的该方法
                         item.ModItem?.ModifyHitNPC(player, target, ref modifiers);
                         return;
-                    }
-                    else {//否则返回false，那么后续的就什么都不执行
+                    } else {//否则返回false，那么后续的就什么都不执行
                         return;
                     }
                 }
@@ -277,8 +271,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public bool OnPreDrawInInventoryHook(On_PreDrawInInventory_Delegate orig, Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.ContainsKey(item.type)) {
-                bool rasg = RItemIndsDict[item.type].On_PreDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                bool rasg = ritem.On_PreDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
                 if (!rasg) {
                     return false;
                 }
