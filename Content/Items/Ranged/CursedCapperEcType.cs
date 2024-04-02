@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ProjectileID.CursedBullet;
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.SetHeldProj<CursedCapperHeldProj>();
+            Item.SetCartridgeGun<CursedCapperHeldProj>(22);
         }
     }
 }

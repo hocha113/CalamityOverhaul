@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             HandDistanceY = 0;
             GunPressure = 0f;
             ControlForce = 0f;
-            Recoil = 0f;
+            Recoil = 3f;
             RangeOfStress = 48;
             kreloadMaxTime = 120;
         }

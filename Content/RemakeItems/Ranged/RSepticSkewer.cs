@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria.ModLoader;
 using Terraria;
 using Terraria.ID;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
@@ -14,6 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int ProtogenesisID => ModContent.ItemType<SepticSkewerEcType>();
         public override string TargetToolTipItemName => "SepticSkewerEcType";
         public override void SetDefaults(Item item) {
+            item.shoot = ModContent.ProjectileType<SepticSkewerProj>();
             item.useAmmo = AmmoID.Bullet;
             item.SetCartridgeGun<SepticSkewerHeldProj>(8);
         }

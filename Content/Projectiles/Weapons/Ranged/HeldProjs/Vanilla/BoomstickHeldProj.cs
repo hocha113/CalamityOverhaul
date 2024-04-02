@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.Boomstick;
         public override void SetRangedProperty() {
             FireTime = 21;
+            kreloadMaxTime = 30;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -6;
             HandDistance = 17;
@@ -24,8 +25,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 2.0f;
             RangeOfStress = 8;
+            ArmRotSengsBackNoFireOffset = 30;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 30;
         }
 
         public override void PreInOwnerUpdate() {

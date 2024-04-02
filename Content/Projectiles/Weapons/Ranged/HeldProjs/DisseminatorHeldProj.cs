@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class DisseminatorHeldProj : BaseGun
+    internal class DisseminatorHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Disseminator";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Disseminator>();
@@ -14,9 +14,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 16;
             ShootPosNorlLengValue = -13;
-            ControlForce = 0.1f;
-            GunPressure = 0.2f;
-            Recoil = 2;
+            ControlForce = 0.05f;
+            GunPressure = 0.12f;
+            Recoil = 1.2f;
             HandDistance = 20;
             HandDistanceY = 5;
             HandFireDistance = 20;
@@ -24,22 +24,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;//可以右键使用
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-            if (onFireR) {
-                GunPressure = 0.2f;
-                Recoil = 1.1f;
-                Item.useTime = 4;
-            }
-            else {
-                GunPressure = 0.5f;
-                Recoil = 2;
-                Item.useTime = 24;
-            }
-        }
-
         public override void FiringShoot() {
-            for (int i = 0; i < 4; i++) {
+            GunPressure = 0.12f;
+            Recoil = 0.35f;
+            FireTime = 24;
+            for (int i = 0; i < 6; i++) {
                 Projectile.NewProjectile(Owner.parent(), GunShootPos,
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.8f, 1.1f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -50,6 +39,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Vector2 vr2 = vr.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.8f, 1.1f);
                 int proj = Projectile.NewProjectile(Owner.parent(), pos, vr2, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].tileCollide = false;
+                Main.projectile[proj].scale += Main.rand.NextFloat(0.5f);
+                Main.projectile[proj].extraUpdates += 1;
             }  
             CaseEjection();
             _ = UpdateConsumeAmmo();
@@ -57,6 +48,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
+            GunPressure = 0.1f;
+            Recoil = 0.3f;
+            FireTime = 4;
             Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Vector2 pos = Owner.Center + new Vector2(MathHelper.Lerp(Main.MouseWorld.To(Owner.Center).X, 0, 0.9f), -780);
             Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ScaleFactor;

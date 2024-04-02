@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
+            Projectile.MaxUpdates = 2;
             BaseOnSpanProj.FlowerAI(Projectile);
             if (Projectile.IsOwnedByLocalPlayer()) {
                 SpanProj();

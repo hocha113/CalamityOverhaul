@@ -37,6 +37,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].velocity *= 3f;
             Main.projectile[proj].ArmorPenetration += 15;
+            Main.projectile[proj].usesLocalNPCImmunity = true;
+            Main.projectile[proj].localNPCHitCooldown = 10;
             if (ammoItem.type == ItemID.CursedDart) {
                 Main.projectile[proj].timeLeft = 30;
             }

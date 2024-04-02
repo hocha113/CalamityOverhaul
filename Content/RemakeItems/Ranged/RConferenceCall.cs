@@ -12,6 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<ConferenceCall>();
         public override int ProtogenesisID => ModContent.ItemType<ConferenceCallEcType>();
         public override string TargetToolTipItemName => "ConferenceCallEcType";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<ConferenceCallHeldProj>(220);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<ConferenceCallHeldProj>(85);
     }
 }

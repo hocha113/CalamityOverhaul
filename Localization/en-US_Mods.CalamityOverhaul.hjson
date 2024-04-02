@@ -2346,6 +2346,8 @@ Projectiles: {
 	VortexpopperHeldProj.DisplayName: Vortexpopper Held Proj
 	XenopopperProj.DisplayName: Xenopopper Proj
 	DaedalusStormbowHeldProj.DisplayName: Daedalus Stormbow Held Proj
+	SepticSkewerProj.DisplayName: Septic Skewer Proj
+	CandyCornRifleHeldProj.DisplayName: Candy Corn Rifle Held Proj
 }
 
 Configs: {
@@ -2571,6 +2573,104 @@ TextContent: {
 			The dragon ahead, smash it, or go straight into battle!
 			Well done, rookie.
 			'''
+		Murasama_Text_Lang_0: Trial
+		Murasama_TextDictionary_Content_0:
+			'''
+			Recruit, You need to prove yourself to me.
+			Those foolish slime aggregations, guardians of the pre-drought sea, decaying husks within the fungus,
+			Deal with one of them at your leisure, this is your first step.
+			'''
+		Murasama_TextDictionary_Content_1:
+			'''
+			As the sun sets, I can feel it, the gaze of the fallen god not completely dissipated still watching this world, I dislike this feeling, kill it.
+			In the ruins of the front sea, I feel that certain ancient things are protected within the giant clams of the arid sea, set them free.
+			'''
+		Murasama_TextDictionary_Content_2:
+			'''
+			The remnants of the old rulers still pollute the land here, flesh grows rampant, corruption abounds.
+			Crush the brain, sever the worm, let us send that pitiful evil god on his way.
+			'''
+		Murasama_TextDictionary_Content_3:
+			'''
+			The flesh parasites are still active, the corrupt tumors begin to contemplate... 
+			you haven't completely wiped them out yet, go, root out the problem.
+			I hear cries coming from the dungeon, and the dungeon seems sealed by some force, 
+			break its seal, perhaps to find treasures of the old world.
+			'''
+		Murasama_TextDictionary_Content_4:
+			'''
+			Remember those foolish slime? I can feel that a special aggregation has appeared among them,
+			Take it out, to prevent future troubles.
+			'''
+		Murasama_TextDictionary_Content_5:
+			'''
+			In the prison within the ice barrier, the prisoners there may be useful, release him, let him serve us.
+			The abandoned offspring of the sulfur sea hinders our exploration of the treasures of the abyss, go, end its devouring and wandering.
+			I miss the flames tempered in the sulfur cliffs, go meet the guardians there.
+			'''
+		Murasama_TextDictionary_Content_6:
+			'''
+			That foolish escaping replica, dare to secretly spy. Kill that alien, with blood and flames to sacrifice the blade.
+			Enchanting songs come from the sea, those are the sirens' people, let us take the head of the sea monster, and establish our deeds on the sea.
+			The foolish lizard clan only worships these stubborn stones, let us crush it to pieces, destroy their faith, we are what they should worship.
+			'''
+		Murasama_TextDictionary_Content_7:
+			'''
+			The intertwined flesh shell, the resentful souls of ancient battlefields, 
+			the relentless destruction golems, it destroys everything, and we destroy it.
+			In the jungle, someone's previous crude work is still wandering, as a failure, it should be like a pile of scrap iron.
+			The former star god wandering dragon has long fallen, now there is only a mere maggot, let us end the era of the star god completely.
+			'''
+		Murasama_TextDictionary_Content_8:
+			'''
+			Poor imitation, foolish clone, that stupid bird, wandering in the jungle, eliminate it.
+			Another sun appears underground, they seem to want to bring this sacred flame 
+			through the sacred land to the surface, expel its apostles.
+			'''
+		Murasama_TextDictionary_Content_9:
+			'''
+			The pitiful deity surviving on the heat of stars gasps its last breath; 
+			its heretical flame needs to be extinguished completely.
+			The stormworms that prey on sky-edge dragons boast impressive armored shells. 
+			Sealed within the dungeons are dimensional rifts, perhaps a good avenue to acquire dark matter. 
+			The heretical apostles from subspace carry rare twisted voids, 
+			presenting us with a fine opportunity to understand the nature of subspace.
+			'''
+		Murasama_TextDictionary_Content_10:
+			'''
+			The arrogant cosmic python lurks behind the veil of the world, poised to unleash its ambitions. 
+			Put an end to his aspirations. The oldest creature lurking in the Sea of Sulfur awakens with the surge of psychic storms, 
+			making it a glorious part of our endeavor.
+			'''
+		Murasama_TextDictionary_Content_11:
+			'''
+			The Jungle Dragon, the last surviving descendant of the Aurelian Dragons on the continent of Terra, 
+			stands apart from other xenomorphs and deserves our respect. However, at present, 
+			we must send it to its demise once again, stripping it of its Auric Essence. 
+			These materials will be used to craft an unparalleled set of armor.
+			'''
+		Murasama_TextDictionary_Content_12:
+			'''
+			The heresy of the Mechanist Church, believing their created Star-Flow Titans surpass the power of the divine,
+			is utterly absurd. Let us return those Titans to their natural state—mere heaps of scrap metal. 
+			The witch, once gifted with exceptional psychic talents, should have been a great asset in safeguarding the sacred Terra. 
+			Yet, she has long been lost to chaos. Therefore, we must exile her, 
+			thrust the blade into her chest, and let the fire of loyalty consume her decayed soul. 
+			This war shall be etched into the annals of Terra, and our journey shall henceforth span the galaxy.
+			'''
+		Murasama_TextDictionary_Content_13:
+			'''
+			The demon dragon appears, we will engage in a full-scale conflict with the alien evil spirits, 
+			with that stone obtained from the trench. New recruit, this is the final battle!
+			'''
+		Murasama_TextDictionary_Content_14:
+			'''
+			Well done, rookie, the abominations of the xenomorphs in this world have been completely eradicated 
+			by us... Why do I see tears shimmering in your eyes?
+			Is it because of confusion? Is it because of guilt? Look, our journey has reached its peak, 
+			even the tyrant who once ruled Terra is no match for us.
+			Now, spread your arms and embrace this world that victory has brought to you
+			'''
 		RemakeItem_Remind_TextContent:
 			'''
 			【From the Author】
@@ -2747,7 +2847,6 @@ TextContent: {
 		Wap_SniperRifle_Text:
 			'''
 			Converts all bullets into high-speed bullets.
-			Right-click to use the sniper scope to zoom in.
 			Accuracy and damage increase with the duration of aiming.
 			The magazine holds four bullets, with the first three unable to trigger critical hits, but the fourth is guaranteed to be a critical hit.
 			Bullets fired from this gun cannot penetrate enemies.
@@ -2909,75 +3008,6 @@ TextContent: {
 			Right-click for a fast and powerful single shot
 			"It has nothing to do with storms, it has nothing to do with angels."
 			'''
-		Murasama_Text_Lang_0: Trial
-		Murasama_TextDictionary_Content_0:
-			'''
-			Recruit, You need to prove yourself to me.
-			Those foolish slime aggregations, guardians of the pre-drought sea, decaying husks within the fungus,
-			Deal with one of them at your leisure, this is your first step.
-			'''
-		Murasama_TextDictionary_Content_1:
-			'''
-			As the sun sets, I can feel it, the gaze of the fallen god not completely dissipated still watching this world, I dislike this feeling, kill it.
-			In the ruins of the front sea, I feel that certain ancient things are protected within the giant clams of the arid sea, set them free.
-			'''
-		Murasama_TextDictionary_Content_2:
-			'''
-			The remnants of the old rulers still pollute the land here, flesh grows rampant, corruption abounds.
-			Crush the brain, sever the worm, let us send that pitiful evil god on his way.
-			'''
-		Murasama_TextDictionary_Content_3:
-			'''
-			The flesh parasites are still active, the corrupt tumors begin to contemplate... 
-			you haven't completely wiped them out yet, go, root out the problem.
-			I hear cries coming from the dungeon, and the dungeon seems sealed by some force, 
-			break its seal, perhaps to find treasures of the old world.
-			'''
-		Murasama_TextDictionary_Content_4:
-			'''
-			Remember those foolish slime? I can feel that a special aggregation has appeared among them,
-			Take it out, to prevent future troubles.
-			'''
-		Murasama_TextDictionary_Content_5:
-			'''
-			In the prison within the ice barrier, the prisoners there may be useful, release him, let him serve us.
-			The abandoned offspring of the sulfur sea hinders our exploration of the treasures of the abyss, go, end its devouring and wandering.
-			I miss the flames tempered in the sulfur cliffs, go meet the guardians there.
-			'''
-		Murasama_TextDictionary_Content_6:
-			'''
-			That foolish escaping replica, dare to secretly spy. Kill that alien, with blood and flames to sacrifice the blade.
-			Enchanting songs come from the sea, those are the sirens' people, let us take the head of the sea monster, and establish our deeds on the sea.
-			The foolish lizard clan only worships these stubborn stones, let us crush it to pieces, destroy their faith, we are what they should worship.
-			'''
-		Murasama_TextDictionary_Content_7:
-			'''
-			The intertwined flesh shell, the resentful souls of ancient battlefields, 
-			the relentless destruction golems, it destroys everything, and we destroy it.
-			In the jungle, someone's previous crude work is still wandering, as a failure, it should be like a pile of scrap iron.
-			The former star god wandering dragon has long fallen, now there is only a mere maggot, let us end the era of the star god completely.
-			'''
-		Murasama_TextDictionary_Content_8:
-			'''
-			Poor imitation, foolish clone, that stupid bird, wandering in the jungle, eliminate it.
-			Another sun appears underground, they seem to want to bring this sacred flame 
-			through the sacred land to the surface, expel its apostles.
-			'''
-		Murasama_TextDictionary_Content_9:
-			'''
-			The poor gods lingering from the sun.
-			The storm insects preying on the edge of the sky for the flying dragons, with decent armored shells.
-			In the dimension crack sealed in the dungeon, perhaps it is a good way to obtain dark matter.
-			The apostles from the exotic land, it seems to carry rare twisted voids.
-			'''
-		Murasama_TextDictionary_Content_10: Take out that arrogant worm! Or go and smash that highly corrupted fish.
-		Murasama_TextDictionary_Content_11: Fire-breathing dragon, don't hold back, smash!
-		Murasama_TextDictionary_Content_12: Go meet the heretics of that mechanical doctrine, or that fallen witch, deal with these heretic brats!
-		Murasama_TextDictionary_Content_13:
-			'''
-			The demon dragon appears, we will engage in a full-scale conflict with the alien evil spirits, 
-			with that stone obtained from the trench. New recruit, this is the final battle!
-			'''
-		Murasama_TextDictionary_Content_14: Well done, recruit.
+		Wap_CandyCornRifle_Text: Fire the gummy corn, because gummy corn is cool!
 	}
 }

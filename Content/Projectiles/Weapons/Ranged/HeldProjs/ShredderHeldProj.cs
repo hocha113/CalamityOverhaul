@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0;
             RecoilRetroForceMagnitude = 14;
             Recoil = 2.3f;
-            for (int index = 0; index < 34; ++index) {
+            for (int index = 0; index < 26; ++index) {
                 float SpeedX = ShootVelocity.X + Main.rand.Next(-30, 31) * 0.05f;
                 float SpeedY = ShootVelocity.Y + Main.rand.Next(-30, 31) * 0.05f;
                 int shredderBoltDamage = (int)(0.85f * WeaponDamage);

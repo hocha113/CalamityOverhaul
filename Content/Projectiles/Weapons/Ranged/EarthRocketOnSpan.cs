@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
+            Projectile.MaxUpdates = 2;
             BaseOnSpanProj.FlowerAI(Projectile);
             if (Projectile.timeLeft % 5 == 0 && Owner.PressKey()) {
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * 7;

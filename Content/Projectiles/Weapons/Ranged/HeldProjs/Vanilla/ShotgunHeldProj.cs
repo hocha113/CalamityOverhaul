@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -25,6 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 2.4f;
             RangeOfStress = 12;
+            ArmRotSengsBackNoFireOffset = 30;
             RepeatedCartridgeChange = true;
             FiringDefaultSound = false;
         }
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             SpawnGunFireDust();
-            SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot with { Volume = 0.35f, Pitch = -0.3f }, Projectile.Center);
+            SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot with { Volume = 0.35f, Pitch = -0.6f }, Projectile.Center);
             for (int i = 0; i < 8; i++) {
                 int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.24f, 0.24f)) * Main.rand.NextFloat(0.7f, 1.4f)
