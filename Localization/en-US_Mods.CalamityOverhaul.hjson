@@ -2348,6 +2348,7 @@ Projectiles: {
 	DaedalusStormbowHeldProj.DisplayName: Daedalus Stormbow Held Proj
 	SepticSkewerProj.DisplayName: Septic Skewer Proj
 	CandyCornRifleHeldProj.DisplayName: Candy Corn Rifle Held Proj
+	CursedDartRemake.DisplayName: Cursed Dart Remake
 }
 
 Configs: {
