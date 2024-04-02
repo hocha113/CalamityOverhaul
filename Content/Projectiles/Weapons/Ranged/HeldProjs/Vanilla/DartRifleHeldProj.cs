@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
@@ -34,15 +35,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
             Item ammoItem = GetSelectedBullets();
+            if (ammoItem.type == ItemID.CursedDart) {
+                AmmoTypes = ModContent.ProjectileType<CursedDartRemake>();
+            }
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Main.projectile[proj].velocity *= 3f;
-            Main.projectile[proj].ArmorPenetration += 15;
             if (ammoItem.type == ItemID.CursedDart) {
                 Main.projectile[proj].timeLeft = 30;
             }
             if (ammoItem.type == ItemID.IchorDart) {
                 Main.projectile[proj].velocity *= 0.5f;
             }
+            Main.projectile[proj].velocity *= 3f;
+            Main.projectile[proj].ArmorPenetration += 15;
         }
     }
 }

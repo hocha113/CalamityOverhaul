@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override string TargetToolTipItemName => "Wap_ChlorophyteShotbow_Text";
         public override void SetDefaults(Item item) {
             item.SetHeldProj<ChlorophyteShotbowHeldProj>();
-            item.useTime = 20;
+            item.useTime = 22;
             item.damage = 35;
         }
     }
