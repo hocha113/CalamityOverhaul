@@ -64,6 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public sealed override void AI() {
+            Projectile.MaxUpdates = 2;
             FlowerAI(Projectile);
             if (++Projectile.ai[0] >= MaxCharge) {
                 onFire = true;

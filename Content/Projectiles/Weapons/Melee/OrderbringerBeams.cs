@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Vector2 pos = Projectile.Center + Projectile.velocity.GetNormalVector() * Main.rand.Next(-160, 160);
                 Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * 10;
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, vr, ModContent.ProjectileType<OrderbringerBeams2>()
-                    , Projectile.damage, Projectile.knockBack, Projectile.owner, 0f, 0f);
+                    , (int)(Projectile.damage * 0.4f), Projectile.knockBack, Projectile.owner, 0f, 0f);
             }
         }
 

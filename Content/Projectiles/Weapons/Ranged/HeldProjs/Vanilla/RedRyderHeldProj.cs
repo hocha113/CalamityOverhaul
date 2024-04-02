@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.RedRyder].Value;
         public override int targetCayItem => ItemID.RedRyder;
         public override int targetCWRItem => ItemID.RedRyder;
-        public override void SetRangedProperty()
-        {
+        public override void SetRangedProperty(){
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;

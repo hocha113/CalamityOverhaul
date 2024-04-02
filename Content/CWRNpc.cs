@@ -188,7 +188,10 @@ namespace CalamityOverhaul.Content
                 foreach (AbstractNPCShop.Entry i in shop.Entries) {
                     Item item = i.Item;
                     if (item?.type != ItemID.None) {
-                        item.SetDefaults(item.type);
+                        CWRItems cwr = item.CWR();
+                        if (cwr.HasCartridgeHolder || cwr.heldProjType > 0 || cwr.isHeldItem) {
+                            item.SetDefaults(item.type);
+                        }
                     }
                 }
             }

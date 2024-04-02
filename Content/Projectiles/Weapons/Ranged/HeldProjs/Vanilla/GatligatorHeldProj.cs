@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.Gatligator;
         public override void SetRangedProperty() {
             kreloadMaxTime = 100;
-            FireTime = 3;
+            FireTime = 4;
             HandDistance = 18;
             HandDistanceY = 0;
             HandFireDistance = 18;

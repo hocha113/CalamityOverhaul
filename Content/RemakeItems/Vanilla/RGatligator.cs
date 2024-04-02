@@ -5,6 +5,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
+    /// <summary>
+    /// 鳄鱼机关枪
+    /// </summary>
     internal class RGatligator : BaseRItem
     {
         public override int TargetID => ItemID.Gatligator;

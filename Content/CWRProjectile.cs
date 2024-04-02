@@ -51,6 +51,10 @@ namespace CalamityOverhaul.Content
         /// 设置为<see langword="true"/>必定不暴击，如果启用，会覆盖<see cref="CertainCrit"/>的设置
         /// </summary>
         public bool NeverCrit;
+        /// <summary>
+        /// 是否无视护甲
+        /// </summary>
+        public bool OnHitBlindArmor;
     }
 
     public class CWRProjectile : GlobalProjectile
@@ -156,6 +160,11 @@ namespace CalamityOverhaul.Content
             }
             if (GetHitAttribute.NeverCrit) {
                 modifiers.DisableCrit();
+            }
+            if (GetHitAttribute.OnHitBlindArmor) {
+                if (modifiers.SuperArmor || target.defense > 999 || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR)
+                    return;
+                modifiers.DefenseEffectiveness *= 0f;
             }
         }
 

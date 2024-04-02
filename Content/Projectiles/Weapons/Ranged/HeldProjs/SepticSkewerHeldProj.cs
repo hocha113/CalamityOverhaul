@@ -2,8 +2,9 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -14,7 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<SepticSkewerEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 60;
             FireTime = 1;
             HandDistance = 25;
             HandDistanceY = 5;
@@ -29,15 +29,46 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 0;
+            RecoilRetroForceMagnitude = 3;
         }
 
         public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
+            LoadingAnimation(50, 3, 0);
         }
 
         public override void PostInOwnerUpdate() {
             FireTime = MagazineSystem ? 1 : 30;
+        }
+
+        public override bool PreOnKreloadEvent() {
+            ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir + 0.3f;
+            FeederOffsetRot = -20;
+            FeederOffsetPos = new Vector2(DirSign * 6, -16) * SafeGravDir;
+            Projectile.Center = GetGunBodyPostion();
+            Projectile.rotation = GetGunBodyRotation();
+            if (kreloadTimeValue >= 50) {
+                ArmRotSengsFront += (kreloadTimeValue - 50) * CWRUtils.atoR * 6;
+            }
+            if (kreloadTimeValue >= 10 && kreloadTimeValue <= 20) {
+                ArmRotSengsFront += (kreloadTimeValue - 10) * CWRUtils.atoR * 6;
+            }
+            return false;
+        }
+
+        public override bool PreReloadEffects(int time, int maxTime) {
+            if (time == 50) {
+                SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipOut with { Volume = 0.75f }, Projectile.Center);
+            }
+            if (time == 40) {
+                SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipLocked with { Volume = 0.75f, Pitch = 0.2f }, Projectile.Center);
+            }
+            if (time == 10) {
+                SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot with { Volume = 0.75f, Pitch = 0.2f }, Projectile.Center);
+            }
+            if (time == 1) {
+                GunShootCoolingValue += 15;
+            }
+            return false;
         }
 
         public override void FiringShoot() {
@@ -49,14 +80,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             SpawnGunFireDust(GunShootPos, ShootVelocity);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f), Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

@@ -45,6 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 SoundEngine.PlaySound(CWRSound.Gun_Shotgun_LoadShell with { Volume = 0.75f}, Projectile.Center);
                 if (BulletNum == ModItem.AmmoCapacity) {
                     SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Pump with { Volume = 0.6f}, Projectile.Center);
+                    GunShootCoolingValue += 15;
                 }
             }
             return false;
@@ -63,9 +64,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 kreloadTimeValue = kreloadMaxTime;
             }
             return true;
-        }
-
-        public override void PostFiringShoot() {
         }
 
         public override void FiringShoot() {

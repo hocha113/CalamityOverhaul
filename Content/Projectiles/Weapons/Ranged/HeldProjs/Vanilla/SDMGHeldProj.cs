@@ -31,21 +31,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAnimation(30, 0, 13);
         }
         public override bool KreLoadFulfill() {
-            if (BulletNum < 200) {
-                BulletNum += 100;
-            } else {
-                BulletNum = 300;
-            }
-            if (Item.CWR().AmmoCapacityInFire) {
-                Item.CWR().AmmoCapacityInFire = false;
-            }
-            return true;
+            return base.KreLoadFulfill();
         }
 
         public override void PostFiringShoot() {
-            if (BulletNum >= 1) {
-                BulletNum -= 1;
-            }
         }
 
         public override void FiringShoot() {

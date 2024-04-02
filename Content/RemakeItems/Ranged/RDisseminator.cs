@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 13f;
             item.shoot = ProjectileID.PurificationPowder;
             item.useAmmo = AmmoID.Bullet;
-            item.SetHeldProj<DisseminatorHeldProj>();
+            item.SetCartridgeGun<DisseminatorHeldProj>(85);
         }
     }
 }

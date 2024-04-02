@@ -10,6 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override int TargetID => ItemID.OnyxBlaster;
         public override bool IsVanilla => true;
         public override string TargetToolTipItemName => "Wap_OnyxBlaster_Text";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<OnyxBlasterHeldProj>(75);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<OnyxBlasterHeldProj>(8);
     }
 }

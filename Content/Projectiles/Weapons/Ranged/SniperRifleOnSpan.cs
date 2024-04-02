@@ -37,6 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         int timenum = 1000;
         int rot = 60;
         public override void AI() {
+            Projectile.MaxUpdates = 1;
             Player player = Main.player[Projectile.owner];
             Projectile owner = null;
             if (timenum >= 932) timenum--;
@@ -66,18 +67,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 lastdamage = 0.1f;
             } 
             else if (timenum < 972 && timenum > 942) {
-                lastdamage = ((972 - timenum) * 20 + 444) / 4444f;
+                lastdamage = ((972 - timenum) * 20 + 444) / 444f;
             }
             else if (timenum < 942) {
-                lastdamage = ((942 - timenum) * 340 + 1044) / 4444f;
+                lastdamage = ((942 - timenum) * 340 + 1044) / 444f;
             }
             if (Owner.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun)) {
                 if (Projectile.IsOwnedByLocalPlayer() && onFire) {
                     SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/TankCannon") { Pitch = Projectile.ai[2] }, Projectile.Center);
+                    int ammo = Owner.GetShootState().AmmoTypes;
+                    if (ammo == ProjectileID.Bullet || ammo == ModContent.ProjectileType<MarksmanShot>()) {
+                        ammo = ProjectileID.BulletHighVelocity;
+                    }
                     int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center + new Vector2(0, -5),
-                        (toMou.SafeNormalize(Vector2.Zero) * 15).RotatedBy(Main.rand.NextFloat(rot * -0.01f, rot * 0.01f))
-                    , ProjectileID.BulletHighVelocity, (int)(Owner.GetShootState().WeaponDamage * lastdamage)/2, 0, Projectile.owner);
-                    Main.projectile[proj].penetrate = 1;
+                        (toMou.SafeNormalize(Vector2.Zero) * 15).RotatedByRandom(rot * 0.01f), ammo, 
+                        (int)(Owner.GetShootState().WeaponDamage * lastdamage), 0, Projectile.owner);
+                    Main.projectile[proj].CWR().GetHitAttribute.OnHitBlindArmor = true;
                     baseFeederGun.Recoil = 3;
                     baseFeederGun.GunPressure = 0.5f;
                     baseFeederGun.ControlForce = 0.05f;

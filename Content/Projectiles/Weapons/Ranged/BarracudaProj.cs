@@ -10,13 +10,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class BarracudaProj : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "MechanicalBarracuda";
+        float offsetRot;
+        bool damageZengs;
         public override void SetDefaults() {
             Projectile.width = 22;
             Projectile.height = 22;
             Projectile.friendly = true;
             Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 12;
             Projectile.alpha = 255;
             Projectile.DamageType = DamageClass.Ranged;
         }
@@ -32,6 +34,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Projectile.ChasingBehavior(target.Center, Projectile.velocity.Length());
                     if (Projectile.Center.Distance(target.Center) < 32) {
                         Projectile.ai[0] = 2;
+                        if (!damageZengs) {
+                            offsetRot = Main.rand.NextFloat(MathHelper.TwoPi) + Main.player[Projectile.owner].Center.To(Projectile.Center).ToRotation();
+                            damageZengs = true;
+                        }
                     }
                 }
                 if (!mousL) {
@@ -45,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
             }
             if (Projectile.ai[0] == 2) {
-                Projectile.rotation = Main.player[Projectile.owner].Center.To(Projectile.Center).ToRotation();
+                Projectile.rotation = offsetRot;
                 if (target.Alives()) {
                     Projectile.Center = target.Center;
                     Projectile.velocity = Vector2.Zero;
