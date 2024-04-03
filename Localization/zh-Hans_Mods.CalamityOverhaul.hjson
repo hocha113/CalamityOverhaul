@@ -2912,7 +2912,7 @@ TextContent: {
 		Wap_DartRifle_Text:
 			'''
 			以较高的伤害发射飞镖
-			无视敌人至多20点护甲
+			无视敌人至多15点护甲
 			“用吹箭筒发射飞镖？老天，你是要我把火药含进嘴里吗”
 			'''
 		CartridgeHolderUI_Text1: 弹匣填充内容

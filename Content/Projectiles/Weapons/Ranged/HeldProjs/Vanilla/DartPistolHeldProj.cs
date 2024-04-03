@@ -40,11 +40,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
             else {
                 damage = WeaponDamage;
+                
             }
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, damage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].velocity *= 0.6f;
             Main.projectile[proj].extraUpdates += 1;
             Main.projectile[proj].timeLeft += 300;
-        }
+            if (ammoItem.type == ItemID.IchorDart) {
+                Main.projectile[proj].aiStyle = 1;
+            }
+            }
     }
 }
