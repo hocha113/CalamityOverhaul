@@ -2397,6 +2397,8 @@ Projectiles: {
 	// DaedalusStormbowHeldProj.DisplayName: Daedalus Stormbow Held Proj
 	// SepticSkewerProj.DisplayName: Septic Skewer Proj
 	// CandyCornRifleHeldProj.DisplayName: Candy Corn Rifle Held Proj
+	// NapalmBombBox.DisplayName: Napalm Bomb Box
+	// NapalmBombHeld.DisplayName: Napalm Bomb Held
 }
 
 Configs: {
@@ -3011,6 +3013,7 @@ TextContent: {
 		SupertableUI_Text4: 关闭摆放监视
 		SupertableUI_Text5: 开启摆放监视
 		AmmoBox_Text: 已到达部署上限
+		AmmoBox_Text2: 正在部署
 		Wap_BubbleGun_Text:
 			'''
 			喷出大量会爆炸的海洋泡泡

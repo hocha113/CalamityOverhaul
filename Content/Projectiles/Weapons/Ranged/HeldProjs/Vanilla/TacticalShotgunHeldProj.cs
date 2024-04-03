@@ -69,8 +69,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void FiringShoot() {
             SpawnGunFireDust();
             SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot with { Volume = 0.4f, Pitch = -0.1f }, Projectile.Center);
-            for (int i = 0; i < 12; i++) {
-                int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos
+            for (int i = 0; i < 10; i++) {
+                int proj = Projectile.NewProjectile(Source, GunShootPos
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.07f, 0.07f)) * Main.rand.NextFloat(1f, 1.5f) * 0.8f
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].scale += 0.3f;

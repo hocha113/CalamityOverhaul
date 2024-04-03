@@ -25,6 +25,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
+            if (Owner.CheckMana(Item)) {
+                FiringDefaultSound = true;
+                Owner.manaRegenDelay = (int)Owner.maxRegenDelay;
+                Owner.statMana -= Item.mana;
+                if (Owner.statMana < 0) {
+                    Owner.statMana = 0;
+                }
+            }
+            else {
+                FiringDefaultSound = false;
+                return;
+            }
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ProjectileID.PurpleLaser, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();

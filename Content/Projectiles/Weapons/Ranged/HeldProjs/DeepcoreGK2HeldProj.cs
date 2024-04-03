@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (kreLoadTime > 60) {
                     Item.CWR().NumberBullets = Item.CWR().AmmoCapacity;
                     Item.CWR().IsKreload = true;
-                    Item.CWR().AmmoCapacityInFire = false;
+                    Item.CWR().AmmoCapacityInNapalmBomb = false;
                 }
             }
             else {

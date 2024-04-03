@@ -56,8 +56,8 @@ namespace CalamityOverhaul.Content.UIs
                         player.QuickSpawnItem(player.parent(), new Item(i.type), i.stack);
                     }
                     cwrItem.InitializeMagazine();
-                    if (cwrItem.AmmoCapacityInFire) {
-                        cwrItem.AmmoCapacityInFire = false;
+                    if (cwrItem.AmmoCapacityInNapalmBomb) {
+                        cwrItem.AmmoCapacityInNapalmBomb = false;
                     }
                 }
             }
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.UIs
                 if (handItem.useAmmo == AmmoID.Rocket) {
                     key = "GrenadeRound";
                 }
-                TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + (handItem.CWR().AmmoCapacityInFire ? "_Fire" : ""));
+                TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + (handItem.CWR().AmmoCapacityInNapalmBomb ? "_Fire" : ""));
             }  
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.Magazines) {
                 DrawPos = new Vector2(60, Main.screenHeight - 100);

@@ -184,14 +184,14 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ModifyShop(NPCShop shop) {
-            if (NPCLoader.GetNPC(shop.NpcType) == null) {
-                foreach (AbstractNPCShop.Entry i in shop.Entries) {
-                    Item item = i.Item;
-                    if (item?.type != ItemID.None) {
-                        CWRItems cwr = item.CWR();
-                        if (cwr.HasCartridgeHolder || cwr.heldProjType > 0 || cwr.isHeldItem) {
-                            item.SetDefaults(item.type);
-                        }
+            foreach (AbstractNPCShop.Entry i in shop.Entries) {
+                Item item = i.Item;
+                if (item?.type != ItemID.None) {
+                    Item item2 = new Item(item.type);
+                    item2.SetDefaults(item.type);
+                    CWRItems cwr = item2.CWR();
+                    if (cwr.HasCartridgeHolder || cwr.heldProjType > 0 || cwr.isHeldItem) {
+                        item.SetDefaults(item.type);
                     }
                 }
             }

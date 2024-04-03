@@ -25,6 +25,7 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.UI;
 using Terraria.WorldBuilding;
+using static Humanizer.In;
 
 namespace CalamityOverhaul
 {
@@ -1020,6 +1021,13 @@ namespace CalamityOverhaul
         #region GameUtils
 
         /// <summary>
+        /// 获取玩家对象一个稳定的中心位置，考虑斜坡矫正与坐骑矫正，适合用于处理手持弹幕的位置获取
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public static Vector2 GetPlayerStabilityCenter(this Player player) => player.MountedCenter.Floor() + new Vector2(0, player.gfxOffY);
+
+        /// <summary>
         /// 快捷的将一个物品实例设置为手持对象
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -1067,8 +1075,10 @@ namespace CalamityOverhaul
 
         public static ShootState GetShootState(this Player player) {
             ShootState shootState = new();
-            _ = player.PickAmmo(player.ActiveItem(), out shootState.AmmoTypes, out shootState.ScaleFactor
+            Item item = player.ActiveItem();
+            _ = player.PickAmmo(item, out shootState.AmmoTypes, out shootState.ScaleFactor
                 , out shootState.WeaponDamage, out shootState.WeaponKnockback, out shootState.UseAmmoItemType, true);
+            shootState.Source = new EntitySource_ItemUse_WithAmmo(player, item, shootState.UseAmmoItemType);
             return shootState;
         }
 

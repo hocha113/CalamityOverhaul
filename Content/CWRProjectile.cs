@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content
 
             Item heldItem = player.ActiveItem();
             if (heldItem.type != ItemID.None) {
-                if (heldItem.CWR().AmmoCapacityInFire && Source != null) {
+                if (heldItem.CWR().AmmoCapacityInNapalmBomb && Source != null) {
                     if (Source.Context == "CWRGunShoot") {
                         target.AddBuff(BuffID.OnFire3, 60);
                         HitFunc(player, target);

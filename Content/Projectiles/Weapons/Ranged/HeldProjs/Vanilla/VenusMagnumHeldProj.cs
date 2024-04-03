@@ -35,8 +35,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             } else {
                 BulletNum = 120;
             }
-            if (Item.CWR().AmmoCapacityInFire) {
-                Item.CWR().AmmoCapacityInFire = false;
+            if (Item.CWR().AmmoCapacityInNapalmBomb) {
+                Item.CWR().AmmoCapacityInNapalmBomb = false;
             }
             return true;
         }

@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -23,18 +23,8 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.consumable = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.Item1;
-            Item.shoot = ModContent.ProjectileType<AmmoBoxProj>();
-        }
-
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
-            , Vector2 velocity, int type, int damage, float knockback) {
-            if (player.ownedProjectileCounts[Item.shoot] >= 5) {
-                CombatText.NewText(player.Hitbox, Color.Gold, CWRLocText.GetTextValue("AmmoBox_Text"));
-                return false;
-            }
-            Vector2 pos = new Vector2((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)) * 16;
-            Projectile.NewProjectile(Item.GetSource_FromThis(), pos, Vector2.Zero, type, 0, 0, player.whoAmI);
-            return false;
+            Item.shoot = ModContent.ProjectileType<NapalmBombBox>();
+            Item.SetHeldProj<NapalmBombHeld>();
         }
 
         public override void AddRecipes() {

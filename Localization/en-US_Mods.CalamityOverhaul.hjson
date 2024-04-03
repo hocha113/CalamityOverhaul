@@ -2348,6 +2348,8 @@ Projectiles: {
 	DaedalusStormbowHeldProj.DisplayName: Daedalus Stormbow Held Proj
 	SepticSkewerProj.DisplayName: Septic Skewer Proj
 	CandyCornRifleHeldProj.DisplayName: Candy Corn Rifle Held Proj
+	NapalmBombBox.DisplayName: Napalm Bomb Box
+	NapalmBombHeld.DisplayName: Napalm Bomb Held
 }
 
 Configs: {
@@ -2846,10 +2848,10 @@ TextContent: {
 			'''
 		Wap_SniperRifle_Text:
 			'''
-			Converts all bullets into high-speed bullets.
+			Musket bullets or marksman bullets are converted into high velocity bullets
 			Accuracy and damage increase with the duration of aiming.
 			The magazine holds four bullets, with the first three unable to trigger critical hits, but the fourth is guaranteed to be a critical hit.
-			Bullets fired from this gun cannot penetrate enemies.
+			Bullets fired will ignore the target armor
 			Mounted creatures will affect the accuracy of this precision weapon.
 			The weapon's power has been halved over time.
 			“When the cross locks you, Death will kiss your forehead.”
@@ -2969,6 +2971,7 @@ TextContent: {
 		SupertableUI_Text4: Close display monitor
 		SupertableUI_Text5: Open display monitor
 		AmmoBox_Text: The deployment upper limit has been reached
+		AmmoBox_Text2: Being deployed
 		Wap_BubbleGun_Text:
 			'''
 			Exploding ocean bubbles

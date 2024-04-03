@@ -2,6 +2,7 @@
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables;
 using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
@@ -373,6 +374,12 @@ namespace CalamityOverhaul.Content
                         if (recipe.HasResult(ItemType<Nadir>())) {
                             recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
                             recipe.AddIngredient(ItemType<CosmiliteBar>(), 5);//添加宇宙锭
+                        }
+                    }
+                    //修改诅咒手枪的合成
+                    {
+                        if (recipe.HasResult(ItemType<CursedCapper>())) {
+                            recipe.AddIngredient(ItemID.SoulofFright, 5);//添加恐惧之魂
                         }
                     }
                 }

@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override bool IsVanilla => true;
         public override string TargetToolTipItemName => "Wap_TacticalShotgun_Text";
         public override void SetDefaults(Item item) {
-            item.damage = 50;
+            item.damage = 40;
             item.SetHeldProj<TacticalShotgunHeldProj>();
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 10;

@@ -2,18 +2,39 @@ v_0.3.5.8.7
 
 负责以下内容的开发者：红茶
 
-0.优化了枪械的开火判定，枪械开火的更新周期更加合理，这会大幅度优化所有枪械的使用手感
-1.以下枪械被二次重做：手枪，战术霰弹枪，霰弹枪，三发猎枪、玛瑙爆破枪。现在，它们更加的酷
-2.修复海豚枪的弹药消耗异常
-3.新加入对玉米糖果步枪的重制
-4.解离者右键发射的子弹数量由36颗减少到26颗
-5.狙击枪面板由4444削弱至444，修复描述文本的错误，重新设计弹药机制
-6.重做梭鱼枪的弹幕，略微降低伤害，优化动画效果
-7.大幅度降低分子操纵器的伤害
-8.散播者现在拥有了弹匣
-9.剧毒鱼叉枪不会再让人物朝向抽搐，换弹重做
-10.泰拉巨刃的面板伤害由253降低至205
-11.携秩之刃的衍生棱晶射弹只会继承40%武器面板伤害，而不是原来的100%
-12.修复星星炮，星辰冲击波的骗伤问题，这两个武器被重新调整以获得更好的使用体验
-13.修复焦土、天蝎、狙击步枪、海啸右键、啸流右键等在装备了射速加成饰品后的攻速异常问题
+1.优化了枪械的开火判定，枪械开火的更新周期更加合理，这会大幅度优化所有枪械的使用手感
+2.以下枪械被二次重做：手枪，战术霰弹枪，霰弹枪，三发猎枪、玛瑙爆破枪。现在，它们更加的酷
+3.修复海豚枪的弹药消耗异常
+4.新加入对玉米糖果步枪的重制
+5.解离者右键发射的子弹数量由36颗减少到26颗
+6.狙击枪面板由4444削弱至444，修复描述文本的错误，重新设计弹药机制
+7.重做梭鱼枪的弹幕，略微降低伤害，优化动画效果
+8.大幅度降低分子操纵器的伤害
+9.散播者现在拥有了弹匣
+10.剧毒鱼叉枪不会再让人物朝向抽搐，换弹重做
+11.泰拉巨刃的面板伤害由253降低至205
+12.携序之刃的衍生棱晶射弹只会继承40%武器面板伤害，而不是原来的100%
+13.修复星星炮，星辰冲击波的骗伤问题，这两个武器被重新调整以获得更好的使用体验
+14.修复焦土、天蝎、狙击步枪、海啸右键、啸流右键等在装备了射速加成饰品后的攻速异常问题
+15.修复激光步枪不消耗魔力的异常
+16.再次重做高分子斩切的文本内容
+
+Developer: HoCha113
+
+1. Optimized firearm firing detection, making the update cycle of firearm firing more reasonable, which will greatly enhance the handling of all firearms.
+2. The following firearms have been redesigned: Handgun, Tactical Shotgun, Shotgun, Boomstick, and OnyxBlaster. Now, they are even cooler.
+3. Fixed abnormal ammunition consumption of SDMG.
+4. Added a remake for the CandyCorn Rifle.
+5. Reduced the number of bullets fired by the Shredder's right-click from 36 to 26.
+6. Weakened the Sniper Rifle's plate damage from 4444 to 444, fixed description text errors, and redesigned ammunition mechanisms.
+7. Redesigned the Barracuda Gun's barrage, slightly reduced damage, and optimized animation effects.
+8. Substantially reduced the Molecular Manipulator's damage.
+9. The Disseminator now has a magazine.
+10. The Septic Skewer will no longer cause character spasms, and reloading has been redesigned.
+11. Reduced Terratomere's plate damage from 253 to 205.
+12. The Orderbringer's derived crystalline projectiles will only inherit 40% of the weapon's plate damage, instead of the original 100%.
+13. Fixed the damage deception issues of the Star Cannon and Stardust Impactor; these two weapons have been readjusted for a better user experience.
+14. Fixed abnormal attack speed issues with Scorched Earth, Scorpio, Sniper Rifle, Tsunami's right-click, Alluvion's right-click, etc., when equipped with attack speed bonus accessories.
+15. Fixed the Laser Rifle's abnormal lack of mana consumption.
+16. Revised the text content of Murasama once again.
 

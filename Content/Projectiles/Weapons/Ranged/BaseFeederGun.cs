@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <returns></returns>
         public virtual Vector2 GetGunInFirePos() {
-            return kreloadTimeValue == 0 ? Owner.Center + Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY * Math.Sign(Owner.gravDir)) + OffsetPos : GetGunBodyPostion();
+            return kreloadTimeValue == 0 ? Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY * Math.Sign(Owner.gravDir)) + OffsetPos : GetGunBodyPostion();
         }
         /// <summary>
         /// 统一获取枪体在静置时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
@@ -220,7 +220,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <returns></returns>
         public virtual Vector2 GetGunBodyPostion() {
-            return Owner.Center + new Vector2(Owner.direction * HandDistance, HandDistanceY) + FeederOffsetPos;
+            return Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY) + FeederOffsetPos;
         }
         /// <summary>
         /// 先行调用，重写它以设置一些特殊状态
@@ -292,8 +292,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                 if (Owner.Calamity().mouseRight && !onFire && CanRightClick) {//Owner.PressKey()
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
-                    Projectile.rotation = GunOnFireRot;
-                    Projectile.Center = Owner.MountedCenter + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
+                    Projectile.rotation = GetGunInFireRot();
+                    Projectile.Center = GetGunInFirePos();
                     ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
                     if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {//HaveAmmo && 
                         onFireR = true;
@@ -356,8 +356,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         if (BulletNum > wRItems.AmmoCapacity) {
                             BulletNum = wRItems.AmmoCapacity;
                         }
-                        if (wRItems.AmmoCapacityInFire) {
-                            wRItems.AmmoCapacityInFire = false;
+                        if (wRItems.AmmoCapacityInNapalmBomb) {
+                            wRItems.AmmoCapacityInNapalmBomb = false;
                         }
                     }
                 }
