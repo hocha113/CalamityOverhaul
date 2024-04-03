@@ -7,6 +7,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 四管霰弹枪
+    /// </summary>
     internal class QuadBarrelShotgunHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;

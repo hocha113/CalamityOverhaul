@@ -356,9 +356,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         if (BulletNum > wRItems.AmmoCapacity) {
                             BulletNum = wRItems.AmmoCapacity;
                         }
-                        if (wRItems.AmmoCapacityInNapalmBomb) {
-                            wRItems.AmmoCapacityInNapalmBomb = false;
-                        }
+                        wRItems.SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
                     }
                 }
             }

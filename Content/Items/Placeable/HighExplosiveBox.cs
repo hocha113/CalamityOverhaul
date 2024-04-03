@@ -1,17 +1,17 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Placeable
 {
-    internal class AmmoBoxFire : ModItem
+    internal class HighExplosiveBox : ModItem
     {
-        public override string Texture => CWRConstant.Item + "Placeable/NapalmBombBox";
+        public override string Texture => CWRConstant.Item + "Placeable/HESHBox";
         public override void SetStaticDefaults() {
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(6, 39));
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(6, 9));
         }
 
         public override void SetDefaults() {
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.consumable = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.Item1;
-            Item.SetHeldProj<NapalmBombHeld>();
+            Item.SetHeldProj<HighExplosiveHeld>();
         }
 
         public override void AddRecipes() {

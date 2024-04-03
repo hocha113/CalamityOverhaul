@@ -12,6 +12,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 火箭发射器
+    /// </summary>
     internal class RocketLauncherHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;

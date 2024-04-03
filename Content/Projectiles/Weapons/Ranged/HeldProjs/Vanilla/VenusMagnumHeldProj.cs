@@ -7,6 +7,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 维纳斯万能枪
+    /// </summary>
     internal class VenusMagnumHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;

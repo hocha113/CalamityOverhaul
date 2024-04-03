@@ -8,6 +8,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 雪球炮
+    /// </summary>
     internal class SnowballCannonHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;

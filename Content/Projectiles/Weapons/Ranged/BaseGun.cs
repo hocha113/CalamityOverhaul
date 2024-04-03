@@ -335,7 +335,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <param name="slp"></param>
         public virtual void CaseEjection(float slp = 1) {
             Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
-            int proj = Projectile.NewProjectile(Source, Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
+            int proj = Projectile.NewProjectile(Source2, Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
             Main.projectile[proj].scale = slp;
         }
         /// <summary>

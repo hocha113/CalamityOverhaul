@@ -56,9 +56,7 @@ namespace CalamityOverhaul.Content.UIs
                         player.QuickSpawnItem(player.parent(), new Item(i.type), i.stack);
                     }
                     cwrItem.InitializeMagazine();
-                    if (cwrItem.AmmoCapacityInNapalmBomb) {
-                        cwrItem.AmmoCapacityInNapalmBomb = false;
-                    }
+                    cwrItem.SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
                 }
             }
             time++;
@@ -69,10 +67,21 @@ namespace CalamityOverhaul.Content.UIs
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.CartridgeHolder) {
                 DrawPos = new Vector2(20, Main.screenHeight - 100);
                 string key = "BulletCard";
+                string key2 = "";
+                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.napalmBomb) {
+                    key2 = "_Fire";
+                }
+                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.armourPiercer) {
+                    key2 = "_AP";
+                }
+                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
+                    key2 = "_SH";
+                }
                 if (handItem.useAmmo == AmmoID.Rocket) {
                     key = "GrenadeRound";
+                    key2 = "";
                 }
-                TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + (handItem.CWR().AmmoCapacityInNapalmBomb ? "_Fire" : ""));
+                TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + key2);
             }  
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.Magazines) {
                 DrawPos = new Vector2(60, Main.screenHeight - 100);

@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public override bool ClickBehavior(Player player, CWRItems cwr) {
             _ = SoundEngine.PlaySound(CWRSound.loadTheRounds, Projectile.Center);
             _ = SoundEngine.PlaySound(CWRSound.DeploymentSound_Fire with { Volume = 0.4f }, Projectile.Center);
-            cwr.AmmoCapacityInNapalmBomb = true;
+            cwr.SpecialAmmoState = SpecialAmmoStateEnum.napalmBomb;
             return true;
         }
     }

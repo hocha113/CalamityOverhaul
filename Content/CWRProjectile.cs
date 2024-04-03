@@ -1,10 +1,13 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
+using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Magic;
 using CalamityMod.Projectiles.Ranged;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
@@ -16,6 +19,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
 using static Humanizer.In;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
@@ -64,6 +68,7 @@ namespace CalamityOverhaul.Content
         public byte SpanTypes;
         public HitAttributeStruct GetHitAttribute;
         public IEntitySource Source;
+        public CWRItems cwrItem;
 
         public override void SetDefaults(Projectile projectile) {
             if (projectile.type == ProjectileID.Meowmere) {
@@ -74,6 +79,12 @@ namespace CalamityOverhaul.Content
 
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             Source = source;
+            if (source.Context == "CWRGunShoot") {
+                Item heldItem = Main.player[projectile.owner].ActiveItem();
+                if (heldItem.type != ItemID.None) {
+                    cwrItem = heldItem.CWR();
+                }
+            }
             if (!projectile.hide && projectile.friendly) {
                 CWRPlayer modPlayer = Main.player[projectile.owner].CWR();
                 if (projectile.DamageType == DamageClass.Ranged) {
@@ -92,6 +103,22 @@ namespace CalamityOverhaul.Content
                 projectile.velocity.X *= 0.98f;
                 projectile.velocity.Y += 0.01f;
             }
+
+            if (Source?.Context == "CWRGunShoot" && cwrItem != null) {
+                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.armourPiercer) {
+                    Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
+                    CWRParticle spark = new SparkParticle(projectile.Center, projectile.velocity * 0.3f, false, 9, 2.3f, color * 0.1f);
+                    CWRParticleHandler.AddParticle(spark);
+                }
+                else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
+                    if (Main.rand.NextBool(3)) {
+                        int dust = Dust.NewDust(projectile.Center, 1, 1, DustID.FireworkFountain_Red, projectile.velocity.X, projectile.velocity.Y);
+                        Main.dust[dust].noGravity = true;
+                        Main.dust[dust].scale *= 0.6f;
+                    }                 
+                }
+            }
+
             if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
                 Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
                         , (int)CalamityDusts.SulfurousSeaAcid, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
@@ -165,6 +192,11 @@ namespace CalamityOverhaul.Content
                 if (modifiers.SuperArmor || target.defense > 999 || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR)
                     return;
                 modifiers.DefenseEffectiveness *= 0f;
+            }
+            if (Source?.Context == "CWRGunShoot" && cwrItem != null) {
+                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.armourPiercer) {
+                    modifiers.DefenseEffectiveness *= 0.75f;
+                }
             }
         }
 
@@ -313,31 +345,31 @@ namespace CalamityOverhaul.Content
                 ExoVortexOnHitDeBug(target);
             }
 
-            Item heldItem = player.ActiveItem();
-            if (heldItem.type != ItemID.None) {
-                if (heldItem.CWR().AmmoCapacityInNapalmBomb && Source != null) {
-                    if (Source.Context == "CWRGunShoot") {
-                        target.AddBuff(BuffID.OnFire3, 60);
-                        HitFunc(player, target);
+            if (Source?.Context == "CWRGunShoot" && cwrItem != null) {
+                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.napalmBomb) {
+                    target.AddBuff(BuffID.OnFire3, 60);
+                    player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 3, 0f, 0, false, DamageClass.Default, true);
+                    float thirdDustScale = Main.rand.NextFloat(2, 4);
+                    Vector2 dustRotation = (target.rotation - MathHelper.PiOver2).ToRotationVector2();
+                    Vector2 dustVelocity = dustRotation * target.velocity.Length();
+                    _ = SoundEngine.PlaySound(SoundID.Item14, target.Center);
+                    for (int j = 0; j < 40; j++) {
+                        int contactDust2 = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.InfernoFork, 0f, 0f, 0, default, thirdDustScale);
+                        Dust dust = Main.dust[contactDust2];
+                        dust.position = target.Center + (Vector2.UnitX.RotatedByRandom(MathHelper.Pi).RotatedBy(target.velocity.ToRotation()) * target.width / 3f);
+                        dust.noGravity = true;
+                        dust.velocity.Y -= 6f;
+                        dust.velocity *= 0.5f;
+                        dust.velocity += dustVelocity * (0.6f + (0.6f * Main.rand.NextFloat()));
                     }
                 }
-            }
-        }
-
-        public void HitFunc(Player player, NPC target) {
-            player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 2, 0f, 0, false, DamageClass.Ranged, true);
-            float thirdDustScale = Main.rand.NextFloat(2, 4);
-            Vector2 dustRotation = (target.rotation - MathHelper.PiOver2).ToRotationVector2();
-            Vector2 dustVelocity = dustRotation * target.velocity.Length();
-            _ = SoundEngine.PlaySound(SoundID.Item14, target.Center);
-            for (int j = 0; j < 40; j++) {
-                int contactDust2 = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.InfernoFork, 0f, 0f, 0, default, thirdDustScale);
-                Dust dust = Main.dust[contactDust2];
-                dust.position = target.Center + (Vector2.UnitX.RotatedByRandom(MathHelper.Pi).RotatedBy(target.velocity.ToRotation()) * target.width / 3f);
-                dust.noGravity = true;
-                dust.velocity.Y -= 6f;
-                dust.velocity *= 0.5f;
-                dust.velocity += dustVelocity * (0.6f + (0.6f * Main.rand.NextFloat()));
+                else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
+                    player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 2, 0f, 0, false, DamageClass.Default, true);
+                    for (int i = 0; i < 6; i++) {
+                        CWRParticle particle = new LightParticle(projectile.Center, CWRUtils.randVr(3, 16), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 2, 0.2f);
+                        CWRParticleHandler.AddParticle(particle);
+                    }
+                }
             }
         }
 

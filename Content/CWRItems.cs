@@ -22,6 +22,26 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
 {
+    public enum SpecialAmmoStateEnum
+    {
+        /// <summary>
+        /// 普通，默认值，即无特殊效果
+        /// </summary>
+        ordinary,
+        /// <summary>
+        /// 燃烧弹
+        /// </summary>
+        napalmBomb,
+        /// <summary>
+        /// 破甲
+        /// </summary>
+        armourPiercer,
+        /// <summary>
+        /// 高爆
+        /// </summary>
+        highExplosive,
+    }
+
     public class CWRItems : GlobalItem
     {
         public override bool InstancePerEntity => true;
@@ -72,6 +92,10 @@ namespace CalamityOverhaul.Content
         /// 使用的弹匣UI类型
         /// </summary>
         public CartridgeUIEnum CartridgeEnum;
+        /// <summary>
+        /// 特种状态
+        /// </summary>
+        public SpecialAmmoStateEnum SpecialAmmoState;
         /// <summary>
         /// 弹匣内容，管理装填后的弹药部分
         /// </summary>

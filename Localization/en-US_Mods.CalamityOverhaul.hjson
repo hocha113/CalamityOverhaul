@@ -1913,6 +1913,16 @@ Items: {
 			"There's nothing like putting a bullet in a bubble."
 			'''
 	}
+
+	ArmourPiercerBox: {
+		DisplayName: Armour Piercer Box
+		Tooltip: ""
+	}
+
+	HighExplosiveBox: {
+		DisplayName: High Explosive Box
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2351,6 +2361,11 @@ Projectiles: {
 	NapalmBombBox.DisplayName: Napalm Bomb Box
 	NapalmBombHeld.DisplayName: Napalm Bomb Held
 	CursedDartRemake.DisplayName: Cursed Dart Remake
+	ArmourPiercerBoxProj.DisplayName: Armour Piercer Box Proj
+	ArmourPiercerHeld.DisplayName: Armour Piercer Held
+	HighExplosiveBoxProj.DisplayName: High Explosive Box Proj
+	HighExplosiveHeld.DisplayName: High Explosive Held
+	SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
 }
 
 Configs: {

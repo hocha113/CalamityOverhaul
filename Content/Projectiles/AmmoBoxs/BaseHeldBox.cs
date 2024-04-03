@@ -138,6 +138,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 if (AmmoBoxID > 0) {
                     SoundEngine.PlaySound(DeploymentSound, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {
+                        ExtraGeneration();
                         Vector2 pos = new Vector2((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)) * 16;
                         Projectile.NewProjectile(Item.GetSource_FromThis(), pos, Vector2.Zero, AmmoBoxID, 0, 0, Owner.whoAmI);
                     }
@@ -145,6 +146,10 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 Item.TurnToAir();
                 Projectile.Kill();
             }
+        }
+
+        public virtual void ExtraGeneration() {
+
         }
 
         public sealed override bool PreDraw(ref Color lightColor) {

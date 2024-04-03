@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Common
         public static SoundStyle V_You_Wo_Namges_Is_The_Pwero = new SoundStyle(CWRConstant.Asset + "Sounds/EasterEggSound/V_You_Wo_Namges_Is_The_Pwero");
         public static SoundStyle DeploymentSound = new SoundStyle(CWRConstant.Asset + "Sounds/DeploymentSound");
         public static SoundStyle DeploymentSound_Fire = new SoundStyle(CWRConstant.Asset + "Sounds/DeploymentSound_Fire");
+        public static SoundStyle DeploymentSound_AP = new SoundStyle(CWRConstant.Asset + "Sounds/DeploymentSound_AP");
         public static SoundStyle Gun_50CAL_Shoot = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/50CAL_Shoot");
         public static SoundStyle Gun_AUTO_Shoot = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/AUTO_Shoot");
         public static SoundStyle Gun_AWP_Shoot = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/AWP_Shoot");
