@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.1f;
             Recoil = 6f;
             RangeOfStress = 48;
+            LoadingQuantity = 1;
             RepeatedCartridgeChange = true;
             FiringDefaultSound = false;
         }

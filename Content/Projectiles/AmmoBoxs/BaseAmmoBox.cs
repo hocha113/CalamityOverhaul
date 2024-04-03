@@ -1,14 +1,12 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using Terraria.Audio;
-using Terraria.ID;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using CalamityMod;
-using System.Runtime.ConstrainedExecution;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 
 namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
 {
@@ -66,6 +64,9 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 if (!(tile.HasTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]))) {
                     Projectile.position.Y += 1;
                 }
+                else {
+                    break;
+                }
             }
         }
 
@@ -85,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 player.cursorItemIconEnabled = true;
                 player.cursorItemIconID = ModContent.ItemType<Items.Placeable.AmmoBoxFire>();
                 if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
-                    gun.GunShootCoolingValue = 2;
+                    gun.GunShootCoolingValue = gun.CanRightClick ? 10 : 2;//因为和一些枪械的右键功能按键冲突，所以要额外设置一个长一些的时间
                 }
                 if (player.PressKey(false)) {
                     Item item = player.ActiveItem();

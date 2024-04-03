@@ -2350,6 +2350,7 @@ Projectiles: {
 	CandyCornRifleHeldProj.DisplayName: Candy Corn Rifle Held Proj
 	NapalmBombBox.DisplayName: Napalm Bomb Box
 	NapalmBombHeld.DisplayName: Napalm Bomb Held
+	CursedDartRemake.DisplayName: Cursed Dart Remake
 }
 
 Configs: {

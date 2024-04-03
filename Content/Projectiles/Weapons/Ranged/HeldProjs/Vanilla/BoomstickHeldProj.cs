@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 2.0f;
             RangeOfStress = 8;
             ArmRotSengsBackNoFireOffset = 30;
+            LoadingQuantity = 1;
             RepeatedCartridgeChange = true;
         }
 

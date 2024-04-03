@@ -1,21 +1,20 @@
-﻿using Terraria.Audio;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
-using CalamityOverhaul.Common;
-using static Humanizer.In;
+using Terraria;
+using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class CursedDartRemake : ModProjectile
     {
-        public override string Texture => CWRConstant.Projectile_Ranged + "HellfireBullet";
+        public override string Texture => CWRConstant.Placeholder;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+            TextureAssets.Projectile[Type] = TextureAssets.Projectile[ProjectileID.CursedDart];
         }
 
         public override void SetDefaults() {
@@ -24,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Ranged;
-            Projectile.timeLeft = 20 + Main.rand.Next(20);
+            Projectile.timeLeft = 20;
             Projectile.light = 3.0f;
             Projectile.ignoreWater = false;
             Projectile.usesLocalNPCImmunity = true;
@@ -36,14 +35,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         int lifenum = 5;
         public override void AI() {
+            Projectile.ai[2].Domp();
+            if (Projectile.ai[2] > 0) {
+                Projectile.timeLeft = 20;
+                Projectile.ai[2]--;
+            }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             if (Projectile.timeLeft == 10) {
                 Projectile.timeLeft = 40;
-                Projectile.NewProjectile(Projectile.parent(), Projectile.Center, new Vector2(0,0), ProjectileID.CursedDartFlame,
-                        Projectile.damage / 2, 0.5f, Projectile.owner);
-                lifenum -= 1;
+                if (Projectile.IsOwnedByLocalPlayer() && Projectile.ai[2] <= 0) {
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center
+                        , Vector2.Zero, ProjectileID.CursedDartFlame, Projectile.damage / 2, 0.5f, Projectile.owner);
+                }
+                Projectile.ai[1]++;
+                if (Projectile.ai[1] >= 5) {
+                    Projectile.Kill();
+                }
             }
-            if (lifenum == 0) Projectile.Kill();
         }
 
         public override Color? GetAlpha(Color lightColor) {

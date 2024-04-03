@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -127,16 +128,19 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
 
         public virtual void OnUse() {
             if (Charge < MaxCharge) {
+                ArmRotSengsBack += MathF.Sin(Main.GameUpdateCount * 0.3f) * 0.6f;
                 Charge++;
             } else {
                 if (Owner.ownedProjectileCounts[Item.shoot] >= 5) {
                     CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("AmmoBox_Text"));
                     return;
                 }
-                Vector2 pos = new Vector2((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)) * 16;
                 if (AmmoBoxID > 0) {
                     SoundEngine.PlaySound(DeploymentSound, Projectile.Center);
-                    Projectile.NewProjectile(Item.GetSource_FromThis(), pos, Vector2.Zero, AmmoBoxID, 0, 0, Owner.whoAmI);
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        Vector2 pos = new Vector2((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)) * 16;
+                        Projectile.NewProjectile(Item.GetSource_FromThis(), pos, Vector2.Zero, AmmoBoxID, 0, 0, Owner.whoAmI);
+                    }
                 }
                 Item.TurnToAir();
                 Projectile.Kill();
@@ -151,8 +155,15 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         }
 
         public virtual void BoxDraw(ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, lightColor
-                , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            Vector2 drawBoxPos = Projectile.Center - Main.screenPosition;
+            float rotation = Projectile.rotation;
+            SpriteEffects spriteEffects = DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+            if (Charge > 0) {
+                rotation = 0;
+                spriteEffects = SpriteEffects.None;
+                drawBoxPos = new Vector2((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)) * 16 - Main.screenPosition + new Vector2(0, 4);
+            }
+            Main.EntitySpriteDraw(TextureValue, drawBoxPos, null, lightColor, rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
             if (!(Charge <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
                 Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;
                 Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;
@@ -165,9 +176,9 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 Main.spriteBatch.Draw(barFG, drawPos, frameCrop, Color.Green * 0.8f, 0f, barOrigin, barScale, 0, 0f);
                 Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("AmmoBox_Text2")
                     , drawPos.X - 32, drawPos.Y - 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
-                if (Main.GameUpdateCount % 20 == 0) {
+                if (Charge % 10 == 0) {
                     textlevelsengs++;
-                    if (textlevelsengs > 4) {
+                    if (textlevelsengs > 10) {
                         textlevelsengs = 0;
                     }
                 }
@@ -176,7 +187,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                     text += ".";
                 }
                 Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, text
-                    , drawPos.X + 32, drawPos.Y - 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
+                    , drawPos.X - 20, drawPos.Y, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
             }
         }
     }
