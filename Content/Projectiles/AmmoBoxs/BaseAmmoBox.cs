@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
 {
     internal abstract class BaseAmmoBox : ModProjectile
     {
-        public override string Texture => CWRConstant.Item + "Placeable/AmmoBox";
+        public override string Texture => CWRConstant.Item + "Placeable/NapalmBombBox";
 
         private bool onProj;
         protected int maxFrameNum = 39;
