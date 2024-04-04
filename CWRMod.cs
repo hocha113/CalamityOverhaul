@@ -1,4 +1,3 @@
-using CalamityMod;
 using CalamityMod.Items;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
@@ -7,11 +6,15 @@ using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 
 namespace CalamityOverhaul
 {
@@ -19,7 +22,7 @@ namespace CalamityOverhaul
     {
         internal static CWRMod Instance;
         internal static int GameLoadCount;
-        internal static CalamityGlobalItem CalamityGlobalItemInstance;
+        internal static GlobalHookList<GlobalItem> ShootHook;
         internal Mod musicMod = null;
         internal Mod betterWaveSkipper = null;
         internal Mod fargowiltasSouls = null;
@@ -89,7 +92,12 @@ namespace CalamityOverhaul
                     RItemIndsDict.Add(ritem.SetReadonlyTargetID, ritem);
                 }
             }
-            CalamityGlobalItemInstance = ModContent.GetInstance<CalamityGlobalItem>();
+
+            FieldInfo itemloader_hook_shoot_fidldinfo_value = typeof(ItemLoader).GetField("HookShoot", BindingFlags.NonPublic | BindingFlags.Static);
+            if (itemloader_hook_shoot_fidldinfo_value != null) {
+                ShootHook = (GlobalHookList<GlobalItem>)itemloader_hook_shoot_fidldinfo_value.GetValue(null);
+            }
+
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
             CWRIDs.Load();
         }

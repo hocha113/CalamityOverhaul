@@ -397,7 +397,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     LuxirEvent();
                 }
                 if (CGItemBehavior) {
-                    CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner, Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
+                    foreach (var g in CWRMod.ShootHook.Enumerate(Item)) {
+                        g.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
+                    }
                 }
                 if (fireLight > 0) {
                     Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * fireLight);

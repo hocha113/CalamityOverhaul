@@ -8,6 +8,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -591,7 +592,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                             FiringShootR();
                         }
                         if (CGItemBehavior) {
-                            CWRMod.CalamityGlobalItemInstance.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
+                            foreach(var g in CWRMod.ShootHook.Enumerate(Item)) {
+                                g.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
+                            }
                         }
                         if (EnableRecoilRetroEffect) {
                             OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
