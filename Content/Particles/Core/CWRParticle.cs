@@ -1,5 +1,4 @@
-﻿using CalamityMod.Particles;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityOverhaul.Content.Particles.Core
@@ -23,16 +22,16 @@ namespace CalamityOverhaul.Content.Particles.Core
         public int Time;
 
         /// <summary>
-        /// 如果你需要在达到粒子上限的情况下渲染粒子，将此设置为true。
+        /// 如果你需要在达到粒子上限的情况下渲染粒子，将此设置为<see langword="true"/>
         /// </summary>
         public virtual bool Important => false;
 
         /// <summary>
-        /// 如果你想让你的粒子在达到其最大寿命时自动移除,将此设置为true
+        /// 如果你想让你的粒子在达到其最大寿命时自动移除,将此设置为<see langword="true"/>
         /// </summary>
         public virtual bool SetLifetime => false;
         /// <summary>
-        /// 一个粒子可以存活的最大时间,单位为tick,一般如果想让其有效需要先将SetlifeTime设置为true
+        /// 一个粒子可以存活的最大时间,单位为tick,一般如果想让其有效需要先将<see cref="SetLifetime"/>设置为<see langword="true"/>
         /// </summary>
         public int Lifetime = 0;
 

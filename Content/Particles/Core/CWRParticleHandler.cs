@@ -184,7 +184,6 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// </summary>
         /// <returns></returns>
         public static int FreeSpacesAvailable() {
-            //Safety check
             if (Main.dedServ || particles == null)
                 return 0;
             return 10000 - particles.Count();

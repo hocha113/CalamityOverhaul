@@ -15,7 +15,6 @@ namespace CalamityOverhaul.Content.UIs
     {
         public override void PostSetupContent() {
             //将自定义的UI放到最后加载，在这之前是确保物品、ID、生物等其他内容都加载完成后
-            new CompressorUI().Load();
             new SupertableUI().Load();
             new RecipeUI().Load();
             new DragButton().Load();
@@ -63,11 +62,6 @@ namespace CalamityOverhaul.Content.UIs
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
             int mouseIndex = layers.FindIndex((GameInterfaceLayer layer) => layer.Name == "Vanilla: Mouse Text");
             if (mouseIndex != -1) {
-                layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("DFs UI", delegate {
-                    if (Main.LocalPlayer.CWR().CompressorPanelID != -1)
-                        CompressorUI.Instance.Draw(Main.spriteBatch);
-                    return true;
-                }, InterfaceScaleType.UI));
                 layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("Sp UI", delegate {
                     if (SupertableUI.Instance.Active) {
                         //上帝，必须得这么做？将逻辑更新和绘制更新放到同一个线程里面！这他妈的的逻辑更新将在绘制线程里面运行！这他妈的简直会是一场亵渎
@@ -97,12 +91,6 @@ namespace CalamityOverhaul.Content.UIs
                     }
                     return true;
                 }, InterfaceScaleType.UI));
-            }
-        }
-
-        public override void UpdateUI(GameTime gameTime) {
-            if (Main.LocalPlayer.CWR().CompressorPanelID != -1) {
-                CompressorUI.Instance.Update();
             }
         }
     }

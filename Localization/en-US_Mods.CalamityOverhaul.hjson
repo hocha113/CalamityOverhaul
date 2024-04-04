@@ -2823,6 +2823,11 @@ TextContent: {
 			Swipe the mouse wheel to see the items that have been reset here
 			These are for reference only, as many partial changes do not appear in this list
 			'''
+		OverhaulTheBibleUI_Text1: Monitor the Meleer
+		OverhaulTheBibleUI_Text2: Monitor the Rangedr
+		OverhaulTheBibleUI_Text3: Monitor the Mager
+		OverhaulTheBibleUI_Text4: Monitor the summoner
+		OverhaulTheBibleUI_Text5: Monitor the Roguer
 		Wap_Minishark_Text: '''"Worth mentioning, little sharky has a gig at the shooting range, playing the role of a 'firearms consultant.'"'''
 		Wap_Megashark_Text: '''"We need a bigger picture, don't we?"'''
 		Wap_HandGun_Text: Baaaah! Daaaaaa! Bang!!

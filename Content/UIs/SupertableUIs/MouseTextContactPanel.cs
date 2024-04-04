@@ -1,9 +1,8 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Runtime.Intrinsics;
+using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -14,7 +13,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
     internal class MouseTextContactPanel : CWRUIPanel
     {
         internal static MouseTextContactPanel Instance { get; private set; }
-
+        bool leftCtrlPressed;
+        bool oldLeftCtrlPressed;
         public override void Load() {
             Instance = this;
             Instance.DrawPos = new Vector2(700, 100);
@@ -28,10 +28,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public void UpdateSets() {
             int Mus = DownStartR();
-            if (Mus == 1) {
+            bool leftCtrlPressed = Main.keyState.IsKeyDown(Keys.LeftControl);
+            if (leftCtrlPressed && !oldLeftCtrlPressed) {
                 SoundEngine.PlaySound(SoundID.Chat);
                 InItemDrawRecipe.Instance.DrawBool = !InItemDrawRecipe.Instance.DrawBool;
             }
+            oldLeftCtrlPressed = leftCtrlPressed;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -46,12 +48,15 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             else {
                 if (offset.Y < 0)
                     offset.Y += 5;
+                if (offset.Y >= 0) {
+                    DrawPos = Main.MouseScreen + new Vector2(0, -50);
+                }
             }
             Vector2 uiSize = new Vector2(1.5f, 0.6f);
             string text = CWRLocText.GetTextValue("MouseTextContactPanel_TextContent");
             Vector2 size = FontAssets.MouseText.Value.MeasureString(text);
             float overSizeX = size.X / (uiSize.X * Texture.Width);
-            spriteBatch.Draw(Texture, DrawPos, null, Color.DarkGoldenrod, 0, Vector2.Zero, uiSize * new Vector2(overSizeX, 1), SpriteEffects.None, 0);//绘制出UI主体
+            spriteBatch.Draw(Texture, DrawPos, null, Color.DarkGoldenrod, 0, Vector2.Zero, uiSize * new Vector2(overSizeX * 1.1f, 1), SpriteEffects.None, 0);//绘制出UI主体
 
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRUtils.GetSafeText(text, size, Texture.Width * uiSize.X)
                 , DrawPos.X + 3, DrawPos.Y + 3, Color.White, Color.Black, new Vector2(0.3f), 1f);

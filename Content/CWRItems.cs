@@ -267,14 +267,14 @@ namespace CalamityOverhaul.Content
                     );
                 tooltips.Add(line);
             }
-            if (isInfiniteItem) {
-                TooltipLine line = new TooltipLine(CWRMod.Instance, "CalamityOverhaul",
-                    CalamityUtils.ColorMessage(
-                        CWRLocText.GetTextValue("CWRItem_IsInfiniteItem_TextContent")
-                        , CWRUtils.MultiStepColorLerp(Main.GameUpdateCount % 120 / 120f, Color.DarkRed, Color.Red, Color.DarkGoldenrod, Color.Gold, Color.Red))
-                    );
-                tooltips.Add(line);
-            }
+            //if (isInfiniteItem) {
+            //    TooltipLine line = new TooltipLine(CWRMod.Instance, "CalamityOverhaul",
+            //        CalamityUtils.ColorMessage(
+            //            CWRLocText.GetTextValue("CWRItem_IsInfiniteItem_TextContent")
+            //            , CWRUtils.MultiStepColorLerp(Main.GameUpdateCount % 120 / 120f, Color.DarkRed, Color.Red, Color.DarkGoldenrod, Color.Gold, Color.Red))
+            //        );
+            //    tooltips.Add(line);
+            //}
         }
 
         public override void PostUpdate(Item item) {
@@ -309,7 +309,7 @@ namespace CalamityOverhaul.Content
         }
 
         //////////////////////////////////////////////////
-        //我不知道为什么CWRPlayer 里面的Modify方法          //
+        //我不知道为什么 CWRPlayer 里面的Modify方法         //
         //所修改的值无法作用到枪械射弹上，上帝，让这些东西去死吧//                                        
         //////////////////////////////////////////////////
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback) {
@@ -456,7 +456,6 @@ namespace CalamityOverhaul.Content
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y) {
             int offsetX = SupertableUI.Instance.Active ? 0 : 600;
             if (OmigaSnyContent != null && InItemDrawRecipe.Instance != null && SupertableUI.Instance != null) {
-                MouseTextContactPanel.Instance.DrawPos = new Vector2(offsetX + 100, 100);
                 MouseTextContactPanel.Instance.UpdateSets();
                 MouseTextContactPanel.Instance.Draw(Main.spriteBatch);
                 InItemDrawRecipe.Instance.Draw(Main.spriteBatch, new Vector2(offsetX + 100, 100), OmigaSnyContent);
