@@ -16,6 +16,8 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
 
         private bool onProj;
         protected int maxFrameNum = 39;
+        protected Vector2 drawOffsetPos;
+        public int FromeThisTImeID;
 
         public override void SetDefaults() {
             Projectile.width = 46;
@@ -49,7 +51,14 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 }
             }
             if (num < cwr.AmmoCapacity) {
-                list.Add(new Item(item.useAmmo == AmmoID.Rocket ? ItemID.RocketI : ItemID.MusketBall, cwr.AmmoCapacity - num));
+                int ammoType = item.useAmmo == AmmoID.Rocket ? ItemID.RocketI : ItemID.MusketBall;
+                if (item.useAmmo == AmmoID.FallenStar) {
+                    ammoType = ItemID.FallenStar;
+                }
+                if (item.useAmmo == AmmoID.Gel) {
+                    ammoType = ItemID.Gel;
+                }
+                list.Add(new Item(ammoType, cwr.AmmoCapacity - num));
             }
             cwr.MagazineContents = list.ToArray();
         }
@@ -84,7 +93,10 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             if (onProj) {
                 player.noThrow = 2;
                 player.cursorItemIconEnabled = true;
-                player.cursorItemIconID = ModContent.ItemType<Items.Placeable.AmmoBoxFire>();
+                if (FromeThisTImeID == 0) {
+                    FromeThisTImeID = ModContent.ItemType<Items.Placeable.AmmoBoxFire>();
+                }
+                player.cursorItemIconID = FromeThisTImeID;
                 if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
                     gun.GunShootCoolingValue = gun.CanRightClick ? 10 : 2;//因为和一些枪械的右键功能按键冲突，所以要额外设置一个长一些的时间
                 }
@@ -103,7 +115,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, maxFrameNum)
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition + drawOffsetPos, CWRUtils.GetRec(value, Projectile.frame, maxFrameNum)
                 , onProj ? Color.Gold : Color.White, Projectile.rotation, CWRUtils.GetOrig(value, maxFrameNum) + new Vector2(0, -2), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }

@@ -1,6 +1,8 @@
-﻿using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod;
+using CalamityMod.Projectiles.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -15,10 +17,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.timeLeft % 6 == 0 && Owner.PressKey()) {
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * 17;
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis()
-                        , Projectile.Center + vr.UnitVector() * 53 + vr.GetNormalVector() * 11 * (Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1)
-                        , vr, ModContent.ProjectileType<MiniRocket>()
-                        , Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
+                    EntitySource_ItemUse_WithAmmo source = new EntitySource_ItemUse_WithAmmo(Owner, Owner.ActiveItem(), Owner.GetShootState().UseAmmoItemType, "CWRGunShoot");
+                    Projectile.NewProjectile(source, Projectile.Center + vr.UnitVector() * 53 + vr.GetNormalVector() * 11 * (Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1)
+                        , vr, ModContent.ProjectileType<MiniRocket>(), Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
                 }
                 
                 Vector2 pos = Projectile.Center - vr * 3 + vr.GetNormalVector() * 10 * Owner.direction;

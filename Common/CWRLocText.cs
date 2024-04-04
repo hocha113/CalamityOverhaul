@@ -76,6 +76,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText CWRGun_Recoil_Level_6 { get; private set; }
         public LocalizedText AmmoBox_Text { get; private set; }
         public LocalizedText AmmoBox_Text2 { get; private set; }
+        public LocalizedText AmmoBox_Text3 { get; private set; }
         public LocalizedText Wap_Minishark_Text { get; private set; }
         public LocalizedText Wap_Megashark_Text { get; private set; }
         public LocalizedText Wap_HandGun_Text { get; private set; }

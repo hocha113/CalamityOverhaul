@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
                     , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

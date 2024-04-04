@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public override string Texture => CWRConstant.Item + "Placeable/HESHBox";
         public override void SetAmmoBox() {
             maxFrameNum = 9;
+            drawOffsetPos = new Microsoft.Xna.Framework.Vector2(0, 2);
         }
         public override bool ClickBehavior(Player player, CWRItems cwr) {
             _ = SoundEngine.PlaySound(CWRSound.loadTheRounds, Projectile.Center);

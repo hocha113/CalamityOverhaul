@@ -1894,7 +1894,12 @@ Items: {
 
 	AmmoBoxFire: {
 		DisplayName: 燃烧弹药箱
-		Tooltip: 使用以部署，右键将燃烧弹装入弹匣
+		Tooltip:
+			'''
+			长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
+			特种弹药可以和原来的子弹效果叠加
+			让弹头变得极度易燃，击中目标时发生爆燃
+			'''
 	}
 
 	Marshmallows: {
@@ -1964,13 +1969,36 @@ Items: {
 	}
 
 	ArmourPiercerBox: {
-		// DisplayName: Armour Piercer Box
-		// Tooltip: ""
+		DisplayName: 破甲弹药箱
+		Tooltip:
+			'''
+			长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
+			特种弹药可以和原来的子弹效果叠加
+			给弹药镀上一层钨金，增加子弹的破甲能力，无视目标75%护甲
+			"即便如此，你仍旧不要尝试用手枪去击毁坦克"
+			'''
 	}
 
 	HighExplosiveBox: {
-		// DisplayName: High Explosive Box
-		// Tooltip: ""
+		DisplayName: 高爆弹药箱
+		Tooltip:
+			'''
+			长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
+			特种弹药可以和原来的子弹效果叠加
+			让弹头变成高爆炸弹，子弹击中目标时发射剧烈的爆炸
+			"把它们全部炸飞！"
+			'''
+	}
+
+	DragonBreathBox: {
+		DisplayName: 龙息弹药箱
+		Tooltip:
+			'''
+			长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
+			特种弹药可以和原来的子弹效果叠加
+			魔法与科技的结合，子弹击中目标后会爆发出一道金属射流，对大范围的敌人造成杀伤
+			"这是那条龙的唾液，你愿意相信吗？"
+			'''
 	}
 }
 
@@ -2415,6 +2443,8 @@ Projectiles: {
 	// HighExplosiveBoxProj.DisplayName: High Explosive Box Proj
 	// HighExplosiveHeld.DisplayName: High Explosive Held
 	// SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
+	// DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
+	// DragonBreathHeld.DisplayName: Dragon Breath Held
 }
 
 Configs: {
@@ -3030,6 +3060,7 @@ TextContent: {
 		SupertableUI_Text5: 开启摆放监视
 		AmmoBox_Text: 已到达部署上限
 		AmmoBox_Text2: 正在部署
+		AmmoBox_Text3: 已部署
 		Wap_BubbleGun_Text:
 			'''
 			喷出大量会爆炸的海洋泡泡

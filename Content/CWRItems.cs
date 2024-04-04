@@ -40,6 +40,10 @@ namespace CalamityOverhaul.Content
         /// 高爆
         /// </summary>
         highExplosive,
+        /// <summary>
+        /// 龙息
+        /// </summary>
+        dragonBreath
     }
 
     public class CWRItems : GlobalItem
@@ -183,7 +187,7 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，角色手持的物品的该函数会被加载一次
+        //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，该函数会被加载一次
         public override void SaveData(Item item, TagCompound tag) {
             tag.Add("_MeleeCharge", MeleeCharge);
             tag.Add("_noDestruct", noDestruct);

@@ -74,6 +74,7 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int RisingDragonCoolDownTime;
         public int SafeHeldProjIndex;
+        
         /// <summary>
         /// 是否受伤
         /// </summary>
@@ -82,6 +83,7 @@ namespace CalamityOverhaul.Content
         public bool HeldFeederGunBool;
         public bool HeldGunBool;
         public bool HeldBowBool;
+        public bool NoCanAutomaticCartridgeChange;
         #region NetCode
         public bool DompBool;
         public bool RecoilAccelerationAddBool;
@@ -104,6 +106,7 @@ namespace CalamityOverhaul.Content
             HeldFeederGunBool = false;
             HeldGunBool = false;
             HeldBowBool = false;
+            NoCanAutomaticCartridgeChange = false;
         }
 
         public override void ResetEffects() {
@@ -124,6 +127,7 @@ namespace CalamityOverhaul.Content
             HeldFeederGunBool = false;
             HeldGunBool = false;
             HeldBowBool = false;
+            NoCanAutomaticCartridgeChange = false;
         }
 
         public override void SaveData(TagCompound tag) {

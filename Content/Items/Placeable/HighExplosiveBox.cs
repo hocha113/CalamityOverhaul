@@ -4,6 +4,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria;
 using Terraria.ModLoader;
+using CalamityMod.Items.Materials;
 
 namespace CalamityOverhaul.Content.Items.Placeable
 {
@@ -28,7 +29,8 @@ namespace CalamityOverhaul.Content.Items.Placeable
             CreateRecipe()
                 .AddIngredient(ItemID.AmmoBox)
                 .AddIngredient(ItemID.EmptyBullet, 100)
-                .AddIngredient(ItemID.LivingFireBlock, 5)
+                .AddIngredient(ItemID.ExplosivePowder, 50)
+                .AddIngredient(ModContent.ItemType<UnholyEssence>(), 5)
                 .AddTile(TileID.Anvils)
                 .Register();
         }

@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.UIs.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -76,6 +77,9 @@ namespace CalamityOverhaul.Content.UIs
                 }
                 if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
                     key2 = "_SH";
+                }
+                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
+                    key2 = "_DBC";
                 }
                 if (handItem.useAmmo == AmmoID.Rocket) {
                     key = "GrenadeRound";

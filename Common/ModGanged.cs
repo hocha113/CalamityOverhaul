@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Graphics.Renderers;
+using CalamityMod.Items;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -118,26 +119,6 @@ namespace CalamityOverhaul.Common
                         trO_PlayerHoldOutAnimation_Type = type;
                     }
                 }
-                /*
-                if (trO_MuzzleflashPlayerDL_Type != null) {
-                    trO_MuzzleflashPlayerDL_Draw_Method = trO_MuzzleflashPlayerDL_Type.GetMethod("Draw", BindingFlags.Instance | BindingFlags.NonPublic);
-                }
-                if (trO_MuzzleflashPlayerDL_Draw_Method != null) {
-                    MonoModHooks.Add(trO_MuzzleflashPlayerDL_Draw_Method, On_MP_Draw_4_Hook);
-                } 
-                else {
-                    "未成功加载 trO_MuzzleflashPlayerDL_Draw_Method 是否是MuzzleflashPlayerDrawLayer.Draw已经改动?".DompInConsole();
-                }
-                if (trO_ArrowPlayerDL_Type != null) {
-                    trO_ArrowPlayerDL_Draw_Method = trO_ArrowPlayerDL_Type.GetMethod("Draw", BindingFlags.Instance | BindingFlags.NonPublic);
-                }
-                if (trO_ArrowPlayerDL_Draw_Method != null) {
-                    MonoModHooks.Add(trO_ArrowPlayerDL_Draw_Method, On_MP_Draw_5_Hook);
-                } 
-                else {
-                    "未成功加载 trO_ArrowPlayerDL_Draw_Method 是否是ArrowPlayerDrawLayer.Draw已经改动?".DompInConsole();
-                }
-                */
                 if (trO_PlayerHoldOutAnimation_Type != null) {
                     trO_PlayerHoldOutAnimation_Method = trO_PlayerHoldOutAnimation_Type.GetMethod("ShouldForceUseAnim", BindingFlags.Static | BindingFlags.NonPublic);
                 }
@@ -148,6 +129,17 @@ namespace CalamityOverhaul.Common
                 }
             } else {
                 "未加载模组 TerrariaOverhaul".DompInConsole();
+            }
+
+            #endregion
+
+            #region catalystMod
+
+            if (CWRMod.Instance.catalystMod != null) {
+
+            }
+            else {
+                "未加载模组 CatalystMod".DompInConsole();
             }
 
             #endregion

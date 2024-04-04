@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     AmmoTypes = ModContent.ProjectileType<AquaBlast>();
                 }
             }
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, AmmoTypes
+            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             CaseEjection();
         }

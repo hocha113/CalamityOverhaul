@@ -239,8 +239,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (DownLeft) {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = GunOnFireRot;
-                Projectile.Center = Owner.MountedCenter + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
-                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
+                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
                 if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     onFire = true;
                     //Projectile.ai[1]++;
@@ -253,8 +253,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Owner.Calamity().mouseRight && !onFire && CanRightClick) {//Owner.PressKey()
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = GunOnFireRot;
-                Projectile.Center = Owner.MountedCenter + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
-                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
+                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
                 if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     onFireR = true;
                     //Projectile.ai[1]++;
@@ -266,10 +266,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void InOwner() {
-            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR;
-            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR;
-            Projectile.Center = Owner.Center + new Vector2(DirSign * HandDistance, HandDistanceY);
-            Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
+            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
+            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir;
+            Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
             Projectile.timeLeft = 2;
             if (GunShootCoolingValue > 0) {
                 GunShootCoolingValue--;

@@ -1849,7 +1849,13 @@ Items: {
 
 	AmmoBoxFire: {
 		DisplayName: Ammo Box Fire
-		Tooltip: Use to deploy, right-click to load incendiary rounds into the magazine
+		Tooltip:
+			'''
+			Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 
+			let the special ammunition to fill the magazine
+			Special ammo can be overlaid with the original bullet effect
+			It makes the warhead highly flammable and explodes when it hits the target
+			'''
 	}
 
 	Marshmallows: {
@@ -1916,12 +1922,38 @@ Items: {
 
 	ArmourPiercerBox: {
 		DisplayName: Armour Piercer Box
-		Tooltip: ""
+		Tooltip:
+			'''
+			Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 
+			let the special ammunition to fill the magazine
+			Special ammo can be overlaid with the original bullet effect
+			Coat the ammunition with tungsten gold to increase the bullet's armor breaking ability, ignoring the target's 75% armor
+			"Even so, don't try to shoot down a tank with a pistol."
+			'''
 	}
 
 	HighExplosiveBox: {
 		DisplayName: High Explosive Box
-		Tooltip: ""
+		Tooltip:
+			'''
+			Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 
+			let the special ammunition to fill the magazine
+			Special ammo can be overlaid with the original bullet effect
+			Turn the warhead into a high-explosive projectile, firing a violent explosion when the bullet hits the target
+			"Blow them all up!"
+			'''
+	}
+
+	DragonBreathBox: {
+		DisplayName: Dragon Breath Box
+		Tooltip:
+			'''
+			Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 
+			let the special ammunition to fill the magazine
+			Special ammo can be overlaid with the original bullet effect
+			A combination of magic and technology, bullets hit their targets and explode into a jet of metal, causing damage to a wide range of enemies
+			"This is the dragon's saliva. Do you want to believe it?"
+			'''
 	}
 }
 
@@ -2366,6 +2398,8 @@ Projectiles: {
 	HighExplosiveBoxProj.DisplayName: High Explosive Box Proj
 	HighExplosiveHeld.DisplayName: High Explosive Held
 	SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
+	DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
+	DragonBreathHeld.DisplayName: Dragon Breath Held
 }
 
 Configs: {
@@ -2988,6 +3022,7 @@ TextContent: {
 		SupertableUI_Text5: Open display monitor
 		AmmoBox_Text: The deployment upper limit has been reached
 		AmmoBox_Text2: Being deployed
+		AmmoBox_Text3: Deployed
 		Wap_BubbleGun_Text:
 			'''
 			Exploding ocean bubbles

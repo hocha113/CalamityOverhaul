@@ -254,7 +254,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (AmmoState.Amount == 0) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态以保证换弹流畅
             }
-            if (!IsKreload && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0 && AmmoState.Amount > 0) {
+            if (!IsKreload && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0 && AmmoState.Amount > 0 && !ModOwner.NoCanAutomaticCartridgeChange) {
                 OnKreload = true;
                 kreloadTimeValue = kreloadMaxTime;
             }
@@ -262,11 +262,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 AutomaticCartridgeChangeDelayTime--;
             }
         }
+        public void AddAutomaticCartridgeChangeDelayTime() => AutomaticCartridgeChangeDelayTime = FireTime;
 
         public sealed override void InOwner() {
             SetHeld();
             InitializeMagazine();
             PreInOwnerUpdate();
+            if (Item.type != ItemID.None) {
+                IsKreload = ModItem.IsKreload;
+            }
             ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             Projectile.Center = GetGunBodyPostion();
@@ -373,9 +377,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             else {
                 LoadingReminder = true;
-            }
-            if (Item.type != ItemID.None) {
-                IsKreload = ModItem.IsKreload;
             }
             PostInOwnerUpdate();
         }
@@ -670,8 +671,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public void LoadingAnimation(int rot, int xl, int yl) {
             if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向
-                FeederOffsetRot = -rot;
-                FeederOffsetPos = new Vector2(DirSign * -xl, -yl) * SafeGravDir;
+                FeederOffsetRot = -rot * SafeGravDir;
+                FeederOffsetPos = new Vector2(DirSign * -xl, -yl * SafeGravDir);
             }
         }
         /// <summary>

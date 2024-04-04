@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.35f;
             FireTime = 24;
             for (int i = 0; i < 6; i++) {
-                Projectile.NewProjectile(Owner.parent(), GunShootPos,
+                Projectile.NewProjectile(Source, GunShootPos,
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.8f, 1.1f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ScaleFactor;
             for (int i = 0; i < 4; i++) {
                 Vector2 vr2 = vr.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.8f, 1.1f);
-                int proj = Projectile.NewProjectile(Owner.parent(), pos, vr2, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                int proj = Projectile.NewProjectile(Source2, pos, vr2, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].tileCollide = false;
                 Main.projectile[proj].scale += Main.rand.NextFloat(0.5f);
                 Main.projectile[proj].extraUpdates += 1;
@@ -51,10 +51,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             GunPressure = 0.1f;
             Recoil = 0.3f;
             FireTime = 4;
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Vector2 pos = Owner.Center + new Vector2(MathHelper.Lerp(Main.MouseWorld.To(Owner.Center).X, 0, 0.9f), -780);
             Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ScaleFactor;
-            Projectile.NewProjectile(Owner.parent(), pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source2, pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             CaseEjection();
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();

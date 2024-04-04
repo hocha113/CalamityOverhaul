@@ -85,12 +85,14 @@ namespace CalamityOverhaul.Content.UIs
                 }, InterfaceScaleType.UI));
                 layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("Ov UI", delegate {
                     if (OverhaulTheBibleUI.Instance.Active) {
+                        OverhaulTheBibleUI.Instance.Update(Main.gameTimeCache);
                         OverhaulTheBibleUI.Instance.Draw(Main.spriteBatch);
                     }
                     return true;
                 }, InterfaceScaleType.UI));
                 layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("CH UI", delegate {
                     if (CartridgeHolderUI.Instance.Active && CWRServerConfig.Instance.MagazineSystem) {
+                        CartridgeHolderUI.Instance.Update(Main.gameTimeCache);
                         CartridgeHolderUI.Instance.Draw(Main.spriteBatch);
                     }
                     return true;
@@ -101,12 +103,6 @@ namespace CalamityOverhaul.Content.UIs
         public override void UpdateUI(GameTime gameTime) {
             if (Main.LocalPlayer.CWR().CompressorPanelID != -1) {
                 CompressorUI.Instance.Update();
-            }
-            if (OverhaulTheBibleUI.Instance.Active) {
-                OverhaulTheBibleUI.Instance.Update(gameTime);
-            }
-            if (CartridgeHolderUI.Instance.Active && CWRServerConfig.Instance.MagazineSystem) {
-                CartridgeHolderUI.Instance.Update(gameTime);
             }
         }
     }

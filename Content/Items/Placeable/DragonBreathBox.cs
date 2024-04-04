@@ -8,11 +8,10 @@ using CalamityMod.Items.Materials;
 
 namespace CalamityOverhaul.Content.Items.Placeable
 {
-    internal class ArmourPiercerBox : ModItem
+    internal class DragonBreathBox : ModItem
     {
-        public override string Texture => CWRConstant.Item + "Placeable/HEATBox";
+        public override string Texture => CWRConstant.Item + "Placeable/DBCBoxHeld";
         public override void SetStaticDefaults() {
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(6, 38));
         }
 
         public override void SetDefaults() {
@@ -22,15 +21,14 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.consumable = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.Item1;
-            Item.SetHeldProj<ArmourPiercerHeld>();
+            Item.SetHeldProj<DragonBreathHeld>();
         }
 
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient(ItemID.AmmoBox)
                 .AddIngredient(ItemID.EmptyBullet, 100)
-                .AddIngredient(ModContent.ItemType<WulfrumMetalScrap>(), 5)
-                .AddIngredient(ModContent.ItemType<DubiousPlating>(), 5)
+                .AddIngredient(ModContent.ItemType<YharonSoulFragment>(), 5)
                 .AddTile(TileID.Anvils)
                 .Register();
         }
