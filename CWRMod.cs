@@ -22,7 +22,8 @@ namespace CalamityOverhaul
     {
         internal static CWRMod Instance;
         internal static int GameLoadCount;
-        internal static GlobalHookList<GlobalItem> ShootHook;
+        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook;
+        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook;
         internal Mod musicMod = null;
         internal Mod betterWaveSkipper = null;
         internal Mod fargowiltasSouls = null;
@@ -93,9 +94,9 @@ namespace CalamityOverhaul
                 }
             }
 
-            FieldInfo itemloader_hook_shoot_fidldinfo_value = typeof(ItemLoader).GetField("HookShoot", BindingFlags.NonPublic | BindingFlags.Static);
-            if (itemloader_hook_shoot_fidldinfo_value != null) {
-                ShootHook = (GlobalHookList<GlobalItem>)itemloader_hook_shoot_fidldinfo_value.GetValue(null);
+            {
+                CWR_InItemLoader_Set_Shoot_Hook = (GlobalHookList<GlobalItem>)typeof(ItemLoader).GetField("HookShoot", BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
+                CWR_InItemLoader_Set_CanUse_Hook = (GlobalHookList<GlobalItem>)typeof(ItemLoader).GetField("HookCanUseItem", BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
             }
 
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了

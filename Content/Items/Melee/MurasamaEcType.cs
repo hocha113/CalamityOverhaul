@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             {11, 1700 },
             {12, 2022 },
             {13, 2500 },
-            {14, 13001 }
+            {14, 13000 }
         };
         /// <summary>
         /// 每个时期阶段对应的挥舞范围大小，这个成员一般不需要直接访问，而是使用<see cref="GetOnScale"/>

@@ -17,10 +17,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 using static Humanizer.In;
+using static System.Net.Mime.MediaTypeNames;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
 namespace CalamityOverhaul.Content
@@ -407,6 +409,12 @@ namespace CalamityOverhaul.Content
             if (projectile.type == ModContent.ProjectileType<ThanatosLaser>()) {
                 ThanatosLaserDrawDeBug(projectile, ref lightColor);
             }
+            //Vector2 pos = projectile.Center - Main.screenPosition;
+            //string name = projectile.Name;
+            //if (projectile.ModProjectile != null) {
+            //    name = projectile.ModProjectile.FullName;
+            //}
+            //Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, name, pos.X + 0, pos.Y - 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
             return base.PreDraw(projectile, ref lightColor);
         }
 

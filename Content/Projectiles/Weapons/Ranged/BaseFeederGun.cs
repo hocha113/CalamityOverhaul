@@ -592,8 +592,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                             FiringShootR();
                         }
                         if (CGItemBehavior) {
-                            foreach(var g in CWRMod.ShootHook.Enumerate(Item)) {
-                                g.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
+                            bool reset = true;
+                            foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
+                                reset = g.CanUseItem(Item, Owner);
+                            }
+                            if (reset) {
+                                foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
+                                    g.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
+                                }
                             }
                         }
                         if (EnableRecoilRetroEffect) {

@@ -397,7 +397,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     LuxirEvent();
                 }
                 if (CGItemBehavior) {
-                    foreach (var g in CWRMod.ShootHook.Enumerate(Item)) {
+                    foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
+                        g.CanUseItem(Item, Owner);
+                    }
+                    foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
                         g.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
                     }
                 }

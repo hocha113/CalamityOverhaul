@@ -33,9 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
-        int lifenum = 5;
         public override void AI() {
-            Projectile.ai[2].Domp();
             if (Projectile.ai[2] > 0) {
                 Projectile.timeLeft = 20;
                 Projectile.ai[2]--;
