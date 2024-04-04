@@ -71,6 +71,7 @@ namespace CalamityOverhaul.Content
         public HitAttributeStruct GetHitAttribute;
         public IEntitySource Source;
         public CWRItems cwrItem;
+        public bool NotSubjectToSpecialEffects;
 
         public override void SetDefaults(Projectile projectile) {
             if (projectile.type == ProjectileID.Meowmere) {

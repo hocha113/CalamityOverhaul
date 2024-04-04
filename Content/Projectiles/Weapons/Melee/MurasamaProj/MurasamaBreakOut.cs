@@ -34,6 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.timeLeft = 300;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 22;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
         public override void PostAI() => CWRUtils.ClockFrame(ref Projectile.frame, 5, 12);

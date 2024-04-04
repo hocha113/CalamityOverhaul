@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 5;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
         public override bool ShouldUpdatePosition() => false;

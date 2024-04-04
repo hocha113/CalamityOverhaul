@@ -40,6 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.timeLeft = 120;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = false;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
         public override bool? CanDamage() => false;

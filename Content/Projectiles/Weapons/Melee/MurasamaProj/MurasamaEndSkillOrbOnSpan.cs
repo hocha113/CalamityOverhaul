@@ -33,6 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.MaxUpdates = 5;
             Projectile.timeLeft = 100 * Projectile.MaxUpdates;
             maxOrbNinmsWeith = Main.rand.NextFloat(3, 53.3f);
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
         public override bool ShouldUpdatePosition() => false;

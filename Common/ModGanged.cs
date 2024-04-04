@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Common
         public delegate void On_VoidFunc_Dalegate(ref PlayerDrawSet drawInfo, bool drawOnBack);
         public delegate void On_VoidFunc_Instance_Dalegate(object inds);
         public delegate bool On_ShouldForceUseAnim_Dalegate(Player player, Item item);
+        public delegate bool On_OnSpawnEnchCanAffectProjectile_Dalegate(Projectile projectile, bool allowMinions);
 
         public static Type[] weaponOutCodeTypes;
 
@@ -40,6 +41,21 @@ namespace CalamityOverhaul.Common
         public static MethodBase trO_MuzzleflashPlayerDL_Draw_Method;
         public static MethodBase trO_ArrowPlayerDL_Draw_Method;
         public static MethodBase trO_PlayerHoldOutAnimation_Method;
+
+        public static Type[] fargowiltasSoulsTypes;
+        public static Type fargowiltasSouls_Utils_Type;
+        public static MethodBase fS_Utils_OnSpawnEnchCanAffectProjectile_Method;
+
+        public static Type[] GetModType(Mod mod) => AssemblyManager.GetLoadableTypes(mod.Code);
+        public static Type GetTargetTypeInStringKey(Type[] types, string key) {
+            Type reset = null;
+            foreach (Type type in types) {
+                if (type.Name == key) {
+                    reset = type;
+                }
+            }
+            return reset;
+        }
 
         public static void Load() {
             #region weaponOut
@@ -143,6 +159,33 @@ namespace CalamityOverhaul.Common
             }
 
             #endregion
+
+            #region fargowiltasSouls
+
+            if (CWRMod.Instance.fargowiltasSouls != null) {
+                fargowiltasSoulsTypes = GetModType(CWRMod.Instance.fargowiltasSouls);
+                fargowiltasSouls_Utils_Type = GetTargetTypeInStringKey(fargowiltasSoulsTypes, "FargoSoulsUtil");
+                if (fargowiltasSouls_Utils_Type != null) {
+                    fS_Utils_OnSpawnEnchCanAffectProjectile_Method = fargowiltasSouls_Utils_Type.GetMethod("OnSpawnEnchCanAffectProjectile", BindingFlags.Static | BindingFlags.Public);
+                }
+                if (fS_Utils_OnSpawnEnchCanAffectProjectile_Method != null) {
+                    MonoModHooks.Add(fS_Utils_OnSpawnEnchCanAffectProjectile_Method, On_OnSpawnEnchCanAffectProjectile_Hook);
+                } else {
+                    "未成功加载 fS_Utils_OnSpawnEnchCanAffectProjectile_Method FargoSoulsUtil.OnSpawnEnchCanAffectProjectile已经改动?".DompInConsole();
+                }
+            }
+            else {
+                "未加载模组 FargowiltasSouls".DompInConsole();
+            }
+
+            #endregion
+        }
+
+        private static bool On_OnSpawnEnchCanAffectProjectile_Hook(On_OnSpawnEnchCanAffectProjectile_Dalegate orig, Projectile projectile, bool allowMinions) {
+            if (projectile.CWR().NotSubjectToSpecialEffects) {
+                return false;
+            }
+            return orig.Invoke(projectile, allowMinions);
         }
 
         private static bool IFDrawHeld(On_ModPlayerDraw_Dalegate orig, PlayerDrawSet drawInfo) {

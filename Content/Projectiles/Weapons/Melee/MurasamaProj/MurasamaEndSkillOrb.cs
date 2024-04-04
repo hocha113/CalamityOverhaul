@@ -45,6 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 13 * Projectile.MaxUpdates;
             Projectile.timeLeft = BaseProjTime * Projectile.MaxUpdates;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
         public override void SendExtraAI(BinaryWriter writer) {
