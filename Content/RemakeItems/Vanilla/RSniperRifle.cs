@@ -11,9 +11,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override int TargetID => ItemID.SniperRifle;
         public override bool IsVanilla => true;
         public override string TargetToolTipItemName => "Wap_SniperRifle_Text";
+        public const int BaseDamage = 244;
         public override void SetDefaults(Item item) {
             item.useTime = 0;
-            item.damage = 444;
+            item.damage = BaseDamage;
             item.CWR().Scope = true;
             item.Calamity().canFirePointBlankShots = true;
             item.SetCartridgeGun<SniperRifleHeldProj>(4);

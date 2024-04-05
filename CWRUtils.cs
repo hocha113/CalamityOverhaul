@@ -1073,12 +1073,15 @@ namespace CalamityOverhaul
             return result;
         }
 
-        public static ShootState GetShootState(this Player player) {
+        public static ShootState GetShootState(this Player player, string shootKey = "Null") {
             ShootState shootState = new();
             Item item = player.ActiveItem();
             _ = player.PickAmmo(item, out shootState.AmmoTypes, out shootState.ScaleFactor
                 , out shootState.WeaponDamage, out shootState.WeaponKnockback, out shootState.UseAmmoItemType, true);
-            shootState.Source = new EntitySource_ItemUse_WithAmmo(player, item, shootState.UseAmmoItemType);
+            if (shootKey == "Null") {
+                shootKey = null;
+            }
+            shootState.Source = new EntitySource_ItemUse_WithAmmo(player, item, shootState.UseAmmoItemType, shootKey);
             return shootState;
         }
 

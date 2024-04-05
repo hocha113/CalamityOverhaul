@@ -12,6 +12,19 @@ v_0.3.5.8.8
 8.重做了终焉合成监视UI，现在的设计更加合理
 9.修复了终焉合成系统在多人模式下的一些严重问题
 10.对法狗魔石进行了适配，以防止玩家游玩两个模组时出现某些荒诞的效果
+11.试着进行了重制节点的修改，以杜绝在开启多个模组游戏时，一些武器的伤害覆盖效果失效的情况
 
-Developer: HoCha113
+——Developer responsible for the following content: HoCha113
+
+1.Fixed an issue where the Tactical Shotgun, Shotgun, Boomstick, and Onyx Blaster would erroneously show full ammo when switching items mid-reload.
+2.Optimized firearm usage animations to eliminate minor glitches when the player is flying rapidly or walking on uneven terrain.
+3.Resolved animation abnormalities with certain firearms when gravity is reversed.
+4.Addressed a bug where switching rapidly from an empty hand to a firearm while holding down the fire button would cause the firearm to repeatedly attempt to reload.
+5.Corrected magazine issues with the Deepcore GK2.
+6.Added more specialty ammo crates and revamped related content.
+7.Overhauled the "Overhaul The Bible" to allow filtering and monitoring of items by different professions, fixing item icon offset issues.
+8.Redesigned the Endgame Crafting Monitor UI for improved usability.
+9.Fixed severe multiplayer issues with the Endgame Crafting system.
+10.Adapted compatibility with Fargowiltas Souls to prevent absurd effects when playing with both mods.
+11.Attempted rework of node modifications to prevent damage override issues with certain weapons when playing with multiple mods active.
 

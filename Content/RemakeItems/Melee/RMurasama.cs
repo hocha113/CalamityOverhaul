@@ -111,7 +111,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             tooltips.AddRange(prefixTooltips);
         }
 
-        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) => damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
+        //public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) => damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
+        public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+            damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
+            return false;
+        }
 
         public override void HoldItem(Item item, Player player) {
             player.CWR().HeldMurasamaBool = true;

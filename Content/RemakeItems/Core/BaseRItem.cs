@@ -451,6 +451,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         }
         /// <summary>
+        /// 修改物品伤害数据
+        /// </summary>
+        /// <returns>返回<see langword="true"/>仅仅会继续执行原ModItem方法与全局Item类的额外修改运行。
+        /// 返回<see langword="false"/>阻止后续所有修改的运行</returns>
+        public virtual bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+            return true;
+        }
+        /// <summary>
         /// 修改物品击退数据
         /// </summary>
         /// <param name="item"></param>

@@ -6,6 +6,7 @@ using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
+using Terraria.UI;
 using static CalamityOverhaul.CWRMod;
 
 namespace CalamityOverhaul.Content.RemakeItems.Core
@@ -22,6 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
     public delegate void On_ModifyWeaponCrit_Delegate(Item item, Player player, ref float crit);
     public delegate void On_ModifyItemLoot_Delegate(Item item, ItemLoot itemLoot);
     public delegate bool On_CanConsumeAmmo_Delegate(Item weapon, Item ammo, Player player);
+    public delegate void On_ModifyWeaponDamage_Delegate(Item item, Player player, ref StatModifier damage);
 
     internal class RItemSystem : ModSystem
     {
@@ -39,6 +41,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onModifyWeaponCritMethod;
         public static MethodBase onModifyItemLootMethod;
         public static MethodBase onCanConsumeAmmoMethod;
+        public static MethodBase onModifyWeaponDamageMethod;
 
         public override void Load() {
             itemLoaderType = typeof(ItemLoader);
@@ -54,6 +57,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onModifyWeaponCritMethod = itemLoaderType.GetMethod("ModifyWeaponCrit", BindingFlags.Public | BindingFlags.Static);
             onModifyItemLootMethod = itemLoaderType.GetMethod("ModifyItemLoot", BindingFlags.Public | BindingFlags.Static);
             onCanConsumeAmmoMethod = itemLoaderType.GetMethod("CanConsumeAmmo", BindingFlags.Public | BindingFlags.Static);
+            onModifyWeaponDamageMethod = itemLoaderType.GetMethod("ModifyWeaponDamage", BindingFlags.Public | BindingFlags.Static);
 
             if (onSetDefaultsMethod != null && !ModLoader.HasMod("MagicBuilder")) {
                 //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发生严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
@@ -92,6 +96,26 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (onCanConsumeAmmoMethod != null) {
                 MonoModHooks.Add(onCanConsumeAmmoMethod, OnCanConsumeAmmoHook);
             }
+            if (onModifyWeaponDamageMethod != null) {
+                MonoModHooks.Add(onModifyWeaponDamageMethod, OnModifyWeaponDamageHook);
+            }
+        }
+
+
+        /// <summary>
+        /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_CanConsumeAmmo"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
+        /// </summary>
+        public void OnModifyWeaponDamageHook(On_ModifyWeaponDamage_Delegate orig, Item item, Player player, ref StatModifier damage) {
+            if (item.IsAir) {
+                return;
+            }
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                bool rasg = ritem.On_ModifyWeaponDamage(item, player, ref damage);
+                if (!rasg) {
+                    return;
+                }
+            }
+            orig.Invoke(item, player, ref damage);
         }
 
         /// <summary>
@@ -139,7 +163,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public void OnModifyWeaponCritHook(On_ModifyWeaponCrit_Delegate orig, Item item, Player player, ref float crit) {
             bool? result = null;
             if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
-                result = RItemIndsDict[item.type].On_ModifyWeaponCrit(item, player, ref crit);
+                result = ritem.On_ModifyWeaponCrit(item, player, ref crit);
             }
             if (result.HasValue) {
                 if (result.Value) {
@@ -161,7 +185,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public void OnUseAnimationHook(On_UseAnimation_Delegate orig, Item item, Player player) {
             bool? result = null;
             if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
-                result = RItemIndsDict[item.type].On_UseAnimation(item, player);
+                result = ritem.On_UseAnimation(item, player);
             }
             if (result.HasValue) {
                 if (result.Value) {

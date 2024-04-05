@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -67,15 +68,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 lastdamage = 0.1f;
             } 
             else if (timenum < 972 && timenum > 942) {
-                lastdamage = ((972 - timenum) * 20 + 444) / 444f;
+                lastdamage = ((972 - timenum) * 20 + 444) / (float)RSniperRifle.BaseDamage;
             }
             else if (timenum < 942) {
-                lastdamage = ((942 - timenum) * 340 + 1044) / 444f;
+                lastdamage = ((942 - timenum) * 340 + 1044) / (float)RSniperRifle.BaseDamage;
             }
             if (Owner.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun)) {
                 if (Projectile.IsOwnedByLocalPlayer() && onFire) {
                     SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/TankCannon") { Pitch = Projectile.ai[2] }, Projectile.Center);
-                    ShootState shootState = Owner.GetShootState();
+                    ShootState shootState = Owner.GetShootState("CWRGunShoot");
                     int ammo = shootState.AmmoTypes;
                     if (ammo == ProjectileID.Bullet || ammo == ModContent.ProjectileType<MarksmanShot>()) {
                         ammo = ProjectileID.BulletHighVelocity;

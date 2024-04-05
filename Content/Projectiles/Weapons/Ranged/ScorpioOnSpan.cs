@@ -17,8 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.timeLeft % 6 == 0 && Owner.PressKey()) {
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * 17;
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    EntitySource_ItemUse_WithAmmo source = new EntitySource_ItemUse_WithAmmo(Owner, Owner.ActiveItem(), Owner.GetShootState().UseAmmoItemType, "CWRGunShoot");
-                    Projectile.NewProjectile(source, Projectile.Center + vr.UnitVector() * 53 + vr.GetNormalVector() * 11 * (Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1)
+                    Projectile.NewProjectile(Owner.GetShootState("CWRGunShoot").Source, Projectile.Center + vr.UnitVector() * 53 + vr.GetNormalVector() * 11 * (Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1)
                         , vr, ModContent.ProjectileType<MiniRocket>(), Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
                 }
                 
