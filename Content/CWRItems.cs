@@ -113,10 +113,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int AmmoCapacity;
         /// <summary>
-        /// 是否装载了燃烧弹，这个字段在换弹时应该回归默认值false
-        /// </summary>
-        public bool AmmoCapacityInNapalmBomb;
-        /// <summary>
         /// 大于0时不可以装弹
         /// </summary>
         public int NoKreLoadTime;

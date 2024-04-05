@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 28;
             kreloadMaxTime = 20;
             ArmRotSengsBackNoFireOffset = 30;
+            LoadingQuantity = 1;
             RepeatedCartridgeChange = true;
         }
 

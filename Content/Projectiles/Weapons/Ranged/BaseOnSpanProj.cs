@@ -42,6 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.timeLeft = (int)MaxCharge;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.light = 0.2f;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
         public sealed override bool? CanDamage() => false;

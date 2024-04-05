@@ -53,11 +53,11 @@ namespace CalamityOverhaul.Content.UIs
             }
         }
 
-        private bool melee;
-        private bool ranged;
-        private bool magic;
-        private bool summon;
-        private bool rogue;
+        private bool melee = true;
+        private bool ranged = true;
+        private bool magic = true;
+        private bool summon = true;
+        private bool rogue = true;
 
         private bool onMeleeP;
         private bool onRangedP;

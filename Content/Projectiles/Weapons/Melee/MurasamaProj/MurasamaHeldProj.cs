@@ -146,8 +146,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 armRotSengsBack = 110;
             }
 
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsFront) * -DirSign * safeGravDir);
-            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsBack) * -DirSign * safeGravDir);
+            if (CWRServerConfig.Instance.WeaponHandheldDisplay || (Owner.PressKey() || Owner.PressKey(false))) {
+                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsFront) * -DirSign * safeGravDir);
+                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsBack) * -DirSign * safeGravDir);
+            }
         }
 
         private void SpanTriggerEffDust() {
@@ -207,6 +209,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            if (!CWRServerConfig.Instance.WeaponHandheldDisplay && !(Owner.PressKey() || Owner.PressKey(false))) {
+                return false;
+            }
             Texture2D value = CWRUtils.GetT2DValue(Texture + (Projectile.hide ? "" : "2"));
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation
                 , CWRUtils.GetOrig(value), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);

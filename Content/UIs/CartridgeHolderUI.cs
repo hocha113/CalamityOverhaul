@@ -83,7 +83,6 @@ namespace CalamityOverhaul.Content.UIs
                 }
                 if (handItem.useAmmo == AmmoID.Rocket) {
                     key = "GrenadeRound";
-                    key2 = "";
                 }
                 TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + key2);
             }  

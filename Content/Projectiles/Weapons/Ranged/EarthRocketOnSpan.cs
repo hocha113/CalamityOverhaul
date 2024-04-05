@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.timeLeft = 21;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.light = 1.2f;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
         public override void AI() {
@@ -32,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * 7;
                 DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, vr);
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.NewProjectile(Owner.parent(), Projectile.Center, vr, ModContent.ProjectileType<ScorchedEarthRocket>(), Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
+                    Projectile.NewProjectile(Owner.GetShootState("CWRGunShoot").Source, Projectile.Center, vr, ModContent.ProjectileType<ScorchedEarthRocket>(), Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
                 }
                 Vector2 pos = Projectile.Center - vr * 3 + vr.GetNormalVector() * 10 * Owner.direction;
                 if (Projectile.rotation != 0) {

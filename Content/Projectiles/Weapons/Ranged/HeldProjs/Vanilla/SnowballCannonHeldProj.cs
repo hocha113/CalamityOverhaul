@@ -18,7 +18,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.SnowballCannon;
         public override int targetCWRItem => ItemID.SnowballCannon;
         public override void SetRangedProperty() {
-            FireTime = 30;
+            FireTime = 40;
+            kreloadMaxTime = 90;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -27,33 +28,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 1.6f;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 60;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 11;
+            RecoilOffsetRecoverValue = 0.8f;
         }
 
         public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 13);
-        }
-
-        public override bool KreLoadFulfill() {
-            if (BulletNum < 16) {
-                BulletNum += 4;
-            } else {
-                BulletNum = 20;
-            }
-            if (Item.CWR().AmmoCapacityInNapalmBomb) {
-                Item.CWR().AmmoCapacityInNapalmBomb = false;
-            }
-            return true;
-        }
-
-        public override bool PreReloadEffects(int time, int maxTime) {
-            return false;
+            LoadingAnimation(30, 0, 6);
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 76, dustID2: 149, dustID3: 76);
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            _ = CreateRecoil();
+            SpawnGunFireDust(GunShootPos, ShootVelocity, splNum: 2, dustID1: 76, dustID2: 149, dustID3: 76);
+            SpawnGunFireDust(GunShootPos, ShootVelocity, splNum: 3, dustID1: 76, dustID2: 149, dustID3: 76);
+            for (int i = 0; i < 8; i++) {
+                int proj = Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.8f, 1.1f)
+                    , AmmoTypes, (int)(WeaponDamage * Main.rand.NextFloat(0.2f, 0.8f)), WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj].scale += Main.rand.NextFloat(0.3f);
+            }
         }
     }
 }

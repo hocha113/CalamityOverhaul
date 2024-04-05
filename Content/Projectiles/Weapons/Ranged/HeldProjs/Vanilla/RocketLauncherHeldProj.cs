@@ -44,14 +44,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override bool KreLoadFulfill() {
-            if (BulletNum < 16) {
-                BulletNum += 4;
-            } else {
-                BulletNum = 20;
-            }
-            if (Item.CWR().AmmoCapacityInNapalmBomb) {
-                Item.CWR().AmmoCapacityInNapalmBomb = false;
-            }
             return true;
         }
 

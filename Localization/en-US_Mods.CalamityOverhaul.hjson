@@ -2400,6 +2400,7 @@ Projectiles: {
 	SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
 	DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
 	DragonBreathHeld.DisplayName: Dragon Breath Held
+	TradewindsHeldProj.DisplayName: Tradewinds Held Proj
 }
 
 Configs: {
@@ -2810,7 +2811,7 @@ TextContent: {
 		Murasama_Text1: Not yet unlocked. You need to pass test 2
 		Murasama_Text2: Not yet unlocked. You need to pass test 5
 		Murasama_Text3: Not yet unlocked. You need to pass test 8
-		MouseTextContactPanel_TextContent: Right-click on the item icon switch to synthesize the recipe
+		MouseTextContactPanel_TextContent: Left Ctrl on the item icon switch to synthesize the recipe
 		CWRItem_IsInfiniteItem_TextContent: Only the ultimate combination can stabilize it, otherwise it will hit the moment that triggers the dreaded collapse of the black hole
 		CWRItem_IsRemakeItem_TextContent: -overhauls-
 		OnEnterWorld_TextContent: weapon reset has been loaded

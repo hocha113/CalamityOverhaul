@@ -32,18 +32,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAnimation(30, 0, 13);
         }
 
-        public override bool KreLoadFulfill() {
-            if (BulletNum < 60) {
-                BulletNum += 60;
-            } else {
-                BulletNum = 120;
-            }
-            if (Item.CWR().AmmoCapacityInNapalmBomb) {
-                Item.CWR().AmmoCapacityInNapalmBomb = false;
-            }
-            return true;
-        }
-
         public override void FiringShoot() {
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ProjectileID.BulletHighVelocity;

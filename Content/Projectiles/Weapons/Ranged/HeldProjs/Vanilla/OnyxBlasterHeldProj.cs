@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             kreloadMaxTime = 18;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
-            HandDistance = 15;
+            HandDistance = 18;
             HandDistanceY = 0;
             GunPressure = 0.3f;
             ControlForce = 0.1f;

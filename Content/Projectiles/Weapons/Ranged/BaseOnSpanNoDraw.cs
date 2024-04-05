@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.timeLeft = 40;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.light = 1.2f;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
         public virtual void SpanProj() {

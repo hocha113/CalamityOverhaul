@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -27,34 +28,50 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 2.8f;
             RangeOfStress = 10;
             RepeatedCartridgeChange = true;
-            kreloadMaxTime = 75;
+            kreloadMaxTime = 20;
+            LoadingQuantity = 1;
         }
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(30, 0, 13);
         }
 
+        public override bool PreConsumeAmmoEvent() {
+            return false;
+        }
+
+        public override bool PreReloadEffects(int time, int maxTime) {
+            if (time == 1) {
+                SoundEngine.PlaySound(CWRSound.Gun_Shotgun_LoadShell with { Volume = 0.75f }, Projectile.Center);
+                if (BulletNum == ModItem.AmmoCapacity) {
+                    SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Pump with { Volume = 0.6f, Pitch = -0.3f }, Projectile.Center);
+                    GunShootCoolingValue += 15;
+                }
+            }
+            return false;
+        }
+
         public override bool KreLoadFulfill() {
-            BulletNum += 6;
-            if (Item.CWR().AmmoCapacityInNapalmBomb) {
-                Item.CWR().AmmoCapacityInNapalmBomb = false;
+            if (BulletNum < ModItem.AmmoCapacity) {
+                if (BulletNum == 0) {
+                    BulletReturn();
+                    LoadingQuantity = 0;
+                    LoadBulletsIntoMagazine();
+                    LoadingQuantity = 1;
+                }
+                ExpendedAmmunition();
+                OnKreload = true;
+                kreloadTimeValue = kreloadMaxTime;
             }
             return true;
         }
 
-        public override void PostFiringShoot() {
-        }
-
         public override void FiringShoot() {
             SpawnGunFireDust();
-            _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage * 2, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
-            for (int i = 0; i < 2; i++) {
-                UpdateMagazineContents();
-                _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.36f, 0.36f)) * Main.rand.NextFloat(0.8f, 1.2f), AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
-            }
-            for (int i = 0; i < 2; i++) {
-                UpdateMagazineContents();
-                _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(0.7f, 1.3f), AmmoTypes, WeaponDamage /2, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
+            for (int i = 0; i < 8; i++) {
+                _ = Projectile.NewProjectile(Source, GunShootPos
+                    , ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1.2f)
+                    , AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
             }
         }
     }

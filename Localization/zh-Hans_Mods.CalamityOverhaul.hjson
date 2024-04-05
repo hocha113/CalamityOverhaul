@@ -2445,6 +2445,7 @@ Projectiles: {
 	// SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
 	// DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
 	// DragonBreathHeld.DisplayName: Dragon Breath Held
+	// TradewindsHeldProj.DisplayName: Tradewinds Held Proj
 }
 
 Configs: {

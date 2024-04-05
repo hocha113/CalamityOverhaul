@@ -107,6 +107,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.penetrate = -1;
             Projectile.hide = true;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
             SetRangedProperty();
         }
 
