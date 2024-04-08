@@ -25,7 +25,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.timeLeft = 1200;
-            Projectile.light = 3.0f;
             Projectile.ignoreWater = false;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 0;
@@ -35,6 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
+            Lighting.AddLight(Projectile.Center, Color.Red.ToVector3());
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, 174, 0f, 0f, 100, Color.Red, 0.8f);
             dust.velocity += Projectile.velocity / 2;

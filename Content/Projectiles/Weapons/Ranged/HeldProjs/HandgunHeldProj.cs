@@ -44,13 +44,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override bool PreReloadEffects(int time, int maxTime) {
             if (time == 50) {
-                SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipOut with { Volume = 0.75f }, Projectile.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipOut with { Volume = 0.65f }, Projectile.Center);
             }
             if (time == 40) {
-                SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipLocked with { Volume = 0.75f }, Projectile.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipLocked with { Volume = 0.65f }, Projectile.Center);
             }
             if (time == 10) {
-                SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot with { Volume = 0.75f }, Projectile.Center);
+                SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot with { Volume = 0.65f }, Projectile.Center);
             }
             return false;
         }

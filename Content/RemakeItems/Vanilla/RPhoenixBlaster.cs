@@ -10,6 +10,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override int TargetID => ItemID.PhoenixBlaster;
         public override bool IsVanilla => true;
         public override string TargetToolTipItemName => "Wap_PhoenixBlaster_Text";
-        public override void SetDefaults(Item item) => item.SetHeldProj<PhoenixBlasterHeldProj>();
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<PhoenixBlasterHeldProj>(22);
     }
 }

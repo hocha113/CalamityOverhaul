@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float Recoil = 5;
         /// <summary>
-        /// 止推模长恢复系数，值越接近1恢复的越加缓慢
+        /// 止推模长恢复系数，值越接近1恢复的越加缓慢，默认为0.5f
         /// </summary>
         protected float RecoilOffsetRecoverValue = 0.5f;
         /// <summary>

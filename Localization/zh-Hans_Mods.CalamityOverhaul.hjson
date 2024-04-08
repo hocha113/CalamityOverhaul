@@ -2000,6 +2000,36 @@ Items: {
 			"这是那条龙的唾液，你愿意相信吗？"
 			'''
 	}
+
+	FlurrystormCannonEcType: {
+		DisplayName: 雪球机关枪
+		Tooltip:
+			'''
+			发射大量雪球，火力随着弹药减少而变强
+			有概率进入超载状态，喷发出大量雪球与冰雹
+			"这足以让你在雪仗中立于不败之地"
+			'''
+	}
+
+	AvalancheM60: {
+		DisplayName: 雪崩 M60
+		Tooltip:
+			'''
+			发射大量雪球，火力随着弹药减少而变强
+			每开火20次进入一次超频爆发，制造一次小型的雪崩
+			"电次，我们来打雪仗吧"
+			'''
+	}
+
+	CrystalDimming: {
+		// DisplayName: Crystal Dimming
+		// Tooltip: ""
+	}
+
+	DarkFrostSolstice: {
+		// DisplayName: Dark Frost Solstice
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2446,6 +2476,15 @@ Projectiles: {
 	// DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
 	// DragonBreathHeld.DisplayName: Dragon Breath Held
 	// TradewindsHeldProj.DisplayName: Tradewinds Held Proj
+	// FlurrystormCannonHeldProj.DisplayName: Flurrystorm Cannon Held Proj
+	// DragonsScaleGreatswordProj.DisplayName: Dragons Scale Greatsword Proj
+	// ExtremeColdHail.DisplayName: Extreme Cold Hail
+	// AvalancheM60HeldProj.DisplayName: Avalanche M60 Held Proj
+	// IceOrb.DisplayName: Ice Orb
+	// CrystalDimmingHeldProj.DisplayName: Crystal Dimming Held Proj
+	// Crystal.DisplayName: Crystal
+	// IceSoulOrb.DisplayName: Ice Soul Orb
+	// DarkFrostSolsticeHeldProj.DisplayName: Dark Frost Solstice Held Proj
 }
 
 Configs: {

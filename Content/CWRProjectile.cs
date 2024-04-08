@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
-using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Magic;
@@ -10,19 +9,14 @@ using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.WorldBuilding;
-using static Humanizer.In;
-using static System.Net.Mime.MediaTypeNames;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
 namespace CalamityOverhaul.Content
@@ -44,7 +38,8 @@ namespace CalamityOverhaul.Content
         AngelicShotgun,
         NailGun,
         RocketLauncher,
-        Voidragon
+        Voidragon,
+        CrystalDimming
     }
 
     public struct HitAttributeStruct
@@ -82,7 +77,7 @@ namespace CalamityOverhaul.Content
 
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             Source = source;
-            if (source.Context == "CWRGunShoot") {
+            if (source?.Context == "CWRGunShoot") {
                 Item heldItem = Main.player[projectile.owner].ActiveItem();
                 if (heldItem.type != ItemID.None) {
                     cwrItem = heldItem.CWR();
@@ -281,6 +276,22 @@ namespace CalamityOverhaul.Content
                         Main.projectile[proj].extraUpdates += 1;
                     }
                     projectile.active = false;
+                }
+            }
+
+            if (SpanTypes == (byte)SpanTypesEnum.CrystalDimming) {
+                for (int i = 0; i < 3; i++) {
+                    Vector2 velocity = new Vector2(Main.rand.NextFloat(-3, 3), -3);
+                    Projectile proj = Projectile.NewProjectileDirect(player.GetShootState().Source
+                    , projectile.Bottom + new Vector2(Main.rand.Next(-16, 16), Main.rand.Next(-64, 0)), velocity
+                    , 961, projectile.damage / 5, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.8f, 1.1f));
+                    proj.rotation = velocity.ToRotation();
+                    proj.hostile = false;
+                    proj.friendly = true;
+                    proj.penetrate = -1;
+                    proj.usesLocalNPCImmunity = true;
+                    proj.localNPCHitCooldown = 20;
+                    proj.light = 0.75f;
                 }
             }
 

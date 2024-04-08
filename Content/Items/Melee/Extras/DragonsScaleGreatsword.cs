@@ -28,6 +28,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 2.5f;
             Item.UseSound = SoundID.Item60;
+            Item.noUseGraphic = true;
+            Item.noMelee= true;
+            Item.channel = true;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.Rarity1BuyPrice;
             Item.rare = ModContent.RarityType<Violet>();
@@ -37,12 +40,12 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 3;
 
+        //public override bool CanUseItem(Player player) {
+        //    return player.ownedProjectileCounts[Item.shoot] == 0;
+        //}
+
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            if (!Item.CWR().closeCombat) {
-                Projectile.NewProjectile(source, position, velocity, type, damage, knockback);
-            }
-            Item.CWR().closeCombat = false;
-            return false;
+            return true;
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone) {

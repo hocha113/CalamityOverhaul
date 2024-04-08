@@ -1,0 +1,99 @@
+﻿using CalamityMod.Buffs.StatDebuffs;
+using CalamityMod.Particles;
+using CalamityMod.Projectiles.Turret;
+using CalamityOverhaul.Common;
+using Terraria.Audio;
+using Terraria.ID;
+using Terraria;
+using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
+using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Content.Particles;
+using Mono.Cecil;
+using static Humanizer.In;
+
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
+{
+    internal class ExtremeColdHail : ModProjectile
+    {
+        public override string Texture => CWRConstant.Cay_Proj_Ranged + "FlurrystormIceChunk";
+        public override void SetDefaults() {
+            Projectile.width = 22;
+            Projectile.height = 24;
+            Projectile.penetrate = 1;
+            Projectile.timeLeft = 180;
+            Projectile.usesIDStaticNPCImmunity = true;
+            Projectile.idStaticNPCHitCooldown = 10;
+        }
+
+        public override bool PreAI() {
+            if (Projectile.knockBack == 0f)
+                Projectile.hostile = true;
+            else Projectile.friendly = true;
+            return true;
+        }
+
+        public override void AI() {
+            if (Projectile.localAI[0] == 0f) {
+                SoundEngine.PlaySound(SoundID.Item89 with { Volume = 0.4f }, Projectile.position);
+            }
+            Projectile.localAI[0]++;
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+
+            Vector2 bloodSpawnPosition = Projectile.Center + (Vector2.UnitY * -13f).RotatedBy(Projectile.rotation);
+            Vector2 splatterDirection = -(Projectile.Center - bloodSpawnPosition).SafeNormalize(Vector2.UnitY);
+            int bloodLifetime = Main.rand.Next(5, 8);
+            float bloodScale = Main.rand.NextFloat(0.4f, 0.6f);
+            Color bloodColor = Color.Lerp(Color.Cyan, Color.LightCyan, Main.rand.NextFloat());
+            bloodColor = Color.Lerp(bloodColor, new Color(11, 64, 128), Main.rand.NextFloat(0.65f));
+
+            if (Main.rand.NextBool(20))
+                bloodScale *= 1.7f;
+
+            Vector2 bloodVelocity = splatterDirection.RotatedByRandom(0.81f) * Main.rand.NextFloat(3f, 6f);
+            bloodVelocity.Y -= 1f;
+            BloodParticle blood = new BloodParticle(bloodSpawnPosition, bloodVelocity, bloodLifetime, bloodScale, bloodColor);
+            GeneralParticleHandler.SpawnParticle(blood);
+            if (Main.rand.NextBool(6)) {
+                Projectile.NewProjectileDirect(Projectile.parent(), Projectile.Center, Projectile.velocity * 0.1f, ModContent.ProjectileType<IceExplosion>(), 13, 0, Projectile.owner, 0);
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            target.AddBuff(ModContent.BuffType<GlacialState>(), 30);
+            target.AddBuff(BuffID.Frostburn2, 180);
+        }
+
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
+            target.AddBuff(ModContent.BuffType<GlacialState>(), 30);
+            target.AddBuff(BuffID.Frostburn2, 180);
+            if (Projectile.hostile && Main.netMode == NetmodeID.MultiplayerClient)
+                return;
+            Projectile.Kill();
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity) {
+            if (Projectile.oldVelocity.Y > 0f && Projectile.velocity.X != 0f) {
+                Projectile.velocity.Y = -0.6f * Projectile.oldVelocity.Y;
+                Projectile.velocity.X *= 0.975f;
+            } else if (Projectile.velocity.X == 0f) {
+                Projectile.velocity.X = -0.6f * Projectile.oldVelocity.X;
+            }
+            return false;
+        }
+
+        public override Color? GetAlpha(Color drawColor) {
+            if (Projectile.timeLeft < 30 && Projectile.timeLeft % 10 < 5)
+                return Color.Orange;
+            return Color.White;
+        }
+
+        public override void OnKill(int timeLeft) {
+            SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/NPCHit/CryogenHit", 3) with { Volume = 0.55f }, Projectile.Center);
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            return base.PreDraw(ref lightColor);
+        }
+    }
+}

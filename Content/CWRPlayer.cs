@@ -13,7 +13,6 @@ using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using static Humanizer.In;
 
 namespace CalamityOverhaul.Content
 {

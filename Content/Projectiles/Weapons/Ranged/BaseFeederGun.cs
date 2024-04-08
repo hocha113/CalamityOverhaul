@@ -255,7 +255,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (AmmoState.Amount == 0) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态以保证换弹流畅
             }
-            if (!IsKreload && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0 && AmmoState.Amount > 0 && !ModOwner.NoCanAutomaticCartridgeChange) {
+            if (!IsKreload && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0 && AmmoState.Amount > 0 && !ModOwner.NoCanAutomaticCartridgeChange && ModItem.NoKreLoadTime == 0) {
                 OnKreload = true;
                 kreloadTimeValue = kreloadMaxTime;
             }

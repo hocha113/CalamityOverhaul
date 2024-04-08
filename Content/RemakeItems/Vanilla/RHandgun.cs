@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override bool IsVanilla => true;
         public override string TargetToolTipItemName => "Wap_HandGun_Text";
         public override void SetDefaults(Item item) {
+            item.damage = 26;
             item.SetCartridgeGun<HandgunHeldProj>(15);
         }
     }

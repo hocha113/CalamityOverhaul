@@ -48,5 +48,7 @@ namespace CalamityOverhaul.Common
         public static SoundStyle Gun_ClipinLocked = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/ClipinLocked");
         public static SoundStyle Gun_Clipout = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/Clipout");
         public static SoundStyle Gun_Slideforward1 = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/Slideforward1");
+        public static SoundStyle Gun_SportingGun_Shoot = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/SportingGun_Shoot");
+        public static SoundStyle Gun_Musket_ClipOut = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/Musket_ClipOut");
     }
 }

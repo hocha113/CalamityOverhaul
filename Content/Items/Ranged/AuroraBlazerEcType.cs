@@ -10,8 +10,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AuroraBlazer";
         public override void SetDefaults() {
             Item.SetCalamitySD<AuroraBlazer>();
-            Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
             Item.SetCartridgeGun<AuroraBlazerHeldProj>(660);
+            Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
         }
     }
 }

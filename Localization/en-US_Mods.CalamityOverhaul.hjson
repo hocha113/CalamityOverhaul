@@ -1955,6 +1955,31 @@ Items: {
 			"This is the dragon's saliva. Do you want to believe it?"
 			'''
 	}
+
+	FlurrystormCannonEcType: {
+		DisplayName: Flurrystorm Cannon
+		Tooltip:
+			'''
+			Fire a lot of snowballs, increasing firepower as ammunition decreases
+			There is a probability of entering a state of overload, erupting a large number of snowballs and hail
+			"Denji, let's have a snowball fight."
+			'''
+	}
+
+	AvalancheM60: {
+		DisplayName: Avalanche M60
+		Tooltip: ""
+	}
+
+	CrystalDimming: {
+		DisplayName: Crystal Dimming
+		Tooltip: ""
+	}
+
+	DarkFrostSolstice: {
+		DisplayName: Dark Frost Solstice
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2401,6 +2426,15 @@ Projectiles: {
 	DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
 	DragonBreathHeld.DisplayName: Dragon Breath Held
 	TradewindsHeldProj.DisplayName: Tradewinds Held Proj
+	FlurrystormCannonHeldProj.DisplayName: Flurrystorm Cannon Held Proj
+	DragonsScaleGreatswordProj.DisplayName: Dragons Scale Greatsword Proj
+	ExtremeColdHail.DisplayName: Extreme Cold Hail
+	AvalancheM60HeldProj.DisplayName: Avalanche M60 Held Proj
+	IceOrb.DisplayName: Ice Orb
+	CrystalDimmingHeldProj.DisplayName: Crystal Dimming Held Proj
+	Crystal.DisplayName: Crystal
+	IceSoulOrb.DisplayName: Ice Soul Orb
+	DarkFrostSolsticeHeldProj.DisplayName: Dark Frost Solstice Held Proj
 }
 
 Configs: {
