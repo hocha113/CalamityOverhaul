@@ -12,9 +12,12 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
@@ -56,6 +59,10 @@ namespace CalamityOverhaul.Content
         /// 是否无视护甲
         /// </summary>
         public bool OnHitBlindArmor;
+        /// <summary>
+        /// 是否是一次超级攻击
+        /// </summary>
+        public bool SuperAttack;
     }
 
     public class CWRProjectile : GlobalProjectile
@@ -107,23 +114,22 @@ namespace CalamityOverhaul.Content
                     Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
                     CWRParticle spark = new SparkParticle(projectile.Center, projectile.velocity * 0.3f, false, 9, 2.3f, color * 0.1f);
                     CWRParticleHandler.AddParticle(spark);
-                }
-                else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
+                } else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
                     if (Main.rand.NextBool(3)) {
                         int dust = Dust.NewDust(projectile.Center, 1, 1, DustID.FireworkFountain_Red, projectile.velocity.X, projectile.velocity.Y);
                         Main.dust[dust].noGravity = true;
                         Main.dust[dust].scale *= 0.6f;
-                    }                 
+                    }
                 }
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
-                Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
+                _ = Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
                         , (int)CalamityDusts.SulfurousSeaAcid, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
             }
             if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
                 if (Main.rand.NextBool()) {
-                    var sparkier = Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.UnusedWhiteBluePurple, 0f, 0f, 100, default, 1f);
+                    int sparkier = Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.UnusedWhiteBluePurple, 0f, 0f, 100, default, 1f);
                     Main.dust[sparkier].scale += 0.3f + (Main.rand.Next(50) * 0.01f);
                     Main.dust[sparkier].noGravity = true;
                     Main.dust[sparkier].velocity *= 0.1f;
@@ -135,7 +141,7 @@ namespace CalamityOverhaul.Content
                 Main.dust[dust].noGravity = true;
             }
             if (SpanTypes == (byte)SpanTypesEnum.BarrenBow) {
-                Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
+                _ = Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
                         , DustID.Sand, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
             }
         }
@@ -155,7 +161,7 @@ namespace CalamityOverhaul.Content
                     NetMessage.SendData(MessageID.SyncProjectile, -1, projectile.owner, null, proj);
                 }
                 if (SpanTypes == (byte)SpanTypesEnum.BarrenBow) {
-                    Projectile.NewProjectile(projectile.parent(), projectile.Center, CWRUtils.randVr(6, 9)
+                    _ = Projectile.NewProjectile(projectile.parent(), projectile.Center, CWRUtils.randVr(6, 9)
                         , ModContent.ProjectileType<BarrenOrb>(), projectile.damage, 0, projectile.owner, 0);
                 }
                 if (SpanTypes == (byte)SpanTypesEnum.AngelicShotgun) {
@@ -187,8 +193,10 @@ namespace CalamityOverhaul.Content
                 modifiers.DisableCrit();
             }
             if (GetHitAttribute.OnHitBlindArmor) {
-                if (modifiers.SuperArmor || target.defense > 999 || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR)
+                if (modifiers.SuperArmor || target.defense > 999 || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR) {
                     return;
+                }
+
                 modifiers.DefenseEffectiveness *= 0f;
             }
             if (Source?.Context == "CWRGunShoot" && cwrItem != null) {
@@ -200,8 +208,17 @@ namespace CalamityOverhaul.Content
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
             RMeowmere.SpanDust(projectile);
-            
+
             Player player = Main.player[projectile.owner];
+
+            if (GetHitAttribute.SuperAttack) {
+                if (projectile.type == 961) {
+                    if (!target.boss && !CWRIDs.WormBodys.Contains(target.type) && !target.CWR().IceParclose) {
+                        _ = Projectile.NewProjectile(CWRUtils.parent(projectile), target.Center, Vector2.Zero
+                            , ModContent.ProjectileType<IceParclose>(), 0, 0, projectile.owner, target.whoAmI, target.type, target.rotation);
+                    }
+                }
+            }
 
             if (SpanTypes == (byte)SpanTypesEnum.DeadWing) {
                 int types = ModContent.ProjectileType<DeadWave>();
@@ -211,7 +228,7 @@ namespace CalamityOverhaul.Content
                     && projectile.numHits == 0) {
                     Vector2 vr = player.Center.To(Main.MouseWorld)
                         .RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-15, 15))).UnitVector() * Main.rand.Next(7, 9);
-                    Vector2 pos = player.Center + vr * 10;
+                    Vector2 pos = player.Center + (vr * 10);
                     Projectile.NewProjectileDirect(CWRUtils.parent(player), pos, vr, ModContent.ProjectileType<DeadWave>(),
                         projectile.damage, projectile.knockBack, projectile.owner).rotation = vr.ToRotation();
                 }
@@ -220,45 +237,39 @@ namespace CalamityOverhaul.Content
             if (SpanTypes == (byte)SpanTypesEnum.ClaretCannon) {
                 Projectile projectile1 = Projectile.NewProjectileDirect(CWRUtils.parent(player), target.position, Vector2.Zero,
                         ModContent.ProjectileType<BloodVerdict>(), projectile.damage, projectile.knockBack, projectile.owner);
-                BloodVerdict bloodVerdict = projectile1.ModProjectile as BloodVerdict;
-                if (bloodVerdict != null) {
+                if (projectile1.ModProjectile is BloodVerdict bloodVerdict) {
                     bloodVerdict.offsetVr = new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height));
                     bloodVerdict.Projectile.ai[1] = target.whoAmI;
                     Vector2[] vrs = new Vector2[3];
-                    for (int i = 0; i < 3; i++)
+                    for (int i = 0; i < 3; i++) {
                         vrs[i] = Main.rand.NextVector2Unit() * Main.rand.Next(16, 19);
+                    }
+
                     bloodVerdict.effusionDirection = vrs;
                 }
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.Phantom && projectile.numHits == 0) {
-                Projectile.NewProjectile(projectile.parent(), player.Center + projectile.velocity.GetNormalVector() * Main.rand.Next(-130, 130)
+                _ = Projectile.NewProjectile(projectile.parent(), player.Center + (projectile.velocity.GetNormalVector() * Main.rand.Next(-130, 130))
                     , projectile.velocity, ModContent.ProjectileType<PhantasmArrow>()
                     , (int)(projectile.damage * 1.5f), projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.Alluvion && projectile.numHits == 0) {
-                Projectile.NewProjectile(projectile.parent(), player.Center
+                _ = Projectile.NewProjectile(projectile.parent(), player.Center
                     , projectile.velocity, ModContent.ProjectileType<DeepSeaSharks>()
                     , projectile.damage, projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.RocketLauncher && projectile.numHits == 0 && projectile.ai[2] > 0) {
-                if(projectile.ai[2] == 3) {
+                if (projectile.ai[2] == 3) {
                     projectile.damage = (int)(projectile.damage * 0.8f);
                 }
                 projectile.ai[2] -= 1;
-                Vector2 velocity0;
-                if (target != null) {
-                    velocity0 = (target.Center - player.Center).SafeNormalize(Vector2.Zero) * 30f;
-                }
-                else {
-                    velocity0 = projectile.velocity;
-                }
+                Vector2 velocity0 = target != null ? (target.Center - player.Center).SafeNormalize(Vector2.Zero) * 30f : projectile.velocity;
                 if (player.PressKey()) {
-                    int proj = Projectile.NewProjectile(projectile.parent(), player.Center + (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero) * 40f
-                                    , velocity0, projectile.type
-                                    , projectile.damage, projectile.knockBack, player.whoAmI, 0, target.whoAmI, projectile.ai[2]);
+                    int proj = Projectile.NewProjectile(projectile.parent(), player.Center + ((Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero) * 40f)
+                        , velocity0, projectile.type, projectile.damage, projectile.knockBack, player.whoAmI, 0, target.whoAmI, projectile.ai[2]);
                     Main.projectile[proj].usesLocalNPCImmunity = true;
                     Main.projectile[proj].localNPCHitCooldown = 5;
                     Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.RocketLauncher;
@@ -272,7 +283,9 @@ namespace CalamityOverhaul.Content
                         projectile.damage /= 2;
                     }
                     for (int i = 0; i < projectile.ai[2]; i++) {
-                        int proj = Projectile.NewProjectile(Source, projectile.Center + new Vector2(0, -target.height), new Vector2(0, -5).RotatedBy(Main.rand.NextFloat(-0.48f, 0.48f)) * Main.rand.NextFloat(0.7f, 1.5f), projectile.type, projectile.damage, projectile.knockBack, player.whoAmI, 0, 0, -1);
+                        int proj = Projectile.NewProjectile(Source, projectile.Center + new Vector2(0, -target.height)
+                            , new Vector2(0, -5).RotatedBy(Main.rand.NextFloat(-0.48f, 0.48f)) * Main.rand.NextFloat(0.7f, 1.5f)
+                            , projectile.type, projectile.damage, projectile.knockBack, player.whoAmI, 0, 0, -1);
                         Main.projectile[proj].extraUpdates += 1;
                     }
                     projectile.active = false;
@@ -280,8 +293,9 @@ namespace CalamityOverhaul.Content
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.CrystalDimming) {
+                bool isSuper = Main.rand.NextBool(projectile.type == ModContent.ProjectileType<Crystal>() ? 4 : 10);
                 for (int i = 0; i < 3; i++) {
-                    Vector2 velocity = new Vector2(Main.rand.NextFloat(-3, 3), -3);
+                    Vector2 velocity = new(Main.rand.NextFloat(-3, 3), -3);
                     Projectile proj = Projectile.NewProjectileDirect(player.GetShootState().Source
                     , projectile.Bottom + new Vector2(Main.rand.Next(-16, 16), Main.rand.Next(-64, 0)), velocity
                     , 961, projectile.damage / 5, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.8f, 1.1f));
@@ -292,6 +306,9 @@ namespace CalamityOverhaul.Content
                     proj.usesLocalNPCImmunity = true;
                     proj.localNPCHitCooldown = 20;
                     proj.light = 0.75f;
+                    if (isSuper) {
+                        proj.CWR().GetHitAttribute.SuperAttack = true;
+                    }
                 }
             }
 
@@ -309,7 +326,7 @@ namespace CalamityOverhaul.Content
                             float randRot = Main.rand.NextFloat(MathHelper.TwoPi);
 
                             for (int i = 0; i < 3; i++) {
-                                Vector2 vr = (MathHelper.TwoPi / 3 * i + randRot).ToRotationVector2() * 10;
+                                Vector2 vr = ((MathHelper.TwoPi / 3 * i) + randRot).ToRotationVector2() * 10;
                                 int proj = Projectile.NewProjectile(CWRUtils.parent(projectile), target.Center, vr
                                     , ModContent.ProjectileType<GodKillers>(), projectile.damage / 2, 0, projectile.owner);
                                 Main.projectile[proj].timeLeft = 65;
@@ -318,7 +335,7 @@ namespace CalamityOverhaul.Content
                         }
                         break;
                     case WhipHitTypeEnum.BleedingScourge:
-                        Projectile.NewProjectile(CWRUtils.parent(projectile), target.Center, Vector2.Zero,
+                        _ = Projectile.NewProjectile(CWRUtils.parent(projectile), target.Center, Vector2.Zero,
                                     ModContent.ProjectileType<Content.Projectiles.Weapons.Summon.BloodBlast>(),
                                     projectile.damage / 2, 0, projectile.owner);
                         break;
@@ -332,8 +349,9 @@ namespace CalamityOverhaul.Content
                         break;
                 }
 
-                if (npc.WhipHitNum > 0)
+                if (npc.WhipHitNum > 0) {
                     npc.WhipHitNum--;
+                }
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
@@ -349,7 +367,7 @@ namespace CalamityOverhaul.Content
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.Voidragon) {
-                Projectile.NewProjectile(projectile.parent(), target.Center
+                _ = Projectile.NewProjectile(projectile.parent(), target.Center
                     , CWRUtils.randVr(6, 13), ModContent.ProjectileType<VoidTentacle>()
                     , projectile.damage, projectile.knockBack / 2, player.whoAmI
                     , Main.rand.Next(-160, 160) * 0.001f, Main.rand.Next(-160, 160) * 0.001f);
@@ -376,15 +394,13 @@ namespace CalamityOverhaul.Content
                         dust.velocity *= 0.5f;
                         dust.velocity += dustVelocity * (0.6f + (0.6f * Main.rand.NextFloat()));
                     }
-                }
-                else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
+                } else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
                     player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 3, 0f, 0, false, DamageClass.Default, true);
                     for (int i = 0; i < 6; i++) {
                         CWRParticle particle = new LightParticle(projectile.Center, CWRUtils.randVr(3, 16), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 2, 0.2f);
                         CWRParticleHandler.AddParticle(particle);
                     }
-                }
-                else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
+                } else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
                     if (projectile.numHits == 0 && player.ownedProjectileCounts[ModContent.ProjectileType<BMGFIRE>()] < 33) {
                         float newdamage = projectile.damage;
                         int projCount = 1;
@@ -408,7 +424,7 @@ namespace CalamityOverhaul.Content
                         }
                         for (int i = 0; i < 4; i++) {
                             Vector2 vr = projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.6f, 1.7f);
-                            int proj = Projectile.NewProjectile(projectile.parent(), projectile.Center + projectile.velocity * -3, vr
+                            int proj = Projectile.NewProjectile(projectile.parent(), projectile.Center + (projectile.velocity * -3), vr
                                 , ModContent.ProjectileType<BMGFIRE>(), (int)(newdamage * (hit.Crit ? 0.35f : 0.2f)), 0, projectile.owner, Main.rand.Next(23));
                             Main.projectile[proj].timeLeft /= 2;
                         }
@@ -419,21 +435,60 @@ namespace CalamityOverhaul.Content
 
         public override bool PreDraw(Projectile projectile, ref Color lightColor) {
             if (projectile.type == ModContent.ProjectileType<ThanatosLaser>()) {
-                ThanatosLaserDrawDeBug(projectile, ref lightColor);
+                return ThanatosLaserDrawDeBug(projectile, ref lightColor);
             }
-            //Vector2 pos = projectile.Center - Main.screenPosition;
-            //string name = projectile.Name;
-            //if (projectile.ModProjectile != null) {
-            //    name = projectile.ModProjectile.FullName;
-            //}
-            //Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, name, pos.X + 0, pos.Y - 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
+            //我不得不说，冰刺的绘制堪称天才，但是原版对暗影背景的处理出现了小小的问题，这会导致弹幕底部出现一个相对不起眼的黑点，下面这段代码试图解决这个问题
+            if (projectile.type == 961) {
+                Projectile_961_DeBug(projectile, lightColor);
+                return false;
+            }
+
             return base.PreDraw(projectile, ref lightColor);
+        }
+
+        public void drawProjName(Projectile projectile) {
+            Vector2 pos = projectile.Center - Main.screenPosition;
+            string name = projectile.Name;
+            if (projectile.ModProjectile != null) {
+                name = projectile.ModProjectile.FullName;
+            }
+            Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, name, pos.X + 0, pos.Y - 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
         }
 
         private void ExoVortexOnHitDeBug(NPC npc) {
             if (npc.type == ModContent.NPCType<BrimstoneHeart>()) {
                 return;
             }
+        }
+
+        private void Projectile_961_DeBug(Projectile projectile, Color lightColor) {
+            Vector2 drawPos = projectile.Center;
+            drawPos.X -= Main.screenPosition.X;
+            drawPos.Y -= Main.screenPosition.Y;
+            drawPos.Y += projectile.gfxOffY;
+            Texture2D value = TextureAssets.Projectile[961].Value;
+            Rectangle rec = value.Frame(1, 5, 0, projectile.frame);
+            Vector2 origin12 = new(16f, rec.Height / 2);
+            Color projectileColor = Lighting.GetColor((int)(projectile.position.X + (projectile.width * 0.5)) / 16, (int)((projectile.position.Y + (projectile.height * 0.5)) / 16.0));
+            Color alpha5 = projectile.GetAlpha(projectileColor);
+            Vector2 vector39 = new(projectile.scale);
+            float lerpValue5 = Utils.GetLerpValue(30f, 25f, projectile.ai[0], clamped: true);
+            vector39.Y *= lerpValue5;
+            Vector4 vector40 = projectileColor.ToVector4();
+            Vector4 vector41 = new Color(67, 17, 17).ToVector4();
+            vector41 *= vector40;
+            /*问题源自这个暗影背景的绘制，它的形状难以容纳，故而注释
+             Main.EntitySpriteDraw(TextureAssets.Extra[98].Value, drawPos - (projectile.velocity * projectile.scale * 0.9f)
+            , null, projectile.GetAlpha(new Color(vector41.X, vector41.Y, vector41.Z, vector41.W)) * 1f, projectile.rotation + ((float)Math.PI / 2f)
+            , TextureAssets.Extra[98].Value.Size() / 2f, projectile.scale * 0.9f, SpriteEffects.None);
+             */
+            Color color49 = projectile.GetAlpha(Color.White) * Utils.Remap(projectile.ai[0], 0f, 20f, 0.5f, 0f);
+            color49.A = 0;
+            for (int num194 = 0; num194 < 4; num194++) {
+                Main.EntitySpriteDraw(value, drawPos + (projectile.rotation.ToRotationVector2().RotatedBy((float)Math.PI / 2f * num194) * 2f * vector39)
+                    , rec, color49, projectile.rotation, origin12, vector39, SpriteEffects.None);
+            }
+            Main.EntitySpriteDraw(value, drawPos, rec, alpha5, projectile.rotation, origin12, vector39, SpriteEffects.None);
         }
 
         private bool ThanatosLaserDrawDeBug(Projectile projectile, ref Color lightColor) {
@@ -444,8 +499,10 @@ namespace CalamityOverhaul.Content
                 lightColor.B = (byte)(255 * projectile.Opacity);
                 Vector2 drawOffset = projectile.velocity.SafeNormalize(Vector2.Zero) * -30f;
                 projectile.Center += drawOffset;
-                if (projectile.type.ValidateIndex(Main.maxProjectiles))
+                if (projectile.type.ValidateIndex(Main.maxProjectiles)) {
                     CalamityUtils.DrawAfterimagesCentered(projectile, ProjectileID.Sets.TrailingMode[projectile.type], lightColor, 1);
+                }
+
                 projectile.Center -= drawOffset;
                 return false;
             }
@@ -453,12 +510,15 @@ namespace CalamityOverhaul.Content
             Texture2D laserTelegraph = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/LaserWallTelegraphBeam").Value;
 
             float yScale = 2f;
-            if (thanatosLaser.TelegraphDelay < ThanatosLaser.TelegraphFadeTime)
+            if (thanatosLaser.TelegraphDelay < ThanatosLaser.TelegraphFadeTime) {
                 yScale = MathHelper.Lerp(0f, 2f, thanatosLaser.TelegraphDelay / 15f);
-            if (thanatosLaser.TelegraphDelay > ThanatosLaser.TelegraphTotalTime - ThanatosLaser.TelegraphFadeTime)
-                yScale = MathHelper.Lerp(2f, 0f, (thanatosLaser.TelegraphDelay - (ThanatosLaser.TelegraphTotalTime - ThanatosLaser.TelegraphFadeTime)) / 15f);
+            }
 
-            Vector2 scaleInner = new Vector2(ThanatosLaser.TelegraphWidth / laserTelegraph.Width, yScale);
+            if (thanatosLaser.TelegraphDelay > ThanatosLaser.TelegraphTotalTime - ThanatosLaser.TelegraphFadeTime) {
+                yScale = MathHelper.Lerp(2f, 0f, (thanatosLaser.TelegraphDelay - (ThanatosLaser.TelegraphTotalTime - ThanatosLaser.TelegraphFadeTime)) / 15f);
+            }
+
+            Vector2 scaleInner = new(ThanatosLaser.TelegraphWidth / laserTelegraph.Width, yScale);
             Vector2 origin = laserTelegraph.Size() * new Vector2(0f, 0.5f);
             Vector2 scaleOuter = scaleInner * new Vector2(1f, 2.2f);
 

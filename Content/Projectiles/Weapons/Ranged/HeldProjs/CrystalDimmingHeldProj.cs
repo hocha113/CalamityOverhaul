@@ -10,6 +10,7 @@ using Terraria;
 using Microsoft.Xna.Framework;
 using System;
 using Microsoft.CodeAnalysis;
+using Terraria.Graphics.CameraModifiers;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -53,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
 
             if (onFireTime > 0) {
-                SoundEngine.PlaySound(SoundID.Item23 with { Pitch = (60 - onFireTime) * 0.15f, MaxInstances = 13, Volume = 0.2f + (60 - onFireTime) * 0.006f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item23 with { Pitch = (60 - onFireTime) * 0.15f, MaxInstances = 13, Volume = 0.2f + onFireTime * 0.006f }, Projectile.Center);
                 if (onFireTime % 15 == 0) {
                     SpawnGunFireDust(GunShootPos, ShootVelocity, splNum: 3, dustID1: 76, dustID2: 149, dustID3: 76);
                     onFireTime2 = 8;
@@ -102,6 +103,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
 
                 Vector2 targetPos = Main.MouseWorld;
+
+                PunchCameraModifier modifier = new PunchCameraModifier(targetPos, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 20f, 6f, 20, 1000f, FullName);
+                Main.instance.CameraModifiers.Add(modifier);
+
                 for (int i = 0; i < 128; i++) {
                     Vector2 offset = new Vector2(0, i * 16);
                     if (CWRUtils.GetTile(CWRUtils.WEPosToTilePos(targetPos + offset)).HasSolidTile()) {
@@ -152,6 +157,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.7f, 1.1f)
                     , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
                 proj.extraUpdates += 1;
+                proj.usesLocalNPCImmunity = true;
+                proj.localNPCHitCooldown = -1;
                 if (Main.rand.NextBool(2)) {
                     proj.damage /= 3;
                 }
@@ -161,8 +168,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (Main.rand.NextBool(3) && FireTime <= 10) {
                     proj.extraUpdates += 1;
                     proj.penetrate += 5;
-                    proj.usesLocalNPCImmunity = true;
-                    proj.localNPCHitCooldown = 30;
                 }
             }
 

@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
 
             if (onFireTime > 0) {
-                SoundEngine.PlaySound(SoundID.Item23 with { Pitch = (60 - onFireTime) * 0.15f, MaxInstances = 13, Volume = 0.2f + (60 - onFireTime) * 0.006f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item23 with { Pitch = (60 - onFireTime) * 0.15f, MaxInstances = 13, Volume = 0.2f + onFireTime * 0.006f }, Projectile.Center);
                 if (onFireTime % 15 == 0) {
                     SpawnGunFireDust(GunShootPos, ShootVelocity, splNum: 3, dustID1: 76, dustID2: 149, dustID3: 76);
                     onFireTime2 = 8;
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 RecoilRetroForceMagnitude = 15;
                 RecoilOffsetRecoverValue = 0.85f;
 
-                SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot with { Pitch = -0.5f, Volume = 0.3f });
+                SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot with { Pitch = -0.5f, Volume = 0.5f });
                 SoundEngine.PlaySound(CosmicCalamityProjectile.BelCanto with { PitchRange = (-0.1f, 0.1f), Volume = 0.9f });
 
                 bool intile = false;
@@ -127,6 +127,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     proj.usesLocalNPCImmunity = true;
                     proj.localNPCHitCooldown = -1;
                     proj.light = 0.75f;
+                    proj.CWR().GetHitAttribute.SuperAttack = true;
                 }
 
                 targetPos.Y -= 700;
@@ -188,6 +189,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.7f, 1.1f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 proj.extraUpdates += 1;
+                proj.usesLocalNPCImmunity = true;
+                proj.localNPCHitCooldown = -1;
                 if (Main.rand.NextBool(2)) {
                     proj.damage /= 2;
                 }
@@ -197,15 +200,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (Main.rand.NextBool(3) && FireTime <= 10) {
                     proj.extraUpdates += 1;
                     proj.penetrate += 5;
-                    proj.usesLocalNPCImmunity = true;
-                    proj.localNPCHitCooldown = 30;
                 }
             }
 
             for (int i = 0; i < 3; i++) {
                 Projectile iceorb = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.06f)
-                , ModContent.ProjectileType<Crystal>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0);
-                iceorb.rotation = iceorb.velocity.ToRotation() + MathHelper.PiOver2;
+                , ModContent.ProjectileType<Crystal>(), WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 0, 0);
+                iceorb.rotation = iceorb.velocity.ToRotation();
                 iceorb.CWR().SpanTypes = (byte)SpanTypesEnum.CrystalDimming;
             }
 

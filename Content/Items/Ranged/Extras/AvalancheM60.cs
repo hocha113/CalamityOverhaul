@@ -13,12 +13,13 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override void SetDefaults() {
             Item.SetCalamitySD<Onyxia>();
             Item.useAmmo = AmmoID.Snowball;
+            Item.UseSound = SoundID.Item36 with { Pitch = 0.2f };
             Item.SetCartridgeGun<AvalancheM60HeldProj>(800);
         }
 
         public override void AddRecipes() {
             _ = CreateRecipe().
-                AddIngredient<FlurrystormCannon>().
+                AddIngredient<SnowQuay>().
                 AddIngredient(ItemID.ShroomiteBar, 3).
                 AddIngredient<CryonicBar>(3).
                 AddIngredient<CoreofEleum>(5).

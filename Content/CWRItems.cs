@@ -3,6 +3,7 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.StorageBattery;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.RemakeItems.Core;
@@ -144,6 +145,14 @@ namespace CalamityOverhaul.Content
         /// 用于动态开关该合成指示UI的变量
         /// </summary>
         internal bool DrawOmigaSnyUIBool;
+        /// <summary>
+        /// 电力交互时间
+        /// </summary>
+        public int PowerInteractionValue;
+        /// <summary>
+        /// 是一个蓄电池
+        /// </summary>
+        public bool IsStorageBattery;
 
         public override void SetDefaults(Item item) {
             if (CWRIDs.OnLoadContentBool) {
@@ -160,6 +169,7 @@ namespace CalamityOverhaul.Content
             if (AmmoCapacity == 0) {
                 AmmoCapacity = 1;
             }
+            PowerInteractionValue = 0;
             InitializeMagazine();
             CWRIDs.SetAmmoItem(item);
             remakeItem = (item.ModItem as EctypeItem) != null;
@@ -462,6 +472,13 @@ namespace CalamityOverhaul.Content
                 }
             }
             return base.PreDrawTooltip(item, lines, ref x, ref y);
+        }
+
+        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
+            if (PowerInteractionValue > 0) {
+                BaseStorageBattery.DrawPowerInteractionValue(item.Calamity(), spriteBatch, position, 0.5f, PowerInteractionValue);
+                PowerInteractionValue--;
+            }
         }
     }
 }

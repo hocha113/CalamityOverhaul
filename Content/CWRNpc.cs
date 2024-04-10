@@ -3,6 +3,7 @@ using CalamityMod.Events;
 using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Summon.Extras;
@@ -11,6 +12,8 @@ using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -49,6 +52,19 @@ namespace CalamityOverhaul.Content
         /// 上一帧实体的位置
         /// </summary>
         public Vector2 oldNPCPos;
+        /// <summary>
+        /// 极寒神性屏障
+        /// </summary>
+        public bool IceParclose;
+        public static Asset<Texture2D> IceParcloseAsset;
+
+        public override void Load() {
+            IceParcloseAsset = CWRUtils.GetT2DAsset(CWRConstant.Projectile + "IceParclose", true);
+        }
+
+        public override void ResetEffects(NPC npc) {
+            IceParclose = false;
+        }
 
         public static void MultipleSegmentsLimitDamage(NPC target, ref NPC.HitModifiers modifiers) {
             if (CWRIDs.targetNpcTypes15.Contains(target.type) || CWRIDs.targetNpcTypes10.Contains(target.type)
@@ -72,6 +88,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreAI(NPC npc) {
+            if (IceParclose) {
+                return false;
+            }
             if (MurasamabrBeatBackBool) {
                 npc.position += MurasamabrBeatBackVr;
                 if (oldNPCPos.Y - npc.position.Y < 0) {
@@ -198,7 +217,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            base.PostDraw(npc, spriteBatch, screenPos, drawColor);
             if (WhipHitNum > 0) {
                 //DrawTameBar(spriteBatch, npc);
             }
@@ -209,6 +227,11 @@ namespace CalamityOverhaul.Content
                 if (npc.type == CWRIDs.HiveMind) {
                     HiveMindBehavior.Instance.Draw(spriteBatch, npc);
                 }
+            }
+            if (IceParclose) {
+                float slp = npc.scale * (npc.height / (float)IceParcloseAsset.Value.Height) * 2;
+                float sengs = 0.3f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.1f) * 0.3f);
+                spriteBatch.Draw(IceParcloseAsset.Value, npc.Center - Main.screenPosition, null, Color.White * sengs, 0, IceParcloseAsset.Value.Size() / 2, slp, SpriteEffects.None, 0);
             }
         }
         /*

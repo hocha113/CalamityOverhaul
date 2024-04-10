@@ -2022,12 +2022,30 @@ Items: {
 	}
 
 	CrystalDimming: {
-		// DisplayName: Crystal Dimming
-		// Tooltip: ""
+		DisplayName: 绝晶黯涌
+		Tooltip:
+			'''
+			发射极寒冰雹和雪球，冰晶在撞击墙壁后会高速反弹，然后追踪敌人
+			每开火20次进入一次超频爆发，在鼠标处生成一个巨大的冰柱
+			'''
 	}
 
 	DarkFrostSolstice: {
-		// DisplayName: Dark Frost Solstice
+		DisplayName: 玄冥寒朔
+		Tooltip:
+			'''
+			发射冰雹和极地幽火，幽火在撞击墙壁后会高速反弹，然后追踪敌人
+			每开火20次进入一次超频爆发，在鼠标处召唤凛冬神性
+			'''
+	}
+
+	SnowQuay: {
+		DisplayName: 雪蝰 M16
+		Tooltip: 一把大口径雪炮，发射冰雪混合炮弹
+	}
+
+	StorageBatteryI: {
+		// DisplayName: Storage Battery I
 		// Tooltip: ""
 	}
 }
@@ -2485,6 +2503,9 @@ Projectiles: {
 	// Crystal.DisplayName: Crystal
 	// IceSoulOrb.DisplayName: Ice Soul Orb
 	// DarkFrostSolsticeHeldProj.DisplayName: Dark Frost Solstice Held Proj
+	// SnowQuayHeldProj.DisplayName: Snow Quay Held Proj
+	// SnowQuayBall.DisplayName: Snow Quay Ball
+	// IceParclose.DisplayName: Ice Parclose
 }
 
 Configs: {

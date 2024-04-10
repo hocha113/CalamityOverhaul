@@ -1980,6 +1980,16 @@ Items: {
 		DisplayName: Dark Frost Solstice
 		Tooltip: ""
 	}
+
+	SnowQuay: {
+		DisplayName: Snow Quay
+		Tooltip: ""
+	}
+
+	StorageBatteryI: {
+		DisplayName: Storage Battery I
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2435,6 +2445,9 @@ Projectiles: {
 	Crystal.DisplayName: Crystal
 	IceSoulOrb.DisplayName: Ice Soul Orb
 	DarkFrostSolsticeHeldProj.DisplayName: Dark Frost Solstice Held Proj
+	SnowQuayHeldProj.DisplayName: Snow Quay Held Proj
+	SnowQuayBall.DisplayName: Snow Quay Ball
+	IceParclose.DisplayName: Ice Parclose
 }
 
 Configs: {

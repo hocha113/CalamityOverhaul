@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework;
 using Terraria.GameContent;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.ID;
+using CalamityMod.Buffs.StatDebuffs;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -21,25 +23,33 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);
             Projectile.rotation = Projectile.velocity.ToRotation();
+            CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);
             if (Projectile.ai[0] > 30) {
                 NPC target = Projectile.Center.FindClosestNPC(600, false, true);
                 if (target != null) {
                     float num = target.Center.Distance(Projectile.Center);
                     if (num > 120) {
-                        Projectile.ChasingBehavior2(target.Center, 1, 0.12f);
+                        Projectile.ChasingBehavior2(target.Center, 1, 0.22f);
                     } else {
                         Projectile.ChasingBehavior(target.Center, Projectile.velocity.Length());
                     }
                 }
             }
-
+            if (Projectile.timeLeft == 1) {
+                for (int i = 0; i < 33; i++) {
+                    int index2 = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height
+                        , DustID.BlueCrystalShard, Projectile.velocity.X, Projectile.velocity.Y, 0, default, 1.1f);
+                    Main.dust[index2].noGravity = true;
+                }
+            }
             Projectile.ai[0]++;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            
+            target.AddBuff(BuffID.Frostburn, 180);
+            target.AddBuff(ModContent.BuffType<GlacialState>(), 30);
+
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {

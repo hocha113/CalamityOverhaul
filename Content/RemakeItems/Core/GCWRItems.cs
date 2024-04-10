@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -197,6 +198,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
+            bool inRItemIndsDict = CWRMod.RItemIndsDict.ContainsKey(item.type);
             if (CWRIDs.ItemToBaseGun.TryGetValue(item.type, out BaseGun gun)) {
                 if (gun.MustConsumeAmmunition && item.CWR().HasCartridgeHolder && CWRServerConfig.Instance.MagazineSystem) {
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_MustCA", CWRLocText.GetTextValue("CWRGun_MustCA_Text")));
@@ -211,8 +213,30 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 }
                 string newText3 = CWRLocText.GetTextValue("CWRGun_Recoil_Text").Replace("[Recoil]", CWRLocText.GetTextValue(gun.GetLckRecoilKey()));
                 tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Recoil", newText3));
+
+                if (!inRItemIndsDict) {
+                    List<TooltipLine> newTooltips = new(tooltips);
+                    List<TooltipLine> prefixTooltips = new();
+                    List<TooltipLine> tooltip = new();
+                    foreach (TooltipLine line in tooltips.ToList()) {//复制 tooltips 集合，以便在遍历时修改
+                        for (int i = 0; i < 9; i++) {
+                            if (line.Name == "Tooltip" + i) {
+                                tooltip.Add(line.Clone());
+                                line.Hide();
+                            }
+                        }
+                        if (line.Name.Contains("Prefix")) {
+                            prefixTooltips.Add(line.Clone());
+                            line.Hide();
+                        }
+                    }
+                    newTooltips.AddRange(tooltip);
+                    tooltips.Clear(); // 清空原 tooltips 集合
+                    tooltips.AddRange(newTooltips); // 添加修改后的 newTooltips 集合
+                    tooltips.AddRange(prefixTooltips);
+                }
             }
-            if (CWRConstant.ForceReplaceResetContent && CWRMod.RItemIndsDict.ContainsKey(item.type)) {
+            if (CWRConstant.ForceReplaceResetContent && inRItemIndsDict) {
                 string key = CWRMod.RItemIndsDict[item.type].TargetToolTipItemName;
                 if (key != "") {
                     if (CWRMod.RItemIndsDict[item.type].IsVanilla) {

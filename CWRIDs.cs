@@ -275,7 +275,9 @@ namespace CalamityOverhaul
         public static int RavagerHead;
         public static int RavagerLegLeft;
         public static int RavagerLegRight;
-
+        /// <summary>
+        /// 蠕虫类体节
+        /// </summary>
         public static int[] WormBodys;
 
         public static void Load() {

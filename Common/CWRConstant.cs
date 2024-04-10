@@ -8,6 +8,7 @@ namespace CalamityOverhaul.Common
         public const string Effects = Asset + "Effects/";
         public const string Placeholder = Asset + "placeholder";
         public const string Placeholder2 = Asset + "placeholder2";
+        public const string Placeholder3 = Asset + "placeholder3";
         public const string Masking = "CalamityOverhaul/Assets/Masking/";
         public const string Item = "CalamityOverhaul/Assets/Items/";
         public const string Item_Magic = "CalamityOverhaul/Assets/Items/Magic/";

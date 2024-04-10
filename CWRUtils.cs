@@ -2325,8 +2325,8 @@ namespace CalamityOverhaul
         /// </summary>
         /// <param name="texture">纹理路径</param>
         /// <returns></returns>
-        public static Asset<Texture2D> GetT2DAsset(string texture) {
-            return ModContent.Request<Texture2D>(texture);
+        public static Asset<Texture2D> GetT2DAsset(string texture, bool immediateLoad = false) {
+            return ModContent.Request<Texture2D>(texture, immediateLoad ? AssetRequestMode.AsyncLoad : AssetRequestMode.ImmediateLoad);
         }
 
         #endregion
