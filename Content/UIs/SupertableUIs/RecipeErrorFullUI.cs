@@ -2,12 +2,10 @@
 using CalamityOverhaul.Content.UIs.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {

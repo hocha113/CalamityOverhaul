@@ -18,14 +18,12 @@ namespace CalamityOverhaul.Common.Effects
         }
 
         public static void LoadRegularShaders(AssetRepository assets) {
-            Ref<Effect> flowColorShader = new(assets.Request<Effect>(CWRConstant.noEffects + "FlowColorShader", AssetRequestMode.ImmediateLoad).Value);
-            GameShaders.Misc["CWRMod:FlowColorShader"] = new MiscShaderData(flowColorShader, "PiercePass");
+            Asset<Effect> _flowColorShaderAsset = assets.Request<Effect>(CWRConstant.noEffects + "FlowColorShader", AssetRequestMode.ImmediateLoad);
+            FlowColorShader = GameShaders.Misc["CWRMod:FlowColorShader"] = new MiscShaderData(_flowColorShaderAsset, "PiercePass");
 
-            Ref<Effect> powerSFShader = new(assets.Request<Effect>(CWRConstant.noEffects + "PowerSFShader", AssetRequestMode.ImmediateLoad).Value);
-            Filters.Scene["CWRMod:powerSFShader"] = new Filter(new(powerSFShader, "Offset"), EffectPriority.VeryHigh);
-
-            PowerSFShader = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "PowerSFShader", AssetRequestMode.ImmediateLoad).Value;
-            FlowColorShader = GameShaders.Misc["CWRMod:FlowColorShader"];
+            Asset<Effect> _powerSFShaderAsset = assets.Request<Effect>(CWRConstant.noEffects + "PowerSFShader", AssetRequestMode.ImmediateLoad);
+            Filters.Scene["CWRMod:powerSFShader"] = new Filter(new(_powerSFShaderAsset, "Offset"), EffectPriority.VeryHigh);
+            PowerSFShader = _powerSFShaderAsset.Value;
         }
     }
 }
