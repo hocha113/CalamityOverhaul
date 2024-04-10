@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             secondaryColor = Color.Lerp(Color.White, secondaryColor, 0.85f);
 
             Vector2 trailOffset = Projectile.Size * 0.5f - Main.screenPosition;
-            flowColorShader.SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak"));
+            flowColorShader.SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak"));
             flowColorShader.UseImage2("Images/Extra_189");
             flowColorShader.UseColor(mainColor);
             flowColorShader.UseSecondaryColor(secondaryColor);

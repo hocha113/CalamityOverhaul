@@ -13,6 +13,7 @@ using System.IO;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
@@ -24,6 +25,7 @@ namespace CalamityOverhaul
         internal static int GameLoadCount;
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook;
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook;
+        
         internal Mod musicMod = null;
         internal Mod betterWaveSkipper = null;
         internal Mod fargowiltasSouls = null;
@@ -105,22 +107,16 @@ namespace CalamityOverhaul
 
         public override void Load() {
             Instance = this;
-            GameLoadCount++;
-            new InWorldBossPhase().Load();
-
+            
             FindMod();
-            ModGanged.Load();
-
             LoadClient();
-
-            //加载头部资源Icon
-            //HEHead.LoadHaedIcon();
-
+            ModGanged.Load();
             CWRParticleHandler.Load();
+            new InWorldBossPhase().Load();
             EffectsRegistry.LoadEffects();
             On_Main.DrawInfernoRings += PeSystem.CWRDrawForegroundParticles;
             On_Player.BuyItem += CWRItems.BuyItemInitialize;
-
+            GameLoadCount++;
             base.Load();
         }
 

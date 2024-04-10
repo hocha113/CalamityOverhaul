@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public static void PrepareSlashShader(bool flipped) {
-            GameShaders.Misc["CalamityMod:ExobladeSlash"].SetShaderTexture(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/VoronoiShapes"));
+            GameShaders.Misc["CalamityMod:ExobladeSlash"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/VoronoiShapes"));
             GameShaders.Misc["CalamityMod:ExobladeSlash"].UseColor(Color.Wheat);
             GameShaders.Misc["CalamityMod:ExobladeSlash"].UseSecondaryColor(Color.Wheat);
             GameShaders.Misc["CalamityMod:ExobladeSlash"].Shader.Parameters["fireColor"].SetValue(Color.Wheat.ToVector3());

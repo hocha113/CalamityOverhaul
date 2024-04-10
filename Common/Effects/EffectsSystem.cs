@@ -16,16 +16,31 @@ namespace CalamityOverhaul.Common.Effects
     public delegate void On_Draw_Dalegate(object inds, SpriteBatch spriteBatch);
     internal class EffectsSystem : ModSystem
     {
+        internal static EffectsSystem Instance;
+
         public static Type holyInfernoRendererType;
 
         public static MethodBase onDrawToTargetMethod;
 
+        internal static Type MiscShaderDataType;
+
+        internal static FieldInfo Shader_Texture_FieldInfo_1;
+        internal static FieldInfo Shader_Texture_FieldInfo_2;
+        internal static FieldInfo Shader_Texture_FieldInfo_3;
+
         public override void Load() {
+            Instance = this;
             holyInfernoRendererType = typeof(HolyInfernoRenderer);
             onDrawToTargetMethod = holyInfernoRendererType.GetMethod("DrawToTarget", BindingFlags.Instance | BindingFlags.Public);
             if (onDrawToTargetMethod != null) {
                 MonoModHooks.Add(onDrawToTargetMethod, OnDrawToTargetHook);
             }
+
+            MiscShaderDataType = typeof(MiscShaderData);
+            FieldInfo miscShaderGetFieldInfo(string key) => MiscShaderDataType.GetField(key, BindingFlags.NonPublic | BindingFlags.Instance);
+            Shader_Texture_FieldInfo_1 = miscShaderGetFieldInfo("_uImage1");
+            Shader_Texture_FieldInfo_2 = miscShaderGetFieldInfo("_uImage2");
+            Shader_Texture_FieldInfo_3 = miscShaderGetFieldInfo("_uImage3");
         }
 
         public static Providence Provi => Main.npc[CalamityGlobalNPC.holyBoss].ModNPC as Providence;

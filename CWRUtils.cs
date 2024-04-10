@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityOverhaul;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
@@ -2333,19 +2334,13 @@ namespace CalamityOverhaul
 
         #region 高级绘制工具
 
-        private static readonly FieldInfo shaderTextureField = typeof(MiscShaderData).GetField("_uImage1", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        private static readonly FieldInfo shaderTextureField2 = typeof(MiscShaderData).GetField("_uImage2", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        private static readonly FieldInfo shaderTextureField3 = typeof(MiscShaderData).GetField("_uImage3", BindingFlags.NonPublic | BindingFlags.Instance);
-
         /// <summary>
         /// 使用反射来设置 _uImage1。它的底层数据是私有的，唯一可以公开更改它的方式是通过一个只接受原始纹理路径的方法
         /// </summary>
         /// <param name="shader">着色器</param>
         /// <param name="texture">要使用的纹理</param>
-        public static void SetShaderTexture(this MiscShaderData shader, Asset<Texture2D> texture) {
-            shaderTextureField.SetValue(shader, texture);
+        public static void SetMiscShaderAsset_1(this MiscShaderData shader, Asset<Texture2D> texture) {
+            EffectsSystem.Shader_Texture_FieldInfo_1.SetValue(shader, texture);
         }
 
         /// <summary>
@@ -2353,8 +2348,8 @@ namespace CalamityOverhaul
         /// </summary>
         /// <param name="shader">着色器</param>
         /// <param name="texture">要使用的纹理</param>
-        public static void SetShaderTexture2(this MiscShaderData shader, Asset<Texture2D> texture) {
-            shaderTextureField2.SetValue(shader, texture);
+        public static void SetMiscShaderAsset_2(this MiscShaderData shader, Asset<Texture2D> texture) {
+            EffectsSystem.Shader_Texture_FieldInfo_2.SetValue(shader, texture);
         }
 
         /// <summary>
@@ -2362,8 +2357,8 @@ namespace CalamityOverhaul
         /// </summary>
         /// <param name="shader">着色器</param>
         /// <param name="texture">要使用的纹理</param>
-        public static void SetShaderTexture3(this MiscShaderData shader, Asset<Texture2D> texture) {
-            shaderTextureField3.SetValue(shader, texture);
+        public static void SetMiscShaderAsset_3(this MiscShaderData shader, Asset<Texture2D> texture) {
+            EffectsSystem.Shader_Texture_FieldInfo_3.SetValue(shader, texture);
         }
 
         /// <summary>

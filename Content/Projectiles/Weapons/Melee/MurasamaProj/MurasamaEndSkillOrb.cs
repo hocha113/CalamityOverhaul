@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (LightningDrawer is null)
                 LightningDrawer = new PrimitiveTrail(PrimitiveWidthFunction, PrimitiveColorFunction, PrimitiveTrail.RigidPointRetreivalFunction, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]);
 
-            GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].SetShaderTexture(CWRUtils.GetT2DAsset(CWRConstant.Masking + "WavyNoise"));
+            GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].SetMiscShaderAsset_1(CWRUtils.GetT2DAsset(CWRConstant.Masking + "WavyNoise"));
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
 
             LightningDrawer.Draw(Projectile.oldPos, Projectile.Size * 0.5f - Main.screenPosition, 28);
