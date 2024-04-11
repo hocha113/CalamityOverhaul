@@ -30,8 +30,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 Projectile.rotation = -MathHelper.PiOver2;
                 Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 12;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
+                SetCompositeArm();
             }
-            SetCompositeArm();
+            
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<TsunamiOnSpan>()] == 0) {
                 if (SoundEngine.TryGetActiveSound(accumulator, out var sound)) {
                     sound.Stop();

@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
             RMeowmere.SpanDust(projectile);
-
+            
             Player player = Main.player[projectile.owner];
 
             if (GetHitAttribute.SuperAttack) {

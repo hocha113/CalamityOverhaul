@@ -255,7 +255,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (AmmoState.Amount == 0) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态以保证换弹流畅
             }
-            if (!IsKreload && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0 && AmmoState.Amount > 0 && !ModOwner.NoCanAutomaticCartridgeChange && ModItem.NoKreLoadTime == 0) {
+            if (!IsKreload && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0 
+                && AmmoState.Amount > 0 && !ModOwner.NoCanAutomaticCartridgeChange && ModItem.NoKreLoadTime == 0) {
                 OnKreload = true;
                 kreloadTimeValue = kreloadMaxTime;
             }
@@ -279,6 +280,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.timeLeft = 2;
             if (GunShootCoolingValue > 0) {
                 GunShootCoolingValue--;
+            }
+            if (ModItem.NoKreLoadTime > 0) {
+                ModItem.NoKreLoadTime--;
             }
             if (!Owner.mouseInterface) {
                 if (DownLeft) {
@@ -365,9 +369,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
             }
-            if (Owner.PressKey()) {
+            if (DownLeft) {
                 if (!IsKreload && LoadingReminder) {
-                    if (!Owner.mouseInterface) {
+                    if (!Owner.mouseInterface && kreloadTimeValue <= 0) {
                         AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态
                         if (AmmoState.Amount <= 0) {
                             HandleEmptyAmmoEjection();

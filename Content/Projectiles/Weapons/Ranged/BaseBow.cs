@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal abstract class BaseBow : BaseHeldRanged
     {
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
+
+        #region Date
         /// <summary>
         /// 右手角度值
         /// </summary>
@@ -89,6 +91,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 获取来自物品的生成源
         /// </summary>
         protected IEntitySource Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType, "CWRBow");
+        protected IEntitySource Source2 => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType);
+        #endregion
+
+        public void SetArmInFire() {
+            float backArmRotation = (Projectile.rotation * SafeGravDir + MathHelper.PiOver2) + MathHelper.Pi * DirSign;
+            float amountValue = 1 - Projectile.ai[1] / (Item.useTime - HandRotStartTime);
+            Player.CompositeArmStretchAmount stretch = amountValue.ToStretchAmount();
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+            Owner.SetCompositeArmFront(true, stretch, backArmRotation);
+        }
 
         public virtual void HandEvent() {
             if (Owner.PressKey()) {
@@ -96,14 +108,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.rotation = ToMouseA;
                 Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY);
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
+                SetCompositeArm();
                 if (HaveAmmo) {
                     onFire = true;
                     Projectile.ai[1]++;
                     if (Projectile.ai[1] > HandRotStartTime && CanFireMotion) {
-                        ArmRotSengsFront += MathF.Sin(Time * HandRotSpeedSengs) * HandRotRange;
-                        //float backArmRotation = (Projectile.rotation * SafeGravDir + MathHelper.PiOver2) + MathHelper.Pi * DirSign;
-                        //Player.CompositeArmStretchAmount stretch = (MathF.Sin(Time * HandRotSpeedSengs)).ToStretchAmount();
-                        //Owner.SetCompositeArmFront(true, stretch, backArmRotation);
+                        SetArmInFire();
                     } 
                 }
             }
@@ -116,11 +126,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.rotation = ToMouseA;
                 Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY);
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
+                SetCompositeArm();
                 if (HaveAmmo) {
                     onFireR = true;
                     Projectile.ai[1]++;
-                    if (Projectile.ai[1] > HandRotStartTime && CanFireMotion)
-                        ArmRotSengsFront += MathF.Sin(Time * HandRotSpeedSengs) * HandRotRange;
+                    if (Projectile.ai[1] > HandRotStartTime && CanFireMotion) {
+                        SetArmInFire();
+                    }
                 }
             }
             else {
@@ -142,12 +154,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(20) : MathHelper.ToRadians(160);
             Projectile.timeLeft = 2;
             SetHeld();
-            //SetCompositeArm();
+            SetCompositeArm();
             if (!Owner.mouseInterface) {
                 HandEvent();
             }
-
-            SetCompositeArm();
 
             PostInOwner();
         }
@@ -201,6 +211,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
                 if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();
+                }
+                foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
+                    g.CanUseItem(Item, Owner);
+                }
+                foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
+                    g.Shoot(Item, Owner, (EntitySource_ItemUse_WithAmmo)Source2, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
                 }
                 if (FiringDefaultSound) {
                     SoundEngine.PlaySound(Item.UseSound, Projectile.Center);

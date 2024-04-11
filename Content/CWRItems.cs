@@ -243,9 +243,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void HoldItem(Item item, Player player) {
-            if (NoKreLoadTime > 0) {
-                NoKreLoadTime--;
-            }
             if (heldProjType > 0) {
                 if (player.ownedProjectileCounts[heldProjType] == 0 && Main.myPlayer == player.whoAmI) {
                     Projectile heldProj = Projectile.NewProjectileDirect(player.parent(), player.Center, Vector2.Zero, heldProjType, item.damage, item.knockBack, player.whoAmI);

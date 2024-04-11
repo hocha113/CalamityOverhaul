@@ -5,6 +5,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatswordProj;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -28,8 +29,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 2.5f;
             Item.UseSound = SoundID.Item60;
-            Item.noUseGraphic = true;
-            Item.noMelee= true;
+            //Item.noUseGraphic = true;
+            //Item.noMelee= true;
             Item.channel = true;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.Rarity1BuyPrice;
@@ -39,6 +40,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 3;
+
+        public override void UseStyle(Player player, Rectangle heldItemFrame) => player.itemLocation = player.Center + player.itemRotation.ToRotationVector2() * -15 * player.direction;
 
         //public override bool CanUseItem(Player player) {
         //    return player.ownedProjectileCounts[Item.shoot] == 0;

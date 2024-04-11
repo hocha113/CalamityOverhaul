@@ -13,13 +13,10 @@ namespace CalamityOverhaul.Content.Dusts
         public override void OnSpawn(Dust dust) {
             dust.scale = Main.rand.NextFloat(0.8f, 1.2f);
             dust.velocity = new Vector2(0, -Main.rand.NextFloat(1, 1.2f));
-            dustFrameCount = Main.rand.Next(4);
             dust.alpha = Main.rand.Next(185, 255);
         }
 
-        int time = 0;
         public override bool Update(Dust dust) {
-            time++;
             dust.position += dust.velocity;
             dust.scale -= 0.015f;
             dust.alpha -= 1;
@@ -29,17 +26,12 @@ namespace CalamityOverhaul.Content.Dusts
             return false;
         }
 
-        int dustFrameCount = 0;
         public override bool PreDraw(Dust dust) {
             Texture2D texture = CWRUtils.GetT2DValue(Texture);
-            if (time % 10 == 0) {
-                dustFrameCount++;
-                if (dustFrameCount > 3) dustFrameCount = 0;
-            }
             Main.EntitySpriteDraw(
                 texture,
                 dust.position - Main.screenPosition,
-                CWRUtils.GetRec(texture, dustFrameCount, 4),
+                CWRUtils.GetRec(texture, (int)(Main.GameUpdateCount / 10 % 4), 4),
                 Color.White * (dust.alpha / 255f),
                 dust.rotation,
                 CWRUtils.GetOrig(texture, 4),
