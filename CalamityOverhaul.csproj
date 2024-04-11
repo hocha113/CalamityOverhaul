@@ -8,12 +8,16 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <AdditionalFiles Remove="Assets\NPCs\Fatuous\**" />
     <AdditionalFiles Remove="Content\NPCs\HeavenEaters\**" />
     <AdditionalFiles Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
+    <Compile Remove="Assets\NPCs\Fatuous\**" />
     <Compile Remove="Content\NPCs\HeavenEaters\**" />
     <Compile Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
+    <EmbeddedResource Remove="Assets\NPCs\Fatuous\**" />
     <EmbeddedResource Remove="Content\NPCs\HeavenEaters\**" />
     <EmbeddedResource Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
+    <None Remove="Assets\NPCs\Fatuous\**" />
     <None Remove="Content\NPCs\HeavenEaters\**" />
     <None Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
   </ItemGroup>
@@ -21,7 +25,7 @@
     <AdditionalFiles Remove="Assets\Projectiles\Magic\GhastlyVisageBall.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="0.3.5.8.8.txt" />
+    <None Remove="0.3.5.9.1.txt" />
     <None Remove="Assets\Items\Replace\TODO.txt" />
     <None Remove="Assets\Masking\Extra_193.png" />
     <None Remove="Assets\Masking\Extra_193_White.png" />
@@ -31,7 +35,6 @@
     <None Remove="Assets\Masking\Streak3.png" />
     <None Remove="Assets\Masking\Wave.png" />
     <None Remove="Assets\Masking\WavyNoise.png" />
-    <None Remove="Assets\NPCs\TODOs.txt" />
     <None Remove="Assets\UIs\ScrollbarInner.png" />
     <None Remove="Assets\UIs\SliderBar.png" />
   </ItemGroup>
@@ -39,6 +42,7 @@
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assets\NPCs\" />
     <Folder Include="Assets\Sounds\Gun\" />
     <Folder Include="Content\RemakeItems\Summon\" />
   </ItemGroup>

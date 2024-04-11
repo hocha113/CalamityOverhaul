@@ -1,0 +1,9 @@
+v_0.3.5.9.1
+
+负责以下内容的开发者：红茶
+
+1.修复部分枪械在换弹过程中反复点击开火会导致弹匣情况的异常
+2.重新调整了枪械的自动换弹，现在自动换弹会更加的流畅
+
+——Developer responsible for the following content: HoCha113
+
