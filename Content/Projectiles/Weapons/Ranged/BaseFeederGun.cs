@@ -128,6 +128,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         protected SoundStyle loadTheRounds = CWRSound.CaseEjection2;
 
+        public bool AmmunitionIsBeingLoaded() => kreloadTimeValue > 0;
+
         /// <summary>
         /// 抛壳的简易实现
         /// </summary>
@@ -603,6 +605,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                                     g.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
                                 }
                             }
+                            ItemLoader.UseItem(Item, Owner);
                         }
                         if (EnableRecoilRetroEffect) {
                             OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;

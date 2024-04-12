@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Graphics.Renderers;
-using CalamityMod.Items;
+using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -38,15 +39,20 @@ namespace CalamityOverhaul.Common
         public static Type trO_MuzzleflashPlayerDL_Type;
         public static Type trO_ArrowPlayerDL_Type;
         public static Type trO_PlayerHoldOutAnimation_Type;
+        public static Type trO_CrosshairSystem_Type;
         public static MethodBase trO_MuzzleflashPlayerDL_Draw_Method;
         public static MethodBase trO_ArrowPlayerDL_Draw_Method;
         public static MethodBase trO_PlayerHoldOutAnimation_Method;
+        public static MethodBase trO_Crosshair_AddImpulse_Method;
 
         public static Type[] fargowiltasSoulsTypes;
         public static Type fargowiltasSouls_Utils_Type;
         public static MethodBase fS_Utils_OnSpawnEnchCanAffectProjectile_Method;
 
-        public static Type[] GetModType(Mod mod) => AssemblyManager.GetLoadableTypes(mod.Code);
+        public static Type[] GetModType(Mod mod) {
+            return AssemblyManager.GetLoadableTypes(mod.Code);
+        }
+
         public static Type GetTargetTypeInStringKey(Type[] types, string key) {
             Type reset = null;
             foreach (Type type in types) {
@@ -92,7 +98,8 @@ namespace CalamityOverhaul.Common
                 else {
                     "未成功加载 weaponOut_WeaponLayer_2_Method 是否是WeaponLayer12.Draw已经改动?".DompInConsole();
                 }
-            } else {
+            }
+            else {
                 "未加载模组 WeaponOut".DompInConsole();
             }
             #endregion
@@ -115,7 +122,8 @@ namespace CalamityOverhaul.Common
                 if (weaponDisplay_ModifyDrawInfo_Method != null) {
                     MonoModHooks.Add(weaponDisplay_ModifyDrawInfo_Method, On_MP_Draw_3_Hook);
                 }
-            } else {
+            }
+            else {
                 "未加载模组 WeaponDisplay".DompInConsole();
             }
             #endregion
@@ -134,16 +142,35 @@ namespace CalamityOverhaul.Common
                     if (type.Name == "PlayerHoldOutAnimation") {
                         trO_PlayerHoldOutAnimation_Type = type;
                     }
+                    if (type.Name == "CrosshairSystem") {
+                        trO_CrosshairSystem_Type = type;
+                    }
                 }
                 if (trO_PlayerHoldOutAnimation_Type != null) {
                     trO_PlayerHoldOutAnimation_Method = trO_PlayerHoldOutAnimation_Type.GetMethod("ShouldForceUseAnim", BindingFlags.Static | BindingFlags.NonPublic);
                 }
                 if (trO_PlayerHoldOutAnimation_Method != null) {
                     MonoModHooks.Add(trO_PlayerHoldOutAnimation_Method, On_ShouldForceUseAnim_Hook);
-                } else {
-                    "未成功加载 trO_PlayerHoldOutAnimation_Method 是否是PlayerHoldOutAnimation.ShouldForceUseAnim已经改动?".DompInConsole();
                 }
-            } else {
+                else {
+                    "未成功加载 trO_PlayerHoldOutAnimation_Method 是否是 PlayerHoldOutAnimation.ShouldForceUseAnim 已经改动?".DompInConsole();
+                }
+
+                if (trO_CrosshairSystem_Type != null) {
+                    trO_Crosshair_AddImpulse_Method = trO_CrosshairSystem_Type.GetMethod("AddImpulse", BindingFlags.Static | BindingFlags.Public);
+                }
+                else {
+                    "未成功加载 trO_CrosshairSystem_Type 是否是 TerrariaOverhaul.CrosshairSystem 已经改动?".DompInConsole();
+                }
+
+                if (trO_Crosshair_AddImpulse_Method != null) {
+
+                }
+                else {
+                    "未成功加载 trO_Crosshair_AddImpulse_Method 是否是 TerrariaOverhaul.CrosshairSystem.AddImpulse 已经改动?".DompInConsole();
+                }
+            }
+            else {
                 "未加载模组 TerrariaOverhaul".DompInConsole();
             }
 
@@ -170,7 +197,8 @@ namespace CalamityOverhaul.Common
                 }
                 if (fS_Utils_OnSpawnEnchCanAffectProjectile_Method != null) {
                     MonoModHooks.Add(fS_Utils_OnSpawnEnchCanAffectProjectile_Method, On_OnSpawnEnchCanAffectProjectile_Hook);
-                } else {
+                }
+                else {
                     "未成功加载 fS_Utils_OnSpawnEnchCanAffectProjectile_Method FargoSoulsUtil.OnSpawnEnchCanAffectProjectile已经改动?".DompInConsole();
                 }
             }
@@ -182,17 +210,11 @@ namespace CalamityOverhaul.Common
         }
 
         private static bool On_OnSpawnEnchCanAffectProjectile_Hook(On_OnSpawnEnchCanAffectProjectile_Dalegate orig, Projectile projectile, bool allowMinions) {
-            if (projectile.CWR().NotSubjectToSpecialEffects) {
-                return false;
-            }
-            return orig.Invoke(projectile, allowMinions);
+            return !projectile.CWR().NotSubjectToSpecialEffects && orig.Invoke(projectile, allowMinions);
         }
 
         private static bool IFDrawHeld(On_ModPlayerDraw_Dalegate orig, PlayerDrawSet drawInfo) {
-            if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                return true;
-            }
-            if (EqualityComparer<PlayerDrawSet>.Default.Equals(drawInfo, default(PlayerDrawSet))) {
+            if (EqualityComparer<PlayerDrawSet>.Default.Equals(drawInfo, default)) {
                 return false;
             }
             if (drawInfo.DrawDataCache == null) {
@@ -209,21 +231,30 @@ namespace CalamityOverhaul.Common
             if (heldItem.type == ItemID.None) {
                 return false;
             }
-            bool isHeld = heldItem.CWR().isHeldItem || heldItem.CWR().heldProjType > 0;
-            if (isHeld) {
-                return false;
+
+            CWRItems ritem = heldItem.CWR();
+            bool itemHasHeldProj = ritem.heldProjType > 0;
+            if (ritem.hasHeldNoCanUseBool && itemHasHeldProj) {
+                if (drawPlayer.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
+                    if (gun.OnHandheldDisplayBool) {
+                        return false;
+                    }
+                }
             }
-            if (orig == null) {
-                return false;
+
+            if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
+                return true;
             }
-            return true;
+
+            bool isHeld = ritem.isHeldItem || itemHasHeldProj;
+            return !isHeld && orig != null;
         }
 
         public static void On_MP_Draw_1_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
             if (!IFDrawHeld(orig, drawInfo)) {
                 return;
             }
-            orig.Invoke(obj, ref  drawInfo);
+            orig.Invoke(obj, ref drawInfo);
         }
 
         public static void On_MP_Draw_2_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
@@ -241,19 +272,42 @@ namespace CalamityOverhaul.Common
         }
 
         public static bool On_ShouldForceUseAnim_Hook(On_ShouldForceUseAnim_Dalegate orig, Player player, Item item) {
-            if (CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                if (item == null) {
-                    return false;
-                }
-                if (item.type == ItemID.None) {
-                    return false;
-                }
-                bool isHeld = item.CWR().isHeldItem || item.CWR().heldProjType > 0;
-                if (isHeld) {
-                    return false;
+            bool result = true;
+
+            if (item == null) {
+                result = false;
+            }
+            if (item.type == ItemID.None) {
+                result = false;
+            }
+
+            Item heldItem = player.inventory[player.selectedItem];
+            if (heldItem == null) {
+                return false;
+            }
+            if (heldItem.type == ItemID.None) {
+                return false;
+            }
+
+            CWRItems ritem = heldItem.CWR();
+            bool isHeld = ritem.isHeldItem || ritem.heldProjType > 0;
+            if (isHeld) {
+                result = false;
+            }
+
+            if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
+                result = true;
+            }
+
+            if (ritem.hasHeldNoCanUseBool && ritem.heldProjType > 0) {
+                if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
+                    if (gun.OnHandheldDisplayBool) {
+                        return false;
+                    }
                 }
             }
-            return orig.Invoke(player, item);
+
+            return orig.Invoke(player, item) && result;
         }
     }
 }
