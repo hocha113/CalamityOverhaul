@@ -4,6 +4,7 @@ v_0.3.5.9.1
 
 1.修复部分枪械在换弹过程中反复点击开火会导致弹匣情况的异常
 2.重新调整了枪械的自动换弹，现在自动换弹会更加的流畅
+3.进一步的优化了枪械与弓的内容适配性，尤其是与 Terraria Overhaul Mod 一起游玩的体验被大幅度增强
 
 ——Developer responsible for the following content: HoCha113
 

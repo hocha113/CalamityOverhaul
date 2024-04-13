@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual bool IsVanilla => false;
         /// <summary>
-        /// 用于在本地化中拉取描述，如果为默认的空字符串则不会其余拉取功能
+        /// 用于在本地化中拉取描述，如果为默认的空字符串则不会启动拉取功能
         /// </summary>
         public virtual string TargetToolTipItemName => "";
         /// <summary>
@@ -699,6 +699,17 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <param name="hideVisual"></param>
         public virtual void UpdateAccessory(Item item, Player player, bool hideVisual) {
 
+        }
+        /// <summary>
+        /// 该饰品被玩家装备时会执行的函数
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="player"></param>
+        /// <param name="hideVisual"></param>
+        /// <returns>返回默认值<see langword="true"/>会继续执行TML的默认行为，
+        /// 返回<see langword="false"/>将会直接阻断后续所有修改的运行</returns>
+        public virtual bool On_UpdateAccessory(Item item, Player player, bool hideVisual) {
+            return true;
         }
         /// <summary>
         /// 这个物品在玩家库存中会执行的函数

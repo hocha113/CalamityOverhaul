@@ -1,4 +1,3 @@
-using CalamityMod.Items;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
@@ -6,14 +5,11 @@ using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
@@ -25,7 +21,8 @@ namespace CalamityOverhaul
         internal static int GameLoadCount;
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook;
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook;
-        
+        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_UseItem_Hook;
+
         internal Mod musicMod = null;
         internal Mod betterWaveSkipper = null;
         internal Mod fargowiltasSouls = null;
@@ -97,8 +94,11 @@ namespace CalamityOverhaul
             }
 
             {
-                CWR_InItemLoader_Set_Shoot_Hook = (GlobalHookList<GlobalItem>)typeof(ItemLoader).GetField("HookShoot", BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
-                CWR_InItemLoader_Set_CanUse_Hook = (GlobalHookList<GlobalItem>)typeof(ItemLoader).GetField("HookCanUseItem", BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
+                GlobalHookList<GlobalItem> getItemLoaderHookTargetValue(string key) 
+                    => (GlobalHookList<GlobalItem>)typeof(ItemLoader).GetField(key, BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
+                CWR_InItemLoader_Set_Shoot_Hook = getItemLoaderHookTargetValue("HookShoot");
+                CWR_InItemLoader_Set_CanUse_Hook = getItemLoaderHookTargetValue("HookCanUseItem");
+                CWR_InItemLoader_Set_UseItem_Hook = getItemLoaderHookTargetValue("HookUseItem");
             }
 
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了

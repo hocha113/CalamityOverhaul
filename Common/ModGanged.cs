@@ -233,10 +233,21 @@ namespace CalamityOverhaul.Common
             }
 
             CWRItems ritem = heldItem.CWR();
+            CWRPlayer modPlayer = drawPlayer.CWR();
             bool itemHasHeldProj = ritem.heldProjType > 0;
             if (ritem.hasHeldNoCanUseBool && itemHasHeldProj) {
-                if (drawPlayer.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
+                if (modPlayer.TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
                     if (gun.OnHandheldDisplayBool) {
+                        return false;
+                    }
+                }
+                if (modPlayer.TryGetInds_BaseGun(out BaseGun gun2)) {
+                    if (gun2.OnHandheldDisplayBool) {
+                        return false;
+                    }
+                }
+                if (modPlayer.TryGetInds_BaseBow(out BaseBow bow)) {
+                    if (bow.OnHandheldDisplayBool) {
                         return false;
                     }
                 }
@@ -290,6 +301,7 @@ namespace CalamityOverhaul.Common
             }
 
             CWRItems ritem = heldItem.CWR();
+            CWRPlayer modPlayer = player.CWR();
             bool isHeld = ritem.isHeldItem || ritem.heldProjType > 0;
             if (isHeld) {
                 result = false;
@@ -300,9 +312,19 @@ namespace CalamityOverhaul.Common
             }
 
             if (ritem.hasHeldNoCanUseBool && ritem.heldProjType > 0) {
-                if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
+                if (modPlayer.TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
                     if (gun.OnHandheldDisplayBool) {
-                        return false;
+                        result = false;
+                    }
+                }
+                if (modPlayer.TryGetInds_BaseGun(out BaseGun gun2)) {
+                    if (gun2.OnHandheldDisplayBool) {
+                        result = false;
+                    }
+                }
+                if (modPlayer.TryGetInds_BaseBow(out BaseBow bow)) {
+                    if (bow.OnHandheldDisplayBool) {
+                        result = false;
                     }
                 }
             }

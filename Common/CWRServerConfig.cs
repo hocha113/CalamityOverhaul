@@ -62,6 +62,10 @@ namespace CalamityOverhaul.Common
         [DefaultValue(true)]
         public bool MagazineSystem {  get; set; }
 
+        [BackgroundColor(182, 24, 64, 192)]
+        [DefaultValue(true)]
+        public bool BowArrowDraw { get; set; }
+
         /// <summary>
         /// 武器屏幕振动
         /// </summary>

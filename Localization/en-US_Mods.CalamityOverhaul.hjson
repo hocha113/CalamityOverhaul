@@ -2448,6 +2448,31 @@ Projectiles: {
 	SnowQuayHeldProj.DisplayName: Snow Quay Held Proj
 	SnowQuayBall.DisplayName: Snow Quay Ball
 	IceParclose.DisplayName: Ice Parclose
+	DemonBowHeldProj.DisplayName: Demon Bow Held Proj
+	IronBowHeldProj.DisplayName: Iron Bow Held Proj
+	WoodenBowHeldProj.DisplayName: Wooden Bow Held Proj
+	EbonwoodBowHeldProj.DisplayName: Ebonwood Bow Held Proj
+	PearlwoodBowHeldProj.DisplayName: Pearlwood Bow Held Proj
+	RichMahoganyBowHeldProj.DisplayName: Rich Mahogany Bow Held Proj
+	IceBowHeldProj.DisplayName: Ice Bow Held Proj
+	MarrowHeldProj.DisplayName: Marrow Held Proj
+	PulseBowHeldProj.DisplayName: Pulse Bow Held Proj
+	ShadewoodBowHeldProj.DisplayName: Shadewood Bow Held Proj
+	TendonBowHeldProj.DisplayName: Tendon Bow Held Proj
+	BeesKneesHeldProj.DisplayName: Bees Knees Held Proj
+	BorealWoodBowHeldProj.DisplayName: Boreal Wood Bow Held Proj
+	PalmWoodBowHeldProj.DisplayName: Palm Wood Bow Held Proj
+	CopperBowHeldProj.DisplayName: Copper Bow Held Proj
+	GoldBowHeldProj.DisplayName: Gold Bow Held Proj
+	LeadBowHeldProj.DisplayName: Lead Bow Held Proj
+	PlatinumBowHeldProj.DisplayName: Platinum Bow Held Proj
+	SilverBowHeldProj.DisplayName: Silver Bow Held Proj
+	TinBowHeldProj.DisplayName: Tin Bow Held Proj
+	TungstenBowHeldProj.DisplayName: Tungsten Bow Held Proj
+	AshWoodBowHeldProj.DisplayName: Ash Wood Bow Held Proj
+	BloodRainBowHeldProj.DisplayName: Blood Rain Bow Held Proj
+	HellwingBowHeldProj.DisplayName: Hellwing Bow Held Proj
+	ShadowFlameBowHeldProj.DisplayName: Shadow Flame Bow Held Proj
 }
 
 Configs: {
@@ -2579,6 +2604,15 @@ Configs: {
 				[c/fff08c:It's worth noting] that the game's major balance adjustments are made based on the [c/fff08c:enabled magazine system].
 				Opting to disable it may render some ranged weapons [c/de0808:overpowered].
 				Therefore, if this feature is disabled, the [c/de0808:balance of ranged weapons] in the game will no longer be meaningful for discussion.
+				'''
+		}
+
+		BowArrowDraw: {
+			Label: Draw the bowstring arrow
+			Tooltip:
+				'''
+				When the player uses the bow class to attack, the corresponding arrow animation will be drawn in real time
+				It is enabled by default and can be set according to personal preferences
 				'''
 		}
 	}
@@ -3116,5 +3150,8 @@ TextContent: {
 			"It has nothing to do with storms, it has nothing to do with angels."
 			'''
 		Wap_CandyCornRifle_Text: Fire the gummy corn, because gummy corn is cool!
+		Wap_WoodenBow_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_WoodenBow_Text
+		Wap_DemonBow_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DemonBow_Text
+		Wap_IronBow_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_IronBow_Text
 	}
 }

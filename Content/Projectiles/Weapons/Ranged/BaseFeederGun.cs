@@ -595,17 +595,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         if (onFireR) {
                             FiringShootR();
                         }
-                        if (CGItemBehavior) {
-                            bool reset = true;
-                            foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
-                                reset = g.CanUseItem(Item, Owner);
-                            }
-                            if (reset) {
-                                foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
-                                    g.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
-                                }
-                            }
-                            ItemLoader.UseItem(Item, Owner);
+                        if (GlobalItemBehavior) {
+                            ItemLoaderInFireSetBaver();
                         }
                         if (EnableRecoilRetroEffect) {
                             OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;

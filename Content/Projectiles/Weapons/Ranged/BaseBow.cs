@@ -1,11 +1,13 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Ranged;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -23,6 +25,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 左手角度值
         /// </summary>
         public float ArmRotSengsBack;
+        /// <summary>
+        /// 右手基本角度值
+        /// </summary>
+        public int ArmRotSengsFrontBaseValue = 60;
+        /// <summary>
+        /// 左手基本角度值
+        /// </summary>
+        public int ArmRotSengsBackBaseValue = 70;
         /// <summary>
         /// 是否可以右键
         /// </summary>
@@ -76,6 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public bool FiringDefaultSound = true;
         public bool CanFire => Owner.PressKey() || (Owner.PressKey(false) && CanRightClick && !onFire);
+        public SpanTypesEnum ShootSpanTypeValue = SpanTypesEnum.None;
         /// <summary>
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
         /// </summary>
@@ -90,8 +101,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 获取来自物品的生成源
         /// </summary>
-        protected IEntitySource Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType, "CWRBow");
-        protected IEntitySource Source2 => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType);
+        protected EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType, "CWRBow");
+        protected EntitySource_ItemUse_WithAmmo Source2 => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType);
         #endregion
 
         public void SetArmInFire() {
@@ -146,14 +157,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void InOwner() {
             PreInOwner();
-
-            ArmRotSengsFront = 60 * CWRUtils.atoR;
-            ArmRotSengsBack = 110 * CWRUtils.atoR;
+            SetHeld();
+            ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR;
+            ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR;
 
             Projectile.Center = Owner.Center + new Vector2(DirSign * HandDistance, HandDistanceY);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(20) : MathHelper.ToRadians(160);
             Projectile.timeLeft = 2;
-            SetHeld();
+            
             SetCompositeArm();
             if (!Owner.mouseInterface) {
                 HandEvent();
@@ -174,11 +185,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public virtual void BowShoot() {
-            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
+            Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
         }
 
         public virtual void BowShootR() {
-            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
+            Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
         }
 
         /// <summary>
@@ -197,8 +212,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public virtual int SpanLuxirProj(int luxirDamage) {
-            return Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
-                , ModContent.ProjectileType<LuxorsGiftRanged>(), luxirDamage, WeaponKnockback / 2, Owner.whoAmI, 0);
+            return 0;
         }
 
         public override void SpanProj() {
@@ -212,12 +226,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
-                foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
-                    g.CanUseItem(Item, Owner);
-                }
-                foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
-                    g.Shoot(Item, Owner, (EntitySource_ItemUse_WithAmmo)Source2, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
-                }
+                ItemLoaderInFireSetBaver();
                 if (FiringDefaultSound) {
                     SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 }
@@ -227,9 +236,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
+        internal void ItemLoaderInFireSetBaver() {
+            foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
+                g.CanUseItem(Item, Owner);
+            }
+            foreach (var g in CWRMod.CWR_InItemLoader_Set_UseItem_Hook.Enumerate(Item)) {
+                g.UseItem(Item, Owner);
+            }
+            foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
+                g.Shoot(Item, Owner, Source2, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
+            }
+        }
+
         public sealed override bool PreDraw(ref Color lightColor) {
             if (OnHandheldDisplayBool) {
                 BowDraw(ref lightColor);
+            }
+            if (CWRServerConfig.Instance.BowArrowDraw) {
+                ArrowDraw();
             }
             return false;
         }
@@ -237,6 +261,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual void BowDraw(ref Color lightColor) {
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+        }
+
+        public virtual void ArrowDraw() {
+            int cooltime = 3;
+            if (cooltime > Item.useTime / 3) {
+                cooltime = Item.useTime / 3;
+            }
+            if (CanFire && Projectile.ai[1] > cooltime) {
+                Texture2D arrowValue = TextureAssets.Item[Owner.GetShootState().UseAmmoItemType].Value;
+                float drawRot = Projectile.rotation + MathHelper.PiOver2;
+                float chordCoefficient = 1 - Projectile.ai[1] / Item.useTime;
+                float lengsOFstValue = chordCoefficient * 16 - 16;
+                //float offsetCCRot = MathHelper.ToRadians(15) * chordCoefficient * -Owner.direction;
+                Vector2 offsetDrawPos = Projectile.rotation.ToRotationVector2() * lengsOFstValue;
+                Main.EntitySpriteDraw(arrowValue, Projectile.Center - Main.screenPosition + offsetDrawPos, null, Color.White
+                    , drawRot, new Vector2(arrowValue.Width / 2, arrowValue.Height), Projectile.scale, SpriteEffects.FlipVertically);
+            }
         }
 
         public void LimitingAngle(int minrot = 50, int maxrot = 130) {

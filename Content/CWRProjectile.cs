@@ -1,10 +1,13 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
+using CalamityMod.Items.Accessories;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Magic;
 using CalamityMod.Projectiles.Ranged;
+using CalamityMod.Projectiles.Summon;
+using CalamityMod.Projectiles.Turret;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
@@ -12,6 +15,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil;
 using System;
 using System.Linq;
 using Terraria;
@@ -29,7 +33,8 @@ namespace CalamityOverhaul.Content
     /// </summary>
     public enum SpanTypesEnum : byte
     {
-        DeadWing = 1,
+        None,
+        DeadWing,
         ClaretCannon,
         Phantom,
         Alluvion,
@@ -42,7 +47,21 @@ namespace CalamityOverhaul.Content
         NailGun,
         RocketLauncher,
         Voidragon,
-        CrystalDimming
+        CrystalDimming,
+        WoodenBow,
+        IronBow,
+        DemonBow,
+        Marrow,
+        IceBow,
+        TendonBow,
+        PulseBow,
+        PlatinumBow,
+        TungstenBow,
+        CopperBow,
+        PearlwoodBow,
+        SilverBow,
+        GoldBow,
+        ShadowFlameBow,
     }
 
     public struct HitAttributeStruct
@@ -211,6 +230,23 @@ namespace CalamityOverhaul.Content
             
             Player player = Main.player[projectile.owner];
 
+            if (player.CWR().RustyMedallion_Value && Source != null) {
+                if (player.ownedProjectileCounts[ModContent.ProjectileType<ToxicannonDrop>()] < 8) {
+                    if (Source.Context == "CWRGunShoot" || Source.Context == "CWRBow") {
+                        Vector2 startingPosition = Main.MouseWorld - Vector2.UnitY.RotatedByRandom(0.4f) * 1250f;
+                        Vector2 directionToMouse = (Main.MouseWorld - startingPosition).SafeNormalize(Vector2.UnitY).RotatedByRandom(0.1f);
+                        int newdamage = projectile.damage;
+                        newdamage /= 6;
+                        int drop = Projectile.NewProjectile(projectile.parent(), startingPosition, directionToMouse * 15f
+                            , ModContent.ProjectileType<ToxicannonDrop>(), newdamage, 0f, player.whoAmI);
+                        if (drop.WithinBounds(Main.maxProjectiles)) {
+                            Main.projectile[drop].penetrate = 2;
+                            Main.projectile[drop].DamageType = DamageClass.Generic;
+                        }
+                    }
+                }
+            }
+
             if (GetHitAttribute.SuperAttack) {
                 if (projectile.type == 961) {
                     if (!target.boss && !CWRIDs.WormBodys.Contains(target.type) && !target.CWR().IceParclose) {
@@ -312,6 +348,112 @@ namespace CalamityOverhaul.Content
                 }
             }
 
+            if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
+                target.AddBuff(70, 60);
+            }
+
+            if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
+                target.AddBuff(BuffID.Electrified, 120);
+            }
+
+            if (SpanTypes == (byte)SpanTypesEnum.FetidEmesis) {
+                target.AddBuff(ModContent.BuffType<Plague>(), 60);
+            }
+
+            if (SpanTypes == (byte)SpanTypesEnum.Voidragon) {
+                _ = Projectile.NewProjectile(projectile.parent(), target.Center
+                    , CWRUtils.randVr(6, 13), ModContent.ProjectileType<VoidTentacle>()
+                    , projectile.damage, projectile.knockBack / 2, player.whoAmI
+                    , Main.rand.Next(-160, 160) * 0.001f, Main.rand.Next(-160, 160) * 0.001f);
+            }
+
+            switch ((SpanTypesEnum)SpanTypes) {
+                case SpanTypesEnum.IronBow:
+                    player.AddBuff(BuffID.Ironskin, 60);
+                    break;
+                case SpanTypesEnum.WoodenBow:
+                    Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -13).RotatedByRandom(0.2f)
+                        , ModContent.ProjectileType<SquirrelSquireAcorn>(), projectile.damage / 3, projectile.knockBack, projectile.owner);
+                    proj.DamageType = DamageClass.Ranged;
+                    break;
+                case SpanTypesEnum.DemonBow:
+                    Projectile proj2 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, CWRUtils.randVr(0.1f)
+                        , 974, projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
+                    proj2.DamageType = DamageClass.Ranged;
+                    break;
+                case SpanTypesEnum.Marrow:
+                    Projectile proj3 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -13).RotatedByRandom(0.2f)
+                        , ProjectileID.Bone, projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
+                    proj3.DamageType = DamageClass.Ranged;
+                    proj3.usesLocalNPCImmunity = true;
+                    proj3.localNPCHitCooldown = 20;
+                    proj3.penetrate = 3;
+                    if (projectile.penetrate > 1) {
+                        projectile.velocity = projectile.velocity.RotatedByRandom(1f);
+                    }
+                    break;
+                case SpanTypesEnum.IceBow:
+                    Projectile proj4 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -5).RotatedByRandom(0.2f)
+                        , ModContent.ProjectileType<IceExplosion>(), projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
+                    proj4.scale += Main.rand.NextFloat(-0.3f, 0);
+                    projectile.Kill();
+                    break;
+                case SpanTypesEnum.TendonBow:
+                    player.AddBuff(BuffID.Panic, 60);
+                    break;
+                case SpanTypesEnum.PulseBow:
+                    if (!NotSubjectToSpecialEffects) {
+                        for (int i = 0; i < 2; i++) {
+                            Projectile proj5 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center - projectile.velocity, projectile.velocity.RotatedByRandom(0.25f)
+                            , ProjectileID.PulseBolt, projectile.damage / 2, projectile.knockBack, projectile.owner, 1);
+                            proj5.CWR().NotSubjectToSpecialEffects = true;
+                        }
+                    }
+                    projectile.Kill();
+                    break;
+                case SpanTypesEnum.CopperBow:
+                    if (projectile.numHits == 0) {
+                        for (int i = 0; i < 3; i++) {
+                            Vector2 spanPos = projectile.Center + CWRUtils.randVr(560, 690);
+                            Vector2 vr = spanPos.To(target.Center).UnitVector() * 13;
+                            Projectile proj6 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
+                            , ProjectileID.CopperCoin, 2, projectile.knockBack, projectile.owner, 1);
+                            proj6.penetrate = 1;
+                            proj6.CWR().GetHitAttribute.NeverCrit = true;
+                        }
+                    }
+                    break;
+                case SpanTypesEnum.SilverBow:
+                    if (projectile.numHits == 0) {
+                        for (int i = 0; i < 4; i++) {
+                            Vector2 spanPos = projectile.Center + CWRUtils.randVr(660, 790);
+                            Vector2 vr = spanPos.To(target.Center).UnitVector() * 15;
+                            Projectile proj6 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
+                            , ProjectileID.SilverCoin, 2, projectile.knockBack, projectile.owner, 1);
+                            proj6.penetrate = 1;
+                            proj6.CWR().GetHitAttribute.NeverCrit = true;
+                        }
+                    }
+                    break;
+                case SpanTypesEnum.GoldBow:
+                    if (projectile.numHits == 0) {
+                        for (int i = 0; i < 5; i++) {
+                            Vector2 spanPos = projectile.Center + CWRUtils.randVr(760, 790);
+                            Vector2 vr = spanPos.To(target.Center).UnitVector() * 15;
+                            Projectile proj6 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
+                            , ProjectileID.GoldCoin, 2, projectile.knockBack, projectile.owner, 1);
+                            proj6.penetrate = 1;
+                            proj6.extraUpdates = 1;
+                            proj6.CWR().GetHitAttribute.NeverCrit = true;
+                        }
+                    }
+                    break;
+            }
+
+            if (projectile.type == ModContent.ProjectileType<ExoVortex>()) {
+                ExoVortexOnHitDeBug(target);
+            }
+
             if (projectile.DamageType == DamageClass.Summon && target.CWR().WhipHitNum > 0) {
                 CWRNpc npc = target.CWR();
                 WhipHitTypeEnum wTypes = (WhipHitTypeEnum)npc.WhipHitType;
@@ -352,29 +494,6 @@ namespace CalamityOverhaul.Content
                 if (npc.WhipHitNum > 0) {
                     npc.WhipHitNum--;
                 }
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
-                target.AddBuff(70, 60);
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
-                target.AddBuff(BuffID.Electrified, 120);
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.FetidEmesis) {
-                target.AddBuff(ModContent.BuffType<Plague>(), 60);
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.Voidragon) {
-                _ = Projectile.NewProjectile(projectile.parent(), target.Center
-                    , CWRUtils.randVr(6, 13), ModContent.ProjectileType<VoidTentacle>()
-                    , projectile.damage, projectile.knockBack / 2, player.whoAmI
-                    , Main.rand.Next(-160, 160) * 0.001f, Main.rand.Next(-160, 160) * 0.001f);
-            }
-
-            if (projectile.type == ModContent.ProjectileType<ExoVortex>()) {
-                ExoVortexOnHitDeBug(target);
             }
 
             if (Source?.Context == "CWRGunShoot" && cwrItem != null) {
@@ -442,13 +561,13 @@ namespace CalamityOverhaul.Content
                 Projectile_961_DeBug(projectile, lightColor);
                 return false;
             }
-
+            //drawProjName(projectile);
             return base.PreDraw(projectile, ref lightColor);
         }
 
         public void drawProjName(Projectile projectile) {
             Vector2 pos = projectile.Center - Main.screenPosition;
-            string name = projectile.Name;
+            string name = projectile.ToString();
             if (projectile.ModProjectile != null) {
                 name = projectile.ModProjectile.FullName;
             }

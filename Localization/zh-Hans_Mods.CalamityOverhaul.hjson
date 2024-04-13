@@ -2506,6 +2506,31 @@ Projectiles: {
 	// SnowQuayHeldProj.DisplayName: Snow Quay Held Proj
 	// SnowQuayBall.DisplayName: Snow Quay Ball
 	// IceParclose.DisplayName: Ice Parclose
+	// DemonBowHeldProj.DisplayName: Demon Bow Held Proj
+	// IronBowHeldProj.DisplayName: Iron Bow Held Proj
+	// WoodenBowHeldProj.DisplayName: Wooden Bow Held Proj
+	// EbonwoodBowHeldProj.DisplayName: Ebonwood Bow Held Proj
+	// PearlwoodBowHeldProj.DisplayName: Pearlwood Bow Held Proj
+	// RichMahoganyBowHeldProj.DisplayName: Rich Mahogany Bow Held Proj
+	// IceBowHeldProj.DisplayName: Ice Bow Held Proj
+	// MarrowHeldProj.DisplayName: Marrow Held Proj
+	// PulseBowHeldProj.DisplayName: Pulse Bow Held Proj
+	// ShadewoodBowHeldProj.DisplayName: Shadewood Bow Held Proj
+	// TendonBowHeldProj.DisplayName: Tendon Bow Held Proj
+	// BeesKneesHeldProj.DisplayName: Bees Knees Held Proj
+	// BorealWoodBowHeldProj.DisplayName: Boreal Wood Bow Held Proj
+	// PalmWoodBowHeldProj.DisplayName: Palm Wood Bow Held Proj
+	// CopperBowHeldProj.DisplayName: Copper Bow Held Proj
+	// GoldBowHeldProj.DisplayName: Gold Bow Held Proj
+	// LeadBowHeldProj.DisplayName: Lead Bow Held Proj
+	// PlatinumBowHeldProj.DisplayName: Platinum Bow Held Proj
+	// SilverBowHeldProj.DisplayName: Silver Bow Held Proj
+	// TinBowHeldProj.DisplayName: Tin Bow Held Proj
+	// TungstenBowHeldProj.DisplayName: Tungsten Bow Held Proj
+	// AshWoodBowHeldProj.DisplayName: Ash Wood Bow Held Proj
+	// BloodRainBowHeldProj.DisplayName: Blood Rain Bow Held Proj
+	// HellwingBowHeldProj.DisplayName: Hellwing Bow Held Proj
+	// ShadowFlameBowHeldProj.DisplayName: Shadow Flame Bow Held Proj
 }
 
 Configs: {
@@ -2633,6 +2658,15 @@ Configs: {
 				[c/fff08c:值得注意的是]，大修的游戏平衡是在[c/fff08c:开启了弹匣系统]的基础上调整的
 				如果您选择关闭，可能会让一些远程武器变得[c/de0808:过分强大]
 				因此，如果关闭此项功能，[c/de0808:远程武器的游戏平衡将不再具有讨论意义]
+				'''
+		}
+
+		BowArrowDraw: {
+			Label: 绘制弓弦箭矢
+			Tooltip:
+				'''
+				玩家使用弓类进行攻击时，会实时绘制出对应的箭矢动画
+				默认开启，可以根据个人喜好进行设置
 				'''
 		}
 	}
@@ -3163,5 +3197,16 @@ TextContent: {
 			"它和风暴没有关系，和天使也没有关系"
 			'''
 		Wap_CandyCornRifle_Text: 发射玉米软糖，因为玉米软糖很酷！
+		Wap_WoodenBow_Text:
+			'''
+			游侠之旅即将启程
+			箭矢击中目标后会转化为橡子
+			'''
+		Wap_DemonBow_Text: 恶魔金属？这貌似是最低效的一种利用方式
+		Wap_IronBow_Text:
+			'''
+			铁！
+			箭矢击中目标后会给予玩家短暂时间的铁皮增益
+			'''
 	}
 }

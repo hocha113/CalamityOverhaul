@@ -83,6 +83,7 @@ namespace CalamityOverhaul.Content
         public bool HeldGunBool;
         public bool HeldBowBool;
         public bool NoCanAutomaticCartridgeChange;
+        public bool RustyMedallion_Value;
         #region NetCode
         public bool DompBool;
         public bool RecoilAccelerationAddBool;
@@ -106,6 +107,7 @@ namespace CalamityOverhaul.Content
             HeldGunBool = false;
             HeldBowBool = false;
             NoCanAutomaticCartridgeChange = false;
+            RustyMedallion_Value = false;
         }
 
         public override void ResetEffects() {
@@ -127,6 +129,7 @@ namespace CalamityOverhaul.Content
             HeldGunBool = false;
             HeldBowBool = false;
             NoCanAutomaticCartridgeChange = false;
+            RustyMedallion_Value = false;
         }
 
         public override void SaveData(TagCompound tag) {
@@ -305,6 +308,14 @@ namespace CalamityOverhaul.Content
         /// <returns>如果玩家没有手持<see cref="BaseFeederGun"/>或者发生了其他非法情况，返回<see langword="false"/></returns>
         internal bool TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun) {
             return TryGetHeldProjInds(out baseFeederGun);
+        }
+        /// <summary>
+        /// 获取玩家所手持的<see cref="BaseBow"/>实例
+        /// </summary>
+        /// <param name="baseGun"></param>
+        /// <returns>如果玩家没有手持<see cref="BaseBow"/>或者发生了其他非法情况，返回<see langword="false"/></returns>
+        internal bool TryGetInds_BaseBow(out BaseBow baseBow) {
+            return TryGetHeldProjInds(out baseBow);
         }
     }
 }

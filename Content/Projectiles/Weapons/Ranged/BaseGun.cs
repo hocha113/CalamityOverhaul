@@ -31,9 +31,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
         /// <summary>
-        /// 每次发射事件是否运行原灾厄的全局物品行为，默认为<see cref="true"/>
+        /// 每次发射事件是否运行全局物品行为，默认为<see cref="true"/>
         /// </summary>
-        public bool CGItemBehavior = true;
+        public bool GlobalItemBehavior = true;
         /// <summary>
         /// 枪械旋转角矫正
         /// </summary>
@@ -399,13 +399,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
-                if (CGItemBehavior) {
-                    foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
-                        g.CanUseItem(Item, Owner);
-                    }
-                    foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
-                        g.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
-                    }
+                if (GlobalItemBehavior) {
+                    ItemLoaderInFireSetBaver();
                 }
                 if (fireLight > 0) {
                     Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * fireLight);
@@ -413,6 +408,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                 GunShootCoolingValue += Item.useTime;
                 onFire = false;
+            }
+        }
+
+        internal void ItemLoaderInFireSetBaver() {
+            foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
+                g.CanUseItem(Item, Owner);
+            }
+            foreach (var g in CWRMod.CWR_InItemLoader_Set_UseItem_Hook.Enumerate(Item)) {
+                g.UseItem(Item, Owner);
+            }
+            foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
+                g.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
             }
         }
 
