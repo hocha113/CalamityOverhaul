@@ -85,6 +85,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 开火时是否默认播放手持物品的使用音效<see cref="Item.UseSound"/>，但如果准备重写<see cref="SpanProj"/>，这个属性将失去作用，默认为<see langword="true"/>
         /// </summary>
         public bool FiringDefaultSound = true;
+        public bool BowArrowDraw = true;
+        public int BowArrowDrawNum = 1;
         public bool CanFire => Owner.PressKey() || (Owner.PressKey(false) && CanRightClick && !onFire);
         public SpanTypesEnum ShootSpanTypeValue = SpanTypesEnum.None;
         /// <summary>
@@ -216,7 +218,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void SpanProj() {
-            if (Projectile.ai[1] > Item.useTime) {             
+            if (Projectile.ai[1] > Item.useTime && (onFire || onFireR)) {             
                 if (onFire) {
                     BowShoot();
                 }
@@ -252,7 +254,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (OnHandheldDisplayBool) {
                 BowDraw(ref lightColor);
             }
-            if (CWRServerConfig.Instance.BowArrowDraw) {
+            if (CWRServerConfig.Instance.BowArrowDraw && BowArrowDraw) {
                 ArrowDraw();
             }
             return false;
@@ -273,10 +275,53 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 float drawRot = Projectile.rotation + MathHelper.PiOver2;
                 float chordCoefficient = 1 - Projectile.ai[1] / Item.useTime;
                 float lengsOFstValue = chordCoefficient * 16 - 16;
-                //float offsetCCRot = MathHelper.ToRadians(15) * chordCoefficient * -Owner.direction;
                 Vector2 offsetDrawPos = Projectile.rotation.ToRotationVector2() * lengsOFstValue;
-                Main.EntitySpriteDraw(arrowValue, Projectile.Center - Main.screenPosition + offsetDrawPos, null, Color.White
-                    , drawRot, new Vector2(arrowValue.Width / 2, arrowValue.Height), Projectile.scale, SpriteEffects.FlipVertically);
+                Vector2 drawOrig = new (arrowValue.Width / 2, arrowValue.Height);
+                Vector2 drawPos = Projectile.Center - Main.screenPosition + offsetDrawPos;
+
+                void drawArrow(float overOffsetRot = 0) => Main.EntitySpriteDraw(arrowValue, drawPos, null, Color.White
+                    , drawRot + overOffsetRot, drawOrig, Projectile.scale, SpriteEffects.FlipVertically);
+
+                switch (BowArrowDrawNum) {
+                    case 2:
+                        drawArrow(0.3f * chordCoefficient);
+                        drawArrow(-0.3f * chordCoefficient);
+                        break;
+                    case 3:
+                        chordCoefficient += 0.5f;
+                        if (chordCoefficient > 1) {
+                            chordCoefficient = 1;
+                        }
+                        drawArrow(0.45f * chordCoefficient);
+                        drawArrow();
+                        drawArrow(-0.45f * chordCoefficient);
+                        break;
+                    case 4:
+                        chordCoefficient += 0.3f;
+                        if (chordCoefficient > 1) {
+                            chordCoefficient = 1;
+                        }
+                        drawArrow(0.6f * chordCoefficient);
+                        drawArrow(-0.6f * chordCoefficient);
+                        drawArrow(0.2f * chordCoefficient);
+                        drawArrow(-0.2f * chordCoefficient);
+                        break;
+                    case 5:
+                        chordCoefficient += 0.3f;
+                        if (chordCoefficient > 1) {
+                            chordCoefficient = 1;
+                        }
+                        drawArrow(0.7f * chordCoefficient);
+                        drawArrow(-0.7f * chordCoefficient);
+                        drawArrow();
+                        drawArrow(0.35f * chordCoefficient);
+                        drawArrow(-0.35f * chordCoefficient);
+                        break;
+                    case 1:
+                    default:
+                        drawArrow();
+                        break;
+                }
             }
         }
 

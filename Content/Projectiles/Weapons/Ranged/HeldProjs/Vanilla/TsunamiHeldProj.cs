@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         private SlotId accumulator;
         public override void SetRangedProperty() {
             CanRightClick = true;
+            BowArrowDrawNum = 5;
         }
 
         public override void PostInOwner() {

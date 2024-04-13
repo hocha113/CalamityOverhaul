@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
             FiringDefaultSound = false;
             HandFireDistance = 20;
+            BowArrowDrawNum = 5;
         }
 
         public override void PostInOwner() {

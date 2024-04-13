@@ -1987,8 +1987,58 @@ Items: {
 	}
 
 	StorageBatteryI: {
-		DisplayName: Storage Battery I
+		DisplayName: Simple Storage Battery
 		Tooltip: ""
+	}
+
+	ArterialAssaultEcType: {
+		DisplayName: Arterial Assault
+		Tooltip:
+			'''
+			Fire five arrows from the sky
+			All arrows will quickly track nearby enemies
+			'''
+	}
+
+	AstralRepeaterEcType: {
+		DisplayName: Astral Repeater
+		Tooltip:
+			'''
+			Execute a powerful triple shot
+			"So, what does this have to do with magic stars? It looks like an ordinary bow."
+			'''
+	}
+
+	AstrealDefeatEcType: {
+		DisplayName: Astreal Defeat
+		Tooltip:
+			'''
+			Converts all arrows into starenergy arrows, spawning stalkers as they fly
+			"Crystals of ancient witchcraft."
+			'''
+	}
+
+	BarinadeEcType: {
+		DisplayName: Barinade
+		Tooltip:
+			'''
+			Launch two converging high-speed fin arrows, which soar easily through the air
+			"From the upper jaw of that sandworm."
+			'''
+	}
+
+	BarinauticalEcType: {
+		DisplayName: Barinautical
+		Tooltip:
+			'''
+			Convert wooden arrows into three bursts of explosive lightning arrows
+			"From the upper jaw of that sandworm, but this one was harder."
+			'''
+	}
+
+	BrimstoneFuryEcType: {
+		DisplayName: Brimstone Fury
+		Tooltip: Convert the wood arrow into three sulfur-fire rays
 	}
 }
 
@@ -2473,6 +2523,12 @@ Projectiles: {
 	BloodRainBowHeldProj.DisplayName: Blood Rain Bow Held Proj
 	HellwingBowHeldProj.DisplayName: Hellwing Bow Held Proj
 	ShadowFlameBowHeldProj.DisplayName: Shadow Flame Bow Held Proj
+	ArterialAssaultHeldProj.DisplayName: Arterial Assault Held Proj
+	AstralRepeaterHeldProj.DisplayName: Astral Repeater Held Proj
+	AstrealDefeatHeldProj.DisplayName: Astreal Defeat Held Proj
+	BarinadeHeldProj.DisplayName: Barinade Held Proj
+	BrimstoneFuryHeldProj.DisplayName: Brimstone Fury Held Proj
+	BarinauticalHeldProj.DisplayName: Barinautical Held Proj
 }
 
 Configs: {

@@ -2045,8 +2045,58 @@ Items: {
 	}
 
 	StorageBatteryI: {
-		// DisplayName: Storage Battery I
-		// Tooltip: ""
+		DisplayName: 简陋蓄电池
+		Tooltip: ""
+	}
+
+	ArterialAssaultEcType: {
+		DisplayName: 血陨
+		Tooltip:
+			'''
+			自天空中发射五支箭
+			所有箭都将迅速跟踪附近的敌人
+			'''
+	}
+
+	AstralRepeaterEcType: {
+		DisplayName: 幻星弓
+		Tooltip:
+			'''
+			进行有力的三连射
+			"所以，这和幻星有什么关系？它看起来只是一把普通的弓"
+			'''
+	}
+
+	AstrealDefeatEcType: {
+		DisplayName: 灵星寂灭
+		Tooltip:
+			'''
+			将所有箭矢转化为星能之箭，飞行时生成追踪的魂灵星炎
+			"远古巫术结晶"
+			'''
+	}
+
+	BarinadeEcType: {
+		DisplayName: 巴淋内德
+		Tooltip:
+			'''
+			发射两支汇聚的高速鳍箭，它们能轻易地翱翔于空气中
+			"从那条沙虫的上颌骨拆下来的"
+			'''
+	}
+
+	BarinauticalEcType: {
+		DisplayName: 巴淋诺提卡
+		Tooltip:
+			'''
+			将木箭转化为三束爆炸闪电箭
+			"从那条沙虫的上颌骨拆下来的，但这次更困难"
+			'''
+	}
+
+	BrimstoneFuryEcType: {
+		DisplayName: 硫火之怒
+		Tooltip: 将木箭转化为三束硫火射线
 	}
 }
 
@@ -2531,6 +2581,12 @@ Projectiles: {
 	// BloodRainBowHeldProj.DisplayName: Blood Rain Bow Held Proj
 	// HellwingBowHeldProj.DisplayName: Hellwing Bow Held Proj
 	// ShadowFlameBowHeldProj.DisplayName: Shadow Flame Bow Held Proj
+	// ArterialAssaultHeldProj.DisplayName: Arterial Assault Held Proj
+	// AstralRepeaterHeldProj.DisplayName: Astral Repeater Held Proj
+	// AstrealDefeatHeldProj.DisplayName: Astreal Defeat Held Proj
+	// BarinadeHeldProj.DisplayName: Barinade Held Proj
+	// BrimstoneFuryHeldProj.DisplayName: Brimstone Fury Held Proj
+	// BarinauticalHeldProj.DisplayName: Barinautical Held Proj
 }
 
 Configs: {
