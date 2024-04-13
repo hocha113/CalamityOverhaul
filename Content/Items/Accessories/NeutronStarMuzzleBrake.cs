@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Items.Accessories;
-using CalamityMod.Items.Materials;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
@@ -16,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
     {
         public override string Texture => CWRConstant.Item + "MuzzleBrakeIV";
         public override void SetStaticDefaults() {
-            Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 14));
+            Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 6));
             ItemID.Sets.AnimatesAsSoul[Type] = true;
         }
 

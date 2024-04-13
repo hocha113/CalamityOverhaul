@@ -2587,6 +2587,8 @@ Projectiles: {
 	// BarinadeHeldProj.DisplayName: Barinade Held Proj
 	// BrimstoneFuryHeldProj.DisplayName: Brimstone Fury Held Proj
 	// BarinauticalHeldProj.DisplayName: Barinautical Held Proj
+	// DD2BetsyBowHeldProj.DisplayName: D D2 Betsy Bow Held Proj
+	// DD2PhoenixBowHeldProj.DisplayName: D D2 Phoenix Bow Held Proj
 }
 
 Configs: {

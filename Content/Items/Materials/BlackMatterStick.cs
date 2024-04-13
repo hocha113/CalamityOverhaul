@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Materials
 
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 9999;
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 6));
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 18));
             ItemID.Sets.AnimatesAsSoul[Type] = true;
         }
 

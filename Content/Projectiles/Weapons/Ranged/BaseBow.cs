@@ -3,11 +3,13 @@ using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Utilities;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -17,6 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
 
         #region Date
+        protected SlotId sound = SlotId.Invalid;
         /// <summary>
         /// 右手角度值
         /// </summary>
@@ -265,7 +268,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
 
-        public virtual void ArrowDraw() {
+        public void ArrowDraw() {
             int cooltime = 3;
             if (cooltime > Item.useTime / 3) {
                 cooltime = Item.useTime / 3;
@@ -275,12 +278,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 float drawRot = Projectile.rotation + MathHelper.PiOver2;
                 float chordCoefficient = 1 - Projectile.ai[1] / Item.useTime;
                 float lengsOFstValue = chordCoefficient * 16 - 16;
-                Vector2 offsetDrawPos = Projectile.rotation.ToRotationVector2() * lengsOFstValue;
+                Vector2 inprojRot = Projectile.rotation.ToRotationVector2();
+                Vector2 offsetDrawPos = inprojRot * lengsOFstValue;
+                Vector2 norlInRotUnit = inprojRot.GetNormalVector();
                 Vector2 drawOrig = new (arrowValue.Width / 2, arrowValue.Height);
                 Vector2 drawPos = Projectile.Center - Main.screenPosition + offsetDrawPos;
 
-                void drawArrow(float overOffsetRot = 0) => Main.EntitySpriteDraw(arrowValue, drawPos, null, Color.White
-                    , drawRot + overOffsetRot, drawOrig, Projectile.scale, SpriteEffects.FlipVertically);
+                void drawArrow(float overOffsetRot = 0, Vector2 overOffsetPos = default) => Main.EntitySpriteDraw(arrowValue
+                    , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos)
+                    , null, Color.White, drawRot + overOffsetRot, drawOrig, Projectile.scale, SpriteEffects.FlipVertically);
 
                 switch (BowArrowDrawNum) {
                     case 2:
@@ -311,11 +317,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         if (chordCoefficient > 1) {
                             chordCoefficient = 1;
                         }
-                        drawArrow(0.7f * chordCoefficient);
-                        drawArrow(-0.7f * chordCoefficient);
+                        drawArrow(0.7f * chordCoefficient, norlInRotUnit * 0.3f);
+                        drawArrow(-0.7f * chordCoefficient, norlInRotUnit * -0.3f);
                         drawArrow();
-                        drawArrow(0.35f * chordCoefficient);
-                        drawArrow(-0.35f * chordCoefficient);
+                        drawArrow(0.35f * chordCoefficient, norlInRotUnit * 0.2f);
+                        drawArrow(-0.35f * chordCoefficient, norlInRotUnit * -0.2f);
                         break;
                     case 1:
                     default:
