@@ -834,7 +834,7 @@ Items: {
 	}
 
 	AstralBladeEcType: {
-		DisplayName: 星幻刃
+		DisplayName: 幻星刃
 		Tooltip:
 			'''
 			挥舞发射幻星之球，被击中的敌人的剩余血量越高，造成的实际伤害越高
@@ -1811,7 +1811,7 @@ Items: {
 	}
 
 	NeutronStarMuzzleBrake: {
-		DisplayName: 中子素态消音器
+		DisplayName: 中子素态稳定器
 		Tooltip:
 			'''
 			完全抵消后坐力与膛压
@@ -2034,7 +2034,7 @@ Items: {
 		DisplayName: 玄冥寒朔
 		Tooltip:
 			'''
-			发射冰雹和极地幽火，幽火在撞击墙壁后会高速反弹，然后追踪敌人
+			发射冰雹和极地幽火
 			每开火20次进入一次超频爆发，在鼠标处召唤凛冬神性
 			'''
 	}
@@ -2110,7 +2110,11 @@ Items: {
 
 	GoobowEcType: {
 		DisplayName: 凝胶弓
-		Tooltip: 发射两束凝胶
+		Tooltip:
+			'''
+			发射两束凝胶
+			"史莱姆曾经用它来干什么？"
+			'''
 	}
 
 	HoarfrostBowEcType: {
@@ -2119,6 +2123,7 @@ Items: {
 			'''
 			一次性发射两支箭矢
 			将木箭转换为霜雾箭
+			"冷的冻手"
 			'''
 	}
 
@@ -2128,6 +2133,7 @@ Items: {
 			'''
 			一次发射两支箭矢
 			将木箭转化为可以在物块表面滑行的能量束
+			"我们需要明白，这不是永夜弓，事实上，凝胶弓会比这更好用"
 			'''
 	}
 
@@ -2137,6 +2143,7 @@ Items: {
 			'''
 			发射缓慢而锋利的箭矢
 			将木箭转换为沉重的穿透性海贝壳
+			"从水族馆里捞出来的"
 			'''
 	}
 
@@ -2147,11 +2154,6 @@ Items: {
 			将木箭转换为缓慢移动的能够造成辐射减益的爆炸箭矢
 			"含有丰富的有毒物质"
 			'''
-	}
-
-	ClockworkBowEcType: {
-		// DisplayName: Clockwork Bow Ec Type
-		// Tooltip: ""
 	}
 
 	ContinentalGreatbowEcType: {
@@ -2175,6 +2177,7 @@ Items: {
 			'''
 			发射一列紧密的三发箭矢
 			将木箭转化为可以在物块表面滑行的能量束
+			"它不发射激光"
 			'''
 	}
 
@@ -2193,17 +2196,26 @@ Items: {
 			'''
 			一次发射两支箭矢
 			将木箭转化为接触后爆炸成蜜蜂的瘟疫箭
+			"每一只蜜蜂都签署了劳动合同，它们享受三险五金，每周双休"
 			'''
 	}
 
 	TelluricGlareEcType: {
 		DisplayName: 地核之炎
-		Tooltip: 发射四支可穿透物块的爆炸辐射箭
+		Tooltip:
+			'''
+			发射数支可穿透物块的爆炸辐射箭
+			"来自地心!"
+			'''
 	}
 
 	TheBallistaEcType: {
 		DisplayName: 破城巨弓
-		Tooltip: 将木箭转化为能击碎敌人的护甲并且会碎裂为化石碎片的破城巨箭
+		Tooltip:
+			'''
+			将木箭转化为能击碎敌人的护甲并且会碎裂为化石碎片的破城巨箭
+			"事实上，它连门都破不开"
+			'''
 	}
 
 	UltimaEcType: {
@@ -2214,6 +2226,19 @@ Items: {
 			随使用时间的增加，光矢会被替换成镭射死光
 			持续射击时，光矢将会充能形成实体光束
 			90%几率节省弹药
+			'''
+	}
+
+	DrataliornusEcType: {
+		DisplayName: 赤陨霸龙弓
+		Tooltip:
+			'''
+			发射一连串龙焰火球，发射速度随使用时间增加而加快
+			火球会降下陨石雨，留下龙尘造成伤害。
+			在最大速度时会发射额外的火球，触发“火球激流”效果，火球具有追踪能力
+			火球激流发动时，如果受到伤害，攻击会被打断，同时降低飞行时间
+			右键点击发射五连发EX龙火之矢
+			“区区之事，无伤尔”
 			'''
 	}
 }
@@ -2722,6 +2747,8 @@ Projectiles: {
 	// TelluricGlareHeldProj.DisplayName: Telluric Glare Held Proj
 	// TheBallistaHeldProj.DisplayName: The Ballista Held Proj
 	// UltimaHeldProj.DisplayName: Ultima Held Proj
+	// Hit.DisplayName: Hit
+	// DrataliornusHeldProj.DisplayName: Drataliornus Held Proj
 }
 
 Configs: {
@@ -3398,6 +3425,67 @@ TextContent: {
 			'''
 			铁！
 			箭矢击中目标后会给予玩家短暂时间的铁皮增益
+			'''
+		Wap_TungstenBow_Text:
+			'''
+			钨!
+			箭矢击中目标后生成几枚银币
+			'''
+		Wap_TinBow_Text:
+			'''
+			锡!
+			箭矢击中目标后生成几枚铜币
+			'''
+		Wap_TendonBow_Text:
+			'''
+			恶魔会在耳畔低语
+			箭矢击中目标后会给予玩家短暂时间的惊恐增益
+			'''
+		Wap_SilverBow_Text:
+			'''
+			银!
+			箭矢击中目标后生成几枚银币
+			'''
+		Wap_ShadowFlameBow_Text:
+			'''
+			发射暗影焰箭矢
+			"来自一个女巫"
+			'''
+		Wap_PlatinumBow_Text:
+			'''
+			铂!
+			箭矢击中目标后生成几枚金币
+			'''
+		Wap_Marrow_Text:
+			'''
+			骨!
+			箭矢击中目标后抛出几根骨头
+			'''
+		Wap_LeadBow_Text:
+			'''
+			铅!
+			箭矢击中目标后会给予玩家短暂时间的铁皮增益
+			'''
+		Wap_IceBow_Text:
+			'''
+			冰!
+			拥有强劲的三连发
+			箭矢击中目标后产生一片冰雾
+			'''
+		Wap_GoldBow_Text:
+			'''
+			金!
+			箭矢击中目标后生成几枚金币
+			'''
+		Wap_CopperBow_Text:
+			'''
+			铜!
+			箭矢击中目标后生成几枚铜币
+			'''
+		Wap_DD2BetsyBow_Text:
+			'''
+			发射五发可以分裂的并排箭矢
+			对空中的目标造成更高的伤害
 			'''
 	}
 }

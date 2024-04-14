@@ -13,23 +13,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<AstralRepeater>();
         public override int targetCWRItem => ModContent.ItemType<AstralRepeaterEcType>();
         private int fireIndex;
-        private int fireTimeValue;
         public override void SetRangedProperty() {
-            base.SetRangedProperty();
-        }
-
-        public override void PostInOwner() {
-            BowArrowDraw = CanFireMotion = true;
-            FiringDefaultSound = true;
-            if (fireTimeValue > 0) {
-                fireTimeValue--;
-                BowArrowDraw = CanFireMotion = false;
-                FiringDefaultSound = false;
-                onFire = false;
-            }
+            HandFireDistance = 17;
+            ShootSpanTypeValue = SpanTypesEnum.AstralRepeater;
         }
 
         public override void BowShoot() {
+            Item.useTime = 4;
             int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
@@ -37,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
             fireIndex++;
             if (fireIndex >= 3) {
-                fireTimeValue += 15;
+                Item.useTime = 15;
                 fireIndex = 0;
             }
         }

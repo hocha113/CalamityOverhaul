@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.TinBow;
         public override bool IsVanilla => true;
+        public override string TargetToolTipItemName => "Wap_TinBow_Text";
         public override void SetDefaults(Item item) => item.SetHeldProj<TinBowHeldProj>();
     }
 }

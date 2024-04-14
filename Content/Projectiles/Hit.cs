@@ -1,0 +1,18 @@
+﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.Projectiles
+{
+    internal class Hit : ModProjectile
+    {
+        public override string Texture => CWRConstant.Placeholder;
+        public override void SetDefaults() {
+            Projectile.width = Projectile.height = 32;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.timeLeft = 3;
+        }
+        public override bool PreDraw(ref Color lightColor) => false;
+    }
+}

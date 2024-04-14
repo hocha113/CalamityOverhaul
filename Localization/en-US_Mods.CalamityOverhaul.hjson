@@ -1768,7 +1768,7 @@ Items: {
 	}
 
 	NeutronStarMuzzleBrake: {
-		DisplayName: Neutron Star Muzzle Brake
+		DisplayName: Neutron Star Stabilizer
 		Tooltip:
 			'''
 			Completely eliminates recoil and chamber pressure
@@ -1960,30 +1960,49 @@ Items: {
 		DisplayName: Flurrystorm Cannon
 		Tooltip:
 			'''
-			Fire a lot of snowballs, increasing firepower as ammunition decreases
-			There is a probability of entering a state of overload, erupting a large number of snowballs and hail
-			"Denji, let's have a snowball fight."
+			Launching a barrage of snowballs, with firepower increasing as ammunition dwindles.
+			Occasionally entering overload mode, unleashing a storm of snowballs and hail.
+			"This is enough to make you unbeatable in a snowball fight."
 			'''
 	}
 
 	AvalancheM60: {
 		DisplayName: Avalanche M60
-		Tooltip: ""
+		Tooltip:
+			'''
+			Firing a barrage of snowballs,
+			Firepower increasing as ammunition diminishes.
+			Every 20 shots triggers an overdrive surge,
+			Creating a small avalanche.
+			"Denji, let's have a snowball fight."
+			'''
 	}
 
 	CrystalDimming: {
 		DisplayName: Crystal Dimming
-		Tooltip: ""
+		Tooltip:
+			'''
+			Launching frigid hail and snowballs,
+			Ice crystals rebound rapidly upon hitting walls,
+			Then track down enemies.
+			Every 20 shots triggers an overdrive surge,
+			Summoning a massive ice pillar at the mouse cursor.
+			'''
 	}
 
 	DarkFrostSolstice: {
 		DisplayName: Dark Frost Solstice
-		Tooltip: ""
+		Tooltip:
+			'''
+			Firing hail and polar flames,
+			Every 20 shots triggers an overdrive surge,
+			Summoning wintry divinity at the mouse cursor.
+			'''
 	}
 
 	SnowQuay: {
-		DisplayName: Snow Quay
-		Tooltip: ""
+		DisplayName: Snow Viper M16
+		Tooltip: A large-caliber snow cannon, firing ice and snow mixed shells
 	}
 
 	StorageBatteryI: {
@@ -2042,78 +2061,147 @@ Items: {
 	}
 
 	FlarewingBowEcType: {
-		DisplayName: Flarewing Bow Ec Type
-		Tooltip: ""
+		DisplayName: Flarewing Bow
+		Tooltip:
+			'''
+			Fires three arrows at once.
+			Wooden arrows are transformed into obsidian bats that track targets after piercing once.
+			'''
 	}
 
 	GoobowEcType: {
-		DisplayName: Goobow Ec Type
-		Tooltip: ""
+		DisplayName: Goobow
+		Tooltip:
+			'''
+			Fires two beams of gel.
+			"What did the slime use this for?"
+			'''
 	}
 
 	HoarfrostBowEcType: {
-		DisplayName: Hoarfrost Bow Ec Type
-		Tooltip: ""
+		DisplayName: Hoarfrost Bow
+		Tooltip:
+			'''
+			Fires two arrows simultaneously.
+			Converts wooden arrows into frost mist arrows.
+			"Freeze with frosty hands."
+			'''
 	}
 
 	LunarianBowEcType: {
-		DisplayName: Lunarian Bow Ec Type
-		Tooltip: ""
+		DisplayName: Lunarian Bow
+		Tooltip:
+			'''
+			Fires two arrows at once,
+			Transforming wooden arrows into energy beams that can slide along surfaces.
+			"We need to understand, this isn't the Night's Edge. In fact, the Goobow might be even better than this."
+			'''
 	}
 
 	ShellshooterEcType: {
-		DisplayName: Shellshooter Ec Type
-		Tooltip: ""
+		DisplayName: Shellshooter
+		Tooltip:
+			'''
+			Fires slow but sharp arrows,
+			Transforming wooden arrows into heavy, penetrating seashells.
+			"Freshly scooped from the aquarium."
+			'''
 	}
 
 	ToxibowEcType: {
-		DisplayName: Toxibow Ec Type
-		Tooltip: ""
-	}
-
-	ClockworkBowEcType: {
-		DisplayName: Clockwork Bow Ec Type
-		Tooltip: ""
+		DisplayName: Toxibow
+		Tooltip:
+			'''
+			Transforms wooden arrows into slow-moving explosive arrows that cause radiation debuffs.
+			"Rich in toxic substances."
+			'''
 	}
 
 	ContinentalGreatbowEcType: {
-		DisplayName: Continental Greatbow Ec Type
-		Tooltip: ""
+		DisplayName: Continental Greatbow
+		Tooltip:
+			'''
+			Wooden arrows ignite upon impact.
+			Fires three arrows simultaneously.
+			Additionally fires two hellfire or ichor arrows.
+			'''
 	}
 
 	CorrodedCaustibowEcType: {
-		DisplayName: Corroded Caustibow Ec Type
-		Tooltip: ""
+		DisplayName: Corroded Caustibow
+		Tooltip: Transforms wooden arrows into slow but powerful venom arrows that leave behind a radiation aura.
 	}
 
 	CosmicBolterEcType: {
-		DisplayName: Cosmic Bolter Ec Type
-		Tooltip: ""
+		DisplayName: Cosmic Bolter
+		Tooltip:
+			'''
+			Fires a tight cluster of three arrows.
+			Converts wooden arrows into energy beams that can slide along surfaces.
+			"It doesn't emit lasers."
+			'''
 	}
 
 	DarkechoGreatbowEcType: {
-		DisplayName: Darkecho Greatbow Ec Type
-		Tooltip: ""
+		DisplayName: Darkecho Greatbow
+		Tooltip:
+			'''
+			Fires two arrows at once.
+			Also shoots an additional crystal dart.
+			'''
 	}
 
 	MalevolenceEcType: {
-		DisplayName: Malevolence Ec Type
-		Tooltip: ""
+		DisplayName: Malevolence
+		Tooltip:
+			'''
+			Fires two arrows simultaneously.
+			Converts wooden arrows into plague arrows that explode into bees upon impact.
+			"Each bee has signed a labor contract, enjoying social insurance benefits and weekends off."
+			'''
 	}
 
 	TelluricGlareEcType: {
-		DisplayName: Telluric Glare Ec Type
-		Tooltip: ""
+		DisplayName: Telluric Glare
+		Tooltip:
+			'''
+			Fires several penetrating explosive radiation arrows.
+			"From the depths of the earth!"
+			'''
 	}
 
 	TheBallistaEcType: {
-		DisplayName: The Ballista Ec Type
-		Tooltip: ""
+		DisplayName: The Ballista
+		Tooltip:
+			'''
+			Transforms wooden arrows into massive siege arrows that shatter 
+			enemy armor and break into fossil fragments upon impact.
+			"In fact, it can't even break down doors."
+			'''
 	}
 
 	UltimaEcType: {
-		DisplayName: Ultima Ec Type
-		Tooltip: ""
+		DisplayName: Ultima
+		Tooltip:
+			'''
+			Fires continuous plasma beams.
+			As usage time increases, the beams are replaced by laser death rays.
+			Continuously firing charges the beams into solid energy beams.
+			90% chance to conserve ammunition.
+			'''
+	}
+
+	DrataliornusEcType: {
+		DisplayName: Drataliornus
+		Tooltip:
+			'''
+			Fires a series of dragonflame fireballs, with firing speed increasing over time.
+			The fireballs summon a meteor shower, leaving dragon dust that inflicts damage. At maximum speed, 
+			extra fireballs are launched, triggering the "Fireball Cascade" effect, where fireballs have homing capability.
+			During Fireball Cascade, taking damage interrupts attacks and reduces flight time.
+			Right-clicking fires a burst of five EX Dragonfire arrows.
+			"Trivial matters, no hit."
+			'''
 	}
 }
 
@@ -2621,6 +2709,8 @@ Projectiles: {
 	TelluricGlareHeldProj.DisplayName: Telluric Glare Held Proj
 	TheBallistaHeldProj.DisplayName: The Ballista Held Proj
 	UltimaHeldProj.DisplayName: Ultima Held Proj
+	Hit.DisplayName: Hit
+	DrataliornusHeldProj.DisplayName: Drataliornus Held Proj
 }
 
 Configs: {
@@ -3043,7 +3133,7 @@ TextContent: {
 		MouseTextContactPanel_TextContent: Left Ctrl on the item icon switch to synthesize the recipe
 		CWRItem_IsInfiniteItem_TextContent: Only the ultimate combination can stabilize it, otherwise it will hit the moment that triggers the dreaded collapse of the black hole
 		CWRItem_IsRemakeItem_TextContent: -overhauls-
-		OnEnterWorld_TextContent: weapon reset has been loaded
+		OnEnterWorld_TextContent: " weapon reset has been loaded"
 		CaseEjection_TextContent: Need to change ammunition
 		SupertableUI_Text1: close
 		SupertableUI_Text2: View recipe
@@ -3257,7 +3347,7 @@ TextContent: {
 		SupertableUI_Text5: Open display monitor
 		AmmoBox_Text: The deployment upper limit has been reached
 		AmmoBox_Text2: Being deployed
-		AmmoBox_Text3: Deployed
+		AmmoBox_Text3: " Deployed"
 		Wap_BubbleGun_Text:
 			'''
 			Exploding ocean bubbles
@@ -3298,8 +3388,77 @@ TextContent: {
 			"It has nothing to do with storms, it has nothing to do with angels."
 			'''
 		Wap_CandyCornRifle_Text: Fire the gummy corn, because gummy corn is cool!
-		Wap_WoodenBow_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_WoodenBow_Text
-		Wap_DemonBow_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_DemonBow_Text
-		Wap_IronBow_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_IronBow_Text
+		Wap_WoodenBow_Text:
+			'''
+			The journey of the ranger is about to begin.
+			Arrows transform into acorns upon hitting targets.
+			'''
+		Wap_DemonBow_Text: Demonite? Seems like the least efficient use of it.
+		Wap_IronBow_Text:
+			'''
+			Iron!
+			Arrows grant the player a brief Ironskin buff upon hitting a target.
+			'''
+		Wap_TungstenBow_Text:
+			'''
+			Tungsten!
+			Arrows generate several silver coins upon hitting a target.
+			'''
+		Wap_TinBow_Text:
+			'''
+			Tin!
+			Arrows generate several copper coins upon hitting a target.
+			'''
+		Wap_TendonBow_Text:
+			'''
+			Demons whisper in your ears.
+			Arrows grant the player a brief Frightened buff upon hitting a target.
+			'''
+		Wap_SilverBow_Text:
+			'''
+			Silver!
+			Arrows generate several silver coins upon hitting a target.
+			'''
+		Wap_ShadowFlameBow_Text:
+			'''
+			Fires shadowflame arrows.
+			"From a witch's hands."
+			'''
+		Wap_PlatinumBow_Text:
+			'''
+			Platinum!
+			Arrows generate several gold coins upon hitting a target.
+			'''
+		Wap_Marrow_Text:
+			'''
+			Marrow!
+			Arrows throw out several bones upon hitting a target.
+			'''
+		Wap_LeadBow_Text:
+			'''
+			Lead!
+			Arrows grant the player a brief Ironskin buff upon hitting a target.
+			'''
+		Wap_IceBow_Text:
+			'''
+			Ice!
+			Has a strong triple shot.
+			Arrows generate an ice mist upon hitting a target.
+			'''
+		Wap_GoldBow_Text:
+			'''
+			Gold!
+			Arrows generate several gold coins upon hitting a target.
+			'''
+		Wap_CopperBow_Text:
+			'''
+			Copper!
+			Arrows generate several copper coins upon hitting a target.
+			'''
+		Wap_DD2BetsyBow_Text:
+			'''
+			Fires five horizontally splitting arrows.
+			Deals increased damage to airborne targets.
+			'''
 	}
 }

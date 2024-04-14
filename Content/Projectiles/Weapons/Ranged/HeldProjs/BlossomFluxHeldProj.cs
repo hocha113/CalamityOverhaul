@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.BlossomFlux>();
         public override int targetCWRItem => ModContent.ItemType<BlossomFluxEcType>();
         int chargeIndex;
-        public void SetCharge() => chargeIndex = 0;
         public override void SetRangedProperty() {
             CanRightClick = true;
             HandRotSpeedSengs = 0.6f;
@@ -25,6 +24,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             base.HandEvent();
             if (!onFire && !onFireR) {
+                chargeIndex = 0;
+            }
+            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
                 chargeIndex = 0;
             }
         }

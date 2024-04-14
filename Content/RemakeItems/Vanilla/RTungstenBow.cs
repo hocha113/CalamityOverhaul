@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.TungstenBow;
         public override bool IsVanilla => true;
+        public override string TargetToolTipItemName => "Wap_TungstenBow_Text";
         public override void SetDefaults(Item item) => item.SetHeldProj<TungstenBowHeldProj>();
     }
 }

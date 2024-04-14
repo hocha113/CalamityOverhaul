@@ -13,25 +13,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ArterialAssault";
         public override int targetCayItem => ModContent.ItemType<ArterialAssault>();
         public override int targetCWRItem => ModContent.ItemType<ArterialAssaultEcType>();
-
         private int fireIndex;
-        private int fireTimeValue;
-        public override void SetRangedProperty() {
-            FiringDefaultSound = false;
-        }
-
-        public override void PostInOwner() {
-            BowArrowDraw = CanFireMotion = true;
-            FiringDefaultSound = true;
-            if (fireTimeValue > 0) {
-                fireTimeValue--;
-                BowArrowDraw = CanFireMotion = false;
-                FiringDefaultSound = false;
-                onFire = false;
-            }
-        }
-
         public override void BowShoot() {
+            Item.useTime = 3;
             _ = Owner.RotatedRelativePoint(Owner.GetPlayerStabilityCenter(), true);
             Vector2 realPlayerPos = new Vector2(Owner.position.X + Owner.width * 0.5f + -(float)Owner.direction + (Main.mouseX + Main.screenPosition.X - Owner.position.X), Owner.MountedCenter.Y - 600f);
             realPlayerPos.X = (realPlayerPos.X + Owner.Center.X) / 2f;
@@ -45,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
             fireIndex++;
             if (fireIndex > 6) {
-                fireTimeValue += 30;
+                Item.useTime = 30;
                 fireIndex = 0;
             }
         }

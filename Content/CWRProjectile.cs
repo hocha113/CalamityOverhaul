@@ -8,6 +8,7 @@ using CalamityMod.Projectiles.Magic;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles.Summon;
 using CalamityMod.Projectiles.Turret;
+using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
@@ -24,6 +25,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.PlayerDrawLayer;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
 namespace CalamityOverhaul.Content
@@ -62,6 +64,7 @@ namespace CalamityOverhaul.Content
         SilverBow,
         GoldBow,
         ShadowFlameBow,
+        AstralRepeater
     }
 
     public struct HitAttributeStruct
@@ -372,9 +375,11 @@ namespace CalamityOverhaul.Content
                     player.AddBuff(BuffID.Ironskin, 60);
                     break;
                 case SpanTypesEnum.WoodenBow:
-                    Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -13).RotatedByRandom(0.2f)
+                    if (projectile.numHits == 0) {
+                        Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -13).RotatedByRandom(0.2f)
                         , ModContent.ProjectileType<SquirrelSquireAcorn>(), projectile.damage / 3, projectile.knockBack, projectile.owner);
-                    proj.DamageType = DamageClass.Ranged;
+                        proj.DamageType = DamageClass.Ranged;
+                    }
                     break;
                 case SpanTypesEnum.DemonBow:
                     Projectile proj2 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, CWRUtils.randVr(0.1f)
@@ -445,6 +450,33 @@ namespace CalamityOverhaul.Content
                             proj6.penetrate = 1;
                             proj6.extraUpdates = 1;
                             proj6.CWR().GetHitAttribute.NeverCrit = true;
+                        }
+                    }
+                    break;
+                case SpanTypesEnum.AstralRepeater:
+                    if (projectile.numHits == 0) {
+                        for (int i = 0; i < 2; i++) {
+                            Vector2 spanPos = projectile.Center + CWRUtils.randVr(860, 990);
+                            Vector2 vr = spanPos.To(target.Center).UnitVector() * 20;
+                            Projectile proj7 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
+                            , ModContent.ProjectileType<AstralStar>(), projectile.damage / 4, projectile.knockBack, projectile.owner, 1);
+                            proj7.DamageType = DamageClass.Ranged;
+                            proj7.extraUpdates = 1;
+                            proj7.CWR().GetHitAttribute.NeverCrit = true;
+                        }
+                        bool blue = Main.rand.NextBool();
+                        float multiplier = 1.9f;
+                        float angleStart = Main.rand.NextFloat(0f, MathHelper.TwoPi);
+                        float var = 0.05f + (2f - multiplier);
+                        int dust1 = ModContent.DustType<AstralBlue>();
+                        int dust2 = ModContent.DustType<AstralOrange>();
+                        for (float angle = 0f; angle < MathHelper.TwoPi; angle += var) {
+                            blue = !blue;
+                            Vector2 velocity = angle.ToRotationVector2() * (2f + (float)(Math.Sin(angleStart + angle * 3f) + 1) * 2.5f) * Main.rand.NextFloat(0.95f, 1.05f);
+                            Dust d = Dust.NewDustPerfect(target.Center, blue ? dust1 : dust2, velocity);
+                            d.customData = 0.025f;
+                            d.scale = multiplier - 0.75f;
+                            d.noLight = false;
                         }
                     }
                     break;

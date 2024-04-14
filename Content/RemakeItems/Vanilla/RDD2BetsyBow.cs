@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.DD2BetsyBow;
         public override bool IsVanilla => true;
+        public override string TargetToolTipItemName => "Wap_DD2BetsyBow_Text";
         public override void SetDefaults(Item item) => item.SetHeldProj<DD2BetsyBowHeldProj>();
     }
 }

@@ -39,12 +39,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
             item.shootSpeed = 1f;
             item.value = CalamityGlobalItem.Rarity13BuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
-        }
-
-        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<FatesRevealHeldProj>()] <= 0)
-                Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<FatesRevealHeldProj>(), damage, knockback, player.whoAmI);
-            return false;
+            item.SetHeldProj<FatesRevealHeldProj>();
         }
     }
 }

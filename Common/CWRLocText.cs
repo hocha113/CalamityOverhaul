@@ -135,6 +135,18 @@ namespace CalamityOverhaul.Common
         public LocalizedText Wap_WoodenBow_Text { get; private set; }
         public LocalizedText Wap_DemonBow_Text { get; private set; }
         public LocalizedText Wap_IronBow_Text { get; private set; }
+        public LocalizedText Wap_TungstenBow_Text { get; private set; }
+        public LocalizedText Wap_TinBow_Text { get; private set; }
+        public LocalizedText Wap_TendonBow_Text { get; private set; }
+        public LocalizedText Wap_SilverBow_Text { get; private set; }
+        public LocalizedText Wap_ShadowFlameBow_Text { get; private set; }
+        public LocalizedText Wap_PlatinumBow_Text { get; private set; }
+        public LocalizedText Wap_Marrow_Text { get; private set; }
+        public LocalizedText Wap_LeadBow_Text { get; private set; }
+        public LocalizedText Wap_IceBow_Text { get; private set; }
+        public LocalizedText Wap_GoldBow_Text { get; private set; }
+        public LocalizedText Wap_CopperBow_Text { get; private set; }
+        public LocalizedText Wap_DD2BetsyBow_Text { get; private set; }
         #endregion
         public override void Load() {
             //使用反射进行属性的自动加载

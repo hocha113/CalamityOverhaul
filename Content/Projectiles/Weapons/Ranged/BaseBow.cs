@@ -85,6 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool BowArrowDraw = true;
         public int BowArrowDrawNum = 1;
         public bool CanFire => Owner.PressKey() || (Owner.PressKey(false) && CanRightClick && !onFire);
+        protected int DrawArrowMode = -16;
         public Vector2 FireOffsetPos = Vector2.Zero;
         public Vector2 FireOffsetVector = Vector2.Zero;
         public SpanTypesEnum ShootSpanTypeValue = SpanTypesEnum.None;
@@ -276,7 +277,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Texture2D arrowValue = TextureAssets.Item[Owner.GetShootState().UseAmmoItemType].Value;
                 float drawRot = Projectile.rotation + MathHelper.PiOver2;
                 float chordCoefficient = 1 - Projectile.ai[1] / Item.useTime;
-                float lengsOFstValue = chordCoefficient * 16 - 16;
+                float lengsOFstValue = chordCoefficient * 16 + DrawArrowMode;
                 Vector2 inprojRot = Projectile.rotation.ToRotationVector2();
                 Vector2 offsetDrawPos = inprojRot * lengsOFstValue;
                 Vector2 norlInRotUnit = inprojRot.GetNormalVector();

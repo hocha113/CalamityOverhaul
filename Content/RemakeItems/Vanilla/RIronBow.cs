@@ -5,6 +5,9 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
+    /// <summary>
+    /// 铁弓
+    /// </summary>
     internal class RIronBow : BaseRItem
     {
         public override int TargetID => ItemID.IronBow;

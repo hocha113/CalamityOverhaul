@@ -18,11 +18,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             CanRightClick = true;
             HandFireDistance = 20;
+            BowArrowDrawNum = 5;
         }
 
         public override void PostInOwner() {
             CanFireMotion = true;
             FiringDefaultSound = true;
+            BowArrowDraw = true;
             if (onFireR) {
                 FiringDefaultSound = CanFireMotion = false;
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
@@ -37,6 +39,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     sound.Stop();
                     accumulator = SlotId.Invalid;
                 }
+            }
+            else {
+                BowArrowDraw = false;
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -12,12 +13,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.DD2BetsyBow;
         public override int targetCWRItem => ItemID.DD2BetsyBow;
         public override void SetRangedProperty() {
-            base.SetRangedProperty();
+            BowArrowDrawNum = 5;
         }
 
         public override void BowShoot() {
             AmmoTypes = ProjectileID.DD2BetsyArrow;
-            base.BowShoot();
+            for (int i = 0; i < 5; i++) {
+                FireOffsetVector = ShootVelocity.RotatedBy((-2 + i) * 0.15f) * 0.2f;
+                base.BowShoot();
+            }
         }
     }
 }

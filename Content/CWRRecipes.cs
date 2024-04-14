@@ -326,6 +326,14 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileType<TransmutationOfMatter>())
                     .Register();
             }
+            //添加雪球炮的合成
+            {
+                Recipe.Create(ItemID.SnowballCannon)
+                    .AddIngredient(ItemID.IllegalGunParts, 1)
+                    .AddIngredient(ItemID.SnowBlock, 30)
+                    .AddIngredient(ItemID.IceBlock, 50)
+                    .Register();
+            }
             
             {
                 for (int i = 0; i < Recipe.numRecipes; i++) {
