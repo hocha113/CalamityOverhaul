@@ -2040,6 +2040,81 @@ Items: {
 		DisplayName: Brimstone Fury
 		Tooltip: Convert the wood arrow into three sulfur-fire rays
 	}
+
+	FlarewingBowEcType: {
+		DisplayName: Flarewing Bow Ec Type
+		Tooltip: ""
+	}
+
+	GoobowEcType: {
+		DisplayName: Goobow Ec Type
+		Tooltip: ""
+	}
+
+	HoarfrostBowEcType: {
+		DisplayName: Hoarfrost Bow Ec Type
+		Tooltip: ""
+	}
+
+	LunarianBowEcType: {
+		DisplayName: Lunarian Bow Ec Type
+		Tooltip: ""
+	}
+
+	ShellshooterEcType: {
+		DisplayName: Shellshooter Ec Type
+		Tooltip: ""
+	}
+
+	ToxibowEcType: {
+		DisplayName: Toxibow Ec Type
+		Tooltip: ""
+	}
+
+	ClockworkBowEcType: {
+		DisplayName: Clockwork Bow Ec Type
+		Tooltip: ""
+	}
+
+	ContinentalGreatbowEcType: {
+		DisplayName: Continental Greatbow Ec Type
+		Tooltip: ""
+	}
+
+	CorrodedCaustibowEcType: {
+		DisplayName: Corroded Caustibow Ec Type
+		Tooltip: ""
+	}
+
+	CosmicBolterEcType: {
+		DisplayName: Cosmic Bolter Ec Type
+		Tooltip: ""
+	}
+
+	DarkechoGreatbowEcType: {
+		DisplayName: Darkecho Greatbow Ec Type
+		Tooltip: ""
+	}
+
+	MalevolenceEcType: {
+		DisplayName: Malevolence Ec Type
+		Tooltip: ""
+	}
+
+	TelluricGlareEcType: {
+		DisplayName: Telluric Glare Ec Type
+		Tooltip: ""
+	}
+
+	TheBallistaEcType: {
+		DisplayName: The Ballista Ec Type
+		Tooltip: ""
+	}
+
+	UltimaEcType: {
+		DisplayName: Ultima Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2531,6 +2606,21 @@ Projectiles: {
 	BarinauticalHeldProj.DisplayName: Barinautical Held Proj
 	DD2BetsyBowHeldProj.DisplayName: D D2 Betsy Bow Held Proj
 	DD2PhoenixBowHeldProj.DisplayName: D D2 Phoenix Bow Held Proj
+	FlarewingBowHeldProj.DisplayName: Flarewing Bow Held Proj
+	GoobowHeldProj.DisplayName: Goobow Held Proj
+	HoarfrostBowHeldProj.DisplayName: Hoarfrost Bow Held Proj
+	LunarianBowHeldProj.DisplayName: Lunarian Bow Held Proj
+	ShellshooterHeldProj.DisplayName: Shellshooter Held Proj
+	ToxibowHeldProj.DisplayName: Toxibow Held Proj
+	ClockworkBowHeldProj.DisplayName: Clockwork Bow Held Proj
+	ContinentalGreatbowHeldProj.DisplayName: Continental Greatbow Held Proj
+	CorrodedCaustibowHeldProj.DisplayName: Corroded Caustibow Held Proj
+	CosmicBolterHeldProj.DisplayName: Cosmic Bolter Held Proj
+	DarkechoGreatbowHeldProj.DisplayName: Darkecho Greatbow Held Proj
+	MalevolenceHeldProj.DisplayName: Malevolence Held Proj
+	TelluricGlareHeldProj.DisplayName: Telluric Glare Held Proj
+	TheBallistaHeldProj.DisplayName: The Ballista Held Proj
+	UltimaHeldProj.DisplayName: Ultima Held Proj
 }
 
 Configs: {

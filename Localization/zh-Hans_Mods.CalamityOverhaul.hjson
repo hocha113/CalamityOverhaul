@@ -2098,6 +2098,124 @@ Items: {
 		DisplayName: 硫火之怒
 		Tooltip: 将木箭转化为三束硫火射线
 	}
+
+	FlarewingBowEcType: {
+		DisplayName: 黑翼蝙蝠弓
+		Tooltip:
+			'''
+			一次发射三支箭
+			木箭会被转化为穿透一次后追踪的黑曜石蝙蝠
+			'''
+	}
+
+	GoobowEcType: {
+		DisplayName: 凝胶弓
+		Tooltip: 发射两束凝胶
+	}
+
+	HoarfrostBowEcType: {
+		DisplayName: 白霜弓
+		Tooltip:
+			'''
+			一次性发射两支箭矢
+			将木箭转换为霜雾箭
+			'''
+	}
+
+	LunarianBowEcType: {
+		DisplayName: 月光弓
+		Tooltip:
+			'''
+			一次发射两支箭矢
+			将木箭转化为可以在物块表面滑行的能量束
+			'''
+	}
+
+	ShellshooterEcType: {
+		DisplayName: 螺壳重弓
+		Tooltip:
+			'''
+			发射缓慢而锋利的箭矢
+			将木箭转换为沉重的穿透性海贝壳
+			'''
+	}
+
+	ToxibowEcType: {
+		DisplayName: 剧毒烈弓
+		Tooltip:
+			'''
+			将木箭转换为缓慢移动的能够造成辐射减益的爆炸箭矢
+			"含有丰富的有毒物质"
+			'''
+	}
+
+	ClockworkBowEcType: {
+		// DisplayName: Clockwork Bow Ec Type
+		// Tooltip: ""
+	}
+
+	ContinentalGreatbowEcType: {
+		DisplayName: 洲陆巨弓
+		Tooltip:
+			'''
+			木箭会被火焰点燃
+			一次发射三支箭矢
+			额外发射两支狱炎或灵液箭
+			'''
+	}
+
+	CorrodedCaustibowEcType: {
+		DisplayName: 酸腐弓
+		Tooltip: 将木箭转换为缓慢但强力的毒箭，毒箭会留下辐射光环
+	}
+
+	CosmicBolterEcType: {
+		DisplayName: 宇束弓
+		Tooltip:
+			'''
+			发射一列紧密的三发箭矢
+			将木箭转化为可以在物块表面滑行的能量束
+			'''
+	}
+
+	DarkechoGreatbowEcType: {
+		DisplayName: 暗之回响
+		Tooltip:
+			'''
+			一次发射两支箭
+			发射一个额外的水晶飞镖
+			'''
+	}
+
+	MalevolenceEcType: {
+		DisplayName: 蜂毒
+		Tooltip:
+			'''
+			一次发射两支箭矢
+			将木箭转化为接触后爆炸成蜜蜂的瘟疫箭
+			'''
+	}
+
+	TelluricGlareEcType: {
+		DisplayName: 地核之炎
+		Tooltip: 发射四支可穿透物块的爆炸辐射箭
+	}
+
+	TheBallistaEcType: {
+		DisplayName: 破城巨弓
+		Tooltip: 将木箭转化为能击碎敌人的护甲并且会碎裂为化石碎片的破城巨箭
+	}
+
+	UltimaEcType: {
+		DisplayName: 创世纪
+		Tooltip:
+			'''
+			射出连续的电浆光矢
+			随使用时间的增加，光矢会被替换成镭射死光
+			持续射击时，光矢将会充能形成实体光束
+			90%几率节省弹药
+			'''
+	}
 }
 
 Projectiles: {
@@ -2589,6 +2707,21 @@ Projectiles: {
 	// BarinauticalHeldProj.DisplayName: Barinautical Held Proj
 	// DD2BetsyBowHeldProj.DisplayName: D D2 Betsy Bow Held Proj
 	// DD2PhoenixBowHeldProj.DisplayName: D D2 Phoenix Bow Held Proj
+	// FlarewingBowHeldProj.DisplayName: Flarewing Bow Held Proj
+	// GoobowHeldProj.DisplayName: Goobow Held Proj
+	// HoarfrostBowHeldProj.DisplayName: Hoarfrost Bow Held Proj
+	// LunarianBowHeldProj.DisplayName: Lunarian Bow Held Proj
+	// ShellshooterHeldProj.DisplayName: Shellshooter Held Proj
+	// ToxibowHeldProj.DisplayName: Toxibow Held Proj
+	// ClockworkBowHeldProj.DisplayName: Clockwork Bow Held Proj
+	// ContinentalGreatbowHeldProj.DisplayName: Continental Greatbow Held Proj
+	// CorrodedCaustibowHeldProj.DisplayName: Corroded Caustibow Held Proj
+	// CosmicBolterHeldProj.DisplayName: Cosmic Bolter Held Proj
+	// DarkechoGreatbowHeldProj.DisplayName: Darkecho Greatbow Held Proj
+	// MalevolenceHeldProj.DisplayName: Malevolence Held Proj
+	// TelluricGlareHeldProj.DisplayName: Telluric Glare Held Proj
+	// TheBallistaHeldProj.DisplayName: The Ballista Held Proj
+	// UltimaHeldProj.DisplayName: Ultima Held Proj
 }
 
 Configs: {

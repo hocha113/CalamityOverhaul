@@ -23,8 +23,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void PostInOwner() {
-            CanFireMotion = true;
-            FiringDefaultSound = true;
+            BowArrowDraw = true;
+            CanFireMotion = FiringDefaultSound = true;
+
             if (onFireR) {
                 FiringDefaultSound = CanFireMotion = false;
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
@@ -39,6 +40,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                     sound.Stop();
                     accumulator = SlotId.Invalid;
                 }
+            }
+            else {
+                BowArrowDraw = false;
             }
         }
 

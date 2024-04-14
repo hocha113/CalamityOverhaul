@@ -1,16 +1,11 @@
 ﻿using CalamityMod;
-using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Utilities;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -19,7 +14,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
 
         #region Date
-        protected SlotId sound = SlotId.Invalid;
         /// <summary>
         /// 右手角度值
         /// </summary>
@@ -91,6 +85,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool BowArrowDraw = true;
         public int BowArrowDrawNum = 1;
         public bool CanFire => Owner.PressKey() || (Owner.PressKey(false) && CanRightClick && !onFire);
+        public Vector2 FireOffsetPos = Vector2.Zero;
+        public Vector2 FireOffsetVector = Vector2.Zero;
         public SpanTypesEnum ShootSpanTypeValue = SpanTypesEnum.None;
         /// <summary>
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
@@ -190,13 +186,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public virtual void BowShoot() {
-            int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, Projectile.Center + FireOffsetPos, ShootVelocity + FireOffsetVector
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
         }
 
         public virtual void BowShootR() {
-            int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, Projectile.Center + FireOffsetPos, ShootVelocity + FireOffsetVector
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
         }
@@ -236,6 +234,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 }
                 UpdateConsumeAmmo();
+                FireOffsetVector = FireOffsetPos = Vector2.Zero;
                 Projectile.ai[1] = 0;
                 onFire = false;
             }
@@ -298,9 +297,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         if (chordCoefficient > 1) {
                             chordCoefficient = 1;
                         }
-                        drawArrow(0.45f * chordCoefficient);
+                        drawArrow(0.45f * chordCoefficient, norlInRotUnit * -1f);
                         drawArrow();
-                        drawArrow(-0.45f * chordCoefficient);
+                        drawArrow(-0.45f * chordCoefficient, norlInRotUnit * 1f);
                         break;
                     case 4:
                         chordCoefficient += 0.3f;

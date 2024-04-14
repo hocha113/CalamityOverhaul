@@ -5,6 +5,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
+    /// <summary>
+    /// 海啸
+    /// </summary>
     internal class RTsunami : BaseRItem
     {
         public override int TargetID => ItemID.Tsunami;
