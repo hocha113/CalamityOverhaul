@@ -399,7 +399,7 @@ namespace CalamityOverhaul.Content
                     break;
                 case SpanTypesEnum.IceBow:
                     Projectile proj4 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -5).RotatedByRandom(0.2f)
-                        , ModContent.ProjectileType<IceExplosion>(), projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
+                        , ModContent.ProjectileType<IceExplosionFriend>(), projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
                     proj4.scale += Main.rand.NextFloat(-0.3f, 0);
                     projectile.Kill();
                     break;
@@ -486,6 +486,22 @@ namespace CalamityOverhaul.Content
                 ExoVortexOnHitDeBug(target);
             }
 
+            if (projectile.type == ProjectileID.SnowBallFriendly && GetHitAttribute.SuperAttack) {
+                if (projectile.numHits == 0) {
+                    for (int i = 0; i < 3; i++) {
+                        Vector2 spanPos = projectile.Center + CWRUtils.randVr(1160, 1290);
+                        Vector2 vr = spanPos.To(target.Center).UnitVector() * 15;
+                        Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
+                        , ProjectileID.FrostBeam, projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
+                        proj.penetrate = -1;
+                        proj.extraUpdates = 6;
+                        proj.hostile = false;
+                        proj.friendly = true;
+                        proj.timeLeft /= 2;
+                    }
+                }
+            }
+
             if (projectile.DamageType == DamageClass.Summon && target.CWR().WhipHitNum > 0) {
                 CWRNpc npc = target.CWR();
                 WhipHitTypeEnum wTypes = (WhipHitTypeEnum)npc.WhipHitType;
@@ -501,10 +517,12 @@ namespace CalamityOverhaul.Content
 
                             for (int i = 0; i < 3; i++) {
                                 Vector2 vr = ((MathHelper.TwoPi / 3 * i) + randRot).ToRotationVector2() * 10;
-                                int proj = Projectile.NewProjectile(CWRUtils.parent(projectile), target.Center, vr
-                                    , ModContent.ProjectileType<GodKillers>(), projectile.damage / 2, 0, projectile.owner);
+                                int proj = Projectile.NewProjectile(projectile.GetSource_FromThis(), target.Center, vr
+                                    , ModContent.ProjectileType<GodKillers>(), projectile.damage / 3, 0, projectile.owner, 0, 0, Main.rand.Next(22));
                                 Main.projectile[proj].timeLeft = 65;
                                 Main.projectile[proj].penetrate = -1;
+                                Main.projectile[proj].usesLocalNPCImmunity = true;
+                                Main.projectile[proj].localNPCHitCooldown = -1;
                             }
                         }
                         break;

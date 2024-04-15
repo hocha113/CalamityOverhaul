@@ -34,6 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
                 chargeIndex = 0;
+                Owner.wingTime = 0;
             }
         }
 

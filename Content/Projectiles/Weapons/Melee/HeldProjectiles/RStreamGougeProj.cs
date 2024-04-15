@@ -146,14 +146,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Vector2 spanPos = (tomousRot + MathHelper.ToRadians(120 + Main.rand.Next(6) * 20)).ToRotationVector2() * 280 + Owner.Center;
                     Vector2 vr = spanPos.To(target.Center).UnitVector() * 16;
                     int proj = Projectile.NewProjectile(
-                            Projectile.parent(),
-                            spanPos,
-                            vr,
+                            Projectile.parent(), spanPos, vr,
                             ModContent.ProjectileType<GodKillers>(),
-                            Projectile.damage / 2,
-                            0,
-                            Projectile.owner
-                            );
+                            Projectile.damage / 2, 0,
+                            Projectile.owner);
                     Main.projectile[proj].timeLeft = 90;
                 }
             }

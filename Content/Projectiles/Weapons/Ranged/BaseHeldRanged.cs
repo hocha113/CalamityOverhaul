@@ -93,15 +93,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         protected void UpdateShootState() {
-            HaveAmmo = Owner.PickAmmo(Item, out AmmoTypes, out ScaleFactor, out WeaponDamage, out WeaponKnockback, out UseAmmoItemType, true);
             if (Item.useAmmo == AmmoID.None) {
                 WeaponDamage = Owner.GetWeaponDamage(Item);
                 WeaponKnockback = Item.knockBack;
                 AmmoTypes = Item.shoot;
+                ScaleFactor = Item.shootSpeed;
+                UseAmmoItemType = ItemID.None;
+                HaveAmmo = true;
                 if (AmmoTypes == 0 || AmmoTypes == 10) {
                     AmmoTypes = ProjectileID.Bullet;
                 }
+                return;
             }
+            HaveAmmo = Owner.PickAmmo(Item, out AmmoTypes, out ScaleFactor, out WeaponDamage, out WeaponKnockback, out UseAmmoItemType, true);
         }
 
         public sealed override void SetDefaults() {

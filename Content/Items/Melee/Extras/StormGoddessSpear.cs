@@ -21,7 +21,11 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
     {
         public override string Texture => CWRConstant.Item_Melee + "StormGoddessSpear";
         public LocalizedText Legend { get; private set; }
-        public override void SetStaticDefaults() => Legend = this.GetLocalization(nameof(Legend));
+        public override void SetStaticDefaults() {
+            Legend = this.GetLocalization(nameof(Legend));
+            ItemID.Sets.AnimatesAsSoul[Type] = true;
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 5));
+        }
         public override void SetDefaults() {
             Item.width = 100;
             Item.height = 100;

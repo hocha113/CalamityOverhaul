@@ -674,8 +674,7 @@ Items: {
 			如今的风暴女神成为了泰拉深渊的象征，她的铠甲上嵌入着如夜空一般的黑曜石，眼中闪烁着的堕落之辉，混沌涌动，憎恶的情绪投射向泰拉大陆。
 			她的剑锋犹如黑夜中的雷霆，带有毁灭之力的电弧在其周围舞动。她不再为正义而战，而是沦为一道摧毁一切的黑暗势力。
 			尽管她依旧保留着昔日的武技和战斗技巧，但此刻她已是泰拉的公敌，遭受着无尽的唾弃。
-			风暴女神残酷地踏上孤寂而堕落的征途，在黑暗中徘徊。她的存在本身便是对泰拉昔日荣光的嘲讽，她成为一场吞噬一切希望的风暴。
-			如同堕入深渊的耀星，她在无边的黑暗中绽放，携带着宇宙的哀伤和毁灭。
+			风暴女神残酷地踏上孤寂而堕落的征途，在黑暗中徘徊。她的存在本身便是对泰拉昔日荣光的嘲讽，成为一场吞噬一切希望的风暴。
 			'''
 	}
 
@@ -2245,6 +2244,17 @@ Items: {
 			“区区之事，无伤尔”
 			'''
 	}
+
+	Snowblindness: {
+		DisplayName: 雪盲症
+		Tooltip:
+			'''
+			高频率发射雪球和极寒射线
+			命中敌人后在四周生成数道EX极寒射线
+			"迷失在暴雪中，永恒的等待，痛苦地图，弯道超车，
+			冻裂的镜片，干涸的血迹，红色的冰，哭泣的海狸，冰中人影"
+			'''
+	}
 }
 
 Projectiles: {
@@ -2753,6 +2763,8 @@ Projectiles: {
 	// UltimaHeldProj.DisplayName: Ultima Held Proj
 	// Hit.DisplayName: Hit
 	// DrataliornusHeldProj.DisplayName: Drataliornus Held Proj
+	// Misc.IceExplosionFriend.DisplayName: Ice Explosion Friend
+	// SnowblindnessHeldProj.DisplayName: Snowblindness Held Proj
 }
 
 Configs: {
@@ -3064,8 +3076,8 @@ TextContent: {
 			'''
 		Murasama_TextDictionary_Content_14:
 			'''
-			好样的，新兵，这个世界上的异形邪祟已被我们一扫而空……为何你眼中泪光闪烁？
-			是因为迷茫？是因为罪孽？看吧，我们的征途已经攀登至巅峰，就连那曾经统治泰拉的暴君也不及我们万一
+			好样的，新兵，这个世界上的异形邪祟已被我们一扫而空
+			我们的征途已经攀登至巅峰，就连那曾经统治泰拉的暴君也不及我们万一
 			现在，展开你的双臂，拥抱这个由胜利带给你的世界
 			'''
 		RemakeItem_Remind_TextContent:

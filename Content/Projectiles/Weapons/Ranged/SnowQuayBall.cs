@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             var source = Main.player[Projectile.owner].GetShootState().Source;
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectileDirect(source, Projectile.Center, new Vector2(Main.rand.NextFloat(-3, 3), -3)
-                    , ModContent.ProjectileType<IceExplosion>(), 13, 0, Projectile.owner, 0);
+                    , ModContent.ProjectileType<IceExplosionFriend>(), 13, 0, Projectile.owner, 0);
                 Projectile proj2 = Projectile.NewProjectileDirect(source, Projectile.Center, new Vector2(Main.rand.NextFloat(-5, 5), -13)
                     , ProjectileID.SnowBallFriendly, 13, 0, Projectile.owner, 0);
                 proj2.scale += Main.rand.NextFloat(0.5f);

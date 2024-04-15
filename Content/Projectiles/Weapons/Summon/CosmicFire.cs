@@ -1,4 +1,6 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Metaballs;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -26,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
             Projectile.width = Projectile.height = 16;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
-            Projectile.penetrate = 1;
+            Projectile.penetrate = -1;
             Projectile.extraUpdates = 3;
             Projectile.timeLeft = 180;
             Projectile.usesLocalNPCImmunity = true;
@@ -48,6 +50,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
                 if (Projectile.timeLeft == 150)
                     Projectile.velocity = Projectile.Center.To(target.Center).UnitVector() * 3;
                 Projectile.ChasingBehavior2(target.Center, 1.01f, 0.01f);
+            }
+            for (int i = 0; i < 6; i++) {
+                StreamGougeMetaball.SpawnParticle(Projectile.Center + CWRUtils.randVr(13), Projectile.velocity, Main.rand.NextFloat(11.3f, 21.5f));
             }
         }
 
@@ -93,13 +98,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            for (int i = 0; i < 10; i++) {
-                //Vector2 center = Projectile.Center + Main.rand.NextVector2Circular(50f, 10f);
-                //FusableParticleManager.GetParticleSetByType<StreamGougeParticleSet>()?.SpawnParticle(center, 30f);
-                //float sizeStrength = MathHelper.Lerp(24f, 64f, CalamityUtils.Convert01To010(i / 19f));
-                //center = Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitY) * MathHelper.Lerp(-40f, 90f, i / 19f);
-                //FusableParticleManager.GetParticleSetByType<StreamGougeParticleSet>()?.SpawnParticle(center, sizeStrength);
-            }
             return false;
         }
     }

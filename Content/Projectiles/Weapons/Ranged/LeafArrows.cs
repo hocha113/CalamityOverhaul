@@ -33,7 +33,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void AI() {
             NPC target = Projectile.Center.FindClosestNPC(600);
             if (target != null) {
-                Projectile.ChasingBehavior2(target.Center, 1, 0.05f);
+                if (Projectile.timeLeft > 30) {
+                    Projectile.ChasingBehavior2(target.Center, 1, 0.05f);
+                }
+                else {
+                    Projectile.ChasingBehavior2(target.Center, 1, 0.25f);
+                }
             }
 
             Projectile.alpha -= 2;

@@ -1084,6 +1084,17 @@ namespace CalamityOverhaul
         public static ShootState GetShootState(this Player player, string shootKey = "Null") {
             ShootState shootState = new();
             Item item = player.ActiveItem();
+            if (item.useAmmo == AmmoID.None) {
+                shootState.WeaponDamage = player.GetWeaponDamage(item);
+                shootState.WeaponKnockback = item.knockBack;
+                shootState.AmmoTypes = item.shoot;
+                shootState.ScaleFactor = item.shootSpeed;
+                shootState.UseAmmoItemType = ItemID.None;
+                if (shootState.AmmoTypes == 0 || shootState.AmmoTypes == 10) {
+                    shootState.AmmoTypes = ProjectileID.Bullet;
+                }
+                return shootState;
+            }
             _ = player.PickAmmo(item, out shootState.AmmoTypes, out shootState.ScaleFactor
                 , out shootState.WeaponDamage, out shootState.WeaponKnockback, out shootState.UseAmmoItemType, true);
             if (shootKey == "Null") {

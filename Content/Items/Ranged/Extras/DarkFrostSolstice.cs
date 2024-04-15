@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items.Placeables.Furniture.CraftingStations;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
@@ -16,6 +15,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.SetCalamitySD<Onyxia>();
             Item.damage = 102;
             Item.useAmmo = AmmoID.Snowball;
+            Item.value = Terraria.Item.buyPrice(0, 35, 5, 5);
             Item.UseSound = SoundID.Item36 with { Pitch = 0.2f };
             Item.SetCartridgeGun<DarkFrostSolsticeHeldProj>(1200);
         }

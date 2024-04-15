@@ -58,10 +58,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer() && onFire) {
                 SoundEngine.PlaySound(SoundID.Item30 with { Volume = SoundID.Item30.Volume * 1.5f }, Owner.MountedCenter);
+                ShootState shootState = Owner.GetShootState();
                 for (int i = 0; i < 3; i++) {
-                    Projectile.NewProjectile(new EntitySource_ItemUse_WithAmmo(Owner, Owner.ActiveItem(), Owner.GetShootState().UseAmmoItemType), Projectile.Center, 
+                    Projectile.NewProjectile(shootState.Source, Projectile.Center, 
                         Projectile.rotation.ToRotationVector2().RotatedBy((-15 + i * 15) * CWRUtils.atoR) * 15
-                    , ModContent.ProjectileType<SporeBombs>(), Owner.GetShootState().WeaponDamage * 3, Owner.GetShootState().WeaponKnockback, Projectile.owner);
+                    , ModContent.ProjectileType<SporeBombs>(), shootState.WeaponDamage * 3, shootState.WeaponKnockback, Projectile.owner);
                 }
             }
         }

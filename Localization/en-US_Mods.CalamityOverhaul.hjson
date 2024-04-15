@@ -2203,6 +2203,17 @@ Items: {
 			"Trivial matters, no hit."
 			'''
 	}
+
+	Snowblindness: {
+		DisplayName: Snowblindness
+		Tooltip:
+			'''
+			High-frequency firing of snowballs and frigid beams.
+			Upon hitting enemies, several EX Frigid Beams radiate outward.
+			"Lost in the blizzard, eternal waiting, the map of agony, overtaking on the bend,
+			Cracked mirrors, dried bloodstains, red ice, weeping beavers, figures in the ice."
+			'''
+	}
 }
 
 Projectiles: {
@@ -2711,6 +2722,8 @@ Projectiles: {
 	UltimaHeldProj.DisplayName: Ultima Held Proj
 	Hit.DisplayName: Hit
 	DrataliornusHeldProj.DisplayName: Drataliornus Held Proj
+	Misc.IceExplosionFriend.DisplayName: Ice Explosion Friend
+	SnowblindnessHeldProj.DisplayName: Snowblindness Held Proj
 }
 
 Configs: {

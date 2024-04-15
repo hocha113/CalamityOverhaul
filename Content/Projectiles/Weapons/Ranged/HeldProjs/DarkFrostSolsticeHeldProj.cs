@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
                 for (int i = 0; i < 35; i++) {
                     Projectile.NewProjectile(Source, targetPos + new Vector2(0, i * -8), new Vector2(0, -13).RotatedByRandom(0.5f) * Main.rand.NextFloat(0.35f, 3.12f)
-                    , ModContent.ProjectileType<IceExplosion>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    , ModContent.ProjectileType<IceExplosionFriend>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 }
 
                 for (int i = 0; i < 40; i++) {

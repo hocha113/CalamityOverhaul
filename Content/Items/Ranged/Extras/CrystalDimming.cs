@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public override void AddRecipes() {
             _ = CreateRecipe().
-                AddIngredient<AvalancheM60>().
+                AddIngredient<Snowblindness>().
                 AddIngredient<PridefulHuntersPlanarRipper>(1).
                 AddIngredient<RuinousSoul>(12).
                 AddTile(TileID.LunarCraftingStation).

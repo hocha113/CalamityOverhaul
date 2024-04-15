@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
                 for (int i = 0; i < 33; i++) {
                     Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.15f, 1.12f)
-                    , ModContent.ProjectileType<IceExplosion>(), WeaponDamage / 6, WeaponKnockback, Owner.whoAmI, 0);
+                    , ModContent.ProjectileType<IceExplosionFriend>(), WeaponDamage / 6, WeaponKnockback, Owner.whoAmI, 0);
                 }
                 
                 GunShootCoolingValue = 15;
