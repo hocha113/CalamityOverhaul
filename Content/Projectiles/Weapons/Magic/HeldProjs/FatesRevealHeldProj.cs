@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             GunPressure = 0;
             HandDistance = 15;
             HandDistanceY = -5;
-            HandFireDistance = 30;
+            HandFireDistance = 50;
             Recoil = 0;
             ArmRotSengsFrontNoFireOffset = 13;
             AngleFirearmRest = 0;
@@ -53,8 +53,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void GunDraw(ref Color lightColor) {
+            float offsetRot = 0;
+            if (DownLeft) {
+                offsetRot = DirSign > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4;
+            }
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
-                , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+                , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }
 }

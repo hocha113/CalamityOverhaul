@@ -46,6 +46,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public int AmmoTypes;
         /// <summary>
+        /// 所使用的弹药对应的物品ID
+        /// </summary>
+        public int UseAmmoItemType;
+        /// <summary>
         /// 射弹速度
         /// </summary>
         public float ScaleFactor = 11f;
@@ -61,6 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 是否启用手持开关
         /// </summary>
         public bool WeaponHandheldDisplay => CWRServerConfig.Instance.WeaponHandheldDisplay;
+        public virtual bool OnHandheldDisplayBool => true;
         /// <summary>
         /// 获取射击向量
         /// </summary>
@@ -79,7 +84,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
 
         protected bool UpdateConsumeAmmo(bool preCanConsumeAmmo = true) {
-            bool canConsume = Owner.IsRangedAmmoFreeThisShot(new Item(Owner.GetShootState().UseAmmoItemType));
+            bool canConsume = Owner.IsRangedAmmoFreeThisShot(new Item(UseAmmoItemType));
             if (MustConsumeAmmunition) {
                 canConsume = false;
             }
@@ -88,7 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         protected void UpdateShootState() {
-            HaveAmmo = Owner.PickAmmo(Item, out AmmoTypes, out ScaleFactor, out WeaponDamage, out WeaponKnockback, out _, true);
+            HaveAmmo = Owner.PickAmmo(Item, out AmmoTypes, out ScaleFactor, out WeaponDamage, out WeaponKnockback, out UseAmmoItemType, true);
             if (Item.useAmmo == AmmoID.None) {
                 WeaponDamage = Owner.GetWeaponDamage(Item);
                 WeaponKnockback = Item.knockBack;
@@ -108,7 +113,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.penetrate = -1;
             Projectile.hide = true;
             Projectile.CWR().NotSubjectToSpecialEffects = true;
+            CWRUtils.SafeLoadItem(targetCayItem);
+            PreSetRangedProperty();
             SetRangedProperty();
+        }
+
+        /// <summary>
+        /// 用于设置额外的基础属性，在<see cref="SetDefaults"/>中于<see cref="SetRangedProperty"/>之前调用
+        /// 非必要时不建议重写使用这个重载，而是使用<see cref="SetRangedProperty"/>
+        /// </summary>
+        public virtual void PreSetRangedProperty() {
+
         }
 
         /// <summary>

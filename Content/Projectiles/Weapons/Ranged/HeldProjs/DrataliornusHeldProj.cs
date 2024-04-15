@@ -26,6 +26,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (!onFire && !onFireR) {
                 chargeIndex = 35;
             }
+            if (onFire) {
+                BowArrowDrawNum = 1;
+            }
+            if (onFireR) {
+                BowArrowDrawNum = 5;
+            }
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
                 chargeIndex = 0;
             }
@@ -57,7 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void BowShootR() {
-            Item.useTime = 30;
+            Item.useTime = 40;
             AmmoTypes = ModContent.ProjectileType<DrataliornusFlame>();
             int flameID = ModContent.ProjectileType<DrataliornusFlame>();
             const int numFlames = 5;
@@ -68,7 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             for (int i = 0; i < numFlames; ++i) {
                 float piArrowOffset = i - (numFlames - 1) / 2;
                 Vector2 offsetSpawn = spinningpoint.RotatedBy(fifteenHundredthPi * piArrowOffset, new Vector2());
-                _ = Projectile.NewProjectile(Source, Projectile.Center + offsetSpawn, ShootVelocity, flameID, WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 1, 0);
+                _ = Projectile.NewProjectile(Source, Projectile.Center + offsetSpawn, ShootVelocity, flameID, WeaponDamage, WeaponKnockback, Owner.whoAmI, 1, 0);
             }
         }
     }

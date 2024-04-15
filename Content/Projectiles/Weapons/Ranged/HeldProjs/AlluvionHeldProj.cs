@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostInOwner() {
-            BowArrowDraw = true;
+            BowArrowDrawBool = true;
             if (onFireR) {
                 Projectile.rotation = -MathHelper.PiOver2;
                 Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 12;
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
             }
             else {
-                BowArrowDraw = false;
+                BowArrowDrawBool = false;
             }
         }
 

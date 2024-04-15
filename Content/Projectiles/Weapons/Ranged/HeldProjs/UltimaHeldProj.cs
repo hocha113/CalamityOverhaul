@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         int fireIndex;
         public override void SetRangedProperty() {
             HandFireDistance = 26;
-            BowArrowDraw = false;
+            BowArrowDrawBool = false;
             CanFireMotion = false;
         }
         public override void PostInOwner() {

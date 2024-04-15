@@ -635,7 +635,7 @@ Items: {
 	}
 
 	DragonsScaleGreatsword: {
-		DisplayName: Dragons Scale Greatsword
+		DisplayName: Dragonseaweed Greatblade
 		Tooltip: Swings a mighty sword that summons poisonous clouds that weakly home into enemies.
 	}
 
@@ -2024,7 +2024,7 @@ Items: {
 		Tooltip:
 			'''
 			Execute a powerful triple shot
-			"So, what does this have to do with magic stars? It looks like an ordinary bow."
+			When an arrow hits its target, it summons a star
 			'''
 	}
 
@@ -3443,6 +3443,7 @@ TextContent: {
 			'''
 			Ice!
 			Has a strong triple shot.
+			Turns a wooden arrow into a frost arrow
 			Arrows generate an ice mist upon hitting a target.
 			'''
 		Wap_GoldBow_Text:

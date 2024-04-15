@@ -680,8 +680,12 @@ Items: {
 	}
 
 	DragonsScaleGreatsword: {
-		DisplayName: 龙藻巨剑
-		Tooltip: ""
+		DisplayName: 龙藻巨刃
+		Tooltip:
+			'''
+			发生螺旋绿藻剑气，击中目标后炸成数团毒藻雾
+			真近战攻击会生成大量毒藻雾
+			'''
 	}
 
 	CosmicCalamity: {
@@ -2063,7 +2067,7 @@ Items: {
 		Tooltip:
 			'''
 			进行有力的三连射
-			"所以，这和幻星有什么关系？它看起来只是一把普通的弓"
+			箭矢击中目标后会召唤星辰
 			'''
 	}
 
@@ -3470,6 +3474,7 @@ TextContent: {
 			'''
 			冰!
 			拥有强劲的三连发
+			会将木箭转化为霜冻箭
 			箭矢击中目标后产生一片冰雾
 			'''
 		Wap_GoldBow_Text:

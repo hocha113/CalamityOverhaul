@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.IceBow;
         public override bool IsVanilla => true;
+        public override string TargetToolTipItemName => "Wap_IceBow_Text";
         public override void SetDefaults(Item item) => item.SetHeldProj<IceBowHeldProj>();
     }
 }

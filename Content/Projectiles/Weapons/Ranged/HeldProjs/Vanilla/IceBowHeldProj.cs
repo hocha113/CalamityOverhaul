@@ -24,6 +24,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void BowShoot() {
             Item.useTime = 5;
+            if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {
+                AmmoTypes = ProjectileID.FrostArrow;
+            }
             base.BowShoot();
             fireIndex++;
             if (fireIndex >= 3) {

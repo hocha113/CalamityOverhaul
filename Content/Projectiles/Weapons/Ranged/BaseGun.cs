@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
         /// </summary>
-        public virtual bool OnHandheldDisplayBool {
+        public override bool OnHandheldDisplayBool {
             get {
                 if (WeaponHandheldDisplay) {
                     return true;

@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void PostInOwner() {
-            BowArrowDraw = true;
+            BowArrowDrawBool = true;
             CanFireMotion = FiringDefaultSound = true;
 
             if (onFireR) {
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 }
             }
             else {
-                BowArrowDraw = false;
+                BowArrowDrawBool = false;
             }
         }
 

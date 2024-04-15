@@ -18,6 +18,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -1020,6 +1021,12 @@ namespace CalamityOverhaul
         #endregion
 
         #region GameUtils
+
+        public static void SafeLoadItem(int id) {
+            if (id > 0 && id < TextureAssets.Item.Length && !Main.dedServ) {
+                Main.instance.LoadItem(id);
+            }
+        }
 
         /// <summary>
         /// 获取玩家对象一个稳定的中心位置，考虑斜坡矫正与坐骑矫正，适合用于处理手持弹幕的位置获取

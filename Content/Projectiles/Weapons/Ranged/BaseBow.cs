@@ -2,18 +2,20 @@
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal abstract class BaseBow : BaseHeldRanged
     {
-        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
-
         #region Date
+        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         /// <summary>
         /// 右手角度值
         /// </summary>
@@ -82,17 +84,38 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 开火时是否默认播放手持物品的使用音效<see cref="Item.UseSound"/>，但如果准备重写<see cref="SpanProj"/>，这个属性将失去作用，默认为<see langword="true"/>
         /// </summary>
         public bool FiringDefaultSound = true;
-        public bool BowArrowDraw = true;
+        /// <summary>
+        /// 是否绘制箭矢动画
+        /// </summary>
+        public bool BowArrowDrawBool = true;
+        /// <summary>
+        /// 绘制箭矢的数量，默认值为1
+        /// </summary>
         public int BowArrowDrawNum = 1;
-        public bool CanFire => Owner.PressKey() || (Owner.PressKey(false) && CanRightClick && !onFire);
+        /// <summary>
+        /// 箭矢绘制模长偏移值，默认值为-16
+        /// </summary>
         protected int DrawArrowMode = -16;
+        /// <summary>
+        /// 开火额外矫正位置，这个值在开火后自动回归默认值<see cref="Vector2.Zero"/>
+        /// </summary>
         public Vector2 FireOffsetPos = Vector2.Zero;
+        /// <summary>
+        /// 开火速度额外矫正，这个值在开火后自动回归默认值<see cref="Vector2.Zero"/>
+        /// </summary>
         public Vector2 FireOffsetVector = Vector2.Zero;
+        /// <summary>
+        /// 射弹特殊生成属性，用于决定射弹的特殊行为，默认值为<see cref="SpanTypesEnum.None"/>
+        /// </summary>
         public SpanTypesEnum ShootSpanTypeValue = SpanTypesEnum.None;
+        /// <summary>
+        /// 是否处于开火时间
+        /// </summary>
+        public bool CanFire => Owner.PressKey() || (Owner.PressKey(false) && CanRightClick && !onFire);
         /// <summary>
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
         /// </summary>
-        public virtual bool OnHandheldDisplayBool {
+        public override bool OnHandheldDisplayBool {
             get {
                 if (WeaponHandheldDisplay) {
                     return true;
@@ -119,7 +142,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Owner.PressKey()) {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = ToMouseA;
-                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY);
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY);
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
                 if (HaveAmmo) {
@@ -137,7 +160,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Owner.PressKey(false) && CanRightClick && !onFire) {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = ToMouseA;
-                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY);
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY);
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
                 if (HaveAmmo) {
@@ -163,8 +186,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR;
             ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR;
 
-            Projectile.Center = Owner.Center + new Vector2(DirSign * HandDistance, HandDistanceY);
-            Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(20) : MathHelper.ToRadians(160);
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY);
+            int art = 20;
+            if (SafeGravDir < 0) {
+                art = 340;
+            }
+            Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(art) : MathHelper.ToRadians(180 - art);
             Projectile.timeLeft = 2;
             
             SetCompositeArm();
@@ -177,8 +204,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public void SetCompositeArm() {
             if (OnHandheldDisplayBool) {
-                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
-                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -Owner.direction);
+                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -Owner.direction);
             }
         }
 
@@ -220,7 +247,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void SpanProj() {
-            if (Projectile.ai[1] > Item.useTime && (onFire || onFireR)) {             
+            if (Projectile.ai[1] > Item.useTime && (onFire || onFireR)) {
                 if (onFire) {
                     BowShoot();
                 }
@@ -257,7 +284,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (OnHandheldDisplayBool) {
                 BowDraw(ref lightColor);
             }
-            if (CWRServerConfig.Instance.BowArrowDraw && BowArrowDraw) {
+            if (CWRServerConfig.Instance.BowArrowDraw && BowArrowDrawBool) {
                 ArrowDraw();
             }
             return false;
@@ -268,13 +295,40 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
 
+        private void ArrowResourceProcessing(ref Texture2D value, Item arrow) {
+            if (!arrow.consumable) {
+                int newtype = ItemID.WoodenArrow;
+                if (CWRIDs.OverProjID_To_Safe_Shoot_Ammo_Item_Target.TryGetValue(arrow.shoot, out int value2)) {
+                    newtype = value2;
+                }
+                Main.instance.LoadItem(newtype);
+                value = TextureAssets.Item[newtype].Value;
+            }
+        }
+
+        public virtual void CustomArrowRP(ref Texture2D value, Item arrow) {
+
+        }
+
         public void ArrowDraw() {
             int cooltime = 3;
             if (cooltime > Item.useTime / 3) {
                 cooltime = Item.useTime / 3;
             }
             if (CanFire && Projectile.ai[1] > cooltime) {
-                Texture2D arrowValue = TextureAssets.Item[Owner.GetShootState().UseAmmoItemType].Value;
+                int useAmmoItemType = UseAmmoItemType;
+                if (useAmmoItemType == ItemID.None) {
+                    return;
+                }
+                if (useAmmoItemType > 0 && useAmmoItemType < TextureAssets.Item.Length) {
+                    Main.instance.LoadItem(useAmmoItemType);
+                }
+
+                Texture2D arrowValue = TextureAssets.Item[useAmmoItemType].Value;
+                Item arrowItemInds = new Item(useAmmoItemType);
+                ArrowResourceProcessing(ref arrowValue, arrowItemInds);
+                CustomArrowRP(ref arrowValue, arrowItemInds);
+
                 float drawRot = Projectile.rotation + MathHelper.PiOver2;
                 float chordCoefficient = 1 - Projectile.ai[1] / Item.useTime;
                 float lengsOFstValue = chordCoefficient * 16 + DrawArrowMode;

@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -134,6 +135,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 抛壳的简易实现
         /// </summary>
         public virtual void EjectCasing() {
+            if (CWRMod.Instance.terrariaOverhaul != null) {
+                return;
+            }
             Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
             int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
             if (EjectCasingProjSize != 1) {
@@ -215,7 +219,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <returns></returns>
         public virtual float GetGunBodyRotation() {
-            int value = (int)(10 + FeederOffsetRot);
+            int art = 10;
+            if (SafeGravDir < 0) {
+                art = 350;
+            }
+            int value = (int)(art + FeederOffsetRot);
             return (Owner.direction > 0 ? MathHelper.ToRadians(value) : MathHelper.ToRadians(180 - value));
         }
         /// <summary>
@@ -223,7 +231,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <returns></returns>
         public virtual Vector2 GetGunBodyPostion() {
-            return Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY) + FeederOffsetPos;
+            return Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY * SafeGravDir) + FeederOffsetPos;
         }
         /// <summary>
         /// 先行调用，重写它以设置一些特殊状态
@@ -435,8 +443,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (AmmunitionIsunlimited(ammoItem)) {//如果该物品不消耗，那么可能是一个无限弹药类型的物品，这里进行特别处理
                     if (CWRIDs.ItemToShootID.ContainsKey(ammoItem.type)) {
                         int newAmmoType = ammoItem.type;
-                        if (CWRIDs.ItemToShootID[ammoItem.type] == ProjectileID.Bullet) {
-                            newAmmoType = ItemID.MusketBall;
+                        if (CWRIDs.OverProjID_To_Safe_Shoot_Ammo_Item_Target.TryGetValue(ammoItem.shoot, out int value2)) {
+                            newAmmoType = value2;
                         }
                         Item newAmmoItem = new Item(newAmmoType, magazineCapacity - accumulatedAmount);
                         newAmmoItem.CWR().AmmoProjectileReturn = false;//因为是无尽弹药类提供的弹药，所以不应该在之后的退弹中被返还

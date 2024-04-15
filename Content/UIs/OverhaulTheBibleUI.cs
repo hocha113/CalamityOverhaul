@@ -159,7 +159,10 @@ namespace CalamityOverhaul.Content.UIs
                 if (item != null) {
                     if (item.type != ItemID.None) {
                         if (melee) {
-                            if (item.DamageType == DamageClass.Melee) {
+                            if (item.DamageType == DamageClass.Melee 
+                                || item.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()
+                                || item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
+                                || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>() ) {
                                 Instance.ecTypeItemList.Add(item);
                             }
                         }

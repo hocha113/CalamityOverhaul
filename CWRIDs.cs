@@ -107,10 +107,11 @@ namespace CalamityOverhaul
         /// 物品对应射弹的词典
         /// </summary>
         public static Dictionary<int, int> ItemToShootID = new();
+        public static Dictionary<int, List<int>> ShootToItemID = new();
         public static Dictionary<int, int> ItemToHeldProjID = new();
-        //public static Dictionary<int, Item> HeldProjIDToItem = new();
         public static Dictionary<int, Projectile> ItemToHeldProj = new();
         internal static Dictionary<int, BaseGun> ItemToBaseGun = new();
+        internal static Dictionary<int, int> OverProjID_To_Safe_Shoot_Ammo_Item_Target = new();
         /// <summary>
         /// 扫地机器人
         /// </summary>
@@ -478,6 +479,40 @@ namespace CalamityOverhaul
                 ItemType<InfiniteIngot>()
             };
 
+            OverProjID_To_Safe_Shoot_Ammo_Item_Target = new Dictionary<int, int>() {
+                { ProjectileID.BoneArrow, ItemID.BoneArrow},
+                { ProjectileID.MoonlordArrow, ItemID.MoonlordArrow},
+                { ProjectileID.ChlorophyteArrow, ItemID.ChlorophyteArrow},
+                { ProjectileID.CursedArrow, ItemID.CursedArrow},
+                { ProjectileID.FlamingArrow, ItemID.FlamingArrow},
+                { ProjectileID.FrostburnArrow, ItemID.FrostburnArrow},
+                { ProjectileID.HellfireArrow, ItemID.HellfireArrow},
+                { ProjectileID.HolyArrow, ItemID.HolyArrow},
+                { ProjectileID.IchorArrow, ItemID.IchorArrow},
+                { ProjectileID.JestersArrow, ItemID.JestersArrow},
+                { ProjectileID.ShimmerArrow, ItemID.ShimmerArrow},
+                { ProjectileID.UnholyArrow, ItemID.UnholyArrow},
+                { ProjectileID.VenomArrow, ItemID.VenomArrow},
+                { ProjectileID.WoodenArrowFriendly, ItemID.WoodenArrow},
+                { ProjectileID.ChumBucket, ItemID.ChumBucket},
+                { ProjectileID.ChlorophyteBullet, ItemID.ChlorophyteBullet},
+                { ProjectileID.CrystalBullet, ItemID.CrystalBullet},
+                { ProjectileID.CursedBullet, ItemID.CursedBullet},
+                { ProjectileID.ExplosiveBullet, ItemID.ExplodingBullet},
+                { ProjectileID.GoldenBullet, ItemID.GoldenBullet},
+                { ProjectileID.BulletHighVelocity, ItemID.HighVelocityBullet},
+                { ProjectileID.IchorBullet, ItemID.IchorBullet},
+                { ProjectileID.MoonlordBullet, ItemID.MoonlordBullet},
+                { ProjectileID.MeteorShot, ItemID.MeteorShot},
+                { ProjectileID.Bullet, ItemID.MusketBall},
+                { ProjectileID.NanoBullet, ItemID.NanoBullet},
+                { ProjectileID.PartyBullet, ItemID.PartyBullet},
+                { ProjectileID.SilverBullet, ItemID.SilverBullet},
+                //{ ProjectileID.Bullet, ItemID.TungstenBullet},
+                { ProjectileID.VenomBullet, ItemID.VenomBullet},
+                { ProjectileID.SnowBallFriendly, ItemID.Snowball},
+            };
+
             if (CWRMod.Instance.fargowiltasSouls != null) {
                 EternitySoul = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("EternitySoul").Type;
                 DevisCurse = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("DevisCurse").Type;
@@ -515,6 +550,13 @@ namespace CalamityOverhaul
                         //int newShot = CWRUtils.RocketAmmo(item);
                         ("添加射弹与物品对应词典: ItemID" + i + "-----" + item + "----- shootID:" + item.shoot).DompInConsole();
                         ItemToShootID.Add(item.type, item.shoot);
+                        if (ShootToItemID.ContainsKey(item.shoot)) {
+                            List<int> shoots = ShootToItemID[item.shoot];
+                            shoots.Add(item.type);
+                        }
+                        else {
+                            ShootToItemID.Add(item.shoot, new List<int>() { item.type });
+                        }
                     }
                 }
             }
