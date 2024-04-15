@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 16; i++) {
                     Projectile proj = Projectile.NewProjectileDirect(Projectile.parent(), Projectile.Center
-                    , new Vector2(0, 1), ModContent.ProjectileType<Godslight>(), Projectile.damage, 0, Projectile.owner, 0, 2f + i * 0.5f);  
+                    , new Vector2(0, 1), ModContent.ProjectileType<Godslight>(), Projectile.damage / 2, 0, Projectile.owner, 0, 2f + i * 0.5f);  
                 }
             }
             SoundEngine.PlaySound(Gangarus.AT, Projectile.Center);

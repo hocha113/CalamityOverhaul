@@ -44,6 +44,8 @@ namespace CalamityOverhaul.Common
         public const string noItem = "Assets/Items/";
         public const string noProjectile = "Assets/Projectiles/";
 
+        public const int MaxParticleCount = 10000;
+
         public static bool ForceReplaceResetContent => ModContent.GetInstance<CWRServerConfig>().ForceReplaceResetContent;
         public static bool WeaponEnhancementSystem => ModContent.GetInstance<CWRServerConfig>().WeaponEnhancementSystem;
     }

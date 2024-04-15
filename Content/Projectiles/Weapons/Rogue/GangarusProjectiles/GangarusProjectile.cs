@@ -33,9 +33,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             Projectile.tileCollide = false;
             Projectile.DamageType = ModContent.GetInstance<RogueDamageClass>();
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 20;
+            Projectile.localNPCHitCooldown = -1;
             Projectile.penetrate = 1;
-            Projectile.MaxUpdates = 3;
+            Projectile.MaxUpdates = 5;
             Projectile.timeLeft = 300;
         }
 

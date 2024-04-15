@@ -20,12 +20,10 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// 这个粒子已经存在的帧数,一般情况下,不需要手动更新它
         /// </summary>
         public int Time;
-
         /// <summary>
         /// 如果你需要在达到粒子上限的情况下渲染粒子，将此设置为<see langword="true"/>
         /// </summary>
         public virtual bool Important => false;
-
         /// <summary>
         /// 如果你想让你的粒子在达到其最大寿命时自动移除,将此设置为<see langword="true"/>
         /// </summary>
@@ -42,7 +40,7 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// </summary>
         public Vector2 RelativeOffset;
         /// <summary>
-        /// 一个粒子在世界中的位置,请记住，这不是在粒子集的上下文中使用的，因为所有的粒子都是根据它们相对于集合原点的位置来计算的
+        /// 一个粒子在世界中的位置，这不是在粒子集的上下文中使用的，因为所有的粒子都是根据它们相对于集合原点的位置来计算的
         /// </summary>
         public Vector2 Position;
         public Vector2 Velocity;
@@ -68,7 +66,7 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// <summary>
         /// 每次更新粒子处理程序时调用。粒子的速度会自动添加到它的位置，它的时间也会自动增加
         /// </summary>
-        public virtual void Update() { }
+        public virtual void AI() { }
 
         /// <summary>
         /// 将此设置为true以使你的粒子使用additive blending而不是alpha blend。

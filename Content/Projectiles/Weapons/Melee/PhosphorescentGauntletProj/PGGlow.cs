@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
             MaxSquish = maxSquish;
         }
 
-        public override void Update() {
+        public override void AI() {
             Velocity *= (LifetimeCompletion >= 0.34f) ? 0.93f : 1.02f;
             Rotation = Velocity.ToRotation();
             Opacity = LifetimeCompletion > 0.5f ? ((float)Math.Sin(LifetimeCompletion * MathHelper.Pi) * 0.2f) + 0.8f : (float)Math.Sin(LifetimeCompletion * MathHelper.Pi);

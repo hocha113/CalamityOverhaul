@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Particles
             followingRateRatio = _followingRateRatio;
         }
 
-        public override void Update() {
+        public override void AI() {
             Velocity *= (LifetimeCompletion >= 0.34f) ? 0.93f : 1.02f;
             Velocity = Velocity.RotatedBy(0.01f);
             Opacity = LifetimeCompletion > 0.5f ? ((float)Math.Sin(LifetimeCompletion * MathHelper.Pi) * 0.2f) + 0.8f : (float)Math.Sin(LifetimeCompletion * MathHelper.Pi);

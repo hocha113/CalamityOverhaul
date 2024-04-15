@@ -120,13 +120,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             Owner.direction = Math.Sign(toMou.X);
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
-            Projectile.Center = Owner.Center + toMou.UnitVector() * 40;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + toMou.UnitVector() * 70;
             Projectile.timeLeft = 2;
         }
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Item[CWRIDs.Gangarus].Value;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation + MathHelper.PiOver4, value.Size() / 2, Projectile.scale * 0.9f, SpriteEffects.None, 0);
+            int dir = Owner.direction;
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor
+                , Projectile.rotation + MathHelper.PiOver4 + (dir > 0 ? MathHelper.PiOver2 : 0)
+                , value.Size() / 2, Projectile.scale * 0.9f, dir > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             return false;
         }
     }

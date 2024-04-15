@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Particles
             Color = InitialColor = color;
         }
 
-        public override void Update() {
+        public override void AI() {
             Scale *= 0.95f;
             Color = Color.Lerp(InitialColor, Color.Transparent, (float)Math.Pow(LifetimeCompletion, 3D));
             Velocity *= 0.95f;

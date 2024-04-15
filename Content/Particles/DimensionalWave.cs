@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Particles
             Rotation = rotation;
         }
 
-        public override void Update() {
+        public override void AI() {
             float pulseProgress = PiecewiseAnimation(LifetimeCompletion, new CurveSegment[] { new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4) });
             Scale = MathHelper.Lerp(OriginalScale, FinalScale, pulseProgress);
 

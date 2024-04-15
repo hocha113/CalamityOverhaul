@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Particles
             RotationalSpeed = rotationalSpeed;
         }
 
-        public override void Update() {
+        public override void AI() {
             if (SpawnDelay > 0) {
                 Time--;
                 Position -= Velocity;

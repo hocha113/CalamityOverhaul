@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Particles
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
         }
 
-        public override void Update() {
+        public override void AI() {
             float pulseProgress = PiecewiseAnimation(LifetimeCompletion, new CurveSegment[] { new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4) });
             Scale = MathHelper.Lerp(OriginalScale, FinalScale, pulseProgress);
 
@@ -54,8 +54,6 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch, Vector2 basePosition) {
-            Texture2D tex = ModContent.Request<Texture2D>("CalamityMod/Particles/HollowCircleHardEdge").Value;
-
         }
     }
 }

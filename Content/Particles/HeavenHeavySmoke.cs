@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Particles
             sengs = Main.rand.Next(30);
         }
 
-        public override void Update() {
+        public override void AI() {
             if (Time / (float)Lifetime < 0.2f)
                 Scale += 0.01f;
             else

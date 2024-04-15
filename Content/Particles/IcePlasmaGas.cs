@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Particles
             sengsValue = 0;
         }
 
-        public override void Update() {
+        public override void AI() {
             Scale = 0.5f + (sengsValue * 0.01f);
             Velocity *= 0.85f;
             sengsValue++;

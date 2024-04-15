@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityMod.Particles;
+using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -24,7 +26,7 @@ namespace CalamityOverhaul.Content.Particles.Core
 
         public static int GetParticlesCount() => particles.Count;
 
-        public static void LoadModParticleInstances(Mod mod) {
+        public static void LoadParticleInstence(Mod mod) {
             Type baseParticleType = typeof(CWRParticle);
             foreach (Type type in AssemblyManager.GetLoadableTypes(mod.Code)) {
                 if (type.IsSubclassOf(baseParticleType) && !type.IsAbstract && type != baseParticleType) {
@@ -53,7 +55,7 @@ namespace CalamityOverhaul.Content.Particles.Core
             batchedNonPremultipliedParticles = new List<CWRParticle>();
             batchedAdditiveBlendParticles = new List<CWRParticle>();
 
-            LoadModParticleInstances(CWRMod.Instance);
+            LoadParticleInstence(CWRMod.Instance);
         }
 
         internal static void Unload() {
@@ -71,10 +73,10 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// 生成提供给世界的粒子实例。如果达到颗粒限值，但该颗粒被标记为重要，它将尝试替换不重要的颗粒
         /// </summary>
         public static void AddParticle(CWRParticle particle) {
-            if (Main.gamePaused || Main.dedServ || particles == null)
+            if (Main.gamePaused || Main.dedServ || particles == null) {
                 return;
-
-            if (particles.Count >= 10000 && !particle.Important) {
+            }
+            if (particles.Count >= CWRConstant.MaxParticleCount && !particle.Important) {
                 return;
             }
 
@@ -83,25 +85,34 @@ namespace CalamityOverhaul.Content.Particles.Core
         }
 
         public static void Update() {
-            foreach (CWRParticle particle in particles) {
-                if (particle == null)
-                    continue;
-                particle.Position += particle.Velocity;
-                particle.Time++;
-                particle.Update();
+            if (Main.dedServ) {//不要在服务器上更新逻辑
+                return;
             }
-
+            foreach (CWRParticle particle in particles) {
+                if (particle == null) {
+                    continue;
+                }
+                UpdateParticleVelocity(particle);
+                UpdateParticleTime(particle);
+                particle.AI();
+            }
+            ParticleGarbageCollection(ref particles);
             particles.RemoveAll(particle => particle.Time >= particle.Lifetime && particle.SetLifetime || particlesToKill.Contains(particle));
             particlesToKill.Clear();
         }
 
-        public static void RemoveParticle(CWRParticle particle) {
-            particlesToKill.Add(particle);
+        public static void ParticleGarbageCollection(ref List<CWRParticle> particles) {
+            bool isGC(CWRParticle p) => p.Time >= p.Lifetime && p.SetLifetime || particlesToKill.Contains(p);
+            particles.RemoveAll(isGC);
         }
+        public static void UpdateParticleVelocity(CWRParticle particle) => particle.Position += particle.Velocity;
+        public static void UpdateParticleTime(CWRParticle particle) => particle.Time++;
+        public static void RemoveParticle(CWRParticle particle) => particlesToKill.Add(particle);
 
         public static void DrawAll(SpriteBatch sb) {
-            if (particles.Count == 0)
+            if (particles.Count == 0) {
                 return;
+            }
 
             sb.End();
             var rasterizer = Main.Rasterizer;
@@ -110,26 +121,32 @@ namespace CalamityOverhaul.Content.Particles.Core
             Main.instance.GraphicsDevice.ScissorRectangle = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
 
             foreach (CWRParticle particle in particles) {
-                if (particle == null)
+                if (particle == null) {
                     continue;
-
-                if (particle.UseAdditiveBlend)
+                }
+                if (particle.UseAdditiveBlend) {
                     batchedAdditiveBlendParticles.Add(particle);
-                else if (particle.UseHalfTransparency)
+                }
+                else if (particle.UseHalfTransparency) {
                     batchedNonPremultipliedParticles.Add(particle);
-                else
+                }
+                else {
                     batchedAlphaBlendParticles.Add(particle);
+                }
             }
             if (batchedAlphaBlendParticles.Count > 0) {
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-
+                void defaultDraw(CWRParticle particle) {
+                    Rectangle frame = particleTextures[particle.Type].Frame(1, particle.FrameVariants, 0, particle.Variant);
+                    sb.Draw(particleTextures[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f,
+                        particle.Scale, SpriteEffects.None, 0f);
+                }
                 foreach (CWRParticle particle in batchedAlphaBlendParticles) {
-                    if (particle.UseCustomDraw)
+                    if (particle.UseCustomDraw) {
                         particle.CustomDraw(sb);
+                    }
                     else {
-                        Rectangle frame = particleTextures[particle.Type].Frame(1, particle.FrameVariants, 0, particle.Variant);
-                        sb.Draw(particleTextures[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f,
-                            particle.Scale, SpriteEffects.None, 0f);
+                        defaultDraw(particle);
                     }
                 }
                 sb.End();
@@ -142,13 +159,15 @@ namespace CalamityOverhaul.Content.Particles.Core
                 Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
                 Main.instance.GraphicsDevice.ScissorRectangle = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
                 sb.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-
+                void defaultDraw(CWRParticle particle) {
+                    Rectangle frame = particleTextures[particle.Type].Frame(1, particle.FrameVariants, 0, particle.Variant);
+                    sb.Draw(particleTextures[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f, particle.Scale, SpriteEffects.None, 0f);
+                }
                 foreach (CWRParticle particle in batchedNonPremultipliedParticles) {
                     if (particle.UseCustomDraw)
                         particle.CustomDraw(sb);
                     else {
-                        Rectangle frame = particleTextures[particle.Type].Frame(1, particle.FrameVariants, 0, particle.Variant);
-                        sb.Draw(particleTextures[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f, particle.Scale, SpriteEffects.None, 0f);
+                        defaultDraw(particle);
                     }
                 }
                 sb.End();
@@ -160,13 +179,15 @@ namespace CalamityOverhaul.Content.Particles.Core
                 Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
                 Main.instance.GraphicsDevice.ScissorRectangle = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
                 sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-
+                void defaultDraw(CWRParticle particle) {
+                    Rectangle frame = particleTextures[particle.Type].Frame(1, particle.FrameVariants, 0, particle.Variant);
+                    sb.Draw(particleTextures[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f, particle.Scale, SpriteEffects.None, 0f);
+                }
                 foreach (CWRParticle particle in batchedAdditiveBlendParticles) {
                     if (particle.UseCustomDraw)
                         particle.CustomDraw(sb);
                     else {
-                        Rectangle frame = particleTextures[particle.Type].Frame(1, particle.FrameVariants, 0, particle.Variant);
-                        sb.Draw(particleTextures[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f, particle.Scale, SpriteEffects.None, 0f);
+                        defaultDraw(particle);
                     }
                 }
                 sb.End();
@@ -184,14 +205,10 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// </summary>
         /// <returns></returns>
         public static int FreeSpacesAvailable() {
-            if (Main.dedServ || particles == null)
+            if (Main.dedServ || particles == null) {
                 return 0;
-            return 10000 - particles.Count();
+            }  
+            return CWRConstant.MaxParticleCount - particles.Count();
         }
-
-        /// <summary>
-        /// 给予粒子类型的纹理。用于自定义绘图
-        /// </summary>
-        public static Texture2D GetTexture(int type) => particleTextures[type];
     }
 }
