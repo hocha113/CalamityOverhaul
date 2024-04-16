@@ -395,7 +395,7 @@ namespace CalamityOverhaul.Content
                 case SpanTypesEnum.WoodenBow:
                     if (projectile.numHits == 0) {
                         Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -13).RotatedByRandom(0.2f)
-                        , ModContent.ProjectileType<SquirrelSquireAcorn>(), projectile.damage / 3, projectile.knockBack, projectile.owner);
+                        , ModContent.ProjectileType<SquirrelSquireAcorn>(), 3, projectile.knockBack, projectile.owner);
                         proj.DamageType = DamageClass.Ranged;
                     }
                     break;

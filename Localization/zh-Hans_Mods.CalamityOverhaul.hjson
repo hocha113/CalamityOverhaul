@@ -2255,6 +2255,11 @@ Items: {
 			冻裂的镜片，干涸的血迹，红色的冰，哭泣的海狸，冰中人影"
 			'''
 	}
+
+	Slingshot: {
+		// DisplayName: Slingshot
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2765,6 +2770,8 @@ Projectiles: {
 	// DrataliornusHeldProj.DisplayName: Drataliornus Held Proj
 	// Misc.IceExplosionFriend.DisplayName: Ice Explosion Friend
 	// SnowblindnessHeldProj.DisplayName: Snowblindness Held Proj
+	// SlingshotHeldProj.DisplayName: Slingshot Held Proj
+	// PebbleBall.DisplayName: Pebble Ball
 }
 
 Configs: {

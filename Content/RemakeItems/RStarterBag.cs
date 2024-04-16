@@ -6,6 +6,7 @@ using CalamityMod.Items.TreasureBags.MiscGrabBags;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Magic.Extras;
 using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Summon.Extras;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
@@ -22,14 +23,11 @@ namespace CalamityOverhaul.Content.RemakeItems
         //为了更加方便的修改掉落内容，这里直接使用On钩子阻断运行
         //以此来进行一些具体的修改
         public override bool? On_ModifyItemLoot(Item item, ItemLoot itemLoot) {
-            LeadingConditionRule tin = itemLoot.DefineConditionalDropSet(() => WorldGen.SavedOreTiers.Copper == TileID.Tin);
-            tin.Add(ItemID.TinBow);
-            tin.OnFailedConditions(new CommonDrop(ItemID.CopperBow, 1));
-
             itemLoot.Add(ItemID.WoodenArrow, 1, 100, 100);
             itemLoot.Add(ModContent.ItemType<OverhaulTheBibleBook>());
             itemLoot.Add(ModContent.ItemType<TheUpiStele>());
             itemLoot.Add(ModContent.ItemType<TheSpiritFlint>());
+            itemLoot.Add(ModContent.ItemType<Slingshot>());
             itemLoot.Add(ModContent.ItemType<Pebble>(), 1, 350, 450);
             itemLoot.Add(ItemID.ManaCrystal);
 

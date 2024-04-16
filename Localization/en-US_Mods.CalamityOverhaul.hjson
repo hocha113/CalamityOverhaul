@@ -2214,6 +2214,11 @@ Items: {
 			Cracked mirrors, dried bloodstains, red ice, weeping beavers, figures in the ice."
 			'''
 	}
+
+	Slingshot: {
+		DisplayName: Slingshot
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2724,6 +2729,8 @@ Projectiles: {
 	DrataliornusHeldProj.DisplayName: Drataliornus Held Proj
 	Misc.IceExplosionFriend.DisplayName: Ice Explosion Friend
 	SnowblindnessHeldProj.DisplayName: Snowblindness Held Proj
+	SlingshotHeldProj.DisplayName: Slingshot Held Proj
+	PebbleBall.DisplayName: Pebble Ball
 }
 
 Configs: {

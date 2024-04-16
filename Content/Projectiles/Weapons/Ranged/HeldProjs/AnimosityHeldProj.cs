@@ -45,12 +45,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             GunPressure = 0.6f;
             Recoil = 5;
             RangeOfStress = 25;
-            Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
-                    , ModContent.ProjectileType<AnimosityOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
-            for (int i = 0; i < 5; i++) {
-                CaseEjection();
-                UpdateMagazineContents();
-            }
+            Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AnimosityOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
+            CaseEjection();
         }
     }
 }

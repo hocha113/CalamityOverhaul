@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (++Projectile.ai[0] >= MaxCharge) {
                 onFire = true;
             }
-            if (!Main.player[Projectile.owner].PressKey(false)) {
+            if (!Main.player[Projectile.owner].PressKey(false) || Main.player[Projectile.owner].PressKey()) {
                 Projectile.Kill();
             }
         }

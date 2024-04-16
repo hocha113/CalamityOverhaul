@@ -35,6 +35,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.IsOwnedByLocalPlayer()) {
                 SpanProj();
             }
+            if (!Main.player[Projectile.owner].PressKey(false) || Main.player[Projectile.owner].PressKey()) {
+                Projectile.Kill();
+            }
         }
     }
 }

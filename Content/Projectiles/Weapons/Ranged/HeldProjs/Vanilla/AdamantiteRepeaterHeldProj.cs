@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             proj.extraUpdates += 1;
             proj.usesLocalNPCImmunity = true;
-            proj.localNPCHitCooldown = 2;
+            proj.localNPCHitCooldown = -1;
             if (proj.penetrate == 1) {
                 proj.maxPenetrate += 2;
                 proj.penetrate += 2;

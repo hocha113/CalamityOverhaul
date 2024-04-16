@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.AshWoodBow;
         public override int targetCWRItem => ItemID.AshWoodBow;
         public override void BowShoot() {
+            ShootSpanTypeValue = SpanTypesEnum.WoodenBow;
             base.BowShoot();
         }
     }

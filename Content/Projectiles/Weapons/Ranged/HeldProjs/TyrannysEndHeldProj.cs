@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
-            FireTime = 30;
+            FireTime = 20;
             HandDistance = 45;
             HandDistanceY = 5;
             HandFireDistance = 45;
@@ -25,8 +25,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
             MustConsumeAmmunition = true;
             EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 8;
-            GunPressure = 0.3f;
+            RecoilRetroForceMagnitude = 12;
+            GunPressure = 0.1f;
             ControlForce = 0.05f;
             Recoil = 6;
             RangeOfStress = 25;
