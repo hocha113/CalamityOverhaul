@@ -33,8 +33,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 BowArrowDrawNum = 5;
             }
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
-                chargeIndex = 0;
-                Owner.wingTime = 0;
+                chargeIndex = 35;
+                if (!Owner.PressKey(false)) {
+                    Owner.wingTime = 0;
+                }
             }
         }
 
@@ -65,6 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void BowShootR() {
             Item.useTime = 40;
+            chargeIndex = 35;
             AmmoTypes = ModContent.ProjectileType<DrataliornusFlame>();
             int flameID = ModContent.ProjectileType<DrataliornusFlame>();
             const int numFlames = 5;

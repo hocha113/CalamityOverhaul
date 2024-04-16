@@ -23,7 +23,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0) {
                 chargeIndex = 35;
-                Owner.wingTime = 0;
+                if (!Owner.PressKey(false)) {
+                    Owner.wingTime = 0;
+                }
             }
             BowArrowDrawBool = CanFireMotion = FiringDefaultSound = onFire;
         }
@@ -41,6 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void BowShootR() {
             Item.useTime = 60;
+            chargeIndex = 35;
             AmmoTypes = ModContent.ProjectileType<SporeBombOnSpan>();
             Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
         }

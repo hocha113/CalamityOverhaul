@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -14,7 +15,10 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.damage = 6;
             Item.DamageType = DamageClass.Ranged;
             Item.rare = ItemRarityID.Blue;
+            Item.UseSound = SoundID.Item5;
             Item.value = Terraria.Item.buyPrice(0, 0, 0, 45);
+            Item.shoot = ModContent.ProjectileType<PebbleBall>();
+            Item.shootSpeed = 11;
             Item.SetHeldProj<SlingshotHeldProj>();
         }
 

@@ -88,6 +88,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (MustConsumeAmmunition) {
                 canConsume = false;
             }
+            if (Item.useAmmo == AmmoID.None) {
+                return false;
+            }
             Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out _, out _, out _, canConsume && preCanConsumeAmmo);
             return canConsume;
         }
