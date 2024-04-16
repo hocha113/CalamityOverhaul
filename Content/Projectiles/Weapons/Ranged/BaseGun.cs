@@ -470,15 +470,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (recoilValue == 0) {
                 return "CWRGun_Recoil_Level_0";
             }
-            if (recoilValue < 0.2f) {
+            if (recoilValue < 0.5f) {
                 recoilKey = "CWRGun_Recoil_Level_1";
-            } else if (recoilValue < 0.5f) {
+            } else if (recoilValue < 0.1f) {
                 recoilKey = "CWRGun_Recoil_Level_2";
-            } else if (recoilValue < 1f) {
-                recoilKey = "CWRGun_Recoil_Level_3";
             } else if (recoilValue < 1.5f) {
-                recoilKey = "CWRGun_Recoil_Level_4";
+                recoilKey = "CWRGun_Recoil_Level_3";
             } else if (recoilValue < 2.2f) {
+                recoilKey = "CWRGun_Recoil_Level_4";
+            } else if (recoilValue < 3.2f) {
                 recoilKey = "CWRGun_Recoil_Level_5";
             } else {
                 recoilKey = "CWRGun_Recoil_Level_6";

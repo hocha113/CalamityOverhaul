@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<Snowblindness>();
         public override int targetCWRItem => ModContent.ItemType<Snowblindness>();
         public override void SetRangedProperty() {
-            loadTheRounds = CWRSound.CaseEjection2 with { Pitch = -0.2f };
+            loadTheRounds = CWRSound.Gun_HandGun_ClipOut with { Pitch = -0.2f };
             HandDistance = 30;
             HandFireDistance = 20;
             HandFireDistanceY = -6;
@@ -24,21 +24,32 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
             RecoilOffsetRecoverValue = 0.6f;
+            RangeOfStress = 50;
+            ShootPosNorlLengValue = 1;
         }
         public override void FiringShoot() {
-            int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedByRandom(0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f), AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0, 1);
             Main.projectile[proj].Calamity().allProjectilesHome = true;
             Main.projectile[proj].CWR().GetHitAttribute.SuperAttack = true;
             Main.projectile[proj].extraUpdates = 1;
+            Main.projectile[proj].usesLocalNPCImmunity = true;
+            Main.projectile[proj].localNPCHitCooldown = -1;
             int bolt = ProjectileID.IceBolt;
+            bool isbeam = false;
             if (Main.rand.NextBool(3)) {
                 bolt = ProjectileID.FrostBeam;
+                isbeam = true;
             }
-            int proj2 = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, bolt, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
+            int proj2 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, bolt, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
             Main.projectile[proj2].extraUpdates = 1;
             Main.projectile[proj2].friendly = true;
             Main.projectile[proj2].hostile = false;
             Main.projectile[proj2].DamageType = DamageClass.Ranged;
+            if (isbeam) {
+                Main.projectile[proj2].damage *= 2;
+                Main.projectile[proj2].usesLocalNPCImmunity = true;
+                Main.projectile[proj2].localNPCHitCooldown = -1;
+            }
         }
     }
 }

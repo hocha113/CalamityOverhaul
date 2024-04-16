@@ -257,6 +257,24 @@ namespace CalamityOverhaul.Content
                             , ModContent.ProjectileType<IceParclose>(), 0, 0, projectile.owner, target.whoAmI, target.type, target.rotation);
                     }
                 }
+                else if (projectile.type == ProjectileID.SnowBallFriendly) {
+                    if (projectile.numHits == 0) {
+                        for (int i = 0; i < 3; i++) {
+                            Vector2 spanPos = projectile.Center + CWRUtils.randVr(1160, 1290);
+                            Vector2 vr = spanPos.To(target.Center).UnitVector() * 15;
+                            Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
+                            , ProjectileID.FrostBeam, projectile.damage / 2, 0, projectile.owner, 1);
+                            proj.penetrate = -1;
+                            proj.extraUpdates = 6;
+                            proj.hostile = false;
+                            proj.friendly = true;
+                            proj.timeLeft /= 2;
+                            proj.usesLocalNPCImmunity = true;
+                            proj.localNPCHitCooldown = -1;
+                            proj.CWR().GetHitAttribute.NeverCrit = true;
+                        }
+                    }
+                }
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.DeadWing) {
@@ -484,22 +502,6 @@ namespace CalamityOverhaul.Content
 
             if (projectile.type == ModContent.ProjectileType<ExoVortex>()) {
                 ExoVortexOnHitDeBug(target);
-            }
-
-            if (projectile.type == ProjectileID.SnowBallFriendly && GetHitAttribute.SuperAttack) {
-                if (projectile.numHits == 0) {
-                    for (int i = 0; i < 3; i++) {
-                        Vector2 spanPos = projectile.Center + CWRUtils.randVr(1160, 1290);
-                        Vector2 vr = spanPos.To(target.Center).UnitVector() * 15;
-                        Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), spanPos, vr
-                        , ProjectileID.FrostBeam, projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
-                        proj.penetrate = -1;
-                        proj.extraUpdates = 6;
-                        proj.hostile = false;
-                        proj.friendly = true;
-                        proj.timeLeft /= 2;
-                    }
-                }
             }
 
             if (projectile.DamageType == DamageClass.Summon && target.CWR().WhipHitNum > 0) {

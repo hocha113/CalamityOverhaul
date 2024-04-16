@@ -7,6 +7,7 @@ v_0.3.5.9.4
 3.朗基努斯之枪的上帝之光伤害降低50%
 4.修复雪球发射器的雪雾会对友方实体造成伤害的问题
 5.适配了Ammo Tools Mod
+6.神圣连弩额外发射的箭矢所造成的伤害降低50%，使用时间由20延长到30
 
 ——Developer responsible for the following content: HoCha113
 

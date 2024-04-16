@@ -1,4 +1,4 @@
-The Calamity Overhaul Mod aims to comprehensively optimize various aspects of the Calamity Mod. 
+﻿The Calamity Overhaul Mod aims to comprehensively optimize various aspects of the Calamity Mod. 
 
 The current version has undergone redesigns for hundreds of Calamity Mod weapons, making them more refined, practical, and eye-catching. 
 
@@ -8,4 +8,5 @@ This mod introduces multiple new expanded weapons along with a brand-new craftin
 
 Future updates will continue to reset a significant number of Calamity Mod weapons and mechanics, bringing players a fresh Calamity experience.
 
-The mod is open-source on Github, and you can search for CalamityOverhaul to find the mod's repository.
+The Mod is Open-Source In Github: https://github.com/hocha113/CalamityOverhaul
+

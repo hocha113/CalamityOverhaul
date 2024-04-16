@@ -2175,7 +2175,7 @@ Items: {
 	}
 
 	CosmicBolterEcType: {
-		DisplayName: 宇束弓
+		DisplayName: 束宇弓
 		Tooltip:
 			'''
 			发射一列紧密的三发箭矢
@@ -2258,7 +2258,7 @@ Items: {
 }
 
 Projectiles: {
-	// SeaBlueBrinySpout.DisplayName: Sea Blue Briny Spout
+	SeaBlueBrinySpout.DisplayName: 海之涡流
 
 	Melee: {
 		// CosmicShivProjectile.DisplayName: Cosmic Shiv Projectile
@@ -2811,7 +2811,7 @@ Configs: {
 			Label: 重置物品温馨提示
 			Tooltip:
 				'''
-				嘿！如果您看到了这个！别急着关掉！在这之前确保您理解了[c/fff08c:强制重制内容替换]的作用和意义！
+				嘿！如果您看到了这个！别急着关掉，在这之前确保您理解了[c/fff08c:强制重制内容替换]的作用和意义
 				[c/de0808:尤其是关闭了][c/fff08c:强制重制内容替换][c/de0808:之后会发生什么！！]
 				如果您在阅读了模组的内容引导后仍旧解决不了您的疑惑与问题，
 				请前往论坛联系我或者向 coslowkimberli185@gmail.com 发送邮件

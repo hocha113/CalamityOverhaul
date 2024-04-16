@@ -332,6 +332,7 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(ItemID.IllegalGunParts, 1)
                     .AddIngredient(ItemID.SnowBlock, 30)
                     .AddIngredient(ItemID.IceBlock, 50)
+                    .AddTile(TileID.Anvils)
                     .Register();
             }
             

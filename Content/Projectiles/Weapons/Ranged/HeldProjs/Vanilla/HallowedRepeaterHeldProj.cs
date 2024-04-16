@@ -35,17 +35,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 proj.maxPenetrate += 2;
                 proj.penetrate += 2;
             }
+            int[] arrows = new int[] { ProjectileID.IchorArrow, ProjectileID.HolyArrow, ProjectileID.CursedArrow };
             for (int i = 0; i < 3; i++) {
-                if (i == 0) {
-                    AmmoTypes = ProjectileID.IchorArrow;
-                }
-                else if (i == 1) {
-                    AmmoTypes = ProjectileID.HolyArrow;
-                }
-                else if (i == 2) {
-                    AmmoTypes = ProjectileID.CursedArrow;
-                }
-                int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.08f, 0.08f)) * Main.rand.NextFloat(0.8f, 1f), AmmoTypes, 2 * WeaponDamage/3, WeaponKnockback, Owner.whoAmI, 0);
+                int proj1 = Projectile.NewProjectile(Source, GunShootPos
+                    , ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1f)
+                    , arrows[i], WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj1].extraUpdates += 2;
             }
         }

@@ -4,7 +4,7 @@
 该模组引入了多件全新的扩展武器，并搭配一个全新的合成系统，以进一步丰富游戏流程。
 未来的更新将进一步重置大量 Calamity Mod 的武器和机制，为玩家带来全新的Calamity体验。
 
-该模组在Github上开源，您可以搜索 CalamityOverhaul 找到模组的开源库
+该模组在[url=https://github.com/hocha113/CalamityOverhaul]Github[/url]上开源
 
 对中文语言区的朋友：
 如果您想反馈问题或者意见，请加QQ群711243165，在那里您可以直接联系到我
