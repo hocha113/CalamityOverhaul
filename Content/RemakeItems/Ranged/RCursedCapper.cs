@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int ProtogenesisID => ModContent.ItemType<CursedCapperEcType>();
         public override string TargetToolTipItemName => "CursedCapperEcType";
         public override void SetDefaults(Item item) {
-            item.damage = 31;
+            item.damage = 22;
             item.DamageType = DamageClass.Ranged;
             item.width = 52;
             item.height = 32;
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ProjectileID.CursedBullet;
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
-            item.SetCartridgeGun<CursedCapperHeldProj>(22);
+            item.SetCartridgeGun<CursedCapperHeldProj>(20);
         }
     }
 }

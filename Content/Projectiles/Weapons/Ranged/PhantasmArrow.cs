@@ -51,5 +51,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             Time++;
         }
+
+        public override bool PreDraw(ref Color lightColor) {
+            if (Time < 3) {
+                return false;
+            }
+            return base.PreDraw(ref lightColor);
+        }
     }
 }

@@ -38,8 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            int num = (Projectile.CritChance + 16) / 20;
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0 , 1 + num);
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
             Main.projectile[proj].extraUpdates += 1;
             Main.projectile[proj].usesLocalNPCImmunity = true;
             Main.projectile[proj].localNPCHitCooldown = 5;

@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
         public override void PostInOwner() {
             if (onFireR) {
+                BowArrowDrawBool = false;
                 LimitingAngle();
             }
         }

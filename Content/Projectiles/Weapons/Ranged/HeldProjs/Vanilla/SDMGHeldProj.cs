@@ -14,14 +14,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.SDMG;
         public override int targetCWRItem => ItemID.SDMG;
         public override void SetRangedProperty() {
-            FireTime = 5;
+            FireTime = 4;
             ShootPosToMouLengValue = 15;
             ShootPosNorlLengValue = 10;
             HandDistance = 15;
             HandDistanceY = 0;
             GunPressure = 0.05f;
             ControlForce = 0.05f;
-            Recoil = 1f;
+            Recoil = 0.8f;
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
             kreloadMaxTime = 45;

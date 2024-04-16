@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Deathwind>();
         public override int targetCWRItem => ModContent.ItemType<DeathwindEcType>();
         public override void SetRangedProperty() {
-            base.SetRangedProperty();
+            BowArrowDrawNum = 3;
+            FiringDefaultSound = false;
         }
 
         public override void HandEvent() {
@@ -27,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundEngine.PlaySound(SoundID.Item12, Projectile.Center);
                 for (int i = 0; i < 3; i++) {
                     int ammo = Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
-                        , ModContent.ProjectileType<DeathLaser>(), WeaponDamage + 500, WeaponKnockback, Projectile.owner);
+                        , ModContent.ProjectileType<DeathLaser>(), WeaponDamage, WeaponKnockback, Projectile.owner);
                     Main.projectile[ammo].ai[1] = Projectile.whoAmI;
                     Main.projectile[ammo].rotation = Projectile.rotation + MathHelper.ToRadians(5 - 5 * i);
                 }
@@ -42,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Main.projectile[ammo].CWR().SpanTypes = (byte)SpanTypesEnum.DeadWing;
                 }
                 Projectile.ai[2]++;
-                if (Projectile.ai[2] > 3) {
+                if (Projectile.ai[2] > 5) {
                     for (int i = 0; i < 3; i++) {
                         Vector2 vr = (Projectile.rotation + MathHelper.ToRadians(5 - 5 * i)).ToRotationVector2();
                         int ammo = Projectile.NewProjectile(Owner.parent(), Projectile.Center + vr * 150, vr * 15,

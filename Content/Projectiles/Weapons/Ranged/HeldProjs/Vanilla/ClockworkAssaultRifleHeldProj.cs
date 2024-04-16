@@ -50,10 +50,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void FiringShoot() {
             SpawnGunFireDust();
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             chargeAmmoNum++;
             if (chargeAmmoNum >= 3) {
-                thisNeedsTime += 30;
+                thisNeedsTime += 20;
                 chargeAmmoNum = 0;
             }
         }

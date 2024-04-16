@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PearlGod";
         public override void SetDefaults() {
-            Item.damage = 33;
+            Item.damage = 38;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 80;
             Item.height = 46;

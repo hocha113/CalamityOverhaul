@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (fireIndex > 3) {
                 Recoil = 1.2f;
                 RecoilRetroForceMagnitude = 7;
-                FireTime = 20;
+                FireTime = 15;
                 fireIndex = 0;
                 SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             }

@@ -2,6 +2,7 @@
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -12,6 +13,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override string Texture => CWRConstant.Item_Ranged + "AvalancheM60";
         public override void SetDefaults() {
             Item.SetCalamitySD<Onyxia>();
+            Item.damage = 62;
             Item.useAmmo = AmmoID.Snowball;
             Item.UseSound = SoundID.Item36 with { Pitch = 0.2f };
             Item.SetCartridgeGun<AvalancheM60HeldProj>(800);

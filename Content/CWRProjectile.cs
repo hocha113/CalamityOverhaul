@@ -307,9 +307,10 @@ namespace CalamityOverhaul.Content
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.Phantom && projectile.numHits == 0) {
-                _ = Projectile.NewProjectile(projectile.parent(), player.Center + (projectile.velocity.GetNormalVector() * Main.rand.Next(-130, 130))
-                    , projectile.velocity, ModContent.ProjectileType<PhantasmArrow>()
-                    , (int)(projectile.damage * 1.5f), projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
+                int proj = Projectile.NewProjectile(projectile.parent(), player.Center + (projectile.velocity.GetNormalVector() * Main.rand.Next(-130, 130))
+                    , projectile.Center.To(target.Center).UnitVector() * 13, ModContent.ProjectileType<PhantasmArrow>()
+                    , (int)(projectile.damage * 0.8f), projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
+                Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() - MathHelper.PiOver2;
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.Alluvion && projectile.numHits == 0) {
@@ -335,17 +336,15 @@ namespace CalamityOverhaul.Content
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.NailGun && projectile.numHits == 0) {
-                if (projectile.ai[2] != -1) {
-                    if (hit.Crit == true) {
-                        projectile.damage /= 2;
-                    }
-                    for (int i = 0; i < projectile.ai[2]; i++) {
-                        int proj = Projectile.NewProjectile(Source, projectile.Center + new Vector2(0, -target.height)
-                            , new Vector2(0, -5).RotatedBy(Main.rand.NextFloat(-0.48f, 0.48f)) * Main.rand.NextFloat(0.7f, 1.5f)
-                            , projectile.type, projectile.damage, projectile.knockBack, player.whoAmI, 0, 0, -1);
-                        Main.projectile[proj].extraUpdates += 1;
-                    }
-                    projectile.active = false;
+                int newdamage = projectile.damage;
+                if (hit.Crit == true) {
+                    newdamage /= 2;
+                }
+                for (int i = 0; i < 3; i++) {
+                    int proj = Projectile.NewProjectile(Source, projectile.Center + new Vector2(0, -target.height)
+                        , new Vector2(0, -5).RotatedBy(Main.rand.NextFloat(-0.48f, 0.48f)) * Main.rand.NextFloat(0.7f, 1.5f)
+                        , projectile.type, newdamage, projectile.knockBack, player.whoAmI, 0, 0, -1);
+                    Main.projectile[proj].extraUpdates += 1;
                 }
             }
 

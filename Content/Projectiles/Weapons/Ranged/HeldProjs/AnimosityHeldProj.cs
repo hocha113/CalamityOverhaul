@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             FireTime = 6;
             ControlForce = 0.1f;
             GunPressure = 0.2f;
-            Recoil = 2;
+            Recoil = 1.2f;
             HandDistance = 27;
             HandDistanceY = 3;
             HandFireDistance = 27;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShoot() {
             FireTime = 6;
             GunPressure = 0.2f;
-            Recoil = 2;
+            Recoil = 1.2f;
             RangeOfStress = 5;
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ProjectileID.BulletHighVelocity;
@@ -45,7 +45,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             GunPressure = 0.6f;
             Recoil = 5;
             RangeOfStress = 25;
-            Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AnimosityOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
+            Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
+                , ModContent.ProjectileType<AnimosityOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
             CaseEjection();
         }
     }

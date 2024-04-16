@@ -23,8 +23,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.scale = 1.25f;
             Item.width = 58;
             Item.height = 58;
-            Item.useTime = 20;
-            Item.useAnimation = 20;
+            Item.useTime = 16;
+            Item.useAnimation = 16;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.useTurn = false;
             Item.knockBack = 2f;
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<DarkIceZeros>();
-            Item.shootSpeed = 5f;
+            Item.shootSpeed = 7f;
         }
 
         public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers) {

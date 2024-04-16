@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Phangasm>();
         public override int targetCWRItem => ModContent.ItemType<PhangasmEcType>();
         public override void SetRangedProperty() {
-            base.SetRangedProperty();
+            BowArrowDrawNum = 3;
         }
         public override void PostInOwner() {
             base.PostInOwner();

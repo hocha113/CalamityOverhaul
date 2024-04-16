@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<PearlGod>();
         public override int ProtogenesisID => ModContent.ItemType<PearlGodEcType>();
         public override void SetDefaults(Item item) {
-            item.damage = 33;
+            item.damage = 38;
             item.DamageType = DamageClass.Ranged;
             item.width = 80;
             item.height = 46;

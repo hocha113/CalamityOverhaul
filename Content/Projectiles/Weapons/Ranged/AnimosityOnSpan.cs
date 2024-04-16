@@ -10,9 +10,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 ShootState shootState = Owner.GetShootState();
                 float rot = Owner.Center.To(Main.MouseWorld).ToRotation();
                 for (int i = 0; i < 5; i++) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center,
+                    Projectile.NewProjectile(shootState.Source, Projectile.Center,
                     (rot + Main.rand.NextFloat(-0.1f, 0.1f)).ToRotationVector2() * shootState.ScaleFactor * Main.rand.NextFloat(0.6f, 1.1f)
-                    , ProjectileID.BulletHighVelocity, shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI, 0);
+                    , ProjectileID.BulletHighVelocity, (int)(shootState.WeaponDamage * 0.6f), shootState.WeaponKnockback, Owner.whoAmI, 0);
                 }
             }
         }

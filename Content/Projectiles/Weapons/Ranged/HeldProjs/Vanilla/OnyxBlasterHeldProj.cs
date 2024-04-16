@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.OnyxBlaster;
         public override int targetCWRItem => ItemID.OnyxBlaster;
         public override void SetRangedProperty() {
-            FireTime = 36;
+            FireTime = 18;
             kreloadMaxTime = 18;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             HandDistanceY = 0;
             GunPressure = 0.3f;
             ControlForce = 0.1f;
-            Recoil = 6f;
+            Recoil = 3.2f;
             RangeOfStress = 48;
             LoadingQuantity = 1;
             RepeatedCartridgeChange = true;

@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CursedCapper";
         public override void SetDefaults() {
-            Item.damage = 31;
+            Item.damage = 22;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 52;
             Item.height = 32;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ProjectileID.CursedBullet;
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.SetCartridgeGun<CursedCapperHeldProj>(22);
+            Item.SetCartridgeGun<CursedCapperHeldProj>(20);
         }
     }
 }

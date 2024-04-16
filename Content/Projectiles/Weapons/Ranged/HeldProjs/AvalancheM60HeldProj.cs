@@ -112,13 +112,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RecoilRetroForceMagnitude = 5;
             RecoilOffsetRecoverValue = 0.5f;
 
-            fireIndex++;
-
-            if (fireIndex > 1) {
-                if (FireTime > 7) {
-                    FireTime--;
-                }
-                fireIndex = 0;
+            if (FireTime > 7) {
+                FireTime--;
             }
 
             for (int i = 0; i < 3; i++) {
@@ -135,12 +130,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     proj.extraUpdates += 1;
                     proj.penetrate += 5;
                     proj.usesLocalNPCImmunity = true;
-                    proj.localNPCHitCooldown = 30;
+                    proj.localNPCHitCooldown = -1;
                 }
             }
 
-            Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<ExtremeColdHail>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, ShootVelocity.Y);
-
+            Projectile proj3 = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<ExtremeColdHail>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, ShootVelocity.Y);
+            proj3.rotation = proj3.velocity.ToRotation() + MathHelper.PiOver2;
             if (FireTime <= 8) {
                 fireIndex2++;
                 if (fireIndex2 > 20) {

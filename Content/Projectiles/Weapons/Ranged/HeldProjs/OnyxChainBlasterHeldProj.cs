@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<OnyxChainBlasterEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 160;
+            kreloadMaxTime = 120;
             FireTime = 6;
             HandDistance = 22;
             HandDistanceY = 5;
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            int shardDamage = (int)(1.05f * WeaponKnockback);
+            int shardDamage = (int)(1.25f * WeaponKnockback);
             float shardKB = 1f * WeaponKnockback;
             Projectile shard = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity, ProjectileID.BlackBolt, shardDamage, shardKB, Owner.whoAmI, 0f, 0f);
             shard.timeLeft = (int)(shard.timeLeft * 2.4f);
@@ -54,8 +54,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 float randVelMultiplier = Main.rand.NextFloat(0.72f, 1.08f);
                 Vector2 ccwVelocity = ShootVelocity.RotatedBy(-randAngle) * randVelMultiplier;
                 Vector2 cwVelocity = ShootVelocity.RotatedBy(randAngle) * randVelMultiplier;
-                Projectile.NewProjectile(Source, GunShootPos, ccwVelocity, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0f, 0f);
-                Projectile.NewProjectile(Source, GunShootPos, cwVelocity, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0f, 0f);
+                Projectile.NewProjectile(Source, GunShootPos, ccwVelocity, AmmoTypes, (int)(WeaponDamage * 0.6f), WeaponKnockback, Owner.whoAmI, 0f, 0f);
+                Projectile.NewProjectile(Source, GunShootPos, cwVelocity, AmmoTypes, (int)(WeaponDamage * 0.6f), WeaponKnockback, Owner.whoAmI, 0f, 0f);
             }
         }
 

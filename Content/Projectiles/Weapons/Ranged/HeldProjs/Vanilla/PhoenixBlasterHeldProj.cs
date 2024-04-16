@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 8;
-            CanRightClick = true;
+            CanRightClick = false;
         }
 
         public override bool PreOnKreloadEvent() {

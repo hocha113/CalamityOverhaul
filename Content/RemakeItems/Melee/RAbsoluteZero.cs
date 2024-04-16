@@ -22,8 +22,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.scale = 1.25f;
             item.width = 58;
             item.height = 58;
-            item.useTime = 20;
-            item.useAnimation = 20;
+            item.useTime = 16;
+            item.useAnimation = 16;
             item.useStyle = ItemUseStyleID.Swing;
             item.useTurn = false;
             item.knockBack = 2f;
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
             item.shoot = ModContent.ProjectileType<DarkIceZeros>();
-            item.shootSpeed = 5f;
+            item.shootSpeed = 7f;
         }
 
         public override bool? On_OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) {

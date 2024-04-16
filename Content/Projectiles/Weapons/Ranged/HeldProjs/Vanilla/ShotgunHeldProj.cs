@@ -45,7 +45,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                     GunShootCoolingValue += 15;
                 }
                 else {
-                    
                     SoundEngine.PlaySound(CWRSound.Gun_Clipin with { Volume = 0.65f, Pitch = 0.2f }, Projectile.Center);
                 }
             }
@@ -73,9 +72,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void FiringShoot() {
             SpawnGunFireDust();
             SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot with { Volume = 0.35f, Pitch = -0.6f }, Projectile.Center);
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 7; i++) {
                 int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos
-                    , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.24f, 0.24f)) * Main.rand.NextFloat(0.7f, 1.4f)
+                    , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.7f, 1.4f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].scale += 0.1f;
             }

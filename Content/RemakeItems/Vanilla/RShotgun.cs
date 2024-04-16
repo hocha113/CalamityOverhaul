@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override int TargetID => ItemID.Shotgun;
         public override bool FormulaSubstitution => false;
         public override void SetDefaults(Item item) {
+            item.damage = 28;
             item.SetHeldProj<ShotgunHeldProj>();
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 8;

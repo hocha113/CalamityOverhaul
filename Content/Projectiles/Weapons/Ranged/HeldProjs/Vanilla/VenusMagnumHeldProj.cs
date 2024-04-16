@@ -17,13 +17,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.VenusMagnum;
         public override int targetCWRItem => ItemID.VenusMagnum;
         public override void SetRangedProperty() {
+            FireTime = 7;
             ShootPosToMouLengValue = 0;
-            ShootPosNorlLengValue = 0;
-            HandDistance = 15;
+            ShootPosNorlLengValue = -3;
+            HandDistance = 18;
+            HandFireDistanceY = -5;
             HandDistanceY = 0;
-            GunPressure = 0.2f;
+            GunPressure = 0.12f;
             ControlForce = 0.05f;
-            Recoil = 3f;
+            Recoil = 1.1f;
             RepeatedCartridgeChange = true;
             kreloadMaxTime = 45;
         }

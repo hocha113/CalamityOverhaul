@@ -124,6 +124,7 @@ namespace CalamityOverhaul
             CWRParticleHandler.Unload();
             On_Main.DrawInfernoRings -= PeSystem.CWRDrawForegroundParticles;
             On_Player.BuyItem -= CWRItems.BuyItemInitialize;
+            ILMainMenuModification.Unload();
             base.Unload();
         }
 
@@ -146,8 +147,7 @@ namespace CalamityOverhaul
             if (Main.dedServ)
                 return;
 
-            //MusicLoader.AddMusicBox(Instance, MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/BuryTheLight")
-            //    , Find<ModItem>("FoodStallChair").Type, Find<ModTile>("FoodStallChair").Type, 0);
+            ILMainMenuModification.Load();
         }
     }
 }

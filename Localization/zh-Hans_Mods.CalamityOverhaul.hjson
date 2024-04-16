@@ -944,7 +944,7 @@ Items: {
 		Tooltip:
 			'''
 			发射追踪敌人的叶流，攻击速度会愈发加快
-			受击会让速度加成清零
+			受击会让速度加成清零，同时清空飞行时间
 			右键蓄力发射强大的丛林爆弹
 			'''
 	}
@@ -2239,7 +2239,7 @@ Items: {
 			发射一连串龙焰火球，发射速度随使用时间增加而加快
 			火球会降下陨石雨，留下龙尘造成伤害。
 			在最大速度时会发射额外的火球，触发“火球激流”效果，火球具有追踪能力
-			火球激流发动时，如果受到伤害，攻击会被打断，同时降低飞行时间
+			火球激流发动时，如果受到伤害，攻击会被打断，同时清空飞行时间
 			右键点击发射五连发EX龙火之矢
 			“区区之事，无伤尔”
 			'''
@@ -2257,8 +2257,8 @@ Items: {
 	}
 
 	Slingshot: {
-		// DisplayName: Slingshot
-		// Tooltip: ""
+		DisplayName: 木制弹弓
+		Tooltip: 原始的蓄能武器
 	}
 }
 
@@ -2322,18 +2322,18 @@ Projectiles: {
 	// SpatialSpears.DisplayName: Spatial Spears
 	// ElementalSpike.DisplayName: Elemental Spike
 	// Feathers.DisplayName: Feathers
-	// ArbalestHeldProj.DisplayName: Arbalest Held Proj
-	// DeathwindHeldProj.DisplayName: Deathwind Held Proj
+	// ArbalestHeldProj.DisplayName: Arbalest
+	// DeathwindHeldProj.DisplayName: Deathwind
 	// DeathLaser.DisplayName: Death Laser
 	// DeadArrow.DisplayName: Dead Arrow
-	// DragonsBreathHeldProj.DisplayName: Dragons Breath Held Proj
+	// DragonsBreathHeldProj.DisplayName: Dragons Breath
 	// Cyclones.DisplayName: Cyclones
 	// DeadWave.DisplayName: Dead Wave
 	// WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica Projectile
 	// CosmicFire.DisplayName: Cosmic Fire
 	// Trail.DisplayName: Trail
 	// StreamGouges.DisplayName: Stream Gouges
-	// GaleforceHeldProj.DisplayName: Galeforce Held Proj
+	// GaleforceHeldProj.DisplayName: Galeforce
 	// ElementWhipProjectile.DisplayName: Element Whip Projectile
 	// ElementBallShivs.DisplayName: Element Ball Shivs
 	// GhostFires.DisplayName: Ghost Fires
@@ -2360,12 +2360,12 @@ Projectiles: {
 	// DivineSourceKnifelight.DisplayName: Divine Source Knifelight
 	// DivineSourceBeam.DisplayName: Divine Source Beam
 	// FatesRevealFlames.DisplayName: Fates Reveal Flames
-	// FatesRevealHeldProj.DisplayName: Fates Reveal Held Proj
+	// FatesRevealHeldProj.DisplayName: Fates Reveal
 	// FateCluster.DisplayName: Fate Cluster
 	// HatredFire.DisplayName: Hatred Fire
 	// TheCurseArchdemon.DisplayName: The Curse Archdemon
 	// BloodVerdict.DisplayName: Blood Verdict
-	// ClaretCannonHeldProj.DisplayName: Claret Cannon Held Proj
+	// ClaretCannonHeldProj.DisplayName: Claret Cannon
 	// EssenceSpark.DisplayName: Essence Spark
 	// EssenceFlamethrower.DisplayName: Essence Flamethrower
 	// ShockwaveBoom.DisplayName: Shockwave Boom
@@ -2378,7 +2378,7 @@ Projectiles: {
 	// AegisBladeProj.DisplayName: Aegis Blade
 	// AegisBeams.DisplayName: Aegis Beams
 	// DragonsBreathRound.DisplayName: Dragons Breath Round
-	// DragonsBreathRifleHeldProj.DisplayName: Dragons Breath Rifle Held Proj
+	// DragonsBreathRifleHeldProj.DisplayName: Dragons Breath Rifle
 	// InfiniteArrow.DisplayName: Infinite Arrow
 	// HeavenLightning.DisplayName: Heaven Lightning
 	// CelestialVortex.DisplayName: Celestial Vortex
@@ -2419,7 +2419,7 @@ Projectiles: {
 	// CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
 	// Rogue.RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 	// GangarusProjectile.DisplayName: Gangarus Projectile
-	// GangarusHeldProjectile.DisplayName: Gangarus Held Projectile
+	// GangarusHeldProjectile.DisplayName: Spear of Longinus
 	// PilgrimsFury.DisplayName: Pilgrims Fury
 	// Godslight.DisplayName: Godslight
 	// SoulSeeker.DisplayName: Soul Seeker
@@ -2436,7 +2436,7 @@ Projectiles: {
 	// PlagueBee.DisplayName: Plague Bee
 	// PlagueBeeWave.DisplayName: Plague Bee Wave
 	// GouldBee.DisplayName: Gould Bee
-	// BalefulHarvesterHeldProj.DisplayName: Baleful Harvester Held Proj
+	// BalefulHarvesterHeldProj.DisplayName: Baleful Harvester
 	// BalefulSickle.DisplayName: Baleful Sickle
 	// BalefulBall.DisplayName: Baleful Ball
 	// VulcaniteBall.DisplayName: Vulcanite Ball
@@ -2448,7 +2448,7 @@ Projectiles: {
 	// MeleeFossilShard.DisplayName: Melee Fossil Shard
 	// TeardropCleaverProj.DisplayName: Teardrop Cleaver Proj
 	// DarkIceZeros.DisplayName: Dark Ice Zeros
-	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade Held Proj
+	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
 	// WaningMoonLight.DisplayName: Waning Moon Light
 	MurasamaHeldProj.DisplayName: 高分子斩切刃
 	MurasamaBreakOut.DisplayName: 高分子斩切刃
@@ -2464,104 +2464,104 @@ Projectiles: {
 	EndSkillMakeDamage.DisplayName: 次元斩-终
 	// PowerSoundEgg.DisplayName: Power Sound Egg
 	// TitleMusicBoxEasterEggProj.DisplayName: Title Music Box Easter Egg Proj
-	// BlossomFluxHeldProj.DisplayName: Blossom Flux Held Proj
+	// BlossomFluxHeldProj.DisplayName: Blossom Flux
 	// LeafArrows.DisplayName: Leaf Arrows
-	// SporeBombOnSpan.DisplayName: Spore Bomb On Span
+	// SporeBombOnSpan.DisplayName: Spore Bomb
 	// SporeBombs.DisplayName: Spore Bombs
-	// PhangasmBowHeldProj.DisplayName: Phangasm Bow Held Proj
+	// PhangasmBowHeldProj.DisplayName: Phangasm Bow
 	// Phantom.DisplayName: Phantom
 	// PhantasmArrow.DisplayName: Phantasm Arrow
-	// ContagionHeldProj.DisplayName: Contagion Held Proj
+	// ContagionHeldProj.DisplayName: Contagion
 	// NurgleArrow.DisplayName: Nurgle Arrow
 	// NurgleTheOfBall.DisplayName: Nurgle The Of Ball
 	// NurgleBee.DisplayName: Nurgle Bee
-	// AlluvionHeldProj.DisplayName: Alluvion Held Proj
-	// PlanetaryAnnihilationHeldProj.DisplayName: Planetary Annihilation Held Proj
-	// TheMaelstromHeldProj.DisplayName: The Maelstrom Held Proj
+	// AlluvionHeldProj.DisplayName: Alluvion
+	// PlanetaryAnnihilationHeldProj.DisplayName: Planetary Annihilation
+	// TheMaelstromHeldProj.DisplayName: The Maelstrom
 	// PlanetaryArrow.DisplayName: Planetary Arrow
 	// TheMaelstromTheArrow.DisplayName: The Maelstrom The Arrow
-	// TheMaelstromSharkOnSpan.DisplayName: The Maelstrom Shark On Span
-	// TyphoonOnSpan.DisplayName: Typhoon On Span
+	// TheMaelstromSharkOnSpan.DisplayName: The Maelstrom Shark
+	// TyphoonOnSpan.DisplayName: Typhoon
 	// BaseOnSpanProj.DisplayName: Base On Span Proj
 	// DeepSeaSharks.DisplayName: Deep Sea Sharks
 	// NurgleSoul.DisplayName: Nurgle Soul
-	// ClockGatlignumHeldProj.DisplayName: Clock Gatlignum Held Proj
-	// ElementalBlasterHeldProj.DisplayName: Elemental Blaster Held Proj
-	// MarksmanBowHeldProj.DisplayName: Marksman Bow Held Proj
+	// ClockGatlignumHeldProj.DisplayName: Clock Gatlignum
+	// ElementalBlasterHeldProj.DisplayName: Elemental Blaster
+	// MarksmanBowHeldProj.DisplayName: Marksman Bow
 	// EnergyBlast.DisplayName: Energy Blast
 	// EnergyBlast2.DisplayName: Energy Blast2
-	// NettlevineGreatbowHeldProj.DisplayName: Nettlevine Greatbow Held Proj
+	// NettlevineGreatbowHeldProj.DisplayName: Nettlevine Greatbow
 	// TarragonArrow.DisplayName: Tarragon Arrow
-	// TarragonArrowOnSpan.DisplayName: Tarragon Arrow On Span
-	// SpectreRifleHeldProj.DisplayName: Spectre Rifle Held Proj
+	// TarragonArrowOnSpan.DisplayName: Tarragon Arrow
+	// SpectreRifleHeldProj.DisplayName: Spectre Rifle
 	// LostSoulBullet.DisplayName: Lost Soul Bullet
-	// StormDragoonHeldProj.DisplayName: Storm Dragoon Held Proj
-	// TheStormHeldProj.DisplayName: The Storm Held Proj
-	// ThunderstormHeldProj.DisplayName: Thunderstorm Held Proj
-	// TyrannysEndHeldProj.DisplayName: Tyrannys End Held Proj
+	// StormDragoonHeldProj.DisplayName: Storm Dragoon
+	// TheStormHeldProj.DisplayName: The Storm
+	// ThunderstormHeldProj.DisplayName: Thunderstorm
+	// TyrannysEndHeldProj.DisplayName: Tyrannys End
 	// BMGBullet.DisplayName: .50 BMG Bullet
 	// BMGFIRE.DisplayName: BMGFIRE
-	// AntiMaterielRifleHeldProj.DisplayName: Anti Materiel Rifle Held Proj
-	// HalibutCannonHeldProj.DisplayName: Halibut Cannon Held Proj
-	// SDFMGHeldProj.DisplayName: S D F M G Held Proj
+	// AntiMaterielRifleHeldProj.DisplayName: Anti Materiel Rifle
+	// HalibutCannonHeldProj.DisplayName: Halibut Cannon
+	// SDFMGHeldProj.DisplayName: S D F M G
 	// BMGFIRE2.DisplayName: BMGFIRE
 	// TorrentialBullet.DisplayName: Torrential Bullet
 	// GildedProboscisLightning.DisplayName: Gilded Proboscis Lightning
 	// GildedProboscisLightningArc.DisplayName: Gilded Proboscis Lightning Arc
-	// DeadSunsWindHeldProj.DisplayName: Dead Suns Wind Held Proj
-	// FetidEmesisHeldProj.DisplayName: Fetid Emesis Held Proj
-	// SeadragonHeldProj.DisplayName: Seadragon Held Proj
-	// FetidEmesisOnSpan.DisplayName: Fetid Emesis On Span
-	// MinisharkHeldProj.DisplayName: Minishark Held Proj
-	// MegasharkHeldProj.DisplayName: Megashark Held Proj
+	// DeadSunsWindHeldProj.DisplayName: Dead Suns Wind
+	// FetidEmesisHeldProj.DisplayName: Fetid Emesis
+	// SeadragonHeldProj.DisplayName: Seadragon
+	// FetidEmesisOnSpan.DisplayName: Fetid Emesis
+	// MinisharkHeldProj.DisplayName: Minishark
+	// MegasharkHeldProj.DisplayName: Megashark
 	// BarrenOrb.DisplayName: Barren Orb
-	// BarrenBowHeldProj.DisplayName: Barren Bow Held Proj
-	// ScorchedEarthHeldProj.DisplayName: Scorched Earth Held Proj
-	// SeasSearingHeldProj.DisplayName: Seas Searing Held Proj
-	// EarthRocketOnSpan.DisplayName: Earth Rocket On Span
-	// CoralCannonHeldProj.DisplayName: Coral Cannon Held Proj
-	// AngelicShotgunHeldProj.DisplayName: Angelic Shotgun Held Proj
-	// AquashardShotgunHeldProj.DisplayName: Aquashard Shotgun Held Proj
-	// AnimosityOnSpan.DisplayName: Animosity On Span
-	// AnimosityHeldProj.DisplayName: Animosity Held Proj
-	// CorinthPrimeHeldProj.DisplayName: Corinth Prime Held Proj
-	// CursedCapperHeldProj.DisplayName: Cursed Capper Held Proj
-	// QuadBarrelShotgunHeldProj.DisplayName: Quad Barrel Shotgun Held Proj
-	// DisseminatorHeldProj.DisplayName: Disseminator Held Proj
-	// HellbornHeldProj.DisplayName: Hellborn Held Proj
-	// HelstormHeldProj.DisplayName: Helstorm Held Proj
-	// LeviatitanHeldProj.DisplayName: Leviatitan Held Proj
-	// PetrifiedDiseaseHeldProj.DisplayName: Petrified Disease Held Proj
+	// BarrenBowHeldProj.DisplayName: Barren Bow
+	// ScorchedEarthHeldProj.DisplayName: Scorched Earth
+	// SeasSearingHeldProj.DisplayName: Seas Searing
+	// EarthRocketOnSpan.DisplayName: Earth Rocket
+	// CoralCannonHeldProj.DisplayName: Coral Cannon
+	// AngelicShotgunHeldProj.DisplayName: Angelic Shotgun
+	// AquashardShotgunHeldProj.DisplayName: Aquashard Shotgun
+	// AnimosityOnSpan.DisplayName: Animosity
+	// AnimosityHeldProj.DisplayName: Animosity
+	// CorinthPrimeHeldProj.DisplayName: Corinth Prime
+	// CursedCapperHeldProj.DisplayName: Cursed Capper
+	// QuadBarrelShotgunHeldProj.DisplayName: Quad Barrel Shotgun
+	// DisseminatorHeldProj.DisplayName: Disseminator
+	// HellbornHeldProj.DisplayName: Hellborn
+	// HelstormHeldProj.DisplayName: Helstorm
+	// LeviatitanHeldProj.DisplayName: Leviatitan
+	// PetrifiedDiseaseHeldProj.DisplayName: Petrified Disease
 	// PetrifiedDiseaseAorrw.DisplayName: Petrified Disease Aorrw
 	// YharonOreProj.DisplayName: Yharon Ore Proj
 	// GoldenEagleHelProj.DisplayName: Golden Eagle Hel Proj
 	// DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
 	// TheDaybreak3.DisplayName: The Daybreak3
 	// DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
-	// HandgunHeldProj.DisplayName: Handgun Held Proj
-	// FlintlockpistolHeldProj.DisplayName: Flintlockpistol Held Proj
-	// MusketHeldProj.DisplayName: Musket Held Proj
-	// TheUndertakerHeldProj.DisplayName: The Undertaker Held Proj
-	// RedRyderHeldProj.DisplayName: Red Ryder Held Proj
-	// FlareGunHeldProj.DisplayName: Flare Gun Held Proj
-	// PhoenixBlasterHeldProj.DisplayName: Phoenix Blaster Held Proj
-	// SandgunHeldProj.DisplayName: Sandgun Held Proj
-	// StarCannonHeldProj.DisplayName: Star Cannon Held Proj
-	// SuperStarCannonHeldProj.DisplayName: Super Star Cannon Held Proj
-	// ZapinatorGrayHeldProj.DisplayName: Zapinator Gray Held Proj
-	// ZapinatorOrangeHeldProj.DisplayName: Zapinator Orange Held Proj
-	// SurgeDriverHeldProj.DisplayName: Surge Driver Held Proj
+	// HandgunHeldProj.DisplayName: Handgun
+	// FlintlockpistolHeldProj.DisplayName: Flintlockpistol
+	// MusketHeldProj.DisplayName: Musket
+	// TheUndertakerHeldProj.DisplayName: The Undertaker
+	// RedRyderHeldProj.DisplayName: Red Ryder
+	// FlareGunHeldProj.DisplayName: Flare Gun
+	// PhoenixBlasterHeldProj.DisplayName: Phoenix Blaster
+	// SandgunHeldProj.DisplayName: Sandgun
+	// StarCannonHeldProj.DisplayName: Star Cannon
+	// SuperStarCannonHeldProj.DisplayName: Super Star Cannon
+	// ZapinatorGrayHeldProj.DisplayName: Zapinator Gray
+	// ZapinatorOrangeHeldProj.DisplayName: Zapinator Orange
+	// SurgeDriverHeldProj.DisplayName: Surge Driver
 	// HellfireBullet.DisplayName: Hellfire Bullet
-	// BoomstickHeldProj.DisplayName: Boomstick Held Proj
-	// ShotgunHeldProj.DisplayName: Shotgun Held Proj
-	// TacticalShotgunHeldProj.DisplayName: Tactical Shotgun Held Proj
-	// DeepcoreGK2HeldProj.DisplayName: Deepcore G K2 Held Proj
-	// DodusHandcannonHeldProj.DisplayName: Dodus Handcannon Held Proj
-	// P90HeldProj.DisplayName: P90 Held Proj
-	// PearlGodHeldProj.DisplayName: Pearl God Held Proj
+	// BoomstickHeldProj.DisplayName: Boomstick
+	// ShotgunHeldProj.DisplayName: Shotgun
+	// TacticalShotgunHeldProj.DisplayName: Tactical Shotgun
+	// DeepcoreGK2HeldProj.DisplayName: Deepcore G K2
+	// DodusHandcannonHeldProj.DisplayName: Dodus Handcannon
+	// P90HeldProj.DisplayName: P90
+	// PearlGodHeldProj.DisplayName: Pearl God
 	// FlintProj.DisplayName: Flint Proj
 	// FlintSpearProj.DisplayName: Flint Spear Proj
-	// TheUpiSteleHeldProj.DisplayName: The Upi Stele Held Proj
+	// TheUpiSteleHeldProj.DisplayName: The Upi Stele
 	// MagicStar.DisplayName: Magic Star
 	// TheSpiritFlintProjL.DisplayName: The Spirit Flint Proj L
 	// TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
@@ -2569,132 +2569,132 @@ Projectiles: {
 	// PebbleSpearProj.DisplayName: Pebble Spear Proj
 	// PebbleProj.DisplayName: Pebble Proj
 	// AmmoBoxProj.DisplayName: Ammo Box Proj
-	// BulletFilledShotgunHeldProj.DisplayName: Bullet Filled Shotgun Held Proj
-	// ButcherHeldProj.DisplayName: Butcher Held Proj
-	// FungicideHeldProj.DisplayName: Fungicide Held Proj
-	// HalleysInfernoHeldProj.DisplayName: Halleys Inferno Held Proj
-	// HandheldTankHeldProj.DisplayName: Handheld Tank Held Proj
-	// InfinityHeldProj.DisplayName: Infinity Held Proj
-	// KarasawaHeldProj.DisplayName: Karasawa Held Proj
-	// KingsbaneHeldProj.DisplayName: Kingsbane Held Proj
-	// MegalodonHeldProj.DisplayName: Megalodon Held Proj
-	// ClockworkAssaultRifleHeldProj.DisplayName: Clockwork Assault Rifle Held Proj
-	// MidasPrimeHeldProj.DisplayName: Midas Prime Held Proj
-	// NeedlerHeldProj.DisplayName: Needler Held Proj
-	// PlagueTaintedSMGHeldProj.DisplayName: Plague Tainted S M G Held Proj
-	// PumplerHeldProj.DisplayName: Pumpler Held Proj
-	// ScorpioHeldProj.DisplayName: Scorpio Held Proj
-	// ScorpioOnSpan.DisplayName: Scorpio On Span
-	// SnowballCannonHeldProj.DisplayName: Snowball Cannon Held Proj
-	// StakeLauncherHeldProj.DisplayName: Stake Launcher Held Proj
-	// UziHeldProj.DisplayName: Uzi Held Proj
-	// VenusMagnumHeldProj.DisplayName: Venus Magnum Held Proj
-	// DartPistolHeldProj.DisplayName: Dart Pistol Held Proj
-	// DartRifleHeldProj.DisplayName: Dart Rifle Held Proj
-	// NailGunHeldProj.DisplayName: Nail Gun Held Proj
-	// SniperRifleHeldProj.DisplayName: Sniper Rifle Held Proj
-	// ArcherfishHeldProj.DisplayName: Archerfish Held Proj
-	// ArcNovaDiffuserHeldProj.DisplayName: Arc Nova Diffuser Held Proj
-	// AstralBlasterHeldProj.DisplayName: Astral Blaster Held Proj
-	// AuralisHeldProj.DisplayName: Auralis Held Proj
-	// AuroraBlazerHeldProj.DisplayName: Aurora Blazer Held Proj
-	// BarracudaGunHeldProj.DisplayName: Barracuda Gun Held Proj
-	// BlissfulBombardierHeldProj.DisplayName: Blissful Bombardier Held Proj
-	// ChickenCannonHeldProj.DisplayName: Chicken Cannon Held Proj
-	// ClamorRifleHeldProj.DisplayName: Clamor Rifle Held Proj
-	// GunkShotHeldProj.DisplayName: Gunk Shot Held Proj
-	// MagnaCannonHeldProj.DisplayName: Magna Cannon Held Proj
-	// NorfleetHeldProj.DisplayName: Norfleet Held Proj
-	// ShroomerHeldProj.DisplayName: Shroomer Held Proj
-	// StarfleetHeldProj.DisplayName: Starfleet Held Proj
-	// StarmadaHeldProj.DisplayName: Starmada Held Proj
-	// SulphuricAcidCannonHeldProj.DisplayName: Sulphuric Acid Cannon Held Proj
-	// UniversalGenesisHeldProj.DisplayName: Universal Genesis Held Proj
-	// VoidragonHeldProj.DisplayName: Voidragon Held Proj
+	// BulletFilledShotgunHeldProj.DisplayName: Bullet Filled Shotgun
+	// ButcherHeldProj.DisplayName: Butcher
+	// FungicideHeldProj.DisplayName: Fungicide
+	// HalleysInfernoHeldProj.DisplayName: Halleys Inferno
+	// HandheldTankHeldProj.DisplayName: Handheld Tank
+	// InfinityHeldProj.DisplayName: Infinity
+	// KarasawaHeldProj.DisplayName: Karasawa
+	// KingsbaneHeldProj.DisplayName: Kingsbane
+	// MegalodonHeldProj.DisplayName: Megalodon
+	// ClockworkAssaultRifleHeldProj.DisplayName: Clockwork Assault Rifle
+	// MidasPrimeHeldProj.DisplayName: Midas Prime
+	// NeedlerHeldProj.DisplayName: Needler
+	// PlagueTaintedSMGHeldProj.DisplayName: Plague Tainted S M G
+	// PumplerHeldProj.DisplayName: Pumpler
+	// ScorpioHeldProj.DisplayName: Scorpio
+	// ScorpioOnSpan.DisplayName: Scorpio
+	// SnowballCannonHeldProj.DisplayName: Snowball Cannon
+	// StakeLauncherHeldProj.DisplayName: Stake Launcher
+	// UziHeldProj.DisplayName: Uzi
+	// VenusMagnumHeldProj.DisplayName: Venus Magnum
+	// DartPistolHeldProj.DisplayName: Dart Pistol
+	// DartRifleHeldProj.DisplayName: Dart Rifle
+	// NailGunHeldProj.DisplayName: Nail Gun
+	// SniperRifleHeldProj.DisplayName: Sniper Rifle
+	// ArcherfishHeldProj.DisplayName: Archerfish
+	// ArcNovaDiffuserHeldProj.DisplayName: Arc Nova Diffuser
+	// AstralBlasterHeldProj.DisplayName: Astral Blaster
+	// AuralisHeldProj.DisplayName: Auralis
+	// AuroraBlazerHeldProj.DisplayName: Aurora Blazer
+	// BarracudaGunHeldProj.DisplayName: Barracuda Gun
+	// BlissfulBombardierHeldProj.DisplayName: Blissful Bombardier
+	// ChickenCannonHeldProj.DisplayName: Chicken Cannon
+	// ClamorRifleHeldProj.DisplayName: Clamor Rifle
+	// GunkShotHeldProj.DisplayName: Gunk Shot
+	// MagnaCannonHeldProj.DisplayName: Magna Cannon
+	// NorfleetHeldProj.DisplayName: Norfleet
+	// ShroomerHeldProj.DisplayName: Shroomer
+	// StarfleetHeldProj.DisplayName: Starfleet
+	// StarmadaHeldProj.DisplayName: Starmada
+	// SulphuricAcidCannonHeldProj.DisplayName: Sulphuric Acid Cannon
+	// UniversalGenesisHeldProj.DisplayName: Universal Genesis
+	// VoidragonHeldProj.DisplayName: Voidragon
 	// BarracudaProj.DisplayName: Barracuda Proj
-	// ArcNovaDiffuserOnSpan.DisplayName: Arc Nova Diffuser On Span
+	// ArcNovaDiffuserOnSpan.DisplayName: Arc Nova Diffuser
 	// VoidragonOrb.DisplayName: Voidragon Orb
-	// LaserRifleHeldProj.DisplayName: Laser Rifle Held Proj
-	// OnyxBlasterHeldProj.DisplayName: Onyx Blaster Held Proj
-	// SDMGHeldProj.DisplayName: S D M G Held Proj
-	// VortexBeaterHeldProj.DisplayName: Vortex Beater Held Proj
-	// AcesHighHeldProj.DisplayName: Aces High Held Proj
-	// ConferenceCallHeldProj.DisplayName: Conference Call Held Proj
-	// MineralMortarHeldProj.DisplayName: Mineral Mortar Held Proj
-	// MolecularManipulatorHeldProj.DisplayName: Molecular Manipulator Held Proj
-	// NullificationRifleHeldProj.DisplayName: Nullification Rifle Held Proj
-	// OnyxChainBlasterHeldProj.DisplayName: Onyx Chain Blaster Held Proj
-	// OnyxiaHeldProj.DisplayName: Onyxia Held Proj
-	// RealmRavagerHeldProj.DisplayName: Realm Ravager Held Proj
-	// RubicoPrimeHeldProj.DisplayName: Rubico Prime Held Proj
-	// SandstormGunHeldProj.DisplayName: Sandstorm Gun Held Proj
-	// SepticSkewerHeldProj.DisplayName: Septic Skewer Held Proj
-	// ShredderHeldProj.DisplayName: Shredder Held Proj
-	// SomaPrimeHeldProj.DisplayName: Soma Prime Held Proj
-	// SpectralstormCannonHeldProj.DisplayName: Spectralstorm Cannon Held Proj
-	// SpeedBlasterHeldProj.DisplayName: Speed Blaster Held Proj
-	// SpykerHeldProj.DisplayName: Spyker Held Proj
-	// StarSputterHeldProj.DisplayName: Star Sputter Held Proj
+	// LaserRifleHeldProj.DisplayName: Laser Rifle
+	// OnyxBlasterHeldProj.DisplayName: Onyx Blaster
+	// SDMGHeldProj.DisplayName: S D M G
+	// VortexBeaterHeldProj.DisplayName: Vortex Beater
+	// AcesHighHeldProj.DisplayName: Aces High
+	// ConferenceCallHeldProj.DisplayName: Conference Call
+	// MineralMortarHeldProj.DisplayName: Mineral Mortar
+	// MolecularManipulatorHeldProj.DisplayName: Molecular Manipulator
+	// NullificationRifleHeldProj.DisplayName: Nullification Rifle
+	// OnyxChainBlasterHeldProj.DisplayName: Onyx Chain Blaster
+	// OnyxiaHeldProj.DisplayName: Onyxia
+	// RealmRavagerHeldProj.DisplayName: Realm Ravager
+	// RubicoPrimeHeldProj.DisplayName: Rubico Prime
+	// SandstormGunHeldProj.DisplayName: Sandstorm Gun
+	// SepticSkewerHeldProj.DisplayName: Septic Skewer
+	// ShredderHeldProj.DisplayName: Shredder
+	// SomaPrimeHeldProj.DisplayName: Soma Prime
+	// SpectralstormCannonHeldProj.DisplayName: Spectralstorm Cannon
+	// SpeedBlasterHeldProj.DisplayName: Speed Blaster
+	// SpykerHeldProj.DisplayName: Spyker
+	// StarSputterHeldProj.DisplayName: Star Sputter
 	// Star.DisplayName: Star
-	// StellarCannonHeldProj.DisplayName: Stellar Cannon Held Proj
-	// SvantechnicalHeldProj.DisplayName: Svantechnical Held Proj
-	// TheHiveHeldProj.DisplayName: The Hive Held Proj
-	// ThePackHeldProj.DisplayName: The Pack Held Proj
-	// PestilentDefilerHeldProj.DisplayName: Pestilent Defiler Held Proj
-	// AdamantiteRepeaterHeldProj.DisplayName: Adamantite Repeater Held Proj
-	// ChlorophyteShotbowHeldProj.DisplayName: Chlorophyte Shotbow Held Proj
-	// CobaltRepeaterHeldProj.DisplayName: Cobalt Repeater Held Proj
-	// ElectrosphereLauncherHeldProj.DisplayName: Electrosphere Launcher Held Proj
-	// GrenadeLauncherHeldProj.DisplayName: Grenade Launcher Held Proj
-	// HallowedRepeaterHeldProj.DisplayName: Hallowed Repeater Held Proj
-	// MythrilRepeaterHeldProj.DisplayName: Mythril Repeater Held Proj
-	// OrichalcumRepeaterHeldProj.DisplayName: Orichalcum Repeater Held Proj
-	// PalladiumRepeaterHeldProj.DisplayName: Palladium Repeater Held Proj
-	// ProximityMineLauncherHeldProj.DisplayName: Proximity Mine Launcher Held Proj
-	// RocketLauncherHeldProj.DisplayName: Rocket Launcher Held Proj
-	// SnowmanCannonHeldProj.DisplayName: Snowman Cannon Held Proj
-	// TitaniumRepeaterHeldProj.DisplayName: Titanium Repeater Held Proj
-	// SandnadoOnSpan.DisplayName: Sandnado On Span
-	// BladedgeGreatbowHeldProj.DisplayName: Bladedge Greatbow Held Proj
-	// CleansingBlazeHeldProj.DisplayName: Cleansing Blaze Held Proj
-	// FirestormCannonHeldProj.DisplayName: Firestorm Cannon Held Proj
-	// FlakToxicannonHeldProj.DisplayName: Flak Toxicannon Held Proj
-	// FreedomStarHeldProj.DisplayName: Freedom Star Held Proj
+	// StellarCannonHeldProj.DisplayName: Stellar Cannon
+	// SvantechnicalHeldProj.DisplayName: Svantechnical
+	// TheHiveHeldProj.DisplayName: The Hive
+	// ThePackHeldProj.DisplayName: The Pack
+	// PestilentDefilerHeldProj.DisplayName: Pestilent Defiler
+	// AdamantiteRepeaterHeldProj.DisplayName: Adamantite Repeater
+	// ChlorophyteShotbowHeldProj.DisplayName: Chlorophyte Shotbow
+	// CobaltRepeaterHeldProj.DisplayName: Cobalt Repeater
+	// ElectrosphereLauncherHeldProj.DisplayName: Electrosphere Launcher
+	// GrenadeLauncherHeldProj.DisplayName: Grenade Launcher
+	// HallowedRepeaterHeldProj.DisplayName: Hallowed Repeater
+	// MythrilRepeaterHeldProj.DisplayName: Mythril Repeater
+	// OrichalcumRepeaterHeldProj.DisplayName: Orichalcum Repeater
+	// PalladiumRepeaterHeldProj.DisplayName: Palladium Repeater
+	// ProximityMineLauncherHeldProj.DisplayName: Proximity Mine Launcher
+	// RocketLauncherHeldProj.DisplayName: Rocket Launcher
+	// SnowmanCannonHeldProj.DisplayName: Snowman Cannon
+	// TitaniumRepeaterHeldProj.DisplayName: Titanium Repeater
+	// SandnadoOnSpan.DisplayName: Sandnado
+	// BladedgeGreatbowHeldProj.DisplayName: Bladedge Greatbow
+	// CleansingBlazeHeldProj.DisplayName: Cleansing Blaze
+	// FirestormCannonHeldProj.DisplayName: Firestorm Cannon
+	// FlakToxicannonHeldProj.DisplayName: Flak Toxicannon
+	// FreedomStarHeldProj.DisplayName: Freedom Star
 	// MakeDamage.DisplayName: Make Damage
-	// StormSurgeHeldProj.DisplayName: Storm Surge Held Proj
+	// StormSurgeHeldProj.DisplayName: Storm Surge
 	// Tornado.DisplayName: Tornado
-	// BubbleGunHeldProj.DisplayName: Bubble Gun Held Proj
-	// MonsoonHeldProj.DisplayName: Monsoon Held Proj
-	// MonsoonOnSpan.DisplayName: Monsoon On Span
-	// TsunamiHeldProj.DisplayName: Tsunami Held Proj
-	// TsunamiOnSpan.DisplayName: Tsunami On Span
-	// MarshmallowHeldProj.DisplayName: Marshmallow Held Proj
+	// BubbleGunHeldProj.DisplayName: Bubble Gun
+	// MonsoonHeldProj.DisplayName: Monsoon
+	// MonsoonOnSpan.DisplayName: Monsoon
+	// TsunamiHeldProj.DisplayName: Tsunami
+	// TsunamiOnSpan.DisplayName: Tsunami
+	// MarshmallowHeldProj.DisplayName: Marshmallow
 	// MarshmallowProj.DisplayName: Marshmallow Proj
-	// MarshmallowsHeldProj.DisplayName: Marshmallows Held Proj
-	// RainbowMarshmallowsHeldProj.DisplayName: Rainbow Marshmallows Held Proj
+	// MarshmallowsHeldProj.DisplayName: Marshmallows
+	// RainbowMarshmallowsHeldProj.DisplayName: Rainbow Marshmallows
 	// MarshmallowProj2.DisplayName: Marshmallow Proj2
-	// AethersWhisperHeldProj.DisplayName: Aethers Whisper Held Proj
-	// AethersWhisperOnSpan.DisplayName: Aethers Whisper On Span
+	// AethersWhisperHeldProj.DisplayName: Aethers Whisper
+	// AethersWhisperOnSpan.DisplayName: Aethers Whisper
 	// AetherOrb.DisplayName: Aether Orb
 	// AetherOrb2.DisplayName: Aether Orb2
-	// SniperRifleOnSpan.DisplayName: Sniper Rifle On Span
-	// EtherRoarHeldProj.DisplayName: Ether Roar Held Proj
-	// EtherRoarOnSpan.DisplayName: Ether Roar On Span
+	// SniperRifleOnSpan.DisplayName: Sniper Rifle
+	// EtherRoarHeldProj.DisplayName: Ether Roar
+	// EtherRoarOnSpan.DisplayName: Ether Roar
 	// EtherRoarOrb.DisplayName: Ether Roar Orb
 	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
 	// GhastlyVisageBall.DisplayName: Ghastly Visage Ball
-	// GhastlyVisageHeldProj.DisplayName: Ghastly Visage Held Proj
-	// PridefulHuntersPlanarRipperHeldProj.DisplayName: Prideful Hunters Planar Ripper Held Proj
+	// GhastlyVisageHeldProj.DisplayName: Ghastly Visage
+	// PridefulHuntersPlanarRipperHeldProj.DisplayName: Prideful Hunters Planar Ripper
 	// VoidTentacle.DisplayName: Void Tentacle
 	// ElectrosphereLauncherOrb.DisplayName: Electrosphere Launcher Orb
-	// GatligatorHeldProj.DisplayName: Gatligator Held Proj
-	// RevolverHeldProj.DisplayName: Revolver Held Proj
-	// XenopopperHeldProj.DisplayName: Xenopopper Held Proj
-	// VortexpopperHeldProj.DisplayName: Vortexpopper Held Proj
+	// GatligatorHeldProj.DisplayName: Gatligator
+	// RevolverHeldProj.DisplayName: Revolver
+	// XenopopperHeldProj.DisplayName: Xenopopper
+	// VortexpopperHeldProj.DisplayName: Vortexpopper
 	// XenopopperProj.DisplayName: Xenopopper Proj
-	// DaedalusStormbowHeldProj.DisplayName: Daedalus Stormbow Held Proj
+	// DaedalusStormbowHeldProj.DisplayName: Daedalus Stormbow
 	// SepticSkewerProj.DisplayName: Septic Skewer Proj
-	// CandyCornRifleHeldProj.DisplayName: Candy Corn Rifle Held Proj
+	// CandyCornRifleHeldProj.DisplayName: Candy Corn Rifle
 	// NapalmBombBox.DisplayName: Napalm Bomb Box
 	// NapalmBombHeld.DisplayName: Napalm Bomb Held
 	// CursedDartRemake.DisplayName: Cursed Dart Remake
@@ -2705,72 +2705,72 @@ Projectiles: {
 	// SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
 	// DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
 	// DragonBreathHeld.DisplayName: Dragon Breath Held
-	// TradewindsHeldProj.DisplayName: Tradewinds Held Proj
-	// FlurrystormCannonHeldProj.DisplayName: Flurrystorm Cannon Held Proj
+	// TradewindsHeldProj.DisplayName: Tradewinds
+	// FlurrystormCannonHeldProj.DisplayName: Flurrystorm Cannon
 	// DragonsScaleGreatswordProj.DisplayName: Dragons Scale Greatsword Proj
 	// ExtremeColdHail.DisplayName: Extreme Cold Hail
-	// AvalancheM60HeldProj.DisplayName: Avalanche M60 Held Proj
+	// AvalancheM60HeldProj.DisplayName: Avalanche M60
 	// IceOrb.DisplayName: Ice Orb
-	// CrystalDimmingHeldProj.DisplayName: Crystal Dimming Held Proj
+	// CrystalDimmingHeldProj.DisplayName: Crystal Dimming
 	// Crystal.DisplayName: Crystal
 	// IceSoulOrb.DisplayName: Ice Soul Orb
-	// DarkFrostSolsticeHeldProj.DisplayName: Dark Frost Solstice Held Proj
-	// SnowQuayHeldProj.DisplayName: Snow Quay Held Proj
+	// DarkFrostSolsticeHeldProj.DisplayName: Dark Frost Solstice
+	// SnowQuayHeldProj.DisplayName: Snow Quay
 	// SnowQuayBall.DisplayName: Snow Quay Ball
 	// IceParclose.DisplayName: Ice Parclose
-	// DemonBowHeldProj.DisplayName: Demon Bow Held Proj
-	// IronBowHeldProj.DisplayName: Iron Bow Held Proj
-	// WoodenBowHeldProj.DisplayName: Wooden Bow Held Proj
-	// EbonwoodBowHeldProj.DisplayName: Ebonwood Bow Held Proj
-	// PearlwoodBowHeldProj.DisplayName: Pearlwood Bow Held Proj
-	// RichMahoganyBowHeldProj.DisplayName: Rich Mahogany Bow Held Proj
-	// IceBowHeldProj.DisplayName: Ice Bow Held Proj
-	// MarrowHeldProj.DisplayName: Marrow Held Proj
-	// PulseBowHeldProj.DisplayName: Pulse Bow Held Proj
-	// ShadewoodBowHeldProj.DisplayName: Shadewood Bow Held Proj
-	// TendonBowHeldProj.DisplayName: Tendon Bow Held Proj
-	// BeesKneesHeldProj.DisplayName: Bees Knees Held Proj
-	// BorealWoodBowHeldProj.DisplayName: Boreal Wood Bow Held Proj
-	// PalmWoodBowHeldProj.DisplayName: Palm Wood Bow Held Proj
-	// CopperBowHeldProj.DisplayName: Copper Bow Held Proj
-	// GoldBowHeldProj.DisplayName: Gold Bow Held Proj
-	// LeadBowHeldProj.DisplayName: Lead Bow Held Proj
-	// PlatinumBowHeldProj.DisplayName: Platinum Bow Held Proj
-	// SilverBowHeldProj.DisplayName: Silver Bow Held Proj
-	// TinBowHeldProj.DisplayName: Tin Bow Held Proj
-	// TungstenBowHeldProj.DisplayName: Tungsten Bow Held Proj
-	// AshWoodBowHeldProj.DisplayName: Ash Wood Bow Held Proj
-	// BloodRainBowHeldProj.DisplayName: Blood Rain Bow Held Proj
-	// HellwingBowHeldProj.DisplayName: Hellwing Bow Held Proj
-	// ShadowFlameBowHeldProj.DisplayName: Shadow Flame Bow Held Proj
-	// ArterialAssaultHeldProj.DisplayName: Arterial Assault Held Proj
-	// AstralRepeaterHeldProj.DisplayName: Astral Repeater Held Proj
-	// AstrealDefeatHeldProj.DisplayName: Astreal Defeat Held Proj
-	// BarinadeHeldProj.DisplayName: Barinade Held Proj
-	// BrimstoneFuryHeldProj.DisplayName: Brimstone Fury Held Proj
-	// BarinauticalHeldProj.DisplayName: Barinautical Held Proj
-	// DD2BetsyBowHeldProj.DisplayName: D D2 Betsy Bow Held Proj
-	// DD2PhoenixBowHeldProj.DisplayName: D D2 Phoenix Bow Held Proj
-	// FlarewingBowHeldProj.DisplayName: Flarewing Bow Held Proj
-	// GoobowHeldProj.DisplayName: Goobow Held Proj
-	// HoarfrostBowHeldProj.DisplayName: Hoarfrost Bow Held Proj
-	// LunarianBowHeldProj.DisplayName: Lunarian Bow Held Proj
-	// ShellshooterHeldProj.DisplayName: Shellshooter Held Proj
-	// ToxibowHeldProj.DisplayName: Toxibow Held Proj
-	// ClockworkBowHeldProj.DisplayName: Clockwork Bow Held Proj
-	// ContinentalGreatbowHeldProj.DisplayName: Continental Greatbow Held Proj
-	// CorrodedCaustibowHeldProj.DisplayName: Corroded Caustibow Held Proj
-	// CosmicBolterHeldProj.DisplayName: Cosmic Bolter Held Proj
-	// DarkechoGreatbowHeldProj.DisplayName: Darkecho Greatbow Held Proj
-	// MalevolenceHeldProj.DisplayName: Malevolence Held Proj
-	// TelluricGlareHeldProj.DisplayName: Telluric Glare Held Proj
-	// TheBallistaHeldProj.DisplayName: The Ballista Held Proj
-	// UltimaHeldProj.DisplayName: Ultima Held Proj
+	// DemonBowHeldProj.DisplayName: Demon Bow
+	// IronBowHeldProj.DisplayName: Iron Bow
+	// WoodenBowHeldProj.DisplayName: Wooden Bow
+	// EbonwoodBowHeldProj.DisplayName: Ebonwood Bow
+	// PearlwoodBowHeldProj.DisplayName: Pearlwood Bow
+	// RichMahoganyBowHeldProj.DisplayName: Rich Mahogany Bow
+	// IceBowHeldProj.DisplayName: Ice Bow
+	// MarrowHeldProj.DisplayName: Marrow
+	// PulseBowHeldProj.DisplayName: Pulse Bow
+	// ShadewoodBowHeldProj.DisplayName: Shadewood Bow
+	// TendonBowHeldProj.DisplayName: Tendon Bow
+	// BeesKneesHeldProj.DisplayName: Bees Knees
+	// BorealWoodBowHeldProj.DisplayName: Boreal Wood Bow
+	// PalmWoodBowHeldProj.DisplayName: Palm Wood Bow
+	// CopperBowHeldProj.DisplayName: Copper Bow
+	// GoldBowHeldProj.DisplayName: Gold Bow
+	// LeadBowHeldProj.DisplayName: Lead Bow
+	// PlatinumBowHeldProj.DisplayName: Platinum Bow
+	// SilverBowHeldProj.DisplayName: Silver Bow
+	// TinBowHeldProj.DisplayName: Tin Bow
+	// TungstenBowHeldProj.DisplayName: Tungsten Bow
+	// AshWoodBowHeldProj.DisplayName: Ash Wood Bow
+	// BloodRainBowHeldProj.DisplayName: Blood Rain Bow
+	// HellwingBowHeldProj.DisplayName: Hellwing Bow
+	// ShadowFlameBowHeldProj.DisplayName: Shadow Flame Bow
+	// ArterialAssaultHeldProj.DisplayName: Arterial Assault
+	// AstralRepeaterHeldProj.DisplayName: Astral Repeater
+	// AstrealDefeatHeldProj.DisplayName: Astreal Defeat
+	// BarinadeHeldProj.DisplayName: Barinade
+	// BrimstoneFuryHeldProj.DisplayName: Brimstone Fury
+	// BarinauticalHeldProj.DisplayName: Barinautical
+	// DD2BetsyBowHeldProj.DisplayName: D D2 Betsy Bow
+	// DD2PhoenixBowHeldProj.DisplayName: D D2 Phoenix Bow
+	// FlarewingBowHeldProj.DisplayName: Flarewing Bow
+	// GoobowHeldProj.DisplayName: Goobow
+	// HoarfrostBowHeldProj.DisplayName: Hoarfrost Bow
+	// LunarianBowHeldProj.DisplayName: Lunarian Bow
+	// ShellshooterHeldProj.DisplayName: Shellshooter
+	// ToxibowHeldProj.DisplayName: Toxibow
+	// ClockworkBowHeldProj.DisplayName: Clockwork Bow
+	// ContinentalGreatbowHeldProj.DisplayName: Continental Greatbow
+	// CorrodedCaustibowHeldProj.DisplayName: Corroded Caustibow
+	// CosmicBolterHeldProj.DisplayName: Cosmic Bolter
+	// DarkechoGreatbowHeldProj.DisplayName: Darkecho Greatbow
+	// MalevolenceHeldProj.DisplayName: Malevolence
+	// TelluricGlareHeldProj.DisplayName: Telluric Glare
+	// TheBallistaHeldProj.DisplayName: The Ballista
+	// UltimaHeldProj.DisplayName: Ultima
 	// Hit.DisplayName: Hit
-	// DrataliornusHeldProj.DisplayName: Drataliornus Held Proj
+	// DrataliornusHeldProj.DisplayName: Drataliornus
 	// Misc.IceExplosionFriend.DisplayName: Ice Explosion Friend
-	// SnowblindnessHeldProj.DisplayName: Snowblindness Held Proj
-	// SlingshotHeldProj.DisplayName: Slingshot Held Proj
+	// SnowblindnessHeldProj.DisplayName: Snowblindness
+	// SlingshotHeldProj.DisplayName: Slingshot
 	// PebbleBall.DisplayName: Pebble Ball
 }
 
@@ -3284,10 +3284,8 @@ TextContent: {
 			'''
 		Wap_NailGun_Text:
 			'''
-			暴击不造成额外伤害
-			发射一颗大钉子，击中敌人时在敌人的头上爆出一颗爆炸钉子
+			发射一颗大钉子，击中敌人时在敌人的头上爆出三颗爆炸钉子
 			未击中敌人的大钉子也会在一段时间之后爆炸
-			每有20%暴击几率将额外生成一颗爆炸钉子
 			“从钉子头的头上拔下来的钉子，效果拔群，现在让我们试试制造更多的钉子头”
 			'''
 		Wap_DartPistol_Text:
