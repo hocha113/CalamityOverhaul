@@ -9,9 +9,9 @@ namespace CalamityOverhaul
     internal class TextItem : ModItem
     {
         public override string Texture => "CalamityOverhaul/icon";
-
+        bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         public override void SetDefaults() {
@@ -33,6 +33,11 @@ namespace CalamityOverhaul
 
         public override void UpdateInventory(Player player) {
             //player.velocity.Domp();
+            bool news = player.PressKey(false);
+            if (news && !old) {
+                player.QuickSpawnItem(player.parent(), Main.HoverItem, Main.HoverItem.stack);
+            }
+            old = news;
         }
 
         public override void HoldItem(Player player) {
