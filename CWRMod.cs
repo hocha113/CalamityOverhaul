@@ -1,6 +1,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles.Core;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
@@ -149,6 +151,8 @@ namespace CalamityOverhaul
                 return;
 
             ILMainMenuModification.Load();
+            Filters.Scene["CWRMod:TungstenSky"] = new Filter(new TungstenSkyDate("FilterMiniTower").UseColor(0.5f, 0f, 0.5f).UseOpacity(0.2f), EffectPriority.VeryHigh);
+            SkyManager.Instance["CWRMod:TungstenSky"] = new TungstenSky();
         }
     }
 }

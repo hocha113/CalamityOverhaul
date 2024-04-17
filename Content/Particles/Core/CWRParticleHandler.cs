@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Particles.Core
         private static List<CWRParticle> particlesToKill;
         internal static Dictionary<Type, int> particleTypes;
         internal static Dictionary<int, Texture2D> particleTextures;
-        private static List<CWRParticle> particleInstances;
+        private static List<CWRParticle> particleEntitys;
         private static List<CWRParticle> batchedAlphaBlendParticles;
         private static List<CWRParticle> batchedNonPremultipliedParticles;
         private static List<CWRParticle> batchedAdditiveBlendParticles;
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Particles.Core
                     particleTypes[type] = ID;
 
                     CWRParticle instance = (CWRParticle)FormatterServices.GetUninitializedObject(type);
-                    particleInstances.Add(instance);
+                    particleEntitys.Add(instance);
 
                     string texturePath = type.Namespace.Replace('.', '/') + "/" + type.Name;
                     if (instance.Texture != "")
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Particles.Core
             particlesToKill = new List<CWRParticle>();
             particleTypes = new Dictionary<Type, int>();
             particleTextures = new Dictionary<int, Texture2D>();
-            particleInstances = new List<CWRParticle>();
+            particleEntitys = new List<CWRParticle>();
 
             batchedAlphaBlendParticles = new List<CWRParticle>();
             batchedNonPremultipliedParticles = new List<CWRParticle>();
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Particles.Core
             particlesToKill = null;
             particleTypes = null;
             particleTextures = null;
-            particleInstances = null;
+            particleEntitys = null;
             batchedAlphaBlendParticles = null;
             batchedNonPremultipliedParticles = null;
             batchedAdditiveBlendParticles = null;

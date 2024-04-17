@@ -9,6 +9,7 @@ using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles.Summon;
 using CalamityMod.Projectiles.Turret;
 using CalamityMod.Projectiles.Typeless;
+using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;

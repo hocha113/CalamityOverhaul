@@ -3,7 +3,9 @@ using CalamityMod.Events;
 using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Summon.Extras;
@@ -14,6 +16,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -66,6 +69,15 @@ namespace CalamityOverhaul.Content
             IceParclose = false;
         }
 
+        public override void SetDefaults(NPC npc) {
+            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
+                if (TungstenRiot.TungstenEventNPCDic.ContainsKey(npc.type)) {
+                    npc.life = npc.lifeMax = (int)(npc.lifeMax * 1.2f);
+                    npc.defense += 3;
+                }
+            }
+        }
+
         public static void MultipleSegmentsLimitDamage(NPC target, ref NPC.HitModifiers modifiers) {
             if (CWRIDs.targetNpcTypes15.Contains(target.type) || CWRIDs.targetNpcTypes10.Contains(target.type)
                 || CWRIDs.targetNpcTypes8.Contains(target.type) || CWRIDs.targetNpcTypes7.Contains(target.type)
@@ -101,6 +113,15 @@ namespace CalamityOverhaul.Content
                 MurasamabrBeatBackVr.X *= MurasamabrBeatBackAttenuationForce;
                 if (MurasamabrBeatBackVr.LengthSquared() < 2) {
                     MurasamabrBeatBackBool = false;
+                }
+            }
+            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
+                Player player = Main.player[npc.target];
+                if (TungstenRiot.TungstenEventNPCDic.ContainsKey(npc.type)) {
+                    if (Main.GameUpdateCount % 60 == 0 && npc.type == ModContent.NPCType<WulfrumDrone>() && !CWRUtils.isClient) {
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
+                            , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerLaser, 12, 0f);
+                    }
                 }
             }
             return base.PreAI(npc);
@@ -160,6 +181,9 @@ namespace CalamityOverhaul.Content
             if (npc.type == CWRIDs.PrimordialWyrmHead) {//我不知道为什么原灾厄没有设置这个字段，为了保持进度的正常，我在这里额外设置一次
                 DownedBossSystem.downedPrimordialWyrm = true;
             }
+            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
+                TungstenRiot.Instance.TungstenKillNPC(npc);
+            }
             PerforatorBehavior.Instance.BloodMoonDorp(npc);
             HiveMindBehavior.Instance.BloodMoonDorp(npc);
             base.OnKill(npc);
@@ -216,10 +240,25 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (WhipHitNum > 0) {
-                //DrawTameBar(spriteBatch, npc);
+        public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns) {
+            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
+                maxSpawns = (int)(maxSpawns * 1.15f);
+                spawnRate = 2;
             }
+        }
+
+        public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo) {
+            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
+                pool.Clear();
+                foreach (int type in TungstenRiot.TungstenEventNPCDic.Keys) {
+                    if (!pool.ContainsKey(type)) {
+                        pool.Add(type, TungstenRiot.TungstenEventNPCDic[type].SpawnRate);
+                    }
+                }
+            }
+        }
+
+        public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (Main.bloodMoon) {
                 if (npc.type == CWRIDs.PerforatorHive) {
                     PerforatorBehavior.Instance.Draw(spriteBatch, npc);
@@ -234,30 +273,5 @@ namespace CalamityOverhaul.Content
                 spriteBatch.Draw(IceParcloseAsset.Value, npc.Center - Main.screenPosition, null, Color.White * sengs, 0, IceParcloseAsset.Value.Size() / 2, slp, SpriteEffects.None, 0);
             }
         }
-        /*
-        //public void DrawTameBar(SpriteBatch spriteBatch, NPC npc) {
-        //    Texture2D top = CWRUtils.GetT2DValue(CWRConstant.UI + "TameBarTop");
-        //    Texture2D bar = CWRUtils.GetT2DValue(CWRConstant.UI + "TameBar");
-        //    Texture2D whi = WhipHitDate.Tex((WhipHitTypeEnum)WhipHitType);
-
-        //    float slp = 0.75f;
-        //    float alp = 1 - (npc.velocity.Length() / 15f);
-        //    if (alp < 0.3f) {
-        //        alp = 0.3f;
-        //    }
-
-        //    int sengs = (int)((1 - (WhipHitNum / 10f)) * bar.Height);
-        //    Rectangle barRec = new(sengs, 0, bar.Width, bar.Height - sengs);
-        //    Color color = Color.White * alp;
-
-        //    Vector2 drawPos = new Vector2(npc.position.X + (npc.width / 2), npc.Bottom.Y + top.Height) - Main.screenPosition;
-
-        //    spriteBatch.Draw(top, drawPos, null, color, 0, bar.Size() / 2, slp, SpriteEffects.None, 0);
-
-        //    spriteBatch.Draw(bar, drawPos + (new Vector2(14, sengs + 18) * slp), barRec, color, 0, bar.Size() / 2, slp, SpriteEffects.None, 0);
-
-        //    spriteBatch.Draw(whi, drawPos + (new Vector2(0, whi.Height) * slp), null, color, 0, bar.Size() / 2, slp / 2, SpriteEffects.None, 0);
-        //}
-        */
     }
 }

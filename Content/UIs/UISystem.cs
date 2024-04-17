@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.UIs
             new OverhaulTheBibleUI().Load();
             new CartridgeHolderUI().Load();
             new RecipeErrorFullUI().Load();
+            new TungstenRiotUI().Load();
 
             OverhaulTheBibleUI.Instance.ecTypeItemList = new List<Item>();
             foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
@@ -88,6 +89,13 @@ namespace CalamityOverhaul.Content.UIs
                     if (CartridgeHolderUI.Instance.Active && CWRServerConfig.Instance.MagazineSystem) {
                         CartridgeHolderUI.Instance.Update(Main.gameTimeCache);
                         CartridgeHolderUI.Instance.Draw(Main.spriteBatch);
+                    }
+                    return true;
+                }, InterfaceScaleType.UI));
+                layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("TG UI", delegate {
+                    if (TungstenRiotUI.Instance.Active) {
+                        TungstenRiotUI.Instance.Update(Main.gameTimeCache);
+                        TungstenRiotUI.Instance.Draw(Main.spriteBatch);
                     }
                     return true;
                 }, InterfaceScaleType.UI));

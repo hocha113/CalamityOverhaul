@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Common
         public static LocalizedText GetText(string key) => Language.GetText($"Mods.CalamityOverhaul.TextContent.CWRLocText.{key}");
         #endregion
         #region 字段内容
+        public LocalizedText Event_TungstenRiot_Name { get; private set; }
         public LocalizedText Item_LegendOnMouseLang { get; private set; }
         public LocalizedText BloodAltar_Text1 { get; private set; }
         public LocalizedText BloodAltar_Text2 { get; private set; }

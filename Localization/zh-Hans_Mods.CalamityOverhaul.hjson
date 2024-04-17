@@ -2977,6 +2977,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		Event_TungstenRiot_Name: 钨钢暴乱
 		Item_LegendOnMouseLang: 按下[Shift]聆听故事...
 		BloodAltar_Text1: 深红的注视正在降临...
 		BloodAltar_Text2: 你身上的血珠不够向深红之王进行朝贡...
@@ -3509,5 +3510,12 @@ TextContent: {
 			发射五发可以分裂的并排箭矢
 			对空中的目标造成更高的伤害
 			'''
+	}
+}
+
+Biomes: {
+	TungstenBiome: {
+		// DisplayName: Tungsten Biome
+		// TownNPCDialogueName: the Tungsten Biome
 	}
 }
