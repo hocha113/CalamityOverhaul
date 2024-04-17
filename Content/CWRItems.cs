@@ -153,6 +153,10 @@ namespace CalamityOverhaul.Content
         /// 是一个蓄电池
         /// </summary>
         public bool IsStorageBattery;
+        /// <summary>
+        /// 是一把弓
+        /// </summary>
+        public bool IsBow;
 
         public override void SetDefaults(Item item) {
             if (CWRIDs.OnLoadContentBool) {

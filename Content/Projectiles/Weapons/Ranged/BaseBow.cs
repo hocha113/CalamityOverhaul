@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -96,6 +97,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 箭矢绘制模长偏移值，默认值为-16
         /// </summary>
         protected int DrawArrowMode = -16;
+        protected float DrawArrowOffsetRot = 0;
+        protected int ToTargetArrow;
+        protected Vector2 CustomDrawOrig = Vector2.Zero;
+        protected Func<bool> ForcedConversionTargetArrowFunc = () => false;
         /// <summary>
         /// 开火额外矫正位置，这个值在开火后自动回归默认值<see cref="Vector2.Zero"/>
         /// </summary>
@@ -193,7 +198,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(art) : MathHelper.ToRadians(180 - art);
             Projectile.timeLeft = 2;
-            
+            ModItem.IsBow = true;
             SetCompositeArm();
             if (!Owner.mouseInterface) {
                 HandEvent();
@@ -248,6 +253,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void SpanProj() {
             if (Projectile.ai[1] > Item.useTime && (onFire || onFireR)) {
+                if (ForcedConversionTargetArrowFunc.Invoke()) {
+                    AmmoTypes = ToTargetArrow;
+                }
                 if (onFire) {
                     BowShoot();
                 }
@@ -304,6 +312,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Main.instance.LoadItem(newtype);
                 value = TextureAssets.Item[newtype].Value;
             }
+            if (ForcedConversionTargetArrowFunc.Invoke()) {
+                value = TextureAssets.Projectile[ToTargetArrow].Value;
+            }
         }
 
         public virtual void CustomArrowRP(ref Texture2D value, Item arrow) {
@@ -335,12 +346,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Vector2 inprojRot = Projectile.rotation.ToRotationVector2();
                 Vector2 offsetDrawPos = inprojRot * lengsOFstValue;
                 Vector2 norlInRotUnit = inprojRot.GetNormalVector();
-                Vector2 drawOrig = new (arrowValue.Width / 2, arrowValue.Height);
+                Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new (arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
                 Vector2 drawPos = Projectile.Center - Main.screenPosition + offsetDrawPos;
 
                 void drawArrow(float overOffsetRot = 0, Vector2 overOffsetPos = default) => Main.EntitySpriteDraw(arrowValue
                     , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos)
-                    , null, Color.White, drawRot + overOffsetRot, drawOrig, Projectile.scale, SpriteEffects.FlipVertically);
+                    , null, Color.White, drawRot + DrawArrowOffsetRot + overOffsetRot, drawOrig, Projectile.scale, SpriteEffects.FlipVertically);
 
                 switch (BowArrowDrawNum) {
                     case 2:

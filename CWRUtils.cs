@@ -9,11 +9,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using ReLogic.Utilities;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Policy;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
@@ -25,6 +27,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using Terraria.Social;
 using Terraria.UI;
 using Terraria.WorldBuilding;
 using static Humanizer.In;
@@ -43,6 +46,15 @@ namespace CalamityOverhaul
 
         public static LocalizedText SafeGetItemName(int id) {
             return ItemLoader.GetItem(id).GetLocalization("DisplayName");
+        }
+
+        public static void WebRedirection(this string str, bool inSteam = true) {
+            if (SocialAPI.Mode == SocialMode.Steam && inSteam) {
+                SteamFriends.ActivateGameOverlayToWebPage(str);
+            }
+            else {
+                Utils.OpenToURL(str);
+            }
         }
 
         /// <summary>

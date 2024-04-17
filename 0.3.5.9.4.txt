@@ -2,79 +2,8 @@ v_0.3.5.9.4
 
 ——负责以下内容的开发者：红茶
 
-特殊更新:
-1.新加入两把射手武器，雪盲症、木制弹弓
-2.风暴女神长矛、朗基努斯之枪使用新的纹理与动画
-5.适配了Ammo Tools Mod
-
-问题修复:
-1.修复白蜡木弓不享受木系弓特殊属性的问题
-2.修复叶流、赤陨霸龙弓右键攻击不会重置攻速充能的问题，修复赤陨霸龙弓受击直接充满能的问题
-3.修复钉枪的伤害问题，钉子分裂数量固定为3枚
-4.修复雪球发射器的雪雾会对友方实体造成伤害的问题
-
-平衡调整(感谢测试员的努力，鸣谢:像樱花一样飘散啊, 悬剑, CataStrophe):
-1.朗基努斯之枪的上帝之光伤害降低50%
-2.神圣连弩额外发射的箭矢所造成的伤害降低50%，使用时间由20延长到30
-3.钴蓝连弩、秘银连弩、精金连弩的箭矢现在只会对一个目标造成一次穿透伤害
-4.木系弓的橡子不再受到伤害加成，固定造成3点伤害
-5.海啸、啸流、季风的蓄力动画现在会因为试图进行左键开火而被打断
-6.优化憎恨的右键使用体验
-7.暴政之终的使用时间由30缩短到20，调整使用动画使其更加自然
-8.叶流、赤陨霸龙弓左键受击会清空玩家飞行时间，但右键攻击时不会再清空玩家飞行时间
-9.雪崩M60的面板伤害由90降低到62
-10.移除凤凰爆破枪的右键攻击
-11.手枪的面板伤害由32降低至20
-12.湮灭千星的左键攻击，代达罗斯弓、瘟疫的右键攻击不会再出现拉弓动画，这样会更加合理
-13.极魂符枪的开火间隔由20缩短至15
-14.维纳斯万能枪的后坐力由3.0降低至1.1，使用时间由10缩短至7，重新调整动画使其更自然
-15.霰弹枪的面板伤害由36降低至28，减小子弹散步
-16.玛瑙爆破枪的使用时间由36缩短至18，后坐力由6.0降低至3.2
-17.空间海豚枪的使用时间由5缩短至4，弹匣容量由300增加至380，后坐力由1.0降低至0.8f
-18.玛瑙链炮的换弹时间由160缩短至120，玛瑙火箭的伤害加成由原来的105%提高至125%，面板伤害由51提高至58，子弹伤害加成由原来的50%提高至60%
-19.憎恨右键的集束子弹的伤害加成由100%降低至60%
-20.绝对零度的使用时间由20缩短至16，加快射弹飞行速度
-21.矫正幻魔的拉弓动画，幻魔的衍生箭矢伤害由200%降低至80%
-22.取消死亡之风使用木箭发射激光时的固定500加伤，降低发射宇宙箭矢的频率
-23.珍珠之神的面板伤害由33提高至38
-24.诅咒手枪的面板伤害由31降低至22，弹匣容量由22降低至20
+1.进一步优化瘟疫的使用动画
+2.增加箭筒动画和玄冥寒朔的背显动画
 
 ——Developer responsible for the following content: HoCha113
-
-Special Updates:
-1. Added two new ranged weapons, Snowblindness and Slingshot.
-2. Updated textures and animations for Storm Goddess Spear and Spear of Longinus.
-3. Adapted compatibility with the Ammo Tools mod.
-
-Bug Fixes:
-1. Fixed an issue where AshWood Bow did not benefit from wood bow special attributes.
-2. Resolved issues with Blossom Flux and Drataliornus not resetting attack speed charge on right-click, and Drataliornus being fully charged upon hit.
-3. Corrected damage calculation for Nail Gun; nails now consistently spawn in sets of 3.
-4. Fixed an issue where Snowball Launchers' snow mist would damage friendly entities.
-
-Balance Adjustments (Thanks to testers: "像樱花一样飘散啊", "悬剑", "CataStrophe"):
-1. Reduced damage of God's Light from Spear of Longinus by 50%.
-2. Decreased damage from additional arrows fired by Hallowed Repeater by 50%; increased usage time from 20 to 30.
-3. Arrows from Cobalt Repeater, Mythril Repeater, and Adamantite Repeater now only penetrate targets once.
-4. Acorns from wooden bows no longer receive damage bonuses; fixed damage at 3.
-5. Charging animations for Tsunami, Alluvion, and Monsoon are interrupted by attempting to left-click fire.
-6. Improved usability of Animosity's right-click function.
-7. Reduced usage time of Tyranny's End from 30 to 20; adjusted usage animation for smoother performance.
-8. Blossom Flux and Drataliornus no longer deplete flight time on left-click hit; flight time is still depleted on right-click attack.
-9. Reduced panel damage of Avalanche M60 from 90 to 62.
-10. Removed right-click attack from Phoenix Blaster.
-11. Reduced panel damage of Hand Gun from 32 to 20.
-12. Removed bow drawing animation from Planetary Annihilation's left-click attack, Daedalus Storm Bow, and Contagion's right-click attack for improved realism.
-13. Reduced firing interval of AcesHigh from 20 to 15.
-14. Reduced recoil of Venus Magnum from 3.0 to 1.1; decreased usage time from 10 to 7; adjusted animation for natural feel.
-15. Reduced panel damage of Shotgun from 36 to 28; minimized bullet spread.
-16. Decreased usage time of Onyx Blaster from 36 to 18; reduced recoil from 6.0 to 3.2.
-17. Decreased usage time of SDMG from 5 to 4; increased magazine capacity from 300 to 380; reduced recoil from 1.0 to 0.8f.
-18. Reduced reload time of Onyx Chain Blaster from 160 to 120; increased damage bonus of Onyx Rockets from 105% to 125%; increased panel damage from 51 to 58; increased bullet damage bonus from 50% to 60%.
-19. Reduced damage bonus of Animosity's right-click clustered bullets from 100% to 60%.
-20. Adjusted bow drawing animation for Phangasm; reduced damage bonus of Phantasm's derived arrows from 200% to 80%.
-21. Removed fixed 500 bonus damage when Deathwind fires laser with wooden arrows; reduced frequency of firing cosmic arrows.
-22. Increased panel damage of Pearl God from 33 to 38.
-23. Reduced panel damage of Cursed Capper from 31 to 22; decreased magazine capacity from 22 to 20.
-24. Decreased usage time of Absolute Zero from 20 to 16; increased projectile flight speed for faster attacks.
 

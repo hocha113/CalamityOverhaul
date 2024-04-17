@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.UIs;
 using System;
 using System.Collections.Generic;
 using System.IO;

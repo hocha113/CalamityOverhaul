@@ -44,6 +44,8 @@ namespace CalamityOverhaul.Common
         public const string noItem = "Assets/Items/";
         public const string noProjectile = "Assets/Projectiles/";
 
+        public const string githubUrl = "https://github.com/hocha113/CalamityOverhaul";
+
         public const int MaxParticleCount = 10000;
 
         public static bool ForceReplaceResetContent => ModContent.GetInstance<CWRServerConfig>().ForceReplaceResetContent;

@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Sounds\Gun\" />
+    <Folder Include="Assets\Players\" />
     <Folder Include="Content\RemakeItems\Summon\" />
   </ItemGroup>
   <ItemGroup>

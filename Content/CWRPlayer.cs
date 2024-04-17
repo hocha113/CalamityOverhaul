@@ -1,15 +1,20 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Renderers;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -19,6 +24,7 @@ namespace CalamityOverhaul.Content
 {
     public class CWRPlayer : ModPlayer
     {
+        #region Date
         /// <summary>
         /// 是否初始化加载，用于角色文件的第一次创建
         /// </summary>
@@ -95,6 +101,17 @@ namespace CalamityOverhaul.Content
         public bool TyrantsFuryBuffBool;
         public bool FlintSummonBool;
         #endregion
+
+        private static Asset<Texture2D> Quiver_back_Asset;
+        private static Asset<Texture2D> IceGod_back_Asset;
+        #endregion
+
+        public override void Load() {
+            if (!Main.dedServ) {
+                Quiver_back_Asset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Players/Quiver_back");
+                IceGod_back_Asset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Players/IceGod_back");
+            }
+        }
 
         public override void Initialize() {
             TheRelicLuxor = 0;
@@ -191,6 +208,55 @@ namespace CalamityOverhaul.Content
             if (RecoilAccelerationAddBool) {
                 Player.velocity += RecoilAccelerationValue;
                 RecoilAccelerationAddBool = false;
+            }
+        }
+
+        public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo) {
+            if (drawInfo.shadow != 0f) {
+                return;
+            }
+
+            Player player = drawInfo.drawPlayer;
+            Item item = player.ActiveItem();
+            
+            if (!player.frozen && item.type > ItemID.None && !item.IsAir && !player.dead) {
+                CWRItems cwrItem = item.CWR();
+                Texture2D value = null;
+                Rectangle frame = new Rectangle(0, 0, 1, 1);
+                Vector2 orig = Vector2.Zero;
+                Vector2 offsetPos = Vector2.Zero;
+                float size = 1;
+                int frameindex = 0;
+
+                if (cwrItem.IsBow) {
+                    if (player.velocity.Y == 0f && player.velocity.X != 0) {
+                        frameindex = (int)(Main.GameUpdateCount / 3 % 5);
+                    }
+                    value = Quiver_back_Asset.Value;
+                    frame = CWRUtils.GetRec(value, frameindex, 5);
+                    orig = CWRUtils.GetOrig(value, 5);
+                }
+
+                if (item.type == ModContent.ItemType<DarkFrostSolstice>()) {
+                    value = IceGod_back_Asset.Value;
+                    frame = CWRUtils.GetRec(value);
+                    orig = CWRUtils.GetOrig(value);
+                    float sengs = Main.GameUpdateCount * 0.05f;
+                    offsetPos = new Vector2(player.direction * 8, -25 + MathF.Sin(sengs) * 5);
+                }
+
+                if (value == null) {
+                    return;
+                }
+
+                SpriteEffects spriteEffects = Player.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+                DrawData howDoIDrawThings = new DrawData(value,
+                    new Vector2((int)(player.position.X - Main.screenPosition.X + (player.width / 2) - (9 * player.direction)) - 4f * player.direction
+                    , (int)(player.position.Y - Main.screenPosition.Y + (player.height / 2) + 2f * player.gravDir - 8f * player.gravDir)) + offsetPos,
+                    frame, drawInfo.colorArmorBody, player.bodyRotation, orig, size, spriteEffects, 0);
+                howDoIDrawThings.shader = 0;
+                drawInfo.DrawDataCache.Add(howDoIDrawThings);
             }
         }
 

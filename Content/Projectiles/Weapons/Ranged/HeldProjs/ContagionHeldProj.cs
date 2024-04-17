@@ -13,11 +13,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<ContagionEcType>();
         public override void SetRangedProperty() {
             CanRightClick = true;
+            BowArrowDrawNum = 2;
+            ForcedConversionTargetArrowFunc = () => true;
+            ToTargetArrow = ModContent.ProjectileType<NurgleArrow>();
+            DrawArrowOffsetRot = MathHelper.Pi;
+            CustomDrawOrig = new Vector2(7, 0);
         }
         public override void PostInOwner() {
             if (onFireR) {
                 BowArrowDrawBool = false;
                 LimitingAngle();
+            }
+            else {
+                BowArrowDrawBool = true;
             }
         }
 
@@ -25,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             for (int i = 0; i < 2; i++) {
                 Projectile.NewProjectile(Source, Projectile.Center
                     , UnitToMouseV.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 13
-                    , ModContent.ProjectileType<NurgleArrow>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
         }
 
