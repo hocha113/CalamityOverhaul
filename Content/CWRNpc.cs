@@ -4,6 +4,7 @@ using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.NormalNPCs;
+using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
@@ -18,6 +19,7 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -75,6 +77,12 @@ namespace CalamityOverhaul.Content
                     npc.life = npc.lifeMax = (int)(npc.lifeMax * 1.2f);
                     npc.defense += 3;
                 }
+                if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
+                    npc.life = npc.lifeMax = npc.lifeMax * 10;
+                    npc.defense += 10;
+                    npc.scale += 0.5f;
+                    npc.boss = true;
+                }
             }
         }
 
@@ -118,10 +126,24 @@ namespace CalamityOverhaul.Content
             if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
                 Player player = Main.player[npc.target];
                 if (TungstenRiot.TungstenEventNPCDic.ContainsKey(npc.type)) {
-                    if (Main.GameUpdateCount % 60 == 0 && npc.type == ModContent.NPCType<WulfrumDrone>() && !CWRUtils.isClient) {
-                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
+                    if (Main.GameUpdateCount % 60 == 0 && npc.type == ModContent.NPCType<WulfrumDrone>()) {
+                        SoundEngine.PlaySound(SoundID.Item12 with { Volume = 0.7f, Pitch = -0.2f}, npc.Center);
+                        if (!CWRUtils.isClient) {
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
                             , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerLaser, 12, 0f);
+                        }
                     }
+                }
+                if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
+                    CWRUtils.WulfrumAmplifierAI(npc, 700, 300);
+                    if (Main.GameUpdateCount % 60 == 0) {
+                        SoundEngine.PlaySound(SoundID.Item12 with { Volume = 0.7f, Pitch = -0.2f }, npc.Center);
+                        if (!CWRUtils.isClient) {
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
+                            , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerMissile, 12, 0f);
+                        }
+                    }
+                    return false;
                 }
             }
             return base.PreAI(npc);
@@ -254,6 +276,9 @@ namespace CalamityOverhaul.Content
                     if (!pool.ContainsKey(type)) {
                         pool.Add(type, TungstenRiot.TungstenEventNPCDic[type].SpawnRate);
                     }
+                }
+                if (TungstenRiot.Instance.EventKillRatio < 0.5f) {
+                    pool.Add(ModContent.NPCType<WulfrumAmplifier>(), 0.25f);
                 }
             }
         }

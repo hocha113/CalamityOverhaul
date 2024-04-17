@@ -1,12 +1,10 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.TileEntitys;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.ObjectInteractions;
-using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -38,12 +36,6 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.CoordinateHeights = new[] { 16, 16 };
             TileObjectData.newTile.CoordinatePaddingFix = new Point16(0, 2);
-            //我不明白为什么要设置这个
-            //TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
-            // 如果决定添加更多样式的垂直堆叠，则需要设置这三行代码以下3行代码
-            //TileObjectData.newTile.StyleWrapLimit = 2;
-            //TileObjectData.newTile.StyleMultiplier = 2;
-            //TileObjectData.newTile.StyleHorizontal = true;
 
             TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
             TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;

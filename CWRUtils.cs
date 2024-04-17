@@ -1,8 +1,10 @@
 ﻿using CalamityMod;
+using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework;
@@ -15,7 +17,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Policy;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
@@ -30,13 +31,25 @@ using Terraria.ObjectData;
 using Terraria.Social;
 using Terraria.UI;
 using Terraria.WorldBuilding;
-using static Humanizer.In;
 
 namespace CalamityOverhaul
 {
     public static class CWRUtils
     {
         #region System
+        public static void HanderSubclass<T>(ref List<T> types) {
+            types = new List<T>();
+            List<Type> targetTypes = GetSubclasses(typeof(T));
+            foreach (Type type in targetTypes) {
+                if (type != typeof(T)) {
+                    object obj = Activator.CreateInstance(type);
+                    if (obj is T inds) {
+                        types.Add(inds);
+                    }
+                }
+            }
+        }
+
         public static LocalizedText SafeGetItemName<T>() where T : ModItem {
             Type type = typeof(T);
             return type.BaseType == typeof(EctypeItem)
@@ -753,6 +766,51 @@ namespace CalamityOverhaul
         #endregion
 
         #region 行为部分
+
+        public static void WulfrumAmplifierAI(NPC npc, float maxrg = 495f, int maxchargeTime = 600) {
+            List<int> SuperchargableEnemies = new List<int>(){
+                ModContent.NPCType<WulfrumDrone>(),
+                ModContent.NPCType<WulfrumGyrator>(),
+                ModContent.NPCType<WulfrumHovercraft>(),
+                ModContent.NPCType<WulfrumRover>()
+            };
+
+            npc.ai[1] = (int)MathHelper.Lerp(npc.ai[1], maxrg, 0.1f);
+
+            if (Main.rand.NextBool(4)) {
+                float dustCount = MathHelper.TwoPi * npc.ai[1] / 8f;
+                for (int i = 0; i < dustCount; i++) {
+                    float angle = MathHelper.TwoPi * i / dustCount;
+                    Dust dust = Dust.NewDustPerfect(npc.Center, 229);
+                    dust.position = npc.Center + angle.ToRotationVector2() * npc.ai[1];
+                    dust.scale = 0.7f;
+                    dust.noGravity = true;
+                    dust.velocity = npc.velocity;
+                }
+            }
+
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npcAtIndex = Main.npc[i];
+                if (!npcAtIndex.active)
+                    continue;
+                if (!SuperchargableEnemies.Contains(npcAtIndex.type) && npcAtIndex.type != ModContent.NPCType<WulfrumRover>())
+                    continue;
+                if (npcAtIndex.ai[3] > 0f)
+                    continue;
+                if (npc.Distance(npcAtIndex.Center) > npc.ai[1])
+                    continue;
+
+                npcAtIndex.ai[3] = maxchargeTime;
+                npcAtIndex.netUpdate = true;
+
+                if (Main.dedServ)
+                    continue;
+
+                for (int j = 0; j < 10; j++) {
+                    Dust.NewDust(npcAtIndex.position, npcAtIndex.width, npcAtIndex.height, DustID.Electric);
+                }
+            }
+        }
 
         /// <summary>
         /// 让弹幕进行爆炸效果的操作
@@ -2218,6 +2276,53 @@ namespace CalamityOverhaul
         #region DrawUtils
 
         #region 普通绘制工具
+
+        public static void DrawEventProgressBar(SpriteBatch spriteBatch, Vector2 drawPos, Asset<Texture2D> iconAsset, float eventKillRatio, float size, int barWidth, int barHeight, string eventMainName, Color eventMainColor) {
+            if (size < 0) {
+                size = 0;
+            }
+
+            Vector2 textOffsetInCorePos = FontAssets.MouseText.Value.MeasureString(eventMainName);
+            float x = 120f;
+            if (textOffsetInCorePos.X > 200f) {
+                x += textOffsetInCorePos.X - 200f;
+            }
+
+            Vector2 value1 = new Vector2(Main.screenWidth - x, Main.screenHeight - 80 + 1);
+            Vector2 value2 = textOffsetInCorePos + new Vector2(iconAsset.Value.Width + 12, 6f);
+            Rectangle iconRec =  Utils.CenteredRectangle(value1, value2);
+
+            Utils.DrawInvBG(spriteBatch, iconRec, eventMainColor * 0.5f * size);
+            spriteBatch.Draw(iconAsset.Value, iconRec.Left() + Vector2.UnitX * 8f, null, Color.White * size
+                , 0f, Vector2.UnitY * iconAsset.Value.Height / 2, 0.8f * size, SpriteEffects.None, 0f);
+            Utils.DrawBorderString(spriteBatch, eventMainName, iconRec.Right() + Vector2.UnitX * -16f, Color.White * size, 0.9f * size, 1f, 0.4f, -1);
+
+            drawPos += new Vector2(-100, 20);
+
+            Rectangle screenCoordsRectangle = new Rectangle((int)drawPos.X - barWidth / 2, (int)drawPos.Y - barHeight / 2, barWidth, barHeight);
+            Texture2D barTexture = TextureAssets.ColorBar.Value;
+
+            Utils.DrawInvBG(spriteBatch, screenCoordsRectangle, new Color(6, 80, 84, 255) * 0.785f * size);
+            spriteBatch.Draw(barTexture, drawPos, null, Color.White * size, 0f, new Vector2(barTexture.Width / 2, 0f), 1f * size, SpriteEffects.None, 0f);
+
+            string barTextContent = Language.GetTextValue("Game.WaveCleared", (100 * eventKillRatio).ToString($"N{1}") + "%");
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(barTextContent);
+            float barTextScale = 1f;
+            if (textSize.Y > 22f)
+                barTextScale *= 22f / textSize.Y;
+
+            drawPos.Y += 10;
+            Utils.DrawBorderString(spriteBatch, barTextContent, drawPos - Vector2.UnitY * 4f, Color.White * size, barTextScale, 0.5f, 1f, -1);
+
+            float barDrawOffsetX = 169f;
+            Vector2 barDrawPosition = drawPos + Vector2.UnitX * (eventKillRatio - 0.5f) * barDrawOffsetX;
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, barDrawPosition, new Rectangle(0, 0, 1, 1)
+                , new Color(255, 241, 51) * size, 0f, new Vector2(1f, 0.5f), new Vector2(barDrawOffsetX * eventKillRatio, 8) * size, SpriteEffects.None, 0f);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, barDrawPosition, new Rectangle(0, 0, 1, 1)
+                , new Color(255, 165, 0, 127) * size, 0f, new Vector2(1f, 0.5f), new Vector2(2f, 8) * size, SpriteEffects.None, 0f);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, barDrawPosition, new Rectangle(0, 0, 1, 1)
+                , Color.Black * size, 0f, Vector2.UnitY * 0.5f, new Vector2(barDrawOffsetX * (1f - eventKillRatio), 8) * size, SpriteEffects.None, 0f);
+        }
 
         public static string GetSafeText(string text, Vector2 textSize, float maxWidth) {
             int charWidth = (int)(textSize.X / text.Length);

@@ -285,8 +285,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void FiringShoot() {
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
         /// <summary>
         /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="onFireR"/>为<see cref="true"/>才可能调用。
@@ -294,8 +292,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void FiringShootR() {
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
         /// <summary>
         /// 一个快捷创建属于卢克索饰品的发射事件，如果luxorsGift为<see langword="true"/>,
@@ -396,6 +392,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (onFireR) {
                     FiringShootR();
                 }
+                _ = UpdateConsumeAmmo();
+                _ = CreateRecoil();
                 if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
                     LuxirEvent();
                 }

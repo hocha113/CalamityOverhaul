@@ -6,6 +6,8 @@ using Terraria.ModLoader;
 using CalamityMod.NPCs.NormalNPCs;
 using Microsoft.Xna.Framework;
 using System.Linq;
+using Terraria.Audio;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Events
 {
@@ -68,6 +70,8 @@ namespace CalamityOverhaul.Content.Events
             }
 
             if (playerCount > 0) {
+                "大量钨钢生物正在入侵!".Domp(MainColor);
+                SoundEngine.PlaySound(SoundID.Roar);
                 TungstenRiotIsOngoing = true;
                 EventKillPoints = 300;
             }
@@ -81,15 +85,20 @@ namespace CalamityOverhaul.Content.Events
             }
             TungstenRiotIsOngoing = false;
             EventKillPoints = 0;
+            "钨钢军团已被击退!".Domp(MainColor);
         }
 
         public void TungstenKillNPC(NPC npc) {
             if (TungstenEventNPCDic.ContainsKey(npc.type)) {
                 EventKillPoints -= TungstenEventNPCDic[npc.type].InvasionContributionPoints;
-                if (EventKillPoints < 0) {
-                    EventKillPoints = 0;
-                    TungstenRiotIsOngoing = false;
-                }
+            }
+            if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
+                EventKillPoints -= 2;
+            }
+            if (EventKillPoints < 0) {
+                EventKillPoints = 0;
+                TungstenRiotIsOngoing = false;
+                "钨钢军团已被击退!".Domp(MainColor);
             }
         }
     }
