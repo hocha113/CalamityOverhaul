@@ -179,13 +179,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public int DrawCrossArrowNum = 1;
         /// <summary>
-        /// 箭矢转化目标
+        /// 弹药转化目标，指定一个弹幕ID类型
         /// </summary>
-        protected int ToTargetArrow;
+        protected int ToTargetAmmo;
         /// <summary>
-        /// 一个委托变量，用于决定什么箭矢会被转化，与<see cref="ToTargetArrow"/>配合使用
+        /// 一个委托变量，用于决定什么弹药会被转化，与<see cref="ToTargetAmmo"/>配合使用
         /// </summary>
-        protected Func<bool> ForcedConversionTargetArrowFunc = () => false;
+        protected Func<bool> ForcedConversionTargetAmmoFunc = () => false;
+        /// <summary>
+        /// <see cref="ForcedConversionTargetAmmoFunc"/>为<see langword="true"/>时是否让弩箭倒转
+        /// </summary>
+        protected bool ISForcedConversionDrawAmmoInversion;
         /// <summary>
         /// 快捷获取该枪械的发射口位置
         /// </summary>
@@ -435,6 +439,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (FiringDefaultSound) {
                     SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 }
+                if (ForcedConversionTargetAmmoFunc.Invoke()) {
+                    AmmoTypes = ToTargetAmmo;
+                }
                 if (onFire) {
                     FiringShoot();
                 }
@@ -513,11 +520,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
+        /// <summary>
+        /// 获取拉弓弦的进度比例，用于处理弩箭的动画进度
+        /// </summary>
+        /// <returns></returns>
+        public virtual float GetBoltInFireRatio() {
+            float value1 = Projectile.ai[1] * 2;
+            if (value1 > Item.useTime) {
+                value1 = Item.useTime;
+            }
+            return value1 / Item.useTime;
+        }
+
         public void DrawBolt() {
             bool boolvalue = Projectile.ai[1] < Item.useTime - 3;
             if (Item.useTime <= 5) {
                 boolvalue = true;
             }
+
             if (boolvalue) {
                 int useAmmoItemType = UseAmmoItemType;
                 if (useAmmoItemType == ItemID.None) {
@@ -537,16 +557,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Main.instance.LoadItem(newtype);
                     arrowValue = TextureAssets.Item[newtype].Value;
                 }
-                if (ForcedConversionTargetArrowFunc.Invoke()) {
-                    arrowValue = TextureAssets.Projectile[ToTargetArrow].Value;
+                if (ForcedConversionTargetAmmoFunc.Invoke()) {
+                    arrowValue = TextureAssets.Projectile[ToTargetAmmo].Value;
+                }
+                if (ForcedConversionTargetAmmoFunc.Invoke()) {
+                    arrowValue = TextureAssets.Projectile[ToTargetAmmo].Value;
+                    if (ISForcedConversionDrawAmmoInversion) {
+                        CustomDrawOrig = new Vector2(arrowValue.Width / 2, 0);
+                        DrawCrossArrowOffsetRot = MathHelper.Pi;
+                    }
+                }
+                else {
+                    CustomDrawOrig = Vector2.Zero;
+                    DrawCrossArrowOffsetRot = 0;
                 }
 
                 float drawRot = Projectile.rotation + MathHelper.PiOver2;
-                float value1 = Projectile.ai[1] * 2;
-                if (value1 > Item.useTime) {
-                    value1 = Item.useTime;
-                }
-                float chordCoefficient = value1 / Item.useTime;
+                float chordCoefficient = GetBoltInFireRatio();
                 float lengsOFstValue = chordCoefficient * 8 * DrawCrossArrowDrawingDieLengthRatio + DrawCrossArrowToMode;
                 Vector2 inprojRot = Projectile.rotation.ToRotationVector2();
                 Vector2 offsetDrawPos = inprojRot * lengsOFstValue;

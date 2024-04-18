@@ -31,12 +31,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             DrawCrossArrowNorlMode = 6;
             DrawCrossArrowToMode = -6;
             DrawCrossArrowDrawingDieLengthRatio = 5;
-            DrawCrossArrowOffsetRot = MathHelper.Pi;
-            CustomDrawOrig = new Vector2(13, 0);
             IsCrossbow = true;
             CanRightClick = true;
-            ForcedConversionTargetArrowFunc = () => true;
-            ToTargetArrow = ModContent.ProjectileType<TheArrowPunishment>();
+            ForcedConversionTargetAmmoFunc = () => true;
+            ISForcedConversionDrawAmmoInversion = true;
+            ToTargetAmmo = ModContent.ProjectileType<TheArrowPunishment>();
         }
 
         public override void FiringIncident() {
@@ -56,7 +55,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SoundEngine.PlaySound(CWRSound.Gun_Crossbow_Shoot, Projectile.Center);
             Item.useTime = 10;
             CanDrawCrossArrow = true;
-            AmmoTypes = ModContent.ProjectileType<TheArrowPunishment>();
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             CWRUtils.SetArrowRot(proj);
             if (Main.rand.NextBool(3)) {

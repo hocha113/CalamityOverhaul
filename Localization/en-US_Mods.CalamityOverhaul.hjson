@@ -3461,6 +3461,7 @@ TextContent: {
 		Wap_Marrow_Text:
 			'''
 			Marrow!
+			Turning a wooden arrow into a skeleton arrow
 			Arrows throw out several bones upon hitting a target.
 			'''
 		Wap_LeadBow_Text:

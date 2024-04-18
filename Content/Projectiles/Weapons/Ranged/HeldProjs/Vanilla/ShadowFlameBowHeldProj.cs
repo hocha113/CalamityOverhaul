@@ -11,8 +11,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ShadowFlameBow].Value;
         public override int targetCayItem => ItemID.ShadowFlameBow;
         public override int targetCWRItem => ItemID.ShadowFlameBow;
+        bool isWood() => UseAmmoItemType == ItemID.WoodenArrow;
         public override void SetRangedProperty() {
             ShootSpanTypeValue = SpanTypesEnum.None;
+            ForcedConversionTargetArrowFunc = isWood;
+            ISForcedConversionDrawArrowInversion = true;
+            ToTargetArrow = ProjectileID.ShadowFlameArrow;
         }
 
         public override void PostInOwner() {

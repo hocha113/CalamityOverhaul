@@ -114,6 +114,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected Func<bool> ForcedConversionTargetArrowFunc = () => false;
         /// <summary>
+        /// <see cref="ForcedConversionTargetArrowFunc"/>为<see langword="true"/>时是否让箭矢倒转
+        /// </summary>
+        protected bool ISForcedConversionDrawArrowInversion;
+        /// <summary>
         /// 开火额外矫正位置，这个值在开火后自动回归默认值<see cref="Vector2.Zero"/>
         /// </summary>
         public Vector2 FireOffsetPos = Vector2.Zero;
@@ -324,9 +328,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Main.instance.LoadItem(newtype);
                 value = TextureAssets.Item[newtype].Value;
             }
-            if (ForcedConversionTargetArrowFunc.Invoke()) {
-                value = TextureAssets.Projectile[ToTargetArrow].Value;
-            }
         }
 
         public virtual void CustomArrowRP(ref Texture2D value, Item arrow) {
@@ -351,6 +352,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Item arrowItemInds = new Item(useAmmoItemType);
                 ArrowResourceProcessing(ref arrowValue, arrowItemInds);
                 CustomArrowRP(ref arrowValue, arrowItemInds);
+
+                if (ForcedConversionTargetArrowFunc.Invoke()) {
+                    arrowValue = TextureAssets.Projectile[ToTargetArrow].Value;
+                    if (ISForcedConversionDrawArrowInversion) {
+                        CustomDrawOrig = new Vector2(arrowValue.Width / 2, 0);
+                        DrawArrowOffsetRot = MathHelper.Pi;
+                    }
+                }
+                else {
+                    CustomDrawOrig = Vector2.Zero;
+                    DrawArrowOffsetRot = 0;
+                }
 
                 float drawRot = Projectile.rotation + MathHelper.PiOver2;
                 float chordCoefficient = 1 - Projectile.ai[1] / Item.useTime;

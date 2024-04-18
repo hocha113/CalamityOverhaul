@@ -1,15 +1,12 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Drawing2D;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Core;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -573,6 +570,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual bool PreFireReloadKreLoad() {
             return true;
         }
+        
+        public override float GetBoltInFireRatio() {//重写这个函数，因为FeederGun和BaseGun的实现原理不一样，为了保持效果正确，封装并重写这部分的逻辑
+            float value1 = Projectile.ai[1] * 2;
+            if (value1 > FireTime) {
+                value1 = FireTime;
+            }
+            return value1 / FireTime;
+        }
 
         public bool GetMagazineCanUseAmmoProbability() {
             bool result;
@@ -581,7 +586,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public sealed override void SpanProj() {
-            if ((onFire || onFireR) && GunShootCoolingValue <= 0 && kreloadTimeValue <= 0) {
+            if ((onFire || onFireR) && GunShootCoolingValue <= 0 && kreloadTimeValue <= 0) {               
                 if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
@@ -594,6 +599,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     if (AmmoTypes == 0) {
                         AmmoTypes = ProjectileID.Bullet;
                     }
+                }
+                if (ForcedConversionTargetAmmoFunc.Invoke()) {
+                    AmmoTypes = ToTargetAmmo;
                 }
                 if (BulletNum > 0) {
                     if (PreFiringShoot()) {

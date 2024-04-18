@@ -3492,6 +3492,7 @@ TextContent: {
 		Wap_Marrow_Text:
 			'''
 			骨!
+			将木箭转化为骸骨箭
 			箭矢击中目标后抛出几根骨头
 			'''
 		Wap_LeadBow_Text:

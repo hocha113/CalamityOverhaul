@@ -50,6 +50,9 @@ namespace CalamityOverhaul.Content.Events
         }
 
         public void Update() {
+            if (TungstenRiotIsOngoing) {
+
+            }
         }
 
         public bool TryStartEvent() {

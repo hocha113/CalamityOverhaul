@@ -1,11 +1,17 @@
-﻿using CalamityMod.Graphics.Renderers;
+﻿using CalamityMod.Events;
+using CalamityMod.Graphics.Renderers;
+using CalamityMod.UI;
 using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent.Events;
+using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
@@ -19,6 +25,7 @@ namespace CalamityOverhaul.Common
         public delegate void On_VoidFunc_Instance_Dalegate(object inds);
         public delegate bool On_ShouldForceUseAnim_Dalegate(Player player, Item item);
         public delegate bool On_OnSpawnEnchCanAffectProjectile_Dalegate(Projectile projectile, bool allowMinions);
+        public delegate void On_BossHealthBarManager_Draw_Dalegate(object obj, SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info);
 
         public static Type[] weaponOutCodeTypes;
 
@@ -48,6 +55,8 @@ namespace CalamityOverhaul.Common
         public static Type[] fargowiltasSoulsTypes;
         public static Type fargowiltasSouls_Utils_Type;
         public static MethodBase fS_Utils_OnSpawnEnchCanAffectProjectile_Method;
+
+        public static MethodBase BossHealthBarManager_Draw_Method;
 
         public static Type[] GetModType(Mod mod) {
             return AssemblyManager.GetLoadableTypes(mod.Code);
@@ -199,7 +208,7 @@ namespace CalamityOverhaul.Common
                     MonoModHooks.Add(fS_Utils_OnSpawnEnchCanAffectProjectile_Method, On_OnSpawnEnchCanAffectProjectile_Hook);
                 }
                 else {
-                    "未成功加载 fS_Utils_OnSpawnEnchCanAffectProjectile_Method FargoSoulsUtil.OnSpawnEnchCanAffectProjectile已经改动?".DompInConsole();
+                    "未成功加载 fS_Utils_OnSpawnEnchCanAffectProjectile_Method 是否是 FargoSoulsUtil.OnSpawnEnchCanAffectProjectile已经改动?".DompInConsole();
                 }
             }
             else {
@@ -207,6 +216,36 @@ namespace CalamityOverhaul.Common
             }
 
             #endregion
+
+            #region CalamityMod_noumenon
+
+            //这一切不该发生，灾厄没有在这里留下任何可扩展的接口，如果想要那该死血条的为第三方事件靠边站，只能这么做，至少这是我目前能想到的方法
+            BossHealthBarManager_Draw_Method = typeof(BossHealthBarManager).GetMethod("Draw", BindingFlags.Instance | BindingFlags.Public);
+            if (BossHealthBarManager_Draw_Method != null) {
+                MonoModHooks.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
+            }
+            else {
+                "未成功加载 BossHealthBarManager_Draw_Method 是否是 CalamityMod.BossHealthBarManager已经改动?".DompInConsole();
+            }
+
+            #endregion
+        }
+
+        private static void On_BossHealthBarManager_Draw_Hook(On_BossHealthBarManager_Draw_Dalegate orig, object obj
+            , SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info) {
+            int startHeight = 100;
+            int x = Main.screenWidth - 420;
+            int y = Main.screenHeight - startHeight;
+            if (Main.playerInventory || Main.invasionType > 0 || Main.pumpkinMoon 
+                || Main.snowMoon || DD2Event.Ongoing || AcidRainEvent.AcidRainEventIsOngoing
+                || TungstenRiot.Instance.TungstenRiotIsOngoing) {
+                x -= 250;
+            }
+            //谢天谢地BossHealthBarManager.Bars和BossHealthBarManager.BossHPUI是公开的
+            foreach (BossHealthBarManager.BossHPUI ui in BossHealthBarManager.Bars) {
+                ui.Draw(spriteBatch, x, y);
+                y -= BossHealthBarManager.BossHPUI.VerticalOffsetPerBar;
+            }
         }
 
         private static bool On_OnSpawnEnchCanAffectProjectile_Hook(On_OnSpawnEnchCanAffectProjectile_Dalegate orig, Projectile projectile, bool allowMinions) {
