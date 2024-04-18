@@ -21,11 +21,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
+            IsCrossbow = true;
         }
 
         public override void FiringShoot() {
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].extraUpdates += 1;
+            Main.projectile[proj].SetArrowRot();
             _ = UpdateConsumeAmmo();
         }
     }

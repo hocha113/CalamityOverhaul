@@ -351,6 +351,9 @@ namespace CalamityOverhaul
             }
         }
 
+        public static void SetArrowRot(int proj) => Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
+        public static void SetArrowRot(this Projectile proj) => proj.rotation = proj.velocity.ToRotation() + MathHelper.PiOver2;
+
         /// <summary>
         /// 关于火箭的弹药映射
         /// </summary>
@@ -2278,8 +2281,8 @@ namespace CalamityOverhaul
         #region 普通绘制工具
 
         public static void DrawEventProgressBar(SpriteBatch spriteBatch, Vector2 drawPos, Asset<Texture2D> iconAsset, float eventKillRatio, float size, int barWidth, int barHeight, string eventMainName, Color eventMainColor) {
-            if (size < 0) {
-                size = 0;
+            if (size < 0.1f) {
+                return;
             }
 
             Vector2 textOffsetInCorePos = FontAssets.MouseText.Value.MeasureString(eventMainName);

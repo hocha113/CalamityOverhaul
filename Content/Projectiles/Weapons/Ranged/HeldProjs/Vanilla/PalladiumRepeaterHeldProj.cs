@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
+            DrawCrossArrowToMode = -3;
+            IsCrossbow = true;
         }
 
         public override void FiringShoot() {
@@ -30,7 +32,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 _ = UpdateConsumeAmmo();
 
-            } else {
+            } 
+            else {
                 for (int i = 0; i < 2; i++) {
                     _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-angle, angle, i)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     _ = UpdateConsumeAmmo();

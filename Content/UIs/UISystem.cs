@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.UI;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
@@ -92,7 +93,11 @@ namespace CalamityOverhaul.Content.UIs
                     }
                     return true;
                 }, InterfaceScaleType.UI));
-                layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("TG UI", delegate {
+            }
+
+            int invasionIndex = layers.FindIndex(layer => layer.Name == "Vanilla: Diagnose Net");
+            if (invasionIndex != -1) {
+                layers.Insert(invasionIndex, new LegacyGameInterfaceLayer("TG UI", delegate {
                     if (TungstenRiotUI.Instance.Active) {
                         TungstenRiotUI.Instance.Update(Main.gameTimeCache);
                         TungstenRiotUI.Instance.Draw(Main.spriteBatch);

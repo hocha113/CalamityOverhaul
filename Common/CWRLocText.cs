@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Common
         #endregion
         #region 字段内容
         public LocalizedText Event_TungstenRiot_Name { get; private set; }
+        public LocalizedText Event_TungstenRiot_Text_1 { get; private set; }
+        public LocalizedText Event_TungstenRiot_Text_2 { get; private set; }
         public LocalizedText Item_LegendOnMouseLang { get; private set; }
         public LocalizedText BloodAltar_Text1 { get; private set; }
         public LocalizedText BloodAltar_Text2 { get; private set; }

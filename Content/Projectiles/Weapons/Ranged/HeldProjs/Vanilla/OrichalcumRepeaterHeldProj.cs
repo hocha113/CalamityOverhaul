@@ -21,13 +21,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
+            DrawCrossArrowToMode = -3;
+            DrawCrossArrowNum = 2;
+            IsCrossbow = true;
         }
 
         public override void FiringShoot() {
             float angle = Main.rand.NextFloat(0.05f, 0.09f);
             for (int i = 0; i < 2; i++) {
-                _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-angle, angle, i)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-angle, angle, i)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 _ = UpdateConsumeAmmo();
+                CWRUtils.SetArrowRot(proj);
             }
         }
     }

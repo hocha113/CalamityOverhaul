@@ -169,6 +169,8 @@ Items: {
 			Fires 6 high-speed arrows
 			Arrow size increases with continuous firing time
 			Larger arrows deal higher damage and knockback, but have a wider spread
+			Right-click for a single rapid fire
+			"His gears are still crunching and turning."
 			'''
 	}
 
@@ -2219,6 +2221,16 @@ Items: {
 		DisplayName: Slingshot
 		Tooltip: Primitive energy storage weapon
 	}
+
+	CondemnationEcType: {
+		DisplayName: Condemnation
+		Tooltip:
+			'''
+			The left button attacks with a six-shot, with a probability of firing an explosive arrow that tracks the target
+			Right-click for a recharge attack, and after charging, fire a series of magic explosive arrows
+			"The power of the evil stain infuses this Crossbow."
+			'''
+	}
 }
 
 Projectiles: {
@@ -2731,6 +2743,8 @@ Projectiles: {
 	SnowblindnessHeldProj.DisplayName: Snowblindness
 	SlingshotHeldProj.DisplayName: Slingshot
 	PebbleBall.DisplayName: Pebble Ball
+	CondemnationHeldProj.DisplayName: Condemnation Held Proj
+	TheArrowPunishment.DisplayName: The Arrow Punishment
 }
 
 Configs: {
@@ -2941,6 +2955,8 @@ Keybinds: {
 TextContent: {
 	CWRLocText: {
 		Event_TungstenRiot_Name: Tungsten Riot
+		Event_TungstenRiot_Text_1: A large number of tungsten creatures are invading!
+		Event_TungstenRiot_Text_2: The Tungsten Army has been beaten back!
 		Item_LegendOnMouseLang: Press [Shift] to listen to the story...
 		BloodAltar_Text1: The crimson gaze is coming...
 		BloodAltar_Text2: You don't have enough blood orb to pay tribute to the Crimson King...
@@ -3181,12 +3197,7 @@ TextContent: {
 		Wap_TheUndertaker_Text: '''"When the undertakers find their clients uncooperative, they often use this this to calm them down"'''
 		Wap_RedRyder_Text: “Don't shoot your own eyeballs out！”
 		Wap_FlareGun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_FlareGun_Text
-		Wap_PhoenixBlaster_Text:
-			'''
-			Right click to fire the fragment of bullet 
-			""
-			"Hellstone weapons can't control fire? In fact, the bullet cannot withstand the heat."
-			'''
+		Wap_PhoenixBlaster_Text: '''"Hellstone weapons can't control fire? In fact, the bullet cannot withstand the heat."'''
 		Wap_Sandgun_Text:
 			'''
 			Right click to scatter more sand bombs

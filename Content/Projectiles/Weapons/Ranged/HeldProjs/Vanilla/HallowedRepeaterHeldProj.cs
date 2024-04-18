@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0;
             Recoil = 0;
             Item.useTime = 16;
+            IsCrossbow = true;
         }
 
         public override void FiringShoot() {
@@ -42,6 +43,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                     , arrows[i], WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj1].extraUpdates += 2;
             }
+
+            _ = UpdateConsumeAmmo();
+            _ = CreateRecoil();
         }
     }
 }

@@ -29,19 +29,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 0;
             fireIndex = 1;
             fireIndex2 = 0;
+            DrawCrossArrowSize = 1;
+            DrawCrossArrowNorlMode = 3;
+            CanRightClick = true;
+            IsCrossbow = true;
         }
 
         public override void FiringIncident() {
             base.FiringIncident();
-            if (fireIndex2 > 0) {
-                fireIndex2--;
-            }
         }
 
         public override void FiringShoot() {
-            if (fireIndex2 > 0) {
-                return;
-            }
+            Item.useTime = 7;
             SoundEngine.PlaySound(SoundID.Item5, Owner.Center);
             for (int i = 0; i < fireIndex; i++) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f)
@@ -49,16 +48,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Main.projectile[proj].scale += fireIndex * 0.08f;
                 Main.projectile[proj].extraUpdates += 1;
                 Main.projectile[proj].velocity *= 1 + fireIndex * 0.1f;
+                Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
             }
             fireIndex++;
             if (fireIndex > 6) {
-                fireIndex = 1;
-                fireIndex2 += 32;
+                Item.useTime = 32;
+                fireIndex = 0;
             }
+
+            _ = UpdateConsumeAmmo();
+            _ = CreateRecoil();
         }
 
         public override void FiringShootR() {
-            base.FiringShootR();
+            SoundEngine.PlaySound(SoundID.Item5, Owner.Center);
+            Item.useTime = 6;
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].extraUpdates += 2;
+            Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
+            _ = UpdateConsumeAmmo();
+            _ = CreateRecoil();
         }
     }
 }

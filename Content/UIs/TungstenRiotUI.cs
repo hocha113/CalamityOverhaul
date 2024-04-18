@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         public override void Draw(SpriteBatch spriteBatch) 
-            => CWRUtils.DrawEventProgressBar(spriteBatch, DrawPos, icon, TungstenRiot.Instance.EventKillRatio
+            => CWRUtils.DrawEventProgressBar(spriteBatch, DrawPos, icon, 1 - TungstenRiot.Instance.EventKillRatio
                 , sengs, 200, 45, CWRLocText.GetTextValue("Event_TungstenRiot_Name"), TungstenRiot.Instance.MainColor);
     }
 }

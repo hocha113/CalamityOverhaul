@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.Items;
+using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.NormalNPCs;
@@ -8,6 +9,7 @@ using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Summon.Extras;
 using CalamityOverhaul.Content.NPCs.OverhaulBehavior;
@@ -18,6 +20,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -124,26 +127,28 @@ namespace CalamityOverhaul.Content
                 }
             }
             if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-                Player player = Main.player[npc.target];
-                if (TungstenRiot.TungstenEventNPCDic.ContainsKey(npc.type)) {
-                    if (Main.GameUpdateCount % 60 == 0 && npc.type == ModContent.NPCType<WulfrumDrone>()) {
-                        SoundEngine.PlaySound(SoundID.Item12 with { Volume = 0.7f, Pitch = -0.2f}, npc.Center);
-                        if (!CWRUtils.isClient) {
-                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
-                            , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerLaser, 12, 0f);
+                if (npc.target >= 0 && npc.target < Main.player.Length) {
+                    Player player = Main.player[npc.target];
+                    if (TungstenRiot.TungstenEventNPCDic.ContainsKey(npc.type)) {
+                        if (Main.GameUpdateCount % 60 == 0 && npc.type == ModContent.NPCType<WulfrumDrone>()) {
+                            SoundEngine.PlaySound(SoundID.Item12 with { Volume = 0.7f, Pitch = -0.2f }, npc.Center);
+                            if (!CWRUtils.isClient) {
+                                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
+                                , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerLaser, 12, 0f);
+                            }
                         }
                     }
-                }
-                if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
-                    CWRUtils.WulfrumAmplifierAI(npc, 700, 300);
-                    if (Main.GameUpdateCount % 60 == 0) {
-                        SoundEngine.PlaySound(SoundID.Item12 with { Volume = 0.7f, Pitch = -0.2f }, npc.Center);
-                        if (!CWRUtils.isClient) {
-                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
-                            , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerMissile, 12, 0f);
+                    if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
+                        CWRUtils.WulfrumAmplifierAI(npc, 700, 300);
+                        if (Main.GameUpdateCount % 60 == 0) {
+                            SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Volume = 0.4f, Pitch = 0.6f }, npc.Center);
+                            if (!CWRUtils.isClient) {
+                                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
+                                , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerMissile, 12, 0f);
+                            }
                         }
+                        return false;
                     }
-                    return false;
                 }
             }
             return base.PreAI(npc);
@@ -236,16 +241,17 @@ namespace CalamityOverhaul.Content
             if (npc.type == CWRIDs.Polterghast) {
                 npcLoot.DefineConditionalDropSet(CWRDorp.InHellDropRule).Add(ModContent.ItemType<GhostFireWhip>());
             }
-            if (npc.type == CWRIDs.Yharon) {
+            else if (npc.type == CWRIDs.Yharon) {
                 npcLoot.DefineConditionalDropSet(CWRDorp.GlodDragonDropRule).Add(CWRDorp.Quantity(ModContent.ItemType<AuricBar>(), 1, 36, 57, 77, 158));
             }
-            if (npc.type == CWRIDs.DevourerofGodsHead) {
+            else if (npc.type == CWRIDs.DevourerofGodsHead) {
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<Ataraxia>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<Nadir>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
             }
-            if (npc.type == CWRIDs.RavagerBody) {
+            else if (npc.type == CWRIDs.RavagerBody) {
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<PetrifiedDisease>(), denominator: 5, minQuantity: 1, maxQuantity: 1));
             }
+            TungstenRiot.Instance.ModifyEventNPCLoot(npc, ref npcLoot);
         }
 
         public override void ModifyShop(NPCShop shop) {

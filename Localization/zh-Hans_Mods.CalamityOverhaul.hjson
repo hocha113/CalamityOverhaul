@@ -188,6 +188,7 @@ Items: {
 			发射6支高速箭
 			箭矢随着持续发射时间增大体积
 			箭矢体积越大，伤害和击退越高，但扩散范围更大
+			右键进行单发速射
 			"它齿轮仍旧嘎吱嘎吱的转动个不停"
 			'''
 	}
@@ -2260,6 +2261,16 @@ Items: {
 		DisplayName: 木制弹弓
 		Tooltip: 原始的蓄能武器
 	}
+
+	CondemnationEcType: {
+		DisplayName: 诘责
+		Tooltip:
+			'''
+			左键以六连射进行攻击，有概率发射出追踪目标的爆炸箭矢
+			右键进行蓄力攻击，充能完毕后发射出一连串魔法爆炸箭矢
+			"邪祟的力量侵染着这把弩"
+			'''
+	}
 }
 
 Projectiles: {
@@ -2772,6 +2783,8 @@ Projectiles: {
 	// SnowblindnessHeldProj.DisplayName: Snowblindness
 	// SlingshotHeldProj.DisplayName: Slingshot
 	// PebbleBall.DisplayName: Pebble Ball
+	// CondemnationHeldProj.DisplayName: Condemnation Held Proj
+	// TheArrowPunishment.DisplayName: The Arrow Punishment
 }
 
 Configs: {
@@ -2978,6 +2991,8 @@ Keybinds: {
 TextContent: {
 	CWRLocText: {
 		Event_TungstenRiot_Name: 钨钢暴乱
+		Event_TungstenRiot_Text_1: 大量钨钢生物正在入侵!
+		Event_TungstenRiot_Text_2: 钨钢军团已被击退!
 		Item_LegendOnMouseLang: 按下[Shift]聆听故事...
 		BloodAltar_Text1: 深红的注视正在降临...
 		BloodAltar_Text2: 你身上的血珠不够向深红之王进行朝贡...
@@ -3204,11 +3219,7 @@ TextContent: {
 		Wap_TheUndertaker_Text: “当入殓师发现他们的客户不配合时，他们往往会使用这个让他们安静下来”
 		Wap_RedRyder_Text: “别把自己的眼球射出来了！”
 		Wap_FlareGun_Text: '''"别把它和发令枪搞混了"'''
-		Wap_PhoenixBlaster_Text:
-			'''
-			右键发射燃烧的子弹碎片
-			“狱石武器却不能掌控火焰？事实上子弹无法承受这股热量”
-			'''
+		Wap_PhoenixBlaster_Text: “狱石武器却不能掌控火焰？事实上子弹无法承受这股热量”
 		Wap_Sandgun_Text:
 			'''
 			右键喷出更多沙弹

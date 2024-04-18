@@ -8,25 +8,22 @@ using Microsoft.Xna.Framework;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.ID;
+using CalamityOverhaul.Common;
+using CalamityMod.Items.Accessories;
+using CalamityMod.Items.Materials;
 
 namespace CalamityOverhaul.Content.Events
 {
     internal class TungstenRiot
     {
         public static TungstenRiot Instance;
-
-        public bool TungstenRiotIsOngoing;
-
+        public static Dictionary<int, TungstenEventNPCValue> TungstenEventNPCDic;
         public const float MaxEventIntegration = 300;
-
+        public bool TungstenRiotIsOngoing;
         public int EventKillPoints;
-
-        public float EventKillRatio => EventKillPoints / MaxEventIntegration;
-
-        public Color MainColor => new Color(28, 169, 175);
-
         public int Time;
-
+        public Color MainColor => new Color(28, 169, 175);
+        public float EventKillRatio => EventKillPoints / MaxEventIntegration;
         public struct TungstenEventNPCValue
         {
             public int InvasionContributionPoints { get; set; }
@@ -36,8 +33,6 @@ namespace CalamityOverhaul.Content.Events
                 SpawnRate = spawnRate;
             }
         }
-
-        public static Dictionary<int, TungstenEventNPCValue> TungstenEventNPCDic;
 
         public void Load() {
             Instance = this;
@@ -57,10 +52,10 @@ namespace CalamityOverhaul.Content.Events
         public void Update() {
         }
 
-        public void TryStartEvent() {
+        public bool TryStartEvent() {
             if (TungstenRiotIsOngoing || (!NPC.downedBoss1 && !Main.hardMode && !DownedBossSystem.downedAquaticScourge) 
                 || BossRushEvent.BossRushActive || AcidRainEvent.AcidRainEventIsOngoing) {
-                return;
+                return false;
             }
 
             int playerCount = 0;
@@ -69,12 +64,22 @@ namespace CalamityOverhaul.Content.Events
                     playerCount++;
             }
 
+            foreach (NPC n in Main.npc) {
+                if (!TungstenEventNPCDic.ContainsKey(n.type) && n.active && !n.friendly && !n.boss) {
+                    n.active = false;
+                }
+            }
+
             if (playerCount > 0) {
-                "大量钨钢生物正在入侵!".Domp(MainColor);
+                CWRUtils.Text(CWRLocText.GetTextValue("Event_TungstenRiot_Text_1"), MainColor);
                 SoundEngine.PlaySound(SoundID.Roar);
                 TungstenRiotIsOngoing = true;
-                EventKillPoints = 300;
+                EventKillPoints = (int)MaxEventIntegration;
             }
+
+            EventNetWork();
+
+            return true;
         }
 
         public void CloseEvent() {
@@ -85,7 +90,8 @@ namespace CalamityOverhaul.Content.Events
             }
             TungstenRiotIsOngoing = false;
             EventKillPoints = 0;
-            "钨钢军团已被击退!".Domp(MainColor);
+            EventNetWork();
+            CWRUtils.Text(CWRLocText.GetTextValue("Event_TungstenRiot_Text_2"), MainColor);
         }
 
         public void TungstenKillNPC(NPC npc) {
@@ -96,9 +102,49 @@ namespace CalamityOverhaul.Content.Events
                 EventKillPoints -= 2;
             }
             if (EventKillPoints < 0) {
-                EventKillPoints = 0;
-                TungstenRiotIsOngoing = false;
-                "钨钢军团已被击退!".Domp(MainColor);
+                CloseEvent();
+            }
+        }
+
+        public void EventNetWork() {
+            if (CWRUtils.isServer) {
+                NetMessage.SendData(MessageID.WorldData);
+                var netMessage = CWRMod.Instance.GetPacket();
+                netMessage.Write((byte)CWRMessageType.TungstenRiotSync);
+                netMessage.Write(TungstenRiotIsOngoing);
+                netMessage.Write(EventKillPoints);
+                netMessage.Send();
+            }
+        }
+
+        public void ModifyEventNPCLoot(NPC npc, ref NPCLoot npcLoot) {
+            if (npc.type == ModContent.NPCType<WulfrumDrone>()) {
+                npcLoot.RemoveWhere(rule => true);
+                npcLoot.Add(ModContent.ItemType<WulfrumMetalScrap>(), 1, 1, 3);
+                npcLoot.AddIf(info => !Instance.TungstenRiotIsOngoing, ModContent.ItemType<WulfrumBattery>(), new Fraction(7, 100));
+                npcLoot.AddIf(info => info.npc.ModNPC<WulfrumDrone>().Supercharged, ModContent.ItemType<EnergyCore>());
+            }
+            else if (npc.type == ModContent.NPCType<WulfrumGyrator>()) {
+                npcLoot.RemoveWhere(rule => true);
+                npcLoot.Add(ModContent.ItemType<WulfrumMetalScrap>(), 1, 1, 2);
+                npcLoot.AddIf(info => !Instance.TungstenRiotIsOngoing, ModContent.ItemType<WulfrumBattery>(), new Fraction(7, 100));
+                npcLoot.AddIf(info => info.npc.ModNPC<WulfrumGyrator>().Supercharged, ModContent.ItemType<EnergyCore>());
+            }
+            else if (npc.type == ModContent.NPCType<WulfrumHovercraft>()) {
+                npcLoot.RemoveWhere(rule => true);
+                npcLoot.Add(ModContent.ItemType<WulfrumMetalScrap>(), 1, 2, 3);
+                npcLoot.AddIf(info => !Instance.TungstenRiotIsOngoing, ModContent.ItemType<WulfrumBattery>(), new Fraction(7, 100));
+                npcLoot.AddIf(info => info.npc.ModNPC<WulfrumHovercraft>().Supercharged, ModContent.ItemType<EnergyCore>());
+            }
+            else if (npc.type == ModContent.NPCType<WulfrumRover>()) {
+                npcLoot.RemoveWhere(rule => true);
+                npcLoot.Add(ModContent.ItemType<WulfrumMetalScrap>(), 1, 1, 2);
+                npcLoot.AddIf(info => !Instance.TungstenRiotIsOngoing, ModContent.ItemType<RoverDrive>(), 10);
+                npcLoot.AddIf(info => !Instance.TungstenRiotIsOngoing, ModContent.ItemType<WulfrumBattery>(), new Fraction(7, 100));
+                npcLoot.AddIf(info => info.npc.ModNPC<WulfrumRover>().Supercharged, ModContent.ItemType<EnergyCore>());
+            }
+            else if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
+                npcLoot.AddIf(info => Instance.TungstenRiotIsOngoing, ModContent.ItemType<EnergyCore>(), dropRateInt: 1, minQuantity: 3, maxQuantity: 5, false);
             }
         }
     }

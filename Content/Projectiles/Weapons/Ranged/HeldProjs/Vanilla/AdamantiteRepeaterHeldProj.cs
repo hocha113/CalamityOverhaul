@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
+            IsCrossbow = true;
         }
 
         public override void FiringShoot() {

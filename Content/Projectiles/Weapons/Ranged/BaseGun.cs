@@ -7,6 +7,7 @@ using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -141,6 +142,50 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 光照强度，默认为1，用于控制在开火时制造光火效果的强度，为0时表示关闭
         /// </summary>
         public float fireLight = 1;
+        /// <summary>
+        /// 是否是一把弩
+        /// </summary>
+        public bool IsCrossbow;
+        /// <summary>
+        /// 是否绘制弩箭，默认为<see langword="true"/>，这个属性只有在<see cref="IsCrossbow"/>也为<see langword="true"/>时才会生效
+        /// </summary>
+        public bool CanDrawCrossArrow = true;
+        /// <summary>
+        /// 所要绘制的弩箭的缩放比例，默认为0.8f
+        /// </summary>
+        public float DrawCrossArrowSize = 0.8f;
+        /// <summary>
+        /// 所要绘制的弩箭的竖直偏移量，该偏移量垂直于弩箭朝向，默认为0
+        /// </summary>
+        public float DrawCrossArrowNorlMode = 0;
+        /// <summary>
+        /// 所要绘制的弩箭的方向偏移量，该偏移量等于弩箭朝向，默认为0
+        /// </summary>
+        public float DrawCrossArrowToMode = 0;
+        /// <summary>
+        /// 所要绘制的弩箭的旋转角偏移量，默认为0
+        /// </summary>
+        public float DrawCrossArrowOffsetRot = 0;
+        /// <summary>
+        /// 箭矢拉伸模长倍率，用于缩放拉箭运动的运动幅度，默认为1
+        /// </summary>
+        public float DrawCrossArrowDrawingDieLengthRatio = 1;
+        /// <summary>
+        /// 自定义绘制中心点，默认为<see cref="Vector2.Zero"/>，即不启用
+        /// </summary>
+        protected Vector2 CustomDrawOrig = Vector2.Zero;
+        /// <summary>
+        /// 所要绘制的弩箭的数量，默认为1
+        /// </summary>
+        public int DrawCrossArrowNum = 1;
+        /// <summary>
+        /// 箭矢转化目标
+        /// </summary>
+        protected int ToTargetArrow;
+        /// <summary>
+        /// 一个委托变量，用于决定什么箭矢会被转化，与<see cref="ToTargetArrow"/>配合使用
+        /// </summary>
+        protected Func<bool> ForcedConversionTargetArrowFunc = () => false;
         /// <summary>
         /// 快捷获取该枪械的发射口位置
         /// </summary>
@@ -285,6 +330,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void FiringShoot() {
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            _ = UpdateConsumeAmmo();
+            _ = CreateRecoil();
         }
         /// <summary>
         /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="onFireR"/>为<see cref="true"/>才可能调用。
@@ -292,6 +339,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void FiringShootR() {
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            _ = UpdateConsumeAmmo();
+            _ = CreateRecoil();
         }
         /// <summary>
         /// 一个快捷创建属于卢克索饰品的发射事件，如果luxorsGift为<see langword="true"/>,
@@ -392,8 +441,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (onFireR) {
                     FiringShootR();
                 }
-                _ = UpdateConsumeAmmo();
-                _ = CreateRecoil();
+                
                 if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
@@ -460,6 +508,72 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual void GunDraw(ref Color lightColor) {
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            if (IsCrossbow && CanDrawCrossArrow && CWRServerConfig.Instance.BowArrowDraw) {
+                DrawBolt();
+            }
+        }
+
+        public void DrawBolt() {
+            bool boolvalue = Projectile.ai[1] < Item.useTime - 3;
+            if (Item.useTime <= 5) {
+                boolvalue = true;
+            }
+            if (boolvalue) {
+                int useAmmoItemType = UseAmmoItemType;
+                if (useAmmoItemType == ItemID.None) {
+                    return;
+                }
+                if (useAmmoItemType > 0 && useAmmoItemType < TextureAssets.Item.Length) {
+                    Main.instance.LoadItem(useAmmoItemType);
+                }
+
+                Texture2D arrowValue = TextureAssets.Item[useAmmoItemType].Value;
+                Item arrowItemInds = new Item(useAmmoItemType);
+                if (!arrowItemInds.consumable) {
+                    int newtype = ItemID.WoodenArrow;
+                    if (CWRIDs.OverProjID_To_Safe_Shoot_Ammo_Item_Target.TryGetValue(arrowItemInds.shoot, out int value2)) {
+                        newtype = value2;
+                    }
+                    Main.instance.LoadItem(newtype);
+                    arrowValue = TextureAssets.Item[newtype].Value;
+                }
+                if (ForcedConversionTargetArrowFunc.Invoke()) {
+                    arrowValue = TextureAssets.Projectile[ToTargetArrow].Value;
+                }
+
+                float drawRot = Projectile.rotation + MathHelper.PiOver2;
+                float value1 = Projectile.ai[1] * 2;
+                if (value1 > Item.useTime) {
+                    value1 = Item.useTime;
+                }
+                float chordCoefficient = value1 / Item.useTime;
+                float lengsOFstValue = chordCoefficient * 8 * DrawCrossArrowDrawingDieLengthRatio + DrawCrossArrowToMode;
+                Vector2 inprojRot = Projectile.rotation.ToRotationVector2();
+                Vector2 offsetDrawPos = inprojRot * lengsOFstValue;
+                Vector2 norlValue = inprojRot.GetNormalVector() * (DrawCrossArrowNorlMode + 2) * Owner.direction;
+                Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new(arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
+                Vector2 drawPos = Projectile.Center - Main.screenPosition + offsetDrawPos;
+
+                void drawArrow(float overOffsetRot = 0, Vector2 overOffsetPos = default) => Main.EntitySpriteDraw(arrowValue
+                    , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos) + norlValue
+                    , null, Color.White, drawRot + overOffsetRot + DrawCrossArrowOffsetRot, drawOrig, Projectile.scale * DrawCrossArrowSize, SpriteEffects.FlipVertically);
+
+                if (DrawCrossArrowNum == 1) {
+                    drawArrow();
+                }
+                else if (DrawCrossArrowNum == 2) {
+                    drawArrow(0.3f * chordCoefficient);
+                    drawArrow(-0.3f * chordCoefficient);
+                }
+                else if (DrawCrossArrowNum == 3) {
+                    drawArrow(0.4f * chordCoefficient * Owner.direction);
+                    drawArrow();
+                    drawArrow(-0.3f * chordCoefficient * Owner.direction);
+                }
+                else {
+                    drawArrow();
+                }
+            }
         }
 
         public string GetLckRecoilKey() {

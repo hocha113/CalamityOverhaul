@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -24,6 +25,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0;
             Recoil = 0;
             RangeOfStress = 25;
+            DrawCrossArrowNorlMode = 5;
+            DrawCrossArrowNum = 2;
+            IsCrossbow = true;
         }
 
         public override void FiringShoot() {
@@ -32,8 +36,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Main.projectile[proj].DamageType = DamageClass.Ranged;
             }
             for (int i = 0; i < 4; i++) {
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.03f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.03f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
             }
+            UpdateConsumeAmmo();
         }
 
         public override void FiringShootR() {

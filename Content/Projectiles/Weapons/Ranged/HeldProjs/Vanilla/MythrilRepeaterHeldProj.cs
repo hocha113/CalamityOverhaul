@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
+            DrawCrossArrowToMode = -6;
+            IsCrossbow = true;
         }
 
         public override void FiringShoot() {
@@ -28,6 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Main.projectile[proj].usesLocalNPCImmunity = true;
             Main.projectile[proj].localNPCHitCooldown = -1;
             Main.projectile[proj].extraUpdates += 1;
+            Main.projectile[proj].SetArrowRot();
             if (Main.projectile[proj].penetrate == 1) {
                 Main.projectile[proj].maxPenetrate += 1;
                 Main.projectile[proj].penetrate += 1;

@@ -97,9 +97,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 箭矢绘制模长偏移值，默认值为-16
         /// </summary>
         protected int DrawArrowMode = -16;
+        /// <summary>
+        /// 箭矢绘制角度矫正值，默认为0
+        /// </summary>
         protected float DrawArrowOffsetRot = 0;
+        /// <summary>
+        /// 箭矢转化目标
+        /// </summary>
         protected int ToTargetArrow;
+        /// <summary>
+        /// 自定义绘制中心点，默认为<see cref="Vector2.Zero"/>，即不启用
+        /// </summary>
         protected Vector2 CustomDrawOrig = Vector2.Zero;
+        /// <summary>
+        /// 一个委托变量，用于决定什么箭矢会被转化，与<see cref="ToTargetArrow"/>配合使用
+        /// </summary>
         protected Func<bool> ForcedConversionTargetArrowFunc = () => false;
         /// <summary>
         /// 开火额外矫正位置，这个值在开火后自动回归默认值<see cref="Vector2.Zero"/>
