@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.damage = 6;
             Item.DamageType = DamageClass.Ranged;
             Item.rare = ItemRarityID.Blue;
-            Item.UseSound = SoundID.Item5;
+            Item.UseSound = CWRSound.Gun_Slingshot_Shoot;
             Item.value = Terraria.Item.buyPrice(0, 0, 0, 45);
             Item.shoot = ModContent.ProjectileType<PebbleBall>();
             Item.shootSpeed = 11;

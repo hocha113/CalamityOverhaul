@@ -1,8 +1,10 @@
 ﻿using CalamityMod.Items.DraedonMisc;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables;
+using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
@@ -19,8 +21,6 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Content
 {
-    //在这个类中无论如何都不应该引入灾厄武器部分的命名空间，这会导致引用混乱，
-    //因为 CalamityOverhaul 使用的武器类名是与灾厄一样的，两者需要靠手动的命名引用来区分
     internal class CWRRecipes : ModSystem
     {
         public static void SpawnAction(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
@@ -317,10 +317,10 @@ namespace CalamityOverhaul.Content
                     Recipe.Create(ItemType<DawnshatterAzure>())
                     .AddIngredient(ItemID.FragmentSolar, 17)
                     .AddIngredient(ItemID.DayBreak, 1)
-                    .AddIngredient<CalamityMod.Items.Weapons.Melee.RedSun>(1)
-                    .AddIngredient<CalamityMod.Items.Weapons.Melee.DraconicDestruction>(1)
-                    .AddIngredient<CalamityMod.Items.Weapons.Melee.DragonPow>(1)
-                    .AddIngredient<CalamityMod.Items.Weapons.Melee.DragonRage>(1)
+                    .AddIngredient<RedSun>(1)
+                    .AddIngredient<DraconicDestruction>(1)
+                    .AddIngredient<DragonPow>(1)
+                    .AddIngredient<DragonRage>(1)
                     .AddIngredient<BlackMatterStick>(3)
                     .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
                         amount = 0;
@@ -339,7 +339,34 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileID.Anvils)
                     .Register();
             }
-            
+            //添加魔影系列的合成
+            {
+                //诘责
+                Recipe.Create(ItemType<Condemnation>())
+                    .AddIngredient(ItemID.HallowedRepeater)
+                    .AddIngredient(ItemType<AshesofAnnihilation>(), 12)
+                    .AddTile(TileType<DraedonsForge>())
+                    .Register();
+                //狞桀
+                Recipe.Create(ItemType<Vehemence>())
+                    .AddIngredient(ItemType<ValkyrieRay>())
+                    .AddIngredient(ItemType<AshesofAnnihilation>(), 12)
+                    .AddTile(TileType<DraedonsForge>())
+                    .Register();
+                //恣睢
+                Recipe.Create(ItemType<Violence>())
+                    .AddIngredient(ItemID.Gungnir)
+                    .AddIngredient(ItemType<AshesofAnnihilation>(), 12)
+                    .AddTile(TileType<DraedonsForge>())
+                    .Register();
+                //恂戒
+                Recipe.Create(ItemType<Vigilance>())
+                    .AddIngredient(ItemType<DeathstareRod>())
+                    .AddIngredient(ItemType<AshesofAnnihilation>(), 12)
+                    .AddTile(TileType<DraedonsForge>())
+                    .Register();
+            }
+            //通用遍历修改部分
             {
                 for (int i = 0; i < Recipe.numRecipes; i++) {
                     Recipe recipe = Main.recipe[i];
@@ -397,22 +424,6 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-            //添加万变之星的相关配方，为了防止被额外修改或者再次被增删改动，这个部分的代码实现应该放在最后面
-            /*
-            {
-                for (int i = 0; i < ItemLoader.ItemCount; i++) {
-                    Item item = new Item(i);
-                    if (item != null && item.type != ItemID.None) {
-                        Console.WriteLine("添加合成结果ID:" + i + "-----" + item + "-----");
-                        Recipe.Create(i)
-                            .AddIngredient(CWRIDs.StarMyriadChanges)
-                            .AddOnCraftCallback(StarMyriadChanges.RecipeEvent)
-                            .DisableDecraft()//我们不能让游戏正常加载这个东西的微光分解配方，这不好
-                            .Register();
-                    }
-                }
-            }
-            */
         }
 
         public static string Any => Language.GetTextValue("LegacyMisc.37");

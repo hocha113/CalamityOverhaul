@@ -98,10 +98,8 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
             LoadDorp();
-            //Main.NewText($"{dorpItems.Count} -- {dorpTypes.Count}");
             if (line.Name == "ItemName" && line.Mod == "Terraria") {
-                Color rarityColor = Main.DiscoColor;
-                Vector2 basePosition = Main.MouseWorld - Main.screenPosition + new Vector2(23, 23);
+                Vector2 basePosition = new Vector2(line.X, line.Y) + new Vector2(0, 80);
                 for (int i = 0; i < dorpItems.Count; i++) {
                     Item item = dorpItems[i];
                     string text = item.HoverName;

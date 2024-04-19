@@ -15,10 +15,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return false;
         }
 
         public override void SetDefaults() {
@@ -27,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.expert = true;
             Item.accessory = true;
             Item.rare = ItemRarityID.Purple;
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems9;
+            //Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems9;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {

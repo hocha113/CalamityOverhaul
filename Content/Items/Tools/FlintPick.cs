@@ -13,8 +13,8 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override void SetDefaults() {
             Item.damage = 10;
             Item.knockBack = 1f;
-            Item.useTime = 22;
-            Item.useAnimation = 22;
+            Item.useTime = 9;
+            Item.useAnimation = 18;
             Item.pick = 20;
             Item.DamageType = DamageClass.Melee;
             Item.width = 46;

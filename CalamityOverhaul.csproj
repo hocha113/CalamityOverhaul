@@ -44,7 +44,6 @@
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\Sounds\Gun\" />
     <Folder Include="Assets\Players\" />
     <Folder Include="Content\RemakeItems\Summon\" />
   </ItemGroup>

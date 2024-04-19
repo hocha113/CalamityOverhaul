@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public bool FiringDefaultSound = true;
         /// <summary>
-        /// 是否绘制箭矢动画
+        /// 是否绘制箭矢动画，默认为<see langword="true"/>
         /// </summary>
         public bool BowArrowDrawBool = true;
         /// <summary>
@@ -126,6 +126,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public Vector2 FireOffsetVector = Vector2.Zero;
         /// <summary>
+        /// 是一把弓
+        /// </summary>
+        public bool IsBow = true;
+        /// <summary>
         /// 射弹特殊生成属性，用于决定射弹的特殊行为，默认值为<see cref="SpanTypesEnum.None"/>
         /// </summary>
         public SpanTypesEnum ShootSpanTypeValue = SpanTypesEnum.None;
@@ -163,7 +167,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Owner.PressKey()) {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = ToMouseA;
-                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY);
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY * SafeGravDir);
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
                 if (HaveAmmo) {
@@ -181,7 +185,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Owner.PressKey(false) && CanRightClick && !onFire) {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = ToMouseA;
-                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY);
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY * SafeGravDir);
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
                 if (HaveAmmo) {
@@ -214,7 +218,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(art) : MathHelper.ToRadians(180 - art);
             Projectile.timeLeft = 2;
-            ModItem.IsBow = true;
+            ModItem.IsBow = IsBow;
             SetCompositeArm();
             if (!Owner.mouseInterface) {
                 HandEvent();

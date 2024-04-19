@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
             if (line.Name == "ItemName" && line.Mod == "Terraria") {
                 _ = Main.DiscoColor;
-                Vector2 basePosition = Main.MouseWorld - Main.screenPosition + new Vector2(23, 23);
+                Vector2 basePosition = new Vector2(line.X, line.Y);
                 string text = Language.GetTextValue("Mods.CalamityOverhaul.Items.HeavenfallLongbow.DisplayName");
                 InfiniteIngot.drawColorText(Main.spriteBatch, line, text, basePosition);
                 return false;

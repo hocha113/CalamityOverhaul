@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
     internal class Marshmallows : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "Marshmallow2";
+        public override bool IsLoadingEnabled(Mod mod) => false;
         public override void SetDefaults() {
             Item.damage = 65;
             Item.knockBack = 1f;

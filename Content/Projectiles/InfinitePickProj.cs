@@ -69,6 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles
                             tile.LiquidAmount = 0;
                             tile.HasTile = false;
                             tile.WallType = 0;
+                            WorldGen.SquareTileFrame((int)tilePos.X, (int)tilePos.Y);
                             if (Main.netMode != NetmodeID.SinglePlayer)
                                 NetMessage.SendTileSquare(own.whoAmI, x, y);
                         }

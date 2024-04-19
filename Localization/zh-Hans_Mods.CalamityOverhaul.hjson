@@ -1907,7 +1907,7 @@ Items: {
 	}
 
 	Marshmallows: {
-		DisplayName: 棉花糖
+		DisplayName: 云锦
 		Tooltip:
 			'''
 			发射可以追踪敌人的棉花糖，击中后会黏在敌人身上持续造成伤害
