@@ -7,7 +7,12 @@ namespace CalamityOverhaul.Content.Items.Placeable
     internal class FoodStallChair : ModItem
     {
         public override string Texture => CWRConstant.Item + "Placeable/" + "FoodStallChair";
-
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
         public override void SetDefaults() {
             Item.DefaultToPlaceableTile(ModContent.TileType<Tiles.FoodStallChair>());
             Item.width = 32;

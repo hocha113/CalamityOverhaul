@@ -14,6 +14,13 @@ namespace CalamityOverhaul.Content.Items.Tools
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 16));
         }
 
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
+
         public override void SetDefaults() {
             Item.width = 24;
             Item.height = 24;

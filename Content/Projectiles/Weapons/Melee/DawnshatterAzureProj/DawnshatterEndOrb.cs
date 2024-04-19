@@ -11,6 +11,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
     internal class DawnshatterEndOrb : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
         public override void SetDefaults() {
             Projectile.width = 32;
             Projectile.height = 62;

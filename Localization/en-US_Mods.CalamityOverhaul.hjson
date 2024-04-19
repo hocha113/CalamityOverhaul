@@ -2231,6 +2231,41 @@ Items: {
 			"The power of the evil stain infuses this Crossbow."
 			'''
 	}
+
+	BlightSpewerEcType: {
+		DisplayName: Blight Spewer
+		Tooltip: ""
+	}
+
+	BloodBoilerEcType: {
+		DisplayName: Blood Boiler
+		Tooltip: ""
+	}
+
+	ElementalEruptionEcType: {
+		DisplayName: Elemental Eruption
+		Tooltip: ""
+	}
+
+	HavocsBreathEcType: {
+		DisplayName: Havocs Breath
+		Tooltip: ""
+	}
+
+	PristineFuryEcType: {
+		DisplayName: Pristine Fury
+		Tooltip: ""
+	}
+
+	ShadethrowerEcType: {
+		DisplayName: Shadethrower
+		Tooltip: ""
+	}
+
+	TerraFlamebursterEcType: {
+		DisplayName: Terra Flameburster
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2745,6 +2780,13 @@ Projectiles: {
 	PebbleBall.DisplayName: Pebble Ball
 	CondemnationHeldProj.DisplayName: Condemnation Held Proj
 	TheArrowPunishment.DisplayName: The Arrow Punishment
+	BlightSpewerHeldProj.DisplayName: Blight Spewer Held Proj
+	BloodBoilerHeldProj.DisplayName: Blood Boiler Held Proj
+	ElementalEruptionHeldProj.DisplayName: Elemental Eruption Held Proj
+	HavocsBreathHeldProj.DisplayName: Havocs Breath Held Proj
+	PristineFuryHeldProj.DisplayName: Pristine Fury Held Proj
+	ShadethrowerHeldProj.DisplayName: Shadethrower Held Proj
+	TerraFlamebursterHeldProj.DisplayName: Terra Flameburster Held Proj
 }
 
 Configs: {
@@ -2762,6 +2804,15 @@ Configs: {
 				[c/fff08c:IM: Actually, we don't recommend you turn this off,]
 				[c/fff08c: This feature is only recommended to be turned off when a serious conflict is confirmed.]
 				[c/FF0000: If you want to optimize the experience of disaster overhaul content, please open it!]
+				'''
+		}
+
+		AddExtrasContent: {
+			Label: Add Extras Content
+			Tooltip:
+				'''
+				Whether to add controversial content to the game, such as Endless Technology
+				Enabled by default, when disabled, content that is not compatible with the theme of disaster can be removed from the game
 				'''
 		}
 

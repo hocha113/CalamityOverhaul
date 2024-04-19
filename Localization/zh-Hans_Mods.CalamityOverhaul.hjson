@@ -2271,6 +2271,71 @@ Items: {
 			"邪祟的力量侵染着这把弩"
 			'''
 	}
+
+	BlightSpewerEcType: {
+		DisplayName: 枯萎散播者
+		Tooltip:
+			'''
+			发射粘附于物块上的瘟疫纳米机器云
+			纳米机器会主动锁定附近的敌人
+			'''
+	}
+
+	BloodBoilerEcType: {
+		DisplayName: 血祸沸炉
+		Tooltip:
+			'''
+			发射两股会回到你身边的生命血火
+			使用凝胶作为弹药
+			发射时消耗会生命
+			'''
+	}
+
+	ElementalEruptionEcType: {
+		DisplayName: 元素喷射器
+		Tooltip:
+			'''
+			蓄力喷射彩色火焰和成对的追踪元素耀斑
+			使用凝胶作为弹药
+			'''
+	}
+
+	HavocsBreathEcType: {
+		DisplayName: 混乱之息
+		Tooltip:
+			'''
+			射出一束锥形高温硫磺火
+			使用凝胶作为弹药
+			'''
+	}
+
+	PristineFuryEcType: {
+		DisplayName: 纯元怒焰
+		Tooltip:
+			'''
+			射出一束猛烈的烈焰螺旋，爆炸成一列火柱
+			右键发射一团短程余晖烈焰
+			使用凝胶作为弹药
+			'''
+	}
+
+	ShadethrowerEcType: {
+		DisplayName: 影流喷射器
+		Tooltip:
+			'''
+			喷射影流之云，使敌人的大脑溃烂
+			使用凝胶作为弹药
+			'''
+	}
+
+	TerraFlamebursterEcType: {
+		DisplayName: 泰拉喷火器
+		Tooltip:
+			'''
+			充能发射一束活性火焰和成对的追踪泰拉火球
+			使用凝胶作为弹药
+			'''
+	}
 }
 
 Projectiles: {
@@ -2785,6 +2850,13 @@ Projectiles: {
 	// PebbleBall.DisplayName: Pebble Ball
 	// CondemnationHeldProj.DisplayName: Condemnation Held Proj
 	// TheArrowPunishment.DisplayName: The Arrow Punishment
+	// BlightSpewerHeldProj.DisplayName: Blight Spewer Held Proj
+	// BloodBoilerHeldProj.DisplayName: Blood Boiler Held Proj
+	// ElementalEruptionHeldProj.DisplayName: Elemental Eruption Held Proj
+	// HavocsBreathHeldProj.DisplayName: Havocs Breath Held Proj
+	// PristineFuryHeldProj.DisplayName: Pristine Fury Held Proj
+	// ShadethrowerHeldProj.DisplayName: Shadethrower Held Proj
+	// TerraFlamebursterHeldProj.DisplayName: Terra Flameburster Held Proj
 }
 
 Configs: {
@@ -2802,6 +2874,15 @@ Configs: {
 				[c/fff08c:IM: 实际上，我们不推荐您关闭这个，]
 				[c/fff08c:这个功能是只有在确认发生严重冲突时才推荐关闭的，]
 				[c/FF0000:如果您希望可以最优化的体验灾厄大修的内容，请开启它！]
+				'''
+		}
+
+		AddExtrasContent: {
+			Label: 添加额外内容
+			Tooltip:
+				'''
+				是否将一些具有争议性的内容添加进游戏，比如无尽科技
+				默认开启，禁用后可以让和灾厄主题相容性较差的内容从游戏中移除
 				'''
 		}
 

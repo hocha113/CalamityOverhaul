@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             OffsetPos -= ShootVelocity.UnitVector() * 28;
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , ModContent.ProjectileType<ScorpioOnSpan>()
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI, 1);
         }
 
         public override void PostFiringShoot() {

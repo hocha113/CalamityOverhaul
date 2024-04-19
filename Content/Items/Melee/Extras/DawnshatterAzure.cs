@@ -22,6 +22,13 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         }
 
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
+
         public override void SetDefaults() {
             Item.height = Item.width = 54;
             Item.damage = 2709;

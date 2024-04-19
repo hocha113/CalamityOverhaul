@@ -37,6 +37,11 @@ namespace CalamityOverhaul.Common
         [DefaultValue(true)]
         public bool ForceReplaceResetContent { get; set; }
 
+        [BackgroundColor(192, 54, 64, 192)]
+        [ReloadRequired]
+        [DefaultValue(true)]
+        public bool AddExtrasContent { get; set; }
+
         /// <summary>
         /// 传奇武器系统
         /// </summary>

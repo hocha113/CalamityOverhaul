@@ -26,7 +26,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         private Vector2 toMou = Vector2.Zero;
         private ref float Time => ref Projectile.ai[0];
         private ref float Time2 => ref Projectile.ai[1];
-
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
         public override void SetDefaults() {
             Projectile.width = 54;
             Projectile.height = 116;

@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Projectile.NewProjectile(Owner.GetShootState("CWRGunShoot").Source, Projectile.Center + vr.UnitVector() * 53 + vr.GetNormalVector() * 11 * (Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1)
                         , vr, ModContent.ProjectileType<MiniRocket>(), Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
                 }
-                
                 Vector2 pos = Projectile.Center - vr * 3 + vr.GetNormalVector() * 10 * Owner.direction;
                 if (Projectile.rotation != 0) {
                     for (int i = 0; i < 100; i++) {

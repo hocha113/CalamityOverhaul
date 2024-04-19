@@ -15,6 +15,12 @@ namespace CalamityOverhaul.Content.Items.Materials
     {
         public override string Texture => CWRConstant.Item + "Materials/DecaySubstance";
         public new string LocalizationCategory => "Items.Materials";
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
 
         public override void SetDefaults() {
             Item.width = Item.height = 25;

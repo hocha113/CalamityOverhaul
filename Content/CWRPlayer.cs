@@ -177,7 +177,9 @@ namespace CalamityOverhaul.Content
                 }
                 InitialCreation = false;
             }
-            RecipeErrorFullUI.Instance.eyEBool = true;
+            if (CWRServerConfig.Instance.AddExtrasContent) {
+                RecipeErrorFullUI.Instance.eyEBool = true;
+            }
         }
 
         public override void OnHurt(Player.HurtInfo info) {

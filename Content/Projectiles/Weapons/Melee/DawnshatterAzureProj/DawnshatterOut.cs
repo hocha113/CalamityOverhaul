@@ -22,6 +22,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
         public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
         SlotId roar;
         bool spanSwing = true;
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;
             Projectile.DamageType = DamageClass.Melee;

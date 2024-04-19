@@ -69,21 +69,23 @@ namespace CalamityOverhaul.Content
             }
             //添加无尽催化剂的额外联动合成
             {
-                for (int i = 0; i < Recipe.numRecipes; i++) {
-                    Recipe recipe = Main.recipe[i];
-                    if (CWRIDs.EternitySoul > ItemID.None) {
-                        if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
-                            recipe.AddIngredient(CWRIDs.DeviatingEnergy, InfinityCatalyst.QFD(15));
-                            recipe.AddIngredient(CWRIDs.AbomEnergy, InfinityCatalyst.QFD(15));
-                            recipe.AddIngredient(CWRIDs.EternalEnergy, InfinityCatalyst.QFD(15));
+                if (CWRServerConfig.Instance.AddExtrasContent) {
+                    for (int i = 0; i < Recipe.numRecipes; i++) {
+                        Recipe recipe = Main.recipe[i];
+                        if (CWRIDs.EternitySoul > ItemID.None) {
+                            if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
+                                recipe.AddIngredient(CWRIDs.DeviatingEnergy, InfinityCatalyst.QFD(15));
+                                recipe.AddIngredient(CWRIDs.AbomEnergy, InfinityCatalyst.QFD(15));
+                                recipe.AddIngredient(CWRIDs.EternalEnergy, InfinityCatalyst.QFD(15));
+                            }
+                            if (recipe.HasResult(CWRIDs.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
+                                recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
+                            }
                         }
-                        if (recipe.HasResult(CWRIDs.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
-                            recipe.AddIngredient(ItemType<InfiniteIngot>(), InfinityCatalyst.QFD(5));
-                        }
-                    }
-                    if (CWRIDs.MetanovaBar > ItemID.None) {
-                        if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
-                            recipe.AddIngredient(CWRIDs.MetanovaBar, InfinityCatalyst.QFD(15));
+                        if (CWRIDs.MetanovaBar > ItemID.None) {
+                            if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
+                                recipe.AddIngredient(CWRIDs.MetanovaBar, InfinityCatalyst.QFD(15));
+                            }
                         }
                     }
                 }
@@ -311,7 +313,8 @@ namespace CalamityOverhaul.Content
             }
             //添加苍穹破晓合成
             {
-                Recipe.Create(ItemType<DawnshatterAzure>())
+                if (CWRServerConfig.Instance.AddExtrasContent) {
+                    Recipe.Create(ItemType<DawnshatterAzure>())
                     .AddIngredient(ItemID.FragmentSolar, 17)
                     .AddIngredient(ItemID.DayBreak, 1)
                     .AddIngredient<CalamityMod.Items.Weapons.Melee.RedSun>(1)
@@ -325,6 +328,7 @@ namespace CalamityOverhaul.Content
                     .AddOnCraftCallback(SpawnAction)
                     .AddTile(TileType<TransmutationOfMatter>())
                     .Register();
+                }
             }
             //添加雪球炮的合成
             {

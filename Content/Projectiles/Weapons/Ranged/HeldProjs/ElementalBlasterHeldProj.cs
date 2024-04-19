@@ -1,9 +1,7 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -11,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class ElementalBlasterHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ElementalBlaster";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.ElementalBlaster>();
+        public override int targetCayItem => ModContent.ItemType<ElementalBlaster>();
         public override int targetCWRItem => ModContent.ItemType<ElementalBlasterEcType>();
         public override void SetRangedProperty() {
             ControlForce = 0f;

@@ -19,6 +19,13 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override string Texture => CWRConstant.Item + "Tools/DarkMatter";
         public List<int> dorpTypes = new List<int>();
         public List<Item> dorpItems = new List<Item>();
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
+
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 3;
         }

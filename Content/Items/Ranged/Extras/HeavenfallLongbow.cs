@@ -36,6 +36,13 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public LocalizedText Legend { get; private set; }
 
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
+
         public override void SetStaticDefaults() {
             Legend = this.GetLocalization(nameof(Legend));
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;

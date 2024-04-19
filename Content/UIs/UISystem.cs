@@ -20,15 +20,17 @@ namespace CalamityOverhaul.Content.UIs
     {
         public override void PostSetupContent() {
             //将自定义的UI放到最后加载，在这之前是确保物品、ID、生物等其他内容都加载完成后
-            new SupertableUI().Load();
-            new RecipeUI().Load();
-            new DragButton().Load();
-            new InItemDrawRecipe().Load();
-            new MouseTextContactPanel().Load();
+            if (CWRServerConfig.Instance.AddExtrasContent) {
+                new SupertableUI().Load();
+                new RecipeUI().Load();
+                new DragButton().Load();
+                new RecipeErrorFullUI().Load();
+                new InItemDrawRecipe().Load();
+                new MouseTextContactPanel().Load();
+            }
             new ResetItemReminderUI().Load();
             new OverhaulTheBibleUI().Load();
             new CartridgeHolderUI().Load();
-            new RecipeErrorFullUI().Load();
             new TungstenRiotUI().Load();
 
             OverhaulTheBibleUI.Instance.ecTypeItemList = new List<Item>();
@@ -43,25 +45,29 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         public override void SaveWorldData(TagCompound tag) {
-            if (SupertableUI.Instance != null && SupertableUI.Instance?.items != null) {
-                for (int i = 0; i < SupertableUI.Instance.items.Length; i++) {
-                    if (SupertableUI.Instance.items[i] == null) {
-                        SupertableUI.Instance.items[i] = new Item(0);
+            if (CWRServerConfig.Instance.AddExtrasContent) {
+                if (SupertableUI.Instance != null && SupertableUI.Instance?.items != null) {
+                    for (int i = 0; i < SupertableUI.Instance.items.Length; i++) {
+                        if (SupertableUI.Instance.items[i] == null) {
+                            SupertableUI.Instance.items[i] = new Item(0);
+                        }
                     }
+                    tag.Add("SupertableUI_ItemDate", SupertableUI.Instance.items);
                 }
-                tag.Add("SupertableUI_ItemDate", SupertableUI.Instance.items);
             }
         }
 
         public override void LoadWorldData(TagCompound tag) {
-            if (SupertableUI.Instance != null && tag.ContainsKey("SupertableUI_ItemDate")) {
-                Item[] loadSupUIItems = tag.Get<Item[]>("SupertableUI_ItemDate");
-                for (int i = 0; i < loadSupUIItems.Length; i++) {
-                    if (loadSupUIItems[i] == null) {
-                        loadSupUIItems[i] = new Item(0);
+            if (CWRServerConfig.Instance.AddExtrasContent) {
+                if (SupertableUI.Instance != null && tag.ContainsKey("SupertableUI_ItemDate")) {
+                    Item[] loadSupUIItems = tag.Get<Item[]>("SupertableUI_ItemDate");
+                    for (int i = 0; i < loadSupUIItems.Length; i++) {
+                        if (loadSupUIItems[i] == null) {
+                            loadSupUIItems[i] = new Item(0);
+                        }
                     }
+                    SupertableUI.Instance.items = tag.Get<Item[]>("SupertableUI_ItemDate");
                 }
-                SupertableUI.Instance.items = tag.Get<Item[]>("SupertableUI_ItemDate");
             }
         }
 
@@ -69,7 +75,7 @@ namespace CalamityOverhaul.Content.UIs
             int mouseIndex = layers.FindIndex((GameInterfaceLayer layer) => layer.Name == "Vanilla: Mouse Text");
             if (mouseIndex != -1) {
                 layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("Sp UI", delegate {
-                    if (SupertableUI.Instance.Active) {
+                    if (CWRServerConfig.Instance.AddExtrasContent && SupertableUI.Instance.Active) {
                         //上帝，必须得这么做？将逻辑更新和绘制更新放到同一个线程里面！这他妈的的逻辑更新将在绘制线程里面运行！这他妈的简直会是一场亵渎
                         SupertableUI.Instance.Update(Main.gameTimeCache);
                         RecipeUI.Instance.Update(Main.gameTimeCache);

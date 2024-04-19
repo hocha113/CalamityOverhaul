@@ -16,6 +16,12 @@ namespace CalamityOverhaul.Content.Tiles
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "FoodStallChair";
         public bool playerInR;
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;

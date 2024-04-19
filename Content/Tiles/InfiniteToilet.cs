@@ -21,6 +21,12 @@ namespace CalamityOverhaul.Content.Tiles
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "InfiniteToilet";
         public const int NextStyleHeight = 40;
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
         public override void SetStaticDefaults() {
             RegisterItemDrop(ModContent.ItemType<InfiniteToiletItem>());
 

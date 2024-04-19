@@ -14,6 +14,12 @@ namespace CalamityOverhaul.Content.Items.Placeable
     {
         public override string Texture => CWRConstant.Asset + "Items/Placeable/" + "DarkMatterCompressorItem";
         public new string LocalizationCategory => "Items.Placeables";
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));

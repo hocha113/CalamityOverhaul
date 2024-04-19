@@ -19,6 +19,12 @@ namespace CalamityOverhaul.Content.Tiles
     internal class InfiniteIngotTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "InfiniteIngotTile";
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
         public override void SetStaticDefaults() {
             Main.tileShine[Type] = 1100;
             Main.tileSolid[Type] = true;

@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables.Furniture.CraftingStations;
 using CalamityMod.Rarities;
-using CalamityMod.Tiles.DraedonStructures;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using Terraria.ID;
@@ -13,6 +12,12 @@ namespace CalamityOverhaul.Content.Items.Placeable
     {
         public override string Texture => CWRConstant.Asset + "Items/Placeable/" + "TransmutationOfMatterItem";
         public new string LocalizationCategory => "Items.Placeables";
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
         public override void SetDefaults() {
             Item.width = 26;
             Item.height = 26;
