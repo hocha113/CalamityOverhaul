@@ -37,7 +37,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = SoundID.Item1;
             Item.value = CalamityGlobalItem.Rarity8BuyPrice;
             Item.rare = ItemRarityID.Yellow;
-            
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -49,10 +48,12 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
             if (player.altFunctionUse == 2) {
+                Item.useAnimation = Item.useTime = 20;
                 damage = (int)(damage * 0.2f);
                 type = ModContent.ProjectileType<Razorwind>();
             }
             else {
+                Item.useAnimation = Item.useTime = 15;
                 type = 0;
             }
         }

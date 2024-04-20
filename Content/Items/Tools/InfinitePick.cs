@@ -52,6 +52,10 @@ namespace CalamityOverhaul.Content.Items.Tools
             return true;
         }
 
+        public override void ModifyWeaponCrit(Player player, ref float crit) {
+            crit = 9999;
+        }
+
         public override bool? UseItem(Player player) {
             return base.UseItem(player);
         }

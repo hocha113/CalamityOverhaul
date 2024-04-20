@@ -663,15 +663,9 @@ End:;
                 if (item.type == CWRIDs.DarkMatterBall) {
                     DarkMatterBall.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
                 }
-                //else if (item.type == CWRIDs.BlackMatterStick) {
-                //    BlackMatterStick.DrawItemIcon(spriteBatch, drawpos + offset, Color.White, item.type, alp);
-                //}
                 else if (item.type == CWRIDs.InfiniteStick) {
                     InfiniteStick.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
                 }
-                //else if (item.type == CWRIDs.StarMyriadChanges) {
-                //    StarMyriadChanges.DrawItemIcon(spriteBatch, drawpos + offset, drawColor, item.type, alp, slp);
-                //}
                 else if (item.type == ModContent.ItemType<DecayParticles>() 
                     || item.type == ModContent.ItemType<DecaySubstance>() 
                     || item.type == ModContent.ItemType<DissipationSubstance>() 
@@ -679,7 +673,11 @@ End:;
                     DecayParticles.DrawItemIcon(spriteBatch, drawpos + offset, drawColor, item.type, alp, slp);
                 }
                 else {
-                    spriteBatch.Draw(TextureAssets.Item[item.type].Value, drawpos + offset, new Rectangle?(rectangle), (drawColor == default ? Color.White : drawColor) * alp, 0f, vector / 2, slp, 0, 0f);
+                    float value999 = 1;
+                    if (CWRIDs.ItemToBaseBow.ContainsKey(item.type)) {
+                        value999 = 0.5f;
+                    }
+                    spriteBatch.Draw(TextureAssets.Item[item.type].Value, drawpos + offset, new Rectangle?(rectangle), (drawColor == default ? Color.White : drawColor) * alp, 0f, vector / 2, slp * value999, 0, 0f);
                 }
                 if (item.stack > 1) {
                     Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, item.stack.ToString(), drawpos.X, drawpos.Y + 25, Color.White, Color.Black, new Vector2(0.3f), 1f);
