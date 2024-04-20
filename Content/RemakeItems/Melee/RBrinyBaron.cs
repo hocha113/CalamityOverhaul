@@ -74,9 +74,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override bool? UseItem(Item item, Player player) {
             if (player.altFunctionUse == 2) {
+                item.useAnimation = item.useTime = 25;
                 item.noMelee = true;
             }
             else {
+                item.useAnimation = item.useTime = 15;
                 item.noMelee = false;
             }
             return null;

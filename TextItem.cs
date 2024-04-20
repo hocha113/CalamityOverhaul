@@ -37,13 +37,13 @@ namespace CalamityOverhaul
         }
 
         public override void UpdateInventory(Player player) {
-            //player.velocity.Domp();
-            //bool news = player.PressKey(false);
-            //if (news && !old) {
-            //    player.QuickSpawnItem(player.parent(), Main.HoverItem, Main.HoverItem.stack);
-            //}
-            //old = news;
-            
+            player.velocity.Domp();
+            bool news = player.PressKey(false);
+            if (news && !old) {
+                player.QuickSpawnItem(player.parent(), Main.HoverItem, Main.HoverItem.stack);
+            }
+            old = news;
+
         }
 
         public override void HoldItem(Player player) {
