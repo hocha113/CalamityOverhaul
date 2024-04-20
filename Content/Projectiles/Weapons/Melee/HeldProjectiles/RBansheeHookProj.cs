@@ -63,8 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                             Vector2 vr = Projectile.velocity.UnitVector().RotatedBy(MathHelper.ToRadians(-20 + 10 * i)) * 10f;
                             Projectile.NewProjectile(
                                 Projectile.parent(),
-                                Projectile.Center,
-                                vr,
+                                Projectile.Center, vr,
                                 ModContent.ProjectileType<BansheeHookScythe>(),
                                 Projectile.damage,
                                 Projectile.knockBack,
@@ -152,14 +151,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                             for (int i = 0; i < 3; i++) {
                                 Vector2 spanPos = Main.MouseWorld + CWRUtils.GetRandomVevtor(0, 360, 160);
                                 Projectile.NewProjectile(
-                                    Owner.parent(),
-                                    spanPos,
+                                    Owner.parent(), spanPos,
                                     spanPos.To(Main.MouseWorld).UnitVector() * 15f,
                                     ModContent.ProjectileType<AbominateHookScythe>(),
-                                    damages,
-                                    0,
-                                    Owner.whoAmI
-                                    );
+                                    damages, 0, Owner.whoAmI);
                             }
                         }
                         if (Projectile.localAI[1] > 10 && Projectile.localAI[1] % 15 == 0)//在法杖处制造鬼火效果

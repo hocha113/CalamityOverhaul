@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 390;
+            Projectile.timeLeft = 160;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 6;
         }
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     status
                     );
             }
-            Projectile.timeLeft -= 30;
+            Projectile.timeLeft -= 10;
             Projectile.ai[0] = 1;
             if (Projectile.ai[2] == 0)
                 Projectile.ai[2] = target.whoAmI;

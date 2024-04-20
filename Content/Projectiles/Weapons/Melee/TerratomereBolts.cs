@@ -55,20 +55,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.EntityToRot(toTarget.ToRotation(), 0.17f);
                 Projectile.velocity = Projectile.rotation.ToRotationVector2() * Projectile.velocity.Length();
             }
-            if (target != null && Projectile.timeLeft <= 30) {
+            if (target != null && Projectile.timeLeft <= 80) {
                 Projectile.ChasingBehavior(target.Center, 32);
             }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.IsOwnedByLocalPlayer() && Projectile.numHits == 1) {
-                int maxNum = Main.rand.Next(3, 5);
+                int maxNum = Main.rand.Next(3, 4);
                 for (int i = 0; i < maxNum; i++) {
                     Vector2 offsetVr = CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(660, 720));
                     Vector2 spanPos = target.Center + offsetVr;
                     Vector2 vr = offsetVr.UnitVector() * -50;
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), spanPos, vr,
-                    ModContent.ProjectileType<TerratomereBigSlashs>(), (int)(Projectile.damage * 0.75f + 50), Projectile.knockBack, Projectile.owner);
+                    ModContent.ProjectileType<TerratomereBigSlashs>(), (int)(Projectile.damage * 0.75f), Projectile.knockBack, Projectile.owner);
                 }
             }
         }

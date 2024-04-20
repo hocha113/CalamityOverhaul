@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ChickenCannon";
         public override void SetDefaults() {
             Item.SetCalamitySD<ChickenCannon>();
+            Item.damage = 220;
             Item.UseSound = SoundID.Item61;
             Item.SetCartridgeGun<ChickenCannonHeldProj>(25);
         }
