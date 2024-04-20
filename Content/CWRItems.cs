@@ -187,6 +187,7 @@ namespace CalamityOverhaul.Content
             }
             if (type == ModContent.ItemType<Nadir>()) {
                 item.damage = 180;
+                item.useTime = item.useAnimation = 15;
             }
         }
 

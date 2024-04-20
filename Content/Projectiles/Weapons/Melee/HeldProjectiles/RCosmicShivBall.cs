@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 if (mode > 260) mode = 260;
                 Vector2 spanPos = Owner.Center + (Owner.Center.To(target.Center).ToRotation() + MathHelper.ToRadians(CWRUtils.rands.Next(-45, 45))).ToRotationVector2() * mode;
                 int proj = Projectile.NewProjectile(Projectile.parent(), spanPos, Vector2.Zero, ModContent.ProjectileType<CosmicRay>(), Projectile.damage * 2, Projectile.knockBack, Owner.whoAmI);
-                Main.projectile[proj].rotation = Main.projectile[proj].Center.To(target.Center).ToRotation();
+                Main.projectile[proj].rotation = Main.projectile[proj].Center.To(target.Center + CWRUtils.randVr(130)).ToRotation();
                 Main.projectile[proj].netUpdate = true;
                 Projectile.NewProjectile(Projectile.parent(), Owner.Center, Vector2.Zero, ModContent.ProjectileType<StarDust>(), 0, Projectile.knockBack, Owner.whoAmI, ai1: proj);
             }

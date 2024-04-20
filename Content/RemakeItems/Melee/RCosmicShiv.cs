@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.useTime = 15;
             item.width = 44;
             item.height = 44;
-            item.damage = 218;
+            item.damage = 188;
             item.knockBack = 9f;
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
