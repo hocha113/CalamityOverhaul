@@ -65,6 +65,10 @@ namespace CalamityOverhaul.Common
 
         [BackgroundColor(182, 24, 64, 192)]
         [DefaultValue(true)]
+        public bool ActivateGunRecoil { get; set; }
+
+        [BackgroundColor(182, 24, 64, 192)]
+        [DefaultValue(true)]
         public bool MagazineSystem {  get; set; }
 
         [BackgroundColor(182, 24, 64, 192)]

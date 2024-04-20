@@ -50,9 +50,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            int damages = damage;
+            int damages;
             if (player.altFunctionUse == 2) {
-                damages = (int)(damage * 1.3f);
+                damages = (int)(damage * 1f);
             }
             else {
                 damages = (int)(damage * 0.3f);

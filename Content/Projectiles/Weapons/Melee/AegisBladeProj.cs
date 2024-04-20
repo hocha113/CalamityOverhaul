@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
             }
             if (Projectile.ai[1] == 1) {
-                if (Projectile.scale < 3) {
+                if (Projectile.scale < 2.5f) {
                     Projectile.scale += 0.02f;
                     if (!CWRUtils.isServer) {
                         for (int i = 0; i < 6; i++) {
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         }
                     }
                 }
-                if (Projectile.damage < Projectile.originalDamage * 50)
+                if (Projectile.damage < Projectile.originalDamage * 45)
                     Projectile.damage += 35;
                 Projectile.velocity = Vector2.Zero;
                 Projectile.rotation += 0.2f;
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
             }
             if (Projectile.ai[1] == 2) {
-                NPC npc = Projectile.Center.FindClosestNPC(6000);
+                NPC npc = Projectile.Center.FindClosestNPC(6000, true, true);
                 if (npc != null) {
                     Projectile.ChasingBehavior(npc.Center, 56);
                     Projectile.penetrate = 1;

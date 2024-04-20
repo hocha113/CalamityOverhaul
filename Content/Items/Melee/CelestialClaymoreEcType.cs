@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.width = 80;
             Item.height = 82;
-            Item.damage = 85;
+            Item.damage = 75;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = 19;
             Item.useTime = 19;
@@ -32,7 +32,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.LightRed;
             Item.shoot = ModContent.ProjectileType<CosmicSpiritBombs>();
             Item.shootSpeed = 0.1f;
-            
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -60,14 +59,14 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
                 int swingDust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, dustType, player.direction * 2, 0f, 150, default, 1.3f);
                 Main.dust[swingDust].velocity *= 0.2f;
-                Vector2 toMou = player.Center.To(Main.MouseWorld).UnitVector();
                 foreach (Projectile proj in Main.projectile) {
                     if (proj.type == ModContent.ProjectileType<CosmicSpiritBombs>()) {
                         if (proj.Hitbox.Intersects(hitbox)) {
+                            Vector2 toMou = proj.Center.To(Main.MouseWorld).UnitVector();
                             proj.ai[0] += 1;
-                            proj.velocity += toMou * (6);
+                            proj.velocity = toMou * 15;
                             proj.timeLeft = 150;
-                            proj.damage = proj.originalDamage / 2;
+                            proj.damage = (int)(proj.originalDamage * 0.3f);
                             proj.netUpdate = true;
                         }
                     }

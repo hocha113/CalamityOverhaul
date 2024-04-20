@@ -2917,6 +2917,15 @@ Configs: {
 				'''
 		}
 
+		ActivateGunRecoil: {
+			Label: Activate Gun Recoil
+			Tooltip:
+				'''
+				When turned on, the gun will have a recoil effect when fired. Disable to turn off these effects
+				Enabled by default, disabled may make some game content meaningless
+				'''
+		}
+
 		MagazineSystem: {
 			Label: Magazine System
 			Tooltip:

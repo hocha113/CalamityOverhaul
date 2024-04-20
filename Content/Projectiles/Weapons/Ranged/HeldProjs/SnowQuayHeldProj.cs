@@ -59,7 +59,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, splNum: 1, dustID1: 76, dustID2: 149, dustID3: 76);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<SnowQuayBall>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<SnowQuayBall>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].ArmorPenetration = 10;
         }
 
         public override void GunDraw(ref Color lightColor) {

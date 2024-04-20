@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.damage = 62;
             Item.useAmmo = AmmoID.Snowball;
             Item.UseSound = SoundID.Item36 with { Pitch = 0.2f };
-            Item.SetCartridgeGun<AvalancheM60HeldProj>(800);
+            Item.SetCartridgeGun<AvalancheM60HeldProj>(400);
         }
 
         public override void AddRecipes() {

@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetDefaults(Item item) {
             item.width = 80;
             item.height = 82;
-            item.damage = 85;
+            item.damage = 75;
             item.DamageType = DamageClass.Melee;
             item.useAnimation = 19;
             item.useTime = 19;
@@ -69,9 +69,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     if (proj.type == ModContent.ProjectileType<CosmicSpiritBombs>()) {
                         if (proj.Hitbox.Intersects(hitbox)) {
                             proj.ai[0] += 1;
-                            proj.velocity += toMou * (6);
+                            proj.velocity += toMou * 7;
                             proj.timeLeft = 150;
-                            proj.damage = proj.originalDamage / 2;
+                            proj.damage = proj.originalDamage / 3;
                             proj.netUpdate = true;
                         }
                     }

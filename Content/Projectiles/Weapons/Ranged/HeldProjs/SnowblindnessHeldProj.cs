@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 30;
             HandFireDistance = 20;
             HandFireDistanceY = -6;
-            Recoil = 0.75f;
+            Recoil = 0.45f;
             FireTime = 3;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = 1;
         }
         public override void FiringShoot() {
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f), AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0, 1);
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
             Main.projectile[proj].Calamity().allProjectilesHome = true;
             Main.projectile[proj].CWR().GetHitAttribute.SuperAttack = true;
             Main.projectile[proj].extraUpdates = 1;

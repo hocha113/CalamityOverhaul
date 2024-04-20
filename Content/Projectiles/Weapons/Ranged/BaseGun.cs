@@ -256,6 +256,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <returns>返回制造出的后坐力向量</returns>
         public virtual Vector2 CreateRecoil() {
             OffsetRot += GunPressure * OwnerPressureIncrease;
+            if (!CWRServerConfig.Instance.ActivateGunRecoil) {
+                return Vector2.Zero;
+            }
             Vector2 recoilVr = ShootVelocity.UnitVector() * (Recoil * -OwnerPressureIncrease);
             if (Math.Abs(Owner.velocity.X) < RangeOfStress && Math.Abs(Owner.velocity.Y) < RangeOfStress) {
                 Owner.velocity += recoilVr;
