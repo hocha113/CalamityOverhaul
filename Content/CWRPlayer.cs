@@ -76,6 +76,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool EndSkillEffectStartBool;
         /// <summary>
+        /// 手持状态
+        /// </summary>
+        public int HeldStyle;
+        /// <summary>
         /// 升龙技冷却时间
         /// </summary>
         public int RisingDragonCoolDownTime;
@@ -116,7 +120,7 @@ namespace CalamityOverhaul.Content
         public override void Initialize() {
             TheRelicLuxor = 0;
             PressureIncrease = 1;
-            SafeHeldProjIndex = -1;
+            HeldStyle = -1;
             OnHit = false;           
             LoadMuzzleBrake = false;
             InitialCreation = true;
@@ -133,7 +137,7 @@ namespace CalamityOverhaul.Content
             TheRelicLuxor = 0;
             LoadMuzzleBrakeLevel = 0;
             PressureIncrease = 1;
-            SafeHeldProjIndex = -1;
+            HeldStyle = -1;
             OnHit = false;
             InFoodStallChair = false;
             EndlessStabilizerBool = false;
@@ -220,7 +224,9 @@ namespace CalamityOverhaul.Content
 
             Player player = drawInfo.drawPlayer;
             Item item = player.ActiveItem();
-            
+            if (HeldStyle >= 0) {
+                player.bodyFrame.Y = player.bodyFrame.Height * HeldStyle;
+            }
             if (!player.frozen && item.type > ItemID.None && !item.IsAir && !player.dead) {
                 CWRItems cwrItem = item.CWR();
                 Texture2D value = null;
@@ -236,6 +242,9 @@ namespace CalamityOverhaul.Content
                     }
                     value = Quiver_back_Asset.Value;
                     frame = CWRUtils.GetRec(value, frameindex, 5);
+                    if (HeldStyle >= 0) {
+                        frame = CWRUtils.GetRec(value, 0, 5);
+                    }
                     orig = CWRUtils.GetOrig(value, 5);
                 }
 

@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.StorageBattery;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -20,6 +21,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using static Humanizer.In;
 
 namespace CalamityOverhaul.Content
 {
@@ -253,6 +255,13 @@ namespace CalamityOverhaul.Content
                     BaseHeldProj baseHeldProj = heldProj.ModProjectile as BaseHeldProj;
                     if (baseHeldProj != null) {
                         baseHeldProj.SpawnItem = item;
+                    }
+                }
+                if (CWRIDs.ItemToBaseRanged.TryGetValue(item.type, out BaseHeldRanged ranged)) {
+                    bool lDown = player.PressKey();
+                    bool rDown = player.PressKey(false);
+                    if (lDown || (rDown && !lDown && ranged.CanRightClick)) {
+                        player.CWR().HeldStyle = 0;
                     }
                 }
             }

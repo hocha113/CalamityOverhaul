@@ -60,10 +60,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float ArmRotSengsBackNoFireOffset;
         /// <summary>
-        /// 是否可以右键，默认为<see langword="false"/>
-        /// </summary>
-        public bool CanRightClick;
-        /// <summary>
         /// 是否正在右键开火
         /// </summary>
         protected bool onFireR;
@@ -205,7 +201,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 快速的获取该枪械是否正在进行开火尝试，包括左键或者右键的情况
         /// </summary>
-        public bool CanFire => DownLeft && !(Owner.Calamity().mouseRight && !onFire && CanRightClick);
+        public override bool CanFire => DownLeft || (Owner.Calamity().mouseRight && !onFire && CanRightClick);
         /// <summary>
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
         /// </summary>

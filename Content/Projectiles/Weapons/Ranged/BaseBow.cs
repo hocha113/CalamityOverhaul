@@ -34,10 +34,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public int ArmRotSengsBackBaseValue = 70;
         /// <summary>
-        /// 是否可以右键
-        /// </summary>
-        public bool CanRightClick;
-        /// <summary>
         /// 是否正在右键开火
         /// </summary>
         protected bool onFireR;
@@ -136,7 +132,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 是否处于开火时间
         /// </summary>
-        public bool CanFire => Owner.PressKey() || (Owner.PressKey(false) && CanRightClick && !onFire);
+        public override bool CanFire => Owner.PressKey() || (Owner.PressKey(false) && CanRightClick && !onFire);
         /// <summary>
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
         /// </summary>

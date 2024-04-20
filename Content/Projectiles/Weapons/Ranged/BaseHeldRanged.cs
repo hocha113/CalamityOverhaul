@@ -67,6 +67,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool WeaponHandheldDisplay => CWRServerConfig.Instance.WeaponHandheldDisplay;
         public virtual bool OnHandheldDisplayBool => true;
         /// <summary>
+        /// 是否处于开火时间
+        /// </summary>
+        public virtual bool CanFire => false;
+        /// <summary>
         /// 获取射击向量
         /// </summary>
         public Vector2 ShootVelocity => ScaleFactor * UnitToMouseV;
@@ -80,6 +84,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool HaveAmmo;
         protected bool onFire;
         protected float ScopeLeng;
+        /// <summary>
+        /// 是否可以右键，默认为<see langword="false"/>
+        /// </summary>
+        public bool CanRightClick;
 
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
 
@@ -166,7 +174,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             ModItem = Item.CWR();
             ModOwner = Owner.CWR();
             ModOwner.HeldRangedBool = true;
-            ModOwner.SafeHeldProjIndex = Projectile.whoAmI;
             if (Owner.PressKey() && !Owner.mouseInterface) {
                 Owner.itemTime = 2;
             }
@@ -201,6 +208,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     return false;
                 }
             }
+            if (Owner.CCed || !Owner.active || Owner.dead) {
+                return false;
+            }
+
             return true;
         }
 

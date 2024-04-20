@@ -111,6 +111,8 @@ namespace CalamityOverhaul
         public static Dictionary<int, int> ItemToHeldProjID = new();
         public static Dictionary<int, Projectile> ItemToHeldProj = new();
         internal static Dictionary<int, BaseGun> ItemToBaseGun = new();
+        internal static Dictionary<int, BaseBow> ItemToBaseBow = new();
+        internal static Dictionary<int, BaseHeldRanged> ItemToBaseRanged = new();
         internal static Dictionary<int, int> OverProjID_To_Safe_Shoot_Ammo_Item_Target = new();
         /// <summary>
         /// 扫地机器人
@@ -539,9 +541,21 @@ namespace CalamityOverhaul
                         ItemToHeldProj.Add(item.type, projectile);
 
                         if (!ItemToBaseGun.ContainsKey(item.type)) {
-                            BaseGun baseGun = projectile.ModProjectile as BaseGun;
-                            if (baseGun != null) {
-                                ItemToBaseGun.Add(item.type, baseGun);
+                            BaseGun gun = projectile.ModProjectile as BaseGun;
+                            if (gun != null) {
+                                ItemToBaseGun.Add(item.type, gun);
+                            }
+                        }
+                        if (!ItemToBaseBow.ContainsKey(item.type)) {
+                            BaseBow bow = projectile.ModProjectile as BaseBow;
+                            if (bow != null) {
+                                ItemToBaseBow.Add(item.type, bow);
+                            }
+                        }
+                        if (!ItemToBaseRanged.ContainsKey(item.type)) {
+                            BaseHeldRanged ranged = projectile.ModProjectile as BaseHeldRanged;
+                            if (ranged != null) {
+                                ItemToBaseRanged.Add(item.type, ranged);
                             }
                         }
                     }
