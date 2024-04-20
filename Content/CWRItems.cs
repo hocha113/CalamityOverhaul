@@ -53,6 +53,7 @@ namespace CalamityOverhaul.Content
     {
         public override bool InstancePerEntity => true;
 
+        #region Date
         /// <summary>
         /// 用于存储物品的状态值，对这个数组的使用避免了额外类成员的创建
         /// (自建类成员数据对于修改物品而言总是令人困惑)
@@ -159,6 +160,7 @@ namespace CalamityOverhaul.Content
         /// 是一把弓
         /// </summary>
         public bool IsBow;
+        #endregion
 
         public override void SetDefaults(Item item) {
             if (CWRIDs.OnLoadContentBool) {
@@ -260,7 +262,7 @@ namespace CalamityOverhaul.Content
                 if (CWRIDs.ItemToBaseRanged.TryGetValue(item.type, out BaseHeldRanged ranged)) {
                     bool lDown = player.PressKey();
                     bool rDown = player.PressKey(false);
-                    if (lDown || (rDown && !lDown && ranged.CanRightClick)) {
+                    if (lDown || (rDown && !lDown && ranged.CanRightClick && !player.cursorItemIconEnabled)) {
                         player.CWR().HeldStyle = 0;
                     }
                 }
@@ -394,10 +396,6 @@ namespace CalamityOverhaul.Content
                     player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);
                 }
             }
-        }
-
-        public static bool BuyItemInitialize(On_Player.orig_BuyItem orig, Player self, long price, int customCurrency) {
-            return orig(self, price, customCurrency);
         }
 
         private void ApplyNameLineColor(Color color, TooltipLine nameLine) => nameLine.OverrideColor = color;

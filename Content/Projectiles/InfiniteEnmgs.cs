@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
@@ -30,9 +31,10 @@ namespace CalamityOverhaul.Content.Projectiles
         public override void AI() {
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3());
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-            NPC target = Projectile.Center.FindClosestNPC(1300);
-            if (target != null) {
-                Projectile.ChasingBehavior2(target.Center, 1, 0.1f);
+            NPC potentialTarget = Projectile.Center.ClosestNPCAt(1500f, true, true);
+            if (potentialTarget != null) {
+                Projectile.velocity = (Projectile.velocity * 29f + Projectile.SafeDirectionTo(potentialTarget.Center) * 21f) / 30f;
+                Projectile.velocity *= 1.01f;
             }
 
             if (!CWRUtils.isServer) {

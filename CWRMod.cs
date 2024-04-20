@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs;
 using System;
 using System.Collections.Generic;
@@ -118,7 +119,6 @@ namespace CalamityOverhaul
             new InWorldBossPhase().Load();
             EffectsRegistry.LoadEffects();
             On_Main.DrawInfernoRings += PeSystem.CWRDrawForegroundParticles;
-            On_Player.BuyItem += CWRItems.BuyItemInitialize;
             GameLoadCount++;
             base.Load();
         }
@@ -126,7 +126,6 @@ namespace CalamityOverhaul
         public override void Unload() {
             CWRParticleHandler.Unload();
             On_Main.DrawInfernoRings -= PeSystem.CWRDrawForegroundParticles;
-            On_Player.BuyItem -= CWRItems.BuyItemInitialize;
             ILMainMenuModification.Unload();
             base.Unload();
         }

@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 快速的获取该枪械是否正在进行开火尝试，包括左键或者右键的情况
         /// </summary>
-        public override bool CanFire => DownLeft || (Owner.Calamity().mouseRight && !onFire && CanRightClick);
+        public override bool CanFire => DownLeft || (Owner.Calamity().mouseRight && !onFire && CanRightClick && SafeMousetStart);
         /// <summary>
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
         /// </summary>
@@ -295,17 +295,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 onFire = false;
             }
 
-            if (Owner.Calamity().mouseRight && !onFire && CanRightClick) {//Owner.PressKey()
+            if (Owner.Calamity().mouseRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = GunOnFireRot;
                 Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
                 if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
+                    SafeMousetStart2 = true;
                     onFireR = true;
                     //Projectile.ai[1]++;
                 }
             }
             else {
+                SafeMousetStart2 = false;
                 onFireR = false;
             }
         }

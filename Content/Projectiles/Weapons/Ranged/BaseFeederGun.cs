@@ -306,17 +306,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     onFire = false;
                 }
 
-                if (Owner.Calamity().mouseRight && !onFire && CanRightClick) {//Owner.PressKey()
+                if (Owner.Calamity().mouseRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = GetGunInFireRot();
                     Projectile.Center = GetGunInFirePos();
                     ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
                     if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {//HaveAmmo && 
+                        SafeMousetStart2 = true;
                         onFireR = true;
                     }
                     SetAutomaticCartridgeChange();
                 }
                 else {
+                    SafeMousetStart2 = false;
                     onFireR = false;
                 }
 

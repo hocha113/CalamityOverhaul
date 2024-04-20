@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 是否处于开火时间
         /// </summary>
-        public override bool CanFire => Owner.PressKey() || (Owner.PressKey(false) && CanRightClick && !onFire);
+        public override bool CanFire => Owner.PressKey() || (Owner.PressKey(false) && CanRightClick && !onFire && SafeMousetStart);
         /// <summary>
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
         /// </summary>
@@ -178,13 +178,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 onFire = false;
             }
 
-            if (Owner.PressKey(false) && CanRightClick && !onFire) {
+            if (Owner.PressKey(false) && CanRightClick && !onFire && SafeMousetStart) {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = ToMouseA;
                 Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY * SafeGravDir);
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
                 if (HaveAmmo) {
+                    SafeMousetStart2 = true;
                     onFireR = true;
                     Projectile.ai[1]++;
                     if (Projectile.ai[1] > HandRotStartTime && CanFireMotion) {
@@ -194,6 +195,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             else {
                 onFireR = false;
+                SafeMousetStart2 = false;
             }
         }
 

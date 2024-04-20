@@ -38,11 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3() * (Projectile.ai[0] == 1 ? 1.2f : 10));
             if (Projectile.ai[0] == 1 && !CWRUtils.isServer) {
                 for (int i = 0; i < 8; i++) {
-                    HeavenHeavySmoke spark = new HeavenHeavySmoke(Projectile.Center
-                        , Main.rand.NextVector2Unit() * Main.rand.Next(3, 7)
-                        , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat()
-                        , HeavenfallLongbow.rainbowColors)
-                        , Main.rand.Next(3, 7), Main.rand.NextFloat(0.5f, 1.2f), 1, 0.1f, player:null);
+                    HeavenfallStarParticle spark = new HeavenfallStarParticle(Projectile.Center + CWRUtils.randVr(13), Projectile.velocity, false, 13, 1, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
                     CWRParticleHandler.AddParticle(spark);
                 }
                 Player own = Main.player[Projectile.owner];

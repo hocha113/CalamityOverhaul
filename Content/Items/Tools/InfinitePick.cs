@@ -53,19 +53,6 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override bool? UseItem(Player player) {
-            if (IsPick) {
-                Item.pick = 9999;
-                Item.hammer = 0;
-                Item.useAnimation = Item.useTime = 10;
-
-            }
-            else {
-                Item.pick = 0;
-                Item.hammer = 9999;
-                Item.useAnimation = Item.useTime = 30;
-            }
-
-
             return base.UseItem(player);
         }
 
@@ -77,6 +64,17 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override void HoldItem(Player player) {
+            if (IsPick) {
+                Item.pick = 9999;
+                Item.hammer = 0;
+                Item.useAnimation = Item.useTime = 10;
+
+            }
+            else {
+                Item.pick = 0;
+                Item.hammer = 9999;
+                Item.useAnimation = Item.useTime = 30;
+            }
             if (CWRKeySystem.InfinitePickSkillKey.JustPressed) {
                 IsPick = !IsPick;
                 SoundEngine.PlaySound(!IsPick ? CWRSound.Pecharge : CWRSound.Peuncharge, player.Center);
@@ -85,13 +83,11 @@ namespace CalamityOverhaul.Content.Items.Tools
             rDown = player.PressKey(false);
             bool justRDown = rDown && !oldRDown;
             oldRDown = rDown;
-            if (justRDown && !player.mouseInterface) {
+            if (justRDown && !player.mouseInterface && !player.mouseInterface && !player.cursorItemIconEnabled && player.cursorItemIconID == 0) {
                 SoundEngine.PlaySound(new SoundStyle(CWRConstant.Sound + "Pedestruct"), Main.MouseWorld);
                 if (!IsPick) {
-                    for (int i = 0; i < 78; i++) {
-                        HeavenHeavySmoke spark = new HeavenHeavySmoke(Main.MouseWorld, Main.rand.NextVector2Unit() * Main.rand.Next(3, 57)
-                            , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors)
-                            , Main.rand.Next(30, 75), Main.rand.NextFloat(1.5f, 6.2f), 1, 0.1f);
+                    for (int i = 0; i < 188; i++) {
+                        HeavenfallStarParticle spark = new HeavenfallStarParticle(Main.MouseWorld + CWRUtils.randVr(213), new Vector2(0, 3), false, 13, 1, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
                         CWRParticleHandler.AddParticle(spark);
                     }
                     int maxX = 500;
@@ -150,8 +146,8 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override void MeleeEffects(Player player, Rectangle hitbox) {
-            HeavenHeavySmoke spark = new HeavenHeavySmoke(player.Center, Main.rand.NextVector2Unit() * Main.rand.Next(13, 17), CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 30, 1, 1, 0.1f);
-            CWRParticleHandler.AddParticle(spark);
+            //HeavenHeavySmoke spark = new HeavenHeavySmoke(player.Center, Main.rand.NextVector2Unit() * Main.rand.Next(13, 17), CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 30, 1, 1, 0.1f);
+            //CWRParticleHandler.AddParticle(spark);
         }
 
         public override void AddRecipes() {
