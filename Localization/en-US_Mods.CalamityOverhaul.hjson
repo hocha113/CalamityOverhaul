@@ -1800,7 +1800,7 @@ Items: {
 
 	BladedgeGreatbowEcType: {
 		DisplayName: Bladedge Greatbow
-		Tooltip: Fires four arrows and three blade shards at once
+		Tooltip: Fire two arrows and four blades at once
 	}
 
 	CleansingBlazeEcType: {

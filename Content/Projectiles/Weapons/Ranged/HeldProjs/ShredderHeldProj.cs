@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             for (int index = 0; index < 26; ++index) {
                 float SpeedX = ShootVelocity.X + Main.rand.Next(-30, 31) * 0.05f;
                 float SpeedY = ShootVelocity.Y + Main.rand.Next(-30, 31) * 0.05f;
-                int shredderBoltDamage = (int)(0.85f * WeaponDamage);
+                int shredderBoltDamage = (int)(0.7f * WeaponDamage);
                 int shot = Projectile.NewProjectile(Source, GunShootPos, new Vector2(SpeedX, SpeedY), AmmoTypes, shredderBoltDamage, WeaponKnockback, Owner.whoAmI, 0f, 0f);
                 Main.projectile[shot].timeLeft = 120;
                 Main.projectile[shot].MaxUpdates *= 2;

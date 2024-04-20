@@ -49,6 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Main.projectile[proj2].damage *= 2;
                 Main.projectile[proj2].usesLocalNPCImmunity = true;
                 Main.projectile[proj2].localNPCHitCooldown = -1;
+                Main.projectile[proj2].ArmorPenetration = 50;
             }
         }
     }

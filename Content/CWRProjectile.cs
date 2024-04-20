@@ -272,6 +272,7 @@ namespace CalamityOverhaul.Content
                             proj.timeLeft /= 2;
                             proj.usesLocalNPCImmunity = true;
                             proj.localNPCHitCooldown = -1;
+                            proj.ArmorPenetration = 15;
                             proj.CWR().GetHitAttribute.NeverCrit = true;
                         }
                     }

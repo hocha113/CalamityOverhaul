@@ -37,7 +37,7 @@ namespace CalamityOverhaul
         }
 
         public override void UpdateInventory(Player player) {
-            player.velocity.Domp();
+            //player.velocity.Domp();
             bool news = player.PressKey(false);
             if (news && !old) {
                 player.QuickSpawnItem(player.parent(), Main.HoverItem, Main.HoverItem.stack);
@@ -76,12 +76,12 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            //if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-            //    TungstenRiot.Instance.CloseEvent();
-            //}
-            //else {
-            //    TungstenRiot.Instance.TryStartEvent();
-            //}
+            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
+                TungstenRiot.Instance.CloseEvent();
+            }
+            else {
+                TungstenRiot.Instance.TryStartEvent();
+            }
             return true;
         }
     }

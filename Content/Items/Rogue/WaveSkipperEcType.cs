@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
 
         public override void SetDefaults() {
             Item.width = 44;
-            Item.damage = 80;
+            Item.damage = 70;
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.useAnimation = Item.useTime = 22;
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
                 if (player.Calamity().StealthStrikeAvailable()) {
-                    for (int i = 0; i < 9; i++) {
+                    for (int i = 0; i < 7; i++) {
                         Vector2 spanPos = position + new Vector2(Main.rand.Next(-160, 160), Main.rand.Next(-560, -500));
                         Vector2 vr = spanPos.To(Main.MouseWorld).UnitVector().RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.Next(13, 17);
                         int stealth = Projectile.NewProjectile(source, spanPos, vr, ModContent.ProjectileType<WaveSkipperProjectile>(), damage, knockback, player.whoAmI);

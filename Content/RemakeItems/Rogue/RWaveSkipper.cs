@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
 
         public override void SetDefaults(Item item) {
             item.width = 44;
-            item.damage = 80;
+            item.damage = 70;
             item.noMelee = true;
             item.noUseGraphic = true;
             item.useAnimation = item.useTime = 22;
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             }
             if (player.altFunctionUse == 2) {
                 if (player.Calamity().StealthStrikeAvailable()) {
-                    for (int i = 0; i < 9; i++) {
+                    for (int i = 0; i < 7; i++) {
                         Vector2 spanPos = position + new Vector2(Main.rand.Next(-160, 160), Main.rand.Next(-560, -500));
                         Vector2 vr = spanPos.To(Main.MouseWorld).UnitVector().RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.Next(13, 17);
                         int stealth = Projectile.NewProjectile(source, spanPos, vr, ModContent.ProjectileType<WaveSkipperProjectile>(), damage, knockback, player.whoAmI);
@@ -70,12 +70,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             }
             else {
                 if (player.Calamity().StealthStrikeAvailable()) {
-                    for (int i = -WaveSkipperEcType.SpreadAngle; i < WaveSkipperEcType.SpreadAngle * 2; i += WaveSkipperEcType.SpreadAngle) {
-                        Vector2 spreadVelocity = player.SafeDirectionTo(Main.MouseWorld).RotatedBy(MathHelper.ToRadians(i)) * item.shootSpeed;
-                        int stealth = Projectile.NewProjectile(source, position, spreadVelocity, ModContent.ProjectileType<RWaveSkipperProjectile>(), damage, knockback, player.whoAmI);
-                        if (stealth.WithinBounds(Main.maxProjectiles))
-                            Main.projectile[stealth].Calamity().stealthStrike = true;
-                    }
+                    int stealth = Projectile.NewProjectile(source, position, velocity.RotatedBy(-0.05f), ModContent.ProjectileType<RWaveSkipperProjectile>(), damage, knockback, player.whoAmI);
+                    if (stealth.WithinBounds(Main.maxProjectiles))
+                        Main.projectile[stealth].Calamity().stealthStrike = true;
+                    int stealth2 = Projectile.NewProjectile(source, position, velocity.RotatedBy(0.05f), ModContent.ProjectileType<RWaveSkipperProjectile>(), damage, knockback, player.whoAmI);
+                    if (stealth2.WithinBounds(Main.maxProjectiles))
+                        Main.projectile[stealth2].Calamity().stealthStrike = true;
                     return false;
                 }
                 Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<RWaveSkipperProjectile>(), damage, knockback, player.whoAmI);

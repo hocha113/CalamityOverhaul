@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 76, dustID2: 149, dustID3: 76);
             SpawnGunFireDust(GunShootPos, ShootVelocity, splNum: 2, dustID1: 76, dustID2: 149, dustID3: 76);
             SpawnGunFireDust(GunShootPos, ShootVelocity, splNum: 3, dustID1: 76, dustID2: 149, dustID3: 76);
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 6; i++) {
                 int proj = Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.8f, 1.1f)
                     , AmmoTypes, (int)(WeaponDamage * Main.rand.NextFloat(0.2f, 0.8f)), WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].scale += Main.rand.NextFloat(0.3f);

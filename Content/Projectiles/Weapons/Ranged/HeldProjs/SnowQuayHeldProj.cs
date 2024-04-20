@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostInOwnerUpdate() {
-            if (DownLeft) {
+            if (DownLeft && !Owner.mouseInterface && IsKreload) {
                 fireIndex++;
                 if (fireIndex < 90) {
                     CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);

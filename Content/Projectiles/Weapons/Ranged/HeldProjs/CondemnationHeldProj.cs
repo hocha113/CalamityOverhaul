@@ -61,6 +61,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Main.projectile[proj].ai[0] = 1;
                 Main.projectile[proj].scale -= 0.3f;
             }
+            else {
+                Main.projectile[proj].ArmorPenetration = 100;
+            }
 
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();

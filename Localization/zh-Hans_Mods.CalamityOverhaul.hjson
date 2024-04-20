@@ -1847,7 +1847,7 @@ Items: {
 
 	BladedgeGreatbowEcType: {
 		DisplayName: 锋叶十字弩
-		Tooltip: 一次发射四支箭和三片锋叶
+		Tooltip: 一次发射两支箭和四片锋叶
 	}
 
 	CleansingBlazeEcType: {

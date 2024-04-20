@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BladedgeGreatbow";
         public override int targetCayItem => ModContent.ItemType<BladedgeGreatbow>();
         public override int targetCWRItem => ModContent.ItemType<BladedgeGreatbowEcType>();
-
+        int fireIndex;
         public override void SetRangedProperty() {
             HandDistance = 20;
             HandDistanceY = 5;
@@ -31,13 +31,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            for (int i = 0; i < 3; i++) {
+            Item.useTime = 12;
+            for (int i = 0; i < 4; i++) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ProjectileID.Leaf, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].DamageType = DamageClass.Ranged;
             }
-            for (int i = 0; i < 4; i++) {
-                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.03f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            for (int i = 0; i < 2; i++) {
+                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.03f) * Main.rand.NextFloat(0.8f, 1), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
+                Main.projectile[proj].extraUpdates += 1;
+            }
+            if (++fireIndex >= 2) {
+                Item.useTime = 30;
+                fireIndex = 0;
             }
             UpdateConsumeAmmo();
         }

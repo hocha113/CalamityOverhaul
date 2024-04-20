@@ -27,28 +27,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = GunPressure = ControlForce = 0;
         }
 
-        public override void KreloadSoundCaseEjection() {
-            base.KreloadSoundCaseEjection();
-        }
-
-        public override void KreloadSoundloadTheRounds() {
-            base.KreloadSoundloadTheRounds();
-        }
-
         public override void PreInOwnerUpdate() {
             LoadingAnimation(20, 3, 5);
         }
 
-        public override Vector2 GetGunInFirePos() {
-            return kreloadTimeValue == 0 ? base.GetGunInFirePos() : GetGunBodyPostion();//避免玩家试图在装弹时开火而引发动画冲突
-        }
-
-        public override float GetGunInFireRot() {
-            return kreloadTimeValue == 0 ? base.GetGunInFireRot() : GetGunBodyRotation();//避免玩家试图在装弹时开火而引发动画冲突
-        }
-
         public override void FiringShoot() {
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void PostFiringShoot() {

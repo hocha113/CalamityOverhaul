@@ -18,12 +18,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void SetRangedProperty() {
             FireTime = 10;
             ShootPosToMouLengValue = 0;
-            ShootPosNorlLengValue = 0;
+            ShootPosNorlLengValue = -6;
             HandDistance = 15;
             HandDistanceY = 0;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
-            Recoil = 1.2f;
+            Recoil = 1.1f;
             RangeOfStress = 8;
             CanRightClick = false;
         }
