@@ -32,8 +32,8 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.mana = 20;
             Item.width = 80;
             Item.height = 86;
-            Item.useTime = 16;
-            Item.useAnimation = 16;
+            Item.useTime = 35;
+            Item.useAnimation = 35;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
             Item.noUseGraphic = true;

@@ -77,8 +77,11 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            if (Item.CWR().MeleeCharge > DefiledGreatswordMaxRageEnergy) {
+                Item.CWR().MeleeCharge = DefiledGreatswordMaxRageEnergy;
+            }
             if (!Item.CWR().closeCombat) {
-                rageEnergy -= damage;
+                rageEnergy -= damage * 1.25f;
                 if (rageEnergy < 0) {
                     rageEnergy = 0;
                 }
@@ -145,26 +148,18 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 3; i++) {
                 Vector2 offsetvr = CWRUtils.GetRandomVevtor(-15, 15, 900 + randomLengs);
                 Vector2 spanPos = target.Center + offsetvr;
-                _ = Projectile.NewProjectile(
-                    CWRUtils.parent(player),
-                    spanPos,
+                int proj1 = Projectile.NewProjectile(
+                    CWRUtils.parent(player), spanPos,
                     CWRUtils.UnitVector(offsetvr) * -13,
-                    type,
-                    Item.damage - 50,
-                    0,
-                    player.whoAmI
-                    );
+                    type, Item.damage - 50, 0, player.whoAmI);
                 Vector2 offsetvr2 = CWRUtils.GetRandomVevtor(165, 195, 900 + randomLengs);
                 Vector2 spanPos2 = target.Center + offsetvr2;
-                _ = Projectile.NewProjectile(
-                    CWRUtils.parent(player),
-                    spanPos2,
-                    CWRUtils.UnitVector(offsetvr2) * -13,
-                    type,
-                    Item.damage - 50,
-                    0,
-                    player.whoAmI
-                    );
+                int proj2 = Projectile.NewProjectile(
+                    CWRUtils.parent(player), spanPos2,
+                    CWRUtils.UnitVector(offsetvr2) * -13, type,
+                    Item.damage - 50, 0, player.whoAmI);
+                Main.projectile[proj1].extraUpdates += 1;
+                Main.projectile[proj2].extraUpdates += 1;
             }
         }
 

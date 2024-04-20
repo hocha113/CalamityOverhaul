@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override int Shoot() {
             int type = ModContent.ProjectileType<HatredFire>();
             SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
-            for (int i = 0; i < Main.rand.Next(2, 4); i++) {
+            for (int i = 0; i < 2; i++) {
                 Projectile.NewProjectile(Source, Projectile.Center,
                 ShootVelocity.RotatedBy(MathHelper.ToRadians(Main.rand.Next(-20, 20))).UnitVector() * 7,
                 type, Projectile.damage, 2, Owner.whoAmI);

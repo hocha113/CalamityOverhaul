@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundEngine.PlaySound(CosmicCalamityProjectile.BelCanto with { PitchRange = (-0.1f, 0.1f), Volume = 0.9f });
 
                 bool intile = false;
-                int overdmg = 500;
+                int overdmg = 1500;
                 Vector2 targetPos = Main.MouseWorld;
                 for (int i = 0; i < 128; i++) {
                     Vector2 offset = new Vector2(0, i * 16);
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Vector2 velocity = new Vector2(Main.rand.NextFloat(-3, 3) * (i * 0.01f), -3);
                     Projectile proj = Projectile.NewProjectileDirect(Source2
                     , targetPos + new Vector2(Main.rand.Next(-16, 16), Main.rand.Next(-64, 0)) + new Vector2(0, i * -25 + 64)
-                    , velocity, 961, WeaponDamage * 2 + overdmg, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(1f, 1.3f) + i * 0.06f);
+                    , velocity, 961, WeaponDamage * 5 + overdmg, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(1f, 1.3f) + i * 0.06f);
                     proj.rotation = velocity.ToRotation();
                     proj.hostile = false;
                     proj.friendly = true;
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Vector2 velocity = inLVr;
                     velocity.Y -= Main.rand.NextFloat(0.3f);
                     Projectile proj = Projectile.NewProjectileDirect(Source2, targetPos + inLVr * i * 16, velocity, 961
-                        , WeaponDamage + overdmg, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(1.8f, 2.1f) + i * 0.07f);
+                        , WeaponDamage * 3 + overdmg, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(1.8f, 2.1f) + i * 0.07f);
                     proj.rotation = velocity.ToRotation();
                     proj.hostile = false;
                     proj.friendly = true;
@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Vector2 velocity = inRVr;
                     velocity.Y -= Main.rand.NextFloat(0.3f);
                     Projectile proj = Projectile.NewProjectileDirect(Source2, targetPos + inRVr * i * 16, velocity, 961
-                        , WeaponDamage + overdmg, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(1.8f, 2.1f) + i * 0.07f);
+                        , WeaponDamage * 3 + overdmg, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(1.8f, 2.1f) + i * 0.07f);
                     proj.rotation = velocity.ToRotation();
                     proj.hostile = false;
                     proj.friendly = true;
@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
             for (int i = 0; i < 3; i++) {
                 Projectile iceorb = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.06f)
-                , ModContent.ProjectileType<Crystal>(), WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 0, 0);
+                , ModContent.ProjectileType<Crystal>(), WeaponDamage * 3, WeaponKnockback, Owner.whoAmI, 0, 0);
                 iceorb.rotation = iceorb.velocity.ToRotation();
                 iceorb.CWR().SpanTypes = (byte)SpanTypesEnum.CrystalDimming;
             }

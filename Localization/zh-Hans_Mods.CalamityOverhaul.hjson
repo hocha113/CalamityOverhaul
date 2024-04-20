@@ -49,7 +49,7 @@ Items: {
 	}
 
 	BlightedCleaverEcType: {
-		DisplayName: 暴君之刃
+		DisplayName: 凋亡屠刀
 		Tooltip:
 			'''
 			刀刃击中敌人会积攒暴君能量，并生成大量的屠杀之镰
@@ -81,7 +81,7 @@ Items: {
 	}
 
 	DefiledGreatswordEcType: {
-		DisplayName: 真暴君之刃
+		DisplayName: 神殇巨剑
 		Tooltip:
 			'''
 			刀刃击中敌人会积攒暴君能量，并生成大量的丛林之镰

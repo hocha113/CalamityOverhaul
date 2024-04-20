@@ -72,8 +72,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            if (item.CWR().MeleeCharge > DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy) {
+                item.CWR().MeleeCharge = DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy;
+            }
             if (!item.CWR().closeCombat) {
-                item.CWR().MeleeCharge -= damage;
+                item.CWR().MeleeCharge -= damage * 1.25f;
                 if (item.CWR().MeleeCharge < 0) item.CWR().MeleeCharge = 0;
 
                 if (item.CWR().MeleeCharge == 0) {
@@ -128,26 +131,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             for (int i = 0; i < 3; i++) {
                 Vector2 offsetvr = CWRUtils.GetRandomVevtor(-15, 15, 900 + randomLengs);
                 Vector2 spanPos = target.Center + offsetvr;
-                Projectile.NewProjectile(
-                    CWRUtils.parent(player),
-                    spanPos,
-                    (Vector2)(CWRUtils.UnitVector(offsetvr) * -13),
-                    type,
-                    item.damage - 50,
-                    0,
-                    player.whoAmI
-                    );
+                int proj1 = Projectile.NewProjectile(
+                    CWRUtils.parent(player), spanPos,
+                    CWRUtils.UnitVector(offsetvr) * -13,
+                    type, item.damage - 50, 0, player.whoAmI);
                 Vector2 offsetvr2 = CWRUtils.GetRandomVevtor(165, 195, 900 + randomLengs);
                 Vector2 spanPos2 = target.Center + offsetvr2;
-                Projectile.NewProjectile(
-                    CWRUtils.parent(player),
-                    spanPos2,
-                    (Vector2)(CWRUtils.UnitVector(offsetvr2) * -13),
-                    type,
-                    item.damage - 50,
-                    0,
-                    player.whoAmI
-                    );
+                int proj2 = Projectile.NewProjectile(
+                    CWRUtils.parent(player), spanPos2,
+                    CWRUtils.UnitVector(offsetvr2) * -13, type,
+                    item.damage - 50, 0, player.whoAmI);
+                Main.projectile[proj1].extraUpdates += 1;
+                Main.projectile[proj2].extraUpdates += 1;
             }
         }
 
@@ -164,7 +159,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             float slp = 3;
             int offsetwid = 4;
             Vector2 drawPos = CWRUtils.WDEpos(player.Center + new Vector2(rageEnergyBar.Width / -2 * slp, 135));
-            Rectangle backRec = new Rectangle(offsetwid, 0, (int)((rageEnergyBar.Width - offsetwid * 2) * (item.CWR().MeleeCharge / BlightedCleaverEcType.BlightedCleaverMaxRageEnergy)), rageEnergyBar.Height);
+            Rectangle backRec = new Rectangle(offsetwid, 0, (int)((rageEnergyBar.Width - offsetwid * 2) * (item.CWR().MeleeCharge / DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy)), rageEnergyBar.Height);
 
             Main.spriteBatch.ResetBlendState();
             Main.EntitySpriteDraw(

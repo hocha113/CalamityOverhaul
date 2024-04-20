@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.alpha = 0;
             Projectile.penetrate = -1;
             Projectile.MaxUpdates = 1;
-            Projectile.timeLeft = 1200;
+            Projectile.timeLeft = 600;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Magic;

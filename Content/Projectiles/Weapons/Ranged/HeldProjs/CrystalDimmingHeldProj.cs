@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
             for (int i = 0; i < 3; i++) {
                 Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.7f, 1.1f)
-                    , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
+                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 proj.extraUpdates += 1;
                 proj.usesLocalNPCImmunity = true;
                 proj.localNPCHitCooldown = -1;
