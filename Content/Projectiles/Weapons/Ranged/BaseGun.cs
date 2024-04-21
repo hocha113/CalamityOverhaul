@@ -60,10 +60,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float ArmRotSengsBackNoFireOffset;
         /// <summary>
-        /// 是否正在右键开火
-        /// </summary>
-        protected bool onFireR;
-        /// <summary>
         /// 是否在<see cref="InOwner"/>执行后自动更新手臂参数，默认为<see langword="true"/>
         /// </summary>
         public bool SetArmRotBool = true;
@@ -291,13 +287,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
                 if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     onFire = true;
-                    //Projectile.ai[1]++;
                 }
             }
             else {
                 onFire = false;
             }
-
+            
             if (Owner.Calamity().mouseRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = GunOnFireRot;
@@ -306,7 +301,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     SafeMousetStart2 = true;
                     onFireR = true;
-                    //Projectile.ai[1]++;
                 }
             }
             else {
@@ -325,7 +319,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 GunShootCoolingValue--;
             }
             SetHeld();
-            if (!Owner.mouseInterface) {
+            if (SafeMouseInterfaceValue) {
                 FiringIncident();
             }
         }

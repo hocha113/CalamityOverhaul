@@ -34,10 +34,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public int ArmRotSengsBackBaseValue = 70;
         /// <summary>
-        /// 是否正在右键开火
-        /// </summary>
-        protected bool onFireR;
-        /// <summary>
         /// 是否在<see cref="InOwner"/>执行后自动更新手臂参数，默认为<see langword="true"/>
         /// </summary>
         public bool SetArmRotBool = true;
@@ -218,7 +214,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.timeLeft = 2;
             ModItem.IsBow = IsBow;
             SetCompositeArm();
-            if (!Owner.mouseInterface) {
+            if (SafeMouseInterfaceValue) {
                 HandEvent();
             }
 

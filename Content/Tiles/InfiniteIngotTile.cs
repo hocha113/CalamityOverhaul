@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Items.TreasureBags.MiscGrabBags;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
@@ -10,7 +9,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 

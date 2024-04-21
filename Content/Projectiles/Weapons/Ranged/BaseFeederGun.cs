@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <returns></returns>
         public virtual bool WhetherStartChangingAmmunition() {
-            if (!MagazineSystem || !Projectile.IsOwnedByLocalPlayer()) {//如果关闭了弹匣系统，枪械将不再可以换弹，因为弹匣不会再发挥作用
+            if (!MagazineSystem || CWRUtils.isServer) {//如果关闭了弹匣系统，枪械将不再可以换弹，因为弹匣不会再发挥作用
                 return false;
             }
             return CWRKeySystem.KreLoad_Key.JustPressed && kreloadTimeValue == 0 
@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (ModItem.NoKreLoadTime > 0) {
                 ModItem.NoKreLoadTime--;
             }
-            if (!Owner.mouseInterface) {
+            if (SafeMouseInterfaceValue) {
                 if (DownLeft) {
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = GetGunInFireRot();

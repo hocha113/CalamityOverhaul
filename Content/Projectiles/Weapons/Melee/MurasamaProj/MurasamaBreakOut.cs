@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 GeneralParticleHandler.SpawnParticle(spark2);
             }
 
-            if (Projectile.ai[0] != 2 && Projectile.ai[0] != 3 && Projectile.IsOwnedByLocalPlayer()) {
+            if (Projectile.ai[0] != 2 && Projectile.ai[0] != 3 && !CWRUtils.isServer) {
                 if (CWRKeySystem.Murasama_DownKey.JustPressed) {//触发下砸技能
                     if (!MurasamaEcType.UnlockSkill2) {//在击败史莱姆之神前不能使用这个技能
                         return;
@@ -170,9 +170,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     murasama.initialize();
                     if (murasama.CWR().ai[0] >= 2) {
                         SoundEngine.PlaySound(MurasamaEcType.BigSwing with { Pitch = -0.1f }, Projectile.Center);
-
-                        Projectile.NewProjectile(Owner.parent(), Projectile.Center, new Vector2(0, 5)
+                        if (Projectile.IsOwnedByLocalPlayer()) {
+                            Projectile.NewProjectile(Owner.parent(), Projectile.Center, new Vector2(0, 5)
                             , ModContent.ProjectileType<MurasamaDownSkill>(), murasama.damage, 0, Owner.whoAmI);
+                        }
 
                         murasama.CWR().ai[0] -= 2;
                         Projectile.Kill();

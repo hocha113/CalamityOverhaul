@@ -82,7 +82,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 使用者是否拥有弹药
         /// </summary>
         public bool HaveAmmo;
+        /// <summary>
+        /// 是否正在左键开火
+        /// </summary>
         protected bool onFire;
+        /// <summary>
+        /// 是否正在右键开火
+        /// </summary>
+        protected bool onFireR;
+        /// <summary>
+        /// 屏幕位移模长
+        /// </summary>
         protected float ScopeLeng;
         /// <summary>
         /// 是否可以右键，默认为<see langword="false"/>
@@ -91,11 +101,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 鼠标是否处在空闲实际
         /// </summary>
-        public bool SafeMousetStart => !Owner.cursorItemIconEnabled && Owner.cursorItemIconID == 0 || SafeMousetStart2;
+        public bool SafeMousetStart => !Owner.cursorItemIconEnabled && Owner.cursorItemIconID == 0 && !Main.mouseText || SafeMousetStart2;
         /// <summary>
         /// 一个额外附属值，用于矫正<see cref="SafeMousetStart"/>的连续，这个值应该在合适的时机被恢复为默认值<see langword="false"/>
         /// </summary>
         public bool SafeMousetStart2;
+        int __safeMouseInterfaceTime;
+        bool _safeMouseInterfaceValue;
+        bool _safeMouseInterfaceValue2;
+        public bool SafeMouseInterfaceValue {
+            get {
+                return _safeMouseInterfaceValue;
+            }
+        }
 
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
 
@@ -166,10 +184,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     ScopeLeng = 30;
                 }
                 Main.SetCameraLerp(0.05f, 10);
-                Owner.CWR().OffsetScreenPos = ToMouse.UnitVector() * ScopeLeng;
+                ModOwner.OffsetScreenPos = ToMouse.UnitVector() * ScopeLeng;
             }
             else {
                 ScopeLeng = 0;
+            }
+        }
+
+        void UpdateSafeMouseInterfaceValue() {
+            if (!CanFire) {//只有在玩家不进行开火尝试时才能更改空闲状态
+                _safeMouseInterfaceValue = !Owner.mouseInterface;
+                if (!_safeMouseInterfaceValue) {//如果鼠标已经被锁定为非空闲状态，那么开火状态也需要锁定为关
+                    onFire = onFireR = false;
+                    Projectile.ai[1] = 0;
+                }
             }
         }
 
@@ -182,7 +210,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             ModItem = Item.CWR();
             ModOwner = Owner.CWR();
             ModOwner.HeldRangedBool = true;
-            if (Owner.PressKey() && !Owner.mouseInterface) {
+            UpdateSafeMouseInterfaceValue();
+            if (CanFire && !Owner.mouseInterface) {
                 Owner.itemTime = 2;
             }
             if (ModItem.Scope && Projectile.IsOwnedByLocalPlayer()) {
