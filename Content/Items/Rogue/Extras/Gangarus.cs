@@ -33,8 +33,16 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public int ChargeGrade;
         public override string Texture => CWRConstant.Item + "Rogue/Gangarus";
         public LocalizedText Legend { get; private set; }
-
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
         public static void ZenithWorldAsset() {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return;
+            }
             if (Main.zenithWorld) {
                 TextureAssets.Item[CWRIDs.Gangarus] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3");
             }

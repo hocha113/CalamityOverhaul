@@ -2883,7 +2883,7 @@ Configs: {
 		}
 
 		AddExtrasContent: {
-			Label: 添加额外内容
+			Label: 是否添加额外内容
 			Tooltip:
 				'''
 				是否将一些具有争议性的内容添加进游戏，比如无尽科技
