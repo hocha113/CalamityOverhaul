@@ -1,7 +1,5 @@
-﻿using CalamityMod.Events;
-using CalamityOverhaul.Content.Events;
+﻿using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
-using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System.IO;
 using Terraria;
@@ -25,11 +23,21 @@ namespace CalamityOverhaul.Content
                 }  
             }
         }
+        static int _time;
+        public static int Time {
+            get => _time;
+            set => _time = value;
+        }
 
         public override void ClearWorld() {
             TitleMusicBoxEasterEgg = true;
             TungstenRiot.Instance.TungstenRiotIsOngoing = false;
             TungstenRiot.Instance.EventKillPoints = 0;
+            Time = 0;
+        }
+
+        public override void PostUpdateEverything() {
+            Time++;
         }
 
         public override void NetSend(BinaryWriter writer) {

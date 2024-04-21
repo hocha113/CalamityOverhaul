@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -22,7 +24,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void BowShoot() {
             AmmoTypes = ProjectileID.PulseBolt;
-            base.BowShoot();
+            int proj = Projectile.NewProjectile(Source, Projectile.Center + FireOffsetPos, ShootVelocity + FireOffsetVector
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Main.projectile[proj].usesLocalNPCImmunity = true;
+            Main.projectile[proj].localNPCHitCooldown = 15;
+            Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
+            Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
         }
     }
 }

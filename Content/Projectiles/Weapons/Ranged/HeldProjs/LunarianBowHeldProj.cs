@@ -14,10 +14,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "LunarianBow";
         public override int targetCayItem => ModContent.ItemType<LunarianBow>();
         public override int targetCWRItem => ModContent.ItemType<LunarianBowEcType>();
+        int fireIndex;
         public override void SetRangedProperty() {
             BowArrowDrawNum = 2;
+            fireIndex = 0;
         }
         public override void BowShoot() {
+            Item.useTime = 10;
+            if (++fireIndex >= 5) {
+                Item.useTime = 50;
+                fireIndex = 0;
+            }
             //如果这些开发者愿意遵守那该死的开发手册，就不会需要多写这么多该死特判代码
             if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {
                 AmmoTypes = ModContent.ProjectileType<LunarBolt>();

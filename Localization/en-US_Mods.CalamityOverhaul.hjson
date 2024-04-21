@@ -65,7 +65,12 @@ Items: {
 
 	CometQuasherEcType: {
 		DisplayName: Comet Quasher
-		Tooltip: Swings a Heavy blade that sends a barrage of meteors at your foes and cursor.
+		Tooltip:
+			'''
+			Launch meteorites, really hit the enemy in melee and let more meteorites fall from the sky
+			"In ancient China, there was a man who could make a bird fall without shooting an arrow. 
+			Finally, our knives can do something similar."
+			'''
 	}
 
 	DefiledGreatswordEcType: {
@@ -73,7 +78,8 @@ Items: {
 		Tooltip:
 			'''
 			Fires a Myriad of Blazing Blades that aggressively hunt down your foes that give the player the "Brutal Carnage" Buff
-			Upon hitting a True Melee strike, Accumulate Tyrant's Fury which will increase the weapon's damage for a short time along with launching blazing blades at the sides of the screen.
+			Upon hitting a True Melee strike, Accumulate Tyrant's Fury which will 
+			increase the weapon's damage for a short time along with launching blazing blades at the sides of the screen.
 			'''
 	}
 
@@ -2787,6 +2793,7 @@ Projectiles: {
 	PristineFuryHeldProj.DisplayName: Pristine Fury Held Proj
 	ShadethrowerHeldProj.DisplayName: Shadethrower Held Proj
 	TerraFlamebursterHeldProj.DisplayName: Terra Flameburster Held Proj
+	LunarFlareBookHeldProj.DisplayName: Lunar Flare Book Held Proj
 }
 
 Configs: {
@@ -2973,7 +2980,7 @@ Buffs: {
 
 	SummonInFlint: {
 		DisplayName: Summon In Flint
-		Description: Mods.CalamityOverhaul.Buffs.SummonInFlint.Description
+		Description: This little guy used to be a fire consultant
 	}
 }
 
@@ -3263,10 +3270,18 @@ TextContent: {
 			Right click to scatter more sand bombs
 			"Take it and bury yourself in the sand so you can pretend to be an antlion."
 			'''
-		Wap_StarCannon_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_StarCannon_Text
-		Wap_SuperStarCannon_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_SuperStarCannon_Text
-		Wap_ZapinatorGray_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ZapinatorGray_Text
-		Wap_ZapinatorOrange_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_ZapinatorOrange_Text
+		Wap_StarCannon_Text:
+			'''
+			Launch stars
+			"Starlight will shine ahead."
+			'''
+		Wap_SuperStarCannon_Text:
+			'''
+			Launch stars
+			"Now we have a bigger and more powerful star launcher."
+			'''
+		Wap_ZapinatorGray_Text: This is your lucky light
+		Wap_ZapinatorOrange_Text: This is your lucky light
 		Wap_QuadBarrelShotgun_Text:
 			'''
 			Fires a spread of bullets
@@ -3440,6 +3455,7 @@ TextContent: {
 		Wap_BubbleGun_Text:
 			'''
 			Exploding ocean bubbles
+			A few bubbles track enemies
 			Who doesn't like to play with bubbles?
 			'''
 		Wap_Tsunami_Text:

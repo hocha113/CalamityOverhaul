@@ -47,12 +47,11 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public static void DrawItemIcon(SpriteBatch spriteBatch, Vector2 position, int Type, float alp = 1) {
-            spriteBatch.Draw(TextureAssets.Item[Type].Value, position, null, Main.DiscoColor * alp, 0, TextureAssets.Item[Type].Value.Size() / 2, 0.8f, SpriteEffects.None, 0);
+            spriteBatch.Draw(TextureAssets.Item[Type].Value, position, null, Color.White, 0, TextureAssets.Item[Type].Value.Size() / 2, 0.8f, SpriteEffects.None, 0);
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            DrawItemIcon(spriteBatch, position, Type);
-            return false;
+            return true;
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {

@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Owner.PressKey() && !Owner.mouseInterface) {
                 Owner.itemTime = 2;
             }
-            if (ModItem.Scope) {
+            if (ModItem.Scope && Projectile.IsOwnedByLocalPlayer()) {
                 ScopeSrecen();
             }
             else {

@@ -75,7 +75,7 @@ Items: {
 		DisplayName: 彗星陨刃
 		Tooltip:
 			'''
-			让大量流星从天而降
+			发射陨石，真近战击中敌人让更多的陨石从天而降
 			"中国古代有个人能够不射出箭就让鸟掉下来，终于我们的刀也能做到类似的事了"
 			'''
 	}
@@ -851,7 +851,7 @@ Items: {
 	}
 
 	AstralPikeEcType: {
-		DisplayName: 幻星长矛
+		DisplayName: 幻星矛
 		Tooltip:
 			'''
 			发射三颗璀璨幻星
@@ -2861,6 +2861,7 @@ Projectiles: {
 	// PristineFuryHeldProj.DisplayName: Pristine Fury Held Proj
 	// ShadethrowerHeldProj.DisplayName: Shadethrower Held Proj
 	// TerraFlamebursterHeldProj.DisplayName: Terra Flameburster Held Proj
+	// LunarFlareBookHeldProj.DisplayName: Lunar Flare Book Held Proj
 }
 
 Configs: {
@@ -3327,10 +3328,10 @@ TextContent: {
 		Wap_SuperStarCannon_Text:
 			'''
 			发射星辰
-			"星光将会照亮前方"
+			"现在我们有了更大更强的星星发射器"
 			'''
-		Wap_ZapinatorGray_Text: ""
-		Wap_ZapinatorOrange_Text: ""
+		Wap_ZapinatorGray_Text: 这是你的幸运光
+		Wap_ZapinatorOrange_Text: 这是你的幸运光
 		Wap_QuadBarrelShotgun_Text:
 			'''
 			一次射出5发不准确的子弹
@@ -3509,6 +3510,7 @@ TextContent: {
 		Wap_BubbleGun_Text:
 			'''
 			喷出大量会爆炸的海洋泡泡
+			少量泡泡会追踪敌人
 			谁不喜欢玩泡泡呢?
 			'''
 		Wap_Tsunami_Text:

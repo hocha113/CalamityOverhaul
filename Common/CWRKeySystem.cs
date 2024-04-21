@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Common
 {
-    internal class CWRKeySystem : ModSystem
+    internal static class CWRKeySystem
     {
         public static ModKeybind HeavenfallLongbowSkillKey { get; private set; }
         public static ModKeybind InfinitePickSkillKey { get; private set; }
@@ -17,20 +17,20 @@ namespace CalamityOverhaul.Common
         public static ModKeybind KreLoad_Key { get; private set; }
         public static ModKeybind ADS_Key { get; private set; }
 
-        public override void Load() {
-            HeavenfallLongbowSkillKey = KeybindLoader.RegisterKeybind(Mod, nameof(HeavenfallLongbowSkillKey), "Q");
-            InfinitePickSkillKey = KeybindLoader.RegisterKeybind(Mod, nameof(InfinitePickSkillKey), "C");
-            TOM_OneClickP = KeybindLoader.RegisterKeybind(Mod, nameof(TOM_OneClickP), "L");
-            TOM_QuickFetch = KeybindLoader.RegisterKeybind(Mod, nameof(TOM_QuickFetch), "LeftShift");
-            TOM_GatheringItem = KeybindLoader.RegisterKeybind(Mod, nameof(TOM_GatheringItem), "G");
-            TOM_GlobalRecall = KeybindLoader.RegisterKeybind(Mod, nameof(TOM_GlobalRecall), "K");
-            Murasama_TriggerKey = KeybindLoader.RegisterKeybind(Mod, nameof(Murasama_TriggerKey), "F");
-            Murasama_DownKey = KeybindLoader.RegisterKeybind(Mod, nameof(Murasama_DownKey), "X");
-            KreLoad_Key = KeybindLoader.RegisterKeybind(Mod, nameof(KreLoad_Key), "R");
-            ADS_Key = KeybindLoader.RegisterKeybind(Mod, nameof(ADS_Key), "Z");
+        public static void LoadKeyDate(Mod mod) {
+            HeavenfallLongbowSkillKey = KeybindLoader.RegisterKeybind(mod, "HeavenfallLongbowSkillKey", "Q");
+            InfinitePickSkillKey = KeybindLoader.RegisterKeybind(mod, "InfinitePickSkillKey", "C");
+            TOM_OneClickP = KeybindLoader.RegisterKeybind(mod, "TOM_OneClickP", "L");
+            TOM_QuickFetch = KeybindLoader.RegisterKeybind(mod, "TOM_QuickFetch", "LeftShift");
+            TOM_GatheringItem = KeybindLoader.RegisterKeybind(mod, "TOM_GatheringItem", "G");
+            TOM_GlobalRecall = KeybindLoader.RegisterKeybind(mod, "TOM_GlobalRecall", "K");
+            Murasama_TriggerKey = KeybindLoader.RegisterKeybind(mod, "Murasama_TriggerKey", "F");
+            Murasama_DownKey = KeybindLoader.RegisterKeybind(mod, "Murasama_DownKey", "X");
+            KreLoad_Key = KeybindLoader.RegisterKeybind(mod, "KreLoad_Key", "R");
+            ADS_Key = KeybindLoader.RegisterKeybind(mod, "ADS_Key", "Z");
         }
 
-        public override void Unload() {
+        public static void Unload() {
             HeavenfallLongbowSkillKey = null;
             InfinitePickSkillKey = null;
             TOM_OneClickP = null;

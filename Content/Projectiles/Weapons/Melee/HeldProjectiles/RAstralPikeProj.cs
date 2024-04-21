@@ -9,6 +9,8 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -42,6 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 astralPike.initialize();
                 astralPike.CWR().ai[0]++;
                 if (astralPike.CWR().ai[0] > AstralPikeEcType.ShootPeriod) {
+                    SoundEngine.PlaySound(SoundID.Item9 with { Pitch = -0.2f }, Projectile.Center);
                     const float sengs = 0.25f;
                     Vector2 spanPos = Projectile.Center + Projectile.velocity * 0.5f;
                     Vector2 targetPos = Projectile.velocity.UnitVector() * AstralPikeEcType.InTargetProjToLang + Projectile.Center;

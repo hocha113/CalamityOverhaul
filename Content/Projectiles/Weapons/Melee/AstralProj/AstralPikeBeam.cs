@@ -47,9 +47,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
             }
             LineParticle spark2 = new LineParticle(Projectile.Center, -Projectile.velocity * 0.05f, false, 17, 1.7f, Color.Goldenrod);
             GeneralParticleHandler.SpawnParticle(spark2);
-
-            Particle orb2 = new GenericBloom(Projectile.Center + Main.rand.NextVector2Circular(5, 5), Projectile.velocity * Main.rand.NextFloat(0.05f, 0.5f), Color.Goldenrod, Main.rand.NextFloat(0.05f, 0.3f), Main.rand.Next(9, 12), true);
-            GeneralParticleHandler.SpawnParticle(orb2);
         }
 
         public override bool PreDraw(ref Color lightColor) {

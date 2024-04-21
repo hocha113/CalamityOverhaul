@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.ignoreWater = false;
             Projectile.MaxUpdates = 15;
             Projectile.timeLeft = 120 * Projectile.MaxUpdates;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
         }
 
         public override void SendExtraAI(BinaryWriter writer) => writer.Write(randomIntDownNum);

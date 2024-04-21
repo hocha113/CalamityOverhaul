@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 GeneralParticleHandler.SpawnParticle(spark2);
             }
 
-            if (Projectile.ai[0] != 2 && Projectile.ai[0] != 3) {
+            if (Projectile.ai[0] != 2 && Projectile.ai[0] != 3 && Projectile.IsOwnedByLocalPlayer()) {
                 if (CWRKeySystem.Murasama_DownKey.JustPressed) {//触发下砸技能
                     if (!MurasamaEcType.UnlockSkill2) {//在击败史莱姆之神前不能使用这个技能
                         return;

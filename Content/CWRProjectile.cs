@@ -1,15 +1,12 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
-using CalamityMod.Items.Accessories;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Magic;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles.Summon;
-using CalamityMod.Projectiles.Turret;
 using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
@@ -17,7 +14,6 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
 using System;
 using System.Linq;
 using Terraria;
@@ -26,7 +22,6 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.PlayerDrawLayer;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
 namespace CalamityOverhaul.Content
@@ -430,6 +425,8 @@ namespace CalamityOverhaul.Content
                         for (int i = 0; i < 2; i++) {
                             Projectile proj5 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center - projectile.velocity, projectile.velocity.RotatedByRandom(0.25f)
                             , ProjectileID.PulseBolt, projectile.damage / 2, projectile.knockBack, projectile.owner, 1);
+                            proj5.usesLocalNPCImmunity = true;
+                            proj5.localNPCHitCooldown = 15;
                             proj5.CWR().NotSubjectToSpecialEffects = true;
                         }
                     }

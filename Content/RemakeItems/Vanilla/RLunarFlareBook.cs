@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
@@ -10,6 +11,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.LunarFlareBook;
         public override bool FormulaSubstitution => false;
-        public override void SetDefaults(Item item) => item.shoot = ModContent.ProjectileType<WaningMoonLight>();
+        public override void SetDefaults(Item item) {
+            item.shoot = ModContent.ProjectileType<WaningMoonLight>();
+            item.SetHeldProj<LunarFlareBookHeldProj>();
+        }
     }
 }

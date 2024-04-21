@@ -53,6 +53,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SoundEngine.PlaySound(CWRSound.Gun_Crossbow_Shoot, Projectile.Center);
+            canFireR = false;
+            fireIndex2 = 21;
+            fireIndex3 = 0;
             Item.useTime = 10;
             CanDrawCrossArrow = true;
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

@@ -16,7 +16,7 @@ namespace CalamityOverhaul
         public override string Texture => "CalamityOverhaul/icon";
         bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;
+            return false;
         }
 
         public override void SetDefaults() {

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria;
+using CalamityMod;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
 {
@@ -28,6 +29,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
                 if (Owner.CheckMana(Item)) {
                     proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f, 1.1f)
                         , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    if (Main.rand.NextBool(6)) {
+                        Main.projectile[proj].Calamity().allProjectilesHome = true;
+                    }
                     Owner.statMana -= Item.mana;
                 }
             }

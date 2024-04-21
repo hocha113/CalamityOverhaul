@@ -23,9 +23,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.DefiledGreatsword>();
         public override int ProtogenesisID => ModContent.ItemType<DefiledGreatswordEcType>();
         public override string TargetToolTipItemName => "DefiledGreatswordEcType";
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.width = 102;
             item.damage = 112;

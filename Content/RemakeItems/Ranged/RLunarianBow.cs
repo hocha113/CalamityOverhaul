@@ -11,6 +11,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.LunarianBow>();
         public override int ProtogenesisID => ModContent.ItemType<LunarianBowEcType>();
         public override string TargetToolTipItemName => "LunarianBowEcType";
-        public override void SetDefaults(Item item) => item.SetHeldProj<LunarianBowHeldProj>();
+        public override void SetDefaults(Item item) {
+            item.damage = 15;
+            item.SetHeldProj<LunarianBowHeldProj>();
+        }
     }
 }

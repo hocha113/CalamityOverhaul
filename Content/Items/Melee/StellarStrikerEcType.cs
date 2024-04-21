@@ -29,9 +29,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.scale = 1.5f;
             Item.damage = 480;
             Item.DamageType = DamageClass.Melee;
-            Item.useAnimation = 25;
+            Item.useAnimation = 20;
             Item.useStyle = ItemUseStyleID.Swing;
-            Item.useTime = 25;
+            Item.useTime = 20;
             Item.useTurn = true;
             Item.knockBack = 7.75f;
             Item.UseSound = SoundID.Item1;
@@ -48,10 +48,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool? UseItem(Player player) {
-            Item.useAnimation = Item.useTime = 18;
+            Item.useAnimation = Item.useTime = 15;
             Item.scale = 1f;
             if (player.altFunctionUse == 2) {
-                Item.useAnimation = Item.useTime = 22;
+                Item.useAnimation = Item.useTime = 20;
                 Item.scale = 1.5f;
             }
 

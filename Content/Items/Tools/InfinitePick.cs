@@ -68,6 +68,9 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override void HoldItem(Player player) {
+            if (Main.myPlayer != player.whoAmI) {
+                return;
+            }
             if (IsPick) {
                 Item.pick = 9999;
                 Item.hammer = 0;

@@ -1,27 +1,26 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Placeables.Furniture;
-using CalamityMod.Particles;
-using CalamityMod.Projectiles.Magic;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Placeable;
-using Microsoft.Xna.Framework;
+﻿using CalamityMod.Items.Placeables.FurnitureExo;
+using CalamityMod;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.GameContent;
 using Terraria.GameContent.ObjectInteractions;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
+using CalamityMod.Particles;
+using CalamityMod.Projectiles.Magic;
+using CalamityOverhaul.Content.Items.Placeable;
 
 namespace CalamityOverhaul.Content.Tiles
 {
-    internal class InfiniteToilet : ModTile
+    internal class InfiniteToilet: ModTile
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "InfiniteToilet";
-        public const int NextStyleHeight = 40;
         public override bool IsLoadingEnabled(Mod mod) {
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return false;
@@ -38,7 +37,6 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.newTile.CoordinateWidth = 16;
             TileObjectData.newTile.CoordinatePadding = 2;
-            TileObjectData.newTile.DrawYOffset = 4;
             TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.newTile.Origin = new Point16(1, 1);
@@ -50,7 +48,7 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.addAlternate(1);
             TileObjectData.addTile(Type);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
-            AddMapEntry(new Color(121, 102, 111), Language.GetText("MapObject.Toilet"));
+            AddMapEntry(new Color(191, 142, 111), Language.GetText("MapObject.Toilet"));
             TileID.Sets.CanBeSatOnForNPCs[Type] = true;
             TileID.Sets.CanBeSatOnForPlayers[Type] = true;
             TileID.Sets.HasOutlines[Type] = true;
@@ -59,45 +57,23 @@ namespace CalamityOverhaul.Content.Tiles
 
         public override bool CanExplode(int i, int j) => false;
 
-        public override bool CreateDust(int i, int j, ref int type) {
-            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.TerraBlade, 0f, 0f, 1, Main.DiscoColor, 1f);
-            return false;
-        }
+        public override bool CreateDust(int i, int j, ref int type) => false;
 
-        public override void NumDust(int i, int j, bool fail, ref int num) {
-            num = fail ? 1 : 3;
-        }
+        public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
-        //public override void PostDraw(int i, int j, SpriteBatch spriteBatch) {
-        //    int xFrameOffset = Main.tile[i, j].TileFrameX;
-        //    int yFrameOffset = Main.tile[i, j].TileFrameY;
-        //    Texture2D glowmask = ModContent.Request<Texture2D>(Texture + "_Highlight").Value;
-        //    Vector2 drawOffest = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-        //    Vector2 drawPosition = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + drawOffest;
-        //    Color drawColour = Main.DiscoColor;
-        //    Tile trackTile = Main.tile[i, j];
-        //    //if (!trackTile.IsHalfBlock && trackTile.Slope == 0)
-        //        //spriteBatch.Draw(glowmask, drawPosition, new Rectangle(xFrameOffset, yFrameOffset, 18, 18), drawColour, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-        //    //else if (trackTile.IsHalfBlock)
-        //        //spriteBatch.Draw(glowmask, drawPosition + new Vector2(0f, 8f), new Rectangle(xFrameOffset, yFrameOffset, 18, 8), drawColour, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-        //}
-
-        public override void ModifySittingTargetInfo(int i, int j, ref TileRestingInfo info) => CalamityUtils.ChairSitInfo(i, j, ref info, NextStyleHeight, true, shitter: true);
+        public override void ModifySittingTargetInfo(int i, int j, ref TileRestingInfo info) => CalamityUtils.ChairSitInfo(i, j, ref info, 40, true, shitter: true);
 
         public override bool RightClick(int i, int j) => CalamityUtils.ChairRightClick(i, j);
 
         public override void MouseOver(int i, int j) => CalamityUtils.ChairMouseOver(i, j, ModContent.ItemType<InfiniteToiletItem>(), true);
 
-        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) {
-            return settings.player.IsWithinSnappngRangeToTile(i, j, PlayerSittingHelper.ChairSittingMaxDistance);
-        }
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => settings.player.IsWithinSnappngRangeToTile(i, j, PlayerSittingHelper.ChairSittingMaxDistance);
 
-        public override void HitWire(int i, int j)
-        {
+        public override void HitWire(int i, int j) {
             Tile tile = Main.tile[i, j];
 
             int spawnX = i;
-            int spawnY = j - (tile.TileFrameY % NextStyleHeight) / 18;
+            int spawnY = j - tile.TileFrameY % 40 / 18;
 
             Wiring.SkipWire(spawnX, spawnY);
             Wiring.SkipWire(spawnX, spawnY + 1);
