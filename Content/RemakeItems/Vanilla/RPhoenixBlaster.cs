@@ -5,6 +5,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
+    /// <summary>
+    /// 凤凰爆破枪
+    /// </summary>
     internal class RPhoenixBlaster : BaseRItem
     {
         public override int TargetID => ItemID.PhoenixBlaster;

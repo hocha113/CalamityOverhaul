@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using log4net.Core;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -123,6 +124,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         {
             None,
             Shotgun,
+            Handgun,
         }
 
         public LoadingAmmoAnimationEnum LoadingAmmoAnimation = LoadingAmmoAnimationEnum.None;
@@ -144,6 +146,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             loadingAmmoStarg_rot = 30,
             loadingAmmoStarg_x = 0,
             loadingAmmoStarg_y = 13,
+        };
+
+        public struct LoadingAA_Handgun_Struct
+        {
+            public SoundStyle clipOut;
+            public SoundStyle clipLocked;
+            public SoundStyle slideInShoot;
+            public float level1;
+            public float level2;
+            public float level3;
+            public int feederOffsetRot;
+            public int loadingAmmoStarg_x;
+            public int loadingAmmoStarg_y;
+        }
+
+        public LoadingAA_Handgun_Struct LoadingAA_Handgun = new LoadingAA_Handgun_Struct() {
+            clipOut = CWRSound.Gun_HandGun_ClipOut with { Volume = 0.65f },
+            clipLocked = CWRSound.Gun_HandGun_ClipLocked with { Volume = 0.65f },
+            slideInShoot = CWRSound.Gun_HandGun_SlideInShoot with { Volume = 0.65f },
+            level1 = 50 / 60f,
+            level2 = 40 / 60f,
+            level3 = 10 / 60f,
+            feederOffsetRot = -20,
+            loadingAmmoStarg_x = 6,
+            loadingAmmoStarg_y = -6,
         };
 
         #endregion
@@ -217,7 +244,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 return false;
             }
             return CWRKeySystem.KreLoad_Key.JustPressed && kreloadTimeValue == 0 
-                && (!IsKreload || RepeatedCartridgeChange) 
+                && (!IsKreload || RepeatedCartridgeChange)
                 && BulletNum < ModItem.AmmoCapacity 
                 && !onFire && HaveAmmo && ModItem.NoKreLoadTime == 0;
         }
@@ -311,6 +338,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
+        bool? Get_LoadingAmmoAnimation_PreOnKreloadEvent() {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
+                return true;
+            }
+            else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Handgun) {
+                ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir + 0.3f;
+                FeederOffsetRot = LoadingAA_Handgun.feederOffsetRot;
+                FeederOffsetPos = new Vector2(DirSign * LoadingAA_Handgun.loadingAmmoStarg_x, LoadingAA_Handgun.loadingAmmoStarg_y) * SafeGravDir;
+                Projectile.Center = GetGunBodyPostion();
+                Projectile.rotation = GetGunBodyRotation();
+                int value1 = (int)(kreloadMaxTime * LoadingAA_Handgun.level1);
+                int value2 = (int)(kreloadMaxTime * LoadingAA_Handgun.level3);
+                if (kreloadTimeValue >= value1) {
+                    ArmRotSengsFront += (kreloadTimeValue - value1) * CWRUtils.atoR * 6;
+                }
+                if (kreloadTimeValue >= value2 && kreloadTimeValue <= value2 * 2) {
+                    ArmRotSengsFront += (kreloadTimeValue - value2) * CWRUtils.atoR * 6;
+                }
+                return false;
+            }
+            return null;
+        }
+
         bool Get_LoadingAmmoAnimation_PreConsumeAmmo() {
             if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
                 return true;
@@ -342,7 +392,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return true;
         }
 
-        bool Get_LoadingAmmoAnimation_PreReloadEffects(int time, int maxTime) {
+        bool? Get_LoadingAmmoAnimation_PreReloadEffects(int time, int maxTime) {
             if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
                 return true;
             }
@@ -356,7 +406,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
                 return false;
             }
-            return true;
+            else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Handgun) {
+                if (time == (int)(maxTime * LoadingAA_Handgun.level1)) {
+                    SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipOut with { Volume = 0.65f }, Projectile.Center);
+                }
+                if (time == (int)(maxTime * LoadingAA_Handgun.level2)) {
+                    SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipLocked with { Volume = 0.65f }, Projectile.Center);
+                }
+                if (time == (int)(maxTime * LoadingAA_Handgun.level3)) {
+                    SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot with { Volume = 0.65f }, Projectile.Center);
+                }
+                return false;
+            }
+            return null;
         }
 
         public override void PostSetRangedProperty() {
@@ -436,7 +498,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
             }
             if (OnKreload) {//装弹过程
-                if (PreOnKreloadEvent()) {
+                bool result3 = PreOnKreloadEvent();
+                if (LoadingAmmoAnimation != LoadingAmmoAnimationEnum.None) {
+                    bool? result4 = Get_LoadingAmmoAnimation_PreOnKreloadEvent();
+                    if (result4.HasValue) {
+                        result3 = result4.Value;
+                    }
+                }
+                if (result3) {
                     ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - (Projectile.rotation)) * DirSign * SafeGravDir + 0.3f;
                     ArmRotSengsFront += MathF.Sin(Time * 0.3f) * 0.7f * SafeGravDir;
                 }
@@ -444,7 +513,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                 bool result = PreReloadEffects(kreloadTimeValue, kreloadMaxTime);
                 if (LoadingAmmoAnimation != LoadingAmmoAnimationEnum.None) {
-                    result = Get_LoadingAmmoAnimation_PreReloadEffects(kreloadTimeValue, kreloadMaxTime);
+                    bool? result5 = Get_LoadingAmmoAnimation_PreReloadEffects(kreloadTimeValue, kreloadMaxTime);
+                    if (result5.HasValue) {
+                        result = result5.Value;
+                    }
                 }
 
                 if (result) {

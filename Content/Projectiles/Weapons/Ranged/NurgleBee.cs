@@ -3,11 +3,9 @@ using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -17,13 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override string Texture => CWRConstant.Placeholder;
 
         protected List<Bee> bees = new List<Bee>();
-
-        SlotId sound = SlotId.Invalid;
-
-        private int Time {
-            get => (int)Projectile.ai[0];
-            set => Projectile.ai[0] = value;
-        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -37,9 +28,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
-            if (Time == 0) {
-                sound = SoundEngine.PlaySound(CWRSound.Bees with { MaxInstances = 60 }, Projectile.Center);
-            }
             float toPlayerLeng = Projectile.Center.Distance(Main.player[Projectile.owner].Center);
             if (!CWRUtils.isServer) {//因为蜜蜂云是纯视觉效果，因此不需要在服务器上运行相关代码，因为服务器看不见这些
                 if (Projectile.timeLeft > 60 && Projectile.numHits == 0 && toPlayerLeng <= 1800) {
@@ -74,12 +62,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Projectile.ChasingBehavior2(target.Center, 0.995f, 0.12f);
                 }
             }
-
-            if (SoundEngine.TryGetActiveSound(sound, out ActiveSound soundInds)){
-                soundInds.Position = Projectile.position;
-            }
-
-            Time++;
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
@@ -100,9 +82,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void OnKill(int timeLeft) {
             if (!CWRUtils.isServer) {
                 bees.Clear();
-            }
-            if (SoundEngine.TryGetActiveSound(sound, out ActiveSound soundInds)) {
-                soundInds.Stop();
             }
         }
 

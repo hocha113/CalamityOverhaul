@@ -1,13 +1,18 @@
-v_0.3.5.9.5
+v_0.3.6.0.1
 
 ——负责以下内容的开发者：红茶
 
-1.远程武器的交互机制被优化，基本杜绝一些令人不爽的现象的发生，
-比如：右键试图与商人交互时会让手中的枪械开火。鼠标移动到背包或者其他UI界面上时会打断正在开火的枪械。
-这些情况不会再发生，相信这个修改会提升射手游戏流程的体验
+1.远程武器的交互机制被优化，基本杜绝一些令人不爽的现象的发生，比如：右键试图与商人交互时会让手中的枪械开火。鼠标移动到背包或者其他UI界面上时会打断正在开火的枪械。这些情况不会再发生，相信这个修改会提升射手游戏流程的体验
 2.优化多人联机体验
+3.修复霰弹枪类武器的装弹问题
+4.移除瘟疫召唤的花园蜜蜂的音效，因为它总是会让游戏在初始阶段发生卡顿
 
 ——Developer responsible for the following content: HoCha113
+
+1. The interaction mechanism for ranged weapons has been optimized to greatly reduce annoying occurrences, such as firing when attempting to interact with a merchant using right-click. Moving the mouse over the inventory or other UI interfaces will no longer interrupt firing weapons. These issues should no longer occur, and we believe this modification will enhance the gameplay experience for marksmen.
+2. Improved multiplayer experience.
+3. Fixed reloading issues with shotgun-type weapons.
+4. Removed the sound effects for Contagion summoned garden bees, as they were causing game stuttering during the initial stages.
 
 
 
