@@ -12,6 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<GunkShot>();
         public override int ProtogenesisID => ModContent.ItemType<GunkShotEcType>();
         public override string TargetToolTipItemName => "GunkShotEcType";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<GunkShotHeldProj>(32);
+        public override void SetDefaults(Item item) => item.SetCartridgeGun<GunkShotHeldProj>(10);
     }
 }

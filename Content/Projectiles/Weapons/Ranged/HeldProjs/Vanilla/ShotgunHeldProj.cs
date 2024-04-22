@@ -24,49 +24,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 2.4f;
             RangeOfStress = 12;
-            LoadingQuantity = 1;
-            ArmRotSengsBackNoFireOffset = 30;
+            ArmRotSengsFrontNoFireOffset = 0;
+            ArmRotSengsBackNoFireOffset = 60;
             RepeatedCartridgeChange = true;
             FiringDefaultSound = false;
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 13);
-        }
-
-        public override bool PreConsumeAmmoEvent() {
-            return false;
+            LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
+            LoadingAA_Shotgun.loadShellSound = CWRSound.Gun_Clipin with { Volume = 0.65f, Pitch = 0.2f };
+            LoadingAA_Shotgun.pump = CWRSound.Gun_ClipinLocked with { Volume = 0.6f };
         }
 
         public override bool PreReloadEffects(int time, int maxTime) {
-            if (time == 1) {
-                if (BulletNum == ModItem.AmmoCapacity) {
-                    SoundEngine.PlaySound(CWRSound.Gun_Clipout with { Volume = 0.65f, Pitch = 0.2f }, Projectile.Center);
-                    GunShootCoolingValue += 15;
-                }
-                else {
-                    SoundEngine.PlaySound(CWRSound.Gun_Clipin with { Volume = 0.65f, Pitch = 0.2f }, Projectile.Center);
-                }
-            }
-            if (time == 5 && BulletNum == ModItem.AmmoCapacity) {
-                SoundEngine.PlaySound(CWRSound.Gun_ClipinLocked with { Volume = 0.6f }, Projectile.Center);
+            if (time == 1 && BulletNum == ModItem.AmmoCapacity) {
+                SoundEngine.PlaySound(CWRSound.Gun_Clipout with { Volume = 0.65f, Pitch = 0.2f }, Projectile.Center);
             }
             return false;
-        }
-
-        public override bool KreLoadFulfill() {
-            if (BulletNum < ModItem.AmmoCapacity) {
-                if (BulletNum == 0) {
-                    BulletReturn();
-                    LoadingQuantity = 0;
-                    LoadBulletsIntoMagazine();
-                    LoadingQuantity = 1;
-                }
-                ExpendedAmmunition();
-                OnKreload = true;
-                kreloadTimeValue = kreloadMaxTime;
-            }
-            return true;
         }
 
         public override void FiringShoot() {

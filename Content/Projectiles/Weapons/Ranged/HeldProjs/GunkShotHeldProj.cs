@@ -1,4 +1,5 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
@@ -14,14 +15,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<GunkShotEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            kreloadMaxTime = 18;
             FireTime = 25;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
-            HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -12;
-            ShootPosToMouLengValue = 30;
+            HandFireDistanceY = -5;
+            ShootPosNorlLengValue = -6;
+            ShootPosToMouLengValue = 20;
             RepeatedCartridgeChange = true;
             GunPressure = 0.3f;
             ControlForce = 0.05f;
@@ -29,29 +30,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 7;
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
-
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
+            LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
+            LoadingAA_Shotgun.loadingAmmoStarg_rot = 50;
+            LoadingAA_Shotgun.loadingAmmoStarg_x = 3;
+            LoadingAA_Shotgun.loadingAmmoStarg_y = 25;
         }
 
         public override void FiringShoot() {
             SpawnGunFireDust(GunShootPos, ShootVelocity);
-            for (int i = 0; i < 3; i++) {
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            for (int i = 0; i < 6; i++) {
+                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                if (Main.rand.NextBool(6)) {
+                    Main.projectile[proj].Calamity().allProjectilesHome = true;
+                }
             }
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

@@ -29,41 +29,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 10;
             RepeatedCartridgeChange = true;
             kreloadMaxTime = 20;
-            LoadingQuantity = 1;
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 13);
-        }
-
-        public override bool PreConsumeAmmoEvent() {
-            return false;
-        }
-
-        public override bool PreReloadEffects(int time, int maxTime) {
-            if (time == 1) {
-                SoundEngine.PlaySound(CWRSound.Gun_Shotgun_LoadShell with { Volume = 0.75f }, Projectile.Center);
-                if (BulletNum == ModItem.AmmoCapacity) {
-                    SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Pump with { Volume = 0.6f, Pitch = -0.3f }, Projectile.Center);
-                    GunShootCoolingValue += 15;
-                }
-            }
-            return false;
-        }
-
-        public override bool KreLoadFulfill() {
-            if (BulletNum < ModItem.AmmoCapacity) {
-                if (BulletNum == 0) {
-                    BulletReturn();
-                    LoadingQuantity = 0;
-                    LoadBulletsIntoMagazine();
-                    LoadingQuantity = 1;
-                }
-                ExpendedAmmunition();
-                OnKreload = true;
-                kreloadTimeValue = kreloadMaxTime;
-            }
-            return true;
+            LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
+            LoadingAA_Shotgun.loadShellSound = CWRSound.Gun_Shotgun_LoadShell with { Volume = 0.75f };
+            LoadingAA_Shotgun.pump = CWRSound.Gun_Shotgun_Pump with { Volume = 0.6f, Pitch = -0.3f };
+            LoadingAA_Shotgun.pumpCoolingValue = 15;
         }
 
         public override void FiringShoot() {

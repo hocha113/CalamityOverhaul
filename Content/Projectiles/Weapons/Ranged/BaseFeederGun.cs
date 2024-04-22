@@ -3,6 +3,7 @@ using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -117,6 +118,34 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 return CanFire || kreloadTimeValue > 0;
             }
         }
+
+        public enum LoadingAmmoAnimationEnum
+        {
+            None,
+            Shotgun,
+        }
+
+        public LoadingAmmoAnimationEnum LoadingAmmoAnimation = LoadingAmmoAnimationEnum.None;
+
+        public struct LoadingAA_Shotgun_Struct
+        {
+            public SoundStyle loadShellSound;
+            public SoundStyle pump;
+            public int pumpCoolingValue;
+            public int loadingAmmoStarg_rot;
+            public int loadingAmmoStarg_x;
+            public int loadingAmmoStarg_y;
+        }
+
+        public LoadingAA_Shotgun_Struct LoadingAA_Shotgun = new LoadingAA_Shotgun_Struct() {
+            loadShellSound = CWRSound.Gun_Shotgun_LoadShell with { Volume = 0.75f },
+            pump = CWRSound.Gun_Shotgun_Pump with { Volume = 0.6f },
+            pumpCoolingValue = 15,
+            loadingAmmoStarg_rot = 30,
+            loadingAmmoStarg_x = 0,
+            loadingAmmoStarg_y = 13,
+        };
+
         #endregion
 
         protected int BulletNum {
@@ -273,9 +302,85 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
         public void AddAutomaticCartridgeChangeDelayTime() => AutomaticCartridgeChangeDelayTime = FireTime;
 
+        void Update_LoadingAmmoAnimation_PreInOwner() {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
+                return;
+            }
+            else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
+                LoadingAnimation(LoadingAA_Shotgun.loadingAmmoStarg_rot, LoadingAA_Shotgun.loadingAmmoStarg_x, LoadingAA_Shotgun.loadingAmmoStarg_y);
+            }
+        }
+
+        bool Get_LoadingAmmoAnimation_PreConsumeAmmo() {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
+                return true;
+            }
+            else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
+                return false;
+            }
+            return true;
+        }
+
+        bool Get_LoadingAmmoAnimation_KreLoadFulfill() {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
+                return true;
+            }
+            else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
+                if (BulletNum < ModItem.AmmoCapacity) {
+                    if (BulletNum == 0) {
+                        BulletReturn();
+                    }
+                    LoadingQuantity = BulletNum + 1;
+                    LoadBulletsIntoMagazine();
+                    LoadingQuantity = 1;
+                    ExpendedAmmunition();
+                    OnKreload = true;
+                    kreloadTimeValue = kreloadMaxTime;
+                }
+                return true;
+            }
+            return true;
+        }
+
+        bool Get_LoadingAmmoAnimation_PreReloadEffects(int time, int maxTime) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
+                return true;
+            }
+            else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
+                if (time == 1) {
+                    SoundEngine.PlaySound(LoadingAA_Shotgun.loadShellSound, Projectile.Center);
+                    if (BulletNum == ModItem.AmmoCapacity) {
+                        SoundEngine.PlaySound(LoadingAA_Shotgun.pump, Projectile.Center);
+                        GunShootCoolingValue += LoadingAA_Shotgun.pumpCoolingValue;
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+
+        public override void PostSetRangedProperty() {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
+                LoadingQuantity = 1;
+            }
+        }
+
+        public override void SendExtraAI(BinaryWriter writer) {
+            base.SendExtraAI(writer);
+            writer.Write(OnKreload);
+            writer.Write(kreloadTimeValue);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            base.ReceiveExtraAI(reader);
+            OnKreload = reader.ReadBoolean();
+            kreloadTimeValue = reader.ReadInt32();
+        }
+
         public sealed override void InOwner() {
             SetHeld();
             InitializeMagazine();
+            Update_LoadingAmmoAnimation_PreInOwner();
             PreInOwnerUpdate();
             if (Item.type != ItemID.None) {
                 IsKreload = ModItem.IsKreload;
@@ -336,7 +441,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     ArmRotSengsFront += MathF.Sin(Time * 0.3f) * 0.7f * SafeGravDir;
                 }
                 kreloadTimeValue--;
-                if (PreReloadEffects(kreloadTimeValue, kreloadMaxTime)) {
+
+                bool result = PreReloadEffects(kreloadTimeValue, kreloadMaxTime);
+                if (LoadingAmmoAnimation != LoadingAmmoAnimationEnum.None) {
+                    result = Get_LoadingAmmoAnimation_PreReloadEffects(kreloadTimeValue, kreloadMaxTime);
+                }
+
+                if (result) {
                     if (kreloadTimeValue == kreloadMaxTime - 1) {
                         KreloadSoundCaseEjection();
                     }
@@ -344,9 +455,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         KreloadSoundloadTheRounds();
                     }
                 }
+
                 if (kreloadTimeValue <= 0) {//时间完成后设置装弹状态并准备下一次发射
                     AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
-                    if (PreConsumeAmmoEvent()) {
+                    if (PreConsumeAmmoEvent() && Get_LoadingAmmoAnimation_PreConsumeAmmo()) {
                         BulletReturn();
                         LoadBulletsIntoMagazine();//这一次更新弹匣内容，压入子弹
                         if (BulletConsumption) {
@@ -360,7 +472,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         wRItems.IsKreload = true;
                     }
                     kreloadTimeValue = 0;
-                    if (KreLoadFulfill()) {
+
+                    bool result2 = KreLoadFulfill();
+                    if (LoadingAmmoAnimation != LoadingAmmoAnimationEnum.None) {
+                        result2 = Get_LoadingAmmoAnimation_KreLoadFulfill();
+                    }
+
+                    if (result2) {
                         int value = AmmoState.Amount;
                         if (value > wRItems.AmmoCapacity) {
                             value = wRItems.AmmoCapacity;
@@ -391,6 +509,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 LoadingReminder = true;
             }
             PostInOwnerUpdate();
+            Projectile.netUpdate = true;
         }
         /// <summary>
         /// 该弹药物品是否应该判定为一个无限弹药

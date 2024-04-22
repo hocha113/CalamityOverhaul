@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,6 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal abstract class BaseHeldRanged : BaseHeldProj
     {
+        #region Date
         /// <summary>
         /// 获取对应的<see cref="CWRPlayer"/>实例，在弹幕初始化时更新这个值
         /// </summary>
@@ -106,13 +108,30 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 一个额外附属值，用于矫正<see cref="SafeMousetStart"/>的连续，这个值应该在合适的时机被恢复为默认值<see langword="false"/>
         /// </summary>
         public bool SafeMousetStart2;
-        int __safeMouseInterfaceTime;
         bool _safeMouseInterfaceValue;
-        bool _safeMouseInterfaceValue2;
+        bool _old_safeMouseInterfaceValue;
         public bool SafeMouseInterfaceValue {
             get {
                 return _safeMouseInterfaceValue;
             }
+        }
+        #endregion
+
+        public override void SendExtraAI(BinaryWriter writer) {
+            base.SendExtraAI(writer);
+            BitsByte flags = new BitsByte();
+            flags[0] = _safeMouseInterfaceValue;
+            flags[1] = onFire;
+            flags[2] = onFireR;
+            writer.Write(flags);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            base.ReceiveExtraAI(reader);
+            BitsByte flags = reader.ReadByte();
+            _safeMouseInterfaceValue = flags[0];
+            onFire = flags[1];
+            onFireR = flags[2];
         }
 
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
@@ -157,6 +176,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             CWRUtils.SafeLoadItem(targetCayItem);
             PreSetRangedProperty();
             SetRangedProperty();
+            PostSetRangedProperty();
         }
 
         /// <summary>
@@ -164,6 +184,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 非必要时不建议重写使用这个重载，而是使用<see cref="SetRangedProperty"/>
         /// </summary>
         public virtual void PreSetRangedProperty() {
+
+        }
+        /// <summary>
+        /// 用于设置额外的基础属性，在<see cref="SetDefaults"/>中于<see cref="SetRangedProperty"/>之后调用
+        /// 非必要时不建议重写使用这个重载，而是使用<see cref="SetRangedProperty"/>
+        /// </summary>
+        public virtual void PostSetRangedProperty() {
 
         }
 
@@ -194,10 +221,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         void UpdateSafeMouseInterfaceValue() {
             if (!CanFire) {//只有在玩家不进行开火尝试时才能更改空闲状态
                 _safeMouseInterfaceValue = !Owner.mouseInterface;
+                if (_old_safeMouseInterfaceValue != _safeMouseInterfaceValue) {
+                    Projectile.netUpdate = true;
+                }
                 if (!_safeMouseInterfaceValue) {//如果鼠标已经被锁定为非空闲状态，那么开火状态也需要锁定为关
                     onFire = onFireR = false;
                     Projectile.ai[1] = 0;
                 }
+                _old_safeMouseInterfaceValue = _safeMouseInterfaceValue;
             }
         }
 
