@@ -4,6 +4,7 @@ using CalamityMod.Items;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
@@ -21,6 +22,7 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -93,9 +95,14 @@ namespace CalamityOverhaul.Content
             if (CWRIDs.targetNpcTypes15.Contains(target.type) || CWRIDs.targetNpcTypes10.Contains(target.type)
                 || CWRIDs.targetNpcTypes8.Contains(target.type) || CWRIDs.targetNpcTypes7.Contains(target.type)
                 || CWRIDs.targetNpcTypes6.Contains(target.type) || CWRIDs.targetNpcTypes5.Contains(target.type)
-                || CWRIDs.targetNpcTypes4.Contains(target.type) || CWRIDs.targetNpcTypes2.Contains(target.type)) {
+                || CWRIDs.targetNpcTypes4.Contains(target.type) || CWRIDs.targetNpcTypes2.Contains(target.type)
+                || CWRIDs.WormBodys.Contains(target.type) || target.type == ModContent.NPCType<AquaticScourgeBodyAlt>()) {
                 modifiers.FinalDamage *= 0.1f;
-                modifiers.SetMaxDamage(50);
+                int dmownInt = (int)(target.lifeMax * 0.001f);
+                if (dmownInt < 50) {
+                    dmownInt = 50;
+                }
+                modifiers.SetMaxDamage(dmownInt + Main.rand.Next(50));
             }
         }
 

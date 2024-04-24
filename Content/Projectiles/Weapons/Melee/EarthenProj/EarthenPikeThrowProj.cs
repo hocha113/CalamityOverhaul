@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj
         Player Owner => Main.player[Projectile.owner];
         public Item earthenPike;
         int Dir;
+        int time;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 6;
@@ -75,6 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj
                     Projectile.Kill();
                 }
             }
+            time++;
         }
 
         public override bool? CanDamage() {
@@ -89,6 +91,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
+            if (time < 15) {
+                return false;
+            }
             if (Projectile.ai[0] == 0) {
                 Projectile.ai[0] = 1;
 

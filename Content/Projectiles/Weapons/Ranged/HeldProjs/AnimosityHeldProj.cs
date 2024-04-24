@@ -14,8 +14,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<AnimosityEcType>();
         public override void SetRangedProperty() {
             FireTime = 6;
-            ControlForce = 0.1f;
-            GunPressure = 0.2f;
+            ControlForce = 0.03f;
+            GunPressure = 0.1f;
             Recoil = 1.2f;
             HandDistance = 27;
             HandDistanceY = 3;
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             FireTime = 6;
-            GunPressure = 0.2f;
+            GunPressure = 0.1f;
             Recoil = 1.2f;
             RangeOfStress = 5;
             if (AmmoTypes == ProjectileID.Bullet) {

@@ -65,9 +65,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         for (int i = 0; i < 6; i++) {
                             Vector2 randdom = Main.rand.NextVector2Unit();
                             Vector2 pos = Projectile.Center + randdom * Main.rand.Next(3, 14) * Projectile.scale;
-                            Vector2 particleSpeed = randdom * 17;
+                            Vector2 particleSpeed = randdom * 19;
                             CWRParticle energyLeak = new LightParticle(pos, particleSpeed
-                                , Main.rand.NextFloat(0.1f, 0.6f), Color.DarkGoldenrod, 16, 1, 1.5f, hueShift: 0.0f);
+                                , Main.rand.NextFloat(0.1f, 0.6f), Color.DarkGoldenrod, Main.rand.Next(16, 18), 1, 1.5f, hueShift: 0.0f);
                             CWRParticleHandler.AddParticle(energyLeak);
                         }
                     }
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     CWRParticleHandler.AddParticle(energyLeak);
                 }
             }
-            if (Projectile.IsOwnedByLocalPlayer()) {
+            if (Projectile.IsOwnedByLocalPlayer() && Projectile.scale > 1.6f) {
                 for (int i = 0; i < 12; i++) {
                     Vector2 velocity = CalamityUtils.RandomVelocity(100f, 70f, 100f);
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + velocity.UnitVector() * 13, velocity, ModContent.ProjectileType<AegisFlame>(), (int)(Projectile.damage * 0.5), 0f, Projectile.owner, 0f, 0f);

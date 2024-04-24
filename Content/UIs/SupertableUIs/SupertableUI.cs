@@ -89,12 +89,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public static void LoadRecipe() {
             Type type = typeof(SupertableRecipeDate);
-            FieldInfo[] stringArrayFields = type.GetFields(BindingFlags.Public | BindingFlags.Static)
-                                                .Where(f => f.FieldType == typeof(string[]))
-                                                .ToArray();
-            PropertyInfo[] stringArrayProperties = type.GetProperties(BindingFlags.Public | BindingFlags.Static)
-                                                      .Where(p => p.PropertyType == typeof(string[]))
-                                                      .ToArray();
+            FieldInfo[] stringArrayFields = type.GetFields(BindingFlags.Public | BindingFlags.Static).Where(f => f.FieldType == typeof(string[])).ToArray();
+            PropertyInfo[] stringArrayProperties = type.GetProperties(BindingFlags.Public | BindingFlags.Static).Where(p => p.PropertyType == typeof(string[])).ToArray();
             var allMembers = stringArrayFields.Concat<MemberInfo>(stringArrayProperties).ToArray();
             var stringArrays = allMembers.Select(member => {
                 if (member is FieldInfo field) {
@@ -275,7 +271,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
             else {
                 string[] fruits = key.Split('/');
-                return (ModLoader.GetMod(fruits[0]).Find<ModItem>(fruits[1]).Type);
+                return ModLoader.GetMod(fruits[0]).Find<ModItem>(fruits[1]).Type;
             }
         }
 

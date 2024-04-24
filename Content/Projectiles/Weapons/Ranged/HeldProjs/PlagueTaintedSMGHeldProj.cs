@@ -38,6 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(50, 3, 25);
+            CanRightClick = BulletNum >= 5;
         }
 
         public override void FiringShoot() {
@@ -45,13 +46,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             GunPressure = 0.1f;
             Recoil = 0.2f;
             SpawnGunFireDust();
-            SoundEngine.PlaySound(CWRSound.Gun_SMG_Shoot with { Pitch = -0.2f, Volume = 0.7f }, Projectile.Center);
+            SoundEngine.PlaySound(CWRSound.Gun_SMG_Shoot with { Pitch = -0.2f, Volume = 0.35f }, Projectile.Center);
             OffsetPos -= ShootVelocity.UnitVector() * 4;
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<PlagueTaintedProjectile>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {
-            FireTime = 45;
+            FireTime = 55;
             GunPressure = 0.5f;
             Recoil = 1.2f;
             SoundEngine.PlaySound(SoundID.Item61, Projectile.Center);
@@ -63,6 +64,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedBy(0.15f * (i + 1))
                     , ModContent.ProjectileType<PlagueTaintedDrone>(), WeaponDamage, WeaponKnockback
                     , Owner.whoAmI, 1f, Owner.Calamity().alchFlask || Owner.Calamity().spiritOrigin ? 1f : 0f);
+            }
+            for (int i = 0; i < 4; i++) {
+                UpdateMagazineContents();
             }
         }
 

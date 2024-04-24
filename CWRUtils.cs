@@ -2437,14 +2437,6 @@ namespace CalamityOverhaul
         /// <summary>
         /// 将世界位置矫正为适应屏幕的画布位置
         /// </summary>
-        /// <param name="entity">传入目标实体</param>
-        /// <returns></returns>
-        public static Vector2 WDEpos(Entity entity) {
-            return GetEntityCenter(entity) - Main.screenPosition;
-        }
-        /// <summary>
-        /// 将世界位置矫正为适应屏幕的画布位置
-        /// </summary>
         /// <param name="pos">绘制目标的世界位置</param>
         /// <returns></returns>
         public static Vector2 WDEpos(Vector2 pos) {

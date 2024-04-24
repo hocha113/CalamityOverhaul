@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Projectiles.Melee;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -23,12 +24,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
-            Item.useTime = 16;
             IsCrossbow = true;
         }
 
         public override void FiringShoot() {
             Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            proj.SetArrowRot();
             proj.usesLocalNPCImmunity = true;
             proj.localNPCHitCooldown = 2;
             proj.extraUpdates += 1;
@@ -36,12 +37,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 proj.maxPenetrate += 2;
                 proj.penetrate += 2;
             }
-            int[] arrows = new int[] { ProjectileID.IchorArrow, ProjectileID.HolyArrow, ProjectileID.CursedArrow };
             for (int i = 0; i < 3; i++) {
+                int[] arrows = new int[] { ProjectileID.IchorArrow, ProjectileID.HolyArrow, ProjectileID.CursedArrow };
                 int proj1 = Projectile.NewProjectile(Source, GunShootPos
-                    , ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1f)
-                    , arrows[i], WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
-                Main.projectile[proj1].extraUpdates += 2;
+                        , ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1f)
+                        , arrows[i], WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj1].SetArrowRot();
             }
 
             _ = UpdateConsumeAmmo();

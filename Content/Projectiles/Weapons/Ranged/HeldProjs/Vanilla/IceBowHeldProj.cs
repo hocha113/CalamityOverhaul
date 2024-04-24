@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -17,14 +16,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void SetRangedProperty() {
             ArmRotSengsBackBaseValue = 70;
             ShootSpanTypeValue = SpanTypesEnum.IceBow;
-            ForcedConversionTargetArrowFunc = isWood;
+            ForcedConversionTargetArrowFunc = () => UseAmmoItemType == ItemID.WoodenArrow;
             ISForcedConversionDrawArrowInversion = true;
             ToTargetArrow = ProjectileID.FrostArrow;
-        }
-
-        bool isWood() => UseAmmoItemType == ItemID.WoodenArrow;
-
-        public override void PostInOwner() {
         }
 
         public override void BowShoot() {
