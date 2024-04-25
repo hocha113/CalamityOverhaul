@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content
             Time = 0;
         }
 
-        public override void PostUpdateEverything() {
+        public override void PostUpdateTime() {
             Time++;
         }
 

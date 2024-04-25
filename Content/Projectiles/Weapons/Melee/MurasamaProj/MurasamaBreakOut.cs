@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
             Lighting.AddLight(Projectile.Center, (Main.rand.NextBool(3) ? Color.Red : Color.IndianRed).ToVector3());
 
-            int level = InWorldBossPhase.Instance.Level();
+            int level = InWorldBossPhase.Instance.Mura_Level();
 
             if (Projectile.ai[0] == 0) {//在这一阶段，弹幕负责飞出
                 Projectile.rotation = Projectile.velocity.ToRotation();

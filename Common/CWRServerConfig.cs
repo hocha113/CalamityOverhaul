@@ -46,7 +46,6 @@ namespace CalamityOverhaul.Common
         /// 传奇武器系统
         /// </summary>
         [BackgroundColor(192, 54, 64, 192)]
-        [ReloadRequired]
         [DefaultValue(true)]
         public bool WeaponEnhancementSystem { get; set; }
 

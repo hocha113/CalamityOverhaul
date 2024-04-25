@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using System;
 using Terraria;
 
@@ -39,10 +40,123 @@ namespace CalamityOverhaul.Content
 
         public bool level13 => Downed31.Invoke() || Downed32.Invoke();
 
-        public int Level() {
+        public int Halibut_Level() {
+            int level = 0;
+
+            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                return 14;
+            }
+
+            if (DownedV0.Invoke()) {
+                level = 1;
+            }
+            else {
+                return level;
+            }
+
+            if (DownedV1.Invoke()) {
+                level = 2;
+            }
+            else {
+                return level;
+            }
+
+            if (DownedV3.Invoke()) {
+                level = 3;
+            }
+            else {
+                return level;
+            }
+
+            if (DownedV4.Invoke()) {
+                level = 4;
+            }
+            else {
+                return level;
+            }
+
+            if (DownedV5.Invoke() || Downed8.Invoke()) {
+                level = 5;
+            }
+            else {
+                return level;
+            }
+
+            if (VDownedV7.Invoke()) {
+                level = 6;
+            }
+            else {
+                return level;
+            }
+
+            if (DownedV7.Invoke() || Downed13.Invoke()) {
+                level = 7;
+            }
+            else {
+                return level;
+            }
+
+            if (VDownedV16.Invoke()) {
+                level = 8;
+            }
+            else {
+                return level;
+            }
+
+            if (Downed19.Invoke()) {
+                level = 9;
+            }
+            else {
+                return level;
+            }
+
+            if (Downed23.Invoke()) {
+                level = 10;
+            }
+            else {
+                return level;
+            }
+
+            if (Downed27.Invoke()) {
+                level = 11;
+            }
+            else {
+                return level;
+            }
+
+            if (Downed28.Invoke()) {
+                level = 12;
+            }
+            else {
+                return level;
+            }
+
+            if (Downed29.Invoke() || Downed30.Invoke()) {
+                level = 13;
+            }
+            else {
+                return level;
+            }
+
+            if (Downed31.Invoke() || Downed32.Invoke()) {
+                level = 14;
+            }
+            else {
+                return level;
+            }
+
+            return level;
+        }
+
+        public int Mura_Level() {
             //int a = (int)((Main.GameUpdateCount / 120) % 15);
             //return a;
             int level = 0;
+
+            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                return 12;
+            }
+
             if (level0) {
                 level = 1;
             }
@@ -173,6 +287,18 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public static readonly Func<bool> DownedV6 = () => NPC.downedMechBossAny;
         /// <summary>
+        /// 世纪之花
+        /// </summary>
+        public static readonly Func<bool> VDownedV7 = () => NPC.downedPlantBoss;
+        /// <summary>
+        /// 南瓜王
+        /// </summary>
+        public static readonly Func<bool> VDownedV8 = () => NPC.downedHalloweenKing;
+        /// <summary>
+        /// 冰霜女王
+        /// </summary>
+        public static readonly Func<bool> VDownedV9 = () => NPC.downedChristmasIceQueen;
+        /// <summary>
         /// 石巨人
         /// </summary>
         public static readonly Func<bool> DownedV7 = () => NPC.downedGolemBoss;
@@ -180,6 +306,26 @@ namespace CalamityOverhaul.Content
         /// 邪教徒
         /// </summary>
         public static readonly Func<bool> DownedV8 = () => NPC.downedAncientCultist;
+        /// <summary>
+        /// 塔1
+        /// </summary>
+        public static readonly Func<bool> VDownedV10 = () => NPC.downedTowerSolar;
+        /// <summary>
+        /// 塔2
+        /// </summary>
+        public static readonly Func<bool> VDownedV11 = () => NPC.downedTowerVortex;
+        /// <summary>
+        /// 塔3
+        /// </summary>
+        public static readonly Func<bool> VDownedV12 = () => NPC.downedTowerNebula;
+        /// <summary>
+        /// 塔4
+        /// </summary>
+        public static readonly Func<bool> VDownedV13 = () => NPC.downedDeerclops;
+        /// <summary>
+        /// 月球领主
+        /// </summary>
+        public static readonly Func<bool> VDownedV16 = () => NPC.downedMoonlord;
         /// <summary>
         /// 荒漠灾虫
         /// </summary>

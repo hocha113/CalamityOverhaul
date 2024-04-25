@@ -8,7 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
-    internal class StakeLauncherHeldProj : BaseFeederGun
+    internal class StakeLauncherHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.StakeLauncher].Value;
@@ -22,27 +22,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0f;
             ControlForce = 0f;
             Recoil = 0f;
-            kreloadMaxTime = 45;
+            IsCrossbow = true;
+            DrawCrossArrowNorlMode = 3;
+            DrawCrossArrowToMode = -6;
+            ForcedConversionTargetAmmoFunc = () => true;
+            ISForcedConversionDrawAmmoInversion = true;
+            ToTargetAmmo = ProjectileID.Stake;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 13);
-        }
-
-        public override bool PreReloadEffects(int time, int maxTime) {
-            if (time == maxTime - 1) {
-                SoundEngine.PlaySound(CWRSound.CaseEjection with { Volume = 0.5f, Pitch = -1f }, Projectile.Center);
+        public override void FiringIncident() {
+            base.FiringIncident();
+            if (GunShootCoolingValue == 1) {
+                SoundEngine.PlaySound(CWRSound.Ejection with { Volume = 0.5f, Pitch = -1f }, Projectile.Center);
             }
-            return false;
-        }
-
-        public override void HandleEmptyAmmoEjection() {
-            SoundEngine.PlaySound(CWRSound.Ejection with { Volume = 0.5f, Pitch = -1f }, Projectile.Center);
-            CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("CaseEjection_TextContent"));
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            base.FiringShoot();
         }
     }
 }

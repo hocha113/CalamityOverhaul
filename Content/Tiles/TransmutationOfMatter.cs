@@ -52,10 +52,9 @@ namespace CalamityOverhaul.Content.Tiles
 
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.newTile.LavaDeath = false;
-
-            //ModTileEntity te = ModContent.GetInstance<TransmutationOfMatterEntity>();
-            //TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(te.Hook_AfterPlacement, -1, 0, true);
-            //TileObjectData.newTile.UsesCustomCanPlace = true;
+            ModTileEntity te = ModContent.GetInstance<TETram>();
+            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(te.Hook_AfterPlacement, -1, 0, true);
+            TileObjectData.newTile.UsesCustomCanPlace = true;
             TileObjectData.addTile(Type);
             AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<TransmutationOfMatterItem>());
             AnimationFrameHeight = 68;
@@ -98,8 +97,11 @@ namespace CalamityOverhaul.Content.Tiles
         public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {
-            SupertableUI.Instance.Active = false;
-            //ModContent.GetInstance<TransmutationOfMatterEntity>().Kill(i, j);
+            Tile t = Main.tile[i, j];
+            int left = i - t.TileFrameX % (Width * SheetSquare) / SheetSquare;
+            int top = j - t.TileFrameY % (Height * SheetSquare) / SheetSquare;
+            TETram te = CalamityUtils.FindTileEntity<TETram>(i, j, Width, Height, SheetSquare);
+            te?.Kill(left, top);
         }
 
         public override bool RightClick(int i, int j) {

@@ -67,6 +67,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     line.Hide();
                 }
             }
+            
             // 获取自定义的文本内容
             string textContent = Language.GetText("Mods.CalamityOverhaul.Items.MurasamaEcType.Tooltip").Value;
             // 拆分传奇提示行的文本内容
@@ -74,27 +75,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             // 遍历传奇提示行并添加新的提示行
             foreach (string legendtops in legendtopsList) {
                 string text = legendtops;
-                string lang = CWRLocText.GetTextValue("Murasama_TextDictionary_Content");
-                string[] langs = lang.Split("\n");
-                int index = InWorldBossPhase.Instance.Level();
+                int index = InWorldBossPhase.Instance.Mura_Level();
                 TooltipLine newLine = new TooltipLine(CWRMod.Instance, "CWRText", text);
-                // 如果文本是 "[Text]"，则使用本地化语言替换
-                //if (newLine.Text == "[Text]") {
-                //    if (index >= 0 && index < langs.Length) {
-                //        text = langs[index];
-                //    }
-                //    else {
-                //        text = "ERROR";
-                //    }
-                //    newLine.Text = text;
-                //    // 使用颜色渐变以提高可读性
-                //    newLine.OverrideColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
-                //}
                 if (newLine.Text == "[Text]") {
                     if (index >= 0 && index <= 14) {
                         text = CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}");
-                    } else {
+                    }
+                    else {
                         text = "ERROR";
+                    }
+
+                    if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                        text = InWorldBossPhase.Instance.level11? CWRLocText.GetTextValue("Murasama_No_legend_Content_2") : CWRLocText.GetTextValue("Murasama_No_legend_Content_1");
                     }
                     newLine.Text = text;
                     // 使用颜色渐变以提高可读性
@@ -164,6 +156,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 || player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] > 0
                 || player.PressKey(false)//如果玩家按下了右键，也要禁止武器的使用
                 ) {
+                return false;
+            }
+            if (!CWRServerConfig.Instance.WeaponEnhancementSystem && !InWorldBossPhase.Instance.level11) {
                 return false;
             }
             return player.ownedProjectileCounts[item.shoot] == 0;

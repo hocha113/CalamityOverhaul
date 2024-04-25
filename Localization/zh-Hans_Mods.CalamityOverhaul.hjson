@@ -527,9 +527,9 @@ Items: {
 			右键进行瞄准，按下扳机键[KEY1]发射刀身，在刀身飞行过程中按下左键执行升龙斩击 [Lang1]
 			按下[KEY2]消耗1点充能值，进行一次下砸 [Lang2]
 			升龙斩击中敌人后将给予武器1充能值，充能达到最大值10点后再次升龙斩中敌人将触发终结技 [Lang3]
-			[c/fff08c:随着旅途的遥远而变强]
+			legend_Text
 			[c/ff4500:"如果有链锯剑会更好"]
-			[Lang4]:
+			[Lang4]
 			[Text]
 			'''
 	}
@@ -2892,7 +2892,7 @@ Configs: {
 		}
 
 		WeaponEnhancementSystem: {
-			Label: 是否开启传奇武器增强系统
+			Label: 是否启用传奇武器内容
 			Tooltip:
 				'''
 				如果开启，一些武器将重新获得传奇称号，这会影响其获取难度
@@ -3113,7 +3113,7 @@ TextContent: {
 			妖龙现身，我们将与异行邪祟展开全面冲突，凭借那块从海沟中得到的石头。新兵，这是最后一战！
 			好样的，新兵
 			'''
-		Murasama_Text_Lang_0: 试炼
+		Murasama_Text_Lang_0: 试炼:
 		Murasama_TextDictionary_Content_0:
 			'''
 			新兵，向我证明你自己
@@ -3198,6 +3198,10 @@ TextContent: {
 			我们的征途已经攀登至巅峰，就连那曾经统治泰拉的暴君也不及我们万一
 			现在，展开你的双臂，拥抱这个由胜利带给你的世界
 			'''
+		Murasama_No_legend_Content_1: 刀鞘将在巨龙陨落后解锁
+		Murasama_No_legend_Content_2: 新兵，我认可你的能力，现在，让我们去斩碎那帮异形
+		Murasama_No_legend_Content_3: "[c/fff08c:随着旅途的遥远而变强]"
+		Murasama_No_legend_Content_4: "[c/00707d:传奇的光辉已经暗淡...]"
 		RemakeItem_Remind_TextContent:
 			'''
 			【作者提醒】

@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Events;
+using CalamityOverhaul.Content.TileEntitys;
 using System.IO;
 using Terraria;
 using Terraria.ModLoader;
@@ -10,6 +11,7 @@ namespace CalamityOverhaul
         DompBool,
         RecoilAcceleration,
         TungstenRiotSync,
+        TEBloodAltar,
     }
 
     public class CWRNetCode
@@ -25,6 +27,9 @@ namespace CalamityOverhaul
             else if (type == CWRMessageType.TungstenRiotSync) {
                 TungstenRiot.Instance.TungstenRiotIsOngoing = reader.ReadBoolean();
                 TungstenRiot.Instance.EventKillPoints = reader.ReadInt32();
+            }
+            else if (type == CWRMessageType.TEBloodAltar) {
+                TEBloodAltar.ReadTEData(mod, reader);
             }
         }
     }

@@ -78,7 +78,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             int safeGravDir = Math.Sign(Owner.gravDir);
             bool noHasDownSkillProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaDownSkill>()] == 0;
             bool noHasBreakOutProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] == 0;
-            int level = InWorldBossPhase.Instance.Level();
+            bool nolegendStart = true;
+            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                nolegendStart = InWorldBossPhase.Instance.level11;
+            }
+            int level = InWorldBossPhase.Instance.Mura_Level();
             Projectile.Center = Owner.Center + new Vector2(0, 5) * safeGravDir;
             Projectile.timeLeft = 2;
             Projectile.scale = 0.7f;
@@ -104,22 +108,27 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 armRotSengsBack = 30;
                 Projectile.rotation = ToMouseA + MathHelper.ToRadians(75 + (DirSign > 0 ? 20 : 0));
 
-                if (Owner.ownedProjectileCounts[breakOutType] == 0 && !CWRUtils.isServer) {
+                if (Owner.ownedProjectileCounts[breakOutType] == 0 &&  !CWRUtils.isServer) {
                     if (CWRKeySystem.Murasama_TriggerKey.JustPressed && risingDragon <= 0 && noHasDownSkillProj) {//扳机键被按下，并且升龙冷却已经完成，那么将刀发射出去
-                        SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
-                        SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.1f, Volume = 0.5f }, Projectile.Center);
-                        if (MurasamaEcType.NameIsVergil(Owner) && Main.rand.NextBool()) {
-                            SoundStyle sound = Main.rand.NextBool() ? CWRSound.V_Kengms : CWRSound.V_Heen;
-                            SoundEngine.PlaySound(sound with { Volume = 0.5f }, Projectile.Center);
-                        }
+                        if (nolegendStart) {
+                            SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
+                            SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.1f, Volume = 0.5f }, Projectile.Center);
+                            if (MurasamaEcType.NameIsVergil(Owner) && Main.rand.NextBool()) {
+                                SoundStyle sound = Main.rand.NextBool() ? CWRSound.V_Kengms : CWRSound.V_Heen;
+                                SoundEngine.PlaySound(sound with { Volume = 0.5f }, Projectile.Center);
+                            }
 
-                        Owner.velocity += UnitToMouseV * -3;
-                        if (Projectile.IsOwnedByLocalPlayer()) {
-                            Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
-                        , breakOutType, (int)(MurasamaEcType.ActualTrueMeleeDamage * (0.35f + level * 0.05f)), 0, Owner.whoAmI);
-                        }
+                            Owner.velocity += UnitToMouseV * -3;
+                            if (Projectile.IsOwnedByLocalPlayer()) {
+                                Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
+                            , breakOutType, (int)(MurasamaEcType.ActualTrueMeleeDamage * (0.35f + level * 0.05f)), 0, Owner.whoAmI);
+                            }
 
-                        SpanTriggerEffDust();
+                            SpanTriggerEffDust();
+                        }
+                        else {
+                            SoundEngine.PlaySound(CWRSound.Ejection with { MaxInstances = 3 }, Projectile.Center);
+                        }
                     }
 
                     if (CWRKeySystem.Murasama_TriggerKey.JustPressed && risingDragon > 0) {
@@ -129,7 +138,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
 
             if (!CWRUtils.isServer) {
-                if (CWRKeySystem.Murasama_DownKey.JustPressed && MurasamaEcType.UnlockSkill2 && noHasDownSkillProj && noHasBreakOutProj) {//下砸技能键被按下，同时技能以及解锁，那么发射执行下砸技能的弹幕
+                if (CWRKeySystem.Murasama_DownKey.JustPressed && MurasamaEcType.UnlockSkill2 && noHasDownSkillProj && noHasBreakOutProj && nolegendStart) {//下砸技能键被按下，同时技能以及解锁，那么发射执行下砸技能的弹幕
                     murasama.initialize();
                     if (murasama.CWR().ai[0] >= 1) {
                         SoundEngine.PlaySound(MurasamaEcType.BigSwing with { Pitch = -0.1f }, Projectile.Center);

@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
-        int level => InWorldBossPhase.Instance.Level();
+        int level => InWorldBossPhase.Instance.Mura_Level();
 
         public override void PostAI() => CWRUtils.ClockFrame(ref Projectile.frame, 3, 6);
 
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         private void strikeToFly(NPC npc) {
-            Vector2 flyVr = new Vector2(Projectile.velocity.X, -16 + (InWorldBossPhase.Instance.Level() * 0.3f));
+            Vector2 flyVr = new Vector2(Projectile.velocity.X, -16 + (InWorldBossPhase.Instance.Mura_Level() * 0.3f));
             void spanDust(int maxdustNum, int dustID) {
                 for (int i = 0; i < maxdustNum; i++) {
                     Dust.NewDust(npc.position, npc.width, npc.height, dustID
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            int level = InWorldBossPhase.Instance.Level();
+            int level = InWorldBossPhase.Instance.Mura_Level();
             if (target.type == ModContent.NPCType<Crabulon>() || target.type == ModContent.NPCType<CrabShroom>()) {
                 modifiers.FinalDamage *= 1.5f;
             }

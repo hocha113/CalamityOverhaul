@@ -14,6 +14,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -110,7 +111,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// <summary>
         /// 获取时期对应的伤害
         /// </summary>
-        public static int GetOnDamage => DamageDictionary[InWorldBossPhase.Instance.Level()];
+        public static int GetOnDamage => DamageDictionary[InWorldBossPhase.Instance.Mura_Level()];
         /// <summary>
         /// 计算伤害比例
         /// </summary>
@@ -122,15 +123,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// <summary>
         /// 获取时期对应的范围增幅
         /// </summary>
-        public static float GetOnScale => BladeVolumeRatioDictionary[InWorldBossPhase.Instance.Level()];
+        public static float GetOnScale => BladeVolumeRatioDictionary[InWorldBossPhase.Instance.Mura_Level()];
         /// <summary>
         /// 获取时期对应的额外暴击
         /// </summary>
-        public static int GetOnCrit => SetLevelCritDictionary[InWorldBossPhase.Instance.Level()];
+        public static int GetOnCrit => SetLevelCritDictionary[InWorldBossPhase.Instance.Mura_Level()];
         /// <summary>
         /// 获取时期对应的冷却时间上限
         /// </summary>
-        public static int GetOnRDCD => RDCDDictionary[InWorldBossPhase.Instance.Level()];
+        public static int GetOnRDCD => RDCDDictionary[InWorldBossPhase.Instance.Mura_Level()];
         /// <summary>
         /// 大小百分比例
         /// </summary>
@@ -156,15 +157,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// <summary>
         /// 是否解锁升龙斩
         /// </summary>
-        public static bool UnlockSkill1 => InWorldBossPhase.Instance.Level() >= 2;
+        public static bool UnlockSkill1 => InWorldBossPhase.Instance.Mura_Level() >= 2;
         /// <summary>
         /// 是否解锁下砸
         /// </summary>
-        public static bool UnlockSkill2 => InWorldBossPhase.Instance.Level() >= 5;
+        public static bool UnlockSkill2 => InWorldBossPhase.Instance.Mura_Level() >= 5;
         /// <summary>
         /// 是否解锁终结技
         /// </summary>
-        public static bool UnlockSkill3 => InWorldBossPhase.Instance.Level() >= 9;
+        public static bool UnlockSkill3 => InWorldBossPhase.Instance.Mura_Level() >= 9;
 
         public static readonly SoundStyle OrganicHit = new("CalamityMod/Sounds/Item/MurasamaHitOrganic") { Volume = 0.45f };
         public static readonly SoundStyle InorganicHit = new("CalamityMod/Sounds/Item/MurasamaHitInorganic") { Volume = 0.55f };
@@ -207,20 +208,29 @@ namespace CalamityOverhaul.Content.Items.Melee
             tooltips.ReplaceTooltip("[Lang1]", UnlockSkill1 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text1")}]", modName);
             tooltips.ReplaceTooltip("[Lang2]", UnlockSkill2 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text2")}]", modName);
             tooltips.ReplaceTooltip("[Lang3]", UnlockSkill3 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text3")}]", modName);
-            tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{InWorldBossPhase.Instance.Level() + 1}]", modName);
+            if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{InWorldBossPhase.Instance.Mura_Level() + 1}]", modName);
+                tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Murasama_No_legend_Content_3"), modName);
+            }
+            else {
+                tooltips.ReplaceTooltip("[Lang4]", "", modName);
+                tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Murasama_No_legend_Content_4"), modName);
+            }
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[Text]") && x.Mod == "Terraria");
             if (legendtops != null) {
-                string lang = CWRLocText.GetTextValue("Murasama_TextDictionary_Content");
-                string[] langs = lang.Split("\n");
-                int index = InWorldBossPhase.Instance.Level();
+                int index = InWorldBossPhase.Instance.Mura_Level();
                 if (index >= 0 && index <= 14) {
                     legendtops.Text = CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}");
                 }
                 else {
                     legendtops.Text = "ERROR";
+                }
+
+                if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                    legendtops.Text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("Murasama_No_legend_Content_2") : CWRLocText.GetTextValue("Murasama_No_legend_Content_1");
                 }
                 legendtops.OverrideColor = Color.Lerp(Color.IndianRed, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             }

@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.TileEntities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.TileEntitys;
 using Microsoft.Xna.Framework;
@@ -36,7 +37,7 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.newTile.LavaDeath = false;
-            ModTileEntity te = ModContent.GetInstance<BloodAltarEntity>();
+            ModTileEntity te = ModContent.GetInstance<TEBloodAltar>();
             TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(te.Hook_AfterPlacement, -1, 0, true);
             TileObjectData.newTile.UsesCustomCanPlace = true;
             TileObjectData.addTile(Type);
@@ -60,43 +61,18 @@ namespace CalamityOverhaul.Content.Tiles
         public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {
-            ModContent.GetInstance<BloodAltarEntity>().Kill(i, j);
-            Main.dayTime = true;
-            if (Main.bloodMoon) {
-                Main.bloodMoon = false;
-            }
+            Tile t = Main.tile[i, j];
+            int left = i - t.TileFrameX % (Width * SheetSquare) / SheetSquare;
+            int top = j - t.TileFrameY % (Height * SheetSquare) / SheetSquare;
+            TEBloodAltar te = CalamityUtils.FindTileEntity<TEBloodAltar>(i, j, Width, Height, SheetSquare);
+            te?.Kill(left, top);
         }
 
         public override bool RightClick(int i, int j) {
-            Vector2 Center = new Vector2(i, j) * 16 + new Vector2(8 * Width, 8 * Height);
-
-            BloodAltarEntity bloodAltarEntity = CalamityUtils.FindTileEntity<BloodAltarEntity>(i, j, Width, Height, SheetSquare);
-            if (bloodAltarEntity != null)
+            TEBloodAltar bloodAltarEntity = CalamityUtils.FindTileEntity<TEBloodAltar>(i, j, Width, Height, SheetSquare);
+            if (bloodAltarEntity != null) {
                 bloodAltarEntity.OnBoolMoon = !bloodAltarEntity.OnBoolMoon;
-
-            if (CWRUtils.isClient) {//这段代码用于在多人模式下进行的功能性补救，天杀的为什么物块实体在多人模式会消失？
-                if (!Main.bloodMoon) {
-                    SoundEngine.PlaySound(SoundID.Roar, Center);
-                    for (int o = 0; o < 63; o++) {
-                        Vector2 vr = new Vector2(Main.rand.Next(-12, 12), Main.rand.Next(-23, -3));
-                        Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
-                            , Scale: Main.rand.NextFloat(1.2f, 3.1f));
-                    }
-                    Main.dayTime = false;
-                    Main.bloodMoon = true;
-                    CalamityNetcode.SyncWorld();
-                }
-                else {
-                    SoundEngine.PlaySound(CWRSound.Peuncharge, Center);
-                    for (int o = 0; o < 133; o++) {
-                        Vector2 vr = new Vector2(0, Main.rand.Next(-33, -3));
-                        Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
-                        , Scale: Main.rand.NextFloat(0.7f, 1.3f));
-                    }
-                    Main.dayTime = true;
-                    Main.bloodMoon = false;
-                    CalamityNetcode.SyncWorld();
-                }
+                bloodAltarEntity.SendTEData();
             }
             
             TileEntity.InitializeAll();
@@ -104,21 +80,15 @@ namespace CalamityOverhaul.Content.Tiles
             return true;
         }
 
-        int ClinetIndexFrame;
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;
             int frameYPos = t.TileFrameY;
 
-            BloodAltarEntity bloodAltarEntity = CalamityUtils.FindTileEntity<BloodAltarEntity>(i, j, Width, Height, SheetSquare);
-
+            TEBloodAltar bloodAltarEntity = CalamityUtils.FindTileEntity<TEBloodAltar>(i, j, Width, Height, SheetSquare);
             if (bloodAltarEntity != null) {
                 frameYPos += bloodAltarEntity.frameIndex % 4 * (Height * SheetSquare);
             }
-            else if (CWRUtils.isClient) {
-                CWRUtils.ClockFrame(ref ClinetIndexFrame, 6, 3);
-                frameYPos += ClinetIndexFrame % 4 * (Height * SheetSquare);
-            }    
 
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);

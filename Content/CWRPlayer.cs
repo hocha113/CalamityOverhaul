@@ -84,7 +84,8 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int RisingDragonCoolDownTime;
         public int SafeHeldProjIndex;
-        
+        public int TETramContrType;
+
         /// <summary>
         /// 是否受伤
         /// </summary>
@@ -121,6 +122,7 @@ namespace CalamityOverhaul.Content
             TheRelicLuxor = 0;
             PressureIncrease = 1;
             HeldStyle = -1;
+            TETramContrType = 0;
             OnHit = false;           
             LoadMuzzleBrake = false;
             InitialCreation = true;
@@ -137,6 +139,7 @@ namespace CalamityOverhaul.Content
             TheRelicLuxor = 0;
             LoadMuzzleBrakeLevel = 0;
             PressureIncrease = 1;
+            TETramContrType = 0;
             HeldStyle = -1;
             OnHit = false;
             InFoodStallChair = false;

@@ -15,10 +15,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
         public override void SpanProj() {
             if (Projectile.timeLeft % 6 == 0 && Owner.PressKey()) {
-                Vector2 vr = Projectile.rotation.ToRotationVector2() * 17;
+                ShootState shootState = Owner.GetShootState("CWRGunShoot");
+                Vector2 vr = Projectile.rotation.ToRotationVector2() * shootState.ScaleFactor;
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.NewProjectile(Owner.GetShootState("CWRGunShoot").Source, Projectile.Center + vr.UnitVector() * 53 + vr.GetNormalVector() * 11 * (Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1)
-                        , vr, ModContent.ProjectileType<MiniRocket>(), Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
+                    Projectile.NewProjectile(shootState.Source, Projectile.Center + vr.UnitVector() * 53 + vr.GetNormalVector() 
+                        * 11 * (Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1)
+                        , vr, ModContent.ProjectileType<MiniRocket>(), shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI, 0);
                 }
                 Vector2 pos = Projectile.Center - vr * 3 + vr.GetNormalVector() * 10 * Owner.direction;
                 if (Projectile.rotation != 0) {

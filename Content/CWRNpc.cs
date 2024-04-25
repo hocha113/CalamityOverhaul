@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                     }
                 }
-                if (npc.type == CWRIDs.Yharon && InWorldBossPhase.Instance.Level() >= 13 && Main.zenithWorld && !CWRUtils.isClient) {
+                if (npc.type == CWRIDs.Yharon && InWorldBossPhase.Instance.level11 && Main.zenithWorld && !CWRUtils.isClient) {
                     Player target = CWRUtils.GetPlayerInstance(npc.target);
                     if (target.Alives()) {
                         float dir = npc.Center.To(target.Center).X;

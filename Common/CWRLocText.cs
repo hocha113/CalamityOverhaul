@@ -41,6 +41,10 @@ namespace CalamityOverhaul.Common
         public LocalizedText Murasama_TextDictionary_Content_12 { get; private set; }
         public LocalizedText Murasama_TextDictionary_Content_13 { get; private set; }
         public LocalizedText Murasama_TextDictionary_Content_14 { get; private set; }
+        public LocalizedText Murasama_No_legend_Content_1 { get; private set; }
+        public LocalizedText Murasama_No_legend_Content_2 { get; private set; }
+        public LocalizedText Murasama_No_legend_Content_3 { get; private set; }
+        public LocalizedText Murasama_No_legend_Content_4 { get; private set; }
         public LocalizedText RemakeItem_Remind_TextContent { get; private set; }
         public LocalizedText StarMyriadChanges_TextContent { get; private set; }
         public LocalizedText Destruct_TextContent { get; private set; }

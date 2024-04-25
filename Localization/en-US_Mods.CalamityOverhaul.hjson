@@ -492,7 +492,7 @@ Items: {
 			Press [KEY2] to consume one points of charge and perform a punch [Lang2]
 			When you hit an enemy, you will give your weapon 1 recharge. 
 			When you hit the maximum 10 recharge, you will trigger the end of the enemy when you lift the dragon again. [Lang3]
-			[c/fff08c: Stronger with the distance of the journey]
+			[c/fff08c: legend_Text]
 			[c/ff4500:" It would be better if this were a chainsaw sword "]
 			[Lang4]:
 			[Text]
@@ -3049,7 +3049,7 @@ TextContent: {
 			The dragon ahead, smash it, or go straight into battle!
 			Well done, rookie.
 			'''
-		Murasama_Text_Lang_0: Trial
+		Murasama_Text_Lang_0: Trial:
 		Murasama_TextDictionary_Content_0:
 			'''
 			Recruit, You need to prove yourself to me.
@@ -3147,6 +3147,10 @@ TextContent: {
 			even the tyrant who once ruled Terra is no match for us.
 			Now, spread your arms and embrace this world that victory has brought to you
 			'''
+		Murasama_No_legend_Content_1: The sheath will be unlocked after the dragon falls
+		Murasama_No_legend_Content_2: Recruit, I approve of your abilities. Now, let's go chop up the aliens
+		Murasama_No_legend_Content_3: "[c/fff08c:Stronger with the distance of the journey]"
+		Murasama_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
 		RemakeItem_Remind_TextContent:
 			'''
 			【From the Author】
