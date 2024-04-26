@@ -45,6 +45,8 @@ namespace CalamityOverhaul.Common
         public LocalizedText Murasama_No_legend_Content_2 { get; private set; }
         public LocalizedText Murasama_No_legend_Content_3 { get; private set; }
         public LocalizedText Murasama_No_legend_Content_4 { get; private set; }
+        public LocalizedText SHPC_No_legend_Content_1 { get; private set; }
+        public LocalizedText SHPC_No_legend_Content_2 { get; private set; }
         public LocalizedText RemakeItem_Remind_TextContent { get; private set; }
         public LocalizedText StarMyriadChanges_TextContent { get; private set; }
         public LocalizedText Destruct_TextContent { get; private set; }
@@ -89,6 +91,8 @@ namespace CalamityOverhaul.Common
         public LocalizedText AmmoBox_Text { get; private set; }
         public LocalizedText AmmoBox_Text2 { get; private set; }
         public LocalizedText AmmoBox_Text3 { get; private set; }
+        public LocalizedText SupMUI_OneClick_Text1 { get; private set; }
+        public LocalizedText SupMUI_OneClick_Text2 { get; private set; }
         public LocalizedText Wap_Minishark_Text { get; private set; }
         public LocalizedText Wap_Megashark_Text { get; private set; }
         public LocalizedText Wap_HandGun_Text { get; private set; }

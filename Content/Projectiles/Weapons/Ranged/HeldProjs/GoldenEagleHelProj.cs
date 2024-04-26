@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            RangeOfStress = 5;
+            RangeOfStress = 25;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
             Recoil = 0.8f;
@@ -42,8 +42,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShootR() {
             RangeOfStress = 25;
-            GunPressure = 0.8f;
-            ControlForce = 0.07f;
+            GunPressure = 0.5f;
+            ControlForce = 0.05f;
             Recoil = 1.8f;
             base.FiringShootR();
             CaseEjection();

@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (onMainP) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
                 , eyEBool ? CWRLocText.GetTextValue("SupertableUI_Text4") : CWRLocText.GetTextValue("SupertableUI_Text5")
-                , DrawPos.X - 30, DrawPos.Y - 20, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
+                , DrawPos.X - 30, DrawPos.Y + 30, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
             }
         }
     }

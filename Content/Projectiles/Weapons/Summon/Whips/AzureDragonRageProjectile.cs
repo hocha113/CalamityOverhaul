@@ -37,6 +37,27 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.damage -= 55;
+            if (Projectile.numHits == 0) {
+                target.CWR().WhipHitNum += 3;
+                target.CWR().WhipHitType = (byte)WhipHitTypeEnum.WhiplashGalactica;
+
+                for (int i = 0; i < 3; i++) {
+                    Projectile.NewProjectile(
+                        Projectile.parent(),
+
+                        target.Center -
+                        Main.player[Projectile.owner].Center.To(target.Center).UnitVector()
+                        .RotatedBy(MathHelper.ToRadians(Main.rand.Next(-75, 75))) * 300,
+
+                        Vector2.Zero,
+                        ProjectileID.Leaf,
+                        Projectile.damage + 500,
+                        0,
+                        Projectile.owner,
+                        Projectile.whoAmI
+                    );
+                }
+            }
         }
 
         private void DrawLine(List<Vector2> list) {

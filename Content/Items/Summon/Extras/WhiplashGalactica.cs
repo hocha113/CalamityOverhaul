@@ -12,21 +12,20 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
     {
         public override string Texture => CWRConstant.Item_Summon + "WhiplashGalactica";
 
-        public override void SetDefaults()
-        {
-            Item.DefaultToWhip(ModContent.ProjectileType<WhiplashGalacticaProjectile>(), 702, 0, 12, 45);
+        public override void SetDefaults() {
+            Item.DefaultToWhip(ModContent.ProjectileType<WhiplashGalacticaProjectile>(), 302, 0, 12, 45);
             Item.rare = ItemRarityID.Green;
-            Item.channel = true;
+            Item.channel = false;
+            Item.useTurn = true;
+            Item.autoReuse = true;
         }
 
-        public override bool MeleePrefix()
-        {
+        public override bool MeleePrefix() {
             return true;
         }
 
-        public override void AddRecipes()
-        {
-            CreateRecipe()
+        public override void AddRecipes() {
+            _ = CreateRecipe()
                 .AddIngredient(ModContent.ItemType<ElementWhip>())
                 .AddIngredient<CosmiliteBar>(5)
                 .AddTile(ModContent.TileType<CosmicAnvil>())

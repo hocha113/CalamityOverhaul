@@ -4,6 +4,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -139,7 +140,6 @@ namespace CalamityOverhaul.Content
             TheRelicLuxor = 0;
             LoadMuzzleBrakeLevel = 0;
             PressureIncrease = 1;
-            TETramContrType = 0;
             HeldStyle = -1;
             OnHit = false;
             InFoodStallChair = false;
@@ -218,6 +218,27 @@ namespace CalamityOverhaul.Content
                 Player.velocity += RecoilAccelerationValue;
                 RecoilAccelerationAddBool = false;
             }
+        }
+
+        public override void PostUpdateEquips() {
+            //Item item = Player.GetItem();
+            //if (item.type == ItemID.None) {
+            //    return;
+            //}
+            //CWRItems modItem = item.CWR();
+            //int projType = modItem.heldProjType;
+            //if (projType > 0) {
+            //    if (Player.ownedProjectileCounts[projType] == 0 && Main.myPlayer == Player.whoAmI) {
+            //        Projectile.NewProjectileDirect(Player.parent(), Player.Center, Vector2.Zero, projType, item.damage, item.knockBack, Player.whoAmI);
+            //    }
+            //    if (CWRIDs.ItemToBaseRanged.TryGetValue(item.type, out BaseHeldRanged ranged)) {
+            //        bool lDown = Player.PressKey();
+            //        bool rDown = Player.PressKey(false);
+            //        if (lDown || (rDown && !lDown && ranged.CanRightClick && !Player.cursorItemIconEnabled)) {
+            //            HeldStyle = 0;
+            //        }
+            //    }
+            //}//此处的性能消耗需要进行探讨，相比于更新在CWRItems.HoldItem的优势是什么？或许是更新顺序更加的好，但写在这里也意味着几乎无时无刻都会运行这段逻辑徒增部分性能消耗
         }
 
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo) {

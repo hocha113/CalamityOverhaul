@@ -41,11 +41,9 @@ namespace CalamityOverhaul.Content.TileEntitys
                 return;
             }
             float leng = Center.Distance(player.Center);
-            if (modPlayer.TETramContrType == 0) {
-                modPlayer.TETramContrType = Type;
-            }
-            if ((leng >= maxleng || player.dead) && modPlayer.TETramContrType == Type) {
+            if ((leng >= maxleng || player.dead) && modPlayer.TETramContrType == ID) {
                 modPlayer.SupertableUIStartBool = false;
+                modPlayer.TETramContrType = 0;
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.2f });
             }
         }

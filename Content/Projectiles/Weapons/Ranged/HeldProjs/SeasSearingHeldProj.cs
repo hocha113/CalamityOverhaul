@@ -27,8 +27,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             base.FiringIncident();
             if (noFireTime > 0) {
                 noFireTime--;
-                if (noFireTime == 15) {
-                    SoundEngine.PlaySound(CWRSound.CaseEjection with { PitchRange = (-0.1f, 0.1f), Volume = 0.4f }, Projectile.Center);
+                if (noFireTime == 30) {
+                    SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot with { PitchRange = (-0.1f, 0.1f), Volume = 0.4f }, Projectile.Center);
                     for (int i = 0; i < maxFireCount; i++) {
                         CaseEjection();
                     }
@@ -43,11 +43,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             AmmoTypes = ModContent.ProjectileType<SeasSearingBubble>();
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 1);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, (indexFire == 1 || indexFire == 5)? 1 : 0);
             indexFire++;
             if (indexFire >= maxFireCount) {
                 indexFire = 0;
-                noFireTime += 30;
+                noFireTime += 45;
             }
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();

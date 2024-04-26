@@ -17,8 +17,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<RubicoPrimeEcType>();
         int fireIndex;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 110;
-            FireTime = 20;
+            kreloadMaxTime = 100;
+            FireTime = 19;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostInOwnerUpdate() {
-            if (!onFire && IsKreload) {
+            if (!onFire && IsKreload && kreloadTimeValue <= 0) {
                 if (++fireIndex > 50) {
                     NPC target = Projectile.Center.FindClosestNPC(1900, false, true);
                     if (target != null) {

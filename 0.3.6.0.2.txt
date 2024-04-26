@@ -1,18 +1,120 @@
 v_0.3.6.0.2
 
 ——负责以下内容的开发者：红茶
-1.SMG的弹匣容量幽45增加到85，右键弹药消耗率增加至5发一开火，减小其开火音效，保护耳朵健康
-2.修复神圣连弩攻速过快的问题，取消其额外发射箭矢的速度加成
-3.星辰溅散的骗伤问题被修复，弹匣容量由40提高至42
-4.洲陆巨弓的骗伤问题被修复
-5.庇护之刃的剑灵现在只有在蓄力足够后才会在命中目标时生成大量火球
-6.修复地炎长矛会对渊海灾虫造成过高伤害的问题，玩家站在地面投掷不会再让枪身即刻落地
-7.重做尖桩发射器
-8.深红祭坛现在适配多人模式，功能基本正常
-9.玩家如果远离欧米茄物质聚合仪会自动关闭终焉合成UI
-10.高分子斩切刃现在会受到'是否启用传奇武器内容'设置影响，如果关闭，该武器将只能在丛林龙后使用，并且不再具有成长属性
+
+特殊更新:
+1.这些武器被重做：酸液枪、凋亡射线、恐寒症、泡沫冲锋枪、幻妖龙吟、源、离子冲击波、拉扎尔射线、纳米净化、等离子步枪、SHPC、侧翼
+2.如果玩家将光标放置在终焉合成面板之上，合成配方窗口将会自动隐藏
+3.移除关于终焉合成的三种快捷键：快捷拿取、全部拿取、一键放置。会有一个新的UI按钮来替代'全部拿取'和'一键放置'功能。而'快捷拿取'只需要按住Shift键，左键点击面板上的材料就可以直接将其放进背包中
+4.现在，如果玩家关闭了枪械后坐力功能，那么物品的描述栏就不会再出现关于后坐力的文字行
+5.重做尖桩发射器
+6.元素长鞭、鬼火鞭、银河鞭挞、血色鞭挞现在可以连续使用
+7.深红祭坛现在适配多人模式，功能基本正常
+8.高分子斩切刃现在会受到'是否启用传奇武器内容'设置影响，如果关闭，该武器将只能在丛林龙后使用，并且不再具有成长属性
+9.SHPC现在会受到'是否启用传奇武器内容'设置影响
+10.玩家如果远离欧米茄物质聚合仪，终焉合成UI会自动关闭
+
+问题修复:
+1.修复神圣连弩攻速过快的问题，取消其额外发射箭矢的速度加成
+2.星辰溅散的骗伤问题被修复
+3.洲陆巨弓的骗伤问题被修复
+4.修复地炎长矛会对渊海灾虫造成过高伤害的问题，玩家站在地面投掷不会再让枪身即刻落地
+5.修复一些英文本地化空缺错误
+6.修复海爵剑的词缀描述异常
+7.修复魔法枪械开火不会重置玩家魔力恢复冷却的问题
+
+平衡调整:
+1.玷污之疫SMG的弹匣容量由45增加到85，右键弹药消耗率增加至5发一开火，减小其开火音效，保护耳朵健康
+2.星辰溅散弹匣容量由40提高至42
+3.庇护之刃的剑灵现在只有在蓄力足够后才会在命中目标时生成大量火球
+4.取消激光步枪的后坐力
+5.绝路Prime的基础伤害面板由1050降低至820，略微加快射速和换弹速度，换弹时不会再自动开火
+6.金源灭却刃的基础武器面板由385提高至455，额外暴击率由71%降低至12%
+7.宇宙暗流的基础武器面板由440降低至400，左键发射的宇宙暗光矢所会爆发出的弑神者飞镖的数量由6个降低至5个，伤害由原来的50%武器面板降低至33%武器面板，右键的暗流穿刺会由拥有10%的额外伤害加成与10点护甲穿透
+8.大幅度降低海之烧灼左键海洋弹生成额外射弹的概率，开火间隔由30延长至45
+9.诺法雷的基础武器面板由354降低至330，一部分星星导弹将只造成70%伤害，但拥有更高的穿甲能力
+10.海龙的后坐力由1.2降低至0.8，发射的泡泡炸弹伤害降低50%
+11.血色鞭挞的基础面板由591降低至191
+12.青龙之怒的基础面板由272降低至172
+13.鬼火鞭的基础面板由522降低至220
+14.银河鞭挞的基础武器面板由702降低至302
+
 
 ——Developer responsible for the following content: HoCha113
+
+特殊更新:
+1.这些武器被重做：Acid Gun、Apoctosis Array、Cryophobia、Effervescence、Eidolic Wail、Genisis、Ion Blaster、Lazhar、Nano Purge、Plasma Rifle、SHPC、Wingman
+2.如果玩家将光标放置在终焉合成面板之上，合成配方窗口将会自动隐藏
+3.移除关于终焉合成的三种快捷键：快捷拿取、全部拿取、一键放置。会有一个新的UI按钮来替代'全部拿取'和'一键放置'功能。而'快捷拿取'只需要按住Shift键，左键点击面板上的材料就可以直接将其放进背包中
+4.现在，如果玩家关闭了枪械后坐力功能，那么物品的描述栏就不会再出现关于后坐力的文字行
+5.重做Stake Launcher
+6.Element Whip、Ghost Fire Whip、Whiplash Galactica、Bleeding Scourge现在可以连续使用
+7.Blood Altar现在适配多人模式，功能基本正常
+8.Murasama现在会受到'Enable Legendary Weapon Enhancement System'设置影响，如果关闭，该武器将只能在丛林龙后使用，并且不再具有成长属性
+9.SHPC现在会受到'是否启用传奇武器内容'设置影响
+10.玩家如果远离 Omega substance polymerizer，终焉合成UI会自动关闭
+
+问题修复:
+1.修复 Hallowed Repeater 攻速过快的问题，取消其额外发射箭矢的速度加成
+2.Star Sputter的骗伤问题被修复
+3.Continental Greatbow的骗伤问题被修复
+4.修复 Earthen Pike 会对渊海灾虫造成过高伤害的问题，玩家站在地面投掷不会再让枪身即刻落地
+5.修复一些英文本地化空缺错误
+6.修复Briny Baron的词缀描述异常
+7.修复魔法枪械开火不会重置玩家魔力恢复冷却的问题
+
+平衡调整:
+1.Plague Tainted SMG的弹匣容量由45增加到85，右键弹药消耗率增加至5发一开火，减小其开火音效，保护耳朵健康
+2.Star Sputter弹匣容量由40提高至42
+3.Aegis Blade 的剑灵现在只有在蓄力足够后才会在命中目标时生成大量火球
+4.取消 Laser Rifle 的后坐力
+5.Rubico Prime 的基础伤害面板由1050降低至820，略微加快射速和换弹速度，换弹时不会再自动开火
+6.Divine Source Blade 的基础武器面板由385提高至455，额外暴击率由71%降低至12%
+7.Stream Gouge的基础武器面板由440降低至400，左键发射的宇宙暗光矢所会爆发出的弑神者飞镖的数量由6个降低至5个，伤害由原来的50%武器面板降低至33%武器面板，右键的暗流穿刺会由拥有10%的额外伤害加成与10点护甲穿透
+8.大幅度降低 Seas Searing 左键海洋弹生成额外射弹的概率，开火间隔由30延长至45
+9.Norfleet 的基础武器面板由354降低至330，一部分星星导弹将只造成70%伤害，但拥有更高的穿甲能力
+10.Seadragon的后坐力由1.2降低至0.8，发射的泡泡炸弹伤害降低50%
+11.Bleeding Scourge的基础面板由591降低至191
+12.Azure Dragon Rage的基础面板由272降低至172
+13.Ghost Fire Whip的基础面板由522降低至220
+14.Whiplash Galactica的基础武器面板由702降低至302
+
+Special Updates:
+1. The following weapons have been reworked: Acid Gun, Apoctosis Array, Cryophobia, Effervescence, Eidolic Wail, Genisis, Ion Blaster, Lazhar, Nano Purge, Plasma Rifle, SHPC, Wingman.
+2. Placing the cursor over the Endgame Crafting Panel will now automatically hide the crafting recipe window.
+3. Three shortcuts related to Endgame Crafting have been removed: Quick Withdraw, Withdraw All, and Quick Stack. A new UI button will replace the functions of "Withdraw All" and "Quick Stack". "Quick Withdraw" can now be performed by holding down the Shift key and left-clicking materials on the panel to instantly place them into the inventory.
+4. Descriptions of items will no longer display information about recoil if the firearm recoil function is disabled.
+5. Stake Launcher has been redesigned.
+6. Element Whip, Ghost Fire Whip, Whiplash Galactica, and Bleeding Scourge can now be used continuously.
+7. Blood Altar now functions properly in multiplayer mode.
+8. Murasama's behavior is now affected by the "Enable Legendary Weapon Enhancement System" setting. When disabled, this weapon can only be used post-Plantera and no longer has growth attributes.
+9. SHPC is now affected by the "Enable Legendary Weapon Content" setting.
+10. The Endgame Crafting UI will automatically close if the player moves away from the Omega substance polymerizer.
+
+Bug Fixes:
+1. Fixed an issue with Hallowed Repeater firing too quickly by removing its extra arrow firing rate bonus.
+2. Fixed the damage deception issue with Star Sputter.
+3. Fixed the damage deception issue with Continental Greatbow.
+4. Fixed an issue where Earthen Pike caused excessive damage to Abyssal Horrors. Players standing on the ground will no longer cause the spear to immediately land.
+5. Fixed some English localization gaps and errors.
+6. Fixed an abnormal prefix description for Briny Baron.
+7. Fixed an issue where firing magical firearms did not reset the player's mana regeneration cooldown.
+
+Balance Adjustments:
+1. Increased the magazine capacity of Plague Tainted SMG from 45 to 85. Right-click ammo consumption rate increased to 5 shots per burst. Reduced its firing sound for ear protection.
+2. Increased the magazine capacity of Star Sputter from 40 to 42.
+3. Aegis Blade's sword spirit now generates a large number of fireballs only when fully charged and hitting a target.
+4. Removed the recoil from Laser Rifle.
+5. Reduced the base damage of Rubico Prime from 1050 to 820, slightly increased fire rate and reload speed, and prevented automatic firing during reload.
+6. Increased the base weapon damage of Divine Source Blade from 385 to 455. Additional critical strike rate reduced from 71% to 12%.
+7. Reduced the base weapon damage of Stream Gouge from 440 to 400. The number of Ender Shurikens burst by cosmic shadow arrows from left-click reduced from 6 to 5. Damage reduced from 50% weapon damage to 33% weapon damage for Ender Shurikens from left-click. Right-click's Cosmic Tidal Pierce will have an additional 10% damage and 10 armor penetration.
+8. Significantly reduced the probability of generating additional projectiles for Seas Searing's left-click ocean projectile, and increased the firing interval from 30 to 45.
+9. Reduced the base weapon damage of Norfleet from 354 to 330. Some of the star missiles will now only deal 70% damage but have higher armor penetration.
+10. Reduced the recoil of Seadragon from 1.2 to 0.8 and reduced the damage of bubble bombs fired by 50%.
+11. Reduced the base panel of Bleeding Scourge from 591 to 191.
+12. Reduced the base panel of Azure Dragon Rage from 272 to 172.
+13. Reduced the base weapon damage of Ghost Fire Whip from 522 to 220.
+14. Reduced the base weapon damage of Whiplash Galactica from 702 to 302.
 
 
 

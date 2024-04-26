@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Microsoft.Xna.Framework;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -25,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.damage = 110;
             Item.knockBack = 2f;
-            Item.useAnimation = Item.useTime = 15;
+            Item.useAnimation = Item.useTime = 20;
             Item.DamageType = DamageClass.Melee;
             Item.useTurn = true;
             Item.autoReuse = true;
@@ -37,6 +38,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = SoundID.Item1;
             Item.value = CalamityGlobalItem.Rarity8BuyPrice;
             Item.rare = ItemRarityID.Yellow;
+        }
+
+        public override void HoldItem(Player player) {
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -81,6 +85,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone) {
+            SoundEngine.PlaySound(SoundID.Item96, target.Center);
             if (player.whoAmI == Main.myPlayer) {
                 Vector2 speed = CWRUtils.RandomBooleanValue(2, 1, true) ? new Vector2(16, 0) : new Vector2(-16, 0);
                 if (Main.projectile.Count(n => n.active && n.type == ModContent.ProjectileType<SeaBlueBrinySpout>() && n.ai[1] == 1) <= 2) {

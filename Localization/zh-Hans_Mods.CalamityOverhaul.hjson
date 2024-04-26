@@ -332,7 +332,11 @@ Items: {
 
 	DivineSourceBlade: {
 		DisplayName: 金源灭却刃
-		Tooltip: ""
+		Tooltip:
+			'''
+			挥舞金源之力
+			"生命不息"
+			'''
 	}
 
 	FatesRevealEcType: {
@@ -1119,7 +1123,7 @@ Items: {
 			会给子弹染上纳垢剧毒
 			每射出八发子弹就会触发一轮污染物的呕吐攻击
 			右键进行切换为半自动，发射污秽肉球
-			"那是一场大瘟疫..."老猪鲨回忆着过去，喃喃自语着
+			"那是一场大瘟疫..."老猪鲨回忆着过去，喃喃自语
 			"我曾经是一名海洋大学的教授，那条大比目鱼就是我的学生，直到瘟疫到来后，
 			海洋大学变成了硫磺海开发部，我就退休了...对了，你想不想见识一下我能一下吞多少子弹？"
 			'''
@@ -2340,6 +2344,107 @@ Items: {
 			使用凝胶作为弹药
 			'''
 	}
+
+	AcidGunEcType: {
+		DisplayName: 酸液枪
+		Tooltip: 喷出酸液流
+	}
+
+	ApoctosisArrayEcType: {
+		DisplayName: 凋亡射线
+		Tooltip:
+			'''
+			发射会加速并爆炸的离子冲击波
+			你的魔力值越高，它的威力越大
+			使用星幻注射剂会削减加成幅度
+			'''
+	}
+
+	CryophobiaEcType: {
+		DisplayName: 恐寒症
+		Tooltip:
+			'''
+			发射会多次分裂并爆炸成碎片的寒冰冲击波
+			“战栗”
+			'''
+	}
+
+	EffervescenceEcType: {
+		DisplayName: 泡沫冲锋枪
+		Tooltip:
+			'''
+			射出一大串泡沫
+			"泡泡!!!!!!!"
+			'''
+	}
+
+	EidolicWailEcType: {
+		DisplayName: 幻妖龙吟
+		Tooltip:
+			'''
+			在光标处生成数道回声波
+			回声波撞到物块后会反弹
+			如果生成位置是实心物块则会转而从枪口发射
+			"且听龙吟"
+			'''
+	}
+
+	GenisisEcType: {
+		DisplayName: 源
+		Tooltip: 发射Y形毁灭能量束和一簇激光
+	}
+
+	IonBlasterEcType: {
+		DisplayName: 离子冲击波
+		Tooltip:
+			'''
+			发射会加速并爆炸的离子冲击波
+			你的魔力值越高，它的威力越大
+			使用星幻注射剂会减弱加成幅度
+			'''
+	}
+
+	LazharEcType: {
+		DisplayName: 拉扎尔射线
+		Tooltip:
+			'''
+			发射高挥发性聚能太阳光束
+			光束有小概率穿透目标
+			'''
+	}
+
+	NanoPurgeEcType: {
+		DisplayName: 纳米净化
+		Tooltip:
+			'''
+			发射纳米激光弹幕
+			右键进行单发速射
+			'''
+	}
+
+	PlasmaRifleEcType: {
+		DisplayName: 等离子步枪
+		Tooltip:
+			'''
+			发射会爆炸的离子射线
+			右键快速发射离子束
+			"看着和等离子没关系"
+			'''
+	}
+
+	SHPCEcType: {
+		DisplayName: SHPC
+		Tooltip: "[GFB]"
+	}
+
+	WingmanEcType: {
+		DisplayName: 侧翼
+		Tooltip:
+			'''
+			发射集中的激光束
+			"这并没有什么用处"
+			'''
+	}
 }
 
 Projectiles: {
@@ -2395,7 +2500,7 @@ Projectiles: {
 	// TerrorBlasts.DisplayName: Terror Blasts
 	// SunlightBlades.DisplayName: Sunlight Blades
 	// RemakeTerrorBeam.DisplayName: Remake Terror Beam
-	// EntropicClaymoreHoldoutProj.DisplayName: Entropic Claymore Holdout Proj
+	// EntropicClaymoreHoldoutProj.DisplayName: Entropic Claymore
 	// StarnightBeams.DisplayName: Starnight Beams
 	// ElementalRay.DisplayName: Elemental Ray
 	// GodKillers.DisplayName: God Killers
@@ -2409,12 +2514,12 @@ Projectiles: {
 	// DragonsBreathHeldProj.DisplayName: Dragons Breath
 	// Cyclones.DisplayName: Cyclones
 	// DeadWave.DisplayName: Dead Wave
-	// WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica Projectile
+	// WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica
 	// CosmicFire.DisplayName: Cosmic Fire
 	// Trail.DisplayName: Trail
 	// StreamGouges.DisplayName: Stream Gouges
 	// GaleforceHeldProj.DisplayName: Galeforce
-	// ElementWhipProjectile.DisplayName: Element Whip Projectile
+	// ElementWhipProjectile.DisplayName: Element Whip
 	// ElementBallShivs.DisplayName: Element Ball Shivs
 	// GhostFires.DisplayName: Ghost Fires
 	// TheRelicLuxorMelee.DisplayName: The Relic Luxor Melee
@@ -2423,19 +2528,19 @@ Projectiles: {
 	// TheRelicLuxorRogue.DisplayName: The Relic Luxor Rogue
 	// TheRelicLuxorSummon.DisplayName: The Relic Luxor Summon
 	// BloodBall.DisplayName: Blood Ball
-	// AzureDragonRageProjectile.DisplayName: Azure Dragon Rage Projectile
-	// BleedingScourgeProjectile.DisplayName: Bleeding Scourge Projectile
-	// GhostFireWhipProjectile.DisplayName: Ghost Fire Whip Projectile
+	// AzureDragonRageProjectile.DisplayName: Azure Dragon Rage
+	// BleedingScourgeProjectile.DisplayName: Bleeding Scourge
+	// GhostFireWhipProjectile.DisplayName: Ghost Fire Whip
 	// BloodflareSouls.DisplayName: Bloodflare Souls
 	// FantasyArrow.DisplayName: Fantasy Arrow
 	// ExcelsusBomb.DisplayName: Excelsus Bomb
 	// LaserFountains.DisplayName: Laser Fountains
 	// GhastlyBlasts.DisplayName: Ghastly Blasts
 	// Ieaf.DisplayName: Ieaf
-	// AllhallowsGoldWhipProjectile.DisplayName: Allhallows Gold Whip Projectile
+	// AllhallowsGoldWhipProjectile.DisplayName: Allhallows Gold Whip
 	// ATrail.DisplayName: A Trail
 	// WTrail.DisplayName: W Trail
-	// DivineSourceBladeProjectile.DisplayName: Divine Source Blade Projectile
+	// DivineSourceBladeProjectile.DisplayName: Divine Source Blade
 	// BloodBlast.DisplayName: Blood Blast
 	// DivineSourceKnifelight.DisplayName: Divine Source Knifelight
 	// DivineSourceBeam.DisplayName: Divine Source Beam
@@ -2614,7 +2719,7 @@ Projectiles: {
 	// PetrifiedDiseaseHeldProj.DisplayName: Petrified Disease
 	// PetrifiedDiseaseAorrw.DisplayName: Petrified Disease Aorrw
 	// YharonOreProj.DisplayName: Yharon Ore Proj
-	// GoldenEagleHelProj.DisplayName: Golden Eagle Hel Proj
+	// GoldenEagleHelProj.DisplayName: Golden Eagle
 	// DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
 	// TheDaybreak3.DisplayName: The Daybreak3
 	// DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
@@ -2635,7 +2740,7 @@ Projectiles: {
 	// BoomstickHeldProj.DisplayName: Boomstick
 	// ShotgunHeldProj.DisplayName: Shotgun
 	// TacticalShotgunHeldProj.DisplayName: Tactical Shotgun
-	// DeepcoreGK2HeldProj.DisplayName: Deepcore G K2
+	// DeepcoreGK2HeldProj.DisplayName: Deepcore GK2
 	// DodusHandcannonHeldProj.DisplayName: Dodus Handcannon
 	// P90HeldProj.DisplayName: P90
 	// PearlGodHeldProj.DisplayName: Pearl God
@@ -2661,7 +2766,7 @@ Projectiles: {
 	// ClockworkAssaultRifleHeldProj.DisplayName: Clockwork Assault Rifle
 	// MidasPrimeHeldProj.DisplayName: Midas Prime
 	// NeedlerHeldProj.DisplayName: Needler
-	// PlagueTaintedSMGHeldProj.DisplayName: Plague Tainted S M G
+	// PlagueTaintedSMGHeldProj.DisplayName: Plague Tainted SMG
 	// PumplerHeldProj.DisplayName: Pumpler
 	// ScorpioHeldProj.DisplayName: Scorpio
 	// ScorpioOnSpan.DisplayName: Scorpio
@@ -2852,16 +2957,28 @@ Projectiles: {
 	// SnowblindnessHeldProj.DisplayName: Snowblindness
 	// SlingshotHeldProj.DisplayName: Slingshot
 	// PebbleBall.DisplayName: Pebble Ball
-	// CondemnationHeldProj.DisplayName: Condemnation Held Proj
+	// CondemnationHeldProj.DisplayName: Condemnation
 	// TheArrowPunishment.DisplayName: The Arrow Punishment
-	// BlightSpewerHeldProj.DisplayName: Blight Spewer Held Proj
-	// BloodBoilerHeldProj.DisplayName: Blood Boiler Held Proj
-	// ElementalEruptionHeldProj.DisplayName: Elemental Eruption Held Proj
-	// HavocsBreathHeldProj.DisplayName: Havocs Breath Held Proj
-	// PristineFuryHeldProj.DisplayName: Pristine Fury Held Proj
-	// ShadethrowerHeldProj.DisplayName: Shadethrower Held Proj
-	// TerraFlamebursterHeldProj.DisplayName: Terra Flameburster Held Proj
-	// LunarFlareBookHeldProj.DisplayName: Lunar Flare Book Held Proj
+	// BlightSpewerHeldProj.DisplayName: Blight Spewer
+	// BloodBoilerHeldProj.DisplayName: Blood Boiler
+	// ElementalEruptionHeldProj.DisplayName: Elemental Eruption
+	// HavocsBreathHeldProj.DisplayName: Havocs Breath
+	// PristineFuryHeldProj.DisplayName: Pristine Fury
+	// ShadethrowerHeldProj.DisplayName: Shadethrower
+	// TerraFlamebursterHeldProj.DisplayName: Terra Flameburster
+	// LunarFlareBookHeldProj.DisplayName: Lunar Flare Book
+	// AcidGunHeldProj.DisplayName: Acid Gun
+	// ApoctosisArrayHeldProj.DisplayName: Apoctosis Array
+	// CryophobiaHeldProj.DisplayName: Cryophobia
+	// EffervescenceHeldProj.DisplayName: Effervescence
+	// EidolicWailHeldProj.DisplayName: Eidolic Wail
+	// GenisisHeldProj.DisplayName: Genisis
+	// IonBlasterHeldProj.DisplayName: Ion Blaster
+	// LazharHeldProj.DisplayName: Lazhar
+	// NanoPurgeHeldProj.DisplayName: Nano Purge
+	// PlasmaRifleHeldProj.DisplayName: Plasma Rifle
+	// SHPCHeldProj.DisplayName: SHPC
+	// WingmanHeldProj.DisplayName: Wingman
 }
 
 Configs: {
@@ -3202,6 +3319,12 @@ TextContent: {
 		Murasama_No_legend_Content_2: 新兵，我认可你的能力，现在，让我们去斩碎那帮异形
 		Murasama_No_legend_Content_3: "[c/fff08c:随着旅途的遥远而变强]"
 		Murasama_No_legend_Content_4: "[c/00707d:传奇的光辉已经暗淡...]"
+		SHPC_No_legend_Content_1:
+			'''
+			发射会停留在空中并引发巨大爆炸的相位激光球
+			右键发射强大的能量束
+			'''
+		SHPC_No_legend_Content_2: "[c/fff08c:传奇武器归来！:)]"
 		RemakeItem_Remind_TextContent:
 			'''
 			【作者提醒】
@@ -3511,6 +3634,8 @@ TextContent: {
 		AmmoBox_Text: 已到达部署上限
 		AmmoBox_Text2: 正在部署
 		AmmoBox_Text3: 已部署
+		SupMUI_OneClick_Text1: 快捷放置材料
+		SupMUI_OneClick_Text2: 快捷拿取材料
 		Wap_BubbleGun_Text:
 			'''
 			喷出大量会爆炸的海洋泡泡
@@ -3627,7 +3752,7 @@ TextContent: {
 
 Biomes: {
 	TungstenBiome: {
-		// DisplayName: Tungsten Biome
-		// TownNPCDialogueName: the Tungsten Biome
+		DisplayName: 钨钢暴乱
+		TownNPCDialogueName: 钨钢生物群系
 	}
 }

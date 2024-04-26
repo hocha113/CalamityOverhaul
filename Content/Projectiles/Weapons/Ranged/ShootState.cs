@@ -8,6 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public int WeaponDamage;
         public float WeaponKnockback;
         public int UseAmmoItemType;
+        public bool HasAmmo;
         public EntitySource_ItemUse_WithAmmo Source;
     }
 }

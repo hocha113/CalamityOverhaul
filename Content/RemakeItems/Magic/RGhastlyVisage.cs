@@ -4,10 +4,7 @@ using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -18,10 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Magic.GhastlyVisage>();
         public override int ProtogenesisID => ModContent.ItemType<GhastlyVisageEcType>();
         public override string TargetToolTipItemName => "GhastlyVisageEcType";
-
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.damage = 69;
             item.DamageType = DamageClass.Magic;

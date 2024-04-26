@@ -10,20 +10,19 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
     {
         public override string Texture => CWRConstant.Item_Summon + "ElementWhip";
 
-        public override void SetDefaults()
-        {
+        public override void SetDefaults() {
             Item.DefaultToWhip(ModContent.ProjectileType<ElementWhipProjectile>(), 192, 2, 12, 30);
             Item.rare = ItemRarityID.Purple;
+            Item.useTurn = true;
+            Item.autoReuse = true;
         }
 
-        public override bool MeleePrefix()
-        {
+        public override bool MeleePrefix() {
             return true;
         }
 
-        public override void AddRecipes()
-        {
-            CreateRecipe()
+        public override void AddRecipes() {
+            _ = CreateRecipe()
                 .AddIngredient(ItemID.RainbowWhip)
                 .AddIngredient(ItemID.LunarBar, 5)
                 .AddIngredient<LifeAlloy>(5)

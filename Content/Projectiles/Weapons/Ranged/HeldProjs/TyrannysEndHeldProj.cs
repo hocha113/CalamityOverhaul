@@ -24,10 +24,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
             MustConsumeAmmunition = true;
-            EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 12;
-            GunPressure = 0.1f;
-            ControlForce = 0.05f;
+            GunPressure = 0.3f;
+            ControlForce = 0.02f;
             Recoil = 6;
             RangeOfStress = 25;
         }

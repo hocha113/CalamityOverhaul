@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = -6;
             HandFireDistance = 0;
             HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -12;
+            ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
             GunPressure = 0;
@@ -37,10 +37,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(-50, -13, -15);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
         public override void FiringShoot() {
             base.FiringShoot();
             Vector2 vr = ShootVelocity;
@@ -51,7 +47,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.NewProjectile(Source, GunShootPos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 vr.X += Main.rand.NextFloat(-1.5f, 1.5f);
                 vr.Y += Main.rand.NextFloat(-1.5f, 1.5f);
-                Projectile.NewProjectile(Source, GunShootPos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                int proj = Projectile.NewProjectile(Source, GunShootPos, vr, AmmoTypes, (int)(WeaponDamage * 0.7f), WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj].ArmorPenetration = 5;
             }
             for (int i = 0; i < 300; i++) {
                 Vector2 dustVel = (Projectile.rotation + Main.rand.NextFloat(-0.1f, 0.1f)).ToRotationVector2() * -Main.rand.Next(26, 117);
@@ -64,14 +61,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
                 Dust.NewDust(pos2, 5, 5, type, dustVel.X, dustVel.Y, 0, default, scale);
             }
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

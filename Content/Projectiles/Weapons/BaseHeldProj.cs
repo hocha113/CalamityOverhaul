@@ -9,13 +9,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
     internal abstract class BaseHeldProj : ModProjectile
     {
         /// <summary>
-        /// 一般情况下我们默认该弹幕的玩家作为弹幕主人，因此，弹幕的<see cref="Projectile.owner"/>属性需要正确设置
+        /// 一般情况下我们默认该弹幕的玩家作为弹幕主人，因此，弹幕的<see cref="Projectile.owner"/>属性需要被正确设置
         /// </summary>
         internal virtual Player Owner => Main.player[Projectile.owner];
-        /// <summary>
-        /// 来源物品，在弹幕被生成时赋值
-        /// </summary>
-        internal Item SpawnItem;
         /// <summary>
         /// 安全的获取一个重力倒转值
         /// </summary>
@@ -25,9 +21,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// </summary>
         internal virtual int DirSign => Owner.direction * SafeGravDir;
         /// <summary>
-        /// 不应该设置这个值，这个值用于在联机同步中使用，一般来讲，我们应该使用<see cref="ToMouse"/>
+        /// 这个值用于在联机同步中使用，一般来讲，应该使用<see cref="ToMouse"/>
         /// </summary>
-        protected Vector2 toMouseVecterDate;
+        Vector2 toMouseVecterDate;
         /// <summary>
         /// 获取玩家到鼠标的向量
         /// </summary>

@@ -59,16 +59,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             if (Projectile.numHits == 0) {
                 float randRot = Main.rand.NextFloat(MathHelper.TwoPi);
-                for (int i = 0; i < 6; i++) {
-                    Vector2 vr = (MathHelper.TwoPi / 6 * i + randRot).ToRotationVector2() * 15;
+                for (int i = 0; i < 5; i++) {
+                    Vector2 vr = (MathHelper.TwoPi / 5 * i + randRot).ToRotationVector2() * 15;
                     Projectile.NewProjectile(
-                        Projectile.parent(),
-                        target.Center,// + vr.UnitVector() * 164
-                        vr,
+                        Projectile.GetSource_FromThis(),
+                        target.Center, vr,
                         ModContent.ProjectileType<GodKillers>(),
-                        Projectile.damage / 2,
-                        0,
-                        Projectile.owner
+                        Projectile.damage / 3, 0, Projectile.owner
                         );
                 }
             }

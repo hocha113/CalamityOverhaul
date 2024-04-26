@@ -2240,37 +2240,167 @@ Items: {
 
 	BlightSpewerEcType: {
 		DisplayName: Blight Spewer
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires a cloud of plague nanomachines that adhere to surfaces. 
+			The nanomachines actively seek out nearby enemies to lock onto.
+			'''
 	}
 
 	BloodBoilerEcType: {
 		DisplayName: Blood Boiler
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fired forth two streams of lifeblood fire that will return to your side. 
+			Using gel as ammunition, this launch consumes life upon firing.
+			'''
 	}
 
 	ElementalEruptionEcType: {
 		DisplayName: Elemental Eruption
-		Tooltip: ""
+		Tooltip:
+			'''
+			Harness the power to unleash streams of vibrant colored flames and paired tracking bursts of elemental brilliance. 
+			Using gel as ammunition
+			'''
 	}
 
 	HavocsBreathEcType: {
 		DisplayName: Havocs Breath
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires a cone of high-temperature sulfur flames, 
+			Using gel as ammunition
+			'''
 	}
 
 	PristineFuryEcType: {
 		DisplayName: Pristine Fury
-		Tooltip: ""
+		Tooltip:
+			'''
+			Unleashes a fierce spiral of flames that explode into a column of fire. 
+			Additionally, right-clicking launches a burst of short-range radiant flames. 
+			Using gel as ammunition.
+			'''
 	}
 
 	ShadethrowerEcType: {
 		DisplayName: Shadethrower
-		Tooltip: ""
+		Tooltip:
+			'''
+			Emitting a shadowy cloud of psychic flux, causing enemies' minds to decay. 
+			Using gel as ammunition.
+			'''
 	}
 
 	TerraFlamebursterEcType: {
 		DisplayName: Terra Flameburster
-		Tooltip: ""
+		Tooltip:
+			'''
+			Harnessing energy to launch a beam of reactive flames along with paired tracking Terra fireballs. 
+			Using gel as ammunition.
+			'''
+	}
+
+	AcidGunEcType: {
+		DisplayName: Acid Gun
+		Tooltip: Spewed forth a cascade of acidic flow.
+	}
+
+	ApoctosisArrayEcType: {
+		DisplayName: Apoctosis Array
+		Tooltip:
+			'''
+			Fires an ion shockwave that accelerates and explodes upon impact. 
+			Its power increases with your mana level. 
+			Using Stardust Infusion reduces the magnitude of this boost.
+			'''
+	}
+
+	CryophobiaEcType: {
+		DisplayName: Cryophobia
+		Tooltip:
+			'''
+			Launches a chilling ice shockwave that repeatedly splits and explodes into fragments, causing 
+			"frostburn".
+			'''
+	}
+
+	EffervescenceEcType: {
+		DisplayName: Effervescence
+		Tooltip:
+			'''
+			Fires a long string of bubbles!
+			"BUBBLES!!!!!!"
+			'''
+	}
+
+	EidolicWailEcType: {
+		DisplayName: Eidolic Wail
+		Tooltip:
+			'''
+			Generates several echowaves at the cursor's location.
+			Echowaves will bounce off blocks upon impact.
+			If the point of generation is a solid block, they will instead emit from the gun's muzzle.
+			"Listen to the dragon's roar."
+			'''
+	}
+
+	GenisisEcType: {
+		DisplayName: Genisis
+		Tooltip: Launch a Y-shaped destructive energy beam and a cluster of lasers
+	}
+
+	IonBlasterEcType: {
+		DisplayName: Ion Blaster
+		Tooltip:
+			'''
+			Fires an ion shockwave that accelerates and explodes upon impact. 
+			Its power increases with your magic level. 
+			Using Stardust Infusion weakens this enhancement effect.
+			'''
+	}
+
+	LazharEcType: {
+		DisplayName: Lazhar
+		Tooltip:
+			'''
+			Emits highly volatile concentrated solar beams
+			The beam has a small probability of penetrating the target
+			'''
+	}
+
+	NanoPurgeEcType: {
+		DisplayName: Nano Purge
+		Tooltip:
+			'''
+			Launch a nanolaser barrage
+			Right-click for a single rapid fire
+			'''
+	}
+
+	PlasmaRifleEcType: {
+		DisplayName: Plasma Rifle
+		Tooltip:
+			'''
+			Fires an exploding ion beam.
+			Right-click rapidly to shoot ion bursts.
+			"Looks nothing like plasma."
+			'''
+	}
+
+	SHPCEcType: {
+		DisplayName: SHPC
+		Tooltip: "[GFB]"
+	}
+
+	WingmanEcType: {
+		DisplayName: Wingman
+		Tooltip:
+			'''
+			A focused laser beam is emitted
+			"It doesn't do any good."
+			'''
 	}
 }
 
@@ -2327,7 +2457,7 @@ Projectiles: {
 	TerrorBlasts.DisplayName: Terror Blasts
 	SunlightBlades.DisplayName: Sunlight Blades
 	RemakeTerrorBeam.DisplayName: Remake Terror Beam
-	EntropicClaymoreHoldoutProj.DisplayName: Entropic Claymore Holdout Proj
+	EntropicClaymoreHoldoutProj.DisplayName: Entropic Claymore
 	StarnightBeams.DisplayName: Starnight Beams
 	ElementalRay.DisplayName: Elemental Ray
 	GodKillers.DisplayName: God Killers
@@ -2341,12 +2471,12 @@ Projectiles: {
 	DragonsBreathHeldProj.DisplayName: Dragons Breath
 	Cyclones.DisplayName: Cyclones
 	DeadWave.DisplayName: Dead Wave
-	WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica Projectile
+	WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica
 	CosmicFire.DisplayName: Cosmic Fire
 	Trail.DisplayName: Trail
 	StreamGouges.DisplayName: Stream Gouges
 	GaleforceHeldProj.DisplayName: Galeforce
-	ElementWhipProjectile.DisplayName: Element Whip Projectile
+	ElementWhipProjectile.DisplayName: Element Whip
 	ElementBallShivs.DisplayName: Element Ball Shivs
 	GhostFires.DisplayName: Ghost Fires
 	TheRelicLuxorMelee.DisplayName: The Relic Luxor Melee
@@ -2355,19 +2485,19 @@ Projectiles: {
 	TheRelicLuxorRogue.DisplayName: The Relic Luxor Rogue
 	TheRelicLuxorSummon.DisplayName: The Relic Luxor Summon
 	BloodBall.DisplayName: Blood Ball
-	AzureDragonRageProjectile.DisplayName: Azure Dragon Rage Projectile
-	BleedingScourgeProjectile.DisplayName: Bleeding Scourge Projectile
-	GhostFireWhipProjectile.DisplayName: Ghost Fire Whip Projectile
+	AzureDragonRageProjectile.DisplayName: Azure Dragon Rage
+	BleedingScourgeProjectile.DisplayName: Bleeding Scourge
+	GhostFireWhipProjectile.DisplayName: Ghost Fire Whip
 	BloodflareSouls.DisplayName: Bloodflare Souls
 	FantasyArrow.DisplayName: Fantasy Arrow
 	ExcelsusBomb.DisplayName: Excelsus Bomb
 	LaserFountains.DisplayName: Laser Fountains
 	GhastlyBlasts.DisplayName: Ghastly Blasts
 	Ieaf.DisplayName: Ieaf
-	AllhallowsGoldWhipProjectile.DisplayName: Allhallows Gold Whip Projectile
+	AllhallowsGoldWhipProjectile.DisplayName: Allhallows Gold Whip
 	ATrail.DisplayName: A Trail
 	WTrail.DisplayName: W Trail
-	DivineSourceBladeProjectile.DisplayName: Divine Source Blade Projectile
+	DivineSourceBladeProjectile.DisplayName: Divine Source Blade
 	BloodBlast.DisplayName: Blood Blast
 	DivineSourceKnifelight.DisplayName: Divine Source Knifelight
 	DivineSourceBeam.DisplayName: Divine Source Beam
@@ -2546,7 +2676,7 @@ Projectiles: {
 	PetrifiedDiseaseHeldProj.DisplayName: Petrified Disease
 	PetrifiedDiseaseAorrw.DisplayName: Petrified Disease Aorrw
 	YharonOreProj.DisplayName: Yharon Ore Proj
-	GoldenEagleHelProj.DisplayName: Golden Eagle Hel Proj
+	GoldenEagleHelProj.DisplayName: Golden Eagle
 	DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
 	TheDaybreak3.DisplayName: The Daybreak3
 	DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
@@ -2567,7 +2697,7 @@ Projectiles: {
 	BoomstickHeldProj.DisplayName: Boomstick
 	ShotgunHeldProj.DisplayName: Shotgun
 	TacticalShotgunHeldProj.DisplayName: Tactical Shotgun
-	DeepcoreGK2HeldProj.DisplayName: Deepcore G K2
+	DeepcoreGK2HeldProj.DisplayName: Deepcore GK2
 	DodusHandcannonHeldProj.DisplayName: Dodus Handcannon
 	P90HeldProj.DisplayName: P90
 	PearlGodHeldProj.DisplayName: Pearl God
@@ -2593,7 +2723,7 @@ Projectiles: {
 	ClockworkAssaultRifleHeldProj.DisplayName: Clockwork Assault Rifle
 	MidasPrimeHeldProj.DisplayName: Midas Prime
 	NeedlerHeldProj.DisplayName: Needler
-	PlagueTaintedSMGHeldProj.DisplayName: Plague Tainted S M G
+	PlagueTaintedSMGHeldProj.DisplayName: Plague Tainted SMG
 	PumplerHeldProj.DisplayName: Pumpler
 	ScorpioHeldProj.DisplayName: Scorpio
 	ScorpioOnSpan.DisplayName: Scorpio
@@ -2784,16 +2914,28 @@ Projectiles: {
 	SnowblindnessHeldProj.DisplayName: Snowblindness
 	SlingshotHeldProj.DisplayName: Slingshot
 	PebbleBall.DisplayName: Pebble Ball
-	CondemnationHeldProj.DisplayName: Condemnation Held Proj
+	CondemnationHeldProj.DisplayName: Condemnation
 	TheArrowPunishment.DisplayName: The Arrow Punishment
-	BlightSpewerHeldProj.DisplayName: Blight Spewer Held Proj
-	BloodBoilerHeldProj.DisplayName: Blood Boiler Held Proj
-	ElementalEruptionHeldProj.DisplayName: Elemental Eruption Held Proj
-	HavocsBreathHeldProj.DisplayName: Havocs Breath Held Proj
-	PristineFuryHeldProj.DisplayName: Pristine Fury Held Proj
-	ShadethrowerHeldProj.DisplayName: Shadethrower Held Proj
-	TerraFlamebursterHeldProj.DisplayName: Terra Flameburster Held Proj
-	LunarFlareBookHeldProj.DisplayName: Lunar Flare Book Held Proj
+	BlightSpewerHeldProj.DisplayName: Blight Spewer
+	BloodBoilerHeldProj.DisplayName: Blood Boiler
+	ElementalEruptionHeldProj.DisplayName: Elemental Eruption
+	HavocsBreathHeldProj.DisplayName: Havocs Breath
+	PristineFuryHeldProj.DisplayName: Pristine Fury
+	ShadethrowerHeldProj.DisplayName: Shadethrower
+	TerraFlamebursterHeldProj.DisplayName: Terra Flameburster
+	LunarFlareBookHeldProj.DisplayName: Lunar Flare Book
+	AcidGunHeldProj.DisplayName: Acid Gun
+	ApoctosisArrayHeldProj.DisplayName: Apoctosis Array
+	CryophobiaHeldProj.DisplayName: Cryophobia
+	EffervescenceHeldProj.DisplayName: Effervescence
+	EidolicWailHeldProj.DisplayName: Eidolic Wail
+	GenisisHeldProj.DisplayName: Genisis
+	IonBlasterHeldProj.DisplayName: Ion Blaster
+	LazharHeldProj.DisplayName: Lazhar
+	NanoPurgeHeldProj.DisplayName: Nano Purge
+	PlasmaRifleHeldProj.DisplayName: Plasma Rifle
+	SHPCHeldProj.DisplayName: SHPC
+	WingmanHeldProj.DisplayName: Wingman
 }
 
 Configs: {
@@ -3151,6 +3293,12 @@ TextContent: {
 		Murasama_No_legend_Content_2: Recruit, I approve of your abilities. Now, let's go chop up the aliens
 		Murasama_No_legend_Content_3: "[c/fff08c:Stronger with the distance of the journey]"
 		Murasama_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
+		SHPC_No_legend_Content_1:
+			'''
+			Launch a phase laser ball that stays in the air and causes a huge explosion
+			Right click to fire a powerful energy beam
+			'''
+		SHPC_No_legend_Content_2: "[c/fff08c:Return of the legendary weapon! :)]"
 		RemakeItem_Remind_TextContent:
 			'''
 			【From the Author】
@@ -3267,7 +3415,7 @@ TextContent: {
 		Wap_Musket_Text: '''"The militia said, 'I must be ready.'"'''
 		Wap_TheUndertaker_Text: '''"When the undertakers find their clients uncooperative, they often use this this to calm them down"'''
 		Wap_RedRyder_Text: “Don't shoot your own eyeballs out！”
-		Wap_FlareGun_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_FlareGun_Text
+		Wap_FlareGun_Text: Not to be confused with a starting gun!
 		Wap_PhoenixBlaster_Text: '''"Hellstone weapons can't control fire? In fact, the bullet cannot withstand the heat."'''
 		Wap_Sandgun_Text:
 			'''
@@ -3456,6 +3604,8 @@ TextContent: {
 		AmmoBox_Text: The deployment upper limit has been reached
 		AmmoBox_Text2: Being deployed
 		AmmoBox_Text3: " Deployed"
+		SupMUI_OneClick_Text1: Quick placement material
+		SupMUI_OneClick_Text2: Quick access to material
 		Wap_BubbleGun_Text:
 			'''
 			Exploding ocean bubbles

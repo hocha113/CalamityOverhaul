@@ -1095,6 +1095,8 @@ namespace CalamityOverhaul
 
         #region GameUtils
 
+        public static Item GetItem(this Player player) => Main.mouseItem.IsAir ? player.inventory[player.selectedItem] : Main.mouseItem;
+
         public static void SafeLoadItem(int id) {
             if (id > 0 && id < TextureAssets.Item.Length && !Main.dedServ) {
                 Main.instance.LoadItem(id);
@@ -1163,12 +1165,13 @@ namespace CalamityOverhaul
                 shootState.AmmoTypes = item.shoot;
                 shootState.ScaleFactor = item.shootSpeed;
                 shootState.UseAmmoItemType = ItemID.None;
+                shootState.HasAmmo = false;
                 if (shootState.AmmoTypes == 0 || shootState.AmmoTypes == 10) {
                     shootState.AmmoTypes = ProjectileID.Bullet;
                 }
                 return shootState;
             }
-            _ = player.PickAmmo(item, out shootState.AmmoTypes, out shootState.ScaleFactor
+            shootState.HasAmmo = player.PickAmmo(item, out shootState.AmmoTypes, out shootState.ScaleFactor
                 , out shootState.WeaponDamage, out shootState.WeaponKnockback, out shootState.UseAmmoItemType, true);
             if (shootKey == "Null") {
                 shootKey = null;

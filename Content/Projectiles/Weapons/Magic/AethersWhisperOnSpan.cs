@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Particles;
-using CalamityOverhaul.Content.Items.Magic;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;

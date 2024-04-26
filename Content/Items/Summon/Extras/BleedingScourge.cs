@@ -10,20 +10,19 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
     {
         public override string Texture => CWRConstant.Item_Summon + "BleedingScourge";
 
-        public override void SetDefaults()
-        {
-            Item.DefaultToWhip(ModContent.ProjectileType<BleedingScourgeProjectile>(), 591, 3, 13, 40);
+        public override void SetDefaults() {
+            Item.DefaultToWhip(ModContent.ProjectileType<BleedingScourgeProjectile>(), 191, 3, 13, 40);
             Item.rare = ItemRarityID.Purple;
+            Item.useTurn = true;
+            Item.autoReuse = true;
         }
 
-        public override bool MeleePrefix()
-        {
+        public override bool MeleePrefix() {
             return true;
         }
 
-        public override void AddRecipes()
-        {
-            CreateRecipe()
+        public override void AddRecipes() {
+            _ = CreateRecipe()
                 .AddIngredient(ModContent.ItemType<ElementWhip>())
                 .AddIngredient(ModContent.ItemType<BloodstoneCore>(), 15)
                 .AddIngredient(ModContent.ItemType<RuinousSoul>(), 5)

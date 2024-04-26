@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.width = 100;
             Item.height = 100;
-            Item.damage = 440;
+            Item.damage = 400;
             Item.DamageType = DamageClass.Melee;
             Item.noMelee = true;
             Item.useTurn = true;

@@ -11,6 +11,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
@@ -117,10 +118,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
                 Projectile.rotation = (float)Math.Pow(SpinCompletion, 0.82) * MathF.PI * SpinDirection * 4f + InitialDirection - MathF.PI / 4f + MathF.PI;
                 DeterminePlayerVariables();
-                if (Projectile.IsOwnedByLocalPlayer() && Time >= 69 && Time % 9 == 8f) {
+                if (Projectile.IsOwnedByLocalPlayer() && Time >= 69 && Time % 9 == 8f && Owner.GetItem().type != ItemID.None) {
                     Vector2 vector = Main.MouseWorld + Main.rand.NextVector2Unit() * Main.rand.NextFloat(50f, 140f);
                     Vector2 velocity = vector.To(Main.MouseWorld).UnitVector();
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), vector, velocity, ModContent.ProjectileType<StreamGougePortal>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                    Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), vector, velocity, ModContent.ProjectileType<StreamGougePortal>()
+                        , (int)(Owner.GetWeaponDamage(Owner.GetItem()) * 1.1f), Projectile.knockBack, Projectile.owner);
+                    proj.ArmorPenetration = 10;
                 }
 
                 Time++;

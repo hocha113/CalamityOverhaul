@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         {
             Item.height = 154;
             Item.width = 154;
-            Item.damage = 385;
+            Item.damage = 455;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = Item.useTime = 15;
             Item.scale = 1;
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.shootSpeed = 17f;
         }
 
-        public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 71;
+        public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 12;
 
         public override void UseAnimation(Player player)
         {

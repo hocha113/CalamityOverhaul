@@ -17,10 +17,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Magic.FatesReveal>();
         public override int ProtogenesisID => ModContent.ItemType<FatesRevealEcType>();
         public override string TargetToolTipItemName => "FatesRevealEcType";
-
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.damage = 56;
             item.DamageType = DamageClass.Magic;

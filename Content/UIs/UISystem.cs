@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.UIs
                 new RecipeErrorFullUI().Load();
                 new InItemDrawRecipe().Load();
                 new MouseTextContactPanel().Load();
+                new OneClickUI().Load();
             }
             new ResetItemReminderUI().Load();
             new OverhaulTheBibleUI().Load();
@@ -81,11 +82,13 @@ namespace CalamityOverhaul.Content.UIs
                         RecipeUI.Instance.Update(Main.gameTimeCache);
                         DragButton.Instance.Update(Main.gameTimeCache);
                         RecipeErrorFullUI.Instance.Update(Main.gameTimeCache);
+                        OneClickUI.Instance.Update(Main.gameTimeCache);
                         //绘制更新将放置在逻辑更新之后
                         SupertableUI.Instance.Draw(Main.spriteBatch);
                         RecipeUI.Instance.Draw(Main.spriteBatch);
                         DragButton.Instance.Draw(Main.spriteBatch);
                         RecipeErrorFullUI.Instance.Draw(Main.spriteBatch);
+                        OneClickUI.Instance.Draw(Main.spriteBatch);
                     }  
                     return true;
                 }, InterfaceScaleType.UI));

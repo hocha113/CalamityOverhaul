@@ -13,15 +13,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Seadragon>();
         public override int targetCWRItem => ModContent.ItemType<SeadragonEcType>();
         public override void SetRangedProperty() {
-            ControlForce = 0.06f;
-            GunPressure = 0.2f;
-            Recoil = 1.2f;
+            ControlForce = 0;
+            GunPressure = 0;
+            Recoil = 0.8f;
         }
         public override void FiringIncident() {
             base.FiringIncident();
         }
 
         public override void FiringShoot() {
+            OffsetPos += ShootVelocity.UnitVector() * -5;
             Vector2 gundir = Projectile.rotation.ToRotationVector2();
 
             Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
@@ -32,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3
                 , ShootVelocity.RotatedByRandom(MathHelper.ToRadians(5f)) * Main.rand.NextFloat(1.45f, 1.65f)
                 , ModContent.ProjectileType<ArcherfishRing>()
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                , WeaponDamage / 2, WeaponKnockback, Owner.whoAmI);
 
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();

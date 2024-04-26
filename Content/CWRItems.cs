@@ -254,11 +254,7 @@ namespace CalamityOverhaul.Content
         public override void HoldItem(Item item, Player player) {
             if (heldProjType > 0) {
                 if (player.ownedProjectileCounts[heldProjType] == 0 && Main.myPlayer == player.whoAmI) {
-                    Projectile heldProj = Projectile.NewProjectileDirect(player.parent(), player.Center, Vector2.Zero, heldProjType, item.damage, item.knockBack, player.whoAmI);
-                    BaseHeldProj baseHeldProj = heldProj.ModProjectile as BaseHeldProj;
-                    if (baseHeldProj != null) {
-                        baseHeldProj.SpawnItem = item;
-                    }
+                    Projectile.NewProjectileDirect(player.parent(), player.Center, Vector2.Zero, heldProjType, item.damage, item.knockBack, player.whoAmI);
                 }
                 if (CWRIDs.ItemToBaseRanged.TryGetValue(item.type, out BaseHeldRanged ranged)) {
                     bool lDown = player.PressKey();
@@ -469,9 +465,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y) {
-            if (CWRServerConfig.Instance.AddExtrasContent) {
+            if (CWRServerConfig.Instance.AddExtrasContent && InItemDrawRecipe.Instance != null && SupertableUI.Instance != null) {
                 int offsetX = SupertableUI.Instance.Active ? 0 : 600;
-                if (OmigaSnyContent != null && InItemDrawRecipe.Instance != null && SupertableUI.Instance != null) {
+                if (OmigaSnyContent != null && !SupertableUI.Instance.onMainP) {
                     MouseTextContactPanel.Instance.UpdateSets();
                     MouseTextContactPanel.Instance.Draw(Main.spriteBatch);
                     InItemDrawRecipe.Instance.Draw(Main.spriteBatch, new Vector2(offsetX + 100, 100), OmigaSnyContent);

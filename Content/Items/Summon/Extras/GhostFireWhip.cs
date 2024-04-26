@@ -9,14 +9,14 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
     {
         public override string Texture => CWRConstant.Item_Summon + "GhostFireWhip";
 
-        public override void SetDefaults()
-        {
-            Item.DefaultToWhip(ModContent.ProjectileType<GhostFireWhipProjectile>(), 522, 1, 12, 30);
+        public override void SetDefaults() {
+            Item.DefaultToWhip(ModContent.ProjectileType<GhostFireWhipProjectile>(), 220, 1, 12, 30);
             Item.rare = ItemRarityID.Purple;
+            Item.useTurn = true;
+            Item.autoReuse = true;
         }
 
-        public override bool MeleePrefix()
-        {
+        public override bool MeleePrefix() {
             return true;
         }
     }

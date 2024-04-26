@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -24,7 +25,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetDefaults(Item item) {
             item.damage = 110;
             item.knockBack = 2f;
-            item.useAnimation = item.useTime = 15;
+            item.useAnimation = item.useTime = 20;
             item.DamageType = DamageClass.Melee;
             item.useTurn = true;
             item.autoReuse = true;
@@ -36,7 +37,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.UseSound = SoundID.Item1;
             item.value = CalamityGlobalItem.Rarity8BuyPrice;
             item.rare = ItemRarityID.Yellow;
-        } 
+        }
+
+        public override void HoldItem(Item item, Player player) {
+        }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             player.AddBuff(BuffID.Wet, 180);
@@ -47,10 +51,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void ModifyShootStats(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
             if (player.altFunctionUse == 2) {
+                item.useAnimation = item.useTime = 20;
                 damage = (int)(player.GetTotalDamage(DamageClass.Melee).ApplyTo(item.OriginalDamage) * 0.2f);
                 type = ModContent.ProjectileType<Razorwind>();
             }
             else {
+                item.useAnimation = item.useTime = 15;
                 type = 0;
             }
         }
@@ -63,22 +69,22 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             modifiers.CritDamage *= 0.5f;
         }
 
-        public override void OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) {
+        public override bool? On_OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) {
+            SoundEngine.PlaySound(SoundID.Item96, target.Center);
             Vector2 speed = CWRUtils.RandomBooleanValue(2, 1, true) ? new Vector2(16, 0) : new Vector2(-16, 0);
             if (Main.projectile.Count(n => n.active && n.type == ModContent.ProjectileType<SeaBlueBrinySpout>() && n.ai[1] == 1) <= 2) {
                 int proj = Projectile.NewProjectile(CWRUtils.parent(player), target.Center, speed, ModContent.ProjectileType<SeaBlueBrinySpout>(), item.damage, item.knockBack, player.whoAmI);
                 Main.projectile[proj].timeLeft = 60;
                 Main.projectile[proj].localAI[1] = 30;
             }
+            return false;
         }
 
         public override bool? UseItem(Item item, Player player) {
             if (player.altFunctionUse == 2) {
-                item.useAnimation = item.useTime = 25;
                 item.noMelee = true;
             }
             else {
-                item.useAnimation = item.useTime = 15;
                 item.noMelee = false;
             }
             return null;

@@ -110,6 +110,13 @@ namespace CalamityOverhaul.Content.Tiles
             if (SupertableUI.Instance.Active && !Main.playerInventory) {//如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
                 Main.playerInventory = true;
             }
+            Tile t = Main.tile[i, j];
+            int left = i - t.TileFrameX % (Width * SheetSquare) / SheetSquare;
+            int top = j - t.TileFrameY % (Height * SheetSquare) / SheetSquare;
+            TETram te = CalamityUtils.FindTileEntity<TETram>(i, j, Width, Height, SheetSquare);
+            if (te != null) {
+                Main.LocalPlayer.CWR().TETramContrType = te.ID;
+            }
             SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });
             Recipe.FindRecipes();
             return true;

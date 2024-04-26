@@ -6,7 +6,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Magic
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 {
     internal abstract class BaseBloomOnSpan : ModProjectile
     {
@@ -18,9 +18,12 @@ namespace CalamityOverhaul.Content.Items.Magic
         public float norlLeng;
         public float MaxCharge = 90f;
         public Vector2 OffsetPos = Vector2.Zero;
-        public virtual float ChargeProgress {
-            get {
-                if (ChargeValue >  MaxCharge) {
+        public virtual float ChargeProgress
+        {
+            get
+            {
+                if (ChargeValue > MaxCharge)
+                {
                     ChargeValue = MaxCharge;
                 }
                 return ChargeValue / MaxCharge;
@@ -31,7 +34,8 @@ namespace CalamityOverhaul.Content.Items.Magic
         protected Color color2 = Color.White;
         protected bool rightControl;
 
-        public override void SetDefaults() {
+        public override void SetDefaults()
+        {
             Projectile.width = 14;
             Projectile.height = 14;
             Projectile.friendly = true;
@@ -44,7 +48,8 @@ namespace CalamityOverhaul.Content.Items.Magic
             Projectile.timeLeft = (int)MaxCharge;
         }
 
-        public virtual void SetBloom() {
+        public virtual void SetBloom()
+        {
 
         }
 
@@ -54,12 +59,15 @@ namespace CalamityOverhaul.Content.Items.Magic
         /// 需要使用弹幕的AI[1]作为跟随弹幕的索引
         /// </summary>
         /// <param name="projectile"></param>
-        public void FlowerAI(Projectile projectile) {
+        public void FlowerAI(Projectile projectile)
+        {
             Projectile owner = null;
-            if (projectile.ai[1] >= 0 && projectile.ai[1] < Main.maxProjectiles) {
+            if (projectile.ai[1] >= 0 && projectile.ai[1] < Main.maxProjectiles)
+            {
                 owner = Main.projectile[(int)projectile.ai[1]];
             }
-            if (owner == null) {
+            if (owner == null)
+            {
                 projectile.Kill();
                 return;
             }
@@ -69,41 +77,51 @@ namespace CalamityOverhaul.Content.Items.Magic
             projectile.rotation = owner.rotation;
         }
 
-        public sealed override void AI() {
+        public sealed override void AI()
+        {
             FlowerAI(Projectile);
-            if (Owner.PressKey(!rightControl)) {
+            if (Owner.PressKey(!rightControl))
+            {
                 ChargeValue++;
-                if (++ChargeValue >= MaxCharge) {
+                if (++ChargeValue >= MaxCharge)
+                {
                     onFire = true;
                 }
                 SpanGenericBloom();
-                if (onFire && Projectile.IsOwnedByLocalPlayer()) {
+                if (onFire && Projectile.IsOwnedByLocalPlayer())
+                {
                     SpanProjFunc((int)ChargeValue);
                 }
             }
-            else {
+            else
+            {
                 Projectile.Kill();
             }
-            
+
         }
 
-        public virtual void SpanGenericBloom() {
+        public virtual void SpanGenericBloom()
+        {
             Particle orb = new GenericBloom(Projectile.Center, Projectile.velocity, color1, ChargeProgress * BloomSize, 2, false);
             GeneralParticleHandler.SpawnParticle(orb);
             Particle orb2 = new GenericBloom(Projectile.Center, Projectile.velocity, color2, ChargeProgress * BloomSize, 2, false);
             GeneralParticleHandler.SpawnParticle(orb2);
         }
 
-        public virtual void SpanProjFunc(int time) {
+        public virtual void SpanProjFunc(int time)
+        {
 
         }
 
-        public virtual void SpanProjFuncInKill() {
+        public virtual void SpanProjFuncInKill()
+        {
             SoundEngine.PlaySound(SoundID.Item96, Projectile.Center);
         }
 
-        public sealed override void OnKill(int timeLeft) {
-            if (Projectile.IsOwnedByLocalPlayer() && onFire) {
+        public sealed override void OnKill(int timeLeft)
+        {
+            if (Projectile.IsOwnedByLocalPlayer() && onFire)
+            {
                 SpanProjFuncInKill();
             }
         }

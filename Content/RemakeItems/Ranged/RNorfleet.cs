@@ -12,6 +12,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<Norfleet>();
         public override int ProtogenesisID => ModContent.ItemType<NorfleetEcType>();
         public override string TargetToolTipItemName => "NorfleetEcType";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<NorfleetHeldProj>(8);
+        public override void SetDefaults(Item item) {
+            item.damage = 330;
+            item.SetCartridgeGun<NorfleetHeldProj>(8);
+        }
     }
 }

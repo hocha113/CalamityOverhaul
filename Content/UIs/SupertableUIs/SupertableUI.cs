@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.UIs.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -200,7 +201,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                         if (items[inCoordIndex] == null) {
                             items[inCoordIndex] = new Item();
                         }
-                        if (CWRKeySystem.TOM_QuickFetch.Current) {
+                        KeyboardState state = Keyboard.GetState();
+                        if (state.IsKeyDown(Keys.LeftShift) || state.IsKeyDown(Keys.RightShift)) {
                             GatheringItem2(inCoordIndex, ref Main.mouseItem);
                         }
                         else {
@@ -225,17 +227,17 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     }
                 }
 
-                if (CWRKeySystem.TOM_OneClickP.JustPressed) {
-                    PlayGrabSound();
-                    OneClickPFunc();
-                    OutItem();
-                }
+                //if (CWRKeySystem.TOM_OneClickP.JustPressed) {
+                //    PlayGrabSound();
+                //    OneClickPFunc();
+                //    OutItem();
+                //}
 
-                if (CWRKeySystem.TOM_GlobalRecall.JustPressed) {
-                    PlayGrabSound();
-                    TakeAllItem();
-                    OutItem();
-                }
+                //if (CWRKeySystem.TOM_GlobalRecall.JustPressed) {
+                //    PlayGrabSound();
+                //    TakeAllItem();
+                //    OutItem();
+                //}
             }
 
             if (onInputP) {
@@ -396,7 +398,17 @@ End:;
         /// </summary>
         public void OneClickPFunc() {
             if (previewItems != null && previewItems?.Length == items.Length) {
-                TakeAllItem();
+                for (int i = 0; i < items.Length; i++) {
+                    Item preItem2 = items[i];
+                    if (preItem2 == null) {
+                        preItem2 = new Item();
+                    }
+                    if (preItem2.type != ItemID.None) {
+                        TakeAllItem();
+                        return;
+                    }
+                }
+                
                 for (int i = 0; i < previewItems.Length; i++) {
                     Item preItem = previewItems[i];
                     //此处加上对玩家鼠标上的物品的检测和放置

@@ -211,8 +211,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                     string newText = CWRLocText.GetTextValue("CWRGun_Scope_Text").Replace("[Scope]", CWRKeySystem.ADS_Key.TooltipHotkeyString());
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Scope", newText));
                 }
-                string newText3 = CWRLocText.GetTextValue("CWRGun_Recoil_Text").Replace("[Recoil]", CWRLocText.GetTextValue(gun.GetLckRecoilKey()));
-                tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Recoil", newText3));
+                if (CWRServerConfig.Instance.ActivateGunRecoil) {
+                    string newText3 = CWRLocText.GetTextValue("CWRGun_Recoil_Text").Replace("[Recoil]", CWRLocText.GetTextValue(gun.GetLckRecoilKey()));
+                    tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Recoil", newText3));
+                }
 
                 if (!inRItemIndsDict) {
                     List<TooltipLine> newTooltips = new(tooltips);

@@ -36,7 +36,9 @@ namespace CalamityOverhaul.Content.UIs
         
         public override void Load() {
             Instance = this;
-            icon = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Events/TungstenRiotIcon");
+            if (!Main.dedServ) {
+                icon = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Events/TungstenRiotIcon");
+            }
         }
 
         public override void Update(GameTime gameTime) {

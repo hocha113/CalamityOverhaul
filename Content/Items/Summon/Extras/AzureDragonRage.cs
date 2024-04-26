@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
 using Terraria.ID;
@@ -11,20 +10,19 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
     {
         public override string Texture => CWRConstant.Item_Summon + "AzureDragonRage";
 
-        public override void SetDefaults()
-        {
-            Item.DefaultToWhip(ModContent.ProjectileType<AzureDragonRageProjectile>(), 272, 2.5f, 13, 35);
+        public override void SetDefaults() {
+            Item.DefaultToWhip(ModContent.ProjectileType<AzureDragonRageProjectile>(), 172, 2.5f, 13, 35);
             Item.rare = ItemRarityID.Purple;
+            Item.useTurn = true;
+            Item.autoReuse = true;
         }
 
-        public override bool MeleePrefix()
-        {
+        public override bool MeleePrefix() {
             return true;
         }
 
-        public override void AddRecipes()
-        {
-            CreateRecipe()
+        public override void AddRecipes() {
+            _ = CreateRecipe()
                 .AddIngredient(ModContent.ItemType<ElementWhip>())
                 .AddIngredient(ModContent.ItemType<UelibloomBar>(), 5)
                 .AddTile(TileID.LunarCraftingStation)

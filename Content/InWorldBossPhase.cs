@@ -40,6 +40,207 @@ namespace CalamityOverhaul.Content
 
         public bool level13 => Downed31.Invoke() || Downed32.Invoke();
 
+        /// <summary>
+        /// 史莱姆王
+        /// </summary>
+        public static readonly Func<bool> DownedV0 = () => NPC.downedSlimeKing;
+        /// <summary>
+        /// 克苏鲁之眼
+        /// </summary>
+        public static readonly Func<bool> DownedV1 = () => NPC.downedBoss1;
+        /// <summary>
+        /// 邪恶Boss
+        /// </summary>
+        public static readonly Func<bool> DownedV2 = () => NPC.downedBoss2;
+        /// <summary>
+        /// 蜂后
+        /// </summary>
+        public static readonly Func<bool> DownedV3 = () => NPC.downedQueenBee;
+        /// <summary>
+        /// 骷髅王
+        /// </summary>
+        public static readonly Func<bool> DownedV4 = () => NPC.downedBoss3;
+        /// <summary>
+        /// 任意机械Boss
+        /// </summary>
+        public static readonly Func<bool> DownedV5 = () => NPC.downedMechBoss1 || NPC.downedMechBoss2 || NPC.downedMechBoss3;
+        /// <summary>
+        /// 所有机械Boss
+        /// </summary>
+        public static readonly Func<bool> DownedV6 = () => NPC.downedMechBossAny;
+        /// <summary>
+        /// 世纪之花
+        /// </summary>
+        public static readonly Func<bool> VDownedV7 = () => NPC.downedPlantBoss;
+        /// <summary>
+        /// 南瓜王
+        /// </summary>
+        public static readonly Func<bool> VDownedV8 = () => NPC.downedHalloweenKing;
+        /// <summary>
+        /// 冰霜女王
+        /// </summary>
+        public static readonly Func<bool> VDownedV9 = () => NPC.downedChristmasIceQueen;
+        /// <summary>
+        /// 石巨人
+        /// </summary>
+        public static readonly Func<bool> DownedV7 = () => NPC.downedGolemBoss;
+        /// <summary>
+        /// 邪教徒
+        /// </summary>
+        public static readonly Func<bool> DownedV8 = () => NPC.downedAncientCultist;
+        /// <summary>
+        /// 塔1
+        /// </summary>
+        public static readonly Func<bool> VDownedV10 = () => NPC.downedTowerSolar;
+        /// <summary>
+        /// 塔2
+        /// </summary>
+        public static readonly Func<bool> VDownedV11 = () => NPC.downedTowerVortex;
+        /// <summary>
+        /// 塔3
+        /// </summary>
+        public static readonly Func<bool> VDownedV12 = () => NPC.downedTowerNebula;
+        /// <summary>
+        /// 塔4
+        /// </summary>
+        public static readonly Func<bool> VDownedV13 = () => NPC.downedDeerclops;
+        /// <summary>
+        /// 月球领主
+        /// </summary>
+        public static readonly Func<bool> VDownedV16 = () => NPC.downedMoonlord;
+        /// <summary>
+        /// 荒漠灾虫
+        /// </summary>
+        public static readonly Func<bool> Downed0 = () => DownedBossSystem.downedDesertScourge;
+        /// <summary>
+        /// 巨像蛤
+        /// </summary>
+        public static readonly Func<bool> Downed1 = () => DownedBossSystem.downedCLAM;
+        /// <summary>
+        /// 蘑菇蟹
+        /// </summary>
+        public static readonly Func<bool> Downed2 = () => DownedBossSystem.downedCrabulon;
+        /// <summary>
+        /// 腐巢意志
+        /// </summary>
+        public static readonly Func<bool> Downed3 = () => DownedBossSystem.downedHiveMind;
+        /// <summary>
+        /// 血肉宿主
+        /// </summary>
+        public static readonly Func<bool> Downed4 = () => DownedBossSystem.downedPerforator;
+        /// <summary>
+        /// 史莱姆之神
+        /// </summary>
+        public static readonly Func<bool> Downed5 = () => DownedBossSystem.downedSlimeGod;
+        /// <summary>
+        /// 极地冰灵
+        /// </summary>
+        public static readonly Func<bool> Downed6 = () => DownedBossSystem.downedCryogen;
+        /// <summary>
+        /// 硫磺火元素
+        /// </summary>
+        public static readonly Func<bool> Downed7 = () => DownedBossSystem.downedBrimstoneElemental;
+        /// <summary>
+        /// 渊海灾虫
+        /// </summary>
+        public static readonly Func<bool> Downed8 = () => DownedBossSystem.downedAquaticScourge;
+        /// <summary>
+        /// 辐射之主
+        /// </summary>
+        public static readonly Func<bool> Downed9 = () => DownedBossSystem.downedCragmawMire;
+        /// <summary>
+        /// 灾厄之影
+        /// </summary>
+        public static readonly Func<bool> Downed10 = () => DownedBossSystem.downedCalamitasClone;
+        /// <summary>
+        /// 沙漠巨鲨
+        /// </summary>
+        public static readonly Func<bool> Downed11 = () => DownedBossSystem.downedGSS;
+        /// <summary>
+        /// 利维坦
+        /// </summary>
+        public static readonly Func<bool> Downed12 = () => DownedBossSystem.downedLeviathan;
+        /// <summary>
+        /// 白金星舰
+        /// </summary>
+        public static readonly Func<bool> Downed13 = () => DownedBossSystem.downedAstrumAureus;
+        /// <summary>
+        /// 瘟疫使者
+        /// </summary>
+        public static readonly Func<bool> Downed14 = () => DownedBossSystem.downedPlaguebringer;
+        /// <summary>
+        /// 毁灭魔像
+        /// </summary>
+        public static readonly Func<bool> Downed15 = () => DownedBossSystem.downedRavager;
+        /// <summary>
+        /// 星神游龙
+        /// </summary>
+        public static readonly Func<bool> Downed16 = () => DownedBossSystem.downedAstrumDeus;
+        /// <summary>
+        /// 亵渎使徒
+        /// </summary>
+        public static readonly Func<bool> Downed17 = () => DownedBossSystem.downedGuardians;
+        /// <summary>
+        /// 痴愚金龙
+        /// </summary>
+        public static readonly Func<bool> Downed18 = () => DownedBossSystem.downedDragonfolly;
+        /// <summary>
+        /// 亵渎天神
+        /// </summary>
+        public static readonly Func<bool> Downed19 = () => DownedBossSystem.downedProvidence;
+        /// <summary>
+        /// 无尽虚空
+        /// </summary>
+        public static readonly Func<bool> Downed20 = () => DownedBossSystem.downedCeaselessVoid;
+        /// <summary>
+        /// 风暴吞噬者
+        /// </summary>
+        public static readonly Func<bool> Downed21 = () => DownedBossSystem.downedStormWeaver;
+        /// <summary>
+        /// 席格纳斯
+        /// </summary>
+        public static readonly Func<bool> Downed22 = () => DownedBossSystem.downedSignus;
+        /// <summary>
+        /// 噬魂幽花
+        /// </summary>
+        public static readonly Func<bool> Downed23 = () => DownedBossSystem.downedPolterghast;
+        /// <summary>
+        /// 酸雨二
+        /// </summary>
+        public static readonly Func<bool> Downed24 = () => DownedBossSystem.downedMauler;
+        /// <summary>
+        /// 生化恐惧
+        /// </summary>
+        public static readonly Func<bool> Downed25 = () => DownedBossSystem.downedNuclearTerror;
+        /// <summary>
+        /// 老核弹
+        /// </summary>
+        public static readonly Func<bool> Downed26 = () => DownedBossSystem.downedBoomerDuke;
+        /// <summary>
+        /// 神明吞噬者
+        /// </summary>
+        public static readonly Func<bool> Downed27 = () => DownedBossSystem.downedDoG;
+        /// <summary>
+        /// 丛林龙
+        /// </summary>
+        public static readonly Func<bool> Downed28 = () => DownedBossSystem.downedYharon;
+        /// <summary>
+        /// 星流巨械
+        /// </summary>
+        public static readonly Func<bool> Downed29 = () => DownedBossSystem.downedExoMechs;
+        /// <summary>
+        /// 至尊灾厄
+        /// </summary>
+        public static readonly Func<bool> Downed30 = () => DownedBossSystem.downedCalamitas;
+        /// <summary>
+        /// 始源妖龙
+        /// </summary>
+        public static readonly Func<bool> Downed31 = () => DownedBossSystem.downedPrimordialWyrm;
+        /// <summary>
+        /// 终焉之战
+        /// </summary>
+        public static readonly Func<bool> Downed32 = () => DownedBossSystem.downedBossRush;
+
         public int Halibut_Level() {
             int level = 0;
 
@@ -257,206 +458,5 @@ namespace CalamityOverhaul.Content
 
             return level;
         }
-
-        /// <summary>
-        /// 史莱姆王
-        /// </summary>
-        public static readonly Func<bool> DownedV0 = () => NPC.downedSlimeKing;
-        /// <summary>
-        /// 克苏鲁之眼
-        /// </summary>
-        public static readonly Func<bool> DownedV1 = () => NPC.downedBoss1;
-        /// <summary>
-        /// 邪恶Boss
-        /// </summary>
-        public static readonly Func<bool> DownedV2 = () => NPC.downedBoss2;
-        /// <summary>
-        /// 蜂后
-        /// </summary>
-        public static readonly Func<bool> DownedV3 = () => NPC.downedQueenBee;
-        /// <summary>
-        /// 骷髅王
-        /// </summary>
-        public static readonly Func<bool> DownedV4 = () => NPC.downedBoss3;
-        /// <summary>
-        /// 任意机械Boss
-        /// </summary>
-        public static readonly Func<bool> DownedV5 = () => NPC.downedMechBoss1 || NPC.downedMechBoss2 || NPC.downedMechBoss3;
-        /// <summary>
-        /// 所有机械Boss
-        /// </summary>
-        public static readonly Func<bool> DownedV6 = () => NPC.downedMechBossAny;
-        /// <summary>
-        /// 世纪之花
-        /// </summary>
-        public static readonly Func<bool> VDownedV7 = () => NPC.downedPlantBoss;
-        /// <summary>
-        /// 南瓜王
-        /// </summary>
-        public static readonly Func<bool> VDownedV8 = () => NPC.downedHalloweenKing;
-        /// <summary>
-        /// 冰霜女王
-        /// </summary>
-        public static readonly Func<bool> VDownedV9 = () => NPC.downedChristmasIceQueen;
-        /// <summary>
-        /// 石巨人
-        /// </summary>
-        public static readonly Func<bool> DownedV7 = () => NPC.downedGolemBoss;
-        /// <summary>
-        /// 邪教徒
-        /// </summary>
-        public static readonly Func<bool> DownedV8 = () => NPC.downedAncientCultist;
-        /// <summary>
-        /// 塔1
-        /// </summary>
-        public static readonly Func<bool> VDownedV10 = () => NPC.downedTowerSolar;
-        /// <summary>
-        /// 塔2
-        /// </summary>
-        public static readonly Func<bool> VDownedV11 = () => NPC.downedTowerVortex;
-        /// <summary>
-        /// 塔3
-        /// </summary>
-        public static readonly Func<bool> VDownedV12 = () => NPC.downedTowerNebula;
-        /// <summary>
-        /// 塔4
-        /// </summary>
-        public static readonly Func<bool> VDownedV13 = () => NPC.downedDeerclops;
-        /// <summary>
-        /// 月球领主
-        /// </summary>
-        public static readonly Func<bool> VDownedV16 = () => NPC.downedMoonlord;
-        /// <summary>
-        /// 荒漠灾虫
-        /// </summary>
-        public static readonly Func<bool> Downed0 = () => DownedBossSystem.downedDesertScourge;
-        /// <summary>
-        /// 巨像蛤
-        /// </summary>
-        public static readonly Func<bool> Downed1 = () => DownedBossSystem.downedCLAM;
-        /// <summary>
-        /// 蘑菇蟹
-        /// </summary>
-        public static readonly Func<bool> Downed2 = () => DownedBossSystem.downedCrabulon;
-        /// <summary>
-        /// 腐巢意志
-        /// </summary>
-        public static readonly Func<bool> Downed3 = () => DownedBossSystem.downedHiveMind;
-        /// <summary>
-        /// 血肉宿主
-        /// </summary>
-        public static readonly Func<bool> Downed4 = () => DownedBossSystem.downedPerforator;
-        /// <summary>
-        /// 史莱姆之神
-        /// </summary>
-        public static readonly Func<bool> Downed5 = () => DownedBossSystem.downedSlimeGod;
-        /// <summary>
-        /// 极地冰灵
-        /// </summary>
-        public static readonly Func<bool> Downed6 = () => DownedBossSystem.downedCryogen;
-        /// <summary>
-        /// 硫磺火元素
-        /// </summary>
-        public static readonly Func<bool> Downed7 = () => DownedBossSystem.downedBrimstoneElemental;
-        /// <summary>
-        /// 渊海灾虫
-        /// </summary>
-        public static readonly Func<bool> Downed8 = () => DownedBossSystem.downedAquaticScourge;
-        /// <summary>
-        /// 辐射之主
-        /// </summary>
-        public static readonly Func<bool> Downed9 = () => DownedBossSystem.downedCragmawMire;
-        /// <summary>
-        /// 灾厄之影
-        /// </summary>
-        public static readonly Func<bool> Downed10 = () => DownedBossSystem.downedCalamitasClone;
-        /// <summary>
-        /// 沙漠巨鲨
-        /// </summary>
-        public static readonly Func<bool> Downed11 = () => DownedBossSystem.downedGSS;
-        /// <summary>
-        /// 利维坦
-        /// </summary>
-        public static readonly Func<bool> Downed12 = () => DownedBossSystem.downedLeviathan;
-        /// <summary>
-        /// 白金星舰
-        /// </summary>
-        public static readonly Func<bool> Downed13 = () => DownedBossSystem.downedAstrumAureus;
-        /// <summary>
-        /// 瘟疫使者
-        /// </summary>
-        public static readonly Func<bool> Downed14 = () => DownedBossSystem.downedPlaguebringer;
-        /// <summary>
-        /// 毁灭魔像
-        /// </summary>
-        public static readonly Func<bool> Downed15 = () => DownedBossSystem.downedRavager;
-        /// <summary>
-        /// 星神游龙
-        /// </summary>
-        public static readonly Func<bool> Downed16 = () => DownedBossSystem.downedAstrumDeus;
-        /// <summary>
-        /// 亵渎使徒
-        /// </summary>
-        public static readonly Func<bool> Downed17 = () => DownedBossSystem.downedGuardians;
-        /// <summary>
-        /// 痴愚金龙
-        /// </summary>
-        public static readonly Func<bool> Downed18 = () => DownedBossSystem.downedDragonfolly;
-        /// <summary>
-        /// 亵渎天神
-        /// </summary>
-        public static readonly Func<bool> Downed19 = () => DownedBossSystem.downedProvidence;
-        /// <summary>
-        /// 无尽虚空
-        /// </summary>
-        public static readonly Func<bool> Downed20 = () => DownedBossSystem.downedCeaselessVoid;
-        /// <summary>
-        /// 风暴吞噬者
-        /// </summary>
-        public static readonly Func<bool> Downed21 = () => DownedBossSystem.downedStormWeaver;
-        /// <summary>
-        /// 席格纳斯
-        /// </summary>
-        public static readonly Func<bool> Downed22 = () => DownedBossSystem.downedSignus;
-        /// <summary>
-        /// 噬魂幽花
-        /// </summary>
-        public static readonly Func<bool> Downed23 = () => DownedBossSystem.downedPolterghast;
-        /// <summary>
-        /// 酸雨二
-        /// </summary>
-        public static readonly Func<bool> Downed24 = () => DownedBossSystem.downedMauler;
-        /// <summary>
-        /// 生化恐惧
-        /// </summary>
-        public static readonly Func<bool> Downed25 = () => DownedBossSystem.downedNuclearTerror;
-        /// <summary>
-        /// 老核弹
-        /// </summary>
-        public static readonly Func<bool> Downed26 = () => DownedBossSystem.downedBoomerDuke;
-        /// <summary>
-        /// 神明吞噬者
-        /// </summary>
-        public static readonly Func<bool> Downed27 = () => DownedBossSystem.downedDoG;
-        /// <summary>
-        /// 丛林龙
-        /// </summary>
-        public static readonly Func<bool> Downed28 = () => DownedBossSystem.downedYharon;
-        /// <summary>
-        /// 星流巨械
-        /// </summary>
-        public static readonly Func<bool> Downed29 = () => DownedBossSystem.downedExoMechs;
-        /// <summary>
-        /// 至尊灾厄
-        /// </summary>
-        public static readonly Func<bool> Downed30 = () => DownedBossSystem.downedCalamitas;
-        /// <summary>
-        /// 始源妖龙
-        /// </summary>
-        public static readonly Func<bool> Downed31 = () => DownedBossSystem.downedPrimordialWyrm;
-        /// <summary>
-        /// 终焉之战
-        /// </summary>
-        public static readonly Func<bool> Downed32 = () => DownedBossSystem.downedBossRush;
     }
 }
