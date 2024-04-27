@@ -2979,6 +2979,8 @@ Projectiles: {
 	// PlasmaRifleHeldProj.DisplayName: Plasma Rifle
 	// SHPCHeldProj.DisplayName: SHPC
 	// WingmanHeldProj.DisplayName: Wingman
+	// FrostFuryHeldProj.DisplayName: Frost Fury Held Proj
+	// BowofLightHeldProj.DisplayName: Bowof Light Held Proj
 }
 
 Configs: {

@@ -44,6 +44,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
         }
 
+        public virtual bool CanLoad() {
+            return true;
+        }
+
         public virtual void Load() {
             SetReadonlyTargetID = TargetID;//这里默认加载一次，在多数情况使其下不用重写Load()方法
         }
@@ -808,6 +812,5 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public virtual bool? WingUpdate(int wings, Player player, bool inUse) {
             return null;
         }
-
     }
 }

@@ -1,13 +1,9 @@
 ﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Events;
-using CalamityOverhaul.Content.Tiles;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 
 namespace CalamityOverhaul
 {

@@ -150,7 +150,7 @@ Items: {
 			'''
 			Fires Feathers that home in on enemies whenever they are near. While spinning in the air, 6 feathers splinter outwards before disappearing.
 			If the splintered feathers hit an enemy, it will latch on and keep dealing damage for a short while.
-			                     A very agile yoyo.
+			A very agile yoyo.
 			'''
 	}
 
@@ -163,7 +163,7 @@ Items: {
 		DisplayName: Wind Blade
 		Tooltip:
 			'''
-			       Fires cyclones that suck enemies in
+			Fires cyclones that suck enemies in
 			Right click to throw cyclones that home in on enemies.
 			'''
 	}
@@ -2936,6 +2936,8 @@ Projectiles: {
 	PlasmaRifleHeldProj.DisplayName: Plasma Rifle
 	SHPCHeldProj.DisplayName: SHPC
 	WingmanHeldProj.DisplayName: Wingman
+	FrostFuryHeldProj.DisplayName: Frost Fury
+	BowofLightHeldProj.DisplayName: Bowof Light
 }
 
 Configs: {

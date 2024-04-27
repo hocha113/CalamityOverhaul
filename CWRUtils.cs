@@ -243,10 +243,7 @@ namespace CalamityOverhaul
         /// <param name="types">指定类型 T 的子类列表</param>
         public static void HanderSubclass<T>(ref List<T> types) => HanderInstance(ref types, GetSubclasses(typeof(T)));
 
-        public static List<T> GetSubInterface<T>(string lname = "") {
-            if (lname == "") {
-                lname = nameof(T);
-            }
+        public static List<T> GetSubInterface<T>(string lname) {
             List<T> subInterface = new();
             Assembly assembly = Assembly.GetExecutingAssembly();
             Type[] allTypes = assembly.GetTypes();

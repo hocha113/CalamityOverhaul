@@ -23,6 +23,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public CWRItems ModItem = null;
         /// <summary>
+        /// 每次发射事件是否运行全局物品行为，默认为<see cref="true"/>
+        /// </summary>
+        public bool GlobalItemBehavior = true;
+        /// <summary>
         /// 一个通用的计时器
         /// </summary>
         public ref float Time => ref Projectile.ai[0];

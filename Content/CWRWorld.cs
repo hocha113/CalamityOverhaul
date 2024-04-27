@@ -1,6 +1,11 @@
 ﻿using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.OthermodMROs.Thorium.Core;
+using CalamityOverhaul.Content.OthermodMROs.Thorium.ItemSet;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ModLoader;

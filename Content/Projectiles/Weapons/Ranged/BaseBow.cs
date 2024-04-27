@@ -279,7 +279,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
-                ItemLoaderInFireSetBaver();
+                if (GlobalItemBehavior) {
+                    ItemLoaderInFireSetBaver();
+                }
                 if (FiringDefaultSound) {
                     SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 }

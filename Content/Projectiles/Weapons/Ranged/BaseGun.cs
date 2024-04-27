@@ -32,10 +32,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
         /// <summary>
-        /// 每次发射事件是否运行全局物品行为，默认为<see cref="true"/>
-        /// </summary>
-        public bool GlobalItemBehavior = true;
-        /// <summary>
         /// 枪械旋转角矫正
         /// </summary>
         public float OffsetRot;

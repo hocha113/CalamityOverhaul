@@ -4,6 +4,7 @@ using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
+using CalamityOverhaul.Content.OthermodMROs.Thorium.Core;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.Tiles;
@@ -47,22 +48,45 @@ namespace CalamityOverhaul
 
         public override void PostSetupContent() {
             LoadMods = ModLoader.Mods.ToList();
+            //额外模组Call需要先行加载
+            FromThorium.PostLoadDate();
 
             {
                 RItemInstances = new List<BaseRItem>();//这里直接进行初始化，便不再需要进行UnLoad卸载
                 List<Type> rItemIndsTypes = CWRUtils.GetSubclasses(typeof(BaseRItem));
+                //($"一共获取到{rItemIndsTypes.Count}个待挑选元素Type").DompInConsole();
                 foreach (Type type in rItemIndsTypes) {
+                    //($"指向元素{type}进行分析").DompInConsole();
                     if (type != typeof(BaseRItem)) {
                         object obj = Activator.CreateInstance(type);
                         if (obj is BaseRItem inds) {
-                            inds.Load();
-                            inds.SetStaticDefaults();
-                            //最后再判断一下TargetID是否为0，因为如果这是一个有效的Ritem实例，那么它的TargetID就不可能为0，否则将其添加进去会导致LoadRecipe部分报错
-                            if (inds.TargetID != 0)
-                                RItemInstances.Add(inds);
+                            //($"元素{type}成功转换为object并进行分析").DompInConsole();
+                            if (inds.CanLoad()) {
+                                //($"正在初始化元素{type}").DompInConsole();
+                                inds.Load();
+                                inds.SetStaticDefaults();
+                                if (inds.TargetID != 0) {
+                                    //($"成功加入元素{type}").DompInConsole();
+                                    //("______________________________").DompInConsole();
+                                    RItemInstances.Add(inds);
+                                }//最后再判断一下TargetID是否为0，因为如果这是一个有效的Ritem实例，那么它的TargetID就不可能为0，否则将其添加进去会导致LoadRecipe部分报错
+                                else {
+                                    //($"元素{type}的TargetID返回0，载入失败").DompInConsole();
+                                }
+                            }
+                            else {
+                                //($"元素{type}CanLoad返回false").DompInConsole();
+                            }
+                        }
+                        else {
+                            //($"元素{type}转换BaseRItem失败").DompInConsole();
                         }
                     }
+                    else {
+                        //($"元素{type}是{typeof(BaseRItem)}").DompInConsole();
+                    }
                 }
+                //($"{RItemInstances.Count}个元素已经装载进RItemInstances").DompInConsole();
             }
 
             {
@@ -96,6 +120,7 @@ namespace CalamityOverhaul
                 foreach (BaseRItem ritem in RItemInstances) {
                     RItemIndsDict.Add(ritem.SetReadonlyTargetID, ritem);
                 }
+                ($"{RItemIndsDict.Count}个键对已经装载进RItemIndsDict").DompInConsole();
             }
 
             {
@@ -115,6 +140,7 @@ namespace CalamityOverhaul
             
             FindMod();
             LoadClient();
+            FromThorium.LoadDate();
             ModGanged.Load();
             CWRParticleHandler.Load();
             new InWorldBossPhase().Load();
