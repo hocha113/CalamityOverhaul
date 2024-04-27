@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAmmo = AmmoID.Bullet;
             Item.shoot = ModContent.ProjectileType<PlagueTaintedProjectile>();
             Item.Calamity().canFirePointBlankShots = true;
-            Item.SetCartridgeGun<PlagueTaintedSMGHeldProj>(85);
+            Item.SetCartridgeGun<PlagueTaintedSMGHeldProj>(90);
             Item.CWR().Scope = true;
         }
     }

@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
             }
         }
 
-        public override void FiringShoot() {
+        public override int Shoot() {
             for (int i = 0; i < 2; i++) {
                 Vector2 pos = Projectile.Center;
                 pos.X += DirSign * Main.rand.Next(130, 360);
@@ -44,6 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
                 Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ScaleFactor;
                 Projectile.NewProjectile(Source, pos, vr, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
+            return 0;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.UIs;
 using log4net.Core;
 using Microsoft.Xna.Framework;
 using System;
@@ -314,12 +315,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 设置自动换弹，在一定条件下让玩家开始换弹，这个方法一般不需要手动调用，枪械会在合适的时候自行调用该逻辑
         /// </summary>
-        protected void SetAutomaticCartridgeChange() {
+        protected void SetAutomaticCartridgeChange(bool ignoreKreLoad = false) {
             if (AmmoState.Amount == 0) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态以保证换弹流畅
             }
-            if (!IsKreload && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0 
-                && AmmoState.Amount > 0 && !ModOwner.NoCanAutomaticCartridgeChange && ModItem.NoKreLoadTime == 0) {
+            if ((!IsKreload || ignoreKreLoad) && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0 
+                && AmmoState.Amount > 0 && !ModOwner.NoCanAutomaticCartridgeChange 
+                && ModItem.NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.OnMainP) {
                 OnKreload = true;
                 kreloadTimeValue = kreloadMaxTime;
             }
@@ -408,13 +410,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Handgun) {
                 if (time == (int)(maxTime * LoadingAA_Handgun.level1)) {
-                    SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipOut with { Volume = 0.65f }, Projectile.Center);
+                    SoundEngine.PlaySound(LoadingAA_Handgun.clipOut with { Volume = 0.65f }, Projectile.Center);
                 }
                 if (time == (int)(maxTime * LoadingAA_Handgun.level2)) {
-                    SoundEngine.PlaySound(CWRSound.Gun_HandGun_ClipLocked with { Volume = 0.65f }, Projectile.Center);
+                    SoundEngine.PlaySound(LoadingAA_Handgun.clipLocked with { Volume = 0.65f }, Projectile.Center);
                 }
                 if (time == (int)(maxTime * LoadingAA_Handgun.level3)) {
-                    SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot with { Volume = 0.65f }, Projectile.Center);
+                    SoundEngine.PlaySound(LoadingAA_Handgun.slideInShoot with { Volume = 0.65f }, Projectile.Center);
                 }
                 return false;
             }
@@ -473,7 +475,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     onFire = false;
                 }
 
-                if (Owner.Calamity().mouseRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
+                if (CalPlayer.mouseRight && !onFire && CanRightClick && SafeMousetStart && (!CartridgeHolderUI.Instance.OnMainP || SafeMousetStart2)) {//Owner.PressKey()
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
                     Projectile.rotation = GetGunInFireRot();
                     Projectile.Center = GetGunInFirePos();

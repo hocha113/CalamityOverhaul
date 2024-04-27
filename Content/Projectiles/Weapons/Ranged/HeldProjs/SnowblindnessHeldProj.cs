@@ -15,17 +15,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<Snowblindness>();
         public override int targetCWRItem => ModContent.ItemType<Snowblindness>();
         public override void SetRangedProperty() {
-            loadTheRounds = CWRSound.Gun_HandGun_ClipOut with { Pitch = -0.2f };
+            kreloadMaxTime = 60;
             HandDistance = 30;
             HandFireDistance = 20;
             HandFireDistanceY = -6;
             Recoil = 0.45f;
             FireTime = 3;
-            EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
             RecoilOffsetRecoverValue = 0.6f;
             RangeOfStress = 50;
             ShootPosNorlLengValue = 1;
+            EnableRecoilRetroEffect = true;
+            LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
+            LoadingAA_Handgun.clipLocked = CWRSound.Gun_Snowblindness_Clipin;
+            LoadingAA_Handgun.clipOut = CWRSound.Gun_Snowblindness_Clipout;
+            LoadingAA_Handgun.feederOffsetRot = -30;
+            LoadingAA_Handgun.loadingAmmoStarg_x = -8;
+            LoadingAA_Handgun.loadingAmmoStarg_y = -16;
         }
         public override void FiringShoot() {
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);

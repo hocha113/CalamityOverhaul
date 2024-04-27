@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 
         public override void OnKill(int timeLeft) {
             Projectile.Explode(62, SoundID.Item88);
-            Vector2 pos = Projectile.Center + Projectile.velocity * 13;
+            Vector2 pos = Projectile.Center;
             for (int i = 0; i < 20; i++) {
                 Vector2 randVr = CWRUtils.GetRandomVevtor(-170, -10, Main.rand.Next(7, 22));
                 AltSparkParticle spark = new(pos, randVr, true, 12, Main.rand.NextFloat(0.5f, 1.2f), Color.White);

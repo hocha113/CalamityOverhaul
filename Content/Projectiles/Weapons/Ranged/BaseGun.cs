@@ -293,7 +293,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 onFire = false;
             }
             
-            if (Owner.Calamity().mouseRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
+            if (CalPlayer.mouseRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = GunOnFireRot;
                 Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;

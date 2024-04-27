@@ -33,6 +33,8 @@ namespace CalamityOverhaul.Content.UIs
             }
         }
 
+        public bool OnMainP => onMainP;
+
         public override void Load() => Instance = this;
 
         public override void Update(GameTime gameTime) {
@@ -44,8 +46,14 @@ namespace CalamityOverhaul.Content.UIs
                 onMainP = mainRec.Intersects(new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1));
             }
             if (onMainP) {
+                bool mr2 = true;
+                if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
+                    if (gun.SafeMousetStart2) {
+                        mr2 = false;
+                    }
+                }
                 int mr = DownStartR();
-                if (mr == 1) {
+                if (mr == 1 && mr2) {
                     SoundEngine.PlaySound(CWRSound.loadTheRounds, player.Center);
                     foreach (Item i in cwrItem.MagazineContents) {
                         if (i.type == ItemID.None || i.stack <= 0) {

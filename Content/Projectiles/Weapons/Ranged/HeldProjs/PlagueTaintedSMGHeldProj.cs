@@ -27,7 +27,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistanceY = -5;
             ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 30;
-            RepeatedCartridgeChange = true;
             GunPressure = 0.06f;
             ControlForce = 0.03f;
             Recoil = 0.2f;
@@ -38,7 +37,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(50, 3, 25);
-            CanRightClick = BulletNum >= 5;
+            CanRightClick = BulletNum >= 6;
+            if (CalPlayer.mouseRight && BulletNum < 6) {
+                SetAutomaticCartridgeChange(true);
+            }
         }
 
         public override void FiringShoot() {
@@ -65,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     , ModContent.ProjectileType<PlagueTaintedDrone>(), WeaponDamage, WeaponKnockback
                     , Owner.whoAmI, 1f, Owner.Calamity().alchFlask || Owner.Calamity().spiritOrigin ? 1f : 0f);
             }
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 5; i++) {
                 UpdateMagazineContents();
             }
         }
