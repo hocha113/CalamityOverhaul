@@ -37,19 +37,6 @@ namespace CalamityOverhaul
     public static class CWRUtils
     {
         #region System
-        public static void HanderSubclass<T>(ref List<T> types) {
-            types = new List<T>();
-            List<Type> targetTypes = GetSubclasses(typeof(T));
-            foreach (Type type in targetTypes) {
-                if (type != typeof(T)) {
-                    object obj = Activator.CreateInstance(type);
-                    if (obj is T inds) {
-                        types.Add(inds);
-                    }
-                }
-            }
-        }
-
         public static LocalizedText SafeGetItemName<T>() where T : ModItem {
             Type type = typeof(T);
             return type.BaseType == typeof(EctypeItem)
@@ -101,7 +88,7 @@ namespace CalamityOverhaul
         /// </summary>
         /// <param name="items">要导出的 Item 数组</param>
         /// <param name="path">写入文件的路径，默认为 "D:\\模组资源\\AAModPrivate\\input.cs"</param>
-        public static void ExportItemTypesToFile(Item[] items, string path = "D:\\模组资源\\AAModPrivate\\input.cs") {
+        public static void ExportItemTypesToFile(Item[] items, string path = "D:\\模组资源\\input.cs") {
             try {
                 int columnIndex = 0;
                 using StreamWriter sw = new(path);
@@ -212,6 +199,29 @@ namespace CalamityOverhaul
             return nonTransparentColors.ToArray();
         }
 
+        /// <summary>
+        /// 根据给定的类型列表，创建符合条件的类型实例，并将实例添加到输出列表中
+        /// </summary>
+        /// <typeparam name="T">期望的类型</typeparam>
+        /// <param name="outInds">输出列表，包含符合条件的类型实例</param>
+        /// <param name="inTypes">输入的类型列表，用于创建实例</param>
+        public static void HanderInstance<T>(ref List<T> outInds, List<Type> inTypes) {
+            outInds = new List<T>();
+            foreach (Type type in inTypes) {
+                if (type != typeof(T)) {
+                    object obj = Activator.CreateInstance(type);
+                    if (obj is T inds) {
+                        outInds.Add(inds);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取指定基类的所有子类列表
+        /// </summary>
+        /// <param name="baseType">基类的类型</param>
+        /// <returns>子类列表</returns>
         public static List<Type> GetSubclasses(Type baseType) {
             List<Type> subclasses = new();
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -225,7 +235,34 @@ namespace CalamityOverhaul
 
             return subclasses;
         }
-        #endregion 
+
+        /// <summary>
+        /// 根据指定类型 T 的子类列表，创建符合条件的类型实例并更新输出列表
+        /// </summary>
+        /// <typeparam name="T">期望的类型</typeparam>
+        /// <param name="types">指定类型 T 的子类列表</param>
+        public static void HanderSubclass<T>(ref List<T> types) => HanderInstance(ref types, GetSubclasses(typeof(T)));
+
+        public static List<T> GetSubInterface<T>(string lname = "") {
+            if (lname == "") {
+                lname = nameof(T);
+            }
+            List<T> subInterface = new();
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Type[] allTypes = assembly.GetTypes();
+
+            foreach (Type type in allTypes) {
+                if (type.IsClass && !type.IsAbstract && type.GetInterface(lname) != null) {
+                    object obj = Activator.CreateInstance(type);
+                    if (obj is T instance) {
+                        subInterface.Add(instance);
+                    }
+                }
+            }
+
+            return subInterface;
+        }
+        #endregion
 
         #region AIUtils
 

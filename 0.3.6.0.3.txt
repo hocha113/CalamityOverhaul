@@ -1,0 +1,13 @@
+v_0.3.6.0.3
+
+——负责以下内容的开发者：红茶
+1.修复远程武器开火不会重置盗贼潜伏条的问题
+
+
+——Developer responsible for the following content: HoCha113
+
+
+
+
+
+

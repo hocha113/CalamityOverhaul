@@ -25,7 +25,7 @@
     <AdditionalFiles Remove="Assets\Projectiles\Magic\GhastlyVisageBall.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="0.3.6.0.2.txt" />
+    <None Remove="0.3.6.0.3.txt" />
     <None Remove="Assets\Events\TungstenRiotIcon.png" />
     <None Remove="Assets\Items\Replace\TODO.txt" />
     <None Remove="Assets\Masking\Extra_193.png" />
@@ -39,7 +39,6 @@
     <None Remove="Assets\NPCs\TODOs.txt" />
     <None Remove="Assets\UIs\ScrollbarInner.png" />
     <None Remove="Assets\UIs\SliderBar.png" />
-    <None Remove="Content\OthermodMROs\Thorium\TODOs.txt" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />

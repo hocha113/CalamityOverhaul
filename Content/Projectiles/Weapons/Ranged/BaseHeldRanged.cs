@@ -1,8 +1,10 @@
 ﻿using CalamityMod;
+using CalamityMod.CalPlayer;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using System.IO;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -15,6 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 获取对应的<see cref="CWRPlayer"/>实例，在弹幕初始化时更新这个值
         /// </summary>
         public CWRPlayer ModOwner = null;
+        protected CalamityPlayer CalPlayer;
         /// <summary>
         /// 获取对应的<see cref="CWRItems"/>实例，在弹幕初始化时更新这个值
         /// </summary>
@@ -241,9 +244,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             ModItem = Item.CWR();
             ModOwner = Owner.CWR();
             ModOwner.HeldRangedBool = true;
+            CalPlayer = Owner.Calamity();
             UpdateSafeMouseInterfaceValue();
-            if (CanFire && !Owner.mouseInterface) {
+            if (CanFire && _safeMouseInterfaceValue) {
                 Owner.itemTime = 2;
+                CalPlayer.rogueStealth = 0;
+                if (CalPlayer.stealthUIAlpha > 0.02f) {
+                    CalPlayer.stealthUIAlpha -= 0.02f;
+                }
             }
             if (ModItem.Scope && Projectile.IsOwnedByLocalPlayer()) {
                 ScopeSrecen();
@@ -289,6 +297,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public virtual void SpanProj() {
 
+        }
+
+        internal void ItemLoaderInFireSetBaver() {
+            foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
+                g.CanUseItem(Item, Owner);
+            }
+            foreach (var g in CWRMod.CWR_InItemLoader_Set_UseItem_Hook.Enumerate(Item)) {
+                g.UseItem(Item, Owner);
+            }
+            foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
+                g.Shoot(Item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType)
+                    , Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
+            }
         }
     }
 }

@@ -143,8 +143,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 获取来自物品的生成源
         /// </summary>
-        protected EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType, "CWRBow");
-        protected EntitySource_ItemUse_WithAmmo Source2 => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType);
+        protected EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType, "CWRBow");
+        protected EntitySource_ItemUse_WithAmmo Source2 => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType);
         #endregion
 
         public void SetArmInFire() {
@@ -287,18 +287,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 FireOffsetVector = FireOffsetPos = Vector2.Zero;
                 Projectile.ai[1] = 0;
                 onFire = false;
-            }
-        }
-
-        internal void ItemLoaderInFireSetBaver() {
-            foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
-                g.CanUseItem(Item, Owner);
-            }
-            foreach (var g in CWRMod.CWR_InItemLoader_Set_UseItem_Hook.Enumerate(Item)) {
-                g.UseItem(Item, Owner);
-            }
-            foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
-                g.Shoot(Item, Owner, Source2, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
             }
         }
 

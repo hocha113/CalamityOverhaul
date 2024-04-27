@@ -212,11 +212,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 获取来自物品的生成源，该生成源实例会附加CWRGun标签，用于特殊识别
         /// </summary>
-        internal EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType, "CWRGunShoot");
+        internal EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType, "CWRGunShoot");
         /// <summary>
         /// 获取来自物品的生成源，该生成源仅仅用于派生于物品关系，如果不想发射的弹幕被识别为枪械类射弹并受到特殊加成，使用这个
         /// </summary>
-        internal EntitySource_ItemUse_WithAmmo Source2 => new EntitySource_ItemUse_WithAmmo(Owner, Item, Owner.GetShootState().UseAmmoItemType);
+        internal EntitySource_ItemUse_WithAmmo Source2 => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType);
         /// <summary>
         /// 该枪体使用的实际纹理
         /// </summary>
@@ -456,18 +456,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                 GunShootCoolingValue += Item.useTime;
                 onFire = false;
-            }
-        }
-
-        internal void ItemLoaderInFireSetBaver() {
-            foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
-                g.CanUseItem(Item, Owner);
-            }
-            foreach (var g in CWRMod.CWR_InItemLoader_Set_UseItem_Hook.Enumerate(Item)) {
-                g.UseItem(Item, Owner);
-            }
-            foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
-                g.Shoot(Item, Owner, Source2, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
             }
         }
 

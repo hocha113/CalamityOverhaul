@@ -22,9 +22,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 1.2f;
             ControlForce = 0.1f;
             RepeatedCartridgeChange = true;
-            Recoil = 3.2f;
+            Recoil = 1.6f;
             RangeOfStress = 5;
             kreloadMaxTime = 60;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 7;
+            RecoilOffsetRecoverValue = 0.7f;
         }
 
         public override void PreInOwnerUpdate() {
@@ -39,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 if (ToMouseA + MathHelper.Pi > MathHelper.ToRadians(270)) {
                     Projectile.rotation = minRot - MathHelper.Pi;
                 }
-                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance;
+                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + OffsetPos;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
             }
