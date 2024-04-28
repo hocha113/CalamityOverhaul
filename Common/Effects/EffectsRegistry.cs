@@ -18,10 +18,10 @@ namespace CalamityOverhaul.Common.Effects
         }
 
         public static void LoadRegularShaders(AssetRepository assets) {
-            Asset<Effect> _flowColorShaderAsset = assets.Request<Effect>(CWRConstant.noEffects + "FlowColorShader", AssetRequestMode.ImmediateLoad);
+            Asset<Effect> _flowColorShaderAsset = assets.Request<Effect>(CWRConstant.noEffects + "FlowColorShader");
             FlowColorShader = GameShaders.Misc["CWRMod:FlowColorShader"] = new MiscShaderData(_flowColorShaderAsset, "PiercePass");
 
-            Asset<Effect> _powerSFShaderAsset = assets.Request<Effect>(CWRConstant.noEffects + "PowerSFShader", AssetRequestMode.ImmediateLoad);
+            Asset<Effect> _powerSFShaderAsset = assets.Request<Effect>(CWRConstant.noEffects + "PowerSFShader");
             Filters.Scene["CWRMod:powerSFShader"] = new Filter(new(_powerSFShaderAsset, "Offset"), EffectPriority.VeryHigh);
             PowerSFShader = _powerSFShaderAsset.Value;
         }

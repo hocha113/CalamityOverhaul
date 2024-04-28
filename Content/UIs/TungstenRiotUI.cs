@@ -41,9 +41,7 @@ namespace CalamityOverhaul.Content.UIs
             }
         }
 
-        public override void Update(GameTime gameTime) {
-            DrawPos = new Vector2(Main.screenWidth - 60, Main.screenHeight - 60);
-        }
+        public override void Update(GameTime gameTime) => DrawPos = new Vector2(Main.screenWidth - 60, Main.screenHeight - 60);
 
         public override void Draw(SpriteBatch spriteBatch) 
             => CWRUtils.DrawEventProgressBar(spriteBatch, DrawPos, icon, 1 - TungstenRiot.Instance.EventKillRatio

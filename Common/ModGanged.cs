@@ -301,6 +301,12 @@ namespace CalamityOverhaul.Common
             CWRPlayer modPlayer = drawPlayer.CWR();
             bool itemHasHeldProj = ritem.heldProjType > 0;
             if (ritem.hasHeldNoCanUseBool && itemHasHeldProj) {
+                if (modPlayer.TryGetInds_BaseHeldRanged(out BaseHeldRanged ranged)) {
+                    if (ranged.OnHandheldDisplayBool) {
+                        return false;
+                    }
+                }
+                /*这些代码是不必要的
                 if (modPlayer.TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
                     if (gun.OnHandheldDisplayBool) {
                         return false;
@@ -316,6 +322,7 @@ namespace CalamityOverhaul.Common
                         return false;
                     }
                 }
+                */
             }
 
             if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
@@ -377,21 +384,29 @@ namespace CalamityOverhaul.Common
             }
 
             if (ritem.hasHeldNoCanUseBool && ritem.heldProjType > 0) {
-                if (modPlayer.TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
-                    if (gun.OnHandheldDisplayBool) {
+                if (modPlayer.TryGetInds_BaseHeldRanged(out BaseHeldRanged ranged)) {
+                    if (ranged.OnHandheldDisplayBool) {
                         result = false;
                     }
                 }
-                if (modPlayer.TryGetInds_BaseGun(out BaseGun gun2)) {
-                    if (gun2.OnHandheldDisplayBool) {
-                        result = false;
-                    }
-                }
-                if (modPlayer.TryGetInds_BaseBow(out BaseBow bow)) {
-                    if (bow.OnHandheldDisplayBool) {
-                        result = false;
-                    }
-                }
+                /*这些代码是不必要的
+                //if (modPlayer.TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
+                //    if (gun.OnHandheldDisplayBool) {
+                //        result = false;
+                //    }
+                //}
+                //if (modPlayer.TryGetInds_BaseGun(out BaseGun gun2)) {
+                //    gun2.OnHandheldDisplayBool.Domp();
+                //    if (gun2.OnHandheldDisplayBool) {
+                //        result = false;
+                //    }
+                //}
+                //if (modPlayer.TryGetInds_BaseBow(out BaseBow bow)) {
+                //    if (bow.OnHandheldDisplayBool) {
+                //        result = false;
+                //    }
+                //}
+                */
             }
 
             return orig.Invoke(player, item) && result;

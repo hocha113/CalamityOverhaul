@@ -23,17 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0.3f;
             ControlForce = 0.05f;
             Recoil = 0.6f;
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation((int)(Time * 30 * DirSign), 3, 5);
-        }
-
-        public override void PostInOwnerUpdate() {
-            if (kreloadTimeValue > 0) {
-                ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - MathHelper.ToRadians(30)) * SafeGravDir + 0.3f;
-                SetCompositeArm();
-            }
+            LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Revolver;
         }
 
         public override void KreloadSoundloadTheRounds() {

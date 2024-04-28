@@ -32,7 +32,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         internal bool BulletConsumption = true;
         /// <summary>
-        /// 是否自动在一次单次射击后调用弹匣更新函数，这负责弹药消耗逻辑，如果设置为<see langword="false"/>就需要手动调用<see cref="UpdateMagazineContents"/>以正常执行弹药逻辑
+        /// 是否自动在一次单次射击后调用弹匣更新函数，这负责弹药消耗逻辑
+        /// ，如果设置为<see langword="false"/>就需要手动调用<see cref="UpdateMagazineContents"/>以正常执行弹药逻辑
         /// </summary>
         internal bool CanUpdateMagazineContentsInShootBool = true;
         /// <summary>
@@ -88,7 +89,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected bool EnableRecoilRetroEffect;
         /// <summary>
-        /// 后坐力制推力度模长，推送方向为<see cref="BaseHeldRanged.ShootVelocity"/>的反向，在<see cref="EnableRecoilRetroEffect"/>为<see langword="true"/>时生效，默认为5f
+        /// 后坐力制推力度模长，推送方向为<see cref="BaseHeldRanged.ShootVelocity"/>的反向
+        /// ，在<see cref="EnableRecoilRetroEffect"/>为<see langword="true"/>时生效，默认为5f
         /// </summary>
         protected float RecoilRetroForceMagnitude = 5;
         /// <summary>
@@ -126,6 +128,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             None,
             Shotgun,
             Handgun,
+            Revolver,
         }
 
         public LoadingAmmoAnimationEnum LoadingAmmoAnimation = LoadingAmmoAnimationEnum.None;
@@ -174,6 +177,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             loadingAmmoStarg_y = -6,
         };
 
+        public struct LoadingAA_Revolver_Struct
+        {
+            public float Rotationratio;
+            public SoundStyle Sound;
+            public int ArmRotSengsFrontOffsetRotOver;
+            public float ArmRotSengsFrontStartRotOver;
+            public int loadingAmmoStarg_x;
+            public int loadingAmmoStarg_y;
+        }
+
+        public LoadingAA_Revolver_Struct LoadingAA_Revolver = new LoadingAA_Revolver_Struct() {
+            Rotationratio = 30,
+            Sound = CWRSound.CaseEjection,
+            ArmRotSengsFrontOffsetRotOver = 30,
+            ArmRotSengsFrontStartRotOver = 0.3f,
+            loadingAmmoStarg_x = 3,
+            loadingAmmoStarg_y = 5,
+        };
+
         #endregion
 
         protected int BulletNum {
@@ -181,6 +203,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             set => ModItem.NumberBullets = value;
         }
 
+        protected SoundStyle caseEjections = CWRSound.CaseEjection;
         protected SoundStyle loadTheRounds = CWRSound.CaseEjection2;
 
         public bool AmmunitionIsBeingLoaded() => kreloadTimeValue > 0;
@@ -208,7 +231,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 关于装弹过程中的第一部分音效的执行
         /// </summary>
         public virtual void KreloadSoundCaseEjection() {
-            SoundEngine.PlaySound(CWRSound.CaseEjection with { Volume = 0.5f, PitchRange = (-0.05f, 0.05f) }, Projectile.Center);
+            SoundEngine.PlaySound(caseEjections with { Volume = 0.5f, PitchRange = (-0.05f, 0.05f) }, Projectile.Center);
         }
         /// <summary>
         /// 关于装弹过程中的第二部分音效的执行
@@ -329,14 +352,47 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 AutomaticCartridgeChangeDelayTime--;
             }
         }
-        public void AddAutomaticCartridgeChangeDelayTime() => AutomaticCartridgeChangeDelayTime = FireTime;
 
-        void Update_LoadingAmmoAnimation_PreInOwner() {
+        public override void PostSetRangedProperty() {
+            Get_LoadingAmmoAnimation_PostSetRangedProperty();
+        }
+
+        #region Get_LoadingAmmoAnimation
+
+        void Get_LoadingAmmoAnimation_PostSetRangedProperty() {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
+                LoadingQuantity = 1;
+            }
+            else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Revolver) {
+                caseEjections = LoadingAA_Revolver.Sound;
+            }
+        }
+
+        void Get_LoadingAmmoAnimation_PreInOwnerUpdate() {
             if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
                 return;
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
-                LoadingAnimation(LoadingAA_Shotgun.loadingAmmoStarg_rot, LoadingAA_Shotgun.loadingAmmoStarg_x, LoadingAA_Shotgun.loadingAmmoStarg_y);
+                LoadingAnimation(LoadingAA_Shotgun.loadingAmmoStarg_rot
+                    , LoadingAA_Shotgun.loadingAmmoStarg_x, LoadingAA_Shotgun.loadingAmmoStarg_y);
+            }
+            else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Revolver) {
+                LoadingAnimation((int)(Time * LoadingAA_Revolver.Rotationratio * DirSign)
+                    , LoadingAA_Revolver.loadingAmmoStarg_x, LoadingAA_Revolver.loadingAmmoStarg_y);
+            }
+        }
+
+        void Get_LoadingAmmoAnimation_PostInOwnerUpdate() {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
+                return;
+            }
+            else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Revolver) {
+                if (kreloadTimeValue > 0) {
+                    ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir 
+                        - MathHelper.ToRadians(LoadingAA_Revolver.ArmRotSengsFrontOffsetRotOver)) 
+                        * SafeGravDir + LoadingAA_Revolver.ArmRotSengsFrontStartRotOver;
+                    SetCompositeArm();
+                }
             }
         }
 
@@ -423,11 +479,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return null;
         }
 
-        public override void PostSetRangedProperty() {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
-                LoadingQuantity = 1;
-            }
-        }
+        #endregion
+
+        
 
         public override void SendExtraAI(BinaryWriter writer) {
             base.SendExtraAI(writer);
@@ -444,22 +498,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public sealed override void InOwner() {
             SetHeld();
             InitializeMagazine();
-            Update_LoadingAmmoAnimation_PreInOwner();
+            Get_LoadingAmmoAnimation_PreInOwnerUpdate();
             PreInOwnerUpdate();
+
             if (Item.type != ItemID.None) {
                 IsKreload = ModItem.IsKreload;
             }
+
             ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             Projectile.Center = GetGunBodyPostion();
             Projectile.rotation = GetGunBodyRotation();
             Projectile.timeLeft = 2;
+
             if (GunShootCoolingValue > 0) {
                 GunShootCoolingValue--;
             }
             if (ModItem.NoKreLoadTime > 0) {
                 ModItem.NoKreLoadTime--;
             }
+
             if (SafeMouseInterfaceValue) {
                 if (DownLeft) {
                     Owner.direction = ToMouse.X > 0 ? 1 : -1;
@@ -499,6 +557,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
             }
+
             if (OnKreload) {//装弹过程
                 bool result3 = PreOnKreloadEvent();
                 if (LoadingAmmoAnimation != LoadingAmmoAnimationEnum.None) {
@@ -568,6 +627,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
             }
+
             if (DownLeft) {
                 if (!IsKreload && LoadingReminder) {
                     if (!Owner.mouseInterface && kreloadTimeValue <= 0) {
@@ -582,6 +642,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             else {
                 LoadingReminder = true;
             }
+
+            Get_LoadingAmmoAnimation_PostInOwnerUpdate();
             PostInOwnerUpdate();
             Projectile.netUpdate = true;
         }
@@ -765,8 +827,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual bool PreFireReloadKreLoad() {
             return true;
         }
-        
-        public override float GetBoltInFireRatio() {//重写这个函数，因为FeederGun和BaseGun的实现原理不一样，为了保持效果正确，封装并重写这部分的逻辑
+
+        //重写这个函数，因为FeederGun和BaseGun的实现原理不一样，为了保持效果正确，封装并重写这部分的逻辑
+        public override float GetBoltInFireRatio() {
             float value1 = Projectile.ai[1] * 2;
             if (value1 > FireTime) {
                 value1 = FireTime;
@@ -816,7 +879,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                         }
                         if (fireLight > 0) {
-                            Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * Main.rand.NextFloat(0.1f, fireLight));
+                            Color fireColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold);
+                            Vector3 fireColorToVr3 = fireColor.ToVector3() * Main.rand.NextFloat(0.1f, fireLight);
+                            Lighting.AddLight(GunShootPos, fireColorToVr3);
                         }
                         if (CanCreateRecoilBool) {
                             CreateRecoil();
@@ -852,6 +917,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             BulletNum = 0;
         }
+
+        public void AddAutomaticCartridgeChangeDelayTime() => AutomaticCartridgeChangeDelayTime = FireTime;
 
         #region Utils
         /// <summary>
