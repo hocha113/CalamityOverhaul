@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                             SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.1f, Volume = 0.5f }, Projectile.Center);
                             if (MurasamaEcType.NameIsVergil(Owner) && Main.rand.NextBool()) {
                                 SoundStyle sound = Main.rand.NextBool() ? CWRSound.V_Kengms : CWRSound.V_Heen;
-                                SoundEngine.PlaySound(sound with { Volume = 0.5f }, Projectile.Center);
+                                SoundEngine.PlaySound(sound with { Volume = 0.3f }, Projectile.Center);
                             }
 
                             Owner.velocity += UnitToMouseV * -3;

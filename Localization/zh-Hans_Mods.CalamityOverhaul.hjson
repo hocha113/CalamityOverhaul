@@ -2445,6 +2445,33 @@ Items: {
 			"这并没有什么用处"
 			'''
 	}
+
+	EternalBlizzardEcType: {
+		DisplayName: 恒吹雪
+		Tooltip:
+			'''
+			拥有四连发的多联射击，发射爆裂的冰锥箭
+			右键进行单发速射，箭矢将拥有追踪能力
+			'''
+	}
+
+	SlagMagnumEcType: {
+		DisplayName: 熔渣马格南
+		Tooltip:
+			'''
+			将火枪子弹转化为化石碎片，命中后生成额外的化石碎片
+			"这里没有特殊感染者"
+			'''
+	}
+
+	SparkSpreaderEcType: {
+		DisplayName: 火花喷射器
+		Tooltip:
+			'''
+			用火花点燃你的敌人
+			使用凝胶作为弹药
+			'''
+	}
 }
 
 Projectiles: {
@@ -2979,8 +3006,11 @@ Projectiles: {
 	// PlasmaRifleHeldProj.DisplayName: Plasma Rifle
 	// SHPCHeldProj.DisplayName: SHPC
 	// WingmanHeldProj.DisplayName: Wingman
-	// FrostFuryHeldProj.DisplayName: Frost Fury Held Proj
-	// BowofLightHeldProj.DisplayName: Bowof Light Held Proj
+	// FrostFuryHeldProj.DisplayName: Frost Fury
+	// BowofLightHeldProj.DisplayName: Bowof Light
+	// EternalBlizzardHeldProj.DisplayName: Eternal Blizzard
+	// SlagMagnumHeldProj.DisplayName: Slag Magnum
+	// SparkSpreaderHeldProj.DisplayName: Spark Spreader
 }
 
 Configs: {

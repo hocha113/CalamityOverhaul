@@ -254,15 +254,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Vector2 recoilVr = ShootVelocity.UnitVector() * (Recoil * -OwnerPressureIncrease);
             if (Math.Abs(Owner.velocity.X) < RangeOfStress && Math.Abs(Owner.velocity.Y) < RangeOfStress) {
                 Owner.velocity += recoilVr;
-                if (!CWRUtils.isSinglePlayer) {//&& netUpdateCooldingTime <= 0
-                    //netUpdateCooldingTime += netUpdateCoold;
+                if (!CWRUtils.isSinglePlayer) {
                     var msg = Mod.GetPacket();
                     msg.Write((byte)CWRMessageType.RecoilAcceleration);
                     msg.Write(Owner.whoAmI);
                     msg.Write(true);
                     msg.Write(recoilVr.X);
                     msg.Write(recoilVr.Y);
-                    msg.Send();
+                    msg.Send(-1, Owner.whoAmI);
                 }
             }
             return recoilVr;

@@ -55,6 +55,9 @@ namespace CalamityOverhaul.Common
         public static SoundStyle Gun_Slingshot_Shoot = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/Slingshot_Shoot");
         public static SoundStyle Gun_Snowblindness_Clipin = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/Snowblindness_Clipin");
         public static SoundStyle Gun_Snowblindness_Clipout = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/Snowblindness_Clipout");
+        public static SoundStyle Gun_Magnum_Shoot = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/Magnum_Shoot");
+        public static SoundStyle Gun_Magnum_ClipLocked = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/Magnum_ClipLocked");
+        public static SoundStyle Gun_Magnum_ClipOut = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/Magnum_ClipOut");
         public static SoundStyle Bow_Shoot = new SoundStyle(CWRConstant.Asset + "Sounds/Bow/Bow_Shoot");
         public static SoundStyle Bow_String = new SoundStyle(CWRConstant.Asset + "Sounds/Bow/Bow_String");
     }

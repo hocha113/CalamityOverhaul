@@ -8,9 +8,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
     {
         public override string Texture => CWRConstant.Item + "Placeable/" + "FoodStallChair";
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
             return base.IsLoadingEnabled(mod);
         }
         public override void SetDefaults() {

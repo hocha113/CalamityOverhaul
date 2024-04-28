@@ -339,6 +339,15 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileID.Anvils)
                     .Register();
             }
+            //添加恒吹雪的合成
+            {
+                Recipe.Create(ItemType<EternalBlizzard>())
+                    .AddIngredient(ItemType<Arbalest>())
+                    .AddIngredient(ItemType<CoreofEleum>(), 6)
+                    .AddIngredient(ItemID.IceBlock, 500)
+                    .AddTile(TileID.IceMachine)
+                    .Register();
+            }
             //添加魔影系列的合成
             {
                 //诘责

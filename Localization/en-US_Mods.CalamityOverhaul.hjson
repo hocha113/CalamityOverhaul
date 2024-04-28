@@ -2402,6 +2402,33 @@ Items: {
 			"It doesn't do any good."
 			'''
 	}
+
+	EternalBlizzardEcType: {
+		DisplayName: Eternal Blizzard
+		Tooltip:
+			'''
+			Has four rounds of multiple shots, firing exploding ice pick arrows
+			Right-click for a single rapid fire, arrows will have tracking ability
+			'''
+	}
+
+	SlagMagnumEcType: {
+		DisplayName: Slag Magnum
+		Tooltip:
+			'''
+			Converts musket bullets into fossil fragments, which generate additional fossil fragments when hit
+			"There are no special infected people here."
+			'''
+	}
+
+	SparkSpreaderEcType: {
+		DisplayName: Spark Spreader
+		Tooltip:
+			'''
+			Ignite your enemy with a spark
+			Using gel as ammunition
+			'''
+	}
 }
 
 Projectiles: {
@@ -2938,6 +2965,9 @@ Projectiles: {
 	WingmanHeldProj.DisplayName: Wingman
 	FrostFuryHeldProj.DisplayName: Frost Fury
 	BowofLightHeldProj.DisplayName: Bowof Light
+	EternalBlizzardHeldProj.DisplayName: Eternal Blizzard
+	SlagMagnumHeldProj.DisplayName: Slag Magnum
+	SparkSpreaderHeldProj.DisplayName: Spark Spreader
 }
 
 Configs: {

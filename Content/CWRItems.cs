@@ -160,6 +160,10 @@ namespace CalamityOverhaul.Content
         /// 是一把弓
         /// </summary>
         public bool IsBow;
+        /// <summary>
+        /// 无特殊右键效果，物品不受真实世界模组右键修改影响
+        /// </summary>
+        public bool NoSpecialAltTOVModEffect;
         #endregion
 
         public override void SetDefaults(Item item) {

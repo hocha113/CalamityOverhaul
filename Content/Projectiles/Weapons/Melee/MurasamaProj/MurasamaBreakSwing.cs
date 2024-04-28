@@ -310,7 +310,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 6)
-            , MurasamaEcType.NameIsVergil(Owner) ? Color.Blue : Color.White, Projectile.rotation
+            , MurasamaEcType.NameIsVergil(Owner) ? Color.BlueViolet : Color.White, Projectile.rotation
             , CWRUtils.GetOrig(value, 6), Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
             return false;
         }
