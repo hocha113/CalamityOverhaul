@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Events;
 using CalamityMod.Graphics.Renderers;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.UI;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
@@ -7,6 +8,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
@@ -15,6 +17,7 @@ using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
+using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Common
 {
@@ -24,6 +27,8 @@ namespace CalamityOverhaul.Common
         public delegate void On_VoidFunc_Dalegate(ref PlayerDrawSet drawInfo, bool drawOnBack);
         public delegate void On_VoidFunc_Instance_Dalegate(object inds);
         public delegate bool On_ShouldForceUseAnim_Dalegate(Player player, Item item);
+        public delegate void On_TrO_ItemPowerAttacks_Load_Dalegate(object obj);
+        public delegate bool On_TrO_Broadsword_ShouldApplyItemOverhaul_Dalegate(object obj, Item item);
         public delegate bool On_AttemptPowerAttackStart_Dalegate(object obj, Item item, Player player);
         public delegate bool On_OnSpawnEnchCanAffectProjectile_Dalegate(Projectile projectile, bool allowMinions);
         public delegate void On_BossHealthBarManager_Draw_Dalegate(object obj, SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info);
@@ -49,10 +54,13 @@ namespace CalamityOverhaul.Common
         public static Type trO_ArrowPlayerDL_Type;
         public static Type trO_PlayerHoldOutAnimation_Type;
         public static Type trO_CrosshairSystem_Type;
+        public static Type trO_Broadsword_Type;
         public static MethodBase trO_MuzzleflashPlayerDL_Draw_Method;
         public static MethodBase trO_ArrowPlayerDL_Draw_Method;
         public static MethodBase trO_PlayerHoldOutAnimation_Method;
         public static MethodBase trO_Crosshair_AddImpulse_Method;
+        public static MethodBase trO_itemPowerAttacksTypes_Load_Method;
+        public static MethodBase trO_Broadsword_ShouldApplyItemOverhaul_Method;
         public static MethodBase trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method;
 
         public static Type[] fargowiltasSoulsTypes;
@@ -148,51 +156,73 @@ namespace CalamityOverhaul.Common
                     if (type.Name == "MuzzleflashPlayerDrawLayer") {
                         trO_MuzzleflashPlayerDL_Type = type;
                     }
-                    if (type.Name == "ArrowPlayerDrawLayer") {
+                    else if (type.Name == "ArrowPlayerDrawLayer") {
                         trO_ArrowPlayerDL_Type = type;
                     }
-                    if (type.Name == "PlayerHoldOutAnimation") {
+                    else if (type.Name == "PlayerHoldOutAnimation") {
                         trO_PlayerHoldOutAnimation_Type = type;
                     }
-                    if (type.Name == "CrosshairSystem") {
+                    else if (type.Name == "CrosshairSystem") {
                         trO_CrosshairSystem_Type = type;
                     }
-                    if (type.Name == "ItemPowerAttacks") {
+                    else if (type.Name == "ItemPowerAttacks") {
                         trO_itemPowerAttacksTypes = type;
                     }
+                    else if (type.Name == "Broadsword") {
+                        trO_Broadsword_Type = type;
+                    }
                 }
+
                 if (trO_PlayerHoldOutAnimation_Type != null) {
                     trO_PlayerHoldOutAnimation_Method = trO_PlayerHoldOutAnimation_Type.GetMethod("ShouldForceUseAnim", BindingFlags.Static | BindingFlags.NonPublic);
-                }
-                if (trO_PlayerHoldOutAnimation_Method != null) {
-                    MonoModHooks.Add(trO_PlayerHoldOutAnimation_Method, On_ShouldForceUseAnim_Hook);
+                    if (trO_PlayerHoldOutAnimation_Method != null) {
+                        MonoModHooks.Add(trO_PlayerHoldOutAnimation_Method, On_ShouldForceUseAnim_Hook);
+                    }
+                    else {
+                        "未成功加载 trO_PlayerHoldOutAnimation_Method 是否是 PlayerHoldOutAnimation.ShouldForceUseAnim 已经改动?".DompInConsole();
+                    }
                 }
                 else {
-                    "未成功加载 trO_PlayerHoldOutAnimation_Method 是否是 PlayerHoldOutAnimation.ShouldForceUseAnim 已经改动?".DompInConsole();
+                    "未成功加载 trO_PlayerHoldOutAnimation_Type 是否是 TerrariaOverhaul.PlayerHoldOutAnimation 已经改动?".DompInConsole();
                 }
 
                 if (trO_CrosshairSystem_Type != null) {
                     trO_Crosshair_AddImpulse_Method = trO_CrosshairSystem_Type.GetMethod("AddImpulse", BindingFlags.Static | BindingFlags.Public);
+                    if (trO_Crosshair_AddImpulse_Method != null) {
+
+                    }
+                    else {
+                        "未成功加载 trO_Crosshair_AddImpulse_Method 是否是 TerrariaOverhaul.CrosshairSystem.AddImpulse 已经改动?".DompInConsole();
+                    }
                 }
                 else {
                     "未成功加载 trO_CrosshairSystem_Type 是否是 TerrariaOverhaul.CrosshairSystem 已经改动?".DompInConsole();
                 }
 
-                if (trO_Crosshair_AddImpulse_Method != null) {
-
-                }
-                else {
-                    "未成功加载 trO_Crosshair_AddImpulse_Method 是否是 TerrariaOverhaul.CrosshairSystem.AddImpulse 已经改动?".DompInConsole();
-                }
-
                 if (trO_itemPowerAttacksTypes != null) {
                     trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method = trO_itemPowerAttacksTypes.GetMethod("AttemptPowerAttackStart", BindingFlags.Instance | BindingFlags.Public);
-                }
-                if (trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method != null) {
-                    MonoModHooks.Add(trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method, On_AttemptPowerAttackStart_Hook);
+                    if (trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method != null) {
+                        MonoModHooks.Add(trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method, On_AttemptPowerAttackStart_Hook);
+                    }
+                    else {
+                        "未成功加载 trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method 是否是 TerrariaOverhaul.ItemPowerAttacks.AttemptPowerAttackStart 已经改动?".DompInConsole();
+                    }
                 }
                 else {
-                    "未成功加载 trO_Crosshair_AddImpulse_Method 是否是 TerrariaOverhaul.ItemPowerAttacks.AttemptPowerAttackStart 已经改动?".DompInConsole();
+                    "未成功加载 trO_itemPowerAttacksTypes 是否是 TerrariaOverhaul.ItemPowerAttacks 已经改动?".DompInConsole();
+                }
+
+                if (trO_Broadsword_Type != null) {
+                    trO_Broadsword_ShouldApplyItemOverhaul_Method = trO_Broadsword_Type.GetMethod("ShouldApplyItemOverhaul", BindingFlags.Instance | BindingFlags.Public);
+                    if (trO_Broadsword_ShouldApplyItemOverhaul_Method != null) {
+                        MonoModHooks.Add(trO_Broadsword_ShouldApplyItemOverhaul_Method, On_ShouldApplyItemOverhaul_Hook);
+                    }
+                    else {
+                        "未成功加载 trO_Broadsword_ShouldApplyItemOverhaul_Method 是否是 TerrariaOverhaul.Broadsword.ShouldApplyItemOverhaul 已经改动?".DompInConsole();
+                    }
+                }
+                else {
+                    "未成功加载 trO_Broadsword_Type 是否是 TerrariaOverhaul.Broadsword 已经改动?".DompInConsole();
                 }
             }
             else {
@@ -233,7 +263,7 @@ namespace CalamityOverhaul.Common
 
             #endregion
 
-            #region CalamityMod_noumenon
+            #region calamityMod_noumenon
 
             //这一切不该发生，灾厄没有在这里留下任何可扩展的接口，如果想要那该死血条的为第三方事件靠边站，只能这么做，至少这是我目前能想到的方法
             BossHealthBarManager_Draw_Method = typeof(BossHealthBarManager).GetMethod("Draw", BindingFlags.Instance | BindingFlags.Public);
@@ -247,18 +277,22 @@ namespace CalamityOverhaul.Common
             #endregion
         }
 
-        private static bool On_AttemptPowerAttackStart_Hook(On_AttemptPowerAttackStart_Dalegate orig, object obj, Item item, Player player) {
-            if (item.IsAir || item.type == ItemID.None) {
+        private static bool On_ShouldApplyItemOverhaul_Hook(On_TrO_Broadsword_ShouldApplyItemOverhaul_Dalegate orig, object obj, Item item) {
+            int[] noEffect = new int[] { ItemType<TrueBiomeBlade>(), ItemType<OmegaBiomeBlade>(), ItemType<BrokenBiomeBlade>(),};
+            if (noEffect.Contains(item.type)) {
                 return false;
             }
-            if (item.CWR().NoSpecialAltTOVModEffect) {
+            return orig.Invoke(obj, item);
+        }
+
+        private static bool On_AttemptPowerAttackStart_Hook(On_AttemptPowerAttackStart_Dalegate orig, object obj, Item item, Player player) {
+            if (item.IsAir || item.type == ItemID.None) {
                 return false;
             }
             return orig.Invoke(obj, item, player);
         }
 
-        private static void On_BossHealthBarManager_Draw_Hook(On_BossHealthBarManager_Draw_Dalegate orig, object obj
-            , SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info) {
+        private static void On_BossHealthBarManager_Draw_Hook(On_BossHealthBarManager_Draw_Dalegate orig, object obj, SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info) {
             int startHeight = 100;
             int x = Main.screenWidth - 420;
             int y = Main.screenHeight - startHeight;
@@ -333,28 +367,28 @@ namespace CalamityOverhaul.Common
             return !isHeld && orig != null;
         }
 
-        public static void On_MP_Draw_1_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
+        private static void On_MP_Draw_1_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
             if (!IFDrawHeld(orig, drawInfo)) {
                 return;
             }
             orig.Invoke(obj, ref drawInfo);
         }
 
-        public static void On_MP_Draw_2_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
+        private static void On_MP_Draw_2_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
             if (!IFDrawHeld(orig, drawInfo)) {
                 return;
             }
             orig.Invoke(obj, ref drawInfo);
         }
 
-        public static void On_MP_Draw_3_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
+        private static void On_MP_Draw_3_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
             if (!IFDrawHeld(orig, drawInfo)) {
                 return;
             }
             orig.Invoke(obj, ref drawInfo);
         }
 
-        public static bool On_ShouldForceUseAnim_Hook(On_ShouldForceUseAnim_Dalegate orig, Player player, Item item) {
+        private static bool On_ShouldForceUseAnim_Hook(On_ShouldForceUseAnim_Dalegate orig, Player player, Item item) {
             bool result = true;
 
             if (item == null) {

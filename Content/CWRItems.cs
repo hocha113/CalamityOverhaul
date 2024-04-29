@@ -160,10 +160,6 @@ namespace CalamityOverhaul.Content
         /// 是一把弓
         /// </summary>
         public bool IsBow;
-        /// <summary>
-        /// 无特殊右键效果，物品不受真实世界模组右键修改影响
-        /// </summary>
-        public bool NoSpecialAltTOVModEffect;
         #endregion
 
         public override void SetDefaults(Item item) {
@@ -402,7 +398,7 @@ namespace CalamityOverhaul.Content
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit) {
             CWRPlayer modPlayer = player.CWR();
             if (modPlayer.LoadMuzzleBrake) {
-                if (item.DamageType == DamageClass.Ranged) {
+                if (item.DamageType.CountsAsClass(DamageClass.Ranged)) {
                     if (modPlayer.LoadMuzzleBrakeLevel == 1) {
                         crit += 5;
                     } else if (modPlayer.LoadMuzzleBrakeLevel == 2) {
@@ -419,7 +415,7 @@ namespace CalamityOverhaul.Content
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
             CWRPlayer modPlayer = player.CWR();
             if (modPlayer.LoadMuzzleBrake) {
-                if (item.DamageType == DamageClass.Ranged) {
+                if (item.DamageType.CountsAsClass(DamageClass.Ranged)) {
                     if (modPlayer.LoadMuzzleBrakeLevel == 1) {
                         damage *= 0.75f;
                     } else if (modPlayer.LoadMuzzleBrakeLevel == 2) {

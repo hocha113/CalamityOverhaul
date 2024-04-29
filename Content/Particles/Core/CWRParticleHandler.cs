@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Particles.Core
                     string texturePath = type.Namespace.Replace('.', '/') + "/" + type.Name;
                     if (instance.Texture != "")
                         texturePath = instance.Texture;
-                    ParticleIDToTexturesDic[ID] = ModContent.Request<Texture2D>(texturePath).Value;
+                    ParticleIDToTexturesDic[ID] = ModContent.Request<Texture2D>(texturePath, AssetRequestMode.ImmediateLoad).Value;
                 }
             }
         }

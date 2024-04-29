@@ -73,9 +73,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected int kreloadTimeValue;
         /// <summary>
+        /// 装弹时间的内部基本值
+        /// </summary>
+        protected int _kreloadMaxTime = 60;
+        /// <summary>
         /// 装弹所需要的时间，默认为60
         /// </summary>
-        protected int kreloadMaxTime = 60;
+        protected int kreloadMaxTime {
+            get => _kreloadMaxTime + extraKreloadMaxTime;
+            set => _kreloadMaxTime = value;
+        }
+        /// <summary>
+        /// 额外装弹时间，默认为0，完成一次装弹后自动回归于0
+        /// </summary>
+        protected int extraKreloadMaxTime = 0;
         /// <summary>
         /// 开火间隔，默认为10
         /// </summary>
@@ -442,8 +453,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     LoadBulletsIntoMagazine();
                     LoadingQuantity = 1;
                     ExpendedAmmunition();
-                    OnKreload = true;
-                    kreloadTimeValue = kreloadMaxTime;
+                    if (!CanFire) {
+                        OnKreload = true;
+                        kreloadTimeValue = kreloadMaxTime;
+                        extraKreloadMaxTime = 0;
+                    }
+                    else {
+                        SoundEngine.PlaySound(LoadingAA_Shotgun.pump with { Volume = 0.4f, Pitch = -0.1f }, Projectile.Center);
+                        GunShootCoolingValue = 30;
+                        extraKreloadMaxTime = 10;
+                    }
                 }
                 return true;
             }
@@ -554,6 +573,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     if (AmmoState.Amount >= MinimumAmmoPerReload) {//只有弹药量大于最小弹药量时才可装填
                         OnKreload = true;
                         kreloadTimeValue = kreloadMaxTime;
+                        extraKreloadMaxTime = 0;
                     }
                 }
             }

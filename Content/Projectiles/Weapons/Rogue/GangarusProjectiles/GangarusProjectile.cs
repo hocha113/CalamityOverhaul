@@ -124,6 +124,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
         }
 
         public void SpanSoulSeeker(Vector2 spanPos) {
+            SoundEngine.PlaySound(CosmicCalamityProjectile.BelCanto with { Volume = 0.5f, Pitch = 0.2f });
             if (Projectile.IsOwnedByLocalPlayer()) {
                 NPC hasGSignTarget = null;
                 foreach (NPC npc in Main.npc) {

@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PlagueTaintedSMG";
         public override void SetDefaults() {
-            Item.damage = 76;
+            Item.damage = 65;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 98;
             Item.height = 50;
@@ -34,5 +34,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.SetCartridgeGun<PlagueTaintedSMGHeldProj>(90);
             Item.CWR().Scope = true;
         }
+        public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 5;
     }
 }

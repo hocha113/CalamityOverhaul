@@ -222,6 +222,15 @@ namespace CalamityOverhaul.Content
                     modifiers.DefenseEffectiveness *= 0.75f;
                 }
             }
+            if (projectile.type == ProjectileID.FinalFractal) {
+                if (CWRIDs.WormBodys.Contains(projectile.type)) {
+                    modifiers.FinalDamage *= 0.9f;
+                }
+                if (target.type == CWRIDs.AresLaserCannon || target.type == CWRIDs.AresPlasmaFlamethrower
+                    || target.type == CWRIDs.AresTeslaCannon || target.type == CWRIDs.AresGaussNuke) {
+                    modifiers.FinalDamage *= 0.7f;
+                }
+            }
         }
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {

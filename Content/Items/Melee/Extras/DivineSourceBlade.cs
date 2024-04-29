@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         {
             Item.height = 154;
             Item.width = 154;
-            Item.damage = 455;
+            Item.damage = 475;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = Item.useTime = 15;
             Item.scale = 1;
@@ -36,10 +36,10 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.value = CalamityGlobalItem.Rarity1BuyPrice;
             Item.rare = ModContent.RarityType<Violet>();
             Item.shoot = ModContent.ProjectileType<DivineSourceBladeProjectile>();
-            Item.shootSpeed = 17f;
+            Item.shootSpeed = 18f;
         }
 
-        public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 12;
+        public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 10;
 
         public override void UseAnimation(Player player)
         {
