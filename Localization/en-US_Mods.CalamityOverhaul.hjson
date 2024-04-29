@@ -3415,9 +3415,9 @@ TextContent: {
 		CWRRecipes_GodEaterWeapon: God Eater weapon
 		CWRRecipes_FishGroup: fish
 		Murasama_Text0: Unlocked
-		Murasama_Text1: Not yet unlocked. You need to pass test 2
-		Murasama_Text2: Not yet unlocked. You need to pass test 5
-		Murasama_Text3: Not yet unlocked. You need to pass test 8
+		Murasama_Text1: Not yet unlocked. Need to pass test 2
+		Murasama_Text2: Not yet unlocked. Need to pass test 5
+		Murasama_Text3: Not yet unlocked. Need to pass test 9
 		MouseTextContactPanel_TextContent: Left Ctrl on the item icon switch to synthesize the recipe
 		CWRItem_IsInfiniteItem_TextContent: Only the ultimate combination can stabilize it, otherwise it will hit the moment that triggers the dreaded collapse of the black hole
 		CWRItem_IsRemakeItem_TextContent: -overhauls-

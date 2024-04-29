@@ -122,6 +122,10 @@ namespace CalamityOverhaul.Content
                 return false;
             }
             if (MurasamabrBeatBackBool) {
+                Vector2 v = Collision.TileCollision(npc.position, MurasamabrBeatBackVr, npc.width, npc.height);
+                if (MurasamabrBeatBackVr != v) {
+                    MurasamabrBeatBackBool = false;
+                }
                 npc.position += MurasamabrBeatBackVr;
                 if (oldNPCPos.Y - npc.position.Y < 0) {
                     MurasamabrBeatBackVr.Y *= 0.9f;

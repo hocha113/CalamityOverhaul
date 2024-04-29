@@ -23,24 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override string TargetToolTipItemName => "SHPCEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<SHPCHeldProj>();
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-            if (SHPCEcType.IsLegend) {
-                bool plantera = NPC.downedPlantBoss;
-                bool golem = NPC.downedGolemBoss;
-                bool cultist = NPC.downedAncientCultist;
-                bool moonLord = NPC.downedMoonlord;
-                bool providence = DownedBossSystem.downedProvidence;
-                bool devourerOfGods = DownedBossSystem.downedDoG;
-                bool yharon = DownedBossSystem.downedYharon;
-                float damageMult = 1f +
-                    (plantera ? 0.1f : 0f) + //1.1
-                    (golem ? 0.15f : 0f) + //1.25
-                    (cultist ? 3.5f : 0f) + //4.75
-                    (moonLord ? 4.5f : 0f) + //9.25
-                    (providence ? 7.5f : 0f) + //16.75
-                    (devourerOfGods ? 2.5f : 0f) + //19.25
-                    (yharon ? 30f : 0f); //49.25
-                damage *= damageMult;
-            }
+            SHPCEcType.SHPCDamage(ref damage);
             return false;
         }
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {

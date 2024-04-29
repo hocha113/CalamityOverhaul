@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.SetHeldProj<SHPCHeldProj>();
         }
 
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
+        public static void SHPCDamage(ref StatModifier damage) {
             if (IsLegend) {
                 bool plantera = NPC.downedPlantBoss;
                 bool golem = NPC.downedGolemBoss;
@@ -27,15 +27,19 @@ namespace CalamityOverhaul.Content.Items.Magic
                 bool devourerOfGods = DownedBossSystem.downedDoG;
                 bool yharon = DownedBossSystem.downedYharon;
                 float damageMult = 1f +
-                    (plantera ? 0.1f : 0f) + //1.1
-                    (golem ? 0.15f : 0f) + //1.25
-                    (cultist ? 3.5f : 0f) + //4.75
-                    (moonLord ? 4.5f : 0f) + //9.25
-                    (providence ? 7.5f : 0f) + //16.75
-                    (devourerOfGods ? 2.5f : 0f) + //19.25
-                    (yharon ? 30f : 0f); //49.25
+                    (plantera ? 0.1f : 0f) +
+                    (golem ? 0.11f : 0f) +
+                    (cultist ? 2.6f : 0f) +
+                    (moonLord ? 4f : 0f) +
+                    (providence ? 3.6f : 0f) +
+                    (devourerOfGods ? 3.5f : 0f) +
+                    (yharon ? 6f : 0f);
                 damage *= damageMult;
             }
+        }
+
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
+            SHPCDamage(ref damage);
         }
 
         public override void ModifyTooltips(List<TooltipLine> list) {

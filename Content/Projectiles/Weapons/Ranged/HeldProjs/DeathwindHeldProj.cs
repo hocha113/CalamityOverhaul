@@ -27,10 +27,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (CalamityUtils.CheckWoodenAmmo(AmmoTypes, Owner)) {
                 SoundEngine.PlaySound(SoundID.Item12, Projectile.Center);
                 for (int i = 0; i < 3; i++) {
-                    int ammo = Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
+                    int ammo = Projectile.NewProjectile(Owner.parent(), Projectile.Center, (Projectile.rotation + MathHelper.ToRadians(5 - 5 * i)).ToRotationVector2()
                         , ModContent.ProjectileType<DeathLaser>(), WeaponDamage, WeaponKnockback, Projectile.owner);
                     Main.projectile[ammo].ai[1] = Projectile.whoAmI;
-                    Main.projectile[ammo].rotation = Projectile.rotation + MathHelper.ToRadians(5 - 5 * i);
                 }
             }
             else {

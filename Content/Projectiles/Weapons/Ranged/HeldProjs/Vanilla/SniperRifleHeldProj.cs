@@ -31,10 +31,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 3f;
             RangeOfStress = 48;
             kreloadMaxTime = 120;
+            LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
+            LoadingAA_Handgun.feederOffsetRot = -15;
+            LoadingAA_Handgun.clipOut = CWRSound.Gun_Musket_ClipOut with { Volume = 0.65f };
+            LoadingAA_Handgun.slideInShoot = CWRSound.Gun_HandGun_SlideInShoot with { Pitch = -0.3f, Volume = 0.55f };
         }
 
         public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 13);
             criticalStrike = BulletNum == 1;
         }
 

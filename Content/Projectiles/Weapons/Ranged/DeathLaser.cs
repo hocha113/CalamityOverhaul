@@ -32,6 +32,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.localNPCHitCooldown = 12;
         }
 
+        public override bool ShouldUpdatePosition() => false;
+
         public int Status { get => (int)Projectile.ai[0]; set => Projectile.ai[0] = value; }
         public int HeldProj { get => (int)Projectile.ai[1]; set => Projectile.ai[1] = value; }
         public int Time { get => (int)Projectile.ai[2]; set => Projectile.ai[2] = value; }
@@ -45,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Leng == 0)
                 Leng = 5000;
             Projectile.alpha += 15;
-
+            Projectile.rotation = Projectile.velocity.ToRotation();
             Vector2 toRot = Projectile.rotation.ToRotationVector2();
             Vector2 ordPos = Projectile.Center;
 

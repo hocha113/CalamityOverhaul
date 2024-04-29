@@ -20,6 +20,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().Scope = true;
         }
 
-        public override void ModifyWeaponCrit(Item item, Player player, ref float crit) => crit += 5;
+        public override void ModifyWeaponCrit(Item item, Player player, ref float crit)=> crit += 5;
     }
 }
