@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
             Item.knockBack = 1.5f;
-            Item.value = Terraria.Item.buyPrice(0, 5, 3, 5);
+            Item.value = Terraria.Item.buyPrice(0, 8, 3, 5);
             Item.rare = ModContent.RarityType<DarkOrange>();
             Item.UseSound = CWRSound.Gun_Snowblindness_Shoot with { Volume = 0.3f };
             Item.autoReuse = true;

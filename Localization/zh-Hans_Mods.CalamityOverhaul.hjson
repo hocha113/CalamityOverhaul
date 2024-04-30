@@ -3452,7 +3452,7 @@ TextContent: {
 		SupertableUI_Text3: 无
 		OverhaulTheBibleUI_Text:
 			'''
-			滑动鼠标滚轮，在这里查看已经被重置过的物品
+			滑动鼠标滚轮或者拖动左侧进度条，上下浏览被重置过的物品
 			这些仅作为参考，因为许多局部改动并不会出现在这个名单中
 			'''
 		OverhaulTheBibleUI_Text1: 监视战士

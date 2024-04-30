@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.penetrate = -1;
             Projectile.timeLeft = 20;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1;//InWorldBossPhase.Instance.Level() >= 5 ? 5 : 
+            Projectile.localNPCHitCooldown = -1;
             Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
@@ -49,11 +49,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override void AI() {
             Lighting.AddLight(Projectile.Center, Color.IndianRed.ToVector3() * 2.2f);
-            
             Projectile.scale += (0.05f + level * 0.005f);
             Projectile.position += Owner.velocity;
             Projectile.rotation = Projectile.velocity.ToRotation();
-            //Projectile.position.Y -= (0.02f + level * 0.005f);
             Owner.direction = Math.Sign(Owner.Center.To(Projectile.Center).X);
         }
 
@@ -75,6 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
                 return;
             }
+
             if (npc.type == NPCID.GolemHead || npc.type == NPCID.GolemFistLeft || npc.type == NPCID.GolemFistRight) {
                 foreach (NPC over in Main.npc) {
                     if (over.type == NPCID.Golem) {
@@ -84,6 +83,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
                 return;
             }
+
             if (CWRIDs.targetNpcTypes4.Contains(npc.type)) {
                 spanDust(33, DustID.Blood);
                 return;
@@ -145,11 +145,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 spanDust(33, (int)CalamityDusts.Nightwither);
                 return;
             }
+
             //执行击飞效果的具体代码
-            npc.CWR().MurasamabrBeatBackBool = true;
-            npc.CWR().oldNPCPos = npc.position;
-            npc.CWR().MurasamabrBeatBackVr = flyVr;
-            npc.CWR().MurasamabrBeatBackAttenuationForce = 0.99f;
+            npc.CWR().OverBeatBackBool = true;
+            npc.CWR().OldNPCPos = npc.position;
+            npc.CWR().OverBeatBackVr = flyVr;
+            npc.CWR().OverBeatBackAttenuationForce = 0.99f;
+            if (!CWRUtils.isSinglePlayer) {
+                var netMessage = CWRMod.Instance.GetPacket();
+                netMessage.Write((byte)CWRMessageType.OverBeatBack);
+                netMessage.Write((byte)npc.whoAmI);
+                netMessage.Write(true);
+                netMessage.WriteVector2(flyVr);
+                netMessage.Write(0.99f);
+                netMessage.Send(-1, Owner.whoAmI);
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

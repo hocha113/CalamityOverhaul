@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override void PostUpdate() {
+        private void SittingFoodStallChair() {
             if (Player.sitting.TryGetSittingBlock(Player, out Tile t)) {
                 if (t.TileType == CWRIDs.FoodStallChairTile) {
                     InFoodStallChair = true;
@@ -210,35 +210,18 @@ namespace CalamityOverhaul.Content
                     Main.instance.CameraModifiers.Add(modifier2);
                 }
             }
-            if (DompBool) {
-                $"{Player.name}成功进行网络同步".Domp();
-                DompBool = false;
-            }
+        }
+
+        public override void PostUpdate() {
+            SittingFoodStallChair();
             if (RecoilAccelerationAddBool) {
                 Player.velocity += RecoilAccelerationValue;
                 RecoilAccelerationAddBool = false;
             }
-        }
-
-        public override void PostUpdateEquips() {
-            //Item item = Player.GetItem();
-            //if (item.type == ItemID.None) {
-            //    return;
-            //}
-            //CWRItems modItem = item.CWR();
-            //int projType = modItem.heldProjType;
-            //if (projType > 0) {
-            //    if (Player.ownedProjectileCounts[projType] == 0 && Main.myPlayer == Player.whoAmI) {
-            //        Projectile.NewProjectileDirect(Player.parent(), Player.Center, Vector2.Zero, projType, item.damage, item.knockBack, Player.whoAmI);
-            //    }
-            //    if (CWRIDs.ItemToBaseRanged.TryGetValue(item.type, out BaseHeldRanged ranged)) {
-            //        bool lDown = Player.PressKey();
-            //        bool rDown = Player.PressKey(false);
-            //        if (lDown || (rDown && !lDown && ranged.CanRightClick && !Player.cursorItemIconEnabled)) {
-            //            HeldStyle = 0;
-            //        }
-            //    }
-            //}//此处的性能消耗需要进行探讨，相比于更新在CWRItems.HoldItem的优势是什么？或许是更新顺序更加的好，但写在这里也意味着几乎无时无刻都会运行这段逻辑徒增部分性能消耗
+            if (DompBool) {
+                $"{Player.name}成功进行网络同步:[{Main.GameUpdateCount}]".Domp();
+                DompBool = false;
+            }
         }
 
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo) {

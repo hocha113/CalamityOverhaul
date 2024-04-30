@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.knockBack = 5.75f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.value = CalamityGlobalItem.Rarity3BuyPrice;
+            Item.value = Item.buyPrice(6, 23, 75, 0);
             Item.rare = ItemRarityID.Orange;
             Item.shoot = ModContent.ProjectileType<DawnshatterAzureProj>();
             Item.shootSpeed = 8f;

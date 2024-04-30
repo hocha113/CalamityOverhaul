@@ -3428,7 +3428,7 @@ TextContent: {
 		SupertableUI_Text3: nothing
 		OverhaulTheBibleUI_Text:
 			'''
-			Swipe the mouse wheel to see the items that have been reset here
+			Swipe the mouse wheel or drag the left progress bar to navigate up and down the reset items
 			These are for reference only, as many partial changes do not appear in this list
 			'''
 		OverhaulTheBibleUI_Text1: Monitor the Meleer

@@ -29,11 +29,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 2.5f;
             Item.UseSound = SoundID.Item60;
-            //Item.noUseGraphic = true;
-            //Item.noMelee= true;
             Item.channel = true;
             Item.autoReuse = true;
-            Item.value = CalamityGlobalItem.Rarity1BuyPrice;
+            Item.value = Terraria.Item.buyPrice(0, 4, 75, 0);
             Item.rare = ModContent.RarityType<Violet>();
             Item.shoot = ModContent.ProjectileType<DragonsScaleGreatswordBeam>();
             Item.shootSpeed = 7f;

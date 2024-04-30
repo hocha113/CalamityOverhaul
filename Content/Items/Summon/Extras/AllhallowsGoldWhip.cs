@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
             Item.channel = true;
             Item.useTurn = true;
             Item.autoReuse = true;
+            Item.value = Item.buyPrice(0, 36, 5, 75);
         }
 
         public override bool MeleePrefix() {

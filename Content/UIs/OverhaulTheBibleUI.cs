@@ -58,24 +58,35 @@ namespace CalamityOverhaul.Content.UIs
         private bool magic = true;
         private bool summon = true;
         private bool rogue = true;
+        private bool slive = false;
 
         private bool onMeleeP;
         private bool onRangedP;
         private bool onMagicP;
         private bool onSummonP;
         private bool onRogueP;
+        private bool onSliveP;
+        private bool onSliveP2;
+        private bool onLsmogP;
+        private bool onRsmogP;
 
         private Rectangle meleeRec;
         private Rectangle rangedRec;
         private Rectangle magicRec;
         private Rectangle summonRec;
         private Rectangle rogueRec;
+        private Rectangle sliveRec;
+        private Rectangle LsmogRec;
+        private Rectangle RsmogRec;
 
         private Vector2 meleePos;
         private Vector2 rangedPos;
         private Vector2 magicPos;
         private Vector2 summonPos;
         private Vector2 roguePos;
+        private Vector2 slivePos;
+        private Vector2 LsmogPos;
+        private Vector2 RsmogPos;
 
         private float SlideroutVlue;
 
@@ -100,7 +111,7 @@ namespace CalamityOverhaul.Content.UIs
                 if (LCCoffsetY == 0) {
                     LCCoffsetY = 0.00001f;//无论如何都不要出现零
                 }
-                return (LCCoffsetY / -snegValue) * 198;
+                return LCCoffsetY / -snegValue * 198;
             }
         }
         public int onIndex;
@@ -131,6 +142,9 @@ namespace CalamityOverhaul.Content.UIs
             magicPos = new Vector2(SlideroutVlue, 30 + frmeInY * 2) + DrawPos;
             summonPos = new Vector2(SlideroutVlue - 10, 30 + frmeInY * 3) + DrawPos;
             roguePos = new Vector2(SlideroutVlue + 5, 30 + frmeInY * 4) + DrawPos;
+            slivePos = DrawPos + new Vector2(5, 5) + new Vector2(0, SliderValueSengs);
+            LsmogPos = DrawPos + new Vector2(-65 + SlideroutVlue + 35, 100);
+            RsmogPos = DrawPos + new Vector2(-65 - SlideroutVlue - 35 + 570, 100);
 
             MainRec = new Rectangle((int)DrawPos.X, (int)DrawPos.Y, Texture.Width, Texture.Height);
 
@@ -139,6 +153,9 @@ namespace CalamityOverhaul.Content.UIs
             magicRec = new Rectangle((int)magicPos.X, (int)magicPos.Y, frmeInY, frmeInY);
             summonRec = new Rectangle((int)summonPos.X, (int)summonPos.Y, frmeInY, frmeInY);
             rogueRec = new Rectangle((int)roguePos.X, (int)roguePos.Y, frmeInY, frmeInY);
+            sliveRec = new Rectangle((int)slivePos.X, (int)slivePos.Y, 10, 15);
+            LsmogRec = new Rectangle((int)LsmogPos.X, (int)LsmogPos.Y, 30, 30);
+            RsmogRec = new Rectangle((int)RsmogPos.X, (int)RsmogPos.Y, 30, 30);
 
             Rectangle mouseRec = new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1);
 
@@ -149,6 +166,9 @@ namespace CalamityOverhaul.Content.UIs
             onMagicP = magicRec.Intersects(mouseRec);
             onSummonP = summonRec.Intersects(mouseRec);
             onRogueP = rogueRec.Intersects(mouseRec);
+            onSliveP = sliveRec.Intersects(mouseRec);
+            onLsmogP = LsmogRec.Intersects(mouseRec);
+            onRsmogP = RsmogRec.Intersects(mouseRec);
 
             CloseRec = new Rectangle((int)(DrawPos.X + 470), (int)(DrawPos.Y + 190), 30, 30);
             OnCloseP = CloseRec.Intersects(mouseRec);
@@ -190,8 +210,9 @@ namespace CalamityOverhaul.Content.UIs
                 }
             }
         }
+
         private void setSouldKey(ref bool keyValue, bool onP, int mouseS) {
-            if (onP) {
+            if (onP && !onSliveP) {
                 player.mouseInterface = true;
                 if (mouseS == 1) {
                     SoundEngine.PlaySound(SoundID.MenuClose);
@@ -200,6 +221,7 @@ namespace CalamityOverhaul.Content.UIs
                 }
             }
         }
+
         public override void Update(GameTime gameTime) {
             Initialize();
 
@@ -242,6 +264,28 @@ namespace CalamityOverhaul.Content.UIs
                 if (mouseInCellPos.Y > 198) {
                     mouseInCellPos.Y = 198;
                 }
+
+                if (onSliveP || onSliveP2) {
+                    if (museS == 3) {
+                        onSliveP2 = true;
+                        float numY = MouPos.Y;
+                        if (numY < 310) {
+                            numY = 310;
+                        }
+                        if (numY > 520) {
+                            numY = 520;
+                        }
+                        float numY2 = numY - 310;
+                        float numY3 = numY2 / 210;
+                        LCCoffsetY = numY3 * -snegValue;
+                    }
+                    else {
+                        onSliveP2 = false;
+                    }
+                }
+                else {
+                    onSliveP2 = false;
+                }
                 int mouseCellX = (int)(mouseInCellPos.X / 50f);
                 int mouseCellY = (int)((mouseInCellPos.Y - LCCoffsetY) / 50f);
                 onIndex = (mouseCellY) * MaxInFrameXNum + mouseCellX;
@@ -249,11 +293,13 @@ namespace CalamityOverhaul.Content.UIs
             
             time++;
         }
+
         private Vector2 inIndexGetPos(int index) {
             int x = index % MaxInFrameXNum;
             int y = index / MaxInFrameXNum;
             return new Vector2(x, y);
         }
+
         private Color getSouldColor(bool keyValue, bool onP) {
             Color color;
             if (keyValue) {
@@ -269,13 +315,21 @@ namespace CalamityOverhaul.Content.UIs
             }
             return color;
         }
+
         private void inMouseDrawText(SpriteBatch spriteBatch, string text) {
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, text, Main.MouseScreen.X, Main.MouseScreen.Y + 30, Color.White, Color.Black, new Vector2(0.3f), 1);
         }
+
         public override void Draw(SpriteBatch spriteBatch) {
             if (DrawPos == Vector2.Zero) {
                 DrawPos = new Vector2(500, 300);
             }
+
+            Texture2D value13 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/TexturePackButtons");
+            Rectangle rec1 = new Rectangle(0, 32, 32, 32);
+            spriteBatch.Draw(value13, LsmogPos, rec1, onLsmogP ? Color.Wheat : Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(value13, RsmogPos, rec1, onRsmogP ? Color.Wheat : Color.White, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "1/1", DrawPos.X + 235, DrawPos.Y + 200, Color.White, Color.Black, new Vector2(0.3f), 1.2f);
 
             spriteBatch.Draw(MeleeImage, meleePos, null, getSouldColor(melee, onMeleeP), 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             spriteBatch.Draw(RangedImage, rangedPos, null, getSouldColor(ranged, onRangedP), 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
@@ -312,7 +366,7 @@ namespace CalamityOverhaul.Content.UIs
             Texture2D value2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SliderBar");
             spriteBatch.Draw(value2, DrawPos + new Vector2(5, 5), null, Color.White, 0f, Vector2.Zero, new Vector2(2, 0.88f), SpriteEffects.None, 0);
             Texture2D value3 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/ScrollbarInner");
-            spriteBatch.Draw(value3, DrawPos + new Vector2(5, 5) + new Vector2(0, SliderValueSengs), null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(value3, slivePos, null, onSliveP2 ? Color.Red : Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
 
             string text = CWRLocText.GetTextValue("OverhaulTheBibleUI_Text");
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRUtils.GetSafeText(text, FontAssets.MouseText.Value.MeasureString(text), 110)

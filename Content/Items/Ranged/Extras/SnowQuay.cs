@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.useAmmo = AmmoID.Snowball;
             Item.UseSound = SoundID.Item36 with { Pitch = -0.2f };
             Item.SetCartridgeGun<SnowQuayHeldProj>(400);
+            Item.value = Terraria.Item.buyPrice(0, 1, 75, 0);
         }
 
         public override void AddRecipes() {

@@ -44,24 +44,26 @@ namespace CalamityOverhaul.Content
         public byte WhipHitType = 0;
         public bool SprBoss;
         public bool ObliterateBool;
-        public bool GangarusSign;
-        public ushort colldHitTime = 0;
         /// <summary>
-        /// 实体是否受到鬼妖升龙斩的击退
+        /// 一个特殊标记，用于朗基努斯识别目标
         /// </summary>
-        public bool MurasamabrBeatBackBool;
+        public bool GangarusSign;
+        /// <summary>
+        /// 实体是否受到额外的击退
+        /// </summary>
+        public bool OverBeatBackBool;
         /// <summary>
         /// 击退力的具体向量
         /// </summary>
-        public Vector2 MurasamabrBeatBackVr;
+        public Vector2 OverBeatBackVr;
         /// <summary>
-        /// 升龙击退的衰减力度系数，1为不衰减
+        /// 击退的衰减力度系数，1为不衰减
         /// </summary>
-        public float MurasamabrBeatBackAttenuationForce;
+        public float OverBeatBackAttenuationForce;
         /// <summary>
         /// 上一帧实体的位置
         /// </summary>
-        public Vector2 oldNPCPos;
+        public Vector2 OldNPCPos;
         /// <summary>
         /// 极寒神性屏障
         /// </summary>
@@ -106,10 +108,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override bool CanBeHitByNPC(NPC npc, NPC attacker) {
-            return base.CanBeHitByNPC(npc, attacker);
-        }
-
         public override bool CheckDead(NPC npc) {
             if (ObliterateBool) {
                 return true;
@@ -117,50 +115,34 @@ namespace CalamityOverhaul.Content
             return base.CheckDead(npc);
         }
 
+        private void UpdateOverBeatBack(NPC npc) {
+            if (OverBeatBackBool) {
+                Vector2 v = Collision.TileCollision(npc.position, OverBeatBackVr, npc.width, npc.height);
+                if (OverBeatBackVr != v) {
+                    OverBeatBackBool = false;
+                    return;
+                }
+                npc.position += OverBeatBackVr;
+                if (OldNPCPos.Y - npc.position.Y < 0) {
+                    OverBeatBackVr.Y *= 0.9f;
+                }
+                OldNPCPos = npc.position;
+                OverBeatBackVr *= OverBeatBackAttenuationForce;
+                OverBeatBackVr.X *= OverBeatBackAttenuationForce;
+                if (OverBeatBackVr.LengthSquared() < 2) {
+                    OverBeatBackBool = false;
+                }
+            }
+        }
+
         public override bool PreAI(NPC npc) {
             if (IceParclose) {
                 return false;
             }
-            if (MurasamabrBeatBackBool) {
-                Vector2 v = Collision.TileCollision(npc.position, MurasamabrBeatBackVr, npc.width, npc.height);
-                if (MurasamabrBeatBackVr != v) {
-                    MurasamabrBeatBackBool = false;
-                }
-                npc.position += MurasamabrBeatBackVr;
-                if (oldNPCPos.Y - npc.position.Y < 0) {
-                    MurasamabrBeatBackVr.Y *= 0.9f;
-                }
-                oldNPCPos = npc.position;
-                MurasamabrBeatBackVr *= MurasamabrBeatBackAttenuationForce;
-                MurasamabrBeatBackVr.X *= MurasamabrBeatBackAttenuationForce;
-                if (MurasamabrBeatBackVr.LengthSquared() < 2) {
-                    MurasamabrBeatBackBool = false;
-                }
-            }
-            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-                if (npc.target >= 0 && npc.target < Main.player.Length) {
-                    Player player = Main.player[npc.target];
-                    if (TungstenRiot.TungstenEventNPCDic.ContainsKey(npc.type)) {
-                        if (Main.GameUpdateCount % 60 == 0 && npc.type == ModContent.NPCType<WulfrumDrone>()) {
-                            SoundEngine.PlaySound(SoundID.Item12 with { Volume = 0.7f, Pitch = -0.2f }, npc.Center);
-                            if (!CWRUtils.isClient) {
-                                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
-                                , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerLaser, 12, 0f);
-                            }
-                        }
-                    }
-                    if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
-                        CWRUtils.WulfrumAmplifierAI(npc, 700, 300);
-                        if (Main.GameUpdateCount % 60 == 0) {
-                            SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Volume = 0.4f, Pitch = 0.6f }, npc.Center);
-                            if (!CWRUtils.isClient) {
-                                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
-                                , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerMissile, 12, 0f);
-                            }
-                        }
-                        return false;
-                    }
-                }
+            UpdateOverBeatBack(npc);
+            bool? tungstenset = TungstenRiot.Instance.UpdateNPCPreAISet(npc);
+            if (tungstenset.HasValue) {
+                return tungstenset.Value;
             }
             return base.PreAI(npc);
         }
@@ -224,7 +206,6 @@ namespace CalamityOverhaul.Content
             }
             PerforatorBehavior.Instance.BloodMoonDorp(npc);
             HiveMindBehavior.Instance.BloodMoonDorp(npc);
-            base.OnKill(npc);
         }
 
         public override void HitEffect(NPC npc, NPC.HitInfo hit) {
@@ -245,7 +226,6 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-            base.HitEffect(npc, hit);
         }
 
         public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot) {

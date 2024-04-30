@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.accessory = true;
-            Item.value = CalamityGlobalItem.Rarity12BuyPrice * 8;
+            Item.value = Terraria.Item.buyPrice(180, 22, 15, 0);
             Item.rare = ModContent.RarityType<Turquoise>();
         }
 

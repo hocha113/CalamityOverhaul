@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Armor.Reminiscence
         public override void SetDefaults() {
             Item.width = 18;
             Item.height = 18;
-            Item.value = CalamityGlobalItem.Rarity3BuyPrice;
+            Item.value = Terraria.Item.buyPrice(100, 6, 15, 0);
             Item.rare = ItemRarityID.Orange;
             Item.defense = 177;
         }

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             base.BowShoot();
             fireIndex++;
             if (fireIndex >= 3) {
-                Item.useTime = 20;
+                Item.useTime = 25;
                 fireIndex = 0;
             }
         }

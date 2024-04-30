@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.knockBack = 9.75f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
+            Item.value = Terraria.Item.buyPrice(0, 18, 25, 0);
             Item.shoot = ModContent.ProjectileType<StormGoddessSpearProj>();
             Item.shootSpeed = 15f;
             Item.rare = ModContent.RarityType<DarkBlue>();

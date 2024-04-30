@@ -14,6 +14,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.DD2BetsyBow;
         public override void SetRangedProperty() {
             BowArrowDrawNum = 5;
+            ForcedConversionTargetArrowFunc = () => true;
+            ISForcedConversionDrawArrowInversion = true;
+            ToTargetArrow = ProjectileID.DD2BetsyArrow;
         }
 
         public override void BowShoot() {
