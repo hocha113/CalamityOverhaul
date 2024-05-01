@@ -89,7 +89,8 @@ namespace CalamityOverhaul.Content.Items.Materials
                 .AddIngredient<AstralBar>(QFD(5))//彗星锭
                 .AddIngredient<CosmiliteBar>(QFD(5))//宇宙锭
                 .AddIngredient<CryonicBar>(QFD(5))//极寒锭
-                .AddIngredient<PerennialBar>(QFD(5))//龙篙锭
+                .AddIngredient<PerennialBar>(QFD(5))//永恒锭
+                .AddIngredient<UelibloomBar>(QFD(5))//龙篙锭
                 .AddIngredient<ScoriaBar>(QFD(5))//岩浆锭
                 .AddIngredient<PestilenceIngot>(QFD(5))//瘟疫锭
                 .AddIngredient<MolluskHusk>(QFD(100))//生物质

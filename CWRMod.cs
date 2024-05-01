@@ -7,7 +7,6 @@ using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.OthermodMROs.Thorium.Core;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs;
 using System;
 using System.Collections.Generic;

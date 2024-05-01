@@ -3,6 +3,7 @@ using CalamityMod.Enums;
 using CalamityMod.Events;
 using CalamityMod.Items;
 using CalamityMod.Items.SummonItems;
+using CalamityMod.Items.TreasureBags.MiscGrabBags;
 using CalamityMod.NPCs.ExoMechs;
 using CalamityMod.Projectiles.Typeless;
 using CalamityMod.Systems;

@@ -459,7 +459,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         extraKreloadMaxTime = 0;
                     }
                     else {
-                        SoundEngine.PlaySound(LoadingAA_Shotgun.pump with { Volume = 0.4f, Pitch = -0.1f }, Projectile.Center);
+                        if (Projectile.IsOwnedByLocalPlayer()) {
+                            SoundEngine.PlaySound(LoadingAA_Shotgun.pump with { Volume = 0.4f, Pitch = -0.1f }, Projectile.Center);
+                        }
                         GunShootCoolingValue = 30;
                         extraKreloadMaxTime = 10;
                     }

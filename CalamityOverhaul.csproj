@@ -23,7 +23,7 @@
     <AdditionalFiles Remove="Assets\Projectiles\Magic\GhastlyVisageBall.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="0.3.6.0.4.txt" />
+    <None Remove="0.3.6.0.5.txt" />
     <None Remove="Assets\Events\TungstenRiotIcon.png" />
     <None Remove="Assets\Items\Replace\TODO.txt" />
     <None Remove="Assets\Masking\Extra_193.png" />

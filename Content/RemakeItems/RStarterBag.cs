@@ -23,12 +23,12 @@ namespace CalamityOverhaul.Content.RemakeItems
         //为了更加方便的修改掉落内容，这里直接使用On钩子阻断运行
         //以此来进行一些具体的修改
         public override bool? On_ModifyItemLoot(Item item, ItemLoot itemLoot) {
-            itemLoot.Add(ItemID.WoodenArrow, 1, 100, 100);
             itemLoot.Add(ModContent.ItemType<OverhaulTheBibleBook>());
             itemLoot.Add(ModContent.ItemType<TheUpiStele>());
             itemLoot.Add(ModContent.ItemType<TheSpiritFlint>());
             itemLoot.Add(ModContent.ItemType<Slingshot>());
             itemLoot.Add(ModContent.ItemType<Pebble>(), 1, 350, 450);
+            itemLoot.Add(ItemID.WoodenArrow, 1, 100, 100);
             itemLoot.Add(ItemID.ManaCrystal);
 
             itemLoot.Add(ItemID.Bomb, 1, 10, 10);
