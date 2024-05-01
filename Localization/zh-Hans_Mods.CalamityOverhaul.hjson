@@ -639,22 +639,34 @@ Items: {
 
 	DecayParticles: {
 		DisplayName: 虚粒子
-		Tooltip: ""
+		Tooltip:
+			'''
+			对物质本源的一丝窥视
+			存在本身便是一种奇迹
+			'''
 	}
 
 	DecaySubstance: {
 		DisplayName: 衰变物质
-		Tooltip: ""
+		Tooltip:
+			'''
+			它在无穷无尽的衰败着
+			循环着毁灭与新生
+			'''
 	}
 
 	DissipationSubstance: {
 		DisplayName: 消渐物质
-		Tooltip: ""
+		Tooltip:
+			'''
+			现实已经难以捕捉它的本质
+			它不断的消散，但又无比庞大
+			'''
 	}
 
 	SpectralMatter: {
 		DisplayName: 幽灵物质
-		Tooltip: ""
+		Tooltip: 大约3700000亿吨吧
 	}
 
 	InfiniteToiletItem: {

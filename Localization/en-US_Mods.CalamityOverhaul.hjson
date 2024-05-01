@@ -97,7 +97,8 @@ Items: {
 		Tooltip:
 			'''
 			Thrusting with the spear causes feathers to split upon impact along with healing you on hit.
-			Right clicking will spin the spear and charge up a Red Lightning Energy Reserve, upon Full Charge it starts shooting out Lightning that bounces off enemies and inflict Electrified until it's Depleted.
+			Right clicking will spin the spear and charge up a Red Lightning Energy Reserve, 
+			upon Full Charge it starts shooting out Lightning that bounces off enemies and inflict Electrified until it's Depleted.
 			'''
 	}
 
@@ -105,7 +106,8 @@ Items: {
 		DisplayName: Terratomere
 		Tooltip:
 			'''
-			Swing a Sword Infused with the essence of Terraria, causing several piercing energy bolts to seek out enemies along with several beams from above.
+			Swing a Sword Infused with the essence of Terraria, 
+			causing several piercing energy bolts to seek out enemies along with several beams from above.
 			Upon death, energy bolts discharge and explode, dealing damage in an Area of Effect.
 			"Make this Journey one to remember."
 			'''
@@ -115,8 +117,10 @@ Items: {
 		DisplayName: Terror Blade
 		Tooltip:
 			'''
-			Wield a blade manifested with souls filled with agony and despair. Shoots out slow moving sword beams that pierce and ricohet off walls, exploding on every enemy hit.
-			Preforming true melee strikes will enhance the weapon immensely and charge up energy, causing the projectiles fired upon non True Melee Strikes to move faster and summon more beams on enemy hits.
+			Wield a blade manifested with souls filled with agony and despair. 
+			Shoots out slow moving sword beams that pierce and ricohet off walls, exploding on every enemy hit.
+			Preforming true melee strikes will enhance the weapon immensely and charge up energy, 
+			causing the projectiles fired upon non True Melee Strikes to move faster and summon more beams on enemy hits.
 			'''
 	}
 
@@ -129,9 +133,10 @@ Items: {
 		DisplayName: Stream Gouge
 		Tooltip:
 			'''
-			Stabs through space to lacerate enemies with cosmic might, inflicting Godslayer inferno. Upon hitting, 6 God Slayer darts will shoot out Omni Directionally.
+			Stabs through space to lacerate enemies with cosmic might, inflicting Godslayer inferno. 
+			Upon hitting, 6 God Slayer darts will shoot out Omni Directionally.
 			Right click to form Cosmic rifts that follow your cursor that assault enemies with copies of the Spear and Cosmic Beams.
-			                     [c/b300b3:"Rend them apart."]
+			[c/b300b3:"Rend them apart."]
 			'''
 	}
 
@@ -148,7 +153,8 @@ Items: {
 		DisplayName: Air Spinner
 		Tooltip:
 			'''
-			Fires Feathers that home in on enemies whenever they are near. While spinning in the air, 6 feathers splinter outwards before disappearing.
+			Fires Feathers that home in on enemies whenever they are near. 
+			While spinning in the air, 6 feathers splinter outwards before disappearing.
 			If the splintered feathers hit an enemy, it will latch on and keep dealing damage for a short while.
 			A very agile yoyo.
 			'''
@@ -590,22 +596,34 @@ Items: {
 
 	DecayParticles: {
 		DisplayName: Decay Particles
-		Tooltip: ""
+		Tooltip:
+			'''
+			A glimpse into the source of matter
+			Existence itself is a miracle
+			'''
 	}
 
 	DecaySubstance: {
 		DisplayName: Decay Substance
-		Tooltip: ""
+		Tooltip:
+			'''
+			It is in endless decay
+			A cycle of destruction and renewal
+			'''
 	}
 
 	DissipationSubstance: {
 		DisplayName: Dissipation Substance
-		Tooltip: ""
+		Tooltip:
+			'''
+			Reality has trouble capturing its essence
+			It's disappearing, but it's huge
+			'''
 	}
 
 	SpectralMatter: {
 		DisplayName: Spectral Matter
-		Tooltip: ""
+		Tooltip: About 3.7 trillion billion tons
 	}
 
 	InfiniteToiletItem: {
@@ -730,7 +748,8 @@ Items: {
 		DisplayName: Phosphorescent Gauntlet
 		Tooltip:
 			'''
-			Strikes the Enemy with multiple fists that home in on enemies. Upon 5 hits, a pair of larger fists will crash onto the enemy hit, causing massive damage.
+			Strikes the Enemy with multiple fists that home in on enemies. Upon 5 hits, 
+			a pair of larger fists will crash onto the enemy hit, causing massive damage.
 			Right click to lunge in the direction of your mouse. On collision, you are knocked back.
 			'''
 	}
@@ -740,7 +759,8 @@ Items: {
 		Tooltip:
 			'''
 			Waning Moon rays shimmer across the blade's surface.
-			Right-click to strengthen the blade, increasing range while decreasing attack speed. Upon True Melee Strikes in this mode, it fires cosmic rays downwards towards the enemy.
+			Right-click to strengthen the blade, increasing range while decreasing attack speed. 
+			Upon True Melee Strikes in this mode, it fires cosmic rays downwards towards the enemy.
 			'''
 	}
 
@@ -758,7 +778,8 @@ Items: {
 		Tooltip:
 			'''
 			Summons several fangs from the Leviathan below your mouse.
-			Right-click to strengthen the blade, increasing range and decreasing attack speed. True Melee strikes in this mode summons Leviathan teeth from the sky.
+			Right-click to strengthen the blade, increasing range and decreasing attack speed. 
+			True Melee strikes in this mode summons Leviathan teeth from the sky.
 			'''
 	}
 
@@ -836,7 +857,8 @@ Items: {
 		DisplayName: Brimlash
 		Tooltip:
 			'''
-			Swings a heavy sword of brimstone that fires brimstone bolts. Bolts eventually explode into 3 smaller bolts before homing onto enemies.
+			Swings a heavy sword of brimstone that fires brimstone bolts. 
+			Bolts eventually explode into 3 smaller bolts before homing onto enemies.
 			Right click to throw out 5 agile brimstone bolts that home onto enemies aggressively.
 			Right clicking has a small chance to backfire and hurt you
 			'''
@@ -848,7 +870,7 @@ Items: {
 			'''
 			Launches several earth fragments with a high chance to throw a boulder that pierces and rolls.
 			Right click to hurl the pike like a javelin, causing an earthquake around its impact point. 
-			                     After using the Right click, you have to pick back up the pike manually before using it again.
+			After using the Right click, you have to pick back up the pike manually before using it again.
 			'''
 	}
 
@@ -924,7 +946,8 @@ Items: {
 		DisplayName: Contagion
 		Tooltip:
 			'''
-			Left click to fire an insanely fast and piercing Cholera Arrow, which will summon projectiles on its trail. After a short while, the projectiles will home in on enemies nearby.
+			Left click to fire an insanely fast and piercing Cholera Arrow, which will summon projectiles on its trail. 
+			After a short while, the projectiles will home in on enemies nearby.
 			Right click to summon an absurd amount of homing plagued bees that follow your cursor
 			[c/085054:The Loving Father will always watch over the bearer of this bow. Make him proud.]
 			'''
@@ -1027,7 +1050,8 @@ Items: {
 		DisplayName: Tyranny's End
 		Tooltip:
 			'''
-			An Extremely Heavy Anti-Materiel rifle that converts Musket Balls to high Velocity .70 Caliber Rounds, ripping through enemies and inflicting them with Marked for Death
+			An Extremely Heavy Anti-Materiel rifle that converts Musket Balls to high Velocity .70 Caliber Rounds, 
+			ripping through enemies and inflicting them with Marked for Death
 			After every shot, Right clicking causes the player to reload the rifle for the next shot.
 			Shots split into a swarm of several additional bullets along with an auric blast.
 			"Pierce the heart of even the most heavily-armored foe." 
@@ -1038,7 +1062,8 @@ Items: {
 		DisplayName: Barrett sniper rifle
 		Tooltip:
 			'''
-			A Heavy Anti-Materiel Rifle that converts musket balls to high velocity .50 Caliber Rounds, Ripping through enemies and inflicting them with Marked for death.
+			A Heavy Anti-Materiel Rifle that converts musket balls to high velocity .50 Caliber Rounds, 
+			Ripping through enemies and inflicting them with Marked for death.
 			After every shot, Right clicking causes the player to reload the rifle for the next shot.
 			Shots Split into a swarm of several aditional bullets.
 			"360 NOSCOPE!!!"

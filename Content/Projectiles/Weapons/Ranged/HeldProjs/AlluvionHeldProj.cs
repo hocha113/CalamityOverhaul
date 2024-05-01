@@ -50,12 +50,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     int proj = Projectile.NewProjectile(Source, Projectile.Center + UnitToMouseV.GetNormalVector() * (-2 + i) * 17
                         , ShootVelocity.UnitVector() * 17, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.Alluvion;
+                    Main.projectile[proj].SetArrowRot();
                 }
             } else {
                 for (int i = 0; i < 5; i++) {
                     int proj = Projectile.NewProjectile(Source, Projectile.Center + UnitToMouseV.GetNormalVector() * (-2 + i) * 12
                         , ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.Alluvion;
+                    Main.projectile[proj].SetArrowRot();
                 }
             }
         }

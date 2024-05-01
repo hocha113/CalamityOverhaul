@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
             Item.useTurn = true;
             Item.autoReuse = true;
             Item.value = Terraria.Item.buyPrice(0, 16, 5, 75);
+            Item.rare = 9;
         }
 
         public override bool MeleePrefix() {

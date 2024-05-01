@@ -141,8 +141,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 spanDust(33, (int)CalamityDusts.Nightwither);
                 return;
             }
+            if (npc.ModNPC?.FullName == "StarsAbove/StarfarerBoss") {
+                spanDust(33, (int)CalamityDusts.Nightwither);
+                return;
+            }
             if (CWRIDs.targetNpcTypes7.Contains(npc.type)) {
                 spanDust(33, (int)CalamityDusts.Nightwither);
+                return;
+            }
+            if (npc.type == NPCID.LunarTowerVortex) {
+                spanDust(33, DustID.LunarRust);
+                return;
+            }
+            if (npc.type == NPCID.LunarTowerSolar) {
+                spanDust(33, DustID.FireworkFountain_Red);
+                return;
+            }
+            if (npc.type == NPCID.LunarTowerNebula) {
+                spanDust(33, DustID.NorthPole);
+                return;
+            }
+            if (npc.type == NPCID.LunarTowerStardust) {
+                spanDust(33, DustID.StarRoyale);
                 return;
             }
 

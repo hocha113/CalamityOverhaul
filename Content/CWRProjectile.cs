@@ -222,13 +222,20 @@ namespace CalamityOverhaul.Content
                     modifiers.DefenseEffectiveness *= 0.75f;
                 }
             }
+
             if (projectile.type == ProjectileID.FinalFractal) {
-                if (CWRIDs.WormBodys.Contains(projectile.type)) {
-                    modifiers.FinalDamage *= 0.9f;
+                if (CWRIDs.WormBodys.Contains(target.type)) {
+                    modifiers.FinalDamage *= 0.75f;
                 }
                 if (target.type == CWRIDs.AresLaserCannon || target.type == CWRIDs.AresPlasmaFlamethrower
                     || target.type == CWRIDs.AresTeslaCannon || target.type == CWRIDs.AresGaussNuke) {
                     modifiers.FinalDamage *= 0.7f;
+                }
+                if (target.type == CWRIDs.DevourerofGodsBody || target.type == CWRIDs.DevourerofGodsHead) {
+                    modifiers.FinalDamage *= 0.7f;
+                }
+                if (target.type == CWRIDs.Polterghast) {
+                    modifiers.FinalDamage *= 0.8f;
                 }
             }
         }

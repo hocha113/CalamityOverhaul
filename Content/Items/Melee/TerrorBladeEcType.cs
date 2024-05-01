@@ -106,16 +106,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 bool olduseup = rageEnergy > 0;//这里使用到了效差的流程思想，用于判断能量耗尽的那一刻            
                 if (rageEnergy > 0) {
                     rageEnergy -= damage / 10;
-                    Projectile.NewProjectileDirect(
-                        source,
-                        position,
-                        velocity,
-                        type,
-                        damage,
-                        knockback,
-                        player.whoAmI,
-                        1
-                        );
+                    Projectile.NewProjectileDirect(source, position,
+                        velocity, type, damage, knockback, player.whoAmI, 1);
                     shootBool = false;
                 }
                 else {
@@ -123,7 +115,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
                 bool useup = rageEnergy > 0;
                 if (useup != olduseup) {
-                    SoundEngine.PlaySound(CWRSound.Peuncharge, player.Center);
+                    SoundEngine.PlaySound(CWRSound.Peuncharge with { Volume = 0.4f }, player.Center);
                 }
             }
 
@@ -139,7 +131,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             rageEnergy += hit.Damage / 5;
             bool charge = rageEnergy > 0;
             if (charge != oldcharge) {
-                SoundEngine.PlaySound(CWRSound.Pecharge, player.Center);
+                SoundEngine.PlaySound(CWRSound.Pecharge with { Volume = 0.4f }, player.Center);
             }
         }
 
@@ -151,7 +143,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             rageEnergy += hurtInfo.Damage * 2;
             bool charge = rageEnergy > 0;
             if (charge != oldcharge) {
-                SoundEngine.PlaySound(CWRSound.Pecharge, player.Center);
+                SoundEngine.PlaySound(CWRSound.Pecharge with { Volume = 0.4f }, player.Center);
             }
         }
 

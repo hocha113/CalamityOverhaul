@@ -425,6 +425,13 @@ namespace CalamityOverhaul.Content
                             recipe.AddIngredient(ItemType<CosmiliteBar>(), 5);//添加宇宙锭
                         }
                     }
+                    //修改天顶剑的合成
+                    {
+                        if (recipe.HasResult(ItemID.Zenith)) {
+                            recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
+                            recipe.AddIngredient(ItemType<PerennialBar>(), 5);//添加龙篙锭
+                        }
+                    }
                     //修改诅咒手枪的合成
                     {
                         if (recipe.HasResult(ItemType<CursedCapper>())) {

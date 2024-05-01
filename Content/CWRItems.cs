@@ -181,13 +181,17 @@ namespace CalamityOverhaul.Content
             InitializeMagazine();
             CWRIDs.SetAmmoItem(item);
             remakeItem = (item.ModItem as EctypeItem) != null;
+
             int type = item.type;
             if (type == ModContent.ItemType<Ataraxia>()) {
                 item.damage = 305;
             }
-            if (type == ModContent.ItemType<Nadir>()) {
+            else if (type == ModContent.ItemType<Nadir>()) {
                 item.damage = 180;
                 item.useTime = item.useAnimation = 15;
+            }
+            else if (type == ItemID.Zenith) {
+                item.damage = 105;
             }
         }
 

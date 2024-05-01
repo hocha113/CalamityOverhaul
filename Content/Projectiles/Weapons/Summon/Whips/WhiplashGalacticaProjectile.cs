@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 
                         Vector2.Zero,
                         ModContent.ProjectileType<CosmicFire>(),
-                        Projectile.damage + 500,
+                        Projectile.damage,
                         0,
                         Projectile.owner,
                         Projectile.whoAmI

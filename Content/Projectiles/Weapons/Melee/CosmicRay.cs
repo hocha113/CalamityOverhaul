@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -100,6 +101,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 ThisTimeValue = 0;
             }
             Projectile.netUpdate = true;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (CWRIDs.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.75f;
+            }
+            if (target.type == CWRIDs.AresLaserCannon || target.type == CWRIDs.AresPlasmaFlamethrower
+                || target.type == CWRIDs.AresTeslaCannon || target.type == CWRIDs.AresGaussNuke) {
+                modifiers.FinalDamage *= 0.7f;
+            }
         }
 
         int Rot = 0;

@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.value = Item.buyPrice(6, 23, 75, 0);
-            Item.rare = ItemRarityID.Orange;
+            Item.rare = ItemRarityID.Quest;
             Item.shoot = ModContent.ProjectileType<DawnshatterAzureProj>();
             Item.shootSpeed = 8f;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems10;

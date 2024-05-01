@@ -22,12 +22,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Item.useTime = 4;
             int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
+            if (fireIndex == 0) {
+                Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
+            }
+            
             Main.projectile[proj].extraUpdates = 1;
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
             fireIndex++;
             if (fireIndex >= 3) {
-                Item.useTime = 15;
+                Item.useTime = 20;
                 fireIndex = 0;
             }
         }

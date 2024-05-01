@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.height = 94;
             Item.scale = 1.5f;
             Item.DamageType = DamageClass.Melee;
-            Item.damage = 360;
+            Item.damage = 280;
             Item.knockBack = 8.5f;
             Item.useAnimation = 18;
             Item.useTime = 18;
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
-            damage *= InTureMelee ? 1.5f : 1;
+            damage *= InTureMelee ? 1.75f : 1;
         }
 
         public override void ModifyWeaponKnockback(Player player, ref StatModifier knockback) {

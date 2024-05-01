@@ -59,6 +59,7 @@ namespace CalamityOverhaul.Content.UIs
         private bool summon = true;
         private bool rogue = true;
         private bool slive = false;
+        private float offsetMouseY;
 
         private bool onMeleeP;
         private bool onRangedP;
@@ -267,8 +268,11 @@ namespace CalamityOverhaul.Content.UIs
 
                 if (onSliveP || onSliveP2) {
                     if (museS == 3) {
+                        if (!onSliveP2) {
+                            offsetMouseY = slivePos.Y - MouPos.Y + 6.24f;
+                        }
                         onSliveP2 = true;
-                        float numY = MouPos.Y;
+                        float numY = MouPos.Y + offsetMouseY;
                         if (numY < 310) {
                             numY = 310;
                         }
@@ -329,7 +333,6 @@ namespace CalamityOverhaul.Content.UIs
             Rectangle rec1 = new Rectangle(0, 32, 32, 32);
             spriteBatch.Draw(value13, LsmogPos, rec1, onLsmogP ? Color.Wheat : Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             spriteBatch.Draw(value13, RsmogPos, rec1, onRsmogP ? Color.Wheat : Color.White, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
-            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "1/1", DrawPos.X + 235, DrawPos.Y + 200, Color.White, Color.Black, new Vector2(0.3f), 1.2f);
 
             spriteBatch.Draw(MeleeImage, meleePos, null, getSouldColor(melee, onMeleeP), 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             spriteBatch.Draw(RangedImage, rangedPos, null, getSouldColor(ranged, onRangedP), 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
@@ -374,6 +377,8 @@ namespace CalamityOverhaul.Content.UIs
 
             spriteBatch.Draw(CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon")
                 , DrawPos + new Vector2(470, 190), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出关闭按键
+
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "1/1", DrawPos.X + 235, DrawPos.Y + 200, Color.White, Color.Black, new Vector2(0.3f), 1.2f);
 
             if (OnCloseP) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("SupertableUI_Text1")

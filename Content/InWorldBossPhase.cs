@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content
 
         public void Load() => Instance = this;
 
+        #region Date
+
         public bool level0 => DownedV0.Invoke() || Downed0.Invoke() || Downed2.Invoke();
 
         public bool level1 => DownedV1.Invoke() || Downed1.Invoke();
@@ -240,6 +242,8 @@ namespace CalamityOverhaul.Content
         /// 终焉之战
         /// </summary>
         public static readonly Func<bool> Downed32 = () => DownedBossSystem.downedBossRush;
+
+        #endregion
 
         public int Halibut_Level() {
             int level = 0;

@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.UseSound = SoundID.Item60;
             Item.autoReuse = true;
             Item.value = Item.buyPrice(0, 33, 15, 0);
-            Item.rare = ModContent.RarityType<Violet>();
+            Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<DivineSourceBladeProjectile>();
             Item.shootSpeed = 18f;
         }

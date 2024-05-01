@@ -15,8 +15,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             base.SetRangedProperty();
         }
         public override void BowShoot() {
-            int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.NettlevineGreat;
+            Main.projectile[proj].SetArrowRot();
 
             nettlevineIndex++;
             if (nettlevineIndex > 4) {
