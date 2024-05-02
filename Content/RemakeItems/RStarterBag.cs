@@ -13,6 +13,7 @@ using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.UI;
 
 namespace CalamityOverhaul.Content.RemakeItems
 {
@@ -20,9 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems
     {
         public override int TargetID => ModContent.ItemType<StarterBag>();
         public override bool FormulaSubstitution => false;
-        //为了更加方便的修改掉落内容，这里直接使用On钩子阻断运行
-        //以此来进行一些具体的修改
-        public override bool? On_ModifyItemLoot(Item item, ItemLoot itemLoot) {
+        internal void Loot(ItemLoot itemLoot) {
             itemLoot.Add(ModContent.ItemType<OverhaulTheBibleBook>());
             itemLoot.Add(ModContent.ItemType<TheUpiStele>());
             itemLoot.Add(ModContent.ItemType<TheSpiritFlint>());
@@ -72,7 +71,17 @@ namespace CalamityOverhaul.Content.RemakeItems
                 return playerName == "bird";
             }
             itemLoot.AddIf(getsSakuraFeather, ModContent.ItemType<CocosFeather>());
-            return false;
         }
+        public override void ModifyItemLoot(Item item, ItemLoot itemLoot) {
+            itemLoot.RemoveWhere(i => true);
+            Loot(itemLoot);
+        }
+        //为了更加方便的修改掉落内容，这里直接使用On钩子阻断运行
+        //以此来进行一些具体的修改
+        //TODO:这个方法目前无作用，因为未知原因钩子不再正常运行以达到想要的效果
+        //public override bool? On_ModifyItemLoot(Item item, ItemLoot itemLoot) {
+        //    Loot(itemLoot);
+        //    return false;
+        //}
     }
 }
