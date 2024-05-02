@@ -49,9 +49,4 @@
       <HintPath>..\..\ModReader\CalamityMod\CalamityMod.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Update="D:\SteamLibrary\steamapps\common\tModLoader\Libraries\humanizer.core\2.14.1\lib\net6.0\Humanizer.dll">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-  </ItemGroup>
 </Project>
