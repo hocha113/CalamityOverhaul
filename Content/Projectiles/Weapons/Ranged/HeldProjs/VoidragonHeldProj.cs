@@ -50,13 +50,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.Voidragon;
             chargeIndex++;
             if (chargeIndex > 5) {
+                if (BulletNum <= 5) {
+                    Recoil = 0.5f;
+                    GunPressure = 0;
+                    ControlForce = 0.03f;
+                    chargeIndex = 0;
+                    return;
+                }
                 Recoil = 2.5f;
                 GunPressure = 0.12f;
                 ControlForce = 0.03f;
                 SoundEngine.PlaySound(SoundID.Item92 with { MaxInstances = 100 }, Projectile.position);
-                for (int i = 0; i < 23; i++) {
+                for (int i = 0; i < 25; i++) {
                     Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1.2f)
                         , ModContent.ProjectileType<VoidragonOrb>(), WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
+                }
+                for (int i = 0; i < 5; i++) {
+                    UpdateMagazineContents();
                 }
                 chargeIndex = 0;
             }

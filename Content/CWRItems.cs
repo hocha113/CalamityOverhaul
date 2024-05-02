@@ -162,6 +162,20 @@ namespace CalamityOverhaul.Content
         public bool IsBow;
         #endregion
 
+        private void SmiperItemSet(Item item) {
+            int type = item.type;
+            if (type == ModContent.ItemType<Ataraxia>()) {
+                item.damage = 305;
+            }
+            else if (type == ModContent.ItemType<Nadir>()) {
+                item.damage = 190;
+                item.useTime = item.useAnimation = 15;
+            }
+            else if (type == ItemID.Zenith) {
+                item.damage = 105;
+            }
+        }
+
         public override void SetDefaults(Item item) {
             if (CWRIDs.OnLoadContentBool) {
                 if (item.createTile != -1 && !CWRIDs.TileToItem.ContainsKey(item.createTile)) {
@@ -178,21 +192,10 @@ namespace CalamityOverhaul.Content
                 AmmoCapacity = 1;
             }
             PowerInteractionValue = 0;
-            InitializeMagazine();
-            CWRIDs.SetAmmoItem(item);
             remakeItem = (item.ModItem as EctypeItem) != null;
-
-            int type = item.type;
-            if (type == ModContent.ItemType<Ataraxia>()) {
-                item.damage = 305;
-            }
-            else if (type == ModContent.ItemType<Nadir>()) {
-                item.damage = 180;
-                item.useTime = item.useAnimation = 15;
-            }
-            else if (type == ItemID.Zenith) {
-                item.damage = 105;
-            }
+            InitializeMagazine();
+            SmiperItemSet(item);
+            CWRIDs.SetAmmoItem(item);
         }
 
         public void InitializeMagazine() {

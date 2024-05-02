@@ -1,18 +1,16 @@
 ﻿using CalamityMod;
-using CalamityMod.Particles;
 using CalamityMod.Projectiles;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
-    internal class VoidTentacle : ModProjectile
+    internal class RVoidTentacle : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
         public override void SetDefaults() {

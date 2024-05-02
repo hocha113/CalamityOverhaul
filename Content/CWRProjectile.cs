@@ -4,6 +4,7 @@ using CalamityMod.Dusts;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
 using CalamityMod.Projectiles.Magic;
+using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles.Summon;
 using CalamityMod.Projectiles.Typeless;
@@ -22,6 +23,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
 namespace CalamityOverhaul.Content
@@ -203,6 +205,29 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        private void InProjTypeSetHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
+            if (projectile.type == ProjectileID.FinalFractal) {
+                if (CWRIDs.WormBodys.Contains(target.type)) {
+                    modifiers.FinalDamage *= 0.75f;
+                }
+                if (target.type == CWRIDs.AresLaserCannon || target.type == CWRIDs.AresPlasmaFlamethrower
+                    || target.type == CWRIDs.AresTeslaCannon || target.type == CWRIDs.AresGaussNuke) {
+                    modifiers.FinalDamage *= 0.7f;
+                }
+                if (target.type == CWRIDs.DevourerofGodsBody || target.type == CWRIDs.DevourerofGodsHead) {
+                    modifiers.FinalDamage *= 0.7f;
+                }
+                if (target.type == CWRIDs.Polterghast) {
+                    modifiers.FinalDamage *= 0.8f;
+                }
+            }
+            else if (projectile.type == ModContent.ProjectileType<CosmicIceBurst>()) {
+                if (target.type == CWRIDs.Yharon) {
+                    modifiers.FinalDamage *= 0.8f;
+                }
+            }
+        }
+
         public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
             if (GetHitAttribute.CertainCrit) {
                 modifiers.SetCrit();
@@ -223,21 +248,7 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            if (projectile.type == ProjectileID.FinalFractal) {
-                if (CWRIDs.WormBodys.Contains(target.type)) {
-                    modifiers.FinalDamage *= 0.75f;
-                }
-                if (target.type == CWRIDs.AresLaserCannon || target.type == CWRIDs.AresPlasmaFlamethrower
-                    || target.type == CWRIDs.AresTeslaCannon || target.type == CWRIDs.AresGaussNuke) {
-                    modifiers.FinalDamage *= 0.7f;
-                }
-                if (target.type == CWRIDs.DevourerofGodsBody || target.type == CWRIDs.DevourerofGodsHead) {
-                    modifiers.FinalDamage *= 0.7f;
-                }
-                if (target.type == CWRIDs.Polterghast) {
-                    modifiers.FinalDamage *= 0.8f;
-                }
-            }
+            InProjTypeSetHitNPC(projectile, target, ref modifiers);
         }
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
@@ -395,7 +406,7 @@ namespace CalamityOverhaul.Content
 
             if (SpanTypes == (byte)SpanTypesEnum.Voidragon) {
                 _ = Projectile.NewProjectile(projectile.parent(), target.Center
-                    , CWRUtils.randVr(6, 13), ModContent.ProjectileType<VoidTentacle>()
+                    , CWRUtils.randVr(6, 13), ModContent.ProjectileType<RVoidTentacle>()
                     , projectile.damage, projectile.knockBack / 2, player.whoAmI
                     , Main.rand.Next(-160, 160) * 0.001f, Main.rand.Next(-160, 160) * 0.001f);
             }

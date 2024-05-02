@@ -1254,7 +1254,7 @@ Items: {
 		Tooltip:
 			'''
 			发射一发巨大石性毒箭
-			"一种奇怪的疾病，不管是生物还是植物都会在感染后逐渐变成石头"
+			"一种奇怪的疾病，不管是动物还是植物都会在感染后逐渐变成石头"
 			'''
 	}
 
@@ -2484,6 +2484,15 @@ Items: {
 			使用凝胶作为弹药
 			'''
 	}
+
+	CosmicDischargeEcType: {
+		DisplayName: 寒宙弹刃
+		Tooltip:
+			'''
+			用能引发冰川爆破的弹鞭击打敌人并使玩家获得寒宙增益
+			此增益会令玩家在站定不动时增加生命再生速度并冻结周围敌人
+			'''
+	}
 }
 
 Projectiles: {
@@ -3023,6 +3032,8 @@ Projectiles: {
 	// EternalBlizzardHeldProj.DisplayName: Eternal Blizzard
 	// SlagMagnumHeldProj.DisplayName: Slag Magnum
 	// SparkSpreaderHeldProj.DisplayName: Spark Spreader
+	// RCosmicDischargeFlail.DisplayName: R Cosmic Discharge Flail
+	// RVoidTentacle.DisplayName: R Void Tentacle
 }
 
 Configs: {

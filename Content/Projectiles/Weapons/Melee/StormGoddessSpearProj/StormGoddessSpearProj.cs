@@ -82,19 +82,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float point = 0f;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center
-                , Projectile.rotation.ToRotationVector2() * Projectile.height * 2 + Projectile.Center, Projectile.width, ref point);
+                , Projectile.rotation.ToRotationVector2() * Projectile.height * 3 + Projectile.Center, Projectile.width, ref point);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             const float piOver3 = MathHelper.TwoPi / 3f;
-            for (int i = 0; i < 3; i++) {
+            int index = 3;
+            float damageset = 0.5f;
+            bool isadrenal = false;
+            if (Owner.Calamity().adrenalineModeActive) {
+                index = 6;
+                damageset = 1;
+                isadrenal = true;
+            }
+            for (int i = 0; i < index; i++) {
                 Vector2 spanPos = Projectile.Center + (piOver3 * i + Main.rand.NextFloat(MathHelper.TwoPi)).ToRotationVector2() * 560;
                 Vector2 vr = spanPos.To(target.Center).UnitVector() * 15;
                 Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), spanPos, vr
-                    , ModContent.ProjectileType<StormArc>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
+                    , ModContent.ProjectileType<StormArc>(), (int)(Projectile.damage * damageset), Projectile.knockBack, Projectile.owner);
                 proj.timeLeft = 30;
                 proj.penetrate = 3;
                 proj.tileCollide = false;
+                if (isadrenal) {
+                    proj.usesIDStaticNPCImmunity = true;
+                    proj.localNPCHitCooldown = 6;
+                }
             }
         }
 

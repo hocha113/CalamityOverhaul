@@ -1229,7 +1229,7 @@ Items: {
 		Tooltip:
 			'''
 			Fire a giant stone poison arrow
-			"A strange disease, whether biological or plant, that gradually turns to stone upon infection."
+			"A strange disease that affects both animals and plants and gradually turns them to stone."
 			'''
 	}
 
@@ -2454,6 +2454,15 @@ Items: {
 			Using gel as ammunition
 			'''
 	}
+
+	CosmicDischargeEcType: {
+		DisplayName: Cosmic Discharge
+		Tooltip:
+			'''
+			Hit enemies with a projectile that causes glacier explosions and gives players a cryostat boost
+			This bonus will allow the player to increase health regeneration and freeze surrounding enemies while standing still
+			'''
+	}
 }
 
 Projectiles: {
@@ -2993,6 +3002,8 @@ Projectiles: {
 	EternalBlizzardHeldProj.DisplayName: Eternal Blizzard
 	SlagMagnumHeldProj.DisplayName: Slag Magnum
 	SparkSpreaderHeldProj.DisplayName: Spark Spreader
+	RCosmicDischargeFlail.DisplayName: R Cosmic Discharge Flail
+	RVoidTentacle.DisplayName: R Void Tentacle
 }
 
 Configs: {

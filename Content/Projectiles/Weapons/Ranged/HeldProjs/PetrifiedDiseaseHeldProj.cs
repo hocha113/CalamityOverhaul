@@ -10,7 +10,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<PetrifiedDisease>();
         public override int targetCWRItem => ModContent.ItemType<PetrifiedDisease>();
         public override void SetRangedProperty() {
-            HandRotStartTime = 40;
+            HandDistance = 20;
+            HandFireDistance = 22;
+            DrawArrowMode = -25;
         }
         public override void BowShoot() {
             AmmoTypes = ModContent.ProjectileType<PetrifiedDiseaseAorrw>();
