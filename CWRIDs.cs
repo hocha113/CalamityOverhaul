@@ -18,16 +18,15 @@ using CalamityMod.NPCs.Ravager;
 using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.Yharon;
+using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -246,7 +245,7 @@ namespace CalamityOverhaul
         public static int EidolonWyrmBody;
         public static int EidolonWyrmBodyAlt;
         public static int EidolonWyrmTail;
-        
+
         /// <summary>
         /// 月球领主
         /// </summary>
@@ -338,7 +337,7 @@ namespace CalamityOverhaul
 
             Apollo = NPCType<Apollo>();
             Artemis = NPCType<Artemis>();
-            AresBody = NPCType<CalamityMod.NPCs.ExoMechs.Ares.AresBody>();
+            AresBody = NPCType<AresBody>();
             ThanatosHead = NPCType<ThanatosHead>();
             ThanatosBody1 = NPCType<ThanatosBody1>();
             ThanatosBody2 = NPCType<ThanatosBody2>();
@@ -371,11 +370,6 @@ namespace CalamityOverhaul
             EidolonWyrmBodyAlt = NPCType<EidolonWyrmBodyAlt>();
             EidolonWyrmTail = NPCType<EidolonWyrmTail>();
 
-            //HEHead = NPCType<HEHead>();
-            //HEBody = NPCType<HEBody>();
-            //HEBodyAlt = NPCType<HEBodyAlt>();
-            //HETail = NPCType<HETail>();
-
             RavagerBody = NPCType<RavagerBody>();
             RavagerClawLeft = NPCType<RavagerClawLeft>();
             RavagerClawRight = NPCType<RavagerClawRight>();
@@ -387,7 +381,7 @@ namespace CalamityOverhaul
             AresPlasmaFlamethrower = NPCType<AresPlasmaFlamethrower>();
             AresTeslaCannon = NPCType<AresTeslaCannon>();
             AresGaussNuke = NPCType<AresGaussNuke>();
-            
+
             targetNpcTypes = new List<int> { SepulcherHead, SepulcherBody, SepulcherTail };
             targetNpcTypes2 = new List<int> { StormWeaverHead, StormWeaverBody, StormWeaverTail };
             targetNpcTypes3 = new List<int> { PrimordialWyrmHead, PrimordialWyrmBody, PrimordialWyrmTail };
@@ -404,7 +398,6 @@ namespace CalamityOverhaul
             targetNpcTypes13 = new List<int> { NPCID.MoonLordFreeEye, NPCID.MoonLordCore, NPCID.MoonLordHand, NPCID.MoonLordHead, NPCID.MoonLordLeechBlob };
             targetNpcTypes14 = new List<int> { NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail };
             targetNpcTypes15 = new List<int> { NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail };
-            //targetNpcTypes16 = new List<int> { HEHead, HEBody, HEBodyAlt, HETail };
             targetNpcTypes17 = new List<int> { RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight };
             WormBodys = new int[] { AquaticScourgeBody, ArmoredDiggerBody, StormWeaverBody, ArmoredDiggerBody
                 , CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
@@ -445,6 +438,7 @@ namespace CalamityOverhaul
                 ItemType<YharonSoulFragment>(),//龙魂
                 ItemType<Rock>()//古恒石
             };
+
             MaterialsTypes2 = new int[]{
                 ItemType<CalamityMod.Items.Weapons.Ranged.Deathwind>(),
                 ItemType<CalamityMod.Items.Weapons.Ranged.Alluvion>(),
@@ -452,12 +446,14 @@ namespace CalamityOverhaul
                 ItemType<Rock>(),
                 ItemType<CosmiliteBar>()
             };
+
             MaterialsTypes3 = new int[]{
                 ItemType<CalamityMod.Items.Weapons.Ranged.Drataliornus>(),
                 ItemType<CalamityMod.Items.Weapons.Ranged.HeavenlyGale>(),
                 ItemType<CalamityMod.Items.Weapons.Magic.Eternity>(),
                 ItemType<InfiniteIngot>()
             };
+
             MaterialsTypes4 = new int[]{
                 ItemType<CalamityMod.Items.Tools.CrystylCrusher>(),
                 ItemType<CalamityMod.Items.Tools.AbyssalWarhammer>(),
@@ -511,7 +507,6 @@ namespace CalamityOverhaul
                 { ProjectileID.NanoBullet, ItemID.NanoBullet},
                 { ProjectileID.PartyBullet, ItemID.PartyBullet},
                 { ProjectileID.SilverBullet, ItemID.SilverBullet},
-                //{ ProjectileID.Bullet, ItemID.TungstenBullet},
                 { ProjectileID.VenomBullet, ItemID.VenomBullet},
                 { ProjectileID.SnowBallFriendly, ItemID.Snowball},
             };
@@ -575,13 +570,15 @@ namespace CalamityOverhaul
                     }
                 }
             }
+
             /*
             "————————————————————————————————————————————————————".DompInConsole();
             $"装载完毕，ItemToShootID共装填入 {ItemToShootID.Count} 个对照索引".DompInConsole();
             "————————————————————————————————————————————————————".DompInConsole();
             */
 
-            NeutronGlaiveBeam.PostLoad();
+            List<ISetupData> setupDatas = CWRUtils.GetSubInterface<ISetupData>("ISetupData");
+            foreach (var i in setupDatas) { i.SetupData(); }
 
             OnLoadContentBool = false;
         }

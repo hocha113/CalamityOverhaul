@@ -5,20 +5,24 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 {
-    internal class NeutronGlaiveBeam : ModProjectile, IDrawWarp
+    internal class NeutronGlaiveBeam : ModProjectile, IDrawWarp, ISetupData
     {
         public override string Texture => CWRConstant.Projectile_Melee + "NeutronGlaiveBeam";
         public static int PType;
         private static Asset<Texture2D> warpTex;
-        public static void PostLoad() {
+        public void SetupData() {
             PType = ModContent.ProjectileType<NeutronGlaiveBeam>();
-            warpTex = CWRUtils.GetT2DAsset(CWRConstant.Masking + "BloomCircle");
+            warpTex = CWRUtils.GetT2DAsset(CWRConstant.Masking + "DiffusionCircle");
         }
+
+        public bool canDraw() => true;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.friendly = true;
@@ -30,6 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         public override void AI() {
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 5);
             Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 0.3f);
+
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
             Projectile.ai[0] += 0.05f;
@@ -63,6 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 
                 rot = Main.rand.NextFloat(MathHelper.TwoPi);
             }
+
             if (++Projectile.localAI[2] > 2) {
                 for (int i = 0; i < 4; i++) {
                     float rot1 = MathHelper.PiOver2 * i;
@@ -95,10 +101,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
             }
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            
-        }
-
         public override bool OnTileCollide(Vector2 oldVelocity) {
             Projectile.velocity = oldVelocity * -0.6f;
             for (int j = 0; j < 73; j++) {
@@ -110,9 +112,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
             return false;
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            return false;
-        }
+        public override bool PreDraw(ref Color lightColor) => false;
 
         public void Warp() {
             Color warpColor = new Color(45, 45, 45) * Projectile.ai[1];
@@ -121,6 +121,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
                 Main.spriteBatch.Draw(warpTex.Value, Projectile.Center - Main.screenPosition
                     , null, warpColor, Projectile.ai[0] + i * 2f, orig, Projectile.localAI[0], SpriteEffects.None, 0f);
             }
+        }
+
+        public void costomDraw(SpriteBatch spriteBatch) {
+            Texture2D value = TextureAssets.Projectile[Type].Value;
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 6)
+                , Color.White, Projectile.rotation, CWRUtils.GetOrig(value, 6), Projectile.scale, SpriteEffects.None, 0);
         }
     }
 }

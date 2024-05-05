@@ -4,14 +4,13 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 {
     internal class NeutronExplode : ModProjectile, IDrawWarp
     {
-        public override string Texture => CWRConstant.Masking + "BloomCircle";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle";
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 200;
             Projectile.timeLeft = 20;
@@ -55,5 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
                     , null, warpColor, Projectile.ai[0] + i * 2f, warpTex.Size() / 2, Projectile.localAI[0], SpriteEffects.None, 0f);
             }
         }
+
+        public void costomDraw(SpriteBatch spriteBatch) { }
     }
 }

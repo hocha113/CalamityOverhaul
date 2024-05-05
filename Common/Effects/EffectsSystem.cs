@@ -91,9 +91,7 @@ namespace CalamityOverhaul.Common.Effects
 
                 Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None
                     , RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
                 foreach (IDrawWarp p in warpSets) { p.Warp(); }
-
                 Main.spriteBatch.End();
 
                 //应用扭曲
@@ -106,9 +104,7 @@ namespace CalamityOverhaul.Common.Effects
                 effect.Parameters["i"].SetValue(0.02f);
                 effect.CurrentTechnique.Passes[0].Apply();
                 Main.spriteBatch.Draw(screen, Vector2.Zero, Color.White);
-
-                foreach (IDrawWarp p in warpSets) { if (p.canDraw()) p.Warp(); }
-
+                foreach (IDrawWarp p in warpSets) { if (p.canDraw()) { p.costomDraw(Main.spriteBatch); } }
                 Main.spriteBatch.End();
             }
 
