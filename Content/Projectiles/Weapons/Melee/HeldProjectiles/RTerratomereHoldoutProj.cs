@@ -246,19 +246,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, num, Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI, Main.rand.NextFloat(MathF.PI * 2f));
                 Owner.ownedProjectileCounts[num]++;
             }
-
-            //if (Projectile.IsOwnedByLocalPlayer())
-            //{
-            //    int maxNum = Main.rand.Next(2, 3);
-            //    for (int i = 0; i < maxNum; i++)
-            //    {
-            //        Vector2 offsetVr = CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(360, 420));
-            //        Vector2 spanPos = target.Center + offsetVr;
-            //        Vector2 vr = offsetVr.UnitVector() * -30;
-            //        Projectile.NewProjectile(Projectile.GetSource_FromThis(), spanPos, vr,
-            //        ModContent.ProjectileType<TerratomereBigSlashs>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
-            //    }
-            //}
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {

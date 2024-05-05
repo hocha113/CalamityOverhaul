@@ -88,6 +88,7 @@ namespace CalamityOverhaul.Content.Particles.Core
             if (Main.dedServ) {//不要在服务器上更新逻辑
                 return;
             }
+
             foreach (CWRParticle particle in particles) {
                 if (particle == null) {
                     continue;

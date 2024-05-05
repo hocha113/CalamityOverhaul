@@ -57,15 +57,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
 
             for (int i = 0; i < 30; i++) {
-                float completion = MathHelper.Lerp(endRot + Projectile.rotation.AtoR(), starRot + Projectile.rotation.AtoR(), i / 30f);
+                float completion = MathHelper.Lerp(endRot + Projectile.rotation.AtoR(), starRot + Projectile.rotation.AtoR(), i /30f);
                 completion *= Math.Sign(Projectile.velocity.X) * -1;
                 yield return completion.ToRotationVector2() * 84f;
             }
         }
 
         public override void AI() {
-            if (owner != null)
+            if (owner != null) {
                 Projectile.position += owner.velocity;
+            }
             Projectile.Opacity = Utils.GetLerpValue(Projectile.localAI[0], 26f, Projectile.timeLeft, clamped: true);
             Projectile.velocity *= 0.91f;
             Projectile.scale *= 1.03f;
@@ -77,16 +78,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public Color SlashColorFunction(float completionRatio) {
-            if (Projectile.ai[1] == 0)
-                return Color.Lime * Utils.GetLerpValue(0.07f, 0.57f, completionRatio, clamped: true) * Projectile.Opacity;
-
-            else {
-                float sengs = MathF.Sin(completionRatio * MathF.PI);
-                if (completionRatio < 0.4f) {
-                    sengs = MathF.Pow(completionRatio, 3) * 13;
-                }
-                return Color.Lime * sengs * Projectile.Opacity;
+            //return Color.Lime * Utils.GetLerpValue(0.07f, 0.57f, completionRatio, clamped: true) * Projectile.Opacity;
+            float sengs = MathF.Sin(completionRatio * MathF.PI);
+            if (completionRatio < 0.4f) {
+                sengs = MathF.Pow(completionRatio, 3) * 13;
             }
+            return Color.Lime * sengs * Projectile.Opacity;
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -120,17 +117,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Vector2 endPos = Projectile.Center + MathHelper.ToRadians(-160 + 11 * i).ToRotationVector2() * Projectile.scale * 120;
                 if (Projectile.velocity.X < 0)
                     endPos = Projectile.Center + MathHelper.ToRadians(20 - 11 * i).ToRotationVector2() * Projectile.scale * 120;
-
-                collBool = Collision.CheckAABBvLineCollision(
-                targetHitbox.TopLeft(),
-                targetHitbox.Size(),
-                starPos,
-                endPos,
-                32,
-                ref point
-                );
-                if (collBool)
+                collBool = Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), starPos, endPos, 32, ref point);
+                if (collBool) {
                     break;
+                }   
             }
 
             return collBool;

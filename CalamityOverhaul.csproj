@@ -23,11 +23,14 @@
     <AdditionalFiles Remove="Assets\Projectiles\Magic\GhastlyVisageBall.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="0.3.6.0.5.txt" />
+    <None Remove="0.3.6.0.6.txt" />
+    <None Remove="Assets\Effects\WarpShader.fx" />
     <None Remove="Assets\Events\TungstenRiotIcon.png" />
     <None Remove="Assets\Items\Replace\TODO.txt" />
+    <None Remove="Assets\Masking\BloomCircle.png" />
     <None Remove="Assets\Masking\Extra_193.png" />
     <None Remove="Assets\Masking\Extra_193_White.png" />
+    <None Remove="Assets\Masking\Halo.png" />
     <None Remove="Assets\Masking\MotionTrail2.png" />
     <None Remove="Assets\Masking\StarTexture.png" />
     <None Remove="Assets\Masking\StarTexture_White.png" />

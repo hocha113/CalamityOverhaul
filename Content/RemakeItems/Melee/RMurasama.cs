@@ -26,9 +26,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public int frameCounter = 0;
         public int frame = 0;
 
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetStaticDefaults() => Main.RegisterItemAnimation(TargetID, new DrawAnimationVertical(5, 14));
         public override void SetDefaults(Item item) {
             item.height = 134;

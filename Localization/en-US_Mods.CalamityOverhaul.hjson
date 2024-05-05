@@ -2463,6 +2463,11 @@ Items: {
 			This bonus will allow the player to increase health regeneration and freeze surrounding enemies while standing still
 			'''
 	}
+
+	NeutronGlaive: {
+		DisplayName: Neutron Glaive
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3004,6 +3009,8 @@ Projectiles: {
 	SparkSpreaderHeldProj.DisplayName: Spark Spreader
 	RCosmicDischargeFlail.DisplayName: R Cosmic Discharge Flail
 	RVoidTentacle.DisplayName: R Void Tentacle
+	NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
+	NeutronExplode.DisplayName: Neutron Explode
 }
 
 Configs: {

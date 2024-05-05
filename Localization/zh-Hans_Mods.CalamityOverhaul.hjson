@@ -2493,6 +2493,11 @@ Items: {
 			此增益会令玩家在站定不动时增加生命再生速度并冻结周围敌人
 			'''
 	}
+
+	NeutronGlaive: {
+		DisplayName: 中子星阔刃
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3034,6 +3039,8 @@ Projectiles: {
 	// SparkSpreaderHeldProj.DisplayName: Spark Spreader
 	// RCosmicDischargeFlail.DisplayName: R Cosmic Discharge Flail
 	// RVoidTentacle.DisplayName: R Void Tentacle
+	// NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
+	// NeutronExplode.DisplayName: Neutron Explode
 }
 
 Configs: {

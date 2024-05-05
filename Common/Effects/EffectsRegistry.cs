@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Common.Effects
     public static class EffectsRegistry
     {
         public static Effect PowerSFShader;
+        public static Effect WarpShader;
         public static MiscShaderData FlowColorShader;
 
         public static void LoadEffects() {
@@ -24,6 +25,10 @@ namespace CalamityOverhaul.Common.Effects
             Asset<Effect> _powerSFShaderAsset = assets.Request<Effect>(CWRConstant.noEffects + "PowerSFShader", AssetRequestMode.ImmediateLoad);
             Filters.Scene["CWRMod:powerSFShader"] = new Filter(new(_powerSFShaderAsset, "Offset"), EffectPriority.VeryHigh);
             PowerSFShader = _powerSFShaderAsset.Value;
+
+            Asset<Effect> _warpShaderAsset = assets.Request<Effect>(CWRConstant.noEffects + "WarpShader", AssetRequestMode.ImmediateLoad);
+            Filters.Scene["CWRMod:warpShader"] = new Filter(new(_warpShaderAsset, "PrimitivesPass"), EffectPriority.VeryHigh);
+            WarpShader = _warpShaderAsset.Value;
         }
     }
 }
