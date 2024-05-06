@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria.ModLoader;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
@@ -12,6 +13,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<StellarCannon>();
         public override int ProtogenesisID => ModContent.ItemType<StellarCannonEcType>();
         public override string TargetToolTipItemName => "StellarCannonEcType";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<StellarCannonHeldProj>(30);
+        public override void SetDefaults(Item item) {
+            item.damage = 115;
+            item.useAmmo = AmmoID.FallenStar;
+            item.SetCartridgeGun<StellarCannonHeldProj>(30);
+        }
     }
 }

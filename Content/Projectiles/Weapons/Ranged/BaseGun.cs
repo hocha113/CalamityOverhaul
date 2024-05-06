@@ -68,13 +68,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public bool FiringDefaultSound = true;
         /// <summary>
-        /// 枪械开火冷切计时器
-        /// </summary>
-        public float GunShootCoolingValue {
-            get => Projectile.ai[1];
-            set => Projectile.ai[1] = value;
-        }
-        /// <summary>
         /// 这个角度用于设置枪体在玩家非开火阶段的仰角，这个角度是周角而非弧度角，默认为20f
         /// </summary>
         public float AngleFirearmRest = 20f;
@@ -275,11 +268,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 一个快捷创建手持事件的方法，在<see cref="InOwner"/>中被调用，值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="InOwner"/>的
         /// </summary>
         public virtual void FiringIncident() {
-            if (DownLeft) {
+            void setBaseFromeAI() {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = GunOnFireRot;
                 Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
+            }
+
+            if (DownLeft) {
+                setBaseFromeAI();
                 if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     onFire = true;
                 }
@@ -289,10 +286,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             
             if (CalPlayer.mouseRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
-                Owner.direction = ToMouse.X > 0 ? 1 : -1;
-                Projectile.rotation = GunOnFireRot;
-                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
-                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
+                setBaseFromeAI();
                 if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     SafeMousetStart2 = true;
                     onFireR = true;
@@ -310,8 +304,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir;
             Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
             Projectile.timeLeft = 2;
-            if (GunShootCoolingValue > 0) {
-                GunShootCoolingValue--;
+            if (ShootCoolingValue > 0) {
+                ShootCoolingValue--;
             }
             SetHeld();
             if (SafeMouseInterfaceValue) {
@@ -425,7 +419,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void SpanProj() {
-            if (GunShootCoolingValue <= 0 && (onFire || onFireR)) {
+            if (ShootCoolingValue <= 0 && (onFire || onFireR)) {
                 if (FiringDefaultSound) {
                     SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 }
@@ -449,7 +443,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * fireLight);
                 }
 
-                GunShootCoolingValue += Item.useTime;
+                ShootCoolingValue += Item.useTime;
                 onFire = false;
             }
         }

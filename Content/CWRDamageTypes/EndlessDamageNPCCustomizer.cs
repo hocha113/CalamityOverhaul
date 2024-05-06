@@ -1,13 +1,32 @@
 ﻿using CalamityOverhaul.Content.NPCs.Core;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.CWRDamageTypes
 {
-    internal class EndlessDamageNPCCustomizer : NPCCustomizer
+    internal class EndlessDamageNPCCustomizer : NPCCustomizer, ISetupData
     {
-        public override bool On_OnHitByProjectile_IfSpan(Projectile proj) => proj.DamageType == EndlessDamageClass.Instance && proj.type != ModContent.ProjectileType<Godslight>();
+        private static List<int> nihilityProjs = new List<int>();
+
+        public void SetupData() {
+            nihilityProjs = new List<int>() {
+                ModContent.ProjectileType<Godslight>(),
+                ModContent.ProjectileType<EXNeutronExplode>(),
+            };
+        }
+
+        public override bool On_OnHitByProjectile_IfSpan(Projectile proj) {
+            if (proj.DamageType != EndlessDamageClass.Instance) {
+                return false;
+            }
+            if (nihilityProjs.Contains(proj.type)) {
+                return false;
+            }
+            return true;
+        }
 
         public override bool? On_OnHitByProjectile(NPC npc, Projectile projectile, in NPC.HitInfo hit, int damageDone){
             int upDamage = (int)(npc.lifeMax / 100f);

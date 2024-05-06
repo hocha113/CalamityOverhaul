@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot with { Pitch = -0.3f, Volume = 0.55f }, Projectile.Center);
             }
             if (time == 1) {//最好不要这么做，这是不规范的
-                GunShootCoolingValue = 10;
+                ShootCoolingValue = 10;
                 ModItem.NoKreLoadTime = 35;
             }
             return false;

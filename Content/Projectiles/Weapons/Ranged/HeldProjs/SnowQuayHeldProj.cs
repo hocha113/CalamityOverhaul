@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);
                     SoundEngine.PlaySound(SoundID.Item23 with { Pitch = (90 - fireIndex) * 0.15f, MaxInstances = 13, Volume = 0.2f + fireIndex * 0.006f }, Projectile.Center);
                     FiringDefaultSound = EnableRecoilRetroEffect = false;
-                    GunShootCoolingValue = 2;
+                    ShootCoolingValue = 2;
                 }
                 else {
                     Projectile.frameCounter++;

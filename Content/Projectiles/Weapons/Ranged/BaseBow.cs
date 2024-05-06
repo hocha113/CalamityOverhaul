@@ -156,12 +156,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public virtual void HandEvent() {
-            if (Owner.PressKey()) {
+            void setBaseFromeAI() {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = ToMouseA;
                 Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY * SafeGravDir);
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
+            }
+
+            if (Owner.PressKey()) {
+                setBaseFromeAI();
                 if (HaveAmmo) {
                     onFire = true;
                     Projectile.ai[1]++;
@@ -175,11 +179,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
 
             if (Owner.PressKey(false) && CanRightClick && !onFire && SafeMousetStart) {
-                Owner.direction = ToMouse.X > 0 ? 1 : -1;
-                Projectile.rotation = ToMouseA;
-                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY * SafeGravDir);
-                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
-                SetCompositeArm();
+                setBaseFromeAI();
                 if (HaveAmmo) {
                     SafeMousetStart2 = true;
                     onFireR = true;

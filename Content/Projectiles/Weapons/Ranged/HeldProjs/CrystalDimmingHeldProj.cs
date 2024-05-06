@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     proj.light = 0.75f;
                 }
 
-                GunShootCoolingValue = 15;
+                ShootCoolingValue = 15;
                 FireTime = 8;
                 return;
             }

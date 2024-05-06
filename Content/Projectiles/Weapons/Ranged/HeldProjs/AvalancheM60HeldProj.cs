@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     , ModContent.ProjectileType<IceExplosionFriend>(), WeaponDamage / 6, WeaponKnockback, Owner.whoAmI, 0);
                 }
                 
-                GunShootCoolingValue = 15;
+                ShootCoolingValue = 15;
                 FireTime = 8;
                 return;
             }

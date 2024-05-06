@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot with { Volume = 0.75f, Pitch = 0.2f }, Projectile.Center);
             }
             if (time == 1) {
-                GunShootCoolingValue += 15;
+                ShootCoolingValue += 15;
             }
             return false;
         }

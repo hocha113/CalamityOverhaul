@@ -234,7 +234,7 @@ namespace CalamityOverhaul.Content
             if (HeldStyle >= 0) {
                 player.bodyFrame.Y = player.bodyFrame.Height * HeldStyle;
             }
-            if (!player.frozen && item.type > ItemID.None && !item.IsAir && !player.dead) {
+            if (!player.frozen && !item.IsAir && !player.dead && item.type > ItemID.None) {
                 CWRItems cwrItem = item.CWR();
                 Texture2D value = null;
                 Rectangle frame = new Rectangle(0, 0, 1, 1);

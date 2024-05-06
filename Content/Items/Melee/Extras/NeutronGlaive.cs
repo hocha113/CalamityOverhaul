@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -10,6 +11,13 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
     internal class NeutronGlaive : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "NeutronGlaive";
+        public override bool IsLoadingEnabled(Mod mod) {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
+        }
+
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 6));
@@ -32,6 +40,30 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<NeutronGlaiveBeam>();
             Item.shootSpeed = 18f;
+        }
+
+        public override bool CanUseItem(Player player) {
+            Item.noMelee = true;
+            Item.noUseGraphic = false;
+            Item.UseSound = SoundID.Item60;
+            if (player.altFunctionUse == 2) {
+                Item.noMelee = false;
+                Item.noUseGraphic = true;
+                Item.UseSound = SoundID.AbigailAttack;
+            }
+            return player.ownedProjectileCounts[ModContent.ProjectileType<NeutronGlaiveHeld>()] == 0;
+        }
+
+        public override bool AltFunctionUse(Player player) {
+            return true;
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            if (player.altFunctionUse == 2) {
+                Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<NeutronGlaiveHeld>(), damage, knockback, player.whoAmI);
+                return false;
+            }
+            return base.Shoot(player, source, position, velocity, type, damage, knockback);
         }
     }
 }

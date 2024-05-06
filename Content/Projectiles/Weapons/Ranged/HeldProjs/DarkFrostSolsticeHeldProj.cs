@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 PunchCameraModifier modifier = new PunchCameraModifier(targetPos, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 20f, 6f, 20, 1000f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
 
-                GunShootCoolingValue = 15;
+                ShootCoolingValue = 15;
                 FireTime = 8;
                 return;
             }

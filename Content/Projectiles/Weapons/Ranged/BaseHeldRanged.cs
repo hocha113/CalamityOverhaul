@@ -80,6 +80,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual bool CanFire => false;
         /// <summary>
+        /// 开火冷切计时器
+        /// </summary>
+        public float ShootCoolingValue {
+            get => Projectile.ai[1];
+            set => Projectile.ai[1] = value;
+        }
+        /// <summary>
         /// 获取射击向量
         /// </summary>
         public Vector2 ShootVelocity => ScaleFactor * UnitToMouseV;

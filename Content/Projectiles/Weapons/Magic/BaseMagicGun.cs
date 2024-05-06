@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             if (SetRegenDelayValue == 0) {
                 SetRegenDelayValue = Owner.maxRegenDelay;
             }
-            if (GunShootCoolingValue <= 0 && (onFire || onFireR)) {
+            if (ShootCoolingValue <= 0 && (onFire || onFireR)) {
                 if (ForcedConversionTargetAmmoFunc.Invoke()) {
                     AmmoTypes = ToTargetAmmo;
                 }
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                     Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * fireLight);
                 }
 
-                GunShootCoolingValue += Item.useTime;
+                ShootCoolingValue += Item.useTime;
                 onFire = false;
             }
         }

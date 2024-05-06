@@ -98,12 +98,16 @@ namespace CalamityOverhaul.Common.Effects
                 graphicsDevice.SetRenderTarget(Main.screenTarget);
                 graphicsDevice.Clear(Color.Transparent);
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                
                 //如果想热加载，最好这样获取值
                 Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "WarpShader").Value;//EffectsRegistry.WarpShader;
                 effect.Parameters["tex0"].SetValue(Main.screenTargetSwap);
                 effect.Parameters["i"].SetValue(0.02f);
                 effect.CurrentTechnique.Passes[0].Apply();
                 Main.spriteBatch.Draw(screen, Vector2.Zero, Color.White);
+                Main.spriteBatch.End();
+
+                Main.spriteBatch.Begin();
                 foreach (IDrawWarp p in warpSets) { if (p.canDraw()) { p.costomDraw(Main.spriteBatch); } }
                 Main.spriteBatch.End();
             }

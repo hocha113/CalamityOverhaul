@@ -462,7 +462,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         if (Projectile.IsOwnedByLocalPlayer()) {
                             SoundEngine.PlaySound(LoadingAA_Shotgun.pump with { Volume = 0.4f, Pitch = -0.1f }, Projectile.Center);
                         }
-                        GunShootCoolingValue = 30;
+                        ShootCoolingValue = 30;
                         extraKreloadMaxTime = 10;
                     }
                 }
@@ -480,7 +480,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     SoundEngine.PlaySound(LoadingAA_Shotgun.loadShellSound, Projectile.Center);
                     if (BulletNum == ModItem.AmmoCapacity) {
                         SoundEngine.PlaySound(LoadingAA_Shotgun.pump, Projectile.Center);
-                        GunShootCoolingValue += LoadingAA_Shotgun.pumpCoolingValue;
+                        ShootCoolingValue += LoadingAA_Shotgun.pumpCoolingValue;
                     }
                 }
                 return false;
@@ -522,6 +522,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Get_LoadingAmmoAnimation_PreInOwnerUpdate();
             PreInOwnerUpdate();
 
+            void setBaseFromeAI() {
+                Owner.direction = ToMouse.X > 0 ? 1 : -1;
+                Projectile.rotation = GetGunInFireRot();
+                Projectile.Center = GetGunInFirePos();
+                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
+            }
+
             if (Item.type != ItemID.None) {
                 IsKreload = ModItem.IsKreload;
             }
@@ -532,8 +539,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.rotation = GetGunBodyRotation();
             Projectile.timeLeft = 2;
 
-            if (GunShootCoolingValue > 0) {
-                GunShootCoolingValue--;
+            if (ShootCoolingValue > 0) {
+                ShootCoolingValue--;
             }
             if (ModItem.NoKreLoadTime > 0) {
                 ModItem.NoKreLoadTime--;
@@ -541,10 +548,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             if (SafeMouseInterfaceValue) {
                 if (DownLeft) {
-                    Owner.direction = ToMouse.X > 0 ? 1 : -1;
-                    Projectile.rotation = GetGunInFireRot();
-                    Projectile.Center = GetGunInFirePos();
-                    ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
+                    setBaseFromeAI();
                     if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {//需要子弹，还需要判断是否已经装弹//HaveAmmo && 
                         onFire = true;
                     }
@@ -555,10 +559,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
 
                 if (CalPlayer.mouseRight && !onFire && CanRightClick && SafeMousetStart && (!CartridgeHolderUI.Instance.OnMainP || SafeMousetStart2)) {//Owner.PressKey()
-                    Owner.direction = ToMouse.X > 0 ? 1 : -1;
-                    Projectile.rotation = GetGunInFireRot();
-                    Projectile.Center = GetGunInFirePos();
-                    ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - Projectile.rotation) * DirSign;
+                    setBaseFromeAI();
                     if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {//HaveAmmo && 
                         SafeMousetStart2 = true;
                         onFireR = true;
@@ -866,7 +867,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public sealed override void SpanProj() {
-            if ((onFire || onFireR) && GunShootCoolingValue <= 0 && kreloadTimeValue <= 0) {               
+            if ((onFire || onFireR) && ShootCoolingValue <= 0 && kreloadTimeValue <= 0) {               
                 if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
@@ -924,7 +925,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
 
-                GunShootCoolingValue += FireTime + 1;
+                ShootCoolingValue += FireTime + 1;
                 onFire = false;
             }
         }

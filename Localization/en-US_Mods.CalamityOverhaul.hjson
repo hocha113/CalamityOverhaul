@@ -1762,7 +1762,11 @@ Items: {
 
 	StellarCannonEcType: {
 		DisplayName: Stellar Cannon
-		Tooltip: Fires an explosive phantom star crystal
+		Tooltip:
+			'''
+			Use the falling Star as ammo
+			Fires an explosive phantom star crystal
+			'''
 	}
 
 	SvantechnicalEcType: {
@@ -2003,6 +2007,7 @@ Items: {
 		DisplayName: Avalanche M60
 		Tooltip:
 			'''
+			Use snowballs as ammunition.
 			Firing a barrage of snowballs,
 			Firepower increasing as ammunition diminishes.
 			Every 20 shots triggers an overdrive surge,
@@ -2015,6 +2020,7 @@ Items: {
 		DisplayName: Crystal Dimming
 		Tooltip:
 			'''
+			Use snowballs as ammunition.
 			Launching frigid hail and snowballs,
 			Ice crystals rebound rapidly upon hitting walls,
 			Then track down enemies.
@@ -2027,6 +2033,7 @@ Items: {
 		DisplayName: Dark Frost Solstice
 		Tooltip:
 			'''
+			Use snowballs as ammunition.
 			Firing hail and polar flames,
 			Every 20 shots triggers an overdrive surge,
 			Summoning wintry divinity at the mouse cursor.
@@ -2035,7 +2042,11 @@ Items: {
 
 	SnowQuay: {
 		DisplayName: Snow Viper M16
-		Tooltip: A large-caliber snow cannon, firing ice and snow mixed shells
+		Tooltip:
+			'''
+			Use snowballs as ammunition
+			A large-caliber snow cannon, firing ice and snow mixed shells
+			'''
 	}
 
 	StorageBatteryI: {
@@ -2466,6 +2477,11 @@ Items: {
 
 	NeutronGlaive: {
 		DisplayName: Neutron Glaive
+		Tooltip: ""
+	}
+
+	NeutronBow: {
+		DisplayName: Neutron Bow
 		Tooltip: ""
 	}
 }
@@ -3011,6 +3027,10 @@ Projectiles: {
 	RVoidTentacle.DisplayName: R Void Tentacle
 	NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
 	NeutronExplode.DisplayName: Neutron Explode
+	EXNeutronExplode.DisplayName: E X Neutron Explode
+	NeutronGlaiveHeld.DisplayName: Neutron Glaive Held
+	NeutronsOrb.DisplayName: Neutrons Orb
+	NeutronBowHeldProj.DisplayName: Neutron Bow Held Proj
 }
 
 Configs: {

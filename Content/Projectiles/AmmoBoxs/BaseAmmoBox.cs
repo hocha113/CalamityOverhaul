@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 }
                 player.cursorItemIconID = FromeThisTImeID;
                 if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
-                    gun.GunShootCoolingValue = gun.CanRightClick ? 10 : 2;//因为和一些枪械的右键功能按键冲突，所以要额外设置一个长一些的时间
+                    gun.ShootCoolingValue = gun.CanRightClick ? 10 : 2;//因为和一些枪械的右键功能按键冲突，所以要额外设置一个长一些的时间
                 }
                 if (player.PressKey(false)) {
                     Item item = player.ActiveItem();

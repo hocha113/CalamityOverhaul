@@ -1797,7 +1797,11 @@ Items: {
 
 	StellarCannonEcType: {
 		DisplayName: 新星炮
-		Tooltip: 发射一个爆炸幻星水晶
+		Tooltip:
+			'''
+			使用坠落之星作为弹药
+			发射一个爆炸幻星水晶
+			'''
 	}
 
 	SvantechnicalEcType: {
@@ -2039,6 +2043,7 @@ Items: {
 		DisplayName: 雪崩 M60
 		Tooltip:
 			'''
+			使用雪球作为弹药
 			发射大量雪球，火力随着弹药减少而变强
 			每开火20次进入一次超频爆发，制造一次小型的雪崩
 			"电次，我们来打雪仗吧"
@@ -2049,6 +2054,7 @@ Items: {
 		DisplayName: 绝晶黯涌
 		Tooltip:
 			'''
+			使用雪球作为弹药
 			发射极寒冰雹和雪球，冰晶在撞击墙壁后会高速反弹，然后追踪敌人
 			每开火20次进入一次超频爆发，在鼠标处生成一个巨大的冰柱
 			'''
@@ -2058,6 +2064,7 @@ Items: {
 		DisplayName: 玄冥寒朔
 		Tooltip:
 			'''
+			使用雪球作为弹药
 			发射冰雹和极地幽火
 			每开火20次进入一次超频爆发，在鼠标处召唤凛冬神性
 			'''
@@ -2065,7 +2072,11 @@ Items: {
 
 	SnowQuay: {
 		DisplayName: 雪蝰 M16
-		Tooltip: 一把大口径雪炮，发射冰雪混合炮弹
+		Tooltip:
+			'''
+			使用雪球作为弹药
+			一把大口径雪炮，发射冰雪混合炮弹
+			'''
 	}
 
 	StorageBatteryI: {
@@ -2496,6 +2507,11 @@ Items: {
 
 	NeutronGlaive: {
 		DisplayName: 中子星阔刃
+		Tooltip: ""
+	}
+
+	NeutronBow: {
+		DisplayName: 中子星长弓
 		Tooltip: ""
 	}
 }
@@ -3041,6 +3057,10 @@ Projectiles: {
 	// RVoidTentacle.DisplayName: R Void Tentacle
 	// NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
 	// NeutronExplode.DisplayName: Neutron Explode
+	// EXNeutronExplode.DisplayName: E X Neutron Explode
+	// NeutronGlaiveHeld.DisplayName: Neutron Glaive Held
+	// NeutronsOrb.DisplayName: Neutrons Orb
+	// NeutronBowHeldProj.DisplayName: Neutron Bow Held Proj
 }
 
 Configs: {
