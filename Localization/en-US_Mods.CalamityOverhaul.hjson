@@ -2484,6 +2484,11 @@ Items: {
 		DisplayName: Neutron Bow
 		Tooltip: ""
 	}
+
+	NeutronGun: {
+		DisplayName: Neutron Gun
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3031,6 +3036,13 @@ Projectiles: {
 	NeutronGlaiveHeld.DisplayName: Neutron Glaive Held
 	NeutronsOrb.DisplayName: Neutrons Orb
 	NeutronBowHeldProj.DisplayName: Neutron Bow Held Proj
+	NeutronArrow.DisplayName: Neutron Arrow
+	EXNeutronArrow.DisplayName: E X Neutron Arrow
+	EXNeutronExplosionRanged.DisplayName: E X Neutron Explosion Ranged
+	NeutronLaser.DisplayName: Neutron Laser
+	NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
+	NeutronGunHeldProj.DisplayName: Neutron Gun Held Proj
+	NeutronBullet.DisplayName: Neutron Bullet
 }
 
 Configs: {
@@ -3816,6 +3828,9 @@ TextContent: {
 			Fires five horizontally splitting arrows.
 			Deals increased damage to airborne targets.
 			'''
+		Wap_NeutronBow_LoadingText1: Catching gravity
+		Wap_NeutronBow_LoadingText2: Is Making Gravity Yield
+		Wap_NeutronBow_LoadingText3: READY!!
 	}
 }
 

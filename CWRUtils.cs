@@ -2317,6 +2317,38 @@ namespace CalamityOverhaul
 
         #region 普通绘制工具
 
+        /// <summary>
+        /// 安全的获取对应实例的图像资源
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public static Texture2D T2DValue(this Projectile p) {
+            if (Main.dedServ) {
+                return new Texture2D(null, 1, 1);
+            }
+            if (p.type < 0 || p.type >= TextureAssets.Projectile.Length) {
+                return new Texture2D(null, 1, 1);
+            }
+            Main.instance.LoadProjectile(p.type);
+            return TextureAssets.Projectile[p.type].Value;
+        }
+
+        /// <summary>
+        /// 安全的获取对应实例的图像资源
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public static Texture2D T2DValue(this Item i) {
+            if (Main.dedServ) {
+                return new Texture2D(null, 1, 1);
+            }
+            if (i.type < ItemID.None || i.type >= TextureAssets.Item.Length) {
+                return new Texture2D(null, 1, 1);
+            }
+            Main.instance.LoadItem(i.type);
+            return TextureAssets.Item[i.type].Value;
+        }
+
         public static void DrawEventProgressBar(SpriteBatch spriteBatch, Vector2 drawPos, Asset<Texture2D> iconAsset, float eventKillRatio, float size, int barWidth, int barHeight, string eventMainName, Color eventMainColor) {
             if (size < 0.1f) {
                 return;

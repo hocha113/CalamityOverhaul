@@ -2514,6 +2514,11 @@ Items: {
 		DisplayName: 中子星长弓
 		Tooltip: ""
 	}
+
+	NeutronGun: {
+		DisplayName: 无序法则
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3061,6 +3066,13 @@ Projectiles: {
 	// NeutronGlaiveHeld.DisplayName: Neutron Glaive Held
 	// NeutronsOrb.DisplayName: Neutrons Orb
 	// NeutronBowHeldProj.DisplayName: Neutron Bow Held Proj
+	// NeutronArrow.DisplayName: Neutron Arrow
+	// EXNeutronArrow.DisplayName: E X Neutron Arrow
+	// EXNeutronExplosionRanged.DisplayName: E X Neutron Explosion Ranged
+	// NeutronLaser.DisplayName: Neutron Laser
+	// NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
+	// NeutronGunHeldProj.DisplayName: Neutron Gun Held Proj
+	// NeutronBullet.DisplayName: Neutron Bullet
 }
 
 Configs: {
@@ -3829,6 +3841,9 @@ TextContent: {
 			发射五发可以分裂的并排箭矢
 			对空中的目标造成更高的伤害
 			'''
+		Wap_NeutronBow_LoadingText1: 正在捕捉引力
+		Wap_NeutronBow_LoadingText2: 正在使引力屈服
+		Wap_NeutronBow_LoadingText3: 就绪!!
 	}
 }
 

@@ -549,7 +549,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (SafeMouseInterfaceValue) {
                 if (DownLeft) {
                     setBaseFromeAI();
-                    if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {//需要子弹，还需要判断是否已经装弹//HaveAmmo && 
+                    if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {
                         onFire = true;
                     }
                     SetAutomaticCartridgeChange();
@@ -558,9 +558,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     onFire = false;
                 }
 
-                if (CalPlayer.mouseRight && !onFire && CanRightClick && SafeMousetStart && (!CartridgeHolderUI.Instance.OnMainP || SafeMousetStart2)) {//Owner.PressKey()
+                if (CalPlayer.mouseRight && !onFire && CanRightClick && SafeMousetStart 
+                    && (!CartridgeHolderUI.Instance.OnMainP || SafeMousetStart2)) {//Owner.PressKey()
                     setBaseFromeAI();
-                    if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {//HaveAmmo && 
+                    if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {
                         SafeMousetStart2 = true;
                         onFireR = true;
                     }

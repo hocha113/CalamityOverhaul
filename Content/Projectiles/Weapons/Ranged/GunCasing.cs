@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.rotation += MathHelper.ToRadians(Projectile.velocity.X * 13);
             Projectile.velocity += new Vector2(0, 0.1f);
 
-            if (Time % 13 == 0)
+            if (Time % 20 == 0)
                 Dust.NewDust(Projectile.Center, 3, 3, DustID.Smoke, Projectile.velocity.X, Projectile.velocity.Y);
         }
 

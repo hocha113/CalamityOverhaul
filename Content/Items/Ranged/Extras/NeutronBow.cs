@@ -31,14 +31,14 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override void SetDefaults() {
             Item.width = Item.height = 54;
             Item.damage = 122;
-            Item.DamageType = DamageClass.Ranged;
             Item.useAnimation = Item.useTime = 20;
             Item.knockBack = 2.5f;
-            Item.rare = ItemRarityID.Red;
-            Item.value = Item.buyPrice(13, 33, 75, 0);
-            Item.useAmmo = AmmoID.Arrow;
             Item.shootSpeed = 16;
             Item.UseSound = SoundID.Item5;
+            Item.useAmmo = AmmoID.Arrow;
+            Item.rare = ItemRarityID.Red;
+            Item.DamageType = DamageClass.Ranged;
+            Item.value = Item.buyPrice(13, 33, 75, 0);
             Item.SetHeldProj<NeutronBowHeldProj>();
         }
     }

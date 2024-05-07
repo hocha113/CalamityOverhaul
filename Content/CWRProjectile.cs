@@ -525,10 +525,6 @@ namespace CalamityOverhaul.Content
                     break;
             }
 
-            if (projectile.type == ModContent.ProjectileType<ExoVortex>()) {
-                ExoVortexOnHitDeBug(target);
-            }
-
             if (projectile.DamageType == DamageClass.Summon && target.CWR().WhipHitNum > 0) {
                 CWRNpc npc = target.CWR();
                 WhipHitTypeEnum wTypes = (WhipHitTypeEnum)npc.WhipHitType;
@@ -649,12 +645,6 @@ namespace CalamityOverhaul.Content
                 name = projectile.ModProjectile.FullName;
             }
             Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, name, pos.X + 0, pos.Y - 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
-        }
-
-        private void ExoVortexOnHitDeBug(NPC npc) {
-            if (npc.type == ModContent.NPCType<BrimstoneHeart>()) {
-                return;
-            }
         }
 
         private void Projectile_961_DeBug(Projectile projectile, Color lightColor) {

@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 
         public override void AI() {
             if (Projectile.ai[2] == 0) {
-                SoundEngine.PlaySound(CWRSound.Pecharge);
+                SoundEngine.PlaySound(CWRSound.Pecharge with { Pitch = -0.1f, Volume = 0.8f}, Projectile.Center);
                 for (int i = 0; i < 4; i++) {
                     float rot1 = MathHelper.PiOver2 * i;
                     Vector2 vr = rot1.ToRotationVector2();

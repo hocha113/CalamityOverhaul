@@ -96,7 +96,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
             }
             SetHeld();
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 5);
-            CWRUtils.ClockFrame(ref uiframe, 5, 6);
+            if (canatcck2) {
+                CWRUtils.ClockFrame(ref uiframe, 5, 6);
+            }
             float rot = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rot * -DirSign);
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, rot * -DirSign);
