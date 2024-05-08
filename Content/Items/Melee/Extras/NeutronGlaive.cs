@@ -38,6 +38,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.autoReuse = true;
             Item.value = Item.buyPrice(13, 53, 75, 0);
             Item.rare = ItemRarityID.Red;
+            Item.crit = 8;
             Item.shoot = ModContent.ProjectileType<NeutronGlaiveBeam>();
             Item.shootSpeed = 18f;
         }

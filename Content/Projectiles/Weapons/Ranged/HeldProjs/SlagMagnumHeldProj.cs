@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            EjectCasing();
+            CaseEjection();
             SpawnGunFireDust(dustID1: DustID.GreenTorch, dustID2: DustID.GreenMoss);
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = Item.shoot;

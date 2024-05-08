@@ -429,7 +429,6 @@ namespace CalamityOverhaul.Content
                     {
                         if (recipe.HasResult(ItemID.Zenith)) {
                             recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
-                            recipe.AddIngredient(ItemType<UelibloomBar>(), 5);//添加龙篙锭
                             recipe.RemoveTile(134);
                             recipe.AddTile(TileID.LunarCraftingStation);
                         }

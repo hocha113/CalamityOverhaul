@@ -1,7 +1,10 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Dusts;
+using CalamityOverhaul.Content.GoreEntity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil;
 using System;
 using System.IO;
 using Terraria;
@@ -160,6 +163,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public int DrawCrossArrowNum = 1;
         /// <summary>
+        /// 快速设置抛壳大小，默认为1
+        /// </summary>
+        protected float EjectCasingProjSize = 1;
+        /// <summary>
         /// 弹药转化目标，指定一个弹幕ID类型
         /// </summary>
         protected int ToTargetAmmo;
@@ -298,7 +305,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
+        /// <summary>
+        /// 先行调用，重写它以设置一些特殊状态
+        /// </summary>
+        public virtual void PreInOwnerUpdate() {
+
+        }
+
+        /// <summary>
+        /// 最后调用，重写它以设置一些特殊状态
+        /// </summary>
+        public virtual void PostInOwnerUpdate() {
+
+        }
+
         public override void InOwner() {
+            PreInOwnerUpdate();
             ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir;
@@ -311,6 +333,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (SafeMouseInterfaceValue) {
                 FiringIncident();
             }
+            PostInOwnerUpdate();
         }
         /// <summary>
         /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="BaseHeldRanged.onFire"/>为<see cref="true"/>才可能调用。
@@ -370,9 +393,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (CWRMod.Instance.terrariaOverhaul != null && slp == 1) {
                 return;
             }
+            Vector2 pos = Owner.Top + Owner.Top.To(GunShootPos) / 2;
             Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
-            int proj = Projectile.NewProjectile(Source2, Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
-            Main.projectile[proj].scale = slp;
+            Gore.NewGore(Source2, pos, vr, CaseGore.PType, slp == 1? EjectCasingProjSize : slp);//这是早该有的改变
         }
         /// <summary>
         /// 一个快捷的创造开火烟尘粒子效果的方法
@@ -392,6 +415,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 velocity = ShootVelocity;
             }
             pos += velocity.SafeNormalize(Vector2.Zero) * Projectile.width * Projectile.scale * 0.71f;
+
+            //if (dustID1 == 262 && dustID2 == 54 && dustID3 == 53) {
+            //    float rot = velocity.ToRotation();
+            //    float spread = 0.4f;
+            //    Vector2 offset = new Vector2(1, -0.05f * Owner.direction).RotatedBy(rot);
+            //    Vector2 direction = offset.RotatedByRandom(spread);
+            //    for (int k = 0; k < 13 * splNum; k++) {
+            //        Dust.NewDustPerfect(pos + offset * 70, ModContent.DustType<InShootGlow>(), direction * Main.rand.NextFloat(8)
+            //            , 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f) * splNum);
+            //    }
+            //    return;
+            //}
+
             for (int i = 0; i < 30 * splNum; i++) {
                 int dustID;
                 switch (Main.rand.Next(6)) {

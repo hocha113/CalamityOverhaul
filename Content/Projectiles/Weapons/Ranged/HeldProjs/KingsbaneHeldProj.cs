@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 return;
             }
             base.PostFiringShoot();
-            EjectCasing();
+            CaseEjection();
         }
 
         public override void GunDraw(ref Color lightColor) {

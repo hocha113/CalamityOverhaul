@@ -39,6 +39,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.rare = ItemRarityID.Red;
             Item.DamageType = DamageClass.Ranged;
             Item.value = Item.buyPrice(13, 33, 75, 0);
+            Item.crit = 20;
             Item.SetHeldProj<NeutronBowHeldProj>();
         }
     }

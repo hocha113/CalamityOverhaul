@@ -6,8 +6,10 @@ using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.NormalNPCs;
+using CalamityMod.Particles;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -68,6 +70,7 @@ namespace CalamityOverhaul.Content
         /// 极寒神性屏障
         /// </summary>
         public bool IceParclose;
+        public bool VoidErosionBool;
         public static Asset<Texture2D> IceParcloseAsset;
 
         public override void Load() {
@@ -76,6 +79,7 @@ namespace CalamityOverhaul.Content
 
         public override void ResetEffects(NPC npc) {
             IceParclose = false;
+            VoidErosionBool = false;
         }
 
         public override void SetDefaults(NPC npc) {
@@ -228,6 +232,22 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        public override void UpdateLifeRegen(NPC npc, ref int damage) {
+            if (VoidErosionBool) {
+                DebuffSet(10000, 8000, ref npc.lifeRegen, ref damage);
+            }
+        }
+
+        public void DebuffSet(int lifeRegenSet, int damageSet, ref int lifeRegen, ref int damage) {
+            if (lifeRegen > 0) {
+                lifeRegen = 0;
+            }
+            lifeRegen -= lifeRegenSet;
+            if (damage < damageSet) {
+                damage = damageSet;
+            }  
+        }
+
         public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot) {
             if (npc.type == CWRIDs.Polterghast) {
                 npcLoot.DefineConditionalDropSet(CWRDorp.InHellDropRule).Add(ModContent.ItemType<GhostFireWhip>());
@@ -277,6 +297,13 @@ namespace CalamityOverhaul.Content
                 if (TungstenRiot.Instance.EventKillRatio < 0.5f) {
                     pool.Add(ModContent.NPCType<WulfrumAmplifier>(), 0.25f);
                 }
+            }
+        }
+
+        public override void DrawEffects(NPC npc, ref Color drawColor) {
+            if (VoidErosionBool) {
+                drawColor.R = 100;
+                VoidErosion.SpanStar(npc, CWRUtils.randVr(npc.width / 2));
             }
         }
 

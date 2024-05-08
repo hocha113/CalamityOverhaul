@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GoreEntity;
 using CalamityOverhaul.Content.UIs;
 using log4net.Core;
 using Microsoft.Xna.Framework;
@@ -104,10 +105,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// ，在<see cref="EnableRecoilRetroEffect"/>为<see langword="true"/>时生效，默认为5f
         /// </summary>
         protected float RecoilRetroForceMagnitude = 5;
-        /// <summary>
-        /// 快速设置抛壳大小，默认为1
-        /// </summary>
-        protected float EjectCasingProjSize = 1;
         /// <summary>
         /// 是否是一个多发装填，一般来讲应用于弹容量大于1的枪类，开启后影响<see cref="PreFireReloadKreLoad"/>
         /// </summary>
@@ -220,19 +217,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool AmmunitionIsBeingLoaded() => kreloadTimeValue > 0;
 
         /// <summary>
-        /// 抛壳的简易实现
-        /// </summary>
-        public virtual void EjectCasing() {
-            if (CWRMod.Instance.terrariaOverhaul != null) {
-                return;
-            }
-            Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
-            int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr, ModContent.ProjectileType<GunCasing>(), 10, Projectile.knockBack, Owner.whoAmI);
-            if (EjectCasingProjSize != 1) {
-                Main.projectile[proj].scale = EjectCasingProjSize;
-            }
-        }
-        /// <summary>
         /// 关于装弹过程中的具体效果实现，返回<see langword="false"/>禁用默认的效果行为
         /// </summary>
         public virtual bool PreReloadEffects(int time, int maxTime) {
@@ -320,18 +304,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <returns></returns>
         public virtual Vector2 GetGunBodyPostion() {
             return Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY * SafeGravDir) + FeederOffsetPos;
-        }
-        /// <summary>
-        /// 先行调用，重写它以设置一些特殊状态
-        /// </summary>
-        public virtual void PreInOwnerUpdate() {
-            
-        }
-        /// <summary>
-        /// 最后调用，重写它以设置一些特殊状态
-        /// </summary>
-        public virtual void PostInOwnerUpdate() {
-
         }
         /// <summary>
         /// 初始化弹匣状态

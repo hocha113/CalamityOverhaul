@@ -4,7 +4,6 @@ using CalamityOverhaul;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework;
@@ -2317,19 +2316,32 @@ namespace CalamityOverhaul
 
         #region 普通绘制工具
 
+        public static void SetAnimation(this Item i, int tickValue, int maxFrame) {
+            ItemID.Sets.AnimatesAsSoul[i.type] = true;
+            Main.RegisterItemAnimation(i.type, new DrawAnimationVertical(tickValue, maxFrame));
+        }
+
+        public static void SetAnimation(int type, int tickValue, int maxFrame) {
+            ItemID.Sets.AnimatesAsSoul[type] = true;
+            Main.RegisterItemAnimation(type, new DrawAnimationVertical(tickValue, maxFrame));
+        }
+
         /// <summary>
         /// 安全的获取对应实例的图像资源
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        public static Texture2D T2DValue(this Projectile p) {
+        public static Texture2D T2DValue(this Projectile p, bool loadCeahk = true) {
             if (Main.dedServ) {
                 return new Texture2D(null, 1, 1);
             }
             if (p.type < 0 || p.type >= TextureAssets.Projectile.Length) {
                 return new Texture2D(null, 1, 1);
             }
-            Main.instance.LoadProjectile(p.type);
+            if (loadCeahk) {
+                Main.instance.LoadProjectile(p.type);
+            }
+                
             return TextureAssets.Projectile[p.type].Value;
         }
 
@@ -2338,15 +2350,37 @@ namespace CalamityOverhaul
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        public static Texture2D T2DValue(this Item i) {
+        public static Texture2D T2DValue(this Item i, bool loadCeahk = true) {
             if (Main.dedServ) {
                 return new Texture2D(null, 1, 1);
             }
             if (i.type < ItemID.None || i.type >= TextureAssets.Item.Length) {
                 return new Texture2D(null, 1, 1);
             }
-            Main.instance.LoadItem(i.type);
+            if (loadCeahk) {
+                Main.instance.LoadItem(i.type);
+            }
+                
             return TextureAssets.Item[i.type].Value;
+        }
+
+        /// <summary>
+        /// 安全的获取对应实例的图像资源
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public static Texture2D T2DValue(this NPC n, bool loadCeahk = true) {
+            if (Main.dedServ) {
+                return new Texture2D(null, 1, 1);
+            }
+            if (n.type < NPCID.None || n.type >= TextureAssets.Npc.Length) {
+                return new Texture2D(null, 1, 1);
+            }
+            if (loadCeahk) {
+                Main.instance.LoadNPC(n.type);
+            }
+                
+            return TextureAssets.Npc[n.type].Value;
         }
 
         public static void DrawEventProgressBar(SpriteBatch spriteBatch, Vector2 drawPos, Asset<Texture2D> iconAsset, float eventKillRatio, float size, int barWidth, int barHeight, string eventMainName, Color eventMainColor) {

@@ -2489,6 +2489,11 @@ Items: {
 		DisplayName: Neutron Gun
 		Tooltip: ""
 	}
+
+	NeutronWand: {
+		DisplayName: Neutron Wand
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3043,6 +3048,9 @@ Projectiles: {
 	NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
 	NeutronGunHeldProj.DisplayName: Neutron Gun Held Proj
 	NeutronBullet.DisplayName: Neutron Bullet
+	NeutronWandHeld.DisplayName: Neutron Wand Held
+	NeutronWandExplode.DisplayName: Neutron Wand Explode
+	NeutronMagchStar.DisplayName: Neutron Magch Star
 }
 
 Configs: {
@@ -3230,6 +3238,11 @@ Buffs: {
 	SummonInFlint: {
 		DisplayName: Summon In Flint
 		Description: This little guy used to be a fire consultant
+	}
+
+	VoidErosion: {
+		DisplayName: Void Erosion
+		Description: Mods.CalamityOverhaul.Buffs.VoidErosion.Description
 	}
 }
 

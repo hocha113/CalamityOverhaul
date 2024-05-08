@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void PostFiringShoot() {
             base.PostFiringShoot();
-            EjectCasing();
+            CaseEjection();
         }
     }
 }

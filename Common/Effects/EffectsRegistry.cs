@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Common.Effects
 {
@@ -11,7 +9,9 @@ namespace CalamityOverhaul.Common.Effects
     {
         public static Effect PowerSFShader;
         public static Effect WarpShader;
+        public static Effect NeutronRingShader;
         public static MiscShaderData FlowColorShader;
+        public static ArmorShaderData InShootGlowShader;
 
         public static void LoadEffects() {
             var assets = CWRMod.Instance.Assets;
@@ -19,16 +19,19 @@ namespace CalamityOverhaul.Common.Effects
         }
 
         public static void LoadRegularShaders(AssetRepository assets) {
-            Asset<Effect> _flowColorShaderAsset = assets.Request<Effect>(CWRConstant.noEffects + "FlowColorShader", AssetRequestMode.ImmediateLoad);
-            FlowColorShader = GameShaders.Misc["CWRMod:FlowColorShader"] = new MiscShaderData(_flowColorShaderAsset, "PiercePass");
+            Asset<Effect> getEffect(string key) => assets.Request<Effect>(CWRConstant.noEffects + key, AssetRequestMode.ImmediateLoad);
+            void loadFiltersEffect(string filtersKey, string filename, string passname, out Effect effect) {
+                Asset<Effect> asset = getEffect(filename);
+                Filters.Scene[filtersKey] = new Filter(new(asset, passname), EffectPriority.VeryHigh);
+                effect = asset.Value;
+            }
 
-            Asset<Effect> _powerSFShaderAsset = assets.Request<Effect>(CWRConstant.noEffects + "PowerSFShader", AssetRequestMode.ImmediateLoad);
-            Filters.Scene["CWRMod:powerSFShader"] = new Filter(new(_powerSFShaderAsset, "Offset"), EffectPriority.VeryHigh);
-            PowerSFShader = _powerSFShaderAsset.Value;
+            loadFiltersEffect("CWRMod:powerSFShader", "PowerSFShader", "Offset", out PowerSFShader);
+            loadFiltersEffect("CWRMod:warpShader", "WarpShader", "PrimitivesPass", out WarpShader);
+            loadFiltersEffect("CWRMod:neutronRingShader", "NeutronRingShader", "NeutronRingPass", out NeutronRingShader);
 
-            Asset<Effect> _warpShaderAsset = assets.Request<Effect>(CWRConstant.noEffects + "WarpShader", AssetRequestMode.ImmediateLoad);
-            Filters.Scene["CWRMod:warpShader"] = new Filter(new(_warpShaderAsset, "PrimitivesPass"), EffectPriority.VeryHigh);
-            WarpShader = _warpShaderAsset.Value;
+            FlowColorShader = new MiscShaderData(getEffect("FlowColorShader"), "PiercePass");
+            InShootGlowShader = new ArmorShaderData(getEffect("InShootGlow"), "InShootGlowPass");
         }
     }
 }

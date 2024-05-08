@@ -44,6 +44,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.rare = ItemRarityID.Red;
             Item.DamageType = DamageClass.Ranged;
             Item.value = Item.buyPrice(13, 83, 5, 0);
+            Item.crit = 2;
             Item.SetCartridgeGun<NeutronGunHeldProj>(120);
         }
     }

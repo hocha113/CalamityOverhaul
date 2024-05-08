@@ -2519,6 +2519,11 @@ Items: {
 		DisplayName: 无序法则
 		Tooltip: ""
 	}
+
+	NeutronWand: {
+		// DisplayName: Neutron Wand
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3073,6 +3078,9 @@ Projectiles: {
 	// NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
 	// NeutronGunHeldProj.DisplayName: Neutron Gun Held Proj
 	// NeutronBullet.DisplayName: Neutron Bullet
+	// NeutronWandHeld.DisplayName: Neutron Wand Held
+	// NeutronWandExplode.DisplayName: Neutron Wand Explode
+	// NeutronMagchStar.DisplayName: Neutron Magch Star
 }
 
 Configs: {
@@ -3256,6 +3264,11 @@ Buffs: {
 	SummonInFlint: {
 		DisplayName: 火石之灵
 		Description: 这个小家伙曾经是一名消防顾问
+	}
+
+	VoidErosion: {
+		// DisplayName: Void Erosion
+		// Description: Mods.CalamityOverhaul.Buffs.VoidErosion.Description
 	}
 }
 

@@ -43,15 +43,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
                     }
                 }
             }
-            if (Projectile.ai[2] % 3 == 0) {
-                Vector2 rand = CWRUtils.randVr(255);
-                for (int i = 0; i < 4; i++) {
-                    float rot1 = MathHelper.PiOver2 * i;
-                    Vector2 vr = rot1.ToRotationVector2();
-                    for (int j = 0; j < 73; j++) {
-                        CWRParticle spark = new HeavenfallStarParticle(Projectile.Center + rand
-                            , vr * 0.24f, false, 13, Main.rand.NextFloat(0.9f, 1.3f), Color.CadetBlue);
-                        CWRParticleHandler.AddParticle(spark);
+            if (Projectile.ai[2] % 6 == 0) {
+                float randvalue = Main.rand.NextFloat(MathHelper.TwoPi);
+                float randvalue2 = Main.rand.NextFloat(0.3f, 1.6f);
+                for (int z = 0; z < 4; z++) {
+                    Vector2 rand = (MathHelper.PiOver2 * z + randvalue).ToRotationVector2() * 130 * randvalue2;
+                    for (int i = 0; i < 4; i++) {
+                        float rot1 = MathHelper.PiOver2 * i;
+                        Vector2 vr = rot1.ToRotationVector2();
+                        for (int j = 0; j < 33; j++) {
+                            CWRParticle spark = new HeavenfallStarParticle(Projectile.Center + rand
+                                , vr * 0.24f, false, 13, Main.rand.NextFloat(0.9f, 1.3f), Color.CadetBlue);
+                            CWRParticleHandler.AddParticle(spark);
+                        }
                     }
                 }
             }

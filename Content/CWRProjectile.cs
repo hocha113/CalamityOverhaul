@@ -626,9 +626,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreDraw(Projectile projectile, ref Color lightColor) {
-            if (projectile.type == ModContent.ProjectileType<ThanatosLaser>()) {
-                return ThanatosLaserDrawDeBug(projectile, ref lightColor);
-            }
             //我不得不说，冰刺的绘制堪称天才，但是原版对暗影背景的处理出现了小小的问题，这会导致弹幕底部出现一个相对不起眼的黑点，下面这段代码试图解决这个问题
             if (projectile.type == 961) {
                 Projectile_961_DeBug(projectile, lightColor);
@@ -716,7 +713,7 @@ namespace CalamityOverhaul.Content
 
             Main.EntitySpriteDraw(laserTelegraph, projectile.Center - Main.screenPosition, null, colorInner, thanatosLaser.Velocity.ToRotation(), origin, scaleInner, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(laserTelegraph, projectile.Center - Main.screenPosition, null, colorOuter, thanatosLaser.Velocity.ToRotation(), origin, scaleOuter, SpriteEffects.None, 0);
-            return false;
+            return true;
         }
     }
 }
