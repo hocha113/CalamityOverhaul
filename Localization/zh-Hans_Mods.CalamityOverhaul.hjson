@@ -2506,23 +2506,23 @@ Items: {
 	}
 
 	NeutronGlaive: {
-		DisplayName: 中子星阔刃
+		DisplayName: 黑域斩切
 		Tooltip: ""
 	}
 
 	NeutronBow: {
-		DisplayName: 中子星长弓
+		DisplayName: 洛希之弦
 		Tooltip: ""
 	}
 
 	NeutronGun: {
-		DisplayName: 无序法则
+		DisplayName: 恒星猎手
 		Tooltip: ""
 	}
 
 	NeutronWand: {
-		// DisplayName: Neutron Wand
-		// Tooltip: ""
+		DisplayName: 星墓之光
+		Tooltip: ""
 	}
 }
 

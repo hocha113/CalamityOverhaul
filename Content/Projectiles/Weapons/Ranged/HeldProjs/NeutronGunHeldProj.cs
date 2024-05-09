@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Charge = 0;
             canattce = false;
             SoundEngine.PlaySound(CWRSound.Gun_AWP_Shoot with { Pitch = -0.1f, Volume = 0.25f }, Projectile.Center);
-            CaseEjection();
+            //CaseEjection();
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Projectile.NewProjectile(Source, GunShootPos + CWRUtils.randVr(130, 131), ShootVelocity
                 , ModContent.ProjectileType<NeutronLaser>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
