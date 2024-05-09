@@ -6,6 +6,7 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Terraria;
 using Terraria.ModLoader;
@@ -17,45 +18,37 @@ namespace CalamityOverhaul.Content.Particles.Core
     {
         internal static Dictionary<Type, int> ParticleTypesDic;
         internal static Dictionary<int, Texture2D> ParticleIDToTexturesDic;
+        internal static List<CWRParticle> CWRParticleCoreInds;
         private static List<CWRParticle> particles;
         private static List<CWRParticle> particlesToKill;
-        private static List<CWRParticle> particleEntitys;
         private static List<CWRParticle> batchedAlphaBlendParticles;
         private static List<CWRParticle> batchedNonPremultipliedParticles;
         private static List<CWRParticle> batchedAdditiveBlendParticles;
 
         public static int GetParticlesCount() => particles.Count;
 
-        public static void LoadParticleInstence(Mod mod) {
-            Type baseParticleType = typeof(CWRParticle);
-            foreach (Type type in AssemblyManager.GetLoadableTypes(mod.Code)) {
-                if (type.IsSubclassOf(baseParticleType) && !type.IsAbstract && type != baseParticleType) {
-                    int ID = ParticleTypesDic.Count;
-                    ParticleTypesDic[type] = ID;
-
-                    CWRParticle instance = (CWRParticle)FormatterServices.GetUninitializedObject(type);
-                    particleEntitys.Add(instance);
-
-                    string texturePath = type.Namespace.Replace('.', '/') + "/" + type.Name;
-                    if (instance.Texture != "")
-                        texturePath = instance.Texture;
-                    ParticleIDToTexturesDic[ID] = ModContent.Request<Texture2D>(texturePath, AssetRequestMode.ImmediateLoad).Value;
-                }
-            }
-        }
-
         internal static void Load() {
             particles = new List<CWRParticle>();
             particlesToKill = new List<CWRParticle>();
             ParticleTypesDic = new Dictionary<Type, int>();
             ParticleIDToTexturesDic = new Dictionary<int, Texture2D>();
-            particleEntitys = new List<CWRParticle>();
+            CWRParticleCoreInds = new List<CWRParticle>();
 
             batchedAlphaBlendParticles = new List<CWRParticle>();
             batchedNonPremultipliedParticles = new List<CWRParticle>();
             batchedAdditiveBlendParticles = new List<CWRParticle>();
 
-            LoadParticleInstence(CWRMod.Instance);
+            CWRUtils.HanderInstance(ref CWRParticleCoreInds, CWRUtils.GetSubclasses(typeof(CWRParticle)), false);//需要选定为有参构造
+            foreach(var particleType in CWRParticleCoreInds) {
+                Type type = particleType.GetType();
+                int ID = ParticleTypesDic.Count;
+                ParticleTypesDic[type] = ID;
+                string texturePath = type.Namespace.Replace('.', '/') + "/" + type.Name;
+                if (particleType.Texture != "") {
+                    texturePath = particleType.Texture;
+                }  
+                ParticleIDToTexturesDic[ID] = ModContent.Request<Texture2D>(texturePath, AssetRequestMode.ImmediateLoad).Value;
+            }
         }
 
         internal static void Unload() {
@@ -63,7 +56,7 @@ namespace CalamityOverhaul.Content.Particles.Core
             particlesToKill = null;
             ParticleTypesDic = null;
             ParticleIDToTexturesDic = null;
-            particleEntitys = null;
+            CWRParticleCoreInds = null;
             batchedAlphaBlendParticles = null;
             batchedNonPremultipliedParticles = null;
             batchedAdditiveBlendParticles = null;

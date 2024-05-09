@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// </summary>
         public virtual bool UseCustomDraw => false;
         /// <summary>
-        /// 如果您想自己处理粒子绘制,请使用此方法。只在UseCustomDraw设置为true时调用
+        /// 如果想自己处理粒子绘制,请使用此方法。只在UseCustomDraw设置为true时调用
         /// </summary>
         public virtual void CustomDraw(SpriteBatch spriteBatch) { }
 

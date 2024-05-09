@@ -7,8 +7,8 @@ namespace CalamityOverhaul.Common.Effects
 {
     public static class EffectsRegistry
     {
-        public static Effect PowerSFShader;
         public static Effect WarpShader;
+        public static Effect PowerSFShader;
         public static Effect NeutronRingShader;
         public static MiscShaderData FlowColorShader;
         public static ArmorShaderData InShootGlowShader;

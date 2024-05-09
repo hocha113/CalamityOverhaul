@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
@@ -199,16 +200,16 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 根据给定的类型列表，创建符合条件的类型实例，并将实例添加到输出列表中
+        /// 根据给定的类型列表，创建符合条件的类型实例，并将实例添加到输出列表中，该方法默认要求类型拥有无参构造
         /// </summary>
         /// <typeparam name="T">期望的类型</typeparam>
         /// <param name="outInds">输出列表，包含符合条件的类型实例</param>
         /// <param name="inTypes">输入的类型列表，用于创建实例</param>
-        public static void HanderInstance<T>(ref List<T> outInds, List<Type> inTypes) {
+        public static void HanderInstance<T>(ref List<T> outInds, List<Type> inTypes, bool parameterless = true) {
             outInds = new List<T>();
             foreach (Type type in inTypes) {
                 if (type != typeof(T)) {
-                    object obj = Activator.CreateInstance(type);
+                    object obj = parameterless ? Activator.CreateInstance(type) : RuntimeHelpers.GetUninitializedObject(type);
                     if (obj is T inds) {
                         outInds.Add(inds);
                     }
