@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<HolyColliderHolyFires>();
             Item.shootSpeed = 10f;
-            Item.value = CalamityGlobalItem.Rarity12BuyPrice;
+            Item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
             Item.rare = ModContent.RarityType<Turquoise>();
             
         }

@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using System;
@@ -15,7 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
     internal class MurasamaEndSkillOrb : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        internal PrimitiveTrail LightningDrawer;
 
         public const int BaseProjTime = 45;
         public ref float OrigVelocityAngle => ref Projectile.ai[0];
@@ -140,13 +140,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (LightningDrawer is null)
-                LightningDrawer = new PrimitiveTrail(PrimitiveWidthFunction, PrimitiveColorFunction, PrimitiveTrail.RigidPointRetreivalFunction, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]);
-
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].SetMiscShaderAsset_1(CWRUtils.GetT2DAsset(CWRConstant.Masking + "WavyNoise"));
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-
-            LightningDrawer.Draw(Projectile.oldPos, Projectile.Size * 0.5f - Main.screenPosition, 28);
+            
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
+                , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 28);
             return false;
         }
     }

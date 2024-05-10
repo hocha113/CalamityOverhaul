@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.height = 44;
-            Item.value = CalamityGlobalItem.Rarity5BuyPrice;
+            Item.value = CalamityGlobalItem.RarityPinkBuyPrice;
             Item.rare = ItemRarityID.Pink;
             Item.shoot = ModContent.ProjectileType<CosmicCalamityProjectile>();
             Item.shootSpeed = 12f;

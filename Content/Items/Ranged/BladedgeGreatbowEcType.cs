@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BladedgeGreatbow";
         public override void SetDefaults() {
-            Item.SetCalamitySD<BladedgeGreatbow>();
+            Item.SetCalamitySD<BladedgeRailbow>();
             Item.SetHeldProj<BladedgeGreatbowHeldProj>();
         }
     }

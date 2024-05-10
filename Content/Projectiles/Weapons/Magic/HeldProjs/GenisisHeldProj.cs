@@ -9,9 +9,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 {
     internal class GenisisHeldProj : BaseMagicGun
     {
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;//TODO:已经废弃，等待重做或者移除
+        }
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Genisis";
-        public override int targetCayItem => ModContent.ItemType<Genisis>();
-        public override int targetCWRItem => ModContent.ItemType<GenisisEcType>();
+        //public override int targetCayItem => ModContent.ItemType<Genisis>();
+        //public override int targetCWRItem => ModContent.ItemType<GenisisEcType>();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 60;
             ShootPosNorlLengValue = 0;

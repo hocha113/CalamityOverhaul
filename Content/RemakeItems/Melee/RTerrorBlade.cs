@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.height = 80;
             item.shoot = ModContent.ProjectileType<RTerrorBeam>();
             item.shootSpeed = 20f;
-            item.value = CalamityGlobalItem.Rarity13BuyPrice;
+            item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
         }
 

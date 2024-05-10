@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.autoReuse = true;
             item.noUseGraphic = true;
             item.noMelee = true;
-            item.value = CalamityGlobalItem.Rarity12BuyPrice;
+            item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
             item.rare = ModContent.RarityType<Turquoise>();
             item.shoot = ModContent.ProjectileType<RTerratomereHoldoutProj>();
             item.shootSpeed = 60f;

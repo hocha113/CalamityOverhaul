@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.UseSound = HandheldTank.UseSound;
             Item.noMelee = true;
-            Item.value = CalamityGlobalItem.Rarity12BuyPrice;
+            Item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
             Item.rare = ModContent.RarityType<Turquoise>();
             Item.Calamity().donorItem = true;
             Item.shoot = ModContent.ProjectileType<HandheldTankShell>();

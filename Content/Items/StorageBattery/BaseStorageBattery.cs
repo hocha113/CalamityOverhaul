@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.StorageBattery
         public override void SetDefaults() {
             Item.width = 56;
             Item.height = 24;
-            Item.value = CalamityGlobalItem.Rarity5BuyPrice;
+            Item.value = CalamityGlobalItem.RarityPinkBuyPrice;
             Item.rare = ItemRarityID.Pink;
             CalamityGlobalItem modItem = Item.Calamity();
             CWRItems cwrItem = Item.CWR();

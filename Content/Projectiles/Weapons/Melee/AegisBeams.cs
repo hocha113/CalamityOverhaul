@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
@@ -85,15 +86,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        public PrimitiveTrail PierceAfterimageDrawer = null;
-
         public float PrimitiveWidthFunction(float completionRatio) => Projectile.scale * 30f;
 
         public Color PrimitiveColorFunction(float _) => Color.Gold * Projectile.Opacity;
 
         public override bool PreDraw(ref Color lightColor) {
-            PierceAfterimageDrawer ??= new(PrimitiveWidthFunction, PrimitiveColorFunction, null, GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]);
-
             float localIdentityOffset = Projectile.identity * 0.1372f;
             Color mainColor = CalamityUtils.MulticolorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f, Color.Gold, Color.White, Color.Goldenrod, Color.DarkGoldenrod, Color.Gold);
             Color secondaryColor = CalamityUtils.MulticolorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset + 0.2f) % 1f, Color.Gold, Color.White, Color.Goldenrod, Color.DarkGoldenrod, Color.Gold);
@@ -107,7 +104,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseColor(mainColor);
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseSecondaryColor(secondaryColor);
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].Apply();
-            PierceAfterimageDrawer.Draw(Projectile.oldPos, trailOffset, 53);
+            //非常好的改动，PrimitiveTrail的绘制非常烦杂，使用这种形式会是一个绝佳的选择
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction, (float _) => trailOffset, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]), 53);
 
             return true;
         }

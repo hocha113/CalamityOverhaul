@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ModContent.ProjectileType<RAirSpinnerYoyo>();
             item.shootSpeed = 14f;
             item.rare = ItemRarityID.Orange;
-            item.value = CalamityGlobalItem.Rarity3BuyPrice;
+            item.value = CalamityGlobalItem.RarityOrangeBuyPrice;
         }
     }
 }

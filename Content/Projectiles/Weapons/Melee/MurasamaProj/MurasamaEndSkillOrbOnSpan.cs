@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
     internal class MurasamaEndSkillOrbOnSpan : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        internal PrimitiveTrail LightningDrawer;
         private List<Vector2> PosLists;
         private float orbNinmsWeith;
         private float maxOrbNinmsWeith;
@@ -89,10 +89,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (PosLists == null) 
                 return false;
 
-            if (LightningDrawer is null)
-                LightningDrawer = new PrimitiveTrail(PrimitiveWidthFunction, PrimitiveColorFunction, PrimitiveTrail.RigidPointRetreivalFunction, GameShaders.Misc["CalamityMod:TrailStreak"]);
             GameShaders.Misc["CalamityMod:TrailStreak"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
-            LightningDrawer.Draw(PosLists, Projectile.Size * 0.5f - Main.screenPosition, 18);
+            
+            PrimitiveRenderer.RenderTrail(PosLists, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
+                , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:TrailStreak"]), 18);
             return false;
         }
     }

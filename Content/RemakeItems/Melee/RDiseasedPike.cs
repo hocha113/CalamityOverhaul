@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
             item.height = 58;
-            item.value = CalamityGlobalItem.Rarity8BuyPrice;
+            item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             item.rare = ItemRarityID.Yellow;
             item.shoot = ModContent.ProjectileType<RDiseasedPikeSpear>();
             item.shootSpeed = 10f;

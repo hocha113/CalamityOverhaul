@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.useAmmo = AmmoID.Bullet;
             Item.UseSound = CommonCalamitySounds.LargeWeaponFireSound with { Volume = 0.6f, Pitch = -0.3f };
             Item.rare = ModContent.RarityType<Violet>();
-            Item.value = CalamityGlobalItem.Rarity15BuyPrice;
+            Item.value = CalamityGlobalItem.RarityVioletBuyPrice;
             Item.Calamity().canFirePointBlankShots = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<SpectreRifleHeldProj>();
             Item.CWR().hasHeldNoCanUseBool = true;

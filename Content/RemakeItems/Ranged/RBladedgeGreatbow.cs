@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
     internal class RBladedgeGreatbow : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<BladedgeGreatbow>();
+        public override int TargetID => ModContent.ItemType<BladedgeRailbow>();
         public override int ProtogenesisID => ModContent.ItemType<BladedgeGreatbowEcType>();
         public override string TargetToolTipItemName => "BladedgeGreatbowEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<BladedgeGreatbowHeldProj>();

@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.knockBack = 5f;
             Item.shootSpeed = 9f;
             Item.shoot = ModContent.ProjectileType<GhastlyBlasts>();
-            Item.value = CalamityGlobalItem.Rarity13BuyPrice;
+            Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
             Item.SetHeldProj<GhastlyVisageHeldProj>();
             

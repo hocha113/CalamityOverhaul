@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAnimation = 7;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 2.5f;
-            Item.value = CalamityGlobalItem.Rarity8BuyPrice;
+            Item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             Item.rare = ItemRarityID.Yellow;
             Item.UseSound = SoundID.Item11;
             Item.autoReuse = true;

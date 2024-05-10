@@ -9,8 +9,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class AstralRepeaterHeldProj : BaseBow
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "AstralRepeater";
-        public override int targetCayItem => ModContent.ItemType<AstralRepeater>();
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "AstralBow";
+        public override int targetCayItem => ModContent.ItemType<AstralBow>();
         public override int targetCWRItem => ModContent.ItemType<AstralRepeaterEcType>();
         private int fireIndex;
         public override void SetRangedProperty() {

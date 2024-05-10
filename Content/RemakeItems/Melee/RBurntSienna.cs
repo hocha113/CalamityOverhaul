@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
             item.height = 54;
-            item.value = CalamityGlobalItem.Rarity1BuyPrice;
+            item.value = CalamityGlobalItem.RarityBlueBuyPrice;
             item.rare = 1;
             item.shoot = ModContent.ProjectileType<BurntSiennaProj>();
             item.shootSpeed = 7f;

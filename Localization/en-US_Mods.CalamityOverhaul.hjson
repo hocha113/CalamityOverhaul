@@ -3051,6 +3051,8 @@ Projectiles: {
 	NeutronWandHeld.DisplayName: Neutron Wand Held
 	NeutronWandExplode.DisplayName: Neutron Wand Explode
 	NeutronMagchStar.DisplayName: Neutron Magch Star
+	AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
+	HyperBlade.DisplayName: Hyper Blade
 }
 
 Configs: {

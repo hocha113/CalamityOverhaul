@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.StatDebuffs;
+using CalamityMod.Graphics.Primitives;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
@@ -18,8 +19,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class RTerratomereHoldoutProj : ModProjectile
     {
-        public PrimitiveTrail SlashDrawer;
-
         public Player Owner => Main.player[Projectile.owner];
 
         public int Direction => Projectile.velocity.X.DirectionalSign();
@@ -197,14 +196,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public void DrawSlash() {
-            if (SlashDrawer == null) {
-                SlashDrawer = new PrimitiveTrail(SlashWidthFunction, SlashColorFunction, null, GameShaders.Misc["CalamityMod:ExobladeSlash"]);
-            }
-
             Main.spriteBatch.EnterShaderRegion();
             TerratomereHoldoutProj.PrepareSlashShader(Direction == 1);
             if (SwingCompletionAtStartOfTrail > SwingCompletionRatio) {
-                SlashDrawer.Draw(GenerateSlashPoints(), Projectile.Center - Main.screenPosition, 95);
+                PrimitiveRenderer.RenderTrail(GenerateSlashPoints().ToArray(), new PrimitiveSettings(SlashWidthFunction, SlashColorFunction
+                    , (float _) => Projectile.Center, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:ExobladeSlash"]), 95);
             }
 
             Main.spriteBatch.ExitShaderRegion();

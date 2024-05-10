@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
             item.knockBack = 8.7f;
-            item.value = CalamityGlobalItem.Rarity14BuyPrice;
+            item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             item.rare = ModContent.RarityType<DarkBlue>();
             item.autoReuse = true;
             item.shootSpeed = 12.6f;

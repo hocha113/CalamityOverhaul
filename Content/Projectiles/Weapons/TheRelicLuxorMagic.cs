@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,8 +13,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
 {
     internal class TheRelicLuxorMagic : ModProjectile
     {
-        internal PrimitiveTrail TrailDrawer;
-
         public override string Texture => CWRConstant.Projectile + "TheRelicLuxorMagicProj";
 
         public override void SetStaticDefaults() {
@@ -53,12 +52,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (TrailDrawer == null) {
-                TrailDrawer = new PrimitiveTrail(WidthFunction, ColorFunction, null, GameShaders.Misc["CalamityMod:TrailStreak"]);
-            }
-
             GameShaders.Misc["CalamityMod:TrailStreak"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
-            TrailDrawer.Draw(Projectile.oldPos, Projectile.Size * 0.5f - Main.screenPosition, 30);
+            
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(WidthFunction, ColorFunction
+                , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:TrailStreak"]), 30);
 
             Texture2D texture = CWRUtils.GetT2DValue(Texture);
             Color color = Color.White;

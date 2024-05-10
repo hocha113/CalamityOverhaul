@@ -9,13 +9,13 @@ using Terraria;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityMod.Graphics.Primitives;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
 {
     internal class Godslight : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        internal PrimitiveTrail LightningDrawer;
         internal Vector2[] RayPoint;
         internal int pointNum => 100;
         internal Color[] colors;
@@ -102,12 +102,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
 
         public override bool PreDraw(ref Color lightColor) {
             if (RayPoint != null) {
-                if (LightningDrawer is null)
-                    LightningDrawer = new PrimitiveTrail(PrimitiveWidthFunction, PrimitiveColorFunction, PrimitiveTrail.RigidPointRetreivalFunction, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]);
-
                 GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
                 GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-                LightningDrawer.Draw(RayPoint, Projectile.Size * 0.5f - Main.screenPosition, 50);
+                
+                PrimitiveRenderer.RenderTrail(RayPoint, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
+                    , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 50);
             }
             return false;
         }

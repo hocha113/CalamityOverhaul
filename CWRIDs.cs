@@ -429,7 +429,7 @@ namespace CalamityOverhaul
                 ItemType<Lumenyl>(),//流明晶
                 ItemType<MeldConstruct>(),//幻塔物质
                 ItemType<MiracleMatter>(),//奇迹物质
-                ItemType<Polterplasm>(),//幻魂
+                //ItemType<Polterplasm>(),//幻魂
                 ItemType<RuinousSoul>(),//幽花之魂
                 ItemType<DarkPlasma>(),//暗物质
                 ItemType<UnholyEssence>(),//灼火精华

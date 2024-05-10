@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAmmo = AmmoID.Bullet;
             Item.shoot = ModContent.ProjectileType<SeasSearingBubble>();
             Item.shootSpeed = 13f;
-            Item.value = CalamityGlobalItem.Rarity5BuyPrice;
+            Item.value = CalamityGlobalItem.RarityPinkBuyPrice;
             Item.rare = ItemRarityID.Pink;
             Item.SetHeldProj<SeasSearingHeldProj>();
         }

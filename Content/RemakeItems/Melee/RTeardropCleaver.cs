@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
             item.height = 66;
-            item.value = CalamityGlobalItem.Rarity2BuyPrice;
+            item.value = CalamityGlobalItem.RarityGreenBuyPrice;
             item.rare = ItemRarityID.Green;
             item.shoot = ModContent.ProjectileType<TeardropCleaverProj>();
             item.shootSpeed = 1;

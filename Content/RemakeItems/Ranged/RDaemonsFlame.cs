@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ModContent.ProjectileType<DaemonsFlameHeldProj>();
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Arrow;
-            item.value = CalamityGlobalItem.Rarity13BuyPrice;
+            item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
             item.Calamity().canFirePointBlankShots = true;
             item.SetHeldProj<DaemonsFlameHeldProj>();

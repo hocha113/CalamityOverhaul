@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.autoReuse = true;
             item.shootSpeed = 15f;
             item.shoot = ProjectileID.PurificationPowder;
-            item.value = CalamityGlobalItem.Rarity8BuyPrice;
+            item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             item.rare = ItemRarityID.Yellow;
         }
 

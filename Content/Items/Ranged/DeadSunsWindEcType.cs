@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.noMelee = true;
             Item.knockBack = 3.5f;
             Item.UseSound = UseShoot;
-            Item.value = CalamityGlobalItem.Rarity9BuyPrice;
+            Item.value = CalamityGlobalItem.RarityCyanBuyPrice;
             Item.rare = ItemRarityID.Cyan;
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<CosmicFire>();

@@ -1,18 +1,13 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Particles;
-using CalamityMod.Projectiles.BaseProjectiles;
-using CalamityMod.Projectiles.Magic;
+using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Graphics.Shaders;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
@@ -20,7 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
     internal class CosmicCalamityRay : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        internal PrimitiveTrail LightningDrawer;
         internal Vector2[] RayPoint;
         internal int pointNum => 100;
         public override bool ShouldUpdatePosition() => false;
@@ -87,12 +81,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
 
         public override bool PreDraw(ref Color lightColor) {
             if (RayPoint != null) {
-                if (LightningDrawer is null)
-                    LightningDrawer = new PrimitiveTrail(PrimitiveWidthFunction, PrimitiveColorFunction, PrimitiveTrail.RigidPointRetreivalFunction, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]);
-
                 GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
                 GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-                LightningDrawer.Draw(RayPoint, Projectile.Size * 0.5f - Main.screenPosition, 50);
+                PrimitiveRenderer.RenderTrail(RayPoint, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
+                    , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 50);
             }
             return false;
         }

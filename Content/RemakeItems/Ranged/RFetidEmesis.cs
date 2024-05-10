@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ProjectileID.PurificationPowder;
             item.shootSpeed = 16f;
             item.useAmmo = AmmoID.Bullet;
-            item.value = CalamityGlobalItem.Rarity13BuyPrice;
+            item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
             item.Calamity().canFirePointBlankShots = true;
             item.SetCartridgeGun<FetidEmesisHeldProj>(120);

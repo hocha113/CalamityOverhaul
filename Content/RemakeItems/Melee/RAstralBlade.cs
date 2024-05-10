@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.useTurn = true;
             item.useStyle = ItemUseStyleID.Swing;
             item.knockBack = 4f;
-            item.value = CalamityGlobalItem.Rarity9BuyPrice;
+            item.value = CalamityGlobalItem.RarityCyanBuyPrice;
             item.rare = ItemRarityID.Cyan;
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;

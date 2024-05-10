@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ModContent.ProjectileType<HighExplosivePeanutShell>();
             item.shootSpeed = 13f;
             item.useAmmo = AmmoID.Bullet;
-            item.value = CalamityGlobalItem.Rarity13BuyPrice;
+            item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
             item.Calamity().donorItem = true;
             item.Calamity().canFirePointBlankShots = true;

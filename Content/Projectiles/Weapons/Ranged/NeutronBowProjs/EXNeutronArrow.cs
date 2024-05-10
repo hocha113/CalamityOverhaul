@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using Microsoft.Xna.Framework;
@@ -14,7 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
     internal class EXNeutronArrow : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "NeutronArrow";
-        public PrimitiveTrail PierceDrawer = null;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.timeLeft = 320;
@@ -52,7 +52,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
 
         public void DrawTrild() {
             MiscShaderData flowColorShader = EffectsRegistry.FlowColorShader;
-            PierceDrawer ??= new(PrimitiveWidthFunction, PrimitiveColorFunction, null, flowColorShader);
 
             float localIdentityOffset = Projectile.identity * 0.1372f;
             Color mainColor = CalamityUtils.MulticolorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f, Color.Blue, Color.White, Color.BlueViolet, Color.CadetBlue, Color.DarkBlue);
@@ -67,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
             flowColorShader.UseColor(mainColor);
             flowColorShader.UseSecondaryColor(secondaryColor);
             flowColorShader.Apply();
-            PierceDrawer.Draw(Projectile.oldPos, trailOffset, 53);
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction, (float _) => trailOffset, smoothen: true, pixelate: false, flowColorShader), 53);
         }
 
         public override bool PreDraw(ref Color lightColor) {

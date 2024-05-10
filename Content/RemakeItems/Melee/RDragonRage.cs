@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.noUseGraphic = true;
             item.useStyle = ItemUseStyleID.Shoot;
             item.UseSound = SoundID.DD2_SkyDragonsFurySwing;
-            item.value = CalamityGlobalItem.Rarity15BuyPrice;
+            item.value = CalamityGlobalItem.RarityVioletBuyPrice;
             item.rare = ModContent.RarityType<Violet>();
         }
 

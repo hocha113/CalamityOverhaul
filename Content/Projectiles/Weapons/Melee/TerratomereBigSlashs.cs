@@ -1,4 +1,4 @@
-﻿using CalamityMod;
+﻿using CalamityMod.Graphics.Primitives;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework;
@@ -14,8 +14,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class TerratomereBigSlashs : ModProjectile
     {
         public int TargetIndex = -1;
-
-        public PrimitiveTrail SlashDrawer;
 
         public new string LocalizationCategory => "Projectiles.Melee";
 
@@ -78,16 +76,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (SlashDrawer == null) {
-                SlashDrawer = new PrimitiveTrail(SlashWidthFunction, SlashColorFunction, null, GameShaders.Misc["CalamityMod:ExobladePierce"]);
-            }
-
             GameShaders.Misc["CalamityMod:ExobladePierce"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/BlobbyNoise"));
             GameShaders.Misc["CalamityMod:ExobladePierce"].UseImage2("Images/Extra_189");
             GameShaders.Misc["CalamityMod:ExobladePierce"].UseColor(TerratomereEcType.TerraColor1);
             GameShaders.Misc["CalamityMod:ExobladePierce"].UseSecondaryColor(TerratomereEcType.TerraColor2);
             for (int i = 0; i < 4; i++) {
-                SlashDrawer.Draw(Projectile.oldPos, Projectile.Size * 0.5f - Main.screenPosition, 30);
+                PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(SlashWidthFunction, SlashColorFunction
+                    , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:ExobladePierce"]), 30);
             }
 
             return false;

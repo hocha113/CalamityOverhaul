@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.knockBack = 5.25f;
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
-            item.value = CalamityGlobalItem.Rarity4BuyPrice;
+            item.value = CalamityGlobalItem.RarityLightRedBuyPrice;
             item.rare = ItemRarityID.LightRed;
             item.shoot = ModContent.ProjectileType<CosmicSpiritBombs>();
             item.shootSpeed = 0.1f;

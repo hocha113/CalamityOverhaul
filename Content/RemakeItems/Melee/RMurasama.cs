@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.useTime = 5;
             item.knockBack = 6.5f;
             item.autoReuse = false;
-            item.value = CalamityGlobalItem.Rarity15BuyPrice;
+            item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             item.shoot = ModContent.ProjectileType<MurasamaRSlash>();
             item.shootSpeed = 24f;
             item.rare = ModContent.RarityType<Violet>();

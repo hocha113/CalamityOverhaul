@@ -12,9 +12,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class TerraFlamebursterHeldProj : BaseFeederGun
     {
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;//TODO:这个项目已经废弃，等待移除或者重做为另一个目标的事项
+        }
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TerraFlameburster";
-        public override int targetCayItem => ModContent.ItemType<TerraFlameburster>();
-        public override int targetCWRItem => ModContent.ItemType<TerraFlamebursterEcType>();
+        //public override int targetCayItem => ModContent.ItemType<TerraFlameburster>();
+        //public override int targetCWRItem => ModContent.ItemType<TerraFlamebursterEcType>();
         int fireIndex;
         public override void SetRangedProperty() {
             FireTime = 9;
@@ -33,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             kreloadMaxTime = 90;
             loadTheRounds = CWRSound.Liquids_Fill_0 with { Pitch = -0.8f };
             ForcedConversionTargetAmmoFunc = () => true;
-            ToTargetAmmo = ModContent.ProjectileType<TerraFlare>();
+            //ToTargetAmmo = ModContent.ProjectileType<TerraFlare>();
         }
 
         public override void PreInOwnerUpdate() {
@@ -51,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             SoundEngine.PlaySound(SoundID.Item34, Projectile.Center);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.08f), ModContent.ProjectileType<TerraFire>(), WeaponDamage, WeaponKnockback, Projectile.owner);
+            //Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.08f), ModContent.ProjectileType<TerraFire>(), WeaponDamage, WeaponKnockback, Projectile.owner);
             if (++fireIndex >= 3) {
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(0.3f), AmmoTypes, WeaponDamage, WeaponKnockback, Projectile.owner);
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(-0.3f), AmmoTypes, WeaponDamage, WeaponKnockback, Projectile.owner);

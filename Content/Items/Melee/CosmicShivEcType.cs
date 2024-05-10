@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.noMelee = true;
             Item.shoot = ModContent.ProjectileType<RCosmicShivProjectile>();
             Item.shootSpeed = 2.4f;
-            Item.value = CalamityGlobalItem.Rarity14BuyPrice;
+            Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             Item.rare = ModContent.RarityType<DarkBlue>();
             Item.Calamity().donorItem = true;
             

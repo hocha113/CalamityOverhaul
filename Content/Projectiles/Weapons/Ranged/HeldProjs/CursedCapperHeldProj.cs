@@ -10,8 +10,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class CursedCapperHeldProj : BaseFeederGun
     {
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;//TODO:这个项目已经废弃，等待移除或者重做为另一个目标的事项
+        }
+
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CursedCapper";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.CursedCapper>();
+        //public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.CursedCapper>();
         public override int targetCWRItem => ModContent.ItemType<CursedCapperEcType>();
         public override void SetRangedProperty() {
             FireTime = 8;

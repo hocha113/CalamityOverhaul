@@ -435,9 +435,9 @@ namespace CalamityOverhaul.Content
                     }
                     //修改诅咒手枪的合成
                     {
-                        if (recipe.HasResult(ItemType<CursedCapper>())) {
-                            recipe.AddIngredient(ItemID.SoulofFright, 5);//添加恐惧之魂
-                        }
+                        //if (recipe.HasResult(ItemType<CursedCapper>())) {
+                        //    recipe.AddIngredient(ItemID.SoulofFright, 5);//添加恐惧之魂
+                        //}//TODO:已经移除或者等待重做
                     }
                 }
             }

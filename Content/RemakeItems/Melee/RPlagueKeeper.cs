@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
             item.height = 90;
-            item.value = CalamityGlobalItem.Rarity10BuyPrice;
+            item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
             item.rare = ItemRarityID.Red;
             item.shoot = ModContent.ProjectileType<PlagueBeeWave>();
             item.shootSpeed = 9f;

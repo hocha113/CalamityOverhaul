@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Cooldowns;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Ranged;
@@ -53,8 +54,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             FiringDefaultSound = true;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
-            Vector2 newVel = ShootVelocity.RotatedByRandom(MathHelper.ToRadians(Owner.Calamity().SpeedBlasterDashDelayCooldown > 0 ? 3f : 15f));
-            float ShotMode = Owner.Calamity().SpeedBlasterDashDelayCooldown > 0 ? 2f : 0f;
+            Vector2 newVel = ShootVelocity.RotatedByRandom(MathHelper.ToRadians(Owner.HasCooldown(SpeedBlasterBoost.ID) ? 3f : 15f));
+            float ShotMode = (Owner.HasCooldown(SpeedBlasterBoost.ID) ? 2f : 0f);
             UpdateMagazineContents();
             Projectile.NewProjectile(Source, GunShootPos, newVel, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, ColorValue, ShotMode);
         }
@@ -63,25 +64,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             FiringDefaultSound = true;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
-            if (Owner.Calamity().SpeedBlasterDashDelayCooldown == 0) {
-                if (ColorValue >= 4f)
+            if (!Owner.HasCooldown(SpeedBlasterBoost.ID)) {
+                if (ColorValue >= 4f) {
                     ColorValue = 0f;
-                else
-                    ColorValue++;
-
+                }
+                else {
+                    ColorValue += 1f;
+                }
                 UpdateMagazineContents();
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, (int)(WeaponDamage * DashShotDamageMult), WeaponKnockback, Owner.whoAmI, ColorValue, 3f);
-
-                Owner.Calamity().SpeedBlasterDashDelayCooldown = DashCooldown;
+                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot
+                    , (int)(WeaponDamage * DashShotDamageMult), WeaponKnockback, Owner.whoAmI, ColorValue, 3f);
+                Owner.AddCooldown(SpeedBlasterBoost.ID, DashCooldown);
                 Owner.Calamity().sBlasterDashActivated = true;
                 if (Owner.velocity != Vector2.Zero) {
                     Color ColorUsed = SpeedBlasterShot.GetColor(ColorValue);
                     for (int i = 0; i <= 8; i++) {
-                        CritSpark spark = new CritSpark(Owner.Center, Owner.velocity.RotatedByRandom(MathHelper.ToRadians(13f))
-                            * Main.rand.NextFloat(-2.1f, -4.5f), Color.White, ColorUsed, 2f, 45, 2f, 2.5f);
-                        GeneralParticleHandler.SpawnParticle(spark);
+                        GeneralParticleHandler.SpawnParticle(new CritSpark(Owner.Center
+                            , Owner.velocity.RotatedByRandom(MathHelper.ToRadians(13f)) * Main.rand.NextFloat(-2.1f, -4.5f)
+                            , Color.White, ColorUsed, 2f, 45, 2f, 2.5f));
                     }
                 }
+
+                if (ColorValue >= 4f)
+                    ColorValue = 0f;
+                else
+                    ColorValue++;
             }
             else {
                 FiringDefaultSound = false;
@@ -89,10 +96,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 ControlForce = 0;
                 SoundEngine.PlaySound(SpeedBlaster.Empty, Owner.Center);
             }
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

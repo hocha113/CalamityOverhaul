@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.height = 102;
             item.useStyle = ItemUseStyleID.Swing;
             item.UseSound = SoundID.Item1;
-            item.value = CalamityGlobalItem.Rarity8BuyPrice;
+            item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             item.rare = ItemRarityID.Yellow;
         }
 

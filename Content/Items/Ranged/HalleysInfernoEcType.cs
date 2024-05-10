@@ -28,8 +28,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.height = 34;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
-            Item.UseSound = HalleysInferno.Shoot;
-            Item.value = CalamityGlobalItem.Rarity13BuyPrice;
+            Item.UseSound = HalleysInferno.ShootSound;
+            Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
             Item.SetHeldProj<HalleysInfernoHeldProj>();
             Item.CWR().HasCartridgeHolder = true;

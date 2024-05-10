@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shoot = ModContent.ProjectileType<LeafArrow>();
             item.shootSpeed = 10f;
             item.useAmmo = AmmoID.Arrow;
-            item.value = CalamityGlobalItem.Rarity7BuyPrice;
+            item.value = CalamityGlobalItem.RarityLimeBuyPrice;
             item.rare = ItemRarityID.Lime;
             item.Calamity().canFirePointBlankShots = true;
             item.CWR().heldProjType = ModContent.ProjectileType<BlossomFluxHeldProj>();

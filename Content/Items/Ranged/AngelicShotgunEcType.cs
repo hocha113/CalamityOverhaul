@@ -24,11 +24,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAnimation = 24;
             Item.UseSound = SoundID.Item38;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.value = CalamityGlobalItem.Rarity12BuyPrice;
+            Item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
             Item.rare = ModContent.RarityType<Turquoise>();
             Item.Calamity().donorItem = true;
             Item.shootSpeed = 12;
-            Item.shoot = ModContent.ProjectileType<IlluminatedBullet>();
+            Item.shoot = ModContent.ProjectileType<HallowPointRoundProj>();//TODO:临时替换HallowPointRoundProj弹幕，有待考证
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
             Item.SetCartridgeGun<AngelicShotgunHeldProj>(50);

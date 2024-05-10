@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
     internal class TheEndSun : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "DawnshatterAzureBeam";
-        internal PrimitiveTrail TailDrawer;
         public override bool IsLoadingEnabled(Mod mod) {
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return false;

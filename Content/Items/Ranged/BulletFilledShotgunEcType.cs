@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.height = 24;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.UseSound = SoundID.Item38;
-            Item.value = CalamityGlobalItem.Rarity3BuyPrice;
+            Item.value = CalamityGlobalItem.RarityOrangeBuyPrice;
             Item.rare = ItemRarityID.Orange;
             Item.Calamity().donorItem = true;
             Item.Calamity().canFirePointBlankShots = true;

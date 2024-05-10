@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             if (AmmoTypes == ProjectileID.Bullet) {
-                AmmoTypes = ModContent.ProjectileType<IlluminatedBullet>();
+                AmmoTypes = ModContent.ProjectileType<HallowPointRoundProj>();
             }
             for (int i = 0; i < 6; i++) {
                 int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f))

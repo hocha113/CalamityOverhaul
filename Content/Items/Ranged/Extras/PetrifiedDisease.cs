@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.shootSpeed = 12f;
             Item.UseSound = SoundID.Item5;
             Item.useAmmo = AmmoID.Arrow;
-            Item.value = CalamityGlobalItem.Rarity13BuyPrice;
+            Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
             Item.CWR().hasHeldNoCanUseBool = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<PetrifiedDiseaseHeldProj>();

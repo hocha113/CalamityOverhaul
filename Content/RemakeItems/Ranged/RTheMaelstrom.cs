@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAnimation = 15;
             item.useStyle = ItemUseStyleID.Shoot;
             item.knockBack = 3f;
-            item.value = CalamityGlobalItem.Rarity13BuyPrice;
+            item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
             item.noMelee = true;
             item.noUseGraphic = true;

@@ -13,17 +13,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "FireCrossburst";
 
-        struct ncb{
+        struct Ncb{
             public Vector2 pos;
             public int frame;
 
-            public ncb(Vector2 overPos, int overFrame) {
+            public Ncb(Vector2 overPos, int overFrame) {
                 pos = overPos;
                 frame = overFrame;
             }
         }
 
-        List<ncb> ncbs = new List<ncb>();
+        List<Ncb> ncbs = new List<Ncb>();
 
         public override void SetDefaults() {
             Projectile.width = 40;
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
                 for (int i = 0; i < 6; i++) {
                     Vector2 spanPos = randomOffsetVr[i] + Projectile.Center;
-                    ncbs.Add(new ncb(spanPos, Main.rand.Next(6)));
+                    ncbs.Add(new Ncb(spanPos, Main.rand.Next(6)));
                 }
             }
         }
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 CWRUtils.ClockFrame(ref Projectile.frameCounter, 4, 6);
                 for (int i = 0; i < 6; i++) {
                     if (i >= 0 && i < ncbs.Count) {
-                        ncb _ncb = ncbs[i];
+                        Ncb _ncb = ncbs[i];
                         CWRUtils.ClockFrame(ref _ncb.frame, 4, 6);
                         _ncb.pos = Projectile.Center + randomOffsetVr[i];
                         ncbs[i] = _ncb;
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             for (int j = 0; j < 6; j++) {
                 if (j >= 0 && j < ncbs.Count) {
-                    ncb _ncb = ncbs[j];
+                    Ncb _ncb = ncbs[j];
                     Main.EntitySpriteDraw(
                     mainValue,
                     CWRUtils.WDEpos(_ncb.pos),

@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.knockBack = 7.75f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.value = CalamityGlobalItem.Rarity10BuyPrice;
+            Item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
             Item.rare = ItemRarityID.Red;
             Item.shoot = ProjectileID.LunarFlare;
             Item.shootSpeed = 12f;

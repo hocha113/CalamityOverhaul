@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.knockBack = 5f;
-            Item.value = CalamityGlobalItem.Rarity14BuyPrice;
+            Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             Item.rare = ModContent.RarityType<DarkBlue>();
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<DeathwindHeldProj>();

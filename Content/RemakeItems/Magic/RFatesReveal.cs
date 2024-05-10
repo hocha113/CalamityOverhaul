@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
             item.autoReuse = true;
             item.shoot = ModContent.ProjectileType<FatesRevealHeldProj>();
             item.shootSpeed = 1f;
-            item.value = CalamityGlobalItem.Rarity13BuyPrice;
+            item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
             item.SetHeldProj<FatesRevealHeldProj>();
         }

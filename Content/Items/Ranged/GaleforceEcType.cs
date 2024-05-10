@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.knockBack = 3f;
-            Item.value = CalamityGlobalItem.Rarity3BuyPrice;
+            Item.value = CalamityGlobalItem.RarityOrangeBuyPrice;
             Item.rare = ItemRarityID.Orange;
             Item.UseSound = SoundID.Item5;
             Item.autoReuse = true;

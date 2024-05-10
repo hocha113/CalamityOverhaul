@@ -20,12 +20,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
             Item.knockBack = 6.5f;
-            Item.value = CalamityGlobalItem.Rarity10BuyPrice;
+            Item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
             Item.rare = ItemRarityID.Red;
             Item.UseSound = SoundID.Item11;
             Item.autoReuse = true;
             Item.shootSpeed = 20f;
-            Item.shoot = ModContent.ProjectileType<MiniRocket>();
+            Item.shoot = ModContent.ProjectileType<MiniSharkron>();
             Item.useAmmo = AmmoID.Rocket;
             Item.SetCartridgeGun<ScorpioHeldProj>(5);
         }

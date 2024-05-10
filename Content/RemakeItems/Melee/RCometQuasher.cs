@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.knockBack = 2.75f;
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
-            item.value = CalamityGlobalItem.Rarity8BuyPrice;
+            item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             item.rare = ItemRarityID.Yellow;
             item.shoot = ModContent.ProjectileType<CometQuasherMeteor>();
             item.shootSpeed = 9f;

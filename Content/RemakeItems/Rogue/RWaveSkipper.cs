@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
             item.height = 44;
-            item.value = CalamityGlobalItem.Rarity5BuyPrice;
+            item.value = CalamityGlobalItem.RarityPinkBuyPrice;
             item.rare = ItemRarityID.Pink;
             item.shoot = ModContent.ProjectileType<RWaveSkipperProjectile>();
             item.shootSpeed = 12f;

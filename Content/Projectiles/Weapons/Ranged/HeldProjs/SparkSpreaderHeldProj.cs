@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             kreloadMaxTime = 90;
             loadTheRounds = CWRSound.Liquids_Fill_0 with { Pitch = -0.8f };
             ForcedConversionTargetAmmoFunc = () => true;
-            ToTargetAmmo = ModContent.ProjectileType<TerraFlare>();
+            ToTargetAmmo = ModContent.ProjectileType<SparkSpreaderFire>();
         }
 
         public override void PreInOwnerUpdate() {
@@ -38,7 +38,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.08f), ModContent.ProjectileType<SparkSpreaderFire>(), WeaponDamage, WeaponKnockback, Projectile.owner);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.08f)
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Projectile.owner);
         }
     }
 }

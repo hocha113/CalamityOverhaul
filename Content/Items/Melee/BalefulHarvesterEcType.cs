@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.knockBack = 8f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.value = CalamityGlobalItem.Rarity10BuyPrice;
+            Item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
             Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<BalefulHarvesterHeldProj>();
             Item.shootSpeed = 15;

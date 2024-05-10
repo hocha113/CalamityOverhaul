@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
@@ -6,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
@@ -16,8 +18,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class EntropicClaymoreHoldoutProj : ModProjectile
     {
-        public PrimitiveTrail SlashDrawer;
-
         public Player Owner => Main.player[Projectile.owner];
 
         public int Direction => Projectile.velocity.X.DirectionalSign();
@@ -180,14 +180,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public void DrawSlash() {
-            if (SlashDrawer == null) {
-                SlashDrawer = new PrimitiveTrail(SlashWidthFunction, SlashColorFunction, null, GameShaders.Misc["CalamityMod:ExobladeSlash"]);
-            }
-
             Main.spriteBatch.EnterShaderRegion();
             PrepareSlashShader(Direction == 1);
             if (SwingCompletionAtStartOfTrail > SwingCompletionRatio) {
-                SlashDrawer.Draw(GenerateSlashPoints(), Projectile.Center - Main.screenPosition, 95);
+                PrimitiveRenderer.RenderTrail(GenerateSlashPoints().ToArray(), new PrimitiveSettings(SlashWidthFunction, SlashColorFunction
+                    , (float _) => Projectile.Center, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:ExobladeSlash"]), 95);
             }
 
             Main.spriteBatch.ExitShaderRegion();

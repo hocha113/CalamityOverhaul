@@ -10,8 +10,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class BladedgeGreatbowHeldProj : BaseGun
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "BladedgeGreatbow";
-        public override int targetCayItem => ModContent.ItemType<BladedgeGreatbow>();
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "BladedgeRailbow";
+        public override int targetCayItem => ModContent.ItemType<BladedgeRailbow>();
         public override int targetCWRItem => ModContent.ItemType<BladedgeGreatbowEcType>();
         int fireIndex;
         public override void SetRangedProperty() {
@@ -46,10 +46,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 fireIndex = 0;
             }
             UpdateConsumeAmmo();
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
         }
     }
 }

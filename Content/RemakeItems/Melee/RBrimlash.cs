@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.knockBack = 6f;
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
-            item.value = CalamityGlobalItem.Rarity7BuyPrice;
+            item.value = CalamityGlobalItem.RarityLimeBuyPrice;
             item.rare = ItemRarityID.Lime;
             item.shoot = ModContent.ProjectileType<BrimlashProj>();
             item.shootSpeed = 10f;

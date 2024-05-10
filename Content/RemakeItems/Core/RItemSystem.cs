@@ -31,7 +31,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
     internal class RItemSystem : ModSystem
     {
         public static Type itemLoaderType;
-
         public static MethodBase onSetDefaultsMethod;
         public static MethodBase onShootMethod;
         public static MethodBase onHitNPCMethod;
@@ -107,6 +106,24 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (onUpdateAccessoryMethod != null) {
                 MonoModHooks.Add(onUpdateAccessoryMethod, OnUpdateAccessoryHook);
             }
+        }
+
+        public override void Unload() {
+            itemLoaderType = null;
+            onSetDefaultsMethod = null;
+            onShootMethod = null;
+            onHitNPCMethod = null;
+            onHitPvpMethod = null;
+            onModifyHitNPCMethod = null;
+            onCanUseItemMethod = null;
+            onPreDrawInInventoryMethod = null;
+            onUseItemMethod = null;
+            onUseAnimationMethod = null;
+            onModifyWeaponCritMethod = null;
+            onModifyItemLootMethod = null;
+            onCanConsumeAmmoMethod = null;
+            onModifyWeaponDamageMethod = null;
+            onUpdateAccessoryMethod = null;
         }
 
         /// <summary>

@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.useTurn = true;
             item.useStyle = ItemUseStyleID.Swing;
             item.knockBack = 7;
-            item.value = CalamityGlobalItem.Rarity7BuyPrice;
+            item.value = CalamityGlobalItem.RarityLimeBuyPrice;
             item.rare = ItemRarityID.Lime;
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
             item.knockBack = 5f;
-            item.value = CalamityGlobalItem.Rarity3BuyPrice;
+            item.value = CalamityGlobalItem.RarityOrangeBuyPrice;
             item.rare = ItemRarityID.Orange;
             item.UseSound = SoundID.Item7;
             item.autoReuse = true;

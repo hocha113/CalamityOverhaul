@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shootSpeed = 2f;
             item.knockBack = 7.5f;
             item.UseSound = SoundID.Item1;
-            item.value = CalamityGlobalItem.Rarity5BuyPrice;
+            item.value = CalamityGlobalItem.RarityPinkBuyPrice;
             item.rare = ItemRarityID.Pink;
             item.EasySetLocalTextNameOverride("BrimstoneSwordEcType");
         }

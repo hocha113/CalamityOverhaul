@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,7 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class CosmicSpiritBombs : ModProjectile
     {
         public static Color[] colorDates;
-        public PrimitiveTrail TrailDrawer;
         public int overTextIndex = 1;
         public Player Owner => Main.player[Projectile.owner];
         public override string Texture => CWRConstant.Cay_Proj_Melee + "CosmicSpiritBomb" + overTextIndex;
@@ -75,7 +75,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
             Projectile.Explode(75);
             for (int k = 0; k < 10; k++) {
-                Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, 15, Projectile.oldVelocity.X * 2.5f, Projectile.oldVelocity.Y * 2.5f);
+                Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height
+                    , DustID.MagicMirror, Projectile.oldVelocity.X * 2.5f, Projectile.oldVelocity.Y * 2.5f);
             }
         }
 
@@ -92,11 +93,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (TrailDrawer == null) {
-                TrailDrawer = new PrimitiveTrail(WidthFunction, ColorFunction, null, GameShaders.Misc["CalamityMod:TrailStreak"]);
-            }
-            GameShaders.Misc["CalamityMod:TrailStreak"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
-            TrailDrawer.Draw(Projectile.oldPos, Projectile.Size * 0.5f - Main.screenPosition, 30);
+            GameShaders.Misc["CalamityMod:TrailStreak"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));            
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(WidthFunction, ColorFunction
+                , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:TrailStreak"]), 30);
             return base.PreDraw(ref lightColor);
         }
     }

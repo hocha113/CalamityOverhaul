@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.useTurn = true;
             item.useStyle = ItemUseStyleID.Swing;
             item.UseSound = SoundID.Item1;
-            item.value = CalamityGlobalItem.Rarity13BuyPrice;
+            item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
             item.Calamity().donorItem = true;
             item.shoot = ModContent.ProjectileType<MourningSkull>();

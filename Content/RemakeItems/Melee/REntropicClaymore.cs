@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.autoReuse = true;
             item.noUseGraphic = true;
             item.noMelee = true;
-            item.value = CalamityGlobalItem.Rarity9BuyPrice;
+            item.value = CalamityGlobalItem.RarityCyanBuyPrice;
             item.rare = ItemRarityID.Cyan;
             item.shoot = ModContent.ProjectileType<EntropicClaymoreHoldoutProj>();
             item.shootSpeed = 12f;

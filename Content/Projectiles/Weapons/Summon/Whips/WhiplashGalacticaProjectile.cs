@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using Microsoft.Xna.Framework;
@@ -149,8 +150,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 
         private class WTrail : ModProjectile
         {
-            internal PrimitiveTrail TrailDrawer;
-
             public override string Texture => CWRConstant.Placeholder;
 
             public override void SetStaticDefaults() {
@@ -204,17 +203,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
             }
 
             public override bool PreDraw(ref Color lightColor) {
-                if (TrailDrawer == null) {
-                    TrailDrawer = new PrimitiveTrail(WidthFunction, ColorFunction, null, GameShaders.Misc["CalamityMod:TrailStreak"]);
-                }
-
                 GameShaders.Misc["CalamityMod:TrailStreak"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
-                TrailDrawer.Draw(Projectile.oldPos, Projectile.Size * 0.5f - Main.screenPosition, 30);
+                PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(WidthFunction, ColorFunction
+                    , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:TrailStreak"]), 30);
                 Texture2D value = ModContent.Request<Texture2D>(Texture).Value;
-                Main.EntitySpriteDraw(
-                    value,
-                    Projectile.Center - Main.screenPosition,
-                    null,
+                Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null,
                     Color.Lerp(lightColor, Color.White, 0.5f),
                     Projectile.rotation + MathHelper.PiOver2,
                     value.Size() / 2f,

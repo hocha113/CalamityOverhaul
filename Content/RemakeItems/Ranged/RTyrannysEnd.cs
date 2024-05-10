@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useStyle = ItemUseStyleID.Shoot;
             item.noMelee = true;
             item.UseSound = CommonCalamitySounds.LargeWeaponFireSound;
-            item.value = CalamityGlobalItem.Rarity15BuyPrice;
+            item.value = CalamityGlobalItem.RarityVioletBuyPrice;
             item.rare = ModContent.RarityType<Violet>();
             item.Calamity().donorItem = true;
             item.Calamity().canFirePointBlankShots = true;

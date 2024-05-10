@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.knockBack = 7f;
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
-            item.value = CalamityGlobalItem.Rarity14BuyPrice;
+            item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             item.rare = ModContent.RarityType<DarkBlue>();
             item.shoot = ModContent.ProjectileType<OrderbringerBeams>();
             item.shootSpeed = 6f;

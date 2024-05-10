@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
@@ -19,7 +20,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     {
         public override string Texture => CWRConstant.Cay_Item + "Ammo/VanquisherArrow";
 
-        public PrimitiveTrail PierceDrawer = null;
         public override bool IsLoadingEnabled(Mod mod) {
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return false;
@@ -92,7 +92,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
 
         public override bool PreDraw(ref Color lightColor) {
             MiscShaderData flowColorShader = EffectsRegistry.FlowColorShader;
-            PierceDrawer ??= new(PrimitiveWidthFunction, PrimitiveColorFunction, null, flowColorShader);
 
             float localIdentityOffset = Projectile.identity * 0.1372f;
             Color mainColor = CalamityUtils.MulticolorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f, Color.Blue, Color.White, Color.BlueViolet, Color.CadetBlue, Color.DarkBlue);
@@ -107,7 +106,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             flowColorShader.UseColor(mainColor);
             flowColorShader.UseSecondaryColor(secondaryColor);
             flowColorShader.Apply();
-            PierceDrawer.Draw(Projectile.oldPos, trailOffset, 53);
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction, (float _) => trailOffset, smoothen: true, pixelate: false, flowColorShader), 53);
 
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Vector2 origin = tex.Size() * 0.5f;

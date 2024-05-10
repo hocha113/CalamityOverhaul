@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityMod.Projectiles.Melee;
 using Microsoft.Xna.Framework;
 using System;
@@ -14,8 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class DivineSourceBeam : ModProjectile
     {
         public Vector2[] ControlPoints;
-
-        public PrimitiveTrail SlashDrawer;
 
         Player owner => CWRUtils.GetPlayerInstance(Projectile.owner);
 
@@ -87,10 +86,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (SlashDrawer == null) {
-                SlashDrawer = new PrimitiveTrail(SlashWidthFunction, SlashColorFunction, null, GameShaders.Misc["CalamityMod:ExobladeSlash"]);
-            }
-
             Main.spriteBatch.EnterShaderRegion();
             TerratomereHoldoutProj.PrepareSlashShader(Flipped);
             List<Vector2> list = new List<Vector2>();
@@ -102,7 +97,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
 
             for (int j = 0; j < 3; j++) {
-                SlashDrawer.Draw(list, Projectile.Center - Main.screenPosition, 65);
+                PrimitiveRenderer.RenderTrail(list, new PrimitiveSettings(SlashWidthFunction, SlashColorFunction
+                    , (float _) => Projectile.Center, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:ExobladeSlash"]), 65);
             }
 
             Main.spriteBatch.ExitShaderRegion();

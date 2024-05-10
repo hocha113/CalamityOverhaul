@@ -10,6 +10,7 @@ using CalamityMod.Projectiles.Summon;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
@@ -145,7 +146,7 @@ namespace CalamityOverhaul.Content
 
             if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
                 _ = Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
-                        , (int)CalamityDusts.SulfurousSeaAcid, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
+                        , (int)CalamityDusts.Necroplasm, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);//TODO:这里的粒子失效了，需要注意后续完善
             }
             if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
                 if (Main.rand.NextBool()) {
@@ -257,14 +258,14 @@ namespace CalamityOverhaul.Content
             Player player = Main.player[projectile.owner];
 
             if (player.CWR().RustyMedallion_Value && Source != null) {
-                if (player.ownedProjectileCounts[ModContent.ProjectileType<ToxicannonDrop>()] < 8) {
+                if (player.ownedProjectileCounts[ModContent.ProjectileType<AcidEtchedTearDrop>()] < 8) {
                     if (Source.Context == "CWRGunShoot" || Source.Context == "CWRBow") {
                         Vector2 startingPosition = Main.MouseWorld - Vector2.UnitY.RotatedByRandom(0.4f) * 1250f;
                         Vector2 directionToMouse = (Main.MouseWorld - startingPosition).SafeNormalize(Vector2.UnitY).RotatedByRandom(0.1f);
                         int newdamage = projectile.damage;
                         newdamage /= 6;
                         int drop = Projectile.NewProjectile(projectile.parent(), startingPosition, directionToMouse * 15f
-                            , ModContent.ProjectileType<ToxicannonDrop>(), newdamage, 0f, player.whoAmI);
+                            , ModContent.ProjectileType<AcidEtchedTearDrop>(), newdamage, 0f, player.whoAmI);
                         if (drop.WithinBounds(Main.maxProjectiles)) {
                             Main.projectile[drop].penetrate = 2;
                             Main.projectile[drop].DamageType = DamageClass.Generic;

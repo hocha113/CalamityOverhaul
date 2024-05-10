@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
             item.height = 66;
-            item.value = CalamityGlobalItem.Rarity11BuyPrice;
+            item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
             item.rare = ItemRarityID.Purple;
             item.shoot = ModContent.ProjectileType<RGildedProboscisProj>();
             item.shootSpeed = 13f;

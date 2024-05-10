@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
         public override void AddRecipes() {
             CreateRecipe().
                 AddIngredient(ItemID.Marshmallow, 136).
-                AddIngredient<Polterplasm>(16).
+                //AddIngredient<Polterplasm>(16).
                 AddIngredient<GalacticaSingularity>(6).
                 AddTile(TileID.Campfire).
                 Register();

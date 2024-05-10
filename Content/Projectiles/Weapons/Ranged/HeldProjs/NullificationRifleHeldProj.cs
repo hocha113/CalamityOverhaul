@@ -9,9 +9,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class NullificationRifleHeldProj : BaseFeederGun
     {
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;//TODO:这个项目已经废弃，等待移除或者重做为另一个目标的事项
+        }
+
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "NullificationRifle";
-        public override int targetCayItem => ModContent.ItemType<NullificationRifle>();
-        public override int targetCWRItem => ModContent.ItemType<NullificationRifleEcType>();
+        //public override int targetCayItem => ModContent.ItemType<NullificationRifle>();
+        //public override int targetCWRItem => ModContent.ItemType<NullificationRifleEcType>();
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;

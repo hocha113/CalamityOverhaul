@@ -1,8 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
-using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Materials;
-using CalamityMod.Projectiles.Pets;
 using CalamityMod.Rarities;
 using CalamityOverhaul;
 using CalamityOverhaul.Common;
@@ -26,39 +24,33 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override string Texture => CWRConstant.Item + "TheLuxirSoulArtifact";
 
-        public override bool IsLoadingEnabled(Mod mod)
-        {
+        public override bool IsLoadingEnabled(Mod mod) {
             return false;
         }
 
-        public override void SetStaticDefaults()
-        {
+        public override void SetStaticDefaults() {
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(6, 8));
             ItemID.Sets.AnimatesAsSoul[Item.type] = true;
             ItemID.Sets.ItemNoGravity[Item.type] = true;
         }
 
-        public override void SetDefaults()
-        {
+        public override void SetDefaults() {
             Item.width = 58;
             Item.height = 48;
-            Item.value = CalamityGlobalItem.Rarity12BuyPrice;
+            Item.value = CalamityGlobalItem.RarityCalamityRedBuyPrice;
             Item.rare = ModContent.RarityType<Violet>();
             Item.accessory = true;
         }
 
-        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-        {
+        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
             base.PostDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
         }
 
-        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
-        {
+        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI) {
             base.PostDrawInWorld(spriteBatch, lightColor, alphaColor, rotation, scale, whoAmI);
         }
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
             Player player = Main.player[Main.myPlayer];
             if (tooltips == null || player == null) return;
 
@@ -68,14 +60,12 @@ namespace CalamityOverhaul.Content.Items.Accessories
             TooltipLine cumstops = tooltips.FirstOrDefault((x) => x.Text.Contains("[tips]") && x.Mod == "Terraria");
             if (cumstops == null) return;
 
-            if (item.CountsAsClass<EndlessDamageClass>())
-            {
+            if (item.CountsAsClass<EndlessDamageClass>()) {
                 OnIfyTops(tooltips, cumstops);
                 return;
             }
 
-            if (item.CountsAsClass<MeleeDamageClass>() || item.CountsAsClass<TrueMeleeNoSpeedDamageClass>())
-            {
+            if (item.CountsAsClass<MeleeDamageClass>() || item.CountsAsClass<TrueMeleeNoSpeedDamageClass>()) {
                 cumstops.Text = CWRUtils.Translation(
                     "刀刃的挥舞将发射出炽热的灵魂\n"
                     + "\"忠！诚！\"",
@@ -84,40 +74,35 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     );
                 cumstops.OverrideColor = Color.Lerp(Color.Red, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             }
-            else if (item.CountsAsClass<ThrowingDamageClass>())
-            {
+            else if (item.CountsAsClass<ThrowingDamageClass>()) {
                 cumstops.Text = CWRUtils.Translation(
                     "投掷出高速弹跳的耀界之灵",
                     "Hurl the Spirit of Glory with a high speed bounce"
                     );
                 cumstops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             }
-            else if (item.CountsAsClass<RangedDamageClass>())
-            {
+            else if (item.CountsAsClass<RangedDamageClass>()) {
                 cumstops.Text = CWRUtils.Translation(
                     "枪口将迸发出耀界闪电",
                     "The muzzle of the gun will burst forth lightning"
                     );
                 cumstops.OverrideColor = Color.Lerp(Color.AliceBlue, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             }
-            else if (item.CountsAsClass<MagicDamageClass>())
-            {
+            else if (item.CountsAsClass<MagicDamageClass>()) {
                 cumstops.Text = CWRUtils.Translation(
                     "散落的魔力将凝聚为金源炸弹",
                     "The scattered magic will condense into the gold source bomb"
                     );
                 cumstops.OverrideColor = Color.Lerp(Color.Gold, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             }
-            else if (item.CountsAsClass<SummonDamageClass>())
-            {
+            else if (item.CountsAsClass<SummonDamageClass>()) {
                 cumstops.Text = CWRUtils.Translation(
                     "召唤泛金能量体为你而战",
                     "Summon Pangold Energies to fight for you"
                     );
                 cumstops.OverrideColor = Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             }
-            else
-            {
+            else {
                 cumstops.Text = CWRUtils.Translation(
                     "耀界之神将对你提供多种援助",
                     "The Gods of Glory will offer you many kinds of assistance"
@@ -128,12 +113,10 @@ namespace CalamityOverhaul.Content.Items.Accessories
             List<TooltipLine> newTooltips = new List<TooltipLine>(tooltips);
 
             KeyboardState state = Keyboard.GetState();
-            if (state.IsKeyDown(Keys.LeftShift) || state.IsKeyDown(Keys.RightShift))
-            {
+            if (state.IsKeyDown(Keys.LeftShift) || state.IsKeyDown(Keys.RightShift)) {
                 OnIfyTops(tooltips, cumstops);
             }
-            else
-            {
+            else {
                 foreach (TooltipLine line in tooltips.ToList()) //复制 tooltips 集合，以便在遍历时修改
                 {
                     if (line.Name == "Assmt")
@@ -142,8 +125,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
-        public void OnIfyTops(List<TooltipLine> tooltips, TooltipLine cumstops)
-        {
+        public void OnIfyTops(List<TooltipLine> tooltips, TooltipLine cumstops) {
             cumstops.Text = CWRUtils.Translation(
                     CWRUtils.Translation(
                     "耀界之神将对你提供多种援助：",
@@ -196,13 +178,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
             tooltips.Add(newLine5);
         }
 
-        public override void UpdateAccessory(Player player, bool hideVisual)
-        {
+        public override void UpdateAccessory(Player player, bool hideVisual) {
             //player.CWR().theRelicLuxor = 2;
         }
 
-        public override void AddRecipes()
-        {
+        public override void AddRecipes() {
             Recipe.Create(Type)
                 .AddIngredient(ModContent.ItemType<TheRelicLuxor>())
                 .AddIngredient(ModContent.ItemType<CosmiliteBar>(), 6)

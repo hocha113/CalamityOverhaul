@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
@@ -19,8 +20,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
     internal class VientianePunishment : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-
-        internal PrimitiveTrail LightningDrawer;
 
         public Player Owner => Main.player[Projectile.owner];
 
@@ -238,15 +237,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (LightningDrawer is null)
-                LightningDrawer = new PrimitiveTrail(PrimitiveWidthFunction, PrimitiveColorFunction, PrimitiveTrail.RigidPointRetreivalFunction, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]);
-
             if (Time > 120)//在开始攻击之前不要进行特效的绘制
             {
                 GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
                 GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-
-                LightningDrawer.Draw(toTargetPath, Projectile.Size * 0.5f - Main.screenPosition, 50);
+                
+                PrimitiveRenderer.RenderTrail(toTargetPath, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
+                    , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 50);
             }
 
             Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Cay_Wap_Ranged + VientianeTex[(int)Projectile.ai[0]]);

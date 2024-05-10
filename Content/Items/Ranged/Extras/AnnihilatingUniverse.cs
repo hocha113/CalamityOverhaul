@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.shoot = ModContent.ProjectileType<AnnihilatingUniverseHeldProj>();
             Item.shootSpeed = 20f;
             Item.useAmmo = AmmoID.Arrow;
-            Item.value = CalamityGlobalItem.Rarity13BuyPrice;
+            Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
             Item.Calamity().canFirePointBlankShots = true;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems4;

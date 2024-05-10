@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAnimation = 7;
             item.useStyle = ItemUseStyleID.Shoot;
             item.knockBack = 2.5f;
-            item.value = CalamityGlobalItem.Rarity8BuyPrice;
+            item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             item.rare = ItemRarityID.Yellow;
             item.UseSound = SoundID.Item11;
             item.autoReuse = true;

@@ -1,26 +1,23 @@
-﻿using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod.Particles;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Common.Effects;
+using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Particles;
-using Microsoft.Xna.Framework.Graphics;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
-using Terraria;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
-using CalamityOverhaul.Content.CWRDamageTypes;
-using CalamityOverhaul.Common.Effects;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj
 {
     internal class ParadiseArrow : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-
-        public PrimitiveTrail PierceDrawer = null;
 
         Color chromaColor => CWRUtils.MultiStepColorLerp(Projectile.ai[0] % 35 / 35f, HeavenfallLongbow.rainbowColors);
         public override bool IsLoadingEnabled(Mod mod) {
@@ -88,7 +85,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         public override bool PreDraw(ref Color lightColor) {
             //PierceDrawer ??= new(PrimitiveWidthFunction, PrimitiveColorFunction, null, GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]);
             MiscShaderData flowColorShader = EffectsRegistry.FlowColorShader;
-            PierceDrawer ??= new(PrimitiveWidthFunction, PrimitiveColorFunction, null, flowColorShader);
 
             float localIdentityOffset = Projectile.identity * 0.1372f;
             Color mainColor = CalamityUtils.MulticolorLerp((Main.GlobalTimeWrappedHourly * 2f + localIdentityOffset) % 1f, HeavenfallLongbow.rainbowColors);
@@ -97,13 +93,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             mainColor = Color.Lerp(Color.White, mainColor, 0.85f);
             secondaryColor = Color.Lerp(Color.White, secondaryColor, 0.85f);
 
-            Vector2 trailOffset = Projectile.Size * 0.5f - Main.screenPosition;
             flowColorShader.SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak"));
             flowColorShader.UseImage2("Images/Extra_189");
             flowColorShader.UseColor(mainColor);
             flowColorShader.UseSecondaryColor(secondaryColor);
             flowColorShader.Apply();
-            PierceDrawer.Draw(Projectile.oldPos, trailOffset, 53);
+            
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction, (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, flowColorShader), 53);
 
             Vector2 scale = new Vector2(0.5f, 1.6f) * Projectile.scale;
             Texture2D texture = ModContent.Request<Texture2D>("CalamityMod/Projectiles/StarProj").Value;

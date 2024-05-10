@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.rare = ModContent.RarityType<HotPink>();
             item.noMelee = true;
             item.knockBack = 1f;
-            item.value = CalamityGlobalItem.Rarity16BuyPrice;
+            item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
             item.UseSound = SoundID.Item38;
             item.autoReuse = true;
             item.shoot = ProjectileID.Bullet;

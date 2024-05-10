@@ -7,9 +7,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class AstralRepeaterEcType : EctypeItem
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "AstralRepeater";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "AstralBow";
         public override void SetDefaults() {
-            Item.SetCalamitySD<AstralRepeater>();
+            Item.SetCalamitySD<AstralBow>();
             Item.SetHeldProj<AstralRepeaterHeldProj>();
         }
     }
