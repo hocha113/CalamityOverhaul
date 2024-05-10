@@ -27,10 +27,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
         public ref float TargetIndex => ref Projectile.ai[2];
 
-        public static string[] VientianeTex = new string[]
-        {
+        public static string[] VientianeTex = new string[]{
             "Alluvion",
-            "AstralRepeater",
+            "ArterialAssault",
+            "AstralBow",
             "AstrealDefeat",
             "Barinade",
             "Barinautical",
@@ -38,9 +38,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             "BrimstoneFury",
             "ClockworkBow",
             "Contagion",
-            "ContinentalGreatbow",
             "CorrodedCaustibow",
-            "CosmicBolter",
+            "ContinentalGreatbow",
             "DaemonsFlame",
             "DarkechoGreatbow",
             "Deathwind",
@@ -63,7 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             "TheMaelstrom",
             "Ultima",
             "Toxibow",
-            "ArterialAssault"
+            "VernalBolter"
         };
 
         public Color[] VientianeColors;

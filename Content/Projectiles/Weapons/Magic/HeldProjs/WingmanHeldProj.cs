@@ -35,15 +35,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             SoundStyle style = new SoundStyle("CalamityMod/Sounds/Item/MagnaCannonShot");
             float rand = Main.rand.NextFloat(0.3f, 1.1f);
             AmmoTypes = ModContent.ProjectileType<WingmanShot>();
+            float newdamage = WeaponDamage * 0.75f;
             if (++fireIndex > 2) {
                 style = new SoundStyle("CalamityMod/Sounds/Item/DeadSunExplosion");
                 AmmoTypes = ModContent.ProjectileType<WingmanGrenade>();
+                newdamage *= 1.75f;
                 fireIndex = 0;
             }
             SoundEngine.PlaySound(style with { Volume = 0.6f }, Projectile.Center);
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy((-1 + i) * 0.1f * rand)
-                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    , AmmoTypes, (int)newdamage, WeaponKnockback, Owner.whoAmI, 0);
             }
             return 0;
         }

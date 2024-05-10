@@ -2339,7 +2339,7 @@ namespace CalamityOverhaul
             if (p.type < 0 || p.type >= TextureAssets.Projectile.Length) {
                 return new Texture2D(null, 1, 1);
             }
-            if (loadCeahk) {
+            if (loadCeahk && p.ModProjectile == null) {
                 Main.instance.LoadProjectile(p.type);
             }
                 
@@ -2358,7 +2358,7 @@ namespace CalamityOverhaul
             if (i.type < ItemID.None || i.type >= TextureAssets.Item.Length) {
                 return new Texture2D(null, 1, 1);
             }
-            if (loadCeahk) {
+            if (loadCeahk && i.ModItem == null) {
                 Main.instance.LoadItem(i.type);
             }
                 
@@ -2377,7 +2377,7 @@ namespace CalamityOverhaul
             if (n.type < NPCID.None || n.type >= TextureAssets.Npc.Length) {
                 return new Texture2D(null, 1, 1);
             }
-            if (loadCeahk) {
+            if (loadCeahk && n.ModNPC == null) {
                 Main.instance.LoadNPC(n.type);
             }
                 
