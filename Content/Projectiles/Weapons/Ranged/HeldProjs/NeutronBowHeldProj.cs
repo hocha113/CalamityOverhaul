@@ -23,6 +23,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         bool level1 = true;
         bool level2 = true;
         bool level3 = true;
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;//暂时不要在这个版本中出现
+        }
         public override void SetRangedProperty() {
             ForcedConversionTargetArrowFunc = () => true;
             ISForcedConversionDrawArrowInversion = true;

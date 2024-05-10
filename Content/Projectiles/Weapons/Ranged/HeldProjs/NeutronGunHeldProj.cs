@@ -23,6 +23,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         int uiframe;
         int fireIndex;
         bool canattce;
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;//暂时不要在这个版本中出现
+        }
         public override void SetRangedProperty() {
             FireTime = 5;
             FiringDefaultSound = false;
