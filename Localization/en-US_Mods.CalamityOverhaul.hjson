@@ -3730,13 +3730,15 @@ TextContent: {
 		SupMUI_OneClick_Text2: Quick access to material
 		TemporaryVersion_Text:
 			'''
-			CalamityOverhaul: The current version is a temporary release. 
+			[CalamityOverhaul-0.3.6.0.8]: The current version is a temporary release. 
 			Versions 0.3.6.0.5 to 0.3.6.0.9 will be used for adapting to the new update, 
 			making adjustments, and fixing errors to ensure the basic gameplay experience.
 			The updates are being pushed relatively quickly, so there may still be some noticeable issues. 
 			If you encounter any problems while playing, please submit an issue on the mod's GitHub repository 
 			or visit the mod's Steam Workshop 'Feedback on Issues' thread for assistance.
 			'''
+		IconUI_Text1: Problem feedback ->Github
+		IconUI_Text2: Problem feedback ->Steam
 		Wap_BubbleGun_Text:
 			'''
 			Exploding ocean bubbles

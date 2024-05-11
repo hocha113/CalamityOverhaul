@@ -9,5 +9,8 @@
         public virtual bool CanLoad() {
             return true;
         }
+        public virtual void UnLoad() {
+
+        }
     }
 }

@@ -58,12 +58,16 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         public static void Unload() {
+            foreach (BaseMainMenuOverUI baseMainMenuOverUI in MainMenuOverUIInstances) {
+                baseMainMenuOverUI.UnLoad();
+            }
             MainMenuOverUIInstances = null;
         }
 
         private static void Draw(SpriteBatch sb) {
             if (Main.gameMenu && MainMenuOverUIInstances != null && MainMenuOverUIInstances.Count > 0) {
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp
+                    , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
                 foreach (BaseMainMenuOverUI baseMainMenuOverUI in MainMenuOverUIInstances) {
                     if (!baseMainMenuOverUI.Active) {
                         continue;
