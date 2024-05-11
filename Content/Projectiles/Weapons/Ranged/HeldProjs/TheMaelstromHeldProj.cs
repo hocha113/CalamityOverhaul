@@ -11,9 +11,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TheMaelstrom";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TheMaelstrom>();
         public override int targetCWRItem => ModContent.ItemType<TheMaelstromEcType>();
-        public override void SetRangedProperty() {
-            CanRightClick = true;
-        }
+        public override void SetRangedProperty() => CanRightClick = true;
+        public override void PostInOwner() => BowArrowDrawBool = onFire;
         public override void BowShoot() {
             Item.UseSound = SoundID.Item5;
             CanFireMotion = FiringDefaultSound = true;

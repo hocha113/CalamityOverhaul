@@ -16,10 +16,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private static bool onMainP;
         private static Rectangle MainP;
 
-        public override bool CanLoad() {
-            return false;//这个UI还没有完成，因此不要让它出现在主页上
-        }
-
         public override void Load() {
             icon = CWRUtils.GetT2DAsset("CalamityOverhaul/icon");
             small = CWRUtils.GetT2DAsset("CalamityOverhaul/icon_small");
@@ -30,7 +26,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             if (DrawPos.X < 0) {
                 DrawPos.X+=2;
             }
-            MainP = new Rectangle((int)DrawPos.X, (int)DrawPos.Y, icon.Value.Width, icon.Value.Height);
+            DrawPos = new Vector2(Main.screenWidth - 82, 0);
+            MainP = new Rectangle((int)DrawPos.X, (int)DrawPos.Y, icon.Value.Width / 2, icon.Value.Height / 2);
             onMainP = MainP.Contains(new Rectangle(Main.mouseX, Main.mouseY, 1, 1));
             int mouS = DownStartL();
             if (mouS == 1 && onMainP) {
@@ -41,9 +38,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (onMainP) {
-                spriteBatch.Draw(icon.Value, DrawPos, null, Color.Gold, 0f, Vector2.Zero, 1.03f, SpriteEffects.None, 0);
+                spriteBatch.Draw(icon.Value, DrawPos, null, Color.Gold * 0.6f, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0);
             }
-            spriteBatch.Draw(icon.Value, DrawPos, null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(icon.Value, DrawPos, null, Color.White * 0.5f, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
         }
     }
 }

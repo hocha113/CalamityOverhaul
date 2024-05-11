@@ -166,6 +166,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnEnterWorld() {
+            CWRUtils.Text(CWRLocText.GetTextValue("TemporaryVersion_Text"), Color.GreenYellow);
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {
                 CWRUtils.Text(CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent"), Color.GreenYellow);
             }

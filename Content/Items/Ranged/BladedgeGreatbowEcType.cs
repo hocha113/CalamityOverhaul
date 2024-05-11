@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class BladedgeGreatbowEcType : EctypeItem
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "BladedgeGreatbow";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "BladedgeRailbow";
         public override void SetDefaults() {
             Item.SetCalamitySD<BladedgeRailbow>();
             Item.SetHeldProj<BladedgeGreatbowHeldProj>();

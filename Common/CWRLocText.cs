@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Steamworks;
+using System;
 using System.Reflection;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -93,6 +94,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText AmmoBox_Text3 { get; private set; }
         public LocalizedText SupMUI_OneClick_Text1 { get; private set; }
         public LocalizedText SupMUI_OneClick_Text2 { get; private set; }
+        public LocalizedText TemporaryVersion_Text { get; private set; }
         public LocalizedText Wap_Minishark_Text { get; private set; }
         public LocalizedText Wap_Megashark_Text { get; private set; }
         public LocalizedText Wap_HandGun_Text { get; private set; }

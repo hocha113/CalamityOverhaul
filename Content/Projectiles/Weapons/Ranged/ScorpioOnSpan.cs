@@ -10,9 +10,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class ScorpioOnSpan : BaseOnSpanNoDraw
     {
-        public override void SetDefaults() {
-            base.SetDefaults();
-        }
         public override void SpanProj() {
             if (Projectile.timeLeft % 6 == 0 && Owner.PressKey()) {
                 ShootState shootState = Owner.GetShootState("CWRGunShoot");
@@ -20,8 +17,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Projectile.NewProjectile(shootState.Source, Projectile.Center + vr.UnitVector() * 53 + vr.GetNormalVector() 
                         * 11 * (Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1)
-                        , vr, ModContent.ProjectileType<ScorpioRocket>(), shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI, 0);
-                }//TODO:临时替换ScorpioRocket弹幕，有待考证
+                        , vr, ModContent.ProjectileType<ScorpioLargeRocket>(), shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI, 0);
+                }//TODO:临时替换ScorpioLargeRocket弹幕，有待考证
                 Vector2 pos = Projectile.Center - vr * 3 + vr.GetNormalVector() * 10 * Owner.direction;
                 if (Projectile.rotation != 0) {
                     for (int i = 0; i < 100; i++) {
