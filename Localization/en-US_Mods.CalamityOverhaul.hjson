@@ -3261,6 +3261,7 @@ NPCs: {
 	HEBodyAlt.DisplayName: H E Body Alt
 	HEHead.DisplayName: H E Head
 	HETail.DisplayName: H E Tail
+	NightWatcher.DisplayName: Night Watcher
 }
 
 Keybinds: {

@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Events;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul
         public override string Texture => "CalamityOverhaul/icon";
         bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         public override void SetDefaults() {
@@ -34,11 +35,11 @@ namespace CalamityOverhaul
 
         public override void UpdateInventory(Player player) {
             //player.velocity.Domp();
-            bool news = player.PressKey(false);
-            if (news && !old) {
-                player.QuickSpawnItem(player.parent(), Main.HoverItem, Main.HoverItem.stack);
-            }
-            old = news;
+            //bool news = player.PressKey(false);
+            //if (news && !old) {
+            //    player.QuickSpawnItem(player.parent(), Main.HoverItem, Main.HoverItem.stack);
+            //}
+            //old = news;
 
         }
 
@@ -72,12 +73,12 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-                TungstenRiot.Instance.CloseEvent();
-            }
-            else {
-                TungstenRiot.Instance.TryStartEvent();
-            }
+            //if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
+            //    TungstenRiot.Instance.CloseEvent();
+            //}
+            //else {
+            //    TungstenRiot.Instance.TryStartEvent();
+            //}
             return true;
         }
     }

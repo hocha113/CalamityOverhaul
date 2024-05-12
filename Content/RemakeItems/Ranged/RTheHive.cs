@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<TheHive>();
         public override int ProtogenesisID => ModContent.ItemType<TheHiveEcType>();
         public override string TargetToolTipItemName => "TheHiveEcType";
+        public override bool CanLoad() => false;//TODO:在当前版本暂时移除
         public override void SetDefaults(Item item) => item.SetCartridgeGun<TheHiveHeldProj>(28);
     }
 }

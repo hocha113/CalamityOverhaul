@@ -3287,6 +3287,7 @@ NPCs: {
 	HEBodyAlt.DisplayName: 天堂吞噬者
 	HEHead.DisplayName: 天堂吞噬者
 	HETail.DisplayName: 天堂吞噬者
+	// NightWatcher.DisplayName: Night Watcher
 }
 
 Keybinds: {

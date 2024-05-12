@@ -199,6 +199,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 24f;
             Item.rare = ModContent.RarityType<Violet>();
             Item.CWR().isHeldItem = true;
+            Item.CWR().heldProjType = heldProjType;
         }
 
         public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {
@@ -238,18 +239,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             SetTooltip(ref tooltips);
         }
 
-        public override void HoldItem(Player player) {
-            player.CWR().HeldMurasamaBool = true;
-            //这个代码实现了玩家手持时的动画，生成一个对玩家来说唯一的弹幕来实现这些
-            if (player.ownedProjectileCounts[heldProjType] == 0 && player.whoAmI == Main.myPlayer) {
-                Projectile.NewProjectile(Item.GetSource_FromThis(), player.Center, Vector2.Zero, heldProjType, Item.damage, 0, player.whoAmI);
-            }
-        }
-
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += GetOnCrit;
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
-            //damage.Base *= GetOnDamage / (float)GetStartDamage;
             damage *= GetOnDamage / (float)GetStartDamage;
         }
 
