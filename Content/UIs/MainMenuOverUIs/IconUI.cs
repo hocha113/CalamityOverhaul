@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         public override void Update(GameTime gameTime) {
-            if (sengs < 1 && Time > 600) {
+            if (sengs < 1 && !CWRIDs.OnLoadContentBool) {//如果CWRID都加载好了，那么本地化肯定已经加载好了
                 sengs += 0.01f;
             }
             DrawPos = new Vector2(Main.screenWidth - 82, -100 + sengs * 101);
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Text2P = new Rectangle((int)text2Pos.X, (int)text2Pos.Y, (int)text2Vr.X, (int)text2Vr.Y);
             var mouseTarget = new Rectangle(Main.mouseX, Main.mouseY, 1, 1);
             onText1 = Text1P.Contains(mouseTarget);
-            onText2 = Text2P.Contains(mouseTarget);
+            onText2 = Text2P.Contains(mouseTarget) && !onText1;
             int mouS = DownStartL();
             if (mouS == 1) {
                 if (onText1) {
@@ -67,11 +67,11 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override void Draw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(icon.Value, DrawPos, null, Color.White * 0.5f * sengs, 0f, Vector2.Zero, 0.56f, SpriteEffects.None, 0);
 
-            Color color = CWRUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(Time * 0.025f)), Color.Gold, Color.Green);
+            Color color = CWRUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(Time * 0.035f)), Color.Gold, Color.Green);
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRUtils.GetSafeText(text1, text1Vr, 1000)
-                , text1Pos.X, text1Pos.Y, color * sengs, Color.Black, new Vector2(0.2f), 1);
+                , text1Pos.X, text1Pos.Y, (onText1 ? color : new Color(190, 210, 200)) * sengs, Color.Black, new Vector2(0.2f), 1);
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRUtils.GetSafeText(text2, text1Vr, 1000)
-                , text2Pos.X, text2Pos.Y, color * sengs, Color.Black, new Vector2(0.2f), 1);
+                , text2Pos.X, text2Pos.Y, (onText2 ? color : new Color(190, 210, 200)) * sengs, Color.Black, new Vector2(0.2f), 1);
         }
     }
 }

@@ -29,11 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             FiringDefaultSound = false;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override int Shoot() {
+        public override void FiringShoot() {
             Item.useTime = 45;
             GunPressure = 0.3f;
             SoundEngine.PlaySound(SoundID.Item92, Projectile.Center);
@@ -41,10 +37,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1f)
                     , ModContent.ProjectileType<SHPB>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            return 0;
         }
 
-        public override int ShootR() {
+        public override void FiringShootR() {
             OffsetPos += ShootVelocity.UnitVector() * -6;
             Item.useTime = 7;
             GunPressure = 0f;
@@ -53,7 +48,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1.1f)
                     , ModContent.ProjectileType<SHPL>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            return 0;
         }
     }
 }

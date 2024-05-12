@@ -24,14 +24,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Recoil = 0;        
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override int Shoot() {
-            int proj = 0;
-            Projectile.NewProjectile(Source, GunShootPos, Vector2.Zero, ModContent.ProjectileType<AethersWhisperOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
-            return proj;
+        public override void FiringShoot() {
+            Projectile.NewProjectile(Source, GunShootPos, Vector2.Zero, ModContent.ProjectileType<AethersWhisperOnSpan>()
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
         }
     }
 }

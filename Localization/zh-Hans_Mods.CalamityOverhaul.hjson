@@ -3287,6 +3287,7 @@ NPCs: {
 	HEBodyAlt.DisplayName: 天堂吞噬者
 	HEHead.DisplayName: 天堂吞噬者
 	HETail.DisplayName: 天堂吞噬者
+	// NightWatcher.DisplayName: Night Watcher
 }
 
 Keybinds: {
@@ -3747,9 +3748,11 @@ TextContent: {
 		SupMUI_OneClick_Text2: 快捷拿取材料
 		TemporaryVersion_Text:
 			'''
-			[CalamityOverhaul-0.3.6.0.8]:当前版本为临时性版本，0.3.6.0.5到0.3.6.0.9版本都会用于适配新版本，进行调整和错误修复以保证最基本的游玩体验
-			更新较为仓促，所以仍可能存在一些明显的错误。
-			如果您在游玩过程中发现问题，请在Github上向模组提交issue，或者前往模组创意工坊Feedback on Issues反馈帖寻求帮助
+			[CalamityOverhaul-0.3.6.1.1]:
+			当前版本为临时性版本，用于适配新版本，进行调整和错误修复以保证最基本的游玩体验，直到在0.4版本到来
+			更新较为仓促，所以仍可能存在一些明显的错误
+			如果您在游玩过程中发现问题，请在Github上向模组提交issue，
+			或者前往模组创意工坊Feedback on Issues反馈帖寻求帮助
 			'''
 		IconUI_Text1: 问题反馈->Github
 		IconUI_Text2: 问题反馈->Steam

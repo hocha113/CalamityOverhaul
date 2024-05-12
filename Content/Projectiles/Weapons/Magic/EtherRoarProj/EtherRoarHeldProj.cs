@@ -27,10 +27,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.EtherRoarProj
             base.FiringIncident();
         }
 
-        public override int Shoot() {
-            int proj = 0;
-            Projectile.NewProjectile(Source, GunShootPos, Vector2.Zero, ModContent.ProjectileType<EtherRoarOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
-            return proj;
+        public override void FiringShoot() {
+            Projectile.NewProjectile(Source, GunShootPos, Vector2.Zero, ModContent.ProjectileType<EtherRoarOnSpan>()
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
         }
     }
 }

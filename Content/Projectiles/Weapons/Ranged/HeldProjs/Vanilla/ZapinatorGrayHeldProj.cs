@@ -17,14 +17,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
-            GunPressure = 0.8f;
+            GunPressure = 0.3f;
             ControlForce = 0.05f;           
             RangeOfStress = 48;
-            Recoil = 4.8f;
-        }
-
-        public override int Shoot() {
-            return base.Shoot();
+            Recoil = 0;
         }
     }
 }

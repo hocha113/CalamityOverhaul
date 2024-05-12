@@ -30,30 +30,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             FiringDefaultSound = false;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override int Shoot() {
+        public override void FiringShoot() {
             SoundEngine.PlaySound(PlasmaRifle.HeavyShotSound, Projectile.Center);
             Item.useTime = 30;
             GunPressure = 0.3f;
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , ModContent.ProjectileType<PlasmaShot>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            return 0;
         }
 
-        public override int ShootR() {
+        public override void FiringShootR() {
             SoundEngine.PlaySound(PlasmaRifle.FastShotSound, Projectile.Center);
             Item.useTime = 10;
             GunPressure = 0.1f;
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , ModContent.ProjectileType<PlasmaBolt>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            return 0;
-        }
-
-        public override void GunDraw(ref Color lightColor) {
-            base.GunDraw(ref lightColor);
         }
     }
 }

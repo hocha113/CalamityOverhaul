@@ -27,15 +27,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Recoil = 0;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override int Shoot() {
+        public override void FiringShoot() {
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.25f) * Main.rand.NextFloat(0.9f, 1.3f)
                 , ProjectileID.LaserMachinegunLaser, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].extraUpdates += 1;
-            return base.Shoot();
         }
     }
 }

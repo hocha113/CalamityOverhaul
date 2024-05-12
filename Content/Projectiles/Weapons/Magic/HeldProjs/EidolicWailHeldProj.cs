@@ -28,8 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             SetRegenDelayValue = 60;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
+        public override void PostInOwnerUpdate() {
             if (onFire) {
                 //OffsetPos += CWRUtils.randVr(0.5f + (Item.useTime - GunShootCoolingValue) * 0.03f);
                 if (Time % 10 == 0) {
@@ -44,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             }
         }
 
-        public override int Shoot() {
+        public override void FiringShoot() {
             OffsetPos += ShootVelocity.UnitVector() * -23;
             for (int i = 0; i < 13; i++) {
                 Vector2 rand = CWRUtils.randVr(480, 800);
@@ -62,7 +61,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 , new Vector2(0.7f, 1.3f) * 0.8f, ShootVelocity.ToRotation(), 0.18f, 0.22f + i * 0.05f, 40);
                 CWRParticleHandler.AddParticle(pulse3);
             }
-            return 0;
         }
     }
 }

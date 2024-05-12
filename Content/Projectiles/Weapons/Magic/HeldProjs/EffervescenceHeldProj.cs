@@ -23,18 +23,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Recoil = 0;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override int Shoot() {
+        public override void FiringShoot() {
             OffsetPos += ShootVelocity.UnitVector() * -6;
-            int type = 0;
             for (int i = 0; i < 3; i++) {
-                type = base.Shoot();
+                int type = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[type].velocity = Main.projectile[type].velocity.RotatedByRandom(0.3f);
             }
-            return type;
         }
     }
 }

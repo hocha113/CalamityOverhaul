@@ -24,19 +24,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Recoil = 0;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override int Shoot() {
+        public override void FiringShoot() {
             Item.useTime = 6;
-            Projectile proj = Main.projectile[base.Shoot()];
-            proj.velocity = proj.velocity.RotatedByRandom(0.2f);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f)
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             if (++fireIndex > 6) {
                 Item.useTime = 45;
                 fireIndex = 0;
             }
-            return proj.whoAmI;
         }
     }
 }

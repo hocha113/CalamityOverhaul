@@ -45,7 +45,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shootSpeed = 24f;
             item.rare = ModContent.RarityType<Violet>();
             item.CWR().isHeldItem = true;
-            CWRUtils.EasySetLocalTextNameOverride(item, "MurasamaEcType");
+            item.CWR().heldProjType = MurasamaEcType.heldProjType;
+            //CWRUtils.EasySetLocalTextNameOverride(item, "MurasamaEcType");
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
@@ -100,19 +101,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             tooltips.AddRange(prefixTooltips);
         }
 
-        //public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) => damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
-        public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+            float oldMultiplicative = damage.Multiplicative;
             damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
-            return false;
+            damage /= oldMultiplicative;
         }
-
-        public override void HoldItem(Item item, Player player) {
-            player.CWR().HeldMurasamaBool = true;
-            //这个代码实现了玩家手持时的动画，生成一个对玩家来说唯一的弹幕来实现这些
-            if (player.ownedProjectileCounts[MurasamaEcType.heldProjType] == 0 && player.whoAmI == Main.myPlayer) {
-                Projectile.NewProjectile(item.GetSource_FromThis(), player.Center, Vector2.Zero, MurasamaEcType.heldProjType, item.damage, 0, player.whoAmI);
-            }
-        }
+        //因为方法表现不稳定，所以重新使用回 ModifyWeaponDamage 而不是 On_ModifyWeaponDamage
+        //public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+        //    damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
+        //    return false;
+        //}
 
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
             crit += MurasamaEcType.GetOnCrit;

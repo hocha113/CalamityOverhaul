@@ -27,8 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             AngleFirearmRest = 0;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
+        public override void PostInOwnerUpdate() {
             if (onFire) {
                 if (Time % 5 == 0) {
                     Vector2 vr = CWRUtils.GetRandomVevtor(-120, -60, 3);
@@ -38,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             }
         }
 
-        public override int Shoot() {
+        public override void FiringShoot() {
             int type = ModContent.ProjectileType<HatredFire>();
             SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
             for (int i = 0; i < 2; i++) {
@@ -49,7 +48,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Vector2 vr = CWRUtils.GetRandomVevtor(-120, -60, 3);
             Projectile.NewProjectile(Source, Projectile.Center + Projectile.rotation.ToRotationVector2() * 36 + Main.rand.NextVector2Unit() * 16,
                 vr, ModContent.ProjectileType<SpiritFlame>(), Projectile.damage / 4, 0, Owner.whoAmI, 3);
-            return 0;
         }
 
         public override void GunDraw(ref Color lightColor) {

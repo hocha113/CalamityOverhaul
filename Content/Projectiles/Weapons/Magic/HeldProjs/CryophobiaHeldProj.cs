@@ -20,14 +20,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
-        }
-
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override int Shoot() {
-            return base.Shoot();
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 6;
         }
     }
 }

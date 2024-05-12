@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             }
         }
 
-        public override int Shoot() {
+        public override void FiringShoot() {
             Item.useTime = fireIndex;
             SoundEngine.PlaySound(SoundID.Item91, Projectile.Center);
             for (int i = 0; i < 3; i++) {
@@ -59,18 +59,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                     intframe = 3;
                 }
             }
-            return base.Shoot();
         }
 
-        public override int ShootR() {
+        public override void FiringShootR() {
             Item.useTime = 3;
             intframe = 2;
             if (++fireIndex2 >= 2) {
                 SoundEngine.PlaySound(SoundID.Item91, Projectile.Center);
                 fireIndex2 = 0;
             }
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<NanoPurgeLaser>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            return base.ShootR();
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , ModContent.ProjectileType<NanoPurgeLaser>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void GunDraw(ref Color lightColor) {

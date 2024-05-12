@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     return false;
                 }
             }
-
+            Owner.CWR().HeldMurasamaBool = true;
             if (base.Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaRSlash>()] != 0  
                 || base.Owner.ownedProjectileCounts[ModContent.ProjectileType<CalamityMod.Projectiles.Melee.MurasamaSlash>()] != 0 
                 || base.Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] != 0) {

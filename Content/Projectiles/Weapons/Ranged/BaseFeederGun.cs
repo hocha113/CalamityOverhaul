@@ -97,19 +97,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected bool RepeatedCartridgeChange = true;
         /// <summary>
-        /// 是否启用后坐力枪体反向制推效果，默认为<see langword="false"/>
-        /// </summary>
-        protected bool EnableRecoilRetroEffect;
-        /// <summary>
-        /// 后坐力制推力度模长，推送方向为<see cref="BaseHeldRanged.ShootVelocity"/>的反向
-        /// ，在<see cref="EnableRecoilRetroEffect"/>为<see langword="true"/>时生效，默认为5f
-        /// </summary>
-        protected float RecoilRetroForceMagnitude = 5;
-        /// <summary>
-        /// 是否是一个多发装填，一般来讲应用于弹容量大于1的枪类，开启后影响<see cref="PreFireReloadKreLoad"/>
-        /// </summary>
-        protected bool MultipleCartridgeLoading;
-        /// <summary>
         /// 一个额外的枪体旋转角度矫正值，默认在<see cref="Recover"/>中恢复为0
         /// </summary>
         protected float FeederOffsetRot;

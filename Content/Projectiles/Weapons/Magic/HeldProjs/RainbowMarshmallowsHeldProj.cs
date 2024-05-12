@@ -24,25 +24,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Recoil = 0;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override int Shoot() {
-            int proj = 0;
+        public override void FiringShoot() {
             for (int i = 0; i < 3; i++) {
                 if (Owner.CheckMana(Item)) {
-                    proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f, 1.1f)
+                    Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f, 1.1f)
                         , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     Owner.statMana -= Item.mana;
                 }
             }
-            return proj;
         }
 
         public override void GunDraw(ref Color lightColor) {
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
-                , Projectile.rotation, DirSign > 0 ? new Vector2(20, 120) : new Vector2(20, 20), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+                , Projectile.rotation, DirSign > 0 ? new Vector2(20, 120) : new Vector2(20, 20)
+                , Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }
 }

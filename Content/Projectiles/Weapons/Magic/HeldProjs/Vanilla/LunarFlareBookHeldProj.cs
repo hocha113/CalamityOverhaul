@@ -1,13 +1,10 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Magic.Extras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
 {
@@ -27,8 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
             AngleFirearmRest = 0;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
+        public override void PostInOwnerUpdate() {
             if (onFire) {
                 Projectile.Center = Owner.MountedCenter + (DirSign > 0 ? new Vector2(13, -20) : new Vector2(-13, -20));
                 Projectile.rotation = DirSign > 0 ? 0 : MathHelper.Pi;
@@ -36,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
             }
         }
 
-        public override int Shoot() {
+        public override void FiringShoot() {
             for (int i = 0; i < 2; i++) {
                 Vector2 pos = Projectile.Center;
                 pos.X += DirSign * Main.rand.Next(130, 360);
@@ -44,7 +40,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
                 Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ScaleFactor;
                 Projectile.NewProjectile(Source, pos, vr, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            return 0;
         }
     }
 }

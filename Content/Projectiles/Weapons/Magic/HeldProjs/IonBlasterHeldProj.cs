@@ -26,12 +26,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Recoil = 0;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override int Shoot() {
-            Projectile proj = Main.projectile[base.Shoot()];
+        public override void FiringShoot() {
+            Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             float manaRatio = (float)Owner.statMana / Owner.statManaMax2;
             bool injectionNerf = Owner.Calamity().astralInjection;
             if (injectionNerf)
@@ -43,7 +40,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 manaRatio2 = MathHelper.Min(manaRatio2, 0.65f);
             float damageRatio = 0.2f + 1.4f * manaRatio2;
             proj.damage = (int)(proj.damage * damageRatio);
-            return proj.whoAmI;
         }
     }
 }

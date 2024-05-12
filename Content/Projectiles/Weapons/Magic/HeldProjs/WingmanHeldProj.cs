@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Items.Magic;
 using Terraria.ModLoader;
 using Terraria;
 using Terraria.Audio;
+using CalamityMod;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 {
@@ -27,11 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             ArmRotSengsBackNoFireOffset = 113;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override int Shoot() {
+        public override void FiringShoot() {
             SoundStyle style = new SoundStyle("CalamityMod/Sounds/Item/MagnaCannonShot");
             float rand = Main.rand.NextFloat(0.3f, 1.1f);
             AmmoTypes = ModContent.ProjectileType<WingmanShot>();
@@ -47,7 +44,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy((-1 + i) * 0.1f * rand)
                     , AmmoTypes, (int)newdamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            return 0;
         }
     }
 }

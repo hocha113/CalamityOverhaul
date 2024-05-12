@@ -75,12 +75,16 @@ namespace CalamityOverhaul
         /// 一个额外的跳字方法，向控制台面板打印对象的ToString内容，并自带换行
         /// </summary>
         /// <param name="obj"></param>
-        public static void DompInConsole(this object obj) {
+        public static void DompInConsole(this object obj, bool outputLogger = true) {
             if (obj == null) {
                 Console.WriteLine("ERROR Is Null");
                 return;
             }
-            Console.WriteLine(obj.ToString());
+            string value = obj.ToString();
+            Console.WriteLine(value);
+            if (outputLogger) {
+                CWRMod.Instance.Logger.Info(value);
+            }
         }
 
         /// <summary>
@@ -804,6 +808,22 @@ namespace CalamityOverhaul
 
         #region 行为部分
 
+        public static void Move(this NPC npc, Vector2 vector, float speed, float turnResistance = 10f, bool toPlayer = false) {
+            Player player = Main.player[npc.target];
+            Vector2 moveTo = toPlayer ? player.Center + vector : vector;
+            Vector2 move = moveTo - npc.Center;
+            float magnitude = move.Length();
+            if (magnitude > speed) {
+                move *= speed / magnitude;
+            }
+            move = (npc.velocity * turnResistance + move) / (turnResistance + 1f);
+            magnitude = move.Length();
+            if (magnitude > speed) {
+                move *= speed / magnitude;
+            }
+            npc.velocity = move;
+        }
+
         public static void WulfrumAmplifierAI(NPC npc, float maxrg = 495f, int maxchargeTime = 600) {
             List<int> SuperchargableEnemies = new List<int>(){
                 ModContent.NPCType<WulfrumDrone>(),
@@ -1152,6 +1172,14 @@ namespace CalamityOverhaul
         public static void SetHeldProj<T>(this Item item) where T : ModProjectile {
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = ModContent.ProjectileType<T>();
+        }
+
+        /// <summary>
+        /// 快捷的将一个物品实例设置为手持对象
+        /// </summary>
+        public static void SetHeldProj(this Item item, int id) {
+            item.CWR().hasHeldNoCanUseBool = true;
+            item.CWR().heldProjType = id;
         }
 
         /// <summary>

@@ -26,8 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             AngleFirearmRest = 0;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
+        public override void PostInOwnerUpdate() {
             if (onFire) {
                 CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
                 Projectile.Center = Owner.MountedCenter + (DirSign > 0 ? new Vector2(13, -20) : new Vector2(-13, -20));
@@ -44,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             }
         }
 
-        public override int Shoot() {
+        public override void FiringShoot() {
             int type = ModContent.ProjectileType<GhastlyVisageBall>();
             SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
             for (int i = 0; i < Main.rand.Next(3, 4); i++) {
@@ -52,7 +51,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 ShootVelocity.RotatedByRandom(0.4f).UnitVector() * 3,
                 type, WeaponDamage, WeaponKnockback, Owner.whoAmI);
             }
-            return 0;
         }
 
         public override void GunDraw(ref Color lightColor) {

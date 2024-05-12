@@ -15,9 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Terratomere>();
         public override int ProtogenesisID => ModContent.ItemType<TerratomereEcType>();
         public override string TargetToolTipItemName => "TerratomereEcType";
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
+        public override bool CanLoad() => false;//TODO:在当前版本暂时移除
         public override void SetDefaults(Item item) {
             item.width = 60;
             item.height = 66;

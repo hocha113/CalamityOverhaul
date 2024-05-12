@@ -37,10 +37,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                         SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                     }
                     if (onFire) {
-                        Shoot();
+                        FiringShoot();
                     }
                     if (onFireR) {
-                        ShootR();
+                        FiringShootR();
+                    }
+                    if (EnableRecoilRetroEffect) {
+                        OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
                     }
                     CreateRecoil();
                     Owner.statMana -= Item.mana;
@@ -63,14 +66,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                 ShootCoolingValue += Item.useTime;
                 onFire = false;
             }
-        }
-
-        public virtual int Shoot() {
-            return Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-        }
-
-        public virtual int ShootR() {
-            return Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

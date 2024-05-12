@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Buffs.StatBuffs;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Dusts;
 using CalamityOverhaul.Content.GoreEntity;
@@ -66,6 +67,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 枪械是否受到应力缩放，默认为<see langword="true"/>
         /// </summary>
         public bool PressureWhetherIncrease = true;
+        /// <summary>
+        /// 是否启用后坐力枪体反向制推效果，默认为<see langword="false"/>
+        /// </summary>
+        protected bool EnableRecoilRetroEffect;
+        /// <summary>
+        /// 后坐力制推力度模长，推送方向为<see cref="BaseHeldRanged.ShootVelocity"/>的反向
+        /// ，在<see cref="EnableRecoilRetroEffect"/>为<see langword="true"/>时生效，默认为5f
+        /// </summary>
+        protected float RecoilRetroForceMagnitude = 5;
         /// <summary>
         /// 开火时是否默认播放手持物品的使用音效<see cref="Item.UseSound"/>，但如果准备重写<see cref="SpanProj"/>，这个属性将失去作用，默认为<see langword="true"/>
         /// </summary>
@@ -193,7 +203,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 快速的获取该枪械是否正在进行开火尝试，包括左键或者右键的情况
         /// </summary>
-        public override bool CanFire => DownLeft || (Owner.Calamity().mouseRight && !onFire && CanRightClick && SafeMousetStart);
+        public override bool CanFire => (DownLeft || (Owner.Calamity().mouseRight && !onFire && CanRightClick && SafeMousetStart)) && SafeMouseInterfaceValue;
         /// <summary>
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
         /// </summary>
@@ -415,19 +425,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 velocity = ShootVelocity;
             }
             pos += velocity.SafeNormalize(Vector2.Zero) * Projectile.width * Projectile.scale * 0.71f;
-
-            //if (dustID1 == 262 && dustID2 == 54 && dustID3 == 53) {
-            //    float rot = velocity.ToRotation();
-            //    float spread = 0.4f;
-            //    Vector2 offset = new Vector2(1, -0.05f * Owner.direction).RotatedBy(rot);
-            //    Vector2 direction = offset.RotatedByRandom(spread);
-            //    for (int k = 0; k < 13 * splNum; k++) {
-            //        Dust.NewDustPerfect(pos + offset * 70, ModContent.DustType<InShootGlow>(), direction * Main.rand.NextFloat(8)
-            //            , 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f) * splNum);
-            //    }
-            //    return;
-            //}
-
             for (int i = 0; i < 30 * splNum; i++) {
                 int dustID;
                 switch (Main.rand.Next(6)) {
@@ -468,7 +465,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (onFireR) {
                     FiringShootR();
                 }
-                
+                if (EnableRecoilRetroEffect) {
+                    OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
+                }
+
                 if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
                     LuxirEvent();
                 }
@@ -493,13 +493,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return reset;
         }
 
+        public bool overNoFireCeahks() {
+            return !CalPlayer.profanedCrystalBuffs;
+        }
+
         public override void AI() {
             InOwner();
             if (SetArmRotBool) {
                 SetCompositeArm();
             }
             UpdateRecoil();
-            if (Projectile.IsOwnedByLocalPlayer()) {
+            if (Projectile.IsOwnedByLocalPlayer() && overNoFireCeahks()) {
                 SpanProj();
             }
             Time++;

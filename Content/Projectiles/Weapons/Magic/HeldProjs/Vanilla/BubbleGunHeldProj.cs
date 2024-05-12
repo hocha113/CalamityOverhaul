@@ -23,19 +23,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
             Recoil = 0;
         }
 
-        public override int Shoot() {
-            int proj = 0;
+        public override void FiringShoot() {
             for (int i = 0; i < Main.rand.Next(6, 9); i++) {
-                if (Owner.CheckMana(Item)) {
-                    proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f, 1.1f)
+                int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f, 1.1f)
                         , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                    if (Main.rand.NextBool(6)) {
-                        Main.projectile[proj].Calamity().allProjectilesHome = true;
-                    }
-                    Owner.statMana -= Item.mana;
+                if (Main.rand.NextBool(6)) {
+                    Main.projectile[proj].Calamity().allProjectilesHome = true;
                 }
             }
-            return proj;
         }
     }
 }
