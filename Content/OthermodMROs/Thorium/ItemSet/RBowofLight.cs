@@ -12,8 +12,8 @@ namespace CalamityOverhaul.Content.OthermodMROs.Thorium.ItemSet
         public override int TargetID => BowofLightID;
         public override bool FormulaSubstitution => false;
         public override bool CanLoad() => FromThorium.Has;
-        public void LoadThoDate(Mod thoriumMod) { }
-        public void PostLoadThoDate(Mod thoriumMod) => BowofLightID = thoriumMod.Find<ModItem>("BowofLight").Type;
+        public void LoadThoData(Mod thoriumMod) { }
+        public void PostLoadThoData(Mod thoriumMod) => BowofLightID = thoriumMod.Find<ModItem>("BowofLight").Type;
         public override void SetDefaults(Item item) => item.SetHeldProj<BowofLightHeldProj>();
     }
 }

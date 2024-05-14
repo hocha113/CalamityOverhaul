@@ -1,20 +1,18 @@
 ﻿using CalamityMod;
 using CalamityMod.Graphics.Renderers.CalamityRenderers;
-using CalamityMod.NPCs.Providence;
 using CalamityMod.NPCs;
+using CalamityMod.NPCs.Providence;
+using CalamityOverhaul.Content.Projectiles.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
-using Terraria.Graphics.Effects;
-using System.Collections.Generic;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
-using CalamityOverhaul.Content.Projectiles.Weapons;
-using ReLogic.Content;
 
 namespace CalamityOverhaul.Common.Effects
 {

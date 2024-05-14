@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.OthermodMROs.Thorium.Core
         /// 你需要保证它们是唯一的或者是静态的
         /// </summary>
         /// <param name="thoriumMod"></param>
-        public void LoadThoDate(Mod thoriumMod);
+        public void LoadThoData(Mod thoriumMod);
         /// <summary>
         /// 在模组加载周期的最末期阶段调用
         /// 用于加载关于瑟银模组的数据，比如反射某些字段的内容并储存到外部
@@ -19,6 +19,10 @@ namespace CalamityOverhaul.Content.OthermodMROs.Thorium.Core
         /// 你需要保证它们是唯一的或者是静态的
         /// </summary>
         /// <param name="thoriumMod"></param>
-        public void PostLoadThoDate(Mod thoriumMod);
+        public void PostLoadThoData(Mod thoriumMod);
+        // <summary>
+        /// 在模组卸载周期调用
+        /// </summary>
+        public void UnLoadThoData() { }
     }
 }

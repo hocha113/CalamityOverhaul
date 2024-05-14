@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content
         public static InWorldBossPhase Instance { get; private set; }
 
         public void Load() => Instance = this;
+        public static void UnLoad() => Instance = null;
 
         #region Date
 

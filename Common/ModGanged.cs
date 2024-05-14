@@ -277,6 +277,33 @@ namespace CalamityOverhaul.Common
             #endregion
         }
 
+        public static void UnLoad() {
+            weaponOutCodeTypes = null;
+            weaponOut_DrawToolType = null;
+            on_weaponOut_DrawTool_Method = null;
+            weaponOut_WeaponLayer_1_Type = null;
+            weaponOut_WeaponLayer_1_Method = null;
+            weaponOut_WeaponLayer_2_Type = null;
+            weaponOut_WeaponLayer_2_Method = null;
+            weaponDisplayCodeTypes = null;
+            weaponDisplay_ModifyDrawInfo_Type = null;
+            weaponDisplay_ModifyDrawInfo_Method = null;
+            trOCodeTypes = null;
+            trO_itemPowerAttacksTypes = null;
+            trO_MuzzleflashPlayerDL_Type = null;
+            trO_ArrowPlayerDL_Type = null;
+            trO_PlayerHoldOutAnimation_Type = null;
+            trO_CrosshairSystem_Type = null;
+            trO_Broadsword_Type = null;
+            trO_MuzzleflashPlayerDL_Draw_Method = null;
+            trO_ArrowPlayerDL_Draw_Method = null;
+            trO_PlayerHoldOutAnimation_Method = null;
+            trO_Crosshair_AddImpulse_Method = null;
+            trO_itemPowerAttacksTypes_Load_Method = null;
+            trO_Broadsword_ShouldApplyItemOverhaul_Method = null;
+            trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method = null;
+        }
+
         private static bool On_ShouldApplyItemOverhaul_Hook(On_TrO_Broadsword_ShouldApplyItemOverhaul_Dalegate orig, object obj, Item item) {
             int[] noEffect = new int[] { ItemType<TrueBiomeBlade>(), ItemType<OmegaBiomeBlade>(), ItemType<BrokenBiomeBlade>(),};
             if (noEffect.Contains(item.type)) {

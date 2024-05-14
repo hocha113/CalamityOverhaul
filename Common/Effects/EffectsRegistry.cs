@@ -18,6 +18,14 @@ namespace CalamityOverhaul.Common.Effects
             LoadRegularShaders(assets);
         }
 
+        public static void UnLoad() {
+            WarpShader = null;
+            PowerSFShader = null;
+            NeutronRingShader = null;
+            InShootGlowShader = null;
+            FlowColorShader = null;
+        }
+
         public static void LoadRegularShaders(AssetRepository assets) {
             Asset<Effect> getEffect(string key) => assets.Request<Effect>(CWRConstant.noEffects + key, AssetRequestMode.ImmediateLoad);
             void loadFiltersEffect(string filtersKey, string filename, string passname, out Effect effect) {

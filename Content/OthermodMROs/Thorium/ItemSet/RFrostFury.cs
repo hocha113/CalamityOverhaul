@@ -13,8 +13,8 @@ namespace CalamityOverhaul.Content.OthermodMROs.Thorium.ItemSet
         public override int TargetID => FrostFuryID;
         public override bool FormulaSubstitution => false;
         public override bool CanLoad() => FromThorium.Has;
-        public void LoadThoDate(Mod thoriumMod) { }
-        public void PostLoadThoDate(Mod thoriumMod) => FrostFuryID = thoriumMod.Find<ModItem>("FrostFury").Type;
+        public void LoadThoData(Mod thoriumMod) { }
+        public void PostLoadThoData(Mod thoriumMod) => FrostFuryID = thoriumMod.Find<ModItem>("FrostFury").Type;
         public override void SetDefaults(Item item) => item.SetHeldProj<FrostFuryHeldProj>();
     }
 }
