@@ -48,7 +48,7 @@ namespace CalamityOverhaul
         public override void PostSetupContent() {
             LoadMods = ModLoader.Mods.ToList();
             //额外模组Call需要先行加载
-            FromThorium.PostLoadDate();
+            FromThorium.PostLoadData();
 
             {
                 RItemInstances = new List<BaseRItem>();//这里直接进行初始化，便不再需要进行UnLoad卸载
@@ -138,23 +138,25 @@ namespace CalamityOverhaul
             Instance = this;
             
             FindMod();
-            LoadClient();
-            FromThorium.LoadDate();
+            FromThorium.LoadData();
             ModGanged.Load();
             CWRParticleHandler.Load();
             new InWorldBossPhase().Load();
-            EffectsRegistry.LoadEffects();
             CWRKeySystem.LoadKeyDate(this);
             On_Main.DrawInfernoRings += PeSystem.CWRDrawForegroundParticles;
+            LoadClient();
             GameLoadCount++;
             base.Load();
         }
 
         public override void Unload() {
+            FromThorium.UnLoadData();
+            ModGanged.UnLoad();
             CWRParticleHandler.Unload();
+            InWorldBossPhase.UnLoad();
             CWRKeySystem.Unload();
             On_Main.DrawInfernoRings -= PeSystem.CWRDrawForegroundParticles;
-            ILMainMenuModification.Unload();
+            UnLoadClient();
             base.Unload();
         }
 
@@ -178,9 +180,18 @@ namespace CalamityOverhaul
             if (Main.dedServ)
                 return;
 
+            EffectsRegistry.LoadEffects();
             ILMainMenuModification.Load();
             Filters.Scene["CWRMod:TungstenSky"] = new Filter(new TungstenSkyDate("FilterMiniTower").UseColor(0.5f, 0f, 0.5f).UseOpacity(0.2f), EffectPriority.VeryHigh);
             SkyManager.Instance["CWRMod:TungstenSky"] = new TungstenSky();
+        }
+
+        public void UnLoadClient() {
+            if (Main.dedServ)
+                return;
+
+            EffectsRegistry.UnLoad();
+            ILMainMenuModification.Unload();
         }
     }
 }

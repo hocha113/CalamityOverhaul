@@ -42,7 +42,10 @@ namespace CalamityOverhaul.Content.UIs
                     i => i.Match(OpCodes.Ldnull),
                     i => i.MatchCall(typeof(Main), $"get_{nameof(Main.UIScaleMatrix)}")
                 )) {
-                    throw new Exception($"{nameof(ILMainMenuModification)}: IL 挂载失败，是否是目标流已经更改或者移除框架?");
+                    string errortext = $"{nameof(ILMainMenuModification)}: IL 挂载失败，是否是目标流已经更改或者移除框架?";
+                    errortext.DompInConsole();
+                    throw new Exception(errortext);
+
                 }
 
                 _ = potlevel.EmitDelegate(() => Draw(Main.spriteBatch));
