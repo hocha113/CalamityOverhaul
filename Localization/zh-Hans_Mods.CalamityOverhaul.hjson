@@ -2524,6 +2524,17 @@ Items: {
 		DisplayName: 星墓之光
 		Tooltip: ""
 	}
+
+	FlakKrakenEcType: {
+		DisplayName: 海妖克拉肯
+		Tooltip:
+			'''
+			发射深渊高爆弹，炸弹会爆炸产生数个锥形散步的墨水破片
+			深渊高爆弹会在抵达光标位置时爆炸
+			炮弹直接命中会让破片伤害降低
+			"来自一条海妖，租借合同为期3年06月23天6小时"
+			'''
+	}
 }
 
 Projectiles: {
@@ -3083,6 +3094,7 @@ Projectiles: {
 	// NeutronMagchStar.DisplayName: Neutron Magch Star
 	// AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
 	// HyperBlade.DisplayName: Hyper Blade
+	// FlakKrakenHeldProj.DisplayName: Flak Kraken Held Proj
 }
 
 Configs: {

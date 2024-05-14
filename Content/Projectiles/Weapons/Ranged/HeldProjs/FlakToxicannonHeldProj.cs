@@ -1,8 +1,10 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -12,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "FlakToxicannon";
         public override int targetCayItem => ModContent.ItemType<FlakToxicannon>();
         public override int targetCWRItem => ModContent.ItemType<FlakToxicannonEcType>();
-
+        int fireIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 10;
@@ -29,7 +31,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 7;
+            FiringDefaultSound = false;
+            RecoilRetroForceMagnitude = 17;
         }
 
         public override void PreInOwnerUpdate() {
@@ -44,22 +47,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (ToMouseA + MathHelper.Pi > MathHelper.ToRadians(270)) {
                     Projectile.rotation = minRot - MathHelper.Pi;
                 }
-                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance;
+                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + OffsetPos;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
             }
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocityInProjRot, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
+            FireTime = 5;
+            AmmoTypes = ModContent.ProjectileType<FlakToxicannonProjectile>();
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocityInProjRot, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, ToMouse.Length());
+            CaseEjection(1.3f);
+            if (++fireIndex > 13) {
+                FireTime = 30;
+                SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/DudFire") with { Volume = 0.8f, Pitch = -0.7f, PitchVariance = 0.1f }, Projectile.Center);
+                fireIndex = 0;
+                return;
+            }
+            SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/FlakKrakenShoot") { Pitch = 0.65f, Volume = 0.5f }, Projectile.Center);
         }
     }
 }

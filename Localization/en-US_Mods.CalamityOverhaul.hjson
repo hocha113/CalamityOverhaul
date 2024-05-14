@@ -2494,6 +2494,17 @@ Items: {
 		DisplayName: Neutron Wand
 		Tooltip: ""
 	}
+
+	FlakKrakenEcType: {
+		DisplayName: Flak Kraken
+		Tooltip:
+			'''
+			Fire a deep high explosive bomb, which explodes into several conical walks of ink shards
+			The abyssal high explosive will explode when it reaches the cursor position
+			A direct hit from a shell reduces splinter damage
+			"From a sirens, lease for 3 years, 6 months, 23 days, 6 hours."
+			'''
+	}
 }
 
 Projectiles: {
@@ -3053,6 +3064,7 @@ Projectiles: {
 	NeutronMagchStar.DisplayName: Neutron Magch Star
 	AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
 	HyperBlade.DisplayName: Hyper Blade
+	FlakKrakenHeldProj.DisplayName: Flak Kraken Held Proj
 }
 
 Configs: {

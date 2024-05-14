@@ -2,17 +2,15 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria.ID;
-using Terraria;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    internal class FlakToxicannonEcType : EctypeItem
+    internal class FlakKrakenEcType : EctypeItem
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "FlakToxicannon";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "FlakKraken";
         public override void SetDefaults() {
-            Item.SetCalamitySD<FlakToxicannon>();
-            Item.SetCartridgeGun<FlakToxicannonHeldProj>(65);
-            Item.useAmmo = AmmoID.Bullet;
+            Item.SetCalamitySD<FlakKraken>();
+            Item.SetCartridgeGun<FlakKrakenHeldProj>(80);
             Item.CWR().Scope = true;
         }
     }
