@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -11,6 +12,7 @@ namespace CalamityOverhaul.Content.GoreEntity
         public void SetupData() => PType = ModContent.GoreType<CaseGore>();
         public override bool Update(Gore gore) {
             gore.velocity.X *= 0.98f;
+            Lighting.AddLight(gore.position, Color.Gold.ToVector3() * 0.2f * gore.scale);
             return base.Update(gore);
         }
     }

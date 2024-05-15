@@ -54,6 +54,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText CWRRecipes_ApostolicRelics { get; private set; }
         public LocalizedText CWRRecipes_GodEaterWeapon { get; private set; }
         public LocalizedText CWRRecipes_FishGroup { get; private set; }
+        public LocalizedText LoadItemRecipe_Condition_Text1 { get; private set; }
         public LocalizedText Murasama_Text0 { get; private set; }
         public LocalizedText Murasama_Text1 { get; private set; }
         public LocalizedText Murasama_Text2 { get; private set; }

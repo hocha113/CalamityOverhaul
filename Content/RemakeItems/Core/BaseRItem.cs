@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -60,7 +61,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (ProtogenesisID == 0) {
                 return;//如果没有设置ProtogenesisID，那么就表示不参与配方替换
             }
-            Recipe.Create(recipeTargetType).AddIngredient(TargetID).Register();
+            string conditiontext = CWRLocText.GetTextValue("LoadItemRecipe_Condition_Text1");
+            Func<bool> conditiontfunc = () => Main.LocalPlayer.CWR().HasOverhaulTheBibleBook;
+            Condition condition = new Condition(conditiontext, conditiontfunc);
+            Recipe.Create(recipeTargetType).AddIngredient(TargetID).AddCondition(condition).Register();
+            Recipe.Create(TargetID).AddIngredient(recipeTargetType).AddCondition(condition).Register();
         }
         /// <summary>
         /// 移除配方，当开启了强制内容替换设置时进行调用

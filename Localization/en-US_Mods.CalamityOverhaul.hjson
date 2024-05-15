@@ -3517,6 +3517,7 @@ TextContent: {
 		CWRRecipes_ApostolicRelics: Apostolic relics
 		CWRRecipes_GodEaterWeapon: God Eater weapon
 		CWRRecipes_FishGroup: fish
+		LoadItemRecipe_Condition_Text1: Need to have an Overhaul The Bible Book in your backpack
 		Murasama_Text0: Unlocked
 		Murasama_Text1: Not yet unlocked. Need to pass test 2
 		Murasama_Text2: Not yet unlocked. Need to pass test 5
@@ -3743,7 +3744,7 @@ TextContent: {
 		SupMUI_OneClick_Text2: Quick access to material
 		TemporaryVersion_Text:
 			'''
-			[CalamityOverhaul-0.3.6.1.1]: 
+			[CalamityOverhaul-0.3.6.1.2]: 
 			This current version is a temporary release used for adapting to the new version, 
 			making adjustments, and fixing errors to ensure a basic gameplay experience until version 0.4 arrives. 
 			The update was somewhat rushed, so there may still be some noticeable issues. 

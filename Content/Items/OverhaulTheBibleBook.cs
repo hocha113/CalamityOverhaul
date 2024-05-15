@@ -46,6 +46,10 @@ namespace CalamityOverhaul.Content.Items
             return false;
         }
 
+        public override void UpdateInventory(Player player) {
+            player.CWR().HasOverhaulTheBibleBook = true;
+        }
+
         public override bool? UseItem(Player player) {
             if (player.whoAmI == Main.myPlayer) {
                 OverhaulTheBibleUI.Instance.Active = !OverhaulTheBibleUI.Instance.Active;

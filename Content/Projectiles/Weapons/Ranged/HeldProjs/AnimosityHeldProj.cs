@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
@@ -14,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Animosity";
         public override int targetCayItem => ModContent.ItemType<Animosity>();
         public override int targetCWRItem => ModContent.ItemType<AnimosityEcType>();
+        int btoole = ProjectileID.None;
         int fireIndex;
         public override void SetRangedProperty() {
             FireTime = 6;
@@ -26,6 +28,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistanceY = -10;
             CanRightClick = true;
             FiringDefaultSound = false;
+            LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
+            LoadingAA_Handgun.loadingAmmoStarg_y = -16;
+            LoadingAA_Handgun.clipLocked = CWRSound.Gun_HandGun_ClipLocked with { Pitch = -0.25f };
+            btoole = ModLoader.GetMod("CalamityMod").Find<ModProjectile>("AnimosityBullet").Type;
         }
 
         public override void FiringShoot() {
@@ -36,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ProjectileID.BulletHighVelocity;
             }
-            SoundEngine.PlaySound(Animosity.ShootAndReloadSound, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.5f, PitchVariance = 0.3f }, Projectile.Center);
             SpawnGunFireDust(GunShootPos, ShootVelocity);
             for (int i = 0; i < 2; i++) {
                 Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f))
@@ -44,6 +50,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             CaseEjection();
             if (++fireIndex > 6) {
+                SoundEngine.PlaySound(CommonCalamitySounds.LargeWeaponFireSound with { Pitch = -0.2f, Volume = 0.7f }, Projectile.Center);
+                Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, btoole, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 FireTime = 15;
                 fireIndex = 0;
             }

@@ -31,6 +31,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool InitialCreation;
         /// <summary>
+        /// 是否拥有大修宝典
+        /// </summary>
+        public bool HasOverhaulTheBibleBook;
+        /// <summary>
         /// 圣物的装备等级，这个字段决定了玩家会拥有什么样的弹幕效果
         /// </summary>
         public int TheRelicLuxor = 0;
@@ -133,6 +137,7 @@ namespace CalamityOverhaul.Content
             HeldBowBool = false;
             NoCanAutomaticCartridgeChange = false;
             RustyMedallion_Value = false;
+            HasOverhaulTheBibleBook = false;
         }
 
         public override void ResetEffects() {
@@ -155,6 +160,7 @@ namespace CalamityOverhaul.Content
             HeldBowBool = false;
             NoCanAutomaticCartridgeChange = false;
             RustyMedallion_Value = false;
+            HasOverhaulTheBibleBook = false;
         }
 
         public override void SaveData(TagCompound tag) {

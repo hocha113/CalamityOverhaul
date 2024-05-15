@@ -3528,6 +3528,7 @@ TextContent: {
 		CWRRecipes_ApostolicRelics: 使徒遗物
 		CWRRecipes_GodEaterWeapon: 噬神者武器
 		CWRRecipes_FishGroup: 鱼
+		LoadItemRecipe_Condition_Text1: 背包中需要存在一本大修宝典
 		Murasama_Text0: 已解锁
 		Murasama_Text1: 未解锁 需要通过试炼2
 		Murasama_Text2: 未解锁 需要通过试炼5
@@ -3760,7 +3761,7 @@ TextContent: {
 		SupMUI_OneClick_Text2: 快捷拿取材料
 		TemporaryVersion_Text:
 			'''
-			[CalamityOverhaul-0.3.6.1.1]:
+			[CalamityOverhaul-0.3.6.1.2]:
 			当前版本为临时性版本，用于适配新版本，进行调整和错误修复以保证最基本的游玩体验，直到在0.4版本到来
 			更新较为仓促，所以仍可能存在一些明显的错误
 			如果您在游玩过程中发现问题，请在Github上向模组提交issue，
