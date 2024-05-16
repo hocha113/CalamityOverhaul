@@ -246,6 +246,113 @@ namespace CalamityOverhaul.Content
 
         #endregion
 
+        public int SHPC_Level() {
+            int level = 0;
+            if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                return 14;
+            }
+
+            if (DownedV0.Invoke()) {
+                level = 1;
+            }
+            else {
+                return level;
+            }
+
+            if (DownedV1.Invoke()) {
+                level = 2;
+            }
+            else {
+                return level;
+            }
+
+            if (DownedV3.Invoke()) {
+                level = 3;
+            }
+            else {
+                return level;
+            }
+
+            if (DownedV4.Invoke()) {
+                level = 4;
+            }
+            else {
+                return level;
+            }
+
+            if (DownedV5.Invoke()) {
+                level = 5;
+            }
+            else {
+                return level;
+            }
+
+            if (VDownedV7.Invoke()) {
+                level = 6;
+            }
+            else {
+                return level;
+            }
+
+            if (DownedV7.Invoke()) {
+                level = 7;
+            }
+            else {
+                return level;
+            }
+
+            if (VDownedV16.Invoke()) {
+                level = 8;
+            }
+            else {
+                return level;
+            }
+
+            if (Downed19.Invoke()) {
+                level = 9;
+            }
+            else {
+                return level;
+            }
+
+            if (Downed23.Invoke()) {
+                level = 10;
+            }
+            else {
+                return level;
+            }
+
+            if (Downed27.Invoke()) {
+                level = 11;
+            }
+            else {
+                return level;
+            }
+
+            if (Downed28.Invoke()) {
+                level = 12;
+            }
+            else {
+                return level;
+            }
+
+            if (Downed29.Invoke() || Downed30.Invoke()) {
+                level = 13;
+            }
+            else {
+                return level;
+            }
+
+            if (Downed32.Invoke()) {
+                level = 14;
+            }
+            else {
+                return level;
+            }
+
+            return level;
+        }
+
         public int Halibut_Level() {
             int level = 0;
 
@@ -355,8 +462,6 @@ namespace CalamityOverhaul.Content
         }
 
         public int Mura_Level() {
-            //int a = (int)((Main.GameUpdateCount / 120) % 15);
-            //return a;
             int level = 0;
 
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {

@@ -2457,7 +2457,14 @@ Items: {
 
 	SHPCEcType: {
 		DisplayName: SHPC
-		Tooltip: "[GFB]"
+		Tooltip:
+			'''
+			发射会停留在空中并引发巨大爆炸的相位激光球
+			右键发射强大的能量束
+			legend_Text
+			[Lang4]
+			[Text]
+			'''
 	}
 
 	WingmanEcType: {
@@ -3447,6 +3454,82 @@ TextContent: {
 			右键发射强大的能量束
 			'''
 		SHPC_No_legend_Content_2: "[c/fff08c:传奇武器归来！:)]"
+		SHPC_No_legend_Content_3: "[c/fff08c:随着旅途的遥远而变强]"
+		SHPC_No_legend_Content_4: "[c/00707d:传奇的光辉已经暗淡...]"
+		SHPC_TextDictionary_Content_0:
+			'''
+			朋友，复兴文明的任务终于落在了我两手上，这是一件光荣的事情...
+			我们的第一个目标是一坨蓝色的凝胶聚合物，它非常的巨大，把它从内部轰开
+			'''
+		SHPC_TextDictionary_Content_1:
+			'''
+			我们需要干掉那只大眼球，它来自一个强大的生命体
+			我需要需要解剖它，看看它是如何实现反重力的
+			'''
+		SHPC_TextDictionary_Content_2:
+			'''
+			丛林的蜂巢变得非常焦躁，蜂俑即将孵化
+			我迫切需要研究它的变性过程，去看看吧
+			'''
+		SHPC_TextDictionary_Content_3:
+			'''
+			巨大的骨头能漂浮在空中，这非常的不科学
+			我们需要前往世界尽头的深牢
+			'''
+		SHPC_TextDictionary_Content_4:
+			'''
+			大地颤动，齿轮轰鸣，电流涌动
+			有一堆机器人在等着我们，是时候让它们见识一下科技的力量了
+			'''
+		SHPC_TextDictionary_Content_5:
+			'''
+			丛林地下有几朵妖艳的大花苞已经盛开
+			我们需要去看看，收集一些实验资料
+			'''
+		SHPC_TextDictionary_Content_6:
+			'''
+			神庙深处的远古机器人等待着一次充能启动
+			让我们去拜访一下，顺带逆向出远古科技
+			'''
+		SHPC_TextDictionary_Content_7:
+			'''
+			月亮背面的秘密将被我们知晓
+			世界将回到原来的样子
+			'''
+		SHPC_TextDictionary_Content_8:
+			'''
+			寄生在地核中的神明注意到了我们
+			去地狱看看，我需要热能利用的知识
+			'''
+		SHPC_TextDictionary_Content_9:
+			'''
+			地牢的怨灵聚集起来了，它们组成了一个庞大的共生体
+			这太有趣了，我们现在就得去看看
+			'''
+		SHPC_TextDictionary_Content_10:
+			'''
+			可以确定它不是碳基生命，仅靠身体就能撕开空间膜
+			它吞噬神明，但我们不是神，我想它会请我们喝茶的
+			'''
+		SHPC_TextDictionary_Content_11:
+			'''
+			世界上仅存的龙裔，哇这太酷了！
+			带我去看看，我要得到它的羽毛
+			'''
+		SHPC_TextDictionary_Content_12:
+			'''
+			是时候拜访我的造物主了
+			或者那个女巫，她的存在让我感到困扰
+			'''
+		SHPC_TextDictionary_Content_13:
+			'''
+			大混战！曾经被我们击败过的敌人联合了起来，准备向我们发起总攻
+			做好准备，我们需要一次完美的胜利
+			'''
+		SHPC_TextDictionary_Content_14:
+			'''
+			HMOI-0001协议已解锁
+			'''
 		RemakeItem_Remind_TextContent:
 			'''
 			【作者提醒】

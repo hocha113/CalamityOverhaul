@@ -3,6 +3,7 @@ using CalamityMod.Graphics.Renderers.CalamityRenderers;
 using CalamityMod.NPCs;
 using CalamityMod.NPCs.Providence;
 using CalamityOverhaul.Content.Projectiles.Weapons;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -32,6 +33,7 @@ namespace CalamityOverhaul.Common.Effects
         internal static FieldInfo Shader_Texture_FieldInfo_3;
 
         internal static RenderTarget2D screen;
+        internal static float twistStrength = 0f;
 
         public override void Load() {
             Instance = this;
@@ -48,7 +50,7 @@ namespace CalamityOverhaul.Common.Effects
             Shader_Texture_FieldInfo_3 = miscShaderGetFieldInfo("_uImage3");
 
             On_FilterManager.EndCapture += new On_FilterManager.hook_EndCapture(FilterManager_EndCapture);
-            On_Main.UpdateDisplaySettings += On_Main_UpdateDisplaySettings;
+            Main.OnResolutionChanged += Main_OnResolutionChanged;
         }
 
         public override void Unload() {
@@ -56,27 +58,22 @@ namespace CalamityOverhaul.Common.Effects
             Shader_Texture_FieldInfo_2 = null;
             Shader_Texture_FieldInfo_3 = null;
             On_FilterManager.EndCapture -= new On_FilterManager.hook_EndCapture(FilterManager_EndCapture);
-            On_Main.UpdateDisplaySettings -= On_Main_UpdateDisplaySettings;
+            Main.OnResolutionChanged -= Main_OnResolutionChanged;
         }
 
-        private void On_Main_UpdateDisplaySettings(On_Main.orig_UpdateDisplaySettings orig, Main self) {
-            orig.Invoke(self);
-            Main.QueueMainThreadAction(() => {
-                if (screen is null || screen.Width != Main.screenWidth || screen.Height != Main.screenHeight) {
-                    screen = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-                }
-            });
+        private void Main_OnResolutionChanged(Vector2 obj) {
+            screen?.Dispose();
+            screen = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
         }
 
         private void FilterManager_EndCapture(On_FilterManager.orig_EndCapture orig, Terraria.Graphics.Effects.FilterManager self
             , RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor) {
+            GraphicsDevice graphicsDevice = Main.instance.GraphicsDevice;
             if (screen == null) {
-                GraphicsDevice gd = Main.instance.GraphicsDevice;
-                screen = new RenderTarget2D(gd, Main.screenWidth, Main.screenHeight);
+                screen = new RenderTarget2D(graphicsDevice, Main.screenWidth, Main.screenHeight);
             }
 
             if (HasWarpEffect(out List<IDrawWarp> warpSets)) {
-                GraphicsDevice graphicsDevice = Main.instance.GraphicsDevice;
                 //绘制屏幕
                 graphicsDevice.SetRenderTarget(screen);
                 graphicsDevice.Clear(Color.Transparent);
@@ -110,7 +107,67 @@ namespace CalamityOverhaul.Common.Effects
                 Main.spriteBatch.End();
             }
 
+            if (HasPwoerEffect()) {
+                graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+                graphicsDevice.Clear(Color.Transparent);//用透明清除
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                Main.spriteBatch.End();
+                graphicsDevice.SetRenderTarget(screen);
+                graphicsDevice.Clear(Color.Transparent);
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointWrap
+                    , DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.Transform);
+                DrawPwoerEffect(Main.spriteBatch);
+                Main.spriteBatch.End();
+                graphicsDevice.SetRenderTarget(Main.screenTarget);
+                graphicsDevice.Clear(Color.Transparent);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                EffectsRegistry.PowerSFShader.Parameters["tex0"].SetValue(screen);
+                EffectsRegistry.PowerSFShader.Parameters["i"].SetValue(twistStrength);
+                EffectsRegistry.PowerSFShader.CurrentTechnique.Passes[0].Apply();
+                Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                Main.spriteBatch.End();
+            }
+
             orig.Invoke(self, finalTexture, screenTarget1, screenTarget2, clearColor);
+        }
+
+        private void DrawPwoerEffect(SpriteBatch sb) {
+            int targetProjType = ModContent.ProjectileType<MurasamaEndSkillOrbOnSpan>();
+            foreach (Projectile proj in Main.projectile) {
+                Vector2 offsetRotV = proj.rotation.ToRotationVector2() * 1500;
+                if (proj.type == targetProjType && proj.active) {
+                    Texture2D texture = CWRUtils.GetT2DValue(CWRConstant.Placeholder2);
+                    int length = (int)(Math.Sqrt(Main.screenWidth * Main.screenWidth + Main.screenHeight * Main.screenHeight) * 4f);
+                    sb.Draw(texture,
+                        proj.Center + Vector2.Normalize((proj.Left - proj.Center).RotatedBy(proj.rotation)) * length / 2 - Main.screenPosition + offsetRotV,
+                        new(0, 0, 1, 1),
+                        new(CWRUtils.GetCorrectRadian(proj.rotation), proj.ai[0], 0f, 0.2f),
+                        proj.rotation,
+                        Vector2.Zero,
+                        length, SpriteEffects.None, 0);
+                    sb.Draw(texture,
+                        proj.Center + Vector2.Normalize((proj.Left - proj.Center).RotatedBy(proj.rotation)) * length / 2 - Main.screenPosition + offsetRotV,
+                        new(0, 0, 1, 1),
+                        new(CWRUtils.GetCorrectRadian(proj.rotation) + Math.Sign(proj.rotation + 0.001f) * 0.5f, proj.ai[0], 0f, 0.2f),
+                        proj.rotation,
+                        new(0, 1),
+                        length,
+                        SpriteEffects.None, 0);
+                    twistStrength = 0.055f * proj.localAI[0];
+                }
+            }
+        }
+
+        private bool HasPwoerEffect() {
+            if (!CWRServerConfig.Instance.MurasamaSpaceFragmentationBool) {//这里，如果配置文件关闭了碎屏效果，那么就不执行这里的特效渲染绘制
+                return false;
+            }
+            if (!Main.LocalPlayer.CWR().EndSkillEffectStartBool) {
+                return false;
+            }
+
+            return true;
         }
 
         private bool HasWarpEffect(out List<IDrawWarp> warpSets) {

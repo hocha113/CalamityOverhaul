@@ -5,36 +5,53 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
 using Terraria.ModLoader;
 using Terraria;
 using System.Collections.Generic;
+using System;
+using Microsoft.Xna.Framework;
+using System.Linq;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
     internal class SHPCEcType : EctypeItem
     {
+        /// <summary>
+        /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
+        /// </summary>
+        static Dictionary<int, int> DamageDictionary => new Dictionary<int, int>(){
+            {0, 12 },
+            {1, 20 },
+            {2, 22 },
+            {3, 30 },
+            {4, 40 },
+            {5, 50 },
+            {6, 80 },
+            {7, 110 },
+            {8, 180 },
+            {9, 220 },
+            {10, 300 },
+            {11, 360 },
+            {12, 422 },
+            {13, 500 },
+            {14, 620 }
+        };
+        /// <summary>
+        /// 获取开局的伤害
+        /// </summary>
+        public static int GetStartDamage => DamageDictionary[0];
+        /// <summary>
+        /// 获取时期对应的伤害
+        /// </summary>
+        public static int GetOnDamage => DamageDictionary[InWorldBossPhase.Instance.SHPC_Level()];
         public override string Texture => CWRConstant.Cay_Wap_Magic + "SHPC";
         public static bool IsLegend => Main.zenithWorld || CWRServerConfig.Instance.WeaponEnhancementSystem;
         public override void SetDefaults() {
             Item.SetCalamitySD<SHPC>();
+            Item.damage = GetStartDamage;
             Item.SetHeldProj<SHPCHeldProj>();
         }
 
         public static void SHPCDamage(ref StatModifier damage) {
             if (IsLegend) {
-                bool plantera = NPC.downedPlantBoss;
-                bool golem = NPC.downedGolemBoss;
-                bool cultist = NPC.downedAncientCultist;
-                bool moonLord = NPC.downedMoonlord;
-                bool providence = DownedBossSystem.downedProvidence;
-                bool devourerOfGods = DownedBossSystem.downedDoG;
-                bool yharon = DownedBossSystem.downedYharon;
-                float damageMult = 1f +
-                    (plantera ? 0.1f : 0f) +
-                    (golem ? 0.11f : 0f) +
-                    (cultist ? 2.6f : 0f) +
-                    (moonLord ? 4f : 0f) +
-                    (providence ? 3.6f : 0f) +
-                    (devourerOfGods ? 3.5f : 0f) +
-                    (yharon ? 6f : 0f);
-                damage *= damageMult;
+                damage *= GetOnDamage / (float)GetStartDamage;
             }
         }
 
@@ -42,8 +59,34 @@ namespace CalamityOverhaul.Content.Items.Magic
             SHPCDamage(ref damage);
         }
 
-        public override void ModifyTooltips(List<TooltipLine> list) {
-            list.FindAndReplace("[GFB]", IsLegend ? CWRLocText.GetTextValue("SHPC_No_legend_Content_1") : CWRLocText.GetTextValue("SHPC_No_legend_Content_2"));
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[Text]") && x.Mod == "Terraria");
+            if (legendtops != null) {
+                int index = InWorldBossPhase.Instance.SHPC_Level();
+                if (index >= 0 && index <= 14) {
+                    legendtops.Text = CWRLocText.GetTextValue($"SHPC_TextDictionary_Content_{index}");
+                }
+                else {
+                    legendtops.Text = "ERROR";
+                }
+
+                if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                    legendtops.Text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("SHPC_No_legend_Content_2") : CWRLocText.GetTextValue("SHPC_No_legend_Content_1");
+                }
+                legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
+            }
+            SetTooltip(ref tooltips, CWRMod.Instance.Name);
+        }
+
+        public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {
+            if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{InWorldBossPhase.Instance.SHPC_Level() + 1}]", modName);
+                tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("SHPC_No_legend_Content_3"), modName);
+            }
+            else {
+                tooltips.ReplaceTooltip("[Lang4]", "", modName);
+                tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("SHPC_No_legend_Content_4"), modName);
+            }
         }
     }
 }

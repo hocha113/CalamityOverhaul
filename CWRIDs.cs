@@ -577,9 +577,6 @@ namespace CalamityOverhaul
             "————————————————————————————————————————————————————".DompInConsole();
             */
 
-            List<ISetupData> setupDatas = CWRUtils.GetSubInterface<ISetupData>("ISetupData");
-            foreach (var i in setupDatas) { i.SetupData(); }
-
             OnLoadContentBool = false;
         }
         /// <summary>

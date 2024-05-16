@@ -2427,7 +2427,14 @@ Items: {
 
 	SHPCEcType: {
 		DisplayName: SHPC
-		Tooltip: "[GFB]"
+		Tooltip:
+			'''
+			Launch a phase laser ball that stays in the air and causes a huge explosion
+			Right click to fire a powerful energy beam
+			legend_Text
+			[Lang4]
+			[Text]
+			'''
 	}
 
 	WingmanEcType: {
@@ -3434,6 +3441,23 @@ TextContent: {
 			Right click to fire a powerful energy beam
 			'''
 		SHPC_No_legend_Content_2: "[c/fff08c:Return of the legendary weapon! :)]"
+		SHPC_No_legend_Content_3: TODO
+		SHPC_No_legend_Content_4: TODO
+		SHPC_TextDictionary_Content_0: TODO
+		SHPC_TextDictionary_Content_1: TODO
+		SHPC_TextDictionary_Content_2: TODO
+		SHPC_TextDictionary_Content_3: TODO
+		SHPC_TextDictionary_Content_4: TODO
+		SHPC_TextDictionary_Content_5: TODO
+		SHPC_TextDictionary_Content_6: TODO
+		SHPC_TextDictionary_Content_7: TODO
+		SHPC_TextDictionary_Content_8: TODO
+		SHPC_TextDictionary_Content_9: TODO
+		SHPC_TextDictionary_Content_10: TODO
+		SHPC_TextDictionary_Content_11: TODO
+		SHPC_TextDictionary_Content_12: TODO
+		SHPC_TextDictionary_Content_13: TODO
+		SHPC_TextDictionary_Content_14: TODO
 		RemakeItem_Remind_TextContent:
 			'''
 			【From the Author】

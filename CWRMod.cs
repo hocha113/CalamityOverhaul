@@ -39,6 +39,7 @@ namespace CalamityOverhaul
         internal Mod terrariaOverhaul = null;
         internal Mod thoriumMod = null;
 
+        internal List<ISetupData> SetupDatas;
         internal List<Mod> LoadMods = new List<Mod>();
         internal static List<BaseRItem> RItemInstances = new List<BaseRItem>();
         internal static List<EctypeItem> EctypeItemInstance = new List<EctypeItem>();
@@ -132,11 +133,15 @@ namespace CalamityOverhaul
 
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
             CWRIDs.Load();
+            foreach (var i in SetupDatas) { i.SetupData(); }
         }
 
         public override void Load() {
             Instance = this;
-            
+            SetupDatas = CWRUtils.GetSubInterface<ISetupData>("ISetupData");
+            foreach (var setup in SetupDatas) {
+                setup.LoadData();
+            }
             FindMod();
             FromThorium.LoadData();
             ModGanged.Load();
@@ -157,6 +162,10 @@ namespace CalamityOverhaul
             CWRKeySystem.Unload();
             On_Main.DrawInfernoRings -= PeSystem.CWRDrawForegroundParticles;
             UnLoadClient();
+            foreach (var setup in SetupDatas) {
+                setup.UnLoadData();
+            }
+            SetupDatas = null;
             base.Unload();
         }
 

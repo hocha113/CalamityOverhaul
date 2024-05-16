@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return false;
             }
-            return false;//暂时不要在这个版本中出现
+            //return false;//暂时不要在这个版本中出现
             return base.IsLoadingEnabled(mod);
         }
 

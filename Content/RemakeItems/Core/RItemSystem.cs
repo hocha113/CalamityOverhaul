@@ -3,11 +3,13 @@ using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 using Terraria.UI;
 using static CalamityOverhaul.CWRMod;
 
@@ -27,6 +29,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
     public delegate bool On_CanConsumeAmmo_Delegate(Item weapon, Item ammo, Player player);
     public delegate void On_ModifyWeaponDamage_Delegate(Item item, Player player, ref StatModifier damage);
     public delegate void On_UpdateAccessory_Delegate(Item item, Player player, bool hideVisual);
+    public delegate void On_ModItem_ModifyTooltips_Delegate(object obj, List<TooltipLine> list);
 
     internal class RItemSystem : ModSystem
     {
