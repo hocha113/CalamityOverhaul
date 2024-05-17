@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.OthermodMROs.Thorium.Core;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using CalamityOverhaul.Content.Structures;
 using CalamityOverhaul.Content.UIs;
 using System;
 using System.Collections.Generic;
@@ -148,6 +149,7 @@ namespace CalamityOverhaul
             CWRParticleHandler.Load();
             new InWorldBossPhase().Load();
             CWRKeySystem.LoadKeyDate(this);
+            StructuresBehavior.Load();
             On_Main.DrawInfernoRings += PeSystem.CWRDrawForegroundParticles;
             LoadClient();
             GameLoadCount++;
@@ -160,6 +162,7 @@ namespace CalamityOverhaul
             CWRParticleHandler.Unload();
             InWorldBossPhase.UnLoad();
             CWRKeySystem.Unload();
+            StructuresBehavior.UnLoad();
             On_Main.DrawInfernoRings -= PeSystem.CWRDrawForegroundParticles;
             UnLoadClient();
             foreach (var setup in SetupDatas) {

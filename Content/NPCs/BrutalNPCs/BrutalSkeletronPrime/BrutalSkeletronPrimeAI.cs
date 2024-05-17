@@ -1,5 +1,9 @@
 ﻿using CalamityMod;
+using CalamityMod.Events;
+using CalamityMod.NPCs;
 using CalamityOverhaul.Content.NPCs.Core;
+using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Content.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,51 +11,129 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using CalamityMod.UI;
+using CalamityMod.World;
+using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     internal class BrutalSkeletronPrimeAI : NPCSet
     {
         public override int targetID => NPCID.SkeletronPrime;
-
+        private const int maxfindModes = 6000;
         private int frame = 0;
         private bool spwanArm;
         private int primeCannon;
         private int primeSaw;
         private int primeVice;
         private int primeLaser;
+        bool cannonAlive;
+        bool viceAlive;
+        bool sawAlive;
+        bool laserAlive;
+        bool bossRush;
+        bool death;
+        Player player;
 
         public override bool CanLoad() {
             return true;
         }
 
+        internal static void FindPlayer(NPC npc) {
+            if (npc.target < 0 || npc.target == Main.maxPlayers || Main.player[npc.target].dead || !Main.player[npc.target].active) {
+                npc.TargetClosest();
+            }
+            if (Vector2.Distance(Main.player[npc.target].Center, npc.Center) > CalamityGlobalNPC.CatchUpDistance200Tiles) {
+                npc.TargetClosest();
+            }
+        }
+
+        internal static int SetMultiplier(int num) {
+            if (CalamityConfig.Instance.EarlyHardmodeProgressionRework && !BossRushEvent.BossRushActive) {
+                double firstMechMultiplier = CalamityGlobalNPC.EarlyHardmodeProgressionReworkFirstMechStatMultiplier_Expert;
+                double secondMechMultiplier = CalamityGlobalNPC.EarlyHardmodeProgressionReworkSecondMechStatMultiplier_Expert;
+                if (!NPC.downedMechBossAny)
+                    num = (int)(num * firstMechMultiplier);
+                else if ((!NPC.downedMechBoss1 && !NPC.downedMechBoss2) || (!NPC.downedMechBoss2 && !NPC.downedMechBoss3) || (!NPC.downedMechBoss3 && !NPC.downedMechBoss1))
+                    num = (int)(num * secondMechMultiplier);
+            }
+            return num;
+        }
+
+        internal static void CheakDead(NPC npc, NPC head) {
+            // 所以，如果头部死亡，那么手臂也立马死亡
+            if (!head.active) {
+                npc.ai[2] += 10f;
+                if (npc.ai[2] > 50f || Main.netMode != NetmodeID.Server) {
+                    npc.life = -1;
+                    npc.HitEffect(0, 10.0);
+                    npc.active = false;
+                }
+            }
+        }
+
+        internal static void CheakRam(out bool cannonAlive, out bool viceAlive, out bool sawAlive, out bool laserAlive) {
+            cannonAlive = viceAlive = sawAlive = laserAlive = false;
+            if (CalamityGlobalNPC.primeCannon != -1) {
+                if (Main.npc[CalamityGlobalNPC.primeCannon].active)
+                    cannonAlive = true;
+            }
+            if (CalamityGlobalNPC.primeVice != -1) {
+                if (Main.npc[CalamityGlobalNPC.primeVice].active)
+                    viceAlive = true;
+            }
+            if (CalamityGlobalNPC.primeSaw != -1) {
+                if (Main.npc[CalamityGlobalNPC.primeSaw].active)
+                    sawAlive = true;
+            }
+            if (CalamityGlobalNPC.primeLaser != -1) {
+                if (Main.npc[CalamityGlobalNPC.primeLaser].active)
+                    sawAlive = true;
+            }
+        }
+
+        internal static void SpanFireLerterDustEffect(NPC npc, int modes) {
+            Vector2 pos = npc.Center + (npc.rotation + MathHelper.PiOver2).ToRotationVector2() * 30;
+            for (int i = 0; i < 4; i++) {
+                float rot1 = MathHelper.PiOver2 * i;
+                Vector2 vr = rot1.ToRotationVector2();
+                for (int j = 0; j < modes; j++) {
+                    CWRParticle spark = new HeavenfallStarParticle(pos, vr * (0.1f + j * 0.34f), false, 13, Main.rand.NextFloat(1.2f, 1.3f), Color.Red);
+                    CWRParticleHandler.AddParticle(spark);
+                }
+            }
+        }
+
+
+        private void FindePlayer(NPC npc) {
+            if (Main.player[npc.target].dead || Math.Abs(npc.position.X - Main.player[npc.target].position.X) > maxfindModes
+                || Math.Abs(npc.position.Y - Main.player[npc.target].position.Y) > maxfindModes) {
+                npc.TargetClosest();
+                if (Main.player[npc.target].dead || Math.Abs(npc.position.X - Main.player[npc.target].position.X) > maxfindModes
+                    || Math.Abs(npc.position.Y - Main.player[npc.target].position.Y) > maxfindModes) {
+                    npc.ai[1] = 3f;
+                }
+            }
+        }
+
         public override bool? AI(NPC npc, Mod mod) {
-            //npc.TargetClosest();
-            //Player player = Main.player[npc.target];
-            //if (!player.Alives()) {
-            //    npc.ai[0] = 1;
-            //}
-            //switch (npc.ai[0]) {
-            //    case 0:
-            //        leisureAI(npc, player);
-            //    break;
-            //}
+            bossRush = BossRushEvent.BossRushActive;
+            death = CalamityWorld.death || bossRush;
+            player = Main.player[npc.target];
             npc.defense = npc.defDefense;
-            if (npc.ai[3] != 0f)
+            if (npc.ai[3] != 0f) {
                 NPC.mechQueen = npc.whoAmI;
+            }
 
             npc.reflectsProjectiles = false;
             if (npc.ai[0] == 0f && Main.netMode != NetmodeID.MultiplayerClient) {
                 npc.TargetClosest();
-                npc.ai[0] = 1f;
                 spanArm(npc);
+                npc.ai[0] = 1f;
             }
 
-            if (Main.player[npc.target].dead || Math.Abs(npc.position.X - Main.player[npc.target].position.X) > 6000f || Math.Abs(npc.position.Y - Main.player[npc.target].position.Y) > 6000f) {
-                npc.TargetClosest();
-                if (Main.player[npc.target].dead || Math.Abs(npc.position.X - Main.player[npc.target].position.X) > 6000f || Math.Abs(npc.position.Y - Main.player[npc.target].position.Y) > 6000f)
-                    npc.ai[1] = 3f;
-            }
+            FindePlayer(npc);
+            CheakRam(out cannonAlive, out viceAlive, out sawAlive, out laserAlive);
 
             if (Main.IsItDay() && npc.ai[1] != 3f && npc.ai[1] != 2f) {
                 npc.ai[1] = 2f;
@@ -62,219 +144,245 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.damage = 0;
 
                 npc.ai[2] += 1f;
-                if (npc.ai[2] >= (Main.masterMode ? 300f : 600f)) {
+                float aiThreshold = Main.masterMode ? 300f : 600f;
+                if (npc.ai[2] >= aiThreshold) {
                     npc.ai[2] = 0f;
                     npc.ai[1] = 1f;
+                    npc.Calamity().newAI[0]++;
+                    if (!CWRUtils.isClient && npc.Calamity().newAI[0] >= 2) {
+                        Projectile.NewProjectile(npc.GetSource_FromAI()
+                            , npc.Center + player.velocity.UnitVector().RotatedByRandom(0.6f) * Main.rand.Next(1600, 1800)
+                            , new Vector2(0, 0), ModContent.ProjectileType<SetPosingStarm>(), npc.damage, 2, -1, 0, npc.whoAmI);
+                        npc.Calamity().newAI[0] = 0;
+                        npc.SyncExtraAI();
+                    }
                     npc.TargetClosest();
                     npc.netUpdate = true;
                 }
 
-                if (NPC.IsMechQueenUp)
-                    npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
-                else
-                    npc.rotation = npc.velocity.X / 15f;
-
-                float num496 = 0.1f;
-                float num497 = 2f;
-                float num498 = 0.1f;
-                float num499 = 8f;
-                float deceleration = Main.masterMode ? 0.94f : Main.expertMode ? 0.96f : 0.98f;
-                int num500 = 200;
-                int num501 = 500;
-                float num502 = 0f;
-                int num503 = ((!(Main.player[npc.target].Center.X < npc.Center.X)) ? 1 : (-1));
                 if (NPC.IsMechQueenUp) {
-                    num502 = -450f * num503;
-                    num500 = 300;
-                    num501 = 350;
+                    npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
+                }
+                else {
+                    npc.rotation = npc.velocity.X / 15f;
+                }
+
+                float verticalAcceleration = 0.1f;
+                float maxVerticalSpeed = 2f;
+                float horizontalAcceleration = 0.1f;
+                float maxHorizontalSpeed = 8f;
+                float deceleration = Main.masterMode ? 0.94f : Main.expertMode ? 0.96f : 0.98f;
+                int verticalOffset = 200;
+                int verticalThreshold = 500;
+                float horizontalOffset = 0f;
+                int directionMultiplier = (Main.player[npc.target].Center.X < npc.Center.X) ? -1 : 1;
+
+                if (NPC.IsMechQueenUp) {
+                    horizontalOffset = -450f * directionMultiplier;
+                    verticalOffset = 300;
+                    verticalThreshold = 350;
                 }
 
                 if (Main.expertMode) {
-                    num496 = Main.masterMode ? 0.05f : 0.03f;
-                    num497 = Main.masterMode ? 5f : 4f;
-                    num498 = Main.masterMode ? 0.15f : 0.12f;
-                    num499 = Main.masterMode ? 11f : 9.5f;
+                    verticalAcceleration = Main.masterMode ? 0.05f : 0.03f;
+                    maxVerticalSpeed = Main.masterMode ? 5f : 4f;
+                    horizontalAcceleration = Main.masterMode ? 0.15f : 0.12f;
+                    maxHorizontalSpeed = Main.masterMode ? 11f : 9.5f;
+                    if (death) {
+                        verticalAcceleration += 0.01f;
+                        maxVerticalSpeed += 1f;
+                        horizontalAcceleration += 0.2f;
+                        maxHorizontalSpeed += 3f;
+                    }
                 }
 
-                if (npc.position.Y > Main.player[npc.target].position.Y - num500) {
-                    if (npc.velocity.Y > 0f)
-                        npc.velocity.Y *= deceleration;
-
-                    npc.velocity.Y -= num496;
-                    if (npc.velocity.Y > num497)
-                        npc.velocity.Y = num497;
-                }
-                else if (npc.position.Y < Main.player[npc.target].position.Y - num501) {
-                    if (npc.velocity.Y < 0f)
-                        npc.velocity.Y *= deceleration;
-
-                    npc.velocity.Y += num496;
-                    if (npc.velocity.Y < -num497)
-                        npc.velocity.Y = -num497;
-                }
-
-                if (npc.Center.X > Main.player[npc.target].Center.X + 100f + num502) {
-                    if (npc.velocity.X > 0f)
-                        npc.velocity.X *= deceleration;
-
-                    npc.velocity.X -= num498;
-                    if (npc.velocity.X > num499)
-                        npc.velocity.X = num499;
-                }
-
-                if (npc.Center.X < Main.player[npc.target].Center.X - 100f + num502) {
-                    if (npc.velocity.X < 0f)
-                        npc.velocity.X *= deceleration;
-
-                    npc.velocity.X += num498;
-                    if (npc.velocity.X < 0f - num499)
-                        npc.velocity.X = 0f - num499;
-                }
+                AdjustVerticalMovement(npc, verticalAcceleration, maxVerticalSpeed, deceleration, verticalOffset, verticalThreshold);
+                AdjustHorizontalMovement(npc, horizontalAcceleration, maxHorizontalSpeed, deceleration, horizontalOffset);
             }
             else if (npc.ai[1] == 1f) {
                 npc.defense *= 2;
                 npc.damage = npc.defDamage * 2;
-
                 npc.Calamity().CurrentlyIncreasingDefenseOrDR = true;
 
-                npc.ai[2] += 1f;
-                if (npc.ai[2] == 2f)
+                npc.ai[2]++;
+                if (npc.ai[2] == 2f) {
                     SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
+                }
 
-                if (npc.ai[2] >= (Main.masterMode ? 300f : 400f)) {
+                float aiThreshold = Main.masterMode ? 300f : 400f;
+                if (npc.ai[2] >= aiThreshold) {
                     npc.ai[2] = 0f;
                     npc.ai[1] = 0f;
                 }
 
-                if (NPC.IsMechQueenUp)
-                    npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
-                else
-                    npc.rotation += npc.direction * 0.3f;
+                UpdateRotation(npc);
 
-                Vector2 vector54 = npc.Center;
-                float num504 = Main.player[npc.target].Center.X - vector54.X;
-                float num505 = Main.player[npc.target].Center.Y - vector54.Y;
-                float num506 = (float)Math.Sqrt(num504 * num504 + num505 * num505);
-                float num507 = 5f;
-                if (Main.expertMode) {
-                    num507 = Main.masterMode ? 7f : 6f;
-                    if (num506 > 150f)
-                        num507 *= (Main.masterMode ? 1.075f : 1.05f);
-
-                    float additionalMultiplier = Main.masterMode ? 1.15f : 1.1f;
-                    if (num506 > 200f)
-                        num507 *= additionalMultiplier;
-
-                    if (num506 > 250f)
-                        num507 *= additionalMultiplier;
-
-                    if (num506 > 300f)
-                        num507 *= additionalMultiplier;
-
-                    if (num506 > 350f)
-                        num507 *= additionalMultiplier;
-
-                    if (num506 > 400f)
-                        num507 *= additionalMultiplier;
-
-                    if (num506 > 450f)
-                        num507 *= additionalMultiplier;
-
-                    if (num506 > 500f)
-                        num507 *= additionalMultiplier;
-
-                    if (num506 > 550f)
-                        num507 *= additionalMultiplier;
-
-                    if (num506 > 600f)
-                        num507 *= additionalMultiplier;
-                }
-
+                Vector2 targetVector = Main.player[npc.target].Center - npc.Center;
+                float distanceToTarget = targetVector.Length();
+                float initialSpeed = 5f;
+                float speedMultiplier = CalculateSpeedMultiplier(distanceToTarget, initialSpeed);
                 if (NPC.IsMechQueenUp) {
-                    float num508 = (NPC.npcsFoundForCheckActive[NPCID.TheDestroyerBody] ? 0.6f : 0.75f);
-                    num507 *= num508;
+                    float mechQueenSpeedFactor = NPC.npcsFoundForCheckActive[NPCID.TheDestroyerBody] ? 0.6f : 0.75f;
+                    speedMultiplier *= mechQueenSpeedFactor;
                 }
 
-                num506 = num507 / num506;
-                npc.velocity.X = num504 * num506;
-                npc.velocity.Y = num505 * num506;
-                if (NPC.IsMechQueenUp) {
-                    float num509 = Vector2.Distance(npc.Center, Main.player[npc.target].Center);
-                    if (num509 < 0.1f)
-                        num509 = 0f;
-
-                    if (num509 < num507)
-                        npc.velocity = npc.velocity.SafeNormalize(Vector2.Zero) * num509;
-                }
+                UpdateVelocity(npc, targetVector, speedMultiplier, distanceToTarget);
             }
             else if (npc.ai[1] == 2f) {
-                npc.damage = 1000;
-                npc.defense = 9999;
-
-                npc.Calamity().CurrentlyEnraged = true;
-                npc.Calamity().CurrentlyIncreasingDefenseOrDR = true;
-
-                if (NPC.IsMechQueenUp)
-                    npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
-                else
-                    npc.rotation += npc.direction * 0.3f;
-
-                Vector2 vector55 = npc.Center;
-                float num510 = Main.player[npc.target].Center.X - vector55.X;
-                float num511 = Main.player[npc.target].Center.Y - vector55.Y;
-                float num512 = (float)Math.Sqrt(num510 * num510 + num511 * num511);
-                float num513 = 10f;
-                num513 += num512 / 100f;
-                if (num513 < 8f)
-                    num513 = 8f;
-
-                if (num513 > 32f)
-                    num513 = 32f;
-
-                num512 = num513 / num512;
-                npc.velocity.X = num510 * num512;
-                npc.velocity.Y = num511 * num512;
+                EnrageNPC(npc);
+                UpdateRotation(npc);
+                MoveTowardsPlayer(npc, 10f, 8f, 32f, 100f);
             }
             else {
-                if (npc.ai[1] != 3f)
+                if (npc.ai[1] != 3f) 
                     return false;
-
-                if (NPC.IsMechQueenUp) {
-                    int num514 = NPC.FindFirstNPC(NPCID.Retinazer);
-                    if (num514 >= 0)
-                        Main.npc[num514].EncourageDespawn(5);
-
-                    num514 = NPC.FindFirstNPC(NPCID.Spazmatism);
-                    if (num514 >= 0)
-                        Main.npc[num514].EncourageDespawn(5);
-
-                    if (!NPC.AnyNPCs(NPCID.Retinazer) && !NPC.AnyNPCs(NPCID.Spazmatism)) {
-                        num514 = NPC.FindFirstNPC(NPCID.TheDestroyer);
-                        if (num514 >= 0)
-                            Main.npc[num514].Transform(NPCID.TheDestroyerTail);
-
-                        npc.EncourageDespawn(5);
-                    }
-
-                    npc.velocity.Y += 0.1f;
-                    if (npc.velocity.Y < 0f)
-                        npc.velocity.Y *= 0.95f;
-
-                    npc.velocity.X *= 0.95f;
-                    if (npc.velocity.Y > 13f)
-                        npc.velocity.Y = 13f;
-                }
-                else {
-                    npc.EncourageDespawn(500);
-                    npc.velocity.Y += 0.1f;
-                    if (npc.velocity.Y < 0f)
-                        npc.velocity.Y *= 0.95f;
-
-                    npc.velocity.X *= 0.95f;
-                }
+                HandleDespawn(npc);
             }
 
             return false;
+        }
+
+        #region SetFromeAIFunc
+        private void AdjustVerticalMovement(NPC npc, float acceleration, float maxSpeed, float deceleration, int offset, int threshold) {
+            if (npc.position.Y > Main.player[npc.target].position.Y - offset) {
+                if (npc.velocity.Y > 0f) {
+                    npc.velocity.Y *= deceleration;
+                }
+                npc.velocity.Y -= acceleration;
+                if (npc.velocity.Y > maxSpeed) {
+                    npc.velocity.Y = maxSpeed;
+                }
+            }
+            else if (npc.position.Y < Main.player[npc.target].position.Y - threshold) {
+                if (npc.velocity.Y < 0f) {
+                    npc.velocity.Y *= deceleration;
+                }
+                npc.velocity.Y += acceleration;
+                if (npc.velocity.Y < -maxSpeed) {
+                    npc.velocity.Y = -maxSpeed;
+                }
+            }
+        }
+
+        private void AdjustHorizontalMovement(NPC npc, float acceleration, float maxSpeed, float deceleration, float offset) {
+            if (npc.Center.X > Main.player[npc.target].Center.X + 100f + offset) {
+                if (npc.velocity.X > 0f) {
+                    npc.velocity.X *= deceleration;
+                }
+                npc.velocity.X -= acceleration;
+                if (npc.velocity.X > maxSpeed) {
+                    npc.velocity.X = maxSpeed;
+                }
+            }
+
+            if (npc.Center.X < Main.player[npc.target].Center.X - 100f + offset) {
+                if (npc.velocity.X < 0f) {
+                    npc.velocity.X *= deceleration;
+                }
+                npc.velocity.X += acceleration;
+                if (npc.velocity.X < -maxSpeed) {
+                    npc.velocity.X = -maxSpeed;
+                }
+            }
+        }
+
+        private void UpdateRotation(NPC npc) {
+            if (NPC.IsMechQueenUp)
+                npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
+            else
+                npc.rotation += npc.direction * 0.3f;
+        }
+
+        private float CalculateSpeedMultiplier(float distance, float initialSpeed) {
+            if (Main.expertMode) {
+                float speed = Main.masterMode ? 7f : 6f;
+                float speedFactor = Main.masterMode ? 1.15f : 1.1f;
+                if (distance > 150f) speed *= Main.masterMode ? 1.075f : 1.05f;
+                for (int threshold = 200; threshold <= 600; threshold += 50) {
+                    if (distance > threshold) speed *= speedFactor;
+                }
+                return speed;
+            }
+            return initialSpeed;
+        }
+
+        private void UpdateVelocity(NPC npc, Vector2 targetVector, float speedMultiplier, float distance) {
+            float adjustedSpeed = speedMultiplier / distance;
+            npc.velocity.X = targetVector.X * adjustedSpeed;
+            npc.velocity.Y = targetVector.Y * adjustedSpeed;
+
+            if (NPC.IsMechQueenUp) {
+                float distanceToPlayer = Vector2.Distance(npc.Center, Main.player[npc.target].Center);
+                if (distanceToPlayer < 0.1f) distanceToPlayer = 0f;
+                if (distanceToPlayer < speedMultiplier)
+                    npc.velocity = npc.velocity.SafeNormalize(Vector2.Zero) * distanceToPlayer;
+            }
+        }
+
+        private void EnrageNPC(NPC npc) {
+            // 增加 NPC 的伤害和防御
+            npc.damage = 1000;
+            npc.defense = 9999;
+            // 标记当前正在愤怒状态和增加防御力或伤害减免
+            npc.Calamity().CurrentlyEnraged = true;
+            npc.Calamity().CurrentlyIncreasingDefenseOrDR = true;
+        }
+
+        private void MoveTowardsPlayer(NPC npc, float baseSpeed, float minSpeed, float maxSpeed, float speedDivisor) {
+            // 计算玩家与 NPC 之间的向量和距离
+            Vector2 npcCenter = npc.Center;
+            Vector2 playerCenter = Main.player[npc.target].Center;
+            Vector2 directionToPlayer = playerCenter - npcCenter;
+            float distanceToPlayer = directionToPlayer.Length();
+            // 计算速度
+            float adjustedSpeed = baseSpeed + distanceToPlayer / speedDivisor;
+            adjustedSpeed = Math.Clamp(adjustedSpeed, minSpeed, maxSpeed);
+            // 根据计算出的向量调整速度
+            directionToPlayer.Normalize();
+            npc.velocity = directionToPlayer * adjustedSpeed;
+        }
+
+        private void HandleDespawn(NPC npc) {
+            if (NPC.IsMechQueenUp) {
+                DespawnNPC(NPCID.Retinazer);
+                DespawnNPC(NPCID.Spazmatism);
+                // 如果 Retinazer 和 Spazmatism 都不在，则变形并消失
+                if (!NPC.AnyNPCs(NPCID.Retinazer) && !NPC.AnyNPCs(NPCID.Spazmatism)) {
+                    TransformOrDespawnNPC(NPCID.TheDestroyer, NPCID.TheDestroyerTail, npc);
+                }
+                AdjustVelocity(npc, 0.1f, 0.95f, 13f);
+            }
+            else {
+                npc.EncourageDespawn(500);
+                AdjustVelocity(npc, 0.1f, 0.95f, float.MaxValue);
+            }
+        }
+
+        private void DespawnNPC(int npcID) {
+            int npcIndex = NPC.FindFirstNPC(npcID);
+            if (npcIndex >= 0) {
+                Main.npc[npcIndex].EncourageDespawn(5);
+            }
+        }
+
+        private void TransformOrDespawnNPC(int findNpcID, int transformNpcID, NPC npc) {
+            int npcIndex = NPC.FindFirstNPC(findNpcID);
+            if (npcIndex >= 0) {
+                Main.npc[npcIndex].Transform(transformNpcID);
+            }
+            npc.EncourageDespawn(5);
+        }
+
+        private void AdjustVelocity(NPC npc, float verticalAcceleration, float horizontalDeceleration, float maxVerticalSpeed) {
+            npc.velocity.Y += verticalAcceleration;
+            if (npc.velocity.Y < 0f) {
+                npc.velocity.Y *= horizontalDeceleration;
+            }
+
+            npc.velocity.X *= horizontalDeceleration;
+            if (npc.velocity.Y > maxVerticalSpeed) {
+                npc.velocity.Y = maxVerticalSpeed;
+            }
         }
 
         private void leisureAI(NPC npc, Player player) {
@@ -325,13 +433,34 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Main.npc[primeLaser].netUpdate = true;
             }
         }
+        #endregion
 
         public override bool? Draw(Mod mod, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
         public override bool PostDraw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             Texture2D mainValue = CalamityMod.CalamityMod.ChadPrime.Value;
+            Texture2D mainValue2 = CalamityMod.CalamityMod.ChadPrimeEyeGlowmask.Value;
             Main.EntitySpriteDraw(mainValue, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
                 , drawColor, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue2, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
+                , Color.White, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
+            if (!cannonAlive && !laserAlive && !sawAlive && !viceAlive) {
+                Vector2 toD = player.Center.To(NPC.Center);
+                Vector2 origpos = player.Center - Main.screenPosition;
+                float alp = toD.Length() / 400f;
+                if (alp > 1) {
+                    alp = 1;
+                }
+                Vector2 drawPos1 = new Vector2(-toD.X, toD.Y) + origpos;
+                Main.EntitySpriteDraw(mainValue, drawPos1, CWRUtils.GetRec(mainValue, frame, 6)
+                , drawColor * alp, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
+                Vector2 drawPos2 = new Vector2(-toD.X, -toD.Y) + origpos;
+                Main.EntitySpriteDraw(mainValue, drawPos2, CWRUtils.GetRec(mainValue, frame, 6)
+                , drawColor * alp, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
+                Vector2 drawPos3 = new Vector2(toD.X, -toD.Y) + origpos;
+                Main.EntitySpriteDraw(mainValue, drawPos3, CWRUtils.GetRec(mainValue, frame, 6)
+                , drawColor * alp, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
+            }
             return false;
         }
     }

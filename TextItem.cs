@@ -1,6 +1,8 @@
 ﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Events;
+using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -79,6 +81,8 @@ namespace CalamityOverhaul
             //else {
             //    TungstenRiot.Instance.TryStartEvent();
             //}
+            Projectile.NewProjectile(player.GetSource_FromAI(), player.Center
+                    , new Vector2(0, 0), ModContent.ProjectileType<SetPosingStarm>(), 2, 2, -1);
             return true;
         }
     }

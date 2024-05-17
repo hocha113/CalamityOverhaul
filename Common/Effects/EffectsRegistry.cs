@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Common.Effects
         public static Effect WarpShader;
         public static Effect PowerSFShader;
         public static Effect NeutronRingShader;
-        public static MiscShaderData FlowColorShader;
+        public static Effect PrimeHaloShader;
         public static ArmorShaderData InShootGlowShader;
 
         public static void LoadEffects() {
@@ -22,8 +22,8 @@ namespace CalamityOverhaul.Common.Effects
             WarpShader = null;
             PowerSFShader = null;
             NeutronRingShader = null;
+            PrimeHaloShader = null;
             InShootGlowShader = null;
-            FlowColorShader = null;
         }
 
         public static void LoadRegularShaders(AssetRepository assets) {
@@ -37,8 +37,8 @@ namespace CalamityOverhaul.Common.Effects
             loadFiltersEffect("CWRMod:powerSFShader", "PowerSFShader", "Offset", out PowerSFShader);
             loadFiltersEffect("CWRMod:warpShader", "WarpShader", "PrimitivesPass", out WarpShader);
             loadFiltersEffect("CWRMod:neutronRingShader", "NeutronRingShader", "NeutronRingPass", out NeutronRingShader);
+            loadFiltersEffect("CWRMod:primeHaloShader", "PrimeHaloShader", "PrimeHaloPass", out PrimeHaloShader);
 
-            FlowColorShader = new MiscShaderData(getEffect("FlowColorShader"), "PiercePass");
             InShootGlowShader = new ArmorShaderData(getEffect("InShootGlow"), "InShootGlowPass");
         }
     }

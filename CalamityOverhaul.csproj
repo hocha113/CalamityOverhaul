@@ -26,6 +26,7 @@
     <None Remove="0.3.6.0.9.txt" />
     <None Remove="Assets\Effects\InShootGlow.fx" />
     <None Remove="Assets\Effects\NeutronRingShader.fx" />
+    <None Remove="Assets\Effects\PrimeHaloShader.fx" />
     <None Remove="Assets\Effects\WarpShader.fx" />
     <None Remove="Assets\Events\TungstenRiotIcon.png" />
     <None Remove="Assets\Items\Replace\TODO.txt" />
@@ -41,6 +42,7 @@
     <None Remove="Assets\Masking\WavyNoise.png" />
     <None Remove="Assets\NPCs\TODOs.txt" />
     <None Remove="Assets\Projectiles\AcidEtchedTearDrop.png" />
+    <None Remove="Assets\Projectiles\DeathLaser.png" />
     <None Remove="Assets\UIs\ScrollbarInner.png" />
     <None Remove="Assets\UIs\SliderBar.png" />
   </ItemGroup>

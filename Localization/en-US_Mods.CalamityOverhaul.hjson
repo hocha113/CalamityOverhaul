@@ -3072,6 +3072,9 @@ Projectiles: {
 	AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
 	HyperBlade.DisplayName: Hyper Blade
 	FlakKrakenHeldProj.DisplayName: Flak Kraken Held Proj
+	PrimeCannonOnSpan.DisplayName: Prime Cannon On Span
+	Mechanicalworm.DisplayName: Mechanicalworm
+	SetPosingStarm.DisplayName: Set Posing Starm
 }
 
 Configs: {

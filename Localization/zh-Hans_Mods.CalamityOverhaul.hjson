@@ -3102,6 +3102,9 @@ Projectiles: {
 	// AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
 	// HyperBlade.DisplayName: Hyper Blade
 	// FlakKrakenHeldProj.DisplayName: Flak Kraken Held Proj
+	// PrimeCannonOnSpan.DisplayName: Prime Cannon On Span
+	// Mechanicalworm.DisplayName: Mechanicalworm
+	// SetPosingStarm.DisplayName: Set Posing Starm
 }
 
 Configs: {
@@ -3448,12 +3451,8 @@ TextContent: {
 		Murasama_No_legend_Content_2: 新兵，我认可你的能力，现在，让我们去斩碎那帮异形
 		Murasama_No_legend_Content_3: "[c/fff08c:随着旅途的遥远而变强]"
 		Murasama_No_legend_Content_4: "[c/00707d:传奇的光辉已经暗淡...]"
-		SHPC_No_legend_Content_1:
-			'''
-			发射会停留在空中并引发巨大爆炸的相位激光球
-			右键发射强大的能量束
-			'''
-		SHPC_No_legend_Content_2: "[c/fff08c:传奇武器归来！:)]"
+		SHPC_No_legend_Content_1: "[c/fff08c:巨龙陨落后解锁使用]"
+		SHPC_No_legend_Content_2: "[c/fff08c:蓄势待发!]"
 		SHPC_No_legend_Content_3: "[c/fff08c:随着旅途的遥远而变强]"
 		SHPC_No_legend_Content_4: "[c/00707d:传奇的光辉已经暗淡...]"
 		SHPC_TextDictionary_Content_0:
@@ -3526,10 +3525,7 @@ TextContent: {
 			大混战！曾经被我们击败过的敌人联合了起来，准备向我们发起总攻
 			做好准备，我们需要一次完美的胜利
 			'''
-		SHPC_TextDictionary_Content_14:
-			'''
-			HMOI-0001协议已解锁
-			'''
+		SHPC_TextDictionary_Content_14: HMOI-0001协议已解锁
 		RemakeItem_Remind_TextContent:
 			'''
 			【作者提醒】
