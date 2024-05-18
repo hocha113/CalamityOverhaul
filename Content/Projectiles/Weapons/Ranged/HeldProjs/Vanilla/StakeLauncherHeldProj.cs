@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
@@ -30,14 +31,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ToTargetAmmo = ProjectileID.Stake;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
+        public override void PostInOwnerUpdate() {
             if (ShootCoolingValue == 1) {
                 SoundEngine.PlaySound(CWRSound.Ejection with { Volume = 0.5f, Pitch = -1f }, Projectile.Center);
             }
         }
 
         public override void FiringShoot() {
+            AmmoTypes = ModContent.ProjectileType<StakeHmmod>();
             base.FiringShoot();
         }
     }

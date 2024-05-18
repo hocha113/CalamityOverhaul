@@ -13,144 +13,215 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     internal class BrutalPrimeViceAI : NPCSet
     {
         public override int targetID => NPCID.PrimeVice;
+        bool bossRush;
+        bool masterMode;
+        bool death;
+        bool cannonAlive;
+        bool sawAlive;
+        bool laserAlive;
+        NPC head;
+        Player player;
+
+        // 计算加速度的函数
+        float CalculateAcceleration(bool bossRush, bool death, bool masterMode, bool cannonAlive, bool laserAlive, bool sawAlive) {
+            float baseAcceleration = bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f);
+            if (!cannonAlive) baseAcceleration += 0.025f;
+            if (!laserAlive) baseAcceleration += 0.025f;
+            if (!sawAlive) baseAcceleration += 0.025f;
+            return baseAcceleration;
+        }
+
+        // 计算加速度倍率的函数
+        float CalculateAccelerationMult(bool cannonAlive, bool laserAlive) {
+            float mult = 1f;
+            if (!cannonAlive) mult += 0.5f;
+            if (!laserAlive) mult += 0.5f;
+            return mult;
+        }
+
+        // 调整Y轴速度的函数
+        void AdjustVelocityY(NPC npc, float topVelocity, float deceleration, float acceleration, float upperBound, float lowerBound) {
+            if (npc.position.Y > upperBound) {
+                if (npc.velocity.Y > 0f)
+                    npc.velocity.Y *= deceleration;
+                npc.velocity.Y -= acceleration;
+                if (npc.velocity.Y > topVelocity)
+                    npc.velocity.Y = topVelocity;
+            }
+            else if (npc.position.Y < lowerBound) {
+                if (npc.velocity.Y < 0f)
+                    npc.velocity.Y *= deceleration;
+                npc.velocity.Y += acceleration;
+                if (npc.velocity.Y < -topVelocity)
+                    npc.velocity.Y = -topVelocity;
+            }
+        }
+
+        // 调整X轴速度的函数
+        void AdjustVelocityX(NPC npc, float topVelocity, float deceleration, float acceleration, float upperBound, float lowerBound, float factor = 1f) {
+            if (npc.Center.X > upperBound) {
+                if (npc.velocity.X > 0f)
+                    npc.velocity.X *= deceleration;
+                npc.velocity.X -= acceleration * factor;
+                if (npc.velocity.X > topVelocity)
+                    npc.velocity.X = topVelocity;
+            }
+            if (npc.Center.X < lowerBound) {
+                if (npc.velocity.X < 0f)
+                    npc.velocity.X *= deceleration;
+                npc.velocity.X += acceleration * factor;
+                if (npc.velocity.X < -topVelocity)
+                    npc.velocity.X = -topVelocity;
+            }
+        }
+
+        // 处理充能阶段的函数
+        void HandleChargePhase(NPC npc, bool masterMode, bool cannonAlive, bool laserAlive, bool sawAlive) {
+            float deceleration = masterMode ? 0.75f : 0.8f;
+            if (death) {
+                deceleration = 0.5f;
+            }
+            if (npc.velocity.Y > 0f) {
+                npc.velocity.Y *= deceleration;
+            }
+
+            Vector2 viceArmChargePosition = npc.Center;
+            float viceArmChargeTargetX = Main.npc[(int)npc.ai[1]].Center.X - 280f * npc.ai[0] - viceArmChargePosition.X;
+            float viceArmChargeTargetY = Main.npc[(int)npc.ai[1]].position.Y + 230f - viceArmChargePosition.Y;
+            npc.rotation = (float)Math.Atan2(viceArmChargeTargetY, viceArmChargeTargetX) + MathHelper.PiOver2;
+
+            npc.velocity.X = (npc.velocity.X * 5f + Main.npc[(int)npc.ai[1]].velocity.X) / 6f;
+            npc.velocity.X += 0.5f;
+            npc.velocity.Y -= 0.5f;
+            if (npc.velocity.Y < -12f) npc.velocity.Y = -12f;
+
+            if (npc.position.Y < Main.npc[(int)npc.ai[1]].position.Y - 280f) {
+                npc.damage = npc.defDamage;
+
+                float chargeVelocity = CalculateChargeVelocity(bossRush, cannonAlive, laserAlive, sawAlive, 20f, 16f);
+                npc.ai[2] = 2f;
+                npc.TargetClosest();
+                viceArmChargePosition = npc.Center;
+                viceArmChargeTargetX = player.Center.X - viceArmChargePosition.X;
+                viceArmChargeTargetY = player.Center.Y - viceArmChargePosition.Y;
+                float viceArmChargeTargetDist = (float)Math.Sqrt(viceArmChargeTargetX * viceArmChargeTargetX + viceArmChargeTargetY * viceArmChargeTargetY);
+                viceArmChargeTargetDist = chargeVelocity / viceArmChargeTargetDist;
+                npc.velocity.X = viceArmChargeTargetX * viceArmChargeTargetDist;
+                npc.velocity.Y = viceArmChargeTargetY * viceArmChargeTargetDist;
+                npc.netUpdate = true;
+            }
+        }
+
+        // 处理不同类型充能的函数
+        void HandleDifferentCharge(NPC npc, bool bossRush, bool cannonAlive, bool laserAlive, bool sawAlive) {
+            Vector2 viceArmOtherChargePosition = npc.Center;
+            float viceArmOtherChargeTargetX = Main.npc[(int)npc.ai[1]].Center.X - 200f * npc.ai[0] - viceArmOtherChargePosition.X;
+            float viceArmOtherChargeTargetY = Main.npc[(int)npc.ai[1]].position.Y + 230f - viceArmOtherChargePosition.Y;
+            npc.rotation = (float)Math.Atan2(viceArmOtherChargeTargetY, viceArmOtherChargeTargetX) + MathHelper.PiOver2;
+
+            npc.velocity.Y = (npc.velocity.Y * 5f + Main.npc[(int)npc.ai[1]].velocity.Y) / 6f;
+            npc.velocity.X += 0.5f;
+            if (npc.velocity.X > 12f) npc.velocity.X = 12f;
+
+            if (npc.Center.X < Main.npc[(int)npc.ai[1]].Center.X - 500f || npc.Center.X > Main.npc[(int)npc.ai[1]].Center.X + 500f) {
+                npc.damage = npc.defDamage;
+
+                float chargeVelocity = CalculateChargeVelocity(bossRush, cannonAlive, laserAlive, sawAlive, 17.5f, 14f);
+                npc.ai[2] = 5f;
+                npc.TargetClosest();
+                viceArmOtherChargePosition = npc.Center;
+                viceArmOtherChargeTargetX = player.Center.X - viceArmOtherChargePosition.X;
+                viceArmOtherChargeTargetY = player.Center.Y - viceArmOtherChargePosition.Y;
+                float viceArmOtherChargeTargetDist = (float)Math.Sqrt(viceArmOtherChargeTargetX * viceArmOtherChargeTargetX + viceArmOtherChargeTargetY * viceArmOtherChargeTargetY);
+                viceArmOtherChargeTargetDist = chargeVelocity / viceArmOtherChargeTargetDist;
+                npc.velocity.X = viceArmOtherChargeTargetX * viceArmOtherChargeTargetDist;
+                npc.velocity.Y = viceArmOtherChargeTargetY * viceArmOtherChargeTargetDist;
+                npc.netUpdate = true;
+            }
+        }
+
+        // 计算充能速度的函数
+        float CalculateChargeVelocity(bool bossRush, bool cannonAlive, bool laserAlive, bool sawAlive, float bossRushVelocity, float defaultVelocity) {
+            float chargeVelocity = bossRush ? bossRushVelocity : defaultVelocity;
+            if (!cannonAlive) 
+                chargeVelocity += 1.5f;
+            if (!laserAlive) 
+                chargeVelocity += 1.5f;
+            if (!sawAlive) 
+                chargeVelocity += 1.5f;
+            return chargeVelocity;
+        }
+
+        // 计算充能次数的函数
+        float CalculateChargeAmt(bool cannonAlive, bool laserAlive, bool sawAlive, float baseAmt) {
+            if (!cannonAlive) 
+                baseAmt += 1f;
+            if (!laserAlive) 
+                baseAmt += 1f;
+            if (!sawAlive) 
+                baseAmt += 1f;
+            return baseAmt;
+        }
+
+        // 计算充能速率的函数
+        float CalculateChargeRate(bool cannonAlive, bool laserAlive, bool sawAlive, float baseRate) {
+            float chargeRate = baseRate;
+            if (!cannonAlive) 
+                chargeRate += 1f;
+            if (!laserAlive) 
+                chargeRate += 1f;
+            if (!sawAlive) 
+                chargeRate += 1f;
+            return chargeRate;
+        }
+
         public override bool? AI(NPC npc, Mod mod) {
-            bool bossRush = BossRushEvent.BossRushActive;
-            bool masterMode = Main.masterMode || bossRush;
-            bool death = CalamityWorld.death || bossRush;
-
-            // Get a target
-            if (npc.target < 0 || npc.target == Main.maxPlayers || Main.player[npc.target].dead || !Main.player[npc.target].active)
-                npc.TargetClosest();
-
-            // Despawn safety, make sure to target another player if the current player target is too far away
-            if (Vector2.Distance(Main.player[npc.target].Center, npc.Center) > CalamityGlobalNPC.CatchUpDistance200Tiles)
-                npc.TargetClosest();
-
-            // Direction
+            bossRush = BossRushEvent.BossRushActive;
+            masterMode = Main.masterMode || bossRush;
+            death = CalamityWorld.death || bossRush;
+            head = Main.npc[(int)npc.ai[1]];
+            player = Main.player[npc.target];
             npc.spriteDirection = -(int)npc.ai[0];
-
-            // Where the vice should be in relation to the head
+            npc.damage = 0;
+            CalamityGlobalNPC.primeVice = npc.whoAmI;
+            BrutalSkeletronPrimeAI.FindPlayer(npc);
+            BrutalSkeletronPrimeAI.CheakDead(npc, head);
+            BrutalSkeletronPrimeAI.CheakRam(out cannonAlive, out _, out sawAlive, out laserAlive);
             Vector2 viceArmPosition = npc.Center;
-            float viceArmIdleXPos = Main.npc[(int)npc.ai[1]].Center.X - 200f * npc.ai[0] - viceArmPosition.X;
-            float viceArmIdleYPos = Main.npc[(int)npc.ai[1]].position.Y + 230f - viceArmPosition.Y;
-            float viceArmIdleDistance = (float)Math.Sqrt(viceArmIdleXPos * viceArmIdleXPos + viceArmIdleYPos * viceArmIdleYPos);
-
-            // Return the vice to its proper location in relation to the head if it's too far away
+            float viceArmIdleXPos = head.Center.X - 200f * npc.ai[0] - viceArmPosition.X;
+            float viceArmIdleYPos = head.position.Y + 230f - viceArmPosition.Y;
+            float viceArmIdleDistance = MathF.Sqrt(viceArmIdleXPos * viceArmIdleXPos + viceArmIdleYPos * viceArmIdleYPos);
             if (npc.ai[2] != 99f) {
                 if (viceArmIdleDistance > 800f)
                     npc.ai[2] = 99f;
             }
-            else if (viceArmIdleDistance < 400f)
+            else if (viceArmIdleDistance < 400f) {
                 npc.ai[2] = 0f;
-
-            // Despawn if head is gone
-            if (!Main.npc[(int)npc.ai[1]].active || Main.npc[(int)npc.ai[1]].aiStyle != NPCAIStyleID.SkeletronPrimeHead) {
-                npc.ai[2] += 10f;
-                if (npc.ai[2] > 50f || Main.netMode != NetmodeID.Server) {
-                    npc.life = -1;
-                    npc.HitEffect(0, 10.0);
-                    npc.active = false;
-                }
             }
 
-            CalamityGlobalNPC.primeVice = npc.whoAmI;
-
-            // Check if arms are alive
-            bool cannonAlive = false;
-            bool laserAlive = false;
-            bool sawAlive = false;
-            if (CalamityGlobalNPC.primeCannon != -1) {
-                if (Main.npc[CalamityGlobalNPC.primeCannon].active)
-                    cannonAlive = true;
-            }
-            if (CalamityGlobalNPC.primeLaser != -1) {
-                if (Main.npc[CalamityGlobalNPC.primeLaser].active)
-                    laserAlive = true;
-            }
-            if (CalamityGlobalNPC.primeSaw != -1) {
-                if (Main.npc[CalamityGlobalNPC.primeSaw].active)
-                    sawAlive = true;
-            }
-
-            // Avoid cheap bullshit
-            npc.damage = 0;
-
-            // Return to the head
             if (npc.ai[2] == 99f) {
-                float acceleration = (bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f));
-                float accelerationMult = 1f;
-                if (!cannonAlive) {
-                    acceleration += 0.025f;
-                    accelerationMult += 0.5f;
-                }
-                if (!laserAlive) {
-                    acceleration += 0.025f;
-                    accelerationMult += 0.5f;
-                }
-                if (!sawAlive)
-                    acceleration += 0.025f;
-                if (masterMode)
-                    acceleration *= accelerationMult;
+                // 计算加速度
+                float acceleration = CalculateAcceleration(bossRush, death, masterMode, cannonAlive, laserAlive, sawAlive);
+                float accelerationMult = CalculateAccelerationMult(cannonAlive, laserAlive);
+                if (masterMode) acceleration *= accelerationMult;
 
                 float topVelocity = acceleration * 100f;
                 float deceleration = masterMode ? 0.6f : 0.8f;
 
-                if (npc.position.Y > Main.npc[(int)npc.ai[1]].position.Y + 20f) {
-                    if (npc.velocity.Y > 0f)
-                        npc.velocity.Y *= deceleration;
+                // 调整Y轴速度
+                AdjustVelocityY(npc, topVelocity, deceleration, acceleration, head.position.Y + 20f, head.position.Y - 20f);
 
-                    npc.velocity.Y -= acceleration;
-
-                    if (npc.velocity.Y > topVelocity)
-                        npc.velocity.Y = topVelocity;
-                }
-                else if (npc.position.Y < Main.npc[(int)npc.ai[1]].position.Y - 20f) {
-                    if (npc.velocity.Y < 0f)
-                        npc.velocity.Y *= deceleration;
-
-                    npc.velocity.Y += acceleration;
-
-                    if (npc.velocity.Y < -topVelocity)
-                        npc.velocity.Y = -topVelocity;
-                }
-
-                if (npc.Center.X > Main.npc[(int)npc.ai[1]].Center.X + 20f) {
-                    if (npc.velocity.X > 0f)
-                        npc.velocity.X *= deceleration;
-
-                    npc.velocity.X -= acceleration * 2f;
-
-                    if (npc.velocity.X > topVelocity)
-                        npc.velocity.X = topVelocity;
-                }
-                if (npc.Center.X < Main.npc[(int)npc.ai[1]].Center.X - 20f) {
-                    if (npc.velocity.X < 0f)
-                        npc.velocity.X *= deceleration;
-
-                    npc.velocity.X += acceleration * 2f;
-
-                    if (npc.velocity.X < -topVelocity)
-                        npc.velocity.X = -topVelocity;
-                }
+                // 调整X轴速度
+                AdjustVelocityX(npc, topVelocity, deceleration, acceleration, head.Center.X + 20f, head.Center.X - 20f, 2f);
             }
-
-            // Other phases
             else {
-                // Stay near the head
+                // 保持在头部附近
                 if (npc.ai[2] == 0f || npc.ai[2] == 3f) {
-                    // Despawn if head is despawning
-                    if (Main.npc[(int)npc.ai[1]].ai[1] == 3f && npc.timeLeft > 10)
+                    if (head.ai[1] == 3f && npc.timeLeft > 10)
                         npc.timeLeft = 10;
 
-                    // Start charging after 10 seconds (change this as each arm dies)
-                    npc.ai[3] += 1f;
-                    if (!cannonAlive)
-                        npc.ai[3] += 1f;
-                    if (!laserAlive)
-                        npc.ai[3] += 1f;
-                    if (!sawAlive)
-                        npc.ai[3] += 1f;
-
+                    // 每死亡一个部件，加速充能
+                    npc.ai[3] += CalculateChargeRate(cannonAlive, laserAlive, sawAlive, masterMode ? 150f : 600f);
                     if (npc.ai[3] >= (masterMode ? 150f : 600f)) {
                         npc.ai[2] += 1f;
                         npc.ai[3] = 0f;
@@ -158,198 +229,69 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         npc.netUpdate = true;
                     }
 
-                    float acceleration = (bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f));
-                    float accelerationMult = 1f;
-                    if (!cannonAlive) {
-                        acceleration += 0.025f;
-                        accelerationMult += 0.5f;
-                    }
-                    if (!laserAlive) {
-                        acceleration += 0.025f;
-                        accelerationMult += 0.5f;
-                    }
-                    if (!sawAlive)
-                        acceleration += 0.025f;
-                    if (masterMode)
-                        acceleration *= accelerationMult;
+                    // 计算加速度
+                    float acceleration = CalculateAcceleration(bossRush, death, masterMode, cannonAlive, laserAlive, sawAlive);
+                    float accelerationMult = CalculateAccelerationMult(cannonAlive, laserAlive);
+                    if (masterMode) acceleration *= accelerationMult;
 
                     float topVelocity = acceleration * 100f;
                     float deceleration = masterMode ? 0.6f : 0.8f;
 
-                    if (npc.position.Y > Main.npc[(int)npc.ai[1]].position.Y + 290f) {
-                        if (npc.velocity.Y > 0f)
-                            npc.velocity.Y *= deceleration;
+                    // 调整Y轴速度
+                    AdjustVelocityY(npc, topVelocity, deceleration, acceleration, head.position.Y + 290f, head.position.Y + 240f);
 
-                        npc.velocity.Y -= acceleration;
+                    // 调整X轴速度
+                    AdjustVelocityX(npc, topVelocity, deceleration, acceleration, head.Center.X + 150f, head.Center.X + 100f);
 
-                        if (npc.velocity.Y > topVelocity)
-                            npc.velocity.Y = topVelocity;
-                    }
-                    else if (npc.position.Y < Main.npc[(int)npc.ai[1]].position.Y + 240f) {
-                        if (npc.velocity.Y < 0f)
-                            npc.velocity.Y *= deceleration;
-
-                        npc.velocity.Y += acceleration;
-
-                        if (npc.velocity.Y < -topVelocity)
-                            npc.velocity.Y = -topVelocity;
-                    }
-
-                    if (npc.Center.X > Main.npc[(int)npc.ai[1]].Center.X + 150f) {
-                        if (npc.velocity.X > 0f)
-                            npc.velocity.X *= deceleration;
-
-                        npc.velocity.X -= acceleration;
-
-                        if (npc.velocity.X > topVelocity)
-                            npc.velocity.X = topVelocity;
-                    }
-                    if (npc.Center.X < Main.npc[(int)npc.ai[1]].Center.X + 100f) {
-                        if (npc.velocity.X < 0f)
-                            npc.velocity.X *= deceleration;
-
-                        npc.velocity.X += acceleration;
-
-                        if (npc.velocity.X < -topVelocity)
-                            npc.velocity.X = -topVelocity;
-                    }
-
+                    // 计算旋转角度
                     Vector2 viceArmReelbackCurrentPos = npc.Center;
-                    float viceArmReelbackXDest = Main.npc[(int)npc.ai[1]].Center.X - 200f * npc.ai[0] - viceArmReelbackCurrentPos.X;
-                    float viceArmReelbackYDest = Main.npc[(int)npc.ai[1]].position.Y + 230f - viceArmReelbackCurrentPos.Y;
+                    float viceArmReelbackXDest = head.Center.X - 200f * npc.ai[0] - viceArmReelbackCurrentPos.X;
+                    float viceArmReelbackYDest = head.position.Y + 230f - viceArmReelbackCurrentPos.Y;
                     npc.rotation = (float)Math.Atan2(viceArmReelbackYDest, viceArmReelbackXDest) + MathHelper.PiOver2;
                     return false;
                 }
 
-                // Charge towards the player
+                // 向玩家冲锋
                 if (npc.ai[2] == 1f) {
-                    float deceleration = masterMode ? 0.75f : 0.8f;
-                    if (npc.velocity.Y > 0f)
-                        npc.velocity.Y *= deceleration;
-
-                    Vector2 viceArmChargePosition = npc.Center;
-                    float viceArmChargeTargetX = Main.npc[(int)npc.ai[1]].Center.X - 280f * npc.ai[0] - viceArmChargePosition.X;
-                    float viceArmChargeTargetY = Main.npc[(int)npc.ai[1]].position.Y + 230f - viceArmChargePosition.Y;
-                    npc.rotation = (float)Math.Atan2(viceArmChargeTargetY, viceArmChargeTargetX) + MathHelper.PiOver2;
-
-                    npc.velocity.X = (npc.velocity.X * 5f + Main.npc[(int)npc.ai[1]].velocity.X) / 6f;
-                    npc.velocity.X += 0.5f;
-
-                    npc.velocity.Y -= 0.5f;
-                    if (npc.velocity.Y < -12f)
-                        npc.velocity.Y = -12f;
-
-                    if (npc.position.Y < Main.npc[(int)npc.ai[1]].position.Y - 280f) {
-                        // Set damage
-                        npc.damage = npc.defDamage;
-
-                        float chargeVelocity = bossRush ? 20f : 16f;
-                        if (!cannonAlive)
-                            chargeVelocity += 1.5f;
-                        if (!laserAlive)
-                            chargeVelocity += 1.5f;
-                        if (!sawAlive)
-                            chargeVelocity += 1.5f;
-
-                        npc.ai[2] = 2f;
-                        npc.TargetClosest();
-                        viceArmChargePosition = npc.Center;
-                        viceArmChargeTargetX = Main.player[npc.target].Center.X - viceArmChargePosition.X;
-                        viceArmChargeTargetY = Main.player[npc.target].Center.Y - viceArmChargePosition.Y;
-                        float viceArmChargeTargetDist = (float)Math.Sqrt(viceArmChargeTargetX * viceArmChargeTargetX + viceArmChargeTargetY * viceArmChargeTargetY);
-                        viceArmChargeTargetDist = chargeVelocity / viceArmChargeTargetDist;
-                        npc.velocity.X = viceArmChargeTargetX * viceArmChargeTargetDist;
-                        npc.velocity.Y = viceArmChargeTargetY * viceArmChargeTargetDist;
-                        npc.netUpdate = true;
-                    }
+                    HandleChargePhase(npc, masterMode, cannonAlive, laserAlive, sawAlive);
                 }
 
-                // Charge 4 times (more if arms are dead)
+                // 冲锋次数根据部件死亡情况调整
                 else if (npc.ai[2] == 2f) {
-                    // Set damage
                     npc.damage = npc.defDamage;
-
-                    if (npc.position.Y > Main.player[npc.target].position.Y || npc.velocity.Y < 0f) {
-                        float chargeAmt = 4f;
-                        if (!cannonAlive)
-                            chargeAmt += 1f;
-                        if (!laserAlive)
-                            chargeAmt += 1f;
-                        if (!sawAlive)
-                            chargeAmt += 1f;
-
+                    if (npc.position.Y > player.position.Y || npc.velocity.Y < 0f) {
+                        float chargeAmt = CalculateChargeAmt(cannonAlive, laserAlive, sawAlive, 4f);
                         if (npc.ai[3] >= chargeAmt) {
-                            // Return to head
                             npc.ai[2] = 3f;
                             npc.ai[3] = 0f;
                             npc.TargetClosest();
                             return false;
                         }
-
                         npc.ai[2] = 1f;
                         npc.ai[3] += 1f;
                     }
                 }
 
-                // Different type of charge
+                // 不同类型的冲锋
                 else if (npc.ai[2] == 4f) {
-                    Vector2 viceArmOtherChargePosition = npc.Center;
-                    float viceArmOtherChargeTargetX = Main.npc[(int)npc.ai[1]].Center.X - 200f * npc.ai[0] - viceArmOtherChargePosition.X;
-                    float viceArmOtherChargeTargetY = Main.npc[(int)npc.ai[1]].position.Y + 230f - viceArmOtherChargePosition.Y;
-                    npc.rotation = (float)Math.Atan2(viceArmOtherChargeTargetY, viceArmOtherChargeTargetX) + MathHelper.PiOver2;
-
-                    npc.velocity.Y = (npc.velocity.Y * 5f + Main.npc[(int)npc.ai[1]].velocity.Y) / 6f;
-
-                    npc.velocity.X += 0.5f;
-                    if (npc.velocity.X > 12f)
-                        npc.velocity.X = 12f;
-
-                    if (npc.Center.X < Main.npc[(int)npc.ai[1]].Center.X - 500f || npc.Center.X > Main.npc[(int)npc.ai[1]].Center.X + 500f) {
-                        // Set damage
-                        npc.damage = npc.defDamage;
-
-                        float chargeVelocity = bossRush ? 17.5f : 14f;
-                        if (!cannonAlive)
-                            chargeVelocity += 1.15f;
-                        if (!laserAlive)
-                            chargeVelocity += 1.15f;
-                        if (!sawAlive)
-                            chargeVelocity += 1.15f;
-
-                        npc.ai[2] = 5f;
-                        npc.TargetClosest();
-                        viceArmOtherChargePosition = npc.Center;
-                        viceArmOtherChargeTargetX = Main.player[npc.target].Center.X - viceArmOtherChargePosition.X;
-                        viceArmOtherChargeTargetY = Main.player[npc.target].Center.Y - viceArmOtherChargePosition.Y;
-                        float viceArmOtherChargeTargetDist = (float)Math.Sqrt(viceArmOtherChargeTargetX * viceArmOtherChargeTargetX + viceArmOtherChargeTargetY * viceArmOtherChargeTargetY);
-                        viceArmOtherChargeTargetDist = chargeVelocity / viceArmOtherChargeTargetDist;
-                        npc.velocity.X = viceArmOtherChargeTargetX * viceArmOtherChargeTargetDist;
-                        npc.velocity.Y = viceArmOtherChargeTargetY * viceArmOtherChargeTargetDist;
-                        npc.netUpdate = true;
-                    }
+                    HandleDifferentCharge(npc, bossRush, cannonAlive, laserAlive, sawAlive);
                 }
 
-                // Charge 4 times (more if arms are dead)
-                else if (npc.ai[2] == 5f && npc.Center.X < Main.player[npc.target].Center.X - 100f) {
-                    // Set damage
+                // 冲锋次数根据部件死亡情况调整
+                else if (npc.ai[2] == 5f && npc.Center.X < player.Center.X - 100f) {
                     npc.damage = npc.defDamage;
-
-                    float chargeAmt = 4f;
-                    if (!cannonAlive)
-                        chargeAmt += 1f;
-                    if (!laserAlive)
-                        chargeAmt += 1f;
-                    if (!sawAlive)
-                        chargeAmt += 1f;
-
+                    float chargeAmt = CalculateChargeAmt(cannonAlive, laserAlive, sawAlive, 4f);
+                    if (death) {
+                        npc.ai[2] = 4f;
+                        npc.ai[3] += 1f;
+                        return false;
+                    }
                     if (npc.ai[3] >= chargeAmt) {
-                        // Return to head
                         npc.ai[2] = 0f;
                         npc.ai[3] = 0f;
                         npc.TargetClosest();
                         return false;
                     }
-
                     npc.ai[2] = 4f;
                     npc.ai[3] += 1f;
                 }

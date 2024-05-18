@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         internal virtual Vector2 ToMouse {
             get {
                 if (Main.myPlayer == Owner.whoAmI) {
-                    Vector2 inOwnerFormToMVr = Owner.Center.To(Main.MouseWorld);
+                    Vector2 inOwnerFormToMVr = Owner.GetPlayerStabilityCenter().To(Main.MouseWorld);
                     toMouseVecterDate = inOwnerFormToMVr;
                     Projectile.netUpdate = true;
                     return inOwnerFormToMVr;

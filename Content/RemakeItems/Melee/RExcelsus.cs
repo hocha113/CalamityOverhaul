@@ -18,10 +18,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Excelsus>();
         public override int ProtogenesisID => ModContent.ItemType<ExcelsusEcType>();
         public override string TargetToolTipItemName => "ExcelsusEcType";
-
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Excelsus>()] = true;
         }

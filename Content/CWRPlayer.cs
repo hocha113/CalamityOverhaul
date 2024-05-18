@@ -101,6 +101,8 @@ namespace CalamityOverhaul.Content
         public bool HeldBowBool;
         public bool NoCanAutomaticCartridgeChange;
         public bool RustyMedallion_Value;
+        public bool ReceivingPlatform;
+        public int ReceivingPlatformTime;
         #region NetCode
         public bool DompBool;
         public bool RecoilAccelerationAddBool;
@@ -128,6 +130,7 @@ namespace CalamityOverhaul.Content
             PressureIncrease = 1;
             HeldStyle = -1;
             TETramContrType = 0;
+            ReceivingPlatformTime = 0;
             OnHit = false;           
             LoadMuzzleBrake = false;
             InitialCreation = true;
@@ -138,6 +141,7 @@ namespace CalamityOverhaul.Content
             NoCanAutomaticCartridgeChange = false;
             RustyMedallion_Value = false;
             HasOverhaulTheBibleBook = false;
+            ReceivingPlatform = false;
         }
 
         public override void ResetEffects() {
@@ -161,6 +165,7 @@ namespace CalamityOverhaul.Content
             NoCanAutomaticCartridgeChange = false;
             RustyMedallion_Value = false;
             HasOverhaulTheBibleBook = false;
+            ReceivingPlatform = false;
         }
 
         public override void SaveData(TagCompound tag) {
@@ -216,6 +221,16 @@ namespace CalamityOverhaul.Content
                     PunchCameraModifier modifier2 = new(Player.Center, new Vector2(0, Main.rand.NextFloat(-2, 2)), 2f, 3f, 2, 1000f, FullName);
                     Main.instance.CameraModifiers.Add(modifier2);
                 }
+            }
+        }
+
+        public override void PreUpdateMovement() {
+            if (ReceivingPlatformTime > 0) {
+                Player.gravity = 0;
+                if (Player.velocity.Y > 0) {
+                    Player.velocity.Y = 0;
+                }
+                ReceivingPlatformTime--;
             }
         }
 

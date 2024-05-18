@@ -45,6 +45,14 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     modeings -= 15;
                 }
             }
+            foreach (var p in Main.player) {
+                if (!p.active) {
+                    continue;
+                }
+                if (p.Distance(Projectile.Center) > modeings) {
+                    p.AddBuff(BuffID.OnFire3, 2);
+                }
+            }
 
             if (Projectile.ai[0] % 15 == 0) {
                 Vector2 pos = Projectile.Center;

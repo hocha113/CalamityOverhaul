@@ -19,6 +19,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private Item murasama => Owner.ActiveItem();
         private ref float Time => ref Projectile.ai[0];
         private ref int risingDragon => ref Owner.CWR().RisingDragonCoolDownTime;
+        bool noHasDownSkillProj;
+        bool noHasBreakOutProj;
+        bool noHasEndSkillEffectStart;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -63,12 +66,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             return true;
         }
 
-        public override void AI() {
-            InOwner();
-            risingDragon--;
-            if (risingDragon < 0) {
-                risingDragon = 0;
+        private void CheakNoHasProj() {
+            noHasDownSkillProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaDownSkill>()] == 0;
+            noHasBreakOutProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] == 0;
+            noHasEndSkillEffectStart = Owner.ownedProjectileCounts[ModContent.ProjectileType<EndSkillEffectStart>()] == 0;
+        }
+
+        private void UpdateRisingDragon() {
+            if (risingDragon > 0) {
+                if (risingDragon == 1 && noHasEndSkillEffectStart && noHasBreakOutProj && noHasDownSkillProj) {
+                    SoundEngine.PlaySound(CWRSound.Retracting with { Volume = 0.35f }, Projectile.Center);
+                }
+                risingDragon--;
             }
+        }
+
+        public override void AI() {
+            CheakNoHasProj();
+            InOwner();
+            UpdateRisingDragon();
             Time++;
         }
 
@@ -76,8 +92,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public void InOwner() {
             int safeGravDir = Math.Sign(Owner.gravDir);
-            bool noHasDownSkillProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaDownSkill>()] == 0;
-            bool noHasBreakOutProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] == 0;
             bool nolegendStart = true;
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 nolegendStart = InWorldBossPhase.Instance.level11;

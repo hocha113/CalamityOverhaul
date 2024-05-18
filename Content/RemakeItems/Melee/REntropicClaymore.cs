@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -16,9 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.EntropicClaymore>();
         public override int ProtogenesisID => ModContent.ItemType<EntropicClaymoreEcType>();
         public override string TargetToolTipItemName => "EntropicClaymoreEcType";
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.damage = 152;
             item.DamageType = DamageClass.Melee;

@@ -19,9 +19,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.GildedProboscis>();
         public override int ProtogenesisID => ModContent.ItemType<GildedProboscisEcType>();
         public override string TargetToolTipItemName => "GildedProboscisEcType";
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetStaticDefaults() {
             ItemID.Sets.Spears[ModContent.ItemType<CalamityMod.Items.Weapons.Melee.GildedProboscis>()] = true;
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<CalamityMod.Items.Weapons.Melee.GildedProboscis>()] = true;

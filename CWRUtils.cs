@@ -2362,10 +2362,10 @@ namespace CalamityOverhaul
         /// <returns></returns>
         public static Texture2D T2DValue(this Projectile p, bool loadCeahk = true) {
             if (Main.dedServ) {
-                return new Texture2D(null, 1, 1);
+                return null;
             }
             if (p.type < 0 || p.type >= TextureAssets.Projectile.Length) {
-                return new Texture2D(null, 1, 1);
+                return null;
             }
             if (loadCeahk && p.ModProjectile == null) {
                 Main.instance.LoadProjectile(p.type);
@@ -2381,10 +2381,10 @@ namespace CalamityOverhaul
         /// <returns></returns>
         public static Texture2D T2DValue(this Item i, bool loadCeahk = true) {
             if (Main.dedServ) {
-                return new Texture2D(null, 1, 1);
+                return null;
             }
             if (i.type < ItemID.None || i.type >= TextureAssets.Item.Length) {
-                return new Texture2D(null, 1, 1);
+                return null;
             }
             if (loadCeahk && i.ModItem == null) {
                 Main.instance.LoadItem(i.type);
@@ -2400,10 +2400,10 @@ namespace CalamityOverhaul
         /// <returns></returns>
         public static Texture2D T2DValue(this NPC n, bool loadCeahk = true) {
             if (Main.dedServ) {
-                return new Texture2D(null, 1, 1);
+                return null;
             }
             if (n.type < NPCID.None || n.type >= TextureAssets.Npc.Length) {
-                return new Texture2D(null, 1, 1);
+                return null;
             }
             if (loadCeahk && n.ModNPC == null) {
                 Main.instance.LoadNPC(n.type);

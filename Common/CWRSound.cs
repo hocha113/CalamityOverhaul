@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Common
         public static SoundStyle Ejection = new SoundStyle(CWRConstant.Asset + "Sounds/Ejection");
         public static SoundStyle Liquids_Fill_0 = new SoundStyle(CWRConstant.Asset + "Sounds/Liquids_Fill_0");
         public static SoundStyle EndSilkOrbSpanSound = new SoundStyle(CWRConstant.Asset + "Sounds/EndSilkOrbSpanSOund");
+        public static SoundStyle ShurikenOut = new SoundStyle(CWRConstant.Asset + "Sounds/ShurikenOut");
+        public static SoundStyle Retracting = new SoundStyle(CWRConstant.Asset + "Sounds/Retracting");
         public static SoundStyle V_Kengms = new SoundStyle(CWRConstant.Asset + "Sounds/EasterEggSound/V_Kengms");
         public static SoundStyle V_ThisThePwero = new SoundStyle(CWRConstant.Asset + "Sounds/EasterEggSound/V_ThisThePwero");
         public static SoundStyle V_TOEeys = new SoundStyle(CWRConstant.Asset + "Sounds/EasterEggSound/V_TOEeys");

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     internal class Mechanicalworm : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 5000;
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 10000;
         public override void SetDefaults() {
             Projectile.width = 10;
             Projectile.height = 10;
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override void OnKill(int timeLeft) {
-            base.OnKill(timeLeft);
+
         }
 
         public override bool PreDraw(ref Color lightColor) {

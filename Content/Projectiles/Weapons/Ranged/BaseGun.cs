@@ -561,6 +561,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                 Texture2D arrowValue = TextureAssets.Item[useAmmoItemType].Value;
                 Item arrowItemInds = new Item(useAmmoItemType);
+
                 if (!arrowItemInds.consumable) {
                     int newtype = ItemID.WoodenArrow;
                     if (CWRIDs.OverProjID_To_Safe_Shoot_Ammo_Item_Target.TryGetValue(arrowItemInds.shoot, out int value2)) {
@@ -569,9 +570,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Main.instance.LoadItem(newtype);
                     arrowValue = TextureAssets.Item[newtype].Value;
                 }
-                if (ForcedConversionTargetAmmoFunc.Invoke()) {
-                    arrowValue = TextureAssets.Projectile[ToTargetAmmo].Value;
-                }
+
                 if (ForcedConversionTargetAmmoFunc.Invoke()) {
                     arrowValue = TextureAssets.Projectile[ToTargetAmmo].Value;
                     if (ISForcedConversionDrawAmmoInversion) {
@@ -579,7 +578,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         DrawCrossArrowOffsetRot = MathHelper.Pi;
                     }
                 }
-                else {
+                else if (ISForcedConversionDrawAmmoInversion) {
                     CustomDrawOrig = Vector2.Zero;
                     DrawCrossArrowOffsetRot = 0;
                 }

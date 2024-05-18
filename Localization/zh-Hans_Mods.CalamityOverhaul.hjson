@@ -2542,6 +2542,16 @@ Items: {
 			"来自一条海妖，租借合同为期3年06月23天6小时"
 			'''
 	}
+
+	GrandGuardianEcType: {
+		// DisplayName: Grand Guardian Ec Type
+		// Tooltip: ""
+	}
+
+	MajesticGuardEcType: {
+		// DisplayName: Majestic Guard Ec Type
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3105,6 +3115,12 @@ Projectiles: {
 	// PrimeCannonOnSpan.DisplayName: Prime Cannon On Span
 	// Mechanicalworm.DisplayName: Mechanicalworm
 	// SetPosingStarm.DisplayName: Set Posing Starm
+	// GrandGuardianRapier.DisplayName: Grand Guardian Rapier
+	// BaseRapiers.DisplayName: Base Rapiers
+	// MajesticGuardRapier.DisplayName: Majestic Guard Rapier
+	// MajesticGuardBeam.DisplayName: Majestic Guard Beam
+	// GrandGuardianBeam.DisplayName: Grand Guardian Beam
+	// StakeHmmod.DisplayName: Stake Hmmod
 }
 
 Configs: {

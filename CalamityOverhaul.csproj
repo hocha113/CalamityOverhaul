@@ -23,10 +23,12 @@
     <AdditionalFiles Remove="Assets\Projectiles\Magic\GhastlyVisageBall.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="0.3.6.0.9.txt" />
+    <None Remove="0.4.0.1.1.txt" />
     <None Remove="Assets\Effects\InShootGlow.fx" />
     <None Remove="Assets\Effects\NeutronRingShader.fx" />
     <None Remove="Assets\Effects\PrimeHaloShader.fx" />
+    <None Remove="Assets\Effects\StreamerDust.fx" />
+    <None Remove="Assets\Effects\TwistColoring.fx" />
     <None Remove="Assets\Effects\WarpShader.fx" />
     <None Remove="Assets\Events\TungstenRiotIcon.png" />
     <None Remove="Assets\Items\Replace\TODO.txt" />

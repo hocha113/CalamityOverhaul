@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private int primeSaw;
         private int primeVice;
         private int primeLaser;
+        private int fireIndex;
         bool cannonAlive;
         bool viceAlive;
         bool sawAlive;
@@ -129,6 +130,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (npc.ai[0] == 0f && Main.netMode != NetmodeID.MultiplayerClient) {
                 npc.TargetClosest();
                 spanArm(npc);
+                fireIndex = 0;
                 npc.ai[0] = 1f;
             }
 
@@ -155,6 +157,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                             , new Vector2(0, 0), ModContent.ProjectileType<SetPosingStarm>(), npc.damage, 2, -1, 0, npc.whoAmI);
                         npc.Calamity().newAI[0] = 0;
                         npc.SyncExtraAI();
+                        fireIndex++;
                     }
                     npc.TargetClosest();
                     npc.netUpdate = true;
@@ -308,9 +311,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private void UpdateVelocity(NPC npc, Vector2 targetVector, float speedMultiplier, float distance) {
             float adjustedSpeed = speedMultiplier / distance;
-            npc.velocity.X = targetVector.X * adjustedSpeed;
-            npc.velocity.Y = targetVector.Y * adjustedSpeed;
+            if (death && fireIndex >= 2) {
+                if (--npc.Calamity().newAI[2] <= 0) {
+                    npc.velocity.X = targetVector.X * adjustedSpeed;
+                    npc.velocity.Y = targetVector.Y * adjustedSpeed;
+                }
+                else {
+                    npc.velocity *= 0.99f;
+                }
 
+                if (++npc.Calamity().newAI[1] > 90) {
+                    Vector2 toD = npc.Center.To(player.Center) + player.velocity;
+                    toD = toD.UnitVector();
+                    npc.velocity += toD * 23;
+                    npc.Calamity().newAI[2] = 60;
+                    npc.Calamity().newAI[1] = 0;
+                    npc.SyncExtraAI();
+                    if (Main.npc[primeCannon].active)
+                        Main.npc[primeCannon].velocity += toD * 33;
+                    if (Main.npc[primeSaw].active)
+                        Main.npc[primeSaw].velocity += toD * 53;
+                    if (Main.npc[primeLaser].active)
+                        Main.npc[primeLaser].velocity += toD * 33;
+                    if (Main.npc[primeVice].active)
+                        Main.npc[primeVice].velocity += toD * 53;
+                }
+            }
+            else {
+                npc.velocity.X = targetVector.X * adjustedSpeed;
+                npc.velocity.Y = targetVector.Y * adjustedSpeed;
+            }
             if (NPC.IsMechQueenUp) {
                 float distanceToPlayer = Vector2.Distance(npc.Center, Main.player[npc.target].Center);
                 if (distanceToPlayer < 0.1f) distanceToPlayer = 0f;

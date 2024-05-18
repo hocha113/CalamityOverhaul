@@ -16,9 +16,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.GoldplumeSpear>();
         public override int ProtogenesisID => ModContent.ItemType<GoldplumeSpearEcType>();
         public override string TargetToolTipItemName => "GoldplumeSpearEcType";
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<CalamityMod.Items.Weapons.Melee.GoldplumeSpear>()] = true;
         }
