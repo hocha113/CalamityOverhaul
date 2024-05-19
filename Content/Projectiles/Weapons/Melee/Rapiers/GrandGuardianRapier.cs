@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         public override string GlowPath => CWRConstant.Item_Melee + "GrandGuardianGlow";
         public override void SetRapiers() {
             overHitModeing = 113;
+            ShurikenOut = CWRSound.ShurikenOut with { Pitch = -0.14f };
         }
 
         public override void ExtraShoot() {

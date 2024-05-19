@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
     {
         public override string Texture => CWRConstant.Item_Melee + "GrandGuardianGlow";
         NPC hitnpc;
+        Vector2 oldnpcPos;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
             ProjectileID.Sets.TrailingMode[Type] = 2;
@@ -53,7 +54,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                     return;
                 }
                 Projectile.extraUpdates = 0;
-                Projectile.position += hitnpc.velocity;
+                Vector2 npcUpdateVer = oldnpcPos.To(hitnpc.position);
+                oldnpcPos = hitnpc.position;
+                Projectile.position += npcUpdateVer;
                 float sengs = 0.9f;
                 if (hitnpc.width > 180) {
                     sengs += 0.01f;
@@ -73,8 +76,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Projectile.localAI[0] == 0) {
+            if (Projectile.localAI[0] == 0 && Projectile.ai[0] <= 60) {
                 hitnpc = target;
+                oldnpcPos = target.position;
                 Projectile.timeLeft = 90;
                 if (!target.active) {
                     hitnpc = null;
@@ -86,26 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         }
 
         public override void OnKill(int timeLeft) {
-            int inc;
-            for (int i = 4; i < 31; i = inc + 1) {
-                Vector2 vector = Projectile.rotation.ToRotationVector2() * 13;
-                float oldXPos = vector.X * (30f / i);
-                float oldYPos = vector.Y * (30f / i);
-                int killDust = Dust.NewDust(new Vector2(Projectile.oldPosition.X - oldXPos, Projectile.oldPosition.Y - oldYPos), 8, 8
-                    , DustID.FireworkFountain_Blue, vector.X, vector.Y, 100, default, 1.8f);
-                Main.dust[killDust].noGravity = true;
-                Dust dust2 = Main.dust[killDust];
-                dust2.velocity *= 0.5f;
-                dust2.color = Color.Blue;
-                dust2.shader = EffectsRegistry.StreamerDustShader;
-                dust2.shader.UseColor(dust2.color);
-                killDust = Dust.NewDust(new Vector2(Projectile.oldPosition.X - oldXPos, Projectile.oldPosition.Y - oldYPos), 8, 8
-                    , DustID.FireworkFountain_Blue, vector.X, vector.Y, 100, default, 1.4f);
-                dust2 = Main.dust[killDust];
-                dust2.velocity *= 0.05f;
-                dust2.noGravity = true;
-                inc = i;
-            }
+            CWRDust.SplashDust(Projectile, 31, DustID.FireworkFountain_Blue, DustID.FireworkFountain_Blue, 13, Color.Blue, EffectsRegistry.StreamerDustShader);
             Projectile.Explode(explosionSound: SoundID.Item14 with { Pitch = 0.6f });
         }
 

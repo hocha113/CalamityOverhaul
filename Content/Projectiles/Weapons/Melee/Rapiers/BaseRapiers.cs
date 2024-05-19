@@ -12,7 +12,7 @@ using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
-    internal class BaseRapiers : BaseHeldProj
+    internal abstract class BaseRapiers : BaseHeldProj
     {
         #region Data
         public int maxTimeLeft;
@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                             if (Projectile.IsOwnedByLocalPlayer()) {
                                 ExtraShoot();
                             }
-                            SoundEngine.PlaySound(ShurikenOut, Projectile.Center);
+                            SoundEngine.PlaySound(ShurikenOut with { MaxInstances = 6 }, Projectile.Center);
                             CanUse = true;
                         }
 
@@ -181,6 +181,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             for (int i = 0; i < SkialithEntitys.Count; i++) {
                 SkialithStruct skialith = SkialithEntitys[i];
                 skialith.time--;
+                //skialith.pos += Owner.velocity;//不因为与玩家相对静止，这不是一个好主意，它并不会带来更好的视觉体验
                 skialith.pos += skialith.ver * SkialithVarSpeedMode;
                 SkialithEntitys[i] = new SkialithStruct(skialith.pos, skialith.ver, skialith.rot, skialith.time);
                 if (SkialithEntitys[i].time <= 0) {
@@ -204,12 +205,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
         }
 
+        public virtual void HitPlayerSoundEffect(NPC target, NPC.HitInfo hit) {
+            float sincrit = 0;
+            if (hit.Crit) {
+                sincrit += 0.2f;
+            }
+            (float min, float max) pot = (-0.1f + +sincrit, 0.1f + +sincrit);
+            if (CWRIDs.NPCValue.TheofSteel[target.type]) {
+                SoundEngine.PlaySound(CWRSound.HitTheSteel with { MaxInstances = 3, PitchRange = pot, Volume = 0.8f }, Projectile.Center);
+            }
+            else {
+                SoundStyle soundonFlesh = Main.rand.NextBool() ? CWRSound.HitTheFlesh_1 : CWRSound.HitTheFlesh_2;
+                SoundEngine.PlaySound(soundonFlesh with { MaxInstances = 3, PitchRange = pot, Volume = 0.7f }, Projectile.Center);
+            }
+        }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (NPCID.Sets.ProjectileNPC[target.type])
+            if (NPCID.Sets.ProjectileNPC[target.type]) {
                 return;
+            }
 
             HitNPCs.Add(target);
-            Owner.CWR().SetScreenShake(4);
+            //Owner.CWR().SetScreenShake(4);
+            HitPlayerSoundEffect(target, hit);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {

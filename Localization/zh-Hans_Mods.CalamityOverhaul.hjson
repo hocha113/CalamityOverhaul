@@ -2552,6 +2552,11 @@ Items: {
 		// DisplayName: Majestic Guard Ec Type
 		// Tooltip: ""
 	}
+
+	FadingGlory: {
+		// DisplayName: Fading Glory
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3121,6 +3126,9 @@ Projectiles: {
 	// MajesticGuardBeam.DisplayName: Majestic Guard Beam
 	// GrandGuardianBeam.DisplayName: Grand Guardian Beam
 	// StakeHmmod.DisplayName: Stake Hmmod
+	// FadingGloryBeam.DisplayName: Fading Glory Beam
+	// FadingGloryRapier.DisplayName: Fading Glory Rapier
+	// FadingGloryHeldSprint.DisplayName: Fading Glory Held Sprint
 }
 
 Configs: {

@@ -2,6 +2,7 @@
 using CalamityMod.Items.Materials;
 using CalamityMod.NPCs.Abyss;
 using CalamityMod.NPCs.AquaticScourge;
+using CalamityMod.NPCs.AstrumAureus;
 using CalamityMod.NPCs.AstrumDeus;
 using CalamityMod.NPCs.DesertScourge;
 using CalamityMod.NPCs.DraedonLabThings;
@@ -245,6 +246,10 @@ namespace CalamityOverhaul
         public static int EidolonWyrmBody;
         public static int EidolonWyrmBodyAlt;
         public static int EidolonWyrmTail;
+        /// <summary>
+        /// 白金星舰
+        /// </summary>
+        public static int AstrumAureus;
 
         /// <summary>
         /// 月球领主
@@ -260,15 +265,6 @@ namespace CalamityOverhaul
         public static List<int> targetNpcTypes15;
 
         /// <summary>
-        /// 天堂吞噬者
-        /// </summary>
-        //public static List<int> targetNpcTypes16;
-        //public static int HEHead;
-        //public static int HEBody;
-        //public static int HEBodyAlt;
-        //public static int HETail;
-
-        /// <summary>
         /// 毁灭魔像
         /// </summary>
         public static List<int> targetNpcTypes17;
@@ -282,6 +278,14 @@ namespace CalamityOverhaul
         /// 蠕虫类体节
         /// </summary>
         public static int[] WormBodys;
+
+        public static class NPCValue
+        {
+            /// <summary>
+            /// 是否是一个金属性质的存在
+            /// </summary>
+            public static Dictionary<int, bool> TheofSteel;
+        }
 
         public static void Load() {
             InfiniteArrow = ProjectileType<InfiniteArrow>();
@@ -330,6 +334,8 @@ namespace CalamityOverhaul
             PerforatorHeadMedium = NPCType<PerforatorHeadMedium>();
             PerforatorBodyMedium = NPCType<PerforatorBodyMedium>();
             PerforatorTailMedium = NPCType<PerforatorTailMedium>();
+
+            AstrumAureus = NPCType<AstrumAureus>();
 
             ArmoredDiggerHead = NPCType<CalamityMod.NPCs.NormalNPCs.ArmoredDiggerHead>();
             ArmoredDiggerBody = NPCType<CalamityMod.NPCs.NormalNPCs.ArmoredDiggerBody>();
@@ -401,7 +407,7 @@ namespace CalamityOverhaul
             targetNpcTypes17 = new List<int> { RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight };
             WormBodys = new int[] { AquaticScourgeBody, ArmoredDiggerBody, StormWeaverBody, ArmoredDiggerBody
                 , CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
-                , AquaticScourgeBody, NPCID.TheDestroyerBody};
+                , AquaticScourgeBody, NPCID.TheDestroyerBody, SepulcherBody};
 
             MaterialsTypes = new int[]{
                 ItemType<AerialiteBar>(),//水华锭
@@ -557,8 +563,6 @@ namespace CalamityOverhaul
                     }
 
                     if (!ItemToShootID.ContainsKey(item.type)) {
-                        //int newShot = CWRUtils.RocketAmmo(item);
-                        //("添加射弹与物品对应词典: ItemID" + i + "-----" + item + "----- shootID:" + item.shoot).DompInConsole();
                         ItemToShootID.Add(item.type, item.shoot);
                         if (ShootToItemID.ContainsKey(item.shoot)) {
                             List<int> shoots = ShootToItemID[item.shoot];
@@ -571,11 +575,22 @@ namespace CalamityOverhaul
                 }
             }
 
-            /*
-            "————————————————————————————————————————————————————".DompInConsole();
-            $"装载完毕，ItemToShootID共装填入 {ItemToShootID.Count} 个对照索引".DompInConsole();
-            "————————————————————————————————————————————————————".DompInConsole();
-            */
+            NPCValue.TheofSteel = new Dictionary<int, bool>();
+            for (int i = 0; i < NPCLoader.NPCCount; i++) {
+                NPC npc = new NPC();
+                npc.SetDefaults(i);
+                bool isSteel = false;
+                if (npc.HitSound == SoundID.NPCHit2 
+                    || npc.HitSound == SoundID.NPCHit3 || npc.HitSound == SoundID.NPCHit4 
+                    || npc.HitSound == SoundID.NPCHit41 || npc.HitSound == SoundID.NPCHit42
+                    || targetNpcTypes10.Contains(npc.type) || targetNpcTypes15.Contains(npc.type)
+                    || targetNpcTypes7.Contains(npc.type) || targetNpcTypes7_1.Contains(npc.type)
+                    || targetNpcTypes6.Contains(npc.type) || targetNpcTypes7_1.Contains(npc.type)
+                    || npc.type == AstrumAureus) {
+                    isSteel = true;
+                }
+                NPCValue.TheofSteel.Add(i, isSteel);
+            }
 
             OnLoadContentBool = false;
         }
@@ -588,40 +603,40 @@ namespace CalamityOverhaul
             if (ammoItem.type == ItemID.FallenStar) {
                 ammoTypes = ProjectileID.StarCannonStar;
             }
-            if (ammoItem.type == ItemID.RocketI) {
+            else if (ammoItem.type == ItemID.RocketI) {
                 ammoTypes = ProjectileID.RocketI;
             }
-            if (ammoItem.type == ItemID.RocketII) {
+            else if (ammoItem.type == ItemID.RocketII) {
                 ammoTypes = ProjectileID.RocketII;
             }
-            if (ammoItem.type == ItemID.RocketIII) {
+            else if (ammoItem.type == ItemID.RocketIII) {
                 ammoTypes = ProjectileID.RocketIII;
             }
-            if (ammoItem.type == ItemID.RocketIV) {
+            else if (ammoItem.type == ItemID.RocketIV) {
                 ammoTypes = ProjectileID.RocketIV;
             }
-            if (ammoItem.type == ItemID.ClusterRocketI) {
+            else if (ammoItem.type == ItemID.ClusterRocketI) {
                 ammoTypes = ProjectileID.ClusterRocketI;
             }
-            if (ammoItem.type == ItemID.ClusterRocketII) {
+            else if (ammoItem.type == ItemID.ClusterRocketII) {
                 ammoTypes = ProjectileID.ClusterRocketII;
             }
-            if (ammoItem.type == ItemID.DryRocket) {
+            else if (ammoItem.type == ItemID.DryRocket) {
                 ammoTypes = ProjectileID.DryRocket;
             }
-            if (ammoItem.type == ItemID.WetRocket) {
+            else if (ammoItem.type == ItemID.WetRocket) {
                 ammoTypes = ProjectileID.WetRocket;
             }
-            if (ammoItem.type == ItemID.HoneyRocket) {
+            else if (ammoItem.type == ItemID.HoneyRocket) {
                 ammoTypes = ProjectileID.HoneyRocket;
             }
-            if (ammoItem.type == ItemID.LavaRocket) {
+            else if (ammoItem.type == ItemID.LavaRocket) {
                 ammoTypes = ProjectileID.LavaRocket;
             }
-            if (ammoItem.type == ItemID.MiniNukeI) {
+            else if (ammoItem.type == ItemID.MiniNukeI) {
                 ammoTypes = ProjectileID.MiniNukeRocketI;
             }
-            if (ammoItem.type == ItemID.MiniNukeII) {
+            else if (ammoItem.type == ItemID.MiniNukeII) {
                 ammoTypes = ProjectileID.MiniNukeRocketII;
             }
         }
