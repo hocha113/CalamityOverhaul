@@ -23,6 +23,7 @@ using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameInput;
+using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
@@ -1154,6 +1155,12 @@ namespace CalamityOverhaul
         public static void SafeLoadItem(int id) {
             if (id > 0 && id < TextureAssets.Item.Length && !Main.dedServ) {
                 Main.instance.LoadItem(id);
+            }
+        }
+
+        public static void ActivateSky(string key) {
+            if (!SkyManager.Instance[key].IsActive()) {
+                SkyManager.Instance.Activate(key);
             }
         }
 

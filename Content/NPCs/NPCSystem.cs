@@ -31,9 +31,6 @@ namespace CalamityOverhaul.Content.NPCs
             //加载生物定义
             new PerforatorBehavior().Load();
             new HiveMindBehavior().Load();
-            foreach (var set in NPCSets) {
-                set.Setup();
-            }
         }
 
         public override void Load() {
@@ -45,7 +42,6 @@ namespace CalamityOverhaul.Content.NPCs
                     object obj = Activator.CreateInstance(type);
                     if (obj is NPCSet inds) {
                         if (inds.CanLoad()) {
-                            inds.Load();
                             NPCSets.Add(inds);
                         }
                     }
@@ -77,12 +73,6 @@ namespace CalamityOverhaul.Content.NPCs
             onPostDraw_Method = getMethodInfo("PostDraw");
             if (onPostDraw_Method != null) {
                 MonoModHooks.Add(onPostDraw_Method, OnPostDrawHook);
-            }
-        }
-
-        public override void Unload() {
-            foreach (var set in NPCSets) {
-                set.UnLoad();
             }
         }
 

@@ -3860,6 +3860,7 @@ TextContent: {
 		AmmoBox_Text: 已到达部署上限
 		AmmoBox_Text2: 正在部署
 		AmmoBox_Text3: 已部署
+		HellfireExplosion_DeadLang_Text: 在地狱的烈火中化为灰烬
 		SupMUI_OneClick_Text1: 快捷放置材料
 		SupMUI_OneClick_Text2: 快捷拿取材料
 		TemporaryVersion_Text:

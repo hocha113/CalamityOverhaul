@@ -12,12 +12,6 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         public virtual bool CanLoad() { return true; }
 
-        public virtual void Setup() { }
-
-        public virtual void Load() { }
-
-        public virtual void UnLoad() { }
-
         public virtual bool? AI(NPC npc, Mod mod) { return null; }
 
         public virtual bool? Draw(Mod mod, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return null; }

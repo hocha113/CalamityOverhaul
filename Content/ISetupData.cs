@@ -1,5 +1,8 @@
 ﻿namespace CalamityOverhaul.Content
 {
+    /// <summary>
+    /// 提供一个通用的资源加载、卸载途径
+    /// </summary>
     internal interface ISetupData
     {
         /// <summary>

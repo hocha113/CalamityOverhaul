@@ -13,6 +13,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using System.Linq;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
@@ -257,6 +258,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BrutalSkeletronPrimeAI.FindPlayer(npc);
             BrutalSkeletronPrimeAI.CheakDead(npc, head);
             BrutalSkeletronPrimeAI.CheakRam(out cannonAlive, out viceAlive, out sawAlive, out _);
+            npc.aiStyle = -1;
             if (dontAttack) {
                 modNPC.newAI[2]++;
                 if (modNPC.newAI[2] >= timeToNotAttack)
@@ -272,5 +274,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             return false;
         }
+
+        int frame;
+        public override bool? Draw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            BrutalSkeletronPrimeAI.DrawArm(spriteBatch, NPC, screenPos);
+            Texture2D mainValue = BrutalSkeletronPrimeAI.BSPlaser.Value;
+            Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPlaserGlow.Value;
+            Main.EntitySpriteDraw(mainValue, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 1)
+                , drawColor, NPC.rotation, CWRUtils.GetOrig(mainValue, 1), NPC.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue2, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 1)
+                , Color.White, NPC.rotation, CWRUtils.GetOrig(mainValue, 1), NPC.scale, SpriteEffects.None, 0);
+            return false;
+        }
+        public override bool PostDraw(Mod mod, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
     }
 }

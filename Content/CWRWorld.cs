@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.OthermodMROs.Thorium.Core;
 using CalamityOverhaul.Content.OthermodMROs.Thorium.ItemSet;
 using CalamityOverhaul.Content.RemakeItems.Core;
@@ -70,6 +71,10 @@ namespace CalamityOverhaul.Content
                 RecipeUI.Instance.LoadPsreviewItems();
             }
             Gangarus.ZenithWorldAsset();
+        }
+
+        public override void PostUpdateEverything() {
+            //BrutalSkeletronPrimeAI.BSP_Main_NPC_Index = -1;
         }
 
         public override void SaveWorldData(TagCompound tag) {

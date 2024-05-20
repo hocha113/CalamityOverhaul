@@ -1,40 +1,135 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.NPCs;
+using CalamityMod.World;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
+using System.Reflection;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityMod.UI;
-using CalamityMod.World;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class BrutalSkeletronPrimeAI : NPCSet
+    internal class BrutalSkeletronPrimeAI : NPCSet, ISetupData
     {
         public override int targetID => NPCID.SkeletronPrime;
+        internal static int BSP_Main_NPC_Index = -1;
         private const int maxfindModes = 6000;
         private int frame = 0;
-        private bool spwanArm;
         private int primeCannon;
         private int primeSaw;
         private int primeVice;
         private int primeLaser;
         private int fireIndex;
-        bool cannonAlive;
-        bool viceAlive;
-        bool sawAlive;
-        bool laserAlive;
-        bool bossRush;
-        bool death;
-        Player player;
+        private bool cannonAlive;
+        private bool viceAlive;
+        private bool sawAlive;
+        private bool laserAlive;
+        private bool bossRush;
+        private bool death;
+        private Player player;
+        internal static Asset<Texture2D> HandAsset;
+        internal static Asset<Texture2D> BSPCannon;
+        internal static Asset<Texture2D> BSPlaser;
+        internal static Asset<Texture2D> BSPPliers;
+        internal static Asset<Texture2D> BSPSAW;
+        internal static Asset<Texture2D> BSPRAM;
+        internal static Asset<Texture2D> HandAssetGlow;
+        internal static Asset<Texture2D> BSPCannonGlow;
+        internal static Asset<Texture2D> BSPlaserGlow;
+        internal static Asset<Texture2D> BSPPliersGlow;
+        internal static Asset<Texture2D> BSPSAWGlow;
+        internal static Asset<Texture2D> BSPRAMGlow;
+
+        internal static void DrawArm(SpriteBatch spriteBatch, NPC rCurrentNPC, Vector2 screenPos) {
+            Vector2 vector7 = new Vector2(rCurrentNPC.position.X + rCurrentNPC.width * 0.5f - 5f * rCurrentNPC.ai[0], rCurrentNPC.position.Y + 20f);
+            for (int k = 0; k < 2; k++) {
+                float num21 = Main.npc[(int)rCurrentNPC.ai[1]].position.X + Main.npc[(int)rCurrentNPC.ai[1]].width / 2 - vector7.X;
+                float num22 = Main.npc[(int)rCurrentNPC.ai[1]].position.Y + Main.npc[(int)rCurrentNPC.ai[1]].height / 2 - vector7.Y;
+                float num23;
+                if (k == 0) {
+                    num21 -= 200f * rCurrentNPC.ai[0];
+                    num22 += 130f;
+                    num23 = (float)Math.Sqrt(num21 * num21 + num22 * num22);
+                    num23 = 92f / num23;
+                    vector7.X += num21 * num23;
+                    vector7.Y += num22 * num23;
+                }
+                else {
+                    num21 -= 50f * rCurrentNPC.ai[0];
+                    num22 += 80f;
+                    num23 = (float)Math.Sqrt(num21 * num21 + num22 * num22);
+                    num23 = 60f / num23;
+                    vector7.X += num21 * num23;
+                    vector7.Y += num22 * num23;
+                }
+                float rotation7 = (float)Math.Atan2(num22, num21) - 1.57f;
+                Color color7 = Lighting.GetColor((int)vector7.X / 16, (int)(vector7.Y / 16f));
+
+                Vector2 drawPos = new Vector2(vector7.X - screenPos.X, vector7.Y - screenPos.Y);
+                Vector2 drawOrig = new Vector2(TextureAssets.BoneArm.Width() * 0.5f, TextureAssets.BoneArm.Height() * 0.5f);
+                Rectangle drawRec = new Rectangle(0, 0, TextureAssets.BoneArm.Width(), TextureAssets.BoneArm.Height());
+                SpriteEffects spriteEffects = k == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+                spriteBatch.Draw(BSPRAM.Value, drawPos, drawRec, color7, rotation7, drawOrig, 1f, spriteEffects, 0f);
+                spriteBatch.Draw(BSPRAMGlow.Value, drawPos, drawRec, Color.White, rotation7, drawOrig, 1f, spriteEffects, 0f);
+
+                if (k == 0) {
+                    vector7.X += num21 * num23 / 2f;
+                    vector7.Y += num22 * num23 / 2f;
+                }
+                else if (Main.instance.IsActive) {
+                    vector7.X += num21 * num23 - 16f;
+                    vector7.Y += num22 * num23 - 6f;
+                    int num24 = Dust.NewDust(new Vector2(vector7.X, vector7.Y), 30, 10
+                        , DustID.FireworkFountain_Red, num21 * 0.02f, num22 * 0.02f, 0, Color.Gold, 0.5f);
+                    Main.dust[num24].noGravity = true;
+                }
+            }
+        }
+
+        void ISetupData.LoadData() {
+            if (Main.dedServ) {
+                return;
+            }
+            string path = CWRConstant.NPC + "BSP/";
+            HandAsset = CWRUtils.GetT2DAsset(path + "BrutalSkeletron");
+            BSPCannon = CWRUtils.GetT2DAsset(path + "BSPCannon");
+            BSPlaser = CWRUtils.GetT2DAsset(path + "BSPlaser");
+            BSPPliers = CWRUtils.GetT2DAsset(path + "BSPPliers");
+            BSPSAW = CWRUtils.GetT2DAsset(path + "BSPSAW");
+            BSPRAM = CWRUtils.GetT2DAsset(path + "BSPRAM");
+            HandAssetGlow = CWRUtils.GetT2DAsset(path + "BrutalSkeletronGlow");
+            BSPCannonGlow = CWRUtils.GetT2DAsset(path + "BSPCannonGlow");
+            BSPlaserGlow = CWRUtils.GetT2DAsset(path + "BSPlaserGlow");
+            BSPPliersGlow = CWRUtils.GetT2DAsset(path + "BSPPliersGlow");
+            BSPSAWGlow = CWRUtils.GetT2DAsset(path + "BSPSAWGlow");
+            BSPRAMGlow = CWRUtils.GetT2DAsset(path + "BSPRAMGlow");
+        }
+
+        void ISetupData.UnLoadData() {
+            HandAsset = null;
+            BSPCannon = null;
+            BSPlaser = null;
+            BSPPliers = null;
+            BSPSAW = null;
+            BSPRAM = null;
+            HandAssetGlow = null;
+            BSPCannonGlow = null;
+            BSPlaserGlow = null;
+            BSPPliersGlow = null;
+            BSPSAWGlow = null;
+            BSPRAMGlow = null;
+        }
 
         public override bool CanLoad() {
             return true;
@@ -105,7 +200,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-
         private void FindePlayer(NPC npc) {
             if (Main.player[npc.target].dead || Math.Abs(npc.position.X - Main.player[npc.target].position.X) > maxfindModes
                 || Math.Abs(npc.position.Y - Main.player[npc.target].position.Y) > maxfindModes) {
@@ -127,10 +221,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             npc.reflectsProjectiles = false;
-            if (npc.ai[0] == 0f && Main.netMode != NetmodeID.MultiplayerClient) {
-                npc.TargetClosest();
-                spanArm(npc);
-                fireIndex = 0;
+            if (npc.ai[0] == 0f) {
+                if (Main.netMode != NetmodeID.MultiplayerClient) {
+                    npc.TargetClosest();
+                    spanArm(npc);
+                    fireIndex = 0;
+                }
+                if (!Main.dedServ) {
+                    CWRUtils.ActivateSky("CWRMod:BrutalSkeletronSky");
+                }
                 npc.ai[0] = 1f;
             }
 
@@ -152,9 +251,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.ai[1] = 1f;
                     npc.Calamity().newAI[0]++;
                     if (!CWRUtils.isClient && npc.Calamity().newAI[0] >= 2) {
-                        Projectile.NewProjectile(npc.GetSource_FromAI()
-                            , npc.Center + player.velocity.UnitVector().RotatedByRandom(0.6f) * Main.rand.Next(1600, 1800)
-                            , new Vector2(0, 0), ModContent.ProjectileType<SetPosingStarm>(), npc.damage, 2, -1, 0, npc.whoAmI);
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
+                            , ModContent.ProjectileType<SetPosingStarm>(), npc.damage, 2, -1, 0, npc.whoAmI);
                         npc.Calamity().newAI[0] = 0;
                         npc.SyncExtraAI();
                         fireIndex++;
@@ -237,7 +335,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 MoveTowardsPlayer(npc, 10f, 8f, 32f, 100f);
             }
             else {
-                if (npc.ai[1] != 3f) 
+                if (npc.ai[1] != 3f)
                     return false;
                 HandleDespawn(npc);
             }
@@ -415,22 +513,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void leisureAI(NPC npc, Player player) {
-            npc.Move(player.Center + new Vector2(0, -450), 12, 0);
-            if (!spwanArm) {
-                SoundEngine.PlaySound(SoundID.Roar);
-                spanArm(npc);
-                spwanArm = true;
-            }
-        }
-
-        private void killArm() {
-            Main.npc[primeCannon].active = false;
-            Main.npc[primeSaw].active = false;
-            Main.npc[primeVice].active = false;
-            Main.npc[primeLaser].active = false;
-        }
-
         private void spanArm(NPC npc, int limit = 0) {
             if (limit == 1 || limit == 0) {
                 primeCannon = NPC.NewNPC(npc.GetSource_FromAI(), (int)npc.Center.X, (int)npc.Center.Y, NPCID.PrimeCannon, npc.whoAmI);
@@ -468,8 +550,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override bool? Draw(Mod mod, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
         public override bool PostDraw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            Texture2D mainValue = CalamityMod.CalamityMod.ChadPrime.Value;
-            Texture2D mainValue2 = CalamityMod.CalamityMod.ChadPrimeEyeGlowmask.Value;
+            Texture2D mainValue = HandAsset.Value;
+            Texture2D mainValue2 = HandAssetGlow.Value;
             Main.EntitySpriteDraw(mainValue, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
                 , drawColor, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(mainValue2, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)

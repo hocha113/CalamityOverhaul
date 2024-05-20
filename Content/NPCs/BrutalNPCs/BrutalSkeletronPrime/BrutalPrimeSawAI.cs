@@ -3,6 +3,7 @@ using CalamityMod.NPCs;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -213,6 +214,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BrutalSkeletronPrimeAI.FindPlayer(npc);
             BrutalSkeletronPrimeAI.CheakDead(npc, head);
             BrutalSkeletronPrimeAI.CheakRam(out cannonAlive, out viceAlive, out _, out laserAlive);
+            npc.aiStyle = -1;
             Vector2 sawArmLocation = npc.Center;
             float sawArmIdleXPos = head.Center.X - 200f * npc.ai[0] - sawArmLocation.X;
             float sawArmIdleYPos = head.position.Y + 230f - sawArmLocation.Y;
@@ -286,5 +288,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             return false;
         }
+        int frame;
+        public override bool? Draw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            BrutalSkeletronPrimeAI.DrawArm(spriteBatch, NPC, screenPos);
+            Texture2D mainValue = BrutalSkeletronPrimeAI.BSPSAW.Value;
+            Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPSAWGlow.Value;
+            Main.EntitySpriteDraw(mainValue, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 2)
+                , drawColor, NPC.rotation, CWRUtils.GetOrig(mainValue, 2), NPC.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue2, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 2)
+                , Color.White, NPC.rotation, CWRUtils.GetOrig(mainValue, 2), NPC.scale, SpriteEffects.None, 0);
+            return false;
+        }
+        public override bool PostDraw(Mod mod, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
     }
 }

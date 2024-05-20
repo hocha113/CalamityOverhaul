@@ -3791,6 +3791,7 @@ TextContent: {
 		AmmoBox_Text: The deployment upper limit has been reached
 		AmmoBox_Text2: Being deployed
 		AmmoBox_Text3: " Deployed"
+		HellfireExplosion_DeadLang_Text: To burn in the flames of hell
 		SupMUI_OneClick_Text1: Quick placement material
 		SupMUI_OneClick_Text2: Quick access to material
 		TemporaryVersion_Text:

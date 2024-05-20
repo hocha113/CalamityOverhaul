@@ -3,8 +3,10 @@ using CalamityMod.NPCs;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -21,6 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         bool laserAlive;
         NPC head;
         Player player;
+        int frame;
 
         // 计算加速度的函数
         float CalculateAcceleration(bool bossRush, bool death, bool masterMode, bool cannonAlive, bool laserAlive, bool sawAlive) {
@@ -187,6 +190,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BrutalSkeletronPrimeAI.FindPlayer(npc);
             BrutalSkeletronPrimeAI.CheakDead(npc, head);
             BrutalSkeletronPrimeAI.CheakRam(out cannonAlive, out _, out sawAlive, out laserAlive);
+            npc.aiStyle = -1;
             Vector2 viceArmPosition = npc.Center;
             float viceArmIdleXPos = head.Center.X - 200f * npc.ai[0] - viceArmPosition.X;
             float viceArmIdleYPos = head.position.Y + 230f - viceArmPosition.Y;
@@ -298,5 +302,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             return false;
         }
+
+        public override bool? Draw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            BrutalSkeletronPrimeAI.DrawArm(spriteBatch, NPC, screenPos);
+            Texture2D mainValue = BrutalSkeletronPrimeAI.BSPPliers.Value;
+            Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPPliersGlow.Value;
+            Main.EntitySpriteDraw(mainValue, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 2)
+                , drawColor, NPC.rotation, CWRUtils.GetOrig(mainValue, 2), NPC.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue2, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 2)
+                , Color.White, NPC.rotation, CWRUtils.GetOrig(mainValue, 2), NPC.scale, SpriteEffects.None, 0);
+            return false;
+        }
+
+        public override bool PostDraw(Mod mod, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
     }
 }

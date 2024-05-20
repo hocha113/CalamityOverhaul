@@ -5,6 +5,7 @@ using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -91,7 +92,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.rotation = (float)Math.Atan2(cannonArmTargetY, cannonArmTargetX) - MathHelper.PiOver2;
 
             if (Main.netMode != NetmodeID.MultiplayerClient && !dontAttack) {
-                // Fire rocket every 2 seconds (change this as each arm dies to fire more aggressively)
                 npc.localAI[0] += 1f;
                 if (!laserAlive)
                     npc.localAI[0] += 1f;
@@ -147,7 +147,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.rotation = (float)Math.Atan2(cannonSpreadArmTargetY, cannonSpreadArmTargetX) - MathHelper.PiOver2;
 
             if (Main.netMode != NetmodeID.MultiplayerClient && !dontAttack) {
-                // Fire rockets every 2 seconds (change this as each arm dies to fire more aggressively)
                 npc.localAI[0] += 1f;
                 if (!laserAlive)
                     npc.localAI[0] += 0.5f;
@@ -196,6 +195,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BrutalSkeletronPrimeAI.FindPlayer(npc);
             BrutalSkeletronPrimeAI.CheakDead(npc, head);
             BrutalSkeletronPrimeAI.CheakRam(out _, out viceAlive, out sawAlive, out laserAlive);
+            npc.aiStyle = -1;
             float timeToNotAttack = 180f;
             dontAttack = npc.Calamity().newAI[2] < timeToNotAttack;
             if (dontAttack) {
@@ -212,7 +212,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             else {
                 fireSlower = npc.ai[2] == 0f;
                 if (fireSlower) {
-                    // Go to other phase after 13.33 seconds (change this as each arm dies)
                     npc.ai[3] += 1f;
                     if (!laserAlive)
                         npc.ai[3] += 1f;
@@ -231,7 +230,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     }
                 }
                 else {
-                    // Go to phase 1 after 2 seconds (change this as each arm dies to stay in this phase for longer)
                     npc.ai[3] += 1f;
 
                     float timeLimit = 120f;
@@ -266,5 +264,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             return false;
         }
+
+        int frame;
+        public override bool? Draw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            BrutalSkeletronPrimeAI.DrawArm(spriteBatch, NPC, screenPos);
+            Texture2D mainValue = BrutalSkeletronPrimeAI.BSPCannon.Value;
+            Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPCannonGlow.Value;
+            Main.EntitySpriteDraw(mainValue, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 1)
+                , drawColor, NPC.rotation, CWRUtils.GetOrig(mainValue, 1), NPC.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue2, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 1)
+                , Color.White, NPC.rotation, CWRUtils.GetOrig(mainValue, 1), NPC.scale, SpriteEffects.None, 0);
+            return false;
+        }
+        public override bool PostDraw(Mod mod, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
     }
 }

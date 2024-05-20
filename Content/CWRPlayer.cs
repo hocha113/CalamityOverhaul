@@ -101,7 +101,6 @@ namespace CalamityOverhaul.Content
         public bool HeldBowBool;
         public bool NoCanAutomaticCartridgeChange;
         public bool RustyMedallion_Value;
-        public bool ReceivingPlatform;
         public int ReceivingPlatformTime;
         #region NetCode
         public bool DompBool;
@@ -112,6 +111,7 @@ namespace CalamityOverhaul.Content
         #region Buff
         public bool TyrantsFuryBuffBool;
         public bool FlintSummonBool;
+        public bool HellfireExplosion;
         #endregion
 
         private static Asset<Texture2D> Quiver_back_Asset;
@@ -126,46 +126,36 @@ namespace CalamityOverhaul.Content
         }
 
         public override void Initialize() {
-            TheRelicLuxor = 0;
-            PressureIncrease = 1;
-            HeldStyle = -1;
             TETramContrType = 0;
             ReceivingPlatformTime = 0;
-            OnHit = false;           
-            LoadMuzzleBrake = false;
             InitialCreation = true;
-            HeldRangedBool = false;
-            HeldFeederGunBool = false;
-            HeldGunBool = false;
-            HeldBowBool = false;
-            NoCanAutomaticCartridgeChange = false;
-            RustyMedallion_Value = false;
-            HasOverhaulTheBibleBook = false;
-            ReceivingPlatform = false;
+            Reset();
         }
 
-        public override void ResetEffects() {
+        public override void ResetEffects() => Reset();
+
+        private void Reset() {
             OffsetScreenPos = Vector2.Zero;
             TheRelicLuxor = 0;
             LoadMuzzleBrakeLevel = 0;
             PressureIncrease = 1;
             HeldStyle = -1;
             OnHit = false;
-            InFoodStallChair = false;
-            EndlessStabilizerBool = false;
-            HeldMurasamaBool = false;
-            EndSkillEffectStartBool = false;
-            LoadMuzzleBrake = false;
-            TyrantsFuryBuffBool = false;
-            FlintSummonBool = false;
-            HeldRangedBool = false;
-            HeldFeederGunBool = false;
             HeldGunBool = false;
             HeldBowBool = false;
+            FlintSummonBool = false;
+            LoadMuzzleBrake = false;
+            InFoodStallChair = false;
+            HeldRangedBool = false;
+            HeldMurasamaBool = false;
+            HeldFeederGunBool = false;
+            EndlessStabilizerBool = false;
+            EndSkillEffectStartBool = false;
+            TyrantsFuryBuffBool = false;
             NoCanAutomaticCartridgeChange = false;
             RustyMedallion_Value = false;
             HasOverhaulTheBibleBook = false;
-            ReceivingPlatform = false;
+            HellfireExplosion = false;
         }
 
         public override void SaveData(TagCompound tag) {
@@ -362,6 +352,23 @@ namespace CalamityOverhaul.Content
                 _ = itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperShortsword);
                 _ = itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperPickaxe);
             }
+        }
+
+        public override void UpdateBadLifeRegen() {
+            if (HellfireExplosion) {
+                if (Player.lifeRegen > 0) {
+                    Player.lifeRegen = 0;
+                }
+                Player.lifeRegenTime = 0;
+                Player.lifeRegen -= 20;
+            }
+        }
+
+        public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource) {
+            if (HellfireExplosion) {
+                damageSource = PlayerDeathReason.ByCustomReason(Player.name + CWRLocText.GetTextValue("HellfireExplosion_DeadLang_Text"));
+            }
+            return true;
         }
 
         /// <summary>

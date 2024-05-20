@@ -11,6 +11,7 @@ using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Summon.Extras;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.OverhaulBehavior;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
@@ -40,6 +41,7 @@ namespace CalamityOverhaul.Content
         public byte WhipHitType = 0;
         public bool SprBoss;
         public bool ObliterateBool;
+        public int BSP_Main_NPC_Index;
         /// <summary>
         /// 一个特殊标记，用于朗基努斯识别目标
         /// </summary>
@@ -64,7 +66,9 @@ namespace CalamityOverhaul.Content
         /// 极寒神性屏障
         /// </summary>
         public bool IceParclose;
+        public bool HellfireExplosion;
         public bool VoidErosionBool;
+
         public static Asset<Texture2D> IceParcloseAsset;
 
         public override void Load() {
@@ -229,6 +233,9 @@ namespace CalamityOverhaul.Content
         public override void UpdateLifeRegen(NPC npc, ref int damage) {
             if (VoidErosionBool) {
                 DebuffSet(10000, 8000, ref npc.lifeRegen, ref damage);
+            }
+            if (HellfireExplosion) {
+                DebuffSet(1000, 80, ref npc.lifeRegen, ref damage);
             }
         }
 

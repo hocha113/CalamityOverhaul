@@ -10,6 +10,7 @@ using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Particles;
 using Terraria.Graphics.Shaders;
 using CalamityMod;
+using CalamityOverhaul.Content.Buffs;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
@@ -50,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     continue;
                 }
                 if (p.Distance(Projectile.Center) > modeings) {
-                    p.AddBuff(BuffID.OnFire3, 2);
+                    p.AddBuff(ModContent.BuffType<HellfireExplosion>(), 2);
                 }
             }
 
