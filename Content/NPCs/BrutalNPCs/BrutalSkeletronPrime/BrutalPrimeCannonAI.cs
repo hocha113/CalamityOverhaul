@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class BrutalPrimeCannonAI : NPCSet
+    internal class BrutalPrimeCannonAI : NPCCoverage
     {
         public override int targetID => NPCID.PrimeCannon;
         bool bossRush;

@@ -17,7 +17,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class BrutalPrimeLaserAI : NPCSet
+    internal class BrutalPrimeLaserAI : NPCCoverage
     {
         public override int targetID => NPCID.PrimeLaser;
         const float timeToNotAttack = 180f;

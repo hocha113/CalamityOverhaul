@@ -15,24 +15,27 @@ using static CalamityOverhaul.CWRMod;
 
 namespace CalamityOverhaul.Content.RemakeItems.Core
 {
-    public delegate void On_SetDefaults_Dalegate(Item item, bool createModItem = true);
-    public delegate bool On_Shoot_Dalegate(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, bool defaultResult = true);
-    public delegate void On_HitNPC_Delegate(Item item, Player player, NPC target, in NPC.HitInfo hit, int damageDone);
-    public delegate void On_HitPvp_Delegate(Item item, Player player, Player target, Player.HurtInfo hurtInfo);
-    public delegate void On_ModifyHitNPC_Delegate(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers);
-    public delegate bool On_CanUseItem_Delegate(Item item, Player player);
-    public delegate bool On_PreDrawInInventory_Delegate(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale);
-    public delegate bool? On_UseItem_Delegate(Item item, Player player);
-    public delegate void On_UseAnimation_Delegate(Item item, Player player);
-    public delegate void On_ModifyWeaponCrit_Delegate(Item item, Player player, ref float crit);
-    public delegate void On_ModifyItemLoot_Delegate(Item item, ItemLoot itemLoot);
-    public delegate bool On_CanConsumeAmmo_Delegate(Item weapon, Item ammo, Player player);
-    public delegate void On_ModifyWeaponDamage_Delegate(Item item, Player player, ref StatModifier damage);
-    public delegate void On_UpdateAccessory_Delegate(Item item, Player player, bool hideVisual);
-    public delegate void On_ModItem_ModifyTooltips_Delegate(object obj, List<TooltipLine> list);
-
+    /// <summary>
+    /// 所有关于物品的覆盖和性质重写钩子在此处挂载
+    /// </summary>
     internal class RItemSystem : ModSystem
     {
+        internal delegate void On_SetDefaults_Dalegate(Item item, bool createModItem = true);
+        internal delegate bool On_Shoot_Dalegate(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, bool defaultResult = true);
+        internal delegate void On_HitNPC_Delegate(Item item, Player player, NPC target, in NPC.HitInfo hit, int damageDone);
+        internal delegate void On_HitPvp_Delegate(Item item, Player player, Player target, Player.HurtInfo hurtInfo);
+        internal delegate void On_ModifyHitNPC_Delegate(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers);
+        internal delegate bool On_CanUseItem_Delegate(Item item, Player player);
+        internal delegate bool On_PreDrawInInventory_Delegate(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale);
+        internal delegate bool? On_UseItem_Delegate(Item item, Player player);
+        internal delegate void On_UseAnimation_Delegate(Item item, Player player);
+        internal delegate void On_ModifyWeaponCrit_Delegate(Item item, Player player, ref float crit);
+        internal delegate void On_ModifyItemLoot_Delegate(Item item, ItemLoot itemLoot);
+        internal delegate bool On_CanConsumeAmmo_Delegate(Item weapon, Item ammo, Player player);
+        internal delegate void On_ModifyWeaponDamage_Delegate(Item item, Player player, ref StatModifier damage);
+        internal delegate void On_UpdateAccessory_Delegate(Item item, Player player, bool hideVisual);
+        internal delegate void On_ModItem_ModifyTooltips_Delegate(object obj, List<TooltipLine> list);
+
         public static Type itemLoaderType;
         public static MethodBase onSetDefaultsMethod;
         public static MethodBase onShootMethod;

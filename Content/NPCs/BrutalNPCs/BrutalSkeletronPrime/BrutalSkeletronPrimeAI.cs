@@ -20,7 +20,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class BrutalSkeletronPrimeAI : NPCSet, ISetupData
+    internal class BrutalSkeletronPrimeAI : NPCCoverage, ISetupData
     {
         public override int targetID => NPCID.SkeletronPrime;
         internal static int BSP_Main_NPC_Index = -1;

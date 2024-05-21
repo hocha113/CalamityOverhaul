@@ -6,7 +6,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.Core
 {
-    internal class NPCSet
+    /// <summary>
+    /// 提供一个强行覆盖目标NPC行为性质的基类，通过OnFrom钩子为基础运行
+    /// </summary>
+    internal class NPCCoverage
     {
         public virtual int targetID => NPCID.None;
 
