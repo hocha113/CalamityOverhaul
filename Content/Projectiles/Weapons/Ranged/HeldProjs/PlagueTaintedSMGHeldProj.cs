@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PreInOwnerUpdate() {
             LoadingAnimation(50, 3, 25);
             CanRightClick = BulletNum >= 6;
-            if (CalPlayer.mouseRight && BulletNum < 6) {
+            if (CalOwner.mouseRight && BulletNum < 6) {
                 SetAutomaticCartridgeChange(true);
             }
         }

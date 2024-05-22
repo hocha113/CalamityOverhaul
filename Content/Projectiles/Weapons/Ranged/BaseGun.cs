@@ -302,7 +302,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 onFire = false;
             }
             
-            if (CalPlayer.mouseRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
+            if (CalOwner.mouseRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
                 setBaseFromeAI();
                 if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
                     SafeMousetStart2 = true;
@@ -494,7 +494,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public bool overNoFireCeahks() {
-            return !CalPlayer.profanedCrystalBuffs;
+            return !CalOwner.profanedCrystalBuffs;
         }
 
         public override void AI() {

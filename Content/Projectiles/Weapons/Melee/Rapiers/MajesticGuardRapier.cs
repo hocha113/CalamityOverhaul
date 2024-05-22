@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Terraria;
 using Terraria.ModLoader;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         public override void SetRapiers() {
             overHitModeing = 73;
             SkialithVarSpeedMode = 3;
-            drawOrig = new Microsoft.Xna.Framework.Vector2(0, 100);
+            drawOrig = new Vector2(0, 100);
         }
 
         public override void ExtraShoot() {

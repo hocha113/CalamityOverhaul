@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
         public override string TargetToolTipItemName => "GreentideEcType";
 
-
         public override void SetDefaults(Item item) {
             item.damage = 95;
             item.DamageType = DamageClass.Melee;

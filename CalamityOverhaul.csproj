@@ -24,6 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="0.4.0.1.1.txt" />
+    <None Remove="Assets\Effects\ColorGradient.fx" />
     <None Remove="Assets\Effects\InShootGlow.fx" />
     <None Remove="Assets\Effects\NeutronRingShader.fx" />
     <None Remove="Assets\Effects\PrimeHaloShader.fx" />

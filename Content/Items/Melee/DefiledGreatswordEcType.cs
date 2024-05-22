@@ -1,12 +1,14 @@
-﻿using CalamityMod.Buffs.StatBuffs;
+﻿using CalamityMod;
+using CalamityMod.Buffs.StatBuffs;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -18,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 暴君巨刃
     /// </summary>
-    internal class DefiledGreatswordEcType : EctypeItem
+    internal class DefiledGreatswordEcType : EctypeItem, ISetupData
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DefiledGreatsword";
 
@@ -27,6 +29,22 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float rageEnergy {
             get => Item.CWR().MeleeCharge;
             set => Item.CWR().MeleeCharge = value;
+        }
+
+        static Asset<Texture2D> rageEnergyTopAsset;
+        static Asset<Texture2D> rageEnergyBarAsset;
+        static Asset<Texture2D> rageEnergyBackAsset;
+        void ISetupData.SetupData() {
+            if (!Main.dedServ) {
+                rageEnergyTopAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyTop");
+                rageEnergyBarAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyBar");
+                rageEnergyBackAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyBack");
+            }
+        }
+        void ISetupData.UnLoadData() {
+            rageEnergyTopAsset = null;
+            rageEnergyBarAsset = null;
+            rageEnergyBackAsset = null;
         }
 
         public override void SetDefaults() {
@@ -45,35 +63,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ModContent.RarityType<Turquoise>();
             Item.shoot = ModContent.ProjectileType<BlazingPhantomBlade>();
             Item.shootSpeed = 12f;
-            
+            Item.CWR().heldProjType = ModContent.ProjectileType<DefiledGreatswordHeld>();
         }
 
-        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position
-            , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            base.PostDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
-            if (Item.CWR().HoldOwner != null && rageEnergy > 0) {
-                DrawRageEnergyChargeBar(Item.CWR().HoldOwner);
-            }
-        }
-
-        public override void UpdateInventory(Player player) {
-            UpdateBar();
-            base.UpdateInventory(player);
-        }
-
-        public override void HoldItem(Player player) {
-            if (Item.CWR().HoldOwner == null) {
-                Item.CWR().HoldOwner = player;
-            }
-
-            UpdateBar();
-            base.HoldItem(player);
-        }
-
-        private void UpdateBar() {
-            if (rageEnergy > DefiledGreatswordMaxRageEnergy) {
-                rageEnergy = DefiledGreatswordMaxRageEnergy;
-            }
+        internal static void UpdateBar(Item item) {
+            if (item.CWR().MeleeCharge > DefiledGreatswordMaxRageEnergy)
+                item.CWR().MeleeCharge = DefiledGreatswordMaxRageEnergy;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -87,31 +82,19 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
 
                 if (rageEnergy == 0) {
-                    _ = Projectile.NewProjectile(
-                        source,
-                        position,
-                        velocity,
-                        type,
-                        damage,
-                        knockback,
-                        player.whoAmI,
-                        1
-                        );
+                    float adjustedItemScale = player.GetAdjustedItemScale(Item);
+                    float ai1 = 40;
+                    float velocityMultiplier = 2;
+                    Projectile.NewProjectile(source, player.MountedCenter, velocity * velocityMultiplier, ModContent.ProjectileType<BlazingPhantomBlade>(), (int)(damage * 0.75)
+                        , knockback * 0.5f, player.whoAmI, (float)player.direction * player.gravDir, ai1, adjustedItemScale);
                 }
                 else {
-
-                    for (int i = 0; i < 2; i++) {
-                        float rot = MathHelper.ToRadians(-10 + (i * 20));
-                        _ = Projectile.NewProjectile(
-                            source,
-                            position,
-                            velocity.RotatedBy(rot),
-                            type,
-                            damage,
-                            knockback,
-                            player.whoAmI,
-                            1
-                        );
+                    float adjustedItemScale = player.GetAdjustedItemScale(Item);
+                    for (int i = 0; i < 3; i++) {
+                        float ai1 = 40 + i * 8;
+                        float velocityMultiplier = 1f - i / (float)3;
+                        Projectile.NewProjectile(source, player.MountedCenter, velocity * velocityMultiplier, ModContent.ProjectileType<BlazingPhantomBlade>(), (int)(damage * 0.75)
+                            , knockback * 0.5f, player.whoAmI, (float)player.direction * player.gravDir, ai1, adjustedItemScale);
                     }
                 }
             }
@@ -197,56 +180,28 @@ namespace CalamityOverhaul.Content.Items.Melee
             target.AddBuff(70, 150);
         }
 
-        public void DrawRageEnergyChargeBar(Player player) {
-            if (player.HeldItem != Item) {
+        public static void DrawRageEnergyChargeBar(Player player, float alp) {
+            Item item = player.ActiveItem();
+            if (item.IsAir) {
                 return;
             }
-
-            Texture2D rageEnergyTop = CWRUtils.GetT2DValue(CWRConstant.UI + "RageEnergyTop");
-            Texture2D rageEnergyBar = CWRUtils.GetT2DValue(CWRConstant.UI + "RageEnergyBar");
-            Texture2D rageEnergyBack = CWRUtils.GetT2DValue(CWRConstant.UI + "RageEnergyBack");
+            Texture2D rageEnergyTop = rageEnergyTopAsset.Value;
+            Texture2D rageEnergyBar = rageEnergyBarAsset.Value;
+            Texture2D rageEnergyBack = rageEnergyBackAsset.Value;
             float slp = 3;
             int offsetwid = 4;
-            Vector2 drawPos = CWRUtils.WDEpos(player.Center + new Vector2(rageEnergyBar.Width / -2 * slp, 135));
-            Rectangle backRec = new(offsetwid, 0, (int)((rageEnergyBar.Width - (offsetwid * 2)) * (rageEnergy / DefiledGreatswordMaxRageEnergy)), rageEnergyBar.Height);
+            float max = DefiledGreatswordMaxRageEnergy;
+            if (item.type == ModContent.ItemType<BlightedCleaverEcType>() || item.type == ModContent.ItemType<BlightedCleaver>()) {
+                max = BlightedCleaverEcType.BlightedCleaverMaxRageEnergy;
+            }
+            Vector2 drawPos = CWRUtils.WDEpos(player.GetPlayerStabilityCenter() + new Vector2(rageEnergyBar.Width / -2 * slp, 135));
+            Rectangle backRec = new(offsetwid, 0, (int)((rageEnergyBar.Width - (offsetwid * 2)) * (item.CWR().MeleeCharge / max)), rageEnergyBar.Height);
 
-            Main.spriteBatch.ResetBlendState();
-            Main.EntitySpriteDraw(
-                rageEnergyBack,
-                drawPos,
-                null,
-                Color.White,
-                0,
-                Vector2.Zero,
-                slp,
-                SpriteEffects.None,
-                0
-                );
+            Main.EntitySpriteDraw(rageEnergyBack, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(rageEnergyBar, drawPos + (new Vector2(offsetwid, 0) * slp)
+                , backRec, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
 
-            Main.EntitySpriteDraw(
-                rageEnergyBar,
-                drawPos + (new Vector2(offsetwid, 0) * slp),
-                backRec,
-                Color.White,
-                0,
-                Vector2.Zero,
-                slp,
-                SpriteEffects.None,
-                0
-                );
-
-            Main.EntitySpriteDraw(
-                rageEnergyTop,
-                drawPos,
-                null,
-                Color.White,
-                0,
-                Vector2.Zero,
-                slp,
-                SpriteEffects.None,
-                0
-                );
-            Main.spriteBatch.ResetUICanvasState();
+            Main.EntitySpriteDraw(rageEnergyTop, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
         }
     }
 }

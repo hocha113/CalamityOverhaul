@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 获取对应的<see cref="CWRPlayer"/>实例，在弹幕初始化时更新这个值
         /// </summary>
         public CWRPlayer ModOwner = null;
-        protected CalamityPlayer CalPlayer;
+        protected CalamityPlayer CalOwner;
         /// <summary>
         /// 获取对应的<see cref="CWRItems"/>实例，在弹幕初始化时更新这个值
         /// </summary>
@@ -246,6 +246,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
+        private void UpdateRogueStealth() {
+            bool isVmos = true;
+            if (CWRMod.Instance.narakuEye != null) {
+                isVmos = (bool)CWRMod.Instance.narakuEye.Call(Owner);
+                if (CalOwner.StealthStrikeAvailable()) {
+                    isVmos = false;
+                }
+            }
+            if (!isVmos) {
+                CalOwner.rogueStealth = 0;
+                if (CalOwner.stealthUIAlpha > 0.02f) {
+                    CalOwner.stealthUIAlpha -= 0.02f;
+                }
+            }
+        }
+
         public override bool PreAI() {
             if (!CheckAlive()) {
                 Projectile.Kill();
@@ -255,14 +271,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             ModItem = Item.CWR();
             ModOwner = Owner.CWR();
             ModOwner.HeldRangedBool = true;
-            CalPlayer = Owner.Calamity();
+            CalOwner = Owner.Calamity();
             UpdateSafeMouseInterfaceValue();
             if (CanFire && _safeMouseInterfaceValue) {
                 Owner.itemTime = 2;
-                CalPlayer.rogueStealth = 0;
-                if (CalPlayer.stealthUIAlpha > 0.02f) {
-                    CalPlayer.stealthUIAlpha -= 0.02f;
-                }
+                UpdateRogueStealth();
             }
             if (ModItem.Scope && Projectile.IsOwnedByLocalPlayer()) {
                 ScopeSrecen();

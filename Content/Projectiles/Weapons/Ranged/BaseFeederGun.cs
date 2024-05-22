@@ -517,7 +517,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     onFire = false;
                 }
 
-                if (CalPlayer.mouseRight && !onFire && CanRightClick && SafeMousetStart 
+                if (CalOwner.mouseRight && !onFire && CanRightClick && SafeMousetStart 
                     && (!CartridgeHolderUI.Instance.OnMainP || SafeMousetStart2)) {//Owner.PressKey()
                     setBaseFromeAI();
                     if (IsKreload && Projectile.IsOwnedByLocalPlayer()) {
@@ -630,6 +630,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             PostInOwnerUpdate();
             Projectile.netUpdate = true;
         }
+
         /// <summary>
         /// 该弹药物品是否应该判定为一个无限弹药
         /// </summary>
@@ -648,7 +649,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 退还弹匣内非空子弹
         /// </summary>
         public void BulletReturn() {
-            if (ModItem.MagazineContents != null && ModItem.MagazineContents.Length > 0 && ReturnRemainingBullets) {
+            if (ModItem.MagazineContents != null && ModItem.MagazineContents.Length > 0 && ReturnRemainingBullets 
+                && Projectile.IsOwnedByLocalPlayer()/*这个操作只能在弹幕主人身上来完成，否则会导致多次给予子弹*/) {
                 foreach (Item i in ModItem.MagazineContents) {//在装弹之前返回玩家弹匣中剩余的弹药
                     if (i.stack > 0 && i.type != ItemID.None) {
                         if (i.CWR().AmmoProjectileReturn) {

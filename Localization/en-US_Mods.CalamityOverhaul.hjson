@@ -2514,18 +2514,58 @@ Items: {
 	}
 
 	GrandGuardianEcType: {
-		DisplayName: Grand Guardian Ec Type
-		Tooltip: ""
+		DisplayName: Grand Guardian
+		Tooltip:
+			'''
+			True melee sends powerful blades flying from behind the player
+			Non-close combat will actively fire the blade, piercing the target's body when it hits
+			The target's defense value is added to true Melee critical damage
+			"My king, I will guard."
+			'''
 	}
 
 	MajesticGuardEcType: {
-		DisplayName: Majestic Guard Ec Type
-		Tooltip: ""
+		DisplayName: Majestic Guard
+		Tooltip:
+			'''
+			Non-true proximity battles will actively fire the blade, which will plunge into the wall
+			"My king, I will guard."
+			'''
 	}
 
 	FadingGlory: {
 		DisplayName: Fading Glory
-		Tooltip: ""
+		Tooltip:
+			'''
+			True melee hits a target that heals the player if the target is an organism, 
+			and releases a lot of sparks if the target is non-organism
+			Non-true proximity battles will actively fire the blade, 
+			which will generate an extra bell chasing ghost cut after 
+			hitting the target and release a blood tentacle when exploding
+			'''
+	}
+
+	LucreciaEcType: {
+		DisplayName: Lucrecia
+		Tooltip: Launch the Demon Crystal sting
+	}
+
+	MirrorBladeEcType: {
+		DisplayName: Mirror Blade
+		Tooltip: Launch a flying Magic Mirror blade
+	}
+
+	TheDarkMasterEcType: {
+		DisplayName: The Dark Master
+		Tooltip:
+			'''
+			When True Melee hits the target, summon the Dark Contract, 
+			and three shadow replicas will fight together with the player
+			When Dark Covenants exist, if a player is injured, 
+			all Shadow replicas are immediately disbanded
+			It also gives the player 3 seconds of Dark Fear reduction, 
+			during which the player can no longer summon Dark Covenants through true Melee
+			'''
 	}
 }
 
@@ -2540,6 +2580,7 @@ Projectiles: {
 		RCosmicShivProjectile.DisplayName: R Cosmic Shiv Projectile
 		RStreamGougeProj.DisplayName: R Stream Gouge Proj
 		MourningSkull2.DisplayName: Mourning Skull2
+		SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
 	}
 
 	DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
@@ -3016,8 +3057,8 @@ Projectiles: {
 	BarinadeHeldProj.DisplayName: Barinade
 	BrimstoneFuryHeldProj.DisplayName: Brimstone Fury
 	BarinauticalHeldProj.DisplayName: Barinautical
-	DD2BetsyBowHeldProj.DisplayName: D D2 Betsy Bow
-	DD2PhoenixBowHeldProj.DisplayName: D D2 Phoenix Bow
+	DD2BetsyBowHeldProj.DisplayName: DD2 Betsy Bow
+	DD2PhoenixBowHeldProj.DisplayName: DD2 Phoenix Bow
 	FlarewingBowHeldProj.DisplayName: Flarewing Bow
 	GoobowHeldProj.DisplayName: Goobow
 	HoarfrostBowHeldProj.DisplayName: Hoarfrost Bow
@@ -3071,12 +3112,12 @@ Projectiles: {
 	NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
 	NeutronExplode.DisplayName: Neutron Explode
 	EXNeutronExplode.DisplayName: E X Neutron Explode
-	NeutronGlaiveHeld.DisplayName: Neutron Glaive Held
+	NeutronGlaiveHeld.DisplayName: Neutron Glaive
 	NeutronsOrb.DisplayName: Neutrons Orb
-	NeutronBowHeldProj.DisplayName: Neutron Bow Held Proj
+	NeutronBowHeldProj.DisplayName: Neutron Bow
 	NeutronArrow.DisplayName: Neutron Arrow
 	EXNeutronArrow.DisplayName: E X Neutron Arrow
-	EXNeutronExplosionRanged.DisplayName: E X Neutron Explosion Ranged
+	EXNeutronExplosionRanged.DisplayName: EX Neutron Explosion
 	NeutronLaser.DisplayName: Neutron Laser
 	NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
 	NeutronGunHeldProj.DisplayName: Neutron Gun Held Proj
@@ -3086,8 +3127,8 @@ Projectiles: {
 	NeutronMagchStar.DisplayName: Neutron Magch Star
 	AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
 	HyperBlade.DisplayName: Hyper Blade
-	FlakKrakenHeldProj.DisplayName: Flak Kraken Held Proj
-	PrimeCannonOnSpan.DisplayName: Prime Cannon On Span
+	FlakKrakenHeldProj.DisplayName: Flak Kraken
+	PrimeCannonOnSpan.DisplayName: Prime Cannon
 	Mechanicalworm.DisplayName: Mechanicalworm
 	SetPosingStarm.DisplayName: Set Posing Starm
 	GrandGuardianRapier.DisplayName: Grand Guardian Rapier
@@ -3099,6 +3140,15 @@ Projectiles: {
 	FadingGloryBeam.DisplayName: Fading Glory Beam
 	FadingGloryRapier.DisplayName: Fading Glory Rapier
 	FadingGloryHeldSprint.DisplayName: Fading Glory Held Sprint
+	LucreciaRapier.DisplayName: Lucrecia Rapier
+	MirrorBladeRapier.DisplayName: Mirror Blade Rapier
+	TheDarkMasterRapier.DisplayName: The Dark Master Rapier
+	GalileoGladiusRapier.DisplayName: Galileo Gladius Rapier
+	GalileosBeam.DisplayName: Galileos Beam
+	GladiusBeam.DisplayName: Gladius Beam
+	GladiusRapier.DisplayName: Gladius Rapier
+	DefiledGreatswordHeld.DisplayName: Defiled Greatsword Held
+	TerrorBladeHeld.DisplayName: Terror Blade Held
 }
 
 Configs: {
@@ -3923,6 +3973,7 @@ TextContent: {
 		Wap_NeutronBow_LoadingText1: Catching gravity
 		Wap_NeutronBow_LoadingText2: Is Making Gravity Yield
 		Wap_NeutronBow_LoadingText3: READY!!
+		Wap_Gladius_Text: Fast and sharp
 	}
 }
 

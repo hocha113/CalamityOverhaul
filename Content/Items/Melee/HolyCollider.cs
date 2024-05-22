@@ -18,7 +18,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class HolyCollider : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HolyCollider";
-        public new string LocalizationCategory => "Items.Weapons.Melee";
         public override void SetDefaults() {
             Item.width = 94;
             Item.height = 80;

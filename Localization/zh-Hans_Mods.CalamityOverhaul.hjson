@@ -2544,18 +2544,52 @@ Items: {
 	}
 
 	GrandGuardianEcType: {
-		// DisplayName: Grand Guardian Ec Type
-		// Tooltip: ""
+		DisplayName: 大守卫者
+		Tooltip:
+			'''
+			真近战会从玩家后方飞出强大的剑刃
+			非真近战时将会主动发射剑刃，击中目标时刺入目标的躯体
+			目标的防御值会加入到真近战暴击伤害中
+			"我的王，我将守护"
+			'''
 	}
 
 	MajesticGuardEcType: {
-		// DisplayName: Majestic Guard Ec Type
-		// Tooltip: ""
+		DisplayName: 雄伟之护
+		Tooltip:
+			'''
+			非真近战时将会主动发射剑刃，剑刃将会刺入墙中
+			"我的王，我将守护"
+			'''
 	}
 
 	FadingGlory: {
-		// DisplayName: Fading Glory
-		// Tooltip: ""
+		DisplayName: 残怨
+		Tooltip:
+			'''
+			真近战击中目标，如果目标是有机体，将会治疗玩家，如果目标是无机体，将会释放大量火花
+			非真近战时将会主动发射剑刃，击中目标后额外生成追钟的孤魂切并在爆炸时释放出一条血触手
+			'''
+	}
+
+	LucreciaEcType: {
+		DisplayName: 卢克雷西亚
+		Tooltip: 发射魔能水晶刺
+	}
+
+	MirrorBladeEcType: {
+		DisplayName: 镜之刃
+		Tooltip: 发射翻飞的魔能镜刃
+	}
+
+	TheDarkMasterEcType: {
+		DisplayName: 黑暗大师
+		Tooltip:
+			'''
+			真近战击中目标后召唤暗黑契约，三个暗影复制体将协同玩家作战
+			暗黑契约存在时，如果玩家受伤，会立马遣散所有暗影复制体
+			并给予玩家3秒黑暗恐惧减益，此期间玩家将无法再通过真近战召唤暗黑契约
+			'''
 	}
 }
 
@@ -2570,6 +2604,7 @@ Projectiles: {
 		// RCosmicShivProjectile.DisplayName: R Cosmic Shiv Projectile
 		// RStreamGougeProj.DisplayName: R Stream Gouge Proj
 		// MourningSkull2.DisplayName: Mourning Skull2
+		// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
 	}
 
 	// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
@@ -3046,8 +3081,8 @@ Projectiles: {
 	// BarinadeHeldProj.DisplayName: Barinade
 	// BrimstoneFuryHeldProj.DisplayName: Brimstone Fury
 	// BarinauticalHeldProj.DisplayName: Barinautical
-	// DD2BetsyBowHeldProj.DisplayName: D D2 Betsy Bow
-	// DD2PhoenixBowHeldProj.DisplayName: D D2 Phoenix Bow
+	// DD2BetsyBowHeldProj.DisplayName: DD2 Betsy Bow
+	// DD2PhoenixBowHeldProj.DisplayName: DD2 Phoenix Bow
 	// FlarewingBowHeldProj.DisplayName: Flarewing Bow
 	// GoobowHeldProj.DisplayName: Goobow
 	// HoarfrostBowHeldProj.DisplayName: Hoarfrost Bow
@@ -3101,12 +3136,12 @@ Projectiles: {
 	// NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
 	// NeutronExplode.DisplayName: Neutron Explode
 	// EXNeutronExplode.DisplayName: E X Neutron Explode
-	// NeutronGlaiveHeld.DisplayName: Neutron Glaive Held
+	// NeutronGlaiveHeld.DisplayName: Neutron Glaive
 	// NeutronsOrb.DisplayName: Neutrons Orb
-	// NeutronBowHeldProj.DisplayName: Neutron Bow Held Proj
+	// NeutronBowHeldProj.DisplayName: Neutron Bow
 	// NeutronArrow.DisplayName: Neutron Arrow
 	// EXNeutronArrow.DisplayName: E X Neutron Arrow
-	// EXNeutronExplosionRanged.DisplayName: E X Neutron Explosion Ranged
+	// EXNeutronExplosionRanged.DisplayName: EX Neutron Explosion
 	// NeutronLaser.DisplayName: Neutron Laser
 	// NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
 	// NeutronGunHeldProj.DisplayName: Neutron Gun Held Proj
@@ -3116,8 +3151,8 @@ Projectiles: {
 	// NeutronMagchStar.DisplayName: Neutron Magch Star
 	// AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
 	// HyperBlade.DisplayName: Hyper Blade
-	// FlakKrakenHeldProj.DisplayName: Flak Kraken Held Proj
-	// PrimeCannonOnSpan.DisplayName: Prime Cannon On Span
+	// FlakKrakenHeldProj.DisplayName: Flak Kraken
+	// PrimeCannonOnSpan.DisplayName: Prime Cannon
 	// Mechanicalworm.DisplayName: Mechanicalworm
 	// SetPosingStarm.DisplayName: Set Posing Starm
 	// GrandGuardianRapier.DisplayName: Grand Guardian Rapier
@@ -3129,6 +3164,15 @@ Projectiles: {
 	// FadingGloryBeam.DisplayName: Fading Glory Beam
 	// FadingGloryRapier.DisplayName: Fading Glory Rapier
 	// FadingGloryHeldSprint.DisplayName: Fading Glory Held Sprint
+	// LucreciaRapier.DisplayName: Lucrecia Rapier
+	// MirrorBladeRapier.DisplayName: Mirror Blade Rapier
+	// TheDarkMasterRapier.DisplayName: The Dark Master Rapier
+	// GalileoGladiusRapier.DisplayName: Galileo Gladius Rapier
+	// GalileosBeam.DisplayName: Galileos Beam
+	// GladiusBeam.DisplayName: Gladius Beam
+	// GladiusRapier.DisplayName: Gladius Rapier
+	// DefiledGreatswordHeld.DisplayName: Defiled Greatsword Held
+	// TerrorBladeHeld.DisplayName: Terror Blade Held
 }
 
 Configs: {
@@ -3987,6 +4031,7 @@ TextContent: {
 		Wap_NeutronBow_LoadingText1: 正在捕捉引力
 		Wap_NeutronBow_LoadingText2: 正在使引力屈服
 		Wap_NeutronBow_LoadingText3: 就绪!!
+		Wap_Gladius_Text: 快速而锋利
 	}
 }
 

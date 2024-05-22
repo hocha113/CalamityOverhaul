@@ -39,6 +39,7 @@ namespace CalamityOverhaul
         internal Mod luiafk = null;
         internal Mod terrariaOverhaul = null;
         internal Mod thoriumMod = null;
+        internal Mod narakuEye = null;
 
         internal List<ISetupData> SetupDatas;
         internal List<Mod> LoadMods = new List<Mod>();
@@ -186,6 +187,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("miningcracks_take_on_luiafk", out luiafk);
             ModLoader.TryGetMod("TerrariaOverhaul", out terrariaOverhaul);
             ModLoader.TryGetMod("ThoriumMod", out thoriumMod);
+            ModLoader.TryGetMod("NarakuEye", out narakuEye);
         }
 
         public void LoadClient() {

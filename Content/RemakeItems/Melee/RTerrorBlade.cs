@@ -3,6 +3,7 @@ using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
@@ -21,10 +22,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.TerrorBlade>();
         public override int ProtogenesisID => ModContent.ItemType<TerrorBladeEcType>();
         public override string TargetToolTipItemName => "TerrorBladeEcType";
-        private bool InCharge;
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.width = 88;
             item.damage = 560;
@@ -41,44 +38,17 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shootSpeed = 20f;
             item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             item.rare = ModContent.RarityType<PureGreen>();
+            item.CWR().heldProjType = ModContent.ProjectileType<TerrorBladeHeld>();
         }
 
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-            damage *= InCharge ? 1.25f : 1;
+            item.initialize();
+            damage *= item.CWR().ai[0] == 1 ? 1.25f : 1;
         }
 
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback) {
-            knockback *= InCharge ? 1.25f : 1;
-        }
-
-        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            if (item.CWR().HoldOwner != null && item.CWR().MeleeCharge > 0) {
-                DrawRageEnergyChargeBar(item.CWR().HoldOwner, item);
-            }
-        }
-
-        public override void UpdateInventory(Item item, Player player) {
-            UpdateBar(item);
-        }
-
-        public override void HoldItem(Item item, Player player) {
-            if (item.CWR().HoldOwner == null) {
-                item.CWR().HoldOwner = player;
-            }
-
-            UpdateBar(item);
-            if (item.CWR().MeleeCharge > 0) {
-                item.shootSpeed = 20f;
-                item.useAnimation = 15;
-                item.useTime = 15;
-                InCharge = true;
-            }
-            else {
-                item.shootSpeed = 15f;
-                item.useAnimation = 20;
-                item.useTime = 20;
-                InCharge = false;
-            }
+            item.initialize();
+            knockback *= item.CWR().ai[0] == 1 ? 1.25f : 1;
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -87,7 +57,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 bool olduseup = item.CWR().MeleeCharge > 0;//这里使用到了效差的流程思想，用于判断能量耗尽的那一刻            
                 if (item.CWR().MeleeCharge > 0) {
                     item.CWR().MeleeCharge -= damage / 10;
-                    Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI, 1);
+                    Projectile.NewProjectileDirect(source, player.GetPlayerStabilityCenter(), velocity, type, damage, knockback, player.whoAmI, 1);
                     shootBool = false;
                 }
                 else {
@@ -113,60 +83,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (charge != oldcharge) {
                 SoundEngine.PlaySound(CWRSound.Pecharge with { Volume = 0.4f }, player.Center);
             }
-        }
-
-        private static void UpdateBar(Item item) {
-            if (item.CWR().MeleeCharge > TerrorBladeEcType.TerrorBladeMaxRageEnergy)
-                item.CWR().MeleeCharge = TerrorBladeEcType.TerrorBladeMaxRageEnergy;
-        }
-
-        public static void DrawRageEnergyChargeBar(Player player, Item item) {
-            if (player.HeldItem != item) return;
-            Texture2D rageEnergyTop = CWRUtils.GetT2DValue(CWRConstant.UI + "FrightEnergyChargeTop");
-            Texture2D rageEnergyBar = CWRUtils.GetT2DValue(CWRConstant.UI + "FrightEnergyChargeBar");
-            Texture2D rageEnergyBack = CWRUtils.GetT2DValue(CWRConstant.UI + "FrightEnergyChargeBack");
-            float slp = 3;
-            int offsetwid = 4;
-            Vector2 drawPos = CWRUtils.WDEpos(player.Center + new Vector2(rageEnergyBar.Width / -2 * slp, 135));
-            Rectangle backRec = new Rectangle(offsetwid, 0, (int)((rageEnergyBar.Width - offsetwid * 2) * (item.CWR().MeleeCharge / TerrorBladeEcType.TerrorBladeMaxRageEnergy)), rageEnergyBar.Height);
-
-            Main.spriteBatch.ResetBlendState();
-            Main.EntitySpriteDraw(
-                rageEnergyBack,
-                drawPos,
-                null,
-                Color.White,
-                0,
-                Vector2.Zero,
-                slp,
-                SpriteEffects.None,
-                0
-                );
-
-            Main.EntitySpriteDraw(
-                rageEnergyBar,
-                drawPos + new Vector2(offsetwid, 0) * slp,
-                backRec,
-                Color.White,
-                0,
-                Vector2.Zero,
-                slp,
-                SpriteEffects.None,
-                0
-                );
-
-            Main.EntitySpriteDraw(
-                rageEnergyTop,
-                drawPos,
-                null,
-                Color.White,
-                0,
-                Vector2.Zero,
-                slp,
-                SpriteEffects.None,
-                0
-                );
-            Main.spriteBatch.ResetUICanvasState();
         }
     }
 }

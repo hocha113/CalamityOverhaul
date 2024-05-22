@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 using Terraria;
 using Newtonsoft.Json.Linq;
 using Terraria.Audio;
+using CalamityMod;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
@@ -31,7 +32,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
         protected float SkialithVarSpeedMode = 6;
 
+        protected float PremanentToSkialthRot = 0;
+
         protected Vector2 OffsetPos;
+
+        protected Vector2 PermanentOffset = Vector2.Zero;
 
         protected Vector2 StabVec;
 
@@ -43,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
         protected Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.Full;
 
-        protected SoundStyle ShurikenOut = CWRSound.ShurikenOut;
+        protected SoundStyle? ShurikenOut = null;
 
         protected float StabbingSpread = 0.45f;
 
@@ -51,11 +56,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
         protected int StabAmplitudeMax = 170;
 
-        protected Vector2 drawOrig = new Vector2(0, 130);
+        protected Vector2 drawOrig = Vector2.Zero;
 
         public override string Texture => CWRConstant.Placeholder3;
 
+        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
+
+        public Item Item {
+            get {
+                Item itemValue = Owner.ActiveItem();
+                if (itemValue == null) {
+                    itemValue = new Item();
+                }
+                return itemValue;
+            }
+        }
+
         public virtual string GlowPath => CWRConstant.Placeholder;
+
+        public virtual Texture2D GlowValue => CWRUtils.GetT2DValue(GlowPath);
         #endregion
 
         public override void SetStaticDefaults() {
@@ -89,7 +108,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         }
 
         protected void SetProjTimeInAttakSpeed() {
-            Projectile.timeLeft = (int)(Owner.HeldItem.useAnimation * (1f / Owner.GetTotalAttackSpeed(DamageClass.Melee)));
+            Projectile.timeLeft = (int)(Item.useAnimation * (1f / Owner.GetTotalAttackSpeed(DamageClass.Melee)));
             maxTimeLeft = Projectile.timeLeft;
         }
 
@@ -128,7 +147,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                             if (Projectile.IsOwnedByLocalPlayer()) {
                                 ExtraShoot();
                             }
-                            SoundEngine.PlaySound(ShurikenOut with { MaxInstances = 6 }, Projectile.Center);
+                            SoundEngine.PlaySound(ShurikenOut.Value with { MaxInstances = 6 }, Projectile.Center);
                             CanUse = true;
                         }
 
@@ -154,6 +173,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
         public override void AI() {
             if (!onInitializedBool) {
+                if (drawOrig == Vector2.Zero) {
+                    drawOrig = new Vector2(0, TextureValue.Height);
+                }
+                if (!ShurikenOut.HasValue) {
+                    ShurikenOut = Item.UseSound;
+                    if (!ShurikenOut.HasValue) {
+                        ShurikenOut = CWRSound.ShurikenOut;
+                    }
+                }
                 SetProjTimeInAttakSpeed();
                 Initialized();
                 onInitializedBool = true;
@@ -169,7 +197,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             //最大存在周期时间减去当前剩余时间得到使用时间
             UpdateFading(maxTimeLeft - Projectile.timeLeft);
             UpdateSkialith();
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + OffsetPos;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + OffsetPos + PermanentOffset + Projectile.velocity * PremanentToSkialthRot;
             Owner.SetCompositeArmFront(true, stretch, Projectile.rotation - MathHelper.Pi);
 
             PostInOwnerUpdate();
@@ -212,11 +240,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             }
             (float min, float max) pot = (-0.1f + +sincrit, 0.1f + +sincrit);
             if (CWRIDs.NPCValue.TheofSteel[target.type]) {
-                SoundEngine.PlaySound(CWRSound.HitTheSteel with { MaxInstances = 3, PitchRange = pot, Volume = 0.8f }, Projectile.Center);
+                SoundEngine.PlaySound(CWRSound.HitTheSteel with { MaxInstances = 3, PitchRange = pot, Volume = 0.5f }, Projectile.Center);
             }
             else {
                 SoundStyle soundonFlesh = Main.rand.NextBool() ? CWRSound.HitTheFlesh_1 : CWRSound.HitTheFlesh_2;
-                SoundEngine.PlaySound(soundonFlesh with { MaxInstances = 3, PitchRange = pot, Volume = 0.7f }, Projectile.Center);
+                SoundEngine.PlaySound(soundonFlesh with { MaxInstances = 3, PitchRange = pot, Volume = 0.5f }, Projectile.Center);
             }
         }
 
@@ -277,8 +305,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-            Texture2D glow = ModContent.Request<Texture2D>(GlowPath).Value;
+            Texture2D tex = TextureValue;
+            Texture2D glow = GlowValue;
             Vector2 drawOffetLmbs = new Vector2(0, 109).RotatedBy(Projectile.rotation);
             float transparency = 1f;
             if (Projectile.timeLeft <= 5 && Fading) {

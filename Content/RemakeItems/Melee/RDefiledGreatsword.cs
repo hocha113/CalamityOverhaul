@@ -2,14 +2,10 @@
 using CalamityMod.Items;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -35,37 +31,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
             item.height = 102;
+            item.shootSpeed = 12f;
             item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
             item.rare = ModContent.RarityType<Turquoise>();
             item.shoot = ModContent.ProjectileType<BlazingPhantomBlade>();
-            item.shootSpeed = 12f;
-        }
-
-        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            if (item.CWR().HoldOwner != null && item.CWR().MeleeCharge > 0) {
-                DrawRageEnergyChargeBar(item.CWR().HoldOwner, item);
-            }
-        }
-
-        public override void UpdateInventory(Item item, Player player) {
-            UpdateBar(item);
-        }
-
-        public override void HoldItem(Item item, Player player) {
-            if (item.CWR().HoldOwner == null) {
-                item.CWR().HoldOwner = player;
-            }
-
-            if (item.CWR().MeleeCharge > 0) {
-                item.useAnimation = 16;
-                item.useTime = 16;
-            }
-            else {
-                item.useAnimation = 26;
-                item.useTime = 26;
-            }
-
-            UpdateBar(item);
+            item.CWR().heldProjType = ModContent.ProjectileType<DefiledGreatswordHeld>();
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -74,34 +44,24 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             }
             if (!item.CWR().closeCombat) {
                 item.CWR().MeleeCharge -= damage * 1.25f;
-                if (item.CWR().MeleeCharge < 0) item.CWR().MeleeCharge = 0;
+                if (item.CWR().MeleeCharge < 0) {
+                    item.CWR().MeleeCharge = 0;
+                }
 
                 if (item.CWR().MeleeCharge == 0) {
-                    Projectile.NewProjectile(
-                        source,
-                        position,
-                        velocity,
-                        type,
-                        damage,
-                        knockback,
-                        player.whoAmI,
-                        1
-                        );
+                    float adjustedItemScale = player.GetAdjustedItemScale(item);
+                    float ai1 = 40;
+                    float velocityMultiplier = 2;
+                    Projectile.NewProjectile(source, player.MountedCenter, velocity * velocityMultiplier, ModContent.ProjectileType<BlazingPhantomBlade>(), (int)(damage * 0.75)
+                        , knockback * 0.5f, player.whoAmI, (float)player.direction * player.gravDir, ai1, adjustedItemScale);
                 }
                 else {
-
-                    for (int i = 0; i < 2; i++) {
-                        float rot = MathHelper.ToRadians(-10 + i * 20);
-                        Projectile.NewProjectile(
-                            source,
-                            position,
-                            velocity.RotatedBy(rot),
-                            type,
-                            damage,
-                            knockback,
-                            player.whoAmI,
-                            1
-                        );
+                    float adjustedItemScale = player.GetAdjustedItemScale(item);
+                    for (int i = 0; i < 3; i++) {
+                        float ai1 = 40 + i * 8;
+                        float velocityMultiplier = 1f - i / (float)3;
+                        Projectile.NewProjectile(source, player.MountedCenter, velocity * velocityMultiplier, ModContent.ProjectileType<BlazingPhantomBlade>(), (int)(damage * 0.75)
+                            , knockback * 0.5f, player.whoAmI, (float)player.direction * player.gravDir, ai1, adjustedItemScale);
                     }
                 }
             }
@@ -141,60 +101,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 Main.projectile[proj1].extraUpdates += 1;
                 Main.projectile[proj2].extraUpdates += 1;
             }
-        }
-
-        private static void UpdateBar(Item item) {
-            if (item.CWR().MeleeCharge > DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy)
-                item.CWR().MeleeCharge = DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy;
-        }
-
-        public void DrawRageEnergyChargeBar(Player player, Item item) {
-            if (player.HeldItem != item) return;
-            Texture2D rageEnergyTop = CWRUtils.GetT2DValue(CWRConstant.UI + "RageEnergyTop");
-            Texture2D rageEnergyBar = CWRUtils.GetT2DValue(CWRConstant.UI + "RageEnergyBar");
-            Texture2D rageEnergyBack = CWRUtils.GetT2DValue(CWRConstant.UI + "RageEnergyBack");
-            float slp = 3;
-            int offsetwid = 4;
-            Vector2 drawPos = CWRUtils.WDEpos(player.Center + new Vector2(rageEnergyBar.Width / -2 * slp, 135));
-            Rectangle backRec = new Rectangle(offsetwid, 0, (int)((rageEnergyBar.Width - offsetwid * 2) * (item.CWR().MeleeCharge / DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy)), rageEnergyBar.Height);
-
-            Main.spriteBatch.ResetBlendState();
-            Main.EntitySpriteDraw(
-                rageEnergyBack,
-                drawPos,
-                null,
-                Color.White,
-                0,
-                Vector2.Zero,
-                slp,
-                SpriteEffects.None,
-                0
-                );
-
-            Main.EntitySpriteDraw(
-                rageEnergyBar,
-                drawPos + new Vector2(offsetwid, 0) * slp,
-                backRec,
-                Color.White,
-                0,
-                Vector2.Zero,
-                slp,
-                SpriteEffects.None,
-                0
-                );
-
-            Main.EntitySpriteDraw(
-                rageEnergyTop,
-                drawPos,
-                null,
-                Color.White,
-                0,
-                Vector2.Zero,
-                slp,
-                SpriteEffects.None,
-                0
-                );
-            Main.spriteBatch.ResetUICanvasState();
         }
     }
 }

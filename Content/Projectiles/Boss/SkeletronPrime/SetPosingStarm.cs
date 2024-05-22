@@ -125,11 +125,11 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             shader.Parameters["maxOpacity"].SetValue(maxOpacity);
             shader.Parameters["isVmos"].SetValue(Projectile.timeLeft <= 30);
             shader.Parameters["projTime"].SetValue(Projectile.timeLeft);
-
             Main.spriteBatch.GraphicsDevice.Textures[1] = diagonalNoise.Value;
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap
+                , DepthStencilState.None, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
             Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
             Main.spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() * 0.5f, 0, 0f);
             Main.spriteBatch.ExitShaderRegion();

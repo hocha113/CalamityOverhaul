@@ -1,12 +1,9 @@
 ﻿using CalamityMod;
-using CalamityMod.Graphics.Renderers;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles;
-using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -102,6 +99,7 @@ namespace CalamityOverhaul.Content
         public bool NoCanAutomaticCartridgeChange;
         public bool RustyMedallion_Value;
         public int ReceivingPlatformTime;
+        public int NoSemberCloneSpanTime;
         #region NetCode
         public bool DompBool;
         public bool RecoilAccelerationAddBool;
