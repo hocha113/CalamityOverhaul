@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using Microsoft.Xna.Framework;
 using Terraria;

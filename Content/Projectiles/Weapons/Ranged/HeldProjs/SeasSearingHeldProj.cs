@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             AmmoTypes = ModContent.ProjectileType<SeasSearingBubble>();
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, (indexFire == 1 || indexFire == 5)? 1 : 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, (indexFire == 1 || indexFire == 5) ? 1 : 0);
             indexFire++;
             if (indexFire >= maxFireCount) {
                 indexFire = 0;

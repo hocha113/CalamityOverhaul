@@ -1,10 +1,10 @@
-﻿using CalamityMod.Projectiles;
-using CalamityMod;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
+﻿using CalamityMod;
+using CalamityMod.Projectiles;
 using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {

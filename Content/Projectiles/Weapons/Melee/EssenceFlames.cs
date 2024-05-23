@@ -1,13 +1,9 @@
-﻿using CalamityMod;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System;
-using Terraria.Audio;
-using Terraria.Graphics.Shaders;
-using Terraria.ID;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
-using static Humanizer.In;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
@@ -65,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Main.dust[essenceDust].velocity *= 3f;
                 if (Main.rand.NextBool()) {
                     Main.dust[essenceDust].scale = 0.5f;
-                    Main.dust[essenceDust].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+                    Main.dust[essenceDust].fadeIn = 1f + Main.rand.Next(10) * 0.1f;
                 }
             }
             for (int j = 0; j < 8; j++) {

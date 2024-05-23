@@ -1,9 +1,8 @@
 ﻿using CalamityOverhaul.Common;
-using Terraria.ID;
-using Terraria;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
-using Microsoft.Xna.Framework;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {

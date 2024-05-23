@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// 是否参与配方替换，默认为<see langword="true"/>，如果<see cref="IsVanilla"/>为<see langword="true"/>，那么该属性自动返回<see langword="false"/>
         /// </summary>
         public virtual bool FormulaSubstitution {
-             get {
+            get {
                 if (IsVanilla) {
                     return false;
                 }
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <param name="origin"></param>
         /// <param name="scale"></param>
         public virtual void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            
+
         }
         /// <summary>
         /// 进行背包中的物品绘制，这个函数会执行在Draw之前

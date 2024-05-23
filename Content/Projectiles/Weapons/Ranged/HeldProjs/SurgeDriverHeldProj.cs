@@ -2,7 +2,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -35,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void KreloadSoundloadTheRounds() {
-            SoundEngine.PlaySound(loadTheRounds with { Pitch = - 0.3f }, Projectile.Center);
+            SoundEngine.PlaySound(loadTheRounds with { Pitch = -0.3f }, Projectile.Center);
         }
 
         public override void PreInOwnerUpdate() {

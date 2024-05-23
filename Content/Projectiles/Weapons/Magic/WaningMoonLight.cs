@@ -1,13 +1,11 @@
-﻿using CalamityMod;
+﻿using CalamityMod.Particles;
 using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
+using System.IO;
+using Terraria;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
-using Terraria;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using CalamityMod.Particles;
-using Terraria.Audio;
-using System.IO;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 {

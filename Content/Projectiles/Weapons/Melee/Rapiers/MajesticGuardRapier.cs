@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
-using Mono.Cecil;
 using Terraria;
 using Terraria.ModLoader;
 

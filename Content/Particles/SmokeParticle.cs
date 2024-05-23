@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Particles
         private bool StrongVisual;
         private bool Glowing;
         private float HueShift;
-        static int FrameAmount = 6;
+        private static int FrameAmount = 6;
 
         public SmokeParticle(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f, bool required = false) {
             Position = position;

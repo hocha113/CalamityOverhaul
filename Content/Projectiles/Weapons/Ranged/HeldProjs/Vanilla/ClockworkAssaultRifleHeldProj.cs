@@ -1,7 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -14,8 +12,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ClockworkAssaultRifle].Value;
         public override int targetCayItem => ItemID.ClockworkAssaultRifle;
         public override int targetCWRItem => ItemID.ClockworkAssaultRifle;
-        int thisNeedsTime;
-        int chargeAmmoNum;
+
+        private int thisNeedsTime;
+        private int chargeAmmoNum;
         public override void SetRangedProperty() {
             FireTime = 5;
             ShootPosToMouLengValue = 0;

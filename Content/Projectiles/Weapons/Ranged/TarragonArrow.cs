@@ -1,14 +1,9 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Projectiles;
-using CalamityMod;
-using CalamityOverhaul.Common;
-using System;
-using Terraria.Audio;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
+﻿using CalamityMod;
 using CalamityMod.Projectiles.Ranged;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {

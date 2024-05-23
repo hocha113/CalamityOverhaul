@@ -19,9 +19,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private Item murasama => Owner.ActiveItem();
         private ref float Time => ref Projectile.ai[0];
         private ref int risingDragon => ref Owner.CWR().RisingDragonCoolDownTime;
-        bool noHasDownSkillProj;
-        bool noHasBreakOutProj;
-        bool noHasEndSkillEffectStart;
+
+        private bool noHasDownSkillProj;
+        private bool noHasBreakOutProj;
+        private bool noHasEndSkillEffectStart;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -52,8 +53,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
             }
             Owner.CWR().HeldMurasamaBool = true;
-            if (base.Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaRSlash>()] != 0  
-                || base.Owner.ownedProjectileCounts[ModContent.ProjectileType<CalamityMod.Projectiles.Melee.MurasamaSlash>()] != 0 
+            if (base.Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaRSlash>()] != 0
+                || base.Owner.ownedProjectileCounts[ModContent.ProjectileType<CalamityMod.Projectiles.Melee.MurasamaSlash>()] != 0
                 || base.Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] != 0) {
                 Projectile.hide = false;
                 return true;
@@ -122,7 +123,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 armRotSengsBack = 30;
                 Projectile.rotation = ToMouseA + MathHelper.ToRadians(75 + (DirSign > 0 ? 20 : 0));
 
-                if (Owner.ownedProjectileCounts[breakOutType] == 0 &&  !CWRUtils.isServer) {
+                if (Owner.ownedProjectileCounts[breakOutType] == 0 && !CWRUtils.isServer) {
                     if (CWRKeySystem.Murasama_TriggerKey.JustPressed && risingDragon <= 0 && noHasDownSkillProj) {//扳机键被按下，并且升龙冷却已经完成，那么将刀发射出去
                         if (nolegendStart) {
                             SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);

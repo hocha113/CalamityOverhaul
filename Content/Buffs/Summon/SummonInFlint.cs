@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Summon;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Summon;
 using Terraria;
 using Terraria.ModLoader;
@@ -22,7 +21,8 @@ namespace CalamityOverhaul.Content.Buffs.Summon
             if (!modPlayer.FlintSummonBool) {
                 player.DelBuff(buffIndex);
                 buffIndex--;
-            } else {
+            }
+            else {
                 player.buffTime[buffIndex] = 18000;
             }
         }

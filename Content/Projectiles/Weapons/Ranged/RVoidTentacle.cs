@@ -32,14 +32,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.velocity.X != Projectile.velocity.X) {
                 if (Math.Abs(Projectile.velocity.X) < 1f) {
                     Projectile.velocity.X = -Projectile.velocity.X;
-                } else {
+                }
+                else {
                     Projectile.Kill();
                 }
             }
             if (Projectile.velocity.Y != Projectile.velocity.Y) {
                 if (Math.Abs(Projectile.velocity.Y) < 1f) {
                     Projectile.velocity.Y = -Projectile.velocity.Y;
-                } else {
+                }
+                else {
                     Projectile.Kill();
                 }
             }
@@ -51,7 +53,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.position.Y = center10.Y - Projectile.height / 2;
             if (Projectile.localAI[0] < 0.1f) {
                 Projectile.localAI[0] += 0.01f;
-            } else {
+            }
+            else {
                 Projectile.localAI[0] += 0.025f;
             }
             if (Projectile.localAI[0] >= 0.95f) {

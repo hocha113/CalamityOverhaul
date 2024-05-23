@@ -1,18 +1,17 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
+﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
 using CalamityMod.Items;
-using CalamityMod;
-using Microsoft.Xna.Framework;
-using System;
-using Terraria.Audio;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
+using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;
+using Microsoft.Xna.Framework;
+using System;
+using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.WorldBuilding;
-using CalamityMod.Projectiles.Typeless;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -40,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<AstralBall>();
             Item.shootSpeed = 11;
-            
+
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 25;

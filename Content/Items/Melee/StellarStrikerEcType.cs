@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Red;
             Item.shoot = ProjectileID.LunarFlare;
             Item.shootSpeed = 12f;
-            
+
         }
 
         public override bool AltFunctionUse(Player player) {

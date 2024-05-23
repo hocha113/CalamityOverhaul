@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles.BaseProjectiles;
+﻿using CalamityMod.Projectiles.BaseProjectiles;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
@@ -52,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public int Time { get => (int)Projectile.localAI[1]; set => Projectile.localAI[1] = value; }
         private List<int> ElementalRayList = new List<int>();
-        int drawUIalp = 0;
+        private int drawUIalp = 0;
         public override void AI() {
             if (Projectile.ai[1] == 0) {
                 base.AI();

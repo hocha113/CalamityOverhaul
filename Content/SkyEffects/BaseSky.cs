@@ -1,14 +1,13 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Graphics.Effects;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.SkyEffects
 {
     internal abstract class BaseSky : CustomSky
     {
-        bool active;
+        private bool active;
         protected float intensity;
         protected float maxIntensity = 0.6f;
         public virtual void SetSkye() {

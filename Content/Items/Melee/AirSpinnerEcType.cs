@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 14f;
             Item.rare = ItemRarityID.Orange;
             Item.value = CalamityGlobalItem.RarityOrangeBuyPrice;
-            
+
         }
     }
 }

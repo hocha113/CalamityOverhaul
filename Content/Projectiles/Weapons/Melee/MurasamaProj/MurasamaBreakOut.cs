@@ -2,7 +2,6 @@
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
-using log4net.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -39,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override void PostAI() => CWRUtils.ClockFrame(ref Projectile.frame, 5, 12);
 
-        float getBrakSwingDamageSengsValue(int level) {
+        private float getBrakSwingDamageSengsValue(int level) {
             float overValue = 0;
             if (level >= 5) {
                 overValue = level * 0.2f;

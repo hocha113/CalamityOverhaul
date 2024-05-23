@@ -1,14 +1,14 @@
 ﻿using CalamityMod;
-using Microsoft.Xna.Framework.Graphics;
+using CalamityMod.Graphics.Primitives;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
-using Terraria;
 using Terraria.ModLoader;
-using System.Linq;
-using CalamityMod.Graphics.Primitives;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     {
         public Vector2[] ControlPoints;
 
-        Player owner => CWRUtils.GetPlayerInstance(Projectile.owner);
+        private Player owner => CWRUtils.GetPlayerInstance(Projectile.owner);
 
         public const float EndRot = 60 * CWRUtils.atoR;
         public const float StarRot = -170 * CWRUtils.atoR;

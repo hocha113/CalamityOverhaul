@@ -56,7 +56,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Projectile.ai[1] = 15f;
                     Projectile.velocity.Y = Projectile.velocity.Y + 0.3f;
                 }
-            } else if (Projectile.ai[0] == 1f) {
+            }
+            else if (Projectile.ai[0] == 1f) {
                 Projectile.tileCollide = false;
                 Projectile.rotation = (float)Math.Atan2((double)yDist, (double)xDist) - 1.57f;
                 float returnSpeed = 20f;

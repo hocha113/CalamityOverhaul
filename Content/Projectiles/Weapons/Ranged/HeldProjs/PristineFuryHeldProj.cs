@@ -6,7 +6,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
@@ -18,8 +17,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PristineFury_Animated";
         public override int targetCayItem => ModContent.ItemType<PristineFury>();
         public override int targetCWRItem => ModContent.ItemType<PristineFuryEcType>();
-        int maxFrame = 1;
-        int fireIndex;
+
+        private int maxFrame = 1;
+        private int fireIndex;
         public override void SetRangedProperty() {
             FireTime = 3;
             HandDistance = 25;
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(30, 0, 13);
-            
+
         }
 
         public override void FiringShoot() {

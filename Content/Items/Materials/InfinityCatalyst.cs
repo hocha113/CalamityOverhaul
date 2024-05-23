@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Items.Materials
                 .AddIngredient<Lumenyl>(QFD(100))//流明晶
                 .AddIngredient<MeldConstruct>(QFD(100))//幻塔物质
                 .AddIngredient<MiracleMatter>(QFD(50))//奇迹物质
-                //.AddIngredient<Polterplasm>(QFD(100))//幻魂
+                                                      //.AddIngredient<Polterplasm>(QFD(100))//幻魂
                 .AddIngredient<RuinousSoul>(QFD(100))//幽花之魂
                 .AddIngredient<DarkPlasma>(QFD(10))//暗物质
                 .AddIngredient<UnholyEssence>(QFD(100))//灼火精华

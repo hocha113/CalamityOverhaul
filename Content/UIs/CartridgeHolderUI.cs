@@ -93,11 +93,11 @@ namespace CalamityOverhaul.Content.UIs
                     key = "GrenadeRound";
                 }
                 TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + key2);
-            }  
+            }
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.Magazines) {
                 DrawPos = new Vector2(60, Main.screenHeight - 100);
                 TextureValue = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/Magazines");
-            } 
+            }
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.JAR) {
                 DrawPos = new Vector2(60, Main.screenHeight - 100);
                 TextureValue = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR");

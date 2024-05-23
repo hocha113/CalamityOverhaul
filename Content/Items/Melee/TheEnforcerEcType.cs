@@ -1,17 +1,14 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Projectiles.Melee;
+﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityMod.Rarities;
-using CalamityMod;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using Terraria.Audio;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -43,7 +40,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ModContent.RarityType<DarkBlue>();
             Item.shoot = ModContent.ProjectileType<EssenceFlames>();
             Item.shootSpeed = 2;
-            
+
         }
 
         public override void UseAnimation(Player player) {

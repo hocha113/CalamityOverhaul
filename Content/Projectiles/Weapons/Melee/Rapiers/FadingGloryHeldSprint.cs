@@ -1,5 +1,5 @@
-﻿using CalamityMod.Graphics.Primitives;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
@@ -7,8 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Graphics.Shaders;
-using Terraria.ModLoader;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 Projectile.alpha += 55;
             }
             Projectile.rotation = Projectile.velocity.ToRotation();
-            
+
             Vector2 toD = Owner.Center + Projectile.velocity.UnitVector() * 33 * Projectile.scale;
             Owner.velocity = Projectile.velocity.UnitVector();
             Owner.Center = Vector2.Lerp(toD, Owner.Center, 0.01f);
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 , null, Color.White * (Projectile.alpha / 255f)
                 , Projectile.rotation + (Projectile.velocity.X > 0 ? MathHelper.ToRadians(0 - offetRoty) : MathHelper.ToRadians(-180 + offetRoty))
                 , glow2.Size() / 2, 1, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-            
+
             return false;
         }
     }

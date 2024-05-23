@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 Vector2 toSet = Projectile.Center.To(player.Center);
                 Projectile.EntityToRot(toSet.ToRotation() + Projectile.ai[2], 0.05f);
             }
-            
+
             Projectile.scale += 0.05f;
             if (Projectile.alpha < 255) {
                 Projectile.alpha += 15;

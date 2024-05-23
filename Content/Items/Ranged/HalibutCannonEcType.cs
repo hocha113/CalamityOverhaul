@@ -1,24 +1,23 @@
-﻿using CalamityMod.Items;
+﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityMod.Rarities;
-using CalamityMod;
-using Terraria.ID;
-using Terraria.ModLoader;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
-using Terraria;
 using System.Collections.Generic;
-using System.Linq;
-using System;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class HalibutCannonEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
+
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
-        static Dictionary<int, int> DamageDictionary => new Dictionary<int, int>(){
+        private static Dictionary<int, int> DamageDictionary => new Dictionary<int, int>(){
             {0, 3 },
             {1, 4 },
             {2, 5 },
@@ -35,10 +34,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
             {13, 55 },
             {14, 70 }
         };
+
         /// <summary>
         /// 每个时期阶段对应的额外暴击振幅的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnCrit"/>
         /// </summary>
-        static Dictionary<int, int> SetLevelCritDictionary => new Dictionary<int, int>(){
+        private static Dictionary<int, int> SetLevelCritDictionary => new Dictionary<int, int>(){
             {0, 0 },
             {1, 1 },
             {2, 1 },

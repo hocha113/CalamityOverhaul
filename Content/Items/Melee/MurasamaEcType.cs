@@ -14,7 +14,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -26,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
-        static Dictionary<int, int> DamageDictionary => new Dictionary<int, int>(){
+        private static Dictionary<int, int> DamageDictionary => new Dictionary<int, int>(){
             {0, 10 },
             {1, 15 },
             {2, 25 },
@@ -43,10 +42,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             {13, 2500 },
             {14, 13000 }
         };
+
         /// <summary>
         /// 每个时期阶段对应的挥舞范围大小，这个成员一般不需要直接访问，而是使用<see cref="GetOnScale"/>
         /// </summary>
-        static Dictionary<int, float> BladeVolumeRatioDictionary => new Dictionary<int, float>(){
+        private static Dictionary<int, float> BladeVolumeRatioDictionary => new Dictionary<int, float>(){
             {0, 0.5f },
             {1, 0.55f },
             {2, 0.6f },
@@ -63,10 +63,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             {13, 1.45f },
             {14, 1.5f }
         };
+
         /// <summary>
         /// 每个时期阶段对应的额外暴击振幅的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnCrit"/>
         /// </summary>
-        static Dictionary<int, int> SetLevelCritDictionary => new Dictionary<int, int>(){
+        private static Dictionary<int, int> SetLevelCritDictionary => new Dictionary<int, int>(){
             {0, 1 },
             {1, 6 },
             {2, 11 },
@@ -83,10 +84,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             {13, 46 },
             {14, 96 }
         };
+
         /// <summary>
         /// 每个时期阶段对应的升龙冷却的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnRDCD"/>
         /// </summary>
-        static Dictionary<int, int> RDCDDictionary => new Dictionary<int, int>(){
+        private static Dictionary<int, int> RDCDDictionary => new Dictionary<int, int>(){
             {0, 120 },
             {1, 120 },
             {2, 120 },
@@ -173,7 +175,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static readonly SoundStyle BigSwing = new("CalamityMod/Sounds/Item/MurasamaBigSwing") { Volume = 0.25f };
 
         public static bool NameIsVergil(Player player) => player.name == "维吉尔" || player.name == "Vergil";
-        private static string[] samNameList = new string[] { "激流山姆", "山姆" , "Samuel Rodrigues" , "Jetstream Sam" , "Sam" };
+        private static string[] samNameList = new string[] { "激流山姆", "山姆", "Samuel Rodrigues", "Jetstream Sam", "Sam" };
         public static bool NameIsSam(Player player) => samNameList.Contains(player.name);
 
         public override void SetStaticDefaults() {
@@ -288,7 +290,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool CanUseItem(Player player) {
             //在升龙斩或者爆发弹幕存在时不能使用武器
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakSwing>()] > 0 
+            if (player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakSwing>()] > 0
                 || player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] > 0
                 || player.PressKey(false)//如果玩家按下了右键，也要禁止武器的使用
                 ) {

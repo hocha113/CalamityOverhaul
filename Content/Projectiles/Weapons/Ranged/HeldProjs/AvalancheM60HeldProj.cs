@@ -1,6 +1,4 @@
-﻿using CalamityMod.Particles;
-using CalamityMod.Projectiles.Ranged;
-using CalamityMod.Projectiles.Turret;
+﻿using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using Microsoft.Xna.Framework;
@@ -17,10 +15,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Item_Ranged + "AvalancheM60Held";
         public override int targetCayItem => ModContent.ItemType<AvalancheM60>();
         public override int targetCWRItem => ModContent.ItemType<AvalancheM60>();
-        int fireIndex;
-        int fireIndex2;
-        int onFireTime;
-        int onFireTime2;
+
+        private int fireIndex;
+        private int fireIndex2;
+        private int onFireTime;
+        private int onFireTime2;
         public override void SetRangedProperty() {
             Recoil = 0.3f;
             FireTime = 20;
@@ -39,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PostInOwnerUpdate() {
             if (onFire) {
                 CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);
-            } 
+            }
             else {
                 Projectile.frame = 4;
             }
@@ -101,7 +100,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.15f, 1.12f)
                     , ModContent.ProjectileType<IceExplosionFriend>(), WeaponDamage / 6, WeaponKnockback, Owner.whoAmI, 0);
                 }
-                
+
                 ShootCoolingValue = 15;
                 FireTime = 8;
                 return;

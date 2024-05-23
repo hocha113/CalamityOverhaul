@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items;
-using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Terraria.ID;
@@ -29,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<JudgementBeam>();
             Item.shootSpeed = 15f;
-            
+
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.OthermodMROs.Thorium.Core;
 using CalamityOverhaul.Content.OthermodMROs.Thorium.ProjectileSet.Helds;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using System.Security.Policy;
 using Terraria;
 using Terraria.ModLoader;
 

@@ -1,10 +1,10 @@
-﻿using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles.Core;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Buffs
 {

@@ -58,12 +58,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                     if (target != null) {
                         if (Projectile.timeLeft > 100) {
                             _ = Projectile.ChasingBehavior2(target.Center);
-                        } else {
+                        }
+                        else {
                             _ = Projectile.ChasingBehavior(target.Center, 16);
                         }
                     }
                 }
-            } else {
+            }
+            else {
                 if (target != null) {
                     _ = Projectile.ChasingBehavior2(target.Center, 1, 0.5f);
                 }
@@ -97,7 +99,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                     dust.fadeIn = 0.5f;
                     dust.customData = Projectile;
                     dust.color = Color.Crimson;
-                } else {
+                }
+                else {
                     Vector2 vector4 = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
                     Dust dust = Main.dust[Dust.NewDust(Projectile.Center - (vector4 * 30f), 0, 0, DustID.RedTorch)];
                     dust.noGravity = true;

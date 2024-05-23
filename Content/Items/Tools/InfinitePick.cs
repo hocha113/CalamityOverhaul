@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                                     int dorptype = CWRUtils.GetTileDorp(tile);
                                     if (dorptype != 0)
                                         darkMatterBall.dorpTypes.Add(dorptype);
-                                    
+
                                     tile.LiquidAmount = 0;
                                     tile.HasTile = false;
                                     WorldGen.SquareTileFrame((int)tilePos.X, (int)tilePos.Y);

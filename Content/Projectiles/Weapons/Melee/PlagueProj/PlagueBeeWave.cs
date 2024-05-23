@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
             Projectile.ai[1]++;
             Lighting.AddLight(Projectile.Center, 0.05f, 0.4f, 0f);
             if (Projectile.ai[1] == 60f) {
-                
+
             }
             if (Projectile.ai[1] < 60f) {
                 if (Projectile.ai[0] > 7f) {

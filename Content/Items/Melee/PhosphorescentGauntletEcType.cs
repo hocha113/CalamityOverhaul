@@ -1,15 +1,15 @@
-﻿using CalamityMod.Items;
+﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
-using CalamityMod;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj;
+using Microsoft.Xna.Framework;
 using System;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shoot = ModContent.ProjectileType<PhosphorescentGauntletPunches>();
             Item.shootSpeed = 1f;
             Item.rare = ModContent.RarityType<PureGreen>();
-            
+
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 10;
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
                 return false;
             }
-            
+
             Projectile.NewProjectile(source, position, velocity.UnitVector() * 15, ModContent.ProjectileType<PGProj>(), damage / 3, knockback / 2, player.whoAmI);
             return false;
         }

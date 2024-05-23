@@ -2,8 +2,8 @@
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {

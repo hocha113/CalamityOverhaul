@@ -2,11 +2,9 @@
 using CalamityMod.Items;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -41,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<GreenWater>();
             Item.shootSpeed = 18f;
-            
+
         }
 
         public override bool AltFunctionUse(Player player) {

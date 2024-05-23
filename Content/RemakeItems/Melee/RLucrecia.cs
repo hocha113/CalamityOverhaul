@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.noMelee = true;
             item.channel = true;
         }
-        public override bool? On_CanUseItem(Item item, Player player) 
+        public override bool? On_CanUseItem(Item item, Player player)
             => player.ownedProjectileCounts[item.shoot] <= 0;
     }
 }

@@ -35,14 +35,14 @@ namespace CalamityOverhaul.Content.Particles.Core
             batchedAdditiveBlendParticles = new List<CWRParticle>();
 
             CWRUtils.HanderInstance(ref CWRParticleCoreInds, CWRUtils.GetSubclasses(typeof(CWRParticle)), false);//需要选定为有参构造
-            foreach(var particleType in CWRParticleCoreInds) {
+            foreach (var particleType in CWRParticleCoreInds) {
                 Type type = particleType.GetType();
                 int ID = ParticleTypesDic.Count;
                 ParticleTypesDic[type] = ID;
                 string texturePath = type.Namespace.Replace('.', '/') + "/" + type.Name;
                 if (particleType.Texture != "") {
                     texturePath = particleType.Texture;
-                }  
+                }
                 ParticleIDToTexturesDic[ID] = ModContent.Request<Texture2D>(texturePath, AssetRequestMode.ImmediateLoad).Value;
             }
         }
@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.Particles.Core
         public static int FreeSpacesAvailable() {
             if (Main.dedServ || particles == null) {
                 return 0;
-            }  
+            }
             return CWRConstant.MaxParticleCount - particles.Count();
         }
     }

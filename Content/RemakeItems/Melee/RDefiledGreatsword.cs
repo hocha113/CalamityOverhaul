@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     float ai1 = 40;
                     float velocityMultiplier = 2;
                     Projectile.NewProjectile(source, player.MountedCenter, velocity * velocityMultiplier, ModContent.ProjectileType<BlazingPhantomBlade>(), (int)(damage * 0.75)
-                        , knockback * 0.5f, player.whoAmI, (float)player.direction * player.gravDir, ai1, adjustedItemScale);
+                        , knockback * 0.5f, player.whoAmI, player.direction * player.gravDir, ai1, adjustedItemScale);
                 }
                 else {
                     float adjustedItemScale = player.GetAdjustedItemScale(item);
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                         float ai1 = 40 + i * 8;
                         float velocityMultiplier = 1f - i / (float)3;
                         Projectile.NewProjectile(source, player.MountedCenter, velocity * velocityMultiplier, ModContent.ProjectileType<BlazingPhantomBlade>(), (int)(damage * 0.75)
-                            , knockback * 0.5f, player.whoAmI, (float)player.direction * player.gravDir, ai1, adjustedItemScale);
+                            , knockback * 0.5f, player.whoAmI, player.direction * player.gravDir, ai1, adjustedItemScale);
                     }
                 }
             }

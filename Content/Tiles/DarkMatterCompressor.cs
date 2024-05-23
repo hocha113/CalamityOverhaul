@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.Height = Height;
             TileObjectData.newTile.Origin = new Point16(OriginOffsetX, OriginOffsetY);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16};
+            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.newTile.LavaDeath = false;
             TileObjectData.addTile(Type);
             AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<DarkMatterCompressorItem>());
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Tiles
 
         public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
-        int frameIndex = 1;
+        private int frameIndex = 1;
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;

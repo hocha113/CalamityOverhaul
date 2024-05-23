@@ -1,10 +1,8 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using CalamityMod;
+﻿using CalamityMod;
 using Microsoft.Xna.Framework;
-using Terraria.ID;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.CodeAnalysis;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -47,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer()) {
-                
+
             }
         }
 

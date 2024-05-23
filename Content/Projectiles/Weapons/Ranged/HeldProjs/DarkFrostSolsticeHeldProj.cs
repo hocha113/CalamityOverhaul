@@ -1,16 +1,14 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using CalamityMod.Projectiles.Turret;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
-using Microsoft.Xna.Framework.Graphics;
+using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using Terraria;
 using Terraria.Audio;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using System;
-using Terraria.Graphics.CameraModifiers;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -19,10 +17,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Item_Ranged + "DarkFrostSolsticeHeld";
         public override int targetCayItem => ModContent.ItemType<DarkFrostSolstice>();
         public override int targetCWRItem => ModContent.ItemType<DarkFrostSolstice>();
-        int fireIndex;
-        int fireIndex2;
-        int onFireTime;
-        int onFireTime2;
+
+        private int fireIndex;
+        private int fireIndex2;
+        private int onFireTime;
+        private int onFireTime2;
         public override void SetRangedProperty() {
             Recoil = 0.3f;
             FireTime = 20;
@@ -43,7 +42,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SetCompositeArm();
             if (onFire) {
                 CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);
-            } else {
+            }
+            else {
                 Projectile.frame = 4;
             }
             if (kreloadTimeValue > 0) {
@@ -63,13 +63,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
                 if (onFireTime2 > 0) {
                     CWRUtils.ClockFrame(ref Projectile.frame, 2, 3);
-                } else {
+                }
+                else {
                     Projectile.frame = 4;
                 }
 
                 OffsetPos += CWRUtils.randVr(8f);
                 onFireTime--;
-            } else {
+            }
+            else {
                 if (FireTime > 30) {
                     FireTime = 15;
                 }

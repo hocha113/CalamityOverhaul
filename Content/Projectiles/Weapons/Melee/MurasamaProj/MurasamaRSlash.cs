@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 || target.type == CWRIDs.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == CWRIDs.PerforatorBodySmall) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            if (target.type == CWRIDs.AstrumDeusBody || target.type == CWRIDs.CosmicGuardianTail || target.type == CWRIDs.CosmicGuardianHead 
+            if (target.type == CWRIDs.AstrumDeusBody || target.type == CWRIDs.CosmicGuardianTail || target.type == CWRIDs.CosmicGuardianHead
                 || target.type == CWRIDs.DevourerofGodsHead || target.type == CWRIDs.DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.33f;
             }

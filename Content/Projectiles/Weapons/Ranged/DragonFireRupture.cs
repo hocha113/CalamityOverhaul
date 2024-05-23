@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "FireCrossburst";
 
-        struct Ncb{
+        private struct Ncb
+        {
             public Vector2 pos;
             public int frame;
 
@@ -23,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        List<Ncb> ncbs = new List<Ncb>();
+        private List<Ncb> ncbs = new List<Ncb>();
 
         public override void SetDefaults() {
             Projectile.width = 40;
@@ -44,12 +45,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public int Behavior { get => (int)Projectile.ai[1]; set => Projectile.ai[1] = value; }
         public int ThisTimeValue { get => (int)Projectile.ai[2]; set => Projectile.ai[2] = value; }
 
-        bool upPos = false;
+        private bool upPos = false;
         public override bool ShouldUpdatePosition() {
             return upPos;
         }
 
-        List<Vector2> randomOffsetVr = new List<Vector2>();
+        private List<Vector2> randomOffsetVr = new List<Vector2>();
         public override void OnSpawn(IEntitySource source) {
             Behavior++;
             Projectile.rotation = Projectile.velocity.ToRotation();
@@ -120,7 +121,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return CWRUtils.CircularHitboxCollision(Projectile.Center, 72, targetHitbox);
         }
 
-        int dorFireType => ModContent.BuffType<Dragonfire>();
+        private int dorFireType => ModContent.BuffType<Dragonfire>();
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.damage -= 15;
             Projectile.timeLeft -= 10;

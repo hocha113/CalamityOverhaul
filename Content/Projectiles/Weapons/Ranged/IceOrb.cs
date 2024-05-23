@@ -1,12 +1,11 @@
 ﻿using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Particles;
-using CalamityMod.Projectiles.Turret;
 using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -74,12 +73,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            if (Projectile.oldVelocity.Y > 0f && Projectile.velocity.X != 0f)
-            {
+            if (Projectile.oldVelocity.Y > 0f && Projectile.velocity.X != 0f) {
                 Projectile.velocity.Y = -0.6f * Projectile.oldVelocity.Y;
                 Projectile.velocity.X *= 0.975f;
-            } else if (Projectile.velocity.X == 0f)
-              {
+            }
+            else if (Projectile.velocity.X == 0f) {
                 Projectile.velocity.X = -0.6f * Projectile.oldVelocity.X;
             }
             return false;

@@ -1,13 +1,10 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
-using Terraria.Audio;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria;
-using CalamityMod;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -16,7 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "EternalBlizzard";
         public override int targetCayItem => ModContent.ItemType<EternalBlizzard>();
         public override int targetCWRItem => ModContent.ItemType<EternalBlizzardEcType>();
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetRangedProperty() {
             HandDistance = 30;
             HandDistanceY = 6;
@@ -47,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Main.projectile[proj].damage /= 2;
                 }
             }
-            
+
             if (++fireIndex > 3) {
                 Item.useTime = 36;
                 fireIndex = 0;

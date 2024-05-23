@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
     /// </summary>
     internal class NPCCoverage
     {
-        public virtual int targetID => NPCID.None;
+        public virtual int TargetID => NPCID.None;
 
         public virtual bool CanLoad() { return true; }
 

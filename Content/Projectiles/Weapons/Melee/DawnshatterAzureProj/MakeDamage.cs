@@ -1,7 +1,7 @@
-﻿using CalamityOverhaul.Common;
-using Terraria.ModLoader;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using Terraria;
-using CalamityMod;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj
 {

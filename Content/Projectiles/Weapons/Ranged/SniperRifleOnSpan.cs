@@ -36,8 +36,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override bool? CanDamage() => false;
 
-        int timenum = 1000;
-        int rot = 60;
+        private int timenum = 1000;
+        private int rot = 60;
         public override void AI() {
             Projectile.MaxUpdates = 1;
             Player player = Main.player[Projectile.owner];
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             float lastdamage = 0;
             if (timenum > 972) {
                 lastdamage = 0.1f;
-            } 
+            }
             else if (timenum < 972 && timenum > 942) {
                 lastdamage = ((972 - timenum) * 20 + 344) / (float)RSniperRifle.BaseDamage;
             }
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     baseFeederGun.UpdateMagazineContents();
                     baseFeederGun.SpawnGunFireDust(Owner.Center, baseFeederGun.ShootVelocity);
                     int proj = Projectile.NewProjectile(shootState.Source, Projectile.Center + new Vector2(0, -5),
-                        (toMou.SafeNormalize(Vector2.Zero) * 15).RotatedByRandom(rot * 0.01f), ammo, 
+                        (toMou.SafeNormalize(Vector2.Zero) * 15).RotatedByRandom(rot * 0.01f), ammo,
                         (int)(shootState.WeaponDamage * lastdamage), 0, Projectile.owner);
                     if (proj > 0 && proj < Main.maxProjectiles) {
                         Main.projectile[proj].CWR().GetHitAttribute.OnHitBlindArmor = true;
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             Texture2D texture = ModContent.Request<Texture2D>("CalamityMod/Projectiles/InvisibleProj").Value;
 
-            Main.EntitySpriteDraw(texture, Owner.MountedCenter - Main.screenPosition + toMou.SafeNormalize(Vector2.Zero) * 59 + new Vector2(0,-5), null, Color.DarkRed, angle, new Vector2(texture.Width / 2f, texture.Height / 2f), 4000f, 0, 0);
+            Main.EntitySpriteDraw(texture, Owner.MountedCenter - Main.screenPosition + toMou.SafeNormalize(Vector2.Zero) * 59 + new Vector2(0, -5), null, Color.DarkRed, angle, new Vector2(texture.Width / 2f, texture.Height / 2f), 4000f, 0, 0);
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);

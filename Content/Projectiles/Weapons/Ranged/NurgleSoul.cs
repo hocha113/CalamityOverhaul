@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.ai[0] == 0) {
                 SpanDust();
             }
-            
+
             Projectile.rotation = Projectile.velocity.ToRotation();
             NPC npc = Projectile.Center.FindClosestNPC(1900);
             if (npc != null) {

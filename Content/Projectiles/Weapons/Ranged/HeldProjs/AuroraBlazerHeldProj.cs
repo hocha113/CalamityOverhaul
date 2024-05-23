@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
@@ -13,7 +12,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AuroraBlazer";
         public override int targetCayItem => ModContent.ItemType<AuroraBlazer>();
         public override int targetCWRItem => ModContent.ItemType<AuroraBlazerEcType>();
-        int soundPma;
+
+        private int soundPma;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             HandDistance = 25;

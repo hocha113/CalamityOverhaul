@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (fireIndex == 0) {
                 Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
             }
-            
+
             Main.projectile[proj].extraUpdates = 1;
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
             fireIndex++;

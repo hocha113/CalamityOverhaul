@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -60,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 SoundEngine.PlaySound(SoundID.Item30 with { Volume = SoundID.Item30.Volume * 1.5f }, Owner.MountedCenter);
                 ShootState shootState = Owner.GetShootState();
                 for (int i = 0; i < 3; i++) {
-                    Projectile.NewProjectile(shootState.Source, Projectile.Center, 
+                    Projectile.NewProjectile(shootState.Source, Projectile.Center,
                         Projectile.rotation.ToRotationVector2().RotatedBy((-15 + i * 15) * CWRUtils.atoR) * 15
                     , ModContent.ProjectileType<SporeBombs>(), shootState.WeaponDamage * 3, shootState.WeaponKnockback, Projectile.owner);
                 }

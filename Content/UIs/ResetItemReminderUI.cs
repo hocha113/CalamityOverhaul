@@ -1,9 +1,8 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using static System.Net.Mime.MediaTypeNames;
-using Terraria.GameContent;
 using Terraria;
+using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.UIs
 {

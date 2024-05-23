@@ -1,12 +1,11 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles.BaseProjectiles;
+﻿using CalamityMod.Projectiles.BaseProjectiles;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Melee;
 using System;
+using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Common;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {

@@ -12,8 +12,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
     internal class MajesticGuardBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Melee + "MajesticGuardGlow";
-        float tileRot;
-        Vector2 tilePos;
+
+        private float tileRot;
+        private Vector2 tilePos;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
             ProjectileID.Sets.TrailingMode[Type] = 2;

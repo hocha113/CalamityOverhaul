@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -8,7 +7,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Items.Melee;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
@@ -92,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     , Projectile.rotation + (Projectile.ai[2] == 0 ? MathHelper.PiOver2 : 0), value.Size() / 2
                 , Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
             }
-            
+
             Main.spriteBatch.Draw(value, Projectile.Center - Main.screenPosition, null, Color.DarkRed
                 , Projectile.rotation + (Projectile.ai[2] == 0 ? MathHelper.PiOver2 : 0), value.Size() / 2
                 , Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);

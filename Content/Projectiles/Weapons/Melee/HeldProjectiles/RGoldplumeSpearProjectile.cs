@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles.BaseProjectiles;
+﻿using CalamityMod.Projectiles.BaseProjectiles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework;
@@ -44,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         private ref float Time => ref Projectile.localAI[2];
 
-        Player owners => CWRUtils.GetPlayerInstance(Projectile.owner);
+        private Player owners => CWRUtils.GetPlayerInstance(Projectile.owner);
 
         public override void AI() {
             if (Status == 0)

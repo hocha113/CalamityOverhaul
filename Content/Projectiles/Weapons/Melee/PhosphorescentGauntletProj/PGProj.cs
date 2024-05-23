@@ -1,6 +1,5 @@
 ﻿using CalamityMod.DataStructures;
 using CalamityMod.Dusts;
-using CalamityMod.Items.Weapons.Rogue;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
@@ -48,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
                 CWRParticleHandler.AddParticle(glow);
                 SpanDust(pos);
             }
-            
+
             Time++;
         }
 
@@ -82,8 +81,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            SoundStyle sound = SoundID.Item88 with
-            {
+            SoundStyle sound = SoundID.Item88 with {
                 Volume = 3
             };
             SoundEngine.PlaySound(sound, Projectile.position);

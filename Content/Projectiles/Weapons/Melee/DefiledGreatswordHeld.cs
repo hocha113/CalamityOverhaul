@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 return;
             }
             Item item = player.ActiveItem();
-            if (item.IsAir 
+            if (item.IsAir
                 || (item.type != ModContent.ItemType<DefiledGreatswordEcType>()
                 && item.type != ModContent.ItemType<DefiledGreatsword>())
                 && item.type != ModContent.ItemType<BlightedCleaverEcType>()

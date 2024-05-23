@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.scale *= 1.002f;
             }
             if (Status == 2) {
-                
+
                 Projectile.penetrate = -1;
                 if (Projectile.timeLeft <= 60) {
                     Projectile.tileCollide = true;

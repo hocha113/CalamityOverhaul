@@ -1,6 +1,4 @@
-﻿using CalamityMod.Items.Placeables.FurnitureExo;
-using CalamityMod.Tiles.FurnitureExo;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Tiles;
 using Microsoft.Xna.Framework;

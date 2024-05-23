@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 float slp = Main.rand.NextFloat(0.5f, 0.9f);
                 GeneralParticleHandler.SpawnParticle(new FlareShine(Projectile.Center + Main.rand.NextVector2Unit() * 13, vector, Color.White, outerSparkColor
                     , 0f, new Vector2(0.6f, 1f) * slp, new Vector2(1.5f, 2.7f) * slp, 20 + Main.rand.Next(6), 0f, 3f, 0f, Main.rand.Next(7) * 2));
-                
+
                 float scaleBoost = MathHelper.Clamp(Projectile.ai[1] * 0.005f, 0f, 2f);
                 float outerSparkScale = 3.2f + scaleBoost;
                 HeavenfallStarParticle spark = new HeavenfallStarParticle(Projectile.Center, vector, false, 7, outerSparkScale, outerSparkColor);
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 if (dorpTypes.Count > 0) {
                     darkMatterBall.dorpTypes = dorpTypes;
                     own.QuickSpawnItem(own.parent(), darkMatterBall.Item, 1);
-                } 
+                }
             }
         }
     }

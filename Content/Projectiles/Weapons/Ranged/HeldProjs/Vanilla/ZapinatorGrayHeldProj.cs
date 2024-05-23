@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             HandDistance = 15;
             HandDistanceY = 0;
             GunPressure = 0.3f;
-            ControlForce = 0.05f;           
+            ControlForce = 0.05f;
             RangeOfStress = 48;
             Recoil = 0;
         }

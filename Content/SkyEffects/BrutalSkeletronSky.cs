@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -17,9 +16,9 @@ namespace CalamityOverhaul.Content.SkyEffects
             SkyManager.Instance["CWRMod:BrutalSkeletronSky"] = this;
         }
 
-        bool active;
-        float intensity;
-        float maxIntensity = 0.6f;
+        private bool active;
+        private float intensity;
+        private float maxIntensity = 0.6f;
         public override void Activate(Vector2 position, params object[] args) {
             active = true;
             intensity = 0.01f;
@@ -53,7 +52,7 @@ namespace CalamityOverhaul.Content.SkyEffects
                 intensity -= 0.01f;
                 if (intensity < 0) {
                     Deactivate();
-                } 
+                }
             }
         }
 

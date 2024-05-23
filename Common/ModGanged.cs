@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Events;
-using CalamityMod.Graphics.Renderers;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.UI;
 using CalamityOverhaul.Content;
@@ -305,7 +304,7 @@ namespace CalamityOverhaul.Common
         }
 
         private static bool On_ShouldApplyItemOverhaul_Hook(On_TrO_Broadsword_ShouldApplyItemOverhaul_Dalegate orig, object obj, Item item) {
-            int[] noEffect = new int[] { ItemType<TrueBiomeBlade>(), ItemType<OmegaBiomeBlade>(), ItemType<BrokenBiomeBlade>(),};
+            int[] noEffect = new int[] { ItemType<TrueBiomeBlade>(), ItemType<OmegaBiomeBlade>(), ItemType<BrokenBiomeBlade>(), };
             if (noEffect.Contains(item.type)) {
                 return false;
             }
@@ -323,7 +322,7 @@ namespace CalamityOverhaul.Common
             int startHeight = 100;
             int x = Main.screenWidth - 420;
             int y = Main.screenHeight - startHeight;
-            if (Main.playerInventory || Main.invasionType > 0 || Main.pumpkinMoon 
+            if (Main.playerInventory || Main.invasionType > 0 || Main.pumpkinMoon
                 || Main.snowMoon || DD2Event.Ongoing || AcidRainEvent.AcidRainEventIsOngoing
                 || TungstenRiot.Instance.TungstenRiotIsOngoing) {
                 x -= 250;

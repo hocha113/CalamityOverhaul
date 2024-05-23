@@ -1,13 +1,12 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Projectiles.Melee.Spears;
-using CalamityMod;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
+﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -40,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Yellow;
             Item.shoot = ModContent.ProjectileType<RVulcaniteLanceProj>();
             Item.shootSpeed = 10f;
-            
+
         }
 
         public override void HoldItem(Player player) {

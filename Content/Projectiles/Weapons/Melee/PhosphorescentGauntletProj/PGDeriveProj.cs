@@ -1,11 +1,8 @@
-﻿using CalamityMod.DataStructures;
-using CalamityMod.Dusts;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj
 {
@@ -47,11 +44,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            
+
         }
 
         public override void OnKill(int timeLeft) {
-            
+
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {

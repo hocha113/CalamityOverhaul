@@ -1,32 +1,32 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
-using System;
-using ReLogic.Content;
-using System.Runtime.InteropServices;
-using Terraria.Audio;
-using Terraria.ID;
-using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using System;
+using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 {
     internal class NeutronGlaiveHeld : BaseHeldProj, ISetupData
     {
         public override string Texture => CWRConstant.Item_Melee + "NeutronGlaive";
-        static Asset<Texture2D> bar1;
-        static Asset<Texture2D> bar2;
-        static Asset<Texture2D> bar3;
-        static Asset<Texture2D> bar4;
-        bool canatcck;
-        bool canatcck2 = true;
-        bool canatcck3 = true;
-        int uiframe;
-        const int maxatcck = 80;
+
+        private static Asset<Texture2D> bar1;
+        private static Asset<Texture2D> bar2;
+        private static Asset<Texture2D> bar3;
+        private static Asset<Texture2D> bar4;
+        private bool canatcck;
+        private bool canatcck2 = true;
+        private bool canatcck3 = true;
+        private int uiframe;
+        private const int maxatcck = 80;
         public void SetupData() {
             bar1 = CWRUtils.GetT2DAsset(CWRConstant.UI + "NeutronsBar");
             bar2 = CWRUtils.GetT2DAsset(CWRConstant.UI + "NeutronsBar2");

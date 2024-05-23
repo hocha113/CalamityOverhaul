@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.UIs
                 }
             }
         }
-        
+
         public override void Load() {
             Instance = this;
             if (!Main.dedServ) {
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.UIs
 
         public override void Update(GameTime gameTime) => DrawPos = new Vector2(Main.screenWidth - 60, Main.screenHeight - 60);
 
-        public override void Draw(SpriteBatch spriteBatch) 
+        public override void Draw(SpriteBatch spriteBatch)
             => CWRUtils.DrawEventProgressBar(spriteBatch, DrawPos, icon, 1 - TungstenRiot.Instance.EventKillRatio
                 , sengs, 200, 45, CWRLocText.GetTextValue("Event_TungstenRiot_Name"), TungstenRiot.Instance.MainColor);
     }

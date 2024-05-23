@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using Microsoft.Xna.Framework;
@@ -68,10 +67,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             spanSmogsBool = reader.ReadBoolean();
         }
 
-        Player Owner => GetPlayerInstance(Projectile.owner);
-        Vector2 toMou = Vector2.Zero;
-        Vector2 oldMou = Vector2.Zero;
-        bool spanSmogsBool = false;
+        private Player Owner => GetPlayerInstance(Projectile.owner);
+
+        private Vector2 toMou = Vector2.Zero;
+        private Vector2 oldMou = Vector2.Zero;
+        private bool spanSmogsBool = false;
         public override void AI() {
             ThisTimeValue++;
             Projectile.localAI[0]++;
@@ -152,8 +152,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        int fireType => ModContent.ProjectileType<DragonsBreathRound>();
-        int fireCross => ModContent.ProjectileType<DragonFireRupture>();
+        private int fireType => ModContent.ProjectileType<DragonsBreathRound>();
+
+        private int fireCross => ModContent.ProjectileType<DragonFireRupture>();
 
         public void ShootFire(Vector2 shootPos) {
             if (Main.myPlayer != Projectile.owner) return;

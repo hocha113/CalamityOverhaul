@@ -1,14 +1,8 @@
-﻿using CalamityMod.UI;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using System.Reflection;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -89,7 +83,7 @@ namespace CalamityOverhaul.Content.UIs
                         DragButton.Instance.Draw(Main.spriteBatch);
                         RecipeErrorFullUI.Instance.Draw(Main.spriteBatch);
                         OneClickUI.Instance.Draw(Main.spriteBatch);
-                    }  
+                    }
                     return true;
                 }, InterfaceScaleType.UI));
                 layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("Ov UI", delegate {

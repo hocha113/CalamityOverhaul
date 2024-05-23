@@ -1,9 +1,9 @@
 ﻿using CalamityOverhaul.Content.Particles.Core;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using Terraria.ModLoader;
 using Terraria;
-using Microsoft.Xna.Framework;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
@@ -18,8 +18,9 @@ namespace CalamityOverhaul.Content.Particles
 
         public override string Texture => "CalamityMod/Particles/HeavySmoke";
 
-        Color[] rainbowColors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet };
-        Color rainColor => CWRUtils.MultiStepColorLerp(sengs % 30 / 30f, rainbowColors);
+        private Color[] rainbowColors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet };
+
+        private Color rainColor => CWRUtils.MultiStepColorLerp(sengs % 30 / 30f, rainbowColors);
         private float Opacity;
         private float Spin;
         private int MaxTime;
@@ -29,7 +30,7 @@ namespace CalamityOverhaul.Content.Particles
         private float Scale2;
         private int sengs;
         private Player player;
-        static int FrameAmount = 6;
+        private static int FrameAmount = 6;
 
         public HeavenHeavySmoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f, bool required = false, Player player = null) {
             Position = position;

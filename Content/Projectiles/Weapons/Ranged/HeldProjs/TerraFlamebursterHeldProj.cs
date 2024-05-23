@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -16,9 +13,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             return false;//TODO:这个项目已经废弃，等待移除或者重做为另一个目标的事项
         }
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TerraFlameburster";
+
         //public override int targetCayItem => ModContent.ItemType<TerraFlameburster>();
         //public override int targetCWRItem => ModContent.ItemType<TerraFlamebursterEcType>();
-        int fireIndex;
+        private int fireIndex;
         public override void SetRangedProperty() {
             FireTime = 9;
             HandDistance = 25;

@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 Main.dust[brimDust].velocity *= 3f;
                 if (Main.rand.NextBool()) {
                     Main.dust[brimDust].scale = 0.5f;
-                    Main.dust[brimDust].fadeIn = 1f + (float)Main.rand.Next(10) * 0.1f;
+                    Main.dust[brimDust].fadeIn = 1f + Main.rand.Next(10) * 0.1f;
                 }
             }
             for (int j = 0; j < 10; j++) {

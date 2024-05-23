@@ -1,11 +1,8 @@
 ﻿using CalamityMod;
-using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -172,7 +169,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Projectile.ai[1]++;
                     if (Projectile.ai[1] > HandRotStartTime && CanFireMotion) {
                         SetArmInFire();
-                    } 
+                    }
                 }
             }
             else {
@@ -360,7 +357,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Vector2 inprojRot = Projectile.rotation.ToRotationVector2();
                 Vector2 offsetDrawPos = inprojRot * lengsOFstValue;
                 Vector2 norlInRotUnit = inprojRot.GetNormalVector();
-                Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new (arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
+                Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new(arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
                 Vector2 drawPos = Projectile.Center - Main.screenPosition + offsetDrawPos;
 
                 void drawArrow(float overOffsetRot = 0, Vector2 overOffsetPos = default) => Main.EntitySpriteDraw(arrowValue

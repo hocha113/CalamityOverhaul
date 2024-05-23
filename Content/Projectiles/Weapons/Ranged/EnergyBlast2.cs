@@ -1,14 +1,12 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
+﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
 using CalamityOverhaul.Common;
-using Terraria.Graphics.Shaders;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using System;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
-using CalamityMod;
+using Microsoft.Xna.Framework;
+using System;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -36,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 dir = (int)Projectile.ai[0];
                 setDir = true;
             }
-            
+
             if (follow != null) {
                 Vector2 pos = follow.Center + follow.velocity.GetNormalVector() * Projectile.ai[2];
                 Projectile.Center = Vector2.Lerp(Projectile.Center, pos, 0.13f);

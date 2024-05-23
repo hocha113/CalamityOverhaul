@@ -1,16 +1,15 @@
-﻿using CalamityMod.Items;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Items;
+using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.DataStructures;
-using Microsoft.Xna.Framework;
-using CalamityMod.Sounds;
-using Terraria.Audio;
-using System.Collections.Generic;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {

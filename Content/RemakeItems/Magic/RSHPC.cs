@@ -14,12 +14,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal class RSHPC : BaseRItem, ISetupData {
+    internal class RSHPC : BaseRItem, ISetupData
+    {
         public static MethodInfo methodInfo;
         public override int TargetID => ModContent.ItemType<SHPC>();
         public override int ProtogenesisID => ModContent.ItemType<SHPCEcType>();
         public override string TargetToolTipItemName => "";
-        static void onSHPCToolFunc(RItemSystem.On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
+
+        private static void onSHPCToolFunc(RItemSystem.On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
         void ISetupData.LoadData() {
             methodInfo = typeof(SHPC).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
             MonoModHooks.Add(methodInfo, onSHPCToolFunc);

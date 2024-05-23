@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -17,14 +16,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "KingsbaneWindUp";
         public override int targetCayItem => ModContent.ItemType<Kingsbane>();
         public override int targetCWRItem => ModContent.ItemType<KingsbaneEctype>();
-        int upNeedsSengs = 11;
-        int chargeSoundSpanTimer = 0;
-        int chargeValue;
-        int chargeAmmo;
-        int maxChargeValue = 130;
-        int maxChargeAmmo = 90;
-        int thisTime;
-        bool thisOnFire;
+
+        private int upNeedsSengs = 11;
+        private int chargeSoundSpanTimer = 0;
+        private int chargeValue;
+        private int chargeAmmo;
+        private int maxChargeValue = 130;
+        private int maxChargeAmmo = 90;
+        private int thisTime;
+        private bool thisOnFire;
         public override void SetRangedProperty() {
             kreloadMaxTime = 110;
             FireTime = 1;

@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Common
 
         public override ConfigScope Mode => ConfigScope.ServerSide;
 
-        private static class Date{
+        private static class Date
+        {
             internal const float MScaleOffset_MinValue = 0.2f;
             internal const float MScaleOffset_MaxValue = 1f;
             public static float MScaleOffsetValue;
@@ -68,7 +69,7 @@ namespace CalamityOverhaul.Common
 
         [BackgroundColor(182, 24, 64, 192)]
         [DefaultValue(true)]
-        public bool MagazineSystem {  get; set; }
+        public bool MagazineSystem { get; set; }
 
         [BackgroundColor(182, 24, 64, 192)]
         [DefaultValue(true)]
@@ -107,7 +108,7 @@ namespace CalamityOverhaul.Common
             }
             set => Date.MScaleOffsetValue = value;
         }
-        
+
         /// <summary>
         /// 镜头缓动
         /// </summary>

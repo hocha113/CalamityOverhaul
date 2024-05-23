@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ModContent.RarityType<Turquoise>();
             Item.shoot = ModContent.ProjectileType<RTerratomereHoldoutProj>();
             Item.shootSpeed = 60f;
-            
+
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = SoundID.Item1;
             Item.value = CalamityGlobalItem.RarityPinkBuyPrice;
             Item.rare = ItemRarityID.Pink;
-            
+
         }
 
         public override bool MeleePrefix() => true;

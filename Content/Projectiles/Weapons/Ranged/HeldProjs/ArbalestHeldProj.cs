@@ -14,8 +14,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Arbalest";
         public override int targetCayItem => ModContent.ItemType<Arbalest>();
         public override int targetCWRItem => ModContent.ItemType<ArbalestEcType>();
-        int fireIndex;
-        int fireIndex2;
+
+        private int fireIndex;
+        private int fireIndex2;
         public override void SetRangedProperty() {
             HandDistance = 25;
             HandDistanceY = 5;

@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Terraria;
+﻿using Terraria;
 
 namespace CalamityOverhaul.Content.Players.Core
 {

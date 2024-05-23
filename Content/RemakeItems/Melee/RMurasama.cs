@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     line.Hide();
                 }
             }
-            
+
             // 获取自定义的文本内容
             string textContent = Language.GetText("Mods.CalamityOverhaul.Items.MurasamaEcType.Tooltip").Value;
             // 拆分传奇提示行的文本内容
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     }
 
                     if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                        text = InWorldBossPhase.Instance.level11? CWRLocText.GetTextValue("Murasama_No_legend_Content_2") : CWRLocText.GetTextValue("Murasama_No_legend_Content_1");
+                        text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("Murasama_No_legend_Content_2") : CWRLocText.GetTextValue("Murasama_No_legend_Content_1");
                     }
                     newLine.Text = text;
                     // 使用颜色渐变以提高可读性

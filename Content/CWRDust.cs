@@ -1,8 +1,6 @@
-﻿using Terraria.ID;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Microsoft.Xna.Framework;
 using Terraria.Graphics.Shaders;
-using CalamityOverhaul.Common.Effects;
 
 namespace CalamityOverhaul.Content
 {
@@ -36,7 +34,7 @@ namespace CalamityOverhaul.Content
 
             if (dust.scale < 0.05f) {
                 dust.active = false;
-            }  
+            }
         }
 
         public static void StramDustAI2(Dust dust) {

@@ -1,17 +1,16 @@
-﻿using CalamityMod.Events;
-using CalamityMod;
-using Terraria;
-using System.Collections.Generic;
-using Terraria.ModLoader;
-using CalamityMod.NPCs.NormalNPCs;
-using Microsoft.Xna.Framework;
-using System.Linq;
-using Terraria.Audio;
-using Terraria.ID;
-using CalamityOverhaul.Common;
+﻿using CalamityMod;
+using CalamityMod.Events;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Materials;
+using CalamityMod.NPCs.NormalNPCs;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Events
 {
@@ -57,7 +56,7 @@ namespace CalamityOverhaul.Content.Events
         }
 
         public bool TryStartEvent() {
-            if (TungstenRiotIsOngoing || (!NPC.downedBoss1 && !Main.hardMode && !DownedBossSystem.downedAquaticScourge) 
+            if (TungstenRiotIsOngoing || (!NPC.downedBoss1 && !Main.hardMode && !DownedBossSystem.downedAquaticScourge)
                 || BossRushEvent.BossRushActive || AcidRainEvent.AcidRainEventIsOngoing) {
                 return false;
             }

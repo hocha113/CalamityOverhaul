@@ -12,7 +12,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.IceBow].Value;
         public override int targetCayItem => ItemID.IceBow;
         public override int targetCWRItem => ItemID.IceBow;
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetRangedProperty() {
             ArmRotSengsBackBaseValue = 70;
             ShootSpanTypeValue = SpanTypesEnum.IceBow;

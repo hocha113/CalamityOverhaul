@@ -1,18 +1,15 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.Utilities;
-using Microsoft.Xna.Framework;
-using CalamityOverhaul.Common;
-using System.Linq;
-using CalamityMod;
-using Terraria.Graphics.Shaders;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using Terraria.Audio;
+﻿using CalamityMod;
 using CalamityMod.Graphics.Primitives;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using Microsoft.Xna.Framework;
+using System;
+using Terraria;
+using Terraria.Audio;
+using Terraria.Graphics.Shaders;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj
 {
@@ -101,7 +98,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         public override bool PreDraw(ref Color lightColor) {
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-            
+
             PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
                 , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 80);
             return false;

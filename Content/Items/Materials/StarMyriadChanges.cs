@@ -1,18 +1,14 @@
-﻿using CalamityOverhaul.Content.UIs.SupertableUIs;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 using Terraria.Localization;
-using Terraria.DataStructures;
-using System.Collections.Generic;
-using CalamityOverhaul.Content.Projectiles;
-using CalamityOverhaul.Common;
-using CalamityMod.Items;
-using CalamityOverhaul.Content.Tiles;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Materials
 {

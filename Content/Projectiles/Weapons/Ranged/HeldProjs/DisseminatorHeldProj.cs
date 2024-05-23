@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Main.projectile[proj].tileCollide = false;
                 Main.projectile[proj].scale += Main.rand.NextFloat(0.5f);
                 Main.projectile[proj].extraUpdates += 1;
-            }  
+            }
             CaseEjection();
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();

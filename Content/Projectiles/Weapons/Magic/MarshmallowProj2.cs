@@ -1,18 +1,19 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 {
     internal class MarshmallowProj2 : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Magic + "MarshmallowProj";
-        NPC OnHItTarget;
-        Vector2 OffsetPos;
+
+        private NPC OnHItTarget;
+        private Vector2 OffsetPos;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.friendly = true;
@@ -36,12 +37,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                     Projectile.velocity = Projectile.velocity.UnitVector() * 10;
                     Projectile.ai[0] = 1;
                 }
-            } else if (Projectile.ai[0] == 1) {
+            }
+            else if (Projectile.ai[0] == 1) {
                 NPC target = Projectile.Center.FindClosestNPC(600, false, true);
                 if (target != null) {
                     Projectile.ChasingBehavior2(target.Center, 1, 0.35f);
                 }
-            } else if (Projectile.ai[0] == 2) {
+            }
+            else if (Projectile.ai[0] == 2) {
                 if (!OnHItTarget.Alives()) {
                     Projectile.Kill();
                     return;

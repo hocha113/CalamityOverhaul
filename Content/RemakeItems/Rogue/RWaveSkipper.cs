@@ -1,18 +1,14 @@
-﻿using CalamityMod.Items;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Items;
+using CalamityMod.Projectiles.Rogue;
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.DataStructures;
-using Microsoft.Xna.Framework;
-using CalamityMod.Projectiles.Rogue;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria.Localization;
-using CalamityOverhaul;
 
 namespace CalamityOverhaul.Content.RemakeItems.Rogue
 {

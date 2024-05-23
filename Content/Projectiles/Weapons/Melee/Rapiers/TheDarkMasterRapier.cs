@@ -1,11 +1,11 @@
-﻿using CalamityMod.Projectiles.Melee;
+﻿using CalamityMod.Particles;
+using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityMod.Particles;
-using Microsoft.Xna.Framework;
-using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
         public override void ExtraShoot() {
             if (HitNPCs.Count > 0) {
-                if (Owner.ownedProjectileCounts[ModContent.ProjectileType<SemberDarkMasterClone>()] <= 0 
+                if (Owner.ownedProjectileCounts[ModContent.ProjectileType<SemberDarkMasterClone>()] <= 0
                     && !Owner.HasBuff(BuffID.Darkness)
                     && Owner.ownedProjectileCounts[ModContent.ProjectileType<DarkMasterClone>()] <= 0) {
                     ring = new BloomRing(Owner.Center, Vector2.Zero, Color.Red, 0.4f, 10);

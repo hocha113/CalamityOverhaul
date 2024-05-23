@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using Terraria.Graphics.Effects;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Events
 {

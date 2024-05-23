@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.shoot = ModContent.ProjectileType<RWaveSkipperProjectile>();
             Item.shootSpeed = 12f;
             Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
-            
+
         }
 
         public override bool AltFunctionUse(Player player) {

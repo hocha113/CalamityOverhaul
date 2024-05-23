@@ -1,12 +1,12 @@
-﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Content.Items.Ranged;
-using Terraria.Audio;
+﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Ranged;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -15,10 +15,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Condemnation";
         public override int targetCayItem => ModContent.ItemType<Condemnation>();
         public override int targetCWRItem => ModContent.ItemType<CondemnationEcType>();
-        int fireIndex;
-        int fireIndex2 = 20;
-        int fireIndex3;
-        bool canFireR;
+
+        private int fireIndex;
+        private int fireIndex2 = 20;
+        private int fireIndex3;
+        private bool canFireR;
         public override void SetRangedProperty() {
             HandDistance = 30;
             HandDistanceY = 6;
@@ -76,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 fireIndex = 0;
                 SoundEngine.PlaySound(SoundID.Item108 with { Volume = SoundID.Item108.Volume * 0.3f });
                 SoundStyle sound = new("CalamityMod/Sounds/Custom/AbilitySounds/BrimflameRecharge");
-                SoundEngine.PlaySound(sound with { Volume = 0.8f, PitchRange = (-0.1f, 0.1f)});
+                SoundEngine.PlaySound(sound with { Volume = 0.8f, PitchRange = (-0.1f, 0.1f) });
                 for (int i = 0; i < 36; i++) {
                     Dust chargeMagic = Dust.NewDustPerfect(GunShootPos, 267);
                     chargeMagic.velocity = (MathHelper.TwoPi * i / 36f).ToRotationVector2() * 5f + Owner.velocity;

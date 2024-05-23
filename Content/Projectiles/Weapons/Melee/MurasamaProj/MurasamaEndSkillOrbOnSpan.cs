@@ -1,11 +1,9 @@
-﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
+﻿using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -76,7 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     Projectile.NewProjectile(Projectile.parent(), new Vector2(Projectile.ai[0], Projectile.ai[1]), Projectile.velocity, ModContent.ProjectileType<MurasamaEndSkillOrb>()
                 , Projectile.damage, 0, Projectile.owner, Projectile.velocity.ToRotation(), Main.rand.Next(100));
                 }
-                
+
                 onOrb = false;
             }
         }
@@ -86,11 +84,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public float PrimitiveWidthFunction(float completionRatio) => orbNinmsWeith;
 
         public override bool PreDraw(ref Color lightColor) {
-            if (PosLists == null) 
+            if (PosLists == null)
                 return false;
 
             GameShaders.Misc["CalamityMod:TrailStreak"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
-            
+
             PrimitiveRenderer.RenderTrail(PosLists, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
                 , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:TrailStreak"]), 18);
             return false;

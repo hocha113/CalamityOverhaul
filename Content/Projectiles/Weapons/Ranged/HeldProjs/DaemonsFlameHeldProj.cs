@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -56,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 for (int i = 0; i < 4; i++) {
                     Vector2 vr = Projectile.rotation.ToRotationVector2() * Main.rand.Next(20, 30);
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * 8;
-                    Projectile.NewProjectile(Projectile.parent(),pos,vr,AmmoTypes,WeaponDamage,WeaponKnockback,Owner.whoAmI);
+                    Projectile.NewProjectile(Projectile.parent(), pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                 }
                 Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 18
                     , ModContent.ProjectileType<DaemonsFlameArrow>(), WeaponDamage, WeaponKnockback, Owner.whoAmI);

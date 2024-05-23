@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void FiringShoot() {
-            Projectile proj = 
+            Projectile proj =
             Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             float manaRatio = (float)Owner.statMana / Owner.statManaMax2;
             bool injectionNerf = Owner.Calamity().astralInjection;

@@ -1,13 +1,12 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Magic;
+﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
-using Terraria.ModLoader;
-using Terraria;
-using System.Collections.Generic;
-using System;
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
@@ -16,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
-        static Dictionary<int, int> DamageDictionary => new Dictionary<int, int>(){
+        private static Dictionary<int, int> DamageDictionary => new Dictionary<int, int>(){
             {0, 12 },
             {1, 20 },
             {2, 22 },

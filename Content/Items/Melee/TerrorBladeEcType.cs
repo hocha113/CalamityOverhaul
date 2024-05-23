@@ -36,9 +36,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             set => Item.CWR().MeleeCharge = value;
         }
 
-        static Asset<Texture2D> rageEnergyTopAsset;
-        static Asset<Texture2D> rageEnergyBarAsset;
-        static Asset<Texture2D> rageEnergyBackAsset;
+        private static Asset<Texture2D> rageEnergyTopAsset;
+        private static Asset<Texture2D> rageEnergyBarAsset;
+        private static Asset<Texture2D> rageEnergyBackAsset;
         void ISetupData.SetupData() {
             if (!Main.dedServ) {
                 rageEnergyTopAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeTop");

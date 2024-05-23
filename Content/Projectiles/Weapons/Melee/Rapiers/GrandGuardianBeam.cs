@@ -1,10 +1,10 @@
-﻿using CalamityOverhaul.Common.Effects;
-using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common.Effects;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
-using Terraria.ID;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
@@ -12,8 +12,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
     internal class GrandGuardianBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Melee + "GrandGuardianGlow";
-        NPC hitnpc;
-        Vector2 oldnpcPos;
+
+        private NPC hitnpc;
+        private Vector2 oldnpcPos;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
             ProjectileID.Sets.TrailingMode[Type] = 2;

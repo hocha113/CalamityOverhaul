@@ -126,7 +126,7 @@ namespace CalamityOverhaul
             }
 
             {
-                GlobalHookList<GlobalItem> getItemLoaderHookTargetValue(string key) 
+                GlobalHookList<GlobalItem> getItemLoaderHookTargetValue(string key)
                     => (GlobalHookList<GlobalItem>)typeof(ItemLoader).GetField(key, BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
                 CWR_InItemLoader_Set_Shoot_Hook = getItemLoaderHookTargetValue("HookShoot");
                 CWR_InItemLoader_Set_CanUse_Hook = getItemLoaderHookTargetValue("HookCanUseItem");

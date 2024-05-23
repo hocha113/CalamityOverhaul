@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using log4net.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +11,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.HalibutCannon>();
         public override int targetCWRItem => ModContent.ItemType<HalibutCannonEcType>();
-        int level => HalibutCannonEcType.Level;
+
+        private int level => HalibutCannonEcType.Level;
         public override void SetRangedProperty() {
             ControlForce = 0.05f;
             GunPressure = 0.2f;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             base.FiringIncident();
         }
 
-        void Shoot(int num) {
+        private void Shoot(int num) {
             for (int i = 0; i < num; i++) {
                 int proj14 = Projectile.NewProjectile(Source, GunShootPos
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.03f, 0.03f)) * Main.rand.NextFloat(0.9f, 1.32f)
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Shoot(33);
                     break;
             }
-            
+
             _ = UpdateConsumeAmmo();
             _ = CreateRecoil();
         }

@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Tiles
 
         public override void MouseOver(int i, int j) {
             Player player = Main.LocalPlayer;
-            
+
             if (!player.IsWithinSnappngRangeToTile(i, j, 180)) { // 匹配RightClick中条件。仅当单击时执行某些操作时才应显示交互
                 return;
             }

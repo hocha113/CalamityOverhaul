@@ -1,26 +1,19 @@
-﻿using CalamityMod.CalPlayer;
-using CalamityMod.Items.DraedonMisc;
-using CalamityMod.Items.Placeables.DraedonStructures;
-using CalamityMod.TileEntities;
-using CalamityMod;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.Audio;
-using Terraria.DataStructures;
-using Terraria.GameContent.ObjectInteractions;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.ObjectData;
-using Microsoft.Xna.Framework;
-using Terraria.Enums;
+﻿using CalamityMod;
+using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
-using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityMod.Items.Materials;
-using FTile = CalamityMod.Items.Placeables.Furniture.CraftingStations;
-using System.Collections.Generic;
 using CalamityOverhaul.Content.TileEntitys;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.Enums;
+using Terraria.GameContent.ObjectInteractions;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Tiles
 {
@@ -121,7 +114,8 @@ namespace CalamityOverhaul.Content.Tiles
             Recipe.FindRecipes();
             return true;
         }
-        int frameIndex = 1;
+
+        private int frameIndex = 1;
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;

@@ -1,8 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Magic;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
-
-namespace CalamityOverhaul.Content.Items.Magic
+﻿namespace CalamityOverhaul.Content.Items.Magic
 {
     //TODO:已经废弃，等待重做或者移除
     //internal class GenisisEcType : EctypeItem

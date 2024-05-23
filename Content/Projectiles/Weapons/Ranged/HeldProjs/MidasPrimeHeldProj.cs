@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MidasPrime";
         public override int targetCayItem => ModContent.ItemType<MidasPrime>();
         public override int targetCWRItem => ModContent.ItemType<MidasPrimeEcType>();
-        bool nextShotGoldCoin = false;
+
+        private bool nextShotGoldCoin = false;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 22;

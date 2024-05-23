@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = SoundID.DD2_SkyDragonsFurySwing;
             Item.value = CalamityGlobalItem.RarityVioletBuyPrice;
             Item.rare = ModContent.RarityType<Violet>();
-            
+
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

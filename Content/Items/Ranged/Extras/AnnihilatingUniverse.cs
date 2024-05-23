@@ -8,7 +8,6 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniversePr
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
-using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

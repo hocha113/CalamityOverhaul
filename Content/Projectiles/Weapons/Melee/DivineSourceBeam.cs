@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     {
         public Vector2[] ControlPoints;
 
-        Player owner => CWRUtils.GetPlayerInstance(Projectile.owner);
+        private Player owner => CWRUtils.GetPlayerInstance(Projectile.owner);
 
         public const float EndRot = 60 * CWRUtils.atoR;
         public const float StarRot = -170 * CWRUtils.atoR;
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
 
             for (int i = 0; i < 30; i++) {
-                float completion = MathHelper.Lerp(endRot + Projectile.rotation.AtoR(), starRot + Projectile.rotation.AtoR(), i /30f);
+                float completion = MathHelper.Lerp(endRot + Projectile.rotation.AtoR(), starRot + Projectile.rotation.AtoR(), i / 30f);
                 completion *= Math.Sign(Projectile.velocity.X) * -1;
                 yield return completion.ToRotationVector2() * 84f;
             }
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 collBool = Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), starPos, endPos, 32, ref point);
                 if (collBool) {
                     break;
-                }   
+                }
             }
 
             return collBool;

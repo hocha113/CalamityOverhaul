@@ -1,15 +1,13 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Dusts;
-using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Newtonsoft.Json.Linq;
-using Terraria.Audio;
-using CalamityMod;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {

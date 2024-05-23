@@ -32,13 +32,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 _ = UpdateConsumeAmmo();
 
-            } 
+            }
             else {
                 for (int i = 0; i < 2; i++) {
                     _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-angle, angle, i)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     _ = UpdateConsumeAmmo();
                 }
-            }  
+            }
         }
     }
 }

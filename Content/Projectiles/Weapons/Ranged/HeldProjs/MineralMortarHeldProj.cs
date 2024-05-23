@@ -1,11 +1,10 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
 using Terraria;
-using CalamityMod.Projectiles.Ranged;
 using Terraria.Audio;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -14,8 +13,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MineralMortar";
         public override int targetCayItem => ModContent.ItemType<MineralMortar>();
         public override int targetCWRItem => ModContent.ItemType<MineralMortarEcType>();
-        bool oldOnFire;
-        int chargeIndex;
+
+        private bool oldOnFire;
+        private int chargeIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 15;

@@ -23,7 +23,7 @@ namespace CalamityOverhaul
             CWRMessageType type = (CWRMessageType)reader.ReadByte();
             if (type == CWRMessageType.DompBool) {
                 Main.player[reader.ReadInt32()].CWR().HandleDomp(reader);
-            } 
+            }
             else if (type == CWRMessageType.RecoilAcceleration) {
                 Main.player[reader.ReadInt32()].CWR().HandleRecoilAcceleration(reader);
             }

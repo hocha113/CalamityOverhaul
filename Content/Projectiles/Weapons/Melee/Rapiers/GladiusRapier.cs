@@ -1,10 +1,9 @@
 ﻿using CalamityOverhaul.Common;
-using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
@@ -14,7 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         public override string GlowPath => CWRConstant.Placeholder3;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Gladius].Value;
         public override Texture2D GlowValue => TextureAssets.Item[ItemID.Gladius].Value;
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetRapiers() {
             PremanentToSkialthRot = 22;
             overHitModeing = 13;

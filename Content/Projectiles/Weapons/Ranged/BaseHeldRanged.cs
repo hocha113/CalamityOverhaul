@@ -122,8 +122,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 一个额外附属值，用于矫正<see cref="SafeMousetStart"/>的连续，这个值应该在合适的时机被恢复为默认值<see langword="false"/>
         /// </summary>
         public bool SafeMousetStart2;
-        bool _safeMouseInterfaceValue;
-        bool _old_safeMouseInterfaceValue;
+        private bool _safeMouseInterfaceValue;
+        private bool _old_safeMouseInterfaceValue;
         public bool SafeMouseInterfaceValue {
             get {
                 return _safeMouseInterfaceValue;
@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        void UpdateSafeMouseInterfaceValue() {
+        private void UpdateSafeMouseInterfaceValue() {
             if (!CanFire) {//只有在玩家不进行开火尝试时才能更改空闲状态
                 _safeMouseInterfaceValue = !Owner.mouseInterface;
                 if (_old_safeMouseInterfaceValue != _safeMouseInterfaceValue) {

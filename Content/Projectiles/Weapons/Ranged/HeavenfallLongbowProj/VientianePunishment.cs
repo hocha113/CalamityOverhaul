@@ -240,7 +240,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             {
                 GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
                 GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-                
+
                 PrimitiveRenderer.RenderTrail(toTargetPath, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
                     , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 50);
             }

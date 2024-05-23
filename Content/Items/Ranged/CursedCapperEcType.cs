@@ -1,11 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod;
-using Terraria.ID;
-using Terraria.ModLoader;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
-
-namespace CalamityOverhaul.Content.Items.Ranged
+﻿namespace CalamityOverhaul.Content.Items.Ranged
 {
     //internal class CursedCapperEcType : EctypeItem
     //{

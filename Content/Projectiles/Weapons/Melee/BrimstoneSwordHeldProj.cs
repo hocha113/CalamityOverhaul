@@ -1,14 +1,13 @@
 ﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Projectiles.BaseProjectiles;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj;
+using CalamityMod.Projectiles.Melee;
+using CalamityOverhaul.Content.Items.Melee;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework;
-using CalamityOverhaul.Content.Items.Melee;
-using Microsoft.Xna.Framework.Graphics;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Projectiles.Melee;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
@@ -62,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             trueMelee = true;
             var source = Projectile.GetSource_FromThis();
             target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300);
-            Vector2 spanPos = new (target.Center.X + Main.rand.Next(-260, 260), target.Center.Y);
+            Vector2 spanPos = new(target.Center.X + Main.rand.Next(-260, 260), target.Center.Y);
             Projectile.NewProjectile(source, spanPos, Vector2.Zero, ModContent.ProjectileType<Brimblast>(), Projectile.damage, Projectile.knockBack, Main.myPlayer);
         }
 

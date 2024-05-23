@@ -1,9 +1,9 @@
-﻿using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.Projectiles
 {

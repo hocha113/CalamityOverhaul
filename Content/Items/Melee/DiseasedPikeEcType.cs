@@ -1,16 +1,14 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Projectiles.Melee.Spears;
-using CalamityMod;
-using CalamityOverhaul.Common;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.DataStructures;
-using Microsoft.Xna.Framework;
-using CalamityMod.Items.Armor.Bloodflare;
+﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityMod.Sounds;
-using Terraria.Audio;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -45,7 +43,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Yellow;
             Item.shoot = ModContent.ProjectileType<RDiseasedPikeSpear>();
             Item.shootSpeed = 10f;
-            
+
         }
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;

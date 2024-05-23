@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void FiringShoot() {
             Item ammoItem = GetSelectedBullets();
             if (ammoItem.type == ItemID.RocketI) {
-            AmmoTypes = ProjectileID.GrenadeI;
+                AmmoTypes = ProjectileID.GrenadeI;
             }
             if (ammoItem.type == ItemID.RocketII) {
                 AmmoTypes = ProjectileID.GrenadeII;
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (ammoItem.type == ItemID.MiniNukeII) {
                 AmmoTypes = ProjectileID.MiniNukeGrenadeII;
             }
-            int proj1 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocityInProjRot + new Vector2(0, -4)) * 0.8f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0) ;
+            int proj1 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocityInProjRot + new Vector2(0, -4)) * 0.8f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj1].timeLeft += 120;
             int proj2 = Projectile.NewProjectile(Source, GunShootPos, (ShootVelocityInProjRot + new Vector2(0, -8)) * 0.6f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj2].timeLeft += 120;

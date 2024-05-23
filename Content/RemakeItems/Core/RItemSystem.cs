@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.TreasureBags.MiscGrabBags;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,10 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Core;
-using Terraria.UI;
 using static CalamityOverhaul.CWRMod;
 
 namespace CalamityOverhaul.Content.RemakeItems.Core
@@ -192,7 +188,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 if (result.Value) {
                     item.ModItem?.ModifyItemLoot(itemLoot);
                     return;
-                } else {
+                }
+                else {
                     return;
                 }
             }
@@ -214,7 +211,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 if (result.Value) {
                     item.ModItem?.ModifyWeaponCrit(player, ref crit);
                     return;
-                } else {
+                }
+                else {
                     return;
                 }
             }
@@ -236,7 +234,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 if (result.Value) {
                     item.ModItem?.UseAnimation(player);
                     return;
-                } else {
+                }
+                else {
                     return;
                 }
             }
@@ -330,7 +329,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                     if (rasg.Value) {//如果返回了true，那么执行原物品的该方法
                         item.ModItem?.ModifyHitNPC(player, target, ref modifiers);
                         return;
-                    } else {//否则返回false，那么后续的就什么都不执行
+                    }
+                    else {//否则返回false，那么后续的就什么都不执行
                         return;
                     }
                 }

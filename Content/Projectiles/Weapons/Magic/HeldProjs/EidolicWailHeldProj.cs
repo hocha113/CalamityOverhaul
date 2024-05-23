@@ -1,8 +1,8 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
-using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override int targetCayItem => ModContent.ItemType<EidolicWail>();
         public override int targetCWRItem => ModContent.ItemType<EidolicWailEcType>();
         public override void SetMagicProperty() {
-            ShootPosToMouLengValue =0;
-            ShootPosNorlLengValue =0;
+            ShootPosToMouLengValue = 0;
+            ShootPosNorlLengValue = 0;
             HandDistance = 20;
             HandDistanceY = 3;
             HandFireDistance = 20;

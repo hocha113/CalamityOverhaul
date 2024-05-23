@@ -1,9 +1,8 @@
 ﻿using CalamityOverhaul.Common;
-using Terraria.DataStructures;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs;
 
 namespace CalamityOverhaul.Content.Items.Magic.Extras
 {

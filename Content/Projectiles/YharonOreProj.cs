@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles
             value.GetData(colors);
             Vector2 projPos = Projectile.position / 16 - new Vector2(value.Width, value.Height) / 2;
             ushort auricOre = (ushort)ModContent.TileType<AuricOre>();
-            for (int i =  0; i < colors.Length; i++) {
+            for (int i = 0; i < colors.Length; i++) {
                 Color color = colors[i];
                 if (color.R == 0) {
                     Vector2 pos = new Vector2(i % value.Width, i / value.Width) + projPos;

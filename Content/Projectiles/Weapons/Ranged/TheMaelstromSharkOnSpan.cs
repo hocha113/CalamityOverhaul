@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer() && onFire) {
                 SoundEngine.PlaySound(SoundID.Item96, Projectile.Center);
-                Projectile.NewProjectile(Projectile.parent(), Projectile.Center,Projectile.rotation.ToRotationVector2() * 35
+                Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 35
                     , ModContent.ProjectileType<TheMaelstromShark>(), Projectile.damage, 0, Projectile.owner);
             }
         }

@@ -1,8 +1,6 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles.Ranged;
+﻿using CalamityMod.Projectiles.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -15,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 ShootState shootState = Owner.GetShootState("CWRGunShoot");
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * shootState.ScaleFactor;
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.NewProjectile(shootState.Source, Projectile.Center + vr.UnitVector() * 53 + vr.GetNormalVector() 
+                    Projectile.NewProjectile(shootState.Source, Projectile.Center + vr.UnitVector() * 53 + vr.GetNormalVector()
                         * 11 * (Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1)
                         , vr, ModContent.ProjectileType<ScorpioLargeRocket>(), shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI, 0);
                 }//TODO:临时替换ScorpioLargeRocket弹幕，有待考证

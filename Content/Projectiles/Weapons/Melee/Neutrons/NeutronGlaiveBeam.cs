@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
@@ -85,7 +84,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         }
 
         public override void OnKill(int timeLeft) {
-            Projectile.Explode(300, SoundID.Item14 with { Pitch = 0.45f } );
+            Projectile.Explode(300, SoundID.Item14 with { Pitch = 0.45f });
             Vector2 randpos = CWRUtils.randVr(64);
             Projectile.Center += randpos;
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero

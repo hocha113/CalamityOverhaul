@@ -1,13 +1,12 @@
 ﻿using CalamityMod.Items;
-using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
-using Terraria.DataStructures;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -32,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ModContent.RarityType<DarkBlue>();
             Item.shoot = ModContent.ProjectileType<OrderbringerBeams>();
             Item.shootSpeed = 6f;
-            
+
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

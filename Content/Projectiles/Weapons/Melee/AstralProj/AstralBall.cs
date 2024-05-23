@@ -1,13 +1,12 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
+﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
-using CalamityMod;
 using Microsoft.Xna.Framework;
+using System;
+using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria;
 using Terraria.ModLoader;
-using System;
-using static Terraria.ModLoader.PlayerDrawLayer;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
 {

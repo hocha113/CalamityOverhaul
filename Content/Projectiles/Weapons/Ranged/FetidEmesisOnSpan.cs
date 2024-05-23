@@ -1,10 +1,10 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Projectiles.Ranged;
+using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria;
 using Terraria.ModLoader;
-using CalamityMod.Projectiles.Ranged;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         Main.projectile[proj].penetrate = 3;
                     }
                 }
-                
+
                 for (int i = 0; i < 10; i++) {
                     Dust dust = Dust.NewDustDirect(Projectile.Center, 10, 10, DustID.Shadowflame);
                     dust.velocity = Vector2.Normalize(owner.rotation.ToRotationVector2() * 7).RotatedByRandom(MathHelper.ToRadians(15f));

@@ -13,9 +13,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "VernalBolter";
         public override int targetCayItem => ModContent.ItemType<VernalBolter>();
         public override int targetCWRItem => ModContent.ItemType<CosmicBolterEcType>();
-        int fireIndex;
-        int fireIndex2;
-        bool fire;
+
+        private int fireIndex;
+        private int fireIndex2;
+        private bool fire;
         public override void SetRangedProperty() {
             BowArrowDrawNum = 3;
             HandFireDistance = 20;

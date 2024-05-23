@@ -1,10 +1,9 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
 using Terraria;
-using CalamityMod.Projectiles.Ranged;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -13,8 +12,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "StarSputter";
         public override int targetCayItem => ModContent.ItemType<StarSputter>();
         public override int targetCWRItem => ModContent.ItemType<StarSputterEcType>();
-        int fireIndex;
-        int chargeIndex;
+
+        private int fireIndex;
+        private int chargeIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 5;

@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Yellow;
             Item.shoot = ModContent.ProjectileType<AnarchyBeam>();
             Item.shootSpeed = 15;
-            
+
         }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     }
                 }
             }
-            
+
         }
 
         public override void OnHitPvp(Player player, Player target, Player.HurtInfo hurtInfo) {

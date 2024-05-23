@@ -1,21 +1,21 @@
-﻿using CalamityOverhaul.Common.Effects;
+﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
-using Terraria.ID;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.GameContent;
-using CalamityMod;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
     internal class GladiusBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        float tileRot;
-        Vector2 tilePos;
+
+        private float tileRot;
+        private Vector2 tilePos;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
             ProjectileID.Sets.TrailingMode[Type] = 2;

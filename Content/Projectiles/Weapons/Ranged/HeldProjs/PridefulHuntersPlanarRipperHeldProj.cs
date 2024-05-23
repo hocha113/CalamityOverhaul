@@ -2,11 +2,10 @@
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
+using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework;
-using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -15,7 +14,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PridefulHuntersPlanarRipper";
         public override int targetCayItem => ModContent.ItemType<PridefulHuntersPlanarRipper>();
         public override int targetCWRItem => ModContent.ItemType<PridefulHuntersPlanarRipperEcType>();
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 122;
             FireTime = 3;

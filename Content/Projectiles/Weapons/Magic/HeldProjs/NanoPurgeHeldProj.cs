@@ -16,9 +16,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override string Texture => CWRConstant.Cay_Proj_Magic + "NanoPurgeHoldout";
         public override int targetCayItem => ModContent.ItemType<NanoPurge>();
         public override int targetCWRItem => ModContent.ItemType<NanoPurgeEcType>();
-        int fireIndex = 30;
-        int fireIndex2;
-        int intframe = 15;
+
+        private int fireIndex = 30;
+        private int fireIndex2;
+        private int intframe = 15;
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

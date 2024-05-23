@@ -1,14 +1,14 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Projectiles.BaseProjectiles;
 using CalamityMod.Projectiles.Melee;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Melee;
+using Microsoft.Xna.Framework;
+using System;
+using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Common;
-using System;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {

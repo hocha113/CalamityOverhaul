@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Particles;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -41,16 +39,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             if (Projectile.ai[0] >= 135) {
                 Projectile.ai[2] = Utils.Remap(Projectile.ai[0], 225f, 270, 1.5f, 0f);
-            } 
+            }
             else {
                 Projectile.ai[2] = Utils.Remap(Projectile.ai[0], 135, 225f, 0f, 1.5f);
             }
-                
+
             Projectile.ai[0]++;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            
+
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {

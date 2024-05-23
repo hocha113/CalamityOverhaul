@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;

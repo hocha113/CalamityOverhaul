@@ -19,7 +19,6 @@ using CalamityMod.NPCs.Ravager;
 using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.Yharon;
-using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Placeable;
@@ -580,8 +579,8 @@ namespace CalamityOverhaul
                 NPC npc = new NPC();
                 npc.SetDefaults(i);
                 bool isSteel = false;
-                if (npc.HitSound == SoundID.NPCHit2 
-                    || npc.HitSound == SoundID.NPCHit3 || npc.HitSound == SoundID.NPCHit4 
+                if (npc.HitSound == SoundID.NPCHit2
+                    || npc.HitSound == SoundID.NPCHit3 || npc.HitSound == SoundID.NPCHit4
                     || npc.HitSound == SoundID.NPCHit41 || npc.HitSound == SoundID.NPCHit42
                     || targetNpcTypes10.Contains(npc.type) || targetNpcTypes15.Contains(npc.type)
                     || targetNpcTypes7.Contains(npc.type) || targetNpcTypes7_1.Contains(npc.type)

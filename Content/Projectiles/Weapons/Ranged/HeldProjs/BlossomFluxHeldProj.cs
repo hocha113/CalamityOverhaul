@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BlossomFlux";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.BlossomFlux>();
         public override int targetCWRItem => ModContent.ItemType<BlossomFluxEcType>();
-        int chargeIndex = 35;
+
+        private int chargeIndex = 35;
         public override void SetRangedProperty() {
             CanRightClick = true;
             HandRotSpeedSengs = 0.6f;

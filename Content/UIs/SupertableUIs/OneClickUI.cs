@@ -3,9 +3,8 @@ using CalamityOverhaul.Content.UIs.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria.GameContent;
 using Terraria;
-using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
@@ -14,10 +13,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
     {
         public static OneClickUI Instance;
         public static Asset<Texture2D> MainValue;
-        SupertableUI mainUI => SupertableUI.Instance;
-        Rectangle mainRec;
-        bool onMainP;
-        bool checkSetO;
+
+        private SupertableUI mainUI => SupertableUI.Instance;
+
+        private Rectangle mainRec;
+        private bool onMainP;
+        private bool checkSetO;
         public override void Load() {
             Instance = this;
             if (!Main.dedServ) {

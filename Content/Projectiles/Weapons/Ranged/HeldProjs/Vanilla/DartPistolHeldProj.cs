@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -40,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
             else {
                 damage = WeaponDamage;
-                
+
             }
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, damage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].velocity *= 0.6f;
@@ -49,6 +48,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (ammoItem.type == ItemID.IchorDart) {
                 Main.projectile[proj].aiStyle = 1;
             }
-            }
+        }
     }
 }

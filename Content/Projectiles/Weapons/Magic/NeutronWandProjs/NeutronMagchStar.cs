@@ -1,12 +1,9 @@
 ﻿using CalamityMod;
-using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

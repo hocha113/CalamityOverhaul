@@ -31,9 +31,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             set => Item.CWR().MeleeCharge = value;
         }
 
-        static Asset<Texture2D> rageEnergyTopAsset;
-        static Asset<Texture2D> rageEnergyBarAsset;
-        static Asset<Texture2D> rageEnergyBackAsset;
+        private static Asset<Texture2D> rageEnergyTopAsset;
+        private static Asset<Texture2D> rageEnergyBarAsset;
+        private static Asset<Texture2D> rageEnergyBackAsset;
         void ISetupData.SetupData() {
             if (!Main.dedServ) {
                 rageEnergyTopAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyTop");
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     float ai1 = 40;
                     float velocityMultiplier = 2;
                     Projectile.NewProjectile(source, player.MountedCenter, velocity * velocityMultiplier, ModContent.ProjectileType<BlazingPhantomBlade>(), (int)(damage * 0.75)
-                        , knockback * 0.5f, player.whoAmI, (float)player.direction * player.gravDir, ai1, adjustedItemScale);
+                        , knockback * 0.5f, player.whoAmI, player.direction * player.gravDir, ai1, adjustedItemScale);
                 }
                 else {
                     float adjustedItemScale = player.GetAdjustedItemScale(Item);
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                         float ai1 = 40 + i * 8;
                         float velocityMultiplier = 1f - i / (float)3;
                         Projectile.NewProjectile(source, player.MountedCenter, velocity * velocityMultiplier, ModContent.ProjectileType<BlazingPhantomBlade>(), (int)(damage * 0.75)
-                            , knockback * 0.5f, player.whoAmI, (float)player.direction * player.gravDir, ai1, adjustedItemScale);
+                            , knockback * 0.5f, player.whoAmI, player.direction * player.gravDir, ai1, adjustedItemScale);
                     }
                 }
             }

@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             base.PostInOwnerUpdate();
         }
 
-        public override void FiringShoot() {           
+        public override void FiringShoot() {
             FiringDefaultSound = true;
             GunPressure = 0.1f;
             ControlForce = 0.05f;

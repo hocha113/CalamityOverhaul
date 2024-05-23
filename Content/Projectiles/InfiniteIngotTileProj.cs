@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Graphics.Metaballs;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
-using CalamityOverhaul.Content.Particles;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;

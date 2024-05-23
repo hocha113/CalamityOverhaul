@@ -2,10 +2,9 @@
 using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
-using Terraria.ModLoader;
 using Terraria;
 using Terraria.Audio;
-using CalamityMod;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 {
@@ -14,7 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Wingman";
         public override int targetCayItem => ModContent.ItemType<Wingman>();
         public override int targetCWRItem => ModContent.ItemType<WingmanEcType>();
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

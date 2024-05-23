@@ -2,13 +2,13 @@
 using CalamityMod.Dusts;
 using CalamityMod.Items;
 using CalamityMod.Projectiles.Melee;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 using CalamityOverhaul.Common;
-using Terraria.DataStructures;
+using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Lime;
             Item.shoot = ModContent.ProjectileType<BrimlashProj>();
             Item.shootSpeed = 10f;
-            
+
         }
 
         public override bool AltFunctionUse(Player player) => true;

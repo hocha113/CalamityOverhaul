@@ -20,10 +20,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// 弹幕的理论朝向，这里考虑并没有到<see cref="Player.gravDir"/>属性，为了防止玩家在重力反转的情况下出现问题，可能需要额外编写代码
         /// </summary>
         internal virtual int DirSign => Owner.direction * SafeGravDir;
+
         /// <summary>
         /// 这个值用于在联机同步中使用，一般来讲，应该使用<see cref="ToMouse"/>
         /// </summary>
-        Vector2 toMouseVecterDate;
+        private Vector2 toMouseVecterDate;
         /// <summary>
         /// 获取玩家到鼠标的向量
         /// </summary>

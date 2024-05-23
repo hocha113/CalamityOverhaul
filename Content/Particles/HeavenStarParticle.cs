@@ -1,10 +1,10 @@
 ﻿using CalamityOverhaul.Content.Particles.Core;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using static CalamityMod.CalamityUtils;
+using Microsoft.Xna.Framework.Graphics;
 using System;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.ModLoader;
+using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul.Content.Particles
 {
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Particles
                 return;
             Texture2D sparkTexture = ModContent.Request<Texture2D>(Texture).Value;
             Texture2D bloomTexture = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
-            float properBloomSize = (float)sparkTexture.Height / (float)bloomTexture.Height;
+            float properBloomSize = sparkTexture.Height / (float)bloomTexture.Height;
             Vector2 squish = Vector2.Lerp(OriginalScale, FinalScale, PiecewiseAnimation(LifetimeCompletion, new CurveSegment[] { new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4) }));
             spriteBatch.Draw(bloomTexture, Position - Main.screenPosition, null, Bloom * opacity * 0.5f, 0, bloomTexture.Size() / 2f, squish * BloomScale * properBloomSize, SpriteEffects.None, 0);
             spriteBatch.Draw(sparkTexture, Position - Main.screenPosition, null, Color * opacity, Rotation, sparkTexture.Size() / 2f, squish, SpriteEffects.None, 0);

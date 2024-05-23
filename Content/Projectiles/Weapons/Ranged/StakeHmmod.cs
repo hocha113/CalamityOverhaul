@@ -11,8 +11,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class StakeHmmod : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        float tileRot;
-        Vector2 tilePos;
+
+        private float tileRot;
+        private Vector2 tilePos;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
             ProjectileID.Sets.TrailingMode[Type] = 2;
@@ -70,7 +71,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     , lightColor * (1 - i / (float)Projectile.oldPos.Length) * 0.6f
                     , Projectile.rotation + MathHelper.PiOver2, mainValue.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             }
-            
+
             return false;
         }
     }

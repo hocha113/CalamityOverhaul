@@ -1,13 +1,13 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using CalamityMod.Projectiles.Ranged;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -16,9 +16,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Proj_Ranged + "FlurrystormCannonShooting";
         public override int targetCayItem => ModContent.ItemType<FlurrystormCannon>();
         public override int targetCWRItem => ModContent.ItemType<FlurrystormCannonEcType>();
-        int fireIndex;
-        int fireIndex2;
-        int onFireTime;
+
+        private int fireIndex;
+        private int fireIndex2;
+        private int onFireTime;
         public override void SetRangedProperty() {
             Recoil = 0.3f;
             FireTime = 20;

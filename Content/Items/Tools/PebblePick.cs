@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
-using Terraria.ID;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Tools

@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             HandFireDistanceY = -5;
             GunPressure = 0;
             ControlForce = 0;
-            Recoil = 0;        
+            Recoil = 0;
         }
 
         public override void FiringShoot() {

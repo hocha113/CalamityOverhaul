@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.TileEntitys
 
         public Vector2 Center => Position.ToWorldCoordinates(8 * TransmutationOfMatter.Width, 8 * TransmutationOfMatter.Height);
 
-        const int maxleng = 300;
+        private const int maxleng = 300;
 
         public override void OnKill() {
             foreach (var p in Main.player) {

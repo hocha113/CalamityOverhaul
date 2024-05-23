@@ -1,17 +1,16 @@
-﻿using CalamityMod.Items;
+﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
-using CalamityMod;
 using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework;
+using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System;
-using Terraria.DataStructures;
-using Microsoft.Xna.Framework;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj;
-using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {

@@ -2,8 +2,8 @@
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Terraria.ID;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee

@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles
                     CWRParticleHandler.AddParticle(new HeavenStarParticle(Projectile.Center, vector, Color.White
                         , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 0f, new Vector2(0.6f, 1f) * slp
                         , new Vector2(1.5f, 2.7f) * slp, 20 + Main.rand.Next(6), 0f, 3f, 0f, Main.rand.Next(7) * 2, Main.rand.NextFloat(-0.3f, 0.3f)));
-                }               
+                }
             }
         }
     }

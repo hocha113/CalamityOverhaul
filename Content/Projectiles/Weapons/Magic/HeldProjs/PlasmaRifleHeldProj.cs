@@ -1,13 +1,10 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
-using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
 using Terraria;
-using CalamityMod.Projectiles.Magic;
-using CalamityMod.Sounds;
 using Terraria.Audio;
-using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 {

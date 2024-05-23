@@ -18,11 +18,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        float rgs => Projectile.width * Projectile.ai[1] / 40;
+        private float rgs => Projectile.width * Projectile.ai[1] / 40;
 
-        SlotId soundSlot;
-
-        SoundStyle modSoundtyle;
+        private SlotId soundSlot;
+        private SoundStyle modSoundtyle;
         public override bool IsLoadingEnabled(Mod mod) {
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return false;

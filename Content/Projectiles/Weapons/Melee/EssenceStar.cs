@@ -1,12 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
+﻿using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using CalamityOverhaul.Content.Items.Ranged;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {

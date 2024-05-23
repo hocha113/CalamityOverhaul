@@ -1,7 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
@@ -19,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.ElectrosphereLauncher;
         public List<ElectrosphereLauncherOrb> Orbs = new List<ElectrosphereLauncherOrb>();
         public const int MaxOrbNum = 4;
-        int fireIndex;
+        private int fireIndex;
         public override void SetRangedProperty() {
             FireTime = 3;
             ShootPosToMouLengValue = 30;
@@ -53,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             SpawnGunFireDust(dustID1: DustID.UnusedWhiteBluePurple, dustID2: DustID.UnusedWhiteBluePurple, dustID3: DustID.UnusedWhiteBluePurple);
             Projectile orb = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.52f) * Main.rand.NextFloat(0.9f, 1.5f)
                 , ModContent.ProjectileType<ElectrosphereLauncherOrb>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            
+
             ElectrosphereLauncherOrb newOrb = orb.ModProjectile as ElectrosphereLauncherOrb;
             if (newOrb != null) {
                 Orbs.Add(newOrb);

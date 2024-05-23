@@ -1,6 +1,4 @@
-﻿using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -14,8 +12,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.HallowedRepeater].Value;
         public override int targetCayItem => ItemID.HallowedRepeater;
         public override int targetCWRItem => ItemID.HallowedRepeater;
-        int thisNeedsTime;
-        int chargeAmmoNum;
+
+        private int thisNeedsTime;
+        private int chargeAmmoNum;
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

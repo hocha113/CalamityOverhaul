@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public override void Load() {
             Instance = this;
-            LoadRecipe();           
+            LoadRecipe();
         }
 
         public static void LoadRecipe() {
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }).Where(array => array != null).ToArray();
 
             foreach (string[] value in stringArrays) {
-                RecipeData recipeData = new RecipeData{
+                RecipeData recipeData = new RecipeData {
                     Values = value,
                     Target = InStrGetItemType(value[value.Length - 1])
                 };
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (DrawPos == Vector2.Zero && initializeBool) {
                 DrawPos = (new Vector2(Main.screenWidth, Main.screenHeight) - new Vector2(Texture.Width - Main.screenWidth / 2, Texture.Height + 400)) / 2;
                 initializeBool = false;
-            } 
+            }
             topLeft = new Vector2(15, 30) + DrawPos;
             cellWid = 48;
             cellHig = 46;
@@ -162,8 +162,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     // 判断是否已经存在 InfiniteToiletItem 的配方，如果不存在则添加
                     if (!AllRecipes.Any(n => n.Target == infiniteToiletItemType)) {
                         string[] value = SupertableRecipeDate.FullItems1000.ToArray();
-                        RecipeData recipeData = new RecipeData
-                        {
+                        RecipeData recipeData = new RecipeData {
                             Values = value,
                             Target = InStrGetItemType(value[value.Length - 1])
                         };
@@ -345,7 +344,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     ResetInputItem();
                     goto End;
                 }
-                
+
                 for (int i = 0; i < fullItemTypes.Length - 1; i++) {//进行一次装填检测，检测材料是否摆放正确
                     if (items?[i]?.type != fullItemTypes[i]) {
                         ResetInputItem();
@@ -408,7 +407,7 @@ End:;
                         return;
                     }
                 }
-                
+
                 for (int i = 0; i < previewItems.Length; i++) {
                     Item preItem = previewItems[i];
                     //此处加上对玩家鼠标上的物品的检测和放置
@@ -524,7 +523,7 @@ End:;
                 PlayGrabSound();
                 (holdItem, onitem) = (onitem, holdItem);
             }
-            
+
         }
 
         /// <summary>
@@ -649,7 +648,7 @@ End:;
             if (holdItem.stack == 0) {
                 holdItem = new Item();
             }
-            
+
             OutItem();
         }
 
@@ -674,9 +673,9 @@ End:;
                 else if (item.type == CWRIDs.InfiniteStick) {
                     InfiniteStick.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
                 }
-                else if (item.type == ModContent.ItemType<DecayParticles>() 
-                    || item.type == ModContent.ItemType<DecaySubstance>() 
-                    || item.type == ModContent.ItemType<DissipationSubstance>() 
+                else if (item.type == ModContent.ItemType<DecayParticles>()
+                    || item.type == ModContent.ItemType<DecaySubstance>()
+                    || item.type == ModContent.ItemType<DissipationSubstance>()
                     || item.type == ModContent.ItemType<SpectralMatter>()) {
                     DecayParticles.DrawItemIcon(spriteBatch, drawpos + offset, drawColor, item.type, alp, slp);
                 }
@@ -718,10 +717,10 @@ End:;
             if (items != null) {
                 for (int i = 0; i < items.Length; i++) {//遍历绘制出UI格中的所有物品
                     if (items[i] != null) {
-                            Item item = items[i];
-                            if (item != null) {
-                                DrawItemIcons(spriteBatch, item, ArcCellPos(i));
-                            }
+                        Item item = items[i];
+                        if (item != null) {
+                            DrawItemIcons(spriteBatch, item, ArcCellPos(i));
+                        }
                     }
                 }
             }

@@ -15,8 +15,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Animosity";
         public override int targetCayItem => ModContent.ItemType<Animosity>();
         public override int targetCWRItem => ModContent.ItemType<AnimosityEcType>();
-        int btoole = ProjectileID.None;
-        int fireIndex;
+
+        private int btoole = ProjectileID.None;
+        private int fireIndex;
         public override void SetRangedProperty() {
             FireTime = 6;
             ControlForce = 0.03f;

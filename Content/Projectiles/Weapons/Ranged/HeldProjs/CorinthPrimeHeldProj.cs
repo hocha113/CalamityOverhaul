@@ -1,9 +1,8 @@
-﻿using CalamityOverhaul.Common;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria;
+﻿using CalamityMod.Projectiles.Ranged;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using CalamityMod.Projectiles.Ranged;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -41,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             for (int i = 0; i < 6; i++) {
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, 
+                Projectile.NewProjectile(Owner.parent(), Projectile.Center,
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.7f, 1.1f)
                     , ModContent.ProjectileType<RealmRavagerBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }

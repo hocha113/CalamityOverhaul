@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     InPosOffsetDragToPos = DrawPos.To(MouPos);//记录此时的偏移向量
                     if (Main.myPlayer == player.whoAmI)
                         SoundEngine.PlaySound(SoundID.MenuTick);
-                }               
+                }
             }
 
             if (onDrag) {

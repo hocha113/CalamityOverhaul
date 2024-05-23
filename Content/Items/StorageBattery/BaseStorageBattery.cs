@@ -1,14 +1,11 @@
-﻿using CalamityMod.Items;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
-using ReLogic.Content;
-using System;
-using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.StorageBattery
 {

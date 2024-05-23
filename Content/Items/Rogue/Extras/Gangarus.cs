@@ -1,28 +1,22 @@
-﻿using CalamityMod.Items;
-using CalamityMod;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles;
-using Mono.Cecil;
-using Terraria.Audio;
-using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria.Localization;
-using CalamityMod.Rarities;
-using System;
-using Terraria.GameContent;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Tiles;
+﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Rogue;
+using CalamityMod.Rarities;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles;
+using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Rogue.Extras
 {
@@ -79,7 +73,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage *= (ChargeGrade + 1);
 
         public override void HoldItem(Player player) {
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<GangarusHeldProjectile>()] == 0 
+            if (player.ownedProjectileCounts[ModContent.ProjectileType<GangarusHeldProjectile>()] == 0
                 && player.ownedProjectileCounts[ModContent.ProjectileType<GangarusProjectile>()] == 0
                 && Main.myPlayer == player.whoAmI) {
                 Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, ModContent.ProjectileType<GangarusHeldProjectile>(), 0, 0, player.whoAmI);

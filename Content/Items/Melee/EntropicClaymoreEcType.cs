@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Cyan;
             Item.shoot = ModContent.ProjectileType<EntropicClaymoreHoldoutProj>();
             Item.shootSpeed = 12f;
-            
+
         }
 
         public override void UseItemHitbox(Player player, ref Rectangle hitbox, ref bool noHitbox) {

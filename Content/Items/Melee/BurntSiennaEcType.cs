@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = 1;
             Item.shoot = ModContent.ProjectileType<BurntSiennaProj>();
             Item.shootSpeed = 7f;
-            
+
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

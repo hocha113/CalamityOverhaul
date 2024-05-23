@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Numerics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

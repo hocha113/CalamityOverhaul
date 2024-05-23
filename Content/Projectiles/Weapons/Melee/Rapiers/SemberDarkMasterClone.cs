@@ -1,20 +1,20 @@
-﻿using CalamityMod.Items.Weapons.Melee;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Melee;
-using Microsoft.Xna.Framework;
-using System;
-using Terraria.ModLoader;
-using Terraria;
 using CalamityOverhaul.Content.Items.Melee;
-using CalamityMod;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
     internal class SemberDarkMasterClone : DarkMasterClone
     {
-        Item item => Main.player[Projectile.owner].ActiveItem();
+        private Item item => Main.player[Projectile.owner].ActiveItem();
         public override void AI() {
             Projectile.velocity = Vector2.Zero;
             Player owner = Main.player[Projectile.owner];
@@ -24,8 +24,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
             Lighting.AddLight(Projectile.Center, Color.DarkBlue.ToVector3());
 
-            if (item.type != ModContent.ItemType<TheDarkMaster>() 
-                && item.type != ModContent.ItemType<TheDarkMasterEcType>() 
+            if (item.type != ModContent.ItemType<TheDarkMaster>()
+                && item.type != ModContent.ItemType<TheDarkMasterEcType>()
                 || owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0
                 || !owner.active || owner.CCed || owner == null) {
                 if (Projectile.ai[0] == 1) {

@@ -37,9 +37,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             Projectile.tileCollide = true;
         }
 
-
-        HashSet<NPC> shockedbefore = new HashSet<NPC>();
-        int prevX = 0;
+        private HashSet<NPC> shockedbefore = new HashSet<NPC>();
+        private int prevX = 0;
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {
                 AdjustMagnitude(ref Projectile.velocity);
@@ -139,7 +138,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
         public override bool PreDraw(ref Color lightColor) {
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-            
+
             PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
                 , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 80);
             return false;

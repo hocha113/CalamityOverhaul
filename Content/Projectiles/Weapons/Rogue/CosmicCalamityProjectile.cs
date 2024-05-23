@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
 
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
-            
+
             if (Main.netMode != NetmodeID.Server) {
                 Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
                 CWRParticle spark = new SparkParticle(Projectile.Center - Projectile.velocity * 8f, -Projectile.velocity * 0.1f, false, 9, 2.3f, color * 0.1f);
@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
                 dust2.shader = GameShaders.Armor.GetSecondaryShader(Owner.cShield, Owner);
             }
             if (Projectile.numHits > 6) {
-                Projectile.Explode(90, spanSound:false);
+                Projectile.Explode(90, spanSound: false);
                 Projectile.Kill();
             }
         }

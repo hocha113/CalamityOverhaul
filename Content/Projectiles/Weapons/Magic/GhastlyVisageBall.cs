@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Projectiles.Magic;
+﻿using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
@@ -10,7 +9,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Humanizer.In;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 {
@@ -68,7 +66,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                         Projectile.velocity.X = Projectile.velocity.X + acceleration;
                         if (Projectile.velocity.X < 0f && xDist > 0f)
                             Projectile.velocity.X += acceleration;
-                    } else if (Projectile.velocity.X > xDist) {
+                    }
+                    else if (Projectile.velocity.X > xDist) {
                         Projectile.velocity.X = Projectile.velocity.X - acceleration;
                         if (Projectile.velocity.X > 0f && xDist < 0f)
                             Projectile.velocity.X -= acceleration;
@@ -77,7 +76,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                         Projectile.velocity.Y = Projectile.velocity.Y + acceleration;
                         if (Projectile.velocity.Y < 0f && yDist > 0f)
                             Projectile.velocity.Y += acceleration;
-                    } else if (Projectile.velocity.Y > yDist) {
+                    }
+                    else if (Projectile.velocity.Y > yDist) {
                         Projectile.velocity.Y = Projectile.velocity.Y - acceleration;
                         if (Projectile.velocity.Y > 0f && yDist < 0f)
                             Projectile.velocity.Y -= acceleration;

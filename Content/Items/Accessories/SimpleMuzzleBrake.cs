@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Materials;
+﻿using CalamityMod.Items.Materials;
 using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.ID;
@@ -25,8 +24,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player) {
-            return incomingItem.type != ModContent.ItemType<NeutronStarMuzzleBrake>() 
-                && incomingItem.type != ModContent.ItemType<ElementMuzzleBrake>() 
+            return incomingItem.type != ModContent.ItemType<NeutronStarMuzzleBrake>()
+                && incomingItem.type != ModContent.ItemType<ElementMuzzleBrake>()
                 && incomingItem.type != ModContent.ItemType<PrecisionMuzzleBrake>();
         }
 

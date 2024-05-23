@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     return true;
                 }
             }
-            
+
             Item.CWR().closeCombat = false;
             return false;
         }

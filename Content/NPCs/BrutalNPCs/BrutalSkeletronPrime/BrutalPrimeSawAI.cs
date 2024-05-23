@@ -13,18 +13,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     internal class BrutalPrimeSawAI : NPCCoverage
     {
-        public override int targetID => NPCID.PrimeSaw;
-        bool bossRush;
-        bool masterMode;
-        bool death;
-        bool cannonAlive;
-        bool viceAlive;
-        bool laserAlive;
-        NPC head;
-        Player player;
+        public override int TargetID => NPCID.PrimeSaw;
+
+        private bool bossRush;
+        private bool masterMode;
+        private bool death;
+        private bool cannonAlive;
+        private bool viceAlive;
+        private bool laserAlive;
+        private NPC head;
+        private Player player;
 
         // 计算加速度的函数
-        float CalculateAcceleration(bool bossRush, bool death, bool masterMode, bool cannonAlive, bool laserAlive, bool viceAlive) {
+        private float CalculateAcceleration(bool bossRush, bool death, bool masterMode, bool cannonAlive, bool laserAlive, bool viceAlive) {
             float acceleration = bossRush ? 0.6f : (death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f));
             if (!cannonAlive) acceleration += 0.025f;
             if (!laserAlive) acceleration += 0.025f;
@@ -33,7 +34,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 调整Y轴速度的函数
-        void AdjustVelocityY(NPC npc, NPC head, float acceleration, float topVelocity, float deceleration) {
+        private void AdjustVelocityY(NPC npc, NPC head, float acceleration, float topVelocity, float deceleration) {
             if (npc.position.Y > head.position.Y + 20f) {
                 if (npc.velocity.Y > 0f) npc.velocity.Y *= deceleration;
                 npc.velocity.Y -= acceleration;
@@ -47,7 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 调整X轴速度的函数
-        void AdjustVelocityX(NPC npc, NPC head, float acceleration, float topVelocity, float deceleration) {
+        private void AdjustVelocityX(NPC npc, NPC head, float acceleration, float topVelocity, float deceleration) {
             if (npc.Center.X > head.Center.X + 20f) {
                 if (npc.velocity.X > 0f) npc.velocity.X *= deceleration;
                 npc.velocity.X -= acceleration * 2f;
@@ -61,7 +62,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 处理初始阶段的函数
-        void HandleInitialPhase(NPC npc, NPC head, bool cannonAlive, bool laserAlive, bool viceAlive, bool masterMode, bool bossRush) {
+        private void HandleInitialPhase(NPC npc, NPC head, bool cannonAlive, bool laserAlive, bool viceAlive, bool masterMode, bool bossRush) {
             if (head.ai[1] == 3f && npc.timeLeft > 10) {
                 npc.timeLeft = 10;
             }
@@ -116,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 处理冲锋阶段的函数
-        void HandleChargePhase(NPC npc, NPC head, Player player, bool bossRush, bool cannonAlive, bool laserAlive, bool viceAlive) {
+        private void HandleChargePhase(NPC npc, NPC head, Player player, bool bossRush, bool cannonAlive, bool laserAlive, bool viceAlive) {
             Vector2 sawArmChargePos = npc.Center;
             float sawArmChargeTargetX = head.Center.X - 200f * npc.ai[0] - sawArmChargePos.X;
             float sawArmChargeTargetY = head.position.Y + 230f - sawArmChargePos.Y;
@@ -149,7 +150,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 处理其他冲锋阶段的函数
-        void HandleOtherChargePhase(NPC npc, NPC head, Player player, bool bossRush, bool cannonAlive, bool laserAlive, bool viceAlive, bool masterMode) {
+        private void HandleOtherChargePhase(NPC npc, NPC head, Player player, bool bossRush, bool cannonAlive, bool laserAlive, bool viceAlive, bool masterMode) {
             npc.damage = npc.defDamage;
 
             float chargeVelocity = bossRush ? 13.5f : 11f;
@@ -191,7 +192,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 调整冲锋速度的辅助函数
-        void AdjustChargeVelocity(ref float currentVelocity, float targetVelocity, float acceleration, float deceleration) {
+        private void AdjustChargeVelocity(ref float currentVelocity, float targetVelocity, float acceleration, float deceleration) {
             if (currentVelocity > targetVelocity) {
                 if (currentVelocity > 0f) currentVelocity *= deceleration;
                 currentVelocity -= acceleration;
@@ -288,7 +289,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             return false;
         }
-        int frame;
+
+        private int frame;
         public override bool? Draw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             BrutalSkeletronPrimeAI.DrawArm(spriteBatch, NPC, screenPos);
             Texture2D mainValue = BrutalSkeletronPrimeAI.BSPSAW.Value;

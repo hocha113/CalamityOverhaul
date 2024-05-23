@@ -1,9 +1,9 @@
-﻿using CalamityMod.Items;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Items;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
-using CalamityOverhaul.Common;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class MarksmanBowEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MarksmanBow";
-        public override void SetDefaults() {           
+        public override void SetDefaults() {
             Item.damage = 35;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 36;

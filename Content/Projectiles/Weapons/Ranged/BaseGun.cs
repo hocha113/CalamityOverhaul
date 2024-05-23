@@ -1,11 +1,8 @@
 ﻿using CalamityMod;
-using CalamityMod.Buffs.StatBuffs;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Dusts;
 using CalamityOverhaul.Content.GoreEntity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
 using System;
 using System.IO;
 using Terraria;
@@ -294,17 +291,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             if (DownLeft) {
                 setBaseFromeAI();
-                if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
+                if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
                     onFire = true;
                 }
             }
             else {
                 onFire = false;
             }
-            
+
             if (CalOwner.mouseRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
                 setBaseFromeAI();
-                if (HaveAmmo && Projectile.IsOwnedByLocalPlayer()) {
+                if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
                     SafeMousetStart2 = true;
                     onFireR = true;
                 }
@@ -371,7 +368,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             float damageMult = 1f;
             if (Item.useTime < 10) {
                 damageMult -= (10 - Item.useTime) / 10f;
-            }   
+            }
             int luxirDamage = Owner.ApplyArmorAccDamageBonusesTo(WeaponDamage * damageMult * 0.15f);
             if (luxirDamage > 1) {
                 SpanLuxirProj(luxirDamage);
@@ -405,7 +402,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             Vector2 pos = Owner.Top + Owner.Top.To(GunShootPos) / 2;
             Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
-            Gore.NewGore(Source2, pos, vr, CaseGore.PType, slp == 1? EjectCasingProjSize : slp);//这是早该有的改变
+            Gore.NewGore(Source2, pos, vr, CaseGore.PType, slp == 1 ? EjectCasingProjSize : slp);//这是早该有的改变
         }
         /// <summary>
         /// 一个快捷的创造开火烟尘粒子效果的方法
@@ -459,21 +456,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (ForcedConversionTargetAmmoFunc.Invoke()) {
                     AmmoTypes = ToTargetAmmo;
                 }
-                if (onFire) {
-                    FiringShoot();
-                }
-                if (onFireR) {
-                    FiringShootR();
-                }
-                if (EnableRecoilRetroEffect) {
-                    OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
+
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    if (onFire) {
+                        FiringShoot();
+                    }
+                    if (onFireR) {
+                        FiringShootR();
+                    }
+                    if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
+                        LuxirEvent();
+                    }
+                    if (GlobalItemBehavior) {
+                        ItemLoaderInFireSetBaver();
+                    }
                 }
 
-                if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
-                    LuxirEvent();
-                }
-                if (GlobalItemBehavior) {
-                    ItemLoaderInFireSetBaver();
+                if (EnableRecoilRetroEffect) {
+                    OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
                 }
                 if (fireLight > 0) {
                     Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * fireLight);
@@ -503,7 +503,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 SetCompositeArm();
             }
             UpdateRecoil();
-            if (Projectile.IsOwnedByLocalPlayer() && overNoFireCeahks()) {
+            if (overNoFireCeahks()) {
                 SpanProj();
             }
             Time++;
@@ -622,15 +622,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             if (recoilValue < 0.5f) {
                 recoilKey = "CWRGun_Recoil_Level_1";
-            } else if (recoilValue < 0.1f) {
+            }
+            else if (recoilValue < 0.1f) {
                 recoilKey = "CWRGun_Recoil_Level_2";
-            } else if (recoilValue < 1.5f) {
+            }
+            else if (recoilValue < 1.5f) {
                 recoilKey = "CWRGun_Recoil_Level_3";
-            } else if (recoilValue < 2.2f) {
+            }
+            else if (recoilValue < 2.2f) {
                 recoilKey = "CWRGun_Recoil_Level_4";
-            } else if (recoilValue < 3.2f) {
+            }
+            else if (recoilValue < 3.2f) {
                 recoilKey = "CWRGun_Recoil_Level_5";
-            } else {
+            }
+            else {
                 recoilKey = "CWRGun_Recoil_Level_6";
             }
             return recoilKey;

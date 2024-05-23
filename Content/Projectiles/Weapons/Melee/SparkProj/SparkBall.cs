@@ -1,11 +1,11 @@
-﻿using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
-using CalamityOverhaul.Common;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
-{ 
+{
     internal class SparkBall : ModProjectile
     {
         public new string LocalizationCategory => "Projectiles.Melee";

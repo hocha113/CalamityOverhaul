@@ -13,8 +13,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
     internal class MouseTextContactPanel : CWRUIPanel
     {
         internal static MouseTextContactPanel Instance { get; private set; }
-        bool leftCtrlPressed;
-        bool oldLeftCtrlPressed;
+
+        private bool leftCtrlPressed;
+        private bool oldLeftCtrlPressed;
         public override void Load() {
             Instance = this;
             Instance.DrawPos = new Vector2(700, 100);

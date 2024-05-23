@@ -1,11 +1,8 @@
 ﻿using CalamityMod;
-using CalamityMod.Dusts;
 using CalamityMod.Projectiles.Ranged;
 using Microsoft.Xna.Framework;
-using System;
 using Terraria;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.PlayerDrawLayer;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -15,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         protected override float halfSpreadAngleRate => 1.15f;
         protected override float edgeBlendLength => 0.17f;
         protected override float edgeBlendStrength => 9;
-        public override float MaxCharge => 180; 
+        public override float MaxCharge => 180;
 
         public override void SpanProjFunc() {
             int arrowTypes;

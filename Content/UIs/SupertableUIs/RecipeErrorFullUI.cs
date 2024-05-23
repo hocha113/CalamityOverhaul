@@ -14,7 +14,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static RecipeErrorFullUI Instance;
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/CallFull");
         public override void Load() => Instance = this;
-        SupertableUI mainUI => SupertableUI.Instance;
+
+        private SupertableUI mainUI => SupertableUI.Instance;
         public Rectangle MainRec;
         public bool onMainP;
         public bool eyEBool;

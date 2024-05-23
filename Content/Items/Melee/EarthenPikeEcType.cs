@@ -1,16 +1,15 @@
 ﻿using CalamityMod.Items;
-using CalamityMod.Projectiles.Melee.Spears;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
 using CalamityOverhaul.Common;
-using Terraria.DataStructures;
-using Microsoft.Xna.Framework;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -45,7 +44,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Pink;
             Item.shoot = ModContent.ProjectileType<REarthenPikeSpear>();
             Item.shootSpeed = 8f;
-            
+
         }
 
         public override bool AltFunctionUse(Player player) {
@@ -59,10 +58,10 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Item.CWR().ai[0] += maxCharge;
                 Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<EarthenPikeThrowProj>(), damage * 2, knockback);
                 EarthenPikeThrowProj earthenPikeThrowProj = (EarthenPikeThrowProj)proj.ModProjectile;
-                if(earthenPikeThrowProj != null) {
+                if (earthenPikeThrowProj != null) {
                     earthenPikeThrowProj.earthenPike = Item.Clone();
                     Item.TurnToAir();
-                } 
+                }
                 else {
                     proj.Kill();
                 }

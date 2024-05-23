@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CaseEjection();
 
             Vector2 shoot2Vr = ShootVelocity.GetNormalVector();
-            
+
             float needsengsValue = Projectile.Center.Distance(Main.MouseWorld);
             Vector2 toMouVr = ShootVelocity.UnitVector() * needsengsValue + Projectile.Center;
 

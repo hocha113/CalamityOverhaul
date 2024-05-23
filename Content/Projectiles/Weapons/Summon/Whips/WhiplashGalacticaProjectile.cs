@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
+﻿using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using Microsoft.Xna.Framework;

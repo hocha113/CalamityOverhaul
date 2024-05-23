@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Particles
 
         private bool StrongVisual;
         private bool Glowing;
-        float sengsValue;
+        private float sengsValue;
 
         public IcePlasmaGas(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, bool required = false) {
             Position = position;

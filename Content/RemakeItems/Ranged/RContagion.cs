@@ -1,16 +1,13 @@
-﻿using CalamityMod.Items;
+﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityMod.Projectiles.Ranged;
+using CalamityMod.Rarities;
+using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityOverhaul.Content.Items.Ranged;
-using CalamityMod.Rarities;
-using CalamityMod;
-using Terraria.DataStructures;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {

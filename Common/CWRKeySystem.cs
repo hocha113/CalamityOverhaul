@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-using Terraria.Localization;
-using Terraria.ModLoader;
+﻿using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Common
 {

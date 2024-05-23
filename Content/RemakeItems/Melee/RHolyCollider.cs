@@ -1,18 +1,16 @@
 ﻿using CalamityMod.Items;
-using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
-using Terraria.DataStructures;
-using Microsoft.Xna.Framework;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using Mono.Cecil;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
+using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {

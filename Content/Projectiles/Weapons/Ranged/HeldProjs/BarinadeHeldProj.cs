@@ -2,7 +2,6 @@
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Mono.Cecil;
 using Terraria;
 using Terraria.ModLoader;
 

@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content
 
         public static void MouldRecipeEvent(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
             MurasamaMould murasamaMould = null;
-            foreach(Item i in consumedItems) {
+            foreach (Item i in consumedItems) {
                 if (i.type == ItemType<MurasamaMould>()) {
                     murasamaMould = (MurasamaMould)i.ModItem;
                 }
@@ -177,7 +177,7 @@ namespace CalamityOverhaul.Content
 
                 //添加瘟疫悠悠球的合成
                 Recipe.Create(ItemType<CalamityMod.Items.Weapons.Melee.Pandemic>())
-                    .AddIngredient(ItemType< CalamityMod.Items.Weapons.Melee.SulphurousGrabber>())//添加硫磺掠夺者
+                    .AddIngredient(ItemType<CalamityMod.Items.Weapons.Melee.SulphurousGrabber>())//添加硫磺掠夺者
                     .AddIngredient(ItemType<PestilenceIngot>(), 5)//添加瘟疫锭
                     .AddTile(TileType<PlagueInfuser>())
                     .Register();
@@ -457,7 +457,7 @@ namespace CalamityOverhaul.Content
 
             LoadGroup(ref ARGroup, "CWRRecipes_ApostolicRelics", new int[] { ItemType<ArmoredShell>()
                 , ItemType<DarkPlasma>()
-                , ItemType<TwistingNether>() 
+                , ItemType<TwistingNether>()
             });
 
             LoadGroup(ref GodDWGroup, "CWRRecipes_GodEaterWeapon", new int[] {ItemType<CalamityMod.Items.Weapons.Melee.Excelsus>()
@@ -467,7 +467,7 @@ namespace CalamityOverhaul.Content
                 , ItemType<CalamityMod.Items.Weapons.Summon.StaffoftheMechworm>()
                 , ItemType<CalamityMod.Items.Weapons.Rogue.Eradicator>()
                 , ItemType<CalamityMod.Items.Weapons.Melee.CosmicDischarge>()
-                , ItemType<CalamityMod.Items.Weapons.Ranged.Norfleet>() 
+                , ItemType<CalamityMod.Items.Weapons.Ranged.Norfleet>()
             });
 
             LoadGroup(ref FishGroup, "CWRRecipes_FishGroup", new int[] {ItemID.Fish

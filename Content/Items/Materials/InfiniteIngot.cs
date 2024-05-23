@@ -1,5 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items;
+using CalamityMod.Items.PermanentBoosters;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
@@ -7,7 +7,6 @@ using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Buffers;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -15,7 +14,6 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI.Chat;
 using static Terraria.ModLoader.ModContent;
-using CalamityMod.Items.PermanentBoosters;
 
 namespace CalamityOverhaul.Content.Items.Materials
 {

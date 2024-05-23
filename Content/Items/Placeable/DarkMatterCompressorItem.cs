@@ -3,8 +3,8 @@ using CalamityMod.Items.Placeables.Furniture.CraftingStations;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
-using Terraria.DataStructures;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void SetDefaults() {
-            
+
             Item.width = 26;
             Item.height = 26;
             Item.maxStack = 1;

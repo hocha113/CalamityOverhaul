@@ -1,10 +1,7 @@
 ﻿using CalamityOverhaul.Common;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
-using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {

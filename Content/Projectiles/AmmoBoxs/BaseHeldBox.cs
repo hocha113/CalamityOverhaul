@@ -70,8 +70,8 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public int Charge;
         public int MaxCharge = 600;
         public int AmmoBoxID;
-        int textlevelsengs;
-        int noCanUseTime;
+        private int textlevelsengs;
+        private int noCanUseTime;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             Item = Player.ActiveItem();
             if (Item.type > ItemID.None) {
                 ModItem = Item.CWR();
-            } 
+            }
             else {
                 Projectile.Kill();
                 return false;
@@ -139,7 +139,8 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             if (Charge < MaxCharge) {
                 ArmRotSengsBack += MathF.Sin(Main.GameUpdateCount * 0.3f) * 0.6f;
                 Charge++;
-            } else {
+            }
+            else {
                 if (AmmoBoxID > 0) {
                     SoundEngine.PlaySound(DeploymentSound, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {
@@ -203,7 +204,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                     }
                 }
                 string text = "";
-                for(int i = 0; i <  textlevelsengs; i++) {
+                for (int i = 0; i < textlevelsengs; i++) {
                     text += ".";
                 }
                 Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, text

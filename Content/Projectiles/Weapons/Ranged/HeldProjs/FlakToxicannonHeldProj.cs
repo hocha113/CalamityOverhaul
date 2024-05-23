@@ -14,7 +14,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "FlakToxicannon";
         public override int targetCayItem => ModContent.ItemType<FlakToxicannon>();
         public override int targetCWRItem => ModContent.ItemType<FlakToxicannonEcType>();
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 10;

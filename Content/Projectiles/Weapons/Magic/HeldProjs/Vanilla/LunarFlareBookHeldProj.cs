@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
     internal class LunarFlareBookHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Placeholder;
-        public override Texture2D TextureValue => TextureAssets.Item[ItemID.LunarFlareBook].Value; 
+        public override Texture2D TextureValue => TextureAssets.Item[ItemID.LunarFlareBook].Value;
         public override int targetCayItem => ItemID.LunarFlareBook;
         public override int targetCWRItem => ItemID.LunarFlareBook;
         public override void SetRangedProperty() {

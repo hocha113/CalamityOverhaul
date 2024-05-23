@@ -21,7 +21,6 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using static Humanizer.In;
 
 namespace CalamityOverhaul.Content
 {
@@ -408,11 +407,14 @@ namespace CalamityOverhaul.Content
                 if (item.DamageType.CountsAsClass(DamageClass.Ranged)) {
                     if (modPlayer.LoadMuzzleBrakeLevel == 1) {
                         crit += 5;
-                    } else if (modPlayer.LoadMuzzleBrakeLevel == 2) {
+                    }
+                    else if (modPlayer.LoadMuzzleBrakeLevel == 2) {
                         crit += 15;
-                    } else if (modPlayer.LoadMuzzleBrakeLevel == 3) {
+                    }
+                    else if (modPlayer.LoadMuzzleBrakeLevel == 3) {
                         crit += 25;
-                    } else if (modPlayer.LoadMuzzleBrakeLevel == 4) {
+                    }
+                    else if (modPlayer.LoadMuzzleBrakeLevel == 4) {
                         crit += 100;
                     }
                 }
@@ -425,11 +427,14 @@ namespace CalamityOverhaul.Content
                 if (item.DamageType.CountsAsClass(DamageClass.Ranged)) {
                     if (modPlayer.LoadMuzzleBrakeLevel == 1) {
                         damage *= 0.75f;
-                    } else if (modPlayer.LoadMuzzleBrakeLevel == 2) {
+                    }
+                    else if (modPlayer.LoadMuzzleBrakeLevel == 2) {
                         damage *= 0.8f;
-                    } else if (modPlayer.LoadMuzzleBrakeLevel == 3) {
+                    }
+                    else if (modPlayer.LoadMuzzleBrakeLevel == 3) {
                         damage *= 0.85f;
-                    } else if (modPlayer.LoadMuzzleBrakeLevel == 4) {
+                    }
+                    else if (modPlayer.LoadMuzzleBrakeLevel == 4) {
                         damage *= 2;
                     }
                 }

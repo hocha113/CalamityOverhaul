@@ -1,6 +1,4 @@
-﻿using CalamityMod.Events;
-using CalamityMod.Skies;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Graphics.Shaders;
 
@@ -16,7 +14,7 @@ namespace CalamityOverhaul.Content.Events
         }
 
         public override void Update(GameTime gameTime) {
-            
+
         }
     }
 }

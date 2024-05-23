@@ -1,6 +1,4 @@
 ﻿using CalamityOverhaul.Content.RemakeItems.Core;
-using Microsoft.Xna.Framework;
-using Steamworks;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;

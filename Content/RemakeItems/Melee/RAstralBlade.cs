@@ -1,5 +1,5 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Items;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Items.Melee;
@@ -10,7 +10,6 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {

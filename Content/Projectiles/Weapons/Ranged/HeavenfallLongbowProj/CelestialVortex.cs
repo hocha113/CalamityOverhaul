@@ -1,17 +1,13 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniverseProj;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Utilities;
 using System;
+using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Shaders;
-using Terraria.ID;
-using Terraria;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using CalamityMod;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj
 {
@@ -19,11 +15,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        float rgs => Projectile.width * Projectile.ai[1] / 40;
+        private float rgs => Projectile.width * Projectile.ai[1] / 40;
 
-        SlotId soundSlot;
-
-        SoundStyle modSoundtyle;
+        private SlotId soundSlot;
+        private SoundStyle modSoundtyle;
         public override bool IsLoadingEnabled(Mod mod) {
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return false;

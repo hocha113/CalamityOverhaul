@@ -12,7 +12,6 @@ using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
@@ -43,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
-        int level => InWorldBossPhase.Instance.Mura_Level();
+        private int level => InWorldBossPhase.Instance.Mura_Level();
 
         public override void PostAI() => CWRUtils.ClockFrame(ref Projectile.frame, 3, 6);
 
@@ -197,7 +196,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     GeneralParticleHandler.SpawnParticle(spark);
                 }
             }
-            
+
             if (Projectile.numHits == 0) {
                 SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 0.15f }, Projectile.Center);
                 strikeToFly(target);
@@ -228,7 +227,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
                 //如果充能已经满了10点，并且该技能已经解锁，那么进行处决技的释放
                 if (murasama.CWR().ai[0] == 10 && MurasamaEcType.UnlockSkill3) {
-                    SoundEngine.PlaySound(CWRSound.EndSilkOrbSpanSound with {Volume = 0.7f }, Projectile.Center);
+                    SoundEngine.PlaySound(CWRSound.EndSilkOrbSpanSound with { Volume = 0.7f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {//同样的，释放衍生弹幕和进行自我充能清零的操作只能交由主人玩家执行
                         int maxSpanNum = 13 + level;
                         for (int i = 0; i < maxSpanNum; i++) {
@@ -268,20 +267,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 0.6f;
             }
             if (target.type == NPCID.SkeletronHand) {
-                 modifiers.FinalDamage *= 0.6f;
+                modifiers.FinalDamage *= 0.6f;
             }
             if (target.type == NPCID.WallofFleshEye || target.type == NPCID.WallofFlesh) {
-                 modifiers.FinalDamage *= 0.35f;
+                modifiers.FinalDamage *= 0.35f;
             }
             if (target.type == NPCID.QueenSlimeBoss || target.type == CWRIDs.AquaticScourgeBody) {
                 modifiers.FinalDamage *= 0.75f;
             }
             if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
-                 modifiers.FinalDamage *= 0.75f;
+                modifiers.FinalDamage *= 0.75f;
             }
             if (target.type == CWRIDs.PerforatorBodyLarge || target.type == CWRIDs.DevourerofGodsBody || target.type == CWRIDs.CosmicGuardianBody
                  || target.type == CWRIDs.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == CWRIDs.PerforatorBodySmall) {
-                 modifiers.FinalDamage *= 0.5f;
+                modifiers.FinalDamage *= 0.5f;
             }
             if (target.type == NPCID.TheDestroyerBody || target.type == CWRIDs.AstrumDeusBody || target.type == CWRIDs.CosmicGuardianTail
                 || target.type == CWRIDs.CosmicGuardianHead || target.type == CWRIDs.DevourerofGodsHead || target.type == CWRIDs.DevourerofGodsTail) {
@@ -291,7 +290,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 3f;
             }
             if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
-                 modifiers.FinalDamage *= 1.5f;
+                modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
                 modifiers.FinalDamage *= 0.7f;

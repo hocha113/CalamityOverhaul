@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Tiles;
 using Terraria.ID;
 using Terraria.ModLoader;
 

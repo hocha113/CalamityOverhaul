@@ -13,8 +13,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
     internal class TheSpiritFlintProj : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Summon + "TheSpiritFlintProj";
-        Player Owner => Main.player[Projectile.owner];
-        ref float Time => ref Projectile.ai[0];
+
+        private Player Owner => Main.player[Projectile.owner];
+
+        private ref float Time => ref Projectile.ai[0];
         public NPC Target { get; set; }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -52,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
                 Projectile.velocity.Y -= MathHelper.Lerp(0, 0.005f, Time % 90);
 
                 Time++;
-                if (Time == 90 && Main.myPlayer == Projectile.owner){
+                if (Time == 90 && Main.myPlayer == Projectile.owner) {
                     Vector2 vr = Projectile.Center.To(Target.Center).UnitVector().RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(5.2f, 7.1f);
                     Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, vr,
                         ProjectileID.WandOfSparkingSpark, Projectile.damage, Projectile.knockBack, Projectile.owner);

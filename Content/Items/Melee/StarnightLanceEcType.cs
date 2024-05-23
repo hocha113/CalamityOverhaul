@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Pink;
             Item.shoot = ModContent.ProjectileType<RStarnightLanceProjectile>();
             Item.shootSpeed = 6f;
-            
+
         }
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;

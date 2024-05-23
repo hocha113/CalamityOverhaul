@@ -1,16 +1,13 @@
-﻿using CalamityMod;
+﻿using CalamityMod.NPCs.Yharon;
 using CalamityOverhaul.Common;
-using System;
-using Terraria.Localization;
-using Terraria;
-using Terraria.ModLoader;
-using CalamityMod.Projectiles.BaseProjectiles;
+using CalamityOverhaul.Content.Items.Melee.Extras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using CalamityOverhaul.Content.Items.Melee.Extras;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
-using CalamityMod.NPCs.Yharon;
+using System;
+using Terraria;
 using Terraria.Audio;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj
 {

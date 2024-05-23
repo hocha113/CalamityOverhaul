@@ -1,8 +1,7 @@
-﻿using CalamityMod.Items;
-using Terraria.ID;
+﻿using CalamityOverhaul.Common;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Common;
 
 namespace CalamityOverhaul.Content.Items.Armor.Reminiscence
 {

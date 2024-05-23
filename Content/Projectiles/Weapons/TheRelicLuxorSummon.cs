@@ -39,10 +39,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
             Projectile.DamageType = DamageClass.Summon;
         }
 
-        int status = 0;
-        int bevers = 0;
-        int time = 0;
-        Vector2 dashVr = Vector2.Zero;
+        private int status = 0;
+        private int bevers = 0;
+        private int time = 0;
+        private Vector2 dashVr = Vector2.Zero;
 
         public void SpanDust() {
             int maxRogs = 36;

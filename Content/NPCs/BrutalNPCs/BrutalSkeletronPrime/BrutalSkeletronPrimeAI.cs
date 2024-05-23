@@ -11,7 +11,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
-using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -22,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     internal class BrutalSkeletronPrimeAI : NPCCoverage, ISetupData
     {
-        public override int targetID => NPCID.SkeletronPrime;
+        public override int TargetID => NPCID.SkeletronPrime;
         internal static int BSP_Main_NPC_Index = -1;
         private const int maxfindModes = 6000;
         private int frame = 0;

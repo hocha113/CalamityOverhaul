@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override bool PreDraw(ref Color lightColor) {
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].SetMiscShaderAsset_1(CWRUtils.GetT2DAsset(CWRConstant.Masking + "WavyNoise"));
             GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-            
+
             PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
                 , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 28);
             return false;

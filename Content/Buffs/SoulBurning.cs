@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Buffs
             Main.debuff[Type] = true;
         }
 
-        int time = 0;
+        private int time = 0;
         public override void Update(Player player, ref int buffIndex) {
             time++;
             if (time % 10 == 0)

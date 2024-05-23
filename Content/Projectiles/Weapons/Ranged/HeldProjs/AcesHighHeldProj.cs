@@ -1,11 +1,10 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
 using Terraria;
 using Terraria.Audio;
-using CalamityMod.Projectiles.Ranged;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -14,7 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AcesHigh";
         public override int targetCayItem => ModContent.ItemType<AcesHigh>();
         public override int targetCWRItem => ModContent.ItemType<AcesHighEcType>();
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 20;

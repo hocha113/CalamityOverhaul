@@ -1,16 +1,17 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Terraria.Audio;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.Audio;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
 {
-    internal class PilgrimsFury : ModProjectile {
+    internal class PilgrimsFury : ModProjectile
+    {
         public override string Texture => CWRConstant.Placeholder;
         private NPC Target => Main.npc[(int)Projectile.ai[1]];
         private int Time {
@@ -68,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 16; i++) {
                     Projectile proj = Projectile.NewProjectileDirect(Projectile.parent(), Projectile.Center
-                    , new Vector2(0, 1), ModContent.ProjectileType<Godslight>(), Projectile.damage / 2, 0, Projectile.owner, 0, 2f + i * 0.5f);  
+                    , new Vector2(0, 1), ModContent.ProjectileType<Godslight>(), Projectile.damage / 2, 0, Projectile.owner, 0, 2f + i * 0.5f);
                 }
             }
             SoundEngine.PlaySound(Gangarus.AT, Projectile.Center);

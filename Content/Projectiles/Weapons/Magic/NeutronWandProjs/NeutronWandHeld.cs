@@ -16,10 +16,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
         public override int targetCayItem => NeutronWand.PType;
         public override int targetCWRItem => NeutronWand.PType;
-        int fireIndex;
-        float colers;
-        bool colers2;
-        Vector2 firePos;
+
+        private int fireIndex;
+        private float colers;
+        private bool colers2;
+        private Vector2 firePos;
         public override void SetRangedProperty() {
             HandDistance = 52;
             HandDistanceY = -20;
@@ -100,7 +101,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             }
         }
 
-        void drawMatric(string texkey, Vector2 drawpos, Vector2 size, float rotation, float uOpacity, bool set) {
+        private void drawMatric(string texkey, Vector2 drawpos, Vector2 size, float rotation, float uOpacity, bool set) {
             Texture2D texRing = CWRUtils.GetT2DValue(CWRConstant.Masking + texkey);
             Effect effect = Filters.Scene["CWRMod:neutronRingShader"].GetShader().Shader;
             effect.Parameters["uTime"].SetValue(rotation);

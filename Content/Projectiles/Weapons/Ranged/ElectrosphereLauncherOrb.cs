@@ -1,14 +1,14 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
-using Terraria;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using Terraria.ID;
+using System.Collections.Generic;
+using Terraria;
 using Terraria.GameContent;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
             }
-            
+
             return null;
         }
 
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 Projectile.velocity *= 0.5f;
                 if (Projectile.ai[0] < 40) {
                     Projectile.ai[0] = 40;
-                }  
+                }
             }
             Color light = Lighting.GetColor((int)(Projectile.position.X + (Projectile.width * 0.5)) / 16, (int)((Projectile.position.Y + (Projectile.height * 0.5)) / 16.0));
             for (int i = 0; i < Main.rand.Next(3, 16); i++) {

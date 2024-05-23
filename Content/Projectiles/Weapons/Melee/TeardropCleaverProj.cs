@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class TeardropCleaverProj : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile + "Teardrop";
-        const int maxFrme = 8;
+
+        private const int maxFrme = 8;
         public override void SetDefaults() {
             Projectile.width = 277;
             Projectile.height = 252;

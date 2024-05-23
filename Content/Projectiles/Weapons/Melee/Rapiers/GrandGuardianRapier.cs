@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Common;
-using Terraria.ModLoader;
-using Terraria;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {

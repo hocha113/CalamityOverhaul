@@ -1,12 +1,10 @@
-﻿using CalamityMod.Projectiles;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Projectiles;
 using CalamityOverhaul.Common;
-using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
-using Terraria.ID;
 using Terraria;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
-using Terraria.Audio;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -47,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     if (Projectile.Center.Distance(potentialTarget.Center) <= Projectile.width) {
                         Projectile.Kill();
                     }
-                }  
+                }
             }
         }
 

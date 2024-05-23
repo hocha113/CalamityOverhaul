@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Buffs
             BuffID.Sets.LongerExpertDebuff[Type] = true;
         }
 
-        int time = 0;
+        private int time = 0;
         public override void Update(NPC npc, ref int buffIndex) {
             time++;
             if (time % 10 == 0 && !npc.dontTakeDamage)

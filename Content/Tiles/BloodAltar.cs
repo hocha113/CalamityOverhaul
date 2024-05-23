@@ -1,11 +1,9 @@
 ﻿using CalamityMod;
-using CalamityMod.TileEntities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.TileEntitys;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.ObjectInteractions;
@@ -74,7 +72,7 @@ namespace CalamityOverhaul.Content.Tiles
                 bloodAltarEntity.OnBoolMoon = !bloodAltarEntity.OnBoolMoon;
                 bloodAltarEntity.SendTEData();
             }
-            
+
             TileEntity.InitializeAll();
             Recipe.FindRecipes();
             return true;

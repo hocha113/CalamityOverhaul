@@ -1,9 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
-using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Boss;
-using CalamityMod.Projectiles.Magic;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles.Summon;
@@ -24,7 +22,6 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.WorldBuilding;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
 namespace CalamityOverhaul.Content
@@ -135,7 +132,8 @@ namespace CalamityOverhaul.Content
                     Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
                     CWRParticle spark = new SparkParticle(projectile.Center, projectile.velocity * 0.3f, false, 9, 2.3f, color * 0.1f);
                     CWRParticleHandler.AddParticle(spark);
-                } else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
+                }
+                else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
                     if (Main.rand.NextBool(3)) {
                         int dust = Dust.NewDust(projectile.Center, 1, 1, DustID.FireworkFountain_Red, projectile.velocity.X, projectile.velocity.Y);
                         Main.dust[dust].noGravity = true;
@@ -254,7 +252,7 @@ namespace CalamityOverhaul.Content
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
             RMeowmere.SpanDust(projectile);
-            
+
             Player player = Main.player[projectile.owner];
 
             if (player.CWR().RustyMedallion_Value && Source != null) {
@@ -587,13 +585,15 @@ namespace CalamityOverhaul.Content
                         dust.velocity *= 0.5f;
                         dust.velocity += dustVelocity * (0.6f + (0.6f * Main.rand.NextFloat()));
                     }
-                } else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
+                }
+                else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
                     player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 3, 0f, 0, false, DamageClass.Default, true);
                     for (int i = 0; i < 6; i++) {
                         CWRParticle particle = new LightParticle(projectile.Center, CWRUtils.randVr(3, 16), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 2, 0.2f);
                         CWRParticleHandler.AddParticle(particle);
                     }
-                } else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
+                }
+                else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
                     if (projectile.numHits == 0 && player.ownedProjectileCounts[ModContent.ProjectileType<BMGFIRE>()] < 33) {
                         float newdamage = projectile.damage;
                         int projCount = 1;

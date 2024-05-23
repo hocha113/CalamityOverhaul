@@ -1,14 +1,14 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System;
-using Terraria.GameContent;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.Audio;
 using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 {
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 
         public override void AI() {
             if (Projectile.ai[2] == 0) {
-                SoundEngine.PlaySound(CWRSound.Pecharge with { Pitch = -0.1f, Volume = 0.8f}, Projectile.Center);
+                SoundEngine.PlaySound(CWRSound.Pecharge with { Pitch = -0.1f, Volume = 0.8f }, Projectile.Center);
                 for (int i = 0; i < 4; i++) {
                     float rot1 = MathHelper.PiOver2 * i;
                     Vector2 vr = rot1.ToRotationVector2();

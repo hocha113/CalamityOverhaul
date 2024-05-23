@@ -15,14 +15,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Item_Ranged + "NeutronBow";
         public override int targetCayItem => NeutronBow.PType;
         public override int targetCWRItem => NeutronBow.PType;
-        float Charge {
+
+        private float Charge {
             get => ((NeutronBow)Item.ModItem).Charge;
             set => ((NeutronBow)Item.ModItem).Charge = value;
         }
-        int uiframe;
-        bool level1 = true;
-        bool level2 = true;
-        bool level3 = true;
+
+        private int uiframe;
+        private bool level1 = true;
+        private bool level2 = true;
+        private bool level3 = true;
         public override bool IsLoadingEnabled(Mod mod) {
             return true;//暂时不要在这个版本中出现
         }
@@ -36,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
         }
 
-        void NewText(string key, int offsetY = 0) {
+        private void NewText(string key, int offsetY = 0) {
             Rectangle rectext = Owner.Hitbox;
             rectext.Y -= offsetY;
             CombatText.NewText(rectext, new Color(155, 200, 100 + offsetY), CWRLocText.GetTextValue(key), true);

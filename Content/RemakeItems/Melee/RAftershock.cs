@@ -1,15 +1,14 @@
-﻿using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.RemakeItems.Core;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
+﻿using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Items;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
-using Terraria.DataStructures;
 using System;
-using CalamityMod.Buffs.StatDebuffs;
-using System.Collections.Generic;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {

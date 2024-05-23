@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             BowArrowDrawNum = 2;
         }
         public override void BowShoot() {
-            FireOffsetVector = ShootVelocity.UnitVector().RotatedByRandom(0.3f) * Main.rand.NextFloat(3.2f, 5.5f); 
+            FireOffsetVector = ShootVelocity.UnitVector().RotatedByRandom(0.3f) * Main.rand.NextFloat(3.2f, 5.5f);
             base.BowShoot();
             FireOffsetVector = ShootVelocity.UnitVector().RotatedByRandom(0.3f) * Main.rand.NextFloat(3.2f, 5.5f);
             base.BowShoot();

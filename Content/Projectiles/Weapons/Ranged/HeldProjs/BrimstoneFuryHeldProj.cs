@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() => BowArrowDrawNum = 3;
 
         public override void PostInOwner() {
-            
+
         }
 
         public override void BowShoot() {

@@ -1,9 +1,9 @@
 ﻿using CalamityOverhaul.Content.Particles.Core;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {

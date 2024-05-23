@@ -14,7 +14,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "LunarianBow";
         public override int targetCayItem => ModContent.ItemType<LunarianBow>();
         public override int targetCWRItem => ModContent.ItemType<LunarianBowEcType>();
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetRangedProperty() {
             BowArrowDrawNum = 2;
             fireIndex = 0;

@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.NPCs.Yharon;
+﻿using CalamityMod.NPCs.Yharon;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -9,7 +8,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Humanizer.In;
 
 namespace CalamityOverhaul.Content.Items.Melee.Extras
 {
@@ -68,7 +66,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         }
 
         public override bool CanUseItem(Player player) {
-            return player.ownedProjectileCounts[Item.shoot] <= 0 
+            return player.ownedProjectileCounts[Item.shoot] <= 0
                 && player.ownedProjectileCounts[ModContent.ProjectileType<DawnshatterOut>()] <= 0
                 && player.ownedProjectileCounts[ModContent.ProjectileType<DawnshatterSwing>()] <= 0;
         }

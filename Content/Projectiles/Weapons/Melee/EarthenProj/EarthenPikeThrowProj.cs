@@ -14,10 +14,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj
     internal class EarthenPikeThrowProj : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "REarthenPikeSpear";
-        Player Owner => Main.player[Projectile.owner];
+
+        private Player Owner => Main.player[Projectile.owner];
         public Item earthenPike;
-        int Dir;
-        int time;
+        private int Dir;
+        private int time;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 6;

@@ -1,7 +1,5 @@
 ﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
@@ -13,7 +11,8 @@ namespace CalamityOverhaul
     internal class TextItem : ModItem
     {
         public override string Texture => "CalamityOverhaul/icon";
-        bool old;
+
+        private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
             return true;
         }

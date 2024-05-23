@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Purple;
             Item.shoot = ModContent.ProjectileType<RGildedProboscisProj>();
             Item.shootSpeed = 13f;
-            
+
         }
 
         public override bool AltFunctionUse(Player player) {

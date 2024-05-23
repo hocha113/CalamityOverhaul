@@ -1,24 +1,22 @@
-﻿using CalamityMod.Items.Placeables.FurnitureExo;
-using CalamityMod;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.GameContent.ObjectInteractions;
-using Terraria.GameContent;
-using Terraria.ID;
-using Terraria.Localization;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.ObjectData;
-using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
+﻿using CalamityMod;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Magic;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.Enums;
+using Terraria.GameContent;
+using Terraria.GameContent.ObjectInteractions;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
+using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Tiles
 {
-    internal class InfiniteToilet: ModTile
+    internal class InfiniteToilet : ModTile
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "InfiniteToilet";
         public override bool IsLoadingEnabled(Mod mod) {

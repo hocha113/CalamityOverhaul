@@ -11,7 +11,6 @@ using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Summon.Extras;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.OverhaulBehavior;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
@@ -246,7 +245,7 @@ namespace CalamityOverhaul.Content
             lifeRegen -= lifeRegenSet;
             if (damage < damageSet) {
                 damage = damageSet;
-            }  
+            }
         }
 
         public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot) {

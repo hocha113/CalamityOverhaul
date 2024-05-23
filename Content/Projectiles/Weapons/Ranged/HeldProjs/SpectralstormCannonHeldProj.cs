@@ -1,13 +1,11 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Rogue;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
 using Terraria;
-using CalamityMod.Projectiles.Rogue;
-using CalamityMod;
-using Mono.Cecil;
-using CalamityMod.Projectiles.Boss;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -16,7 +14,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SpectralstormCannon";
         public override int targetCayItem => ModContent.ItemType<SpectralstormCannon>();
         public override int targetCWRItem => ModContent.ItemType<SpectralstormCannonEcType>();
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 20;

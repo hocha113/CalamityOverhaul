@@ -1,20 +1,17 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Content.TileEntitys.Core;
 using CalamityOverhaul.Content.Tiles;
+using Microsoft.Xna.Framework;
+using System;
+using System.IO;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using CalamityOverhaul.Common;
-using Terraria.DataStructures;
-using CalamityMod.Items.Materials;
-using CalamityMod;
-using System;
-using Terraria.Audio;
-using System.IO;
-using System.Reflection.Metadata;
-using CalamityMod.TileEntities;
-using CalamityOverhaul.Content.TileEntitys.Core;
 
 namespace CalamityOverhaul.Content.TileEntitys
 {

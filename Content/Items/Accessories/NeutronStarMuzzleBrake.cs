@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.Accessories;
+﻿using CalamityMod.Items.Accessories;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
@@ -40,8 +39,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player) {
-            return incomingItem.type != ModContent.ItemType<ElementMuzzleBrake>() 
-                && incomingItem.type != ModContent.ItemType<PrecisionMuzzleBrake>() 
+            return incomingItem.type != ModContent.ItemType<ElementMuzzleBrake>()
+                && incomingItem.type != ModContent.ItemType<PrecisionMuzzleBrake>()
                 && incomingItem.type != ModContent.ItemType<SimpleMuzzleBrake>();
         }
 

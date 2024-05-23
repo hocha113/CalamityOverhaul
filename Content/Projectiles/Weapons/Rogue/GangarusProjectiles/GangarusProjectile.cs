@@ -1,17 +1,16 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Common;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
 using CalamityMod.NPCs.DevourerofGods;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using Microsoft.Xna.Framework;
-using Terraria.Audio;
-using Microsoft.Xna.Framework.Graphics;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
-using Mono.Cecil;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
 {
@@ -119,7 +118,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                         Projectile.Explode(320);
                     }
                 }
-                
+
             }
         }
 

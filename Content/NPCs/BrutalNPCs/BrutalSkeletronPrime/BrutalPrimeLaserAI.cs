@@ -1,38 +1,35 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.NPCs;
-using CalamityMod.UI;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System.Linq;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     internal class BrutalPrimeLaserAI : NPCCoverage
     {
-        public override int targetID => NPCID.PrimeLaser;
-        const float timeToNotAttack = 180f;
-        bool bossRush;
-        bool masterMode;
-        bool death;
-        bool cannonAlive;
-        bool viceAlive;
-        bool sawAlive;
-        bool dontAttack;
-        bool normalLaserRotation;
-        int lerterFireIndex;
-        NPC head;
-        Player player;
-        
+        public override int TargetID => NPCID.PrimeLaser;
+
+        private const float timeToNotAttack = 180f;
+        private bool bossRush;
+        private bool masterMode;
+        private bool death;
+        private bool cannonAlive;
+        private bool viceAlive;
+        private bool sawAlive;
+        private bool dontAttack;
+        private bool normalLaserRotation;
+        private int lerterFireIndex;
+        private NPC head;
+        private Player player;
+
         private void Movement(NPC npc) {
             float acceleration = (bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f));
             float accelerationMult = 1f;
@@ -236,7 +233,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                             }
                         }
                     }
-                    
+
                     npc.localAI[1] += 1f;
                     npc.localAI[0] = 0f;
                 }
@@ -275,7 +272,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        int frame;
+        private int frame;
         public override bool? Draw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             BrutalSkeletronPrimeAI.DrawArm(spriteBatch, NPC, screenPos);
             Texture2D mainValue = BrutalSkeletronPrimeAI.BSPlaser.Value;

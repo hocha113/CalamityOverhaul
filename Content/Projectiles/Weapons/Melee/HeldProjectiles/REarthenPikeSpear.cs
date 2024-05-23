@@ -1,15 +1,13 @@
 ﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityMod;
 using CalamityMod.Projectiles.BaseProjectiles;
-using CalamityMod.Projectiles.Ranged;
-using Terraria.Localization;
-using Terraria.ModLoader;
+using CalamityMod.Projectiles.Melee;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
 using Terraria;
 using Terraria.ID;
-using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
-using CalamityMod.Projectiles.Melee;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {

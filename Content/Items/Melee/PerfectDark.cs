@@ -1,12 +1,12 @@
 ﻿using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Items;
 using CalamityMod.Projectiles.Melee;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
 using CalamityOverhaul.Common;
-using Terraria.DataStructures;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Orange;
             Item.shoot = ModContent.ProjectileType<DarkBall>();
             Item.shootSpeed = 10f;
-            
+
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

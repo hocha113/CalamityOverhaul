@@ -1,14 +1,13 @@
-﻿using CalamityMod.Items;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Items;
+using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj;
-using Microsoft.Xna.Framework;
-using CalamityOverhaul.Content.Items.Melee;
-using System.Collections.Generic;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {

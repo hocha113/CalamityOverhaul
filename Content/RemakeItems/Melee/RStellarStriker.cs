@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -40,7 +39,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shoot = ProjectileID.LunarFlare;
             item.shootSpeed = 12f;
         }
-        
+
         public override bool? AltFunctionUse(Item item, Player player) {
             return true;
         }
@@ -68,7 +67,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override bool? On_OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) {
             if (player.altFunctionUse == 2) {
                 StellarStrikerEcType.SpawnFlares(item, player, item.knockBack, item.damage, hit.Crit);
-            }   
+            }
             return false;
         }
 

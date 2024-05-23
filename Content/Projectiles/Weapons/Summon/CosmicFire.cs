@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Graphics.Metaballs;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;

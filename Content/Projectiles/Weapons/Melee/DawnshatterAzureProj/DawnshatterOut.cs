@@ -3,8 +3,6 @@ using CalamityMod.Particles;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee.Extras;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
-using log4net.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Utilities;
@@ -20,8 +18,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
     {
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DawnshatterAzure>();
         public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
-        SlotId roar;
-        bool spanSwing = true;
+
+        private SlotId roar;
+        private bool spanSwing = true;
         public override bool IsLoadingEnabled(Mod mod) {
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return false;

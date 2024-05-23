@@ -2,9 +2,9 @@
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Terraria.ModLoader;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Shadethrower";
         public override int targetCayItem => ModContent.ItemType<Shadethrower>();
         public override int targetCWRItem => ModContent.ItemType<ShadethrowerEcType>();
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetRangedProperty() {
             FireTime = 9;
             HandDistance = 25;

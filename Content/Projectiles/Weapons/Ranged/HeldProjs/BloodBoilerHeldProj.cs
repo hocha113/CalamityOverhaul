@@ -3,12 +3,11 @@ using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Mono.Cecil;
-using Terraria.DataStructures;
-using Terraria;
-using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -17,8 +16,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BloodBoiler";
         public override int targetCayItem => ModContent.ItemType<BloodBoiler>();
         public override int targetCWRItem => ModContent.ItemType<BloodBoilerEcType>();
-        bool shotReturn = false;
-        int fireIndex;
+
+        private bool shotReturn = false;
+        private int fireIndex;
         public override void SetRangedProperty() {
             FireTime = 3;
             HandDistance = 25;

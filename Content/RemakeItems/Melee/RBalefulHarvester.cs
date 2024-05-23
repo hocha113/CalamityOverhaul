@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -16,7 +15,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RBalefulHarvester : BaseRItem 
+    internal class RBalefulHarvester : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BalefulHarvester>();
         public override int ProtogenesisID => ModContent.ItemType<BalefulHarvesterEcType>();
@@ -45,7 +44,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shootSpeed = 15;
         }
 
-        public override bool? CanUseItem(Item item, Player player) 
+        public override bool? CanUseItem(Item item, Player player)
             => player.ownedProjectileCounts[ModContent.ProjectileType<BalefulHarvesterHeldProj>()] == 0;
 
         public override bool? AltFunctionUse(Item item, Player player) {

@@ -1,14 +1,13 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles.Core;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Graphics.CameraModifiers;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
@@ -114,7 +113,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             float point = 0;
             Vector2 vr = Projectile.rotation.ToRotationVector2();
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center + vr * -155
-                ,  Projectile.Center + vr * 155, 155, ref point);
+                , Projectile.Center + vr * 155, 155, ref point);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

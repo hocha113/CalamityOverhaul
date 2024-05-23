@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -14,19 +13,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     internal class BrutalPrimeViceAI : NPCCoverage
     {
-        public override int targetID => NPCID.PrimeVice;
-        bool bossRush;
-        bool masterMode;
-        bool death;
-        bool cannonAlive;
-        bool sawAlive;
-        bool laserAlive;
-        NPC head;
-        Player player;
-        int frame;
+        public override int TargetID => NPCID.PrimeVice;
+
+        private bool bossRush;
+        private bool masterMode;
+        private bool death;
+        private bool cannonAlive;
+        private bool sawAlive;
+        private bool laserAlive;
+        private NPC head;
+        private Player player;
+        private int frame;
 
         // 计算加速度的函数
-        float CalculateAcceleration(bool bossRush, bool death, bool masterMode, bool cannonAlive, bool laserAlive, bool sawAlive) {
+        private float CalculateAcceleration(bool bossRush, bool death, bool masterMode, bool cannonAlive, bool laserAlive, bool sawAlive) {
             float baseAcceleration = bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f);
             if (!cannonAlive) baseAcceleration += 0.025f;
             if (!laserAlive) baseAcceleration += 0.025f;
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 计算加速度倍率的函数
-        float CalculateAccelerationMult(bool cannonAlive, bool laserAlive) {
+        private float CalculateAccelerationMult(bool cannonAlive, bool laserAlive) {
             float mult = 1f;
             if (!cannonAlive) mult += 0.5f;
             if (!laserAlive) mult += 0.5f;
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 调整Y轴速度的函数
-        void AdjustVelocityY(NPC npc, float topVelocity, float deceleration, float acceleration, float upperBound, float lowerBound) {
+        private void AdjustVelocityY(NPC npc, float topVelocity, float deceleration, float acceleration, float upperBound, float lowerBound) {
             if (npc.position.Y > upperBound) {
                 if (npc.velocity.Y > 0f)
                     npc.velocity.Y *= deceleration;
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 调整X轴速度的函数
-        void AdjustVelocityX(NPC npc, float topVelocity, float deceleration, float acceleration, float upperBound, float lowerBound, float factor = 1f) {
+        private void AdjustVelocityX(NPC npc, float topVelocity, float deceleration, float acceleration, float upperBound, float lowerBound, float factor = 1f) {
             if (npc.Center.X > upperBound) {
                 if (npc.velocity.X > 0f)
                     npc.velocity.X *= deceleration;
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 处理充能阶段的函数
-        void HandleChargePhase(NPC npc, bool masterMode, bool cannonAlive, bool laserAlive, bool sawAlive) {
+        private void HandleChargePhase(NPC npc, bool masterMode, bool cannonAlive, bool laserAlive, bool sawAlive) {
             float deceleration = masterMode ? 0.75f : 0.8f;
             if (death) {
                 deceleration = 0.5f;
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 处理不同类型充能的函数
-        void HandleDifferentCharge(NPC npc, bool bossRush, bool cannonAlive, bool laserAlive, bool sawAlive) {
+        private void HandleDifferentCharge(NPC npc, bool bossRush, bool cannonAlive, bool laserAlive, bool sawAlive) {
             Vector2 viceArmOtherChargePosition = npc.Center;
             float viceArmOtherChargeTargetX = Main.npc[(int)npc.ai[1]].Center.X - 200f * npc.ai[0] - viceArmOtherChargePosition.X;
             float viceArmOtherChargeTargetY = Main.npc[(int)npc.ai[1]].position.Y + 230f - viceArmOtherChargePosition.Y;
@@ -144,36 +144,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 计算充能速度的函数
-        float CalculateChargeVelocity(bool bossRush, bool cannonAlive, bool laserAlive, bool sawAlive, float bossRushVelocity, float defaultVelocity) {
+        private float CalculateChargeVelocity(bool bossRush, bool cannonAlive, bool laserAlive, bool sawAlive, float bossRushVelocity, float defaultVelocity) {
             float chargeVelocity = bossRush ? bossRushVelocity : defaultVelocity;
-            if (!cannonAlive) 
+            if (!cannonAlive)
                 chargeVelocity += 1.5f;
-            if (!laserAlive) 
+            if (!laserAlive)
                 chargeVelocity += 1.5f;
-            if (!sawAlive) 
+            if (!sawAlive)
                 chargeVelocity += 1.5f;
             return chargeVelocity;
         }
 
         // 计算充能次数的函数
-        float CalculateChargeAmt(bool cannonAlive, bool laserAlive, bool sawAlive, float baseAmt) {
-            if (!cannonAlive) 
+        private float CalculateChargeAmt(bool cannonAlive, bool laserAlive, bool sawAlive, float baseAmt) {
+            if (!cannonAlive)
                 baseAmt += 1f;
-            if (!laserAlive) 
+            if (!laserAlive)
                 baseAmt += 1f;
-            if (!sawAlive) 
+            if (!sawAlive)
                 baseAmt += 1f;
             return baseAmt;
         }
 
         // 计算充能速率的函数
-        float CalculateChargeRate(bool cannonAlive, bool laserAlive, bool sawAlive, float baseRate) {
+        private float CalculateChargeRate(bool cannonAlive, bool laserAlive, bool sawAlive, float baseRate) {
             float chargeRate = baseRate;
-            if (!cannonAlive) 
+            if (!cannonAlive)
                 chargeRate += 1f;
-            if (!laserAlive) 
+            if (!laserAlive)
                 chargeRate += 1f;
-            if (!sawAlive) 
+            if (!sawAlive)
                 chargeRate += 1f;
             return chargeRate;
         }

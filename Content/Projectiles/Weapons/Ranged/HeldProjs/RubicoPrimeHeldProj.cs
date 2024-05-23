@@ -1,12 +1,12 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
+using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
 using Terraria;
-using CalamityMod.Projectiles.Ranged;
-using CalamityMod.Sounds;
 using Terraria.Audio;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "RubicoPrime";
         public override int targetCayItem => ModContent.ItemType<RubicoPrime>();
         public override int targetCWRItem => ModContent.ItemType<RubicoPrimeEcType>();
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 100;
             FireTime = 19;
@@ -59,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                         IsKreload = false;
                         BulletNum = 0;
                     }
-                    
+
                     fireIndex = 0;
                 }
             }

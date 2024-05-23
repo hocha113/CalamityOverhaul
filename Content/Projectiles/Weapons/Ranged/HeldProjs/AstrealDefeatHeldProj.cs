@@ -13,13 +13,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AstrealDefeat";
         public override int targetCayItem => ModContent.ItemType<AstrealDefeat>();
         public override int targetCWRItem => ModContent.ItemType<AstrealDefeatEcType>();
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetRangedProperty() {
             base.SetRangedProperty();
         }
 
         public override void PostInOwner() {
-            
+
         }
 
         public override void BowShoot() {

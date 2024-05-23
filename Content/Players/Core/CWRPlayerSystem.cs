@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.CalPlayer;
+﻿using CalamityMod.CalPlayer;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

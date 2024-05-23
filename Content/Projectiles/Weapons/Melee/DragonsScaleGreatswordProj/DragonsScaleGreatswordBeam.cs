@@ -1,9 +1,6 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -20,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatsw
             Projectile.hostile = false;
             Projectile.friendly = true;
             Projectile.MaxUpdates = 3;
-            Projectile.timeLeft = 120 * Projectile.MaxUpdates;           
+            Projectile.timeLeft = 120 * Projectile.MaxUpdates;
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {

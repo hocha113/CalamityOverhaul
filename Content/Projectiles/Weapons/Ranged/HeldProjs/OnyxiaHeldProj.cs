@@ -2,10 +2,9 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
 using Terraria;
-using Mono.Cecil;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -14,10 +13,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Onyxia";
         public override int targetCayItem => ModContent.ItemType<Onyxia>();
         public override int targetCWRItem => ModContent.ItemType<OnyxiaEcType>();
-        int fireIndex;
-        int chargeIndex;
-        const int maxfireD = 15;
-        const int minfireD = 6;
+
+        private int fireIndex;
+        private int chargeIndex;
+        private const int maxfireD = 15;
+        private const int minfireD = 6;
         public override void SetRangedProperty() {
             kreloadMaxTime = 150;
             FireTime = maxfireD;

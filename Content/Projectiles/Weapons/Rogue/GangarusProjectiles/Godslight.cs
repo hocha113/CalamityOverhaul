@@ -1,15 +1,15 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using System;
-using Terraria.Graphics.Shaders;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using CalamityOverhaul.Content.CWRDamageTypes;
+﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Graphics.Primitives;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.CWRDamageTypes;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using Microsoft.Xna.Framework;
+using System;
+using Terraria;
+using Terraria.Graphics.Shaders;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
 {
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             if (RayPoint != null) {
                 GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].UseImage1("Images/Misc/Perlin");
                 GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"].Apply();
-                
+
                 PrimitiveRenderer.RenderTrail(RayPoint, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
                     , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleLightningArc"]), 50);
             }

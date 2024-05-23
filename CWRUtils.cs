@@ -63,7 +63,7 @@ namespace CalamityOverhaul
         /// </summary>
         /// <param name="obj"></param>
         public static void Domp(this object obj, Color color = default) {
-            if (color == default) 
+            if (color == default)
                 color = Color.White;
             if (obj == null) {
                 Text("ERROR Is Null", Color.Red);
@@ -111,20 +111,15 @@ namespace CalamityOverhaul
                     }
                 }
                 sw.Write("};");
-            }
-            catch (UnauthorizedAccessException) {
+            } catch (UnauthorizedAccessException) {
                 ($"UnauthorizedAccessException: 无法访问文件路径 '{path}'. 权限不足").DompInConsole();
-            }
-            catch (DirectoryNotFoundException) {
+            } catch (DirectoryNotFoundException) {
                 ($"DirectoryNotFoundException: 文件路径 '{path}' 中的目录不存在").DompInConsole();
-            }
-            catch (PathTooLongException) {
+            } catch (PathTooLongException) {
                 ($"PathTooLongException: 文件路径 '{path}' 太长").DompInConsole();
-            }
-            catch (IOException) {
+            } catch (IOException) {
                 ($"IOException: 无法打开文件 '{path}' 进行写入").DompInConsole();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 ($"An error occurred: {e.Message}").DompInConsole();
             }
         }
@@ -2377,7 +2372,7 @@ namespace CalamityOverhaul
             if (loadCeahk && p.ModProjectile == null) {
                 Main.instance.LoadProjectile(p.type);
             }
-                
+
             return TextureAssets.Projectile[p.type].Value;
         }
 
@@ -2396,7 +2391,7 @@ namespace CalamityOverhaul
             if (loadCeahk && i.ModItem == null) {
                 Main.instance.LoadItem(i.type);
             }
-                
+
             return TextureAssets.Item[i.type].Value;
         }
 
@@ -2415,7 +2410,7 @@ namespace CalamityOverhaul
             if (loadCeahk && n.ModNPC == null) {
                 Main.instance.LoadNPC(n.type);
             }
-                
+
             return TextureAssets.Npc[n.type].Value;
         }
 
@@ -2432,7 +2427,7 @@ namespace CalamityOverhaul
 
             Vector2 value1 = new Vector2(Main.screenWidth - x, Main.screenHeight - 80 + 1);
             Vector2 value2 = textOffsetInCorePos + new Vector2(iconAsset.Value.Width + 12, 6f);
-            Rectangle iconRec =  Utils.CenteredRectangle(value1, value2);
+            Rectangle iconRec = Utils.CenteredRectangle(value1, value2);
 
             Utils.DrawInvBG(spriteBatch, iconRec, eventMainColor * 0.5f * size);
             spriteBatch.Draw(iconAsset.Value, iconRec.Left() + Vector2.UnitX * 8f, null, Color.White * size
@@ -2835,8 +2830,7 @@ namespace CalamityOverhaul
             int maxInstances = 1,
             SoundLimitBehavior soundLimitBehavior = SoundLimitBehavior.ReplaceOldest
             ) {
-            sound = sound with
-            {
+            sound = sound with {
                 Volume = volume,
                 Pitch = pitch,
                 PitchVariance = pitchVariance,

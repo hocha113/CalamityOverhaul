@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
         public Vector2 TargetPos {
             get => new Vector2(Projectile.ai[0], Projectile.ai[1]);
             set {
-                Projectile.ai[0] = value.X; 
+                Projectile.ai[0] = value.X;
                 Projectile.ai[1] = value.Y;
             }
         }
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(Supernova.ExplosionSound, Projectile.Center);
             SpanDust(Projectile, 3);
-            
+
             Vector2 normVr = Projectile.velocity.GetNormalVector();
 
             for (int i = 0; i < 136; i++) {

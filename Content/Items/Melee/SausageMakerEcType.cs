@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Orange;
             Item.shoot = ModContent.ProjectileType<RSausageMakerSpear>();
             Item.shootSpeed = 6f;
-            
+
         }
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;

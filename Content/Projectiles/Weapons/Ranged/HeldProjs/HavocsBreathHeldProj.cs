@@ -2,9 +2,9 @@
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Terraria.ModLoader;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HavocsBreath";
         public override int targetCayItem => ModContent.ItemType<HavocsBreath>();
         public override int targetCWRItem => ModContent.ItemType<HavocsBreathEcType>();
-        int fireIndex;
+
+        private int fireIndex;
         public override void SetRangedProperty() {
             FireTime = 3;
             HandDistance = 25;

@@ -1,17 +1,14 @@
-﻿using CalamityMod.Items;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Items;
+using CalamityMod.Items.Materials;
+using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
-using Terraria.ID;
-using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
-using Microsoft.Xna.Framework;
-using CalamityMod.Projectiles.Rogue;
-using CalamityMod.UI;
-using CalamityMod.Items.Materials;
-using CalamityMod.Items.Placeables.Furniture.CraftingStations;
-using CalamityMod.Tiles.Furniture.CraftingStations;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Rogue.Extras
 {

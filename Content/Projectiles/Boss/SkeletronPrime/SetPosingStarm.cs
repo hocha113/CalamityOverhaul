@@ -1,16 +1,15 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod;
+using CalamityMod.NPCs;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework;
-using CalamityMod.NPCs;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using Terraria.Graphics.Shaders;
-using CalamityMod;
-using CalamityOverhaul.Content.Buffs;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
@@ -131,7 +130,9 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap
                 , DepthStencilState.None, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
             Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
-            Main.spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() * 0.5f, 0, 0f);
+            //Rectangle rekt = new(Main.screenWidth / -2, Main.screenHeight / -2, Main.screenWidth * 2, Main.screenHeight * 2);
+            Main.spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() / 2, 0, 0f);
+            //Main.spriteBatch.Draw(blackTile.Value, Vector2.Zero, new Rectangle(0, 0, 2000, 2000), default, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             Main.spriteBatch.ExitShaderRegion();
         }
     }

@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             CreateRecipe().
                 AddIngredient<Flint>(4).
                 AddIngredient(ItemID.VineRope, 3).
-                AddIngredient(ItemID.Wood ,8).
+                AddIngredient(ItemID.Wood, 8).
                 AddTile(TileID.WorkBenches).
                 Register();
         }

@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
                 if (Projectile.scale < 0)
                     Projectile.scale = 0;
             }
-            return true; 
+            return true;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {

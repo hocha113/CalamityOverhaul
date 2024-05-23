@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.MaxUpdates = 3;
             Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
         }
-        
+
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
             NPC target = Main.npc[(int)Projectile.ai[1]];

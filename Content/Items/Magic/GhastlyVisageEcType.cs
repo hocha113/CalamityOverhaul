@@ -7,7 +7,6 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -40,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
             Item.SetHeldProj<GhastlyVisageHeldProj>();
-            
+
         }
 
         public override void OnConsumeMana(Player player, int manaConsumed) {

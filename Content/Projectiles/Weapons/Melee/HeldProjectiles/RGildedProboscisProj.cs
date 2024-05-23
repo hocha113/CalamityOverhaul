@@ -59,10 +59,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             projIndex = reader.ReadInt32();
         }
 
-        Player Owner => CWRUtils.GetPlayerInstance(Projectile.owner);
-        Item gildedProboscis => Owner.HeldItem;
-        int projIndex = -1;
-        int drawUIalp = 0;
+        private Player Owner => CWRUtils.GetPlayerInstance(Projectile.owner);
+
+        private Item gildedProboscis => Owner.HeldItem;
+
+        private int projIndex = -1;
+        private int drawUIalp = 0;
         public override void AI() {
             if (Projectile.ai[1] == 0) {
                 base.AI();
@@ -215,7 +217,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             DrawKevinChargeBar();
         }
 
-        int barsFrame = 0;
+        private int barsFrame = 0;
         public void DrawKevinChargeBar() {
             if (Owner == null || Projectile.ai[1] != 1) return;
             Texture2D kevinChargeBack = CWRUtils.GetT2DValue(CWRConstant.UI + "KevinChargeBack");

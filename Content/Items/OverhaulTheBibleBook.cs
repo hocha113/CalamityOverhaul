@@ -1,6 +1,4 @@
 ﻿using CalamityMod.Items;
-using CalamityMod.Items.Materials;
-using CalamityMod.Items.SummonItems;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.UIs;
 using Microsoft.Xna.Framework;

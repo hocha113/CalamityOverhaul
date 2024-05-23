@@ -1,7 +1,7 @@
 ﻿using CalamityMod.Particles;
 using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.EtherRoarProj
 {

@@ -1,21 +1,20 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
-using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
 using System.Linq;
 using Terraria;
-using Terraria.ModLoader;
-using static Humanizer.In;
-using Terraria.ID;
 using Terraria.Audio;
-using CalamityMod.Items.Weapons.Ranged;
 using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
 {
@@ -52,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => false;
 
         private bool isProj() => (Main.projectile.Count((Projectile p)
-                => p.type == ModContent.ProjectileType<GangarusProjectile>() 
+                => p.type == ModContent.ProjectileType<GangarusProjectile>()
                 && p.Center.To(Owner.Center).LengthSquared() < 9000) == 0);
 
         public override void AI() {

@@ -21,12 +21,18 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private static Rectangle Text2P;
         private static int Time;
         private static float sengs;
-        string text1 => CWRLocText.GetTextValue("IconUI_Text1");
-        Vector2 text1Vr => FontAssets.MouseText.Value.MeasureString(text1);
-        Vector2 text1Pos => new Vector2(DrawPos.X - text1Vr.X, DrawPos.Y + 6);
-        string text2 => CWRLocText.GetTextValue("IconUI_Text2");
-        Vector2 text2Vr => FontAssets.MouseText.Value.MeasureString(text2);
-        Vector2 text2Pos => new Vector2(text1Pos.X, text1Pos.Y + text1Vr.Y - 6);
+
+        private string text1 => CWRLocText.GetTextValue("IconUI_Text1");
+
+        private Vector2 text1Vr => FontAssets.MouseText.Value.MeasureString(text1);
+
+        private Vector2 text1Pos => new Vector2(DrawPos.X - text1Vr.X, DrawPos.Y + 6);
+
+        private string text2 => CWRLocText.GetTextValue("IconUI_Text2");
+
+        private Vector2 text2Vr => FontAssets.MouseText.Value.MeasureString(text2);
+
+        private Vector2 text2Pos => new Vector2(text1Pos.X, text1Pos.Y + text1Vr.Y - 6);
         public override void Load() {
             icon = CWRUtils.GetT2DAsset("CalamityOverhaul/icon");
             small = CWRUtils.GetT2DAsset("CalamityOverhaul/icon_small");

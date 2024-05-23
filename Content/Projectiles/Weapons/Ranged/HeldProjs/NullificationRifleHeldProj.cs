@@ -1,9 +1,6 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
+﻿using CalamityOverhaul.Common;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {

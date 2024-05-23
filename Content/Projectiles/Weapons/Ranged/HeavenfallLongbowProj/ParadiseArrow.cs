@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Particles;
@@ -19,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        Color chromaColor => CWRUtils.MultiStepColorLerp(Projectile.ai[0] % 35 / 35f, HeavenfallLongbow.rainbowColors);
+        private Color chromaColor => CWRUtils.MultiStepColorLerp(Projectile.ai[0] % 35 / 35f, HeavenfallLongbow.rainbowColors);
         public override bool IsLoadingEnabled(Mod mod) {
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return false;
@@ -95,7 +94,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseColor(mainColor);
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseSecondaryColor(secondaryColor);
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].Apply();
-            
+
             PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction, (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]), 53);
 
             Vector2 scale = new Vector2(0.5f, 1.6f) * Projectile.scale;

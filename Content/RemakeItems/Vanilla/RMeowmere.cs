@@ -1,8 +1,6 @@
-﻿using CalamityMod.NPCs.TownNPCs;
-using CalamityOverhaul.Content.RemakeItems.Core;
+﻿using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 

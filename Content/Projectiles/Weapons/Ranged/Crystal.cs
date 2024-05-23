@@ -1,11 +1,11 @@
-﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityMod.Buffs.StatDebuffs;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
-using Terraria.GameContent;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.ModLoader;
+using Terraria.GameContent;
 using Terraria.ID;
-using CalamityMod.Buffs.StatDebuffs;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
@@ -31,7 +31,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     float num = target.Center.Distance(Projectile.Center);
                     if (num > 120) {
                         Projectile.ChasingBehavior2(target.Center, 1, 0.22f);
-                    } else {
+                    }
+                    else {
                         Projectile.ChasingBehavior(target.Center, Projectile.velocity.Length());
                     }
                 }

@@ -1,10 +1,10 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Terraria.ModLoader;
 using Terraria;
-using CalamityOverhaul.Common;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Ranged
 {
@@ -20,6 +20,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.CWR().Scope = true;
         }
 
-        public override void ModifyWeaponCrit(Item item, Player player, ref float crit)=> crit += 5;
+        public override void ModifyWeaponCrit(Item item, Player player, ref float crit) => crit += 5;
     }
 }

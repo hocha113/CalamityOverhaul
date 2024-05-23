@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Common.Effects
                 graphicsDevice.SetRenderTarget(Main.screenTarget);
                 graphicsDevice.Clear(Color.Transparent);
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                
+
                 //如果想热加载，最好这样获取值
                 Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "WarpShader").Value;//EffectsRegistry.WarpShader;
                 effect.Parameters["tex0"].SetValue(Main.screenTargetSwap);

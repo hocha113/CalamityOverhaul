@@ -2,7 +2,8 @@
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
-    public struct ShootState{
+    public struct ShootState
+    {
         public int AmmoTypes;
         public float ScaleFactor;
         public int WeaponDamage;

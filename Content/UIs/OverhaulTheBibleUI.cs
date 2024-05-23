@@ -106,8 +106,10 @@ namespace CalamityOverhaul.Content.UIs
         public Vector2 InCellPos => DrawPos + new Vector2(35, 32);
         public Vector2 CellSlpSize => new Vector2(55, 50);
         public int MaxInFrameXNum => 4;
-        int snegValue => (ecTypeItemList.Count / 4 - 1) * 50;
-        float SliderValueSengs {
+
+        private int snegValue => (ecTypeItemList.Count / 4 - 1) * 50;
+
+        private float SliderValueSengs {
             get {
                 if (LCCoffsetY == 0) {
                     LCCoffsetY = 0.00001f;//无论如何都不要出现零
@@ -180,10 +182,10 @@ namespace CalamityOverhaul.Content.UIs
                 if (item != null) {
                     if (item.type != ItemID.None) {
                         if (melee) {
-                            if (item.DamageType == DamageClass.Melee 
+                            if (item.DamageType == DamageClass.Melee
                                 || item.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()
                                 || item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
-                                || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>() ) {
+                                || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
                                 Instance.ecTypeItemList.Add(item);
                             }
                         }
@@ -294,7 +296,7 @@ namespace CalamityOverhaul.Content.UIs
                 int mouseCellY = (int)((mouseInCellPos.Y - LCCoffsetY) / 50f);
                 onIndex = (mouseCellY) * MaxInFrameXNum + mouseCellX;
             }
-            
+
             time++;
         }
 
@@ -308,7 +310,8 @@ namespace CalamityOverhaul.Content.UIs
             Color color;
             if (keyValue) {
                 color = new Color(255, 255, 255, 255);
-            } else {
+            }
+            else {
                 color = new Color(0, 0, 0, 155);
             }
             if (onP) {

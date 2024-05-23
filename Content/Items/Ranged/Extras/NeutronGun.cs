@@ -1,11 +1,11 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria;
 using Terraria.ModLoader;
-using ReLogic.Content;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Extras
 {

@@ -1,15 +1,13 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.CWRDamageTypes;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System;
-using Terraria.Audio;
-using Terraria.GameContent;
-using Terraria;
-using Terraria.ModLoader;
 using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using Terraria;
+using Terraria.GameContent;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
 {
@@ -33,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
 
         public bool canDraw() => false;
 
-        void SpanStar(Vector2 offset) {
+        private void SpanStar(Vector2 offset) {
             for (int i = 0; i < 4; i++) {
                 float rot1 = MathHelper.PiOver2 * i;
                 Vector2 vr = rot1.ToRotationVector2();
@@ -83,7 +81,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             Color warpColor = new Color(45, 45, 45) * Projectile.ai[1];
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 drawOrig = warpTex.Size() / 2;
-            
+
             for (int i = 0; i < 33; i++) {
                 Main.spriteBatch.Draw(warpTex, drawPos, null, warpColor, Projectile.velocity.ToRotation() + MathHelper.PiOver2
                     , drawOrig, new Vector2(0.1f, 21), SpriteEffects.None, 0f);

@@ -50,9 +50,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.hide = true;
         }
 
-        Player Owner => CWRUtils.GetPlayerInstance(Projectile.owner);
-        Item bansheeHook => Owner.HeldItem;
-        int drawUIalp = 0;
+        private Player Owner => CWRUtils.GetPlayerInstance(Projectile.owner);
+
+        private Item bansheeHook => Owner.HeldItem;
+
+        private int drawUIalp = 0;
         public override void AI() {
             if (Projectile.ai[1] == 0) {
                 base.AI();

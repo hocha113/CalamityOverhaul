@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -113,7 +112,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        int Rot = 0;
+        private int Rot = 0;
         public override bool PreDraw(ref Color lightColor) {
             Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.Masking + "Streak3");
             Texture2D startValue = CWRUtils.GetT2DValue("CalamityMod/Projectiles/TornadoProj");

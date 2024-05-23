@@ -19,8 +19,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Spears/DiseasedPikeSpear";
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DiseasedPikeEcType>();
-        Player Owner => CWRUtils.GetPlayerInstance(Projectile.owner);
-        Item diseasedPike => Owner.ActiveItem();
+
+        private Player Owner => CWRUtils.GetPlayerInstance(Projectile.owner);
+
+        private Item diseasedPike => Owner.ActiveItem();
 
         private int Time {
             get => (int)Projectile.ai[0];
