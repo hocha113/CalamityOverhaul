@@ -493,11 +493,14 @@ Items: {
 		DisplayName: Murasama
 		Tooltip:
 			'''
-			Right-click to aim, press the trigger key [KEY1] to launch the blade, 
-			and press the left key to execute the rising dragon strike during the blade flight [Lang1]
-			Press [KEY2] to consume one points of charge and perform a punch [Lang2]
-			When you hit an enemy, you will give your weapon 1 recharge. 
-			When you hit the maximum 10 recharge, you will trigger the end of the enemy when you lift the dragon again. [Lang3]
+			Right-click to aim and charge Dragon Energy. 
+			Hitting a target with a melee attack using the left-click will also charge the Dragon Energy bar
+			When Dragon Energy is fully charged, press [KEY1] to launch the blade. 
+			During the blade's flight, press the left-click to execute a Rising Dragon Slash [Lang1]
+			Hitting an enemy with the Rising Dragon Slash will charge Weapon 1. 
+			Press [KEY2] to consume 1 point of weapon charge for a slam attack [Lang2]
+			When the weapon charge reaches the maximum of 10 points, 
+			hitting an enemy with another Rising Dragon Slash will trigger the finishing move [Lang3]
 			[c/fff08c: legend_Text]
 			[c/ff4500:" It would be better if this were a chainsaw sword "]
 			[Lang4]:

@@ -2357,6 +2357,24 @@ namespace CalamityOverhaul
             Main.RegisterItemAnimation(type, new DrawAnimationVertical(tickValue, maxFrame));
         }
 
+        public static void DrawBar(Player Owner, float sengs, float slp, int uiframe
+            , int maxFrame, Texture2D tex1, Texture2D tex2, Texture2D tex3, Texture2D tex4) {
+            if (!(sengs <= 0f)) {
+                Texture2D barBG = tex1;
+                Texture2D barFG = tex2;
+                if (sengs >= 1) {
+                    barBG = tex3;
+                    barFG = tex4;
+                }
+                float barScale = slp;
+                Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, 75) - Main.screenPosition;
+                Rectangle frameCrop = new Rectangle(0, 0, (int)(sengs * barFG.Width), barFG.Height);
+                Color color = Color.White;
+                Main.spriteBatch.Draw(barBG, drawPos, GetRec(barBG, uiframe, maxFrame), color, 0f, GetOrig(barBG, maxFrame), barScale, 0, 0f);
+                Main.spriteBatch.Draw(barFG, drawPos, frameCrop, color, 0f, GetOrig(barFG, 1), barScale, 0, 0f);
+            }
+        }
+
         /// <summary>
         /// 安全的获取对应实例的图像资源
         /// </summary>

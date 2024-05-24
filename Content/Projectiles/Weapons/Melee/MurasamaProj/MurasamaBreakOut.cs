@@ -60,6 +60,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
             }
 
+            if (Projectile.ai[2] > 0) {
+                Projectile.ai[2]--;
+            }
+
             Lighting.AddLight(Projectile.Center, (Main.rand.NextBool(3) ? Color.Red : Color.IndianRed).ToVector3());
 
             int level = InWorldBossPhase.Instance.Mura_Level();
@@ -144,7 +148,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         , ModContent.ProjectileType<MurasamaBreakSwing>(), sengsDmg, 0, Owner.whoAmI);
                         Main.projectile[proj].scale = 0.5f + level * 0.0f;
 
-                        Owner.CWR().RisingDragonCoolDownTime += MurasamaEcType.GetOnRDCD / 2;//添加升龙冷却
                         Projectile.Kill();
                     }
                 }
@@ -179,10 +182,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         return;
                     }
                 }
-                if (Owner.PressKey()) {//如果按下的是左键，那么切换到3状态进行升龙斩的相关代码的执行
+
+                if (Owner.PressKey() && Projectile.ai[2] <= 0) {//如果按下的是左键，那么切换到3状态进行升龙斩的相关代码的执行
                     if (!MurasamaEcType.UnlockSkill1) {//在击败初期Boss之前不能使用这个技能
                         return;
                     }
+
                     if (Projectile.ai[1] > 0) {
                         SoundEngine.PlaySound(MurasamaEcType.Swing with { Pitch = -0.1f }, Projectile.Center);
                         Projectile.ai[0] = 3;

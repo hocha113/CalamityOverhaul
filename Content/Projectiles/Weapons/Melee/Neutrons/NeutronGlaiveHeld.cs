@@ -27,11 +27,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         private bool canatcck3 = true;
         private int uiframe;
         private const int maxatcck = 80;
-        public void SetupData() {
+        void ISetupData.SetupData() {
+            if (Main.dedServ) {
+                return;
+            }
             bar1 = CWRUtils.GetT2DAsset(CWRConstant.UI + "NeutronsBar");
             bar2 = CWRUtils.GetT2DAsset(CWRConstant.UI + "NeutronsBar2");
             bar3 = CWRUtils.GetT2DAsset(CWRConstant.UI + "NeutronsBarTop");
             bar4 = CWRUtils.GetT2DAsset(CWRConstant.UI + "NeutronsBarTop2");
+        }
+        void ISetupData.UnLoadData() {
+            bar1 = null;
+            bar2 = null;
+            bar3 = null;
+            bar4 = null;
         }
 
         public override void SetDefaults() {

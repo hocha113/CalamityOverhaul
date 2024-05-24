@@ -122,7 +122,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
             Vector2 playerRotatedPoint = player.RotatedRelativePoint(player.MountedCenter, true);
             if (Main.myPlayer == Projectile.owner) {
-                if (player.channel && !player.noItems && !player.CCed) {
+                if (player.channel && !player.noItems && !player.CCed 
+                    && player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] <= 0) {
                     HandleChannelMovement(player, playerRotatedPoint);
                 }
                 else {
@@ -268,9 +269,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
-                Owner.CWR().RisingDragonCoolDownTime -= 5;
-                if (Owner.CWR().RisingDragonCoolDownTime < 0) {
-                    Owner.CWR().RisingDragonCoolDownTime = 0;
+                Owner.CWR().RisingDragonCoolDownTime += 5;
+                if (Owner.CWR().RisingDragonCoolDownTime > MurasamaEcType.GetOnRDCD) {
+                    Owner.CWR().RisingDragonCoolDownTime = MurasamaEcType.GetOnRDCD;
+                }
+                int type = ModContent.ProjectileType<MurasamaHeldProj>();
+                foreach (var p in Main.projectile) {
+                    if (p.type != type) {
+                        continue;
+                    }
+                    MurasamaHeldProj murasamaHeldProj = p.ModProjectile as MurasamaHeldProj;
+                    if (murasamaHeldProj != null) {
+                        murasamaHeldProj.SetAttenuation(45);
+                    }
                 }
             }
             if (target.Organic()) {

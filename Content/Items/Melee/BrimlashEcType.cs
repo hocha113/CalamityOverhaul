@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void MeleeEffects(Player player, Rectangle hitbox) {
             if (Main.rand.NextBool(3)) {
-                int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, (int)CalamityDusts.Brimstone);
+                Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, (int)CalamityDusts.Brimstone);
             }
         }
 

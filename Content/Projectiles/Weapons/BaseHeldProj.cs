@@ -39,6 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
                 return toMouseVecterDate;
             }
         }
+
         /// <summary>
         /// 获取玩家到鼠标的角度
         /// </summary>
@@ -58,15 +59,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
             toMouseVecterDate.Y = reader.ReadSingle();
         }
 
-        public override void PostAI() {
+        public sealed override void PostAI() {
             if (!Owner.Alives()) {
                 Projectile.Kill();
-                return;
             }
         }
 
         protected void SetHeld() => Owner.heldProj = Projectile.whoAmI;
-
-        protected void SetOwnerItemTime(int time) => Owner.itemTime = Owner.itemAnimation = time;
     }
 }
