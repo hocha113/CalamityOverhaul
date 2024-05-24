@@ -2,7 +2,9 @@
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -25,7 +27,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.noMelee = true;
             item.channel = true;
         }
-        public override bool? On_CanUseItem(Item item, Player player)
-            => player.ownedProjectileCounts[item.shoot] <= 0;
+        public override bool? On_CanUseItem(Item item, Player player) {
+            return player.ownedProjectileCounts[item.shoot] <= 0;
+        }
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            return false;
+        }
     }
 }

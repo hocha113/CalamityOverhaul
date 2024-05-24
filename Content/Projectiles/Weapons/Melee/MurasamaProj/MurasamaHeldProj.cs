@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override string Texture => CWRConstant.Projectile_Melee + "MurasamaHeldProj";
         private Item murasama => Owner.ActiveItem();
         private ref float Time => ref Projectile.ai[0];
-        private ref int risingDragon => ref Owner.CWR().RisingDragonCoolDownTime;
+        private ref int risingDragon => ref Owner.CWR().RisingDragonCharged;
         private bool onFireR => Owner.PressKey(false) && !Owner.PressKey();
         private int level => InWorldBossPhase.Instance.Mura_Level();
 

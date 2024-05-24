@@ -127,9 +127,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                     if (Main.rand.NextBool()) {
                         tentacleXDirection *= -1f;
                     }
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, tentacleVelocity
+                    int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, tentacleVelocity
                         , ModContent.ProjectileType<EldritchTentacle>(), Projectile.damage
                         , Projectile.knockBack, Projectile.owner, tentacleXDirection, tentacleYDirection);
+                    Main.projectile[proj].DamageType = DamageClass.Magic;
                 }
                 else {
                     CWRDust.SplashDust(Projectile, 21, DustID.FireworkFountain_Red, DustID.FireworkFountain_Red, 13, Color.DarkRed);

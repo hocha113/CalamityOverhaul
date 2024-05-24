@@ -269,9 +269,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
-                Owner.CWR().RisingDragonCoolDownTime += 5;
-                if (Owner.CWR().RisingDragonCoolDownTime > MurasamaEcType.GetOnRDCD) {
-                    Owner.CWR().RisingDragonCoolDownTime = MurasamaEcType.GetOnRDCD;
+                Owner.CWR().RisingDragonCharged += 5;
+                if (Owner.CWR().RisingDragonCharged > MurasamaEcType.GetOnRDCD) {
+                    Owner.CWR().RisingDragonCharged = MurasamaEcType.GetOnRDCD;
                 }
                 int type = ModContent.ProjectileType<MurasamaHeldProj>();
                 foreach (var p in Main.projectile) {

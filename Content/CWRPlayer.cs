@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 升龙技冷却时间
         /// </summary>
-        public int RisingDragonCoolDownTime;
+        public int RisingDragonCharged;
         public int SafeHeldProjIndex;
         public int TETramContrType;
 

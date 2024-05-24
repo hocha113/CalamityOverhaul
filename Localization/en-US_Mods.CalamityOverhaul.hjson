@@ -2570,6 +2570,16 @@ Items: {
 			during which the player can no longer summon Dark Covenants through true Melee
 			'''
 	}
+
+	GraniteRifle: {
+		DisplayName: Granite Rifle
+		Tooltip: ""
+	}
+
+	MarbleRifle: {
+		DisplayName: Marble Rifle
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3152,6 +3162,10 @@ Projectiles: {
 	GladiusRapier.DisplayName: Gladius Rapier
 	DefiledGreatswordHeld.DisplayName: Defiled Greatsword Held
 	TerrorBladeHeld.DisplayName: Terror Blade Held
+	GraniteBullet.DisplayName: Granite Bullet
+	GraniteRifleHeldProj.DisplayName: Granite Rifle Held Proj
+	MarbleRifleHeldProj.DisplayName: Marble Rifle Held Proj
+	MarbleBullet.DisplayName: Marble Bullet
 }
 
 Configs: {
@@ -3247,7 +3261,7 @@ Configs: {
 		}
 
 		MurasamaRisingDragonCoolDownBarSize: {
-			Label: Murasama cooling UI size
+			Label: Murasama Charged UI Size
 			Tooltip:
 				'''
 				An additional UI size correction factor, in percentage % units

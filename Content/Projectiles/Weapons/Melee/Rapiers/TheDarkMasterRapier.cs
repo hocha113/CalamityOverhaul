@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             SkialithVarSpeedMode = 3;
             StabbingSpread = 0.15f;
             ShurikenOut = SoundID.Item71 with { Pitch = 0.7f };
+            ring = null;
         }
 
         public override void ExtraShoot() {

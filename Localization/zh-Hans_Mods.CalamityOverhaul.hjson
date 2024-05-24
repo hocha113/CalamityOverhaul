@@ -2592,6 +2592,24 @@ Items: {
 			并给予玩家3秒黑暗恐惧减益，此期间玩家将无法再通过真近战召唤暗黑契约
 			'''
 	}
+
+	GraniteRifle: {
+		DisplayName: 花岗岩步枪
+		Tooltip:
+			'''
+			将火枪子弹转化为花岗岩碎屑弹丸，会在实心物块中蛇形游走
+			"我故意让这枪转起来一卡一卡的，这样你才知道你玩的是泰拉瑞亚"
+			'''
+	}
+
+	MarbleRifle: {
+		DisplayName: 大理岩步枪
+		Tooltip:
+			'''
+			将火枪子弹转化为大理岩碎屑弹丸，击中物块时弹起并爆炸
+			"我故意让这枪转起来一卡一卡的，这样你才知道你玩的是泰拉瑞亚"
+			'''
+	}
 }
 
 Projectiles: {
@@ -3174,6 +3192,10 @@ Projectiles: {
 	// GladiusRapier.DisplayName: Gladius Rapier
 	// DefiledGreatswordHeld.DisplayName: Defiled Greatsword Held
 	// TerrorBladeHeld.DisplayName: Terror Blade Held
+	// GraniteBullet.DisplayName: Granite Bullet
+	// GraniteRifleHeldProj.DisplayName: Granite Rifle Held Proj
+	// MarbleRifleHeldProj.DisplayName: Marble Rifle Held Proj
+	// MarbleBullet.DisplayName: Marble Bullet
 }
 
 Configs: {
@@ -3267,7 +3289,7 @@ Configs: {
 		}
 
 		MurasamaRisingDragonCoolDownBarSize: {
-			Label: 高分子斩切刃升龙冷却UI大小
+			Label: 鬼妖村正充能UI大小
 			Tooltip:
 				'''
 				一个额外的UI大小矫正因子，单位以百分比%为基准

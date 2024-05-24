@@ -110,9 +110,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float RangeOfStress = 10;
         /// <summary>
-        /// 开火时会制造的后坐力模长，默认为5
+        /// 开火时会制造的后坐力模长，默认为1.2f
         /// </summary>
-        public float Recoil = 5;
+        public float Recoil = 1.2f;
         /// <summary>
         /// 止推模长恢复系数，值越接近1恢复的越加缓慢，默认为0.5f
         /// </summary>
