@@ -10,7 +10,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Rogue
 {
-    [LegacyName("DuneHopper")]
     public class WaveSkipperEcType : EctypeItem
     {
         public override string Texture => "CalamityMod/Items/Weapons/Rogue/WaveSkipper";

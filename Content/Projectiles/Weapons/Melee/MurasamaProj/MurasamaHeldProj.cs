@@ -174,13 +174,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 else {
                     noAttenuationTime = 35;
                 }
-                if (Owner.ownedProjectileCounts[breakOutType] == 0 && !CWRUtils.isServer) {
-                    ShootMBOut();
-
-                    if (CWRKeySystem.Murasama_TriggerKey.JustPressed && risingDragon < MurasamaEcType.GetOnRDCD) {
-                        SoundEngine.PlaySound(CWRSound.Ejection with { MaxInstances = 3 }, Projectile.Center);
-                    }
-                }
             }
 
             if (risingDragon >= MurasamaEcType.GetOnRDCD && Owner.ownedProjectileCounts[breakOutType] == 0 && !CWRUtils.isServer) {

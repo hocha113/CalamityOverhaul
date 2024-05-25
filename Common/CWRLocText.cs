@@ -183,6 +183,9 @@ namespace CalamityOverhaul.Common
         public LocalizedText Wap_NeutronBow_LoadingText2 { get; private set; }
         public LocalizedText Wap_NeutronBow_LoadingText3 { get; private set; }
         public LocalizedText Wap_Gladius_Text { get; private set; }
+        public LocalizedText Wap_WoodenBoomerang_Text { get; private set; }
+        public LocalizedText Wap_Flamarang_Text { get; private set; }
+        public LocalizedText Wap_EnchantedBoomerang_Text { get; private set; }
         #endregion
         public override void Load() {
             //使用反射进行属性的自动加载

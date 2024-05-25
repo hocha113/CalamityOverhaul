@@ -2580,6 +2580,11 @@ Items: {
 		DisplayName: Marble Rifle
 		Tooltip: ""
 	}
+
+	FrostcrushValariEcType: {
+		DisplayName: Frostcrush Valari Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3166,6 +3171,9 @@ Projectiles: {
 	GraniteRifleHeldProj.DisplayName: Granite Rifle Held Proj
 	MarbleRifleHeldProj.DisplayName: Marble Rifle Held Proj
 	MarbleBullet.DisplayName: Marble Bullet
+	FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
+	WoodenBoomerangHeld.DisplayName: Wooden Boomerang Held
+	FlamarangHeld.DisplayName: Flamarang Held
 }
 
 Configs: {
@@ -3991,6 +3999,8 @@ TextContent: {
 		Wap_NeutronBow_LoadingText2: Is Making Gravity Yield
 		Wap_NeutronBow_LoadingText3: READY!!
 		Wap_Gladius_Text: Fast and sharp
+		Wap_WoodenBoomerang_Text: A lurking attack will quickly throw three boomerangs
+		Wap_Flamarang_Text: A lurking attack will quickly throw three boomerangs
 	}
 }
 

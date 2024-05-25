@@ -45,6 +45,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
         }
 
+        /// <summary>
+        /// 该重置节点是否会加载进图鉴中，默认为true
+        /// </summary>
+        public virtual bool DrawingInfo => true;
+
+        /// <summary>
+        /// 该重置节点在图鉴中的绘制缩放，默认为1
+        /// </summary>
+        public virtual float DrawingSize => 1;
+
         public virtual bool CanLoad() {
             return true;
         }

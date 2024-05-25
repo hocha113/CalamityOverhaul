@@ -2610,6 +2610,11 @@ Items: {
 			"我故意让这枪转起来一卡一卡的，这样你才知道你玩的是泰拉瑞亚"
 			'''
 	}
+
+	FrostcrushValariEcType: {
+		// DisplayName: Frostcrush Valari Ec Type
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3196,6 +3201,9 @@ Projectiles: {
 	// GraniteRifleHeldProj.DisplayName: Granite Rifle Held Proj
 	// MarbleRifleHeldProj.DisplayName: Marble Rifle Held Proj
 	// MarbleBullet.DisplayName: Marble Bullet
+	// FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
+	// WoodenBoomerangHeld.DisplayName: Wooden Boomerang Held
+	// FlamarangHeld.DisplayName: Flamarang Held
 }
 
 Configs: {
@@ -4055,6 +4063,8 @@ TextContent: {
 		Wap_NeutronBow_LoadingText2: 正在使引力屈服
 		Wap_NeutronBow_LoadingText3: 就绪!!
 		Wap_Gladius_Text: 快速而锋利
+		Wap_WoodenBoomerang_Text: 潜伏攻击将快速投掷三个回旋镖
+		Wap_Flamarang_Text: 潜伏攻击将快速投掷三个回旋镖
 	}
 }
 

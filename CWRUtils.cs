@@ -32,6 +32,7 @@ using Terraria.ObjectData;
 using Terraria.Social;
 using Terraria.UI;
 using Terraria.WorldBuilding;
+using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul
 {
@@ -2333,6 +2334,117 @@ namespace CalamityOverhaul
 
             return p;
         }
+
+        /// <summary>
+        /// 委托，用于定义曲线的缓动函数。
+        /// </summary>
+        /// <param name="progress">进度，范围在0到1之间。</param>
+        /// <param name="polynomialDegree">如果缓动模式是多项式，则此为多项式的阶数。</param>
+        /// <returns>给定进度下的曲线值。</returns>
+        public delegate float CurveEasingFunction(float progress, int polynomialDegree);
+
+        /// <summary>
+        /// 表示分段函数的一部分。
+        /// </summary>
+        public struct AnimationCurvePart
+        {
+            /// <summary>
+            /// 用于该段的缓动函数类型。
+            /// </summary>
+            public CurveEasingFunction CurveEasingFunction { get; }
+
+            /// <summary>
+            /// 段在动画中的起始位置。
+            /// </summary>
+            public float StartX { get; internal set; }
+
+            /// <summary>
+            /// 段的起始高度。
+            /// </summary>
+            public float StartHeight { get; }
+
+            /// <summary>
+            /// 段内的高度变化量。设为0时段为平直线。通常在段末应用，但sinebump缓动类型在曲线顶点应用。
+            /// </summary>
+            public float HeightShift { get; }
+
+            /// <summary>
+            /// 如果选择的缓动模式是多项式，则此为多项式的阶数。
+            /// </summary>
+            public int PolynomialDegree { get; }
+
+            /// <summary>
+            /// 在考虑高度变化后的段结束高度。
+            /// </summary>
+            public float EndHeight => StartHeight + HeightShift;
+
+            public struct StartData
+            {
+                public float startX;
+                public float startHeight;
+                public float heightShift;
+                public int degree = 1;
+
+                public StartData() { }
+            }
+
+            public AnimationCurvePart(CurveEasingFunction curveEasingFunction
+                , float startX, float startHeight, float heightShift, int degree = 1) {
+                CurveEasingFunction = curveEasingFunction;
+                StartX = startX;
+                StartHeight = startHeight;
+                HeightShift = heightShift;
+                PolynomialDegree = degree;
+            }
+
+            public AnimationCurvePart(CurveEasingFunction curveEasingFunction, StartData starData) {
+                CurveEasingFunction = curveEasingFunction;
+                StartX = starData.startX;
+                StartHeight = starData.startHeight;
+                HeightShift = starData.heightShift;
+                PolynomialDegree = starData.degree;
+            }
+        }
+
+        /// <summary>
+        /// 获取自定义分段函数在任意给定X值的高度，使您可以轻松创建复杂的动画曲线。X值自动限定在0到1之间，但函数高度可以超出0到1的范围。
+        /// </summary>
+        /// <param name="progress">曲线进度。自动限定在0到1之间。</param>
+        /// <param name="segments">构成完整动画曲线的曲线段数组。</param>
+        /// <returns>给定X值的函数高度。</returns>
+        public static float EvaluateCurve(float progress, params AnimationCurvePart[] segments) {
+            if (segments.Length == 0) {
+                return 0f;
+            }
+
+            if (segments[0].StartX != 0) {
+                segments[0].StartX = 0;
+            }
+
+            progress = MathHelper.Clamp(progress, 0f, 1f); // 限定进度在0到1之间
+            float height = 0f;
+
+            for (int i = 0; i < segments.Length; i++) {
+                AnimationCurvePart segment = segments[i];
+                float startX = segment.StartX;
+                float endX = (i < segments.Length - 1) ? segments[i + 1].StartX : 1f;
+
+                if (progress < startX) {
+                    continue;
+                }
+                   
+
+                if (progress >= endX) {
+                    continue;
+                }
+
+                float segmentProgress = (progress - startX) / (endX - startX); // 计算段内进度
+                height = segment.StartHeight + segment.CurveEasingFunction(segmentProgress, segment.PolynomialDegree) * segment.HeightShift;
+                break;
+            }
+            return height;
+        }
+
 
         public const float TwoPi = MathF.PI * 2;
         public const float FourPi = MathF.PI * 4;

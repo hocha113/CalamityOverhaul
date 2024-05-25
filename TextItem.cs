@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
+using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
@@ -82,7 +83,7 @@ namespace CalamityOverhaul
             //    TungstenRiot.Instance.TryStartEvent();
             //}
             Projectile.NewProjectile(player.GetSource_FromAI(), player.Center
-                    , new Vector2(0, 0), ModContent.ProjectileType<TheDarkMasterRapier>(), 2, 2, player.whoAmI);
+                    , new Vector2(13, 0), ModContent.ProjectileType<FrostcrushValariHeld>(), 2, 2, player.whoAmI);
             return true;
         }
     }

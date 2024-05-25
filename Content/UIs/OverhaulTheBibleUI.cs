@@ -178,6 +178,9 @@ namespace CalamityOverhaul.Content.UIs
 
             Instance.ecTypeItemList = new List<Item>();
             foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
+                if (!baseRItem.DrawingInfo) {
+                    continue;
+                }
                 Item item = new Item(baseRItem.TargetID);
                 if (item != null) {
                     if (item.type != ItemID.None) {
@@ -356,7 +359,11 @@ namespace CalamityOverhaul.Content.UIs
                 Item item = ecTypeItemList[i];
                 Main.instance.LoadItem(item.type);
                 Vector2 drawPos = InCellPos + new Vector2(0, LCCoffsetY) + inIndexGetPos(i) * CellSlpSize;
-                SupertableUI.DrawItemIcons(spriteBatch, item, drawPos, new Vector2(0.001f, 0.001f));
+                float slp = 1;
+                if (CWRMod.RItemIndsDict.TryGetValue(item.type, out BaseRItem baseRItem)) {
+                    slp = baseRItem.DrawingSize;
+                }
+                SupertableUI.DrawItemIcons(spriteBatch, item, drawPos, new Vector2(0.001f, 0.001f), overSlp: slp);
             }
             //恢复画布
             spriteBatch.GraphicsDevice.ScissorRectangle = originalScissorRect;
