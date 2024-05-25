@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override void SetDefaults() {
             Item.SetCalamitySD<GraniteRifle>();
             Item.SetCartridgeGun<MarbleRifleHeldProj>(10);
+            Item.CWR().Scope = true;
         }
     }
 }

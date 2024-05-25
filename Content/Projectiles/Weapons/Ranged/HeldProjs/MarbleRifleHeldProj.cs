@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -11,13 +10,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<MarbleRifle>();
         public override int targetCWRItem => ModContent.ItemType<MarbleRifle>();
         public override void SetRangedProperty() {
-            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
+            base.SetRangedProperty();
             ToTargetAmmo = ModContent.ProjectileType<MarbleBullet>();
-            LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
-            FireTime = 25;
-            HandDistance = 22;
-            HandFireDistance = 22;
-            Recoil = 0.6f;
         }
     }
 }

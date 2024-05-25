@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class GraniteBullet : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        private bool onTile;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 6;
             Projectile.DamageType = DamageClass.Ranged;

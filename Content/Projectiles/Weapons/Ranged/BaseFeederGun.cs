@@ -129,9 +129,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         {
             public SoundStyle loadShellSound;
             public SoundStyle pump;
+            /// <summary>
+            /// 默认为15
+            /// </summary>
             public int pumpCoolingValue;
+            /// <summary>
+            /// 默认为30
+            /// </summary>
             public int loadingAmmoStarg_rot;
+            /// <summary>
+            /// 默认为0
+            /// </summary>
             public int loadingAmmoStarg_x;
+            /// <summary>
+            /// 默认为13
+            /// </summary>
             public int loadingAmmoStarg_y;
         }
 
@@ -152,8 +164,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             public float level1;
             public float level2;
             public float level3;
+            /// <summary>
+            /// 默认为-20
+            /// </summary>
             public int feederOffsetRot;
+            /// <summary>
+            /// 默认为6
+            /// </summary>
             public int loadingAmmoStarg_x;
+            /// <summary>
+            /// 默认为-6
+            /// </summary>
             public int loadingAmmoStarg_y;
         }
 
@@ -478,8 +499,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             PreInOwnerUpdate();
 
             void setBaseFromeAI() {
-                Owner.direction = ToMouse.X > 0 ? 1 : -1;
-                Projectile.rotation = GetGunInFireRot();
+                Owner.direction = LazyRotationUpdate ? (oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1) : (ToMouse.X > 0 ? 1 : -1);
+                Projectile.rotation = LazyRotationUpdate ? oldSetRoting : GetGunInFireRot();
                 Projectile.Center = GetGunInFirePos();
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
             }
@@ -505,6 +526,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (DownLeft) {
                     setBaseFromeAI();
                     if (IsKreload) {// && Projectile.IsOwnedByLocalPlayer()
+                        if (!onFire) {
+                            oldSetRoting = ToMouseA;
+                        }
                         onFire = true;
                     }
                     SetAutomaticCartridgeChange();
@@ -517,6 +541,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     && (!CartridgeHolderUI.Instance.OnMainP || SafeMousetStart2)) {//Owner.PressKey()
                     setBaseFromeAI();
                     if (IsKreload) {//&& Projectile.IsOwnedByLocalPlayer()
+                        if (!onFireR) {
+                            oldSetRoting = ToMouseA;
+                        }
                         SafeMousetStart2 = true;
                         onFireR = true;
                     }
@@ -623,6 +650,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
 
             Get_LoadingAmmoAnimation_PostInOwnerUpdate();
+            if (AutomaticPolishingEffect) {
+                AutomaticPolishing(FireTime);
+            }
             PostInOwnerUpdate();
             Projectile.netUpdate = true;
         }
@@ -828,6 +858,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public sealed override void SpanProj() {
             if ((onFire || onFireR) && ShootCoolingValue <= 0 && kreloadTimeValue <= 0) {
+                oldSetRoting = ToMouseA;
+
                 if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
                     LuxirEvent();
                 }

@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override bool? On_CanUseItem(Item item, Player player) {
             return player.ownedProjectileCounts[item.shoot] <= 0;
         }
-        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+        public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;

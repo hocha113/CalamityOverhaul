@@ -20,8 +20,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal abstract class BaseGun : BaseHeldRanged
     {
         #region Date
+        protected float oldSetRoting;
         private bool old_downLeftValue;
         private bool downLeftValue;
+        /// <summary>
+        /// 玩家左键控制
+        /// </summary>
         protected bool DownLeft {
             get {
                 downLeftValue = Owner.PressKey();
@@ -57,6 +61,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float ArmRotSengsBackNoFireOffset;
         /// <summary>
+        /// 是否启用自动抛弹壳的行为，如果为<see langword="true"/>，那么枪械AI会在合适的时机自行调用<see cref="CaseEjection"/>函数
+        /// </summary>
+        public bool AutomaticPolishingEffect;
+        /// <summary>
         /// 是否在<see cref="InOwner"/>执行后自动更新手臂参数，默认为<see langword="true"/>
         /// </summary>
         public bool SetArmRotBool = true;
@@ -64,6 +72,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 枪械是否受到应力缩放，默认为<see langword="true"/>
         /// </summary>
         public bool PressureWhetherIncrease = true;
+        /// <summary>
+        /// 是否启用惰性旋转角更新，如果为<see langword="true"/>，枪械在开火周期中的旋转角度只会在开火前更新一次
+        /// </summary>
+        public bool LazyRotationUpdate = false;
         /// <summary>
         /// 是否启用后坐力枪体反向制推效果，默认为<see langword="false"/>
         /// </summary>
@@ -283,8 +295,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void FiringIncident() {
             void setBaseFromeAI() {
-                Owner.direction = ToMouse.X > 0 ? 1 : -1;
-                Projectile.rotation = GunOnFireRot;
+                Owner.direction = LazyRotationUpdate ? (oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1) : (ToMouse.X > 0 ? 1 : -1);
+                Projectile.rotation = LazyRotationUpdate ? oldSetRoting : GunOnFireRot;
                 Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
             }
@@ -292,6 +304,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (DownLeft) {
                 setBaseFromeAI();
                 if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
+                    if (!onFire) {
+                        oldSetRoting = ToMouseA;
+                    }
                     onFire = true;
                 }
             }
@@ -302,6 +317,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (CalOwner.mouseRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
                 setBaseFromeAI();
                 if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
+                    if (!onFireR) {
+                        oldSetRoting = ToMouseA;
+                    }
                     SafeMousetStart2 = true;
                     onFireR = true;
                 }
@@ -340,7 +358,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (SafeMouseInterfaceValue) {
                 FiringIncident();
             }
+            if (AutomaticPolishingEffect) {
+                AutomaticPolishing(Item.useTime);
+            }
             PostInOwnerUpdate();
+        }
+        /// <summary>
+        /// 一个自动抛科的行为的二次封装
+        /// </summary>
+        protected void AutomaticPolishing(int maxTime) {
+            if (ShootCoolingValue == Item.useTime / 2) {
+                SoundEngine.PlaySound(CWRSound.Case with { Volume = 0.5f, PitchRange = (-0.05f, 0.05f) }, Projectile.Center);
+                CaseEjection();
+            }
         }
         /// <summary>
         /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="BaseHeldRanged.onFire"/>为<see cref="true"/>才可能调用。
@@ -450,6 +480,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void SpanProj() {
             if (ShootCoolingValue <= 0 && (onFire || onFireR)) {
+                oldSetRoting = ToMouseA;
+
                 if (FiringDefaultSound) {
                     SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 }
