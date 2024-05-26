@@ -11,7 +11,7 @@ using static CalamityOverhaul.CWRUtils.AnimationCurvePart;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
 {
-    internal abstract class BaseBoomerang : BaseHeldProj
+    internal abstract class BaseThrowable : BaseHeldProj
     {
         public virtual Texture2D TextureValue => GetT2DValue(Texture);
         
@@ -65,6 +65,35 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             degree = 3
         };
         private AnimationCurvePart throwout = new AnimationCurvePart(part, startDataThrowout);
+
+        private Func<float, Vector2> _onThrowingGetCenter;
+        /// <summary>
+        /// 获取蓄力时实体的位置
+        /// </summary>
+        protected Func<float, Vector2> OnThrowingGetCenter {
+            get {
+                if (_onThrowingGetCenter == null) {
+                    _onThrowingGetCenter = (float armRotation) => Owner.GetPlayerStabilityCenter() + 
+                    Vector2.UnitY.RotatedBy(armRotation * Owner.gravDir) * HandOnTwringMode * Owner.gravDir;
+                }
+                return _onThrowingGetCenter;
+            }
+            set => _onThrowingGetCenter = value;
+        }
+
+        private Func<float, float> _onThrowingGetRotation;
+        /// <summary>
+        /// 获取蓄力时实体的旋转角
+        /// </summary>
+        protected Func<float, float> OnThrowingGetRotation {
+            get {
+                if (_onThrowingGetRotation == null) {
+                    _onThrowingGetRotation = (float armRotation) => (armRotation - MathHelper.PiOver2) * Owner.gravDir;
+                }
+                return _onThrowingGetRotation;
+            }
+            set => _onThrowingGetRotation = value;
+        }
 
         private static float part(float amount, int degree) => 1f - (float)Math.Pow(1f - amount, degree);
 
@@ -132,8 +161,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         public void OnThrowing() {
             float armRotation = ArmAnticipationMovement.Invoke() * Owner.direction;
             Owner.heldProj = Projectile.whoAmI;
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + Vector2.UnitY.RotatedBy(armRotation * Owner.gravDir) * HandOnTwringMode * Owner.gravDir;
-            Projectile.rotation = (armRotation - MathHelper.PiOver2) * Owner.gravDir;
+            Projectile.Center = OnThrowingGetCenter.Invoke(armRotation);
+            Projectile.rotation = OnThrowingGetRotation.Invoke(armRotation);
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.Pi + armRotation);
         }
         
@@ -227,7 +256,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            Projectile.velocity = Projectile.oldVelocity.Length() * 0.3f * (Owner.MountedCenter - Projectile.Center).SafeNormalize(Vector2.One);
+            Projectile.velocity = Projectile.Center.To(Owner.GetPlayerStabilityCenter()).UnitVector(Projectile.oldVelocity.Length());
             ReturnProgress = 1f;
             return false;
         }

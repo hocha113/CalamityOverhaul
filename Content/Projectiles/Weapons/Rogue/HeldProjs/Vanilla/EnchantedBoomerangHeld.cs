@@ -7,7 +7,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
 {
-    internal class EnchantedBoomerangHeld : BaseBoomerang
+    internal class EnchantedBoomerangHeld : BaseThrowable
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.EnchantedBoomerang].Value;

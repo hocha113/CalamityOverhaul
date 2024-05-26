@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
 {
-    internal class FrostcrushValariHeld : BaseBoomerang
+    internal class FrostcrushValariHeld : BaseThrowable
     {
         public override string Texture => CWRConstant.Cay_Wap_Rogue + "FrostcrushValari";
         public static int FireIndex = 1;

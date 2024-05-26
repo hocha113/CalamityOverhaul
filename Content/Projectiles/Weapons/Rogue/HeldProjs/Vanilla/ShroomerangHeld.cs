@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
 {
-    internal class ShroomerangHeld : BaseBoomerang
+    internal class ShroomerangHeld : BaseThrowable
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Shroomerang].Value;

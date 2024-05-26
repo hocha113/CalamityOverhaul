@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
 {
-    internal class WoodenBoomerangHeld : BaseBoomerang
+    internal class WoodenBoomerangHeld : BaseThrowable
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.WoodenBoomerang].Value;

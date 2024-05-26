@@ -2069,6 +2069,13 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
+        /// 简单安全的获取一个单位向量，如果出现非法情况则会返回 <see cref="Vector2.Zero"/>
+        /// </summary>
+        public static Vector2 UnitVector(this Vector2 vr, float mode) {
+            return vr.SafeNormalize(Vector2.Zero) * mode;
+        }
+
+        /// <summary>
         /// 计算两个向量的点积
         /// </summary>
         public static float DotProduct(this Vector2 vr1, Vector2 vr2) {
