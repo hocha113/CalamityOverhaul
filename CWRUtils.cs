@@ -2040,8 +2040,8 @@ namespace CalamityOverhaul
         /// <summary>
         /// 获取一个随机方向的向量
         /// </summary>
-        /// <param name="startAngle">开始角度,请输入角度单位的值</param>
-        /// <param name="targetAngle">目标角度,请输入角度单位的值</param>
+        /// <param name="startAngle">开始角度,输入角度单位的值</param>
+        /// <param name="targetAngle">目标角度,输入角度单位的值</param>
         /// <param name="ModeLength">返回的向量的长度</param>
         /// <returns></returns>
         public static Vector2 GetRandomVevtor(float startAngle, float targetAngle, float ModeLength) {

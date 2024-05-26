@@ -933,8 +933,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             BulletNum = 0;
         }
 
-        public void AddAutomaticCartridgeChangeDelayTime() => AutomaticCartridgeChangeDelayTime = FireTime;
-
         #region Utils
         /// <summary>
         /// 截取弹匣的内容，并将弹匣更新为指定的截取内容

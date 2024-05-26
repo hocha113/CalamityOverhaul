@@ -1,25 +1,25 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
     /// <summary>
-    /// 附魔回旋镖
+    /// 蘑菇回旋镖
     /// </summary>
-    internal class REnchantedBoomerang : BaseRItem
+    internal class RShroomerang :BaseRItem
     {
-        public override int TargetID => ItemID.EnchantedBoomerang;
+        public override int TargetID => ItemID.Shroomerang;
         public override bool IsVanilla => true;
-        public override string TargetToolTipItemName => "Wap_EnchantedBoomerang_Text";
+        public override string TargetToolTipItemName => "Wap_Shroomerang_Text";
         public override void SetDefaults(Item item) {
             item.DamageType = ModContent.GetInstance<RogueDamageClass>();
-            item.shoot = ModContent.ProjectileType<EnchantedBoomerangHeld>();
+            item.shoot = ModContent.ProjectileType<ShroomerangHeld>();
         }
         public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[item.shoot] <= 6;
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source

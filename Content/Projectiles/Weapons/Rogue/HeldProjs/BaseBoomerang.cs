@@ -144,28 +144,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             Projectile.tileCollide = true;
         }
 
-        public virtual void UpdatesoundDelay() {
-            if (Projectile.soundDelay <= 0) {
-                SoundEngine.PlaySound(SoundID.Item7, Projectile.Center);
-                Projectile.soundDelay = 8;
-            }
-        }
-
-        public virtual void UpdateRoting() {
-            Projectile.rotation += (MathHelper.PiOver4 / 4f + MathHelper.PiOver4 / 2f
-                * Math.Clamp(CurrentThrowProgress * 2f, 0, 1)) * Math.Sign(Projectile.velocity.X);
-        }
-
         public void ReturnTrip() {
             Projectile.tileCollide = false;
-            Projectile.velocity = Projectile.velocity.Length()
-                * (Owner.GetPlayerStabilityCenter() - Projectile.Center).SafeNormalize(Vector2.One);
-            if ((Projectile.Center - Owner.MountedCenter).Length() < 24f || Projectile.numHits >= 5) {
+            Vector2 toPlayer = Projectile.Center.To(Owner.GetPlayerStabilityCenter());
+            Projectile.velocity = Projectile.velocity.Length() * toPlayer.UnitVector();
+            if (toPlayer.Length() < 24f || Projectile.numHits >= 5) {
                 Projectile.Kill();
             }
         }
 
-        public void Departure() {
+        public virtual bool PreDeparture() {
+            return true;
+        }
+
+        public virtual void Departure() {
+            if (Projectile.soundDelay <= 0) {
+                SoundEngine.PlaySound(SoundID.Item7, Projectile.Center);
+                Projectile.soundDelay = 8;
+            }
+
+            Projectile.rotation += (MathHelper.PiOver4 / 4f + MathHelper.PiOver4 / 2f * 
+                Math.Clamp(CurrentThrowProgress * 2f, 0, 1)) * Math.Sign(Projectile.velocity.X);
+
             if (BounceCount == 0f) {
                 if (Projectile.velocity.Length() < 2f) {
                     ReturnProgress = 1f;
@@ -209,9 +209,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
                 }              
             }
 
-            UpdatesoundDelay();
-            UpdateRoting();
-            Departure();
+            if (PreDeparture()) {
+                Departure();
+            }
 
             if (ReturnProgress == 1f) {
                 if (PreReturnTrip()) {

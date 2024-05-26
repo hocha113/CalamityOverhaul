@@ -49,11 +49,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         }
 
         public override bool PreThrowOut() {
-            if (stealthStrike && !accompanying) {
+            if (stealthStrike && !accompanying && Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 2; i++) {
-                    Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center
-                        , Projectile.velocity.RotatedBy(i == 0? -0.3f : 0.3f), Type, Projectile.damage, 0.2f, Owner.whoAmI);
-                    ((FrostcrushValariHeld)proj.ModProjectile).accompanying = true;
+                    Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center
+                        , Projectile.velocity.RotatedBy(i == 0? -0.3f : 0.3f), Type, Projectile.damage, 0.2f, Owner.whoAmI, 0, 0, 1);
                 }
             }
             return base.PreThrowOut();

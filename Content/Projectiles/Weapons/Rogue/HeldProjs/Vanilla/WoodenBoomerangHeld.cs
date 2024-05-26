@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
         }
 
         public override bool PreThrowOut() {
-            if (stealthStrike && Projectile.ai[2] == 0) {
+            if (stealthStrike && Projectile.ai[2] == 0 && Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 2; i++) {
                     Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center
                         , Projectile.velocity.RotatedBy(i == 0 ? -0.3f : 0.3f), Type, Projectile.damage, 0.2f, Owner.whoAmI, ai2: 1);

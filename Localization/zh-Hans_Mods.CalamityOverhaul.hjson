@@ -3205,6 +3205,7 @@ Projectiles: {
 	// WoodenBoomerangHeld.DisplayName: Wooden Boomerang Held
 	// FlamarangHeld.DisplayName: Flamarang Held
 	// EnchantedBoomerangHeld.DisplayName: Enchanted Boomerang Held
+	// ShroomerangHeld.DisplayName: Shroomerang Held
 }
 
 Configs: {
@@ -4066,7 +4067,8 @@ TextContent: {
 		Wap_Gladius_Text: 快速而锋利
 		Wap_WoodenBoomerang_Text: 潜伏攻击将快速投掷三个回旋镖
 		Wap_Flamarang_Text: 潜伏攻击将快速投掷三个回旋镖
-		// Wap_EnchantedBoomerang_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_EnchantedBoomerang_Text
+		Wap_EnchantedBoomerang_Text: 潜伏攻击将快速投掷三个回旋镖，击中目标后召唤落星
+		Wap_Shroomerang_Text: 潜伏攻击将释放蘑菇孢子炸弹
 	}
 }
 

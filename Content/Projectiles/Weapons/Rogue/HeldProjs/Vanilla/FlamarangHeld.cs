@@ -5,6 +5,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria;
 using System.IO;
+using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
 {
@@ -25,13 +26,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
         }
 
         public override bool PreThrowOut() {
-            if (stealthStrike && Projectile.ai[2] == 0) {
+            if (stealthStrike && Projectile.ai[2] == 0 && Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 2; i++) {
                     Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center
                         , Projectile.velocity.RotatedBy(i == 0 ? -0.3f : 0.3f), Type, Projectile.damage, 0.2f, Owner.whoAmI, ai2: 1);
                 }
             }
             return base.PreThrowOut();
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (stealthStrike && Projectile.ai[2] == 0 && Projectile.numHits == 0) {
+                Projectile.Explode();
+                Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), target.Bottom, new Vector2(0, -6)
+                        , ProjectileID.DD2ExplosiveTrapT3Explosion, Projectile.damage, 0.2f, Owner.whoAmI, ai2: 1);
+            }
         }
     }
 }
