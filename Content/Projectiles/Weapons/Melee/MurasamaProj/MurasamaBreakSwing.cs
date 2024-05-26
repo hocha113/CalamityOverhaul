@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
             }
 
-            if (CWRIDs.targetNpcTypes17.Contains(npc.type)) {
+            if (CWRIDs.targetNpcTypes16.Contains(npc.type)) {
                 foreach (NPC over in Main.npc) {
                     if (over.type == CWRIDs.RavagerBody) {
                         over.velocity += flyVr;

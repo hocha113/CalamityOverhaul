@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             FiringDefaultSound = false;
         }
 
-        public override void HandEvent() {
-            base.HandEvent();
+        public override void FiringIncident() {
+            base.FiringIncident();
         }
 
         public override void BowShoot() {

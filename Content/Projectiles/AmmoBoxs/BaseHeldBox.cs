@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
 
         }
 
-        public override bool PreAI() {
+        public override bool PreUpdate() {
             Player = Main.player[Projectile.owner];
             Item = Player.ActiveItem();
             if (Item.type > ItemID.None) {

@@ -20,26 +20,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// 弹幕的理论朝向，这里考虑并没有到<see cref="Player.gravDir"/>属性，为了防止玩家在重力反转的情况下出现问题，可能需要额外编写代码
         /// </summary>
         internal virtual int DirSign => Owner.direction * SafeGravDir;
-
         /// <summary>
         /// 这个值用于在联机同步中使用，一般来讲，应该使用<see cref="ToMouse"/>
         /// </summary>
         private Vector2 toMouseVecterDate;
+        private Vector2 _old_toMouseVecterDate;
+        private const float toMouseVer_variationMode = 0.5f;
+        /// <summary>
+        /// 是否处于开火时间
+        /// </summary>
+        public virtual bool CanFire => false;
         /// <summary>
         /// 获取玩家到鼠标的向量
         /// </summary>
-        internal virtual Vector2 ToMouse {
-            get {
-                if (Main.myPlayer == Owner.whoAmI) {
-                    Vector2 inOwnerFormToMVr = Owner.GetPlayerStabilityCenter().To(Main.MouseWorld);
-                    toMouseVecterDate = inOwnerFormToMVr;
-                    Projectile.netUpdate = true;
-                    return inOwnerFormToMVr;
-                }
-                return toMouseVecterDate;
-            }
-        }
-
+        internal virtual Vector2 ToMouse { get; private set; }
         /// <summary>
         /// 获取玩家到鼠标的角度
         /// </summary>
@@ -50,13 +44,38 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         internal virtual Vector2 UnitToMouseV => ToMouse.UnitVector();
 
         public override void SendExtraAI(BinaryWriter writer) {
-            writer.Write(toMouseVecterDate.X);
-            writer.Write(toMouseVecterDate.Y);
+            writer.WriteVector2(toMouseVecterDate);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
-            toMouseVecterDate.X = reader.ReadSingle();
-            toMouseVecterDate.Y = reader.ReadSingle();
+            toMouseVecterDate = reader.ReadVector2();
+        }
+
+        public Vector2 UpdateToMouse() {
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                toMouseVecterDate = Owner.GetPlayerStabilityCenter().To(Main.MouseWorld);
+                bool difference = Math.Abs(toMouseVecterDate.X - _old_toMouseVecterDate.X) > toMouseVer_variationMode
+                    || Math.Abs(toMouseVecterDate.Y - _old_toMouseVecterDate.Y) > toMouseVer_variationMode;
+                if (difference && CanFire) {
+                    NetUpdate();
+                }
+                _old_toMouseVecterDate = toMouseVecterDate;
+            }
+            return toMouseVecterDate;
+        }
+
+        public virtual void ExtraPreSet() {
+
+        }
+
+        public virtual bool PreUpdate() {
+            return true;
+        }
+
+        public sealed override bool PreAI() {
+            ToMouse = UpdateToMouse();
+            ExtraPreSet();
+            return PreUpdate();
         }
 
         public sealed override void PostAI() {
@@ -66,5 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         }
 
         protected void SetHeld() => Owner.heldProj = Projectile.whoAmI;
+
+        protected void NetUpdate() => Projectile.netUpdate = true;
     }
 }

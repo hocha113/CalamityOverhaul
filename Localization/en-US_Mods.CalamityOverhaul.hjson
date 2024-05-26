@@ -3174,6 +3174,7 @@ Projectiles: {
 	FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
 	WoodenBoomerangHeld.DisplayName: Wooden Boomerang Held
 	FlamarangHeld.DisplayName: Flamarang Held
+	EnchantedBoomerangHeld.DisplayName: Enchanted Boomerang Held
 }
 
 Configs: {
@@ -4001,6 +4002,7 @@ TextContent: {
 		Wap_Gladius_Text: Fast and sharp
 		Wap_WoodenBoomerang_Text: A lurking attack will quickly throw three boomerangs
 		Wap_Flamarang_Text: A lurking attack will quickly throw three boomerangs
+		Wap_EnchantedBoomerang_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_EnchantedBoomerang_Text
 	}
 }
 

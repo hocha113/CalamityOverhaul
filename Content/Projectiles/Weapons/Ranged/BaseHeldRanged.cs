@@ -18,6 +18,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public CWRPlayer ModOwner = null;
         protected CalamityPlayer CalOwner;
+
+        private bool old_downLeftValue;
+        private bool downLeftValue;
+        /// <summary>
+        /// 玩家左键控制
+        /// </summary>
+        protected bool DownLeft { get; private set; }
         /// <summary>
         /// 获取对应的<see cref="CWRItems"/>实例，在弹幕初始化时更新这个值
         /// </summary>
@@ -74,11 +81,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 是否启用手持开关
         /// </summary>
         public bool WeaponHandheldDisplay => CWRServerConfig.Instance.WeaponHandheldDisplay;
+        /// <summary>
+        /// 是否自动设置手臂状态
+        /// </summary>
         public virtual bool OnHandheldDisplayBool => true;
         /// <summary>
         /// 是否处于开火时间
         /// </summary>
-        public virtual bool CanFire => false;
+        public override bool CanFire => false;
         /// <summary>
         /// 开火冷切计时器
         /// </summary>
@@ -124,11 +134,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool SafeMousetStart2;
         private bool _safeMouseInterfaceValue;
         private bool _old_safeMouseInterfaceValue;
-        public bool SafeMouseInterfaceValue {
-            get {
-                return _safeMouseInterfaceValue;
-            }
-        }
+        public bool SafeMouseInterfaceValue => _safeMouseInterfaceValue;
         #endregion
 
         public override void SendExtraAI(BinaryWriter writer) {
@@ -137,6 +143,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             flags[0] = _safeMouseInterfaceValue;
             flags[1] = onFire;
             flags[2] = onFireR;
+            flags[3] = downLeftValue;
             writer.Write(flags);
         }
 
@@ -146,6 +153,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             _safeMouseInterfaceValue = flags[0];
             onFire = flags[1];
             onFireR = flags[2];
+            downLeftValue = flags[3];
+        }
+
+        private bool UpdateDownLeftStart() {
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                downLeftValue = Owner.PressKey();
+                if (old_downLeftValue != downLeftValue) {
+                    NetUpdate();
+                }
+                old_downLeftValue = downLeftValue;
+            }
+            return downLeftValue;
+        }
+
+        public override void ExtraPreSet() {
+            DownLeft = UpdateDownLeftStart();
         }
 
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
@@ -234,27 +257,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         private void UpdateSafeMouseInterfaceValue() {
             if (!CanFire) {//只有在玩家不进行开火尝试时才能更改空闲状态
-                _safeMouseInterfaceValue = !Owner.mouseInterface;
-                if (_old_safeMouseInterfaceValue != _safeMouseInterfaceValue) {
-                    Projectile.netUpdate = true;
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    _safeMouseInterfaceValue = !Owner.mouseInterface;
+                    if (_old_safeMouseInterfaceValue != _safeMouseInterfaceValue) {
+                        NetUpdate();
+                    }
+                    _old_safeMouseInterfaceValue = _safeMouseInterfaceValue;
                 }
                 if (!_safeMouseInterfaceValue) {//如果鼠标已经被锁定为非空闲状态，那么开火状态也需要锁定为关
                     onFire = onFireR = false;
-                    Projectile.ai[1] = 0;
+                    ShootCoolingValue = 0;
                 }
-                _old_safeMouseInterfaceValue = _safeMouseInterfaceValue;
             }
         }
 
         private void UpdateRogueStealth() {
-            bool isVmos = true;
+            bool noAvailable = true;
             if (CWRMod.Instance.narakuEye != null) {
-                isVmos = (bool)CWRMod.Instance.narakuEye.Call(Owner);
+                noAvailable = (bool)CWRMod.Instance.narakuEye.Call(Owner);
                 if (CalOwner.StealthStrikeAvailable()) {
-                    isVmos = false;
+                    noAvailable = false;
                 }
             }
-            if (!isVmos) {
+            if (!noAvailable) {
                 CalOwner.rogueStealth = 0;
                 if (CalOwner.stealthUIAlpha > 0.02f) {
                     CalOwner.stealthUIAlpha -= 0.02f;
@@ -262,7 +287,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        public override bool PreAI() {
+        public override bool PreUpdate() {
             if (!CheckAlive()) {
                 Projectile.Kill();
                 return false;
@@ -316,6 +341,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public virtual void InOwner() {
+
+        }
+        /// <summary>
+        /// 一个快捷创建手持事件的方法，在<see cref="InOwner"/>中被调用，值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="InOwner"/>的
+        /// </summary>
+        public virtual void FiringIncident() {
 
         }
 

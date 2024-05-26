@@ -16,8 +16,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
         }
 
-        public override void HandEvent() {
-            base.HandEvent();
+        public override void FiringIncident() {
+            base.FiringIncident();
             if (onFireR) {
                 Item.useTime = 5;
             }

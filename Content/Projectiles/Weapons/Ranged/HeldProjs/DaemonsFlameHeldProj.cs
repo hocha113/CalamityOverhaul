@@ -20,8 +20,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
         }
 
-        public override void HandEvent() {
-            base.HandEvent();
+        public override void FiringIncident() {
+            base.FiringIncident();
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
         }
 

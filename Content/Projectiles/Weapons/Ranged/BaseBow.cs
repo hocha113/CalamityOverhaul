@@ -146,45 +146,43 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         #endregion
 
         public void SetArmInFire() {
-            float backArmRotation = (Projectile.rotation * SafeGravDir + MathHelper.PiOver2) + MathHelper.Pi * DirSign;
-            float amountValue = 1 - Projectile.ai[1] / (Item.useTime - HandRotStartTime);
-            Player.CompositeArmStretchAmount stretch = amountValue.ToStretchAmount();
-            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
-            Owner.SetCompositeArmFront(true, stretch, backArmRotation);
+            ShootCoolingValue++;
+            if (ShootCoolingValue > HandRotStartTime && CanFireMotion) {
+                float backArmRotation = (Projectile.rotation * SafeGravDir + MathHelper.PiOver2) + MathHelper.Pi * DirSign;
+                float amountValue = 1 - Projectile.ai[1] / (Item.useTime - HandRotStartTime);
+                Player.CompositeArmStretchAmount stretch = amountValue.ToStretchAmount();
+                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+                Owner.SetCompositeArmFront(true, stretch, backArmRotation);
+            }
         }
 
-        public virtual void HandEvent() {
+        public override void FiringIncident() {
             void setBaseFromeAI() {
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = ToMouseA;
-                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY * SafeGravDir);
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() 
+                    * HandFireDistance + new Vector2(0, HandFireDistanceY * SafeGravDir);
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
             }
 
-            if (Owner.PressKey()) {
+            if (DownLeft) {
                 setBaseFromeAI();
                 if (HaveAmmo) {
                     onFire = true;
-                    Projectile.ai[1]++;
-                    if (Projectile.ai[1] > HandRotStartTime && CanFireMotion) {
-                        SetArmInFire();
-                    }
+                    SetArmInFire();
                 }
             }
             else {
                 onFire = false;
             }
 
-            if (Owner.PressKey(false) && CanRightClick && !onFire && SafeMousetStart) {
+            if (CalOwner.mouseRight && CanRightClick && !onFire && SafeMousetStart) {
                 setBaseFromeAI();
                 if (HaveAmmo) {
                     SafeMousetStart2 = true;
                     onFireR = true;
-                    Projectile.ai[1]++;
-                    if (Projectile.ai[1] > HandRotStartTime && CanFireMotion) {
-                        SetArmInFire();
-                    }
+                    SetArmInFire();
                 }
             }
             else {
@@ -193,9 +191,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        public virtual void PreInOwner() {
-
-        }
+        public virtual void PreInOwner() { }
 
         public override void InOwner() {
             PreInOwner();
@@ -213,7 +209,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             ModItem.IsBow = IsBow;
             SetCompositeArm();
             if (SafeMouseInterfaceValue) {
-                HandEvent();
+                FiringIncident();
             }
 
             PostInOwner();
@@ -226,9 +222,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        public virtual void PostInOwner() {
-
-        }
+        public virtual void PostInOwner() { }
 
         public virtual void BowShoot() {
             int proj = Projectile.NewProjectile(Source, Projectile.Center + FireOffsetPos, ShootVelocity + FireOffsetVector
@@ -265,27 +259,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void SpanProj() {
             if (Projectile.ai[1] > Item.useTime && (onFire || onFireR)) {
-                if (ForcedConversionTargetArrowFunc.Invoke()) {
-                    AmmoTypes = ToTargetArrow;
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    if (ForcedConversionTargetArrowFunc.Invoke()) {
+                        AmmoTypes = ToTargetArrow;
+                    }
+                    if (onFire) {
+                        BowShoot();
+                    }
+                    if (onFireR) {
+                        BowShootR();
+                    }
+                    if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
+                        LuxirEvent();
+                    }
+                    if (GlobalItemBehavior) {
+                        ItemLoaderInFireSetBaver();
+                    }
+                    UpdateConsumeAmmo();
                 }
-                if (onFire) {
-                    BowShoot();
-                }
-                if (onFireR) {
-                    BowShootR();
-                }
-                if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
-                    LuxirEvent();
-                }
-                if (GlobalItemBehavior) {
-                    ItemLoaderInFireSetBaver();
-                }
+                
                 if (FiringDefaultSound) {
                     SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 }
-                UpdateConsumeAmmo();
+
                 FireOffsetVector = FireOffsetPos = Vector2.Zero;
-                Projectile.ai[1] = 0;
+                ShootCoolingValue = 0;
                 onFire = false;
             }
         }

@@ -266,7 +266,7 @@ namespace CalamityOverhaul
         /// <summary>
         /// 毁灭魔像
         /// </summary>
-        public static List<int> targetNpcTypes17;
+        public static List<int> targetNpcTypes16;
         public static int RavagerBody;
         public static int RavagerClawLeft;
         public static int RavagerClawRight;
@@ -403,7 +403,7 @@ namespace CalamityOverhaul
             targetNpcTypes13 = new List<int> { NPCID.MoonLordFreeEye, NPCID.MoonLordCore, NPCID.MoonLordHand, NPCID.MoonLordHead, NPCID.MoonLordLeechBlob };
             targetNpcTypes14 = new List<int> { NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail };
             targetNpcTypes15 = new List<int> { NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail };
-            targetNpcTypes17 = new List<int> { RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight };
+            targetNpcTypes16 = new List<int> { RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight };
             WormBodys = new int[] { AquaticScourgeBody, ArmoredDiggerBody, StormWeaverBody, ArmoredDiggerBody
                 , CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
                 , AquaticScourgeBody, NPCID.TheDestroyerBody, SepulcherBody};
@@ -593,6 +593,7 @@ namespace CalamityOverhaul
 
             OnLoadContentBool = false;
         }
+
         /// <summary>
         /// 修改一些原弹药设定异常的物品的shoot值
         /// </summary>

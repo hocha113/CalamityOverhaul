@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override bool ShouldUpdatePosition() => false;
 
-        public override bool PreAI() {
+        public override bool PreUpdate() {
             bool heldBool1 = murasama.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>();
             bool heldBool2 = murasama.type != ModContent.ItemType<MurasamaEcType>();
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换

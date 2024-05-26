@@ -79,8 +79,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public bool onCloseP;
 
-        private bool ContinuousAcquisition;
-
         public static List<RecipeData> AllRecipes = new List<RecipeData>();
 
         public override void Load() {

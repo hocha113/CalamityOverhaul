@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Terraria;
 using Terraria.Audio;
@@ -9,24 +10,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class TyrannysEndHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TyrannysEnd";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.TyrannysEnd>();
+        public override int targetCayItem => ModContent.ItemType<TyrannysEnd>();
         public override int targetCWRItem => ModContent.ItemType<TyrannysEndEcType>();
 
         public override void SetRangedProperty() {
-            kreloadMaxTime = 120;
+            Recoil = 6;
             FireTime = 20;
+            kreloadMaxTime = 120;
+            RangeOfStress = 25;
             HandDistance = 45;
             HandDistanceY = 5;
+            GunPressure = 0.3f;
+            ControlForce = 0.02f;
             HandFireDistance = 45;
             HandFireDistanceY = -10;
             ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
             MustConsumeAmmunition = true;
-            GunPressure = 0.3f;
-            ControlForce = 0.02f;
-            Recoil = 6;
-            RangeOfStress = 25;
+            AutomaticPolishingEffect = true;
         }
 
         public override void PreInOwnerUpdate() {
@@ -37,12 +39,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShoot() {
             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             SpawnGunFireDust();
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<BMGBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
-            CaseEjection();
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , ModContent.ProjectileType<BMGBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

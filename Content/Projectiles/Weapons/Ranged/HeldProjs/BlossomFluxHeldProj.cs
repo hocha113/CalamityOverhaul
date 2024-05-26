@@ -17,8 +17,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandRotSpeedSengs = 0.6f;
         }
 
-        public override void HandEvent() {
-            base.HandEvent();
+        public override void FiringIncident() {
+            base.FiringIncident();
             if (!onFire && !onFireR) {
                 chargeIndex = 35;
             }

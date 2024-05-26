@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.ignoreWater = true;
             Projectile.timeLeft = 3;
         }
+        public override bool ShouldUpdatePosition() => false;
+        public override bool? CanDamage() => false;
         public override bool PreDraw(ref Color lightColor) => false;
     }
 }

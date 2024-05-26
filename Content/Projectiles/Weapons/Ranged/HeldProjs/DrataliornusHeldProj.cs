@@ -20,8 +20,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             DrawArrowMode = -30;
         }
 
-        public override void HandEvent() {
-            base.HandEvent();
+        public override void FiringIncident() {
+            base.FiringIncident();
             if (!onFire && !onFireR) {
                 chargeIndex = 35;
             }

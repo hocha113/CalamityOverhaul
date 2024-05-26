@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             loadingAmmoStarg_y = 5,
         };
 
-        #endregion
+        
 
         protected int BulletNum {
             get => ModItem.NumberBullets;
@@ -218,6 +218,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         protected SoundStyle caseEjections = CWRSound.CaseEjection;
         protected SoundStyle loadTheRounds = CWRSound.CaseEjection2;
+
+        #endregion
 
         public bool AmmunitionIsBeingLoaded() => kreloadTimeValue > 0;
 
@@ -479,18 +481,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         #endregion
-
-        public override void SendExtraAI(BinaryWriter writer) {
-            base.SendExtraAI(writer);
-            writer.Write(OnKreload);
-            writer.Write(kreloadTimeValue);
-        }
-
-        public override void ReceiveExtraAI(BinaryReader reader) {
-            base.ReceiveExtraAI(reader);
-            OnKreload = reader.ReadBoolean();
-            kreloadTimeValue = reader.ReadInt32();
-        }
 
         public sealed override void InOwner() {
             SetHeld();
@@ -858,10 +848,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public sealed override void SpanProj() {
             if ((onFire || onFireR) && ShootCoolingValue <= 0 && kreloadTimeValue <= 0) {
-                oldSetRoting = ToMouseA;
-
-                if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
-                    LuxirEvent();
+                if (LazyRotationUpdate) {
+                    Projectile.rotation = oldSetRoting = ToMouseA;
                 }
 
                 //弹容替换在此处执行，将发射内容设置为弹匣第一位的弹药类型
@@ -883,6 +871,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (BulletNum > 0) {
                     if (PreFiringShoot()) {
                         if (Projectile.IsOwnedByLocalPlayer()) {
+                            if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
+                                LuxirEvent();
+                            }
                             if (onFire) {
                                 FiringShoot();
                             }

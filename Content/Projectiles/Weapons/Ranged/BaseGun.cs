@@ -21,21 +21,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     {
         #region Date
         protected float oldSetRoting;
-        private bool old_downLeftValue;
-        private bool downLeftValue;
-        /// <summary>
-        /// 玩家左键控制
-        /// </summary>
-        protected bool DownLeft {
-            get {
-                downLeftValue = Owner.PressKey();
-                if (old_downLeftValue != downLeftValue) {
-                    Projectile.netUpdate = true;
-                }
-                old_downLeftValue = downLeftValue;
-                return downLeftValue;
-            }
-        }
         /// <summary>
         /// 枪械旋转角矫正
         /// </summary>
@@ -238,16 +223,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         #endregion
 
-        public override void SendExtraAI(BinaryWriter writer) {
-            base.SendExtraAI(writer);
-            writer.Write(downLeftValue);
-        }
-
-        public override void ReceiveExtraAI(BinaryReader reader) {
-            base.ReceiveExtraAI(reader);
-            downLeftValue = reader.ReadBoolean();
-        }
-
         /// <summary>
         /// 更新枪压的作用状态
         /// </summary>
@@ -290,10 +265,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void Recover() {
         }
-        /// <summary>
-        /// 一个快捷创建手持事件的方法，在<see cref="InOwner"/>中被调用，值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="InOwner"/>的
-        /// </summary>
-        public virtual void FiringIncident() {
+
+        public override void FiringIncident() {
             void setBaseFromeAI() {
                 Owner.direction = LazyRotationUpdate ? (oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1) : (ToMouse.X > 0 ? 1 : -1);
                 Projectile.rotation = LazyRotationUpdate ? oldSetRoting : GunOnFireRot;
@@ -367,8 +340,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 一个自动抛科的行为的二次封装
         /// </summary>
         protected void AutomaticPolishing(int maxTime) {
-            if (ShootCoolingValue == Item.useTime / 2) {
-                SoundEngine.PlaySound(CWRSound.Case with { Volume = 0.5f, PitchRange = (-0.05f, 0.05f) }, Projectile.Center);
+            if (ShootCoolingValue == maxTime / 2) {
+                SoundEngine.PlaySound(CWRSound.Gun_BoltAction with { Volume = 0.5f, PitchRange = (-0.05f, 0.05f) }, Projectile.Center);
                 CaseEjection();
             }
         }
@@ -480,7 +453,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override void SpanProj() {
             if (ShootCoolingValue <= 0 && (onFire || onFireR)) {
-                oldSetRoting = ToMouseA;
+                if (LazyRotationUpdate) {
+                    Projectile.rotation = oldSetRoting = ToMouseA;
+                }
 
                 if (FiringDefaultSound) {
                     SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
@@ -516,8 +491,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        public override bool PreAI() {
-            bool reset = base.PreAI();
+        public override bool PreUpdate() {
+            bool reset = base.PreUpdate();
             if (ModOwner == null) {
                 ModOwner = Owner.CWR();
             }

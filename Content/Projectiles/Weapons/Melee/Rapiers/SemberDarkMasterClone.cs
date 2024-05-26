@@ -71,9 +71,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         public override bool PreDraw(ref Color lightColor) {
             Main.playerVisualClone[Projectile.owner] ??= new();
             Player owner = Main.player[Projectile.owner];
-
             Player player = Main.playerVisualClone[Projectile.owner];
+
             player.CopyVisuals(Main.player[Projectile.owner]);
+
             player.hair = owner.hair;
             player.skinVariant = owner.skinVariant;
             player.skinColor = Color.Black;
@@ -83,21 +84,27 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             player.shoeColor = Color.Black;
             player.hairColor = Color.Black;
             player.eyeColor = Color.Red;
+
             for (int i = 0; i < player.dye.Length; i++) {
                 if (player.dye[i].type != ItemID.ShadowDye) {
                     player.dye[i].SetDefaults(ItemID.ShadowDye);
                 }
             }
+
             player.ResetEffects();
             player.ResetVisibleAccessories();
             player.DisplayDollUpdate();
             player.UpdateSocialShadow();
             player.UpdateDyes();
             player.PlayerFrame();
-            if (owner.ItemAnimationActive && owner.altFunctionUse != 2)
+
+            if (owner.ItemAnimationActive && owner.altFunctionUse != 2) {
                 player.bodyFrame = owner.bodyFrame;
-            else
+            }
+            else {
                 player.bodyFrame.Y = 0;
+            }
+
             player.legFrame.Y = 0;
             player.direction = Math.Sign(Projectile.DirectionTo(Main.MouseWorld).X);
             Main.PlayerRenderer.DrawPlayer(Main.Camera, player, Projectile.position, 0f, player.fullRotationOrigin, 0f, 1f);
@@ -105,7 +112,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 Texture2D Sword = ModContent.Request<Texture2D>("CalamityMod/Items/Weapons/Melee/TheDarkMaster").Value;
                 float rots = Projectile.Center.DirectionTo(Main.MouseWorld).ToRotation() + MathHelper.PiOver4;
                 Vector2 distToPlayer = Projectile.position - owner.position;
-                Vector2 drawPos = owner.GetPlayerStabilityCenter() + distToPlayer - Main.screenPosition + (rots - MathHelper.PiOver4).ToRotationVector2() * (Projectile.localAI[0] - 5);
+                Vector2 drawPos = owner.GetPlayerStabilityCenter() + distToPlayer - Main.screenPosition
+                    + (rots - MathHelper.PiOver4).ToRotationVector2() * (Projectile.localAI[0] - 5);
                 Main.EntitySpriteDraw(Sword, drawPos, null, lightColor, rots, new Vector2(0, Sword.Height), 1f, SpriteEffects.None);
             }
             return false;

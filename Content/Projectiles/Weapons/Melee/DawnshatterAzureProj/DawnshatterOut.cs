@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             Projectile.hide = true;
         }
 
-        public override bool PreAI() {
+        public override bool PreUpdate() {
             if (Projectile.ai[0] == 0) {
                 roar = SoundEngine.PlaySound(Yharon.RoarSound with { Pitch = 0.2f }, Owner.Center);
             }
