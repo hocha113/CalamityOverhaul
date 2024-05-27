@@ -33,6 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosToMouLengValue = 18;
             RecoilRetroForceMagnitude = 5;
             EnableRecoilRetroEffect = true;
+            CanCreateCaseEjection = false;
         }
 
         public override void PostInOwnerUpdate() {
@@ -74,9 +75,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void FiringShoot() {
+        public override void HanderSpwanDust() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, splNum: 3, dustID1: 76, dustID2: 149, dustID3: 76);
+        }
 
+        public override void FiringShoot() {
             if (onFireTime > 0) {
                 Recoil = 5;
                 GunPressure = 0.6f;

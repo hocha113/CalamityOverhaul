@@ -177,7 +177,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 onFire = false;
             }
 
-            if (CalOwner.mouseRight && CanRightClick && !onFire && SafeMousetStart) {
+            if (DownRight && CanRightClick && !onFire && SafeMousetStart) {
                 setBaseFromeAI();
                 if (HaveAmmo) {
                     SafeMousetStart2 = true;

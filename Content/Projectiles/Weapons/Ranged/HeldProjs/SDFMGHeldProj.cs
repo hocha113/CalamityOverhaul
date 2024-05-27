@@ -31,11 +31,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
                 , ModContent.ProjectileType<FishronRPG>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
-                CreateRecoil();
             }
 
             _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
     }
 }

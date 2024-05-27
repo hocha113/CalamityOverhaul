@@ -46,6 +46,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public float ArmRotSengsBackNoFireOffset;
         /// <summary>
+        /// 是否自动在一次单次射击后调用后坐力函数
+        /// </summary>
+        internal bool CanCreateRecoilBool = true;
+        /// <summary>
+        /// 是否自动在一次单次射击后调用开火粒子
+        /// </summary>
+        internal bool CanCreateSpawnGunDust = true;
+        /// <summary>
+        /// 是否自动在一次单次射击后调用后坐力函数
+        /// </summary>
+        internal bool CanCreateCaseEjection = true;
+        /// <summary>
         /// 是否启用自动抛弹壳的行为，如果为<see langword="true"/>，那么枪械AI会在合适的时机自行调用<see cref="CaseEjection"/>函数
         /// </summary>
         public bool AutomaticPolishingEffect;
@@ -209,6 +221,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 return CanFire;
             }
         }
+
+        internal struct SpwanGunDustMngsDataStruct{
+            public Vector2 pos = default;
+            public Vector2 velocity = default; 
+            public int splNum = 1; 
+            public int dustID1 = 262; 
+            public int dustID2 = 54;
+            public int dustID3 = 53;
+            public SpwanGunDustMngsDataStruct() { }
+        }
+
+        protected SpwanGunDustMngsDataStruct SpwanGunDustMngsData = new SpwanGunDustMngsDataStruct();
+
         /// <summary>
         /// 获取来自物品的生成源，该生成源实例会附加CWRGun标签，用于特殊识别
         /// </summary>
@@ -248,22 +273,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Vector2 recoilVr = ShootVelocity.UnitVector() * (Recoil * -OwnerPressureIncrease);
             if (Math.Abs(Owner.velocity.X) < RangeOfStress && Math.Abs(Owner.velocity.Y) < RangeOfStress) {
                 Owner.velocity += recoilVr;
-                if (!CWRUtils.isSinglePlayer) {
-                    var msg = Mod.GetPacket();
-                    msg.Write((byte)CWRMessageType.RecoilAcceleration);
-                    msg.Write(Owner.whoAmI);
-                    msg.Write(true);
-                    msg.Write(recoilVr.X);
-                    msg.Write(recoilVr.Y);
-                    msg.Send(-1, Owner.whoAmI);
-                }
             }
             return recoilVr;
         }
         /// <summary>
         /// 在枪械的更新周期中的最后被调用，用于复原一些数据
         /// </summary>
-        public virtual void Recover() {
+        public virtual void Recover() { }
+
+        public override void PostSetRangedProperty() {
+            if (IsCrossbow) {
+                CanCreateSpawnGunDust = false;
+                CanCreateCaseEjection = false;
+            }
         }
 
         public override void FiringIncident() {
@@ -287,7 +309,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 onFire = false;
             }
 
-            if (CalOwner.mouseRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
+            if (DownRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
                 setBaseFromeAI();
                 if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
                     if (!onFireR) {
@@ -352,7 +374,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual void FiringShoot() {
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
         /// <summary>
         /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="onFireR"/>为<see cref="true"/>才可能调用。
@@ -361,7 +382,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public virtual void FiringShootR() {
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
         /// <summary>
         /// 一个快捷创建属于卢克索饰品的发射事件，如果luxorsGift为<see langword="true"/>,
@@ -417,7 +437,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <param name="dustID2"></param>
         /// <param name="dustID3"></param>
         public virtual void SpawnGunFireDust(Vector2 pos = default, Vector2 velocity = default, int splNum = 1, int dustID1 = 262, int dustID2 = 54, int dustID3 = 53) {
-            if (Main.myPlayer != Projectile.owner) return;
             if (pos == default) {
                 pos = GunShootPos;
             }
@@ -451,15 +470,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
+        public virtual void HanderSpwanDust() {
+            SpawnGunFireDust(SpwanGunDustMngsData.pos, SpwanGunDustMngsData.velocity, SpwanGunDustMngsData.splNum
+                        , SpwanGunDustMngsData.dustID1, SpwanGunDustMngsData.dustID2, SpwanGunDustMngsData.dustID3);
+        }
+
+        public virtual void HanderCaseEjection() {
+            CaseEjection();
+        }
+
         public override void SpanProj() {
             if (ShootCoolingValue <= 0 && (onFire || onFireR)) {
                 if (LazyRotationUpdate) {
                     Projectile.rotation = oldSetRoting = ToMouseA;
                 }
 
-                if (FiringDefaultSound) {
-                    SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
-                }
                 if (ForcedConversionTargetAmmoFunc.Invoke()) {
                     AmmoTypes = ToTargetAmmo;
                 }
@@ -477,6 +502,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     if (GlobalItemBehavior) {
                         ItemLoaderInFireSetBaver();
                     }
+                }
+
+                if (FiringDefaultSound) {
+                    HanderPlaySound();
+                }
+                if (CanCreateSpawnGunDust) {
+                    HanderSpwanDust();
+                }
+                if (CanCreateCaseEjection) {
+                    HanderCaseEjection();
+                }
+                if (CanCreateRecoilBool) {
+                    CreateRecoil();
                 }
 
                 if (EnableRecoilRetroEffect) {

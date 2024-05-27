@@ -79,28 +79,30 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
 
             if (Owner.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun)) {
-                if (Projectile.IsOwnedByLocalPlayer() && onFire) {
-                    SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/TankCannon") { Pitch = Projectile.ai[2] }, Projectile.Center);
-                    ShootState shootState = Owner.GetShootState("CWRGunShoot");
-                    int ammo = shootState.AmmoTypes;
-                    if (ammo == ProjectileID.Bullet || ammo == ModContent.ProjectileType<MarksmanShot>()) {
-                        ammo = ProjectileID.BulletHighVelocity;
-                    }
-                    else {
-                        lastdamage *= 0.8f;
-                    }
-                    baseFeederGun.Recoil = 3;
-                    baseFeederGun.GunPressure = 0.5f;
-                    baseFeederGun.ControlForce = 0.05f;
-                    baseFeederGun.CreateRecoil();
-                    baseFeederGun.UpdateMagazineContents();
-                    baseFeederGun.SpawnGunFireDust(Owner.Center, baseFeederGun.ShootVelocity);
-                    int proj = Projectile.NewProjectile(shootState.Source, Projectile.Center + new Vector2(0, -5),
+                if (onFire) {
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        ShootState shootState = Owner.GetShootState("CWRGunShoot");
+                        int ammo = shootState.AmmoTypes;
+                        if (ammo == ProjectileID.Bullet || ammo == ModContent.ProjectileType<MarksmanShot>()) {
+                            ammo = ProjectileID.BulletHighVelocity;
+                        }
+                        else {
+                            lastdamage *= 0.8f;
+                        }
+                        baseFeederGun.Recoil = 3;
+                        baseFeederGun.GunPressure = 0.5f;
+                        baseFeederGun.ControlForce = 0.05f;
+                        baseFeederGun.UpdateMagazineContents();
+                        int proj = Projectile.NewProjectile(shootState.Source, Projectile.Center + new Vector2(0, -5),
                         (toMou.SafeNormalize(Vector2.Zero) * 15).RotatedByRandom(rot * 0.01f), ammo,
                         (int)(shootState.WeaponDamage * lastdamage), 0, Projectile.owner);
-                    if (proj > 0 && proj < Main.maxProjectiles) {
-                        Main.projectile[proj].CWR().GetHitAttribute.OnHitBlindArmor = true;
+                        if (proj > 0 && proj < Main.maxProjectiles) {
+                            Main.projectile[proj].CWR().GetHitAttribute.OnHitBlindArmor = true;
+                        }
                     }
+                    SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/TankCannon") { Pitch = Projectile.ai[2] }, Projectile.Center);
+                    baseFeederGun.CreateRecoil();
+                    baseFeederGun.SpawnGunFireDust(Owner.Center, baseFeederGun.ShootVelocity);
                 }
             }
         }

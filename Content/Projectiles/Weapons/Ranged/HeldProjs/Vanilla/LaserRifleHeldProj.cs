@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.LaserRifle;
         public override int targetCWRItem => ItemID.LaserRifle;
         public override void SetRangedProperty() {
-            ShootPosToMouLengValue = 0;
+            ShootPosToMouLengValue = -50;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
             HandDistanceY = 0;
@@ -21,24 +21,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 0f;
             RangeOfStress = 48;
+            CanCreateCaseEjection = false;
+            CanCreateSpawnGunDust = false;
         }
 
         public override void FiringShoot() {
             if (Owner.CheckMana(Item)) {
-                FiringDefaultSound = true;
-                Owner.manaRegenDelay = (int)Owner.maxRegenDelay;
+                CanCreateRecoilBool = FiringDefaultSound = true;
+                Owner.manaRegenDelay = 30;
                 Owner.statMana -= Item.mana;
                 if (Owner.statMana < 0) {
                     Owner.statMana = 0;
                 }
             }
             else {
-                FiringDefaultSound = false;
+                CanCreateRecoilBool = FiringDefaultSound = false;
                 return;
             }
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ProjectileID.PurpleLaser, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
     }
 }

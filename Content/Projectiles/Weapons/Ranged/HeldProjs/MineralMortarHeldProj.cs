@@ -65,19 +65,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<MineralMortarProjectile>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 UpdateMagazineContents();
-                CreateRecoil();
                 OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
                 RecoilOffsetRecoverValue = 0.9f;
                 chargeIndex = 0;
             }
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

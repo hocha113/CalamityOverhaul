@@ -37,19 +37,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
         }
 
-        public override void PreInOwnerUpdate() {
-            //LoadingAnimation(50, 3, 25);
-        }
-
-        public override void PostInOwnerUpdate() {
+        public override void HanderCaseEjection() {
+            CaseEjection(1.3f);
         }
 
         public override void FiringShoot() {
             FireTime = 8;
             RecoilRetroForceMagnitude = 17 + fireIndex;
             AmmoTypes = ModContent.ProjectileType<FlakKrakenProjectile>();
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocityInProjRot, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, ToMouse.Length());
-            CaseEjection(1.3f);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocityInProjRot, AmmoTypes
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, ToMouse.Length());
             if (++fireIndex > 6) {
                 FireTime = 30;
                 SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/DudFire") with { Pitch = -0.7f, PitchVariance = 0.1f }, Projectile.Center);

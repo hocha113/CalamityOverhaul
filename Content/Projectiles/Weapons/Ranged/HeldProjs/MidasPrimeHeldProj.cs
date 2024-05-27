@@ -42,7 +42,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             FireTime = 22;
-            SpawnGunFireDust();
             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ModContent.ProjectileType<MarksmanShot>();
@@ -79,11 +78,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Projectile.NewProjectile(Source, GunShootPos, Owner.GetCoinTossVelocity()
                 , ModContent.ProjectileType<RicoshotCoin>()
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, coinAIVariable);
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
-            CaseEjection();
         }
     }
 }

@@ -33,16 +33,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostInOwnerUpdate() {
-            if (!Owner.PressKey() && kreloadTimeValue == 0) {
+            if (!DownLeft && kreloadTimeValue == 0) {
                 ArmRotSengsFront = 70 * CWRUtils.atoR;
                 ArmRotSengsBack = 110 * CWRUtils.atoR;
             }
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust();
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            _ = CreateRecoil();
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

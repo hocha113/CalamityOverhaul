@@ -52,7 +52,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
 
             _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
 
         public override void FiringShootR() {
@@ -62,7 +61,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Main.projectile[proj].SetArrowRot();
             Main.projectile[proj].Calamity().allProjectilesHome = true;
             _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
     }
 }

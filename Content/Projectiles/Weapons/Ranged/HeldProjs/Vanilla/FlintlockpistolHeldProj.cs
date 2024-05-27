@@ -20,11 +20,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 0.8f;
         }
-
-        public override void FiringShoot() {
-            base.FiringShoot();
-            CaseEjection();
-            SpawnGunFireDust();
-        }
     }
 }

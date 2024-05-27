@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 AmmoTypes = ProjectileID.MiniNukeRocketII;
                 newDamg *= 0.85f;
             }
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
+
             _ = SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = -0.6f, Volume = 0.6f }, Projectile.Center);
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 0.5f, AmmoTypes, (int)newDamg, WeaponKnockback, Owner.whoAmI, 0, 0, 3);
             Main.projectile[proj].scale *= 1.6f;

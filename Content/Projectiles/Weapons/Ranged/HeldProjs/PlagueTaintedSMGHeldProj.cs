@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PreInOwnerUpdate() {
             LoadingAnimation(50, 3, 25);
             CanRightClick = BulletNum >= 6;
-            if (CalOwner.mouseRight && BulletNum < 6) {
+            if (DownRight && BulletNum < 6) {
                 SetAutomaticCartridgeChange(true);
             }
         }
@@ -45,7 +45,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             FireTime = 6;
             GunPressure = 0.1f;
             Recoil = 0.2f;
-            SpawnGunFireDust();
             SoundEngine.PlaySound(CWRSound.Gun_SMG_Shoot with { Pitch = -0.2f, Volume = 0.35f }, Projectile.Center);
             OffsetPos -= ShootVelocity.UnitVector() * 4;
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<PlagueTaintedProjectile>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -68,11 +67,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             for (int i = 0; i < 5; i++) {
                 UpdateMagazineContents();
             }
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
-            CaseEjection();
         }
     }
 }

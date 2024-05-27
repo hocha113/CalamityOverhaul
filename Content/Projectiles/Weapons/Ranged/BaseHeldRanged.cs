@@ -4,6 +4,7 @@ using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using System.IO;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -21,10 +22,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         private bool old_downLeftValue;
         private bool downLeftValue;
+        private bool old_downRightValue;
+        private bool downRightValue;
         /// <summary>
         /// 玩家左键控制
         /// </summary>
         protected bool DownLeft { get; private set; }
+        /// <summary>
+        /// 玩家右键控制
+        /// </summary>
+        protected bool DownRight { get; private set; }
         /// <summary>
         /// 获取对应的<see cref="CWRItems"/>实例，在弹幕初始化时更新这个值
         /// </summary>
@@ -144,6 +151,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             flags[1] = onFire;
             flags[2] = onFireR;
             flags[3] = downLeftValue;
+            flags[4] = downRightValue;
             writer.Write(flags);
         }
 
@@ -154,6 +162,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             onFire = flags[1];
             onFireR = flags[2];
             downLeftValue = flags[3];
+            downRightValue = flags[4];
         }
 
         private bool UpdateDownLeftStart() {
@@ -167,8 +176,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return downLeftValue;
         }
 
+        private bool UpdateDownRightStart() {
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                downRightValue = Owner.PressKey(false);
+                if (old_downRightValue != downRightValue) {
+                    NetUpdate();
+                }
+                old_downRightValue = downRightValue;
+            }
+            return downRightValue;
+        }
+
         public override void ExtraPreSet() {
             DownLeft = UpdateDownLeftStart();
+            DownRight = UpdateDownRightStart();
         }
 
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
@@ -348,6 +369,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public virtual void FiringIncident() {
 
+        }
+
+        public virtual void HanderPlaySound() {
+            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
         }
 
         public virtual void SpanProj() {

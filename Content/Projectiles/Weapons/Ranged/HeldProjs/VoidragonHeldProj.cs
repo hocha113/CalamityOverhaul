@@ -31,21 +31,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 5;
+            SpwanGunDustMngsData.dustID1 = 173;
+            SpwanGunDustMngsData.dustID2 = 173;
+            SpwanGunDustMngsData.dustID3 = 173;
         }
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(30, 0, 13);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
         public override void FiringShoot() {
             Recoil = 0.5f;
             GunPressure = 0;
             ControlForce = 0.03f;
-            SpawnGunFireDust(GunShootPos, ShootVelocity, 1, 173, 173, 173);
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.Voidragon;
@@ -71,14 +69,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
                 chargeIndex = 0;
             }
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

@@ -32,7 +32,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAnimation(30, 0, 13);
         }
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
             Item ammoItem = GetSelectedBullets();
             if (ammoItem.type == ItemID.CursedDart) {
                 AmmoTypes = ModContent.ProjectileType<CursedDartRemake>();

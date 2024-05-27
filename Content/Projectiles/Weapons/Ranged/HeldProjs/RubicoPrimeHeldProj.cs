@@ -50,10 +50,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                         if (!WeaponHandheldDisplay) {
                             pos = Owner.Center;
                         }
-                        SoundEngine.PlaySound(CommonCalamitySounds.LargeWeaponFireSound with { Volume = CommonCalamitySounds.LargeWeaponFireSound.Volume * 0.45f, Pitch = 0.2f }, Projectile.Center);
+                        SoundEngine.PlaySound(CommonCalamitySounds.LargeWeaponFireSound 
+                            with { Volume = CommonCalamitySounds.LargeWeaponFireSound.Volume * 0.45f, Pitch = 0.2f }, Projectile.Center);
                         Vector2 vr = pos.To(target.Center).UnitVector() * ScaleFactor;
                         Projectile.NewProjectile(Source, pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                        SpawnGunFireDust(pos, vr);
                     }
                     if (BulletNum <= 0) {
                         Item.CWR().IsKreload = false;
@@ -67,18 +67,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , ModContent.ProjectileType<ImpactRound>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].penetrate = 6;
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

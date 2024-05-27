@@ -97,6 +97,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PostInOwnerUpdate() => onFire = thisOnFire;
 
+        public override void HanderSpwanDust() {
+            if (chargeValue > maxChargeValue && chargeAmmo > maxChargeAmmo) {
+                SpawnGunFireDust(GunShootPos, ShootVelocity / 2, 13
+                    , dustID1: DustID.Smoke, dustID2: DustID.Smoke, dustID3: DustID.Smoke);
+            }
+        }
+
         public override void FiringShoot() {
             if (!thisOnFire) {
                 return;
@@ -112,7 +119,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (chargeAmmo > maxChargeAmmo) {
                     chargeAmmo = chargeValue = 0;
                     Recoil = 0.2f;
-                    SpawnGunFireDust(GunShootPos, ShootVelocity / 2, 13, dustID1: DustID.Smoke, dustID2: DustID.Smoke, dustID3: DustID.Smoke);
                 }
             }
             SoundEngine.PlaySound(SoundID.Item40 with { PitchVariance = setPitchVarianceValue }, Projectile.Center);
@@ -122,11 +128,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostFiringShoot() {
-            if (!thisOnFire) {
-                return;
-            }
+            if (!thisOnFire) { return; }
             base.PostFiringShoot();
-            CaseEjection();
         }
 
         public override void GunDraw(ref Color lightColor) {

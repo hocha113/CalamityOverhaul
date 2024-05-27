@@ -24,10 +24,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.8f;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
         }
-
-        public override void FiringShoot() {
-            base.FiringShoot();
-            CaseEjection();
-        }
     }
 }

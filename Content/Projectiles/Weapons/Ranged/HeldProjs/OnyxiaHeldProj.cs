@@ -49,7 +49,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
             int shardDamage = (int)(2.45f * WeaponDamage);
             float shardKB = 2f * WeaponKnockback;
             float randomMode = 0.25f - fireIndex * 0.03f;
@@ -84,14 +83,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 fireIndex = 0;
                 chargeIndex = 0;
             }
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

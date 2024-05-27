@@ -31,22 +31,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 48;
             kreloadMaxTime = 60;
             EjectCasingProjSize = 2;
+            SpwanGunDustMngsData.dustID1 = 76;
+            SpwanGunDustMngsData.dustID2 = 149;
+            SpwanGunDustMngsData.dustID3 = 76;
         }
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(-30, 3, -3);
         }
 
-        public override bool KreLoadFulfill() {
-            return base.KreLoadFulfill();
-        }
-
         public override void FiringShoot() {
             AmmoTypes = CWRUtils.SnowmanCannonAmmo(GetSelectedBullets());
-            SpawnGunFireDust();
             _ = SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = 0.3f }, Projectile.Center);
             DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
-            SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 76, dustID2: 149, dustID3: 76);
             int ammonum = Main.rand.Next(7);
             if (ammonum != 0) {
                 int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.4f, AmmoTypes, WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 0);
@@ -86,11 +83,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 Main.projectile[proj5].CWR().GetHitAttribute.NeverCrit = true;
                 ModOwner.SetScreenShake(3.5f);
             }
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
-            CaseEjection();
         }
     }
 }

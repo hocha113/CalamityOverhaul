@@ -28,11 +28,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistance = 27;
             HandFireDistanceY = -10;
             CanRightClick = true;
-            FiringDefaultSound = false;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.loadingAmmoStarg_y = -16;
             LoadingAA_Handgun.clipLocked = CWRSound.Gun_HandGun_ClipLocked with { Pitch = -0.25f };
             btoole = ModLoader.GetMod("CalamityMod").Find<ModProjectile>("AnimosityBullet").Type;
+        }
+
+        public override void HanderPlaySound() {
+            if (onFire) {
+                SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.5f, PitchVariance = 0.3f }, Projectile.Center);
+            }
+            else if (onFireR) {
+                SoundEngine.PlaySound(Animosity.ShootAndReloadSound, Projectile.Center);
+                if (fireIndex > 5) {
+                    SoundEngine.PlaySound(CommonCalamitySounds.LargeWeaponFireSound 
+                        with { Pitch = -0.2f, Volume = 0.7f }, Projectile.Center);
+                }
+            }
         }
 
         public override void FiringShoot() {
@@ -43,15 +55,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ProjectileID.BulletHighVelocity;
             }
-            SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.5f, PitchVariance = 0.3f }, Projectile.Center);
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
             for (int i = 0; i < 2; i++) {
                 Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f))
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            CaseEjection();
             if (++fireIndex > 6) {
-                SoundEngine.PlaySound(CommonCalamitySounds.LargeWeaponFireSound with { Pitch = -0.2f, Volume = 0.7f }, Projectile.Center);
                 Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, btoole, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 FireTime = 15;
                 fireIndex = 0;
@@ -63,10 +71,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             GunPressure = 0.6f;
             Recoil = 5;
             RangeOfStress = 25;
-            SoundEngine.PlaySound(Animosity.ShootAndReloadSound, Projectile.Center);
             Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
                 , ModContent.ProjectileType<AnimosityOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
-            CaseEjection();
         }
     }
 }

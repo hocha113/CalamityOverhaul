@@ -24,6 +24,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             HandFireDistance = 18;
             HandFireDistanceY = -5;
             CanRightClick = true;
+            SpwanGunDustMngsData.dustID1 = DustID.Water;
+            SpwanGunDustMngsData.dustID2 = DustID.Water;
+            SpwanGunDustMngsData.dustID3 = DustID.Water;
         }
 
         public override void PreInOwnerUpdate() {
@@ -31,7 +34,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust(dustID1: DustID.Water, dustID2: DustID.Water, dustID3: DustID.Water);
             FireTime = 15;
             Recoil = 1;
             GunPressure = 0.2f;
@@ -46,7 +48,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShootR() {
-            SpawnGunFireDust();
             FireTime = 5;
             Recoil = 0.5f;
             GunPressure = 0.1f;

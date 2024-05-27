@@ -38,7 +38,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust();
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             if (fireIndex > 2) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<MiniSharkron>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -46,11 +45,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 fireIndex = 0;
             }
             fireIndex++;
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
-            CaseEjection();
         }
     }
 }

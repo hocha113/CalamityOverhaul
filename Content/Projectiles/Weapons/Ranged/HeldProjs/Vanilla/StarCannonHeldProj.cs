@@ -29,6 +29,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RecoilRetroForceMagnitude = 6;
             RepeatedCartridgeChange = true;
             FiringDefaultSound = false;
+            SpwanGunDustMngsData.dustID1 = 15;
+            SpwanGunDustMngsData.dustID2 = 57;
+            SpwanGunDustMngsData.dustID3 = 58;
         }
 
         public override bool KreLoadFulfill() {
@@ -37,7 +40,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
             SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot with { Volume = 0.3f, Pitch = -0.3f }, Projectile.Center);
             if (FireTime > 10) {
                 FireTime--;

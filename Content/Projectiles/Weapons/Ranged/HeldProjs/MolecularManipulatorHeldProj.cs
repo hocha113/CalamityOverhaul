@@ -36,26 +36,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
             for (int index = 0; index < 4; ++index) {
                 Vector2 velocity = ShootVelocity;
                 velocity.X += Main.rand.Next(-40, 41) * 0.05f;
                 velocity.Y += Main.rand.Next(-40, 41) * 0.05f;
-                Projectile.NewProjectile(Source, GunShootPos, velocity, AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
+                Projectile.NewProjectile(Source, GunShootPos, velocity, AmmoTypes
+                    , WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
             }
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

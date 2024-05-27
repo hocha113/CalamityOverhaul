@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -38,11 +39,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust();
             float randomMode = FireTime * 0.006f;
             for (int i = 0; i < 3; i++) {
-                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-randomMode, randomMode)) * Main.rand.NextFloat(0.6f, 1.52f) * 0.3f, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
-                _ = CreateRecoil();
+                Vector2 ver = ShootVelocity.RotatedBy(Main.rand.NextFloat(-randomMode, randomMode)) * Main.rand.NextFloat(0.6f, 1.52f) * 0.3f;
+                Projectile.NewProjectile(Source, GunShootPos, ver, AmmoTypes, WeaponDamage, WeaponKnockback * 1.5f, Owner.whoAmI, 0);
             }
             FireTime--;
             if (FireTime < 12) {

@@ -22,8 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
+        public override void PostInOwnerUpdate() {
             if (onFireR) {
                 GunPressure = 0.7f;
                 Recoil = 6;
@@ -44,17 +43,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.7f, 1.1f)
                     , ModContent.ProjectileType<RealmRavagerBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            CaseEjection();
             _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
 
         public override void FiringShootR() {
             Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
                     , ModContent.ProjectileType<CorinthPrimeAirburstGrenade>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            CaseEjection();
             _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
     }
 }

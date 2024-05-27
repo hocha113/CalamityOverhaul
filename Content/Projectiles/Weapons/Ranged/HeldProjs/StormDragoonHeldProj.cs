@@ -35,7 +35,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust();
             for (int i = 0; i < 4; i++) {
                 Projectile.NewProjectile(Source, GunShootPos
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.9f, 1.32f)

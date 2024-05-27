@@ -4,6 +4,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -32,15 +33,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 7;
-            FiringDefaultSound = false;
         }
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
+        public override void HanderPlaySound() {
+            if (fireIndex > 2) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+            }
         }
 
         public override void FiringShoot() {
@@ -54,7 +56,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 RecoilRetroForceMagnitude = 7;
                 FireTime = 15;
                 fireIndex = 0;
-                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             }
             AmmoTypes = Utils.SelectRandom(Main.rand, new int[]
             {
@@ -65,14 +66,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             });
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             fireIndex++;
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

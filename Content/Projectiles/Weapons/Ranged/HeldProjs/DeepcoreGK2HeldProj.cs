@@ -24,6 +24,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             FiringDefaultSound = false;
         }
 
+        public override void HanderCaseEjection() {
+            if (onFire) {
+                CaseEjection(2);
+            }
+            if (onFireR) {
+                CaseEjection();
+            }
+        }
+
+        public override void HanderSpwanDust() {
+            if (onFire) {
+                SpawnGunFireDust(GunShootPos, dustID1: DustID.YellowStarDust
+                    , dustID2: DustID.FireworksRGB, dustID3: DustID.FireworksRGB);
+            }
+            if (onFireR) {
+                SpawnGunFireDust(GunShootPos + ShootVelocity, dustID1: DustID.YellowStarDust
+                    , dustID2: DustID.FireworkFountain_Red, dustID3: DustID.FireworkFountain_Red);
+            }
+        }
+
         public override void FiringShoot() {
             Recoil = 1.2f;
             Item.useTime = 14;
@@ -31,8 +51,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].scale *= 3;
             Main.projectile[proj].extraUpdates += 1;
-            SpawnGunFireDust(GunShootPos, dustID1: DustID.YellowStarDust, dustID2: DustID.FireworksRGB, dustID3: DustID.FireworksRGB);
-            CaseEjection(2);
             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
         }
 
@@ -41,8 +59,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Item.useTime = 7;
             Item.UseSound = CommonCalamitySounds.LargeWeaponFireSound with { Volume = 0.3f, Pitch = 0.2f };
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            SpawnGunFireDust(GunShootPos + ShootVelocity, dustID1: DustID.YellowStarDust, dustID2: DustID.FireworkFountain_Red, dustID3: DustID.FireworkFountain_Red);
-            CaseEjection();
             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
         }
     }

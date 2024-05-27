@@ -33,15 +33,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void FiringShoot() {
+        public override void HanderSpwanDust() {
             SpawnGunFireDust(dustID1: 187, dustID2: 229);
-            OffsetPos -= ShootVelocity.UnitVector() * 18;
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
-            CaseEjection();
+        public override void FiringShoot() {
+            OffsetPos -= ShootVelocity.UnitVector() * 18;
+            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

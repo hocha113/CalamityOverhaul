@@ -31,11 +31,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             ControlForce = 0;
             Recoil = 0;
             CanRightClick = true;
-            FiringDefaultSound = false;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
+        public override void PostInOwnerUpdate() {
             if (onFire || onFireR) {
                 CWRUtils.ClockFrame(ref Projectile.frame, intframe, 3);
             }
@@ -45,9 +43,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             }
         }
 
+        public override void HanderPlaySound() {
+            if (onFire) {
+                SoundEngine.PlaySound(SoundID.Item91, Projectile.Center);
+            }
+            else if (onFireR) {
+                if (++fireIndex2 >= 2) {
+                    SoundEngine.PlaySound(SoundID.Item91, Projectile.Center);
+                    fireIndex2 = 0;
+                }
+            }
+        }
+
         public override void FiringShoot() {
             Item.useTime = fireIndex;
-            SoundEngine.PlaySound(SoundID.Item91, Projectile.Center);
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.9f, 1.1f)
                 , ModContent.ProjectileType<NanoPurgeLaser>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -65,10 +74,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override void FiringShootR() {
             Item.useTime = 3;
             intframe = 2;
-            if (++fireIndex2 >= 2) {
-                SoundEngine.PlaySound(SoundID.Item91, Projectile.Center);
-                fireIndex2 = 0;
-            }
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , ModContent.ProjectileType<NanoPurgeLaser>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }

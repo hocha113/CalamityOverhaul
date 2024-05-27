@@ -97,7 +97,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 CWRUtils.SetArrowRot(proj);
                 _ = UpdateConsumeAmmo();
-                _ = CreateRecoil();
 
                 fireIndex3++;
                 if (fireIndex3 >= 13) {

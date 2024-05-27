@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (ammoItem.type == ItemID.MiniNukeII) {
                 AmmoTypes = ProjectileID.MiniNukeMineII;
             }
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
+
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

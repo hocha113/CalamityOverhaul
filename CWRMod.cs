@@ -9,6 +9,7 @@ using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.Structures;
 using CalamityOverhaul.Content.UIs;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,6 +48,19 @@ namespace CalamityOverhaul
         internal static List<EctypeItem> EctypeItemInstance = new List<EctypeItem>();
         internal static List<NPCCustomizer> NPCCustomizerInstances = new List<NPCCustomizer>();
         internal static Dictionary<int, BaseRItem> RItemIndsDict = new Dictionary<int, BaseRItem>();
+
+        internal enum CallType
+        {
+            SupertableRecipeDate,
+        }
+
+        public override object Call(params object[] args) {
+            CallType callType = (CallType)args[0];
+            if (callType == CallType.SupertableRecipeDate) {
+                return SupertableUI.RpsDataStringArrays;
+            }
+            return null;
+        }
 
         public override void PostSetupContent() {
             LoadMods = ModLoader.Mods.ToList();

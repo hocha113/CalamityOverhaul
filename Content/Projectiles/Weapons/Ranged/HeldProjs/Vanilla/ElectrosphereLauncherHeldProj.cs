@@ -42,12 +42,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             return true;
         }
 
+        public override void HanderSpwanDust() {
+            SpawnGunFireDust(dustID1: DustID.UnusedWhiteBluePurple, dustID2: DustID.UnusedWhiteBluePurple, dustID3: DustID.UnusedWhiteBluePurple);
+        }
+
         public override void FiringShoot() {
             FireTime = 3;
             if (Orbs == null) {
                 Orbs = new List<ElectrosphereLauncherOrb>();
             }
-            SpawnGunFireDust(dustID1: DustID.UnusedWhiteBluePurple, dustID2: DustID.UnusedWhiteBluePurple, dustID3: DustID.UnusedWhiteBluePurple);
+            
             Projectile orb = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.52f) * Main.rand.NextFloat(0.9f, 1.5f)
                 , ModContent.ProjectileType<ElectrosphereLauncherOrb>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
 

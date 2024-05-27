@@ -33,13 +33,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAnimation(30, 0, 13);
         }
 
-        public override bool KreLoadFulfill() {
-            return true;
-        }
-
-        public override void PostFiringShoot() {
-        }
-
         public override void PostInOwnerUpdate() {
             if (thisNeedsTime > 0) {
                 onFire = false;
@@ -48,7 +41,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust();
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             chargeAmmoNum++;
             if (chargeAmmoNum >= 3) {

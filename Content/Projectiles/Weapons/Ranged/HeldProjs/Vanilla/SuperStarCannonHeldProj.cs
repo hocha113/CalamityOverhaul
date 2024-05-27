@@ -28,6 +28,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RecoilRetroForceMagnitude = 6;
             RepeatedCartridgeChange = true;
             FiringDefaultSound = false;
+            SpwanGunDustMngsData.dustID1 = 15;
+            SpwanGunDustMngsData.dustID2 = 57;
+            SpwanGunDustMngsData.dustID3 = 58;
         }
 
         public override bool KreLoadFulfill() {

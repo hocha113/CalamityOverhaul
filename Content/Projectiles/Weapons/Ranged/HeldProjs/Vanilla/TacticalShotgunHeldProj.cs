@@ -24,16 +24,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.06f;
             Recoil = 1.4f;
             RangeOfStress = 25;
-            FiringDefaultSound = false;
             RepeatedCartridgeChange = true;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 7;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
         }
 
-        public override void FiringShoot() {
-            SpawnGunFireDust();
+        public override void HanderPlaySound() {
             SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot with { Volume = 0.4f, Pitch = -0.1f }, Projectile.Center);
+        }
+
+        public override void FiringShoot() {
             for (int i = 0; i < 10; i++) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.07f, 0.07f)) * Main.rand.NextFloat(1f, 1.5f) * 0.8f

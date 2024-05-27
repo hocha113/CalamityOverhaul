@@ -42,9 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Main.projectile[proj].scale += Main.rand.NextFloat(0.5f);
                 Main.projectile[proj].extraUpdates += 1;
             }
-            CaseEjection();
             _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
 
         public override void FiringShootR() {
@@ -55,9 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Vector2 pos = Owner.Center + new Vector2(MathHelper.Lerp(Main.MouseWorld.To(Owner.Center).X, 0, 0.9f), -780);
             Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ScaleFactor;
             Projectile.NewProjectile(Source2, pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            CaseEjection();
             _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
     }
 }

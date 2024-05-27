@@ -33,17 +33,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void FiringShoot() {
+        public override void HanderSpwanDust() {
             SpawnGunFireDust(dustID1: DustID.GreenTorch, dustID2: DustID.GreenMoss);
+        }
+
+        public override void FiringShoot() {
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = Item.shoot;
             }
             Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
-            CaseEjection();
         }
     }
 }

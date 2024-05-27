@@ -78,8 +78,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 GunPressure = 0.3f;
                 RecoilRetroForceMagnitude = 6;
             }
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f), Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f)
+                , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

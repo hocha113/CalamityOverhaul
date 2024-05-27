@@ -4,6 +4,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
@@ -24,7 +25,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             ControlForce = 0.02f;
             Recoil = 0;
             CanRightClick = true;
-            FiringDefaultSound = false;
+        }
+
+        public override void HanderPlaySound() {
+            if (onFire) {
+                SoundEngine.PlaySound(PlasmaRifle.HeavyShotSound, Projectile.Center);
+            }
+            else if (onFireR) {
+                SoundEngine.PlaySound(PlasmaRifle.FastShotSound, Projectile.Center);
+            }
         }
 
         public override void FiringShoot() {

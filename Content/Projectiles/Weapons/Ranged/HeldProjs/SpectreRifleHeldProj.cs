@@ -37,7 +37,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     , ModContent.ProjectileType<LostSoulBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
 
             UpdateConsumeAmmo();
-            CreateRecoil();
         }
     }
 }

@@ -26,13 +26,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             ControlForce = 0.02f;
             Recoil = 0;
             CanRightClick = true;
-            FiringDefaultSound = false;
+        }
+
+        public override void HanderPlaySound() {
+            if (onFire) {
+                SoundEngine.PlaySound(SoundID.Item92, Projectile.Center);
+            }
+            else if (onFireR) {
+                SoundEngine.PlaySound(CommonCalamitySounds.LaserCannonSound, Projectile.Center);
+            }
         }
 
         public override void FiringShoot() {
             Item.useTime = 45;
             GunPressure = 0.3f;
-            SoundEngine.PlaySound(SoundID.Item92, Projectile.Center);
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1f)
                     , ModContent.ProjectileType<SHPB>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -43,7 +50,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             OffsetPos += ShootVelocity.UnitVector() * -6;
             Item.useTime = 7;
             GunPressure = 0f;
-            SoundEngine.PlaySound(CommonCalamitySounds.LaserCannonSound, Projectile.Center);
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1.1f)
                     , ModContent.ProjectileType<SHPL>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

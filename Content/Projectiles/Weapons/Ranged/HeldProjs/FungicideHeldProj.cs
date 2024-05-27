@@ -33,10 +33,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(30, 0, 13);
         }
 
-        public override void FiringShoot() {
+        public override void HanderSpwanDust() {
             SpawnGunFireDust(dustID1: DustID.BlueFairy, dustID2: DustID.BlueFairy, dustID3: DustID.BlueFairy);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            _ = CreateRecoil();
+        }
+
+        public override void FiringShoot() {
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

@@ -36,12 +36,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
+        public override void HanderSpwanDust() {
+            SpawnGunFireDust(GunShootPos, ShootVelocity, 1, dustID1: DustID.FireworkFountain_Blue
+                , dustID2: DustID.FireworkFountain_Blue, dustID3: DustID.FireworkFountain_Blue);
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity, 1, dustID1: DustID.FireworkFountain_Blue, dustID2: DustID.FireworkFountain_Blue, dustID3: DustID.FireworkFountain_Blue);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.1f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.2f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -53,14 +53,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Main.projectile[proj].usesLocalNPCImmunity = true;
                 Main.projectile[proj].localNPCHitCooldown = 5;
             }
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

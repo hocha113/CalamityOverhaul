@@ -35,6 +35,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosToMouLengValue = 18;
             RecoilRetroForceMagnitude = 5;
             EnableRecoilRetroEffect = true;
+            CanCreateCaseEjection = false;
+            SpwanGunDustMngsData.dustID1 = 76;
+            SpwanGunDustMngsData.dustID2 = 149;
+            SpwanGunDustMngsData.dustID3 = 76;
         }
 
         public override void PostInOwnerUpdate() {

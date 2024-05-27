@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosToMouLengValue = 20;
             RecoilRetroForceMagnitude = 5;
             EnableRecoilRetroEffect = true;
+            CanCreateCaseEjection = false;
         }
 
         public override void PostInOwnerUpdate() {
@@ -58,8 +59,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void FiringShoot() {
+        public override void HanderSpwanDust() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, splNum: 1, dustID1: 76, dustID2: 149, dustID3: 76);
+        }
+
+        public override void FiringShoot() {
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<SnowQuayBall>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].ArmorPenetration = 10;
         }

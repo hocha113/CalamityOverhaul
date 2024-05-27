@@ -39,7 +39,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.NewProjectile(Source2, GunShootPos, Vector2.Zero
                 , ModContent.ProjectileType<FetidEmesisOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
                 Projectile.ai[2] = 0;
-                _ = CreateRecoil();//执行两次，它会造成两倍的后坐力效果
             }
         }
 

@@ -22,10 +22,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 8;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
         }
-
-        public override void FiringShoot() {
-            base.FiringShoot();
-            SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 174, dustID2: 213, dustID3: 213);
-        }
     }
 }

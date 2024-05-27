@@ -61,9 +61,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 9);
         }
 
+        public override void HanderPlaySound() {
+            if (onFire) {
+                SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.6f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item88 with { Pitch = -0.6f }, Projectile.Center);
+            }
+            else if (onFireR) {
+                SoundStyle sound = Item.UseSound.Value;
+                SoundEngine.PlaySound(sound with { Pitch = -0.1f + fireIndex * 0.15f }, Projectile.Center);
+            }
+        }
+
         public override void FiringShoot() {
-            SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.6f }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Item88 with { Pitch = -0.6f }, Projectile.Center);
             for (int i = 0; i < 4; i++) {
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * (0.6f + i * 0.1f)
                 , ModContent.ProjectileType<NeutronMagchStar>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -71,8 +80,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
         }
 
         public override void FiringShootR() {
-            SoundStyle sound = Item.UseSound.Value;
-            SoundEngine.PlaySound(sound with { Pitch = -0.1f + fireIndex * 0.15f }, Projectile.Center);
             int newdamage = (int)(WeaponDamage * (1 + fireIndex * 0.15f));
             for (int i = 0; i < 3; i++) {
                 Vector2 shootPos = firePos;

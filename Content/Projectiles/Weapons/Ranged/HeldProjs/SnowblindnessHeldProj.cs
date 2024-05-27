@@ -30,6 +30,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAA_Handgun.feederOffsetRot = -30;
             LoadingAA_Handgun.loadingAmmoStarg_x = -8;
             LoadingAA_Handgun.loadingAmmoStarg_y = -16;
+            CanCreateCaseEjection = false;
+            SpwanGunDustMngsData.dustID1 = 76;
+            SpwanGunDustMngsData.dustID2 = 149;
+            SpwanGunDustMngsData.dustID3 = 76;
         }
         public override void FiringShoot() {
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);

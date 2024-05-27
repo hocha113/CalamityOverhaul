@@ -34,7 +34,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            CaseEjection();
         }
     }
 }

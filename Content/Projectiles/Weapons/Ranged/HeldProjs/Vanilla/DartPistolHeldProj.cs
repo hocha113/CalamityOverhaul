@@ -31,8 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
-            int damage = 0;
+            int damage;
             Item ammoItem = GetSelectedBullets();
             if (ammoItem.type == ItemID.CursedDart) {
                 damage = (int)(WeaponDamage * 0.7f);

@@ -31,7 +31,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust();
             int bulletAmt = Main.rand.Next(25, 35);
             for (int i = 0; i < bulletAmt; i++) {
                 float newSpeedX = ShootVelocity.X + Main.rand.NextFloat(-15f, 15f);
@@ -39,7 +38,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 int proj = Projectile.NewProjectile(Source, GunShootPos, new Vector2(newSpeedX, newSpeedY), Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                 Main.projectile[proj].extraUpdates += 1;
             }
-            _ = CreateRecoil();
         }
     }
 }

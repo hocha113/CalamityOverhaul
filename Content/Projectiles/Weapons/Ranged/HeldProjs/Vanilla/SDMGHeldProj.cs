@@ -5,6 +5,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 海豚机枪
+    /// </summary>
     internal class SDMGHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -23,6 +26,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
             kreloadMaxTime = 45;
+            SpwanGunDustMngsData.dustID1 = DustID.PinkStarfish;
+            SpwanGunDustMngsData.dustID2 = DustID.PinkStarfish;
+            SpwanGunDustMngsData.dustID3 = DustID.PinkStarfish;
         }
 
         public override void PreInOwnerUpdate() {

@@ -22,10 +22,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         internal AmmoState AmmoState;
         /// <summary>
-        /// 是否自动在一次单次射击后调用后坐力函数
-        /// </summary>
-        internal bool CanCreateRecoilBool = true;
-        /// <summary>
         /// 换弹是否消耗弹药
         /// </summary>
         internal bool BulletConsumption = true;
@@ -527,7 +523,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     onFire = false;
                 }
 
-                if (CalOwner.mouseRight && !onFire && CanRightClick && SafeMousetStart
+                if (DownRight && !onFire && CanRightClick && SafeMousetStart
                     && (!CartridgeHolderUI.Instance.OnMainP || SafeMousetStart2)) {//Owner.PressKey()
                     setBaseFromeAI();
                     if (IsKreload) {//&& Projectile.IsOwnedByLocalPlayer()
@@ -812,14 +808,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 左键单次开火事件
         /// </summary>
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
         /// <summary>
         /// 右键单次开火事件
         /// </summary>
         public override void FiringShootR() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
         /// <summary>
@@ -883,17 +877,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                             if (GlobalItemBehavior) {
                                 ItemLoaderInFireSetBaver();
                             }
-                            if (CanCreateRecoilBool) {
-                                CreateRecoil();
-                            }
+                        }
+
+                        if (CanCreateSpawnGunDust) {
+                            HanderSpwanDust();
+                        }
+                        if (CanCreateCaseEjection) {
+                            HanderCaseEjection();
+                        }
+                        if (CanCreateRecoilBool) {
+                            CreateRecoil();
                         }
 
                         if (EnableRecoilRetroEffect) {
                             OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
                         }
                         if (FiringDefaultSound) {
-                            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+                            HanderPlaySound();
                         }
+
                         if (fireLight > 0) {
                             Color fireColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold);
                             Vector3 fireColorToVr3 = fireColor.ToVector3() * Main.rand.NextFloat(0.1f, fireLight);

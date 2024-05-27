@@ -28,36 +28,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0;
             Recoil = 0.2f;
             FireTime = 5;
-            FiringDefaultSound = false;
         }
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override void FiringShoot() {
+        public override void HanderPlaySound() {
             soundPma++;
             if (soundPma > 5) {
                 SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 soundPma = 0;
             }
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
+        public override void FiringShoot() {
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

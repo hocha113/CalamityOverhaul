@@ -45,7 +45,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
 
             _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
     }
 }

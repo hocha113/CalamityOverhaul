@@ -37,12 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
             int shardDamage = (int)(1.25f * WeaponKnockback);
             float shardKB = 1f * WeaponKnockback;
             Projectile shard = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity, ProjectileID.BlackBolt, shardDamage, shardKB, Owner.whoAmI, 0f, 0f);
@@ -57,14 +52,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.NewProjectile(Source, GunShootPos, ccwVelocity, AmmoTypes, (int)(WeaponDamage * 0.6f), WeaponKnockback, Owner.whoAmI, 0f, 0f);
                 Projectile.NewProjectile(Source, GunShootPos, cwVelocity, AmmoTypes, (int)(WeaponDamage * 0.6f), WeaponKnockback, Owner.whoAmI, 0f, 0f);
             }
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

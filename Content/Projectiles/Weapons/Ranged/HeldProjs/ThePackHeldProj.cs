@@ -37,22 +37,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 5);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
         public override void FiringShoot() {
-            SoundEngine.PlaySound(CalamityMod.Items.Weapons.Ranged.ScorchedEarth.ShootSound with { Volume = 0.6f, Pitch = 0.2f, PitchRange = (-0.1f, 0.1f) }, Projectile.Center);
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
+            SoundEngine.PlaySound(ScorchedEarth.ShootSound with { Volume = 0.6f, Pitch = 0.2f, PitchRange = (-0.1f, 0.1f) }, Projectile.Center);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

@@ -38,8 +38,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
+        public override void HanderCaseEjection() {
+            if (fireIndex > 15) {
+                for (int i = 0; i < 13; i++) {
+                    CaseEjection();
+                }
+            }
+            CaseEjection();
         }
 
         public override void FiringShoot() {
@@ -62,7 +67,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 fireIndex = 0;
                 SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = 0.8f, Volume = 0.5f });
                 for (int i = 0; i < 13; i++) {
-                    CaseEjection();
                     UpdateMagazineContents();
                     int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj].usesLocalNPCImmunity = true;
@@ -71,15 +75,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
 
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            CaseEjection();
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

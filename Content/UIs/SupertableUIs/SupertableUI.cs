@@ -22,6 +22,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
     {
         public static SupertableUI Instance { get; private set; }
 
+        public static string[][] RpsDataStringArrays;
+
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue2");
 
         public string[] StaticFullItemNames;
@@ -91,7 +93,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             FieldInfo[] stringArrayFields = type.GetFields(BindingFlags.Public | BindingFlags.Static).Where(f => f.FieldType == typeof(string[])).ToArray();
             PropertyInfo[] stringArrayProperties = type.GetProperties(BindingFlags.Public | BindingFlags.Static).Where(p => p.PropertyType == typeof(string[])).ToArray();
             var allMembers = stringArrayFields.Concat<MemberInfo>(stringArrayProperties).ToArray();
-            var stringArrays = allMembers.Select(member => {
+            RpsDataStringArrays = allMembers.Select(member => {
                 if (member is FieldInfo field) {
                     return (string[])field.GetValue(null);
                 }
@@ -101,14 +103,15 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 return null;
             }).Where(array => array != null).ToArray();
 
-            foreach (string[] value in stringArrays) {
+            foreach (string[] value in RpsDataStringArrays) {
                 RecipeData recipeData = new RecipeData {
                     Values = value,
                     Target = InStrGetItemType(value[value.Length - 1])
                 };
                 AllRecipes.Add(recipeData);
             }
-            Console.WriteLine($"得到配方表容量：{AllRecipes.Count}");
+
+            ($"得到配方表容量：{AllRecipes.Count}").DompInConsole();
         }
 
         public void UpdateUIElementPos() {

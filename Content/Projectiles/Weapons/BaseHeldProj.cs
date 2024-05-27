@@ -13,15 +13,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// <summary>
         /// 一般情况下我们默认该弹幕的玩家作为弹幕主人，因此，弹幕的<see cref="Projectile.owner"/>属性需要被正确设置
         /// </summary>
-        internal virtual Player Owner { get; private set; }
+        internal virtual Player Owner => Main.player[Projectile.owner];
         /// <summary>
         /// 安全的获取一个重力倒转值
         /// </summary>
-        internal int SafeGravDir { get; private set; }
+        internal int SafeGravDir => Math.Sign(Owner.gravDir);
         /// <summary>
         /// 弹幕的理论朝向，这里考虑并没有到<see cref="Player.gravDir"/>属性，为了防止玩家在重力反转的情况下出现问题，可能需要额外编写代码
         /// </summary>
-        internal virtual int DirSign { get; private set; }
+        internal virtual int DirSign => Owner.direction * SafeGravDir;
         /// <summary>
         /// 获取玩家到鼠标的向量
         /// </summary>
@@ -48,6 +48,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// </summary>
         public virtual bool CanFire => false;
         /// <summary>
+        /// 单独处理玩家到鼠标的方向向量，同时处理对应的网络逻辑
+        /// </summary>
+        /// <returns></returns>
+        private Vector2 UpdateToMouse() {
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                toMouseVecterDate = Owner.GetPlayerStabilityCenter().To(Main.MouseWorld);
+                bool difference = Math.Abs(toMouseVecterDate.X - _old_toMouseVecterDate.X) > toMouseVer_variationMode
+                    || Math.Abs(toMouseVecterDate.Y - _old_toMouseVecterDate.Y) > toMouseVer_variationMode;
+                if (difference && CanFire) {
+                    NetUpdate();
+                }
+                _old_toMouseVecterDate = toMouseVecterDate;
+            }
+            return toMouseVecterDate;
+        }
+        /// <summary>
         /// 更新玩家到鼠标的相关数据
         /// </summary>
         private void UpdateMouseData() {
@@ -59,9 +75,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// 在AI更新前进行数据更新
         /// </summary>
         public sealed override bool PreAI() {
-            Owner = Main.player[Projectile.owner];
-            SafeGravDir = Math.Sign(Owner.gravDir);
-            DirSign = Owner.direction * SafeGravDir;
             UpdateMouseData();
             ExtraPreSet();
             return PreUpdate();
@@ -79,19 +92,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             toMouseVecterDate = reader.ReadVector2();
-        }
-
-        public Vector2 UpdateToMouse() {
-            if (Projectile.IsOwnedByLocalPlayer()) {
-                toMouseVecterDate = Owner.GetPlayerStabilityCenter().To(Main.MouseWorld);
-                bool difference = Math.Abs(toMouseVecterDate.X - _old_toMouseVecterDate.X) > toMouseVer_variationMode
-                    || Math.Abs(toMouseVecterDate.Y - _old_toMouseVecterDate.Y) > toMouseVer_variationMode;
-                if (difference && CanFire) {
-                    NetUpdate();
-                }
-                _old_toMouseVecterDate = toMouseVecterDate;
-            }
-            return toMouseVecterDate;
         }
 
         public virtual void ExtraPreSet() {

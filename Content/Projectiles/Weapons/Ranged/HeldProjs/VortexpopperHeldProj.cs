@@ -25,6 +25,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 8;
+            SpwanGunDustMngsData.dustID1 = DustID.Water;
+            SpwanGunDustMngsData.dustID2 = DustID.Water;
+            SpwanGunDustMngsData.dustID3 = DustID.Water;
         }
 
         public override void PreInOwnerUpdate() {
@@ -32,7 +35,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust(dustID1: DustID.Water, dustID2: DustID.Water, dustID3: DustID.Water);
             FireTime = 12;
             Recoil = 1;
             GunPressure = 0.2f;
@@ -47,7 +49,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            SpawnGunFireDust();
             FireTime = 4;
             Recoil = 0.5f;
             GunPressure = 0.1f;

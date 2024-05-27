@@ -74,7 +74,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust();
             FireTime = 20;
             Recoil = 1;
             GunPressure = 0.2f;
@@ -87,7 +86,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            SpawnGunFireDust();
             FireTime = 5;
             Recoil = 0.5f;
             GunPressure = 0.1f;

@@ -33,34 +33,39 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                 }
 
                 if (Owner.CheckMana(Item)) {
-                    if (FiringDefaultSound) {
-                        SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        if (onFire) {
+                            FiringShoot();
+                        }
+                        if (onFireR) {
+                            FiringShootR();
+                        }
+                        if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
+                            LuxirEvent();
+                        }
+                        if (GlobalItemBehavior) {
+                            ItemLoaderInFireSetBaver();
+                        }
                     }
-                    if (onFire) {
-                        FiringShoot();
-                    }
-                    if (onFireR) {
-                        FiringShootR();
-                    }
+
                     if (EnableRecoilRetroEffect) {
                         OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
                     }
-                    CreateRecoil();
+                    if (FiringDefaultSound) {
+                        HanderPlaySound();
+                    }
+                    if (fireLight > 0) {
+                        Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * fireLight);
+                    }
+                    if (CanCreateRecoilBool) {
+                        CreateRecoil();
+                    }
+
                     Owner.statMana -= Item.mana;
                     Owner.manaRegenDelay = SetRegenDelayValue;
                     if (Owner.statMana < 0) {
                         Owner.statMana = 0;
                     }
-                }
-
-                if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
-                    LuxirEvent();
-                }
-                if (GlobalItemBehavior) {
-                    ItemLoaderInFireSetBaver();
-                }
-                if (fireLight > 0) {
-                    Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * fireLight);
                 }
 
                 ShootCoolingValue += Item.useTime;

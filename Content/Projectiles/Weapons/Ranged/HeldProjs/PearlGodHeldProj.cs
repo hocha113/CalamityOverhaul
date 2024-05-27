@@ -36,8 +36,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void FiringShoot() {
+        public override void HanderSpwanDust() {
             SpawnGunFireDust();
+            if (BulletNum <= 1) {
+                SpawnGunFireDust(GunShootPos + ShootVelocity, dustID1: DustID.YellowStarDust
+                    , dustID2: DustID.FireworkFountain_Blue, dustID3: DustID.FireworkFountain_Blue);
+            }
+        }
+
+        public override void FiringShoot() {
             if (BulletNum > 1) {
                 GunPressure = 0.3f;
                 Recoil = 1.2f;
@@ -49,17 +56,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             else {
                 GunPressure = 1.3f;
                 Recoil = 5.2f;
-                SpawnGunFireDust(GunShootPos + ShootVelocity, dustID1: DustID.YellowStarDust, dustID2: DustID.FireworkFountain_Blue, dustID3: DustID.FireworkFountain_Blue);
                 SoundEngine.PlaySound(CommonCalamitySounds.LargeWeaponFireSound with { Pitch = -0.7f, Volume = 0.7f }, Projectile.Center);
                 int proj = Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<ShockblastRound>(), WeaponDamage * 5, WeaponKnockback * 2f, Owner.whoAmI, 0f, 10f);
                 Main.projectile[proj].extraUpdates += 9;
             }
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
-            CaseEjection();
         }
     }
 }

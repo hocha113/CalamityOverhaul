@@ -36,7 +36,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 , WeaponDamage / 2, WeaponKnockback, Owner.whoAmI);
 
             _ = UpdateConsumeAmmo();
-            _ = CreateRecoil();
         }
     }
 }

@@ -42,16 +42,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanUpdateMagazineContentsInShootBool = CanCreateRecoilBool = onFire;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
         public override void FiringShoot() {
             GunPressure = 0.3f;
             ControlForce = 0.05f;
             RecoilRetroForceMagnitude = 13;
             SoundEngine.PlaySound(SoundID.Item61, Owner.Center);
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
@@ -73,10 +68,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 RecoilRetroForceMagnitude = 22;
                 SoundEngine.PlaySound(SoundID.Item110, Owner.Center);
             }
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

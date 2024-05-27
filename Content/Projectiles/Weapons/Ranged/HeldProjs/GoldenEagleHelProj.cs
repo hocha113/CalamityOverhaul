@@ -24,6 +24,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.8f;
         }
 
+        public override void HanderCaseEjection() {
+            if (onFire) {
+                for (int o = 0; o < 5; o++) {
+                    CaseEjection();
+                }
+            }
+            else if (onFireR) {
+                CaseEjection();
+            }
+        }
+
         public override void FiringShoot() {
             RangeOfStress = 25;
             GunPressure = 0.2f;
@@ -31,9 +42,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.8f;
             base.FiringShoot();
             const float spread = 0.0425f;
-            for (int o = 0; o < 5; o++) {
-                CaseEjection();
-            }
             for (int i = 0; i < 2; i++) {
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity.RotatedBy(-spread * (i + 1)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity.RotatedBy(spread * (i + 1)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
@@ -46,7 +54,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.05f;
             Recoil = 1.8f;
             base.FiringShootR();
-            CaseEjection();
 
             Vector2 shoot2Vr = ShootVelocity.GetNormalVector();
 

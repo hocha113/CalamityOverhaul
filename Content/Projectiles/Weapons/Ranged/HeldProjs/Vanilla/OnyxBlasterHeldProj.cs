@@ -30,7 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
             SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot2 with { Volume = 0.4f, Pitch = -0.1f }, Projectile.Center);
             for (int i = 0; i < 4; i++) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.13f) * Main.rand.NextFloat(0.9f, 1.5f)
