@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosToMouLengValue = 28;
             AngleFirearmRest = -11;
             CanRightClick = true;
-            FiringDefaultSound = false;
         }
 
         public override void HanderCaseEjection() {
@@ -44,22 +43,30 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
+        public override void SetShootAttribute() {
+            if (onFire) {
+                Recoil = 1.2f;
+                Item.useTime = 14;
+                Item.UseSound = SoundID.Item38;
+            }
+            if (onFireR) {
+                Recoil = 0.3f;
+                Item.useTime = 7;
+                Item.UseSound = CommonCalamitySounds.LargeWeaponFireSound with { Volume = 0.3f, Pitch = 0.2f };
+            }
+        }
+
         public override void FiringShoot() {
-            Recoil = 1.2f;
-            Item.useTime = 14;
-            Item.UseSound = SoundID.Item38;
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].scale *= 3;
             Main.projectile[proj].extraUpdates += 1;
-            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+            
         }
 
         public override void FiringShootR() {
-            Recoil = 0.3f;
-            Item.useTime = 7;
-            Item.UseSound = CommonCalamitySounds.LargeWeaponFireSound with { Volume = 0.3f, Pitch = 0.2f };
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

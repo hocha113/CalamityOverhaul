@@ -34,17 +34,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void PostInOwnerUpdate() {
-            if (thisNeedsTime > 0) {
-                onFire = false;
-                thisNeedsTime--;
-            }
         }
 
-        public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+        public override void PostFiringShoot() {
+            FireTime = 5;
             chargeAmmoNum++;
             if (chargeAmmoNum >= 3) {
-                thisNeedsTime += 20;
+                FireTime = 20;
                 chargeAmmoNum = 0;
             }
         }

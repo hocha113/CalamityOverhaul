@@ -32,13 +32,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override void PostInOwnerUpdate() {
             if (ShootCoolingValue == 1) {
-                SoundEngine.PlaySound(CWRSound.Ejection with { Volume = 0.5f, Pitch = -1f }, Projectile.Center);
+                SoundEngine.PlaySound(CWRSound.Ejection 
+                    with { Volume = 0.5f, Pitch = -1f }, Projectile.Center);
             }
         }
 
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
             AmmoTypes = ModContent.ProjectileType<StakeHmmod>();
-            base.FiringShoot();
         }
     }
 }

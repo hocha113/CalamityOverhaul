@@ -22,21 +22,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 0.22f;
             RepeatedCartridgeChange = true;
             kreloadMaxTime = 45;
+            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
+            ToTargetAmmo = ProjectileID.BulletHighVelocity;
+            SpwanGunDustMngsData.splNum = 0.3f;
         }
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(30, 0, 13);
-        }
-
-        public override bool KreLoadFulfill() {
-            return true;
-        }
-
-        public override void FiringShoot() {
-            if (AmmoTypes == ProjectileID.Bullet) {
-                AmmoTypes = ProjectileID.BulletHighVelocity;
-            }
-            base.FiringShoot();
         }
     }
 }

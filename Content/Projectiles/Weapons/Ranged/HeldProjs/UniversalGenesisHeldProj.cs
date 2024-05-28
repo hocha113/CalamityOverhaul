@@ -52,13 +52,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.NewProjectile(Source, pos, vr, ModContent.ProjectileType<UniversalGenesisStar>(), WeaponDamage / 2, WeaponKnockback / 2, Owner.whoAmI, i, 1);
             }
         }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
-        }
     }
 }

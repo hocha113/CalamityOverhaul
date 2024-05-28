@@ -38,10 +38,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
         public override void FiringShoot() {
             if (fireIndex > 25) {
                 FireTime = 20;
@@ -74,14 +70,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 FireTime = 5;
             }
             fireIndex++;
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

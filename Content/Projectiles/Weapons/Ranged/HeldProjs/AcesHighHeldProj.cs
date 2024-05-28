@@ -33,6 +33,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 7;
+            SpwanGunDustMngsData.splNum = 0.5f;
+            SpwanGunDustMngsData.dustID1 = DustID.BlueTorch;
+            SpwanGunDustMngsData.dustID2 = DustID.BoneTorch;
+            SpwanGunDustMngsData.dustID3 = DustID.CorruptTorch;
+            LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
+            LoadingAA_Handgun.loadingAmmoStarg_x = -3;
+            LoadingAA_Handgun.loadingAmmoStarg_y = -10;
+            LoadingAA_Handgun.feederOffsetRot = -22;
         }
 
         public override void PreInOwnerUpdate() {
@@ -45,13 +53,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
             RecoilRetroForceMagnitude = 0;
             FireTime = 1;
-            if (fireIndex > 3) {
+            if (++fireIndex > 3) {
                 Recoil = 1.2f;
                 RecoilRetroForceMagnitude = 7;
                 FireTime = 15;
@@ -64,8 +72,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 ModContent.ProjectileType<CardDiamond>(),
                 ModContent.ProjectileType<CardClub>()
             });
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            fireIndex++;
         }
     }
 }

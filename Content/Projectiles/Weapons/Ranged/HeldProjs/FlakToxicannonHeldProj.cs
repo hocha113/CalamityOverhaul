@@ -58,18 +58,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CaseEjection(1.3f);
         }
 
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
             FireTime = 5;
             AmmoTypes = ModContent.ProjectileType<FlakToxicannonProjectile>();
+        }
+
+        public override void FiringShoot() {
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocityInProjRot
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, ToMouse.Length());
+        }
+
+        public override void PostFiringShoot() {
             if (++fireIndex > 13) {
                 FireTime = 30;
-                SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/DudFire") with { Volume = 0.8f, Pitch = -0.7f, PitchVariance = 0.1f }, Projectile.Center);
+                SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/DudFire") 
+                    with { Volume = 0.8f, Pitch = -0.7f, PitchVariance = 0.1f }, Projectile.Center);
                 fireIndex = 0;
                 return;
             }
-            SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/FlakKrakenShoot") { Pitch = 0.65f, Volume = 0.5f }, Projectile.Center);
+            SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/FlakKrakenShoot") 
+            { Pitch = 0.65f, Volume = 0.5f }, Projectile.Center);
         }
     }
 }

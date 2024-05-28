@@ -25,12 +25,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 3.2f;
             RangeOfStress = 48;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
-            RepeatedCartridgeChange = true;
-            FiringDefaultSound = false;
+        }
+
+        public override void HanderPlaySound() {
+            SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot2 with { Volume = 0.4f, Pitch = -0.1f }, Projectile.Center);
         }
 
         public override void FiringShoot() {
-            SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot2 with { Volume = 0.4f, Pitch = -0.1f }, Projectile.Center);
             for (int i = 0; i < 4; i++) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.13f) * Main.rand.NextFloat(0.9f, 1.5f)
                     , ProjectileID.BlackBolt, (int)(WeaponDamage * 0.9f), WeaponKnockback, Owner.whoAmI, 0);

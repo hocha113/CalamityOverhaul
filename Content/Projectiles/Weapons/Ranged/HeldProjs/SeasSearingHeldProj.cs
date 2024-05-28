@@ -20,15 +20,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             GunPressure = 0.12f;
             Recoil = 0.75f;
             CanRightClick = true;
-            FiringDefaultSound = false;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
+        public override void PostInOwnerUpdate() {
             if (noFireTime > 0) {
                 noFireTime--;
                 if (noFireTime == 30) {
-                    SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot with { PitchRange = (-0.1f, 0.1f), Volume = 0.4f }, Projectile.Center);
+                    SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot 
+                        with { PitchRange = (-0.1f, 0.1f), Volume = 0.4f }, Projectile.Center);
                     for (int i = 0; i < maxFireCount; i++) {
                         CaseEjection();
                     }
@@ -36,27 +35,35 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
+        public override void SetShootAttribute() {
+            if (onFire) {
+                Item.useTime = 3;
+                AmmoTypes = ModContent.ProjectileType<SeasSearingBubble>();
+            }
+            else if (onFireR) {
+                Item.useTime = 30;
+                AmmoTypes = ModContent.ProjectileType<SeasSearingSecondary>();
+            }
+        }
+
         public override void FiringShoot() {
-            Item.useTime = 3;
             if (noFireTime > 0) {
                 return;
             }
-            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
-            AmmoTypes = ModContent.ProjectileType<SeasSearingBubble>();
+            
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, (indexFire == 1 || indexFire == 5) ? 1 : 0);
-            indexFire++;
-            if (indexFire >= maxFireCount) {
-                indexFire = 0;
-                noFireTime += 45;
-            }
+            
             _ = UpdateConsumeAmmo();
         }
 
-        public override void FiringShootR() {
-            Item.useTime = 30;
-            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
-            AmmoTypes = ModContent.ProjectileType<SeasSearingSecondary>();
-            base.FiringShootR();
+        public override void PostFiringShoot() {
+            if (onFire) {
+                indexFire++;
+                if (indexFire >= maxFireCount) {
+                    indexFire = 0;
+                    noFireTime += 45;
+                }
+            }
         }
     }
 }

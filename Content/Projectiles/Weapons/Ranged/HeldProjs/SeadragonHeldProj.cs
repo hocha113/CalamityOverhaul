@@ -17,9 +17,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             GunPressure = 0;
             Recoil = 0.8f;
         }
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
 
         public override void FiringShoot() {
             OffsetPos += ShootVelocity.UnitVector() * -5;

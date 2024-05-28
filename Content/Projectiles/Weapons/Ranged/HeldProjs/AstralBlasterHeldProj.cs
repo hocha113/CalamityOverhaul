@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Terraria.ID;
@@ -20,39 +21,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistance = 25;
             HandFireDistanceY = -10;
             ShootPosNorlLengValue = -12;
-            ShootPosToMouLengValue = 30;
+            ShootPosToMouLengValue = 20;
             RepeatedCartridgeChange = true;
             GunPressure = 0.3f;
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;
+            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
+            ToTargetAmmo = ModContent.ProjectileType<AstralRound>();
+            SpwanGunDustMngsData.splNum = 0.3f;
+            SpwanGunDustMngsData.dustID1 = DustID.RedStarfish;
+            SpwanGunDustMngsData.dustID2 = DustID.YellowStarDust;
         }
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(50, 3, 25);
-        }
-
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override void FiringShoot() {
-            if (AmmoTypes == ProjectileID.Bullet) {
-                AmmoTypes = Item.shoot;
-            }
-            base.FiringShoot();
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

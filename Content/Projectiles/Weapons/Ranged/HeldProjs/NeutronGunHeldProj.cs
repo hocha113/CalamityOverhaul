@@ -30,7 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
         public override void SetRangedProperty() {
             FireTime = 5;
-            FiringDefaultSound = false;
             CanRightClick = true;
             ForcedConversionTargetAmmoFunc = () => true;
             ToTargetAmmo = ModContent.ProjectileType<NeutronBullet>();
@@ -65,15 +64,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
+        public override void SetShootAttribute() {
+            if (onFire) {
+                FireTime = 5;
+                Recoil = 0.45f;
+                GunPressure = 0.1f;
+                ControlForce = 0.03f;
+                ShootPosToMouLengValue = 10;
+                Charge = 0;
+                canattce = false;
+                Item.UseSound = CWRSound.Gun_AWP_Shoot with { Pitch = -0.1f, Volume = 0.25f };
+            }
+            else if (onFireR) {
+                FireTime = 45;
+                Recoil = 1.45f;
+                GunPressure = 0.16f;
+                ControlForce = 0.01f;
+                ShootPosToMouLengValue = -10;
+                Item.UseSound = CWRSound.Gun_AWP_Shoot with { Pitch = -0.2f, Volume = 0.3f };
+            }
+        }
+
         public override void FiringShoot() {
-            FireTime = 5;
-            Recoil = 0.45f;
-            GunPressure = 0.1f;
-            ControlForce = 0.03f;
-            ShootPosToMouLengValue = 10;
-            Charge = 0;
-            canattce = false;
-            SoundEngine.PlaySound(CWRSound.Gun_AWP_Shoot with { Pitch = -0.1f, Volume = 0.25f }, Projectile.Center);
             //CaseEjection();
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Projectile.NewProjectile(Source, GunShootPos + CWRUtils.randVr(130, 131), ShootVelocity
@@ -85,12 +97,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            FireTime = 45;
-            Recoil = 1.45f;
-            GunPressure = 0.16f;
-            ControlForce = 0.01f;
-            ShootPosToMouLengValue = -10;
-            SoundEngine.PlaySound(CWRSound.Gun_AWP_Shoot with { Pitch = -0.2f, Volume = 0.3f }, Projectile.Center);
             int newdamage = (int)(WeaponDamage * (canattce ? 5.6f : 2.6f));
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, newdamage, WeaponKnockback, Owner.whoAmI, 1);
             if (!canattce) {

@@ -40,10 +40,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAnimation(-30, 3, -3);
         }
 
-        public override void FiringShoot() {
+        public override void HanderPlaySound() {
+            SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = 0.3f }, Projectile.Center);
+        }
+
+        public override void SetShootAttribute() {
             AmmoTypes = CWRUtils.SnowmanCannonAmmo(GetSelectedBullets());
-            _ = SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = 0.3f }, Projectile.Center);
-            DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, ShootVelocity);
+        }
+
+        public override void FiringShoot() {
             int ammonum = Main.rand.Next(7);
             if (ammonum != 0) {
                 int proj1 = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.4f, AmmoTypes, WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 0);

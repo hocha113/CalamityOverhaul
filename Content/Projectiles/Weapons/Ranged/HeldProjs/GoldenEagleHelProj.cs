@@ -35,11 +35,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
+            if (onFireR) {
+                RangeOfStress = 25;
+                GunPressure = 0.5f;
+                ControlForce = 0.05f;
+                Recoil = 1.8f;
+                return;
+            }
             RangeOfStress = 25;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
             Recoil = 0.8f;
+        }
+
+        public override void FiringShoot() {
+            
             base.FiringShoot();
             const float spread = 0.0425f;
             for (int i = 0; i < 2; i++) {
@@ -49,10 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            RangeOfStress = 25;
-            GunPressure = 0.5f;
-            ControlForce = 0.05f;
-            Recoil = 1.8f;
+            
             base.FiringShootR();
 
             Vector2 shoot2Vr = ShootVelocity.GetNormalVector();

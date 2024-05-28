@@ -30,7 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.2f;
             RangeOfStress = 25;
             CanRightClick = true;
-            FiringDefaultSound = false;
         }
 
         public override void PreInOwnerUpdate() {
@@ -41,20 +40,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
+        public override void SetShootAttribute() {
+            if (onFire) {
+                FireTime = 6;
+                GunPressure = 0.1f;
+                Recoil = 0.2f;
+                Item.UseSound = CWRSound.Gun_SMG_Shoot with { Pitch = -0.2f, Volume = 0.35f };
+            }
+            else if (onFireR) {
+                FireTime = 55;
+                GunPressure = 0.5f;
+                Recoil = 1.2f;
+                Item.UseSound = SoundID.Item61;
+            }
+        }
+
         public override void FiringShoot() {
-            FireTime = 6;
-            GunPressure = 0.1f;
-            Recoil = 0.2f;
-            SoundEngine.PlaySound(CWRSound.Gun_SMG_Shoot with { Pitch = -0.2f, Volume = 0.35f }, Projectile.Center);
             OffsetPos -= ShootVelocity.UnitVector() * 4;
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<PlagueTaintedProjectile>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , ModContent.ProjectileType<PlagueTaintedProjectile>()
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {
-            FireTime = 55;
-            GunPressure = 0.5f;
-            Recoil = 1.2f;
-            SoundEngine.PlaySound(SoundID.Item61, Projectile.Center);
             OffsetPos -= ShootVelocity.UnitVector() * 6;
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedBy(-0.15f * (i + 1))

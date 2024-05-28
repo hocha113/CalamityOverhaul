@@ -34,15 +34,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void PreInOwnerUpdate() {
             LoadingAnimation(30, 0, 13);
         }
-        public override bool KreLoadFulfill() {
-            return base.KreLoadFulfill();
-        }
-
-        public override void PostFiringShoot() {
-        }
-
-        public override void FiringShoot() {
-            base.FiringShoot();
-        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Terraria.ModLoader;
@@ -28,27 +29,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 7;
             AmmoTypeAffectedByMagazine = false;
+            ForcedConversionTargetAmmoFunc = () => true;
+            ToTargetAmmo = ModContent.ProjectileType<SulphuricBlast>();
         }
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(50, 3, 25);
-        }
-
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
-        public override void FiringShoot() {
-            AmmoTypes = Item.shoot;
-            base.FiringShoot();
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

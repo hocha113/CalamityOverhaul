@@ -34,9 +34,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PreInOwnerUpdate() {
             LoadingAnimation(30, 0, 13);
         }
-
-        public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-        }
     }
 }

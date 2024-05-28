@@ -38,33 +38,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
             FireTime = 5;
             if (fireIndex > 2) {
                 FireTime = 30;
                 chargeIndex++;
                 fireIndex = 0;
             }
+        }
+
+        public override void FiringShoot() {
+            
             if (chargeIndex > 3) {
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<SputterCometBig>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                    , ModContent.ProjectileType<SputterCometBig>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 chargeIndex = 0;
             }
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].usesLocalNPCImmunity = true;
             Main.projectile[proj].localNPCHitCooldown = -1;
-            fireIndex++;
+            
         }
 
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
-        }
+        public override void PostFiringShoot() => fireIndex++;
     }
 }

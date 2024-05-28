@@ -18,9 +18,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = GunPressure = 0;
             Recoil = 0.2f;
         }
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
 
         public override void FiringShoot() {
             Vector2 gundir = Projectile.rotation.ToRotationVector2();

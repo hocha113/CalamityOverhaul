@@ -45,6 +45,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
+        public override void HanderPlaySound() {
+            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<MonsoonOnSpan>()] == 0 && onFireR) {
+                accumulator = SoundEngine.PlaySound(CWRSound.Accumulator with { Pitch = 0.3f }, Projectile.Center);
+            }
+        }
+
         public override void BowShoot() {
             for (int i = 0; i < 5; i++) {
                 if (Main.rand.NextBool(13)) {
@@ -59,11 +65,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void BowShootR() {
-            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<MonsoonOnSpan>()] == 0) {
-                accumulator = SoundEngine.PlaySound(CWRSound.Accumulator with { Pitch = 0.3f }, Projectile.Center);
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
-                    , ModContent.ProjectileType<MonsoonOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
-            }
+            Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
+                    , ModContent.ProjectileType<MonsoonOnSpan>(), WeaponDamage
+                    , WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
         }
     }
 }

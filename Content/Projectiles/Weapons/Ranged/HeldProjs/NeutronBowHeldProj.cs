@@ -29,9 +29,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             return true;//暂时不要在这个版本中出现
         }
         public override void SetRangedProperty() {
-            ForcedConversionTargetArrowFunc = () => true;
-            ISForcedConversionDrawArrowInversion = true;
-            ToTargetArrow = ModContent.ProjectileType<NeutronArrow>();
+            ForcedConversionTargetAmmoFunc = () => true;
+            ISForcedConversionDrawAmmoInversion = true;
+            ToTargetAmmo = ModContent.ProjectileType<NeutronArrow>();
             HandDistance = 15;
             HandFireDistance = 22;
             DrawArrowMode = -25;
@@ -97,15 +97,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void BowShoot() {
-            FiringDefaultSound = true;
-            Item.useTime = 20;
-            base.BowShoot();
+        public override void SetShootAttribute() {
+            if (onFire) {
+                FiringDefaultSound = true;
+                Item.useTime = 20;
+            }
+        }
+
+        public override void HanderPlaySound() {
+            if (onFireR) {
+                SoundEngine.PlaySound(CWRSound.Gun_Magnum_Shoot 
+                    with { Pitch = 0.7f, Volume = 0.6f }, Projectile.Center);
+                return;
+            }
+            base.HanderPlaySound();
         }
 
         public override void BowShootR() {
-            FiringDefaultSound = false;
-            SoundEngine.PlaySound(CWRSound.Gun_Magnum_Shoot with { Pitch = 0.7f, Volume = 0.6f }, Projectile.Center);
             ModOwner.SetScreenShake(6.2f);
             AmmoTypes = ModContent.ProjectileType<EXNeutronArrow>();
             for (int i = 0; i < 3; i++) {
@@ -114,8 +122,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
                 Main.projectile[proj].SetArrowRot();
             }
-            level1 = level2 = level3 = true;
-            Charge = 0;
+        }
+
+        public override void PostBowShoot() {
+            if (onFireR) {
+                level1 = level2 = level3 = true;
+                Charge = 0;
+            }
         }
 
         public override void BowDraw(ref Color lightColor) {

@@ -35,21 +35,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
         public override void FiringShoot() {
             Projectile.NewProjectile(Source, new Vector2(GunShootPos.X, Main.MouseWorld.Y), new Vector2(ShootVelocity.X, 0)
                 , ModContent.ProjectileType<SandnadoOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

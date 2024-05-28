@@ -19,10 +19,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             FiringDefaultSound = false;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
         public override void BowShoot() {
             if (CalamityUtils.CheckWoodenAmmo(AmmoTypes, Owner)) {
                 SoundEngine.PlaySound(SoundID.Item12, Projectile.Center);

@@ -43,14 +43,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(30, 0, 13);
         }
 
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
             if (++fireIndex > 5) {
                 SoundEngine.PlaySound(BloodBoiler.Heartbeat, GunShootPos);
                 fireIndex = 0;
             }
             shotReturn = !shotReturn;
-            if (Main.rand.NextFloat() > 0.60f)
+        }
+
+        public override void FiringShoot() {
+            if (Main.rand.NextFloat() > 0.60f) {
                 Owner.statLife -= 1;
+            }
             if (Owner.statLife <= 0) {
                 PlayerDeathReason pdr = PlayerDeathReason.ByCustomReason(CalamityUtils.GetText("Status.Death.BloodBoiler" + Main.rand.Next(1, 2 + 1)).Format(Owner.name));
                 Owner.KillMe(pdr, 1000.0, 0, false);

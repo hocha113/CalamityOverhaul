@@ -17,16 +17,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void SetRangedProperty() {
             ArmRotSengsBackBaseValue = 70;
             ShootSpanTypeValue = SpanTypesEnum.IceBow;
-            ForcedConversionTargetArrowFunc = () => UseAmmoItemType == ItemID.WoodenArrow;
-            ISForcedConversionDrawArrowInversion = true;
-            ToTargetArrow = ProjectileID.FrostArrow;
+            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.WoodenArrowFriendly;
+            ISForcedConversionDrawAmmoInversion = true;
+            ToTargetAmmo = ProjectileID.FrostArrow;
         }
 
-        public override void BowShoot() {
+        public override void SetShootAttribute() {
             Item.useTime = 5;
-            base.BowShoot();
             fireIndex++;
-            if (fireIndex >= 3) {
+            if (++fireIndex >= 3) {
                 Item.useTime = 25;
                 fireIndex = 0;
             }

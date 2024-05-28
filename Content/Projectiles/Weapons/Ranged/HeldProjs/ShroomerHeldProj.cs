@@ -35,21 +35,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
         public override void FiringShoot() {
             base.FiringShoot();
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<Shroom>(), (int)(WeaponDamage * 0.7f), WeaponKnockback, Owner.whoAmI, 0);
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , ModContent.ProjectileType<Shroom>(), (int)(WeaponDamage * 0.7f), WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

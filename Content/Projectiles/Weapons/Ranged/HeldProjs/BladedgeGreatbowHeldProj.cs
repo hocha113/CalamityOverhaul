@@ -31,8 +31,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             IsCrossbow = true;
         }
 
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
             Item.useTime = 12;
+            if (++fireIndex > 2) {
+                Item.useTime = 30;
+                fireIndex = 0;
+            }
+        }
+
+        public override void FiringShoot() {
             for (int i = 0; i < 4; i++) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ProjectileID.Leaf, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].DamageType = DamageClass.Ranged;
@@ -42,10 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
                 Main.projectile[proj].extraUpdates += 1;
             }
-            if (++fireIndex >= 2) {
-                Item.useTime = 30;
-                fireIndex = 0;
-            }
+            
             UpdateConsumeAmmo();
         }
     }

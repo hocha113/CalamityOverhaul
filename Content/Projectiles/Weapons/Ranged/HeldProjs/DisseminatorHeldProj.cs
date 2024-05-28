@@ -24,10 +24,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;//可以右键使用
         }
 
+        public override void SetShootAttribute() {
+            if (onFire) {
+                GunPressure = 0.12f;
+                Recoil = 0.35f;
+                FireTime = 24;
+            }
+            else if (onFireR) {
+                GunPressure = 0.1f;
+                Recoil = 0.3f;
+                FireTime = 4;
+            }
+        }
+
         public override void FiringShoot() {
-            GunPressure = 0.12f;
-            Recoil = 0.35f;
-            FireTime = 24;
             for (int i = 0; i < 6; i++) {
                 Projectile.NewProjectile(Source, GunShootPos,
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.8f, 1.1f)
@@ -46,9 +56,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            GunPressure = 0.1f;
-            Recoil = 0.3f;
-            FireTime = 4;
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Vector2 pos = Owner.Center + new Vector2(MathHelper.Lerp(Main.MouseWorld.To(Owner.Center).X, 0, 0.9f), -780);
             Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ScaleFactor;

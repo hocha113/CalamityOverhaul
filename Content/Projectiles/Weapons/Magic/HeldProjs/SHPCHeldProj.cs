@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             ControlForce = 0.02f;
             Recoil = 0;
             CanRightClick = true;
+            EnableRecoilRetroEffect = true;
         }
 
         public override void HanderPlaySound() {
@@ -37,9 +38,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             }
         }
 
+        public override void SetShootAttribute() {
+            if (onFire) {
+                Item.useTime = 45;
+                GunPressure = 0.3f;
+                RecoilRetroForceMagnitude = 0;
+            }
+            else if (onFireR) {
+                Item.useTime = 7;
+                GunPressure = 0f;
+                RecoilRetroForceMagnitude = 6;
+            }
+        }
+
         public override void FiringShoot() {
-            Item.useTime = 45;
-            GunPressure = 0.3f;
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1f)
                     , ModContent.ProjectileType<SHPB>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -47,9 +59,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void FiringShootR() {
-            OffsetPos += ShootVelocity.UnitVector() * -6;
-            Item.useTime = 7;
-            GunPressure = 0f;
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1.1f)
                     , ModContent.ProjectileType<SHPL>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

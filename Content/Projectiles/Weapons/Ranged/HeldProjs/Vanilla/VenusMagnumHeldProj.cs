@@ -26,17 +26,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 1.1f;
             RepeatedCartridgeChange = true;
             kreloadMaxTime = 45;
+            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
+            ToTargetAmmo = ProjectileID.BulletHighVelocity;
+            SpwanGunDustMngsData.splNum = 0.2f;
+            SpwanGunDustMngsData.dustID1 = DustID.FireworkFountain_Yellow;
+            SpwanGunDustMngsData.dustID2 = DustID.BoneTorch;
+            SpwanGunDustMngsData.dustID3 = DustID.FireworkFountain_Yellow;
         }
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(30, 0, 13);
-        }
-
-        public override void FiringShoot() {
-            if (AmmoTypes == ProjectileID.Bullet) {
-                AmmoTypes = ProjectileID.BulletHighVelocity;
-            }
-            base.FiringShoot();
         }
     }
 }

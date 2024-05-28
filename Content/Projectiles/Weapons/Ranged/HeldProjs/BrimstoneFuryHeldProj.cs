@@ -15,11 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<BrimstoneFury>();
         public override int targetCWRItem => ModContent.ItemType<BrimstoneFuryEcType>();
         public override void SetRangedProperty() => BowArrowDrawNum = 3;
-
-        public override void PostInOwner() {
-
-        }
-
         public override void BowShoot() {
             if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {
                 AmmoTypes = ModContent.ProjectileType<BrimstoneBolt>();

@@ -14,8 +14,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistance = 16;
             HandFireDistanceY = 6;
             IsBow = false;
-            ForcedConversionTargetArrowFunc = () => true;
-            ToTargetArrow = ModContent.ProjectileType<PebbleBall>();
+            ForcedConversionTargetAmmoFunc = () => true;
+            ToTargetAmmo = ModContent.ProjectileType<PebbleBall>();
         }
 
         public override void BowShoot() {

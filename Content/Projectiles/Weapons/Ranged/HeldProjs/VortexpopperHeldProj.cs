@@ -34,11 +34,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
+        public override void SetShootAttribute() {
+            if (onFire) {
+                FireTime = 12;
+                Recoil = 1;
+                GunPressure = 0.2f;
+                EnableRecoilRetroEffect = false;
+            }
+            else if (onFireR) {
+                FireTime = 4;
+                Recoil = 0.5f;
+                GunPressure = 0.1f;
+                EnableRecoilRetroEffect = true;
+            }
+        }
+
         public override void FiringShoot() {
-            FireTime = 12;
-            Recoil = 1;
-            GunPressure = 0.2f;
-            EnableRecoilRetroEffect = false;
+            
             for (int i = 0; i < 5; i++) {
                 Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos,
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-1.1f, 1.1f)) * Main.rand.NextFloat(0.7f, 1.5f)
@@ -49,10 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            FireTime = 4;
-            Recoil = 0.5f;
-            GunPressure = 0.1f;
-            EnableRecoilRetroEffect = true;
+            
             _ = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Projectile proj = Projectile.NewProjectileDirect(Source, Main.MouseWorld + CWRUtils.randVr(130, 160), ShootVelocity / 3
                     , ModContent.ProjectileType<XenopopperProj>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

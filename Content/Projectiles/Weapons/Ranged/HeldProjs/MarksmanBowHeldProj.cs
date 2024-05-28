@@ -11,9 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MarksmanBow";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.MarksmanBow>();
         public override int targetCWRItem => ModContent.ItemType<MarksmanBowEcType>();
-        public override void SetRangedProperty() {
-            base.SetRangedProperty();
-        }
         public override void BowShoot() {
             for (int i = 0; i < 3; i++) {
                 int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity * (0.7f + i * 0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

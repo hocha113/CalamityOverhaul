@@ -26,10 +26,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
         }
 
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
+            if (onFireR) {
+                FireTime = 22;
+                GunPressure = 0.25f;
+                Recoil = 1.75f;
+                return;
+            }
             FireTime = 7;
             GunPressure = 0.12f;
             Recoil = 0.75f;
+        }
+
+        public override void FiringShoot() {
             int proj = Projectile.NewProjectile(Source, GunShootPos
                 , ShootVelocityInProjRot.RotatedBy(Main.rand.NextFloat(-0.02f, 0.02f))
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -43,9 +52,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            FireTime = 22;
-            GunPressure = 0.25f;
-            Recoil = 1.75f;
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                         , ModContent.ProjectileType<EmesisGore>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].penetrate = 8;

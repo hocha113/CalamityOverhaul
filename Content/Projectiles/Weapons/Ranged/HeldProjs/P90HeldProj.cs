@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Terraria;
@@ -23,14 +24,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
             MustConsumeAmmunition = false;
             Recoil = GunPressure = ControlForce = 0;
+            ForcedConversionTargetAmmoFunc = () => true;
+            ToTargetAmmo = ModContent.ProjectileType<P90Round>();
         }
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(20, 3, 5);
-        }
-
-        public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

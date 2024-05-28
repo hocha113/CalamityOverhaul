@@ -35,30 +35,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
+            if (onFireR) {
+                FireTime = 30;
+                GunPressure = 0.4f;
+                Recoil = 2.2f;
+                return;
+            }
             FireTime = 8;
             GunPressure = 0.12f;
             Recoil = 1.2f;
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+        }
+
+        public override void FiringShoot() {
+            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].timeLeft = 160;
         }
 
         public override void FiringShootR() {
-            FireTime = 30;
-            GunPressure = 0.4f;
-            Recoil = 2.2f;
             for (int i = 0; i < 5; i++) {
-                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(1.3f, 1.5f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                int proj = Projectile.NewProjectile(Source, GunShootPos
+                    , ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(1.3f, 1.5f)
+                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].timeLeft = 160;
             }
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

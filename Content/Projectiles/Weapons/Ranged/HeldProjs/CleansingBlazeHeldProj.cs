@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CleansingBlaze";
         public override int targetCayItem => ModContent.ItemType<CleansingBlaze>();
         public override int targetCWRItem => ModContent.ItemType<CleansingBlazeEcType>();
-
         private int fireIndex;
         public override void SetRangedProperty() {
             FireTime = 3;
@@ -36,16 +35,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(30, 0, 13);
         }
 
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
             if (++fireIndex > 5) {
                 SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 fireIndex = 0;
             }
+        }
+
+        public override void FiringShoot() {
             int num6 = Main.rand.Next(2, 4);
             for (int index = 0; index < num6; ++index) {
                 float SpeedX = ShootVelocity.X + (Main.rand.Next(-15, 16) * 0.05f);
                 float SpeedY = ShootVelocity.Y + (Main.rand.Next(-15, 16) * 0.05f);
-                _ = Projectile.NewProjectile(Source, GunShootPos.X, GunShootPos.Y, SpeedX, SpeedY, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0f, 0f);
+                _ = Projectile.NewProjectile(Source, GunShootPos.X, GunShootPos.Y
+                    , SpeedX, SpeedY, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0f, 0f);
             }
         }
     }

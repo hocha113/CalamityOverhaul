@@ -12,9 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "DarkechoGreatbow";
         public override int targetCayItem => ModContent.ItemType<DarkechoGreatbow>();
         public override int targetCWRItem => ModContent.ItemType<DarkechoGreatbowEcType>();
-        public override void SetRangedProperty() {
-            BowArrowDrawNum = 2;
-        }
+        public override void SetRangedProperty() => BowArrowDrawNum = 2;
         public override void BowShoot() {
             FireOffsetVector = ShootVelocity.UnitVector().RotatedByRandom(0.3f) * Main.rand.NextFloat(3.2f, 5.5f);
             base.BowShoot();

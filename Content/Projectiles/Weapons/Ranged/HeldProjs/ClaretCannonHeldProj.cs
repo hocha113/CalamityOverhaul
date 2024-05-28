@@ -28,37 +28,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;
+            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
+            ToTargetAmmo = ModContent.ProjectileType<ClaretCannonProj>();
         }
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
         public override void FiringShoot() {
-            if (AmmoTypes == ProjectileID.Bullet) {
-                AmmoTypes = ModContent.ProjectileType<ClaretCannonProj>();
-            }
             base.FiringShoot();
             ScaleFactor *= 0.9f;
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.05f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             ScaleFactor *= 0.9f;
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.05f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

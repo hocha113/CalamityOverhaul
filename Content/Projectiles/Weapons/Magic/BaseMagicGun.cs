@@ -33,6 +33,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                 }
 
                 if (Owner.CheckMana(Item)) {
+                    SetShootAttribute();
+
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         if (onFire) {
                             FiringShoot();
@@ -54,11 +56,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                     if (FiringDefaultSound) {
                         HanderPlaySound();
                     }
-                    if (fireLight > 0) {
-                        Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * fireLight);
-                    }
                     if (CanCreateRecoilBool) {
                         CreateRecoil();
+                    }
+                    if (FireLight > 0) {
+                        Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * FireLight);
                     }
 
                     Owner.statMana -= Item.mana;
@@ -69,7 +71,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                 }
 
                 ShootCoolingValue += Item.useTime;
-                onFire = false;
+                onFireR = onFire = false;
             }
         }
     }

@@ -14,9 +14,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void SetRangedProperty() {
             ArmRotSengsBackBaseValue = 70;
             ShootSpanTypeValue = SpanTypesEnum.Marrow;
-            ForcedConversionTargetArrowFunc = () => UseAmmoItemType == ItemID.WoodenArrow;
-            ISForcedConversionDrawArrowInversion = true;
-            ToTargetArrow = ProjectileID.BoneArrowFromMerchant;
+            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.WoodenArrowFriendly;
+            ISForcedConversionDrawAmmoInversion = true;
+            ToTargetAmmo = ProjectileID.BoneArrowFromMerchant;
         }
     }
 }

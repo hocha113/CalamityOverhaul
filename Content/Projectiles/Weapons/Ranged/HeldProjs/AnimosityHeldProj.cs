@@ -47,32 +47,46 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void FiringShoot() {
-            FireTime = 6;
-            GunPressure = 0.1f;
-            Recoil = 1.2f;
-            RangeOfStress = 5;
-            if (AmmoTypes == ProjectileID.Bullet) {
-                AmmoTypes = ProjectileID.BulletHighVelocity;
+        public override void SetShootAttribute() {
+            if (onFire) {
+                FireTime = 6;
+                GunPressure = 0.1f;
+                Recoil = 1.2f;
+                RangeOfStress = 5;
+                if (AmmoTypes == ProjectileID.Bullet) {
+                    AmmoTypes = ProjectileID.BulletHighVelocity;
+                }
             }
+            else if (onFireR) {
+                FireTime = 50;
+                GunPressure = 0.6f;
+                Recoil = 5;
+                RangeOfStress = 25;
+            }
+            
+        }
+        public override void FiringShoot() {
             for (int i = 0; i < 2; i++) {
                 Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f))
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
+            if (fireIndex > 6) {
+                Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
+                    , btoole, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            }
+        }
+
+        public override void PostFiringShoot() {
             if (++fireIndex > 6) {
-                Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, btoole, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 FireTime = 15;
                 fireIndex = 0;
             }
         }
 
         public override void FiringShootR() {
-            FireTime = 50;
-            GunPressure = 0.6f;
-            Recoil = 5;
-            RangeOfStress = 25;
             Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
-                , ModContent.ProjectileType<AnimosityOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
+                , ModContent.ProjectileType<AnimosityOnSpan>(), WeaponDamage
+                , WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
         }
     }
 }

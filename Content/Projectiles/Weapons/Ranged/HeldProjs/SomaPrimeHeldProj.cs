@@ -40,10 +40,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
         public override void FiringShoot() {
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ProjectileID.BulletHighVelocity;
@@ -63,14 +59,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CalamityGlobalProjectile cgp3 = Main.projectile[proj3].Calamity();
             cgp3.supercritHits = -1;
             cgp3.appliesSomaShred = true;
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

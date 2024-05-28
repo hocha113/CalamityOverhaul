@@ -30,16 +30,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 16;
-            FiringDefaultSound = false;
         }
 
         public override void PreInOwnerUpdate() {
             LoadingAnimation(50, 3, 5);
         }
 
+        public override void HanderPlaySound() {
+            SoundEngine.PlaySound(ScorchedEarth.ShootSound 
+                with { Volume = 0.6f, Pitch = 0.2f, PitchRange = (-0.1f, 0.1f) }, Projectile.Center);
+        }
+
         public override void FiringShoot() {
-            SoundEngine.PlaySound(ScorchedEarth.ShootSound with { Volume = 0.6f, Pitch = 0.2f, PitchRange = (-0.1f, 0.1f) }, Projectile.Center);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

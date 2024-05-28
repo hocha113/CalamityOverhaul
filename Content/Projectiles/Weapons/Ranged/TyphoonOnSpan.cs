@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (haveAmmo && !CalamityUtils.CheckWoodenAmmo(arrowTypes, Owner)) {
                 for (int i = 0; i < 64; i++) {
                     float rot = MathHelper.TwoPi / 64 * i;
-                    Vector2 velocity = rot.ToRotationVector2() * (9 + (-1f + rot % MathHelper.PiOver4) * 7);
+                    Vector2 velocity = rot.ToRotationVector2() * (19 + (-11f + rot % MathHelper.PiOver4) * 17);
                     Projectile.NewProjectile(Owner.parent(), Projectile.Center, velocity
                         , arrowTypes, weaponDamage, weaponKnockback, Owner.whoAmI);
                 }
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             weaponKnockback = Projectile.knockBack;
             for (int i = 0; i < 94; i++) {
                 float rot = MathHelper.TwoPi / 94 * i;
-                Vector2 velocity = rot.ToRotationVector2() * (11 + (-1f + rot % MathHelper.PiOver4) * 9);
+                Vector2 velocity = rot.ToRotationVector2() * (1 + (-6f + rot % MathHelper.PiOver4) * 2);
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center, velocity
                     , ModContent.ProjectileType<TorrentialArrow>()
                     , weaponDamage, weaponKnockback, Owner.whoAmI);

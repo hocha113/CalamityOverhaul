@@ -11,9 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.NettlevineGreatbow>();
         public override int targetCWRItem => ModContent.ItemType<NettlevineGreatbowEcType>();
         private int nettlevineIndex;
-        public override void SetRangedProperty() {
-            base.SetRangedProperty();
-        }
         public override void BowShoot() {
             int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.NettlevineGreat;

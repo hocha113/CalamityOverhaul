@@ -24,7 +24,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             proj.extraUpdates += 1;
             proj.usesLocalNPCImmunity = true;
             proj.localNPCHitCooldown = -1;
@@ -32,6 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 proj.maxPenetrate += 2;
                 proj.penetrate += 2;
             }
+            proj.netUpdate = true;
             _ = UpdateConsumeAmmo();
         }
     }

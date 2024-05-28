@@ -27,7 +27,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<StormSurgeTornado>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , ModContent.ProjectileType<StormSurgeTornado>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

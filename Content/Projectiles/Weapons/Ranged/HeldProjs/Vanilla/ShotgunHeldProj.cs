@@ -27,7 +27,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ArmRotSengsFrontNoFireOffset = 0;
             ArmRotSengsBackNoFireOffset = 60;
             RepeatedCartridgeChange = true;
-            FiringDefaultSound = false;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
             LoadingAA_Shotgun.loadShellSound = CWRSound.Gun_Clipin with { Volume = 0.65f, Pitch = 0.2f };
             LoadingAA_Shotgun.pump = CWRSound.Gun_ClipinLocked with { Volume = 0.6f };
@@ -40,8 +39,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             return false;
         }
 
+        public override void HanderPlaySound() {
+            SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot 
+                with { Volume = 0.35f, Pitch = -0.6f }, Projectile.Center);
+        }
+
         public override void FiringShoot() {
-            SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot with { Volume = 0.35f, Pitch = -0.6f }, Projectile.Center);
             for (int i = 0; i < 7; i++) {
                 int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.7f, 1.4f)

@@ -37,34 +37,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
-        }
-
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override void FiringShoot() {
+        public override void PostFiringShoot() {
             for (int i = 0; i < 4; i++) {
                 Gore bubble = Gore.NewGorePerfect(Source, GunShootPos, ShootVelocity.RotatedByRandom(MathHelper.ToRadians(30f)) * 0.5f, 411);
                 bubble.timeLeft = 6 + Main.rand.Next(4);
                 bubble.scale = Main.rand.NextFloat(0.6f, 0.8f);
                 bubble.type = Main.rand.NextBool(3) ? 412 : 411;
             }
+        }
+
+        public override void FiringShoot() {
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = Item.shoot;
             }
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.6f, ModContent.ProjectileType<ArcherfishRing>(), WeaponDamage / 2, WeaponKnockback + 5, Owner.whoAmI, 0);
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
-        }
-
-        public override void PostFiringShoot() {
-            base.PostFiringShoot();
         }
     }
 }

@@ -18,10 +18,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ShootSpanTypeValue = SpanTypesEnum.PulseBow;
         }
 
-        public override void PostInOwner() {
-            base.PostInOwner();
-        }
-
         public override void BowShoot() {
             AmmoTypes = ProjectileID.PulseBolt;
             int proj = Projectile.NewProjectile(Source, Projectile.Center + FireOffsetPos, ShootVelocity + FireOffsetVector

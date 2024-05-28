@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<MarbleRifle>();
         public override void SetRangedProperty() {
             base.SetRangedProperty();
-            ToTargetAmmo = ModContent.ProjectileType<MarbleBullet>();
+            ToTargetAmmo = ModContent.ProjectileType<MarbleBullet>();//你要转化什么?
         }
     }
 }

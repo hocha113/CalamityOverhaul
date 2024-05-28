@@ -37,6 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].scale += 0.1f;
                 Main.projectile[proj].extraUpdates += 1;
+                Main.projectile[proj].netUpdate = true;
             }
         }
     }

@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             BowArrowDrawNum = 2;
             fireIndex = 0;
         }
-        public override void BowShoot() {
+        public override void SetShootAttribute() {
             Item.useTime = 10;
             if (++fireIndex >= 5) {
                 Item.useTime = 50;
@@ -30,6 +30,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {
                 AmmoTypes = ModContent.ProjectileType<LunarBolt>();
             }
+        }
+        public override void BowShoot() {
             int proj = Projectile.NewProjectile(Source, Projectile.Center + ShootVelocity.GetNormalVector() * 3, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;

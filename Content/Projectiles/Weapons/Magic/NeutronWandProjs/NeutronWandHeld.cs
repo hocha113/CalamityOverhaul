@@ -32,7 +32,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             ArmRotSengsBackNoFireOffset = -20;
             ShootPosToMouLengValue = 20;
             CanRightClick = true;
-            FiringDefaultSound = false;
         }
 
         public override void PostInOwnerUpdate() {

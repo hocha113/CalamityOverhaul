@@ -39,13 +39,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(30, 0, 13);
         }
 
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
             if (++fireIndex > 8) {
                 SoundEngine.PlaySound(Item.UseSound, GunShootPos);
                 fireIndex = 0;
             }
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.16f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.26f) * Main.rand.NextFloat(1.05f, 1.2f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+        }
+
+        public override void FiringShoot() {
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.16f)
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.26f) 
+                * Main.rand.NextFloat(1.05f, 1.2f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

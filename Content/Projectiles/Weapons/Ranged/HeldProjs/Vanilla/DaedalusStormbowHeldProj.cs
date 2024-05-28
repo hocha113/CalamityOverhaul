@@ -22,8 +22,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
         }
 
+        public override void SetShootAttribute() {
+            if (onFire) {
+                Item.useTime = 19;
+            }
+            else if (onFireR) {
+                Item.useTime = 6;
+            }
+        }
+
         public override void BowShoot() {
-            Item.useTime = 19;
             for (int i = 0; i < 5; i++) {
                 Vector2 spanPos = Projectile.Center + new Vector2(Main.rand.Next(-320, 320), Main.rand.Next(-632, -583));
                 Vector2 vr = spanPos.To(Main.MouseWorld).UnitVector().RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 13;
@@ -32,7 +40,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void BowShootR() {
-            Item.useTime = 6;
             Vector2 spanPos = Projectile.Center + new Vector2(Main.rand.Next(-20, 20), Main.rand.Next(-632, -583));
             Vector2 vr = spanPos.To(Main.MouseWorld).UnitVector().RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 13;
             Projectile p = Projectile.NewProjectileDirect(Source, spanPos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

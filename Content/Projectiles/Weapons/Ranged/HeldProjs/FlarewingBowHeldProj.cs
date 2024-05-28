@@ -12,9 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "FlarewingBow";
         public override int targetCayItem => ModContent.ItemType<FlarewingBow>();
         public override int targetCWRItem => ModContent.ItemType<FlarewingBowEcType>();
-        public override void SetRangedProperty() {
-            BowArrowDrawNum = 3;
-        }
+        public override void SetRangedProperty() => BowArrowDrawNum = 3;
         public override void BowShoot() {
             //如果这些开发者愿意遵守那该死的开发手册，就不会需要多写这么多该死特判代码
             if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {

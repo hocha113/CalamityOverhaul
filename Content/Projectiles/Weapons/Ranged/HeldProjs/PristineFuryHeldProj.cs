@@ -46,12 +46,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         }
 
-        public override void FiringShoot() {
-            ShootPosToMouLengValue = 0;
-            if (++fireIndex > 3) {
+        public override void SetShootAttribute() {
+            if (onFireR) {
+                ShootPosToMouLengValue = 0;
+                if (++fireIndex > 3) {
+                    SoundEngine.PlaySound(Item.UseSound, GunShootPos);
+                    fireIndex = 0;
+                }
+                return;
+            }
+            ShootPosToMouLengValue = -16;
+            if (++fireIndex > 4) {
                 SoundEngine.PlaySound(Item.UseSound, GunShootPos);
                 fireIndex = 0;
             }
+        }
+
+        public override void FiringShoot() {
             CritSpark spark = new CritSpark(GunShootPos + ShootVelocity * 3f + new Vector2(0, -3), ShootVelocity.RotatedBy(0.25f * Owner.direction).RotatedByRandom(0.25f) * Main.rand.NextFloat(0.2f, 1.8f), Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed, Color.OrangeRed, 0.9f, 18, 2f, 1.9f);
             GeneralParticleHandler.SpawnParticle(spark);
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -59,11 +70,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            ShootPosToMouLengValue = -16;
-            if (++fireIndex > 4) {
-                SoundEngine.PlaySound(Item.UseSound, GunShootPos);
-                fireIndex = 0;
-            }
             for (int i = 0; i < 2; i++) {
                 Vector2 newVel = ShootVelocity.RotatedByRandom(MathHelper.ToRadians(5f));
                 Projectile.NewProjectile(Source, GunShootPos, newVel, ModContent.ProjectileType<PristineSecondary>(), WeaponDamage, WeaponKnockback, Owner.whoAmI);

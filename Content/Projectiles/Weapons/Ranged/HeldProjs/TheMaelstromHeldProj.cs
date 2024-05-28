@@ -13,18 +13,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<TheMaelstromEcType>();
         public override void SetRangedProperty() => CanRightClick = true;
         public override void PostInOwner() => BowArrowDrawBool = onFire;
-        public override void BowShoot() {
-            Item.UseSound = SoundID.Item5;
-            CanFireMotion = FiringDefaultSound = true;
-            AmmoTypes = ModContent.ProjectileType<TheMaelstromTheArrow>();
-            base.BowShoot();
+        public override void SetShootAttribute() {
+            if (onFire) {
+                Item.UseSound = SoundID.Item5;
+                CanFireMotion = FiringDefaultSound = true;
+                AmmoTypes = ModContent.ProjectileType<TheMaelstromTheArrow>();
+            }
+            else if (onFireR) {
+                Item.UseSound = SoundID.Item66;
+                CanFireMotion = FiringDefaultSound = false;
+                AmmoTypes = ModContent.ProjectileType<TheMaelstromSharkOnSpan>();
+            }
         }
+
         public override void BowShootR() {
-            Item.UseSound = SoundID.Item66;
-            CanFireMotion = FiringDefaultSound = false;
-            AmmoTypes = ModContent.ProjectileType<TheMaelstromSharkOnSpan>();
+            
             if (Owner.ownedProjectileCounts[AmmoTypes] == 0) {
-                Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
+                Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
+                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
             }
         }
     }

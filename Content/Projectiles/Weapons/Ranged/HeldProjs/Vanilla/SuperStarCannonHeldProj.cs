@@ -26,8 +26,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 8;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
-            RepeatedCartridgeChange = true;
-            FiringDefaultSound = false;
             SpwanGunDustMngsData.dustID1 = 15;
             SpwanGunDustMngsData.dustID2 = 57;
             SpwanGunDustMngsData.dustID3 = 58;
@@ -38,13 +36,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             return true;
         }
 
-        public override void FiringShoot() {
+        public override void HanderSpwanDust() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
-            SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot with { Volume = 0.3f, Pitch = 0.3f }, Projectile.Center);
+        }
+
+        public override void HanderPlaySound() {
+            SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot with { Volume = 0.2f, Pitch = 0.3f }, Projectile.Center);
+        }
+
+        public override void SetShootAttribute() {
             if (FireTime > 6) {
                 FireTime--;
             }
-            _ = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

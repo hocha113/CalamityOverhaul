@@ -14,15 +14,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PlanetaryAnnihilation";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.PlanetaryAnnihilation>();
         public override int targetCWRItem => ModContent.ItemType<PlanetaryAnnihilationEcType>();
-        public override void SetRangedProperty() {
-            FiringDefaultSound = false;
-        }
         public override void PostInOwner() {
             if (onFire) {
                 BowArrowDrawBool = false;
                 LimitingAngle();
             }
         }
+
+        public override void HanderPlaySound() {
+            if (CalamityUtils.CheckWoodenAmmo(AmmoTypes, Owner)) {
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+            }
+            else {
+                SoundEngine.PlaySound(SoundID.Item5, Projectile.Center);
+            }
+        }
+
         public override void BowShoot() {
             if (CalamityUtils.CheckWoodenAmmo(AmmoTypes, Owner)) {
                 SoundEngine.PlaySound(Item.UseSound, Projectile.Center);

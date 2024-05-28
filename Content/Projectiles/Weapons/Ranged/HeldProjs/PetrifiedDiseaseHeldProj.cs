@@ -13,10 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 20;
             HandFireDistance = 22;
             DrawArrowMode = -25;
-        }
-        public override void BowShoot() {
-            AmmoTypes = ModContent.ProjectileType<PetrifiedDiseaseAorrw>();
-            base.BowShoot();
+            ForcedConversionTargetAmmoFunc = () => true;
+            ToTargetAmmo = ModContent.ProjectileType<PetrifiedDiseaseAorrw>();
         }
     }
 }

@@ -38,9 +38,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+        }
+
+        public override void PostFiringShoot() {
             if (fireIndex > 2) {
-                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<MiniSharkron>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                    , ModContent.ProjectileType<MiniSharkron>()
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].MaxUpdates *= 2;
                 fireIndex = 0;
             }

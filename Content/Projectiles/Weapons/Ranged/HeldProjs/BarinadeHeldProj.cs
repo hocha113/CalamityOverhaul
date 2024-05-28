@@ -17,9 +17,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 5;
         }
 
-        public override void PostInOwner() {
-        }
-
         public override void BowShoot() {
             Projectile.NewProjectile(Source, Projectile.Center + ShootVelocity.RotatedBy(-0.55f), ShootVelocity.RotatedBy(0.025f)
                 , ModContent.ProjectileType<BarinadeArrow>(), WeaponDamage, WeaponKnockback, Owner.whoAmI);

@@ -17,9 +17,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistance = 17;
             ShootSpanTypeValue = SpanTypesEnum.AstralRepeater;
         }
-
-        public override void BowShoot() {
+        public override void SetShootAttribute() {
             Item.useTime = 4;
+            if (++fireIndex >= 3) {
+                Item.useTime = 20;
+                fireIndex = 0;
+            }
+        }
+        public override void BowShoot() {
             int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             if (fireIndex == 0) {
@@ -28,11 +33,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
             Main.projectile[proj].extraUpdates = 1;
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
-            fireIndex++;
-            if (fireIndex >= 3) {
-                Item.useTime = 20;
-                fireIndex = 0;
-            }
         }
     }
 }

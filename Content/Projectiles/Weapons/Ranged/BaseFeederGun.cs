@@ -791,27 +791,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("CaseEjection_TextContent"));
         }
         /// <summary>
-        /// 在单次开火时运行，优先于<see cref="FiringShoot"/>运行，返回<see langword="false"/>禁用<see cref="FiringShoot"/>的运行
-        /// 需要注意的是，该函数将会在服务器与其他客户端上运行，所以在编写功能时需要斟酌调用环境以保证其在多人模式的正确运行
-        /// </summary>
-        /// <returns></returns>
-        public virtual bool PreFiringShoot() {
-            return true;
-        }
-        /// <summary>
-        /// 在单次开火时，在<see cref="FiringShoot"/>运行后运行，在网络模式中只会被弹幕主人调用，无论<see cref="PreFiringShoot"/>返回什么都会运行
-        /// </summary>
-        /// <returns></returns>
-        public virtual void PostFiringShoot() {
-        }
-        /// <summary>
-        /// 左键单次开火事件
+        /// 左键单次开火事件，在网络模式中只会被弹幕主人调用
         /// </summary>
         public override void FiringShoot() {
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
         /// <summary>
-        /// 右键单次开火事件
+        /// 右键单次开火事件，在网络模式中只会被弹幕主人调用
         /// </summary>
         public override void FiringShootR() {
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -862,6 +848,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     AmmoTypes = ToTargetAmmo;
                 }
 
+                SetShootAttribute();
+
                 if (BulletNum > 0) {
                     if (PreFiringShoot()) {
                         if (Projectile.IsOwnedByLocalPlayer()) {
@@ -896,15 +884,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                             HanderPlaySound();
                         }
 
-                        if (fireLight > 0) {
+                        if (FireLight > 0) {
                             Color fireColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold);
-                            Vector3 fireColorToVr3 = fireColor.ToVector3() * Main.rand.NextFloat(0.1f, fireLight);
+                            Vector3 fireColorToVr3 = fireColor.ToVector3() * Main.rand.NextFloat(0.1f, FireLight);
                             Lighting.AddLight(GunShootPos, fireColorToVr3);
                         }
                     }
-                    if (Projectile.IsOwnedByLocalPlayer()) {
-                        PostFiringShoot();
-                    }
+                    PostFiringShoot();
                 }
                 if (CanUpdateMagazineContentsInShootBool) {
                     //如果关闭了弹匣系统，他将会必定调用一次UpdateMagazineContents

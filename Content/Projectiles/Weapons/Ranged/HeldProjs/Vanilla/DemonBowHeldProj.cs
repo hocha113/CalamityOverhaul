@@ -11,16 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.DemonBow].Value;
         public override int targetCayItem => ItemID.DemonBow;
         public override int targetCWRItem => ItemID.DemonBow;
-        public override void SetRangedProperty() {
-            ShootSpanTypeValue = SpanTypesEnum.DemonBow;
-        }
-
-        public override void PostInOwner() {
-            base.PostInOwner();
-        }
-
-        public override void BowShoot() {
-            base.BowShoot();
-        }
+        public override void SetRangedProperty() => ShootSpanTypeValue = SpanTypesEnum.DemonBow;
     }
 }

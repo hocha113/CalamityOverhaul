@@ -39,12 +39,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(30, 0, 13);
         }
 
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
             if (++fireIndex > 2) {
                 SoundEngine.PlaySound(Item.UseSound, GunShootPos);
                 fireIndex = 0;
             }
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

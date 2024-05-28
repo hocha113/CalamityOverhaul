@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 2;
             HandDistance = 28;
             HandDistanceY = 3;
+            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
+            ToTargetAmmo = ModContent.ProjectileType<HallowPointRoundProj>();
         }
 
         public override void PreInOwnerUpdate() {
@@ -27,11 +29,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            if (AmmoTypes == ProjectileID.Bullet) {
-                AmmoTypes = ModContent.ProjectileType<HallowPointRoundProj>();
-            }
             for (int i = 0; i < 6; i++) {
-                int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f))
+                int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center
+                    , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f))
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.AngelicShotgun;
             }

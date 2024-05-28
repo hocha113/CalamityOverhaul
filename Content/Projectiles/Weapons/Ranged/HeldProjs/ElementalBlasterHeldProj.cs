@@ -20,10 +20,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistanceY = -5;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
         public override void FiringShoot() {
             int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
                        , ModContent.ProjectileType<EnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

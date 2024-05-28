@@ -22,12 +22,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 0;
             DrawCrossArrowNum = 3;
             IsCrossbow = true;
+            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.WoodenArrowFriendly;
+            ToTargetAmmo = ProjectileID.ChlorophyteArrow;
         }
 
         public override void FiringShoot() {
-            if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {
-                AmmoTypes = ProjectileID.ChlorophyteArrow;
-            }
             _ = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             for (int i = 0; i < 3; i++) {
                 Main.projectile[Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.07f, 0.07f)) * Main.rand.NextFloat(0.8f, 1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0)].SetArrowRot();

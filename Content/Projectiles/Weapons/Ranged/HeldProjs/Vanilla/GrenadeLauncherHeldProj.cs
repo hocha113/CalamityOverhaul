@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 5;
             kreloadMaxTime = 60;
             EnableRecoilRetroEffect = true;
+            CanCreateCaseEjection = false;
             RecoilRetroForceMagnitude = 7;
             RecoilOffsetRecoverValue = 0.7f;
         }

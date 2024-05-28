@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BarracudaGun";
         public override int targetCayItem => ModContent.ItemType<BarracudaGun>();
         public override int targetCWRItem => ModContent.ItemType<BarracudaGunEcType>();
-
+        bool canFire;
         public override void SetRangedProperty() {
             HandDistance = 25;
             HandDistanceY = 5;
@@ -24,24 +24,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;
-            FiringDefaultSound = false;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
+        public override void SetShootAttribute() {
+            FiringDefaultSound = canFire = true;
+            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<BarracudaProj>()] > 0) {
+                FiringDefaultSound = canFire = false;
+            }
         }
 
         public override void FiringShoot() {
-            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<BarracudaProj>()] > 0) {
+            if (!canFire) {
                 return;
             }
-            SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(-0.11f), ModContent.ProjectileType<BarracudaProj>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(0.11f), ModContent.ProjectileType<BarracudaProj>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-        }
-
-        public override void FiringShootR() {
-            base.FiringShootR();
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(-0.11f)
+                , ModContent.ProjectileType<BarracudaProj>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(0.11f)
+                , ModContent.ProjectileType<BarracudaProj>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

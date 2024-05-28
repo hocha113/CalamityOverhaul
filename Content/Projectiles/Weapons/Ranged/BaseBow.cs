@@ -92,21 +92,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected float DrawArrowOffsetRot = 0;
         /// <summary>
-        /// 箭矢转化目标
-        /// </summary>
-        protected int ToTargetArrow;
-        /// <summary>
         /// 自定义绘制中心点，默认为<see cref="Vector2.Zero"/>，即不启用
         /// </summary>
         protected Vector2 CustomDrawOrig = Vector2.Zero;
-        /// <summary>
-        /// 一个委托变量，用于决定什么箭矢会被转化，与<see cref="ToTargetArrow"/>配合使用
-        /// </summary>
-        protected Func<bool> ForcedConversionTargetArrowFunc = () => false;
-        /// <summary>
-        /// <see cref="ForcedConversionTargetArrowFunc"/>为<see langword="true"/>时是否让箭矢倒转
-        /// </summary>
-        protected bool ISForcedConversionDrawArrowInversion;
         /// <summary>
         /// 开火额外矫正位置，这个值在开火后自动回归默认值<see cref="Vector2.Zero"/>
         /// </summary>
@@ -257,19 +245,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return 0;
         }
 
+        public virtual void SetShootAttribute() {
+
+        }
+
+        public virtual void PostBowShoot() {
+
+        }
+
         public override void SpanProj() {
             if (Projectile.ai[1] > Item.useTime && (onFire || onFireR)) {
+                if (ForcedConversionTargetAmmoFunc.Invoke()) {
+                    AmmoTypes = ToTargetAmmo;
+                }
+                SetShootAttribute();
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    if (ForcedConversionTargetArrowFunc.Invoke()) {
-                        AmmoTypes = ToTargetArrow;
-                    }
                     if (onFire) {
                         BowShoot();
                     }
                     if (onFireR) {
                         BowShootR();
                     }
-                    if (Owner.Calamity().luxorsGift || Owner.CWR().TheRelicLuxor > 0) {
+                    if (CalOwner.luxorsGift || ModOwner.TheRelicLuxor > 0) {
                         LuxirEvent();
                     }
                     if (GlobalItemBehavior) {
@@ -277,14 +274,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                     UpdateConsumeAmmo();
                 }
-                
+                PostBowShoot();
+
                 if (FiringDefaultSound) {
-                    SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+                    HanderPlaySound();
                 }
 
                 FireOffsetVector = FireOffsetPos = Vector2.Zero;
                 ShootCoolingValue = 0;
-                onFire = false;
+                onFireR = onFire = false;
             }
         }
 
@@ -337,9 +335,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 ArrowResourceProcessing(ref arrowValue, arrowItemInds);
                 CustomArrowRP(ref arrowValue, arrowItemInds);
 
-                if (ForcedConversionTargetArrowFunc.Invoke()) {
-                    arrowValue = TextureAssets.Projectile[ToTargetArrow].Value;
-                    if (ISForcedConversionDrawArrowInversion) {
+                if (ForcedConversionTargetAmmoFunc.Invoke()) {
+                    arrowValue = TextureAssets.Projectile[ToTargetAmmo].Value;
+                    if (ISForcedConversionDrawAmmoInversion) {
                         CustomDrawOrig = new Vector2(arrowValue.Width / 2, 0);
                         DrawArrowOffsetRot = MathHelper.Pi;
                     }
@@ -412,7 +410,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (ToMouseA + MathHelper.Pi > MathHelper.ToRadians(270)) {
                 Projectile.rotation = minRot - MathHelper.Pi;
             }
-            Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance;
             ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
             SetCompositeArm();
         }

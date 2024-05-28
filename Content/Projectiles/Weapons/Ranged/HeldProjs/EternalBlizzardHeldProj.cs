@@ -31,12 +31,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ToTargetAmmo = ModContent.ProjectileType<IcicleArrowProj>();
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
+        public override void SetShootAttribute() {
+            Item.useTime = 10;
         }
 
         public override void FiringShoot() {
-            Item.useTime = 10;
             for (int i = 0; i < fireIndex + 1; i++) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -46,16 +45,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 }
             }
 
-            if (++fireIndex > 3) {
-                Item.useTime = 36;
-                fireIndex = 0;
-            }
-
             _ = UpdateConsumeAmmo();
         }
 
+        public override void PostFiringShoot() {
+            if (onFire) {
+                if (++fireIndex > 3) {
+                    Item.useTime = 36;
+                    fireIndex = 0;
+                }
+            }
+        }
+
         public override void FiringShootR() {
-            Item.useTime = 10;
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , AmmoTypes, (int)(WeaponDamage * 0.6f), WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].SetArrowRot();

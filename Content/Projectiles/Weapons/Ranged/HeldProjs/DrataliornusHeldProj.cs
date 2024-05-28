@@ -20,8 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             DrawArrowMode = -30;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
+        public override void PostInOwner() {
             if (!onFire && !onFireR) {
                 chargeIndex = 35;
             }
@@ -39,9 +38,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void BowShoot() {
-            Item.useTime = chargeIndex;
+        public override void SetShootAttribute() {
+            if (onFire) {
+                Item.useTime = chargeIndex;
+            }
+            else if (onFireR) {
+                Item.useTime = 40;
+                chargeIndex = 35;
+            }
             AmmoTypes = ModContent.ProjectileType<DrataliornusFlame>();
+        }
+
+        public override void BowShoot() {
             Vector2 speed = ShootVelocity;
             float ai0 = 0f;
             if (chargeIndex < 6) {
@@ -58,16 +66,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, ai0);
             Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
-            chargeIndex--;
-            if (chargeIndex < 5) {
-                chargeIndex = 5;
+            
+        }
+
+        public override void PostBowShoot() {
+            if (onFire) {
+                chargeIndex--;
+                if (chargeIndex < 5) {
+                    chargeIndex = 5;
+                }
             }
         }
 
         public override void BowShootR() {
-            Item.useTime = 40;
-            chargeIndex = 35;
-            AmmoTypes = ModContent.ProjectileType<DrataliornusFlame>();
             const int numFlames = 5;
             const float fifteenHundredthPi = 0.471238898f;
             Vector2 spinningpoint = ShootVelocity;

@@ -23,10 +23,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistanceY = -3;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
         private void Shoot(int num) {
             for (int i = 0; i < num; i++) {
                 int proj14 = Projectile.NewProjectile(Source, GunShootPos

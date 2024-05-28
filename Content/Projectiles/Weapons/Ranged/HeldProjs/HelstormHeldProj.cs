@@ -38,11 +38,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
+            if (onFireR) {
+                FireTime = 3;
+                Recoil = 0.5f;
+                GunPressure = 0.1f;
+                EnableRecoilRetroEffect = true;
+                return;
+            }
             FireTime = 20;
             Recoil = 1;
             GunPressure = 0.2f;
             EnableRecoilRetroEffect = false;
+        }
+
+        public override void FiringShoot() {
             for (int i = 0; i < 5; i++) {
                 _ = Projectile.NewProjectile(Source, GunShootPos,
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.7f, 1.1f)
@@ -51,11 +61,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            FireTime = 3;
-            Recoil = 0.5f;
-            GunPressure = 0.1f;
-            EnableRecoilRetroEffect = true;
-            _ = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.06f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            _ = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.06f)
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

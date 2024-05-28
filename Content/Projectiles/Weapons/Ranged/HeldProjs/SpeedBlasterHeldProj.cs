@@ -37,6 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
+            CanCreateSpawnGunDust = false;
             RecoilRetroForceMagnitude = 6;
             CanRightClick = true;
             CanUpdateMagazineContentsInShootBool = false;
@@ -46,14 +47,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAnimation(50, 3, 25);
         }
 
-        public override void PostInOwnerUpdate() {
-            base.PostInOwnerUpdate();
+        public override void SetShootAttribute() {
+            FiringDefaultSound = true;
+            CanCreateCaseEjection = true;
+            GunPressure = 0.1f;
+            ControlForce = 0.05f;
+            if (onFireR && Owner.HasCooldown(SpeedBlasterBoost.ID)) {
+                FiringDefaultSound = false;
+                CanCreateCaseEjection = false;
+                GunPressure = 0;
+                ControlForce = 0;
+                SoundEngine.PlaySound(SpeedBlaster.Empty, Owner.Center);
+            }
         }
 
         public override void FiringShoot() {
-            FiringDefaultSound = true;
-            GunPressure = 0.1f;
-            ControlForce = 0.05f;
             Vector2 newVel = ShootVelocity.RotatedByRandom(MathHelper.ToRadians(Owner.HasCooldown(SpeedBlasterBoost.ID) ? 3f : 15f));
             float ShotMode = (Owner.HasCooldown(SpeedBlasterBoost.ID) ? 2f : 0f);
             UpdateMagazineContents();
@@ -61,9 +69,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            FiringDefaultSound = true;
-            GunPressure = 0.1f;
-            ControlForce = 0.05f;
             if (!Owner.HasCooldown(SpeedBlasterBoost.ID)) {
                 if (ColorValue >= 4f) {
                     ColorValue = 0f;
@@ -89,12 +94,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     ColorValue = 0f;
                 else
                     ColorValue++;
-            }
-            else {
-                FiringDefaultSound = false;
-                GunPressure = 0;
-                ControlForce = 0;
-                SoundEngine.PlaySound(SpeedBlaster.Empty, Owner.Center);
             }
         }
     }

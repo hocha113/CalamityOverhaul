@@ -18,14 +18,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 4;
         }
 
-        public override void FiringIncident() {
-            base.FiringIncident();
-        }
-
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ModContent.ProjectileType<Aquashard>();
             }
+        }
+
+        public override void FiringShoot() {
             for (int i = 0; i < 4; i++) {
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f))
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

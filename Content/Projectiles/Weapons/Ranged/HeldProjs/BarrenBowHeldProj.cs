@@ -10,9 +10,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Item_Ranged + "BarrenBow";
         public override int targetCayItem => ModContent.ItemType<BarrenBow>();
         public override int targetCWRItem => ModContent.ItemType<BarrenBow>();
-        public override void SetRangedProperty() {
-            base.SetRangedProperty();
-        }
         public override void BowShoot() {
             int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.UnitVector() * 17
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

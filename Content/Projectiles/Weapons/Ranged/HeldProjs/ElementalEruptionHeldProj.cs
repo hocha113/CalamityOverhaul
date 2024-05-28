@@ -59,8 +59,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void FiringShoot() {
+        public override void HanderPlaySound() {
             SoundEngine.PlaySound(SoundID.Item34, Projectile.Center);
+        }
+
+        public override void FiringShoot() {
+            
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.08f), ModContent.ProjectileType<ElementalFire>(), WeaponDamage, WeaponKnockback, Projectile.owner);
             if (++fireIndex >= 3) {
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(0.3f), AmmoTypes, WeaponDamage, WeaponKnockback, Projectile.owner, ShootVelocity.Length(), 1);

@@ -15,13 +15,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ArmRotSengsBackBaseValue = 70;
             ShootSpanTypeValue = SpanTypesEnum.WoodenBow;
         }
-
-        public override void PostInOwner() {
-            base.PostInOwner();
-        }
-
-        public override void BowShoot() {
-            base.BowShoot();
-        }
     }
 }

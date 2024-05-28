@@ -30,10 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAnimation(30, 0, 13);
         }
 
-        public override bool KreLoadFulfill() {
-            return true;
-        }
-
         public override void FiringShoot() {
             //火箭弹药特判，感应雷特判
             Item ammoItem = GetSelectedBullets();
@@ -74,7 +70,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 AmmoTypes = ProjectileID.MiniNukeMineII;
             }
 
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes
+                , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

@@ -15,6 +15,8 @@ namespace CalamityOverhaul
         TungstenRiot,
         TEBloodAltar,
         OverBeatBack,
+        HeldGunData,
+        HeldBowData,
     }
 
     public class CWRNetCode
@@ -44,6 +46,9 @@ namespace CalamityOverhaul
                 modnpc.OverBeatBackBool = reader.ReadBoolean();
                 modnpc.OverBeatBackVr = reader.ReadVector2();
                 modnpc.OverBeatBackAttenuationForce = reader.ReadSingle();
+            }
+            else if (type == CWRMessageType.HeldGunData) {
+
             }
         }
     }

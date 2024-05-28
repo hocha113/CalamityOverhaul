@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 光照强度，默认为1，用于控制在开火时制造光火效果的强度，为0时表示关闭
         /// </summary>
-        public float fireLight = 1;
+        public float FireLight = 1;
         /// <summary>
         /// 是否是一把弩
         /// </summary>
@@ -183,18 +183,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected float EjectCasingProjSize = 1;
         /// <summary>
-        /// 弹药转化目标，指定一个弹幕ID类型
-        /// </summary>
-        protected int ToTargetAmmo;
-        /// <summary>
-        /// 一个委托变量，用于决定什么弹药会被转化，与<see cref="ToTargetAmmo"/>配合使用
-        /// </summary>
-        protected Func<bool> ForcedConversionTargetAmmoFunc = () => false;
-        /// <summary>
-        /// <see cref="ForcedConversionTargetAmmoFunc"/>为<see langword="true"/>时是否让弩箭倒转
-        /// </summary>
-        protected bool ISForcedConversionDrawAmmoInversion;
-        /// <summary>
         /// 快捷获取该枪械的发射口位置
         /// </summary>
         public Vector2 GunShootPos => GetShootPos(ShootPosToMouLengValue, ShootPosNorlLengValue);
@@ -225,7 +213,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         internal struct SpwanGunDustMngsDataStruct{
             public Vector2 pos = default;
             public Vector2 velocity = default; 
-            public int splNum = 1; 
+            public float splNum = 1f; 
             public int dustID1 = 262; 
             public int dustID2 = 54;
             public int dustID3 = 53;
@@ -436,7 +424,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <param name="dustID1"></param>
         /// <param name="dustID2"></param>
         /// <param name="dustID3"></param>
-        public virtual void SpawnGunFireDust(Vector2 pos = default, Vector2 velocity = default, int splNum = 1, int dustID1 = 262, int dustID2 = 54, int dustID3 = 53) {
+        public virtual void SpawnGunFireDust(Vector2 pos = default, Vector2 velocity = default, float splNum = 1f, int dustID1 = 262, int dustID2 = 54, int dustID3 = 53) {
             if (pos == default) {
                 pos = GunShootPos;
             }
@@ -479,6 +467,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             CaseEjection();
         }
 
+        public virtual void SetShootAttribute() {
+
+        }
+
+        /// <summary>
+        /// 在单次开火时运行，优先于<see cref="FiringShoot"/>运行，返回<see langword="false"/>禁用<see cref="FiringShoot"/>的运行
+        /// 需要注意的是，该函数将会在服务器与其他客户端上运行，所以在编写功能时需要斟酌调用环境以保证其在多人模式的正确运行
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool PreFiringShoot() {
+            return true;
+        }
+        /// <summary>
+        /// 在单次开火时，在<see cref="FiringShoot"/>运行后运行，无论<see cref="PreFiringShoot"/>返回什么都会运行
+        /// 需要注意的是，该函数将会在服务器与其他客户端上运行，所以在编写功能时需要斟酌调用环境以保证其在多人模式的正确运行
+        /// </summary>
+        /// <returns></returns>
+        public virtual void PostFiringShoot() { }
+
         public override void SpanProj() {
             if (ShootCoolingValue <= 0 && (onFire || onFireR)) {
                 if (LazyRotationUpdate) {
@@ -489,43 +496,47 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     AmmoTypes = ToTargetAmmo;
                 }
 
-                if (Projectile.IsOwnedByLocalPlayer()) {
-                    if (onFire) {
-                        FiringShoot();
-                    }
-                    if (onFireR) {
-                        FiringShootR();
-                    }
-                    if (Owner.Calamity().luxorsGift || ModOwner.TheRelicLuxor > 0) {
-                        LuxirEvent();
-                    }
-                    if (GlobalItemBehavior) {
-                        ItemLoaderInFireSetBaver();
-                    }
-                }
+                SetShootAttribute();
 
-                if (FiringDefaultSound) {
-                    HanderPlaySound();
-                }
-                if (CanCreateSpawnGunDust) {
-                    HanderSpwanDust();
-                }
-                if (CanCreateCaseEjection) {
-                    HanderCaseEjection();
-                }
-                if (CanCreateRecoilBool) {
-                    CreateRecoil();
-                }
+                if (PreFiringShoot()) {
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        if (onFire) {
+                            FiringShoot();
+                        }
+                        if (onFireR) {
+                            FiringShootR();
+                        }
+                        if (CalOwner.luxorsGift || ModOwner.TheRelicLuxor > 0) {
+                            LuxirEvent();
+                        }
+                        if (GlobalItemBehavior) {
+                            ItemLoaderInFireSetBaver();
+                        }
+                    }
 
-                if (EnableRecoilRetroEffect) {
-                    OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
+                    if (FiringDefaultSound) {
+                        HanderPlaySound();
+                    }
+                    if (CanCreateSpawnGunDust) {
+                        HanderSpwanDust();
+                    }
+                    if (CanCreateCaseEjection) {
+                        HanderCaseEjection();
+                    }
+                    if (CanCreateRecoilBool) {
+                        CreateRecoil();
+                    }
+                    if (EnableRecoilRetroEffect) {
+                        OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
+                    }
+                    if (FireLight > 0) {
+                        Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * FireLight);
+                    }
                 }
-                if (fireLight > 0) {
-                    Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * fireLight);
-                }
+                PostFiringShoot();
 
                 ShootCoolingValue += Item.useTime;
-                onFire = false;
+                onFireR = onFire = false;
             }
         }
 

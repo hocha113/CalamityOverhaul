@@ -14,13 +14,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.DD2BetsyBow;
         public override void SetRangedProperty() {
             BowArrowDrawNum = 5;
-            ForcedConversionTargetArrowFunc = () => true;
-            ISForcedConversionDrawArrowInversion = true;
-            ToTargetArrow = ProjectileID.DD2BetsyArrow;
+            ForcedConversionTargetAmmoFunc = () => true;
+            ISForcedConversionDrawAmmoInversion = true;
+            ToTargetAmmo = ProjectileID.DD2BetsyArrow;
         }
 
         public override void BowShoot() {
-            AmmoTypes = ProjectileID.DD2BetsyArrow;
             for (int i = 0; i < 5; i++) {
                 FireOffsetVector = ShootVelocity.RotatedBy((-2 + i) * 0.15f) * 0.2f;
                 base.BowShoot();

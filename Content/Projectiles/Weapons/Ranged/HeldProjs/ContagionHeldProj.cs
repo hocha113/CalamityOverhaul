@@ -14,8 +14,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             CanRightClick = true;
             BowArrowDrawNum = 2;
-            ForcedConversionTargetArrowFunc = () => true;
-            ToTargetArrow = ModContent.ProjectileType<NurgleArrow>();
+            ForcedConversionTargetAmmoFunc = () => true;
+            ToTargetAmmo = ModContent.ProjectileType<NurgleArrow>();
             DrawArrowOffsetRot = MathHelper.Pi;
             CustomDrawOrig = new Vector2(7, 0);
         }

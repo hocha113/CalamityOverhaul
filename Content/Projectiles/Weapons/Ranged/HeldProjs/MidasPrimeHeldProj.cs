@@ -40,9 +40,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanUpdateMagazineContentsInShootBool = CanCreateRecoilBool = onFire;
         }
 
-        public override void FiringShoot() {
-            FireTime = 22;
+        public override void SetShootAttribute() {
+            FireTime = onFireR ? 12 : 22;
+        }
+
+        public override void HanderPlaySound() {
+            if (onFireR) {
+                SoundEngine.PlaySound(new("CalamityMod/Sounds/Custom/Ultrabling") 
+                { PitchVariance = 0.5f }, Projectile.Center);
+                return;
+            }
             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+        }
+
+        public override void FiringShoot() {
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ModContent.ProjectileType<MarksmanShot>();
             }
@@ -51,7 +62,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            FireTime = 12;
             long cashAvailable2 = Utils.CoinsCount(out bool overflow2, Owner.inventory);
             if (cashAvailable2 < 100 && !overflow2) {
                 return;
@@ -59,8 +69,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (Owner.GetActiveRicoshotCoinCount() >= 4) {
                 return;
             }
-
-            SoundEngine.PlaySound(new("CalamityMod/Sounds/Custom/Ultrabling") { PitchVariance = 0.5f }, Projectile.Center);
 
             long cashAvailable = Utils.CoinsCount(out bool overflow, Owner.inventory);
 

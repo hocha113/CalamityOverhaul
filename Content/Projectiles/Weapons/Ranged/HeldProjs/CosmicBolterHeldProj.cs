@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "VernalBolter";
         public override int targetCayItem => ModContent.ItemType<VernalBolter>();
         public override int targetCWRItem => ModContent.ItemType<CosmicBolterEcType>();
-
         private int fireIndex;
         private int fireIndex2;
         private bool fire;
@@ -21,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             BowArrowDrawNum = 3;
             HandFireDistance = 20;
         }
-        public override void BowShoot() {
+        public override void SetShootAttribute() {
             Item.useTime = 20;
             if (fire) {
                 Item.useTime = 5;
@@ -34,10 +33,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {
                 AmmoTypes = ModContent.ProjectileType<VernalBolt>();
             }
+        }
+        public override void BowShoot() {
             for (int i = 0; i < 3; i++) {
                 FireOffsetPos = ShootVelocity.GetNormalVector() * ((-1 + i) * 8);
                 base.BowShoot();
             }
+        }
+        public override void PostBowShoot() {
             if (!fire) {
                 if (++fireIndex2 > 12) {
                     fire = true;

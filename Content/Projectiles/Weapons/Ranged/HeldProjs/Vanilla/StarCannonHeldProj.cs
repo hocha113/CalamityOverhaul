@@ -28,7 +28,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
             RepeatedCartridgeChange = true;
-            FiringDefaultSound = false;
             SpwanGunDustMngsData.dustID1 = 15;
             SpwanGunDustMngsData.dustID2 = 57;
             SpwanGunDustMngsData.dustID3 = 58;
@@ -39,11 +38,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             return true;
         }
 
-        public override void FiringShoot() {
-            SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot with { Volume = 0.3f, Pitch = -0.3f }, Projectile.Center);
+        public override void HanderPlaySound() {
+            SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot 
+                with { Volume = 0.2f, Pitch = -0.3f }, Projectile.Center);
+        }
+
+        public override void SetShootAttribute() {
             if (FireTime > 10) {
                 FireTime--;
             }
+        }
+
+        public override void FiringShoot() {
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].usesLocalNPCImmunity = true;
             Main.projectile[proj].localNPCHitCooldown = -1;

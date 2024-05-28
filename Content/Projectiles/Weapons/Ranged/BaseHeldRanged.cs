@@ -2,6 +2,7 @@
 using CalamityMod.CalPlayer;
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
+using System;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -128,6 +129,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected float ScopeLeng;
         /// <summary>
+        /// 弹药转化目标
+        /// </summary>
+        protected int ToTargetAmmo;
+        /// <summary>
+        /// 一个委托变量，用于决定什么弹药会被转化，与<see cref="ToTargetAmmo"/>配合使用
+        /// </summary>
+        protected Func<bool> ForcedConversionTargetAmmoFunc = () => false;
+        /// <summary>
+        /// <see cref="ForcedConversionTargetAmmoFunc"/>为<see langword="true"/>时是否让弹药倒转
+        /// </summary>
+        protected bool ISForcedConversionDrawAmmoInversion;
+        /// <summary>
         /// 是否可以右键，默认为<see langword="false"/>
         /// </summary>
         public bool CanRightClick;
@@ -232,6 +245,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.hide = true;
             Projectile.CWR().NotSubjectToSpecialEffects = true;
             CWRUtils.SafeLoadItem(targetCayItem);
+            CWRUtils.SafeLoadProj(ToTargetAmmo);
             PreSetRangedProperty();
             SetRangedProperty();
             PostSetRangedProperty();

@@ -14,8 +14,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<ArterialAssault>();
         public override int targetCWRItem => ModContent.ItemType<ArterialAssaultEcType>();
         private int fireIndex;
-        public override void BowShoot() {
+        public override void SetShootAttribute() {
             Item.useTime = 3;
+            if (++fireIndex > 6) {
+                Item.useTime = 30;
+                fireIndex = 0;
+            }
+        }
+        public override void BowShoot() {
             _ = Owner.RotatedRelativePoint(Owner.GetPlayerStabilityCenter(), true);
             Vector2 realPlayerPos = new Vector2(Owner.position.X + Owner.width * 0.5f + -(float)Owner.direction + (Main.mouseX + Main.screenPosition.X - Owner.position.X), Owner.MountedCenter.Y - 600f);
             realPlayerPos.X = (realPlayerPos.X + Owner.Center.X) / 2f;
@@ -27,11 +33,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
             Main.projectile[proj].Calamity().allProjectilesHome = true;
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
-            fireIndex++;
-            if (fireIndex > 6) {
-                Item.useTime = 30;
-                fireIndex = 0;
-            }
         }
     }
 }

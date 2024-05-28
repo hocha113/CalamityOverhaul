@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 1.1f;
             RangeOfStress = 8;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
+            SpwanGunDustMngsData.splNum = 0.5f;
+            SpwanGunDustMngsData.dustID1 = DustID.FireworkFountain_Red;
         }
     }
 }

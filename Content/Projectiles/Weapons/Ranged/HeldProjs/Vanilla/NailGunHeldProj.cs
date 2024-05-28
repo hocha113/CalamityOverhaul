@@ -30,10 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAnimation(30, 0, 13);
         }
 
-        public override bool KreLoadFulfill() {
-            return true;
-        }
-
         public override void FiringShoot() {
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
             Main.projectile[proj].extraUpdates += 1;

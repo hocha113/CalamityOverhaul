@@ -39,8 +39,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAnimation(-30, 3, -3);
         }
 
-        public override bool KreLoadFulfill() {
-            return true;
+        public override void HanderPlaySound() {
+            SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = -0.6f, Volume = 0.6f }, Projectile.Center);
         }
 
         public override void FiringShoot() {
@@ -88,7 +88,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 newDamg *= 0.85f;
             }
 
-            _ = SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = -0.6f, Volume = 0.6f }, Projectile.Center);
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 0.5f, AmmoTypes, (int)newDamg, WeaponKnockback, Owner.whoAmI, 0, 0, 3);
             Main.projectile[proj].scale *= 1.6f;
             Main.projectile[proj].usesLocalNPCImmunity = true;

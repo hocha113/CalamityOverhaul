@@ -1154,6 +1154,12 @@ namespace CalamityOverhaul
             }
         }
 
+        public static void SafeLoadProj(int id) {
+            if (id > 0 && id < TextureAssets.Projectile.Length && !Main.dedServ) {
+                Main.instance.LoadProjectile(id);
+            }
+        }
+
         public static void ActivateSky(string key) {
             if (!SkyManager.Instance[key].IsActive()) {
                 SkyManager.Instance.Activate(key);
