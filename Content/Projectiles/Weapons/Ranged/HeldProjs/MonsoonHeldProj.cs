@@ -24,12 +24,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PostInOwner() {
             CanFireMotion = true;
             FiringDefaultSound = true;
-            BowArrowDrawBool = true;
+            BowArrowDrawBool = onFire;
             if (onFireR) {
-                FiringDefaultSound = CanFireMotion = false;
+                CanFireMotion = false;
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = -MathHelper.PiOver2;
-                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 12;
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * 12;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
             }
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
@@ -40,14 +40,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     accumulator = SlotId.Invalid;
                 }
             }
-            else {
-                BowArrowDrawBool = false;
-            }
         }
 
         public override void HanderPlaySound() {
-            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<MonsoonOnSpan>()] == 0 && onFireR) {
-                accumulator = SoundEngine.PlaySound(CWRSound.Accumulator with { Pitch = 0.3f }, Projectile.Center);
+            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<MonsoonOnSpan>()] == 0) {
+                if (onFireR) {
+                    accumulator = SoundEngine.PlaySound(CWRSound.Accumulator with { Pitch = -0.3f }, Projectile.Center);
+                    return;
+                }
+                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
             }
         }
 
@@ -65,9 +66,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void BowShootR() {
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
+            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<MonsoonOnSpan>()] == 0) {
+                Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<MonsoonOnSpan>(), WeaponDamage
                     , WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
+            }
         }
     }
 }

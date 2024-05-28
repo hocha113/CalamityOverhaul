@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
                 if (!colers2) {
                     colers2 = true;
                     if (colers <= 0) {
-                        firePos = Main.MouseWorld;
+                        firePos = ToMouse + Owner.GetPlayerStabilityCenter();
                     }
                     SoundEngine.PlaySound(SoundID.Item77, Projectile.Center);
                 }
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
                 colers2 = false;
             }
 
-            firePos = Vector2.Lerp(firePos, Main.MouseWorld, 0.1f);
+            firePos = Vector2.Lerp(firePos, ToMouse + Owner.GetPlayerStabilityCenter(), 0.1f);
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 9);
         }
 

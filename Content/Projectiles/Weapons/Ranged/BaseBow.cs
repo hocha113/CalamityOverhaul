@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 是否处于开火时间
         /// </summary>
-        public override bool CanFire => Owner.PressKey() || (Owner.PressKey(false) && CanRightClick && !onFire && SafeMousetStart);
+        public override bool CanFire => DownLeft || (DownRight && CanRightClick && !onFire && SafeMousetStart);
         /// <summary>
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
         /// </summary>
@@ -196,6 +196,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.timeLeft = 2;
             ModItem.IsBow = IsBow;
             SetCompositeArm();
+
             if (SafeMouseInterfaceValue) {
                 FiringIncident();
             }
@@ -253,6 +254,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         }
 
+        public override void AI() {
+            InOwner();
+            if (overNoFireCeahks()) {
+                SpanProj();
+            }
+            Time++;
+        }
+
         public override void SpanProj() {
             if (Projectile.ai[1] > Item.useTime && (onFire || onFireR)) {
                 if (ForcedConversionTargetAmmoFunc.Invoke()) {
@@ -290,6 +299,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (OnHandheldDisplayBool) {
                 BowDraw(ref lightColor);
             }
+            
             if (CWRServerConfig.Instance.BowArrowDraw && BowArrowDrawBool) {
                 ArrowDraw();
             }
@@ -297,8 +307,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public virtual void BowDraw(ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, CanFire ? Color.White : lightColor
-                , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition
+                , null, CanFire ? Color.White : lightColor
+                , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
 
         private void ArrowResourceProcessing(ref Texture2D value, Item arrow) {
@@ -312,15 +324,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        public virtual void CustomArrowRP(ref Texture2D value, Item arrow) {
-
-        }
+        public virtual void CustomArrowRP(ref Texture2D value, Item arrow) { }
 
         public void ArrowDraw() {
             int cooltime = 3;
             if (cooltime > Item.useTime / 3) {
                 cooltime = Item.useTime / 3;
             }
+
             if (CanFire && Projectile.ai[1] > cooltime) {
                 int useAmmoItemType = UseAmmoItemType;
                 if (useAmmoItemType == ItemID.None) {
@@ -349,6 +360,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                 float drawRot = Projectile.rotation + MathHelper.PiOver2;
                 float chordCoefficient = 1 - Projectile.ai[1] / Item.useTime;
+
                 float lengsOFstValue = chordCoefficient * 16 + DrawArrowMode;
                 Vector2 inprojRot = Projectile.rotation.ToRotationVector2();
                 Vector2 offsetDrawPos = inprojRot * lengsOFstValue;

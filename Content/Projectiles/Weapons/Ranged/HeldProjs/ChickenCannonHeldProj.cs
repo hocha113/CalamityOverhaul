@@ -23,15 +23,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistanceY = -10;
             ShootPosNorlLengValue = -12;
             ShootPosToMouLengValue = 30;
-            RepeatedCartridgeChange = true;
             GunPressure = 0.3f;
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;
-            CanRightClick = true;
-            EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 13;
+            CanRightClick = true;
             FiringDefaultSound = false;
+            RepeatedCartridgeChange = true;
+            EnableRecoilRetroEffect = true;
         }
 
         public override void PreInOwnerUpdate() {

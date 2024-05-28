@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using ReLogic.Utilities;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -20,15 +21,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
             HandFireDistance = 20;
             BowArrowDrawNum = 5;
-            ForcedConversionTargetAmmoFunc = () => CalamityUtils.CheckWoodenAmmo(AmmoTypes, Owner);
+            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.WoodenArrowFriendly;
             ToTargetAmmo = ModContent.ProjectileType<Voidragon>();
         }
 
         public override void PostInOwner() {
-            BowArrowDrawBool = true;
+            BowArrowDrawBool = onFire;
             if (onFireR) {
                 Projectile.rotation = -MathHelper.PiOver2;
-                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 12;
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * 12;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
             }
@@ -37,9 +38,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     sound.Stop();
                     accumulator = SlotId.Invalid;
                 }
-            }
-            else {
-                BowArrowDrawBool = false;
             }
         }
 
@@ -53,12 +51,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void SetShootAttribute() {
-            BowArrowDrawNum = 5;
-        }
-
         public override void BowShoot() {
-            if (CalamityUtils.CheckWoodenAmmo(AmmoTypes, Owner)) {
+            if (AmmoTypes == ModContent.ProjectileType<Voidragon>()) {
                 AmmoTypes = ModContent.ProjectileType<TorrentialArrow>();
                 for (int i = 0; i < 5; i++) {
                     int proj = Projectile.NewProjectile(Source, Projectile.Center + UnitToMouseV.GetNormalVector() * (-2 + i) * 17

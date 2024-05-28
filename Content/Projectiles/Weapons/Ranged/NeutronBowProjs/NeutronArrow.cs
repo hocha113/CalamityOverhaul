@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
             if (Projectile.alpha > 0) {
                 Projectile.alpha -= 25;
             }
+            Projectile.SetArrowRot();
             Lighting.AddLight(Projectile.Center + Projectile.velocity, Color.AntiqueWhite.ToVector3());
             if (++Projectile.ai[0] > 10 || ++Projectile.ai[1] > 2) {
                 Vector2 norl = Projectile.velocity.GetNormalVector();

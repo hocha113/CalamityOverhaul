@@ -31,8 +31,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 1.2f;
             RangeOfStress = 25;
             AmmoTypeAffectedByMagazine = false;
-            EnableRecoilRetroEffect = true;
             FiringDefaultSound = false;
+            CanCreateSpawnGunDust = false;
             RecoilRetroForceMagnitude = 17;
         }
 
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (ToMouseA + MathHelper.Pi > MathHelper.ToRadians(270)) {
                     Projectile.rotation = minRot - MathHelper.Pi;
                 }
-                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * HandFireDistance + OffsetPos;
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + OffsetPos;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
             }
@@ -76,8 +76,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 fireIndex = 0;
                 return;
             }
+            OffsetPos -= ShootVelocityInProjRot.UnitVector() * RecoilRetroForceMagnitude;
             SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/FlakKrakenShoot") 
-            { Pitch = 0.65f, Volume = 0.5f }, Projectile.Center);
+            { Pitch = 0.65f, Volume = 0.3f }, Projectile.Center);
         }
     }
 }

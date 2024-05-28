@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 射弹速度
         /// </summary>
-        public float ScaleFactor = 11f;
+        public float ShootSpeedModeFactor = 11f;
         /// <summary>
         /// 获取一个实时的远程伤害
         /// </summary>
@@ -107,11 +107,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 获取射击向量
         /// </summary>
-        public Vector2 ShootVelocity => ScaleFactor * UnitToMouseV;
+        public Vector2 ShootVelocity => ShootSpeedModeFactor * UnitToMouseV;
         /// <summary>
         /// 获取射击向量，该属性以远程武器本身的选择角度为基准
         /// </summary>
-        public Vector2 ShootVelocityInProjRot => ScaleFactor * Projectile.rotation.ToRotationVector2();
+        public Vector2 ShootVelocityInProjRot => ShootSpeedModeFactor * Projectile.rotation.ToRotationVector2();
         /// <summary>
         /// 使用者是否拥有弹药
         /// </summary>
@@ -178,6 +178,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             downRightValue = flags[4];
         }
 
+        public bool overNoFireCeahks() {
+            return !CalOwner.profanedCrystalBuffs;
+        }
+
         private bool UpdateDownLeftStart() {
             if (Projectile.IsOwnedByLocalPlayer()) {
                 downLeftValue = Owner.PressKey();
@@ -224,7 +228,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 WeaponDamage = Owner.GetWeaponDamage(Item);
                 WeaponKnockback = Item.knockBack;
                 AmmoTypes = Item.shoot;
-                ScaleFactor = Item.shootSpeed;
+                ShootSpeedModeFactor = Item.shootSpeed;
                 UseAmmoItemType = ItemID.None;
                 HaveAmmo = true;
                 if (AmmoTypes == 0 || AmmoTypes == 10) {
@@ -232,7 +236,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
                 return;
             }
-            HaveAmmo = Owner.PickAmmo(Item, out AmmoTypes, out ScaleFactor, out WeaponDamage, out WeaponKnockback, out UseAmmoItemType, true);
+            HaveAmmo = Owner.PickAmmo(Item, out AmmoTypes, out ShootSpeedModeFactor, out WeaponDamage, out WeaponKnockback, out UseAmmoItemType, true);
         }
 
         public sealed override void SetDefaults() {

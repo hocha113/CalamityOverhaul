@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                         }
                         SoundEngine.PlaySound(CommonCalamitySounds.LargeWeaponFireSound 
                             with { Volume = CommonCalamitySounds.LargeWeaponFireSound.Volume * 0.45f, Pitch = 0.2f }, Projectile.Center);
-                        Vector2 vr = pos.To(target.Center).UnitVector() * ScaleFactor;
+                        Vector2 vr = pos.To(target.Center).UnitVector() * ShootSpeedModeFactor;
                         Projectile.NewProjectile(Source, pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     }
                     if (BulletNum <= 0) {

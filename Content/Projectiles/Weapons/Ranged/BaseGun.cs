@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 快速的获取该枪械是否正在进行开火尝试，包括左键或者右键的情况
         /// </summary>
-        public override bool CanFire => (DownLeft || (Owner.Calamity().mouseRight && !onFire && CanRightClick && SafeMousetStart)) && SafeMouseInterfaceValue;
+        public override bool CanFire => (DownLeft || (DownRight && !onFire && CanRightClick && SafeMousetStart)) && SafeMouseInterfaceValue;
         /// <summary>
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
         /// </summary>
@@ -547,10 +547,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             ModOwner.HeldGunBool = true;
             return reset;
-        }
-
-        public bool overNoFireCeahks() {
-            return !CalOwner.profanedCrystalBuffs;
         }
 
         public override void AI() {

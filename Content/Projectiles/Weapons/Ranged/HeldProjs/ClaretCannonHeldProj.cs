@@ -38,9 +38,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             base.FiringShoot();
-            ScaleFactor *= 0.9f;
+            ShootSpeedModeFactor *= 0.9f;
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.05f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            ScaleFactor *= 0.9f;
+            ShootSpeedModeFactor *= 0.9f;
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.05f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

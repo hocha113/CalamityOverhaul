@@ -23,14 +23,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void PostInOwner() {
-            BowArrowDrawBool = true;
+            BowArrowDrawBool = onFire;
             CanFireMotion = FiringDefaultSound = true;
 
             if (onFireR) {
                 FiringDefaultSound = CanFireMotion = false;
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = -MathHelper.PiOver2;
-                Projectile.Center = Owner.Center + Projectile.rotation.ToRotationVector2() * 12;
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * 12;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
             }
@@ -40,9 +40,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                     sound.Stop();
                     accumulator = SlotId.Invalid;
                 }
-            }
-            else {
-                BowArrowDrawBool = false;
             }
         }
 

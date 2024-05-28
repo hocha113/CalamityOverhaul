@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (target != null) {
                 for (int index = 0; index < 5; ++index) {
                     Vector2 spanPos = new Vector2(Main.rand.Next(500) * (ShootVelocity.X < 0 ? 1 : -1), -900) + Projectile.Center;
-                    Vector2 velocity = spanPos.To(target.Center).UnitVector() * ScaleFactor;
+                    Vector2 velocity = spanPos.To(target.Center).UnitVector() * ShootSpeedModeFactor;
                     Projectile.NewProjectile(Source, spanPos, velocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 }
             }

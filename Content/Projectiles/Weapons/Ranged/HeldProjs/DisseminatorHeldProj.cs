@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
             Vector2 pos = Owner.Center + new Vector2(MathHelper.Lerp(Main.MouseWorld.To(Owner.Center).X, 0, 1.3f), 780);
-            Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ScaleFactor;
+            Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ShootSpeedModeFactor;
             for (int i = 0; i < 4; i++) {
                 Vector2 vr2 = vr.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.8f, 1.1f);
                 int proj = Projectile.NewProjectile(Source2, pos, vr2, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShootR() {
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Vector2 pos = Owner.Center + new Vector2(MathHelper.Lerp(Main.MouseWorld.To(Owner.Center).X, 0, 0.9f), -780);
-            Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ScaleFactor;
+            Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ShootSpeedModeFactor;
             Projectile.NewProjectile(Source2, pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
         }

@@ -87,7 +87,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             for (int i = 0; i < numFlames; ++i) {
                 float piArrowOffset = i - (numFlames - 1) / 2;
                 Vector2 offsetSpawn = spinningpoint.RotatedBy(fifteenHundredthPi * piArrowOffset, new Vector2());
-                _ = Projectile.NewProjectile(Source, Projectile.Center + offsetSpawn, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 1, 0);
+                _ = Projectile.NewProjectile(Source, Projectile.Center + offsetSpawn, ShootVelocity
+                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 1, 0);
             }
         }
     }

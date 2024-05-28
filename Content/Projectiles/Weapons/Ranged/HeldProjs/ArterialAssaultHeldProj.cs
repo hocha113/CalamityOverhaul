@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Vector2 realPlayerPos = new Vector2(Owner.position.X + Owner.width * 0.5f + -(float)Owner.direction + (Main.mouseX + Main.screenPosition.X - Owner.position.X), Owner.MountedCenter.Y - 600f);
             realPlayerPos.X = (realPlayerPos.X + Owner.Center.X) / 2f;
             realPlayerPos.Y -= 100f;
-            Vector2 vr = realPlayerPos.To(Main.MouseWorld).UnitVector() * ScaleFactor;
+            Vector2 vr = realPlayerPos.To(Main.MouseWorld).UnitVector() * ShootSpeedModeFactor;
 
             int proj = Projectile.NewProjectile(Source, realPlayerPos, vr
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

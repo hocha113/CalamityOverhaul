@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
                 Vector2 pos = Projectile.Center;
                 pos.X += DirSign * Main.rand.Next(130, 360);
                 pos.Y -= Main.rand.Next(660, 760);
-                Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ScaleFactor;
+                Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ShootSpeedModeFactor;
                 Projectile.NewProjectile(Source, pos, vr, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
         }
