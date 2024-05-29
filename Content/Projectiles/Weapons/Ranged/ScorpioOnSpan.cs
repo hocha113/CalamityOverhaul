@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class ScorpioOnSpan : BaseOnSpanNoDraw
     {
         public override void SpanProj() {
-            if (Projectile.timeLeft % 6 == 0 && Owner.PressKey()) {
+            if (Projectile.timeLeft % 6 == 0 && DownLeft) {
                 ShootState shootState = Owner.GetShootState("CWRGunShoot");
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * shootState.ScaleFactor;
                 if (Projectile.IsOwnedByLocalPlayer()) {

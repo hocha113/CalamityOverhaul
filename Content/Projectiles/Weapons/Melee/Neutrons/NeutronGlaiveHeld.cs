@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         }
 
         public override void AI() {
-            if (Owner.dead || !Owner.active || !Owner.Calamity().mouseRight || canatcck) {
+            if (Owner.dead || !Owner.active || canatcck || !DownRight) {
                 canatcck = true;
                 if (Projectile.ai[0] >= maxatcck) {
                     Projectile.Kill();

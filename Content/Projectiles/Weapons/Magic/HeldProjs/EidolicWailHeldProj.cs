@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Recoil = 0;
             RecoilOffsetRecoverValue = 0.75f;
             SetRegenDelayValue = 60;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 23;
         }
 
         public override void PostInOwnerUpdate() {
@@ -44,7 +46,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void FiringShoot() {
-            OffsetPos += ShootVelocity.UnitVector() * -23;
             for (int i = 0; i < 13; i++) {
                 Vector2 rand = CWRUtils.randVr(480, 800);
                 Vector2 pos = Main.MouseWorld + rand;

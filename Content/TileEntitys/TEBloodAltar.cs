@@ -72,11 +72,14 @@ namespace CalamityOverhaul.Content.TileEntitys
                     if (orbToPos.LengthSquared() > 62 * 62) {
                         Vector2 orbToPosUnit = orbToPos.UnitVector();
                         float leng = orbToPos.Length() / 62f;
-                        for (int j = 0; j < 62; j++) {
-                            Vector2 spanPos = orb.Center + orbToPosUnit * leng * j;
-                            LightParticle particle = new LightParticle(spanPos, Vector2.Zero, 0.3f, Color.DarkRed, 15);
-                            CWRParticleHandler.AddParticle(particle);
+                        if (!CWRUtils.isServer) {
+                            for (int j = 0; j < 62; j++) {
+                                Vector2 spanPos = orb.Center + orbToPosUnit * leng * j;
+                                LightParticle particle = new LightParticle(spanPos, Vector2.Zero, 0.3f, Color.DarkRed, 15);
+                                CWRParticleHandler.AddParticle(particle);
+                            }
                         }
+                        
                         orb.position = Center;
                     }
                     else {
@@ -87,11 +90,14 @@ namespace CalamityOverhaul.Content.TileEntitys
                             Vector2 PosToChest = Center.To(chestPos);
                             Vector2 PosToChestUnit = PosToChest.UnitVector();
                             float leng = PosToChest.Length() / 32f;
-                            for (int j = 0; j < 32; j++) {
-                                Vector2 spanPos = Center + PosToChestUnit * leng * j;
-                                LightParticle particle = new LightParticle(spanPos, Vector2.Zero, 0.3f, Color.DarkGreen, 15);
-                                CWRParticleHandler.AddParticle(particle);
+                            if (!CWRUtils.isServer) {
+                                for (int j = 0; j < 32; j++) {
+                                    Vector2 spanPos = Center + PosToChestUnit * leng * j;
+                                    LightParticle particle = new LightParticle(spanPos, Vector2.Zero, 0.3f, Color.DarkGreen, 15);
+                                    CWRParticleHandler.AddParticle(particle);
+                                }
                             }
+                            
                             chest.AddItem(orb);
                             orb.TurnToAir();
                         }
@@ -180,13 +186,17 @@ namespace CalamityOverhaul.Content.TileEntitys
                     if (!UseInPlayerBloodOrb(player)) {
                         return;
                     }
-                    SoundEngine.PlaySound(SoundID.Roar, Center);
-                    for (int i = 0; i < 63; i++) {
-                        Vector2 vr = new Vector2(Main.rand.Next(-12, 12), Main.rand.Next(-23, -3));
-                        Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
-                            , Scale: Main.rand.NextFloat(1.2f, 3.1f));
+                    
+                    if (!CWRUtils.isServer) {
+                        SoundEngine.PlaySound(SoundID.Roar, Center);
+                        for (int i = 0; i < 63; i++) {
+                            Vector2 vr = new Vector2(Main.rand.Next(-12, 12), Main.rand.Next(-23, -3));
+                            Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
+                                , Scale: Main.rand.NextFloat(1.2f, 3.1f));
+                        }
+                        CWRUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text1"), Color.DarkRed);
                     }
-                    CWRUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text1"), Color.DarkRed);
+
                 }
 
                 Main.dayTime = false;

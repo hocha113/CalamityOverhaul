@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.LavaDeath = false;
             ModTileEntity te = ModContent.GetInstance<TETram>();
             TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(te.Hook_AfterPlacement, -1, 0, true);
-            TileObjectData.newTile.UsesCustomCanPlace = true;
+
             TileObjectData.addTile(Type);
             AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<TransmutationOfMatterItem>());
             AnimationFrameHeight = 68;

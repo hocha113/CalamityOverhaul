@@ -8,10 +8,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 {
-    internal abstract class BaseBloomOnSpan : ModProjectile
+    internal abstract class BaseBloomOnSpan : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
-        public Player Owner => Main.player[Projectile.owner];
         public float ChargeValue;
         public float BloomSize = 1;
         public float toMouLeng;
@@ -71,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 
         public sealed override void AI() {
             FlowerAI(Projectile);
-            if (Owner.PressKey(!rightControl)) {
+            if (rightControl ? DownRight : DownLeft) {
                 ChargeValue++;
                 if (++ChargeValue >= MaxCharge) {
                     onFire = true;

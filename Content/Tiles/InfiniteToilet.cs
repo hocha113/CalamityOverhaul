@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Tiles
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "InfiniteToilet";
         public override bool IsLoadingEnabled(Mod mod) {
+            return false;
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return false;
             }

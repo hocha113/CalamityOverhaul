@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f))
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            if (fireIndex > 6) {
+            if (fireIndex > 5) {
                 Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
                     , btoole, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }

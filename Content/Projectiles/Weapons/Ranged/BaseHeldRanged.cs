@@ -25,14 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         private bool downLeftValue;
         private bool old_downRightValue;
         private bool downRightValue;
-        /// <summary>
-        /// 玩家左键控制
-        /// </summary>
-        protected bool DownLeft { get; private set; }
-        /// <summary>
-        /// 玩家右键控制
-        /// </summary>
-        protected bool DownRight { get; private set; }
+
         /// <summary>
         /// 获取对应的<see cref="CWRItems"/>实例，在弹幕初始化时更新这个值
         /// </summary>
@@ -157,56 +150,33 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public bool SafeMouseInterfaceValue => _safeMouseInterfaceValue;
         #endregion
 
-        public override void SendExtraAI(BinaryWriter writer) {
-            base.SendExtraAI(writer);
-            BitsByte flags = new BitsByte();
-            flags[0] = _safeMouseInterfaceValue;
-            flags[1] = onFire;
-            flags[2] = onFireR;
-            flags[3] = downLeftValue;
-            flags[4] = downRightValue;
-            writer.Write(flags);
+        /// <summary>
+        /// 发送一个比特体，存储8个栏位的布尔值，
+        /// 如果子类准备重写，需要尊重父类的使用逻辑，当前已经占用至4号位
+        /// </summary>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        public override BitsByte SandBitsByte(BitsByte flags) {
+            flags = base.SandBitsByte(flags);
+            flags[2] = _safeMouseInterfaceValue;
+            flags[3] = onFire;
+            flags[4] = onFireR;
+            return flags;
         }
-
-        public override void ReceiveExtraAI(BinaryReader reader) {
-            base.ReceiveExtraAI(reader);
-            BitsByte flags = reader.ReadByte();
-            _safeMouseInterfaceValue = flags[0];
-            onFire = flags[1];
-            onFireR = flags[2];
-            downLeftValue = flags[3];
-            downRightValue = flags[4];
+        /// <summary>
+        /// 接受一个比特体，最多处理8个布尔属性的网络更新，
+        /// 如果子类准备重写，需要尊重父类的使用逻辑，当前已经占用至4号位
+        /// </summary>
+        /// <param name="flags"></param>
+        public override void ReceiveBitsByte(BitsByte flags) {
+            base.ReceiveBitsByte(flags);
+            _safeMouseInterfaceValue = flags[2];
+            onFire = flags[3];
+            onFireR = flags[4];
         }
 
         public bool overNoFireCeahks() {
             return !CalOwner.profanedCrystalBuffs;
-        }
-
-        private bool UpdateDownLeftStart() {
-            if (Projectile.IsOwnedByLocalPlayer()) {
-                downLeftValue = Owner.PressKey();
-                if (old_downLeftValue != downLeftValue) {
-                    NetUpdate();
-                }
-                old_downLeftValue = downLeftValue;
-            }
-            return downLeftValue;
-        }
-
-        private bool UpdateDownRightStart() {
-            if (Projectile.IsOwnedByLocalPlayer()) {
-                downRightValue = Owner.PressKey(false);
-                if (old_downRightValue != downRightValue) {
-                    NetUpdate();
-                }
-                old_downRightValue = downRightValue;
-            }
-            return downRightValue;
-        }
-
-        public override void ExtraPreSet() {
-            DownLeft = UpdateDownLeftStart();
-            DownRight = UpdateDownRightStart();
         }
 
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐

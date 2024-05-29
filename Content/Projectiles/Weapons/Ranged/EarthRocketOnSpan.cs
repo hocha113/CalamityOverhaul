@@ -8,10 +8,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
-    internal class EarthRocketOnSpan : ModProjectile
+    internal class EarthRocketOnSpan : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
-        public Player Owner => Main.player[Projectile.owner];
         public override void SetDefaults() {
             Projectile.width = 14;
             Projectile.height = 14;
@@ -28,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void AI() {
             Projectile.MaxUpdates = 2;
             BaseOnSpanProj.FlowerAI(Projectile);
-            if (Projectile.timeLeft % 5 == 0 && Owner.PressKey()) {
+            if (Projectile.timeLeft % 5 == 0 && DownLeft) {
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * 7;
                 DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, vr);
                 if (Projectile.IsOwnedByLocalPlayer()) {

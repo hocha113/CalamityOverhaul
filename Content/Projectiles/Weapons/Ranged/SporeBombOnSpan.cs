@@ -11,10 +11,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
-    internal class SporeBombOnSpan : ModProjectile
+    internal class SporeBombOnSpan : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
-        public Player Owner => Main.player[Projectile.owner];
         public const float MaxCharge = 90f;
         public float ChargeProgress => (MaxCharge - Projectile.timeLeft) / MaxCharge;
         public float Spread => MathHelper.PiOver2 * (1 - (float)Math.Pow(ChargeProgress, 1.5) * 0.95f);
@@ -34,7 +33,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override bool? CanDamage() => false;
 
         public override void AI() {
-            Player player = Main.player[Projectile.owner];
             Projectile owner = null;
             if (Projectile.ai[1] >= 0 && Projectile.ai[1] < Main.maxProjectiles) {
                 owner = Main.projectile[(int)Projectile.ai[1]];
@@ -49,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (++Projectile.ai[0] > 80) {
                 onFire = true;
             }
-            if (!player.PressKey(false)) {
+            if (!DownRight) {
                 Projectile.Kill();
             }
         }

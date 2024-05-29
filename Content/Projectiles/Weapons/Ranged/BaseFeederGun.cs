@@ -215,6 +215,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         protected SoundStyle caseEjections = CWRSound.CaseEjection;
         protected SoundStyle loadTheRounds = CWRSound.CaseEjection2;
 
+        private bool old_ManualReloadDown;
+        /// <summary>
+        /// 玩家是否准备进行手动换弹，目前为止，只应该在手动换弹的逻辑中使用，考虑到网络优化，
+        /// 此值为惰性更新，使用时需要谨慎以保证多人模式正常运行
+        /// </summary>
+        protected bool ManualReloadStart { get; private set; }
+
         #endregion
 
         public bool AmmunitionIsBeingLoaded() => kreloadTimeValue > 0;
@@ -265,10 +272,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (!MagazineSystem || CWRUtils.isServer) {//如果关闭了弹匣系统，枪械将不再可以换弹，因为弹匣不会再发挥作用
                 return false;
             }
-            return CWRKeySystem.KreLoad_Key.JustPressed && kreloadTimeValue == 0
+
+            bool canReload = kreloadTimeValue == 0
                 && (!IsKreload || RepeatedCartridgeChange)
                 && BulletNum < ModItem.AmmoCapacity
                 && !onFire && HaveAmmo && ModItem.NoKreLoadTime == 0;
+
+            if (Projectile.IsOwnedByLocalPlayer() && canReload) {
+                ManualReloadStart = CWRKeySystem.KreLoad_Key.JustPressed;
+                if (ManualReloadStart != old_ManualReloadDown) {
+                    NetUpdate();
+                }
+                old_ManualReloadDown = ManualReloadStart;
+            }
+
+            if (!canReload) {
+                ManualReloadStart = false;
+            }
+
+            return ManualReloadStart;
         }
 
         public override void Recover() {
@@ -478,6 +500,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         #endregion
 
+        public override BitsByte SandBitsByte(BitsByte flags) {
+            flags = base.SandBitsByte(flags);
+            flags[5] = IsKreload;
+            flags[6] = ManualReloadStart;
+            return flags;
+        }
+
+        public override void ReceiveBitsByte(BitsByte flags) {
+            base.ReceiveBitsByte(flags);
+            IsKreload = flags[5];
+            ManualReloadStart = flags[6];
+        }
+
         public sealed override void InOwner() {
             SetHeld();
             InitializeMagazine();
@@ -590,11 +625,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                             ExpendedAmmunition();
                         }
                     }
-                    CWRItems wRItems = ModItem;
+
                     OnKreload = false;
                     IsKreload = true;
                     if (Item.type != ItemID.None) {
-                        wRItems.IsKreload = true;
+                        ModItem.IsKreload = true;
                     }
                     kreloadTimeValue = 0;
 
@@ -605,17 +640,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                     if (result2) {
                         int value = AmmoState.Amount;
-                        if (value > wRItems.AmmoCapacity) {
-                            value = wRItems.AmmoCapacity;
+                        if (value > ModItem.AmmoCapacity) {
+                            value = ModItem.AmmoCapacity;
                         }
                         if (LoadingQuantity > 0) {
                             value = LoadingQuantity;
                         }
                         BulletNum += value;
-                        if (BulletNum > wRItems.AmmoCapacity) {
-                            BulletNum = wRItems.AmmoCapacity;
+                        if (BulletNum > ModItem.AmmoCapacity) {
+                            BulletNum = ModItem.AmmoCapacity;
                         }
-                        wRItems.SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
+                        ModItem.SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
                     }
                 }
             }

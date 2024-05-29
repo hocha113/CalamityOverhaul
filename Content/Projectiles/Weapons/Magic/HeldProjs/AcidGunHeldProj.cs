@@ -25,14 +25,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Recoil = 0;
         }
 
-        public override void FiringShoot() {
+        public override void SetShootAttribute() {
             Item.useTime = 6;
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f)
-                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             if (++fireIndex > 6) {
                 Item.useTime = 45;
                 fireIndex = 0;
             }
+        }
+
+        public override void FiringShoot() {
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f)
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

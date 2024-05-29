@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
-    internal class FetidEmesisOnSpan : ModProjectile
+    internal class FetidEmesisOnSpan : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
         public override void SetDefaults() {
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             Projectile.Center = owner.Center;
             Projectile.rotation = owner.rotation;
-            if (!player.PressKey()) {
+            if (!DownLeft) {
                 Projectile.Kill();
                 return;
             }

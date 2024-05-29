@@ -21,10 +21,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 6;
         }
 
         public override void FiringShoot() {
-            OffsetPos += ShootVelocity.UnitVector() * -6;
             for (int i = 0; i < 3; i++) {
                 int type = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes
                     , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

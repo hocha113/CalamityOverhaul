@@ -8,10 +8,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     /// 一个通用的用于制造外置效果的实体栈，其中Projectile.ai[0]默认作为时间计数器
     /// 而Projectile.ai[1]用于存储需要跟随的弹幕的索引
     /// </summary>
-    internal abstract class BaseOnSpanNoDraw : ModProjectile
+    internal abstract class BaseOnSpanNoDraw : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
-        public Player Owner => Main.player[Projectile.owner];
         public override void SetDefaults() {
             Projectile.width = 14;
             Projectile.height = 14;
@@ -36,12 +35,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 SpanProj();
             }
             if (Projectile.ai[2] == 0) {
-                if (!Main.player[Projectile.owner].PressKey(false) || Main.player[Projectile.owner].PressKey()) {
+                if (!DownRight || DownLeft) {
                     Projectile.Kill();
                 }
             }
             else {
-                if (!Main.player[Projectile.owner].PressKey() || Main.player[Projectile.owner].PressKey(false)) {
+                if (!DownLeft || DownRight) {
                     Projectile.Kill();
                 }
             }

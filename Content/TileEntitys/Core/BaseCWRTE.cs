@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.TileEntitys.Core
 
         }
 
+
+
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate) {
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 NetMessage.SendTileSquare(Main.myPlayer, i, j, Width, Height);

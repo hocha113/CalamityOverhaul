@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.LavaDeath = false;
             ModTileEntity te = ModContent.GetInstance<TEBloodAltar>();
             TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(te.Hook_AfterPlacement, -1, 0, true);
-            TileObjectData.newTile.UsesCustomCanPlace = true;
+
             TileObjectData.addTile(Type);
             AddMapEntry(Color.Red, CWRUtils.SafeGetItemName<Items.Placeable.BloodAltar>());
             AnimationFrameHeight = 54;

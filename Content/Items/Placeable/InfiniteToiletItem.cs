@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.createTile = ModContent.TileType<InfiniteToilet>();
+            Item.createTile = ModContent.TileType<InfiniteIngotTile>();
         }
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {

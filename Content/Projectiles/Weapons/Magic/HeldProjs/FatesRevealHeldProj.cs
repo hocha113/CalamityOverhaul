@@ -37,9 +37,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             }
         }
 
+        public override void HanderPlaySound() {
+            SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
+        }
+
         public override void FiringShoot() {
             int type = ModContent.ProjectileType<HatredFire>();
-            SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
             for (int i = 0; i < 2; i++) {
                 Projectile.NewProjectile(Source, Projectile.Center,
                 ShootVelocity.RotatedBy(MathHelper.ToRadians(Main.rand.Next(-20, 20))).UnitVector() * 7,

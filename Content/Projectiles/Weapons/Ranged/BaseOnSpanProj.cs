@@ -14,10 +14,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     /// 一个通用的用于制造蓄力效果的实体栈，其中Projectile.ai[0]默认作为时间计数器
     /// 而Projectile.ai[1]用于存储需要跟随的弹幕的索引，Projectile.ai[2]为0表示是一个右键生成源，否则是一个左键生成源
     /// </summary>
-    internal abstract class BaseOnSpanProj : ModProjectile
+    internal abstract class BaseOnSpanProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
-        public Player Owner => Main.player[Projectile.owner];
         public virtual float MaxCharge => 90f;
         public virtual float ChargeProgress => (MaxCharge - Projectile.timeLeft) / MaxCharge;
         public virtual float Spread => MathHelper.PiOver2 * (1 - (float)Math.Pow(ChargeProgress, 1.5) * 0.95f);
@@ -70,12 +69,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 onFire = true;
             }
             if (Projectile.ai[2] == 0) {
-                if (!Main.player[Projectile.owner].PressKey(false) || Main.player[Projectile.owner].PressKey()) {
+                if (!DownRight || DownLeft) {
                     Projectile.Kill();
                 }
             }
             else {
-                if (!Main.player[Projectile.owner].PressKey() || Main.player[Projectile.owner].PressKey(false)) {
+                if (!DownLeft || DownRight) {
                     Projectile.Kill();
                 }
             }
