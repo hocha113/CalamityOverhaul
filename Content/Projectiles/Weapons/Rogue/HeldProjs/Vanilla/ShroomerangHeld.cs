@@ -13,13 +13,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Shroomerang].Value;
-        public override void SetBoomerang() {
+        public override void SetThrowable() {
             CWRUtils.SafeLoadItem(ItemID.Shroomerang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
         }
 
-        public override void PostSetBoomerang() {
+        public override void PostSetThrowable() {
             if (stealthStrike) {
                 Projectile.scale *= 1.25f;
             }

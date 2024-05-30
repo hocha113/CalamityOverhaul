@@ -408,7 +408,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <param name="slp"></param>
         public virtual void CaseEjection(float slp = 1) {
-            if (CWRMod.Instance.terrariaOverhaul != null && slp == 1) {
+            if (CWRMod.Instance.terrariaOverhaul != null && slp == 1 
+                || !CWRServerConfig.Instance.EnableCasingsEntity) {
                 return;
             }
             Vector2 pos = Owner.Top + Owner.Top.To(GunShootPos) / 2;
@@ -623,8 +624,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     arrowValue = TextureAssets.Item[newtype].Value;
                 }
 
-                if (ForcedConversionTargetAmmoFunc.Invoke()) {
+                if (ForcedConversionTargetAmmoFunc.Invoke() && ToTargetAmmoInDraw != -1) {
                     arrowValue = TextureAssets.Projectile[ToTargetAmmo].Value;
+                    if (ToTargetAmmoInDraw > 0) {
+                        arrowValue = TextureAssets.Projectile[ToTargetAmmoInDraw].Value;
+                    }
                     if (ISForcedConversionDrawAmmoInversion) {
                         CustomDrawOrig = new Vector2(arrowValue.Width / 2, 0);
                         DrawCrossArrowOffsetRot = MathHelper.Pi;

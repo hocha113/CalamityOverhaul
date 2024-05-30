@@ -187,6 +187,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText Wap_Flamarang_Text { get; private set; }
         public LocalizedText Wap_EnchantedBoomerang_Text { get; private set; }
         public LocalizedText Wap_Shroomerang_Text { get; private set; }
+        public LocalizedText Wap_Spear_Text { get; private set; }
         #endregion
         public override void Load() {
             //使用反射进行属性的自动加载

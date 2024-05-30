@@ -11,13 +11,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.EnchantedBoomerang].Value;
-        public override void SetBoomerang() {
+        public override void SetThrowable() {
             CWRUtils.SafeLoadItem(ItemID.EnchantedBoomerang);
             HandOnTwringMode = -30;
             OffsetRoting = MathHelper.ToRadians(30 + 180);
         }
 
-        public override void PostSetBoomerang() {
+        public override void PostSetThrowable() {
             if (stealthStrike && Projectile.ai[2] == 0) {
                 Projectile.scale *= 1.25f;
             }

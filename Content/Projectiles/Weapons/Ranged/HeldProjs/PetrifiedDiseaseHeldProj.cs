@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             DrawArrowMode = -25;
             ForcedConversionTargetAmmoFunc = () => true;
             ToTargetAmmo = ModContent.ProjectileType<PetrifiedDiseaseAorrw>();
+            ToTargetAmmoInDraw = -1;
+
         }
     }
 }

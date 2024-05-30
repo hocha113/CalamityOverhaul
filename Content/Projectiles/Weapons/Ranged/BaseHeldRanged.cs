@@ -126,6 +126,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected int ToTargetAmmo;
         /// <summary>
+        /// 关于绘制的弹药转化目标，如果值大于0，则会在绘制效果上覆盖<see cref="ToTargetAmmo"/>
+        /// </summary>
+        protected int ToTargetAmmoInDraw;
+        /// <summary>
         /// 一个委托变量，用于决定什么弹药会被转化，与<see cref="ToTargetAmmo"/>配合使用
         /// </summary>
         protected Func<bool> ForcedConversionTargetAmmoFunc = () => false;
@@ -281,7 +285,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         private void UpdateRogueStealth() {
-            bool noAvailable = true;
+            bool noAvailable = false;
             if (CWRMod.Instance.narakuEye != null) {
                 noAvailable = (bool)CWRMod.Instance.narakuEye.Call(Owner);
                 if (CalOwner.StealthStrikeAvailable()) {

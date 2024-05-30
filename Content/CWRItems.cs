@@ -190,7 +190,6 @@ namespace CalamityOverhaul.Content
             if (AmmoCapacity == 0) {
                 AmmoCapacity = 1;
             }
-            PowerInteractionValue = 0;
             remakeItem = (item.ModItem as EctypeItem) != null;
             InitializeMagazine();
             SmiperItemSet(item);

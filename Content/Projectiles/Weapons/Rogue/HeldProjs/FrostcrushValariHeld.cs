@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             }
         }
 
-        public override void PostSetBoomerang() {
+        public override void PostSetThrowable() {
             FireIndex *= -1;
             if (stealthStrike) {
                 Projectile.scale *= 2;

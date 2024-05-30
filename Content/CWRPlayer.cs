@@ -1,5 +1,7 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Renderers;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Armor.DemonshadeExter;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles;

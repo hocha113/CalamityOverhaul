@@ -2616,6 +2616,66 @@ Items: {
 		// DisplayName: Frostcrush Valari Ec Type
 		// Tooltip: ""
 	}
+
+	NeutronScythe: {
+		// DisplayName: Neutron Scythe
+		// Tooltip: ""
+	}
+
+	DemonshadeHelmMagic: {
+		// DisplayName: Demonshade Helm Magic
+		// Tooltip: ""
+	}
+
+	DemonshadeHelmRanged: {
+		// DisplayName: Demonshade Helm Ranged
+		// Tooltip: ""
+	}
+
+	DemonshadeHelmSummon: {
+		// DisplayName: Demonshade Helm Summon
+		// Tooltip: ""
+	}
+
+	DemonshadeHelmRogue: {
+		// DisplayName: Demonshade Helm Rogue
+		// Tooltip: ""
+	}
+
+	Palustris: {
+		// DisplayName: Palustris
+		// Tooltip: ""
+	}
+
+	VioletConjecture: {
+		// DisplayName: Violet Conjecture
+		// Tooltip: ""
+	}
+
+	GraniteSpear: {
+		// DisplayName: Granite Spear
+		// Tooltip: ""
+	}
+
+	MarbleSpear: {
+		// DisplayName: Marble Spear
+		// Tooltip: ""
+	}
+
+	RebelBlade: {
+		// DisplayName: Rebel Blade
+		// Tooltip: ""
+	}
+
+	GraniteDart: {
+		// DisplayName: Granite Dart
+		// Tooltip: ""
+	}
+
+	MarbleDagger: {
+		// DisplayName: Marble Dagger
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3207,6 +3267,18 @@ Projectiles: {
 	// FlamarangHeld.DisplayName: Flamarang Held
 	// EnchantedBoomerangHeld.DisplayName: Enchanted Boomerang Held
 	// ShroomerangHeld.DisplayName: Shroomerang Held
+	// SpearHeld.DisplayName: Spear Held
+	// NeutronScytheHeld.DisplayName: Neutron Scythe Held
+	// GraniteSpearHeld.DisplayName: Granite Spear Held
+	// MarbleSpearHeld.DisplayName: Marble Spear Held
+	// RebelBladeFlyAttcke.DisplayName: Rebel Blade Fly Attcke
+	// GraniteDartHeld.DisplayName: Granite Dart Held
+	// MarbleDaggerHeld.DisplayName: Marble Dagger Held
+	// PalustrisHeldProj.DisplayName: Palustris Held Proj
+	// PalustrisOrb.DisplayName: Palustris Orb
+	// VioletConjectureHeldProj.DisplayName: Violet Conjecture Held Proj
+	// VioletConjectureOrb.DisplayName: Violet Conjecture Orb
+	// RebelBladeOrb.DisplayName: Rebel Blade Orb
 }
 
 Configs: {
@@ -3362,6 +3434,11 @@ Configs: {
 				玩家使用弓类进行攻击时，会实时绘制出对应的箭矢动画
 				默认开启，可以根据个人喜好进行设置
 				'''
+		}
+
+		EnableCasingsEntity: {
+			// Label: Enable Casings Entity
+			// Tooltip: ""
 		}
 	}
 }
@@ -4070,6 +4147,7 @@ TextContent: {
 		Wap_Flamarang_Text: 潜伏攻击将快速投掷三个回旋镖
 		Wap_EnchantedBoomerang_Text: 潜伏攻击将快速投掷三个回旋镖，击中目标后召唤落星
 		Wap_Shroomerang_Text: 潜伏攻击将释放蘑菇孢子炸弹
+		// Wap_Spear_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_Spear_Text
 	}
 }
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using CalamityMod.Projectiles.Ranged;
+using System.ComponentModel;
 using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Common
@@ -59,40 +60,44 @@ namespace CalamityOverhaul.Common
 
         [Header("CWRWeapon")]
 
-        [BackgroundColor(182, 24, 64, 192)]
+        [BackgroundColor(182, 24, 94, 172)]
         [DefaultValue(true)]
         public bool WeaponHandheldDisplay { get; set; }
 
-        [BackgroundColor(182, 24, 64, 192)]
+        [BackgroundColor(182, 24, 94, 172)]
         [DefaultValue(true)]
         public bool ActivateGunRecoil { get; set; }
 
-        [BackgroundColor(182, 24, 64, 192)]
+        [BackgroundColor(182, 24, 94, 172)]
         [DefaultValue(true)]
         public bool MagazineSystem { get; set; }
 
-        [BackgroundColor(182, 24, 64, 192)]
+        [BackgroundColor(182, 24, 94, 172)]
+        [DefaultValue(true)]
+        public bool EnableCasingsEntity { get; set; }
+
+        [BackgroundColor(182, 24, 94, 172)]
         [DefaultValue(true)]
         public bool BowArrowDraw { get; set; }
 
         /// <summary>
         /// 武器屏幕振动
         /// </summary>
-        [BackgroundColor(182, 24, 64, 192)]
+        [BackgroundColor(182, 24, 94, 172)]
         [DefaultValue(false)]
         public bool ScreenVibration { get; set; }
 
         /// <summary>
         /// 鬼妖终结技碎屏效果
         /// </summary>
-        [BackgroundColor(182, 24, 64, 192)]
+        [BackgroundColor(182, 24, 94, 172)]
         [DefaultValue(true)]
         public bool MurasamaSpaceFragmentationBool { get; set; }
 
         /// <summary>
         /// 鬼妖刀刃大小调节
         /// </summary>
-        [BackgroundColor(182, 24, 64, 192)]
+        [BackgroundColor(182, 24, 94, 172)]
         [SliderColor(224, 165, 56, 128)]
         [Range(Date.MScaleOffset_MinValue, Date.MScaleOffset_MaxValue)]
         [DefaultValue(1)]
@@ -112,7 +117,7 @@ namespace CalamityOverhaul.Common
         /// <summary>
         /// 镜头缓动
         /// </summary>
-        [BackgroundColor(182, 24, 64, 192)]
+        [BackgroundColor(182, 24, 94, 172)]
         [DefaultValue(true)]
         public bool LensEasing { get; set; }
 
@@ -121,7 +126,7 @@ namespace CalamityOverhaul.Common
         /// <summary>
         /// 鬼妖升龙冷却UI大小调节
         /// </summary>
-        [BackgroundColor(182, 24, 64, 192)]
+        [BackgroundColor(182, 24, 122, 192)]
         [SliderColor(224, 165, 56, 128)]
         [Range(Date.M_RDCD_BarSize_MinValue, Date.M_RDCD_BarSize_MaxValue)]
         [DefaultValue(1)]
@@ -141,7 +146,7 @@ namespace CalamityOverhaul.Common
         /// <summary>
         /// 弹夹UI位置调节_X
         /// </summary>
-        [BackgroundColor(182, 24, 64, 192)]
+        [BackgroundColor(182, 24, 122, 192)]
         [SliderColor(224, 165, 56, 128)]
         [Range(Date.CartridgeUI_Offset_X_MinValue, Date.CartridgeUI_Offset_X_MaxValue)]
         [DefaultValue(1)]
@@ -161,7 +166,7 @@ namespace CalamityOverhaul.Common
         /// <summary>
         /// 弹夹UI位置调节_Y
         /// </summary>
-        [BackgroundColor(182, 24, 64, 192)]
+        [BackgroundColor(182, 24, 122, 192)]
         [SliderColor(224, 165, 56, 128)]
         [Range(Date.CartridgeUI_Offset_Y_MinValue, Date.CartridgeUI_Offset_Y_MaxValue)]
         [DefaultValue(1)]

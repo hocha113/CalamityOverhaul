@@ -346,8 +346,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 ArrowResourceProcessing(ref arrowValue, arrowItemInds);
                 CustomArrowRP(ref arrowValue, arrowItemInds);
 
-                if (ForcedConversionTargetAmmoFunc.Invoke()) {
+                if (ForcedConversionTargetAmmoFunc.Invoke() && ToTargetAmmoInDraw != -1) {
                     arrowValue = TextureAssets.Projectile[ToTargetAmmo].Value;
+                    if (ToTargetAmmoInDraw > 0) {
+                        arrowValue = TextureAssets.Projectile[ToTargetAmmoInDraw].Value;
+                    }
                     if (ISForcedConversionDrawAmmoInversion) {
                         CustomDrawOrig = new Vector2(arrowValue.Width / 2, 0);
                         DrawArrowOffsetRot = MathHelper.Pi;

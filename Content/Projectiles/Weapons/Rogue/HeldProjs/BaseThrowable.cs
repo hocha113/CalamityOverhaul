@@ -17,7 +17,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         
         protected float OverallProgress => 1 - Projectile.timeLeft / (float)TotalLifetime; // 总体进度
         protected float CurrentThrowProgress => 1 - Projectile.timeLeft / (float)TotalLifetime; // 当前投掷进度
-        protected float ThrowStorageProgress => 1 - (Projectile.timeLeft - TotalLifetime) / (float)ChargeUpTime; // 投掷存储进度
+        protected int ThrowStorage {
+            get => Projectile.timeLeft - TotalLifetime;
+            set => Projectile.timeLeft = TotalLifetime + value;
+        }
+        protected float ThrowStorageProgress => 1 - ThrowStorage / (float)ChargeUpTime; // 投掷存储进度
         protected ref float ReturnProgress => ref Projectile.ai[0]; // 返回进度
         protected ref float BounceCount => ref Projectile.ai[1]; // 弹跳计数
         protected Item Item => Owner.ActiveItem();
@@ -122,7 +126,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             throwout = new AnimationCurvePart(part, startDataThrowout);
         }
 
-        public override void SetDefaults() {
+        public sealed override void SetDefaults() {
             Projectile.width = 38;
             Projectile.height = 32;
             Projectile.friendly = true;
@@ -131,18 +135,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             Projectile.timeLeft = TotalLifetime + ChargeUpTime;
             Projectile.DamageType = ModContent.GetInstance<RogueDamageClass>();
             Projectile.ignoreWater = true;
-            SetBoomerang();
+            SetThrowable();
         }
         /// <summary>
         /// 设置实体的初始数据
         /// </summary>
-        public virtual void SetBoomerang() {
+        public virtual void SetThrowable() {
 
         }
         /// <summary>
         /// 二次设置实体的初始数据，这个方法会在<see cref="AI"/>中调用一次，一般用于设置需要访问玩家或者目标物品的逻辑
         /// </summary>
-        public virtual void PostSetBoomerang() {
+        public virtual void PostSetThrowable() {
 
         }
 
@@ -158,7 +162,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             return null;
         }
 
-        public void OnThrowing() {
+        public virtual void OnThrowing() {
             float armRotation = ArmAnticipationMovement.Invoke() * Owner.direction;
             Owner.heldProj = Projectile.whoAmI;
             Projectile.Center = OnThrowingGetCenter.Invoke(armRotation);
@@ -166,14 +170,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.Pi + armRotation);
         }
         
-        public void ThrowOut() {
+        public virtual void ThrowOut() {
             SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.velocity * 2f;
             Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 17.5f;
             Projectile.tileCollide = true;
         }
 
-        public void ReturnTrip() {
+        public virtual void ReturnTrip() {
             Projectile.tileCollide = false;
             Vector2 toPlayer = Projectile.Center.To(Owner.GetPlayerStabilityCenter());
             Projectile.velocity = Projectile.velocity.Length() * toPlayer.UnitVector();
@@ -216,14 +219,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             return true;
         }
 
+        public virtual void FlyToMovementAI() {
+            if (PreDeparture()) {
+                Departure();
+            }
+
+            if (ReturnProgress == 1f) {
+                if (PreReturnTrip()) {
+                    ReturnTrip();
+                }
+            }
+        }
+
         public virtual bool PreReturnTrip() {
             return true;
         }
 
-        public override void AI() {
+        public sealed override void AI() {
             if (!onSet) {
                 stealthStrike = Owner.Calamity().StealthStrikeAvailable();
-                PostSetBoomerang();
+                PostSetThrowable();
                 onSet = true;
             }
 
@@ -238,15 +253,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
                 }              
             }
 
-            if (PreDeparture()) {
-                Departure();
-            }
-
-            if (ReturnProgress == 1f) {
-                if (PreReturnTrip()) {
-                    ReturnTrip();
-                }
-            }
+            FlyToMovementAI();
 
             PostUpdate();
         }
@@ -261,15 +268,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             return false;
         }
 
-        public virtual void DrawBoomerang(Color lightColor) {
+        public virtual void DrawThrowable(Color lightColor) {
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, lightColor
                 , Projectile.rotation + (MathHelper.PiOver4 + OffsetRoting) * (Projectile.velocity.X > 0 ? 1 : -1)
-                , TextureValue.Size() / 2, Projectile.scale
-                , Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
+                , TextureValue.Size() / 2, Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            DrawBoomerang(lightColor);
+            DrawThrowable(lightColor);
             return false;
         }
     }
