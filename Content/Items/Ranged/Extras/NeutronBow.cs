@@ -1,5 +1,8 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -20,7 +23,6 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return false;
             }
-            //return false;//暂时不要在这个版本中出现
             return base.IsLoadingEnabled(mod);
         }
 
@@ -42,6 +44,15 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.value = Item.buyPrice(13, 33, 75, 0);
             Item.crit = 20;
             Item.SetHeldProj<NeutronBowHeldProj>();
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems19;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<BlackMatterStick>(25)
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
+                .Register();
         }
     }
 }

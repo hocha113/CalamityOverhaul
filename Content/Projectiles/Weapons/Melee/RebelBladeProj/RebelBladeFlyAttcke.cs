@@ -1,21 +1,26 @@
-﻿using CalamityMod.Graphics.Primitives;
+﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityMod.Particles;
-using CalamityMod;
 using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
 {
     internal class RebelBladeFlyAttcke : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "RebelBlade";
-        Color tillColor = Color.White;
+
+        private Color tillColor = Color.White;
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 28;
+        }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 45;
             Projectile.timeLeft = 200;
@@ -26,11 +31,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
             Projectile.extraUpdates = 1;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
         }
 
         public override void AI() {
+            Projectile.Calamity().timesPierced = 0;
+
             if (Projectile.localAI[1] <= 0) {
                 Projectile.rotation = Projectile.velocity.ToRotation();
             }
@@ -69,9 +74,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Projectile.localAI[1]--;
             }
 
-            //SparkParticle spark = new SparkParticle(Projectile.Center, Projectile.velocity
-            //, true, 22, 3.3f, tillColor);
-            //GeneralParticleHandler.SpawnParticle(spark);
+            float rot = (MathHelper.PiOver2 * SafeGravDir - Owner.Center.To(Projectile.Center).ToRotation()) * DirSign * SafeGravDir;
+            float rot2 = (MathHelper.PiOver2 * SafeGravDir - MathHelper.ToRadians(DirSign > 0 ? - 20 : 200)) * DirSign * SafeGravDir;
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rot * -DirSign);
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, rot2 * -DirSign);
+            Owner.direction = Owner.Center.To(Projectile.Center).X > 0 ? 1 : -1;
 
             Lighting.AddLight(Projectile.Center, tillColor.ToVector3() * 2.2f);
         }
@@ -102,6 +109,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
+            Projectile.timeLeft = 30;
             Projectile.velocity = -oldVelocity;
             HitEffet(Projectile.velocity);
             return false;
@@ -118,7 +126,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseSecondaryColor(tillColor);
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].Apply();
             PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(PrimitiveWidthFunction, PrimitiveColorFunction
-                , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]), 53);
+                , (_) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"]), 53);
         }
 
         public override bool PreDraw(ref Color lightColor) {

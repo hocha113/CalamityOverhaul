@@ -1,5 +1,8 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs;
+using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,7 +12,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
     internal class NeutronWand : ModItem, ISetupData
     {
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;//暂时不要在这个版本中出现
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return false;
+            }
+            return base.IsLoadingEnabled(mod);
         }
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
         internal static int PType;
@@ -28,6 +34,15 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             Item.crit = 6;
             Item.UseSound = SoundID.NPCDeath56;
             Item.SetHeldProj<NeutronWandHeld>();
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems20;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<BlackMatterStick>(16)
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
+                .Register();
         }
     }
 }

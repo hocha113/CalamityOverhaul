@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                         break;
                     }
                 }
-                if (mouseS == 1 && RecipeUI.Instance.index > 0) {
+                if (mouseS == 1) {
                     SupertableUI.PlayGrabSound();
                     mainUI.OneClickPFunc();
                     mainUI.OutItem();
@@ -53,9 +53,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             Color color = Color.White;
             if (onMainP) {
                 color = Color.Gold;
-            }
-            if (RecipeUI.Instance.index == 0) {
-                color = Color.White * 0.3f;
             }
             spriteBatch.Draw(MainValue.Value, DrawPos, null, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             if (onMainP) {

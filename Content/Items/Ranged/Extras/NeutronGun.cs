@@ -1,5 +1,8 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -26,7 +29,6 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return false;
             }
-            //return false;//暂时不要在这个版本中出现
             return base.IsLoadingEnabled(mod);
         }
 
@@ -47,6 +49,15 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.value = Item.buyPrice(13, 83, 5, 0);
             Item.crit = 2;
             Item.SetCartridgeGun<NeutronGunHeldProj>(120);
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems18;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<BlackMatterStick>(29)
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
+                .Register();
         }
     }
 }

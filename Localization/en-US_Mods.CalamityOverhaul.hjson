@@ -3084,13 +3084,13 @@ Projectiles: {
 	NapalmBombBox.DisplayName: Napalm Bomb Box
 	NapalmBombHeld.DisplayName: Napalm Bomb Held
 	CursedDartRemake.DisplayName: Cursed Dart Remake
-	ArmourPiercerBoxProj.DisplayName: Armour Piercer Box Proj
-	ArmourPiercerHeld.DisplayName: Armour Piercer Held
-	HighExplosiveBoxProj.DisplayName: High Explosive Box Proj
-	HighExplosiveHeld.DisplayName: High Explosive Held
+	ArmourPiercerBoxProj.DisplayName: Armour Piercer
+	ArmourPiercerHeld.DisplayName: Armour Piercer
+	HighExplosiveBoxProj.DisplayName: High Explosive
+	HighExplosiveHeld.DisplayName: High Explosive
 	SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
-	DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
-	DragonBreathHeld.DisplayName: Dragon Breath Held
+	DragonBreathBoxProj.DisplayName: Dragon Breath
+	DragonBreathHeld.DisplayName: Dragon Breath
 	TradewindsHeldProj.DisplayName: Tradewinds
 	FlurrystormCannonHeldProj.DisplayName: Flurrystorm Cannon
 	DragonsScaleGreatswordProj.DisplayName: Dragons Scale Greatsword Proj
@@ -3189,18 +3189,18 @@ Projectiles: {
 	RVoidTentacle.DisplayName: R Void Tentacle
 	NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
 	NeutronExplode.DisplayName: Neutron Explode
-	EXNeutronExplode.DisplayName: E X Neutron Explode
+	EXNeutronExplode.DisplayName: EX Neutron Explode
 	NeutronGlaiveHeld.DisplayName: Neutron Glaive
 	NeutronsOrb.DisplayName: Neutrons Orb
 	NeutronBowHeldProj.DisplayName: Neutron Bow
 	NeutronArrow.DisplayName: Neutron Arrow
-	EXNeutronArrow.DisplayName: E X Neutron Arrow
+	EXNeutronArrow.DisplayName: EX Neutron Arrow
 	EXNeutronExplosionRanged.DisplayName: EX Neutron Explosion
 	NeutronLaser.DisplayName: Neutron Laser
 	NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
-	NeutronGunHeldProj.DisplayName: Neutron Gun Held Proj
+	NeutronGunHeldProj.DisplayName: Neutron Gun
 	NeutronBullet.DisplayName: Neutron Bullet
-	NeutronWandHeld.DisplayName: Neutron Wand Held
+	NeutronWandHeld.DisplayName: Neutron Wand
 	NeutronWandExplode.DisplayName: Neutron Wand Explode
 	NeutronMagchStar.DisplayName: Neutron Magch Star
 	AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
@@ -3217,7 +3217,7 @@ Projectiles: {
 	StakeHmmod.DisplayName: Stake Hmmod
 	FadingGloryBeam.DisplayName: Fading Glory Beam
 	FadingGloryRapier.DisplayName: Fading Glory Rapier
-	FadingGloryHeldSprint.DisplayName: Fading Glory Held Sprint
+	FadingGloryHeldSprint.DisplayName: Fading Glory Sprint
 	LucreciaRapier.DisplayName: Lucrecia Rapier
 	MirrorBladeRapier.DisplayName: Mirror Blade Rapier
 	TheDarkMasterRapier.DisplayName: The Dark Master Rapier
@@ -3225,29 +3225,31 @@ Projectiles: {
 	GalileosBeam.DisplayName: Galileos Beam
 	GladiusBeam.DisplayName: Gladius Beam
 	GladiusRapier.DisplayName: Gladius Rapier
-	DefiledGreatswordHeld.DisplayName: Defiled Greatsword Held
-	TerrorBladeHeld.DisplayName: Terror Blade Held
+	DefiledGreatswordHeld.DisplayName: Defiled Greatsword
+	TerrorBladeHeld.DisplayName: Terror Blade
 	GraniteBullet.DisplayName: Granite Bullet
-	GraniteRifleHeldProj.DisplayName: Granite Rifle Held Proj
-	MarbleRifleHeldProj.DisplayName: Marble Rifle Held Proj
+	GraniteRifleHeldProj.DisplayName: Granite Rifle
+	MarbleRifleHeldProj.DisplayName: Marble Rifle
 	MarbleBullet.DisplayName: Marble Bullet
-	FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
-	WoodenBoomerangHeld.DisplayName: Wooden Boomerang Held
-	FlamarangHeld.DisplayName: Flamarang Held
-	EnchantedBoomerangHeld.DisplayName: Enchanted Boomerang Held
-	ShroomerangHeld.DisplayName: Shroomerang Held
-	SpearHeld.DisplayName: Spear Held
-	NeutronScytheHeld.DisplayName: Neutron Scythe Held
-	GraniteSpearHeld.DisplayName: Granite Spear Held
-	MarbleSpearHeld.DisplayName: Marble Spear Held
+	FrostcrushValariHeld.DisplayName: Frostcrush Valari
+	WoodenBoomerangHeld.DisplayName: Wooden Boomerang
+	FlamarangHeld.DisplayName: Flamarang
+	EnchantedBoomerangHeld.DisplayName: Enchanted Boomerang
+	ShroomerangHeld.DisplayName: Shroomerang
+	SpearHeld.DisplayName: Spear
+	NeutronScytheHeld.DisplayName: Neutron Scythe
+	GraniteSpearHeld.DisplayName: Granite Spear
+	MarbleSpearHeld.DisplayName: Marble Spear
 	RebelBladeFlyAttcke.DisplayName: Rebel Blade Fly Attcke
-	GraniteDartHeld.DisplayName: Granite Dart Held
-	MarbleDaggerHeld.DisplayName: Marble Dagger Held
-	PalustrisHeldProj.DisplayName: Palustris Held Proj
+	GraniteDartHeld.DisplayName: Granite Dart
+	MarbleDaggerHeld.DisplayName: Marble Dagger
+	PalustrisHeldProj.DisplayName: Palustris
 	PalustrisOrb.DisplayName: Palustris Orb
-	VioletConjectureHeldProj.DisplayName: Violet Conjecture Held Proj
+	VioletConjectureHeldProj.DisplayName: Violet Conjecture
 	VioletConjectureOrb.DisplayName: Violet Conjecture Orb
 	RebelBladeOrb.DisplayName: Rebel Blade Orb
+	RebelBladeBack.DisplayName: Rebel Blade Back
+	RebelBladeSlash.DisplayName: Rebel Blade Slash
 }
 
 Configs: {

@@ -2516,22 +2516,43 @@ Items: {
 
 	NeutronGlaive: {
 		DisplayName: 黑域斩切
-		Tooltip: ""
+		Tooltip:
+			'''
+			挥舞将发射强大的引力波剑气，击中目标后生成一次中子星爆炸
+			右键持剑蓄力，蓄力完成后松开可以在光标处引发一次大型的中子星爆炸
+			蓄力未完成松开则会让能量倾泻而出
+			'''
 	}
 
 	NeutronBow: {
 		DisplayName: 洛希之弦
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射重力箭矢，击中目标后生成数道伽马射线
+			右键进行三级蓄力，蓄满能量后将发射三发强大的引力箭矢
+			'''
 	}
 
 	NeutronGun: {
 		DisplayName: 恒星猎手
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射重力弹丸，击中目标后生成翘曲点
+			右键切换为狙击形态，发射更为强大引力子弹，引力子弹击中目标后将让数道伽马射线降落
+			每次开火都会给枪械充能，充能满格后再次开火会在鼠标处引发一次中子星爆炸
+			"把太阳射下来!"
+			'''
 	}
 
 	NeutronWand: {
 		DisplayName: 星墓之光
-		Tooltip: ""
+		Tooltip:
+			'''
+			发射四颗强大引力星星
+			右键在鼠标处施展重力魔法
+			"传说在远古时期，有一位强大的灵能者用这根法杖将恒星压缩成了黑洞，
+			但已经无从考证，成为星际游牧者口中吟唱的残诗"
+			'''
 	}
 
 	FlakKrakenEcType: {
@@ -2618,63 +2639,72 @@ Items: {
 	}
 
 	NeutronScythe: {
-		// DisplayName: Neutron Scythe
-		// Tooltip: ""
+		DisplayName: 行星使者
+		Tooltip:
+			'''
+			镰刀会向敌人发射伽马射线，并在飞行途中留下数个翘曲点
+			潜伏攻击会丢出一圈镰刀
+			'''
 	}
 
 	DemonshadeHelmMagic: {
-		// DisplayName: Demonshade Helm Magic
-		// Tooltip: ""
+		DisplayName: 魔影兜帽
+		Tooltip: ""
 	}
 
 	DemonshadeHelmRanged: {
-		// DisplayName: Demonshade Helm Ranged
-		// Tooltip: ""
+		DisplayName: 魔影羽笠
+		Tooltip: ""
 	}
 
 	DemonshadeHelmSummon: {
-		// DisplayName: Demonshade Helm Summon
-		// Tooltip: ""
+		DisplayName: 魔影面甲
+		Tooltip: ""
 	}
 
 	DemonshadeHelmRogue: {
-		// DisplayName: Demonshade Helm Rogue
-		// Tooltip: ""
+		DisplayName: 魔影面罩
+		Tooltip: ""
 	}
 
 	Palustris: {
-		// DisplayName: Palustris
-		// Tooltip: ""
+		DisplayName: 白色欺诈
+		Tooltip: ""
 	}
 
 	VioletConjecture: {
-		// DisplayName: Violet Conjecture
-		// Tooltip: ""
+		DisplayName: 紫罗兰幻想
+		Tooltip: ""
 	}
 
 	GraniteSpear: {
-		// DisplayName: Granite Spear
-		// Tooltip: ""
+		DisplayName: 花岗岩刺矛
+		Tooltip: ""
 	}
 
 	MarbleSpear: {
-		// DisplayName: Marble Spear
-		// Tooltip: ""
+		DisplayName: 大理岩刺矛
+		Tooltip: ""
 	}
 
 	RebelBlade: {
-		// DisplayName: Rebel Blade
-		// Tooltip: ""
+		DisplayName: 叛逆之刃
+		Tooltip:
+			'''
+			真近战会在目标周围生成大量恶魔光球
+			右键操控剑刃飞行，并向光标处进行斩切
+			"嘿，把刀给我"
+			'''
 	}
 
 	GraniteDart: {
-		// DisplayName: Granite Dart
-		// Tooltip: ""
+		DisplayName: 花岗岩投镖
+		Tooltip: ""
 	}
 
 	MarbleDagger: {
-		// DisplayName: Marble Dagger
-		// Tooltip: ""
+		DisplayName: 大理岩匕首
+		Tooltip: ""
 	}
 }
 
@@ -3115,13 +3145,13 @@ Projectiles: {
 	// NapalmBombBox.DisplayName: Napalm Bomb Box
 	// NapalmBombHeld.DisplayName: Napalm Bomb Held
 	// CursedDartRemake.DisplayName: Cursed Dart Remake
-	// ArmourPiercerBoxProj.DisplayName: Armour Piercer Box Proj
-	// ArmourPiercerHeld.DisplayName: Armour Piercer Held
-	// HighExplosiveBoxProj.DisplayName: High Explosive Box Proj
-	// HighExplosiveHeld.DisplayName: High Explosive Held
+	// ArmourPiercerBoxProj.DisplayName: Armour Piercer
+	// ArmourPiercerHeld.DisplayName: Armour Piercer
+	// HighExplosiveBoxProj.DisplayName: High Explosive
+	// HighExplosiveHeld.DisplayName: High Explosive
 	// SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
-	// DragonBreathBoxProj.DisplayName: Dragon Breath Box Proj
-	// DragonBreathHeld.DisplayName: Dragon Breath Held
+	// DragonBreathBoxProj.DisplayName: Dragon Breath
+	// DragonBreathHeld.DisplayName: Dragon Breath
 	// TradewindsHeldProj.DisplayName: Tradewinds
 	// FlurrystormCannonHeldProj.DisplayName: Flurrystorm Cannon
 	// DragonsScaleGreatswordProj.DisplayName: Dragons Scale Greatsword Proj
@@ -3220,18 +3250,18 @@ Projectiles: {
 	// RVoidTentacle.DisplayName: R Void Tentacle
 	// NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
 	// NeutronExplode.DisplayName: Neutron Explode
-	// EXNeutronExplode.DisplayName: E X Neutron Explode
+	// EXNeutronExplode.DisplayName: EX Neutron Explode
 	// NeutronGlaiveHeld.DisplayName: Neutron Glaive
 	// NeutronsOrb.DisplayName: Neutrons Orb
 	// NeutronBowHeldProj.DisplayName: Neutron Bow
 	// NeutronArrow.DisplayName: Neutron Arrow
-	// EXNeutronArrow.DisplayName: E X Neutron Arrow
+	// EXNeutronArrow.DisplayName: EX Neutron Arrow
 	// EXNeutronExplosionRanged.DisplayName: EX Neutron Explosion
 	// NeutronLaser.DisplayName: Neutron Laser
 	// NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
-	// NeutronGunHeldProj.DisplayName: Neutron Gun Held Proj
+	// NeutronGunHeldProj.DisplayName: Neutron Gun
 	// NeutronBullet.DisplayName: Neutron Bullet
-	// NeutronWandHeld.DisplayName: Neutron Wand Held
+	// NeutronWandHeld.DisplayName: Neutron Wand
 	// NeutronWandExplode.DisplayName: Neutron Wand Explode
 	// NeutronMagchStar.DisplayName: Neutron Magch Star
 	// AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
@@ -3248,7 +3278,7 @@ Projectiles: {
 	// StakeHmmod.DisplayName: Stake Hmmod
 	// FadingGloryBeam.DisplayName: Fading Glory Beam
 	// FadingGloryRapier.DisplayName: Fading Glory Rapier
-	// FadingGloryHeldSprint.DisplayName: Fading Glory Held Sprint
+	// FadingGloryHeldSprint.DisplayName: Fading Glory Sprint
 	// LucreciaRapier.DisplayName: Lucrecia Rapier
 	// MirrorBladeRapier.DisplayName: Mirror Blade Rapier
 	// TheDarkMasterRapier.DisplayName: The Dark Master Rapier
@@ -3256,29 +3286,31 @@ Projectiles: {
 	// GalileosBeam.DisplayName: Galileos Beam
 	// GladiusBeam.DisplayName: Gladius Beam
 	// GladiusRapier.DisplayName: Gladius Rapier
-	// DefiledGreatswordHeld.DisplayName: Defiled Greatsword Held
-	// TerrorBladeHeld.DisplayName: Terror Blade Held
+	// DefiledGreatswordHeld.DisplayName: Defiled Greatsword
+	// TerrorBladeHeld.DisplayName: Terror Blade
 	// GraniteBullet.DisplayName: Granite Bullet
-	// GraniteRifleHeldProj.DisplayName: Granite Rifle Held Proj
-	// MarbleRifleHeldProj.DisplayName: Marble Rifle Held Proj
+	// GraniteRifleHeldProj.DisplayName: Granite Rifle
+	// MarbleRifleHeldProj.DisplayName: Marble Rifle
 	// MarbleBullet.DisplayName: Marble Bullet
-	// FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
-	// WoodenBoomerangHeld.DisplayName: Wooden Boomerang Held
-	// FlamarangHeld.DisplayName: Flamarang Held
-	// EnchantedBoomerangHeld.DisplayName: Enchanted Boomerang Held
-	// ShroomerangHeld.DisplayName: Shroomerang Held
-	// SpearHeld.DisplayName: Spear Held
-	// NeutronScytheHeld.DisplayName: Neutron Scythe Held
-	// GraniteSpearHeld.DisplayName: Granite Spear Held
-	// MarbleSpearHeld.DisplayName: Marble Spear Held
-	// RebelBladeFlyAttcke.DisplayName: Rebel Blade Fly Attcke
-	// GraniteDartHeld.DisplayName: Granite Dart Held
-	// MarbleDaggerHeld.DisplayName: Marble Dagger Held
-	// PalustrisHeldProj.DisplayName: Palustris Held Proj
+	// FrostcrushValariHeld.DisplayName: Frostcrush Valari
+	// WoodenBoomerangHeld.DisplayName: Wooden Boomerang
+	// FlamarangHeld.DisplayName: Flamarang
+	// EnchantedBoomerangHeld.DisplayName: Enchanted Boomerang
+	// ShroomerangHeld.DisplayName: Shroomerang
+	// SpearHeld.DisplayName: Spear
+	// NeutronScytheHeld.DisplayName: Neutron Scythe
+	// GraniteSpearHeld.DisplayName: Granite Spear
+	// MarbleSpearHeld.DisplayName: Marble Spear
+	RebelBladeFlyAttcke.DisplayName: 叛逆之刃
+	// GraniteDartHeld.DisplayName: Granite Dart
+	// MarbleDaggerHeld.DisplayName: Marble Dagger
+	// PalustrisHeldProj.DisplayName: Palustris
 	// PalustrisOrb.DisplayName: Palustris Orb
-	// VioletConjectureHeldProj.DisplayName: Violet Conjecture Held Proj
+	// VioletConjectureHeldProj.DisplayName: Violet Conjecture
 	// VioletConjectureOrb.DisplayName: Violet Conjecture Orb
-	// RebelBladeOrb.DisplayName: Rebel Blade Orb
+	RebelBladeOrb.DisplayName: 恶魔光球
+	RebelBladeBack.DisplayName: 叛逆之刃
+	RebelBladeSlash.DisplayName: 叛逆之刃
 }
 
 Configs: {
@@ -3437,8 +3469,8 @@ Configs: {
 		}
 
 		EnableCasingsEntity: {
-			// Label: Enable Casings Entity
-			// Tooltip: ""
+			Label: 启用弹壳实体
+			Tooltip: ""
 		}
 	}
 }

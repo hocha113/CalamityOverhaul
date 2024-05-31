@@ -37,9 +37,6 @@ namespace CalamityOverhaul.Content.TileEntitys
             if (Main.bloodMoon) {
                 Main.bloodMoon = false;
             }
-            if (CWRUtils.isServer) {
-                NetMessage.SendData(MessageID.WorldData);
-            }
         }
 
         private void SpanDustEfset() {

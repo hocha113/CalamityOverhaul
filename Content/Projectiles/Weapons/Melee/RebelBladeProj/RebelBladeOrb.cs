@@ -1,11 +1,10 @@
-﻿using CalamityOverhaul.Common.Effects;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Buffs;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityOverhaul.Content.Buffs;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
 {
     public class RebelBladeOrb : ModProjectile
     {

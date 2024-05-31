@@ -18,13 +18,13 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// 天堂陨落
         /// </summary>
         public static string[] FullItems2 = new string[] {"0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0",
-            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityMod/Drataliornus", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "0", "0",
-            "0", "0", "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "0",
-            "0", "0", "0", "0", "0", "0", "CalamityMod/Eternity", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot",
-            "0", "0", "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "0", "0",
-            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityMod/HeavenlyGale", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
+            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityMod/Drataliornus", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0",
+            "0", "0", "0", "0", "0", "0", "CalamityMod/Eternity", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0", "0",
+            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityMod/HeavenlyGale", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
             "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0",
             "CalamityOverhaul/HeavenfallLongbow"
         };
@@ -32,14 +32,14 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// 无尽镐
         /// </summary>
         public static string[] FullItems3 = new string[] {"0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
-            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "0", "0",
-            "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "CalamityMod/CrystylCrusher", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "0",
-            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "0", "CalamityOverhaul/DarkMatterBall", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot",
-            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "CalamityOverhaul/DarkMatterBall", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
-            "0", "0", "0", "0", "CalamityOverhaul/DarkMatterBall", "0", "0", "0", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/DarkMatterBall", "0", "0", "0", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/DarkMatterBall", "0", "0", "0", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/DarkMatterBall", "0", "0", "0", "0",
+            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0", "0",
+            "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "CalamityMod/CrystylCrusher", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0",
+            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot",
+            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
             "CalamityOverhaul/InfinitePick"
         };
         /// <summary>
@@ -224,47 +224,91 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/Gangarus"
         };
+
         /// <summary>
-        /// 万变之星
+        /// 黑域斩切
         /// </summary>
-        //public static string[] FullItems17 = new string[] {"CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst",
-        //    "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst",
-        //    "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst",
-        //    "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst",
-        //    "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot",
-        //    "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst",
-        //    "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst",
-        //    "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst",
-        //    "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst",
-        //    "CalamityOverhaul/StarMyriadChanges"
-        //};
+        public static string[] FullItems17 = new string[] {"0", "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
+            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
+            "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0",
+            "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/NeutronGlaive"
+        };
         /// <summary>
-        /// 测试物品
+        /// 恒星猎手
         /// </summary>
-        //public static string[] FullItems999 = new string[] {"CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
-        //    "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot",
-        //    "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityMod/LoreAbyss", "CalamityMod/LoreAquaticScourge", "CalamityMod/LoreArchmage", "CalamityMod/LoreAstralInfection", "CalamityMod/LoreAstrumAureus", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot",
-        //    "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityMod/LoreAstrumDeus", "CalamityMod/LoreAwakening", "CalamityMod/LoreAzafure", "CalamityMod/LoreBrimstoneElemental", "CalamityMod/LoreCalamitas", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot",
-        //    "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityMod/LoreCalamitasClone", "CalamityMod/LoreCeaselessVoid", "CalamityMod/LoreCynosure", "CalamityMod/LoreCrabulon", "CalamityMod/LoreCrimson", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot",
-        //    "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityMod/LoreCorruption", "CalamityMod/LoreDesertScourge", "CalamityMod/LoreDestroyer", "CalamityMod/LoreHiveMind", "CalamityMod/LoreLeviathanAnahita", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot",
-        //    "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityMod/LoreOldDuke", "CalamityMod/LorePerforators", "CalamityMod/LorePlaguebringerGoliath", "CalamityMod/LorePolterghast", "CalamityMod/LoreProfanedGuardians", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot",
-        //    "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot",
-        //    "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
-        //    "CalamityOverhaul/TextItem"
-        //};
+        public static string[] FullItems18 = new string[] {"0", "0", "0", "0", "0", "0", "0", "0", "0", 
+            "0", "0", "0", "0", "0", "0", "0", "0", "0", 
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", 
+            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", 
+            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", 
+            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", 
+            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", 
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", 
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/NeutronGun"
+        };
+        /// <summary>
+        /// 洛希之弦
+        /// </summary>
+        public static string[] FullItems19 = new string[] {"0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "CalamityOverhaul/NeutronBow"
+        };
+        /// <summary>
+        /// 星墓之光
+        /// </summary>
+        public static string[] FullItems20 = new string[] {"0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
+            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0",
+            "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0",
+            "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/NeutronWand"
+        };
+        /// <summary>
+        /// 黑洞使者
+        /// </summary>
+        public static string[] FullItems21 = new string[] {"0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
+            "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick",
+            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick",
+            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/NeutronScythe"
+        };
+
         /// <summary>
         /// 无尽马桶
         /// </summary>
         public static List<string> FullItems1000 = new List<string> {"CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
-            "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0",
-            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
-            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0",
-            "CalamityOverhaul/InfiniteToiletItem"
-        };
-    }
+                "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
+                "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
+                "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
+                "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0",
+                "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0",
+                "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
+                "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
+                "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0",
+                "CalamityOverhaul/InfiniteToiletItem"
+            };
+        }
 }

@@ -6,6 +6,9 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.DataStructures;
+using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 
 namespace CalamityOverhaul.Content.Items.Rogue.Extras
 {
@@ -36,9 +39,18 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.noUseGraphic = true;
             Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
             Item.shoot = ModContent.ProjectileType<NeutronScytheHeld>();
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems21;
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 22;
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 26;
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<BlackMatterStick>(20)
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
+                .Register();
+        }
     }
 }

@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content
             }
 
             else if (headItem.type == DemonshadeHelmSummon.PType) {
-                headDrawPosition += new Vector2(-player.direction - 2, -8);
+                headDrawPosition += new Vector2(player.direction > 0 ? -4 : 2, -10);
                 extraPieceTexture = DemonshadeHelmSummon.Hand.Value;
 
                 frame = extraPieceTexture.Frame(1, 20, 0, player.bodyFrame.Y / player.bodyFrame.Height);

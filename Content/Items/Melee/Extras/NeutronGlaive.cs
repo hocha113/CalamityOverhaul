@@ -1,5 +1,8 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
+using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -41,6 +44,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.crit = 8;
             Item.shoot = ModContent.ProjectileType<NeutronGlaiveBeam>();
             Item.shootSpeed = 18f;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems17;
         }
 
         public override bool CanUseItem(Player player) {
@@ -65,6 +69,14 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
                 return false;
             }
             return base.Shoot(player, source, position, velocity, type, damage, knockback);
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<BlackMatterStick>(23)
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
+                .Register();
         }
     }
 }
