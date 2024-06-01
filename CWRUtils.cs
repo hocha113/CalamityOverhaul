@@ -1251,6 +1251,21 @@ namespace CalamityOverhaul
             return shootState;
         }
 
+        /// <summary>
+        /// 该弹药物品是否应该判定为一个无限弹药
+        /// </summary>
+        /// <param name="ammoItem"></param>
+        /// <returns></returns>
+        public static bool AmmunitionIsunlimited(Item ammoItem) {
+            bool result = !ammoItem.consumable;
+            if (CWRMod.Instance.luiafk != null || CWRMod.Instance.improveGame != null) {
+                if (ammoItem.stack >= 3996) {
+                    result = true;
+                }
+            }
+            return result;
+        }
+
         public static AmmoState GetAmmoState(this Player player, int assignAmooType = 0, bool numSort = false) {
             AmmoState ammoState = new();
             int num = 0;
