@@ -34,10 +34,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             fireIndex = 0;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
-
         public override void HanderCaseEjection() {
             if (fireIndex > 15) {
                 for (int i = 0; i < 13; i++) {

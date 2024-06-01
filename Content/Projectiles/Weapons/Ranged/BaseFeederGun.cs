@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     /// </summary>
     internal abstract class BaseFeederGun : BaseGun
     {
-        #region Date
+        #region Data
         /// <summary>
         /// 子弹状态，对应枪械的弹匣内容
         /// </summary>
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected int MinimumAmmoPerReload = 1;
         /// <summary>
-        /// 单次弹药装填最大数量，默认为<see cref="CWRItems.AmmoCapacity"/>的值
+        /// 单次弹药装填最大数量，默认为0，即不启用
         /// </summary>
         protected int LoadingQuantity = 0;
         /// <summary>
@@ -121,6 +121,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public LoadingAmmoAnimationEnum LoadingAmmoAnimation = LoadingAmmoAnimationEnum.None;
+
+        public struct LoadingAA_None_Struct
+        {
+            /// <summary>
+            /// 默认为50
+            /// </summary>
+            public int loadingAA_None_Roting = 50;
+            /// <summary>
+            /// 默认为3
+            /// </summary>
+            public int loadingAA_None_X = 3;
+            /// <summary>
+            /// 默认为25
+            /// </summary>
+            public int loadingAA_None_Y = 25;
+
+            public LoadingAA_None_Struct() { }
+        }
+
+        public LoadingAA_None_Struct LoadingAA_None = new LoadingAA_None_Struct();
 
         public struct LoadingAA_Shotgun_Struct
         {
@@ -205,8 +225,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             loadingAmmoStarg_x = 3,
             loadingAmmoStarg_y = 5,
         };
-
-        
 
         protected int BulletNum {
             get => ModItem.NumberBullets;
@@ -380,7 +398,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         private void Get_LoadingAmmoAnimation_PreInOwnerUpdate() {
             if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
-                return;
+                LoadingAnimation(LoadingAA_None.loadingAA_None_Roting, LoadingAA_None.loadingAA_None_X, LoadingAA_None.loadingAA_None_Y);
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
                 LoadingAnimation(LoadingAA_Shotgun.loadingAmmoStarg_rot
@@ -708,7 +726,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             // 更好的体验适配 - 如果有弹药链，转到单独的弹药装载
             var ammoChain = Item.GetQotAmmoChain();
-            if (ammoChain is not null && Owner.LoadFromAmmoChain(Item, ammoChain, Item.useAmmo, magazineCapacity, out var pushedAmmo, out int ammoCount)) {
+            if (ammoChain is not null && Owner.LoadFromAmmoChain(Item, ammoChain, Item.useAmmo
+                , magazineCapacity, out var pushedAmmo, out int ammoCount)) {
                 cwrItem.MagazineContents = pushedAmmo.ToArray();
                 AmmoState.Amount = ammoCount;
                 return;
@@ -721,10 +740,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     stack = magazineCapacity - accumulatedAmount;
                 }
 
-                if (CWRUtils.AmmunitionIsunlimited(ammoItem)) {//如果该物品不消耗，那么可能是一个无限弹药类型的物品，这里进行特别处理
+                if (CWRUtils.IsAmmunitionUnlimited(ammoItem)) {//如果该物品不消耗，那么可能是一个无限弹药类型的物品，这里进行特别处理
                     if (CWRIDs.ItemToShootID.ContainsKey(ammoItem.type)) {
                         int newAmmoType = ammoItem.type;
-                        if (CWRIDs.OverProjID_To_Safe_Shoot_Ammo_Item_Target.TryGetValue(ammoItem.shoot, out int value2)) {
+                        if (CWRIDs.ProjectileToSafeAmmoMap.TryGetValue(ammoItem.shoot, out int value2)) {
                             newAmmoType = value2;
                         }
                         Item newAmmoItem = new Item(newAmmoType, magazineCapacity - accumulatedAmount);
@@ -763,7 +782,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (inds.stack <= 0) {
                     continue;
                 }
-                if (CWRUtils.AmmunitionIsunlimited(inds)) {
+                if (CWRUtils.IsAmmunitionUnlimited(inds)) {
                     break;
                 }
                 if (inds.stack >= maxAmmo) {

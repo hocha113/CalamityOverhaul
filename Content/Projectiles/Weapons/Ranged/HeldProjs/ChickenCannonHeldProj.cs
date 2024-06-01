@@ -34,10 +34,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EnableRecoilRetroEffect = true;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
-
         public override void PostInOwnerUpdate() {
             CanUpdateMagazineContentsInShootBool = CanCreateRecoilBool = onFire;
         }

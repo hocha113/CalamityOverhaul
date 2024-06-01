@@ -32,10 +32,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RecoilRetroForceMagnitude = 6;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
-
         public override void HanderSpwanDust() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, 1, dustID1: DustID.FireworkFountain_Blue
                 , dustID2: DustID.FireworkFountain_Blue, dustID3: DustID.FireworkFountain_Blue);

@@ -29,10 +29,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
             MustConsumeAmmunition = true;
             AutomaticPolishingEffect = true;
+            LoadingAA_None.loadingAA_None_Roting = 30;
+            LoadingAA_None.loadingAA_None_X = 0;
+            LoadingAA_None.loadingAA_None_Y = 23;
         }
 
         public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 23);
             FireTime = MagazineSystem ? 30 : 50;
         }
 

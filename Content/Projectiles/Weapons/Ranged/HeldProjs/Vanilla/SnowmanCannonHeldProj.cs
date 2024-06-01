@@ -34,10 +34,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             SpwanGunDustMngsData.dustID1 = 76;
             SpwanGunDustMngsData.dustID2 = 149;
             SpwanGunDustMngsData.dustID3 = 76;
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(-30, 3, -3);
+            LoadingAA_None.loadingAA_None_Roting = -30;
+            LoadingAA_None.loadingAA_None_X = 3;
+            LoadingAA_None.loadingAA_None_Y = -3;
         }
 
         public override void HanderPlaySound() {

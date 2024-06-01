@@ -36,7 +36,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
             CanUpdateMagazineContentsInShootBool = CanCreateRecoilBool = onFire;
         }
 

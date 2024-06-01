@@ -34,10 +34,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RecoilRetroForceMagnitude = 12;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
-
         public override void FiringShoot() {
             for (int i = 0; i < 5; i++) {
                 AmmoTypes = Utils.SelectRandom(Main.rand, new int[]{

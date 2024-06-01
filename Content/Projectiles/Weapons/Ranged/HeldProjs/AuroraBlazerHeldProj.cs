@@ -30,10 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             FireTime = 5;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
-
         public override void HanderPlaySound() {
             soundPma++;
             if (soundPma > 5) {

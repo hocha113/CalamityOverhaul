@@ -32,9 +32,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ForcedConversionTargetAmmoFunc = () => true;
             ToTargetAmmo = ModContent.ProjectileType<SulphuricBlast>();
         }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
     }
 }

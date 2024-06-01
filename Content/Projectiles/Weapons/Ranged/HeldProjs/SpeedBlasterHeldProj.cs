@@ -43,10 +43,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanUpdateMagazineContentsInShootBool = false;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
-
         public override void SetShootAttribute() {
             FiringDefaultSound = true;
             CanCreateCaseEjection = true;

@@ -35,10 +35,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             loadTheRounds = CWRSound.Liquids_Fill_0 with { Pitch = -0.8f };
             ForcedConversionTargetAmmoFunc = () => true;
             //ToTargetAmmo = ModContent.ProjectileType<TerraFlare>();
+            LoadingAA_None.loadingAA_None_Roting = 30;
+            LoadingAA_None.loadingAA_None_X = 0;
+            LoadingAA_None.loadingAA_None_Y = 13;
         }
 
         public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 13);
             if (IsKreload) {
                 for (int i = 0; i < 2; i++) {
                     float rotMulti = Main.rand.NextFloat(0.3f, 1f);

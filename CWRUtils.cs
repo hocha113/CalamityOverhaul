@@ -1252,11 +1252,11 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 该弹药物品是否应该判定为一个无限弹药
+        /// 判断该弹药物品是否应该被视为无限弹药
         /// </summary>
-        /// <param name="ammoItem"></param>
-        /// <returns></returns>
-        public static bool AmmunitionIsunlimited(Item ammoItem) {
+        /// <param name="ammoItem">要检查的弹药物品</param>
+        /// <returns>如果弹药物品是无限的，返回<see langword="true"/>；否则返回<see langword="false"/></returns>
+        public static bool IsAmmunitionUnlimited(Item ammoItem) {
             bool result = !ammoItem.consumable;
             if (CWRMod.Instance.luiafk != null || CWRMod.Instance.improveGame != null) {
                 if (ammoItem.stack >= 3996) {
@@ -1266,7 +1266,7 @@ namespace CalamityOverhaul
             return result;
         }
 
-        public static AmmoState GetAmmoState(this Player player, int assignAmooType = 0, bool numSort = false) {
+        public static AmmoState GetAmmoState(this Player player, int assignAmmoType = 0, bool numSort = false) {
             AmmoState ammoState = new();
             int num = 0;
             List<Item> itemInds = new List<Item>();
@@ -1276,8 +1276,8 @@ namespace CalamityOverhaul
                 if (item.ammo == AmmoID.None) {
                     continue;
                 }
-                if (assignAmooType != 0) {
-                    if (item.ammo != assignAmooType) {
+                if (assignAmmoType != 0) {
+                    if (item.ammo != assignAmmoType) {
                         continue;
                     }
                 }
@@ -1287,14 +1287,14 @@ namespace CalamityOverhaul
             }
             for (int i = 54; i < 58; i++) {
                 Item item = player.inventory[i];
-                if ((assignAmooType != 0 && item.ammo != assignAmooType) || item.ammo == AmmoID.None) {
+                if ((assignAmmoType != 0 && item.ammo != assignAmmoType) || item.ammo == AmmoID.None) {
                     continue;
                 }
                 itemInds.Add(player.inventory[i]);
             }
             for (int i = 0; i < 54; i++) {
                 Item item = player.inventory[i];
-                if ((assignAmooType != 0 && item.ammo != assignAmooType) || item.ammo == AmmoID.None) {
+                if ((assignAmmoType != 0 && item.ammo != assignAmmoType) || item.ammo == AmmoID.None) {
                     continue;
                 }
                 itemInds.Add(player.inventory[i]);

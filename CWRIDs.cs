@@ -113,7 +113,7 @@ namespace CalamityOverhaul
         internal static Dictionary<int, BaseGun> ItemToBaseGun = new();
         internal static Dictionary<int, BaseBow> ItemToBaseBow = new();
         internal static Dictionary<int, BaseHeldRanged> ItemToBaseRanged = new();
-        internal static Dictionary<int, int> OverProjID_To_Safe_Shoot_Ammo_Item_Target = new();
+        internal static Dictionary<int, int> ProjectileToSafeAmmoMap = new();
         /// <summary>
         /// 扫地机器人
         /// </summary>
@@ -483,7 +483,7 @@ namespace CalamityOverhaul
                 ItemType<InfiniteIngot>()
             };
 
-            OverProjID_To_Safe_Shoot_Ammo_Item_Target = new Dictionary<int, int>() {
+            ProjectileToSafeAmmoMap = new Dictionary<int, int>() {
                 { ProjectileID.BoneArrow, ItemID.BoneArrow},
                 { ProjectileID.MoonlordArrow, ItemID.MoonlordArrow},
                 { ProjectileID.ChlorophyteArrow, ItemID.ChlorophyteArrow},
@@ -532,6 +532,13 @@ namespace CalamityOverhaul
             for (int i = 0; i < ItemLoader.ItemCount; i++) {
                 Item item = new Item(i);
                 if (item != null && item.type != ItemID.None) {//验证物品是否有效
+                    if (item.createTile != -1 && !TileToItem.ContainsKey(item.createTile)) {
+                        TileToItem.Add(item.createTile, item.type);
+                    }
+                    if (item.createWall != -1 && !WallToItem.ContainsKey(item.createWall)) {
+                        WallToItem.Add(item.createWall, item.type);
+                    }
+
                     if (!ItemToHeldProjID.ContainsKey(item.type)) {
                         ItemToHeldProjID.Add(item.type, item.CWR().heldProjType);
                     }

@@ -33,10 +33,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RecoilRetroForceMagnitude = 6;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
-
         public override void FiringShoot() {
             int shardDamage = (int)(1.25f * WeaponKnockback);
             float shardKB = 1f * WeaponKnockback;

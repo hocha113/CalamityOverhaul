@@ -30,10 +30,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 3.2f;
             RangeOfStress = 25;
             EjectCasingProjSize = 2;
+            LoadingAA_None.loadingAA_None_Roting = -50;
+            LoadingAA_None.loadingAA_None_X = 3;
+            LoadingAA_None.loadingAA_None_Y = 0;
         }
 
         public override void PreInOwnerUpdate() {
-            LoadingAnimation(-50, 3, 0);
             FireTime = MagazineSystem ? 30 : 75;
         }
 

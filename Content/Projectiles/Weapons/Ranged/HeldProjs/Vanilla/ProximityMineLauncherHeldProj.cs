@@ -24,10 +24,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 4.8f;
             RangeOfStress = 48;
             kreloadMaxTime = 60;
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 13);
+            LoadingAA_None.loadingAA_None_Roting = 30;
+            LoadingAA_None.loadingAA_None_X = 0;
+            LoadingAA_None.loadingAA_None_Y = 13;
         }
 
         public override void FiringShoot() {

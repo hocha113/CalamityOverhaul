@@ -617,7 +617,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                 if (!arrowItemInds.consumable) {
                     int newtype = ItemID.WoodenArrow;
-                    if (CWRIDs.OverProjID_To_Safe_Shoot_Ammo_Item_Target.TryGetValue(arrowItemInds.shoot, out int value2)) {
+                    if (CWRIDs.ProjectileToSafeAmmoMap.TryGetValue(arrowItemInds.shoot, out int value2)) {
                         newtype = value2;
                     }
                     Main.instance.LoadItem(newtype);

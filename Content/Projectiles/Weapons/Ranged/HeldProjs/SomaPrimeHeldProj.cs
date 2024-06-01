@@ -20,24 +20,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 2;
+            GunPressure = 0;
+            ControlForce = 0;
+            Recoil = 0.2f;
+            RangeOfStress = 25;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
             HandFireDistanceY = -5;
             ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 10;
+            RecoilRetroForceMagnitude = 3;
+            SpwanGunDustMngsData.splNum = 0.5f;
             RepeatedCartridgeChange = true;
             MustConsumeAmmunition = false;
-            GunPressure = 0;
-            ControlForce = 0;
-            Recoil = 0.2f;
-            RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
-            RecoilRetroForceMagnitude = 3;
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
+            SpwanGunDustMngsData.dustID1 = DustID.Adamantite;
+            SpwanGunDustMngsData.dustID2 = DustID.SailfishBoots;
+            SpwanGunDustMngsData.dustID3 = DustID.UltraBrightTorch;
         }
 
         public override void FiringShoot() {

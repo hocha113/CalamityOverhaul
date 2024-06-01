@@ -30,10 +30,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             CanCreateCaseEjection = false;
             RecoilRetroForceMagnitude = 11;
             RecoilOffsetRecoverValue = 0.8f;
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 6);
+            LoadingAA_None.loadingAA_None_Roting = 30;
+            LoadingAA_None.loadingAA_None_X = 0;
+            LoadingAA_None.loadingAA_None_Y = 6;
         }
 
         public override void HanderSpwanDust() {

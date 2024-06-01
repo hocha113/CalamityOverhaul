@@ -27,18 +27,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
             FiringDefaultSound = false;
             Recoil = 0;
-        }
-
-        public override void KreloadSoundCaseEjection() {
-            base.KreloadSoundCaseEjection();
+            LoadingAA_None.loadingAA_None_Roting = 30;
+            LoadingAA_None.loadingAA_None_X = 0;
+            LoadingAA_None.loadingAA_None_Y = 23;
         }
 
         public override void KreloadSoundloadTheRounds() {
             SoundEngine.PlaySound(loadTheRounds with { Pitch = -0.3f }, Projectile.Center);
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 23);
         }
 
         public override bool PreFireReloadKreLoad() {

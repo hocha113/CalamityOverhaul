@@ -23,16 +23,18 @@ public static class QotUtils
     /// <param name="item">物品实例</param>
     /// <returns>有弹药链则返回弹药列表，无弹药链则返回null</returns>
     public static List<Ammo> GetQotAmmoChain(this Item item) {
-        if (!QotLoaded)
+        if (!QotLoaded) {
             return null;
+        }
 
         var tag = (TagCompound) QotInstance.Call("GetAmmoChainSequence", item);
         return !tag.TryGet("chain", out List<Ammo> chain) || chain.Count is 0 ? null : chain;
     }
 
     public static List<Item> GetBigBagItems(this Player player) {
-        if (!QotLoaded)
+        if (!QotLoaded) {
             return null;
+        }
 
         return (List<Item>) QotInstance.Call("GetBigBagItems", player);
     }
@@ -43,7 +45,8 @@ public static class QotUtils
     /// <b>注意：在该方法执行完成后，物品栏内的弹药即已被消耗！</b>
     /// </summary>
     /// <returns>弹药列表</returns>
-    public static bool LoadFromAmmoChain(this Player player, Item weapon, List<Ammo> ammoChain, int assignAmmoType, int capacity, out List<Item> pushedAmmo, out int ammoCount) {
+    public static bool LoadFromAmmoChain(this Player player, Item weapon, List<Ammo> ammoChain
+        , int assignAmmoType, int capacity, out List<Item> pushedAmmo, out int ammoCount) {
         int initialCapacity = capacity; // 记录一下一开始的，用于判断是否有弹药被取出
         pushedAmmo = [];
 
@@ -91,13 +94,13 @@ public static class QotUtils
                     while (times > 0 && ammoQueue.Count > 0) {
                         var item = ammoQueue.Peek();
                         int ammoType = item.type;
-                        if (CWRIDs.OverProjID_To_Safe_Shoot_Ammo_Item_Target.TryGetValue(item.shoot, out int actualAmmo))
+                        if (CWRIDs.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo))
                             ammoType = actualAmmo;
 
                         // 不消耗的独立处理
                         // 按常理来说，这里不需要 AmmunitionIsunlimited 的判断，CombinedHooks.CanConsumeAmmo 就够了
                         // 但是实际测试下来不加这个判断会出问题，可能和灾厄大修内部的其他机制有关，我不理解，所以就不乱动了
-                        if (CWRUtils.AmmunitionIsunlimited(item) || !CombinedHooks.CanConsumeAmmo(player, weapon, item)) {
+                        if (CWRUtils.IsAmmunitionUnlimited(item) || !CombinedHooks.CanConsumeAmmo(player, weapon, item)) {
                             var clone = new Item(ammoType, times);
                             clone.CWR().AmmoProjectileReturn = false;
                             // 将其压入弹匣
@@ -131,18 +134,19 @@ public static class QotUtils
                     continue;
                 }
 
-                if (!idToInstances.TryGetValue(itemType, out var instances))
+                if (!idToInstances.TryGetValue(itemType, out var instances)) {
                     continue;
+                }
 
                 foreach (var item in instances) {
                     int ammoType = item.type;
-                    if (CWRIDs.OverProjID_To_Safe_Shoot_Ammo_Item_Target.TryGetValue(item.shoot, out int actualAmmo))
+                    if (CWRIDs.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo))
                         ammoType = actualAmmo;
 
                     // 不消耗的独立处理
                     // 按常理来说，这里不需要 AmmunitionIsunlimited 的判断，CombinedHooks.CanConsumeAmmo 就够了
                     // 但是实际测试下来不加这个判断会出问题，可能和灾厄大修内部的其他机制有关，我不理解，所以就不乱动了
-                    if (CWRUtils.AmmunitionIsunlimited(item) || !CombinedHooks.CanConsumeAmmo(player, weapon, item)) {
+                    if (CWRUtils.IsAmmunitionUnlimited(item) || !CombinedHooks.CanConsumeAmmo(player, weapon, item)) {
                         var clone = new Item(ammoType, times);
                         clone.CWR().AmmoProjectileReturn = false;
                         // 将其压入弹匣
@@ -173,8 +177,9 @@ public static class QotUtils
             }
 
             // 如果没有弹药被取出，说明背包里没有足够的弹药，直接退出
-            if (oldCapacity == capacity)
+            if (oldCapacity == capacity) {
                 break;
+            }  
         }
 
         #endregion

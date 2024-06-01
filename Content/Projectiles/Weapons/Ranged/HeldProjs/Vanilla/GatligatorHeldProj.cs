@@ -28,10 +28,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 0.6f;
             RangeOfStress = 25;
             SpwanGunDustMngsData.splNum = 0.35f;
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 15);
+            LoadingAA_None.loadingAA_None_Roting = 50;
+            LoadingAA_None.loadingAA_None_X = 3;
+            LoadingAA_None.loadingAA_None_Y = 15;
         }
 
         public override void FiringShoot() {

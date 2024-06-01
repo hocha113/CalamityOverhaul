@@ -28,10 +28,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
-
         public override void FiringShoot() {
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Source, GunShootPos

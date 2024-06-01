@@ -43,7 +43,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
             thisTime++;
             if (DownLeft && IsKreload && !Owner.mouseInterface) {
                 if (thisTime % 2 == 0)

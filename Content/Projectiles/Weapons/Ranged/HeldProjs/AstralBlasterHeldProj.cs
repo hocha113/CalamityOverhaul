@@ -33,9 +33,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SpwanGunDustMngsData.dustID1 = DustID.RedStarfish;
             SpwanGunDustMngsData.dustID2 = DustID.YellowStarDust;
         }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
     }
 }

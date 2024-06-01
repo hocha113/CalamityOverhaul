@@ -176,14 +176,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void SetDefaults(Item item) {
-            if (CWRIDs.OnLoadContentBool) {
-                if (item.createTile != -1 && !CWRIDs.TileToItem.ContainsKey(item.createTile)) {
-                    CWRIDs.TileToItem.Add(item.createTile, item.type);
-                }
-                if (item.createWall != -1 && !CWRIDs.WallToItem.ContainsKey(item.createWall)) {
-                    CWRIDs.WallToItem.Add(item.createWall, item.type);
-                }
-            }
             if (isInfiniteItem) {
                 destructTime = 5;
             }

@@ -21,11 +21,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public CWRPlayer ModOwner = null;
         protected CalamityPlayer CalOwner;
 
-        private bool old_downLeftValue;
-        private bool downLeftValue;
-        private bool old_downRightValue;
-        private bool downRightValue;
-
         /// <summary>
         /// 获取对应的<see cref="CWRItems"/>实例，在弹幕初始化时更新这个值
         /// </summary>

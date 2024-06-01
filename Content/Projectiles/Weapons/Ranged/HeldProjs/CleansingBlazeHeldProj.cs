@@ -29,10 +29,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             FiringDefaultSound = false;
             kreloadMaxTime = 90;
             loadTheRounds = CWRSound.Liquids_Fill_0 with { Pitch = -0.8f };
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 13);
+            LoadingAA_None.loadingAA_None_Roting = 30;
+            LoadingAA_None.loadingAA_None_X = 0;
+            LoadingAA_None.loadingAA_None_Y = 13;
         }
 
         public override void SetShootAttribute() {

@@ -58,7 +58,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
                 Projectile.timeLeft = 200;
                 Owner.itemRotation = (Projectile.velocity * Projectile.direction).ToRotation();
                 Vector2 mousePos = ToMouse + Owner.GetPlayerStabilityCenter();
-                Projectile.ai[0] += Main.rand.Next(1, 3);
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    Projectile.ai[0] += Main.rand.Next(1, 3);
+                    Projectile.netUpdate = true;//肮脏的手段——HoCha113, 2024-06-02 02:37
+                }
                 if (Projectile.ai[0] > 30) {
                     Vector2 ver = Projectile.Center.To(mousePos);
                     Projectile.velocity = ver.UnitVector() * 45;

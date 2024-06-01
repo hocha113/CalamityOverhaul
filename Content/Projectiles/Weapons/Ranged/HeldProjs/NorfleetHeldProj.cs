@@ -31,10 +31,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 22;
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(-50, -13, -15);
+            LoadingAA_None.loadingAA_None_Roting = -50;
+            LoadingAA_None.loadingAA_None_X = -13;
+            LoadingAA_None.loadingAA_None_Y = -15;
         }
 
         public override void FiringShoot() {

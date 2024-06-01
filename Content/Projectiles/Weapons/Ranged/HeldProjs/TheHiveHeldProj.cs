@@ -29,15 +29,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
-        }
-
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 15);
-        }
-
-        public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
-                , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            LoadingAA_None.loadingAA_None_Roting = 50;
+            LoadingAA_None.loadingAA_None_X = 3;
+            LoadingAA_None.loadingAA_None_Y = 15;
         }
     }
 }

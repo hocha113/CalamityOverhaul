@@ -36,10 +36,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
-
         public override void PostInOwnerUpdate() {
             if (!onFire && IsKreload && kreloadTimeValue <= 0) {
                 if (++fireIndex > 50) {

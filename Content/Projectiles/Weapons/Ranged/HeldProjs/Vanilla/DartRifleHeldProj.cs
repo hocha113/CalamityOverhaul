@@ -26,11 +26,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
             kreloadMaxTime = 45;
+            LoadingAA_None.loadingAA_None_Roting = 30;
+            LoadingAA_None.loadingAA_None_X = 0;
+            LoadingAA_None.loadingAA_None_Y = 13;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(30, 0, 13);
-        }
         public override void FiringShoot() {
             Item ammoItem = GetSelectedBullets();
             if (ammoItem.type == ItemID.CursedDart) {

@@ -29,10 +29,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
-
         public override void HanderSpwanDust() {
             SpawnGunFireDust(dustID1: DustID.GreenTorch, dustID2: DustID.GreenMoss);
         }

@@ -43,10 +43,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAA_Handgun.feederOffsetRot = -22;
         }
 
-        public override void PreInOwnerUpdate() {
-            LoadingAnimation(50, 3, 25);
-        }
-
         public override void HanderPlaySound() {
             if (fireIndex > 2) {
                 SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
