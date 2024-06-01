@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CalamityOverhaul.Content.OthermodMROs.ImproveGame;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -679,20 +680,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         /// <summary>
-        /// 该弹药物品是否应该判定为一个无限弹药
-        /// </summary>
-        /// <param name="ammoItem"></param>
-        /// <returns></returns>
-        public bool AmmunitionIsunlimited(Item ammoItem) {
-            bool result = !ammoItem.consumable;
-            if (CWRMod.Instance.luiafk != null || CWRMod.Instance.improveGame != null) {
-                if (ammoItem.stack >= 3996) {
-                    result = true;
-                }
-            }
-            return result;
-        }
-        /// <summary>
         /// 退还弹匣内非空子弹
         /// </summary>
         public void BulletReturn() {
@@ -719,6 +706,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             int accumulatedAmount = 0;
 
+            // 更好的体验适配 - 如果有弹药链，转到单独的弹药装载
+            var ammoChain = Item.GetQotAmmoChain();
+            if (ammoChain is not null && Owner.LoadFromAmmoChain(Item, ammoChain, Item.useAmmo, magazineCapacity, out var pushedAmmo, out int ammoCount)) {
+                cwrItem.MagazineContents = pushedAmmo.ToArray();
+                AmmoState.Amount = ammoCount;
+                return;
+            }
+
             foreach (Item ammoItem in AmmoState.InItemInds) {
                 int stack = ammoItem.stack;
 
@@ -726,7 +721,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     stack = magazineCapacity - accumulatedAmount;
                 }
 
-                if (AmmunitionIsunlimited(ammoItem)) {//如果该物品不消耗，那么可能是一个无限弹药类型的物品，这里进行特别处理
+                if (CWRUtils.AmmunitionIsunlimited(ammoItem)) {//如果该物品不消耗，那么可能是一个无限弹药类型的物品，这里进行特别处理
                     if (CWRIDs.ItemToShootID.ContainsKey(ammoItem.type)) {
                         int newAmmoType = ammoItem.type;
                         if (CWRIDs.OverProjID_To_Safe_Shoot_Ammo_Item_Target.TryGetValue(ammoItem.shoot, out int value2)) {
@@ -768,7 +763,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (inds.stack <= 0) {
                     continue;
                 }
-                if (AmmunitionIsunlimited(inds)) {
+                if (CWRUtils.AmmunitionIsunlimited(inds)) {
                     break;
                 }
                 if (inds.stack >= maxAmmo) {
