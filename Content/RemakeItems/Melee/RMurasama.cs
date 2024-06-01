@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
             float oldMultiplicative = damage.Multiplicative;
             damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
-            damage /= oldMultiplicative;
+            damage /= oldMultiplicative; 
         }
         //因为方法表现不稳定，所以重新使用回 ModifyWeaponDamage 而不是 On_ModifyWeaponDamage
         //public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {

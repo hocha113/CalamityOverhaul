@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content
             Texture2D extraPieceTexture;
 
             if (headItem.type == DemonshadeHelmMagic.PType) {
-                headDrawPosition += new Vector2(0, -6);
+                headDrawPosition += new Vector2(-4, -16);
                 extraPieceTexture = DemonshadeHelmMagic.Hand.Value;
 
                 frame = extraPieceTexture.Frame(1, 20, 0, player.bodyFrame.Y / player.bodyFrame.Height);
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content
             }
 
             else if (headItem.type == DemonshadeHelmRanged.PType) {
-                headDrawPosition += new Vector2(-10, -16);
+                headDrawPosition += new Vector2(-6, -18);
                 extraPieceTexture = DemonshadeHelmRanged.Hand.Value;
 
                 frame = extraPieceTexture.Frame(1, 20, 0, player.bodyFrame.Y / player.bodyFrame.Height);
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content
             }
 
             else if (headItem.type == DemonshadeHelmSummon.PType) {
-                headDrawPosition += new Vector2(player.direction > 0 ? -4 : 2, -10);
+                headDrawPosition += new Vector2(-6, -4);
                 extraPieceTexture = DemonshadeHelmSummon.Hand.Value;
 
                 frame = extraPieceTexture.Frame(1, 20, 0, player.bodyFrame.Y / player.bodyFrame.Height);
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content
             }
 
             else if (headItem.type == DemonshadeHelmRogue.PType) {
-                headDrawPosition += new Vector2(-player.direction - 2, -10);
+                headDrawPosition += new Vector2(-4, -14);
                 extraPieceTexture = DemonshadeHelmRogue.Hand.Value;
 
                 frame = extraPieceTexture.Frame(1, 20, 0, player.bodyFrame.Y / player.bodyFrame.Height);
