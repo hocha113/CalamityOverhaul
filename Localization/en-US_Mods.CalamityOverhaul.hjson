@@ -2645,6 +2645,26 @@ Items: {
 		DisplayName: Marble Dagger
 		Tooltip: ""
 	}
+
+	ApoctolithEcType: {
+		DisplayName: Apoctolith Ec Type
+		Tooltip: ""
+	}
+
+	ThrowingBrickEcType: {
+		DisplayName: Throwing Brick Ec Type
+		Tooltip: ""
+	}
+
+	GuardianTerra: {
+		DisplayName: Guardian Terra
+		Tooltip: ""
+	}
+
+	NitroExpressRifleEcType: {
+		DisplayName: Nitro Express Rifle Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3250,6 +3270,12 @@ Projectiles: {
 	RebelBladeOrb.DisplayName: Rebel Blade Orb
 	RebelBladeBack.DisplayName: Rebel Blade Back
 	RebelBladeSlash.DisplayName: Rebel Blade Slash
+	ApoctolithHeld.DisplayName: Apoctolith Held
+	ThrowingBrickHeld.DisplayName: Throwing Brick Held
+	Spindrift.DisplayName: Spindrift
+	GuardianTerraHeld.DisplayName: Guardian Terra Held
+	GuardianTerraBeam.DisplayName: Guardian Terra Beam
+	NitroExpressRifleHeldProj.DisplayName: Nitro Express Rifle Held Proj
 }
 
 Configs: {

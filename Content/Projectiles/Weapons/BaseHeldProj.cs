@@ -38,6 +38,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// </summary>
         internal virtual Vector2 ToMouse { get; private protected set; }
         /// <summary>
+        /// 获取玩家鼠标的位置
+        /// </summary>
+        internal virtual Vector2 InMousePos { get; private protected set; }
+        /// <summary>
         /// 获取玩家到鼠标的角度
         /// </summary>
         internal virtual float ToMouseA { get; private protected set; }
@@ -112,6 +116,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
             ToMouse = UpdateToMouse();
             ToMouseA = ToMouse.ToRotation();
             UnitToMouseV = ToMouse.UnitVector();
+            InMousePos = ToMouse + Owner.GetPlayerStabilityCenter();
         }
         /// <summary>
         /// 在AI更新前进行数据更新

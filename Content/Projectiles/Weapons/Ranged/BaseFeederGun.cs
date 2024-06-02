@@ -690,8 +690,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
 
             Get_LoadingAmmoAnimation_PostInOwnerUpdate();
-            if (AutomaticPolishingEffect) {
+            if (AutomaticPolishingEffect && automaticPolishingInShootStartFarg) {
                 AutomaticPolishing(FireTime);
+                
             }
             PostInOwnerUpdate();
             Projectile.netUpdate = true;
@@ -919,7 +920,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         if (CanCreateSpawnGunDust) {
                             HanderSpwanDust();
                         }
-                        if (CanCreateCaseEjection) {
+                        if (CanCreateCaseEjection && !AutomaticPolishingEffect) {
                             HanderCaseEjection();
                         }
                         if (CanCreateRecoilBool) {
@@ -953,7 +954,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         AutomaticCartridgeChangeDelayTime += FireTime;
                     }
                 }
-
+                automaticPolishingInShootStartFarg = true;
                 ShootCoolingValue += FireTime + 1;
                 onFire = false;
             }

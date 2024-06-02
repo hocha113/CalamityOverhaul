@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             for (int i = 0; i < 6; i++) {
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center,
+                Projectile.NewProjectile(Source, Projectile.Center,
                     ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.7f, 1.1f)
                     , ModContent.ProjectileType<RealmRavagerBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
                     , ModContent.ProjectileType<CorinthPrimeAirburstGrenade>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
         }

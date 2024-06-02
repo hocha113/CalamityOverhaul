@@ -30,13 +30,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             int ammonum = Main.rand.Next(3);
             if (ammonum == 0) {
                 for (int i = 0; i < 2; i++) {
-                    _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.07f, 0.07f, i)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    _ = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.07f, 0.07f, i)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     _ = UpdateConsumeAmmo();
                 }
             }
             else {
                 for (int i = 0; i < 3; i++) {
-                    _ = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.07f, 0.07f, i / 2f)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    _ = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy(MathHelper.Lerp(-0.07f, 0.07f, i / 2f)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     _ = UpdateConsumeAmmo();
                 }
             }

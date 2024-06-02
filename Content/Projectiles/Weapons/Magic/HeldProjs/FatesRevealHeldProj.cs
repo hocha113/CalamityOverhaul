@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             if (onFire) {
                 if (Time % 5 == 0) {
                     Vector2 vr = CWRUtils.GetRandomVevtor(-120, -60, 3);
-                    Projectile.NewProjectile(Owner.parent(), Projectile.Center, vr,
+                    Projectile.NewProjectile(Source2, Projectile.Center, vr,
                         ModContent.ProjectileType<SpiritFlame>(), Projectile.damage / 4, 0, Owner.whoAmI, 3);
                 }
             }

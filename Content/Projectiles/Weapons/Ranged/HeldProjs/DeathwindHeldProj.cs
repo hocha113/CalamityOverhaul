@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (CalamityUtils.CheckWoodenAmmo(AmmoTypes, Owner)) {
                 SoundEngine.PlaySound(SoundID.Item12, Projectile.Center);
                 for (int i = 0; i < 3; i++) {
-                    int ammo = Projectile.NewProjectile(Owner.parent(), Projectile.Center, (Projectile.rotation + MathHelper.ToRadians(5 - 5 * i)).ToRotationVector2()
+                    int ammo = Projectile.NewProjectile(Source, Projectile.Center, (Projectile.rotation + MathHelper.ToRadians(5 - 5 * i)).ToRotationVector2()
                         , ModContent.ProjectileType<DeathLaser>(), WeaponDamage, WeaponKnockback, Projectile.owner);
                     Main.projectile[ammo].ai[1] = Projectile.whoAmI;
                 }
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             else {
                 SoundEngine.PlaySound(SoundID.Item5, Projectile.Center);
                 for (int i = 0; i < 3; i++) {
-                    int ammo = Projectile.NewProjectile(Owner.parent(), Projectile.Center
+                    int ammo = Projectile.NewProjectile(Source, Projectile.Center
                         , (Projectile.rotation + MathHelper.ToRadians(5 - 5 * i)).ToRotationVector2() * 17
                         , AmmoTypes, WeaponDamage, WeaponKnockback, Projectile.owner);
                     Main.projectile[ammo].MaxUpdates = 2;
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (Projectile.ai[2] > 5) {
                     for (int i = 0; i < 3; i++) {
                         Vector2 vr = (Projectile.rotation + MathHelper.ToRadians(5 - 5 * i)).ToRotationVector2();
-                        int ammo = Projectile.NewProjectile(Owner.parent(), Projectile.Center + vr * 150, vr * 15,
+                        int ammo = Projectile.NewProjectile(Source, Projectile.Center + vr * 150, vr * 15,
                                 ModContent.ProjectileType<DeadArrow>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
                         Main.projectile[ammo].scale = 1.5f;
                     }

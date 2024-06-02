@@ -291,13 +291,6 @@ namespace CalamityOverhaul
             return new EntitySource_Parent(entity);
         }
 
-        public static Vector2 InPosMoveTowards(this Vector2 currentPosition, Vector2 targetPosition, float maxAmountAllowedToMove) {
-            Vector2 v = targetPosition - currentPosition;
-            return v.Length() < maxAmountAllowedToMove
-                ? targetPosition
-                : currentPosition + (v.SafeNormalize(Vector2.Zero) * maxAmountAllowedToMove);
-        }
-
         /// <summary>
         /// 判断是否发生对视
         /// </summary>

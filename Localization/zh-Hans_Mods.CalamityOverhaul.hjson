@@ -2053,7 +2053,7 @@ Items: {
 	}
 
 	CrystalDimming: {
-		DisplayName: 绝晶黯涌
+		DisplayName: 冰河时代
 		Tooltip:
 			'''
 			使用雪球作为弹药
@@ -2063,7 +2063,7 @@ Items: {
 	}
 
 	DarkFrostSolstice: {
-		DisplayName: 玄冥寒朔
+		DisplayName: 暗寒狂涌
 		Tooltip:
 			'''
 			使用雪球作为弹药
@@ -2706,6 +2706,26 @@ Items: {
 		DisplayName: 大理岩匕首
 		Tooltip: ""
 	}
+
+	ApoctolithEcType: {
+		// DisplayName: Apoctolith Ec Type
+		// Tooltip: ""
+	}
+
+	ThrowingBrickEcType: {
+		// DisplayName: Throwing Brick Ec Type
+		// Tooltip: ""
+	}
+
+	GuardianTerra: {
+		// DisplayName: Guardian Terra
+		// Tooltip: ""
+	}
+
+	NitroExpressRifleEcType: {
+		// DisplayName: Nitro Express Rifle Ec Type
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3311,6 +3331,12 @@ Projectiles: {
 	RebelBladeOrb.DisplayName: 恶魔光球
 	RebelBladeBack.DisplayName: 叛逆之刃
 	RebelBladeSlash.DisplayName: 叛逆之刃
+	// ApoctolithHeld.DisplayName: Apoctolith Held
+	// ThrowingBrickHeld.DisplayName: Throwing Brick Held
+	// Spindrift.DisplayName: Spindrift
+	// GuardianTerraHeld.DisplayName: Guardian Terra Held
+	// GuardianTerraBeam.DisplayName: Guardian Terra Beam
+	// NitroExpressRifleHeldProj.DisplayName: Nitro Express Rifle Held Proj
 }
 
 Configs: {

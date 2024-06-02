@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<MarksmanBowEcType>();
         public override void BowShoot() {
             for (int i = 0; i < 3; i++) {
-                int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity * (0.7f + i * 0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity * (0.7f + i * 0.1f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].MaxUpdates = 6;
                 Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.Marksman;
                 NetMessage.SendData(MessageID.SyncProjectile, -1, Owner.whoAmI, null, proj);

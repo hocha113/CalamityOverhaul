@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void BowShootR() {
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<MonsoonOnSpan>()] == 0) {
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
+                Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<MonsoonOnSpan>(), WeaponDamage
                     , WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
             }

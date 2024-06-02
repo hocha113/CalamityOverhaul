@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
     {
         internal static MouseTextContactPanel Instance { get; private set; }
 
-        private bool leftCtrlPressed;
         private bool oldLeftCtrlPressed;
         public override void Load() {
             Instance = this;

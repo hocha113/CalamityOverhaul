@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SparkParticle spark = new SparkParticle(pos, sparkVelocity, false, sparkLifetime, sparkScale, sparkColor);
                 GeneralParticleHandler.SpawnParticle(spark);
             }
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
                     , ModContent.ProjectileType<LostSoulBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
 
             UpdateConsumeAmmo();

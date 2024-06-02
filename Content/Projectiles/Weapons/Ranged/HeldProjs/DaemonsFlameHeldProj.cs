@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 for (int i = 0; i < 4; i++) {
                     Vector2 vr = (Projectile.rotation + Main.rand.NextFloat(-0.1f, 0.1f)).ToRotationVector2() * Main.rand.Next(8, 18);
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * 8;
-                    int doms = Projectile.NewProjectile(Projectile.parent(), pos, vr, types, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                    int doms = Projectile.NewProjectile(Source, pos, vr, types, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                     Projectile newDoms = Main.projectile[doms];
                     newDoms.DamageType = DamageClass.Ranged;
                     newDoms.timeLeft = 120;
@@ -49,9 +49,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 for (int i = 0; i < 4; i++) {
                     Vector2 vr = Projectile.rotation.ToRotationVector2() * Main.rand.Next(20, 30);
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * 8;
-                    Projectile.NewProjectile(Projectile.parent(), pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                    Projectile.NewProjectile(Source2, pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
                 }
-                Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 18
+                Projectile.NewProjectile(Source, Projectile.Center, Projectile.rotation.ToRotationVector2() * 18
                     , ModContent.ProjectileType<DaemonsFlameArrow>(), WeaponDamage, WeaponKnockback, Owner.whoAmI);
             }
         }

@@ -54,8 +54,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             base.FiringShoot();
             const float spread = 0.0425f;
             for (int i = 0; i < 2; i++) {
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity.RotatedBy(-spread * (i + 1)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity.RotatedBy(spread * (i + 1)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                Projectile.NewProjectile(Source2, Projectile.Center, ShootVelocity.RotatedBy(-spread * (i + 1)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                Projectile.NewProjectile(Source2, Projectile.Center, ShootVelocity.RotatedBy(spread * (i + 1)), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
             }
         }
 
@@ -71,13 +71,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             for (int i = 0; i < 7; i++) {
                 Vector2 pos2 = shoot2Vr.RotatedBy((-3 + i) * 0.15f) * 1230 + toMouVr;
                 Vector2 vr = pos2.To(Main.MouseWorld);
-                Projectile.NewProjectile(Owner.parent(), pos2, vr.UnitVector() * 13
+                Projectile.NewProjectile(Source2, pos2, vr.UnitVector() * 13
                     , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI);
             }
             for (int i = 0; i < 7; i++) {
                 Vector2 pos4 = shoot2Vr.RotatedBy((-3 + i) * 0.15f) * -1230 + toMouVr;
                 Vector2 vr2 = pos4.To(Main.MouseWorld);
-                Projectile.NewProjectile(Owner.parent(), pos4, vr2.UnitVector() * 13
+                Projectile.NewProjectile(Source2, pos4, vr2.UnitVector() * 13
                     , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI);
             }
         }

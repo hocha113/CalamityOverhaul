@@ -21,11 +21,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+            int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
                        , ModContent.ProjectileType<EnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+            Projectile.NewProjectile(Source2, Projectile.Center, ShootVelocity
                     , ModContent.ProjectileType<EnergyBlast2>(), WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 1, proj, -60);
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+            Projectile.NewProjectile(Source2, Projectile.Center, ShootVelocity
                     , ModContent.ProjectileType<EnergyBlast2>(), WeaponDamage / 2, 0, Owner.whoAmI, -1, proj, 60);
         }
     }

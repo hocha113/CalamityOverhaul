@@ -22,6 +22,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         #region Date
         protected float oldSetRoting;
         /// <summary>
+        /// 一个专用与子类的属性，仅仅用于保证自动抛壳<see cref="BaseGun.AutomaticPolishing"/>会在正确的时机运行
+        /// ，一般来讲不要设置它，它会在一次射击中自动恢复为<see langword="true"/>
+        /// </summary>
+        protected bool automaticPolishingInShootStartFarg;
+        /// <summary>
         /// 枪械旋转角矫正
         /// </summary>
         public float OffsetRot;
@@ -54,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         internal bool CanCreateSpawnGunDust = true;
         /// <summary>
-        /// 是否自动在一次单次射击后调用后坐力函数
+        /// 是否自动在一次单次射击后调用抛壳函数，如果<see cref="AutomaticPolishingEffect"/>为<see langword="true"/>，那么该属性将无效化
         /// </summary>
         internal bool CanCreateCaseEjection = true;
         /// <summary>
@@ -350,9 +355,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 一个自动抛科的行为的二次封装
         /// </summary>
         protected void AutomaticPolishing(int maxTime) {
-            if (ShootCoolingValue == maxTime / 2) {
+            if (ShootCoolingValue == maxTime / 2 && maxTime > 0) {
                 SoundEngine.PlaySound(CWRSound.Gun_BoltAction with { Volume = 0.5f, PitchRange = (-0.05f, 0.05f) }, Projectile.Center);
                 CaseEjection();
+                automaticPolishingInShootStartFarg = false;
             }
         }
         /// <summary>
@@ -521,7 +527,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     if (CanCreateSpawnGunDust) {
                         HanderSpwanDust();
                     }
-                    if (CanCreateCaseEjection) {
+                    if (CanCreateCaseEjection && !AutomaticPolishingEffect) {
                         HanderCaseEjection();
                     }
                     if (CanCreateRecoilBool) {
@@ -535,7 +541,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
                 PostFiringShoot();
-
+                automaticPolishingInShootStartFarg = true;
                 ShootCoolingValue += Item.useTime;
                 onFireR = onFire = false;
             }

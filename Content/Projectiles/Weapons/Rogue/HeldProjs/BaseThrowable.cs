@@ -172,6 +172,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         
         public virtual void ThrowOut() {
             SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
+            Projectile.Center = Owner.Center + UnitToMouseV * 8;
             Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 17.5f;
             Projectile.tileCollide = true;
         }
