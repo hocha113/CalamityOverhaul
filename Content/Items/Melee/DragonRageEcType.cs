@@ -20,8 +20,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DragonRage";
 
-        public new string LocalizationCategory => "Items.Weapons.Melee";
-
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         }

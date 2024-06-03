@@ -2665,6 +2665,16 @@ Items: {
 		DisplayName: Nitro Express Rifle Ec Type
 		Tooltip: ""
 	}
+
+	LifehuntScytheEcType: {
+		DisplayName: Lifehunt Scythe Ec Type
+		Tooltip: ""
+	}
+
+	DeathsAscensionEcType: {
+		DisplayName: Deaths Ascension Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3276,6 +3286,12 @@ Projectiles: {
 	GuardianTerraHeld.DisplayName: Guardian Terra Held
 	GuardianTerraBeam.DisplayName: Guardian Terra Beam
 	NitroExpressRifleHeldProj.DisplayName: Nitro Express Rifle Held Proj
+	LifehuntScytheHeld.DisplayName: Lifehunt Scythe Held
+	LifehuntScytheThrowable.DisplayName: Lifehunt Scythe Throwable
+	LifeScythe1.DisplayName: Life Scythe1
+	DeathsAscensionHeld.DisplayName: Deaths Ascension Held
+	DeathsAscensionThrowable.DisplayName: Deaths Ascension Throwable
+	DeathsAscensionBreakSwing.DisplayName: Deaths Ascension Break Swing
 }
 
 Configs: {

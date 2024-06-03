@@ -183,6 +183,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
 
         protected void SetHeld() => Owner.heldProj = Projectile.whoAmI;
 
+        protected void SetDirection() => Owner.direction = Math.Sign(ToMouse.X);
+
         protected void NetUpdate() => Projectile.netUpdate = true;
     }
 }
