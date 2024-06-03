@@ -12,6 +12,7 @@ using Terraria;
 using Terraria.GameInput;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
@@ -47,11 +48,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override float ReelbackSpeed => 2.4f;
         public override float ForwardSpeed => 0.95f;
         public override Action<Projectile> EffectBeforeReelback => delegate {
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity * 0.5f, Projectile.velocity, ModContent.ProjectileType<PlagueBee>(), (int)(Projectile.damage * 0.75f), Projectile.knockBack * 0.85f, Projectile.owner);
+            Projectile.NewProjectile(Projectile.GetSource_FromThis()
+                , Projectile.Center + Projectile.velocity * 0.5f, Projectile.velocity
+                , ModContent.ProjectileType<PlagueBee>(), (int)(Projectile.damage * 0.75f)
+                , Projectile.knockBack * 0.85f, Projectile.owner);
         };
         public override void ExtraBehavior() {
             if (Main.rand.NextBool(4))
-                Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, 107, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
+                Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height
+                    , DustID.TerraBlade, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
         }
 
         public override void AI() {

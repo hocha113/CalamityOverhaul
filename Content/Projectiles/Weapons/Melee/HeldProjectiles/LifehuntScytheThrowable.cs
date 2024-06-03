@@ -33,11 +33,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override bool PreThrowOut() {
+            SoundEngine.PlaySound(SoundID.Item45, Owner.Center);
             SoundEngine.PlaySound(SoundID.Item71, Owner.Center);
             return true;
         }
 
         public override void FlyToMovementAI() {
+            float rot = (MathHelper.PiOver2 * SafeGravDir - Owner.Center.To(Projectile.Center).ToRotation()) * DirSign * SafeGravDir;
+            float rot2 = (MathHelper.PiOver2 * SafeGravDir - MathHelper.ToRadians(DirSign > 0 ? -20 : 200)) * DirSign * SafeGravDir;
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rot * -DirSign);
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, rot2 * -DirSign);
+
             if (DownLeft && Projectile.ai[2] < 60) {
                 Owner.direction = Math.Sign(ToMouse.X);
                 Projectile.ChasingBehavior(InMousePos, 33);

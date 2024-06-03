@@ -6,6 +6,9 @@ using Terraria;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Melee;
+using System;
+using Terraria.Graphics.CameraModifiers;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
@@ -33,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
             Projectile.ownerHitCheck = true;
             Projectile.usesIDStaticNPCImmunity = true;
-            Projectile.idStaticNPCHitCooldown = 8;
+            Projectile.idStaticNPCHitCooldown = 5;
             Projectile.frameCounter = 0;
         }
 
@@ -47,7 +50,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
 
             if (frameX == 0 && frameY == 3 && Projectile.frameCounter % 3 == 0) {
-                SoundEngine.PlaySound(SoundID.Item71, Projectile.position);
+                PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center
+                    , (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 20f, 6f, 20, 1000f, FullName);
+                Main.instance.CameraModifiers.Add(modifier);
+                SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 0.35f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.6f , Volume = 1.25f, MaxInstances = 2 }, Projectile.position);
                 Projectile.timeLeft = 30;
             }
 
@@ -82,7 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (Projectile.frameCounter <= 1)
                 return false;
             Texture2D texture = CWRUtils.GetT2DValue(Texture);
-            Vector2 position = Projectile.Center - Main.screenPosition + (Projectile.spriteDirection == -1 ? new Vector2(60, 0) : new Vector2(-60, 0));
+            Vector2 position = Projectile.Center - Main.screenPosition + (Projectile.spriteDirection == -1 ? new Vector2(90, 0) : new Vector2(-90, 0));
             Vector2 origin = texture.Size() / new Vector2(2f, 6f) * 0.5f;
             Rectangle frame = texture.Frame(2, 6, frameX, frameY);
             SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;

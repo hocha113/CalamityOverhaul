@@ -2634,7 +2634,7 @@ Items: {
 	}
 
 	FrostcrushValariEcType: {
-		// DisplayName: Frostcrush Valari Ec Type
+		// DisplayName: Frostcrush Valari
 		// Tooltip: ""
 	}
 
@@ -2708,33 +2708,51 @@ Items: {
 	}
 
 	ApoctolithEcType: {
-		// DisplayName: Apoctolith Ec Type
-		// Tooltip: ""
+		DisplayName: 末渊石板
+		Tooltip: ""
 	}
 
 	ThrowingBrickEcType: {
-		// DisplayName: Throwing Brick Ec Type
-		// Tooltip: ""
+		DisplayName: 板砖
+		Tooltip: ""
 	}
 
 	GuardianTerra: {
-		// DisplayName: Guardian Terra
-		// Tooltip: ""
+		DisplayName: 泰拉守护者
+		Tooltip:
+			'''
+			发射强大的泰拉生命源质
+			右键进行强力挥舞
+			'''
 	}
 
 	NitroExpressRifleEcType: {
-		// DisplayName: Nitro Express Rifle Ec Type
-		// Tooltip: ""
+		DisplayName: NE猎枪
+		Tooltip:
+			'''
+			适合崩碎熊的颅骨
+			将火枪子弹转化为动能弹
+			"老旧，但实用"
+			'''
 	}
 
 	LifehuntScytheEcType: {
-		// DisplayName: Lifehunt Scythe Ec Type
-		// Tooltip: ""
+		DisplayName: 猎命镰刀
+		Tooltip:
+			'''
+			每轮挥舞都会掷出一圈生命镰刀
+			每三轮挥舞会将巨大化的镰刀掷出
+			'''
 	}
 
 	DeathsAscensionEcType: {
-		// DisplayName: Deaths Ascension Ec Type
-		// Tooltip: ""
+		DisplayName: 死神耀升
+		Tooltip:
+			'''
+			每轮挥舞都会掷出收割灵魂的死神之镰
+			每三轮挥舞会将巨大化的飞镰掷出
+			按住左键让飞镰追寻光标位置，松开左键触发死神半月
+			'''
 	}
 }
 
@@ -3341,18 +3359,18 @@ Projectiles: {
 	RebelBladeOrb.DisplayName: 恶魔光球
 	RebelBladeBack.DisplayName: 叛逆之刃
 	RebelBladeSlash.DisplayName: 叛逆之刃
-	// ApoctolithHeld.DisplayName: Apoctolith Held
-	// ThrowingBrickHeld.DisplayName: Throwing Brick Held
+	// ApoctolithHeld.DisplayName: Apoctolith
+	// ThrowingBrickHeld.DisplayName: Throwing Brick
 	// Spindrift.DisplayName: Spindrift
-	// GuardianTerraHeld.DisplayName: Guardian Terra Held
+	// GuardianTerraHeld.DisplayName: Guardian Terra
 	// GuardianTerraBeam.DisplayName: Guardian Terra Beam
-	// NitroExpressRifleHeldProj.DisplayName: Nitro Express Rifle Held Proj
-	// LifehuntScytheHeld.DisplayName: Lifehunt Scythe Held
-	// LifehuntScytheThrowable.DisplayName: Lifehunt Scythe Throwable
-	// LifeScythe1.DisplayName: Life Scythe1
-	// DeathsAscensionHeld.DisplayName: Deaths Ascension Held
-	// DeathsAscensionThrowable.DisplayName: Deaths Ascension Throwable
-	// DeathsAscensionBreakSwing.DisplayName: Deaths Ascension Break Swing
+	// NitroExpressRifleHeldProj.DisplayName: Nitro Express Rifle
+	// LifehuntScytheHeld.DisplayName: Lifehunt Scythe
+	// LifehuntScytheThrowable.DisplayName: Lifehunt Scythe
+	// LifeScythe1.DisplayName: Life Scythe
+	// DeathsAscensionHeld.DisplayName: Deaths Ascension
+	// DeathsAscensionThrowable.DisplayName: Deaths Ascension
+	// DeathsAscensionBreakSwing.DisplayName: Deaths Ascension
 }
 
 Configs: {

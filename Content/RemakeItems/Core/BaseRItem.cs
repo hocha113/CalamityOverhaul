@@ -140,6 +140,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             return null;
         }
         /// <summary>
+        /// 返回<see langword="true"/>将允许该物品可以被右键使用
+        /// </summary>
+        /// <returns>返回默认值<see langword="null"/>会继续执行该物品的原默认方法，否则将阻断后续所有判定的执行</returns>
+        public virtual bool? On_AltFunctionUse(Item item, Player player) {
+            return null;
+        }
+        /// <summary>
         /// 觉定这个饰品在什么情况下可以被装载
         /// </summary>
         /// <returns>返回默认值<see langword="null"/>会继续执行该物品的原默认方法</returns>

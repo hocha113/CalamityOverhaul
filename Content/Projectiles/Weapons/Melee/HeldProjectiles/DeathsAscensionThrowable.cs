@@ -1,16 +1,15 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
-using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityMod;
+using CalamityMod.Particles;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
+using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityOverhaul.Common;
-using CalamityMod.Projectiles.Melee;
-using Mono.Cecil;
-using CalamityMod.Particles;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
@@ -18,6 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DeathsAscension";
         bool inOut;
+        bool outFive;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 17;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
@@ -36,11 +36,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override bool PreThrowOut() {
-            SoundEngine.PlaySound(SoundID.Item71, Owner.Center);
+            outFive = true;
+            SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.2f }, Owner.Center);
             return true;
         }
 
         public override void FlyToMovementAI() {
+            float rot = (MathHelper.PiOver2 * SafeGravDir - Owner.Center.To(Projectile.Center).ToRotation()) * DirSign * SafeGravDir;
+            float rot2 = (MathHelper.PiOver2 * SafeGravDir - MathHelper.ToRadians(DirSign > 0 ? -20 : 200)) * DirSign * SafeGravDir;
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rot * -DirSign);
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, rot2 * -DirSign);
+
             if (DownLeft && Projectile.ai[2] < 60 && !inOut) {
                 Owner.direction = Math.Sign(ToMouse.X);
                 Projectile.ChasingBehavior(InMousePos, 33);
@@ -66,7 +72,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 if (Projectile.Distance(Owner.Center) < 86) {
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, Owner.velocity
                         , ModContent.ProjectileType<DeathsAscensionBreakSwing>()
-                        , Projectile.damage, Projectile.knockBack, Owner.whoAmI, 0f, 0f);
+                        , Projectile.damage * 2, Projectile.knockBack, Owner.whoAmI, 0f, 0f);
                     Projectile.Kill();
                 }
                 Projectile.rotation -= 0.6f * Owner.direction;
@@ -100,6 +106,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, lightColor
                 , Projectile.rotation + (MathHelper.PiOver4 + OffsetRoting) * (Projectile.velocity.X > 0 ? 1 : -1)
                 , orig, Projectile.scale, spriteEffects, 0);
+
+
+            if (outFive) {
+                Texture2D value = ModContent.Request<Texture2D>("CalamityMod/Particles/SemiCircularSmear").Value;
+                Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
+                Main.EntitySpriteDraw(color: Color.Fuchsia * 0.9f
+                    , origin: value.Size() * 0.5f, texture: value, position: Projectile.Center - Main.screenPosition
+                    , sourceRectangle: null, rotation: Projectile.rotation - CWRUtils.PiOver5
+                    , scale: Projectile.scale * 1.15f, effects: SpriteEffects.None);
+                Main.spriteBatch.ExitShaderRegion();
+            }
         }
     }
 }

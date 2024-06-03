@@ -1,20 +1,20 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    internal class DeathsAscensionEcType : ModItem
+    internal class DeathsAscensionEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DeathsAscension";
         int swingIndex = 0;
         public override void SetDefaults() {
-            Item.SetCalamitySD<LifehuntScythe>();
+            Item.SetCalamitySD<DeathsAscension>();
             Item.UseSound = null;
             Item.noUseGraphic = true;
             Item.noMelee = true;

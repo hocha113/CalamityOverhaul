@@ -55,13 +55,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.localNPCHitCooldown = 4;
         }
 
-        public override void OnSpawn(IEntitySource source) {
-            base.OnSpawn(source);
-        }
-
-        public override void OnKill(int timeLeft) {
-        }
-
         public override void SendExtraAI(BinaryWriter writer) {
             writer.Write(Time);
             writer.Write(Projectile.localAI[1]);
@@ -73,9 +66,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void AI() {
-
-            if (Projectile.localAI[1] == 0)
+            if (Projectile.localAI[1] == 0) {
                 base.AI();
+            }
+                
             if (Projectile.localAI[1] == 1) {
                 Projectile.MaxUpdates = 2;
                 if (Time == 0f) {
@@ -93,26 +87,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Projectile.velocity = InitialDirection.ToRotationVector2() * num2;
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         InitialDirection = Owner.Center.To(Main.MouseWorld).ToRotation();
-                        #region 添加随行激光的设计好坏性存疑，所以暂且注释这段代码
-                        //Projectile ray = AiBehavior.GetProjectileInstance((int)Projectile.localAI[2]);
-                        //if (ray == null && ray.type != ModContent.ProjectileType<CosmicRay>())
-                        //{
-                        //    Projectile.localAI[2] = Projectile.NewProjectile(
-                        //    AiBehavior.GetEntitySource_Parent(Projectile),
-                        //    Projectile.Center,
-                        //    Vector2.Zero,
-                        //    ModContent.ProjectileType<CosmicRay>(),
-                        //    Projectile.damage,
-                        //    0,
-                        //    Owner.whoAmI
-                        //    );
-                        //}
-                        //if (ray != null)
-                        //{
-                        //    ray.Center = Owner.Center + InitialDirection.ToRotationVector2() * 132;
-                        //    ray.rotation = InitialDirection;
-                        //}
-                        #endregion
                     }
                 }
 

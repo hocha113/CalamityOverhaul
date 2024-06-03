@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Main.projectile[proj].localAI[1] = 1;
             }
 
-            return true;
+            return false;
         }
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI) {

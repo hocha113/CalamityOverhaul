@@ -30,6 +30,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         internal delegate bool On_CanConsumeAmmo_Delegate(Item weapon, Item ammo, Player player);
         internal delegate void On_ModifyWeaponDamage_Delegate(Item item, Player player, ref StatModifier damage);
         internal delegate void On_UpdateAccessory_Delegate(Item item, Player player, bool hideVisual);
+        internal delegate bool On_AltFunctionUse_Delegate(Item item, Player player);
         internal delegate void On_ModItem_ModifyTooltips_Delegate(object obj, List<TooltipLine> list);
 
         public static Type itemLoaderType;
@@ -47,6 +48,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onCanConsumeAmmoMethod;
         public static MethodBase onModifyWeaponDamageMethod;
         public static MethodBase onUpdateAccessoryMethod;
+        public static MethodBase onAltFunctionUseMethod;
 
         public override void Load() {
             itemLoaderType = typeof(ItemLoader);
@@ -64,6 +66,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onCanConsumeAmmoMethod = itemLoaderType.GetMethod("CanConsumeAmmo", BindingFlags.Public | BindingFlags.Static);
             onModifyWeaponDamageMethod = itemLoaderType.GetMethod("ModifyWeaponDamage", BindingFlags.Public | BindingFlags.Static);
             onUpdateAccessoryMethod = itemLoaderType.GetMethod("UpdateAccessory", BindingFlags.Public | BindingFlags.Static);
+            onAltFunctionUseMethod = itemLoaderType.GetMethod("AltFunctionUse", BindingFlags.Public | BindingFlags.Static);
 
             if (onSetDefaultsMethod != null && !ModLoader.HasMod("MagicBuilder")) {
                 //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发生严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
@@ -108,6 +111,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (onUpdateAccessoryMethod != null) {
                 MonoModHooks.Add(onUpdateAccessoryMethod, OnUpdateAccessoryHook);
             }
+            if (onAltFunctionUseMethod != null) {
+                MonoModHooks.Add(onAltFunctionUseMethod, OnAltFunctionUseHook);
+            }
         }
 
         public override void Unload() {
@@ -126,8 +132,23 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onCanConsumeAmmoMethod = null;
             onModifyWeaponDamageMethod = null;
             onUpdateAccessoryMethod = null;
+            onAltFunctionUseMethod = null;
         }
-
+        /// <summary>
+        /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_AltFunctionUse"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
+        /// </summary>
+        public bool OnAltFunctionUseHook(On_AltFunctionUse_Delegate orig, Item item, Player player) {
+            if (item.IsAir) {
+                return false;
+            }
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                bool? rasg = ritem.On_AltFunctionUse(item, player);
+                if (rasg.HasValue) {
+                    return rasg.Value;
+                }
+            }
+            return orig.Invoke(item, player);
+        }
         /// <summary>
         /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_UpdateAccessory"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
         /// </summary>
