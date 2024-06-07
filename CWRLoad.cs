@@ -35,9 +35,9 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul
 {
-    public static class CWRIDs
+    public static class CWRLoad
     {
-        public static bool OnLoadContentBool = true;
+        public static bool OnLoadContentBool;
 
         public static int DarkMatterBall;
         public static int BlackMatterStick;
@@ -598,7 +598,7 @@ namespace CalamityOverhaul
                 NPCValue.TheofSteel.Add(i, isSteel);
             }
 
-            OnLoadContentBool = false;
+            OnLoadContentBool = true;
         }
 
         /// <summary>

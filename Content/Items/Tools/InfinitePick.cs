@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                                 }
 
                                 if (tile.WallType != 0) {
-                                    if (CWRIDs.WallToItem.TryGetValue(tile.WallType, out int value))
+                                    if (CWRLoad.WallToItem.TryGetValue(tile.WallType, out int value))
                                         darkMatterBall.dorpTypes.Add(value);
 
                                     tile.WallType = 0;

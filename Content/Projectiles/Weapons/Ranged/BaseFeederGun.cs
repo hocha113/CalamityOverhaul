@@ -742,9 +742,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
 
                 if (CWRUtils.IsAmmunitionUnlimited(ammoItem)) {//如果该物品不消耗，那么可能是一个无限弹药类型的物品，这里进行特别处理
-                    if (CWRIDs.ItemToShootID.ContainsKey(ammoItem.type)) {
+                    if (CWRLoad.ItemToShootID.ContainsKey(ammoItem.type)) {
                         int newAmmoType = ammoItem.type;
-                        if (CWRIDs.ProjectileToSafeAmmoMap.TryGetValue(ammoItem.shoot, out int value2)) {
+                        if (CWRLoad.ProjectileToSafeAmmoMap.TryGetValue(ammoItem.shoot, out int value2)) {
                             newAmmoType = value2;
                         }
                         Item newAmmoItem = new Item(newAmmoType, magazineCapacity - accumulatedAmount);

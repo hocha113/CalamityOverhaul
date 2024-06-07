@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Projectile.IsOwnedByLocalPlayer() && !CWRIDs.WormBodys.Contains(target.type)) {
+            if (Projectile.IsOwnedByLocalPlayer() && !CWRLoad.WormBodys.Contains(target.type)) {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center
                     , Vector2.Zero, ModContent.ProjectileType<EXNeutronExplosionRanged>(), Projectile.damage * 3, 0);
             }

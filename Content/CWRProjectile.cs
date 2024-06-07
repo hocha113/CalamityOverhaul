@@ -206,22 +206,22 @@ namespace CalamityOverhaul.Content
 
         private void InProjTypeSetHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
             if (projectile.type == ProjectileID.FinalFractal) {
-                if (CWRIDs.WormBodys.Contains(target.type)) {
+                if (CWRLoad.WormBodys.Contains(target.type)) {
                     modifiers.FinalDamage *= 0.75f;
                 }
-                if (target.type == CWRIDs.AresLaserCannon || target.type == CWRIDs.AresPlasmaFlamethrower
-                    || target.type == CWRIDs.AresTeslaCannon || target.type == CWRIDs.AresGaussNuke) {
+                if (target.type == CWRLoad.AresLaserCannon || target.type == CWRLoad.AresPlasmaFlamethrower
+                    || target.type == CWRLoad.AresTeslaCannon || target.type == CWRLoad.AresGaussNuke) {
                     modifiers.FinalDamage *= 0.7f;
                 }
-                if (target.type == CWRIDs.DevourerofGodsBody || target.type == CWRIDs.DevourerofGodsHead) {
+                if (target.type == CWRLoad.DevourerofGodsBody || target.type == CWRLoad.DevourerofGodsHead) {
                     modifiers.FinalDamage *= 0.7f;
                 }
-                if (target.type == CWRIDs.Polterghast) {
+                if (target.type == CWRLoad.Polterghast) {
                     modifiers.FinalDamage *= 0.8f;
                 }
             }
             else if (projectile.type == ModContent.ProjectileType<CosmicIceBurst>()) {
-                if (target.type == CWRIDs.Yharon) {
+                if (target.type == CWRLoad.Yharon) {
                     modifiers.FinalDamage *= 0.8f;
                 }
             }
@@ -274,7 +274,7 @@ namespace CalamityOverhaul.Content
 
             if (GetHitAttribute.SuperAttack) {
                 if (projectile.type == 961) {
-                    if (!target.boss && !CWRIDs.WormBodys.Contains(target.type) && !target.CWR().IceParclose) {
+                    if (!target.boss && !CWRLoad.WormBodys.Contains(target.type) && !target.CWR().IceParclose) {
                         _ = Projectile.NewProjectile(CWRUtils.parent(projectile), target.Center, Vector2.Zero
                             , ModContent.ProjectileType<IceParclose>(), 0, 0, projectile.owner, target.whoAmI, target.type, target.rotation);
                     }

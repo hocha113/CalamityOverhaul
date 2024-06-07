@@ -148,8 +148,13 @@ namespace CalamityOverhaul
             }
 
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
-            CWRIDs.Load();
-            foreach (var i in SetupDatas) { i.SetupData(); }
+            CWRLoad.Load();
+            foreach (var i in SetupDatas) { 
+                i.SetupData();
+                if (!Main.dedServ) {
+                    i.LoadAsset();
+                }
+            }
         }
 
         public override void Load() {

@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool CanLoad() {
-            return true;
+            return false;
         }
 
         internal static void FindPlayer(NPC npc) {

@@ -30,6 +30,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.scale = 1.5f;
         }
 
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            return CWRUtils.CircularHitboxCollision(Projectile.Center, 125, targetHitbox);
+        }
+
         public override void OnThrowing() {
             SetDirection();
             base.OnThrowing();
@@ -72,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 if (Projectile.Distance(Owner.Center) < 86) {
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, Owner.velocity
                         , ModContent.ProjectileType<DeathsAscensionBreakSwing>()
-                        , Projectile.damage * 2, Projectile.knockBack, Owner.whoAmI, 0f, 0f);
+                        , Projectile.damage * 3, Projectile.knockBack, Owner.whoAmI, 0f, 0f);
                     Projectile.Kill();
                 }
                 Projectile.rotation -= 0.6f * Owner.direction;

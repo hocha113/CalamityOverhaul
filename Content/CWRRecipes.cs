@@ -72,19 +72,19 @@ namespace CalamityOverhaul.Content
                 if (CWRServerConfig.Instance.AddExtrasContent) {
                     for (int i = 0; i < Recipe.numRecipes; i++) {
                         Recipe recipe = Main.recipe[i];
-                        if (CWRIDs.EternitySoul > ItemID.None) {
+                        if (CWRLoad.EternitySoul > ItemID.None) {
                             if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
-                                recipe.AddIngredient(CWRIDs.DeviatingEnergy, InfinityCatalyst.QFD(15));
-                                recipe.AddIngredient(CWRIDs.AbomEnergy, InfinityCatalyst.QFD(15));
-                                recipe.AddIngredient(CWRIDs.EternalEnergy, InfinityCatalyst.QFD(15));
+                                recipe.AddIngredient(CWRLoad.DeviatingEnergy, InfinityCatalyst.QFD(15));
+                                recipe.AddIngredient(CWRLoad.AbomEnergy, InfinityCatalyst.QFD(15));
+                                recipe.AddIngredient(CWRLoad.EternalEnergy, InfinityCatalyst.QFD(15));
                             }
-                            if (recipe.HasResult(CWRIDs.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
+                            if (recipe.HasResult(CWRLoad.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
                                 recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
                             }
                         }
-                        if (CWRIDs.MetanovaBar > ItemID.None) {
+                        if (CWRLoad.MetanovaBar > ItemID.None) {
                             if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
-                                recipe.AddIngredient(CWRIDs.MetanovaBar, InfinityCatalyst.QFD(15));
+                                recipe.AddIngredient(CWRLoad.MetanovaBar, InfinityCatalyst.QFD(15));
                             }
                         }
                     }

@@ -38,8 +38,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
         private Color dustColor;
         private int setDamage;
         private NPC NPC;
+
+        public override bool CanLoad() {
+            return false;
+        }
+
         public override bool? AI(NPC foremNPC, Mod mod) {
-            this.NPC = foremNPC;
+            NPC = foremNPC;
             // Percent life remaining
             lifeRatio = NPC.life / (float)NPC.lifeMax;
             lifeRatio2 = lifeRatio;

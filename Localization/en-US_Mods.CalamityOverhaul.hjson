@@ -3506,6 +3506,7 @@ NPCs: {
 	HEHead.DisplayName: H E Head
 	HETail.DisplayName: H E Tail
 	NightWatcher.DisplayName: Night Watcher
+	MarbleElemental.DisplayName: Marble Elemental
 }
 
 Keybinds: {

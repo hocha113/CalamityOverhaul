@@ -32,14 +32,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (CWRIDs.targetNpcTypes7.Contains(target.type) || CWRIDs.targetNpcTypes7_1.Contains(target.type)) {
+            if (CWRLoad.targetNpcTypes7.Contains(target.type) || CWRLoad.targetNpcTypes7_1.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.6f;
                 modifiers.SetMaxDamage(1500 + Main.rand.Next(-30, 30));
             }
-            if (CWRIDs.WormBodys.Contains(target.target)) {
+            if (CWRLoad.WormBodys.Contains(target.target)) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            if (target.type == CWRIDs.Yharon) {
+            if (target.type == CWRLoad.Yharon) {
                 modifiers.FinalDamage *= 0.35f;
             }
         }

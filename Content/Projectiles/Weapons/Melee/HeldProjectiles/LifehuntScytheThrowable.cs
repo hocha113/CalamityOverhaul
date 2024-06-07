@@ -27,6 +27,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             OffsetRoting = MathHelper.ToRadians(10);
         }
 
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            return CWRUtils.CircularHitboxCollision(Projectile.Center, 75, targetHitbox);
+        }
+
         public override void OnThrowing() {
             SetDirection();
             base.OnThrowing();

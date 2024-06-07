@@ -1,17 +1,17 @@
-﻿using CalamityMod.Projectiles.Melee;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Projectiles.Melee;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee.Extras;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using CalamityOverhaul.Common;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
@@ -62,8 +62,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 if (Timer == (int)(4 * SwingSpeed)) {
                     for (int i = 0; i < 6; i++) {
                         Vector2 vr = UnitToMouseV.RotatedByRandom(0.6f);
-                        Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + vr * Length, vr * 16,
-                        ModContent.ProjectileType<DeathsAscensionProjectile>(), (int)(Projectile.damage * 0.75f), Projectile.knockBack / 2, Projectile.owner);
+                        int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + vr * Length, vr * 16,
+                        ModContent.ProjectileType<DeathsAscensionProjectile>(), (int)(Projectile.damage * 0.15f), Projectile.knockBack / 2, Projectile.owner);
+                        Main.projectile[proj].penetrate = 2;
                     }
                 }
                 if (Timer < 6 * SwingSpeed) {

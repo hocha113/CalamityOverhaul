@@ -171,21 +171,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == NPCID.WallofFleshEye || target.type == NPCID.WallofFlesh) {
                 modifiers.FinalDamage *= 0.3f;
             }
-            if (target.type == NPCID.QueenSlimeBoss || target.type == CWRIDs.AquaticScourgeBody) {
+            if (target.type == NPCID.QueenSlimeBoss || target.type == CWRLoad.AquaticScourgeBody) {
                 modifiers.FinalDamage *= 0.75f;
             }
             if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
                 modifiers.FinalDamage *= 0.75f;
             }
-            if (target.type == CWRIDs.PerforatorBodyLarge || target.type == CWRIDs.DevourerofGodsBody || target.type == CWRIDs.CosmicGuardianBody
-                || target.type == CWRIDs.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == CWRIDs.PerforatorBodySmall) {
+            if (target.type == CWRLoad.PerforatorBodyLarge || target.type == CWRLoad.DevourerofGodsBody || target.type == CWRLoad.CosmicGuardianBody
+                || target.type == CWRLoad.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == CWRLoad.PerforatorBodySmall) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            if (target.type == CWRIDs.AstrumDeusBody || target.type == CWRIDs.CosmicGuardianTail || target.type == CWRIDs.CosmicGuardianHead
-                || target.type == CWRIDs.DevourerofGodsHead || target.type == CWRIDs.DevourerofGodsTail) {
+            if (target.type == CWRLoad.AstrumDeusBody || target.type == CWRLoad.CosmicGuardianTail || target.type == CWRLoad.CosmicGuardianHead
+                || target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.33f;
             }
-            if (target.type == CWRIDs.AstrumDeusHead || target.type == CWRIDs.AstrumDeusTail) {
+            if (target.type == CWRLoad.AstrumDeusHead || target.type == CWRLoad.AstrumDeusTail) {
                 modifiers.FinalDamage *= 3.5f;
             }
             if (target.type == NPCID.TheDestroyerBody) {
@@ -200,10 +200,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == ModContent.NPCType<SplitEbonianPaladin>() || target.type == ModContent.NPCType<SplitCrimulanPaladin>()) {
                 modifiers.FinalDamage *= 0.3f;
             }
-            if (target.type == CWRIDs.PlaguebringerGoliath) {
+            if (target.type == CWRLoad.PlaguebringerGoliath) {
                 modifiers.FinalDamage *= 1.25f;
             }
-            if (target.type == CWRIDs.RavagerBody) {
+            if (target.type == CWRLoad.RavagerBody) {
                 modifiers.FinalDamage *= 2f;
             }
             if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
@@ -215,26 +215,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == ModContent.NPCType<ProfanedGuardianCommander>()) {
                 modifiers.FinalDamage *= 1.75f;
             }
-            if (target.type == CWRIDs.Polterghast) {
+            if (target.type == CWRLoad.Polterghast) {
                 modifiers.FinalDamage *= 0.8f;
             }
             if (target.type == ModContent.NPCType<OldDukeToothBall>() || target.type == ModContent.NPCType<SulphurousSharkron>()) {
                 modifiers.FinalDamage *= 2f;
             }
-            if (target.type == CWRIDs.Yharon) {
+            if (target.type == CWRLoad.Yharon) {
                 modifiers.FinalDamage *= 0.9f;
             }
-            if (target.type == CWRIDs.ThanatosBody1 || target.type == CWRIDs.ThanatosBody2) {
+            if (target.type == CWRLoad.ThanatosBody1 || target.type == CWRLoad.ThanatosBody2) {
                 modifiers.FinalDamage *= 1.25f;
             }
-            if (target.type == CWRIDs.ThanatosHead) {
+            if (target.type == CWRLoad.ThanatosHead) {
                 modifiers.FinalDamage *= 2.86f;
             }
-            if (target.type == CWRIDs.Apollo || target.type == CWRIDs.Artemis) {
+            if (target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
                 modifiers.FinalDamage *= 1.5f;
             }
-            if (target.type == CWRIDs.AresBody || target.type == CWRIDs.AresGaussNuke || target.type == CWRIDs.AresLaserCannon
-                || target.type == CWRIDs.AresPlasmaFlamethrower || target.type == CWRIDs.AresTeslaCannon) {
+            if (target.type == CWRLoad.AresBody || target.type == CWRLoad.AresGaussNuke || target.type == CWRLoad.AresLaserCannon
+                || target.type == CWRLoad.AresPlasmaFlamethrower || target.type == CWRLoad.AresTeslaCannon) {
                 modifiers.FinalDamage *= 0.85f;
             }
             if (target.type == ModContent.NPCType<SupremeCataclysm>() || target.type == ModContent.NPCType<SupremeCatastrophe>()) {

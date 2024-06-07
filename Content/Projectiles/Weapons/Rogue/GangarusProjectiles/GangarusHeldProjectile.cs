@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 && p.Center.To(Owner.Center).LengthSquared() < 9000) == 0);
 
         public override void AI() {
-            if (Owner.HeldItem.type != CWRIDs.Gangarus || !isProj()) {
+            if (Owner.HeldItem.type != CWRLoad.Gangarus || !isProj()) {
                 Projectile.Kill();
                 return;
             }
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = TextureAssets.Item[CWRIDs.Gangarus].Value;
+            Texture2D value = TextureAssets.Item[CWRLoad.Gangarus].Value;
             int dir = Owner.direction;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor
                 , Projectile.rotation + MathHelper.PiOver4 + (dir > 0 ? MathHelper.PiOver2 : 0)

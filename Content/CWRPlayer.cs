@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content
 
         private void SittingFoodStallChair() {
             if (Player.sitting.TryGetSittingBlock(Player, out Tile t)) {
-                if (t.TileType == CWRIDs.FoodStallChairTile) {
+                if (t.TileType == CWRLoad.FoodStallChairTile) {
                     InFoodStallChair = true;
                     Main.raining = true;
                     Main.maxRaining = 0.99f;

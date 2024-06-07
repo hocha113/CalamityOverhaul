@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             rageEnergy += addnum;
             target.AddBuff(70, 150);
 
-            if (CWRIDs.WormBodys.Contains(target.type)) {
+            if (CWRLoad.WormBodys.Contains(target.type)) {
                 return;
             }
 

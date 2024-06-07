@@ -199,21 +199,21 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                 npc.active = false;
             }
             List<List<int>> allTargetNpcTypes = new() {
-                 CWRIDs.targetNpcTypes,
-                 CWRIDs.targetNpcTypes2,
-                 CWRIDs.targetNpcTypes3,
-                 CWRIDs.targetNpcTypes4,
-                 CWRIDs.targetNpcTypes5,
-                 CWRIDs.targetNpcTypes6,
-                 CWRIDs.targetNpcTypes7,
-                 CWRIDs.targetNpcTypes8,
-                 CWRIDs.targetNpcTypes9,
-                 CWRIDs.targetNpcTypes10,
-                 CWRIDs.targetNpcTypes11,
-                 CWRIDs.targetNpcTypes12,
-                 CWRIDs.targetNpcTypes13,
-                 CWRIDs.targetNpcTypes14,
-                 CWRIDs.targetNpcTypes15
+                 CWRLoad.targetNpcTypes,
+                 CWRLoad.targetNpcTypes2,
+                 CWRLoad.targetNpcTypes3,
+                 CWRLoad.targetNpcTypes4,
+                 CWRLoad.targetNpcTypes5,
+                 CWRLoad.targetNpcTypes6,
+                 CWRLoad.targetNpcTypes7,
+                 CWRLoad.targetNpcTypes8,
+                 CWRLoad.targetNpcTypes9,
+                 CWRLoad.targetNpcTypes10,
+                 CWRLoad.targetNpcTypes11,
+                 CWRLoad.targetNpcTypes12,
+                 CWRLoad.targetNpcTypes13,
+                 CWRLoad.targetNpcTypes14,
+                 CWRLoad.targetNpcTypes15
             };
             foreach (NPC npc in Main.npc) {
                 if (npc.Center.To(origPos).LengthSquared() > maxLengthSquared) {

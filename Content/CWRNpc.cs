@@ -9,7 +9,10 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
+using CalamityOverhaul.Content.Items.Magic.Extras;
+using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Items.Summon.Extras;
 using CalamityOverhaul.Content.NPCs.OverhaulBehavior;
 using CalamityOverhaul.Content.Projectiles;
@@ -95,11 +98,11 @@ namespace CalamityOverhaul.Content
         }
 
         public static void MultipleSegmentsLimitDamage(NPC target, ref NPC.HitModifiers modifiers) {
-            if (CWRIDs.targetNpcTypes15.Contains(target.type) || CWRIDs.targetNpcTypes10.Contains(target.type)
-                || CWRIDs.targetNpcTypes8.Contains(target.type) || CWRIDs.targetNpcTypes7.Contains(target.type)
-                || CWRIDs.targetNpcTypes6.Contains(target.type) || CWRIDs.targetNpcTypes5.Contains(target.type)
-                || CWRIDs.targetNpcTypes4.Contains(target.type) || CWRIDs.targetNpcTypes2.Contains(target.type)
-                || CWRIDs.WormBodys.Contains(target.type) || target.type == ModContent.NPCType<AquaticScourgeBodyAlt>()) {
+            if (CWRLoad.targetNpcTypes15.Contains(target.type) || CWRLoad.targetNpcTypes10.Contains(target.type)
+                || CWRLoad.targetNpcTypes8.Contains(target.type) || CWRLoad.targetNpcTypes7.Contains(target.type)
+                || CWRLoad.targetNpcTypes6.Contains(target.type) || CWRLoad.targetNpcTypes5.Contains(target.type)
+                || CWRLoad.targetNpcTypes4.Contains(target.type) || CWRLoad.targetNpcTypes2.Contains(target.type)
+                || CWRLoad.WormBodys.Contains(target.type) || target.type == ModContent.NPCType<AquaticScourgeBodyAlt>()) {
                 modifiers.FinalDamage *= 0.1f;
                 int dmownInt = (int)(target.lifeMax * 0.001f);
                 if (dmownInt < 50) {
@@ -155,9 +158,9 @@ namespace CalamityOverhaul.Content
                 }
             }
             if (Main.bloodMoon) {//在血月的情况下让一些生物执行特殊的行为，将这段代码写在PostAI中是防止被覆盖
-                if (npc.type == CWRIDs.PerforatorHive)//改动血肉宿主的行为，这会让它在血月更加的暴躁和危险
+                if (npc.type == CWRLoad.PerforatorHive)//改动血肉宿主的行为，这会让它在血月更加的暴躁和危险
                     PerforatorBehavior.Instance.Intensive(npc);
-                if (npc.type == CWRIDs.HiveMind)//改动腐巢意志的行为，这会让它在血月更加的恐怖和强大
+                if (npc.type == CWRLoad.HiveMind)//改动腐巢意志的行为，这会让它在血月更加的恐怖和强大
                     HiveMindBehavior.Instance.Intensive(npc);
             }
         }
@@ -175,21 +178,21 @@ namespace CalamityOverhaul.Content
 
         public override void OnKill(NPC npc) {
             if (npc.boss) {
-                if (CWRIDs.targetNpcTypes7.Contains(npc.type) || npc.type == CWRIDs.PlaguebringerGoliath) {
+                if (CWRLoad.targetNpcTypes7.Contains(npc.type) || npc.type == CWRLoad.PlaguebringerGoliath) {
                     for (int i = 0; i < Main.rand.Next(3, 6); i++) {
-                        int type = Item.NewItem(npc.parent(), npc.Hitbox, CWRIDs.DubiousPlating, Main.rand.Next(7, 13));
+                        int type = Item.NewItem(npc.parent(), npc.Hitbox, CWRLoad.DubiousPlating, Main.rand.Next(7, 13));
                         if (CWRUtils.isClient) {
                             NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                         }
                     }
                 }
-                if (npc.type == CWRIDs.PrimordialWyrmHead) {
+                if (npc.type == CWRLoad.PrimordialWyrmHead) {
                     int type = Item.NewItem(npc.parent(), npc.Hitbox, ModContent.ItemType<TerminusOver>());
                     if (CWRUtils.isClient) {
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                     }
                 }
-                if (npc.type == CWRIDs.Yharon && InWorldBossPhase.Instance.level11 && Main.zenithWorld && !CWRUtils.isClient) {
+                if (npc.type == CWRLoad.Yharon && InWorldBossPhase.Instance.level11 && Main.zenithWorld && !CWRUtils.isClient) {
                     Player target = CWRUtils.GetPlayerInstance(npc.target);
                     if (target.Alives()) {
                         float dir = npc.Center.To(target.Center).X;
@@ -199,7 +202,7 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-            if (npc.type == CWRIDs.PrimordialWyrmHead) {//我不知道为什么原灾厄没有设置这个字段，为了保持进度的正常，我在这里额外设置一次
+            if (npc.type == CWRLoad.PrimordialWyrmHead) {//我不知道为什么原灾厄没有设置这个字段，为了保持进度的正常，我在这里额外设置一次
                 DownedBossSystem.downedPrimordialWyrm = true;
             }
             if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
@@ -249,19 +252,32 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot) {
-            if (npc.type == CWRIDs.Polterghast) {
+            if (npc.type == CWRLoad.Polterghast) {
                 npcLoot.DefineConditionalDropSet(CWRDorp.InHellDropRule).Add(ModContent.ItemType<GhostFireWhip>());
             }
-            else if (npc.type == CWRIDs.Yharon) {
+            else if (npc.type == CWRLoad.Yharon) {
                 npcLoot.DefineConditionalDropSet(CWRDorp.GlodDragonDropRule).Add(CWRDorp.Quantity(ModContent.ItemType<AuricBar>(), 1, 36, 57, 77, 158));
             }
-            else if (npc.type == CWRIDs.DevourerofGodsHead) {
+            else if (npc.type == CWRLoad.DevourerofGodsHead) {
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<Ataraxia>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<Nadir>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
             }
-            else if (npc.type == CWRIDs.RavagerBody) {
+            else if (npc.type == CWRLoad.RavagerBody) {
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<PetrifiedDisease>(), denominator: 5, minQuantity: 1, maxQuantity: 1));
             }
+            else if (npc.type == NPCID.GraniteFlyer) {
+                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<VioletConjecture>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
+                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<GraniteRifle>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
+            }
+            else if (npc.type == NPCID.GraniteGolem) {
+                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<GraniteSpear>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
+                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<GraniteDart>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
+            }
+            else if (npc.type == NPCID.GreekSkeleton) {
+                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<MarbleSpear>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
+                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<MarbleDagger>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
+            }
+
             TungstenRiot.Instance.ModifyEventNPCLoot(npc, ref npcLoot);
         }
 
@@ -309,10 +325,10 @@ namespace CalamityOverhaul.Content
 
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (Main.bloodMoon) {
-                if (npc.type == CWRIDs.PerforatorHive) {
+                if (npc.type == CWRLoad.PerforatorHive) {
                     PerforatorBehavior.Instance.Draw(spriteBatch, npc);
                 }
-                if (npc.type == CWRIDs.HiveMind) {
+                if (npc.type == CWRLoad.HiveMind) {
                     HiveMindBehavior.Instance.Draw(spriteBatch, npc);
                 }
             }

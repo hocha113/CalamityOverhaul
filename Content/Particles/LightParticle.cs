@@ -1,13 +1,14 @@
 ﻿using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class LightParticle : CWRParticle
+    internal class LightParticle : CWRParticle, ISetupData
     {
         public override string Texture => "CalamityMod/Particles/Light";
         public override bool UseAdditiveBlend => true;
@@ -20,7 +21,16 @@ namespace CalamityOverhaul.Content.Particles
         public float HueShift;
         public float followingRateRatio;
         public Entity entity;
-
+        internal static Asset<Texture2D> Tex;
+        internal static Asset<Texture2D> BloomTex;
+        void ISetupData.LoadAsset() {
+            Tex = CWRUtils.GetT2DAsset("CalamityMod/Particles/Light");
+            BloomTex = CWRUtils.GetT2DAsset("CalamityMod/Particles/BloomCircle");
+        }
+        void ISetupData.UnLoadData() {
+            Tex = null;
+            BloomTex = null;
+        }
         public LightParticle(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f, float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, Entity _entity = null, float _followingRateRatio = 0.9f) {
             Position = position;
             Velocity = velocity;
@@ -50,8 +60,8 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = ModContent.Request<Texture2D>("CalamityMod/Particles/Light").Value;
-            Texture2D bloomTex = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
+            Texture2D tex = Tex.Value;
+            Texture2D bloomTex = BloomTex.Value;
 
             float squish = MathHelper.Clamp(Velocity.Length() / 10f * SquishStrenght, 1f, MaxSquish);
 

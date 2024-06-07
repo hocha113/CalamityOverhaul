@@ -103,11 +103,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (CWRIDs.WormBodys.Contains(target.type)) {
+            if (CWRLoad.WormBodys.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.75f;
             }
-            if (target.type == CWRIDs.AresLaserCannon || target.type == CWRIDs.AresPlasmaFlamethrower
-                || target.type == CWRIDs.AresTeslaCannon || target.type == CWRIDs.AresGaussNuke) {
+            if (target.type == CWRLoad.AresLaserCannon || target.type == CWRLoad.AresPlasmaFlamethrower
+                || target.type == CWRLoad.AresTeslaCannon || target.type == CWRLoad.AresGaussNuke) {
                 modifiers.FinalDamage *= 0.7f;
             }
         }

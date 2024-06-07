@@ -38,10 +38,10 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
                 return;
             }
             if (Main.zenithWorld) {
-                TextureAssets.Item[CWRIDs.Gangarus] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3");
+                TextureAssets.Item[CWRLoad.Gangarus] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3");
             }
             else {
-                TextureAssets.Item[CWRIDs.Gangarus] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");
+                TextureAssets.Item[CWRLoad.Gangarus] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");
             }
         }
 

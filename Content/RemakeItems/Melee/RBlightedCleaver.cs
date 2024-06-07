@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
             item.CWR().MeleeCharge += addnum;
 
-            if (CWRIDs.WormBodys.Contains(target.type) && !Main.rand.NextBool(5)) {
+            if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(5)) {
                 return;
             }
 

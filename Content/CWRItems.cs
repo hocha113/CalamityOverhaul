@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content
             remakeItem = (item.ModItem as EctypeItem) != null;
             InitializeMagazine();
             SmiperItemSet(item);
-            CWRIDs.SetAmmoItem(item);
+            CWRLoad.SetAmmoItem(item);
         }
 
         public void InitializeMagazine() {
@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content
                 if (player.ownedProjectileCounts[heldProjType] == 0 && Main.myPlayer == player.whoAmI) {
                     Projectile.NewProjectileDirect(player.parent(), player.Center, Vector2.Zero, heldProjType, item.damage, item.knockBack, player.whoAmI);
                 }
-                if (CWRIDs.ItemToBaseRanged.TryGetValue(item.type, out BaseHeldRanged ranged)) {
+                if (CWRLoad.ItemToBaseRanged.TryGetValue(item.type, out BaseHeldRanged ranged)) {
                     bool lDown = player.PressKey();
                     bool rDown = player.PressKey(false);
                     if (lDown || (rDown && !lDown && ranged.CanRightClick && !player.cursorItemIconEnabled)) {
@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content
 
         public static void OverModifyTool(Item item, List<TooltipLine> tooltips) {
             bool inRItemIndsDict = CWRMod.RItemIndsDict.ContainsKey(item.type);
-            if (CWRIDs.ItemToBaseGun.TryGetValue(item.type, out BaseGun gun)) {
+            if (CWRLoad.ItemToBaseGun.TryGetValue(item.type, out BaseGun gun)) {
                 if (gun.MustConsumeAmmunition && item.CWR().HasCartridgeHolder && CWRServerConfig.Instance.MagazineSystem) {
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_MustCA", CWRLocText.GetTextValue("CWRGun_MustCA_Text")));
                 }
@@ -359,8 +359,8 @@ namespace CalamityOverhaul.Content
             if (Main.myPlayer == player.whoAmI) {
                 destructTime--;
                 Item[] inven = player.inventory;
-                if (!noDestruct && destructTime <= 0 && inven.Count((Item n) => n.type == CWRIDs.EndlessStabilizer) == 0) {
-                    if (item.type != CWRIDs.StarMyriadChanges) {
+                if (!noDestruct && destructTime <= 0 && inven.Count((Item n) => n.type == CWRLoad.EndlessStabilizer) == 0) {
+                    if (item.type != CWRLoad.StarMyriadChanges) {
                         Projectile.NewProjectile(new EntitySource_WorldEvent()
                         , pos, Vector2.Zero, ModContent.ProjectileType<InfiniteIngotTileProj>(), 9999, 0);
                     }

@@ -668,10 +668,10 @@ End:;
                     offset = new Vector2(cellWid, cellHig) / 2;
                 float slp = 32f / size.X;
                 slp *= overSlp;
-                if (item.type == CWRIDs.DarkMatterBall) {
+                if (item.type == CWRLoad.DarkMatterBall) {
                     DarkMatterBall.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
                 }
-                else if (item.type == CWRIDs.InfiniteStick) {
+                else if (item.type == CWRLoad.InfiniteStick) {
                     InfiniteStick.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
                 }
                 else if (item.type == ModContent.ItemType<DecayParticles>()
@@ -682,7 +682,7 @@ End:;
                 }
                 else {
                     float value999 = 1;
-                    if (CWRIDs.ItemToBaseBow.ContainsKey(item.type)) {
+                    if (CWRLoad.ItemToBaseBow.ContainsKey(item.type)) {
                         value999 = 0.5f;
                     }
                     spriteBatch.Draw(TextureAssets.Item[item.type].Value, drawpos + offset, new Rectangle?(rectangle), (drawColor == default ? Color.White : drawColor) * alp, 0f, vector / 2, slp * value999, 0, 0f);

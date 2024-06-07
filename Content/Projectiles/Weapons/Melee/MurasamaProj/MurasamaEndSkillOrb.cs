@@ -117,11 +117,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (CWRIDs.targetNpcTypes7_1.Contains(target.type)) {
+            if (CWRLoad.targetNpcTypes7_1.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.1f;
                 modifiers.SetMaxDamage(6000);
             }
-            if (CWRIDs.WormBodys.Contains(target.type)) {
+            if (CWRLoad.WormBodys.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.5f;
             }
         }

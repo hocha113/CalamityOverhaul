@@ -21,21 +21,17 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private static Rectangle Text2P;
         private static int Time;
         private static float sengs;
-
         private string text1 => CWRLocText.GetTextValue("IconUI_Text1");
-
         private Vector2 text1Vr => FontAssets.MouseText.Value.MeasureString(text1);
-
         private Vector2 text1Pos => new Vector2(DrawPos.X - text1Vr.X, DrawPos.Y + 6);
-
         private string text2 => CWRLocText.GetTextValue("IconUI_Text2");
-
         private Vector2 text2Vr => FontAssets.MouseText.Value.MeasureString(text2);
-
         private Vector2 text2Pos => new Vector2(text1Pos.X, text1Pos.Y + text1Vr.Y - 6);
         public override void Load() {
-            icon = CWRUtils.GetT2DAsset("CalamityOverhaul/icon");
-            small = CWRUtils.GetT2DAsset("CalamityOverhaul/icon_small");
+            if (!Main.dedServ) {
+                icon = CWRUtils.GetT2DAsset("CalamityOverhaul/icon");
+                small = CWRUtils.GetT2DAsset("CalamityOverhaul/icon_small");
+            }
             sengs = 0;
             Time = 0;
         }
@@ -47,7 +43,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         public override void Update(GameTime gameTime) {
-            if (sengs < 1 && !CWRIDs.OnLoadContentBool) {//如果CWRID都加载好了，那么本地化肯定已经加载好了
+            if (sengs < 1 && CWRLoad.OnLoadContentBool) {//如果CWRLoad都加载好了，那么本地化肯定已经加载好了
                 sengs += 0.01f;
             }
             DrawPos = new Vector2(Main.screenWidth - 82, -100 + sengs * 101);

@@ -234,7 +234,7 @@ namespace CalamityOverhaul.Content.NPCs.OverhaulBehavior
         }
 
         public virtual void BloodMoonDorp(NPC npc) {
-            if (npc.type == CWRIDs.PerforatorHive) {
+            if (npc.type == CWRLoad.PerforatorHive) {
                 if (Main.bloodMoon && !CWRUtils.isClient) {
                     for (int i = 0; i < Main.rand.Next(19, 26); i++) {
                         int type = Item.NewItem(npc.parent(), npc.Hitbox, ModContent.ItemType<BloodOrb>(), Main.rand.Next(7, 13));

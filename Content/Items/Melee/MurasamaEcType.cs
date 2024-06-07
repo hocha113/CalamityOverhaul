@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// </summary>
         public static float ScaleOffset_PercentageValue => CWRServerConfig.Instance.MurasamaScaleOffset;
         /// <summary>
-        /// 用于存储手持弹幕的ID，这个成员在<see cref="CWRIDs.Load"/>中被加载，不需要进行手动的赋值
+        /// 用于存储手持弹幕的ID，这个成员在<see cref="CWRLoad.Load"/>中被加载，不需要进行手动的赋值
         /// </summary>
         public static int heldProjType;
         public new string LocalizationCategory => "Items.Weapons.Melee";

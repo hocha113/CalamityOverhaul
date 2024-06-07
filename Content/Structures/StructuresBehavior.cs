@@ -9,10 +9,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Structures
 {
-    internal delegate void SetChest_Delegate(Chest chest);
-    internal delegate void SetChest_Delegate2(Chest chest, int type, bool hasPlacedLogAndSchematic);
     internal static class StructuresBehavior
     {
+        internal delegate void SetChest_Delegate(Chest chest, int type, bool hasPlacedLogAndSchematic);
         public static void Load() {
             Type draedonStructures = typeof(DraedonStructures);
             MethodInfo getMethod(string key) => draedonStructures.GetMethod(key, BindingFlags.Public | BindingFlags.Static);
@@ -34,7 +33,7 @@ namespace CalamityOverhaul.Content.Structures
             }
         }
 
-        private static void OnPlanetoidChest(SetChest_Delegate2 orig, Chest chest, int type, bool hasPlacedLogAndSchematic) {
+        private static void OnPlanetoidChest(SetChest_Delegate orig, Chest chest, int type, bool hasPlacedLogAndSchematic) {
             orig.Invoke(chest, type, hasPlacedLogAndSchematic);
             if (hasPlacedLogAndSchematic) {
                 AddChestContent(chest, ModContent.ItemType<SHPC>(), 1
@@ -42,7 +41,7 @@ namespace CalamityOverhaul.Content.Structures
             }
         }
 
-        private static void OnPlagueChest(SetChest_Delegate2 orig, Chest chest, int type, bool hasPlacedLogAndSchematic) {
+        private static void OnPlagueChest(SetChest_Delegate orig, Chest chest, int type, bool hasPlacedLogAndSchematic) {
             orig.Invoke(chest, type, hasPlacedLogAndSchematic);
             if (hasPlacedLogAndSchematic) {
                 AddChestContent(chest, ModContent.ItemType<BlossomFlux>(), 1

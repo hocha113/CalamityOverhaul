@@ -8,6 +8,6 @@ namespace CalamityOverhaul.Content.SkyEffects
     {
         public override int Music => MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/TheDeadSpiritIsDead");
         public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
-        public override bool IsSceneEffectActive(Player player) => NPC.AnyNPCs(NPCID.SkeletronPrime);
+        public override bool IsSceneEffectActive(Player player) => false;
     }
 }

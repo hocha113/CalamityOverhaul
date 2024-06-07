@@ -17,9 +17,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Common.Effects
 {
-    public delegate void On_Draw_Dalegate(object inds, SpriteBatch spriteBatch);
     internal class EffectsSystem : ModSystem
     {
+        public delegate void On_Draw_Dalegate(object inds, SpriteBatch spriteBatch);
+
         internal static EffectsSystem Instance;
 
         public static Type holyInfernoRendererType;
