@@ -251,7 +251,7 @@ namespace CalamityOverhaul
 
             foreach (Type type in allTypes) {
                 if (type.IsClass && !type.IsAbstract && type.GetInterface(lname) != null) {
-                    object obj = Activator.CreateInstance(type);
+                    object obj = RuntimeHelpers.GetUninitializedObject(type);
                     if (obj is T instance) {
                         subInterface.Add(instance);
                     }

@@ -94,20 +94,20 @@ namespace CalamityOverhaul.Content
             {
                 for (int i = 0; i < Recipe.numRecipes; i++) {
                     Recipe recipe = Main.recipe[i];
-                    if (recipe.HasResult(ItemType<CalamityMod.Items.Weapons.Melee.TheEnforcer>())) {
+                    if (recipe.HasResult(ItemType<TheEnforcer>())) {
                         recipe.DisableRecipe();
                     }
                 }
-                Recipe.Create(ItemType<CalamityMod.Items.Weapons.Melee.TheEnforcer>())
-                    .AddIngredient(ItemType<CalamityMod.Items.Weapons.Melee.HolyCollider>())
+                Recipe.Create(ItemType<TheEnforcer>())
+                    .AddIngredient(ItemType<HolyCollider>())
                     .AddIngredient(ItemType<CosmiliteBar>(), 5)
                     .AddTile(TileType<CosmicAnvil>())
                     .Register();
             }
             //添加圣火之刃的合成
             {
-                Recipe.Create(ItemType<CalamityMod.Items.Weapons.Melee.HolyCollider>())
-                .AddIngredient(ItemType<CalamityMod.Items.Weapons.Melee.CelestialClaymore>())
+                Recipe.Create(ItemType<HolyCollider>())
+                .AddIngredient(ItemType<CelestialClaymore>())
                 .AddIngredient(ItemType<DivineGeode>(), 16)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
@@ -139,9 +139,9 @@ namespace CalamityOverhaul.Content
                 for (int i = 0; i < Recipe.numRecipes; i++) {
                     Recipe recipe = Main.recipe[i];
                     //瘟疫大剑
-                    if (recipe.HasResult(ItemType<CalamityMod.Items.Weapons.Melee.PlagueKeeper>())) {
+                    if (recipe.HasResult(ItemType<PlagueKeeper>())) {
                         recipe.RemoveIngredient(ItemID.LunarBar);//移除夜明锭的配方
-                        recipe.AddIngredient(ItemType<CalamityMod.Items.Weapons.Melee.Hellkite>());//添加地狱龙锋
+                        recipe.AddIngredient(ItemType<Hellkite>());//添加地狱龙锋
                         recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
                     }
                     //瘟疫
@@ -169,15 +169,15 @@ namespace CalamityOverhaul.Content
                     }
                 }
                 //添加瘟疫长矛的合成
-                Recipe.Create(ItemType<CalamityMod.Items.Weapons.Melee.DiseasedPike>())
-                    .AddIngredient(ItemType<CalamityMod.Items.Weapons.Melee.HellionFlowerSpear>(), 5)//添加花刺长矛
+                Recipe.Create(ItemType<DiseasedPike>())
+                    .AddIngredient(ItemType<HellionFlowerSpear>(), 5)//添加花刺长矛
                     .AddIngredient(ItemType<PestilenceIngot>(), 5)//添加瘟疫锭
                     .AddTile(TileType<PlagueInfuser>())
                     .Register();
 
                 //添加瘟疫悠悠球的合成
-                Recipe.Create(ItemType<CalamityMod.Items.Weapons.Melee.Pandemic>())
-                    .AddIngredient(ItemType<CalamityMod.Items.Weapons.Melee.SulphurousGrabber>())//添加硫磺掠夺者
+                Recipe.Create(ItemType<Pandemic>())
+                    .AddIngredient(ItemType<SulphurousGrabber>())//添加硫磺掠夺者
                     .AddIngredient(ItemType<PestilenceIngot>(), 5)//添加瘟疫锭
                     .AddTile(TileType<PlagueInfuser>())
                     .Register();
@@ -258,7 +258,7 @@ namespace CalamityOverhaul.Content
             //添加鬼妖村正的合成
             {
                 int _Mould = ItemType<MurasamaMould>();
-                int murasamaItem = ItemType<CalamityMod.Items.Weapons.Melee.Murasama>();
+                int murasamaItem = ItemType<Murasama>();
 
                 Recipe.Create(_Mould)
                     .AddIngredient(murasamaItem, 1)
@@ -284,7 +284,7 @@ namespace CalamityOverhaul.Content
                     .DisableDecraft()
                     .Register();
 
-                Recipe.Create(ItemType<CalamityMod.Items.Weapons.Melee.Murasama>())
+                Recipe.Create(ItemType<Murasama>())
                     .AddIngredient(ItemID.Muramasa, 1)
                     .AddIngredient(ItemID.MeteoriteBar, 1)
                     .AddIngredient(_Mould, 1)
@@ -293,7 +293,7 @@ namespace CalamityOverhaul.Content
                     .DisableDecraft()
                     .Register();
 
-                Recipe.Create(ItemType<CalamityMod.Items.Weapons.Melee.Murasama>())
+                Recipe.Create(ItemType<Murasama>())
                     .AddIngredient(ItemID.Katana, 1)
                     .AddIngredient(ItemID.MeteoriteBar, 1)
                     .AddIngredient(ItemID.CobaltBar, 1)
@@ -460,13 +460,13 @@ namespace CalamityOverhaul.Content
                 , ItemType<TwistingNether>()
             });
 
-            LoadGroup(ref GodDWGroup, "CWRRecipes_GodEaterWeapon", new int[] {ItemType<CalamityMod.Items.Weapons.Melee.Excelsus>()
-                , ItemType<CalamityMod.Items.Weapons.Melee.TheObliterator>()
+            LoadGroup(ref GodDWGroup, "CWRRecipes_GodEaterWeapon", new int[] {ItemType<Excelsus>()
+                , ItemType<TheObliterator>()
                 , ItemType<CalamityMod.Items.Weapons.Ranged.Deathwind>()
                 , ItemType<CalamityMod.Items.Weapons.Magic.DeathhailStaff>()
                 , ItemType<CalamityMod.Items.Weapons.Summon.StaffoftheMechworm>()
                 , ItemType<CalamityMod.Items.Weapons.Rogue.Eradicator>()
-                , ItemType<CalamityMod.Items.Weapons.Melee.CosmicDischarge>()
+                , ItemType<CosmicDischarge>()
                 , ItemType<CalamityMod.Items.Weapons.Ranged.Norfleet>()
             });
 
