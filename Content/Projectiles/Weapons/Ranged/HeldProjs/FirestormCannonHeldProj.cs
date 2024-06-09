@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 1.2f;
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
+            CanCreateCaseEjection = false;
             RecoilRetroForceMagnitude = 7;
             CanRightClick = true;
         }

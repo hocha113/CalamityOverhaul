@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.tileCollide = Projectile.ai[0] != 1;
             Projectile.rotation += 0.1f;
             if (Projectile.timeLeft < 30) {
-                NPC target = Projectile.Center.FindClosestNPC(1300);
+                NPC target = Projectile.Center.FindClosestNPC(500);
                 if (target != null) {
                     _ = Projectile.ChasingBehavior(target.Center, 23);
                 }

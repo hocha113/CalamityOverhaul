@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 RecoilRetroForceMagnitude = 15;
                 RecoilOffsetRecoverValue = 0.85f;
                 SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot with { Pitch = -0.6f, Volume = 0.2f });
-                for (int i = 0; i < 16; i++) {
+                for (int i = 0; i < 12; i++) {
                     Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.75f, 1.12f)
                     , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
                     proj.scale += Main.rand.NextFloat(0.3f);
@@ -98,13 +98,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             for (int i = 0; i < 3; i++) {
                 Projectile proj = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.7f, 1.1f)
                     , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
-                if (Main.rand.NextBool(3)) {
+                if (Main.rand.NextBool(2)) {
                     proj.damage /= 3;
                 }
-                if (Main.rand.NextBool(4) && FireTime <= 15) {
+                if (Main.rand.NextBool(3) && FireTime <= 15) {
                     proj.scale += Main.rand.NextFloat(0.35f);
                 }
-                if (Main.rand.NextBool(3) && FireTime <= 10) {
+                if (Main.rand.NextBool(2) && FireTime <= 10) {
                     proj.extraUpdates += 1;
                     proj.penetrate += 5;
                     proj.usesLocalNPCImmunity = true;

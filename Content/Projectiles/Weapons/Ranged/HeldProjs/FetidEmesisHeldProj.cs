@@ -21,9 +21,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 20;
             HandFireDistance = 20;
             HandFireDistanceY = -3;
+            ShootPosToMouLengValue = 10;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 5;
             CanRightClick = true;
+            SpwanGunDustMngsData.splNum = 0.8f;
+            SpwanGunDustMngsData.dustID1 = DustID.GemEmerald;
+            SpwanGunDustMngsData.dustID3 = DustID.GemEmerald;
         }
 
         public override void SetShootAttribute() {

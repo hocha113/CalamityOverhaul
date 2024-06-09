@@ -12,10 +12,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<DeadSunsWindEcType>();
 
         public override void SetRangedProperty() {
+            FireTime = 15;
             HandDistance = 30;
             HandFireDistance = 30;
-            HandFireDistanceY = -10;
+            HandFireDistanceY = -4;
             Recoil = 0;
+            CanCreateCaseEjection = false;
+            CanCreateSpawnGunDust = false;
         }
 
         public override void FiringShoot() {

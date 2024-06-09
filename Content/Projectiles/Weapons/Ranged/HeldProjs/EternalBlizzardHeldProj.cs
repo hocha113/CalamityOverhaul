@@ -62,6 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 , AmmoTypes, (int)(WeaponDamage * 0.6f), WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].SetArrowRot();
             Main.projectile[proj].Calamity().allProjectilesHome = true;
+            Main.projectile[proj].ArmorPenetration = 5;
             Main.projectile[proj].netUpdate = true;
             _ = UpdateConsumeAmmo();
         }

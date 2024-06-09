@@ -1,6 +1,8 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -10,44 +12,46 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class ChickenCannonHeldProj : BaseFeederGun
     {
-        public override string Texture => CWRConstant.Cay_Wap_Ranged + "ChickenCannon";
+        public override string Texture => CWRConstant.Cay_Proj_Ranged + "ChickenCannonHeld";
         public override int targetCayItem => ModContent.ItemType<ChickenCannon>();
         public override int targetCWRItem => ModContent.ItemType<ChickenCannonEcType>();
         bool spanSound = false;
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
-            FireTime = 20;
+            FireTime = 25;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
-            HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -12;
+            HandFireDistanceY = -4;
+            ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 30;
-            GunPressure = 0.3f;
-            ControlForce = 0.05f;
+            GunPressure = 0f;
+            ControlForce = 0f;
             Recoil = 1.2f;
             RangeOfStress = 25;
-            RecoilRetroForceMagnitude = 13;
+            RecoilRetroForceMagnitude = 6;
+            EjectCasingProjSize = 2f;
             CanRightClick = true;
-            FiringDefaultSound = false;
             RepeatedCartridgeChange = true;
             EnableRecoilRetroEffect = true;
         }
 
         public override void PostInOwnerUpdate() {
             CanUpdateMagazineContentsInShootBool = CanCreateRecoilBool = onFire;
+            if (onFire) {
+                CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
+            }
         }
 
         public override void SetShootAttribute() {
             if (onFire) {
-                GunPressure = 0.3f;
-                ControlForce = 0.05f;
                 RecoilRetroForceMagnitude = 13;
+                CanCreateCaseEjection = CanCreateSpawnGunDust = true;
+
             }
             else if (onFireR) {
-                GunPressure = 0;
-                ControlForce = 0;
                 RecoilRetroForceMagnitude = 0;
+                CanCreateCaseEjection = CanCreateSpawnGunDust = false;
             }
         }
 
@@ -80,6 +84,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 RecoilRetroForceMagnitude = 22;
                 SoundEngine.PlaySound(SoundID.Item110, Owner.Center);
             }
+        }
+
+        public override void GunDraw(ref Color lightColor) {
+            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition
+                , CWRUtils.GetRec(TextureValue, Projectile.frame, 4), lightColor
+                , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 4), Projectile.scale
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }
 }

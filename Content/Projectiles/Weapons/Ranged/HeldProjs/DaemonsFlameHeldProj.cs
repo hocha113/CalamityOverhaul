@@ -17,7 +17,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DaemonsFlameEcType>();
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.DaemonsFlame>();
         public override int targetCWRItem => ModContent.ItemType<DaemonsFlameEcType>();
-        public override void PostInOwner() => CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
+        public override void PostInOwner() {
+            HandDistance = 22;
+            HandFireDistance = 26;
+            DrawArrowMode = -30;
+            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
+        }
 
         public override void BowDraw(ref Color lightColor) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);

@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 50;
-            FireTime = 12;
+            FireTime = 15;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -29,6 +29,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.6f;
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
+            CanCreateCaseEjection = false;
+            CanCreateSpawnGunDust = false;
             RecoilRetroForceMagnitude = 7;
             ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
             ToTargetAmmo = ModContent.ProjectileType<ClamorRifleProj>();

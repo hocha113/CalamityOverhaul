@@ -13,14 +13,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<DisseminatorEcType>();
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 16;
-            ShootPosNorlLengValue = -13;
+            ShootPosNorlLengValue = -8;
             ControlForce = 0.05f;
             GunPressure = 0.12f;
             Recoil = 1.2f;
             HandDistance = 20;
-            HandDistanceY = 5;
+            HandDistanceY = 6;
             HandFireDistance = 20;
-            HandFireDistanceY = -8;
+            HandFireDistanceY = -4;
             CanRightClick = true;//可以右键使用
         }
 
@@ -40,13 +40,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void FiringShoot() {
             for (int i = 0; i < 6; i++) {
                 Projectile.NewProjectile(Source, GunShootPos,
-                    ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.8f, 1.1f)
+                    ShootVelocity.RotateRandom(0.06f) * Main.rand.NextFloat(0.8f, 1.1f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
             Vector2 pos = Owner.Center + new Vector2(MathHelper.Lerp(Main.MouseWorld.To(Owner.Center).X, 0, 1.3f), 780);
-            Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ShootSpeedModeFactor;
-            for (int i = 0; i < 4; i++) {
-                Vector2 vr2 = vr.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.8f, 1.1f);
+            NPC target = Main.MouseWorld.FindClosestNPC(1200);
+            Vector2 targetPos = Main.MouseWorld;
+            if (target != null) {
+                targetPos = target.Center;
+            }
+            Vector2 vr = pos.To(targetPos).UnitVector() * ShootSpeedModeFactor;
+            for (int i = 0; i < 12; i++) {
+                Vector2 vr2 = vr.RotateRandom(0.06f) * Main.rand.NextFloat(0.8f, 1.1f);
                 int proj = Projectile.NewProjectile(Source2, pos, vr2, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].tileCollide = false;
                 Main.projectile[proj].scale += Main.rand.NextFloat(0.5f);
@@ -59,7 +64,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Vector2 pos = Owner.Center + new Vector2(MathHelper.Lerp(Main.MouseWorld.To(Owner.Center).X, 0, 0.9f), -780);
             Vector2 vr = pos.To(Main.MouseWorld).UnitVector() * ShootSpeedModeFactor;
-            Projectile.NewProjectile(Source2, pos, vr, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source2, pos, vr, AmmoTypes, (int)(WeaponDamage * 0.7f), WeaponKnockback, Owner.whoAmI, 0);
+            Vector2 pos2 = Owner.Center + new Vector2(MathHelper.Lerp(Main.MouseWorld.To(Owner.Center).X, 0, 0.9f), 780);
+            Vector2 vr2 = pos2.To(Main.MouseWorld).UnitVector() * ShootSpeedModeFactor;
+            Projectile.NewProjectile(Source2, pos2, vr2, AmmoTypes, (int)(WeaponDamage * 0.7f), WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
         }
     }

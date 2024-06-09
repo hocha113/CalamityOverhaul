@@ -18,16 +18,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
-            HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -12;
+            HandFireDistanceY = -6;
+            ShootPosNorlLengValue = -10;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.25f;
-            ControlForce = 0.05f;
+            GunPressure = 0.15f;
+            ControlForce = 0.03f;
             Recoil = 1.2f;
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 13;
+            EjectCasingProjSize = 2.4f;
         }
     }
 }

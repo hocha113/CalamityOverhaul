@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             NPC target = Projectile.Center.FindClosestNPC(1200, false, true);
             if (target != null) {
-                for (int index = 0; index < 5; ++index) {
+                for (int index = 0; index < 3; ++index) {
                     Vector2 spanPos = new Vector2(Main.rand.Next(500) * (ShootVelocity.X < 0 ? 1 : -1), -900) + Projectile.Center;
                     Vector2 velocity = spanPos.To(target.Center).UnitVector() * ShootSpeedModeFactor;
                     Projectile.NewProjectile(Source, spanPos, velocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

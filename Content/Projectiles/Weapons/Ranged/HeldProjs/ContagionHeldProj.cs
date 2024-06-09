@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void BowShootR() {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 3; i++) {
                 Vector2 spanPos = Projectile.Center + new Vector2(Main.rand.Next(-520, 520), Main.rand.Next(-732, -623));
                 Vector2 vr = spanPos.To(Main.MouseWorld).UnitVector().RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f) * 13;
                 Projectile.NewProjectile(Source, spanPos, vr, ModContent.ProjectileType<NurgleBee>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

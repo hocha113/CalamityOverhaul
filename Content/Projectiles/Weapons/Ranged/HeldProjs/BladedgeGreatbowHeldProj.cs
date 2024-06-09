@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 2; i++) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ProjectileID.Leaf, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].DamageType = DamageClass.Ranged;
             }

@@ -1281,11 +1281,10 @@ Items: {
 	}
 
 	GoldenEagleEcType: {
-		DisplayName: 黄金波洛克
+		DisplayName: 黄金之鹰
 		Tooltip:
 			'''
 			一次发射五颗子弹
-			右键进行速射，在鼠标处生成大量伴生弹
 			"你不会想知道这把枪是怎么制作的"
 			'''
 	}

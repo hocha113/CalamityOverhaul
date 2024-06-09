@@ -18,7 +18,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private bool fire;
         public override void SetRangedProperty() {
             BowArrowDrawNum = 3;
-            HandFireDistance = 20;
+            HandDistance = 20;
+            HandFireDistance = 26;
+            DrawArrowMode = -26;
         }
         public override void SetShootAttribute() {
             Item.useTime = 20;

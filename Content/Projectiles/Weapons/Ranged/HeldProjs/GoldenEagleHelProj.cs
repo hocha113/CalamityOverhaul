@@ -19,7 +19,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistanceY = -6;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
-            CanRightClick = true;
             RepeatedCartridgeChange = true;
             Recoil = 0.8f;
         }

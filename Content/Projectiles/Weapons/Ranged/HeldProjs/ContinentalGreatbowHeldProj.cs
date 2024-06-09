@@ -18,7 +18,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             for (int i = 0; i < 2; i++) {
                 FireOffsetVector = ShootVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.2f, 0.23f);
                 AmmoTypes = Utils.SelectRandom(Main.rand, new int[] { ProjectileID.HellfireArrow, ProjectileID.IchorArrow });
-                base.BowShoot();
+                int proj = Projectile.NewProjectile(Source, Projectile.Center + FireOffsetPos, ShootVelocity + FireOffsetVector
+                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj].usesLocalNPCImmunity = true;
+                Main.projectile[proj].localNPCHitCooldown = -1;
+                Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
+                Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
             }
             bool vms = Main.rand.NextBool(3);
             for (int j = 0; j < 3; j++) {

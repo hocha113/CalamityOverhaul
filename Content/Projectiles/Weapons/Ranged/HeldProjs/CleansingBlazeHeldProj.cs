@@ -25,9 +25,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0;
             Recoil = 0.5f;
             RangeOfStress = 28;
+            kreloadMaxTime = 90;
             RepeatedCartridgeChange = true;
             FiringDefaultSound = false;
-            kreloadMaxTime = 90;
+            CanCreateCaseEjection = false;
+            CanCreateSpawnGunDust = false;
             loadTheRounds = CWRSound.Liquids_Fill_0 with { Pitch = -0.8f };
             LoadingAA_None.loadingAA_None_Roting = 30;
             LoadingAA_None.loadingAA_None_X = 0;

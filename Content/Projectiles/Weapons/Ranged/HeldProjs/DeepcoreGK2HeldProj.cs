@@ -1,4 +1,5 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -16,7 +17,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<DeepcoreGK2EcType>();
         public override void SetRangedProperty() {
             HandFireDistance = HandDistance = 36;
-            HandFireDistanceY = HandDistanceY = -8;
+            HandDistanceY = -2;
+            HandFireDistanceY = -4;
             ShootPosNorlLengValue = -18;
             ShootPosToMouLengValue = 28;
             AngleFirearmRest = -11;
@@ -46,12 +48,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetShootAttribute() {
             if (onFire) {
                 Recoil = 1.2f;
-                Item.useTime = 14;
+                FireTime = 16;
                 Item.UseSound = SoundID.Item38;
             }
             if (onFireR) {
                 Recoil = 0.3f;
-                Item.useTime = 7;
+                FireTime = 10;
                 Item.UseSound = CommonCalamitySounds.LargeWeaponFireSound with { Volume = 0.3f, Pitch = 0.2f };
             }
         }
@@ -61,7 +63,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].scale *= 3;
             Main.projectile[proj].extraUpdates += 1;
-            
+            Main.projectile[proj].Calamity().deepcoreBullet = true;
+            Main.projectile[proj].ArmorPenetration = 10;
         }
 
         public override void FiringShootR() {

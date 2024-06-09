@@ -17,23 +17,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         private int fireIndex;
         public override void SetRangedProperty() {
-            kreloadMaxTime = 90;
+            Recoil = 1.2f;
             FireTime = 10;
+            GunPressure = 0;
+            ControlForce = 0;
             HandDistance = 25;
             HandDistanceY = 5;
+            RangeOfStress = 25;
+            kreloadMaxTime = 90;
             HandFireDistance = 25;
             HandFireDistanceY = -5;
             ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 10;
-            RepeatedCartridgeChange = true;
-            GunPressure = 0;
-            ControlForce = 0;
-            Recoil = 1.2f;
-            RangeOfStress = 25;
-            AmmoTypeAffectedByMagazine = false;
+            RecoilRetroForceMagnitude = 17;
             FiringDefaultSound = false;
             CanCreateSpawnGunDust = false;
-            RecoilRetroForceMagnitude = 17;
+            RepeatedCartridgeChange = true;
+            AmmoTypeAffectedByMagazine = false;
         }
 
         public override void PostInOwnerUpdate() {
@@ -65,8 +65,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostFiringShoot() {
-            if (++fireIndex > 13) {
-                FireTime = 30;
+            if (++fireIndex >= 8) {
+                FireTime = 60;
                 SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/DudFire") 
                     with { Volume = 0.8f, Pitch = -0.7f, PitchVariance = 0.1f }, Projectile.Center);
                 fireIndex = 0;

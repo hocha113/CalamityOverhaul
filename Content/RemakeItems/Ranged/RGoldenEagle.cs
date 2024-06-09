@@ -33,7 +33,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
             item.SetCartridgeGun<GoldenEagleHelProj>(38);
-            item.EasySetLocalTextNameOverride("GoldenEagleEcType");
         }
     }
 }

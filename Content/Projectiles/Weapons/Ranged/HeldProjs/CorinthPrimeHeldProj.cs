@@ -18,7 +18,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 27;
             HandDistanceY = 5;
             HandFireDistance = 27;
-            HandFireDistanceY = -8;
+            HandFireDistanceY = -4;
+            ShootPosNorlLengValue = -4;
+            ShootPosToMouLengValue = 15;
             CanRightClick = true;
         }
 
@@ -27,13 +29,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 GunPressure = 0.7f;
                 Recoil = 6;
                 RangeOfStress = 25;
-                Item.useTime = 60;
+                Item.useTime = 80;
             }
             else {
                 GunPressure = 0.2f;
-                Recoil = 2;
+                Recoil = 1;
                 RangeOfStress = 5;
-                Item.useTime = 20;
+                Item.useTime = 30;
             }
         }
 

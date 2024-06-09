@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -26,12 +27,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.05f;
             Recoil = 0.9f;
             RangeOfStress = 25;
+            SpwanGunDustMngsData.splNum = 0.6f;
         }
 
         public override void FiringShoot() {
+            if (AmmoTypes == ProjectileID.Bullet) {
+                AmmoTypes = ProjectileID.BulletHighVelocity;
+            }
             for (int i = 0; i < 3; i++) {
                 Projectile.NewProjectile(Source, GunShootPos
-                    , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f)
+                    , ShootVelocity.RotatedByRandom(0.06f) * Main.rand.NextFloat(0.9f, 1.2f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
         }

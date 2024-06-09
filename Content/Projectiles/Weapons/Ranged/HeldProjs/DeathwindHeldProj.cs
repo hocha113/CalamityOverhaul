@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
@@ -30,6 +31,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             else {
                 SoundEngine.PlaySound(SoundID.Item5, Projectile.Center);
+                if (AmmoTypes == ModContent.ProjectileType<VanquisherArrowProj>()) {
+                    WeaponDamage = (int)(WeaponDamage * 0.65f);
+                }
                 for (int i = 0; i < 3; i++) {
                     int ammo = Projectile.NewProjectile(Source, Projectile.Center
                         , (Projectile.rotation + MathHelper.ToRadians(5 - 5 * i)).ToRotationVector2() * 17
@@ -42,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     for (int i = 0; i < 3; i++) {
                         Vector2 vr = (Projectile.rotation + MathHelper.ToRadians(5 - 5 * i)).ToRotationVector2();
                         int ammo = Projectile.NewProjectile(Source, Projectile.Center + vr * 150, vr * 15,
-                                ModContent.ProjectileType<DeadArrow>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                                ModContent.ProjectileType<DeadArrow>(), WeaponDamage, Projectile.knockBack, Projectile.owner);
                         Main.projectile[ammo].scale = 1.5f;
                     }
                     Projectile.ai[2] = 0;
