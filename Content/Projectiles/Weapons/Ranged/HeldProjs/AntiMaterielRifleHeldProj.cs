@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -13,21 +12,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<AntiMaterielRifleEcType>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
-            FireTime = 40;
+            FireTime = 60;
             ControlForce = 0.04f;
             GunPressure = 0.25f;
-            Recoil = 4.5f;
+            Recoil = 3.5f;
             HandDistance = 35;
             HandFireDistance = 30;
             HandFireDistanceY = -8;
             ShootPosToMouLengValue = 30;
             ShootPosNorlLengValue = -5;
             RangeOfStress = 25;
-            RepeatedCartridgeChange = true;
+            SpwanGunDustMngsData.splNum = 3.3f;
         }
         public override void FiringShoot() {
-            SoundEngine.PlaySound(Item.UseSound.Value with { Pitch = 0.3f }, Projectile.Center);
-            DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, GunShootPos, ShootVelocity);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<BMGBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
         }

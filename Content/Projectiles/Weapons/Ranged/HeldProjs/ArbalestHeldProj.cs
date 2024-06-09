@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
-            HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -0;
+            HandFireDistanceY = -5;
+            ShootPosNorlLengValue = -4;
             ShootPosToMouLengValue = 30;
             GunPressure = 0;
             ControlForce = 0;
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void SetShootAttribute() {
-            Item.useTime = onFire ? 6 : 7;
+            Item.useTime = onFire ? 6 : 8;
         }
 
         public override void HanderPlaySound() {
@@ -42,12 +42,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            for (int i = 0; i < fireIndex; i++) {
+            int max = fireIndex;
+            if (max > 3) {
+                max = 3;
+            }
+            for (int i = 0; i < max; i++) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                Main.projectile[proj].scale += fireIndex * 0.08f;
+                Main.projectile[proj].scale += fireIndex * 0.06f;
                 Main.projectile[proj].extraUpdates += 1;
-                Main.projectile[proj].velocity *= 1 + fireIndex * 0.1f;
+                Main.projectile[proj].velocity *= 1 + fireIndex * 0.05f;
                 Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
             }
 
@@ -56,9 +60,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PostFiringShoot() {
             if (onFire) {
-                fireIndex++;
-                if (fireIndex >= 6) {
-                    Item.useTime = 45;
+                if (++fireIndex >= 6) {
+                    Item.useTime = 60;
                     fireIndex = 0;
                 }
             }

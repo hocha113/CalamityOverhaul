@@ -14,10 +14,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Archerfish";
         public override int targetCayItem => ModContent.ItemType<Archerfish>();
         public override int targetCWRItem => ModContent.ItemType<ArcherfishEcType>();
-
+        int fireIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            FireTime = 10;
+            FireTime = 30;
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
@@ -25,12 +25,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -0;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
-            GunPressure = 0.2f;
-            ControlForce = 0.05f;
+            GunPressure = 0f;
+            ControlForce = 0f;
             Recoil = 0.4f;
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 12;
+            SpwanGunDustMngsData.dustID1 = DustID.Water;
+            SpwanGunDustMngsData.dustID2 = DustID.Water;
+            SpwanGunDustMngsData.dustID3 = DustID.Water;
+            SpwanGunDustMngsData.splNum = 0.8f;
+            CanCreateCaseEjection = false;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 3;
         }
 
         public override void PostFiringShoot() {
@@ -40,14 +47,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 bubble.scale = Main.rand.NextFloat(0.6f, 0.8f);
                 bubble.type = Main.rand.NextBool(3) ? 412 : 411;
             }
+            FireTime = 3;
+            if (++fireIndex > 9) {
+                FireTime = 30;
+                fireIndex = 0;
+            }
         }
 
         public override void FiringShoot() {
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = Item.shoot;
             }
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.6f, ModContent.ProjectileType<ArcherfishRing>(), WeaponDamage / 2, WeaponKnockback + 5, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity * 1.6f, ModContent.ProjectileType<ArcherfishRing>(), WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

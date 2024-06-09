@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PreInOwnerUpdate() {
-            FireTime = MagazineSystem ? 30 : 50;
+            FireTime = MagazineSystem ? 40 : 60;
         }
 
         public override void FiringShoot() {

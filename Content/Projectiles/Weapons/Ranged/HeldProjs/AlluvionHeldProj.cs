@@ -19,8 +19,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private SlotId accumulator;
         public override void SetRangedProperty() {
             CanRightClick = true;
-            HandFireDistance = 20;
+            HandFireDistance = 30;
             BowArrowDrawNum = 5;
+            DrawArrowMode = -30;
             ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.WoodenArrowFriendly;
             ToTargetAmmo = ModContent.ProjectileType<Voidragon>();
         }
@@ -29,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             BowArrowDrawBool = onFire;
             if (onFireR) {
                 Projectile.rotation = -MathHelper.PiOver2;
-                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * 12;
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
             }
@@ -55,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (AmmoTypes == ModContent.ProjectileType<Voidragon>()) {
                 AmmoTypes = ModContent.ProjectileType<TorrentialArrow>();
                 for (int i = 0; i < 5; i++) {
-                    int proj = Projectile.NewProjectile(Source, Projectile.Center + UnitToMouseV.GetNormalVector() * (-2 + i) * 17
+                    int proj = Projectile.NewProjectile(Source, Projectile.Center + UnitToMouseV.GetNormalVector() * (-2 + i) * 12
                         , ShootVelocity.UnitVector() * 17, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.Alluvion;
                     Main.projectile[proj].SetArrowRot();
@@ -63,7 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
             else {
                 for (int i = 0; i < 5; i++) {
-                    int proj = Projectile.NewProjectile(Source, Projectile.Center + UnitToMouseV.GetNormalVector() * (-2 + i) * 12
+                    int proj = Projectile.NewProjectile(Source, Projectile.Center + UnitToMouseV.GetNormalVector() * (-2 + i) * 8
                         , ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.Alluvion;
                     Main.projectile[proj].SetArrowRot();

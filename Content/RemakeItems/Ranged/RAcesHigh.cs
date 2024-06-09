@@ -12,6 +12,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<AcesHigh>();
         public override int ProtogenesisID => ModContent.ItemType<AcesHighEcType>();
         public override string TargetToolTipItemName => "AcesHighEcType";
-        public override void SetDefaults(Item item) => item.SetCartridgeGun<AcesHighHeldProj>(160);
+        public override void SetDefaults(Item item) {
+            item.damage = 375;
+            item.SetCartridgeGun<AcesHighHeldProj>(90);
+        }
     }
 }

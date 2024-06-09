@@ -1,4 +1,6 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -39,11 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.5f, PitchVariance = 0.3f }, Projectile.Center);
             }
             else if (onFireR) {
-                SoundEngine.PlaySound(Animosity.ShootAndReloadSound, Projectile.Center);
-                if (fireIndex > 5) {
-                    SoundEngine.PlaySound(CommonCalamitySounds.LargeWeaponFireSound 
-                        with { Pitch = -0.2f, Volume = 0.7f }, Projectile.Center);
-                }
+                SoundEngine.PlaySound(Animosity.ShootAndReloadSound with { MaxInstances = 6 }, Projectile.Center);
             }
         }
 
@@ -51,24 +49,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (onFire) {
                 FireTime = 6;
                 GunPressure = 0.1f;
-                Recoil = 1.2f;
-                RangeOfStress = 5;
+                Recoil = 0.8f;
+                RangeOfStress = 15;
+                EnableRecoilRetroEffect = false;
                 if (AmmoTypes == ProjectileID.Bullet) {
                     AmmoTypes = ProjectileID.BulletHighVelocity;
                 }
             }
             else if (onFireR) {
                 FireTime = 50;
-                GunPressure = 0.6f;
-                Recoil = 5;
+                GunPressure = 0.2f;
+                Recoil = 3;
                 RangeOfStress = 25;
+                EnableRecoilRetroEffect = true;
+                RecoilRetroForceMagnitude = 6;
             }
             
         }
         public override void FiringShoot() {
             for (int i = 0; i < 2; i++) {
-                Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f))
+                int proj = Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f))
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Main.projectile[proj].Calamity().brimstoneBullets = true;
             }
             if (fireIndex > 5) {
                 Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
@@ -77,8 +79,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostFiringShoot() {
+            if (onFireR) {
+                return;
+            }
             if (++fireIndex > 6) {
-                FireTime = 15;
+                FireTime = 25;
                 fireIndex = 0;
             }
         }

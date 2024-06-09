@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AngelicShotgun";
         public override void SetDefaults() {
-            Item.damage = 136;
+            Item.damage = 126;
             Item.knockBack = 3f;
             Item.DamageType = DamageClass.Ranged;
             Item.noMelee = true;

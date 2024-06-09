@@ -21,8 +21,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetShootAttribute() {
             Item.useTime = 4;
             fireIndex++;
-            if (fireIndex > 4) {
-                Item.useTime = 15;
+            if (fireIndex >= 4) {
+                Item.useTime = 20;
                 fireIndex = 0;
             }
         }

@@ -2617,18 +2617,12 @@ Items: {
 
 	GraniteRifle: {
 		DisplayName: 花岗岩步枪
-		Tooltip:
-			'''
-			将火枪子弹转化为花岗岩碎屑弹丸，会在实心物块中蛇形游走
-			'''
+		Tooltip: 将火枪子弹转化为花岗岩碎屑弹丸，会在实心物块中蛇形游走
 	}
 
 	MarbleRifle: {
 		DisplayName: 大理岩步枪
-		Tooltip:
-			'''
-			将火枪子弹转化为大理岩碎屑弹丸，击中物块时弹起并爆炸
-			'''
+		Tooltip: 将火枪子弹转化为大理岩碎屑弹丸，击中物块时弹起并爆炸
 	}
 
 	FrostcrushValariEcType: {

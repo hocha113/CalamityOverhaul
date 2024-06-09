@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content
 {
@@ -28,6 +29,10 @@ namespace CalamityOverhaul.Content
 
             Rectangle frame;
             Texture2D extraPieceTexture;
+
+            if (headItem.type <= ItemID.None) {
+                return;
+            }
 
             if (headItem.type == DemonshadeHelmMagic.PType) {
                 headDrawPosition += new Vector2(-4, -16);

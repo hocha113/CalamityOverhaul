@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -182,7 +183,7 @@ namespace CalamityOverhaul.Content.UIs
                     continue;
                 }
                 Item item = new Item(baseRItem.TargetID);
-                if (item != null) {
+                if (item != null && item.ModItem != null) {
                     if (item.type != ItemID.None) {
                         if (melee) {
                             if (item.DamageType == DamageClass.Melee

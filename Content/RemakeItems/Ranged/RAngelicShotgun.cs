@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int ProtogenesisID => ModContent.ItemType<AngelicShotgunEcType>();
         public override string TargetToolTipItemName => "AngelicShotgunEcType";
         public override void SetDefaults(Item item) {
-            item.damage = 136;
+            item.damage = 126;
             item.knockBack = 3f;
             item.DamageType = DamageClass.Ranged;
             item.noMelee = true;

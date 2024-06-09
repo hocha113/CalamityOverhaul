@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.AngelicShotgun>();
         public override int targetCWRItem => ModContent.ItemType<AngelicShotgunEcType>();
         public override void SetRangedProperty() {
-            FireTime = 18;
+            FireTime = 20;
             EnableRecoilRetroEffect = true;
             ControlForce = 0.1f;
             GunPressure = 0.3f;
@@ -25,9 +25,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 4; i++) {
                 int proj = Projectile.NewProjectile(Source, Projectile.Center
-                    , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f))
+                    , ShootVelocity.RotatedByRandom(0.08f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.AngelicShotgun;
             }
