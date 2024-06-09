@@ -86,6 +86,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         public override bool CanFire => false;
         /// <summary>
+        /// 武器适应性缩放，默认为1
+        /// </summary>
+        public float Scaling = 1;
+        /// <summary>
         /// 开火冷切计时器
         /// </summary>
         public float ShootCoolingValue {

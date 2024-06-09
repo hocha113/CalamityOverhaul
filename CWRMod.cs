@@ -41,6 +41,7 @@ namespace CalamityOverhaul
         internal Mod terrariaOverhaul = null;
         internal Mod thoriumMod = null;
         internal Mod narakuEye = null;
+        internal Mod coolerItemVisualEffect = null;
 
         internal List<ISetupData> SetupDatas;
         internal List<Mod> LoadMods = new List<Mod>();
@@ -194,7 +195,24 @@ namespace CalamityOverhaul
 
         public override void HandlePacket(BinaryReader reader, int whoAmI) => CWRNetCode.HandlePacket(this, reader, whoAmI);
 
+        private void emptyMod() {
+            musicMod = null;
+            betterWaveSkipper = null;
+            fargowiltasSouls = null;
+            catalystMod = null;
+            weaponOut = null;
+            weaponDisplay = null;
+            magicBuilder = null;
+            improveGame = null;
+            luiafk = null;
+            terrariaOverhaul = null;
+            thoriumMod = null;
+            narakuEye = null;
+            coolerItemVisualEffect = null;
+        }
+
         public void FindMod() {
+            emptyMod();
             ModLoader.TryGetMod("CalamityModMusic", out musicMod);
             ModLoader.TryGetMod("BetterWaveSkipper", out betterWaveSkipper);
             ModLoader.TryGetMod("FargowiltasSouls", out fargowiltasSouls);
@@ -207,6 +225,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("TerrariaOverhaul", out terrariaOverhaul);
             ModLoader.TryGetMod("ThoriumMod", out thoriumMod);
             ModLoader.TryGetMod("NarakuEye", out narakuEye);
+            ModLoader.TryGetMod("CoolerItemVisualEffect", out coolerItemVisualEffect);
         }
 
         public void LoadClient() {

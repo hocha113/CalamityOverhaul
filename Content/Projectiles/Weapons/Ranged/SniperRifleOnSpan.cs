@@ -102,6 +102,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                     SoundEngine.PlaySound(new("CalamityMod/Sounds/Item/TankCannon") { Pitch = Projectile.ai[2] }, Projectile.Center);
                     baseFeederGun.CreateRecoil();
+                    baseFeederGun.CaseEjection();
                     baseFeederGun.SpawnGunFireDust(Owner.Center, baseFeederGun.ShootVelocity);
                 }
             }

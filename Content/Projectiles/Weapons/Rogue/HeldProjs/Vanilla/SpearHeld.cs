@@ -12,8 +12,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Spear].Value;
+        private bool onTIle;
+        private float tileRot;
         public override void SetThrowable() {
             CWRUtils.SafeLoadItem(ItemID.Spear);
+            Projectile.width = Projectile.height = 11;
             Projectile.alpha = 255;
             HandOnTwringMode = -15;
             OnThrowingGetRotation = (float a) => ToMouseA;
@@ -22,23 +25,42 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
                 * HandOnTwringMode * Owner.gravDir + UnitToMouseV * 6;
         }
 
-        public override void OnThrowing() {
-            base.OnThrowing();
+        public override void FlyToMovementAI() {
+            Projectile.rotation = Projectile.velocity.ToRotation();
+            if (++Projectile.ai[2] > 60 && !onTIle) {
+                Projectile.velocity.Y += 0.3f;
+                Projectile.velocity.X *= 0.99f;
+            }
+            if (onTIle) {
+                Projectile.rotation = tileRot;
+                Projectile.velocity *= 0.9f;
+            }
         }
-
-        public override void FlyToMovementAI() => Projectile.rotation = Projectile.velocity.ToRotation();
 
         public override bool PreThrowOut() {
             SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
             Projectile.velocity = UnitToMouseV * 17.5f;
             Projectile.tileCollide = true;
+            Projectile.penetrate = 1;
+            if (stealthStrike) {
+                Projectile.damage *= 2;
+                Projectile.ArmorPenetration = 10;
+                Projectile.penetrate = 6;
+                Projectile.extraUpdates = 3;
+                Projectile.scale = 1.5f;
+            }
             return false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) { }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            Projectile.velocity = oldVelocity * 0.6f;
+            if (!onTIle) {
+                Projectile.velocity /= 10;
+                tileRot = Projectile.rotation;
+                onTIle = true;
+            }
+            
             Projectile.alpha -= 15;
             return false;
         }

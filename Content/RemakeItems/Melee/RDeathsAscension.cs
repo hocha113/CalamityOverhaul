@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             swingIndex = 0;
             item.UseSound = null;
             item.noUseGraphic = true;
+            item.autoReuse = true;
             item.noMelee = true;
             item.useStyle = ItemUseStyleID.Shoot;
             item.shoot = ModContent.ProjectileType<DeathsAscensionHeld>();

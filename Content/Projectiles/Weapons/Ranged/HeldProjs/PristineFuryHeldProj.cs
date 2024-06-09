@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 maxFrame = 1;
                 value = CWRUtils.GetT2DValue(CWRConstant.Cay_Wap_Ranged + "PristineFury");
             }
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, maxFrame), onFire ? Color.White : lightColor
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, maxFrame), lightColor
                 , Projectile.rotation, CWRUtils.GetOrig(value, maxFrame), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }

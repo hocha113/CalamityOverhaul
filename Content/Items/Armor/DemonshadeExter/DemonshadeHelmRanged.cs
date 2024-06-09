@@ -28,6 +28,9 @@ namespace CalamityOverhaul.Content.Items.Armor.DemonshadeExter
             PType = 0;
             Hand = null;
         }
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;//TODO
+        }
         public override void SetDefaults() {
             Item.width = 18;
             Item.height = 18;

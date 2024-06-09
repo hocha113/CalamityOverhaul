@@ -66,6 +66,10 @@ namespace CalamityOverhaul.Common
         public static Type fargowiltasSouls_Utils_Type;
         public static MethodBase fS_Utils_OnSpawnEnchCanAffectProjectile_Method;
 
+        public static Type[] coolerItemVisualEffectTypes;
+        public static Type coolerItemVisualEffectPlayerType;
+        public static MethodBase coolerItemVisualEffect_Method;
+
         public static MethodBase BossHealthBarManager_Draw_Method;
 
         public static Type[] GetModType(Mod mod) {
@@ -262,6 +266,31 @@ namespace CalamityOverhaul.Common
 
             #endregion
 
+            #region coolerItemVisualEffect
+
+            if (CWRMod.Instance.coolerItemVisualEffect != null) {
+                coolerItemVisualEffectTypes = AssemblyManager.GetLoadableTypes(CWRMod.Instance.coolerItemVisualEffect.Code);
+                foreach (Type type in coolerItemVisualEffectTypes) {
+                    if (type.Name == "CoolerItemVisualEffectPlayer") {
+                        coolerItemVisualEffectPlayerType = type;
+                    }
+                }
+                if (coolerItemVisualEffectPlayerType != null) {
+                    coolerItemVisualEffect_Method = coolerItemVisualEffectPlayerType.GetMethod("ModifyDrawInfo", BindingFlags.Instance | BindingFlags.Public);
+                }
+                if (coolerItemVisualEffect_Method != null) {
+                    MonoModHooks.Add(coolerItemVisualEffect_Method, On_MP_Draw_4_Hook);
+                }
+                else {
+                    "未成功加载 coolerItemVisualEffect_Method CoolerItemVisualEffectPlayer.ModifyDrawInfo已经改动?".DompInConsole();
+                }
+            }
+            else {
+                "未加载模组 CoolerItemVisualEffect".DompInConsole();
+            }
+
+            #endregion
+
             #region calamityMod_noumenon
 
             //这一切不该发生，灾厄没有在这里留下任何可扩展的接口，如果想要那该死血条的为第三方事件靠边站，只能这么做，至少这是我目前能想到的方法
@@ -408,6 +437,13 @@ namespace CalamityOverhaul.Common
         }
 
         private static void On_MP_Draw_3_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
+            if (!IFDrawHeld(orig, drawInfo)) {
+                return;
+            }
+            orig.Invoke(obj, ref drawInfo);
+        }
+
+        private static void On_MP_Draw_4_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
             if (!IFDrawHeld(orig, drawInfo)) {
                 return;
             }

@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void GunDraw(ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(TextureValue, Projectile.frame, 4), onFire ? Color.White : lightColor
+            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(TextureValue, Projectile.frame, 4), lightColor
                 , Projectile.rotation + MathHelper.PiOver2, CWRUtils.GetOrig(TextureValue, 4), Projectile.scale, SpriteEffects.None);
         }
     }

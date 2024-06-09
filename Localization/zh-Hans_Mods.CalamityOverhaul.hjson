@@ -2620,7 +2620,6 @@ Items: {
 		Tooltip:
 			'''
 			将火枪子弹转化为花岗岩碎屑弹丸，会在实心物块中蛇形游走
-			"我故意让这枪转起来一卡一卡的，这样你才知道你玩的是泰拉瑞亚"
 			'''
 	}
 
@@ -2629,7 +2628,6 @@ Items: {
 		Tooltip:
 			'''
 			将火枪子弹转化为大理岩碎屑弹丸，击中物块时弹起并爆炸
-			"我故意让这枪转起来一卡一卡的，这样你才知道你玩的是泰拉瑞亚"
 			'''
 	}
 
@@ -2693,18 +2691,25 @@ Items: {
 			'''
 			真近战会在目标周围生成大量恶魔光球
 			右键操控剑刃飞行，并向光标处进行斩切
-			"嘿，把刀给我"
 			'''
 	}
 
 	GraniteDart: {
 		DisplayName: 花岗岩投镖
-		Tooltip: ""
+		Tooltip:
+			'''
+			快而准的投掷飞镖
+			潜伏攻击将掷出强有力的一镖
+			'''
 	}
 
 	MarbleDagger: {
 		DisplayName: 大理岩匕首
-		Tooltip: ""
+		Tooltip:
+			'''
+			命中目标后会额外投掷三枚大理岩匕首
+			潜伏攻击将掷出强有力的一镖
+			'''
 	}
 
 	ApoctolithEcType: {
@@ -3528,6 +3533,24 @@ Configs: {
 				'''
 		}
 
+		WeaponAdaptiveIllumination: {
+			Label: 武器适应性光照(实验性)
+			Tooltip:
+				'''
+				默认开启，使用时武器将正常使用环境光混合绘制
+				如果关闭，武器将在使用时无视环境明暗度保持高亮
+				'''
+		}
+
+		WeaponAdaptiveVolumeScaling: {
+			Label: 武器适应性缩放(实验性)
+			Tooltip:
+				'''
+				默认开启，武器将具备不同的绘制缩放，以保持视觉自然并防止过度遮挡
+				考虑到像素敏感的不统一问题，玩家可以选择关闭以保持像素块的平滑
+				'''
+		}
+
 		EnableCasingsEntity: {
 			Label: 启用弹壳实体
 			Tooltip: ""
@@ -4240,7 +4263,7 @@ TextContent: {
 		Wap_Flamarang_Text: 潜伏攻击将快速投掷三个回旋镖
 		Wap_EnchantedBoomerang_Text: 潜伏攻击将快速投掷三个回旋镖，击中目标后召唤落星
 		Wap_Shroomerang_Text: 潜伏攻击将释放蘑菇孢子炸弹
-		// Wap_Spear_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_Spear_Text
+		Wap_Spear_Text: 潜伏攻击将掷出强有力的一矛
 	}
 }
 

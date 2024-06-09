@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void GunDraw(ref Color lightColor) {
-            Color drawColor = onFire ? Color.White : lightColor;
+            Color drawColor = lightColor;
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition
                 , CWRUtils.GetRec(TextureValue, Projectile.frame, 10), drawColor
                 , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 10)

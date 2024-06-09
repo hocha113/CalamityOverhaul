@@ -2573,12 +2573,12 @@ Items: {
 
 	GraniteRifle: {
 		DisplayName: Granite Rifle
-		Tooltip: ""
+		Tooltip: Converting musket bullet into a granite-debris projectile will snake through the solid mass.
 	}
 
 	MarbleRifle: {
 		DisplayName: Marble Rifle
-		Tooltip: ""
+		Tooltip: Converting musket bullet into a marble clastic projectile that bounces and explodes when it hits the mass.
 	}
 
 	FrostcrushValariEcType: {
@@ -2588,7 +2588,11 @@ Items: {
 
 	NeutronScythe: {
 		DisplayName: Neutron Scythe
-		Tooltip: ""
+		Tooltip:
+			'''
+			The scythe shoots gamma rays at the enemy and leaves several warping points along the way
+A			lurking attack throws a scythe
+			'''
 	}
 
 	DemonshadeHelmMagic: {
@@ -2633,17 +2637,29 @@ Items: {
 
 	RebelBlade: {
 		DisplayName: Rebel Blade
-		Tooltip: ""
+		Tooltip:
+			'''
+			True melee generates a large number of demon light balls around the target
+			Right click to control blade flight and cut towards the cursor
+			'''
 	}
 
 	GraniteDart: {
 		DisplayName: Granite Dart
-		Tooltip: ""
+		Tooltip:
+			'''
+			Throw darts quickly and accurately
+			A lurking attack will throw a powerful dart
+			'''
 	}
 
 	MarbleDagger: {
 		DisplayName: Marble Dagger
-		Tooltip: ""
+		Tooltip:
+			'''
+			Three additional marble daggers are thrown after hitting the target
+			A lurking attack will throw a powerful dart
+			'''
 	}
 
 	ApoctolithEcType: {
@@ -2658,22 +2674,41 @@ Items: {
 
 	GuardianTerra: {
 		DisplayName: Guardian Terra
-		Tooltip: ""
+		Tooltip:
+			'''
+			Launch powerful Terra biogenic material
+			Right click for a powerful swing
+			'''
 	}
 
 	NitroExpressRifleEcType: {
 		DisplayName: Nitro Express Rifle
-		Tooltip: ""
+		Tooltip:
+			'''
+			For crushing a bear's skull
+			Turning musket bullets into kinetic energy rounds
+			"Old, but useful."
+			'''
 	}
 
 	LifehuntScytheEcType: {
 		DisplayName: Lifehunt Scythe
-		Tooltip: ""
+		Tooltip:
+			'''
+			Each swing throws a life scythe
+			Every third swing will throw a giant scythe
+			'''
 	}
 
 	DeathsAscensionEcType: {
 		DisplayName: Deaths Ascension
-		Tooltip: ""
+		Tooltip:
+			'''
+			Each wave throws the sickle of Death, which reaps souls
+			Every three swings will throw the giant flying sickle
+			Press and hold the left button to allow the sickle to track the cursor. 
+			Release the left button to trigger the Death Half Moon
+			'''
 	}
 }
 
@@ -3453,6 +3488,24 @@ Configs: {
 				'''
 		}
 
+		WeaponAdaptiveIllumination: {
+			Label: Weapon Adaptive Illumination (Experimental)
+			Tooltip:
+				'''
+				Turned on by default, weapons will normally be drawn using ambient light mixing when used
+				If turned off, the weapon will remain bright when used regardless of ambient brightness
+				'''
+		}
+
+		WeaponAdaptiveVolumeScaling: {
+			Label: Weapon Adaptive Volume Scaling (Experimental)
+			Tooltip:
+				'''
+				Turned on by default, weapons will have different drawing scales to keep the vision natural and prevent excessive occlusion
+				Given the ununiformity of pixel sensitivity, players can choose to turn off to keep the pixel blocks smooth
+				'''
+		}
+
 		EnableCasingsEntity: {
 			Label: Enable Casings Entity
 			Tooltip: ""
@@ -4127,7 +4180,7 @@ TextContent: {
 		Wap_Flamarang_Text: A lurking attack will quickly throw three boomerangs
 		Wap_EnchantedBoomerang_Text: The lurking attack will quickly throw three boomerangs, which will summon a falling star after hitting the target
 		Wap_Shroomerang_Text: A latent attack will release the mushroom spore bomb
-		Wap_Spear_Text: Mods.CalamityOverhaul.TextContent.CWRLocText.Wap_Spear_Text
+		Wap_Spear_Text: A lurking attack will throw a powerful spear
 	}
 }
 

@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 setValue = NeutronGun.ShootGun.Value;
             }
             Main.EntitySpriteDraw(setValue, Projectile.Center - Main.screenPosition
-                , CWRUtils.GetRec(setValue, Projectile.frame, 6), CanFire ? Color.White : lightColor
+                , CWRUtils.GetRec(setValue, Projectile.frame, 6), lightColor
                 , Projectile.rotation, CWRUtils.GetOrig(setValue, 6), Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
