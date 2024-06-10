@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosToMouLengValue = 35;
             RepeatedCartridgeChange = true;
             FiringDefaultSound = false;
+            CanCreateSpawnGunDust = false;
             Recoil = 0;
             LoadingAA_None.loadingAA_None_Roting = 30;
             LoadingAA_None.loadingAA_None_X = 0;

@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 5;
             HandFireDistance = 27;
             HandFireDistanceY = -8;
+            CanCreateSpawnGunDust = CanCreateCaseEjection = false;
         }
 
         public override void FiringShoot() {

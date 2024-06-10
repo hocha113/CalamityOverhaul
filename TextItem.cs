@@ -1,9 +1,4 @@
 ﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -16,7 +11,7 @@ namespace CalamityOverhaul
 
         private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;
+            return false;
         }
 
         public override void SetDefaults() {

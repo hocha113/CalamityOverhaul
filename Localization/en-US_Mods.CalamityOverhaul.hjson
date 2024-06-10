@@ -2486,23 +2486,44 @@ Items: {
 	}
 
 	NeutronGlaive: {
-		DisplayName: Neutron Glaive
-		Tooltip: ""
+		DisplayName: Black Zone Cleaver
+		Tooltip:
+			'''
+			Swinging releases powerful gravitational sword waves, causing a neutron star explosion upon hitting a target.
+			Right-click to charge the blade; releasing it when fully charged triggers a large neutron star explosion at the cursor.
+			Releasing before fully charged will cause the energy to spill out.
+			'''
 	}
 
 	NeutronBow: {
-		DisplayName: Neutron Bow
-		Tooltip: ""
+		DisplayName: Roche's String
+		Tooltip:
+			'''
+			Fires gravity arrows that generate gamma rays upon hitting a target.
+			Right-click to perform a three-level charge, releasing three powerful gravity arrows when fully charged.
+			'''
 	}
 
 	NeutronGun: {
-		DisplayName: Neutron Gun
-		Tooltip: ""
+		DisplayName: Stellar Hunter
+		Tooltip:
+			'''
+			Fires gravity projectiles that create warp points upon hitting a target.
+			Right-click to switch to sniper mode, firing more powerful gravity bullets that summon gamma rays upon impact.
+			Each shot charges the gun, and when fully charged, the next shot triggers a neutron star explosion at the cursor.
+			"Shoot the sun down!"
+			'''
 	}
 
 	NeutronWand: {
-		DisplayName: Neutron Wand
-		Tooltip: ""
+		DisplayName: Light of the Star Tomb
+		Tooltip:
+			'''
+			Fires four powerful gravity stars.
+			Right-click to cast gravity magic at the cursor.
+			"Legend says that in ancient times, a powerful psychic used this wand to compress stars into black holes,
+			but this tale is lost to time, now just a fragment of song sung by interstellar nomads."
+			'''
 	}
 
 	FlakKrakenEcType: {
@@ -2583,15 +2604,15 @@ Items: {
 
 	FrostcrushValariEcType: {
 		DisplayName: Frostcrush Valari
-		Tooltip: ""
+		Tooltip: A lurking attack throws a giant boomerang and two companion boomerangs that track the target
 	}
 
 	NeutronScythe: {
-		DisplayName: Neutron Scythe
+		DisplayName: Planet Messenger
 		Tooltip:
 			'''
-			The scythe shoots gamma rays at the enemy and leaves several warping points along the way
-			A			lurking attack throws a scythe
+			The scythe fires gamma rays at enemies, leaving several warp points along its path.
+			Stealth attack throws a circle of scythes.
 			'''
 	}
 
@@ -3510,6 +3531,11 @@ Configs: {
 			Label: Enable Casings Entity
 			Tooltip: ""
 		}
+
+		LoadingAA_Volume: {
+			Label: Gun Reload Sound Volume Coefficient
+			Tooltip: The larger the value, the more prominent the sound; 1 is the original volume
+		}
 	}
 }
 
@@ -3541,7 +3567,7 @@ Buffs: {
 
 	VoidErosion: {
 		DisplayName: Void Erosion
-		Description: Mods.CalamityOverhaul.Buffs.VoidErosion.Description
+		Description: The nothingness is eating you away
 	}
 }
 
@@ -3558,7 +3584,6 @@ NPCs: {
 	HEBodyAlt.DisplayName: H E Body Alt
 	HEHead.DisplayName: H E Head
 	HETail.DisplayName: H E Tail
-	NightWatcher.DisplayName: Night Watcher
 	MarbleElemental.DisplayName: Marble Elemental
 }
 
@@ -3720,23 +3745,79 @@ TextContent: {
 			Right click to fire a powerful energy beam
 			'''
 		SHPC_No_legend_Content_2: "[c/fff08c:Return of the legendary weapon! :)]"
-		SHPC_No_legend_Content_3: TODO
-		SHPC_No_legend_Content_4: TODO
-		SHPC_TextDictionary_Content_0: TODO
-		SHPC_TextDictionary_Content_1: TODO
-		SHPC_TextDictionary_Content_2: TODO
-		SHPC_TextDictionary_Content_3: TODO
-		SHPC_TextDictionary_Content_4: TODO
-		SHPC_TextDictionary_Content_5: TODO
-		SHPC_TextDictionary_Content_6: TODO
-		SHPC_TextDictionary_Content_7: TODO
-		SHPC_TextDictionary_Content_8: TODO
-		SHPC_TextDictionary_Content_9: TODO
-		SHPC_TextDictionary_Content_10: TODO
-		SHPC_TextDictionary_Content_11: TODO
-		SHPC_TextDictionary_Content_12: TODO
-		SHPC_TextDictionary_Content_13: TODO
-		SHPC_TextDictionary_Content_14: TODO
+		SHPC_No_legend_Content_3: "[c/fff08c:Grows stronger with the distance of the journey]"
+		SHPC_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
+		SHPC_TextDictionary_Content_0:
+			'''
+			Friend, the task of reviving civilization finally falls into our hands. This is an honorable duty...
+			Our first target is a massive blob of blue gel polymer. Blast it open from the inside.
+			'''
+		SHPC_TextDictionary_Content_1:
+			'''
+			We need to take down that giant eyeball. It comes from a powerful entity.
+			I need to dissect it to see how it achieves anti-gravity.
+			'''
+		SHPC_TextDictionary_Content_2:
+			'''
+			The jungle hives are becoming very agitated, and the bee idols are about to hatch.
+			I urgently need to study its metamorphic process. Go and take a look.
+			'''
+		SHPC_TextDictionary_Content_3:
+			'''
+			Giant bones floating in the air... it's very unscientific.
+			We need to head to the deep dungeon at the world's end.
+			'''
+		SHPC_TextDictionary_Content_4:
+			'''
+			The earth trembles, gears roar, and currents surge.
+			A bunch of robots are waiting for us. It's time to show them the power of technology.
+			'''
+		SHPC_TextDictionary_Content_5:
+			'''
+			A few flamboyant large flower buds have bloomed underground in the jungle.
+			We need to check them out and collect some experimental data.
+			'''
+		SHPC_TextDictionary_Content_6:
+			'''
+			Ancient robots deep within the temple await a recharge activation.
+			Let's pay them a visit and reverse-engineer ancient technology while we're at it.
+			'''
+		SHPC_TextDictionary_Content_7:
+			'''
+			The secrets on the dark side of the moon will be revealed to us.
+			The world will return to its original state.
+			'''
+		SHPC_TextDictionary_Content_8:
+			'''
+			The deity parasitizing the earth's core has noticed us.
+			Go to the underworld. I need knowledge on thermal energy utilization.
+			'''
+		SHPC_TextDictionary_Content_9:
+			'''
+			The spirits of the dungeon are gathering into a massive symbiotic entity.
+			This is fascinating. We need to check it out immediately.
+			'''
+		SHPC_TextDictionary_Content_10:
+			'''
+			It's certain that it’s not a carbon-based lifeform; it can tear open space membranes with its body alone.
+			It devours gods, but we are not gods. I think it will invite us for tea.
+			'''
+		SHPC_TextDictionary_Content_11:
+			'''
+			The last dragonborn in the world, wow, that's so cool!
+			Take me to see it. I need to get its feathers.
+			'''
+		SHPC_TextDictionary_Content_12:
+			'''
+			It's time to visit my creator.
+			Or that witch, her existence troubles me.
+			'''
+		SHPC_TextDictionary_Content_13:
+			'''
+			A grand melee! The enemies we once defeated have united and are preparing for a total assault on us.
+			Get ready; we need a perfect victory.
+			'''
+		SHPC_TextDictionary_Content_14: HMOI-0001 protocol unlocked
 		RemakeItem_Remind_TextContent:
 			'''
 			【From the Author】

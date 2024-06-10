@@ -22,6 +22,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -3;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
+            EjectCasingProjSize = 1.6f;
+            CanCreateSpawnGunDust = false;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
             Recoil = 1.2f;

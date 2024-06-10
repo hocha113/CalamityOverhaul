@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Magic + "SHPC";
         public override int targetCayItem => ModContent.ItemType<SHPC>();
         public override int targetCWRItem => ModContent.ItemType<SHPCEcType>();
+        int level => InWorldBossPhase.Instance.SHPC_Level();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
@@ -52,16 +53,54 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void FiringShoot() {
-            for (int i = 0; i < 3; i++) {
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1f)
+            switch (level) {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<SHPB>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                    for (int i = 0; i < 2; i++) {
+                        Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1f)
+                            , ModContent.ProjectileType<SHPB>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    }
+                    break;
+                default:
+                    for (int i = 0; i < 3; i++) {
+                        Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.22f) * Main.rand.NextFloat(0.8f, 1f)
+                            , ModContent.ProjectileType<SHPB>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    }
+                    break;
             }
         }
 
         public override void FiringShootR() {
-            for (int i = 0; i < 3; i++) {
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.8f, 1.1f)
+            switch (level) {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<SHPL>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                    for (int i = 0; i < 2; i++) {
+                        Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.08f) * Main.rand.NextFloat(0.8f, 1f)
+                            , ModContent.ProjectileType<SHPL>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    }
+                    break;
+                default:
+                    for (int i = 0; i < 3; i++) {
+                        Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1f)
+                            , ModContent.ProjectileType<SHPL>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    }
+                    break;
             }
         }
     }

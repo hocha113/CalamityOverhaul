@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanRightClick = true;
             HandFireDistance = 20;
             BowArrowDrawNum = 5;
+            DrawArrowMode = -22;
         }
 
         public override void PostInOwner() {
@@ -29,11 +30,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 CanFireMotion = false;
                 Owner.direction = ToMouse.X > 0 ? 1 : -1;
                 Projectile.rotation = -MathHelper.PiOver2;
-                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * 12;
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
+                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
+                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
             }
-            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
-            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+            
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<MonsoonOnSpan>()] == 0) {
                 if (SoundEngine.TryGetActiveSound(accumulator, out var sound)) {
                     sound.Stop();

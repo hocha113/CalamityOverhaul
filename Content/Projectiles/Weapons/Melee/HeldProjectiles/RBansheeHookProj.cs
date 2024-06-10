@@ -90,14 +90,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
                 Owner.heldProj = Projectile.whoAmI;
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    float frontArmRotation = (MathHelper.PiOver2 - 0.31f) * -Owner.direction;
-                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, frontArmRotation);
+                    int SafeGravDir = Math.Sign(Owner.gravDir);
+                    float rot = (MathHelper.PiOver2 * SafeGravDir - Owner.Center.To(Projectile.Center).ToRotation())
+                        * Owner.direction * SafeGravDir * SafeGravDir;
+                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rot * -Owner.direction * SafeGravDir);
+                    Owner.direction = Owner.Center.To(Projectile.Center).X > 0 ? 1 : -1;
                     if (PlayerInput.Triggers.Current.MouseRight) Projectile.timeLeft = 2;
-                    Owner.direction = Owner.Center.To(Main.MouseWorld).X > 0 ? 1 : -1;
                 }
 
                 if (Projectile.ai[2] == 0) {
-                    Projectile.Center = Owner.Center;
+                    Projectile.Center = Owner.GetPlayerStabilityCenter();
                     Projectile.rotation += MathHelper.ToRadians(25);
 
                     drawUIalp += 5;
@@ -139,8 +141,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
                 if (Projectile.ai[2] == 1) {
                     if (Projectile.IsOwnedByLocalPlayer()) {
-                        Vector2 toMous = Owner.Center.To(Main.MouseWorld).UnitVector();
-                        Vector2 topos = toMous * 56 + Owner.Center;
+                        Vector2 toMous = Owner.GetPlayerStabilityCenter().To(Main.MouseWorld).UnitVector();
+                        Vector2 topos = toMous * 56 + Owner.GetPlayerStabilityCenter();
                         Projectile.Center = Vector2.Lerp(topos, Projectile.Center, 0.01f);
                         Projectile.rotation = toMous.ToRotation();
                         Projectile.localAI[2]++;
@@ -149,6 +151,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
                         if (Projectile.localAI[1] > 10 && Projectile.localAI[1] % 20 == 0)//在鼠标处发射勾魂爪
                         {
+                            SoundEngine.PlaySound(SoundID.DD2_GhastlyGlaivePierce with { Pitch = 0.35f, Volume = 0.7f }, Projectile.Center);
                             int damages = (int)(Owner.GetWeaponDamage(Owner.ActiveItem()) * 0.5f);
                             for (int i = 0; i < 3; i++) {
                                 Vector2 spanPos = Main.MouseWorld + CWRUtils.GetRandomVevtor(0, 360, 160);
@@ -263,7 +266,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public void DrawStar() {
             if (Projectile.localAI[2] != 0) {
                 Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.Masking + "StarTexture_White");
-                Vector2 pos = CWRUtils.WDEpos(Projectile.Center + Projectile.rotation.ToRotationVector2() * 45 * Projectile.scale);
+                Vector2 pos = CWRUtils.WDEpos(Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * 45 * Projectile.scale);
                 int Time = (int)Projectile.localAI[2];
                 int slp = Time * 5;
                 if (slp > 255) { slp = 255; }

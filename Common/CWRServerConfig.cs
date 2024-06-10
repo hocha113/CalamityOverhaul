@@ -25,9 +25,10 @@ namespace CalamityOverhaul.Common
             public static int CartridgeUI_Offset_Y;
             internal const int CartridgeUI_Offset_Y_MinValue = 0;
             internal const int CartridgeUI_Offset_Y_MaxValue = 800;
+            public static float LoadingAA_VolumeValue;
+            internal const int LoadingAA_Volume_MinValue = 0;
+            internal const int LoadingAA_Volume_MaxValue = 800;
         }
-
-        public float GetDateMScaleOffsetValue() => Date.MScaleOffsetValue;
 
         [Header("CWRSystem")]
 
@@ -101,6 +102,23 @@ namespace CalamityOverhaul.Common
         [BackgroundColor(192, 54, 94, 192)]
         [DefaultValue(true)]
         public bool MurasamaSpaceFragmentationBool { get; set; }
+
+        [BackgroundColor(192, 54, 94, 192)]
+        [SliderColor(224, 165, 56, 128)]
+        [Range(Date.LoadingAA_Volume_MinValue, Date.LoadingAA_Volume_MaxValue)]
+        [DefaultValue(1)]
+        public float LoadingAA_Volume {
+            get {
+                if (Date.LoadingAA_VolumeValue < Date.LoadingAA_Volume_MinValue) {
+                    Date.LoadingAA_VolumeValue = Date.LoadingAA_Volume_MinValue;
+                }
+                if (Date.LoadingAA_VolumeValue > Date.LoadingAA_Volume_MaxValue) {
+                    Date.LoadingAA_VolumeValue = Date.LoadingAA_Volume_MaxValue;
+                }
+                return Date.LoadingAA_VolumeValue;
+            }
+            set => Date.LoadingAA_VolumeValue = value;
+        }
 
         /// <summary>
         /// 鬼妖刀刃大小调节

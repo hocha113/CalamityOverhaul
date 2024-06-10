@@ -26,9 +26,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             Projectile.ignoreWater = true;
             Projectile.friendly = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 160;
+            Projectile.timeLeft = 120;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 15;
+            Projectile.localNPCHitCooldown = 30;
         }
 
         public override void AI() {

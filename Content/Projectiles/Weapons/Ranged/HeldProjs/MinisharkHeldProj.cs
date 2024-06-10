@@ -28,11 +28,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.2f;
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
+            SpwanGunDustMngsData.splNum = 0.4f;
             RecoilRetroForceMagnitude = 4;
         }
 
         public override void FiringShoot() {
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.02f)
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

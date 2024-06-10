@@ -1,4 +1,6 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
@@ -45,8 +47,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 GunPressure = 0.3f;
                 Recoil = 1.2f;
                 for (int i = 0; i < 5; i++) {
-                    Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy((-2 + i) * (BulletNum * 0.01f))
+                    int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy((-2 + i) * (BulletNum * 0.01f))
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    Main.projectile[proj].Calamity().betterLifeBullet1 = true;
                 }
             }
             else {
@@ -55,7 +58,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundEngine.PlaySound(CommonCalamitySounds.LargeWeaponFireSound with { Pitch = -0.7f, Volume = 0.7f }, Projectile.Center);
                 int proj = Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<ShockblastRound>(), WeaponDamage * 5, WeaponKnockback * 2f, Owner.whoAmI, 0f, 10f);
-                Main.projectile[proj].extraUpdates += 9;
+                Main.projectile[proj].extraUpdates += 2;
+                Main.projectile[proj].Calamity().betterLifeBullet2 = true;
             }
         }
     }

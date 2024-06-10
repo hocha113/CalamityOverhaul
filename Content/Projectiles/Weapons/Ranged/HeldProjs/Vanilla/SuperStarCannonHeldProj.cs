@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 0.5f;
             RangeOfStress = 8;
             EnableRecoilRetroEffect = true;
+            CanCreateCaseEjection = false;
             RecoilRetroForceMagnitude = 6;
             SpwanGunDustMngsData.dustID1 = 15;
             SpwanGunDustMngsData.dustID2 = 57;

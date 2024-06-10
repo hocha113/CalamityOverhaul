@@ -19,11 +19,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.05f;
             GunPressure = 0.12f;
             Recoil = 0.75f;
+            ShootPosToMouLengValue = 10;
             CanRightClick = true;
+            CanCreateCaseEjection = false;
+            CanCreateSpawnGunDust = false;
         }
 
         public override void PostInOwnerUpdate() {
             if (noFireTime > 0) {
+                ShootCoolingValue = 2;
                 noFireTime--;
                 if (noFireTime == 30) {
                     SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot 
@@ -51,7 +55,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 return;
             }
             
-            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, (indexFire == 1 || indexFire == 5) ? 1 : 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage
+                , WeaponKnockback, Owner.whoAmI, (indexFire == 1 || indexFire == 5) ? 1 : 0);
             
             _ = UpdateConsumeAmmo();
         }

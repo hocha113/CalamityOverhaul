@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.SetHeldProj<HalleysInfernoHeldProj>();
             Item.CWR().HasCartridgeHolder = true;
             Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
-            Item.CWR().AmmoCapacity = 26;
+            Item.CWR().AmmoCapacity = 86;
         }
     }
 }

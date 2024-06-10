@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0;
             RangeOfStress = 28;
             RepeatedCartridgeChange = true;
+            CanCreateCaseEjection = CanCreateSpawnGunDust = false;
             kreloadMaxTime = 90;
             loadTheRounds = CWRSound.Liquids_Fill_0 with { Pitch = -0.8f };
             ForcedConversionTargetAmmoFunc = () => true;

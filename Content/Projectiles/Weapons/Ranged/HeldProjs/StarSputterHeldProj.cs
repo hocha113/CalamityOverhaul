@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
+            CanCreateCaseEjection = false;
+            CanCreateSpawnGunDust = false;
             RecoilRetroForceMagnitude = 6;
         }
 

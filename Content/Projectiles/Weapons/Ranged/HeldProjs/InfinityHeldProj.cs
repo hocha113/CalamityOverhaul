@@ -22,8 +22,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 5;
             HandFireDistance = 25;
             HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            ShootPosNorlLengValue = 0;
+            ShootPosToMouLengValue = 14;
+            SpwanGunDustMngsData.dustID1 = DustID.AncientLight;
+            SpwanGunDustMngsData.dustID2 = DustID.AncientLight;
+            SpwanGunDustMngsData.dustID3 = DustID.AncientLight;
             RepeatedCartridgeChange = true;
             GunPressure = 0;
             ControlForce = 0;

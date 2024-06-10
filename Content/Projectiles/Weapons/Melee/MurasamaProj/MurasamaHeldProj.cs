@@ -176,8 +176,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
             }
 
-            if (risingDragon >= MurasamaEcType.GetOnRDCD && Owner.ownedProjectileCounts[breakOutType] == 0 && !CWRUtils.isServer) {
-                ShootMBOut();
+            if (!CWRUtils.isServer) {
+                if (CWRKeySystem.Murasama_TriggerKey.JustPressed && Owner.ownedProjectileCounts[breakOutType] == 0 && noHasDownSkillProj) {//扳机键被按下，并且升龙冷却已经完成，那么将刀发射出去
+                    if (nolegendStart && risingDragon >= MurasamaEcType.GetOnRDCD) {
+                        SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
+                        SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.1f, Volume = 0.5f }, Projectile.Center);
+                        if (MurasamaEcType.NameIsVergil(Owner) && Main.rand.NextBool()) {
+                            SoundStyle sound = Main.rand.NextBool() ? CWRSound.V_Kengms : CWRSound.V_Heen;
+                            SoundEngine.PlaySound(sound with { Volume = 0.3f }, Projectile.Center);
+                        }
+
+                        Owner.velocity += UnitToMouseV * -3;
+                        if (Projectile.IsOwnedByLocalPlayer()) {
+                            Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
+                        , breakOutType, (int)(MurasamaEcType.ActualTrueMeleeDamage * (0.35f + level * 0.05f)), 0, Owner.whoAmI, ai2: 15);
+                        }
+                        risingDragon = 0;
+                        SpanTriggerEffDust();
+                    }
+                    else {
+                        SoundEngine.PlaySound(CWRSound.Ejection with { MaxInstances = 3 }, Projectile.Center);
+                    }
+                }
             }
 
             if (!CWRUtils.isServer) {
@@ -203,30 +223,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (CWRServerConfig.Instance.WeaponHandheldDisplay || (Owner.PressKey() || Owner.PressKey(false))) {
                 Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsFront) * -DirSign * safeGravDir);
                 Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsBack) * -DirSign * safeGravDir);
-            }
-        }
-
-        private void ShootMBOut() {
-            if (CWRKeySystem.Murasama_TriggerKey.JustPressed && risingDragon >= MurasamaEcType.GetOnRDCD && noHasDownSkillProj) {//扳机键被按下，并且升龙冷却已经完成，那么将刀发射出去
-                if (nolegendStart) {
-                    SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
-                    SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.1f, Volume = 0.5f }, Projectile.Center);
-                    if (MurasamaEcType.NameIsVergil(Owner) && Main.rand.NextBool()) {
-                        SoundStyle sound = Main.rand.NextBool() ? CWRSound.V_Kengms : CWRSound.V_Heen;
-                        SoundEngine.PlaySound(sound with { Volume = 0.3f }, Projectile.Center);
-                    }
-
-                    Owner.velocity += UnitToMouseV * -3;
-                    if (Projectile.IsOwnedByLocalPlayer()) {
-                        Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
-                    , breakOutType, (int)(MurasamaEcType.ActualTrueMeleeDamage * (0.35f + level * 0.05f)), 0, Owner.whoAmI, ai2: 15);
-                    }
-                    risingDragon = 0;
-                    SpanTriggerEffDust();
-                }
-                else {
-                    SoundEngine.PlaySound(CWRSound.Ejection with { MaxInstances = 3 }, Projectile.Center);
-                }
             }
         }
 

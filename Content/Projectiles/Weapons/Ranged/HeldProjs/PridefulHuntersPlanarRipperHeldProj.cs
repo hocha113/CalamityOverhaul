@@ -31,6 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 4;
+            SpwanGunDustMngsData.splNum = 0.4f;
             fireIndex = 0;
         }
 
@@ -44,7 +45,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity);
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ModContent.ProjectileType<PlanarRipperBolt>();
             }
@@ -62,9 +62,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 RecoilRetroForceMagnitude = 8;
                 fireIndex = 0;
                 SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Pitch = 0.8f, Volume = 0.5f });
-                for (int i = 0; i < 13; i++) {
+                for (int i = 0; i < 15; i++) {
                     UpdateMagazineContents();
-                    int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f)
+                        , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj].usesLocalNPCImmunity = true;
                     Main.projectile[proj].localNPCHitCooldown = 10;
                 }

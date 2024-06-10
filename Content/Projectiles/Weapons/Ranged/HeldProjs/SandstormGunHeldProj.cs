@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistance = 25;
             HandFireDistanceY = -10;
             ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            ShootPosToMouLengValue = 0;
             RepeatedCartridgeChange = true;
             GunPressure = 0;
             ControlForce = 0;
@@ -29,6 +29,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 0;
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = false;
+            CanCreateCaseEjection = false;
+            SpwanGunDustMngsData.dustID1 = Dust.SandStormCount;
+            SpwanGunDustMngsData.dustID2 = Dust.SandStormCount;
+            SpwanGunDustMngsData.dustID3 = Dust.SandStormCount;
         }
 
         public override void FiringShoot() {

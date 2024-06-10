@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.UIs
                 }
                 Item item = new Item(baseRItem.TargetID);
                 if (item != null) {
-                    if (item.type != ItemID.None && item.ModItem != null) {
+                    if (item.type != ItemID.None) {
                         if (melee) {
                             if (item.DamageType == DamageClass.Melee
                                 || item.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()

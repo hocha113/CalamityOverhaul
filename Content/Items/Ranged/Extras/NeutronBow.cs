@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public override void SetDefaults() {
             Item.width = Item.height = 54;
-            Item.damage = 122;
+            Item.damage = 152;
             Item.useAnimation = Item.useTime = 20;
             Item.knockBack = 2.5f;
             Item.shootSpeed = 16;

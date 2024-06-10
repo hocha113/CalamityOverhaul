@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             Projectile.alpha = 255;
             Projectile.scale = 0.1f;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 11;
+            Projectile.localNPCHitCooldown = 10;
         }
 
         public override bool PreAI() {
@@ -41,12 +41,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 for (int i = 0; i < pointNum; i++) {
                     RayPoint[i] = Projectile.velocity.ToRotation().ToRotationVector2() * (-pointNum * 30 + 60 * i) + Projectile.Center;
                 }
-                foreach (Vector2 pos in RayPoint) {
-                    Vector2 spanPos = pos + Main.rand.NextVector2Unit() * Main.rand.Next(56);
-                    Vector2 vr = new Vector2((Main.rand.NextBool() ? -1 : 1) * Main.rand.Next(7, 51), 0);
-                    LightParticle light = new LightParticle(spanPos
-                        , vr, 0.3f, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), colors), 30);
-                    CWRParticleHandler.AddParticle(light);
+                for (int i = 0; i < 4; i++) {
+                    foreach (Vector2 pos in RayPoint) {
+                        Vector2 spanPos = pos + Main.rand.NextVector2Unit() * Main.rand.Next(56);
+                        Vector2 vr = new Vector2((Main.rand.NextBool() ? -1 : 1) * Main.rand.Next(7, 51), 0);
+                        LightParticle light = new LightParticle(spanPos
+                            , vr, 0.3f, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), colors), 30);
+                        CWRParticleHandler.AddParticle(light);
+                    }
                 }
                 Projectile.ai[0] = 1;
             }
@@ -80,7 +82,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             float point = 0f;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
                 , Projectile.rotation.ToRotationVector2() * -3000 + Projectile.Center
-                , Projectile.rotation.ToRotationVector2() * 3000 + Projectile.Center, 32, ref point);
+                , Projectile.rotation.ToRotationVector2() * 3000 + Projectile.Center, 132, ref point);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

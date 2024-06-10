@@ -140,6 +140,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             public LoadingAA_None_Struct() { }
         }
 
+        /// <summary>
+        /// 是否启用默认的换弹行为，默认为<see langword="true"/>
+        /// </summary>
+        public bool NO_EEMONG_LOADINGNONESET = true;
         public LoadingAA_None_Struct LoadingAA_None = new LoadingAA_None_Struct();
 
         public struct LoadingAA_Shotgun_Struct
@@ -241,6 +245,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         protected bool ManualReloadStart { get; private set; }
 
+        protected float loadingAA_VolumeValue => CWRServerConfig.Instance.LoadingAA_Volume;
+
         #endregion
 
         public bool AmmunitionIsBeingLoaded() => kreloadTimeValue > 0;
@@ -255,13 +261,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 关于装弹过程中的第一部分音效的执行
         /// </summary>
         public virtual void KreloadSoundCaseEjection() {
-            SoundEngine.PlaySound(caseEjections with { Volume = 0.5f, PitchRange = (-0.05f, 0.05f) }, Projectile.Center);
+            SoundEngine.PlaySound(caseEjections with { Volume = 0.5f * loadingAA_VolumeValue, PitchRange = (-0.05f, 0.05f) }, Projectile.Center);
         }
         /// <summary>
         /// 关于装弹过程中的第二部分音效的执行
         /// </summary>
         public virtual void KreloadSoundloadTheRounds() {
-            SoundEngine.PlaySound(loadTheRounds with { Volume = 0.65f, PitchRange = (-0.1f, 0) }, Projectile.Center);
+            SoundEngine.PlaySound(loadTheRounds with { Volume = 0.65f * loadingAA_VolumeValue, PitchRange = (-0.1f, 0) }, Projectile.Center);
         }
         /// <summary>
         /// 额外的弹药消耗事件，返回<see langword="false"/>禁用默认弹药消耗逻辑的运行
@@ -397,7 +403,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         private void Get_LoadingAmmoAnimation_PreInOwnerUpdate() {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
                 LoadingAnimation(LoadingAA_None.loadingAA_None_Roting, LoadingAA_None.loadingAA_None_X, LoadingAA_None.loadingAA_None_Y);
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
@@ -411,7 +417,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         private void Get_LoadingAmmoAnimation_PostInOwnerUpdate() {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
                 return;
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Revolver) {
@@ -425,7 +431,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         private bool? Get_LoadingAmmoAnimation_PreOnKreloadEvent() {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
                 return true;
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Handgun) {
@@ -448,7 +454,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         private bool Get_LoadingAmmoAnimation_PreConsumeAmmo() {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
                 return true;
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
@@ -458,7 +464,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         private bool Get_LoadingAmmoAnimation_KreLoadFulfill() {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
                 return true;
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
@@ -477,7 +483,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                     else {
                         if (Projectile.IsOwnedByLocalPlayer()) {
-                            SoundEngine.PlaySound(LoadingAA_Shotgun.pump with { Volume = 0.4f, Pitch = -0.1f }, Projectile.Center);
+                            SoundEngine.PlaySound(LoadingAA_Shotgun.pump with { Volume = 0.4f * loadingAA_VolumeValue, Pitch = -0.1f }, Projectile.Center);
                         }
                         ShootCoolingValue = 30;
                         extraKreloadMaxTime = 10;
@@ -489,14 +495,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         private bool? Get_LoadingAmmoAnimation_PreReloadEffects(int time, int maxTime) {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
                 return true;
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
                 if (time == 1) {
-                    SoundEngine.PlaySound(LoadingAA_Shotgun.loadShellSound, Projectile.Center);
+                    SoundEngine.PlaySound(LoadingAA_Shotgun.loadShellSound with { Volume = loadingAA_VolumeValue }, Projectile.Center);
                     if (BulletNum == ModItem.AmmoCapacity) {
-                        SoundEngine.PlaySound(LoadingAA_Shotgun.pump, Projectile.Center);
+                        SoundEngine.PlaySound(LoadingAA_Shotgun.pump with { Volume = loadingAA_VolumeValue }, Projectile.Center);
                         ShootCoolingValue += LoadingAA_Shotgun.pumpCoolingValue;
                     }
                 }
@@ -504,13 +510,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Handgun) {
                 if (time == (int)(maxTime * LoadingAA_Handgun.level1)) {
-                    SoundEngine.PlaySound(LoadingAA_Handgun.clipOut with { Volume = 0.65f }, Projectile.Center);
+                    SoundEngine.PlaySound(LoadingAA_Handgun.clipOut with { Volume = 0.65f * loadingAA_VolumeValue }, Projectile.Center);
                 }
                 if (time == (int)(maxTime * LoadingAA_Handgun.level2)) {
-                    SoundEngine.PlaySound(LoadingAA_Handgun.clipLocked with { Volume = 0.65f }, Projectile.Center);
+                    SoundEngine.PlaySound(LoadingAA_Handgun.clipLocked with { Volume = 0.65f * loadingAA_VolumeValue }, Projectile.Center);
                 }
                 if (time == (int)(maxTime * LoadingAA_Handgun.level3)) {
-                    SoundEngine.PlaySound(LoadingAA_Handgun.slideInShoot with { Volume = 0.65f }, Projectile.Center);
+                    SoundEngine.PlaySound(LoadingAA_Handgun.slideInShoot with { Volume = 0.65f * loadingAA_VolumeValue }, Projectile.Center);
                 }
                 return false;
             }

@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(icon.Value, DrawPos, null, Color.White * 0.5f * sengs, 0f, Vector2.Zero, 0.56f, SpriteEffects.None, 0);
+            spriteBatch.Draw(icon.Value, DrawPos + new Vector2(0, 5), null, Color.White * 0.5f * sengs, 0f, Vector2.Zero, 0.56f, SpriteEffects.None, 0);
 
             Color color = CWRUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(Time * 0.035f)), Color.Gold, Color.Green);
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRUtils.GetSafeText(text1, text1Vr, 1000)

@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private int chargeIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
-            FireTime = 5;
+            FireTime = 6;
             HandDistance = 35;
             HandDistanceY = 5;
             HandFireDistance = 35;
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.Voidragon;
             chargeIndex++;
-            if (chargeIndex > 5) {
+            if (chargeIndex > 6) {
                 if (BulletNum <= 5) {
                     Recoil = 0.5f;
                     GunPressure = 0;
@@ -59,9 +59,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 GunPressure = 0.12f;
                 ControlForce = 0.03f;
                 SoundEngine.PlaySound(SoundID.Item92 with { MaxInstances = 100 }, Projectile.position);
-                for (int i = 0; i < 25; i++) {
+                for (int i = 0; i < 20; i++) {
                     Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1.2f)
-                        , ModContent.ProjectileType<VoidragonOrb>(), WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
+                        , ModContent.ProjectileType<VoidragonOrb>(), WeaponDamage / 3, WeaponKnockback, Owner.whoAmI, 0);
                 }
                 for (int i = 0; i < 5; i++) {
                     UpdateMagazineContents();

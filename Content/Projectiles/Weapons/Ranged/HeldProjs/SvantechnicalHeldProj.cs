@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
@@ -42,8 +43,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.1f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.2f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Vector2 spanPos = GunShootPos + ShootVelocity.UnitVector() * GunShootPos.To(Main.MouseWorld).Length();
-            for (int i = 0; i < 23; i++) {
-                int proj = Projectile.NewProjectile(Source, spanPos, ShootVelocity.RotatedByRandom(0.12f), AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            for (int i = 0; i < 16; i++) {
+                int proj = Projectile.NewProjectile(Source, spanPos, ShootVelocity.RotatedByRandom(0.12f)
+                    , ModContent.ProjectileType<ChargedBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].timeLeft = 90;
                 Main.projectile[proj].maxPenetrate *= 2;
                 Main.projectile[proj].usesLocalNPCImmunity = true;

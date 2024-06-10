@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                 }
                 legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             }
-            SetTooltip(ref tooltips, CWRMod.Instance.Name);
+            SetTooltip(ref tooltips);
         }
 
         public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {

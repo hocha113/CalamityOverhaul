@@ -32,7 +32,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 1.2f;
             RangeOfStress = 25;
             CanRightClick = true;
-            FiringDefaultSound = false;
         }
 
         public override void PreInOwnerUpdate() {
@@ -41,6 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetShootAttribute() {
             FireTime = onFireR ? 12 : 22;
+            CanCreateCaseEjection = CanCreateSpawnGunDust = onFire;
         }
 
         public override void HanderPlaySound() {

@@ -23,6 +23,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -6;
             ShootPosToMouLengValue = 25;
             FiringDefaultSound = false;
+            CanCreateCaseEjection = false;
+            CanCreateSpawnGunDust = false;
         }
 
         public override void FiringShoot() {

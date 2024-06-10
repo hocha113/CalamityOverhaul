@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override void SetStaticDefaults() => Legend = this.GetLocalization(nameof(Legend));
         public override void SetDefaults() {
             Item.width = 44;
-            Item.damage = 4480;
+            Item.damage = 2480;
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.useAnimation = Item.useTime = 35;

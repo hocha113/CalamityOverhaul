@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
-            HandFireDistanceY = -10;
+            HandFireDistanceY = -4;
             ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
@@ -30,6 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
+            CanCreateCaseEjection = false;
         }
 
         public override void FiringShoot() {

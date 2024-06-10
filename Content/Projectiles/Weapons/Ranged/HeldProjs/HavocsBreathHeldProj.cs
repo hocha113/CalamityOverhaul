@@ -30,6 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
             FiringDefaultSound = false;
             kreloadMaxTime = 90;
+            CanCreateCaseEjection = CanCreateSpawnGunDust = false;
             loadTheRounds = CWRSound.Liquids_Fill_0 with { Pitch = -0.8f };
             ForcedConversionTargetAmmoFunc = () => true;
             ToTargetAmmo = ModContent.ProjectileType<BrimstoneFireFriendly>();

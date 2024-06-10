@@ -3,6 +3,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -16,6 +17,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0;
             GunPressure = 0;
             Recoil = 0.8f;
+            ShootPosToMouLengValue = 12;
+            CanCreateSpawnGunDust = false;
         }
 
         public override void FiringShoot() {

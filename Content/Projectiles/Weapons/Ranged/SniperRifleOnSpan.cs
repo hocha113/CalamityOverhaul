@@ -13,11 +13,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
-    internal class SniperRifleOnSpan : ModProjectile
+    internal class SniperRifleOnSpan : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
-        public Player Owner => Main.player[Projectile.owner];
-        private Vector2 toMou => Owner.Center.To(Main.MouseWorld);
         public const float MaxCharge = 1000f;
         public float ChargeProgress => 15 * (MaxCharge - timenum) / MaxCharge;
         public float Spread => MathHelper.PiOver2 * (1 - (float)Math.Pow(ChargeProgress, 1.5) * 0.95f);
@@ -37,28 +35,35 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override bool? CanDamage() => false;
 
         private int timenum = 1000;
+        private int timenum2;
         private int rot = 60;
         public override void AI() {
             Projectile.MaxUpdates = 1;
-            Player player = Main.player[Projectile.owner];
-            Projectile owner = null;
-            if (timenum >= 932) timenum--;
-            if (rot > 0) rot--;
-            if (Projectile.timeLeft <= 2) Projectile.timeLeft = 2;
-            if (Projectile.ai[1] >= 0 && Projectile.ai[1] < Main.maxProjectiles) {
-                owner = Main.projectile[(int)Projectile.ai[1]];
+            Projectile flowProj = null;
+            if (timenum >= 932) {
+                timenum--;
             }
-            if (owner == null) {
+            if (rot > 0) {
+                rot--;
+            }
+            if (Projectile.timeLeft <= 2) {
+                Projectile.timeLeft = 2;
+            }
+            if (Projectile.ai[1] >= 0 && Projectile.ai[1] < Main.maxProjectiles) {
+                flowProj = Main.projectile[(int)Projectile.ai[1]];
+            }
+            if (flowProj == null) {
                 Projectile.Kill();
                 return;
             }
-            Projectile.Center = owner.Center;
-            Projectile.rotation = owner.rotation;
+
+            Projectile.Center = flowProj.Center;
+            Projectile.rotation = flowProj.rotation;
 
             if (++Projectile.ai[0] > 10) {
                 onFire = true;
             }
-            if (!player.PressKey()) {
+            if (!Owner.PressKey()) {
                 Projectile.Kill();
             }
         }
@@ -74,8 +79,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             else if (timenum < 942) {
                 lastdamage = ((942 - timenum) * 340 + 644) / (float)RSniperRifle.BaseDamage;
             }
-            if (lastdamage > 15) {
-                lastdamage = 15;
+            if (lastdamage > 6) {
+                lastdamage = 6;
             }
 
             if (Owner.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun baseFeederGun)) {
@@ -94,7 +99,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         baseFeederGun.ControlForce = 0.05f;
                         baseFeederGun.UpdateMagazineContents();
                         int proj = Projectile.NewProjectile(shootState.Source, Projectile.Center + new Vector2(0, -5),
-                        (toMou.SafeNormalize(Vector2.Zero) * 15).RotatedByRandom(rot * 0.01f), ammo,
+                        (UnitToMouseV * 15).RotatedByRandom(rot * 0.01f), ammo,
                         (int)(shootState.WeaponDamage * lastdamage), 0, Projectile.owner);
                         if (proj > 0 && proj < Main.maxProjectiles) {
                             Main.projectile[proj].CWR().GetHitAttribute.OnHitBlindArmor = true;
@@ -109,10 +114,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            float angle = (Owner.Calamity().mouseWorld - Owner.MountedCenter).ToRotation();
+            float angle = ToMouseA;
             float blinkage = 0;
             if (Projectile.timeLeft >= MaxCharge * 1.5f) {
-                blinkage = (float)Math.Sin(MathHelper.Clamp((Projectile.timeLeft - MaxCharge * 1.5f) / 15f, 0, 1) * MathHelper.PiOver2 + MathHelper.PiOver2);
+                blinkage = (float)Math.Sin(MathHelper.Clamp((Projectile.timeLeft - MaxCharge * 1.5f) / 15f, 0, 1)
+                    * MathHelper.PiOver2 + MathHelper.PiOver2);
             }
             Effect effect = Filters.Scene["CalamityMod:SpreadTelegraph"].GetShader().Shader;
             effect.Parameters["centerOpacity"].SetValue(ChargeProgress + 0.1f);
@@ -124,14 +130,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             effect.Parameters["edgeBlendStrength"].SetValue(0.007f);
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState
+                , DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
             Texture2D texture = ModContent.Request<Texture2D>("CalamityMod/Projectiles/InvisibleProj").Value;
 
-            Main.EntitySpriteDraw(texture, Owner.MountedCenter - Main.screenPosition + toMou.SafeNormalize(Vector2.Zero) * 59 + new Vector2(0, -5), null, Color.DarkRed, angle, new Vector2(texture.Width / 2f, texture.Height / 2f), 4000f, 0, 0);
+            Main.EntitySpriteDraw(texture, Owner.MountedCenter - Main.screenPosition + UnitToMouseV * 59 + new Vector2(0, -5)
+                , null, Color.DarkRed, angle, new Vector2(texture.Width / 2f, texture.Height / 2f), 4000f, 0, 0);
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
             return false;
         }
     }

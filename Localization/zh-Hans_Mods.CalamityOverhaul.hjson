@@ -528,8 +528,8 @@ Items: {
 		DisplayName: 高分子斩切刃
 		Tooltip:
 			'''
-			右键进行瞄准并积蓄龙之能量。左键真近战击中目标时，也会为龙之能量条充能
-			当龙之能量蓄满后，按下[KEY1]发射刀身。在刀身飞行过程中，按下左键执行升龙斩击 [Lang1]
+			右键进行瞄准并积蓄剑之能量。左键真近战击中目标时，也会为剑之能量充能
+			当剑之能量蓄满后，按下[KEY1]发射刀身。在刀身飞行过程中，按下左键执行升龙斩击 [Lang1]
 			升龙斩击命中敌人后会为武器1充能。按下[KEY2]消耗1点武器充能值，进行一次下砸攻击 [Lang2]
 			当武器充能值达到最大值10点后，再次用升龙斩击命中敌人将触发终结技 [Lang3]
 			legend_Text
@@ -2625,8 +2625,8 @@ Items: {
 	}
 
 	FrostcrushValariEcType: {
-		// DisplayName: Frostcrush Valari
-		// Tooltip: ""
+		DisplayName: 寒霜回旋镖
+		Tooltip: 潜伏攻击将投掷出一个巨大的回旋镖和两个追踪目标的伴生回旋镖
 	}
 
 	NeutronScythe: {
@@ -2744,7 +2744,7 @@ Items: {
 	}
 
 	DeathsAscensionEcType: {
-		DisplayName: 死神耀升
+		DisplayName: 死神擢升
 		Tooltip:
 			'''
 			每轮挥舞都会掷出收割灵魂的死神之镰
@@ -3548,6 +3548,11 @@ Configs: {
 			Label: 启用弹壳实体
 			Tooltip: ""
 		}
+
+		LoadingAA_Volume: {
+			Label: 枪械换弹音效音量系数
+			Tooltip: 值越大声音越明显，1为原音量
+		}
 	}
 }
 
@@ -3578,8 +3583,8 @@ Buffs: {
 	}
 
 	VoidErosion: {
-		// DisplayName: Void Erosion
-		// Description: Mods.CalamityOverhaul.Buffs.VoidErosion.Description
+		DisplayName: 虚空侵蚀
+		Description: 逐渐化为虚无
 	}
 }
 
@@ -3596,7 +3601,6 @@ NPCs: {
 	HEBodyAlt.DisplayName: 天堂吞噬者
 	HEHead.DisplayName: 天堂吞噬者
 	HETail.DisplayName: 天堂吞噬者
-	// NightWatcher.DisplayName: Night Watcher
 	MarbleElemental.DisplayName: 大理石精
 }
 

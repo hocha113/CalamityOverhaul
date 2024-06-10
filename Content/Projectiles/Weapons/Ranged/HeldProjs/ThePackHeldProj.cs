@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 130;
-            FireTime = 28;
+            FireTime = 38;
             HandDistance = 12;
             HandDistanceY = 5;
             HandFireDistance = 12;
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 16;
             LoadingAA_None.loadingAA_None_X = 3;
-            LoadingAA_None.loadingAA_None_Y = 5;
+            LoadingAA_None.loadingAA_None_Y = 10;
         }
 
         public override void HanderPlaySound() {
