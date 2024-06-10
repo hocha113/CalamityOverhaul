@@ -36,6 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EnableRecoilRetroEffect = false;
             FiringDefaultSound = false;
             CanCreateRecoilBool = false;
+            CanCreateSpawnGunDust = CanCreateCaseEjection = false;
             CanUpdateMagazineContentsInShootBool = false;
         }
 
@@ -59,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/ScorchedEarthShot", 3) with { Volume = .2f, Pitch = 1.2f, PitchVariance = 1.1f }, Projectile.Center);
                 SpawnGunFireDust(GunShootPos, ShootVelocity);
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
-                    , ModContent.ProjectileType<MineralMortarProjectile>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    , ModContent.ProjectileType<MineralMortarProjectile>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, UseAmmoItemType);
                 UpdateMagazineContents();
                 OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
                 RecoilOffsetRecoverValue = 0.9f;

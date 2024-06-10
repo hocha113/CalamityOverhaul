@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Needler";
         public override void SetDefaults() {
-            Item.damage = 52;
+            Item.damage = 40;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 44;
             Item.height = 26;

@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 FireTime = 20;
                 fireIndex = 0;
             }
-            for (int index = 0; index < 5; ++index) {
+            for (int index = 0; index < 3; ++index) {
                 Vector2 velocity = ShootVelocity;
                 velocity.X += Main.rand.Next(-40, 41) * 0.05f;
                 velocity.Y += Main.rand.Next(-40, 41) * 0.05f;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Main.projectile[proj].DamageType = DamageClass.Ranged;
                 }
             }
-            for (int index = 0; index < 5; ++index) {
+            for (int index = 0; index < 3; ++index) {
                 Vector2 velocity = ShootVelocity;
                 velocity *= Main.rand.NextFloat(1, 1.1f);
                 velocity.X += Main.rand.Next(-20, 21) * 0.05f;

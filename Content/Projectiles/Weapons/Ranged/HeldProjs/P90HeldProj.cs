@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 0;
             HandDistance = HandFireDistance = 12;
             HandFireDistanceY = -6;
-            ShootPosNorlLengValue = -3;
-            ShootPosToMouLengValue = -10;
+            ShootPosNorlLengValue = 0;
+            ShootPosToMouLengValue = 0;
             RepeatedCartridgeChange = true;
             MustConsumeAmmunition = false;
             Recoil = GunPressure = ControlForce = 0;
@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAA_None.loadingAA_None_Roting = 20;
             LoadingAA_None.loadingAA_None_X = 3;
             LoadingAA_None.loadingAA_None_Y = 5;
+            CanCreateSpawnGunDust = false;
         }
     }
 }

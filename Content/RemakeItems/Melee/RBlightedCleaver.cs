@@ -43,7 +43,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                     if (item.CWR().MeleeCharge < 0) {
                         item.CWR().MeleeCharge = 0;
                     }
-                    return true;
+                    float adjustedItemScale = player.GetAdjustedItemScale(item);
+                    Projectile.NewProjectile(source, player.MountedCenter, velocity, type
+                        , (int)(damage * 0.75), knockback * 0.5f, player.whoAmI
+                        , (float)player.direction * player.gravDir, 32f, adjustedItemScale);
+                    NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, player.whoAmI);
+                    return false;
                 }
             }
             item.CWR().closeCombat = false;

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             CanCreateCaseEjection = false;
             RecoilRetroForceMagnitude = 7;
             RecoilOffsetRecoverValue = 0.7f;
-
+            CanCreateSpawnGunDust = false;
             LoadingAA_None.loadingAA_None_Roting = 30;
             LoadingAA_None.loadingAA_None_X = 0;
             LoadingAA_None.loadingAA_None_Y = 13;

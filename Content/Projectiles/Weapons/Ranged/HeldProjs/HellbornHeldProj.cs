@@ -66,27 +66,32 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistance = 20;
             HandFireDistanceY = -4;
             ShootPosNorlLengValue = -3;
+            ShootPosToMouLengValue = 2;
             CanRightClick = true;
         }
 
         public override void SetShootAttribute() {
             if (onFireR) {
-                FireTime = 5;
+                EjectCasingProjSize = 1;
+                FireTime = 7;
                 Recoil = 0.5f;
                 GunPressure = 0.1f;
                 EnableRecoilRetroEffect = true;
+                SpwanGunDustMngsData.splNum = 0.5f;
                 return;
             }
+            EjectCasingProjSize = 1.8f;
             FireTime = 20;
             Recoil = 1;
             GunPressure = 0.2f;
             EnableRecoilRetroEffect = false;
+            SpwanGunDustMngsData.splNum = 1f;
         }
 
         public override void FiringShoot() {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 4; i++) {
                 _ = Projectile.NewProjectile(Source, GunShootPos,
-                    ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)) * Main.rand.NextFloat(0.7f, 1.1f)
+                    ShootVelocity.RotatedByRandom(0.08f) * Main.rand.NextFloat(0.7f, 1.1f)
                     , ModContent.ProjectileType<RealmRavagerBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
         }

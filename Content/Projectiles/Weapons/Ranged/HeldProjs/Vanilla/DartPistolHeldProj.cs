@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 1f;
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
+            CanCreateCaseEjection = CanCreateSpawnGunDust = false;
             kreloadMaxTime = 30;
             LoadingAA_None.loadingAA_None_Roting = 30;
             LoadingAA_None.loadingAA_None_X = 0;

@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosNorlLengValue = -12;
             ShootPosToMouLengValue = 30;
             RepeatedCartridgeChange = true;
+            CanCreateCaseEjection = false;
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 1.2f;
@@ -43,7 +44,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                             ProjectileID.StarCannonStar,
                             ProjectileID.Starfury
                         });
-                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
         }
     }

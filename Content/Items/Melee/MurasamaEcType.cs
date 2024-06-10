@@ -47,12 +47,12 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// 每个时期阶段对应的挥舞范围大小，这个成员一般不需要直接访问，而是使用<see cref="GetOnScale"/>
         /// </summary>
         private static Dictionary<int, float> BladeVolumeRatioDictionary => new Dictionary<int, float>(){
-            {0, 0.5f },
-            {1, 0.55f },
-            {2, 0.6f },
-            {3, 0.65f },
-            {4, 0.7f },
-            {5, 0.8f },
+            {0, 0.6f },
+            {1, 0.65f },
+            {2, 0.7f },
+            {3, 0.75f },
+            {4, 0.8f },
+            {5, 0.85f },
             {6, 0.9f },
             {7, 1f },
             {8, 1.1f },
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         };
 
         /// <summary>
-        /// 每个时期阶段对应的额外暴击振幅的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnCrit"/>
+        /// 每个时期阶段对应的额外暴击增幅的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnCrit"/>
         /// </summary>
         private static Dictionary<int, int> SetLevelCritDictionary => new Dictionary<int, int>(){
             {0, 1 },
@@ -89,20 +89,20 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// 每个时期阶段对应的升龙冷却的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnRDCD"/>
         /// </summary>
         private static Dictionary<int, int> RDCDDictionary => new Dictionary<int, int>(){
-            {0, 120 },
-            {1, 120 },
-            {2, 120 },
-            {3, 110 },
-            {4, 105 },
-            {5, 100 },
-            {6, 90 },
-            {7, 85 },
-            {8, 75 },
-            {9, 70 },
-            {10, 65 },
-            {11, 55 },
-            {12, 50 },
-            {13, 45 },
+            {0, 105 },
+            {1, 95 },
+            {2, 90 },
+            {3, 85 },
+            {4, 80 },
+            {5, 75 },
+            {6, 70 },
+            {7, 65 },
+            {8, 60 },
+            {9, 55 },
+            {10, 50 },
+            {11, 45 },
+            {12, 40 },
+            {13, 35 },
             {14, 30 }
         };
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";

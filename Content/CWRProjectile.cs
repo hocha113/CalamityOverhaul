@@ -330,14 +330,14 @@ namespace CalamityOverhaul.Content
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.Phantom && projectile.numHits == 0) {
-                int proj = Projectile.NewProjectile(projectile.parent(), player.Center + (projectile.velocity.GetNormalVector() * Main.rand.Next(-130, 130))
+                int proj = Projectile.NewProjectile(projectile.GetSource_FromAI(), player.Center + (projectile.velocity.GetNormalVector() * Main.rand.Next(-130, 130))
                     , projectile.Center.To(target.Center).UnitVector() * 13, ModContent.ProjectileType<PhantasmArrow>()
                     , (int)(projectile.damage * 0.8f), projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
                 Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() - MathHelper.PiOver2;
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.Alluvion && projectile.numHits == 0) {
-                _ = Projectile.NewProjectile(projectile.parent(), player.Center
+                _ = Projectile.NewProjectile(projectile.GetSource_FromAI(), player.Center
                     , projectile.velocity, ModContent.ProjectileType<DeepSeaSharks>()
                     , projectile.damage, projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
             }
@@ -349,8 +349,8 @@ namespace CalamityOverhaul.Content
                 projectile.ai[2] -= 1;
                 Vector2 velocity0 = target != null ? (target.Center - player.Center).SafeNormalize(Vector2.Zero) * 30f : projectile.velocity;
                 if (player.PressKey()) {
-                    int proj = Projectile.NewProjectile(projectile.parent(), player.Center + ((Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero) * 40f)
-                        , velocity0, projectile.type, projectile.damage, projectile.knockBack, player.whoAmI, 0, target.whoAmI, projectile.ai[2]);
+                    int proj = Projectile.NewProjectile(projectile.GetSource_FromAI(), player.Center + ((Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero) * 40f)
+                        , velocity0, projectile.type, projectile.damage / 2, projectile.knockBack, player.whoAmI, 0, target.whoAmI, projectile.ai[2]);
                     Main.projectile[proj].usesLocalNPCImmunity = true;
                     Main.projectile[proj].localNPCHitCooldown = 5;
                     Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.RocketLauncher;

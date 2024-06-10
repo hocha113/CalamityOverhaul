@@ -24,6 +24,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.05f;
             Recoil = 1.5f;
             RangeOfStress = 25;
+            CanCreateCaseEjection = CanCreateSpawnGunDust = false;
+
         }
 
         public override void FiringShoot() {

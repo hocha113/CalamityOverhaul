@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = -5;
             HandFireDistance = 30;
             HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            ShootPosNorlLengValue = 0;
+            ShootPosToMouLengValue = -30;
             RepeatedCartridgeChange = true;
             MustConsumeAmmunition = true;
             GunPressure = 0;
@@ -35,7 +35,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void FiringShoot() {
             OffsetPos -= ShootVelocity.UnitVector() * 18;
-            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                , Item.shoot, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }
 }

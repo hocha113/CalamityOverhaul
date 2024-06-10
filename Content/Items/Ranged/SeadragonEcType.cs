@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.DamageType = DamageClass.Ranged;
             Item.width = 90;
             Item.height = 38;
-            Item.useTime = 5;
+            Item.useTime = 6;
             Item.useAnimation = 5;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;

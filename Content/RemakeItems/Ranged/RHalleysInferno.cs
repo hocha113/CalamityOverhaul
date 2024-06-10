@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int ProtogenesisID => ModContent.ItemType<HalleysInfernoEcType>();
         public override string TargetToolTipItemName => "HalleysInfernoEcType";
         public override void SetDefaults(Item item) {
-            item.SetCartridgeGun<HalleysInfernoHeldProj>(26);
+            item.SetCartridgeGun<HalleysInfernoHeldProj>(86);
             item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
         }
     }

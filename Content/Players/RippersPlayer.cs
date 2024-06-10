@@ -2,6 +2,7 @@
 using CalamityMod.CalPlayer;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Players.Core;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
 using System.Collections.Generic;
 using Terraria;
@@ -21,7 +22,9 @@ namespace CalamityOverhaul.Content.Players
             noRippersProj = new List<int>() {
                 ModContent.ProjectileType<CosmicDischargeFlail>(),
                 ModContent.ProjectileType<CosmicIceBurst>(),
-
+                ModContent.ProjectileType<EndSkillMakeDamage>(),
+                ModContent.ProjectileType<EndSkillMakeDamage>(),
+                ModContent.ProjectileType<MurasamaEndSkillOrb>(),
                 ModContent.ProjectileType<StormGoddessSpearProj>(),
                 ModContent.ProjectileType<StormArc>(),
                 ModContent.ProjectileType<StormLightning>(),

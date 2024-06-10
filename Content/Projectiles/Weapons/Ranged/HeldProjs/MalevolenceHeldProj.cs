@@ -13,7 +13,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Malevolence";
         public override int targetCayItem => ModContent.ItemType<Malevolence>();
         public override int targetCWRItem => ModContent.ItemType<MalevolenceEcType>();
-        public override void SetRangedProperty() => BowArrowDrawNum = 2;
+        public override void SetRangedProperty() {
+            BowArrowDrawNum = 2;
+            HandFireDistance = 20;
+            DrawArrowMode = -24;
+        }
         public override void BowShoot() {
             if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {
                 AmmoTypes = ModContent.ProjectileType<PlagueArrow>();

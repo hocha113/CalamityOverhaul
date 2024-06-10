@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             ControlForce = GunPressure = 0;
             Recoil = 0.2f;
+            CanCreateSpawnGunDust = false;
         }
 
         public override void FiringShoot() {

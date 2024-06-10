@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             HandDistanceY = 5;
             HandFireDistance = 15;
             HandFireDistanceY = -5;
-            ShootPosNorlLengValue = 0;
+            ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 5;
             RepeatedCartridgeChange = true;
             GunPressure = 0.1f;
@@ -27,10 +27,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 0.2f;
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
+            CanCreateCaseEjection = false;
+            SpwanGunDustMngsData.dustID1 = DustID.YellowTorch;
+            SpwanGunDustMngsData.dustID2 = DustID.YellowTorch;
+            SpwanGunDustMngsData.dustID3 = DustID.YellowTorch;
             RecoilRetroForceMagnitude = 4;
+            SpwanGunDustMngsData.splNum = 0.6f;
             LoadingAA_None.loadingAA_None_Roting = 30;
             LoadingAA_None.loadingAA_None_X = 3;
-            LoadingAA_None.loadingAA_None_Y = 20;
+            LoadingAA_None.loadingAA_None_Y = 10;
         }
 
         public override void FiringShoot() {

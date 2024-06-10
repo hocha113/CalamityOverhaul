@@ -1,4 +1,5 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
@@ -31,6 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 4;
+            SpwanGunDustMngsData.splNum = 0.6f;
         }
 
         public override void FiringShoot() {
@@ -39,14 +41,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostFiringShoot() {
-            if (fireIndex > 2) {
+            if (++fireIndex > 3) {
                 int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<MiniSharkron>()
                     , WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].MaxUpdates *= 2;
+                Main.projectile[proj].Calamity().allProjectilesHome = true;
                 fireIndex = 0;
             }
-            fireIndex++;
         }
     }
 }

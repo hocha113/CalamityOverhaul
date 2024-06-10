@@ -19,24 +19,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 25;
             HandDistanceY = 5;
             HandFireDistance = 25;
-            HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 30;
+            HandFireDistanceY = -4;
+            ShootPosNorlLengValue = 0;
+            ShootPosToMouLengValue = 0;
             RepeatedCartridgeChange = true;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
             Recoil = 1.2f;
             RangeOfStress = 25;
             AmmoTypeAffectedByMagazine = false;
+            CanCreateCaseEjection = CanCreateSpawnGunDust = false;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
         }
 
         public override void FiringShoot() {
-            for (int index = 0; index < 4; ++index) {
+            for (int index = 0; index < 2; ++index) {
                 Vector2 velocity = ShootVelocity;
-                velocity.X += Main.rand.Next(-40, 41) * 0.05f;
-                velocity.Y += Main.rand.Next(-40, 41) * 0.05f;
+                velocity.X += Main.rand.Next(-10, 11) * 0.05f;
+                velocity.Y += Main.rand.Next(-10, 11) * 0.05f;
                 Projectile.NewProjectile(Source, GunShootPos, velocity, AmmoTypes
                     , WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
             }

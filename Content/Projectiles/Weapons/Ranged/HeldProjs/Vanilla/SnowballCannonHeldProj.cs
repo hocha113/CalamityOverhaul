@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.SnowballCannon;
         public override void SetRangedProperty() {
             FireTime = 40;
-            kreloadMaxTime = 90;
+            kreloadMaxTime = 35;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 15;
@@ -30,9 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             CanCreateCaseEjection = false;
             RecoilRetroForceMagnitude = 11;
             RecoilOffsetRecoverValue = 0.8f;
-            LoadingAA_None.loadingAA_None_Roting = 30;
-            LoadingAA_None.loadingAA_None_X = 0;
-            LoadingAA_None.loadingAA_None_Y = 6;
+            LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Revolver;
         }
 
         public override void HanderSpwanDust() {
@@ -42,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void FiringShoot() {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 5; i++) {
                 int proj = Projectile.NewProjectile(Source2, GunShootPos, ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.8f, 1.1f)
                     , AmmoTypes, (int)(WeaponDamage * Main.rand.NextFloat(0.2f, 0.8f)), WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].scale += Main.rand.NextFloat(0.3f);

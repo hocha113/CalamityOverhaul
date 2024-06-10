@@ -30,9 +30,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 13;
             RecoilOffsetRecoverValue = 0.9f;
-            Recoil = 3.5f;
+            EjectCasingProjSize = 2;
+            Recoil = 3f;
             RangeOfStress = 10;
-            kreloadMaxTime = 60;
+            kreloadMaxTime = 80;
             LoadingAA_None.loadingAA_None_Roting = -30;
             LoadingAA_None.loadingAA_None_X = 3;
             LoadingAA_None.loadingAA_None_Y = -3;
@@ -88,7 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
 
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 0.5f, AmmoTypes, (int)newDamg, WeaponKnockback, Owner.whoAmI, 0, 0, 3);
-            Main.projectile[proj].scale *= 1.6f;
+            Main.projectile[proj].scale *= 1.3f;
             Main.projectile[proj].usesLocalNPCImmunity = true;
             Main.projectile[proj].localNPCHitCooldown = 5;
             Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.RocketLauncher;

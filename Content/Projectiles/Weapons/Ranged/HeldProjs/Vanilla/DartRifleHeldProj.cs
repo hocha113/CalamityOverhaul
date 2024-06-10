@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 1f;
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
+            CanCreateCaseEjection = CanCreateSpawnGunDust = false;
             kreloadMaxTime = 45;
             LoadingAA_None.loadingAA_None_Roting = 30;
             LoadingAA_None.loadingAA_None_X = 0;
@@ -38,6 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * 1.5f, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0, Main.rand.Next(20));
             Main.projectile[proj].ArmorPenetration += 15;
+            Main.projectile[proj].extraUpdates += 1;
         }
     }
 }

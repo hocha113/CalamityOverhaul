@@ -4,6 +4,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -21,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 5;
             HandFireDistance = 25;
             HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -2;
+            ShootPosNorlLengValue = 0;
             ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;
             GunPressure = 0.1f;
@@ -40,6 +41,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 ControlForce = 0.05f;
                 RecoilRetroForceMagnitude = 4;
                 Recoil = 0.3f;
+                EjectCasingProjSize = 1;
+                SpwanGunDustMngsData.splNum = 0.3f;
+                SpwanGunDustMngsData.dustID1 = DustID.FireworkFountain_Blue;
+                SpwanGunDustMngsData.dustID2 = DustID.FireworkFountain_Blue;
+                SpwanGunDustMngsData.dustID3 = DustID.FireworkFountain_Blue;
             }
             else if (onFireR) {
                 FireTime = 20;
@@ -47,12 +53,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 ControlForce = 0;
                 RecoilRetroForceMagnitude = 14;
                 Recoil = 2.3f;
+                EjectCasingProjSize = 2;
+                SpwanGunDustMngsData.splNum = 1.3f;
+                SpwanGunDustMngsData.dustID1 = 262;
+                SpwanGunDustMngsData.dustID2 = 54;
+                SpwanGunDustMngsData.dustID3 = 53;
             }
         }
 
         public override void FiringShoot() {
-            
-            for (int index = 0; index < 4; ++index) {
+            for (int index = 0; index < 3; ++index) {
                 float SpeedX = ShootVelocity.X + Main.rand.Next(-30, 31) * 0.05f;
                 float SpeedY = ShootVelocity.Y + Main.rand.Next(-30, 31) * 0.05f;
                 int shredderBoltDamage = (int)(0.85f * WeaponDamage);
@@ -63,12 +73,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            
-            for (int index = 0; index < 26; ++index) {
+            for (int index = 0; index < 18; ++index) {
                 float SpeedX = ShootVelocity.X + Main.rand.Next(-30, 31) * 0.05f;
                 float SpeedY = ShootVelocity.Y + Main.rand.Next(-30, 31) * 0.05f;
                 int shredderBoltDamage = (int)(0.7f * WeaponDamage);
-                int shot = Projectile.NewProjectile(Source, GunShootPos, new Vector2(SpeedX, SpeedY)
+                int shot = Projectile.NewProjectile(Source2, GunShootPos, new Vector2(SpeedX, SpeedY)
                     , AmmoTypes, shredderBoltDamage, WeaponKnockback, Owner.whoAmI, 0f, 0f);
                 Main.projectile[shot].timeLeft = 120;
                 Main.projectile[shot].MaxUpdates *= 2;

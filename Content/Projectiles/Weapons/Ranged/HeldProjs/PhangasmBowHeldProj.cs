@@ -9,10 +9,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => "CalamityMod/Items/Weapons/Ranged/Phangasm";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Phangasm>();
         public override int targetCWRItem => ModContent.ItemType<PhangasmEcType>();
-        public override void SetRangedProperty() => BowArrowDrawNum = 3;
+        public override void SetRangedProperty() {
+            BowArrowDrawNum = 3;
+            HandFireDistance = 22;
+            DrawArrowMode = -24;
+        }
         public override void BowShoot() {
-            for (int i = 0; i < 5; i++) {
-                int proj = Projectile.NewProjectile(Owner.parent(), Projectile.Center
+            for (int i = 0; i < 3; i++) {
+                int proj = Projectile.NewProjectile(Source, Projectile.Center + ShootVelocity.GetNormalVector() * (-1 + i) * 15
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.03f, 0.03f)) * Main.rand.NextFloat(0.8f, 1.12f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
                 Main.projectile[proj].noDropItem = true;

@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override int TargetID => ItemID.Flamarang;
         public override bool IsVanilla => true;
+        public override float DrawingSize => 0.5f;
         public override string TargetToolTipItemName => "Wap_Flamarang_Text";
         public override void SetDefaults(Item item) {
             item.DamageType = ModContent.GetInstance<RogueDamageClass>();

@@ -4,6 +4,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -16,15 +17,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
-            FireTime = 18;
+            FireTime = 24;
             HandDistance = 20;
             HandDistanceY = 0;
             HandFireDistance = 18;
             HandFireDistanceY = -10;
-            ShootPosNorlLengValue = -15;
+            ShootPosNorlLengValue = -4;
             ShootPosToMouLengValue = 50;
             RepeatedCartridgeChange = true;
             GunPressure = 0.1f;
+            EjectCasingProjSize = 1.8f;
             ControlForce = 0.05f;
             Recoil = 0.5f;
             RangeOfStress = 25;
@@ -40,6 +42,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
+            if (AmmoTypes == ProjectileID.Bullet) {
+                AmmoTypes = ModContent.ProjectileType<UniversalGenesisStarcaller>();
+            }
+                
             for (int i = 0; i < 5; i++) {
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy((-2 + i) * 0.03f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
