@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             kreloadMaxTime = 90;
             FireTime = 10;
             HandDistance = 25;
-            HandDistanceY = 5;
+            HandDistanceY = -5;
             HandFireDistance = 25;
             HandFireDistanceY = -15;
             ShootPosNorlLengValue = -2;
@@ -35,6 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RecoilRetroForceMagnitude = 17;
             RecoilOffsetRecoverValue = 0.8f;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
+            LoadingAA_Handgun.loadingAmmoStarg_y = -16;
         }
 
         public override void HanderCaseEjection() {
@@ -53,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostFiringShoot() {
-            if (++fireIndex > 6) {
+            if (++fireIndex >= 5) {
                 FireTime = 30;
                 SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/DudFire") 
                     with { Pitch = -0.7f, PitchVariance = 0.1f }, Projectile.Center);

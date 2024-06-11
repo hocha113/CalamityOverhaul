@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using Microsoft.Xna.Framework;
+using CalamityMod;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
@@ -17,6 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override string TargetToolTipItemName => "DeathsAscensionEcType";
         int swingIndex = 0;
         public override void SetDefaults(Item item) {
+            item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             swingIndex = 0;
             item.UseSound = null;
             item.noUseGraphic = true;

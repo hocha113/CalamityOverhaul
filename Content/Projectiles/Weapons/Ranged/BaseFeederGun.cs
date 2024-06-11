@@ -731,13 +731,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             int accumulatedAmount = 0;
 
-            // 更好的体验适配 - 如果有弹药链，转到单独的弹药装载
-            var ammoChain = Item.GetQotAmmoChain();
-            if (ammoChain is not null && Owner.LoadFromAmmoChain(Item, ammoChain, Item.useAmmo
-                , magazineCapacity, out var pushedAmmo, out int ammoCount)) {
-                cwrItem.MagazineContents = pushedAmmo.ToArray();
-                AmmoState.Amount = ammoCount;
-                return;
+            if (CWRMod.Suitableversion_improveGame) {
+                // 更好的体验适配 - 如果有弹药链，转到单独的弹药装载
+                var ammoChain = Item.GetQotAmmoChain();
+                if (ammoChain is not null && Owner.LoadFromAmmoChain(Item, ammoChain, Item.useAmmo
+                    , magazineCapacity, out var pushedAmmo, out int ammoCount)) {
+                    cwrItem.MagazineContents = pushedAmmo.ToArray();
+                    AmmoState.Amount = ammoCount;
+                    return;
+                }
             }
 
             foreach (Item ammoItem in AmmoState.InItemInds) {

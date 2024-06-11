@@ -13,6 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
 {
+    /*
     internal class BrutalKingSlimeAI : NPCCoverage
     {
         public override int TargetID => NPCID.KingSlime;
@@ -571,4 +572,5 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             }
         }
     }
+    */
 }

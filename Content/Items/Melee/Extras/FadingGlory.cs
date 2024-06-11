@@ -1,5 +1,10 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Tiles.Furniture.CraftingStations;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
+using CalamityOverhaul.Content.Tiles;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -19,6 +24,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.damage = 882;
             Item.DamageType = DamageClass.Melee;
             Item.rare = ItemRarityID.Red;
+            Item.value = Item.buyPrice(2, 53, 75, 0);
             Item.shoot = ModContent.ProjectileType<FadingGloryRapier>();
             Item.useTime = 30;
             Item.useAnimation = 30;
@@ -32,5 +38,13 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         }
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<GrandGuardian>()
+                .AddIngredient<AshesofAnnihilation>(5)
+                .AddTile(ModContent.TileType<DraedonsForge>())
+                .Register();
+        }
     }
 }

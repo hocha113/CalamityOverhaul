@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.damage = 18;
             Item.DamageType = DamageClass.Melee;
             Item.rare = ItemRarityID.Cyan;
+            Item.value = Item.buyPrice(0, 0, 5, 0);
             Item.shoot = ModContent.ProjectileType<MarbleSpearHeld>();
             Item.useTime = 30;
             Item.useAnimation = 30;

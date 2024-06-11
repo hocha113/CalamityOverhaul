@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.width = Item.height = 32;
             Item.useTime = Item.useAnimation = 12;
             Item.useStyle = ItemUseStyleID.Shoot;
+            Item.value = Item.buyPrice(0, 0, 5, 0);
             Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
             Item.damage = 12;
             Item.knockBack = 2.2f;

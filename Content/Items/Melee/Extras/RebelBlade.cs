@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.useTime = 15;
             Item.useAnimation = 15;
             Item.knockBack = 6;
+            Item.value = Item.buyPrice(0, 83, 55, 0);
             Item.rare = ItemRarityID.Lime;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.Item1;

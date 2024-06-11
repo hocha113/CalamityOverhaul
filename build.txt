@@ -1,5 +1,5 @@
 displayName = Calamity Overhaul
-modReferences = CalamityMod@2.0.4.1
+modReferences = CalamityMod@2.0.4.3
 weakReferences = WeaponOut@1.4.4.9
 author = HoCha113
-version = 0.4011
+version = 0.4012

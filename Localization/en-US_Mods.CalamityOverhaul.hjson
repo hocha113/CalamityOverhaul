@@ -3910,6 +3910,13 @@ TextContent: {
 		CWRItem_IsInfiniteItem_TextContent: Only the ultimate combination can stabilize it, otherwise it will hit the moment that triggers the dreaded collapse of the black hole
 		CWRItem_IsRemakeItem_TextContent: -overhauls-
 		OnEnterWorld_TextContent: " weapon reset has been loaded"
+		OnEnterWorld_TextContent2:
+			'''
+			It has been detected that you have installed [Quality of Terraria Mod], 
+			but your [Quality of Terraria Mod] version is outdated.
+			To ensure the game runs properly, please make sure your 
+			[Quality of Terraria Mod] version is at least 1.7.1.7.
+			'''
 		CaseEjection_TextContent: Need to change ammunition
 		SupertableUI_Text1: close
 		SupertableUI_Text2: View recipe

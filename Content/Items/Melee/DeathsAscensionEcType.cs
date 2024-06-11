@@ -1,4 +1,5 @@
-﻿using CalamityMod.Items.Weapons.Melee;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Microsoft.Xna.Framework;
@@ -15,6 +16,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         int swingIndex = 0;
         public override void SetDefaults() {
             Item.SetCalamitySD<DeathsAscension>();
+            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             Item.UseSound = null;
             Item.noUseGraphic = true;
             Item.noMelee = true;

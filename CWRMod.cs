@@ -23,6 +23,7 @@ namespace CalamityOverhaul
 {
     public class CWRMod : Mod
     {
+        #region Date
         internal static CWRMod Instance;
         internal static int GameLoadCount;
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook;
@@ -43,6 +44,8 @@ namespace CalamityOverhaul
         internal Mod narakuEye = null;
         internal Mod coolerItemVisualEffect = null;
 
+        internal static bool Suitableversion_improveGame { get; private set; }
+
         internal List<ISetupData> SetupDatas;
         internal List<Mod> LoadMods = new List<Mod>();
         internal static List<BaseRItem> RItemInstances = new List<BaseRItem>();
@@ -54,6 +57,7 @@ namespace CalamityOverhaul
         {
             SupertableRecipeDate,
         }
+        #endregion
 
         public override object Call(params object[] args) {
             CallType callType = (CallType)args[0];
@@ -148,6 +152,13 @@ namespace CalamityOverhaul
                 CWR_InItemLoader_Set_UseItem_Hook = getItemLoaderHookTargetValue("HookUseItem");
             }
 
+            {
+                Suitableversion_improveGame = false;
+                if (improveGame != null) {
+                    Suitableversion_improveGame = improveGame.Version >= new Version(1, 7, 1, 7);
+                }
+            }
+
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
             CWRLoad.Load();
             foreach (var i in SetupDatas) { 
@@ -231,7 +242,7 @@ namespace CalamityOverhaul
         public void LoadClient() {
             if (Main.dedServ)
                 return;
-
+            
             EffectsRegistry.LoadEffects();
             ILMainMenuModification.Load();
             Filters.Scene["CWRMod:TungstenSky"] = new Filter(new TungstenSkyDate("FilterMiniTower").UseColor(0.5f, 0f, 0.5f).UseOpacity(0.2f), EffectPriority.VeryHigh);

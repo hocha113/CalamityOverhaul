@@ -167,6 +167,11 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnEnterWorld() {
+            if (!CWRMod.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
+                string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");
+                CWRUtils.Text(improvGameText, Color.Red);
+                improvGameText.DompInConsole();
+            }
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {
                 CWRUtils.Text(CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent"), Color.GreenYellow);
             }

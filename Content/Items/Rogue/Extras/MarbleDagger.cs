@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.useTime = Item.useAnimation = 36;
+            Item.value = Item.buyPrice(0, 0, 5, 0);
             Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
             Item.damage = 12;
             Item.knockBack = 2.2f;

@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int ProtogenesisID => ModContent.ItemType<FlakKrakenEcType>();
         public override string TargetToolTipItemName => "FlakKrakenEcType";
         public override void SetDefaults(Item item) {
+            item.damage = 84;
             item.SetCartridgeGun<FlakKrakenHeldProj>(80);
             item.CWR().Scope = true;
         }

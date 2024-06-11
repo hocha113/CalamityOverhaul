@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
+using System.Collections.Generic;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
@@ -21,6 +22,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void BowShoot() {
             FireOffsetPos = ShootVelocity.GetNormalVector() * 5 * DirSign;
             base.BowShoot();
+        }
+
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs
+            , List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) {
+            if (CanFire) {
+                overPlayers.Add(index);
+            }
         }
     }
 }

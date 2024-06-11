@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
     internal class IconUI : BaseMainMenuOverUI
     {
+        #region Date
         private static Asset<Texture2D> icon;
         private static Asset<Texture2D> small;
         private static bool onText1;
@@ -27,6 +28,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private string text2 => CWRLocText.GetTextValue("IconUI_Text2");
         private Vector2 text2Vr => FontAssets.MouseText.Value.MeasureString(text2);
         private Vector2 text2Pos => new Vector2(text1Pos.X, text1Pos.Y + text1Vr.Y - 6);
+        #endregion
         public override void Load() {
             if (!Main.dedServ) {
                 icon = CWRUtils.GetT2DAsset("CalamityOverhaul/icon");
@@ -60,7 +62,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
                 else if (onText2) {
                     SoundEngine.PlaySound(SoundID.MenuOpen);
-                    "https://steamcommunity.com/workshop/filedetails/discussion/3161388997/4366878568237971869/".WebRedirection(true);
+                    "https://steamcommunity.com/workshop/filedetails/discussion/3161388997/4331980200220181304/".WebRedirection(true);
                 }
             }
             Time++;

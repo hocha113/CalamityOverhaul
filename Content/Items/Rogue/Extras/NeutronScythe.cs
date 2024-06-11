@@ -31,6 +31,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.useTime = 16;
             Item.useAnimation = 16;
             Item.shootSpeed = 6;
+            Item.value = Item.buyPrice(12, 73, 75, 0);
             Item.rare = ItemRarityID.LightPurple;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.Item1;

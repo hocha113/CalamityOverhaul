@@ -1431,12 +1431,11 @@ namespace CalamityOverhaul
         /// <param name="message">要发送的消息文本</param>
         /// <param name="colour">（可选）消息的颜色,默认为 null</param>
         public static void Text(string message, Color? colour = null) {
-            if (Main.netMode == NetmodeID.SinglePlayer) {
-                Main.NewText(message, colour);
-            }
-            else if (Main.netMode == NetmodeID.Server) {
+            if (Main.netMode == NetmodeID.Server) {
                 ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), (Color)(colour == null ? Color.White : colour));
+                return;
             }
+            Main.NewText(message, colour);
         }
 
         /// <summary>
