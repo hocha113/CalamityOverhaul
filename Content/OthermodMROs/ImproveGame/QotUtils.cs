@@ -15,7 +15,7 @@ public static class QotUtils
     /// <summary>
     /// “任意弹药”物品的ID，注意使用这个前应该确保加载了更好的体验 (QotLoaded is true)
     /// </summary>
-    public static int UniversalAmmoId => (int) QotInstance.Call("GetUniversalAmmoId");
+    public static int UniversalAmmoId => (int)QotInstance.Call("GetUniversalAmmoId");
 
     /// <summary>
     /// 获取该物品上的弹药链
@@ -27,7 +27,7 @@ public static class QotUtils
             return null;
         }
 
-        var tag = (TagCompound) QotInstance.Call("GetAmmoChainSequence", item);
+        var tag = (TagCompound)QotInstance.Call("GetAmmoChainSequence", item);
         return !tag.TryGet("chain", out List<Ammo> chain) || chain.Count is 0 ? null : chain;
     }
 
@@ -36,7 +36,7 @@ public static class QotUtils
             return null;
         }
 
-        return (List<Item>) QotInstance.Call("GetBigBagItems", player);
+        return (List<Item>)QotInstance.Call("GetBigBagItems", player);
     }
 
     /// <summary>
@@ -179,7 +179,7 @@ public static class QotUtils
             // 如果没有弹药被取出，说明背包里没有足够的弹药，直接退出
             if (oldCapacity == capacity) {
                 break;
-            }  
+            }
         }
 
         #endregion

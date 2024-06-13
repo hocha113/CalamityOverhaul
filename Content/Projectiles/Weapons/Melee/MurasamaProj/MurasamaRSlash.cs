@@ -269,7 +269,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
-                Owner.CWR().RisingDragonCharged += 5;
+                Owner.CWR().RisingDragonCharged += MurasamaEcType.GetOnRDCD / 5;
                 if (Owner.CWR().RisingDragonCharged > MurasamaEcType.GetOnRDCD) {
                     Owner.CWR().RisingDragonCharged = MurasamaEcType.GetOnRDCD;
                 }
@@ -284,7 +284,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     }
                 }
             }
-            if (target.Organic()) {
+            if (!CWRLoad.NPCValue.TheofSteel[target.type]) {
                 _ = SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center);
             }
             else {

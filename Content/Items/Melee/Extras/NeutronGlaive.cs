@@ -48,11 +48,11 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         }
 
         public override bool CanUseItem(Player player) {
-            Item.noMelee = true;
+            Item.noMelee = false;
             Item.noUseGraphic = false;
             Item.UseSound = SoundID.Item60;
             if (player.altFunctionUse == 2) {
-                Item.noMelee = false;
+                Item.noMelee = true;
                 Item.noUseGraphic = true;
                 Item.UseSound = SoundID.AbigailAttack;
             }

@@ -130,9 +130,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPRAMGlow = null;
         }
 
-        public override bool CanLoad() {
-            return false;
-        }
+        public override bool CanLoad() => false;
 
         internal static void FindPlayer(NPC npc) {
             if (npc.target < 0 || npc.target == Main.maxPlayers || Main.player[npc.target].dead || !Main.player[npc.target].active) {

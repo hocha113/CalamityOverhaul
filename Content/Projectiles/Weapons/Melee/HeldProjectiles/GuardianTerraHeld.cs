@@ -50,6 +50,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public static Vector2 PolarVector(float radius, float theta) => new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta)) * radius;
 
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            float point = 0f;
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Owner.Center
+                , Rot.ToRotationVector2() * Length * Projectile.scale * 1.1f + Owner.Center, 88, ref point);
+        }
+
         public void InOnwer() {
             if (Projectile.ai[0] == 0) {
                 if (Timer++ == 0) {
@@ -130,10 +136,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Owner.ActiveItem().type == ModContent.ItemType<GuardianTerra>() && Projectile.numHits == 0) {
+            int type = ModContent.ProjectileType<TerratomereSlashCreator>();
+            if (Owner.ActiveItem().type == ModContent.ItemType<GuardianTerra>() && Owner.ownedProjectileCounts[type] < 1) {
                 int proj = Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Owner.ActiveItem()), Projectile.Center, Vector2.Zero
-                    , ModContent.ProjectileType<TerratomereSlashCreator>(),
-                Projectile.damage, 0, Projectile.owner, target.whoAmI, Main.rand.NextFloat(MathHelper.TwoPi));
+                    , type, Projectile.damage, 0, Projectile.owner, target.whoAmI, Main.rand.NextFloat(MathHelper.TwoPi));
                 Main.projectile[proj].timeLeft = 130;
             }
         }

@@ -26,9 +26,6 @@ namespace CalamityOverhaul
         #region Date
         internal static CWRMod Instance;
         internal static int GameLoadCount;
-        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook;
-        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook;
-        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_UseItem_Hook;
 
         internal Mod musicMod = null;
         internal Mod betterWaveSkipper = null;
@@ -46,12 +43,15 @@ namespace CalamityOverhaul
 
         internal static bool Suitableversion_improveGame { get; private set; }
 
-        internal List<ISetupData> SetupDatas;
-        internal List<Mod> LoadMods = new List<Mod>();
-        internal static List<BaseRItem> RItemInstances = new List<BaseRItem>();
-        internal static List<EctypeItem> EctypeItemInstance = new List<EctypeItem>();
-        internal static List<NPCCustomizer> NPCCustomizerInstances = new List<NPCCustomizer>();
-        internal static Dictionary<int, BaseRItem> RItemIndsDict = new Dictionary<int, BaseRItem>();
+        internal List<Mod> LoadMods { get; private set; }
+        internal List<ISetupData> SetupDatas { get; private set; }
+        internal static List<BaseRItem> RItemInstances { get; private set; } = new List<BaseRItem>();
+        internal static List<EctypeItem> EctypeItemInstance { get; private set; } = new List<EctypeItem>();
+        internal static List<NPCCustomizer> NPCCustomizerInstances { get; private set; } = new List<NPCCustomizer>();
+        internal static Dictionary<int, BaseRItem> RItemIndsDict { get; private set; } = new Dictionary<int, BaseRItem>();
+        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook { get; private set; }
+        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook { get; private set; }
+        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_UseItem_Hook { get; private set; }
 
         internal enum CallType
         {

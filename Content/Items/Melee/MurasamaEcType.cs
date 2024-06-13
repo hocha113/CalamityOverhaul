@@ -89,21 +89,21 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// 每个时期阶段对应的升龙冷却的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnRDCD"/>
         /// </summary>
         private static Dictionary<int, int> RDCDDictionary => new Dictionary<int, int>(){
-            {0, 105 },
-            {1, 95 },
-            {2, 90 },
-            {3, 85 },
-            {4, 80 },
-            {5, 75 },
-            {6, 70 },
-            {7, 65 },
-            {8, 60 },
-            {9, 55 },
-            {10, 50 },
-            {11, 45 },
-            {12, 40 },
-            {13, 35 },
-            {14, 30 }
+            {0, 215 },
+            {1, 195 },
+            {2, 180 },
+            {3, 175 },
+            {4, 160 },
+            {5, 150 },
+            {6, 140 },
+            {7, 130 },
+            {8, 120 },
+            {9, 110 },
+            {10, 100 },
+            {11, 90 },
+            {12, 80 },
+            {13, 70 },
+            {14, 60 }
         };
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
         /// <summary>

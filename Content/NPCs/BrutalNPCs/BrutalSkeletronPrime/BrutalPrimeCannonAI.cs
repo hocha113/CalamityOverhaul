@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     internal class BrutalPrimeCannonAI : NPCCoverage
     {
         public override int TargetID => NPCID.PrimeCannon;
-
         private bool bossRush;
         private bool masterMode;
         private bool death;
@@ -26,6 +25,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool dontAttack;
         private NPC head;
         private Player player;
+        public override bool CanLoad() => false;
         internal void Movement(NPC npc) {
             float acceleration = (bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f));
             float accelerationMult = 1f;

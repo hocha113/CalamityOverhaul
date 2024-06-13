@@ -7,6 +7,7 @@ using CalamityMod.NPCs.Providence;
 using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Particles;
+using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework;
@@ -198,7 +199,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
 
             if (Projectile.numHits == 0) {
-                SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 0.15f }, Projectile.Center);
+                if (!CWRLoad.NPCValue.TheofSteel[target.type]) {
+                    _ = SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 0.15f }, Projectile.Center);
+                }
+                else {
+                    _ = SoundEngine.PlaySound(MurasamaEcType.InorganicHit with { Pitch = 0.15f }, Projectile.Center);
+                }
+
                 strikeToFly(target);
 
                 //设置玩家的不可击退性并给予玩家短暂的无敌帧

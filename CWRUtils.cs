@@ -43,7 +43,7 @@ namespace CalamityOverhaul
             Type type = typeof(T);
             return type.BaseType == typeof(EctypeItem)
                 ? Language.GetText($"Mods.CalamityOverhaul.Items.{(Activator.CreateInstance(type) as EctypeItem)?.Name}.DisplayName")
-                : CalamityUtils.GetItemName<T>();
+                : GetItemName<T>();
         }
 
         public static LocalizedText SafeGetItemName(int id) {
@@ -238,11 +238,21 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 根据指定类型 T 的子类列表，创建符合条件的类型实例并更新输出列表
+        /// 根据给定的类型列表，创建符合条件的类型实例，并将实例添加到输出列表中，该方法默认要求类型拥有无参构造
         /// </summary>
-        /// <typeparam name="T">期望的类型</typeparam>
-        /// <param name="types">指定类型 T 的子类列表</param>
-        public static void HanderSubclass<T>(ref List<T> types) => HanderInstance(ref types, GetSubclasses(typeof(T)));
+        public static List<T> HanderSubclass<T>(bool parameterless = true) {
+            List<Type> inTypes = GetSubclasses(typeof(T));
+            List<T> outInds = new List<T>();
+            foreach (Type type in inTypes) {
+                if (type != typeof(T)) {
+                    object obj = parameterless ? Activator.CreateInstance(type) : RuntimeHelpers.GetUninitializedObject(type);
+                    if (obj is T inds) {
+                        outInds.Add(inds);
+                    }
+                }
+            }
+            return outInds;
+        }
 
         public static List<T> GetSubInterface<T>(string lname) {
             List<T> subInterface = new();

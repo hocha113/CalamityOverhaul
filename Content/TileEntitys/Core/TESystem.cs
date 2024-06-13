@@ -7,10 +7,11 @@ namespace CalamityOverhaul.Content.TileEntitys.Core
 {
     internal class TESystem : ModSystem
     {
-        public static List<BaseCWRTE> BaseCWRTEs = new();
+        public static List<BaseCWRTE> BaseCWRTEs { get; private set; }
 
         public override void PostSetupContent() {
-            CWRUtils.HanderSubclass(ref BaseCWRTEs);
+            BaseCWRTEs = new();
+            BaseCWRTEs = CWRUtils.HanderSubclass<BaseCWRTE>();
         }
 
         public override void PostUpdateTime() {

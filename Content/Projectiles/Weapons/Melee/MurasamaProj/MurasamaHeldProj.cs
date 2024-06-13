@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
-using log4net.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -11,7 +10,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
@@ -23,6 +21,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private ref int risingDragon => ref Owner.CWR().RisingDragonCharged;
         private bool onFireR => Owner.PressKey(false) && !Owner.PressKey();
         private int level => InWorldBossPhase.Instance.Mura_Level();
+
+        private bool oldRisingDragonFullSet;
+        private bool risingDragonFullSet;
 
         private bool noHasDownSkillProj;
         private bool noHasBreakOutProj;
@@ -103,15 +104,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         private void UpdateRisingDragon() {
             CWRUtils.ClockFrame(ref uiFrame, 5, 6);
+
+            bool hasBoss = false;
+            foreach (var npc in Main.npc) {
+                if (!npc.active || npc.friendly) {
+                    continue;
+                }
+                if (npc.boss) {
+                    hasBoss = true;
+                }
+            }
+
             if (risingDragon > 0) {
                 if (uiAlape < 1) {
                     uiAlape += 0.1f;
                 }
-                if (!onFireR && noAttenuationTime <= 0) {
-                    if (risingDragon == 1 && noHasEndSkillEffectStart && noHasBreakOutProj && noHasDownSkillProj) {
+                if (noAttenuationTime <= 0) {
+                    if (!onFireR && risingDragon == 1 && noHasEndSkillEffectStart && noHasBreakOutProj && noHasDownSkillProj) {
                         SoundEngine.PlaySound(CWRSound.Retracting with { Volume = 0.35f }, Projectile.Center);
                     }
-                    risingDragon--;
+                    if (!hasBoss) {
+                        risingDragon--;
+                    }
                 }
             }
             else {
@@ -120,9 +134,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
             }
 
+            if (hasBoss && !DownRight && risingDragon < MurasamaEcType.GetOnRDCD) {
+                noAttenuationTime = 4;
+                risingDragon++;
+            }
+
             if (noAttenuationTime > 0) {
                 noAttenuationTime--;
             }
+
+            if (risingDragon > MurasamaEcType.GetOnRDCD) {
+                risingDragon = MurasamaEcType.GetOnRDCD;
+            }
+            else if (risingDragon < 0) {
+                risingDragon = 0;
+            }
+
+            risingDragonFullSet = risingDragon >= MurasamaEcType.GetOnRDCD;
+
+            if (risingDragonFullSet && !oldRisingDragonFullSet) {
+                SoundEngine.PlaySound(CWRSound.Retracting with { Volume = 0.35f, Pitch = 0.3f }, Projectile.Center);
+            }
+
+            oldRisingDragonFullSet = risingDragonFullSet;
         }
 
         public override void AI() {
@@ -169,10 +203,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     if (risingDragon == MurasamaEcType.GetOnRDCD - 1) {
                         SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
                     }
-                    risingDragon += 1;
+                    risingDragon += 3;
+                    noAttenuationTime = 10;
                 }
                 else {
-                    noAttenuationTime = 35;
+                    noAttenuationTime = 180;
                 }
             }
 

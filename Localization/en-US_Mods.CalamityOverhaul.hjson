@@ -493,15 +493,16 @@ Items: {
 		DisplayName: Murasama
 		Tooltip:
 			'''
-			Right-click to aim and charge Dragon Energy. 
-			Hitting a target with a melee attack using the left-click will also charge the Dragon Energy bar
-			When Dragon Energy is fully charged, press [KEY1] to launch the blade. 
-			During the blade's flight, press the left-click to execute a Rising Dragon Slash [Lang1]
-			Hitting an enemy with the Rising Dragon Slash will charge Weapon 1. 
-			Press [KEY2] to consume 1 point of weapon charge for a slam attack [Lang2]
-			When the weapon charge reaches the maximum of 10 points, 
-			hitting an enemy with another Rising Dragon Slash will trigger the finishing move [Lang3]
-			[c/fff08c: legend_Text]
+			Right-click to aim and charge the sword's energy. 
+			When a target is hit with a true melee attack using the left-click, the sword's energy will be charged. 
+			If there are powerful enemies nearby, the sword's energy will slowly charge on its own.
+			When the sword's energy is fully charged, press [KEY1] to release the blade. 
+			During the blade's flight, press the left-click to perform an Ascending Slash. [Lang1]
+			Hitting an enemy with the Ascending Slash will charge Weapon 1. 
+			Press [KEY2] to consume 1 point of weapon charge and perform a downward strike. [Lang2]
+			When the weapon charge reaches the maximum value of 10 points, 
+			hitting an enemy with the Ascending Slash again will trigger a finishing move. [Lang3]
+			legend_Text
 			[c/ff4500:" It would be better if this were a chainsaw sword "]
 			[Lang4]:
 			[Text]

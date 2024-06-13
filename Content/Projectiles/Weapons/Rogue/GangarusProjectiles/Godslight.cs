@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.Graphics.Shaders;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
@@ -20,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
         internal int pointNum => 100;
         internal Color[] colors;
         public override bool ShouldUpdatePosition() => false;
-
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 8000;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
             Projectile.friendly = true;

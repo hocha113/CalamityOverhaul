@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.UIs
                 }
 
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, text
-                    , MouPos.X + 0, MouPos.Y - 30 - value * 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
+                    , MouPos.X + 0, MouPos.Y - 40 - value * 24, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("CartridgeHolderUI_Text4")
                     , MouPos.X + 0, MouPos.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1.1f);
             }
