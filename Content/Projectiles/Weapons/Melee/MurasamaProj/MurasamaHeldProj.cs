@@ -19,27 +19,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private Item murasama => Owner.ActiveItem();
         private ref float Time => ref Projectile.ai[0];
         private ref int risingDragon => ref Owner.CWR().RisingDragonCharged;
-        private bool onFireR => Owner.PressKey(false) && !Owner.PressKey();
+        private bool onFireR => DownRight && !DownLeft;
         private int level => InWorldBossPhase.Instance.Mura_Level();
-
         private bool oldRisingDragonFullSet;
         private bool risingDragonFullSet;
-
         private bool noHasDownSkillProj;
         private bool noHasBreakOutProj;
         private bool noHasEndSkillEffectStart;
         private bool nolegendStart = true;
-
         private int uiFrame;
         private float uiAlape;
-        private int noAttenuationTime;
-        public void SetAttenuation(int time) => noAttenuationTime = time;
-
+        internal int noAttenuationTime;
         private static Asset<Texture2D> MuraBarBottom;
         private static Asset<Texture2D> MuraBarTop;
         private static Asset<Texture2D> MuraBarFull;
+        private static int breakOutType;
 
         void ISetupData.SetupData() {
+            breakOutType = ModContent.ProjectileType<MurasamaBreakOut>();
             if (Main.dedServ) {
                 return;
             }
@@ -48,6 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             MuraBarFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarFull");
         }
         void ISetupData.UnLoadData() {
+            breakOutType = 0;
             MuraBarBottom = null;
             MuraBarTop = null;
             MuraBarFull = null;
@@ -165,8 +163,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             UpdateRisingDragon();
             Time++;
         }
-
-        private int breakOutType => ModContent.ProjectileType<MurasamaBreakOut>();
 
         public void InOwner() {
             int safeGravDir = Math.Sign(Owner.gravDir);
@@ -301,7 +297,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
         }
 
-        private void DrawBar(float risingDragon) {
+        public override void PostDraw(Color lightColor) {
             float scale = CWRServerConfig.Instance.MurasamaRisingDragonCoolDownBarSize;//综合计算UI大小
             if (!(risingDragon <= 0f) || uiAlape > 0) {//这是一个通用的进度条绘制，用于判断冷却进度
                 Texture2D barBG = MuraBarBottom.Value;
@@ -319,10 +315,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     Main.spriteBatch.Draw(barBG, drawPos + new Vector2(0, 2) * scale, CWRUtils.GetRec(barBG, uiFrame, 7), color, 0f, CWRUtils.GetOrig(barBG, 7), scale, 0, 0f);
                 }
             }
-        }
-
-        public override void PostDraw(Color lightColor) {
-            DrawBar(risingDragon);
         }
 
         public override bool PreDraw(ref Color lightColor) {

@@ -322,25 +322,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             FeederOffsetRot = 0;
             FeederOffsetPos = Vector2.Zero;
         }
-        /// <summary>
-        /// 统一获取枪体在开火时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
-        /// </summary>
-        /// <returns></returns>
-        public virtual float GetGunInFireRot() {
+
+        public override float GetGunInFireRot() {
             return kreloadTimeValue == 0 ? GunOnFireRot : GetGunBodyRotation();
         }
-        /// <summary>
-        /// 统一获取枪体在开火时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
-        /// </summary>
-        /// <returns></returns>
-        public virtual Vector2 GetGunInFirePos() {
-            return kreloadTimeValue == 0 ? Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY * Math.Sign(Owner.gravDir)) + OffsetPos : GetGunBodyPostion();
+
+        public override Vector2 GetGunInFirePos() {
+            return kreloadTimeValue == 0 ? Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() 
+                * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY * Math.Sign(Owner.gravDir)) + OffsetPos : GetGunBodyPostion();
         }
-        /// <summary>
-        /// 统一获取枪体在静置时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
-        /// </summary>
-        /// <returns></returns>
-        public virtual float GetGunBodyRotation() {
+
+        public override float GetGunBodyRotation() {
             int art = 10;
             if (SafeGravDir < 0) {
                 art = 350;
@@ -348,13 +340,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             int value = (int)(art + FeederOffsetRot);
             return (Owner.direction > 0 ? MathHelper.ToRadians(value) : MathHelper.ToRadians(180 - value));
         }
-        /// <summary>
-        /// 统一获取枪体在静置时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
-        /// </summary>
-        /// <returns></returns>
-        public virtual Vector2 GetGunBodyPostion() {
+
+        public override Vector2 GetGunBodyPostion() {
             return Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY * SafeGravDir) + FeederOffsetPos;
         }
+
         /// <summary>
         /// 初始化弹匣状态
         /// </summary>
@@ -538,18 +528,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             ManualReloadStart = flags[6];
         }
 
+        protected override void setBaseFromeAI() {
+            Owner.direction = LazyRotationUpdate ? (oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1) : (ToMouse.X > 0 ? 1 : -1);
+            Projectile.rotation = LazyRotationUpdate ? oldSetRoting : GetGunInFireRot();
+            Projectile.Center = GetGunInFirePos();
+            ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
+        }
+
         public sealed override void InOwner() {
             SetHeld();
             InitializeMagazine();
             Get_LoadingAmmoAnimation_PreInOwnerUpdate();
             PreInOwnerUpdate();
-
-            void setBaseFromeAI() {
-                Owner.direction = LazyRotationUpdate ? (oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1) : (ToMouse.X > 0 ? 1 : -1);
-                Projectile.rotation = LazyRotationUpdate ? oldSetRoting : GetGunInFireRot();
-                Projectile.Center = GetGunInFirePos();
-                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
-            }
 
             if (Item.type != ItemID.None) {
                 IsKreload = ModItem.IsKreload;

@@ -22,7 +22,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     internal class BrutalSkeletronPrimeAI : NPCCoverage, ISetupData
     {
         public override int TargetID => NPCID.SkeletronPrime;
-        internal static int BSP_Main_NPC_Index = -1;
         private const int maxfindModes = 6000;
         private int frame = 0;
         private int primeCannon;

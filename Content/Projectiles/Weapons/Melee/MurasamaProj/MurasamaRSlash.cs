@@ -280,7 +280,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     }
                     MurasamaHeldProj murasamaHeldProj = p.ModProjectile as MurasamaHeldProj;
                     if (murasamaHeldProj != null) {
-                        murasamaHeldProj.SetAttenuation(180);
+                        murasamaHeldProj.noAttenuationTime = 180;
                     }
                 }
             }

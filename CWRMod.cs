@@ -182,7 +182,7 @@ namespace CalamityOverhaul
             new InWorldBossPhase().Load();
             CWRKeySystem.LoadKeyDate(this);
             StructuresBehavior.Load();
-            On_Main.DrawInfernoRings += PeSystem.CWRDrawForegroundParticles;
+
             LoadClient();
             GameLoadCount++;
             base.Load();
@@ -195,7 +195,7 @@ namespace CalamityOverhaul
             InWorldBossPhase.UnLoad();
             CWRKeySystem.Unload();
             StructuresBehavior.UnLoad();
-            On_Main.DrawInfernoRings -= PeSystem.CWRDrawForegroundParticles;
+
             UnLoadClient();
             foreach (var setup in SetupDatas) {
                 setup.UnLoadData();

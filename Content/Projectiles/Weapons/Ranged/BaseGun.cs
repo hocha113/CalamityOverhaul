@@ -281,14 +281,44 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        public override void FiringIncident() {
-            void setBaseFromeAI() {
-                Owner.direction = LazyRotationUpdate ? (oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1) : (ToMouse.X > 0 ? 1 : -1);
-                Projectile.rotation = LazyRotationUpdate ? oldSetRoting : GunOnFireRot;
-                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
-                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
-            }
+        /// <summary>
+        /// 统一获取枪体在开火时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
+        /// </summary>
+        /// <returns></returns>
+        public virtual float GetGunInFireRot() {
+            return LazyRotationUpdate ? oldSetRoting : GunOnFireRot;
+        }
+        /// <summary>
+        /// 统一获取枪体在开火时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
+        /// </summary>
+        /// <returns></returns>
+        public virtual Vector2 GetGunInFirePos() {
+            return Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
+        }
 
+        /// <summary>
+        /// 统一获取枪体在静置时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
+        /// </summary>
+        /// <returns></returns>
+        public virtual float GetGunBodyRotation() {
+            return Owner.direction > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
+        }
+        /// <summary>
+        /// 统一获取枪体在静置时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
+        /// </summary>
+        /// <returns></returns>
+        public virtual Vector2 GetGunBodyPostion() {
+            return Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir;
+        }
+
+        protected virtual void setBaseFromeAI() {
+            Owner.direction = LazyRotationUpdate ? (oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1) : (ToMouse.X > 0 ? 1 : -1);
+            Projectile.rotation = GetGunInFireRot();
+            Projectile.Center = GetGunInFirePos();
+            ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
+        }
+
+        public override void FiringIncident() {
             if (DownLeft) {
                 setBaseFromeAI();
                 if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
@@ -336,8 +366,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             PreInOwnerUpdate();
             ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir;
-            Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
+            Projectile.Center = GetGunBodyPostion();
+            Projectile.rotation = GetGunBodyRotation();
             Projectile.timeLeft = 2;
             if (ShootCoolingValue > 0) {
                 ShootCoolingValue--;

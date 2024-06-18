@@ -34,9 +34,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
             new HiveMindBehavior().Load();
         }
 
-        public override void Load() {
-            npcLoaderType = typeof(NPCLoader);
-
+        private void LoadNPCSets() {
             NPCSets = new List<NPCCoverage>();
             foreach (Type type in CWRUtils.GetSubclasses(typeof(NPCCoverage))) {
                 if (type != typeof(NPCCoverage)) {
@@ -48,33 +46,47 @@ namespace CalamityOverhaul.Content.NPCs.Core
                     }
                 }
             }
+        }
 
-            MethodInfo getMethodInfo(string key) => npcLoaderType.GetMethod(key, BindingFlags.Public | BindingFlags.Static);
+        MethodInfo getMethodInfo(string key) => npcLoaderType.GetMethod(key, BindingFlags.Public | BindingFlags.Static);
 
-            onHitByProjectile_Method = getMethodInfo("OnHitByProjectile");
-            if (onHitByProjectile_Method != null) {
-                MonoModHooks.Add(onHitByProjectile_Method, OnHitByProjectileHook);
+        void LoaderMethodAndHook() {
+            {
+                onHitByProjectile_Method = getMethodInfo("OnHitByProjectile");
+                if (onHitByProjectile_Method != null) {
+                    MonoModHooks.Add(onHitByProjectile_Method, OnHitByProjectileHook);
+                }
             }
-
-            modifyIncomingHit_Method = getMethodInfo("ModifyIncomingHit");
-            if (modifyIncomingHit_Method != null) {
-                MonoModHooks.Add(modifyIncomingHit_Method, ModifyIncomingHitHook);
+            {
+                modifyIncomingHit_Method = getMethodInfo("ModifyIncomingHit");
+                if (modifyIncomingHit_Method != null) {
+                    MonoModHooks.Add(modifyIncomingHit_Method, ModifyIncomingHitHook);
+                }
             }
-
-            onPreAI_Method = getMethodInfo("PreAI");
-            if (onPreAI_Method != null) {
-                MonoModHooks.Add(onPreAI_Method, OnPreAIHook);
+            {
+                onPreAI_Method = getMethodInfo("PreAI");
+                if (onPreAI_Method != null) {
+                    MonoModHooks.Add(onPreAI_Method, OnPreAIHook);
+                }
             }
-
-            onPreDraw_Method = getMethodInfo("PreDraw");
-            if (onPreDraw_Method != null) {
-                MonoModHooks.Add(onPreDraw_Method, OnPreDrawHook);
+            {
+                onPreDraw_Method = getMethodInfo("PreDraw");
+                if (onPreDraw_Method != null) {
+                    MonoModHooks.Add(onPreDraw_Method, OnPreDrawHook);
+                }
             }
-
-            onPostDraw_Method = getMethodInfo("PostDraw");
-            if (onPostDraw_Method != null) {
-                MonoModHooks.Add(onPostDraw_Method, OnPostDrawHook);
+            {
+                onPostDraw_Method = getMethodInfo("PostDraw");
+                if (onPostDraw_Method != null) {
+                    MonoModHooks.Add(onPostDraw_Method, OnPostDrawHook);
+                }
             }
+        }
+
+        public override void Load() {
+            npcLoaderType = typeof(NPCLoader);
+            LoadNPCSets();
+            LoaderMethodAndHook();
         }
 
         public static bool OnPreAIHook(On_NPCDelegate orig, NPC npc) {
