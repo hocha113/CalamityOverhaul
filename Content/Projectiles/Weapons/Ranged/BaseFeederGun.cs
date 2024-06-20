@@ -324,15 +324,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override float GetGunInFireRot() {
-            return kreloadTimeValue == 0 ? GunOnFireRot : GetGunBodyRotation();
+            return kreloadTimeValue == 0 ? GunOnFireRot : GetGunBodyRot();
         }
 
         public override Vector2 GetGunInFirePos() {
             return kreloadTimeValue == 0 ? Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() 
-                * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY * Math.Sign(Owner.gravDir)) + OffsetPos : GetGunBodyPostion();
+                * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY * Math.Sign(Owner.gravDir)) + OffsetPos : GetGunBodyPos();
         }
 
-        public override float GetGunBodyRotation() {
+        public override float GetGunBodyRot() {
             int art = 10;
             if (SafeGravDir < 0) {
                 art = 350;
@@ -341,7 +341,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return (Owner.direction > 0 ? MathHelper.ToRadians(value) : MathHelper.ToRadians(180 - value));
         }
 
-        public override Vector2 GetGunBodyPostion() {
+        public override Vector2 GetGunBodyPos() {
             return Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY * SafeGravDir) + FeederOffsetPos;
         }
 
@@ -428,8 +428,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir + 0.3f;
                 FeederOffsetRot = LoadingAA_Handgun.feederOffsetRot;
                 FeederOffsetPos = new Vector2(DirSign * LoadingAA_Handgun.loadingAmmoStarg_x, LoadingAA_Handgun.loadingAmmoStarg_y) * SafeGravDir;
-                Projectile.Center = GetGunBodyPostion();
-                Projectile.rotation = GetGunBodyRotation();
+                Projectile.Center = GetGunBodyPos();
+                Projectile.rotation = GetGunBodyRot();
                 int value1 = (int)(kreloadMaxTime * LoadingAA_Handgun.level1);
                 int value2 = (int)(kreloadMaxTime * LoadingAA_Handgun.level3);
                 if (kreloadTimeValue >= value1) {
@@ -547,8 +547,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
             ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
-            Projectile.Center = GetGunBodyPostion();
-            Projectile.rotation = GetGunBodyRotation();
+            Projectile.Center = GetGunBodyPos();
+            Projectile.rotation = GetGunBodyRot();
             Projectile.timeLeft = 2;
 
             if (ShootCoolingValue > 0) {

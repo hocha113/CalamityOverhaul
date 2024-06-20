@@ -29,8 +29,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir + 0.3f;
             FeederOffsetRot = 10;
             FeederOffsetPos = new Vector2(DirSign * 5, 0) * SafeGravDir;
-            Projectile.Center = GetGunBodyPostion();
-            Projectile.rotation = GetGunBodyRotation();
+            Projectile.Center = GetGunBodyPos();
+            Projectile.rotation = GetGunBodyRot();
             if (kreloadTimeValue >= 50) {
                 ArmRotSengsFront += (kreloadTimeValue - 50) * CWRUtils.atoR * 6;
             }

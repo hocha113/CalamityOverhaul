@@ -282,14 +282,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         /// <summary>
-        /// 统一获取枪体在开火时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
+        /// 统一获取枪体在开火时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
         /// </summary>
         /// <returns></returns>
         public virtual float GetGunInFireRot() {
             return LazyRotationUpdate ? oldSetRoting : GunOnFireRot;
         }
         /// <summary>
-        /// 统一获取枪体在开火时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
+        /// 统一获取枪体在开火时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
         /// </summary>
         /// <returns></returns>
         public virtual Vector2 GetGunInFirePos() {
@@ -297,17 +297,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         /// <summary>
-        /// 统一获取枪体在静置时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
+        /// 统一获取枪体在静置时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
         /// </summary>
         /// <returns></returns>
-        public virtual float GetGunBodyRotation() {
+        public virtual float GetGunBodyRot() {
             return Owner.direction > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
         }
         /// <summary>
-        /// 统一获取枪体在静置时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
+        /// 统一获取枪体在静置时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
         /// </summary>
         /// <returns></returns>
-        public virtual Vector2 GetGunBodyPostion() {
+        public virtual Vector2 GetGunBodyPos() {
             return Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir;
         }
 
@@ -366,8 +366,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             PreInOwnerUpdate();
             ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
-            Projectile.Center = GetGunBodyPostion();
-            Projectile.rotation = GetGunBodyRotation();
+            Projectile.Center = GetGunBodyPos();
+            Projectile.rotation = GetGunBodyRot();
             Projectile.timeLeft = 2;
             if (ShootCoolingValue > 0) {
                 ShootCoolingValue--;

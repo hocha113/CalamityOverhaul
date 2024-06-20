@@ -2732,6 +2732,15 @@ Items: {
 			Release the left button to trigger the Death Half Moon
 			'''
 	}
+
+	MG42: {
+		DisplayName: MG42
+		Tooltip:
+			'''
+			Continuous firing causes the barrel to overheat
+			Turning musket bullets into armor-piercing bullets
+			'''
+	}
 }
 
 Projectiles: {
@@ -3349,6 +3358,7 @@ Projectiles: {
 	DeathsAscensionHeld.DisplayName: Deaths Ascension
 	DeathsAscensionThrowable.DisplayName: Deaths Ascension
 	DeathsAscensionBreakSwing.DisplayName: Deaths Ascension
+	MG42HeldProj.DisplayName: M G42 Held Proj
 }
 
 Configs: {

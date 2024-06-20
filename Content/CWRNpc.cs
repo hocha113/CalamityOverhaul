@@ -262,6 +262,9 @@ namespace CalamityOverhaul.Content
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<Ataraxia>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<Nadir>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
             }
+            else if (npc.type == CWRLoad.ThanatosHead) {
+                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<MG42>(), denominator: 5, minQuantity: 1, maxQuantity: 1));
+            }
             else if (npc.type == CWRLoad.RavagerBody) {
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<PetrifiedDisease>(), denominator: 5, minQuantity: 1, maxQuantity: 1));
             }

@@ -2753,6 +2753,15 @@ Items: {
 			按住左键让飞镰追寻光标位置，松开左键触发死神半月
 			'''
 	}
+
+	MG42: {
+		DisplayName: MG42
+		Tooltip:
+			'''
+			连续射击会让枪管过热
+			将火枪子弹转化为穿甲弹
+			'''
+	}
 }
 
 Projectiles: {
@@ -3370,6 +3379,7 @@ Projectiles: {
 	// DeathsAscensionHeld.DisplayName: Deaths Ascension
 	// DeathsAscensionThrowable.DisplayName: Deaths Ascension
 	// DeathsAscensionBreakSwing.DisplayName: Deaths Ascension
+	// MG42HeldProj.DisplayName: M G42 Held Proj
 }
 
 Configs: {
