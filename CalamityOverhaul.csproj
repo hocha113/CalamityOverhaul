@@ -23,7 +23,7 @@
     <AdditionalFiles Remove="Assets\Projectiles\Magic\GhastlyVisageBall.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="0.4.0.1.3.txt" />
+    <None Remove="0.4.0.1.4.txt" />
     <None Remove="Assets\Effects\ColorGradient.fx" />
     <None Remove="Assets\Effects\InShootGlow.fx" />
     <None Remove="Assets\Effects\NeutronRingShader.fx" />
@@ -50,7 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Players\" />
-    <Folder Include="Content\RemakeItems\Summon\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CalamityMod">

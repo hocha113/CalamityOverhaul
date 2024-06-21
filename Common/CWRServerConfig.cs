@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Projectiles.Ranged;
+using Microsoft.Xna.Framework;
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
 
@@ -35,12 +36,12 @@ namespace CalamityOverhaul.Common
         /// <summary>
         /// 是否开启强制内容替换
         /// </summary>
-        [BackgroundColor(162, 185, 120, 192)]
+        [BackgroundColor(35, 185, 78, 192)]
         [ReloadRequired]
         [DefaultValue(true)]
         public bool ForceReplaceResetContent { get; set; }
 
-        [BackgroundColor(162, 185, 120, 192)]
+        [BackgroundColor(35, 185, 78, 192)]
         [ReloadRequired]
         [DefaultValue(true)]
         public bool AddExtrasContent { get; set; }
@@ -48,14 +49,14 @@ namespace CalamityOverhaul.Common
         /// <summary>
         /// 传奇武器系统
         /// </summary>
-        [BackgroundColor(162, 185, 120, 192)]
+        [BackgroundColor(35, 185, 78, 192)]
         [DefaultValue(true)]
         public bool WeaponEnhancementSystem { get; set; }
 
         /// <summary>
         /// 重置物品的温馨提示
         /// </summary>
-        [BackgroundColor(162, 185, 120, 192)]
+        [BackgroundColor(35, 185, 78, 192)]
         [DefaultValue(true)]
         public bool ResetItemReminder { get; set; }
 

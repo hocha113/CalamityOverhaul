@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.shootSpeed = 12;
             Item.useAmmo = AmmoID.Bullet;
             Item.rare = ItemRarityID.Red;
-            Item.UseSound = CWRSound.Gun_AWP_Shoot with { Pitch = -0.1f, Volume = 0.25f };
+            Item.UseSound = CWRSound.Gun_AWP_Shoot with { Pitch = -0.1f, Volume = 0.15f };
             Item.DamageType = DamageClass.Ranged;
             Item.value = Terraria.Item.buyPrice(3, 53, 5, 0);
             Item.crit = 2;

@@ -4280,6 +4280,11 @@ TextContent: {
 		Wap_EnchantedBoomerang_Text: The lurking attack will quickly throw three boomerangs, which will summon a falling star after hitting the target
 		Wap_Shroomerang_Text: A latent attack will release the mushroom spore bomb
 		Wap_Spear_Text: A lurking attack will throw a powerful spear
+		Wap_VortexBeater_Text:
+			'''
+			Launch Vortex Rocket at a certain frequency
+			Right click launch Vortex Rocket at full power
+			'''
 	}
 }
 
