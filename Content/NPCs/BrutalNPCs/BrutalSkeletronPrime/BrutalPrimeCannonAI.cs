@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool sawAlive;
         private bool dontAttack;
         private NPC head;
+        private int frame;
         private Player player;
         public override bool CanLoad() => false;
         internal void Movement(NPC npc) {
@@ -265,7 +266,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        private int frame;
         public override bool? Draw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             BrutalSkeletronPrimeAI.DrawArm(spriteBatch, NPC, screenPos);
             Texture2D mainValue = BrutalSkeletronPrimeAI.BSPCannon.Value;

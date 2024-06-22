@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -15,11 +16,19 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
             Item.useTurn = true;
             Item.autoReuse = true;
             Item.value = Terraria.Item.buyPrice(0, 16, 5, 75);
-            Item.rare = 9;
+            Item.rare = ItemRarityID.Cyan;
         }
 
         public override bool MeleePrefix() {
             return true;
+        }
+
+        public override void AddRecipes() {
+            _ = CreateRecipe()
+                .AddIngredient(ItemID.BoneWhip)
+                .AddIngredient(ModContent.ItemType<RuinousSoul>(), 5)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
         }
     }
 }
