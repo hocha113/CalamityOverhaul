@@ -2708,12 +2708,20 @@ Items: {
 
 	ApoctolithEcType: {
 		DisplayName: 末渊石板
-		Tooltip: ""
+		Tooltip:
+			'''
+			潜伏攻击会生成巨浪
+			往天上丢，然后用脸去接，你就会相信板砖的力量
+			'''
 	}
 
 	ThrowingBrickEcType: {
 		DisplayName: 板砖
-		Tooltip: ""
+		Tooltip:
+			'''
+			潜伏攻击会碎成数块
+			往天上丢，然后用脸去接，你就会相信板砖的力量
+			'''
 	}
 
 	GuardianTerra: {
@@ -3766,7 +3774,7 @@ TextContent: {
 		SHPC_TextDictionary_Content_1:
 			'''
 			我们需要干掉那只大眼球，它来自一个强大的生命体
-			我需要需要解剖它，看看它是如何实现反重力的
+			我需要解剖它，看看它是如何实现反重力的
 			'''
 		SHPC_TextDictionary_Content_2:
 			'''

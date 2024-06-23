@@ -40,6 +40,7 @@ namespace CalamityOverhaul
         internal Mod thoriumMod = null;
         internal Mod narakuEye = null;
         internal Mod coolerItemVisualEffect = null;
+        internal Mod gravityDontFlipScreen = null;
 
         internal static bool Suitableversion_improveGame { get; private set; }
 
@@ -220,6 +221,7 @@ namespace CalamityOverhaul
             thoriumMod = null;
             narakuEye = null;
             coolerItemVisualEffect = null;
+            gravityDontFlipScreen = null;
         }
 
         public void FindMod() {
@@ -237,6 +239,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("ThoriumMod", out thoriumMod);
             ModLoader.TryGetMod("NarakuEye", out narakuEye);
             ModLoader.TryGetMod("CoolerItemVisualEffect", out coolerItemVisualEffect);
+            ModLoader.TryGetMod("GravityDontFlipScreen", out gravityDontFlipScreen);
         }
 
         public void LoadClient() {

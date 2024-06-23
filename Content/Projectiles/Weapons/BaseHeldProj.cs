@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// </summary>
         internal int SafeGravDir => Math.Sign(Owner.gravDir);
         /// <summary>
-        /// 弹幕的理论朝向，这里考虑并没有到<see cref="Player.gravDir"/>属性，为了防止玩家在重力反转的情况下出现问题，可能需要额外编写代码
+        /// 弹幕的理论朝向
         /// </summary>
         internal virtual int DirSign => Owner.direction * SafeGravDir;
         /// <summary>
@@ -69,6 +69,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         private Vector2 UpdateToMouse() {
             if (Projectile.IsOwnedByLocalPlayer()) {
                 toMouseVecterDate = Owner.GetPlayerStabilityCenter().To(Main.MouseWorld);
+
+                int grgDir = 1;
+                if (CWRMod.Instance.gravityDontFlipScreen != null && SafeGravDir < 0) {
+                    grgDir *= -1;
+                }
+                //因为重力翻转后进行了坐标变换，这里反转一下Y值以保证旋转角正常
+                toMouseVecterDate.Y *= grgDir;
+
                 bool difference = Math.Abs(toMouseVecterDate.X - _old_toMouseVecterDate.X) > toMouseVer_variationMode
                     || Math.Abs(toMouseVecterDate.Y - _old_toMouseVecterDate.Y) > toMouseVer_variationMode;
                 if (difference && CanFire) {

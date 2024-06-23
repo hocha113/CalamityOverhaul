@@ -18,11 +18,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
-    internal class MurasamaRSlash : ModProjectile
+    internal class MurasamaRSlash : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "MurasamaSlash";
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<MurasamaEcType>();
-        private Player Owner => Main.player[Projectile.owner];
         public ref int hitCooldown => ref Main.player[Projectile.owner].Calamity().murasamaHitCooldown;
         public int time = 0;
         public override void SetStaticDefaults() {
@@ -61,18 +60,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             return false;
         }
 
-        public override bool PreAI() {
-            Projectile.Calamity().timesPierced = 0;
-            return true;
-        }
-
         public override void AI() {
+            Projectile.Calamity().timesPierced = 0;
             Player player = Main.player[Projectile.owner];
             if (time == 0) {
                 Projectile.scale = (MurasamaEcType.NameIsSam(player) ? 1.65f : MurasamaEcType.GetOnScale) * MurasamaEcType.ScaleOffset_PercentageValue;
-                if (Main.zenithWorld) {
-                    Projectile.scale = 1;
-                }
                 Projectile.frame = Main.zenithWorld ? 6 : 10;
                 Projectile.alpha = 0;
                 time++;
@@ -252,7 +244,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (player.ActiveItem().shoot == Projectile.type) {
                 speed = player.ActiveItem().shootSpeed * Projectile.scale;
             }
-            Vector2 newVelocity = (Main.MouseWorld - playerRotatedPoint).SafeNormalize(Vector2.UnitX * player.direction) * speed;
+            Vector2 newVelocity = ToMouse.SafeNormalize(Vector2.UnitX * player.direction) * speed;
 
             if (Slashing) {
                 if (Projectile.velocity.X != newVelocity.X || Projectile.velocity.Y != newVelocity.Y) {
@@ -336,7 +328,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float point = 0;
-            Vector2 toMou = Owner.Center.To(Main.MouseWorld);
+            Vector2 toMou = ToMouse;
             Vector2 orig = Owner.Center + toMou.GetNormalVector() * 30;
             Vector2 endPos = orig + toMou.UnitVector() * (300 * Projectile.scale);
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), orig, endPos, (270 * Projectile.scale), ref point);
