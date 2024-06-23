@@ -2686,12 +2686,22 @@ Items: {
 
 	ApoctolithEcType: {
 		DisplayName: Apoctolith
-		Tooltip: ""
+		Tooltip:
+			'''
+			A lurking attack creates a giant wave
+			Throw it in the sky, catch it with your face, 
+			and you'll believe in the power of a brick
+			'''
 	}
 
 	ThrowingBrickEcType: {
 		DisplayName: Throwing Brick
-		Tooltip: ""
+		Tooltip:
+			'''
+			A latent attack breaks into pieces
+			Throw it in the sky, catch it with your face, 
+			and you'll believe in the power of a brick
+			'''
 	}
 
 	GuardianTerra: {

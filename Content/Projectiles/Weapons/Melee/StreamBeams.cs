@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         Projectile.GetSource_FromThis(),
                         target.Center, vr,
                         ModContent.ProjectileType<GodKillers>(),
-                        Projectile.damage / 3, 0, Projectile.owner
+                        Projectile.damage / 2, 0, Projectile.owner
                         );
                 }
             }
