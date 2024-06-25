@@ -25,7 +25,7 @@ using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
 using System.Collections.Generic;
 using Terraria;

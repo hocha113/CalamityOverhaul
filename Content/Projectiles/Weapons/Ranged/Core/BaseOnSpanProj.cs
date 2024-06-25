@@ -8,7 +8,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
     /// <summary>
     /// 一个通用的用于制造蓄力效果的实体栈，其中Projectile.ai[0]默认作为时间计数器
@@ -30,7 +30,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         protected virtual float halfSpreadAngleRate => 0.5f;
         protected bool onFire;
 
-        public override void SetDefaults() {
+        public override void SetDefaults()
+        {
             Projectile.width = 14;
             Projectile.height = 14;
             Projectile.friendly = true;
@@ -49,12 +50,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 需要使用弹幕的AI[1]作为跟随弹幕的索引
         /// </summary>
         /// <param name="projectile"></param>
-        public static void FlowerAI(Projectile projectile) {
+        public static void FlowerAI(Projectile projectile)
+        {
             Projectile owner = null;
-            if (projectile.ai[1] >= 0 && projectile.ai[1] < Main.maxProjectiles) {
+            if (projectile.ai[1] >= 0 && projectile.ai[1] < Main.maxProjectiles)
+            {
                 owner = Main.projectile[(int)projectile.ai[1]];
             }
-            if (owner == null) {
+            if (owner == null)
+            {
                 projectile.Kill();
                 return;
             }
@@ -62,19 +66,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             projectile.rotation = owner.rotation;
         }
 
-        public sealed override void AI() {
+        public sealed override void AI()
+        {
             Projectile.MaxUpdates = 2;
             FlowerAI(Projectile);
-            if (++Projectile.ai[0] >= MaxCharge) {
+            if (++Projectile.ai[0] >= MaxCharge)
+            {
                 onFire = true;
             }
-            if (Projectile.ai[2] == 0) {
-                if (!DownRight || DownLeft) {
+            if (Projectile.ai[2] == 0)
+            {
+                if (!DownRight || DownLeft)
+                {
                     Projectile.Kill();
                 }
             }
-            else {
-                if (!DownLeft || DownRight) {
+            else
+            {
+                if (!DownLeft || DownRight)
+                {
                     Projectile.Kill();
                 }
             }
@@ -82,20 +92,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public virtual void SpanSoundFunc() => SoundEngine.PlaySound(SoundID.Item96, Projectile.Center);
 
-        public virtual void SpanProjFunc() {
+        public virtual void SpanProjFunc()
+        {
 
         }
 
-        public sealed override void OnKill(int timeLeft) {
-            if (Projectile.IsOwnedByLocalPlayer() && onFire) {
+        public sealed override void OnKill(int timeLeft)
+        {
+            if (Projectile.IsOwnedByLocalPlayer() && onFire)
+            {
                 SpanSoundFunc();
                 SpanProjFunc();
             }
         }
 
-        public sealed override bool PreDraw(ref Color lightColor) {
+        public sealed override bool PreDraw(ref Color lightColor)
+        {
             float blinkage = 0;
-            if (Projectile.timeLeft >= MaxCharge * 1.5f) {
+            if (Projectile.timeLeft >= MaxCharge * 1.5f)
+            {
                 blinkage = (float)Math.Sin(MathHelper.Clamp((Projectile.timeLeft - MaxCharge * 1.5f) / 15f, 0, 1) * MathHelper.PiOver2 + MathHelper.PiOver2);
             }
             Effect effect = Filters.Scene["CalamityMod:SpreadTelegraph"].GetShader().Shader;

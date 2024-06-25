@@ -10,7 +10,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
     internal abstract class BaseHeldRanged : BaseHeldProj
     {
@@ -92,7 +92,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// <summary>
         /// 开火冷切计时器
         /// </summary>
-        public float ShootCoolingValue {
+        public float ShootCoolingValue
+        {
             get => Projectile.ai[1];
             set => Projectile.ai[1] = value;
         }
@@ -159,7 +160,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// </summary>
         /// <param name="flags"></param>
         /// <returns></returns>
-        public override BitsByte SandBitsByte(BitsByte flags) {
+        public override BitsByte SandBitsByte(BitsByte flags)
+        {
             flags = base.SandBitsByte(flags);
             flags[2] = _safeMouseInterfaceValue;
             flags[3] = onFire;
@@ -171,40 +173,48 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 如果子类准备重写，需要尊重父类的使用逻辑，当前已经占用至4号位
         /// </summary>
         /// <param name="flags"></param>
-        public override void ReceiveBitsByte(BitsByte flags) {
+        public override void ReceiveBitsByte(BitsByte flags)
+        {
             base.ReceiveBitsByte(flags);
             _safeMouseInterfaceValue = flags[2];
             onFire = flags[3];
             onFireR = flags[4];
         }
 
-        public bool overNoFireCeahks() {
+        public bool overNoFireCeahks()
+        {
             return !CalOwner.profanedCrystalBuffs;
         }
 
         public override bool ShouldUpdatePosition() => false;//一般来讲，不希望这类手持弹幕可以移动，因为如果受到速度更新，弹幕会发生轻微的抽搐
 
-        protected bool UpdateConsumeAmmo(bool preCanConsumeAmmo = true) {
+        protected bool UpdateConsumeAmmo(bool preCanConsumeAmmo = true)
+        {
             bool canConsume = Owner.IsRangedAmmoFreeThisShot(new Item(UseAmmoItemType));
-            if (MustConsumeAmmunition) {
+            if (MustConsumeAmmunition)
+            {
                 canConsume = false;
             }
-            if (Item.useAmmo == AmmoID.None) {
+            if (Item.useAmmo == AmmoID.None)
+            {
                 return false;
             }
             Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out _, out _, out _, canConsume && preCanConsumeAmmo);
             return canConsume;
         }
 
-        protected void UpdateShootState() {
-            if (Item.useAmmo == AmmoID.None) {
+        protected void UpdateShootState()
+        {
+            if (Item.useAmmo == AmmoID.None)
+            {
                 WeaponDamage = Owner.GetWeaponDamage(Item);
                 WeaponKnockback = Item.knockBack;
                 AmmoTypes = Item.shoot;
                 ShootSpeedModeFactor = Item.shootSpeed;
                 UseAmmoItemType = ItemID.None;
                 HaveAmmo = true;
-                if (AmmoTypes == 0 || AmmoTypes == 10) {
+                if (AmmoTypes == 0 || AmmoTypes == 10)
+                {
                     AmmoTypes = ProjectileID.Bullet;
                 }
                 return;
@@ -212,7 +222,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             HaveAmmo = Owner.PickAmmo(Item, out AmmoTypes, out ShootSpeedModeFactor, out WeaponDamage, out WeaponKnockback, out UseAmmoItemType, true);
         }
 
-        public sealed override void SetDefaults() {
+        public sealed override void SetDefaults()
+        {
             Projectile.width = Projectile.height = 22;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
@@ -232,75 +243,94 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         /// 用于设置额外的基础属性，在<see cref="SetDefaults"/>中于<see cref="SetRangedProperty"/>之前调用
         /// 非必要时不建议重写使用这个重载，而是使用<see cref="SetRangedProperty"/>
         /// </summary>
-        public virtual void PreSetRangedProperty() {
+        public virtual void PreSetRangedProperty()
+        {
 
         }
         /// <summary>
         /// 用于设置额外的基础属性，在<see cref="SetDefaults"/>中于<see cref="SetRangedProperty"/>之后调用
         /// 非必要时不建议重写使用这个重载，而是使用<see cref="SetRangedProperty"/>
         /// </summary>
-        public virtual void PostSetRangedProperty() {
+        public virtual void PostSetRangedProperty()
+        {
 
         }
 
         /// <summary>
         /// 用于设置额外的基础属性，在<see cref="SetDefaults"/>中被最后调用
         /// </summary>
-        public virtual void SetRangedProperty() {
+        public virtual void SetRangedProperty()
+        {
 
         }
 
         public override bool? CanDamage() => CanMelee;
 
-        protected void ScopeSrecen() {
+        protected void ScopeSrecen()
+        {
             Owner.scope = false;
-            if (CWRKeySystem.ADS_Key.Old) {
+            if (CWRKeySystem.ADS_Key.Old)
+            {
                 ScopeLeng += 4f;
-                if (ScopeLeng > 30) {
+                if (ScopeLeng > 30)
+                {
                     ScopeLeng = 30;
                 }
                 Main.SetCameraLerp(0.05f, 10);
                 ModOwner.OffsetScreenPos = ToMouse.UnitVector() * ScopeLeng;
             }
-            else {
+            else
+            {
                 ScopeLeng = 0;
             }
         }
 
-        private void UpdateSafeMouseInterfaceValue() {
-            if (!CanFire) {//只有在玩家不进行开火尝试时才能更改空闲状态
-                if (Projectile.IsOwnedByLocalPlayer()) {
+        private void UpdateSafeMouseInterfaceValue()
+        {
+            if (!CanFire)
+            {//只有在玩家不进行开火尝试时才能更改空闲状态
+                if (Projectile.IsOwnedByLocalPlayer())
+                {
                     _safeMouseInterfaceValue = !Owner.mouseInterface;
-                    if (_old_safeMouseInterfaceValue != _safeMouseInterfaceValue) {
+                    if (_old_safeMouseInterfaceValue != _safeMouseInterfaceValue)
+                    {
                         NetUpdate();
                     }
                     _old_safeMouseInterfaceValue = _safeMouseInterfaceValue;
                 }
-                if (!_safeMouseInterfaceValue) {//如果鼠标已经被锁定为非空闲状态，那么开火状态也需要锁定为关
+                if (!_safeMouseInterfaceValue)
+                {//如果鼠标已经被锁定为非空闲状态，那么开火状态也需要锁定为关
                     onFire = onFireR = false;
                     ShootCoolingValue = 0;
                 }
             }
         }
 
-        private void UpdateRogueStealth() {
+        private void UpdateRogueStealth()
+        {
             bool noAvailable = false;
-            if (CWRMod.Instance.narakuEye != null) {
+            if (CWRMod.Instance.narakuEye != null)
+            {
                 noAvailable = (bool)CWRMod.Instance.narakuEye.Call(Owner);
-                if (CalOwner.StealthStrikeAvailable()) {
+                if (CalOwner.StealthStrikeAvailable())
+                {
                     noAvailable = false;
                 }
             }
-            if (!noAvailable) {
+            if (!noAvailable)
+            {
                 CalOwner.rogueStealth = 0;
-                if (CalOwner.stealthUIAlpha > 0.02f) {
+                if (CalOwner.stealthUIAlpha > 0.02f)
+                {
                     CalOwner.stealthUIAlpha -= 0.02f;
                 }
             }
         }
 
-        public override bool PreUpdate() {
-            if (!CheckAlive()) {
+        public override bool PreUpdate()
+        {
+            if (!CheckAlive())
+            {
                 Projectile.Kill();
                 return false;
             }
@@ -310,74 +340,93 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             ModOwner.HeldRangedBool = true;
             CalOwner = Owner.Calamity();
             UpdateSafeMouseInterfaceValue();
-            if (CanFire && _safeMouseInterfaceValue) {
+            if (CanFire && _safeMouseInterfaceValue)
+            {
                 Owner.itemTime = 2;
                 UpdateRogueStealth();
             }
-            if (ModItem.Scope && Projectile.IsOwnedByLocalPlayer()) {
+            if (ModItem.Scope && Projectile.IsOwnedByLocalPlayer())
+            {
                 ScopeSrecen();
             }
-            else {
+            else
+            {
                 ScopeLeng = 0;
             }
             UpdateShootState();
             return true;
         }
 
-        public override void AI() {
+        public override void AI()
+        {
             InOwner();
-            if (Projectile.IsOwnedByLocalPlayer()) {
+            if (Projectile.IsOwnedByLocalPlayer())
+            {
                 SpanProj();
             }
             Time++;
         }
 
-        public virtual bool CheckAlive() {
+        public virtual bool CheckAlive()
+        {
             bool heldBool1 = Item.type != targetCayItem;
             bool heldBool2 = Item.type != targetCWRItem;
-            if (CWRServerConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换
-                if (heldBool1) {//只需要判断原版的物品
+            if (CWRServerConfig.Instance.ForceReplaceResetContent)
+            {//如果开启了强制替换
+                if (heldBool1)
+                {//只需要判断原版的物品
                     return false;
                 }
             }
-            else {//如果没有开启强制替换
-                if (heldBool2) {
+            else
+            {//如果没有开启强制替换
+                if (heldBool2)
+                {
                     return false;
                 }
             }
-            if (Owner.CCed || !Owner.active || Owner.dead) {
+            if (Owner.CCed || !Owner.active || Owner.dead)
+            {
                 return false;
             }
 
             return true;
         }
 
-        public virtual void InOwner() {
+        public virtual void InOwner()
+        {
 
         }
         /// <summary>
         /// 一个快捷创建手持事件的方法，在<see cref="InOwner"/>中被调用，值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="InOwner"/>的
         /// </summary>
-        public virtual void FiringIncident() {
+        public virtual void FiringIncident()
+        {
 
         }
 
-        public virtual void HanderPlaySound() {
+        public virtual void HanderPlaySound()
+        {
             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
         }
 
-        public virtual void SpanProj() {
+        public virtual void SpanProj()
+        {
 
         }
 
-        internal void ItemLoaderInFireSetBaver() {
-            foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item)) {
+        internal void ItemLoaderInFireSetBaver()
+        {
+            foreach (var g in CWRMod.CWR_InItemLoader_Set_CanUse_Hook.Enumerate(Item))
+            {
                 g.CanUseItem(Item, Owner);
             }
-            foreach (var g in CWRMod.CWR_InItemLoader_Set_UseItem_Hook.Enumerate(Item)) {
+            foreach (var g in CWRMod.CWR_InItemLoader_Set_UseItem_Hook.Enumerate(Item))
+            {
                 g.UseItem(Item, Owner);
             }
-            foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item)) {
+            foreach (var g in CWRMod.CWR_InItemLoader_Set_Shoot_Hook.Enumerate(Item))
+            {
                 g.Shoot(Item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType)
                     , Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback);
             }

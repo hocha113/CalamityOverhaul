@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
 using Terraria.ModLoader;
 

@@ -6,7 +6,7 @@ using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.StorageBattery;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;

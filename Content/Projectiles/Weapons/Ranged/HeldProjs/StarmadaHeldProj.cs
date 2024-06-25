@@ -4,6 +4,7 @@ using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
