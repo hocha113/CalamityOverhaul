@@ -27,19 +27,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private bool noHasBreakOutProj;
         private bool noHasEndSkillEffectStart;
         private bool nolegendStart = true;
+        private bool old_TriggerKeyDown;
+        private bool triggerKeyDown;
+        private bool old_FodingDownKey;
+        private bool fodingDownKey;
         private int uiFrame;
         private float uiAlape;
         internal int noAttenuationTime;
+        private static int breakOutType;
         private static Asset<Texture2D> MuraBarBottom;
         private static Asset<Texture2D> MuraBarTop;
         private static Asset<Texture2D> MuraBarFull;
-        private static int breakOutType;
 
         void ILoader.SetupData() {
             breakOutType = ModContent.ProjectileType<MurasamaBreakOut>();
-            if (Main.dedServ) {
-                return;
-            }
+        }
+        void ILoader.LoadAsset() {
             MuraBarBottom = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarBottom");
             MuraBarTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarTop");
             MuraBarFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarFull");
@@ -157,11 +160,37 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             oldRisingDragonFullSet = risingDragonFullSet;
         }
 
+        private void NetKeyingWork() {
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                triggerKeyDown = CWRKeySystem.Murasama_TriggerKey.JustPressed;
+                fodingDownKey = CWRKeySystem.Murasama_DownKey.JustPressed;
+                if (fodingDownKey != old_FodingDownKey || triggerKeyDown != old_TriggerKeyDown) {
+                    NetUpdate();
+                }
+                old_TriggerKeyDown = triggerKeyDown;
+                old_FodingDownKey = fodingDownKey;
+            }
+        }
+
         public override void AI() {
             CheakNoHasProj();
+            NetKeyingWork();
             InOwner();
             UpdateRisingDragon();
             Time++;
+        }
+
+        public override void ReceiveBitsByte(BitsByte flags) {
+            base.ReceiveBitsByte(flags);
+            triggerKeyDown = flags[2];
+            fodingDownKey = flags[3];
+        }
+
+        public override BitsByte SandBitsByte(BitsByte flags) {
+            BitsByte bytes = base.SandBitsByte(flags);
+            bytes[2] = triggerKeyDown;
+            flags[3] = fodingDownKey;
+            return bytes;
         }
 
         public void InOwner() {
@@ -209,7 +238,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
 
             if (!CWRUtils.isServer) {
-                if (CWRKeySystem.Murasama_TriggerKey.JustPressed && Owner.ownedProjectileCounts[breakOutType] == 0 && noHasDownSkillProj) {//扳机键被按下，并且升龙冷却已经完成，那么将刀发射出去
+                if (triggerKeyDown && Owner.ownedProjectileCounts[breakOutType] == 0 && noHasDownSkillProj) {//扳机键被按下，并且升龙冷却已经完成，那么将刀发射出去
                     if (nolegendStart && risingDragon >= MurasamaEcType.GetOnRDCD) {
                         SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
                         SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.1f, Volume = 0.5f }, Projectile.Center);
@@ -230,10 +259,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         SoundEngine.PlaySound(CWRSound.Ejection with { MaxInstances = 3 }, Projectile.Center);
                     }
                 }
-            }
-
-            if (!CWRUtils.isServer) {
-                if (CWRKeySystem.Murasama_DownKey.JustPressed && MurasamaEcType.UnlockSkill2 && noHasDownSkillProj 
+                if (fodingDownKey && MurasamaEcType.UnlockSkill2 && noHasDownSkillProj
                     && noHasBreakOutProj && nolegendStart) {//下砸技能键被按下，同时技能以及解锁，那么发射执行下砸技能的弹幕
                     murasama.initialize();
                     if (murasama.CWR().ai[0] >= 1) {

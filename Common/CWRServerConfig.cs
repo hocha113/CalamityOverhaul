@@ -55,6 +55,7 @@ namespace CalamityOverhaul.Common
         public bool WeaponEnhancementSystem { get; set; }
 
         [BackgroundColor(35, 185, 78, 192)]
+        [ReloadRequired]
         [DefaultValue(false)]
         public bool OpeningOukModification { get; set; }
 

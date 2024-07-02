@@ -172,7 +172,7 @@ namespace CalamityOverhaul
 
         public override void Load() {
             Instance = this;
-            SetupDatas = CWRUtils.GetSubInterface<ILoader>("ISetupData");
+            SetupDatas = CWRUtils.GetSubInterface<ILoader>("ILoader");
             foreach (var setup in SetupDatas) {
                 setup.LoadData();
             }
