@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Projectiles.Magic;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;

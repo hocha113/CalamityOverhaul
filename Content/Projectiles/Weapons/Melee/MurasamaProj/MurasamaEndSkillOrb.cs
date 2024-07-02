@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Graphics.Primitives;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using System;
 using System.IO;

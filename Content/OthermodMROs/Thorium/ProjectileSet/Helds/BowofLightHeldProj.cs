@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.OthermodMROs.Thorium.Core;
+﻿using CalamityOverhaul.Content.OthermodMROs.Thorium.Core;
 using CalamityOverhaul.Content.OthermodMROs.Thorium.ItemSet;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;

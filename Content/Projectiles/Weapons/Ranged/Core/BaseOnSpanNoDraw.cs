@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using Terraria;
+﻿using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
@@ -11,8 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
     internal abstract class BaseOnSpanNoDraw : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
-        public override void SetDefaults()
-        {
+        public override void SetDefaults() {
             Projectile.width = 14;
             Projectile.height = 14;
             Projectile.friendly = true;
@@ -25,30 +23,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
 
-        public virtual void SpanProj()
-        {
+        public virtual void SpanProj() {
 
         }
 
-        public override void AI()
-        {
+        public override void AI() {
             Projectile.MaxUpdates = 2;
             BaseOnSpanProj.FlowerAI(Projectile);
-            if (Projectile.IsOwnedByLocalPlayer())
-            {
+            if (Projectile.IsOwnedByLocalPlayer()) {
                 SpanProj();
             }
-            if (Projectile.ai[2] == 0)
-            {
-                if (!DownRight || DownLeft)
-                {
+            if (Projectile.ai[2] == 0) {
+                if (!DownRight || DownLeft) {
                     Projectile.Kill();
                 }
             }
-            else
-            {
-                if (!DownLeft || DownRight)
-                {
+            else {
+                if (!DownLeft || DownRight) {
                     Projectile.Kill();
                 }
             }

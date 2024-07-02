@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using Terraria.ModLoader;
+﻿using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Events
 {

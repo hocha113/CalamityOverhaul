@@ -2,7 +2,6 @@
 using CalamityMod.Projectiles.BaseProjectiles;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj;
 using Microsoft.Xna.Framework;

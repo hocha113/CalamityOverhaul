@@ -4,7 +4,6 @@ using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 暴君巨刃
     /// </summary>
-    internal class DefiledGreatswordEcType : EctypeItem, ISetupData
+    internal class DefiledGreatswordEcType : EctypeItem, ILoader
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DefiledGreatsword";
 
@@ -34,14 +33,14 @@ namespace CalamityOverhaul.Content.Items.Melee
         private static Asset<Texture2D> rageEnergyTopAsset;
         private static Asset<Texture2D> rageEnergyBarAsset;
         private static Asset<Texture2D> rageEnergyBackAsset;
-        void ISetupData.SetupData() {
+        void ILoader.SetupData() {
             if (!Main.dedServ) {
                 rageEnergyTopAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyTop");
                 rageEnergyBarAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyBar");
                 rageEnergyBackAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyBack");
             }
         }
-        void ISetupData.UnLoadData() {
+        void ILoader.UnLoadData() {
             rageEnergyTopAsset = null;
             rageEnergyBarAsset = null;
             rageEnergyBackAsset = null;

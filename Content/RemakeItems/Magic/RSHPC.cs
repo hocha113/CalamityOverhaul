@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
+using CalamityOverhaul;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
@@ -14,18 +15,18 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
-    internal class RSHPC : BaseRItem, ISetupData
+    internal class RSHPC : BaseRItem, ILoader
     {
         public static MethodInfo methodInfo;
         public override int TargetID => ModContent.ItemType<SHPC>();
         public override int ProtogenesisID => ModContent.ItemType<SHPCEcType>();
         public override string TargetToolTipItemName => "";
         private static void onSHPCToolFunc(RItemSystem.On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
-        void ISetupData.LoadData() {
+        void ILoader.LoadData() {
             methodInfo = typeof(SHPC).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
             MonoModHooks.Add(methodInfo, onSHPCToolFunc);
         }
-        void ISetupData.UnLoadData() => methodInfo = null;
+        void ILoader.UnLoadData() => methodInfo = null;
         public override void SetDefaults(Item item) {
             item.damage = SHPCEcType.GetStartDamage;
             item.SetHeldProj<SHPCHeldProj>();

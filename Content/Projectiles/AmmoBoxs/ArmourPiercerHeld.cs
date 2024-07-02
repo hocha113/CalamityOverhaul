@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Placeable;
+﻿using CalamityOverhaul.Content.Items.Placeable;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs

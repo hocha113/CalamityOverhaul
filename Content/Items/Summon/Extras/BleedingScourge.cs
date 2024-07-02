@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips;
 using Terraria.ID;
 using Terraria.ModLoader;

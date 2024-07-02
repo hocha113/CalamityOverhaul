@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System;

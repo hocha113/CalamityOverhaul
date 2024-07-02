@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Magic.Extras;
+﻿using CalamityOverhaul.Content.Items.Magic.Extras;
 using Terraria.ModLoader;
 using Terraria;
 using Microsoft.Xna.Framework;

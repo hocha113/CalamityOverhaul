@@ -2,7 +2,6 @@
 using CalamityMod.Events;
 using CalamityMod.NPCs;
 using CalamityMod.World;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
@@ -19,7 +18,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class BrutalSkeletronPrimeAI : NPCCoverage, ISetupData
+    internal class BrutalSkeletronPrimeAI : NPCCoverage, ILoader
     {
         public override int TargetID => NPCID.SkeletronPrime;
         private const int maxfindModes = 6000;
@@ -95,7 +94,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        void ISetupData.LoadData() {
+        void ILoader.LoadData() {
             if (Main.dedServ) {
                 return;
             }
@@ -114,7 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPRAMGlow = CWRUtils.GetT2DAsset(path + "BSPRAMGlow");
         }
 
-        void ISetupData.UnLoadData() {
+        void ILoader.UnLoadData() {
             HandAsset = null;
             BSPCannon = null;
             BSPlaser = null;
@@ -129,7 +128,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPRAMGlow = null;
         }
 
-        public override bool CanLoad() => false;
+        public override bool CanLoad() => true;
 
         internal static void FindPlayer(NPC npc) {
             if (npc.target < 0 || npc.target == Main.maxPlayers || Main.player[npc.target].dead || !Main.player[npc.target].active) {

@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj;
 using Microsoft.Xna.Framework;

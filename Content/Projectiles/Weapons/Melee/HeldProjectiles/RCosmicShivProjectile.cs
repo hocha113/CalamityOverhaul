@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Projectiles.BaseProjectiles;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;

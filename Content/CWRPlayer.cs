@@ -176,16 +176,18 @@ namespace CalamityOverhaul.Content
                 CWRUtils.Text(CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent"), Color.GreenYellow);
             }
             if (InitialCreation) {
-                for (int i = 0; i < Player.inventory.Length; i++) {
-                    if (Player.inventory[i].type == ItemID.CopperAxe) {
-                        Player.inventory[i] = new Item(ModContent.ItemType<PebbleAxe>());
-                    }
-                    if (Player.inventory[i].type == ItemID.CopperPickaxe) {
-                        Player.inventory[i] = new Item(ModContent.ItemType<PebblePick>());
-                    }
-                    if (Player.inventory[i].type is ItemID.CopperBroadsword
-                        or ItemID.CopperShortsword) {
-                        Player.inventory[i] = new Item(ModContent.ItemType<PebbleSpear>());
+                if (CWRServerConfig.Instance.OpeningOukModification) {
+                    for (int i = 0; i < Player.inventory.Length; i++) {
+                        if (Player.inventory[i].type == ItemID.CopperAxe) {
+                            Player.inventory[i] = new Item(ModContent.ItemType<PebbleAxe>());
+                        }
+                        if (Player.inventory[i].type == ItemID.CopperPickaxe) {
+                            Player.inventory[i] = new Item(ModContent.ItemType<PebblePick>());
+                        }
+                        if (Player.inventory[i].type is ItemID.CopperBroadsword
+                            or ItemID.CopperShortsword) {
+                            Player.inventory[i] = new Item(ModContent.ItemType<PebbleSpear>());
+                        }
                     }
                 }
                 InitialCreation = false;
@@ -344,13 +346,15 @@ namespace CalamityOverhaul.Content
         }
 
         public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) {
-            yield return new Item(ModContent.ItemType<PebbleSpear>());
-            yield return new Item(ModContent.ItemType<PebblePick>());
-            yield return new Item(ModContent.ItemType<PebbleAxe>());
+            if (CWRServerConfig.Instance.OpeningOukModification) {
+                yield return new Item(ModContent.ItemType<PebbleSpear>());
+                yield return new Item(ModContent.ItemType<PebblePick>());
+                yield return new Item(ModContent.ItemType<PebbleAxe>());
+            }
         }
 
         public override void ModifyStartingInventory(IReadOnlyDictionary<string, List<Item>> itemsByMod, bool mediumCoreDeath) {
-            if (!mediumCoreDeath) {
+            if (!mediumCoreDeath && CWRServerConfig.Instance.OpeningOukModification) {
                 _ = itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperAxe);
                 _ = itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperShortsword);
                 _ = itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperPickaxe);

@@ -1,7 +1,6 @@
 ﻿using CalamityMod.CalPlayer;
 using CalamityMod.Items;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;

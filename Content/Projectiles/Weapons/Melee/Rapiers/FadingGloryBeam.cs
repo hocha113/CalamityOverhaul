@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Graphics.Primitives;
 using CalamityMod.Projectiles.Magic;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;

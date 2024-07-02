@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

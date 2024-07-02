@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Common;
-
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
+﻿namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class PebbleSpearProj : FlintSpearProj
     {

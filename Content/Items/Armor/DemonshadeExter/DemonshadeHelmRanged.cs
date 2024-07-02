@@ -2,7 +2,6 @@
 using CalamityMod.Items.Materials;
 using CalamityMod.Items;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.ModLoader;
 using CalamityMod.Tiles.Furniture.CraftingStations;
@@ -12,19 +11,19 @@ using ReLogic.Content;
 namespace CalamityOverhaul.Content.Items.Armor.DemonshadeExter
 {
     [AutoloadEquip(EquipType.Head)]
-    internal class DemonshadeHelmRanged : ModItem, ISetupData
+    internal class DemonshadeHelmRanged : ModItem, ILoader
     {
         public override string Texture => CWRConstant.Item + "Armor/DemonshadeExter/DemonshadeHelmRanged";
         internal static int PType;
         internal static Asset<Texture2D> Hand;
         internal readonly static string TextureFrome = CWRConstant.Item + "Armor/DemonshadeExter/DemonshadeHelmRanged_Head_Frome";
-        void ISetupData.SetupData() {
+        void ILoader.SetupData() {
             PType = ModContent.ItemType<DemonshadeHelmRanged>();
             if (!Main.dedServ) {
                 Hand = CWRUtils.GetT2DAsset(TextureFrome);
             }
         }
-        void ISetupData.UnLoadData() {
+        void ILoader.UnLoadData() {
             PType = 0;
             Hand = null;
         }

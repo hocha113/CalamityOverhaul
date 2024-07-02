@@ -4,13 +4,11 @@ using CalamityOverhaul.Content.GoreEntity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
@@ -176,13 +174,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public float DrawCrossArrowDrawingDieLengthRatio = 1;
         /// <summary>
-        /// 自定义绘制中心点，默认为<see cref="Vector2.Zero"/>，即不启用
-        /// </summary>
-        protected Vector2 CustomDrawOrig = Vector2.Zero;
-        /// <summary>
         /// 所要绘制的弩箭的数量，默认为1
         /// </summary>
         public int DrawCrossArrowNum = 1;
+        /// <summary>
+        /// 自定义绘制中心点，默认为<see cref="Vector2.Zero"/>，即不启用
+        /// </summary>
+        protected Vector2 CustomDrawOrig = Vector2.Zero;
         /// <summary>
         /// 快速设置抛壳大小，默认为1
         /// </summary>
@@ -206,12 +204,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <summary>
         /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
         /// </summary>
-        public override bool OnHandheldDisplayBool
-        {
-            get
-            {
-                if (WeaponHandheldDisplay)
-                {
+        public override bool OnHandheldDisplayBool {
+            get {
+                if (WeaponHandheldDisplay) {
                     return true;
                 }
                 return CanFire;
@@ -248,15 +243,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <summary>
         /// 更新枪压的作用状态
         /// </summary>
-        public void UpdateRecoil()
-        {
+        public void UpdateRecoil() {
             OffsetRot -= ControlForce;
-            if (OffsetRot <= 0)
-            {
+            if (OffsetRot <= 0) {
                 OffsetRot = 0;
             }
-            if (OffsetPos != Vector2.Zero)
-            {
+            if (OffsetPos != Vector2.Zero) {
                 OffsetPos *= RecoilOffsetRecoverValue;
             }
         }
@@ -265,16 +257,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// ，以确保制造后坐力的时机正确，一般在<see cref="BaseHeldRanged.SpanProj"/>中调用
         /// </summary>
         /// <returns>返回制造出的后坐力向量</returns>
-        public virtual Vector2 CreateRecoil()
-        {
+        public virtual Vector2 CreateRecoil() {
             OffsetRot += GunPressure * OwnerPressureIncrease;
-            if (!CWRServerConfig.Instance.ActivateGunRecoil)
-            {
+            if (!CWRServerConfig.Instance.ActivateGunRecoil) {
                 return Vector2.Zero;
             }
             Vector2 recoilVr = ShootVelocity.UnitVector() * (Recoil * -OwnerPressureIncrease);
-            if (Math.Abs(Owner.velocity.X) < RangeOfStress && Math.Abs(Owner.velocity.Y) < RangeOfStress)
-            {
+            if (Math.Abs(Owner.velocity.X) < RangeOfStress && Math.Abs(Owner.velocity.Y) < RangeOfStress) {
                 Owner.velocity += recoilVr;
             }
             return recoilVr;
@@ -284,10 +273,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public virtual void Recover() { }
 
-        public override void PostSetRangedProperty()
-        {
-            if (IsCrossbow)
-            {
+        public override void PostSetRangedProperty() {
+            if (IsCrossbow) {
                 CanCreateSpawnGunDust = false;
                 CanCreateCaseEjection = false;
             }
@@ -297,16 +284,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 统一获取枪体在开火时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
         /// </summary>
         /// <returns></returns>
-        public virtual float GetGunInFireRot()
-        {
+        public virtual float GetGunInFireRot() {
             return LazyRotationUpdate ? oldSetRoting : GunOnFireRot;
         }
         /// <summary>
         /// 统一获取枪体在开火时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
         /// </summary>
         /// <returns></returns>
-        public virtual Vector2 GetGunInFirePos()
-        {
+        public virtual Vector2 GetGunInFirePos() {
             return Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
         }
 
@@ -314,61 +299,49 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 统一获取枪体在静置时的旋转角，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.rotation
         /// </summary>
         /// <returns></returns>
-        public virtual float GetGunBodyRot()
-        {
+        public virtual float GetGunBodyRot() {
             return Owner.direction > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
         }
         /// <summary>
         /// 统一获取枪体在静置时的中心位置，返回值默认在<see cref="InOwner"/>中被获取设置于Projectile.Center
         /// </summary>
         /// <returns></returns>
-        public virtual Vector2 GetGunBodyPos()
-        {
+        public virtual Vector2 GetGunBodyPos() {
             return Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir;
         }
 
-        protected virtual void setBaseFromeAI()
-        {
+        protected virtual void setBaseFromeAI() {
             Owner.direction = LazyRotationUpdate ? oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1 : ToMouse.X > 0 ? 1 : -1;
             Projectile.rotation = GetGunInFireRot();
             Projectile.Center = GetGunInFirePos();
             ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
         }
 
-        public override void FiringIncident()
-        {
-            if (DownLeft)
-            {
+        public override void FiringIncident() {
+            if (DownLeft) {
                 setBaseFromeAI();
-                if (HaveAmmo)
-                {// && Projectile.IsOwnedByLocalPlayer()
-                    if (!onFire)
-                    {
+                if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
+                    if (!onFire) {
                         oldSetRoting = ToMouseA;
                     }
                     onFire = true;
                 }
             }
-            else
-            {
+            else {
                 onFire = false;
             }
 
-            if (DownRight && !onFire && CanRightClick && SafeMousetStart)
-            {//Owner.PressKey()
+            if (DownRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
                 setBaseFromeAI();
-                if (HaveAmmo)
-                {// && Projectile.IsOwnedByLocalPlayer()
-                    if (!onFireR)
-                    {
+                if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
+                    if (!onFireR) {
                         oldSetRoting = ToMouseA;
                     }
                     SafeMousetStart2 = true;
                     onFireR = true;
                 }
             }
-            else
-            {
+            else {
                 SafeMousetStart2 = false;
                 onFireR = false;
             }
@@ -377,38 +350,32 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <summary>
         /// 先行调用，重写它以设置一些特殊状态
         /// </summary>
-        public virtual void PreInOwnerUpdate()
-        {
+        public virtual void PreInOwnerUpdate() {
 
         }
 
         /// <summary>
         /// 最后调用，重写它以设置一些特殊状态
         /// </summary>
-        public virtual void PostInOwnerUpdate()
-        {
+        public virtual void PostInOwnerUpdate() {
 
         }
 
-        public override void InOwner()
-        {
+        public override void InOwner() {
             PreInOwnerUpdate();
             ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             Projectile.Center = GetGunBodyPos();
             Projectile.rotation = GetGunBodyRot();
             Projectile.timeLeft = 2;
-            if (ShootCoolingValue > 0)
-            {
+            if (ShootCoolingValue > 0) {
                 ShootCoolingValue--;
             }
             SetHeld();
-            if (SafeMouseInterfaceValue)
-            {
+            if (SafeMouseInterfaceValue) {
                 FiringIncident();
             }
-            if (AutomaticPolishingEffect)
-            {
+            if (AutomaticPolishingEffect) {
                 AutomaticPolishing(Item.useTime);
             }
             PostInOwnerUpdate();
@@ -416,10 +383,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <summary>
         /// 一个自动抛科的行为的二次封装
         /// </summary>
-        protected void AutomaticPolishing(int maxTime)
-        {
-            if (ShootCoolingValue == maxTime / 2 && maxTime > 0)
-            {
+        protected void AutomaticPolishing(int maxTime) {
+            if (ShootCoolingValue == maxTime / 2 && maxTime > 0) {
                 SoundEngine.PlaySound(CWRSound.Gun_BoltAction with { Volume = 0.5f, PitchRange = (-0.05f, 0.05f) }, Projectile.Center);
                 CaseEjection();
                 automaticPolishingInShootStartFarg = false;
@@ -429,8 +394,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="BaseHeldRanged.onFire"/>为<see cref="true"/>才可能调用。
         /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
         /// </summary>
-        public virtual void FiringShoot()
-        {
+        public virtual void FiringShoot() {
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
         }
@@ -438,8 +402,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 一个快捷创建发射事件的方法，在<see cref="SpanProj"/>中被调用，<see cref="onFireR"/>为<see cref="true"/>才可能调用。
         /// 值得注意的是，如果需要更强的自定义效果，一般是需要直接重写<see cref="SpanProj"/>的
         /// </summary>
-        public virtual void FiringShootR()
-        {
+        public virtual void FiringShootR() {
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             _ = UpdateConsumeAmmo();
         }
@@ -447,16 +410,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 一个快捷创建属于卢克索饰品的发射事件，如果luxorsGift为<see langword="true"/>,
         /// 或者<see cref="CWRPlayer.TheRelicLuxor"/>大于0，便会调用该方法，在Firing方法之后调用
         /// </summary>
-        public virtual void LuxirEvent()
-        {
+        public virtual void LuxirEvent() {
             float damageMult = 1f;
-            if (Item.useTime < 10)
-            {
+            if (Item.useTime < 10) {
                 damageMult -= (10 - Item.useTime) / 10f;
             }
             int luxirDamage = Owner.ApplyArmorAccDamageBonusesTo(WeaponDamage * damageMult * 0.15f);
-            if (luxirDamage > 1)
-            {
+            if (luxirDamage > 1) {
                 SpanLuxirProj(luxirDamage);
             }
         }
@@ -465,8 +425,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         /// <param name="luxirDamage"></param>
         /// <returns></returns>
-        public virtual int SpanLuxirProj(int luxirDamage)
-        {
+        public virtual int SpanLuxirProj(int luxirDamage) {
             return 0;
         }
         /// <summary>
@@ -475,8 +434,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <param name="toMouLeng"></param>
         /// <param name="norlLeng"></param>
         /// <returns></returns>
-        public virtual Vector2 GetShootPos(float toMouLeng, float norlLeng)
-        {
+        public virtual Vector2 GetShootPos(float toMouLeng, float norlLeng) {
             Vector2 norlVr = (Projectile.rotation + (DirSign > 0 ? MathHelper.PiOver2 : -MathHelper.PiOver2)).ToRotationVector2();
             return Projectile.Center + Projectile.rotation.ToRotationVector2() * toMouLeng + norlVr * norlLeng;
         }
@@ -484,11 +442,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 一个快捷的抛壳方法，需要自行调用
         /// </summary>
         /// <param name="slp"></param>
-        public virtual void CaseEjection(float slp = 1)
-        {
+        public virtual void CaseEjection(float slp = 1) {
             if (CWRMod.Instance.terrariaOverhaul != null && slp == 1
-                || !CWRServerConfig.Instance.EnableCasingsEntity)
-            {
+                || !CWRServerConfig.Instance.EnableCasingsEntity) {
                 return;
             }
             Vector2 pos = Owner.Top + Owner.Top.To(GunShootPos) / 2;
@@ -504,22 +460,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <param name="dustID1"></param>
         /// <param name="dustID2"></param>
         /// <param name="dustID3"></param>
-        public virtual void SpawnGunFireDust(Vector2 pos = default, Vector2 velocity = default, float splNum = 1f, int dustID1 = 262, int dustID2 = 54, int dustID3 = 53)
-        {
-            if (pos == default)
-            {
+        public virtual void SpawnGunFireDust(Vector2 pos = default, Vector2 velocity = default, float splNum = 1f, int dustID1 = 262, int dustID2 = 54, int dustID3 = 53) {
+            if (pos == default) {
                 pos = GunShootPos;
             }
-            if (velocity == default)
-            {
+            if (velocity == default) {
                 velocity = ShootVelocity;
             }
             pos += velocity.SafeNormalize(Vector2.Zero) * Projectile.width * Projectile.scale * 0.71f;
-            for (int i = 0; i < 30 * splNum; i++)
-            {
+            for (int i = 0; i < 30 * splNum; i++) {
                 int dustID;
-                switch (Main.rand.Next(6))
-                {
+                switch (Main.rand.Next(6)) {
                     case 0:
                         dustID = dustID1;
                         break;
@@ -543,19 +494,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
         }
 
-        public virtual void HanderSpwanDust()
-        {
+        public virtual void HanderSpwanDust() {
             SpawnGunFireDust(SpwanGunDustMngsData.pos, SpwanGunDustMngsData.velocity, SpwanGunDustMngsData.splNum
                         , SpwanGunDustMngsData.dustID1, SpwanGunDustMngsData.dustID2, SpwanGunDustMngsData.dustID3);
         }
 
-        public virtual void HanderCaseEjection()
-        {
+        public virtual void HanderCaseEjection() {
             CaseEjection();
         }
 
-        public virtual void SetShootAttribute()
-        {
+        public virtual void SetShootAttribute() {
 
         }
 
@@ -564,8 +512,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 需要注意的是，该函数将会在服务器与其他客户端上运行，所以在编写功能时需要斟酌调用环境以保证其在多人模式的正确运行
         /// </summary>
         /// <returns></returns>
-        public virtual bool PreFiringShoot()
-        {
+        public virtual bool PreFiringShoot() {
             return true;
         }
         /// <summary>
@@ -575,66 +522,50 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <returns></returns>
         public virtual void PostFiringShoot() { }
 
-        public override void SpanProj()
-        {
-            if (ShootCoolingValue <= 0 && (onFire || onFireR))
-            {
-                if (LazyRotationUpdate)
-                {
+        public override void SpanProj() {
+            if (ShootCoolingValue <= 0 && (onFire || onFireR)) {
+                if (LazyRotationUpdate) {
                     Projectile.rotation = oldSetRoting = ToMouseA;
                 }
 
-                if (ForcedConversionTargetAmmoFunc.Invoke())
-                {
+                if (ForcedConversionTargetAmmoFunc.Invoke()) {
                     AmmoTypes = ToTargetAmmo;
                 }
 
                 SetShootAttribute();
 
-                if (PreFiringShoot())
-                {
-                    if (Projectile.IsOwnedByLocalPlayer())
-                    {
-                        if (onFire)
-                        {
+                if (PreFiringShoot()) {
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        if (onFire) {
                             FiringShoot();
                         }
-                        if (onFireR)
-                        {
+                        if (onFireR) {
                             FiringShootR();
                         }
-                        if (CalOwner.luxorsGift || ModOwner.TheRelicLuxor > 0)
-                        {
+                        if (CalOwner.luxorsGift || ModOwner.TheRelicLuxor > 0) {
                             LuxirEvent();
                         }
-                        if (GlobalItemBehavior)
-                        {
+                        if (GlobalItemBehavior) {
                             ItemLoaderInFireSetBaver();
                         }
                     }
 
-                    if (FiringDefaultSound)
-                    {
+                    if (FiringDefaultSound) {
                         HanderPlaySound();
                     }
-                    if (CanCreateSpawnGunDust)
-                    {
+                    if (CanCreateSpawnGunDust) {
                         HanderSpwanDust();
                     }
-                    if (CanCreateCaseEjection && !AutomaticPolishingEffect)
-                    {
+                    if (CanCreateCaseEjection && !AutomaticPolishingEffect) {
                         HanderCaseEjection();
                     }
-                    if (CanCreateRecoilBool)
-                    {
+                    if (CanCreateRecoilBool) {
                         CreateRecoil();
                     }
-                    if (EnableRecoilRetroEffect)
-                    {
+                    if (EnableRecoilRetroEffect) {
                         OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
                     }
-                    if (FireLight > 0)
-                    {
+                    if (FireLight > 0) {
                         Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * FireLight);
                     }
                 }
@@ -645,49 +576,39 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
         }
 
-        public override bool PreUpdate()
-        {
+        public override bool PreUpdate() {
             bool reset = base.PreUpdate();
-            if (ModOwner == null)
-            {
+            if (ModOwner == null) {
                 ModOwner = Owner.CWR();
             }
             ModOwner.HeldGunBool = true;
             return reset;
         }
 
-        public override void AI()
-        {
+        public override void AI() {
             InOwner();
-            if (SetArmRotBool)
-            {
+            if (SetArmRotBool) {
                 SetCompositeArm();
             }
             UpdateRecoil();
-            if (overNoFireCeahks())
-            {
+            if (overNoFireCeahks()) {
                 SpanProj();
             }
             Time++;
             Recover();
         }
 
-        public void SetCompositeArm()
-        {
-            if (OnHandheldDisplayBool)
-            {
+        public void SetCompositeArm() {
+            if (OnHandheldDisplayBool) {
                 Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
                 Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
             }
         }
 
-        public sealed override bool PreDraw(ref Color lightColor)
-        {
-            if (OnHandheldDisplayBool)
-            {
+        public sealed override bool PreDraw(ref Color lightColor) {
+            if (OnHandheldDisplayBool) {
                 Color color = lightColor;
-                if (!CWRServerConfig.Instance.WeaponAdaptiveIllumination && CanFire)
-                {
+                if (!CWRServerConfig.Instance.WeaponAdaptiveIllumination && CanFire) {
                     color = Color.White;
                 }
                 GunDraw(ref color);
@@ -695,12 +616,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             return false;
         }
 
-        public virtual void GunDraw(ref Color lightColor)
-        {
+        public virtual void GunDraw(ref Color lightColor) {
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, lightColor
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
-            if (IsCrossbow && CanDrawCrossArrow && CWRServerConfig.Instance.BowArrowDraw)
-            {
+            if (IsCrossbow && CanDrawCrossArrow && CWRServerConfig.Instance.BowArrowDraw) {
                 DrawBolt();
             }
         }
@@ -709,65 +628,52 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 获取拉弓弦的进度比例，用于处理弩箭的动画进度
         /// </summary>
         /// <returns></returns>
-        public virtual float GetBoltInFireRatio()
-        {
+        public virtual float GetBoltInFireRatio() {
             float value1 = Projectile.ai[1] * 2;
-            if (value1 > Item.useTime)
-            {
+            if (value1 > Item.useTime) {
                 value1 = Item.useTime;
             }
             return value1 / Item.useTime;
         }
 
-        public void DrawBolt()
-        {
+        public void DrawBolt() {
             bool boolvalue = Projectile.ai[1] < Item.useTime - 3;
-            if (Item.useTime <= 5)
-            {
+            if (Item.useTime <= 5) {
                 boolvalue = true;
             }
 
-            if (boolvalue)
-            {
+            if (boolvalue) {
                 int useAmmoItemType = UseAmmoItemType;
-                if (useAmmoItemType == ItemID.None)
-                {
+                if (useAmmoItemType == ItemID.None) {
                     return;
                 }
-                if (useAmmoItemType > 0 && useAmmoItemType < TextureAssets.Item.Length)
-                {
+                if (useAmmoItemType > 0 && useAmmoItemType < TextureAssets.Item.Length) {
                     Main.instance.LoadItem(useAmmoItemType);
                 }
 
                 Texture2D arrowValue = TextureAssets.Item[useAmmoItemType].Value;
                 Item arrowItemInds = new Item(useAmmoItemType);
 
-                if (!arrowItemInds.consumable)
-                {
+                if (!arrowItemInds.consumable) {
                     int newtype = ItemID.WoodenArrow;
-                    if (CWRLoad.ProjectileToSafeAmmoMap.TryGetValue(arrowItemInds.shoot, out int value2))
-                    {
+                    if (CWRLoad.ProjectileToSafeAmmoMap.TryGetValue(arrowItemInds.shoot, out int value2)) {
                         newtype = value2;
                     }
                     Main.instance.LoadItem(newtype);
                     arrowValue = TextureAssets.Item[newtype].Value;
                 }
 
-                if (ForcedConversionTargetAmmoFunc.Invoke() && ToTargetAmmoInDraw != -1)
-                {
+                if (ForcedConversionTargetAmmoFunc.Invoke() && ToTargetAmmoInDraw != -1) {
                     arrowValue = TextureAssets.Projectile[ToTargetAmmo].Value;
-                    if (ToTargetAmmoInDraw > 0)
-                    {
+                    if (ToTargetAmmoInDraw > 0) {
                         arrowValue = TextureAssets.Projectile[ToTargetAmmoInDraw].Value;
                     }
-                    if (ISForcedConversionDrawAmmoInversion)
-                    {
+                    if (ISForcedConversionDrawAmmoInversion) {
                         CustomDrawOrig = new Vector2(arrowValue.Width / 2, 0);
                         DrawCrossArrowOffsetRot = MathHelper.Pi;
                     }
                 }
-                else if (ISForcedConversionDrawAmmoInversion)
-                {
+                else if (ISForcedConversionDrawAmmoInversion) {
                     CustomDrawOrig = Vector2.Zero;
                     DrawCrossArrowOffsetRot = 0;
                 }
@@ -785,58 +691,46 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos) + norlValue
                     , null, Color.White, drawRot + overOffsetRot + DrawCrossArrowOffsetRot, drawOrig, Projectile.scale * DrawCrossArrowSize, SpriteEffects.FlipVertically);
 
-                if (DrawCrossArrowNum == 1)
-                {
+                if (DrawCrossArrowNum == 1) {
                     drawArrow();
                 }
-                else if (DrawCrossArrowNum == 2)
-                {
+                else if (DrawCrossArrowNum == 2) {
                     drawArrow(0.3f * chordCoefficient);
                     drawArrow(-0.3f * chordCoefficient);
                 }
-                else if (DrawCrossArrowNum == 3)
-                {
+                else if (DrawCrossArrowNum == 3) {
                     drawArrow(0.4f * chordCoefficient * Owner.direction);
                     drawArrow();
                     drawArrow(-0.3f * chordCoefficient * Owner.direction);
                 }
-                else
-                {
+                else {
                     drawArrow();
                 }
             }
         }
 
-        public string GetLckRecoilKey()
-        {
+        public string GetLckRecoilKey() {
             float recoilValue = Math.Abs(Recoil);
             string recoilKey;
-            if (recoilValue == 0)
-            {
+            if (recoilValue == 0) {
                 return "CWRGun_Recoil_Level_0";
             }
-            if (recoilValue < 0.5f)
-            {
+            if (recoilValue < 0.5f) {
                 recoilKey = "CWRGun_Recoil_Level_1";
             }
-            else if (recoilValue < 0.1f)
-            {
+            else if (recoilValue < 0.1f) {
                 recoilKey = "CWRGun_Recoil_Level_2";
             }
-            else if (recoilValue < 1.5f)
-            {
+            else if (recoilValue < 1.5f) {
                 recoilKey = "CWRGun_Recoil_Level_3";
             }
-            else if (recoilValue < 2.2f)
-            {
+            else if (recoilValue < 2.2f) {
                 recoilKey = "CWRGun_Recoil_Level_4";
             }
-            else if (recoilValue < 3.2f)
-            {
+            else if (recoilValue < 3.2f) {
                 recoilKey = "CWRGun_Recoil_Level_5";
             }
-            else
-            {
+            else {
                 recoilKey = "CWRGun_Recoil_Level_6";
             }
             return recoilKey;

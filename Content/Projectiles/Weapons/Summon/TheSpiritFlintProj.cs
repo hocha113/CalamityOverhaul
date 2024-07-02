@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs.Summon;
 using Microsoft.Xna.Framework;
 using System;

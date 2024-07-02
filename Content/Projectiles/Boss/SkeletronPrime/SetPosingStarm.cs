@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.NPCs;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;

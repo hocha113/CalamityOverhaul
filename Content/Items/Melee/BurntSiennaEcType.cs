@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Projectiles.Healing;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;

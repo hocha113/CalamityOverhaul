@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
 using Microsoft.Xna.Framework;
 using Terraria;

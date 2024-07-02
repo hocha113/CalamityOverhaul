@@ -45,7 +45,7 @@ namespace CalamityOverhaul
         internal static bool Suitableversion_improveGame { get; private set; }
 
         internal List<Mod> LoadMods { get; private set; }
-        internal List<ISetupData> SetupDatas { get; private set; }
+        internal List<ILoader> SetupDatas { get; private set; }
         internal static List<BaseRItem> RItemInstances { get; private set; } = new List<BaseRItem>();
         internal static List<EctypeItem> EctypeItemInstance { get; private set; } = new List<EctypeItem>();
         internal static List<NPCCustomizer> NPCCustomizerInstances { get; private set; } = new List<NPCCustomizer>();
@@ -172,7 +172,7 @@ namespace CalamityOverhaul
 
         public override void Load() {
             Instance = this;
-            SetupDatas = CWRUtils.GetSubInterface<ISetupData>("ISetupData");
+            SetupDatas = CWRUtils.GetSubInterface<ILoader>("ISetupData");
             foreach (var setup in SetupDatas) {
                 setup.LoadData();
             }
@@ -196,7 +196,7 @@ namespace CalamityOverhaul
             InWorldBossPhase.UnLoad();
             CWRKeySystem.Unload();
             StructuresBehavior.UnLoad();
-
+            emptyMod();
             UnLoadClient();
             foreach (var setup in SetupDatas) {
                 setup.UnLoadData();

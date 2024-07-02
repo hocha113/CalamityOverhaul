@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Microsoft.Xna.Framework;

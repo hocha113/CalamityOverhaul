@@ -1,6 +1,7 @@
-﻿using Terraria.ModLoader;
+﻿using CalamityOverhaul.Common;
+using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Common
+namespace CalamityOverhaul
 {
     public static class CWRConstant
     {

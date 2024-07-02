@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;

@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
 using Terraria;
 using Terraria.DataStructures;

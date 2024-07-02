@@ -5,7 +5,6 @@ using Terraria.ID;
 using Terraria;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using System;
 using Terraria.Graphics.CameraModifiers;

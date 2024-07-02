@@ -3,7 +3,6 @@ using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.CalPlayer;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

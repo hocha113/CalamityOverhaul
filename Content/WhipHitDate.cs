@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Summon.Extras;
+﻿using CalamityOverhaul.Content.Items.Summon.Extras;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 

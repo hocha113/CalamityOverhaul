@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Summon;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Summon;
 using Terraria;
 using Terraria.ModLoader;
 

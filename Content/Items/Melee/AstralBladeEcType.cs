@@ -3,7 +3,6 @@ using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Dusts;
 using CalamityMod.Items;
 using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;
 using Microsoft.Xna.Framework;
 using System;

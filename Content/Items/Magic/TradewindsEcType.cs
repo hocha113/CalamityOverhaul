@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Projectiles.Magic;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
 using Terraria;
 using Terraria.ID;

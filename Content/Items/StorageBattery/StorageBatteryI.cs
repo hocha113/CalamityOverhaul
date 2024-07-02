@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Items.DraedonMisc;
 using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
 
 namespace CalamityOverhaul.Content.Items.StorageBattery
 {

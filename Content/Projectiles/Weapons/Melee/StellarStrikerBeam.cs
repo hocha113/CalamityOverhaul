@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Graphics.Shaders;

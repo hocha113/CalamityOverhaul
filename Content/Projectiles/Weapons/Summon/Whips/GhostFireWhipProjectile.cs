@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Dusts;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using Microsoft.Xna.Framework;

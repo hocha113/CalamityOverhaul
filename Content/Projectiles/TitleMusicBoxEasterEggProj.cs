@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.NPCs.SupremeCalamitas;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;

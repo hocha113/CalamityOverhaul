@@ -3,7 +3,6 @@ using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Sounds;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;

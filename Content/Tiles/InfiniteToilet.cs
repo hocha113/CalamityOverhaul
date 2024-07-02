@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Magic;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
 using Microsoft.Xna.Framework;
 using Terraria;

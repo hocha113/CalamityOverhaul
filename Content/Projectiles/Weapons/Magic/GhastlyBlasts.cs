@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Magic;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;

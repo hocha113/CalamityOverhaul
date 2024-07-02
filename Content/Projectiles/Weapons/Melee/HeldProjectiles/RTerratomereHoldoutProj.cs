@@ -2,7 +2,6 @@
 using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Graphics.Primitives;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

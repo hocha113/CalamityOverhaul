@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Tiles.Ores;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

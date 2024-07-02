@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using Terraria;
 using Terraria.ID;

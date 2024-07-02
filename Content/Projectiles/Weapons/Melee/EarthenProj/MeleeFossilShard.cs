@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

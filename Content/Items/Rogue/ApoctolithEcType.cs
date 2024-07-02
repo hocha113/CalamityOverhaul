@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Weapons.Rogue;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using Terraria;
 using Terraria.ID;

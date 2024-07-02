@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

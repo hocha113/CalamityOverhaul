@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Melee;
+using CalamityOverhaul;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Materials;
@@ -196,6 +197,9 @@ namespace CalamityOverhaul.Content
             MagazineContents = new Item[AmmoCapacity];
             for (int i = 0; i < MagazineContents.Length; i++) {
                 MagazineContents[i] = new Item();
+            }
+            if (!CWRServerConfig.Instance.MagazineSystem) {
+                IsKreload = true;
             }
         }
 

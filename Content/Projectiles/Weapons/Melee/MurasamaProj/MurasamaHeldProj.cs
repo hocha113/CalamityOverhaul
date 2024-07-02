@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
-    internal class MurasamaHeldProj : BaseHeldProj, ISetupData
+    internal class MurasamaHeldProj : BaseHeldProj, ILoader
     {
         public override string Texture => CWRConstant.Projectile_Melee + "MurasamaHeldProj";
         private Item murasama => Owner.ActiveItem();
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private static Asset<Texture2D> MuraBarFull;
         private static int breakOutType;
 
-        void ISetupData.SetupData() {
+        void ILoader.SetupData() {
             breakOutType = ModContent.ProjectileType<MurasamaBreakOut>();
             if (Main.dedServ) {
                 return;
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             MuraBarTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarTop");
             MuraBarFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarFull");
         }
-        void ISetupData.UnLoadData() {
+        void ILoader.UnLoadData() {
             breakOutType = 0;
             MuraBarBottom = null;
             MuraBarTop = null;

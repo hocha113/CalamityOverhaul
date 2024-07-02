@@ -3,6 +3,7 @@ using CalamityMod.Items.Accessories.Vanity;
 using CalamityMod.Items.LoreItems;
 using CalamityMod.Items.Pets;
 using CalamityMod.Items.TreasureBags.MiscGrabBags;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Magic.Extras;
 using CalamityOverhaul.Content.Items.Materials;
@@ -20,6 +21,9 @@ namespace CalamityOverhaul.Content.RemakeItems
     {
         public override int TargetID => ModContent.ItemType<StarterBag>();
         public override bool FormulaSubstitution => false;
+        public override bool CanLoad() {//如果不启用开局物品修改，那么便不会试图修改开局战利品袋子的内容
+            return CWRServerConfig.Instance.OpeningOukModification;
+        }
         internal void Loot(ItemLoot itemLoot) {
             itemLoot.Add(ModContent.ItemType<OverhaulTheBibleBook>());
             itemLoot.Add(ModContent.ItemType<TheUpiStele>());

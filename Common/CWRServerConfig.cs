@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Projectiles.Ranged;
 using Microsoft.Xna.Framework;
 using System.ComponentModel;
+using Terraria;
 using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Common
@@ -53,6 +54,10 @@ namespace CalamityOverhaul.Common
         [DefaultValue(true)]
         public bool WeaponEnhancementSystem { get; set; }
 
+        [BackgroundColor(35, 185, 78, 192)]
+        [DefaultValue(false)]
+        public bool OpeningOukModification { get; set; }
+
         /// <summary>
         /// 重置物品的温馨提示
         /// </summary>
@@ -89,6 +94,10 @@ namespace CalamityOverhaul.Common
         [BackgroundColor(192, 54, 94, 192)]
         [DefaultValue(true)]
         public bool WeaponAdaptiveVolumeScaling { get; set; }
+
+        [BackgroundColor(192, 54, 94, 192)]
+        [DefaultValue(false)]
+        public bool ShotgunFireForcedReloadInterruption { get; set; }
 
         /// <summary>
         /// 武器屏幕振动

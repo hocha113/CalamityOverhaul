@@ -27,6 +27,7 @@ using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -114,6 +115,14 @@ namespace CalamityOverhaul
         internal static Dictionary<int, BaseBow> ItemToBaseBow = new();
         internal static Dictionary<int, BaseHeldRanged> ItemToBaseRanged = new();
         internal static Dictionary<int, int> ProjectileToSafeAmmoMap = new();
+        /// <summary>
+        /// 对应ID的武器是否应该判定为一个霰弹枪
+        /// </summary>
+        internal static Dictionary<int, bool> WeaponIsShotgunSkt = new();
+        /// <summary>
+        /// 对应ID的武器是否应该判定为一个弩
+        /// </summary>
+        internal static Dictionary<int, bool> WeaponIsCrossbow = new();
         /// <summary>
         /// 扫地机器人
         /// </summary>
@@ -532,6 +541,9 @@ namespace CalamityOverhaul
             for (int i = 0; i < ItemLoader.ItemCount; i++) {
                 Item item = new Item(i);
                 if (item != null && item.type != ItemID.None) {//验证物品是否有效
+                    WeaponIsShotgunSkt.TryAdd(item.type, false);
+                    WeaponIsCrossbow.TryAdd(item.type, false);
+
                     if (item.createTile != -1 && !TileToItem.ContainsKey(item.createTile)) {
                         TileToItem.Add(item.createTile, item.type);
                     }
@@ -552,6 +564,15 @@ namespace CalamityOverhaul
                             BaseGun gun = projectile.ModProjectile as BaseGun;
                             if (gun != null) {
                                 ItemToBaseGun.Add(item.type, gun);
+                                if (gun.IsCrossbow) {
+                                    WeaponIsCrossbow[item.type] = true;
+                                }
+                            }
+                            BaseFeederGun baseFeederGun = projectile.ModProjectile as BaseFeederGun;
+                            if (baseFeederGun != null) {
+                                if (baseFeederGun.LoadingAmmoAnimation == BaseFeederGun.LoadingAmmoAnimationEnum.Shotgun) {
+                                    WeaponIsShotgunSkt[item.type] = true;
+                                }
                             }
                         }
                         if (!ItemToBaseBow.ContainsKey(item.type)) {

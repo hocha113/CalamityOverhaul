@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Projectiles.Rogue;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;

@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.NPCs.DevourerofGods;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;

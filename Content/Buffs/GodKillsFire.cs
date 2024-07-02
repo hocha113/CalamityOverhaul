@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Dusts;
+﻿using CalamityOverhaul.Content.Dusts;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

@@ -4,7 +4,6 @@ using CalamityMod.Dusts;
 using CalamityMod.Items;
 using CalamityMod.NPCs;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj;
 using Microsoft.Xna.Framework;
 using Terraria;

@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using Microsoft.Xna.Framework;

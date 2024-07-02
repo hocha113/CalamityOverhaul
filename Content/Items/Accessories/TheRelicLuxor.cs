@@ -3,7 +3,6 @@ using CalamityMod.Items;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Materials;
 using CalamityOverhaul;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

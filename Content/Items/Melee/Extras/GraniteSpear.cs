@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Terraria;

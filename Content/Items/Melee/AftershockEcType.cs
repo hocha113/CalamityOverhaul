@@ -2,7 +2,6 @@
 using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Items;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
 using Microsoft.Xna.Framework;
 using System;

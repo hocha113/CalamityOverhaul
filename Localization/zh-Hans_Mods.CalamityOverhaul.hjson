@@ -3546,7 +3546,7 @@ Configs: {
 		}
 
 		WeaponAdaptiveIllumination: {
-			Label: 武器适应性光照(实验性)
+			Label: 武器适应性光照[c/06e33f:(实验性)]
 			Tooltip:
 				'''
 				默认开启，使用时武器将正常使用环境光混合绘制
@@ -3555,7 +3555,7 @@ Configs: {
 		}
 
 		WeaponAdaptiveVolumeScaling: {
-			Label: 武器适应性缩放(实验性)
+			Label: 武器适应性缩放[c/06e33f:(实验性)]
 			Tooltip:
 				'''
 				默认开启，武器将具备不同的绘制缩放，以保持视觉自然并防止过度遮挡
@@ -3565,12 +3565,30 @@ Configs: {
 
 		EnableCasingsEntity: {
 			Label: 启用弹壳实体
-			Tooltip: ""
+			Tooltip: 如果觉得滚动一地的弹壳很碍眼，关掉这个选项将是一个好主意
 		}
 
 		LoadingAA_Volume: {
 			Label: 枪械换弹音效音量系数
 			Tooltip: 值越大声音越明显，1为原音量
+		}
+
+		OpeningOukModification: {
+			Label: 启用开局物品袋修改[c/06e33f:(实验性)]
+			Tooltip:
+				'''
+				如果开启，会完全修改初始角色的背包物品，比如，铜质工具会变成石头工具
+				在当前版本归纳为实验性功能，默认关闭，如果开启，将只会在新创建的角色上生效
+				'''
+		}
+
+		ShotgunFireForcedReloadInterruption: {
+			Label: 霰弹枪开火强制打断子弹装填[c/06e33f:(实验性)]
+			Tooltip:
+				'''
+				小部分的霰弹枪类拥有这个特性，在装填子弹时，如果玩家试图开火将打断装填动作
+				这个选项如果开启，将令所有霰弹枪武器具备该特性
+				'''
 		}
 	}
 }

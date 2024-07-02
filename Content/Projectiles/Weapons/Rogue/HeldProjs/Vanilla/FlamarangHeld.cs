@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent;
 using Terraria.ID;

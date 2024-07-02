@@ -1,12 +1,11 @@
-﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GoreEntity
 {
-    internal class CaseGore : ModGore, ISetupData
+    internal class CaseGore : ModGore, ILoader
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "GunCasing";
         public static int PType;

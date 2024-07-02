@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Shaders;

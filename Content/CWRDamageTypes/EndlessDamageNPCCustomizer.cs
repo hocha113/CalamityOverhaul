@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.CWRDamageTypes
 {
-    internal class EndlessDamageNPCCustomizer : NPCCustomizer, ISetupData
+    internal class EndlessDamageNPCCustomizer : NPCCustomizer, ILoader
     {
         private static List<int> nihilityProjs = new List<int>();
 

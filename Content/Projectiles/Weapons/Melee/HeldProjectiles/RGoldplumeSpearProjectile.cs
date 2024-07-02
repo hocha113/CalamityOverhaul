@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Projectiles.BaseProjectiles;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Graphics.Effects;
@@ -7,9 +6,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.SkyEffects
 {
-    internal class BrutalSkeletronSky : CustomSky, ISetupData
+    internal class BrutalSkeletronSky : CustomSky, ILoader
     {
-        void ISetupData.LoadData() {
+        void ILoader.LoadData() {
             if (CWRUtils.isServer) {
                 return;
             }

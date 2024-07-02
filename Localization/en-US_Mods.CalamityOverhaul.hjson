@@ -3557,6 +3557,16 @@ Configs: {
 			Label: Gun Reload Sound Volume Coefficient
 			Tooltip: The larger the value, the more prominent the sound; 1 is the original volume
 		}
+
+		OpeningOukModification: {
+			Label: Opening Ouk Modification
+			Tooltip: ""
+		}
+
+		ShotgunFireForcedReloadInterruption: {
+			Label: Shotgun Fire Forced Reload Interruption
+			Tooltip: ""
+		}
 	}
 }
 

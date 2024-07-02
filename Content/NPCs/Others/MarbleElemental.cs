@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic.Extras;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using Microsoft.Xna.Framework;

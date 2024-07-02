@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Extras

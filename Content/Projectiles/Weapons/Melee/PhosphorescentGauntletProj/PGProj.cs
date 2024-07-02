@@ -1,6 +1,5 @@
 ﻿using CalamityMod.DataStructures;
 using CalamityMod.Dusts;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

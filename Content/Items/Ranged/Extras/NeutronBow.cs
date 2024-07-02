@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Extras
 {
-    internal class NeutronBow : ModItem, ISetupData
+    internal class NeutronBow : ModItem, ILoader
     {
         public override string Texture => CWRConstant.Item_Ranged + "NeutronBow";
         public static int PType;

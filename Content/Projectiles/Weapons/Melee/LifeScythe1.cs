@@ -2,7 +2,6 @@
 using Terraria.ID;
 using Terraria;
 using Terraria.ModLoader;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;

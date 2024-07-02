@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;

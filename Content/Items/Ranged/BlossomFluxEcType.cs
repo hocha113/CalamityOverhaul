@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
 using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;

@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityOverhaul.Content.Items.Ranged;
 using Terraria;
 using Terraria.ModLoader;
 

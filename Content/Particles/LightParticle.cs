@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class LightParticle : CWRParticle, ISetupData
+    internal class LightParticle : CWRParticle, ILoader
     {
         public override string Texture => "CalamityMod/Particles/Light";
         public override bool UseAdditiveBlend => true;
@@ -23,11 +23,11 @@ namespace CalamityOverhaul.Content.Particles
         public Entity entity;
         internal static Asset<Texture2D> Tex;
         internal static Asset<Texture2D> BloomTex;
-        void ISetupData.LoadAsset() {
+        void ILoader.LoadAsset() {
             Tex = CWRUtils.GetT2DAsset("CalamityMod/Particles/Light");
             BloomTex = CWRUtils.GetT2DAsset("CalamityMod/Particles/BloomCircle");
         }
-        void ISetupData.UnLoadData() {
+        void ILoader.UnLoadData() {
             Tex = null;
             BloomTex = null;
         }

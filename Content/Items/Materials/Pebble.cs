@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

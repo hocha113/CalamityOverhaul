@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj;
 using Microsoft.Xna.Framework;
 using Terraria;

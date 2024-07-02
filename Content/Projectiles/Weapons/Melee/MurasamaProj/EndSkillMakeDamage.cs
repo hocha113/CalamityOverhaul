@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using System.Linq;
+﻿using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 

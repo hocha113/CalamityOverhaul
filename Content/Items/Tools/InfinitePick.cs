@@ -120,9 +120,10 @@ namespace CalamityOverhaul.Content.Items.Tools
 
                                     tile.LiquidAmount = 0;
                                     tile.HasTile = false;
-                                    WorldGen.SquareTileFrame((int)tilePos.X, (int)tilePos.Y);
-                                    if (Main.netMode != NetmodeID.SinglePlayer)
+                                    CWRUtils.SafeSquareTileFrame(tilePos, tile);
+                                    if (Main.netMode != NetmodeID.SinglePlayer) {
                                         NetMessage.SendTileSquare(player.whoAmI, x, y);
+                                    }
                                 }
 
                                 if (tile.WallType != 0) {

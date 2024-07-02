@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private NPC head;
         private int frame;
         private Player player;
-        public override bool CanLoad() => false;
+        public override bool CanLoad() => true;
         internal void Movement(NPC npc) {
             float acceleration = (bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f));
             float accelerationMult = 1f;

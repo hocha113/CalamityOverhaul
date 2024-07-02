@@ -2,7 +2,6 @@
 using CalamityMod.Items;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj;
 using Microsoft.Xna.Framework;
 using System;

@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
