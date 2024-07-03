@@ -29,6 +29,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
             LoadingAA_Shotgun.loadShellSound = CWRSound.Gun_Shotgun_LoadShell with { Volume = 0.75f };
             LoadingAA_Shotgun.pump = CWRSound.Gun_Clipout with { Volume = 0.6f };
+            if (!MagazineSystem) {
+                FireTime += 30;
+            }
         }
 
         public override void FiringShoot() {

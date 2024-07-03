@@ -6,6 +6,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 发条突击步枪
+    /// </summary>
     internal class ClockworkAssaultRifleHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -40,6 +43,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             chargeAmmoNum++;
             if (chargeAmmoNum >= 3) {
                 FireTime = 20;
+                if (!MagazineSystem) {
+                    FireTime += 5;
+                }
                 chargeAmmoNum = 0;
             }
         }

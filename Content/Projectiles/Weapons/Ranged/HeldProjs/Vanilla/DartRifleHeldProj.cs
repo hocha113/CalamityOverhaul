@@ -30,6 +30,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAA_None.loadingAA_None_Roting = 30;
             LoadingAA_None.loadingAA_None_X = 0;
             LoadingAA_None.loadingAA_None_Y = 13;
+            if (!MagazineSystem) {
+                FireTime += 2;
+            }
         }
 
         public override void FiringShoot() {

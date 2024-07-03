@@ -42,8 +42,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override void UnLoad() {
             Instance = null;
             _sengs = 0;
-            steamOAC.Dispose();
-            githubOAC.Dispose();
+            steamOAC = null;
+            githubOAC = null;
         }
 
         public override void Initialize() {
