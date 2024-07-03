@@ -45,7 +45,7 @@ namespace CalamityOverhaul
         internal static bool Suitableversion_improveGame { get; private set; }
 
         internal List<Mod> LoadMods { get; private set; }
-        internal List<ILoader> SetupDatas { get; private set; }
+        internal List<ILoader> ILoaders { get; private set; }
         internal static List<BaseRItem> RItemInstances { get; private set; } = new List<BaseRItem>();
         internal static List<EctypeItem> EctypeItemInstance { get; private set; } = new List<EctypeItem>();
         internal static List<NPCCustomizer> NPCCustomizerInstances { get; private set; } = new List<NPCCustomizer>();
@@ -162,7 +162,7 @@ namespace CalamityOverhaul
 
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
             CWRLoad.Load();
-            foreach (var i in SetupDatas) { 
+            foreach (var i in ILoaders) { 
                 i.SetupData();
                 if (!Main.dedServ) {
                     i.LoadAsset();
@@ -172,8 +172,8 @@ namespace CalamityOverhaul
 
         public override void Load() {
             Instance = this;
-            SetupDatas = CWRUtils.GetSubInterface<ILoader>("ILoader");
-            foreach (var setup in SetupDatas) {
+            ILoaders = CWRUtils.GetSubInterface<ILoader>("ILoader");
+            foreach (var setup in ILoaders) {
                 setup.LoadData();
             }
             FindMod();
@@ -198,10 +198,10 @@ namespace CalamityOverhaul
             StructuresBehavior.UnLoad();
             emptyMod();
             UnLoadClient();
-            foreach (var setup in SetupDatas) {
+            foreach (var setup in ILoaders) {
                 setup.UnLoadData();
             }
-            SetupDatas = null;
+            ILoaders = null;
             base.Unload();
         }
 

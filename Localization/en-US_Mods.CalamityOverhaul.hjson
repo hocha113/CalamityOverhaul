@@ -4175,7 +4175,7 @@ TextContent: {
 			or visit the mod's Steam Workshop 'Feedback on Issues' thread for assistance.
 			'''
 		IconUI_Text1: Problem feedback
-		IconUI_Text2: Thank you list
+		IconUI_Text2: Acknowledgments
 		Wap_BubbleGun_Text:
 			'''
 			Exploding ocean bubbles

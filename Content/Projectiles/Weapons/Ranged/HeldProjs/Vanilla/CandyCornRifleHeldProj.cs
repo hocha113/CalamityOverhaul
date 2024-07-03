@@ -6,6 +6,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 玉米糖步枪
+    /// </summary>
     internal class CandyCornRifleHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -36,6 +39,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAA_None.loadingAA_None_Roting = 30;
             LoadingAA_None.loadingAA_None_X = 3;
             LoadingAA_None.loadingAA_None_Y = 10;
+            if (!MagazineSystem) {
+                FireTime += 1;
+            }
         }
 
         public override void FiringShoot() {
