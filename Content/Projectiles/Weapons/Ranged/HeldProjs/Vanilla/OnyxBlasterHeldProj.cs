@@ -26,6 +26,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 3.2f;
             RangeOfStress = 48;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
+            if (!MagazineSystem) {
+                FireTime += kreloadMaxTime;
+            }
         }
 
         public override void HanderPlaySound() {

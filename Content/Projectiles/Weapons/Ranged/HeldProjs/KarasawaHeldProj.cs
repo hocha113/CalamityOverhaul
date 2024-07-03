@@ -27,6 +27,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0;
             Recoil = 2.2f;
             RangeOfStress = 25;
+            if (!MagazineSystem) {
+                FireTime += 8;
+                LazyRotationUpdate = true;
+            }
         }
 
         public override void HanderSpwanDust() {

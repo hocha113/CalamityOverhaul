@@ -31,6 +31,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
             LoadingAA_Shotgun.loadShellSound = CWRSound.Gun_Clipin with { Volume = 0.65f, Pitch = 0.2f };
             LoadingAA_Shotgun.pump = CWRSound.Gun_ClipinLocked with { Volume = 0.6f };
+            if (!MagazineSystem) {
+                FireTime += 20;
+            }
         }
 
         public override bool PreReloadEffects(int time, int maxTime) {

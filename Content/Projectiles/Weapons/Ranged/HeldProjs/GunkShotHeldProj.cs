@@ -33,6 +33,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAA_Shotgun.loadingAmmoStarg_rot = 50;
             LoadingAA_Shotgun.loadingAmmoStarg_x = 3;
             LoadingAA_Shotgun.loadingAmmoStarg_y = 25;
+            if (!MagazineSystem) {
+                FireTime += 15;
+            }
         }
 
         public override void FiringShoot() {

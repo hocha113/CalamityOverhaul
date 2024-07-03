@@ -54,15 +54,15 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 sengs += 0.01f;
             }
             DrawPos = new Vector2(Main.screenWidth - 82, -100 + sengs * 101);
-            Text1P = new Rectangle((int)text1Pos.X, (int)text1Pos.Y, (int)text1Vr.X, (int)text1Vr.Y);
-            Text2P = new Rectangle((int)text2Pos.X, (int)text2Pos.Y, (int)text2Vr.X, (int)text2Vr.Y);
-            Text3P = new Rectangle((int)text3Pos.X, (int)text3Pos.Y, (int)text3Vr.X, (int)text3Vr.Y);
+            Text1P = new Rectangle((int)text1Pos.X, (int)text1Pos.Y, (int)text1Vr.X, (int)text1Vr.Y - 5);
+            Text2P = new Rectangle((int)text2Pos.X, (int)text2Pos.Y, (int)text2Vr.X, (int)text2Vr.Y - 8);
+            Text3P = new Rectangle((int)text3Pos.X, (int)text3Pos.Y, (int)text3Vr.X, (int)text3Vr.Y - 8);
             var mouseTarget = new Rectangle(Main.mouseX, Main.mouseY, 1, 1);
             onText1 = Text1P.Contains(mouseTarget);
             onText2 = Text2P.Contains(mouseTarget);
             onText3 = Text3P.Contains(mouseTarget);
             int mouS = DownStartL();
-            if (mouS == 1 && !OpenUI.Instance.OnActive()) {
+            if (mouS == 1 && !OpenUI.Instance.OnActive() && !AcknowledgmentUI.Instance.OnActive()) {
                 if (onText1) {
                     SoundEngine.PlaySound(SoundID.MenuOpen);
                 }
@@ -72,6 +72,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
                 else if (onText3) {
                     SoundEngine.PlaySound(SoundID.MenuOpen);
+                    AcknowledgmentUI.Instance._active = true;
                 }
             }
             Time++;

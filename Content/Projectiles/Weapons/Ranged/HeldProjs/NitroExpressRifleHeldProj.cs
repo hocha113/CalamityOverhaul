@@ -34,9 +34,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RecoilRetroForceMagnitude = 6;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
             LoadingAA_Shotgun.pump = CWRSound.Gun_NERifle_SlideInt;
-            //LoadingAA_Shotgun.loadShellSound = CWRSound.Gun_NERifle_ClipLocked with { Volume = 0.6f, Pitch = -0.8f }; 
             ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
             ToTargetAmmo = ModContent.ProjectileType<NitroShot>();
+            if (!MagazineSystem) {
+                FireTime += 20;
+            }
         }
     }
 }

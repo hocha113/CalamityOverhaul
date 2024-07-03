@@ -7,6 +7,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 沙枪
+    /// </summary>
     internal class SandgunHeldProj : BaseGun
     {
         public override string Texture => CWRConstant.Placeholder;

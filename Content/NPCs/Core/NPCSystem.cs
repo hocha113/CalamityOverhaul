@@ -110,7 +110,14 @@ namespace CalamityOverhaul.Content.NPCs.Core
                     }
                 }
             }
-            return orig.Invoke(npc, spriteBatch, screenPos, drawColor);
+            if (Main.gameMenu) {
+                return true;
+            }
+            try {
+                return orig.Invoke(npc, spriteBatch, screenPos, drawColor);
+            } catch {
+                return true;
+            }
         }
 
         public static void OnPostDrawHook(On_DrawDelegate2 orig, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

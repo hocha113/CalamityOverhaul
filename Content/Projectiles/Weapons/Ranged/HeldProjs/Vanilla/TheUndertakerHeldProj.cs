@@ -24,6 +24,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 0.6f;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Revolver;
+            if (!MagazineSystem) {
+                FireTime += 3;
+            }
         }
 
         public override void KreloadSoundloadTheRounds() {

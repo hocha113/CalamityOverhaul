@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.StarCannon;
 
         public override void SetRangedProperty() {
+            ArmRotSengsBackNoFireOffset = -30;
             kreloadMaxTime = 60;
             FireTime = 30;
             ShootPosToMouLengValue = 30;
@@ -45,8 +46,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 with { Volume = 0.2f, Pitch = -0.3f }, Projectile.Center);
         }
 
+        public override void PostInOwnerUpdate() {
+            if (!CanFire && !MagazineSystem) {
+                FireTime = 30;
+            }
+        }
+
         public override void SetShootAttribute() {
-            if (FireTime > 10) {
+            int minShootTime = 10;
+            if (!MagazineSystem) {
+                minShootTime += 2;
+            }
+            if (FireTime > minShootTime) {
                 FireTime--;
             }
         }

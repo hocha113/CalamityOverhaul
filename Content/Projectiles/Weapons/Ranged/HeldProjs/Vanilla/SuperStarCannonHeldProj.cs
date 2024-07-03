@@ -38,6 +38,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             return true;
         }
 
+        public override void PostInOwnerUpdate() {
+            if (!CanFire && !MagazineSystem) {
+                FireTime = 15;
+            }
+        }
+
         public override void HanderSpwanDust() {
             SpawnGunFireDust(GunShootPos, ShootVelocity, dustID1: 15, dustID2: 57, dustID3: 58);
         }
@@ -47,7 +53,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void SetShootAttribute() {
-            if (FireTime > 6) {
+            int minShootTime = 6;
+            if (!MagazineSystem) {
+                minShootTime += 1;
+            }
+            if (FireTime > minShootTime) {
                 FireTime--;
             }
         }

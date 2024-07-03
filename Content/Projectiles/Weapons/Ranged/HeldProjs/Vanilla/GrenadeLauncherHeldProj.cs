@@ -7,6 +7,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 榴弹发射器
+    /// </summary>
     internal class GrenadeLauncherHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -33,6 +36,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAA_None.loadingAA_None_Roting = 30;
             LoadingAA_None.loadingAA_None_X = 0;
             LoadingAA_None.loadingAA_None_Y = 13;
+            if (!MagazineSystem) {
+                FireTime += 15;
+            }
         }
 
         public override void PostInOwnerUpdate() {

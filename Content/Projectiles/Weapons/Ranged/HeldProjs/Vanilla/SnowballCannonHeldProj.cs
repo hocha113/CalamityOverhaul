@@ -31,6 +31,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RecoilRetroForceMagnitude = 11;
             RecoilOffsetRecoverValue = 0.8f;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Revolver;
+            if (!MagazineSystem) {
+                FireTime += 25;
+            }
         }
 
         public override void HanderSpwanDust() {

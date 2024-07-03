@@ -364,12 +364,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 初始化弹匣状态
         /// </summary>
         protected void InitializeMagazine() {
-            CWRItems cwrItem = ModItem;
-            if (cwrItem.MagazineContents == null) {
+            if (ModItem.MagazineContents == null) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
-                cwrItem.MagazineContents = new Item[cwrItem.AmmoCapacity];
-                for (int i = 0; i < cwrItem.MagazineContents.Length; i++) {
-                    cwrItem.MagazineContents[i] = new Item();
+                ModItem.MagazineContents = new Item[ModItem.AmmoCapacity];
+                for (int i = 0; i < ModItem.MagazineContents.Length; i++) {
+                    ModItem.MagazineContents[i] = new Item();
+                }
+            }
+            if (Item.type != ItemID.None) {
+                IsKreload = ModItem.IsKreload;
+                if (!MagazineSystem) {
+                    IsKreload = true;
                 }
             }
         }
@@ -561,10 +566,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             InitializeMagazine();
             Get_LoadingAmmoAnimation_PreInOwnerUpdate();
             PreInOwnerUpdate();
-
-            if (Item.type != ItemID.None) {
-                IsKreload = ModItem.IsKreload;
-            }
 
             ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
@@ -956,7 +957,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                         }
 
                         if (EnableRecoilRetroEffect) {
-                            OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
+                            OffsetPos -= ShootVelocityInProjRot.UnitVector() * RecoilRetroForceMagnitude;
                         }
                         if (FiringDefaultSound) {
                             HanderPlaySound();

@@ -31,11 +31,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAA_None.loadingAA_None_Roting = 50;
             LoadingAA_None.loadingAA_None_X = 3;
             LoadingAA_None.loadingAA_None_Y = 15;
+            if (!MagazineSystem) {
+                FireTime += 1;
+            }
         }
 
         public override void FiringShoot() {
             Projectile.NewProjectile(Source, GunShootPos
-                    , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(0.6f, 1.52f)
+                    , ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.6f, 1.52f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
     }

@@ -28,6 +28,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ArmRotSengsBackNoFireOffset = 30;
             RepeatedCartridgeChange = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
+            if (!MagazineSystem) {
+                FireTime += kreloadMaxTime;
+            }
         }
 
         public override void FiringShoot() {

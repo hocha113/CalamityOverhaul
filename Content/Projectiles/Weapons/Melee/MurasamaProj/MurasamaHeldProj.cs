@@ -237,40 +237,38 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
             }
 
-            if (!CWRUtils.isServer) {
-                if (triggerKeyDown && Owner.ownedProjectileCounts[breakOutType] == 0 && noHasDownSkillProj) {//扳机键被按下，并且升龙冷却已经完成，那么将刀发射出去
-                    if (nolegendStart && risingDragon >= MurasamaEcType.GetOnRDCD) {
-                        SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
-                        SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.1f, Volume = 0.5f }, Projectile.Center);
-                        if (MurasamaEcType.NameIsVergil(Owner) && Main.rand.NextBool()) {
-                            SoundStyle sound = Main.rand.NextBool() ? CWRSound.V_Kengms : CWRSound.V_Heen;
-                            SoundEngine.PlaySound(sound with { Volume = 0.3f }, Projectile.Center);
-                        }
+            if (triggerKeyDown && Owner.ownedProjectileCounts[breakOutType] == 0 && noHasDownSkillProj) {//扳机键被按下，并且升龙冷却已经完成，那么将刀发射出去
+                if (nolegendStart && risingDragon >= MurasamaEcType.GetOnRDCD) {
+                    SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.1f, Volume = 0.5f }, Projectile.Center);
+                    if (MurasamaEcType.NameIsVergil(Owner) && Main.rand.NextBool()) {
+                        SoundStyle sound = Main.rand.NextBool() ? CWRSound.V_Kengms : CWRSound.V_Heen;
+                        SoundEngine.PlaySound(sound with { Volume = 0.3f }, Projectile.Center);
+                    }
 
-                        Owner.velocity += UnitToMouseV * -3;
-                        if (Projectile.IsOwnedByLocalPlayer()) {
-                            Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
-                        , breakOutType, (int)(MurasamaEcType.ActualTrueMeleeDamage * (0.35f + level * 0.05f)), 0, Owner.whoAmI, ai2: 15);
-                        }
-                        risingDragon = 0;
-                        SpanTriggerEffDust();
+                    Owner.velocity += UnitToMouseV * -3;
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
+                    , breakOutType, (int)(MurasamaEcType.ActualTrueMeleeDamage * (0.35f + level * 0.05f)), 0, Owner.whoAmI, ai2: 15);
                     }
-                    else {
-                        SoundEngine.PlaySound(CWRSound.Ejection with { MaxInstances = 3 }, Projectile.Center);
-                    }
+                    risingDragon = 0;
+                    SpanTriggerEffDust();
                 }
-                if (fodingDownKey && MurasamaEcType.UnlockSkill2 && noHasDownSkillProj
-                    && noHasBreakOutProj && nolegendStart) {//下砸技能键被按下，同时技能以及解锁，那么发射执行下砸技能的弹幕
-                    murasama.initialize();
-                    if (murasama.CWR().ai[0] >= 1) {
-                        SoundEngine.PlaySound(MurasamaEcType.BigSwing with { Pitch = -0.1f }, Projectile.Center);
-                        if (Projectile.IsOwnedByLocalPlayer()) {
-                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 5)
-                            , ModContent.ProjectileType<MurasamaDownSkill>(), (int)(MurasamaEcType.ActualTrueMeleeDamage * (2 + level * 1f)), 0, Owner.whoAmI);
-                        }
-
-                        murasama.CWR().ai[0] -= 1;//消耗一点能量
+                else {
+                    SoundEngine.PlaySound(CWRSound.Ejection with { MaxInstances = 3 }, Projectile.Center);
+                }
+            }
+            if (fodingDownKey && MurasamaEcType.UnlockSkill2 && noHasDownSkillProj
+                && noHasBreakOutProj && nolegendStart) {//下砸技能键被按下，同时技能以及解锁，那么发射执行下砸技能的弹幕
+                murasama.initialize();
+                if (murasama.CWR().ai[0] >= 1) {
+                    SoundEngine.PlaySound(MurasamaEcType.BigSwing with { Pitch = -0.1f }, Projectile.Center);
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 5)
+                        , ModContent.ProjectileType<MurasamaDownSkill>(), (int)(MurasamaEcType.ActualTrueMeleeDamage * (2 + level * 1f)), 0, Owner.whoAmI);
                     }
+
+                    murasama.CWR().ai[0] -= 1;//消耗一点能量
                 }
             }
 

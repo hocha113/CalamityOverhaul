@@ -6,6 +6,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 左轮手枪
+    /// </summary>
     internal class RevolverHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -27,6 +30,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 0.9f;
             RangeOfStress = 25;
+            if (!MagazineSystem) {
+                FireTime += 5;
+            }
         }
 
         public override void PreInOwnerUpdate() {

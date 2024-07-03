@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.QuadBarrelShotgun;
         public override int targetCWRItem => ItemID.QuadBarrelShotgun;
         public override void SetRangedProperty() {
-            FireTime = 55;
+            FireTime = 25;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
             HandDistance = 17;
@@ -32,6 +32,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             LoadingAA_Shotgun.loadShellSound = CWRSound.Gun_Shotgun_LoadShell with { Volume = 0.75f };
             LoadingAA_Shotgun.pump = CWRSound.Gun_Shotgun_Pump with { Volume = 0.6f, Pitch = -0.3f };
             LoadingAA_Shotgun.pumpCoolingValue = 15;
+            if (!MagazineSystem) {
+                FireTime += kreloadMaxTime;
+            }
         }
 
         public override void FiringShoot() {

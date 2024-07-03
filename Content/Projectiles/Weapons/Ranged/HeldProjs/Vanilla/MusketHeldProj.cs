@@ -24,6 +24,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 2.8f;
             RangeOfStress = 48;
             NO_EEMONG_LOADINGNONESET = false;
+            if (!MagazineSystem) {
+                FireTime += 36;
+            }
         }
 
         public override bool PreOnKreloadEvent() {

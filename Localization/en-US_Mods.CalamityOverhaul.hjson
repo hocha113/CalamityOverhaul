@@ -3518,6 +3518,7 @@ Configs: {
 				[c/fff08c:It's worth noting] that the game's major balance adjustments are made based on the [c/fff08c:enabled magazine system].
 				Opting to disable it may render some ranged weapons [c/de0808:overpowered].
 				Therefore, if this feature is disabled, the [c/de0808:balance of ranged weapons] in the game will no longer be meaningful for discussion.
+				[c/fff08c:If you change this option, re-enter the world to make sure all effects change correctly]
 				'''
 		}
 

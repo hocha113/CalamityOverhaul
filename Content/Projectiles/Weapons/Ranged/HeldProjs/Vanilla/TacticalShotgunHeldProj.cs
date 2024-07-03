@@ -29,6 +29,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 7;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
+            if (!MagazineSystem) {
+                FireTime += kreloadMaxTime;
+            }
         }
 
         public override void HanderPlaySound() {
