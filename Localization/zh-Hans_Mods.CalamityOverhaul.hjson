@@ -2770,6 +2770,11 @@ Items: {
 			将火枪子弹转化为穿甲弹
 			'''
 	}
+
+	DarkmatterJetpack: {
+		// DisplayName: Darkmatter Jetpack
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -4182,8 +4187,13 @@ TextContent: {
 			如果您在游玩过程中发现问题，请在Github上向模组提交issue，
 			或者前往模组创意工坊Feedback on Issues反馈帖寻求帮助
 			'''
+		IconUI_Text0: 前往模组的开源库 :)
 		IconUI_Text1: 问题反馈
 		IconUI_Text2: 致谢名单
+		IconUI_Text3: 画师
+		IconUI_Text4: 代码援助
+		IconUI_Text5: 捐赠者
+		IconUI_Text6: 平衡测试
 		Wap_BubbleGun_Text:
 			'''
 			喷出大量会爆炸的海洋泡泡

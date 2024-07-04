@@ -1,26 +1,26 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.UIs.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using ReLogic.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.UI.Chat;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
     internal class AcknowledgmentUI : BaseMainMenuOverUI
     {
-        internal static string textElement1 => " [画师]";
-        internal static string textElement2 => " [代码援助]";
-        internal static string textElement3 => " [捐赠者]";
-        internal static string textElement4 => " [平衡测试]";
+        internal static string textElement1 => $" [{CWRLocText.GetTextValue("IconUI_Text3")}]";
+        internal static string textElement2 => $" [{CWRLocText.GetTextValue("IconUI_Text4")}]";
+        internal static string textElement3 => $" [{CWRLocText.GetTextValue("IconUI_Text5")}]";
+        internal static string textElement4 => $" [{CWRLocText.GetTextValue("IconUI_Text6")}]";
         internal static string[] names => [
+            "[icon]",
             "雾梯" + textElement1,
             "子离似槜" + textElement1,
             "Cyrilly" + textElement2,
@@ -148,18 +148,25 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
 
             public virtual void Draw(SpriteBatch spriteBatch, float sengs) {
-                if (--startTime > 0) {
+                if (--startTime > 0 || position.Y < -200) {
                     return;
                 }
+                
                 float textAlp = sengs * (alp / 255f);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, text
+                if (index == 0) {
+                    spriteBatch.Draw(IconUI.icon.Value, position, null, Color.White * textAlp, 0f
+                        , new Vector2(IconUI.icon.Value.Size().X / 2, IconUI.icon.Value.Size().Y)
+                        , 1, SpriteEffects.None, 0);
+                    return;
+                }
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text
                     , position.X - textSize.X / 2, position.Y, color * textAlp, Color.Black * textAlp, new Vector2(0.2f), 1);
             }
         }
 
         internal class EffectEntity : ProjItem
         {
-            int ai0;
+            protected int ai0;
             float rotation;
             public float rotSpeed;
             public int itemID;
@@ -182,39 +189,31 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
             public static int SpwanItemID() {
                 int id = CWRMod.RItemInstances[Main.rand.Next(CWRMod.RItemInstances.Count)].TargetID;
-                if (id == ModContent.ItemType<Murasama>()) {
-                    id = ModContent.ItemType<DarklightGreatsword>();
-                }
                 Main.instance.LoadItem(id);
                 return id;
             }
 
             public override void AI(float sengs) {
-                if (ai0 == 0) {
-                    if (--startTime > 0) {
-                        return;
-                    }
+                if (--startTime > 0) {
+                    return;
+                }
 
-                    if (timeLeft > 60) {
-                        if (alp < 255) {
-                            alp++;
-                        }
-                    }
-                    else {
-                        if (alp > 0) {
-                            alp-= 4;
-                        }
-                    }
-
-                    position += velocity;
-                    rotation += rotSpeed;
-                    timeLeft--;
-                    if (timeLeft <= 0) {
-                        active = false;
+                if (timeLeft > 60) {
+                    if (alp < 255) {
+                        alp++;
                     }
                 }
-                else if (ai0 == 1) {
+                else {
+                    if (alp > 0) {
+                        alp -= 4;
+                    }
+                }
 
+                position += velocity;
+                rotation += rotSpeed;
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    active = false;
                 }
             }
 
@@ -232,9 +231,15 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 if (rectangle.HasValue) {
                     orig = rectangle.Value.Size() / 2;
                 }
+                if (itemID == ModContent.ItemType<Murasama>()) {
+                    spriteBatch.Draw(texture, position, CWRUtils.GetRec(texture, Instance.time / 5 % 13, 13), color * sengs * (alp / 255f)
+                        , rotation, CWRUtils.GetOrig(texture, 13), size, SpriteEffects.None, 0);
+                    return;
+                }
                 spriteBatch.Draw(texture, position, rectangle, color * sengs * (alp / 255f), rotation, orig, size, SpriteEffects.None, 0);
             }
         }
+
         private int musicFade50;
         private float _sengs;
         internal bool _active;
@@ -253,7 +258,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         private void ToMusicFunc() {
             if (Main.gameMenu && OnActive()) {
-                int targetID = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/TheDeadSpiritIsDead");
+                int targetID = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/ED_WEH");
                 for (int i = 0; i < Main.musicFade.Length; i++) {
                     if (i == targetID) {
                         continue;
@@ -315,7 +320,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     if (projItem.active) {
                         continue;
                     }
-                    projItem.color.R += 1;
+                    projItem.color.R -= 25;
                     projItem.timeLeft = 3900;
                     projItem.position = itemPos;
                     projItem.alp = 0;
@@ -333,19 +338,17 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     effect.position = new Vector2(Main.rand.Next(Main.screenWidth), Main.rand.Next(Main.screenHeight));
                     effect.rotSpeed = Main.rand.NextFloat(-0.03f, 0.03f);
                     effect.timeLeft = 360;
+                    effect.velocity = new Vector2(0, -Main.rand.NextFloat(0.8f, 1.2f));
                     effect.alp = 0;
                     effect.active = true;
                 }
             } catch {
                 _sengs = 0;
                 _active = false;
-                return;
             }
         }
         public override void Update(GameTime gameTime) {
             if (!OnActive()) {
-                projectiles = new List<ProjItem>();
-                effectEntities = new List<EffectEntity>();
                 if (musicFade50 < 120) {
                     musicFade50++;
                 }

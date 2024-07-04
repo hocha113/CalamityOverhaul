@@ -2751,6 +2751,11 @@ Items: {
 			Turning musket bullets into armor-piercing bullets
 			'''
 	}
+
+	DarkmatterJetpack: {
+		DisplayName: Darkmatter Jetpack
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -4175,8 +4180,13 @@ TextContent: {
 			If you encounter any problems during gameplay, please submit an issue on the mod's GitHub page 
 			or visit the mod's Steam Workshop 'Feedback on Issues' thread for assistance.
 			'''
-		IconUI_Text1: Problem feedback
+		IconUI_Text0: Go to the mod's open source repository :)
+		IconUI_Text1: Issue Feedback
 		IconUI_Text2: Acknowledgments
+		IconUI_Text3: Artist
+		IconUI_Text4: Code Assistance
+		IconUI_Text5: Donor
+		IconUI_Text6: Balance Tester
 		Wap_BubbleGun_Text:
 			'''
 			Exploding ocean bubbles

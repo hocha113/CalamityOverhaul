@@ -110,9 +110,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
                     }
                 }
             }
-            if (Main.gameMenu) {
-                return true;
-            }
+
             try {
                 return orig.Invoke(npc, spriteBatch, screenPos, drawColor);
             } catch {
