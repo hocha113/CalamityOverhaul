@@ -41,11 +41,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override void SetShootAttribute() {
             if (onFire) {
                 Item.useTime = 45;
+                Item.mana = 20;
                 GunPressure = 0.3f;
                 RecoilRetroForceMagnitude = 0;
             }
             else if (onFireR) {
                 Item.useTime = 7;
+                Item.mana = 6;
                 GunPressure = 0f;
                 RecoilRetroForceMagnitude = 6;
             }

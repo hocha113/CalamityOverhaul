@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.width = 54;
             Item.damage = 232;
             Item.DamageType = DamageClass.Melee;
-            Item.useAnimation = Item.useTime = 18;
+            Item.useAnimation = Item.useTime = 20;
             Item.useTurn = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 2.5f;
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 3;
 
-        public override void UseStyle(Player player, Rectangle heldItemFrame) => player.itemLocation = player.Center + player.itemRotation.ToRotationVector2() * -15 * player.direction;
+        public override void UseStyle(Player player, Rectangle heldItemFrame) => player.itemLocation = player.Center;
 
         //public override bool CanUseItem(Player player) {
         //    return player.ownedProjectileCounts[Item.shoot] == 0;

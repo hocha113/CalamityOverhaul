@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatsw
             Projectile.tileCollide = false;
             Projectile.hostile = false;
             Projectile.friendly = true;
-            Projectile.timeLeft = 90;
+            Projectile.timeLeft = 60;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 25;
             startCanHitCooldown = Main.rand.Next(Projectile.localNPCHitCooldown);

@@ -2966,8 +2966,8 @@ Projectiles: {
 	// DarkIceZeros.DisplayName: Dark Ice Zeros
 	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
 	// WaningMoonLight.DisplayName: Waning Moon Light
-	MurasamaHeldProj.DisplayName: 高分子斩切刃
-	MurasamaBreakOut.DisplayName: 高分子斩切刃
+	MurasamaHeldProj.DisplayName: 分子斩切
+	MurasamaBreakOut.DisplayName: 分子斩切
 	MurasamaBreakSwing.DisplayName: 升龙半月
 	MurasamaEndSilkOrb.DisplayName: 次元斩-终
 	MurasamaEndSilkOrbOnSpan.DisplayName: 次元斩-始
@@ -3456,7 +3456,7 @@ Configs: {
 		}
 
 		MurasamaScaleOffset: {
-			Label: 高分子斩切刃大小调节
+			Label: 鬼妖村正大小调节
 			Tooltip:
 				'''
 				一个额外的挥刀范围矫正因子，单位以百分比%为基准
@@ -3471,10 +3471,10 @@ Configs: {
 		}
 
 		MurasamaSpaceFragmentationBool: {
-			Label: 高分子斩切刃终结技碎屏效果
+			Label: 鬼妖村正终结技碎屏效果
 			Tooltip:
 				'''
-				默认开启，高分子斩切刃进行终结技时会制造屏幕破碎的特效用于增强打击感
+				默认开启，鬼妖村正进行终结技时会制造屏幕破碎的特效用于增强打击感
 				如果关闭便会禁用这些特效，可以根据您的喜好设置
 				'''
 		}
@@ -3661,8 +3661,8 @@ Keybinds: {
 	TOM_QuickFetch.DisplayName: 欧米茄合成:快速拿取
 	TOM_GatheringItem.DisplayName: 欧米茄合成:聚拢物品
 	TOM_GlobalRecall.DisplayName: 欧米茄合成:全部收回
-	Murasama_TriggerKey.DisplayName: 高分子斩切刃:扳机键
-	Murasama_DownKey.DisplayName: 高分子斩切刃:下砸
+	Murasama_TriggerKey.DisplayName: 鬼妖村正:扳机键
+	Murasama_DownKey.DisplayName: 鬼妖村正:下砸
 	ADS_Key.DisplayName: 打开瞄准镜
 	KreLoad_Key.DisplayName: 换弹
 }

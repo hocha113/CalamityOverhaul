@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.value = Item.sellPrice(0, 8, 0, 0);
             Item.rare = ItemRarityID.Purple;
             Item.accessory = true;
+            Item.master = true;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {

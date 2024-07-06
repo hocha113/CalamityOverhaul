@@ -13,6 +13,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
     internal class GuardianTerra : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "GuardianTerra";
+        public override bool IsLoadingEnabled(Mod mod) {
+            return false;
+        }
         public override void SetDefaults() {
             Item.width = 62;
             Item.height = 76;

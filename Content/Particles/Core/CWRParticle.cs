@@ -9,10 +9,6 @@ namespace CalamityOverhaul.Content.Particles.Core
     internal class CWRParticle
     {
         /// <summary>
-        /// 一般粒子处理程序数组中粒子的ID,这在创建粒子时自动设置
-        /// </summary>
-        public int ID;
-        /// <summary>
         /// 由一般粒子处理程序注册的粒子类型的ID,这是在粒子处理器loadsl时自动设置的
         /// </summary>
         public int Type;
@@ -35,10 +31,6 @@ namespace CalamityOverhaul.Content.Particles.Core
 
         public float LifetimeCompletion => Lifetime != 0 ? Time / (float)Lifetime : 0;
 
-        /// <summary>
-        /// 粒子相对于它所属集合的原点的偏移量,这只在粒子集的上下文中使用
-        /// </summary>
-        public Vector2 RelativeOffset;
         /// <summary>
         /// 一个粒子在世界中的位置，这不是在粒子集的上下文中使用的，因为所有的粒子都是根据它们相对于集合原点的位置来计算的
         /// </summary>

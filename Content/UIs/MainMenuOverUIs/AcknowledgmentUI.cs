@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     Texture2D pts = CWRUtils.GetT2DValue(CWRConstant.Placeholder);
                     for (int i = 0; i < names.Length; i++) {
                         string textContent = names[i];
-                        ProjItem proj = new ProjItem(i, 3900, 1, 0, Color.White, itemPos, new Vector2(0, -1), textContent, pts, i * 90);
+                        ProjItem proj = new ProjItem(i, 4500, 1, 0, Color.White, itemPos, new Vector2(0, -1), textContent, pts, i * 90);
                         projectiles.Add(proj);
                     }
                 }
@@ -321,7 +321,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                         continue;
                     }
                     projItem.color.R -= 25;
-                    projItem.timeLeft = 3900;
+                    projItem.timeLeft = 4500;
                     projItem.position = itemPos;
                     projItem.alp = 0;
                     projItem.active = true;
@@ -349,6 +349,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
         public override void Update(GameTime gameTime) {
             if (!OnActive()) {
+                projectiles = new List<ProjItem>();
                 if (musicFade50 < 120) {
                     musicFade50++;
                 }

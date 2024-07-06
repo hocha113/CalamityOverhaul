@@ -33,10 +33,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private Vector2 text1Pos => new Vector2(DrawPos.X - text1Vr.X + 76, DrawPos.Y + 6);
         private string text2 => CWRLocText.GetTextValue("IconUI_Text1");
         private Vector2 text2Vr => Font.Value.MeasureString(text2);
-        private Vector2 text2Pos => new Vector2(DrawPos.X - text2Vr.X + 76, text1Pos.Y + text1Vr.Y - 6);
+        private Vector2 text2Pos => new Vector2(DrawPos.X - text2Vr.X + 76, text1Pos.Y + text1Vr.Y - 2);
         private string text3 => CWRLocText.GetTextValue("IconUI_Text2");
         private Vector2 text3Vr => Font.Value.MeasureString(text3);
-        private Vector2 text3Pos => new Vector2(DrawPos.X - text3Vr.X + 76, text2Pos.Y + text1Vr.Y - 6);
+        private Vector2 text3Pos => new Vector2(DrawPos.X - text3Vr.X + 76, text2Pos.Y + text1Vr.Y - 2);
         internal bool safeStart => !OpenUI.Instance.OnActive() && !AcknowledgmentUI.Instance.OnActive();
         #endregion
         public override void Load() {

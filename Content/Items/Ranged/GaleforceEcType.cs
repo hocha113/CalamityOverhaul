@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Galeforce";
         public override void SetDefaults() {
-            Item.damage = 18;
+            Item.damage = 15;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 32;
             Item.height = 52;

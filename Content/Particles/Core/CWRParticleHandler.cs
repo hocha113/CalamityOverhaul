@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Particles.Core
             batchedNonPremultipliedParticles = new List<CWRParticle>();
             batchedAdditiveBlendParticles = new List<CWRParticle>();
 
-            CWRUtils.HanderInstance(ref CWRParticleCoreInds, CWRUtils.GetSubclasses(typeof(CWRParticle)), false);//需要选定为有参构造
+            CWRParticleCoreInds = CWRUtils.HanderSubclass<CWRParticle>(false);
             foreach (var particleType in CWRParticleCoreInds) {
                 Type type = particleType.GetType();
                 int ID = ParticleTypesDic.Count;

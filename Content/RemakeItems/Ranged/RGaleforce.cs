@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override string TargetToolTipItemName => "GaleforceEcType";
 
         public override void SetDefaults(Item item) {
-            item.damage = 18;
+            item.damage = 15;
             item.DamageType = DamageClass.Ranged;
             item.width = 32;
             item.height = 52;
