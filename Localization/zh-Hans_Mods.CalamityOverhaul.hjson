@@ -3393,6 +3393,7 @@ Projectiles: {
 	// DeathsAscensionThrowable.DisplayName: Deaths Ascension
 	// DeathsAscensionBreakSwing.DisplayName: Deaths Ascension
 	// MG42HeldProj.DisplayName: M G42 Held Proj
+	// ChainGunHeldProj.DisplayName: Chain Gun Held Proj
 }
 
 Configs: {
@@ -4319,6 +4320,7 @@ TextContent: {
 			按一定频率发射星旋导弹
 			右键全功率发射星旋导弹
 			'''
+		Wap_ChainGun_Text: 火力压制
 	}
 }
 

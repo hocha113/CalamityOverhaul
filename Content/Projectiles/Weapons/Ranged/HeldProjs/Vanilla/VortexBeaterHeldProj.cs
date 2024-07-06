@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -38,6 +39,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             return rot;
         }
 
+        public override void NetCodeHeldSend(BinaryWriter writer) {
+            writer.Write(randomShootRotset);
+        }
+
+        public override void NetCodeReceiveHeld(BinaryReader reader) {
+            randomShootRotset = reader.ReadSingle();
+        }
+
         public override void SetShootAttribute() {
             if (onFireR) {
                 EjectCasingProjSize = 2;
@@ -51,7 +60,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
             EjectCasingProjSize = 1;
             FireTime = 4;
-            randomShootRotset = Main.rand.NextFloat(-0.16f, 0.16f);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                randomShootRotset = Main.rand.NextFloat(-0.16f, 0.16f);
+                NetUpdate();
+            }
             if (++fireIndex > 6) {
                 SoundEngine.PlaySound(SoundID.Item45 with { Pitch = 0.45f }, Projectile.Center);
                 if (Projectile.IsOwnedByLocalPlayer()) {

@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -40,6 +41,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ToTargetAmmo = ModContent.ProjectileType<NitroShot>();
         }
 
+        public override void NetCodeHeldSend(BinaryWriter writer) {
+            writer.Write(randomShootRotset);
+        }
+
+        public override void NetCodeReceiveHeld(BinaryReader reader) {
+            randomShootRotset = reader.ReadSingle();
+        }
+
         public override float GetGunInFireRot() {
             float rot = base.GetGunInFireRot();
             if (kreloadTimeValue == 0) {
@@ -64,7 +73,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void SetShootAttribute() {
-            randomShootRotset = Main.rand.NextFloat(-0.1f, 0.1f);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                randomShootRotset = Main.rand.NextFloat(-0.1f, 0.1f);
+                NetUpdate();
+            }
             shootValue += 0.4f;
         }
 

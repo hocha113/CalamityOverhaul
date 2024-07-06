@@ -3374,6 +3374,7 @@ Projectiles: {
 	DeathsAscensionThrowable.DisplayName: Deaths Ascension
 	DeathsAscensionBreakSwing.DisplayName: Deaths Ascension
 	MG42HeldProj.DisplayName: M G42 Held Proj
+	ChainGunHeldProj.DisplayName: Chain Gun Held Proj
 }
 
 Configs: {
@@ -4316,6 +4317,7 @@ TextContent: {
 			Launch Vortex Rocket at a certain frequency
 			Right click launch Vortex Rocket at full power
 			'''
+		Wap_ChainGun_Text: Suppression by fire
 	}
 }
 
