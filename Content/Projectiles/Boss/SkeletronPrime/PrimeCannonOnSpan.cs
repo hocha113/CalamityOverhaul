@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.penetrate = -1;
             Projectile.timeLeft = 60;
             Projectile.alpha = 0;
-            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         }
 
         public override void AI() {
@@ -49,12 +48,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         public override void OnKill(int timeLeft) {
             if (!CWRUtils.isClient) {
                 SoundEngine.PlaySound(SoundID.Item62, Projectile.Center);
-                int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI()
-                        , Projectile.Center, Projectile.rotation.ToRotationVector2() * 13
-                        , ProjectileID.RocketSkeleton, Projectile.damage, 0f, Main.myPlayer, Projectile.ai[1], 2);
-                Main.projectile[proj].timeLeft = 600;
-                Main.projectile[proj].extraUpdates = 6;
-                Main.projectile[proj].tileCollide = false;
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 13
+                        , ModContent.ProjectileType<RocketSkeleton>(), Projectile.damage, 0f, Main.myPlayer, Projectile.ai[1], 2);
             }
         }
 

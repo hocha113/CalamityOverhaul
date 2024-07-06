@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.TileEntitys;
 using System.IO;
 using Terraria;
@@ -15,8 +16,7 @@ namespace CalamityOverhaul
         TungstenRiot,
         TEBloodAltar,
         OverBeatBack,
-        HeldGunData,
-        HeldBowData,
+        BrutalSkeletronPrimeAI,
     }
 
     public class CWRNetCode
@@ -47,8 +47,14 @@ namespace CalamityOverhaul
                 modnpc.OverBeatBackVr = reader.ReadVector2();
                 modnpc.OverBeatBackAttenuationForce = reader.ReadSingle();
             }
-            else if (type == CWRMessageType.HeldGunData) {
-
+            else if (type == CWRMessageType.BrutalSkeletronPrimeAI) {
+                BrutalSkeletronPrimeAI.ai4 = reader.ReadByte();
+                BrutalSkeletronPrimeAI.ai5 = reader.ReadByte();
+                BrutalSkeletronPrimeAI.ai6 = reader.ReadByte();
+                BrutalSkeletronPrimeAI.ai7 = reader.ReadByte();
+                BrutalSkeletronPrimeAI.ai8 = reader.ReadByte();
+                BrutalSkeletronPrimeAI.ai9 = reader.ReadByte();
+                BrutalSkeletronPrimeAI.ai10 = reader.ReadByte();
             }
         }
     }

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -22,6 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     {
         public override int TargetID => NPCID.SkeletronPrime;
         private const int maxfindModes = 6000;
+        private Player player;
         private int frame = 0;
         private int primeCannon;
         private int primeSaw;
@@ -34,7 +36,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool laserAlive;
         private bool bossRush;
         private bool death;
-        private Player player;
+        private bool noArm => !cannonAlive && !laserAlive && !sawAlive && !viceAlive;
+        internal static byte ai4;
+        internal static byte ai5;
+        internal static byte ai6;
+        internal static byte ai7;
+        internal static byte ai8;
+        internal static byte ai9;
+        internal static byte ai10;
         internal static Asset<Texture2D> HandAsset;
         internal static Asset<Texture2D> BSPCannon;
         internal static Asset<Texture2D> BSPlaser;
@@ -47,6 +56,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static Asset<Texture2D> BSPPliersGlow;
         internal static Asset<Texture2D> BSPSAWGlow;
         internal static Asset<Texture2D> BSPRAMGlow;
+
+        internal void NetAISend() {
+            if (!CWRUtils.isSinglePlayer) {
+                var netMessage = CWRMod.Instance.GetPacket();
+                netMessage.Write((byte)CWRMessageType.BrutalSkeletronPrimeAI);
+                netMessage.Write(ai4);
+                netMessage.Write(ai5);
+                netMessage.Write(ai6);
+                netMessage.Write(ai7);
+                netMessage.Write(ai8);
+                netMessage.Write(ai9);
+                netMessage.Write(ai10);
+            }
+        }
 
         internal static void DrawArm(SpriteBatch spriteBatch, NPC rCurrentNPC, Vector2 screenPos) {
             Vector2 vector7 = new Vector2(rCurrentNPC.position.X + rCurrentNPC.width * 0.5f - 5f * rCurrentNPC.ai[0], rCurrentNPC.position.Y + 20f);
@@ -214,7 +237,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (npc.ai[3] != 0f) {
                 NPC.mechQueen = npc.whoAmI;
             }
-
+            
             npc.reflectsProjectiles = false;
             if (npc.ai[0] == 0f) {
                 if (Main.netMode != NetmodeID.MultiplayerClient) {
@@ -222,9 +245,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     spanArm(npc);
                     fireIndex = 0;
                 }
-                if (!Main.dedServ) {
-                    CWRUtils.ActivateSky("CWRMod:BrutalSkeletronSky");
-                }
+                CWRUtils.ActivateSky("CWRMod:BrutalSkeletronSky");
                 npc.ai[0] = 1f;
             }
 
@@ -333,6 +354,119 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 if (npc.ai[1] != 3f)
                     return false;
                 HandleDespawn(npc);
+            }
+
+            if (noArm) {
+                int type = ProjectileID.RocketSkeleton;
+                int damage = SetMultiplier(npc.GetProjectileDamage(type));
+                float rocketSpeed = 10f;
+                Vector2 cannonSpreadTargetDist = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY) * rocketSpeed;
+                int numProj = bossRush ? 5 : 3;
+                float rotation = MathHelper.ToRadians(bossRush ? 15 : 9);
+
+                switch (ai4) {
+                    case 0:
+                        if (++ai5 > 90) {
+                            npc.TargetClosest();
+                            for (int i = 0; i < numProj; i++) {
+                                float rotoffset = MathHelper.Lerp(-rotation, rotation, i / (float)(numProj - 1));
+                                Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
+                                if (death && Main.masterMode || bossRush) {
+                                    Projectile.NewProjectile(npc.GetSource_FromAI()
+                                    , npc.Center, perturbedSpeed
+                                    , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
+                                    , Main.myPlayer, npc.whoAmI, npc.target, rotoffset);
+                                }
+                                else {
+                                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI()
+                                        , npc.Center + perturbedSpeed.SafeNormalize(Vector2.UnitY) * 40f
+                                        , perturbedSpeed, type, damage, 0f, Main.myPlayer, npc.target, 2f);
+                                    Main.projectile[proj].timeLeft = 600;
+                                }
+                            }
+
+                            ai5 = 0;
+                            ai6++;
+                            NetAISend();
+                        }
+
+                        if (ai6 > 3 || npc.ai[1] == 1) {
+                            ai4 = 1;
+                            ai5 = 0;
+                            ai6 = 0;
+                            NetAISend();
+                        }
+                        break;
+                    case 1:
+                        int primeCannonOnSpanCount = 0;
+                        foreach (Projectile proj in Main.projectile) {
+                            if (proj.type == ModContent.ProjectileType<PrimeCannonOnSpan>() && proj.active) {
+                                primeCannonOnSpanCount++;
+                            }
+                        }
+
+                        if (++ai5 > 90 && primeCannonOnSpanCount == 0) {
+                            npc.TargetClosest();
+                            for (int i = 0; i < 12; i++) {
+                                float rotoffset = MathHelper.TwoPi / 12f * i;
+                                Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
+                                if (death && Main.masterMode || bossRush) {
+                                    Projectile.NewProjectile(npc.GetSource_FromAI()
+                                    , npc.Center, perturbedSpeed
+                                    , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
+                                    , Main.myPlayer, npc.whoAmI, npc.target, rotoffset);
+                                }
+                                else {
+                                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI()
+                                        , npc.Center + perturbedSpeed.SafeNormalize(Vector2.UnitY) * 40f
+                                        , perturbedSpeed, type, damage, 0f, Main.myPlayer, npc.target, 2f);
+                                    Main.projectile[proj].timeLeft = 600;
+                                }
+                            }
+                            ai5 = 0;
+                            ai6++;
+                        }
+
+                        if (npc.ai[1] != 1 && ai6 > 2) {
+                            ai4 = 2;
+                            ai5 = 0;
+                            ai6 = 0;
+                            NetAISend();
+                        }
+
+                        break;
+                    case 2:
+                        int count = 0;
+                        foreach (Projectile proj in Main.projectile) {
+                            if (proj.type == ModContent.ProjectileType<Mechanicalworm>() && proj.active) {
+                                count++;
+                            }
+                        }
+
+                        Vector2 pos2 = player.Center;
+
+                        for (int i = 0; i < 80; i++) {
+                            Vector2 spanPos = pos2 + new Vector2(-800 + i * 20, 100);
+                            Vector2 vr1 = new Vector2(0, -6);
+                            Projectile.NewProjectile(npc.GetSource_FromAI()
+                                    , spanPos, vr1
+                                    , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
+                                    , Main.myPlayer, 0, npc.target, vr1.ToRotation());
+                            Vector2 spanPos2 = pos2 + new Vector2(-800 + i * 20, -100);
+                            Vector2 vr2 = new Vector2(0, 6);
+                            Projectile.NewProjectile(npc.GetSource_FromAI()
+                                    , spanPos2, vr2
+                                    , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
+                                    , Main.myPlayer, 0, npc.target, vr2.ToRotation());
+                        }
+
+                        ai4 = 0;
+                        ai5 = 0;
+                        ai6 = 0;
+                        NetAISend();
+
+                        break;
+                }
             }
 
             return false;
@@ -551,7 +685,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 , drawColor, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(mainValue2, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
                 , Color.White, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
-            if (!cannonAlive && !laserAlive && !sawAlive && !viceAlive) {
+            if (noArm) {
                 Vector2 toD = player.Center.To(NPC.Center);
                 Vector2 origpos = player.Center - Main.screenPosition;
                 float alp = toD.Length() / 400f;

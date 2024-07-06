@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.SkyEffects
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
             spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.Placeholder2)
-                , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(60, 220, Main.DiscoR) * intensity);
+                , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black * intensity);
         }
 
         public override bool IsActive() {
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.SkyEffects
 
         public override void Update(GameTime gameTime) {
             if (NPC.AnyNPCs(NPCID.SkeletronPrime)) {
-                if (intensity < maxIntensity) {
+                if (intensity < 0.6f) {
                     intensity += 0.01f;
                 }
             }
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.SkyEffects
         }
 
         public override Color OnTileColor(Color inColor) {
-            return inColor * (1f - intensity);
+            return inColor;
         }
     }
 }

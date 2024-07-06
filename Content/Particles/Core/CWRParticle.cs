@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.Particles.Core
     /// <summary>
     /// 一个粒子的基类，它主要来自于灾厄本体
     /// </summary>
-    internal class CWRParticle
+    internal abstract class CWRParticle
     {
         /// <summary>
         /// 由一般粒子处理程序注册的粒子类型的ID,这是在粒子处理器loadsl时自动设置的

@@ -179,7 +179,6 @@ namespace CalamityOverhaul
             FindMod();
             FromThorium.LoadData();
             ModGanged.Load();
-            CWRParticleHandler.Load();
             new InWorldBossPhase().Load();
             CWRKeySystem.LoadKeyDate(this);
             StructuresBehavior.Load();
@@ -192,7 +191,6 @@ namespace CalamityOverhaul
         public override void Unload() {
             FromThorium.UnLoadData();
             ModGanged.UnLoad();
-            CWRParticleHandler.Unload();
             InWorldBossPhase.UnLoad();
             CWRKeySystem.Unload();
             StructuresBehavior.UnLoad();

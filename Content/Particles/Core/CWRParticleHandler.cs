@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles.Core
 {
-    internal class CWRParticleHandler
+    internal class CWRParticleHandler : ModSystem
     {
         internal static Dictionary<Type, int> ParticleTypesDic;
         internal static Dictionary<int, Texture2D> ParticleIDToTexturesDic;
@@ -21,8 +21,13 @@ namespace CalamityOverhaul.Content.Particles.Core
         private static List<CWRParticle> batchedAdditiveBlendParticles;
 
         public static int GetParticlesCount() => particles.Count;
+        public override void PostUpdateEverything() => Update();
+        public static void CWRDrawForegroundParticles(Terraria.On_Main.orig_DrawInfernoRings orig, Main self) {
+            DrawAll(Main.spriteBatch);
+            orig(self);
+        }
 
-        internal static void Load() {
+        public override void Load() {
             particles = new List<CWRParticle>();
             particlesToKill = new List<CWRParticle>();
             ParticleTypesDic = new Dictionary<Type, int>();
@@ -44,9 +49,11 @@ namespace CalamityOverhaul.Content.Particles.Core
                 }
                 ParticleIDToTexturesDic[ID] = ModContent.Request<Texture2D>(texturePath, AssetRequestMode.ImmediateLoad).Value;
             }
+
+            On_Main.DrawInfernoRings += CWRDrawForegroundParticles;
         }
 
-        internal static void Unload() {
+        public override void Unload() {
             particles = null;
             particlesToKill = null;
             ParticleTypesDic = null;
@@ -55,6 +62,8 @@ namespace CalamityOverhaul.Content.Particles.Core
             batchedAlphaBlendParticles = null;
             batchedNonPremultipliedParticles = null;
             batchedAdditiveBlendParticles = null;
+
+            On_Main.DrawInfernoRings -= CWRDrawForegroundParticles;
         }
 
         /// <summary>

@@ -3375,6 +3375,7 @@ Projectiles: {
 	DeathsAscensionBreakSwing.DisplayName: Deaths Ascension
 	MG42HeldProj.DisplayName: M G42 Held Proj
 	ChainGunHeldProj.DisplayName: Chain Gun Held Proj
+	RocketSkeleton.DisplayName: Rocket Skeleton
 }
 
 Configs: {
