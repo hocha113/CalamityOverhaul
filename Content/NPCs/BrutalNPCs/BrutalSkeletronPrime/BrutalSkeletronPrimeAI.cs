@@ -246,7 +246,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     spanArm(npc);
                     fireIndex = 0;
                 }
-                CWRUtils.ActivateSky("CWRMod:BrutalSkeletronSky");
                 npc.ai[0] = 1f;
             }
 
@@ -358,16 +357,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             if (npc.life < npc.lifeMax - 20) {
                 if (cannonAlive) {
-                    npc.life += 5;
+                    npc.life += 2;
                 }
                 if (laserAlive) {
-                    npc.life += 5;
+                    npc.life += 2;
                 }
                 if (sawAlive) {
-                    npc.life += 5;
+                    npc.life += 2;
                 }
                 if (viceAlive) {
-                    npc.life += 5;
+                    npc.life += 2;
                 }
             }
 
@@ -498,8 +497,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         break;
                     case 3:
                         MoveToPoint(npc, player.Center + new Vector2(0, -300));
-                        if (npc.life < npc.lifeMax) {
-                            npc.life += (int)(npc.lifeMax / 300f);
+                        npc.life += (int)(npc.lifeMax / 300f);
+                        if (npc.life > npc.lifeMax) {
+                            npc.life = npc.lifeMax;
                         }
                         ai5++;
                         if (ai5 > 300 && npc.life >= npc.lifeMax) {

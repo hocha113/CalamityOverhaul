@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Graphics.Renderers;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Armor.DemonshadeExter;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Tools;
@@ -350,6 +351,9 @@ namespace CalamityOverhaul.Content
                 yield return new Item(ModContent.ItemType<PebbleSpear>());
                 yield return new Item(ModContent.ItemType<PebblePick>());
                 yield return new Item(ModContent.ItemType<PebbleAxe>());
+            }
+            else {//如果不进行开局修改，那么直接放一本宝典在玩家背包中
+                yield return new Item(ModContent.ItemType<OverhaulTheBibleBook>());
             }
         }
 

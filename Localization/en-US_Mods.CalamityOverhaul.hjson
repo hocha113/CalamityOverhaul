@@ -3539,7 +3539,7 @@ Configs: {
 		}
 
 		WeaponAdaptiveIllumination: {
-			Label: Weapon Adaptive Illumination (Experimental)
+			Label: Weapon Adaptive Illumination [c/06e33f:(Experimental)]
 			Tooltip:
 				'''
 				Turned on by default, weapons will normally be drawn using ambient light mixing when used
@@ -3548,7 +3548,7 @@ Configs: {
 		}
 
 		WeaponAdaptiveVolumeScaling: {
-			Label: Weapon Adaptive Volume Scaling (Experimental)
+			Label: Weapon Adaptive Volume Scaling [c/06e33f:(Experimental)]
 			Tooltip:
 				'''
 				Turned on by default, weapons will have different drawing scales to keep the vision natural and prevent excessive occlusion
@@ -3567,13 +3567,32 @@ Configs: {
 		}
 
 		OpeningOukModification: {
-			Label: Opening Ouk Modification
-			Tooltip: ""
+			Label: Opening Ouk Modification [c/06e33f:(Experimental)]
+			Tooltip:
+				'''
+				If enabled, it will completely modify the starting inventory of new characters; 
+				for example, copper tools will be replaced with stone tools.
+				In the current version, this is classified as an experimental feature and is disabled by default. 
+				If enabled, it will only affect newly created characters.
+				'''
 		}
 
 		ShotgunFireForcedReloadInterruption: {
-			Label: Shotgun Fire Forced Reload Interruption
-			Tooltip: ""
+			Label: Shotgun Fire Forced Reload Interruption [c/06e33f:(Experimental)]
+			Tooltip:
+				'''
+				A small number of shotguns have this feature where attempting to fire while reloading will interrupt the reload action. 
+				If enabled, this option will give all shotgun weapons this feature.
+				'''
+		}
+
+		BiobehavioralOverlay: {
+			Label: Biobehavioral Modification
+			Tooltip:
+				'''
+				Enabled by default, this will modify the AI behavior of certain creatures, such as bosses in death mode.
+				This might significantly increase the game's difficulty, so you can choose to disable it based on your personal preference.
+				'''
 		}
 	}
 }

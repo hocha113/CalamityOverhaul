@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Graphics.Effects;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.SkyEffects
@@ -12,9 +13,10 @@ namespace CalamityOverhaul.Content.SkyEffects
             if (CWRUtils.isServer) {
                 return;
             }
-            SkyManager.Instance["CWRMod:BrutalSkeletronSky"] = this;
+            SkyManager.Instance[name] = this;
+            Filters.Scene[name] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.15f, 0.1f, 0.1f).UseOpacity(0.3f), EffectPriority.High);
         }
-
+        internal static string name => "CWRMod:BrutalSkeletronSky";
         private bool active;
         private float intensity;
         private float maxIntensity = 0.6f;

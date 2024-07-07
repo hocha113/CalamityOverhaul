@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.NPCs.OverhaulBehavior;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.OverhaulBehavior;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -40,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
                 if (type != typeof(NPCCoverage)) {
                     object obj = Activator.CreateInstance(type);
                     if (obj is NPCCoverage inds) {
-                        if (inds.CanLoad()) {
+                        if (inds.CanLoad() && CWRServerConfig.Instance.BiobehavioralOverlay) {//前提是开启了生物修改
                             NPCSets.Add(inds);
                         }
                     }

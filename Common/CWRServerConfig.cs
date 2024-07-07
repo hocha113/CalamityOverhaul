@@ -47,6 +47,11 @@ namespace CalamityOverhaul.Common
         [DefaultValue(true)]
         public bool AddExtrasContent { get; set; }
 
+        [BackgroundColor(35, 185, 78, 192)]
+        [ReloadRequired]
+        [DefaultValue(true)]
+        public bool BiobehavioralOverlay { get; set; }
+
         /// <summary>
         /// 传奇武器系统
         /// </summary>
