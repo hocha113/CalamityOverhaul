@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Particles;
+using CalamityMod.Tiles.Abyss;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Ranged.Extras;

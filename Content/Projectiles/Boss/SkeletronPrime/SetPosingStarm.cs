@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     {
         public override string Texture => CWRConstant.Placeholder;
         private float modeings = 5000;
+        private float sengs;
         public override void SetDefaults() {
             Projectile.width = 10;
             Projectile.height = 10;
@@ -27,6 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.timeLeft = 380;
             Projectile.alpha = 0;
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
+            sengs = 0;
         }
 
         public override void AI() {
@@ -50,6 +52,19 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 }
                 if (p.Distance(Projectile.Center) > modeings) {
                     p.AddBuff(ModContent.BuffType<HellfireExplosion>(), 2);
+                    p.HealEffect(-1);
+                }
+                
+            }
+
+            if (Main.LocalPlayer.Distance(Projectile.Center) > modeings && Projectile.timeLeft > 30) {
+                if (sengs < 1f) {
+                    sengs += 0.02f;
+                }
+            }
+            else {
+                if (sengs > 0f) {
+                    sengs -= 0.02f;
                 }
             }
 
@@ -133,6 +148,9 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Main.spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() / 2, 0, 0f);
             //Main.spriteBatch.Draw(blackTile.Value, Vector2.Zero, new Rectangle(0, 0, 2000, 2000), default, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             Main.spriteBatch.ExitShaderRegion();
+
+            Main.spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.Placeholder2)
+                , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Red * sengs);
         }
     }
 }

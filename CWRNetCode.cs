@@ -48,13 +48,13 @@ namespace CalamityOverhaul
                 modnpc.OverBeatBackAttenuationForce = reader.ReadSingle();
             }
             else if (type == CWRMessageType.BrutalSkeletronPrimeAI) {
-                BrutalSkeletronPrimeAI.ai4 = reader.ReadByte();
-                BrutalSkeletronPrimeAI.ai5 = reader.ReadByte();
-                BrutalSkeletronPrimeAI.ai6 = reader.ReadByte();
-                BrutalSkeletronPrimeAI.ai7 = reader.ReadByte();
-                BrutalSkeletronPrimeAI.ai8 = reader.ReadByte();
-                BrutalSkeletronPrimeAI.ai9 = reader.ReadByte();
-                BrutalSkeletronPrimeAI.ai10 = reader.ReadByte();
+                BrutalSkeletronPrimeAI.ai4 = reader.ReadInt32();
+                BrutalSkeletronPrimeAI.ai5 = reader.ReadInt32();
+                BrutalSkeletronPrimeAI.ai6 = reader.ReadInt32();
+                BrutalSkeletronPrimeAI.ai7 = reader.ReadInt32();
+                BrutalSkeletronPrimeAI.ai8 = reader.ReadInt32();
+                BrutalSkeletronPrimeAI.ai9 = reader.ReadInt32();
+                BrutalSkeletronPrimeAI.ai10 = reader.ReadInt32();
             }
         }
     }
