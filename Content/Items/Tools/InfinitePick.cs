@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.DamageType = EndlessDamageClass.Instance;
             Item.width = 40;
             Item.height = 40;
-            Item.useTime = 10;
+            Item.useTime = 1;
             Item.useAnimation = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 6;
@@ -61,6 +61,10 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override void ModifyWeaponCrit(Player player, ref float crit) {
             crit = 9999;
+        }
+
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
+            damage = damage.Scale(0);
         }
 
         public override bool? UseItem(Player player) {

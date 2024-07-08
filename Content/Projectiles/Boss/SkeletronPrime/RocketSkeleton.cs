@@ -25,9 +25,16 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             Projectile.scale += 0.012f;
-            Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.FireworkFountain_Red, Projectile.velocity);
-            dust.noGravity = true;
-            dust.scale *= Main.rand.NextFloat(0.3f, 1.2f);
+            
+            if (CWRParticleHandler.FreeSpacesAvailable() > 10) {
+                CWRParticle spark = new HeavenfallStarParticle(Projectile.Center, Projectile.velocity * 0.7f, false, 33, Main.rand.NextFloat(1.2f, 1.3f), Color.Gold);
+                CWRParticleHandler.AddParticle(spark);
+            }
+            else {
+                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.FireworkFountain_Red, Projectile.velocity);
+                dust.noGravity = true;
+                dust.scale *= Main.rand.NextFloat(0.3f, 1.2f);
+            }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {

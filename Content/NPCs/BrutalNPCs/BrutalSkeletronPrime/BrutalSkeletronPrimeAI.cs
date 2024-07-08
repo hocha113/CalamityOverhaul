@@ -773,7 +773,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 , drawColor, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(mainValue2, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
                 , Color.White, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
-            if (noArm) {
+            if (noArm && ai10 > 2 && player != null) {
                 Vector2 toD = player.Center.To(NPC.Center);
                 Vector2 origpos = player.Center - Main.screenPosition;
                 float alp = toD.Length() / 400f;
