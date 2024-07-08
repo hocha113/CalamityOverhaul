@@ -401,6 +401,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                         , Main.myPlayer, npc.whoAmI, npc.target, rotoffset);
                                     }
                                     else {
+                                        SoundEngine.PlaySound(SoundID.Item62, npc.Center);
                                         int proj = Projectile.NewProjectile(npc.GetSource_FromAI()
                                             , npc.Center + perturbedSpeed.SafeNormalize(Vector2.UnitY) * 40f
                                             , perturbedSpeed, type, damage, 0f, Main.myPlayer, npc.target, 2f);
@@ -442,6 +443,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                         , Main.myPlayer, npc.whoAmI, npc.target, rotoffset);
                                     }
                                     else {
+                                        SoundEngine.PlaySound(SoundID.Item62, npc.Center);
                                         int proj = Projectile.NewProjectile(npc.GetSource_FromAI()
                                             , npc.Center + perturbedSpeed.SafeNormalize(Vector2.UnitY) * 40f
                                             , perturbedSpeed, type, damage, 0f, Main.myPlayer, npc.target, 2f);

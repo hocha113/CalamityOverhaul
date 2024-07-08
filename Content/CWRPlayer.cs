@@ -371,7 +371,7 @@ namespace CalamityOverhaul.Content
                     Player.lifeRegen = 0;
                 }
                 Player.lifeRegenTime = 0;
-                Player.lifeRegen -= 20;
+                Player.lifeRegen -= 120;
             }
         }
 

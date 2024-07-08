@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.SkyEffects
         }
 
         public override bool IsActive() {
-            return active;
+            return active || intensity > 0;
         }
 
         public override void Reset() {
@@ -45,12 +45,12 @@ namespace CalamityOverhaul.Content.SkyEffects
 
         public override void Update(GameTime gameTime) {
             if (NPC.AnyNPCs(NPCID.SkeletronPrime)) {
-                if (intensity < 0.6f) {
-                    intensity += 0.01f;
+                if (intensity < 0.3f) {
+                    intensity += 0.005f;
                 }
             }
             else {
-                intensity -= 0.01f;
+                intensity -= 0.005f;
                 if (intensity < 0) {
                     Deactivate();
                 }
