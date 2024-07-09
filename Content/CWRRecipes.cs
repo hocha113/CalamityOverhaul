@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileID.Anvils)
                     .Register();
             }
-            //添加水瓶的合成事件
+            /*添加水瓶的合成事件
             {
                 for (int i = 0; i < Recipe.numRecipes; i++) {
                     Recipe recipe = Main.recipe[i];
@@ -134,6 +134,7 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
+            */
             //修改瘟疫系列的合成
             {
                 for (int i = 0; i < Recipe.numRecipes; i++) {
@@ -145,7 +146,7 @@ namespace CalamityOverhaul.Content
                         recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
                     }
                     //瘟疫
-                    if (recipe.HasResult(ItemType<CalamityMod.Items.Weapons.Ranged.Contagion>())) {
+                    if (recipe.HasResult(ItemType<Contagion>())) {
                         recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
                         recipe.AddIngredient(ItemType<PestilenceIngot>(), 15);//添加瘟疫锭
                     }
@@ -189,31 +190,31 @@ namespace CalamityOverhaul.Content
                     .Register();
 
                 //添加疫病污染者的合成
-                Recipe.Create(ItemType<CalamityMod.Items.Weapons.Ranged.PestilentDefiler>())
+                Recipe.Create(ItemType<PestilentDefiler>())
                     .AddIngredient(ItemType<PestilenceIngot>(), 8)//添加瘟疫锭
                     .AddTile(TileType<PlagueInfuser>())
                     .Register();
 
                 //添加蜂巢发射器的合成
-                Recipe.Create(ItemType<CalamityMod.Items.Weapons.Ranged.TheHive>())
+                Recipe.Create(ItemType<TheHive>())
                     .AddIngredient(ItemType<PestilenceIngot>(), 8)//添加瘟疫锭
                     .AddTile(TileType<PlagueInfuser>())
                     .Register();
 
                 //添加枯萎散播者的合成
-                Recipe.Create(ItemType<CalamityMod.Items.Weapons.Ranged.BlightSpewer>())
+                Recipe.Create(ItemType<BlightSpewer>())
                     .AddIngredient(ItemType<PestilenceIngot>(), 8)//添加瘟疫锭
                     .AddTile(TileType<PlagueInfuser>())
                     .Register();
 
                 //添加蜂毒弓的合成
-                Recipe.Create(ItemType<CalamityMod.Items.Weapons.Ranged.Malevolence>())
+                Recipe.Create(ItemType<Malevolence>())
                     .AddIngredient(ItemType<PestilenceIngot>(), 8)//添加瘟疫锭
                     .AddTile(TileType<PlagueInfuser>())
                     .Register();
 
                 //添加瘟疫法杖的合成
-                Recipe.Create(ItemType<CalamityMod.Items.Weapons.Magic.PlagueStaff>())
+                Recipe.Create(ItemType<PlagueStaff>())
                     .AddIngredient(ItemType<PestilenceIngot>(), 8)//添加瘟疫锭
                     .AddTile(TileType<PlagueInfuser>())
                     .Register();
@@ -223,8 +224,8 @@ namespace CalamityOverhaul.Content
             {
                 for (int i = 0; i < Recipe.numRecipes; i++) {
                     Recipe recipe = Main.recipe[i];
-                    if (recipe.HasResult(ItemType<CalamityMod.Items.Weapons.Ranged.SomaPrime>())) {
-                        recipe.AddIngredient(ItemType<CalamityMod.Items.Weapons.Ranged.Infinity>());//添加无穷
+                    if (recipe.HasResult(ItemType<SomaPrime>())) {
+                        recipe.AddIngredient(ItemType<Infinity>());//添加无穷
                     }
                 }
             }
@@ -232,7 +233,7 @@ namespace CalamityOverhaul.Content
             {
                 for (int i = 0; i < Recipe.numRecipes; i++) {
                     Recipe recipe = Main.recipe[i];
-                    if (recipe.HasResult(ItemType<CalamityMod.Items.Weapons.Ranged.OpalStriker>())) {
+                    if (recipe.HasResult(ItemType<OpalStriker>())) {
                         recipe.AddIngredient(ItemType<Pebble>(), 8);//添加鹅卵石
                     }
                 }
@@ -462,12 +463,12 @@ namespace CalamityOverhaul.Content
 
             LoadGroup(ref GodDWGroup, "CWRRecipes_GodEaterWeapon", new int[] {ItemType<Excelsus>()
                 , ItemType<TheObliterator>()
-                , ItemType<CalamityMod.Items.Weapons.Ranged.Deathwind>()
-                , ItemType<CalamityMod.Items.Weapons.Magic.DeathhailStaff>()
+                , ItemType<Deathwind>()
+                , ItemType<DeathhailStaff>()
                 , ItemType<CalamityMod.Items.Weapons.Summon.StaffoftheMechworm>()
                 , ItemType<CalamityMod.Items.Weapons.Rogue.Eradicator>()
                 , ItemType<CosmicDischarge>()
-                , ItemType<CalamityMod.Items.Weapons.Ranged.Norfleet>()
+                , ItemType<Norfleet>()
             });
 
             LoadGroup(ref FishGroup, "CWRRecipes_FishGroup", new int[] {ItemID.Fish

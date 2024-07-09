@@ -302,6 +302,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.ai[3] += 1f;
                 }
             }
+
+            if (Main.GameUpdateCount % 10 == 0) {
+                if (++frame > 1) {
+                    frame = 0;
+                }
+            }
+
             return false;
         }
 

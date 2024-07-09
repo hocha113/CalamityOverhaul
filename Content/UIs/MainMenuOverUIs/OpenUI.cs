@@ -18,16 +18,18 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         static Asset<Texture2D> githubOAC;
         static Asset<Texture2D> steamOAC;
         Vector2 githubPos1 => new Vector2(Main.screenWidth - 80, 20);
-        Vector2 githubPos2 => new Vector2(Main.screenWidth - 120, 20);
+        Vector2 githubPos2 => new Vector2(Main.screenWidth - 140, 30);
         Vector2 githubPos => Vector2.Lerp(githubPos1, githubPos2, _sengs);
         Vector2 githubCenter => githubPos + new Vector2(githubOAC.Width(), githubOAC.Height()) / 2 * githubSiz;
         float githubSiz1 => 0.001f;
         float githubSiz2 => 0.05f;
+        bool old_onGithub;
+        bool old_onSteam;
         bool onGithub => MouPos.Distance(githubCenter) < githubOAC.Width() * githubSiz2 / 2f;
         bool onSteam => MouPos.Distance(steamCenter) < steamOAC.Width() * githubSiz2 / 2f;
         float githubSiz => float.Lerp(githubSiz1, githubSiz2, _sengs);
         Vector2 steamPos1 => new Vector2(Main.screenWidth - 80, 20);
-        Vector2 steamPos2 => new Vector2(Main.screenWidth - 180, 20);
+        Vector2 steamPos2 => new Vector2(Main.screenWidth - 200, 30);
         Vector2 steamPos => Vector2.Lerp(steamPos1, steamPos2, _sengs);
         Vector2 steamCenter => steamPos + new Vector2(steamOAC.Width(), steamOAC.Height()) / 2 * githubSiz;
         public bool OnActive() => _active || _sengs > 0;
@@ -61,6 +63,13 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         public override void Update(GameTime gameTime) {
             Initialize();
+
+            if ((!old_onSteam && onSteam || !old_onGithub && onGithub) && _sengs >= 1) {
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.6f, Volume = 0.6f });
+            }
+
+            old_onSteam = onSteam;
+            old_onGithub = onGithub;
 
             int mouS = DownStartL();
             if (mouS == 1) {

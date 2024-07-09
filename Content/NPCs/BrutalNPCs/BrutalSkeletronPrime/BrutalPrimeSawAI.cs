@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool laserAlive;
         private NPC head;
         private Player player;
+        private int frame;
 
         public override bool CanLoad() => true;
 
@@ -289,10 +290,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
+            if (Main.GameUpdateCount % 5 == 0) {
+                if (++frame > 1) {
+                    frame = 0;
+                }
+            }
+
             return false;
         }
 
-        private int frame;
         public override bool? Draw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             BrutalSkeletronPrimeAI.DrawArm(spriteBatch, NPC, screenPos);
             Texture2D mainValue = BrutalSkeletronPrimeAI.BSPSAW.Value;
