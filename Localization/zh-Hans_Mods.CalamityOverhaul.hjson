@@ -3395,6 +3395,7 @@ Projectiles: {
 	// MG42HeldProj.DisplayName: M G42 Held Proj
 	// ChainGunHeldProj.DisplayName: Chain Gun Held Proj
 	// RocketSkeleton.DisplayName: Rocket Skeleton
+	// DeadLaser.DisplayName: Dead Laser
 }
 
 Configs: {

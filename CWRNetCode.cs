@@ -55,6 +55,7 @@ namespace CalamityOverhaul
                 BrutalSkeletronPrimeAI.ai8 = reader.ReadInt32();
                 BrutalSkeletronPrimeAI.ai9 = reader.ReadInt32();
                 BrutalSkeletronPrimeAI.ai10 = reader.ReadInt32();
+                BrutalSkeletronPrimeAI.fireIndex = reader.ReadInt32();
             }
         }
     }

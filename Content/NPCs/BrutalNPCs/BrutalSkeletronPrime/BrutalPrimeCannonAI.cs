@@ -201,8 +201,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             dontAttack = npc.Calamity().newAI[2] < timeToNotAttack;
             if (dontAttack) {
                 npc.Calamity().newAI[2] += 1f;
-                if (npc.Calamity().newAI[2] >= timeToNotAttack)
-                    npc.SyncExtraAI();
+                if (npc.Calamity().newAI[2] >= timeToNotAttack) {
+                    BrutalSkeletronPrimeAI.SendExtraAI(npc);
+                }   
             }
 
             bool fireSlower = false;

@@ -46,8 +46,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override void OnKill(int timeLeft) {
+            SoundEngine.PlaySound(SoundID.Item62, Projectile.Center);
             if (!CWRUtils.isClient) {
-                SoundEngine.PlaySound(SoundID.Item62, Projectile.Center);
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 13
                         , ModContent.ProjectileType<RocketSkeleton>(), Projectile.damage, 0f, Main.myPlayer, Projectile.ai[1], 2);
             }

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -139,6 +140,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.TargetClosest();
                     float laserSpeed = bossRush ? 5f : 4f;
                     int type = ProjectileID.DeathLaser;
+                    if (death) {
+                        type = ModContent.ProjectileType<DeadLaser>();
+                    }
                     int damage = BrutalSkeletronPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
                     BrutalSkeletronPrimeAI.SpanFireLerterDustEffect(npc, 3);
                     laserArmTargetDist = laserSpeed / laserArmTargetDist;
@@ -220,7 +224,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                 for (int k = 0; k < totalProjectiles; k++) {
                                     Vector2 laserFireDirection = spinningPoint.RotatedBy(radians * k);
                                     int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + laserFireDirection.SafeNormalize(Vector2.UnitY) * 100f
-                                        , laserFireDirection * (1 + j * 0.25f), type, damage, 0f, Main.myPlayer, 1f, 0f);
+                                        , laserFireDirection * (1 + j * 0.25f), ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
                                     Main.projectile[proj].timeLeft = 900;
                                 }
                             }
@@ -260,8 +264,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.aiStyle = -1;
             if (dontAttack) {
                 modNPC.newAI[2]++;
-                if (modNPC.newAI[2] >= timeToNotAttack)
-                    npc.SyncExtraAI();
+                if (modNPC.newAI[2] >= timeToNotAttack) {
+                    BrutalSkeletronPrimeAI.SendExtraAI(npc);
+                } 
             }
             Movement(npc);
             if (npc.ai[2] == 0f) {

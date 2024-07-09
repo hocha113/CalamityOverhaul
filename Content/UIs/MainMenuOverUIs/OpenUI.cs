@@ -64,16 +64,16 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override void Update(GameTime gameTime) {
             Initialize();
 
-            if ((!old_onSteam && onSteam || !old_onGithub && onGithub) && _sengs >= 1) {
-                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.6f, Volume = 0.6f });
-            }
+            if (_sengs >= 1 && githubOAC != null && steamOAC != null) {
+                if (!old_onSteam && onSteam || !old_onGithub && onGithub) {
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.6f, Volume = 0.6f });
+                }
 
-            old_onSteam = onSteam;
-            old_onGithub = onGithub;
+                old_onSteam = onSteam;
+                old_onGithub = onGithub;
 
-            int mouS = DownStartL();
-            if (mouS == 1) {
-                if (_sengs >= 1) {
+                int mouS = DownStartL();
+                if (mouS == 1) {
                     if (onGithub) {
                         SoundEngine.PlaySound(SoundID.MenuTick);
                         (CWRConstant.githubUrl + "/issues/new").WebRedirection(true);

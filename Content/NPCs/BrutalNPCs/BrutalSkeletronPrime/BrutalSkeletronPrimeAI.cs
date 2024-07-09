@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -29,7 +28,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private int primeSaw;
         private int primeVice;
         private int primeLaser;
-        private int fireIndex;
         private bool cannonAlive;
         private bool viceAlive;
         private bool sawAlive;
@@ -44,6 +42,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static int ai8;
         internal static int ai9;
         internal static int ai10;
+        internal static int fireIndex;
         internal static Asset<Texture2D> HandAsset;
         internal static Asset<Texture2D> BSPCannon;
         internal static Asset<Texture2D> BSPlaser;
@@ -58,7 +57,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static Asset<Texture2D> BSPRAMGlow;
 
         internal void NetAISend() {
-            if (!CWRUtils.isSinglePlayer) {
+            if (CWRUtils.isServer) {
                 var netMessage = CWRMod.Instance.GetPacket();
                 netMessage.Write((byte)CWRMessageType.BrutalSkeletronPrimeAI);
                 netMessage.Write(ai4);
@@ -68,6 +67,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 netMessage.Write(ai8);
                 netMessage.Write(ai9);
                 netMessage.Write(ai10);
+                netMessage.Write(fireIndex);
+                netMessage.Send();
             }
         }
 
@@ -229,6 +230,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
+        internal static void SendExtraAI(NPC npc) {
+            if (CWRUtils.isServer) {
+                npc.SyncExtraAI();
+            }
+        }
+
         public override bool? AI(NPC npc, Mod mod) {
             bossRush = BossRushEvent.BossRushActive;
             death = CalamityWorld.death || bossRush;
@@ -242,9 +249,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (npc.ai[0] == 0f) {
                 ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = 0;
                 if (Main.netMode != NetmodeID.MultiplayerClient) {
+                    fireIndex = 0;
                     npc.TargetClosest();
                     spanArm(npc);
-                    fireIndex = 0;
+                    SendExtraAI(npc);
+                    NetAISend();
                 }
                 npc.ai[0] = 1f;
             }
@@ -269,8 +278,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
                             , ModContent.ProjectileType<SetPosingStarm>(), npc.damage, 2, -1, 0, npc.whoAmI);
                         npc.Calamity().newAI[0] = 0;
-                        npc.SyncExtraAI();
                         fireIndex++;
+                        SendExtraAI(npc);
+                        NetAISend();
                     }
                     npc.TargetClosest();
                     npc.netUpdate = true;
@@ -538,28 +548,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region SetFromeAIFunc
         private void MoveToPoint(NPC npc, Vector2 point) {
-            float moveSpeed = 20f;
-            float velMultiplier = 1f;
-            Vector2 dist = point - npc.Center;
-            float length = dist == Vector2.Zero ? 0f : dist.Length();
-            if (length < moveSpeed) {
-                velMultiplier = MathHelper.Lerp(0f, 1f, length / moveSpeed);
-            }
-            if (length < 200f) {
-                moveSpeed *= 0.5f;
-            }
-            if (length < 100f) {
-                moveSpeed *= 0.5f;
-            }
-            if (length < 50f) {
-                moveSpeed *= 0.5f;
-            }
-            if (length < 10f) {
-                moveSpeed *= 0.01f;
-            }
-            npc.velocity = length == 0f ? Vector2.Zero : Vector2.Normalize(dist);
-            npc.velocity *= moveSpeed;
-            npc.velocity *= velMultiplier;
+            npc.ChasingBehavior(point, 20);
         }
 
         private void AdjustVerticalMovement(NPC npc, float acceleration, float maxSpeed, float deceleration, int offset, int threshold) {
@@ -640,9 +629,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     Vector2 toD = npc.Center.To(player.Center) + player.velocity;
                     toD = toD.UnitVector();
                     npc.velocity += toD * 23;
-                    npc.Calamity().newAI[2] = 60;
-                    npc.Calamity().newAI[1] = 0;
-                    npc.SyncExtraAI();
+                    
                     if (Main.npc[primeCannon].active)
                         Main.npc[primeCannon].velocity += toD * 33;
                     if (Main.npc[primeSaw].active)
@@ -651,6 +638,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         Main.npc[primeLaser].velocity += toD * 33;
                     if (Main.npc[primeVice].active)
                         Main.npc[primeVice].velocity += toD * 53;
+
+                    npc.Calamity().newAI[2] = 60;
+                    npc.Calamity().newAI[1] = 0;
+                    npc.netUpdate = true;
+                    SendExtraAI(npc);
                 }
             }
             else {

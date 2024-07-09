@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.timeLeft = 600;
             Projectile.extraUpdates = 6;
             Projectile.tileCollide = false;
+            CooldownSlot = ImmunityCooldownID.Bosses;
         }
 
         public override void AI() {
