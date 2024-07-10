@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     internal class DeadLaser : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder2;
-        private float timeLeft => 300;
+        private float timeLeft => 900;
         private bool onSound;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 33;

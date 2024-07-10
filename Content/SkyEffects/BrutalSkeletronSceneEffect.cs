@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.SkyEffects
 {
     internal class BrutalSkeletronSceneEffect : ModSceneEffect
     {
-        public override int Music => -1;
+        public override int Music => -1;//MusicLoader.GetMusicSlot(Mod, "Assets/Sounds/Music/TheGomsDead");
         public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
         public override bool IsSceneEffectActive(Player player) => NPC.AnyNPCs(NPCID.SkeletronPrime);
         public override void SpecialVisuals(Player player, bool isActive) 

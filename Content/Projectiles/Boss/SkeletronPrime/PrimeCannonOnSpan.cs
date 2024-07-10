@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             float sengs = Projectile.alpha / 255f;
             Color color = CWRUtils.MultiStepColorLerp(sengs, Color.Blue, Color.Red);
             Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, null, color with { A = 255 } * sengs, Projectile.rotation - MathHelper.PiOver2
-                    , new Vector2(mainValue.Width / 2, 0), new Vector2((0.1f + sengs) * 1.6f, 3000) * Projectile.scale, SpriteEffects.None, 0);
+                    , new Vector2(mainValue.Width / 2, 0), new Vector2((0.1f + sengs) * 1.2f, 3000) * Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }
