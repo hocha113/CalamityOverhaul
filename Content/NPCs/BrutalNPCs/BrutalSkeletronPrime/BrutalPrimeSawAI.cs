@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        public override bool? AI(NPC npc, Mod mod) {
+        public override bool? AI() {
             bossRush = BossRushEvent.BossRushActive;
             masterMode = Main.masterMode || bossRush;
             death = CalamityWorld.death || bossRush;
@@ -299,16 +299,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        public override bool? Draw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            BrutalSkeletronPrimeAI.DrawArm(spriteBatch, NPC, screenPos);
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            BrutalSkeletronPrimeAI.DrawArm(spriteBatch, npc, screenPos);
             Texture2D mainValue = BrutalSkeletronPrimeAI.BSPSAW.Value;
             Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPSAWGlow.Value;
-            Main.EntitySpriteDraw(mainValue, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 2)
-                , drawColor, NPC.rotation, CWRUtils.GetOrig(mainValue, 2), NPC.scale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(mainValue2, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 2)
-                , Color.White, NPC.rotation, CWRUtils.GetOrig(mainValue, 2), NPC.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 2)
+                , drawColor, npc.rotation, CWRUtils.GetOrig(mainValue, 2), npc.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 2)
+                , Color.White, npc.rotation, CWRUtils.GetOrig(mainValue, 2), npc.scale, SpriteEffects.None, 0);
             return false;
         }
-        public override bool PostDraw(Mod mod, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
+        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
     }
 }

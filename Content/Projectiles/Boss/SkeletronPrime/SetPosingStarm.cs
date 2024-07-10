@@ -45,16 +45,16 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 if (modeings > 1200) {
                     modeings -= 15;
                 }
-            }
-            foreach (var p in Main.player) {
-                if (!p.active) {
-                    continue;
+                foreach (var p in Main.player) {
+                    if (!p.active) {
+                        continue;
+                    }
+                    if (p.Distance(Projectile.Center) > modeings) {
+                        p.AddBuff(ModContent.BuffType<HellfireExplosion>(), 2);
+                        p.HealEffect(-1);
+                    }
+
                 }
-                if (p.Distance(Projectile.Center) > modeings) {
-                    p.AddBuff(ModContent.BuffType<HellfireExplosion>(), 2);
-                    p.HealEffect(-1);
-                }
-                
             }
 
             if (Main.LocalPlayer.Distance(Projectile.Center) > modeings && Projectile.timeLeft > 30) {

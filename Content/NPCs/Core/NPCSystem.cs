@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.Core
@@ -15,11 +16,11 @@ namespace CalamityOverhaul.Content.NPCs.Core
     /// </summary>
     internal class NPCSystem : ModSystem
     {
-        internal delegate void On_OnHitByProjectileDelegate(NPC npc, Projectile projectile, in NPC.HitInfo hit, int damageDone);
-        internal delegate void On_ModifyIncomingHitDelegate(NPC npc, ref NPC.HitModifiers modifiers);
         internal delegate bool On_NPCDelegate(NPC npc);
         internal delegate bool On_DrawDelegate(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor);
         internal delegate void On_DrawDelegate2(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor);
+        internal delegate void On_OnHitByProjectileDelegate(NPC npc, Projectile projectile, in NPC.HitInfo hit, int damageDone);
+        internal delegate void On_ModifyIncomingHitDelegate(NPC npc, ref NPC.HitModifiers modifiers);
 
         public static Type npcLoaderType;
         public static List<NPCCoverage> NPCSets { get; private set; }
@@ -90,10 +91,22 @@ namespace CalamityOverhaul.Content.NPCs.Core
             LoaderMethodAndHook();
         }
 
-        public static bool OnPreAIHook(On_NPCDelegate orig, NPC npc) {
+        public static void OnSetPropertyHook(NPC npc) {
             foreach (var set in NPCSets) {
                 if (npc.type == set.TargetID) {
-                    bool? reset = set.AI(npc, CWRMod.Instance);
+                    set.npc = npc;
+                    set.SetProperty();
+                }
+            }
+        }
+
+        public static bool OnPreAIHook(On_NPCDelegate orig, NPC npc) {
+            foreach (var set in NPCSets) {
+                if (set.npc == null) {
+                    continue;
+                }
+                if (npc.type == set.TargetID) {
+                    bool? reset = set.AI();
                     if (reset.HasValue) {
                         return reset.Value;
                     }
@@ -104,8 +117,11 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         public static bool OnPreDrawHook(On_DrawDelegate orig, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             foreach (var set in NPCSets) {
+                if (set.npc == null) {
+                    continue;
+                }
                 if (npc.type == set.TargetID) {
-                    bool? reset = set.Draw(CWRMod.Instance, npc, spriteBatch, screenPos, drawColor);
+                    bool? reset = set.Draw(spriteBatch, screenPos, drawColor);
                     if (reset.HasValue) {
                         return reset.Value;
                     }
@@ -121,13 +137,17 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         public static void OnPostDrawHook(On_DrawDelegate2 orig, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             foreach (var set in NPCSets) {
+                if (set.npc == null) {
+                    continue;
+                }
                 if (npc.type == set.TargetID) {
-                    bool reset = set.PostDraw(CWRMod.Instance, npc, spriteBatch, screenPos, drawColor);
+                    bool reset = set.PostDraw(spriteBatch, screenPos, drawColor);
                     if (!reset) {
                         return;
                     }
                 }
             }
+
             orig.Invoke(npc, spriteBatch, screenPos, drawColor);
         }
 

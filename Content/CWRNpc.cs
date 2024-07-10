@@ -13,6 +13,7 @@ using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Items.Summon.Extras;
+using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.NPCs.OverhaulBehavior;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
@@ -23,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -82,6 +84,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void SetDefaults(NPC npc) {
+            NPCSystem.OnSetPropertyHook(npc);//这让我感觉非常被动，gNPC的钩子优先级很低，但相对稳定
             if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
                 if (TungstenRiot.TungstenEventNPCDic.ContainsKey(npc.type)) {
                     npc.life = npc.lifeMax = (int)(npc.lifeMax * 1.2f);

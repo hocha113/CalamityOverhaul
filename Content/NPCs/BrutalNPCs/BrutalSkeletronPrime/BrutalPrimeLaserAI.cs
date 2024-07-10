@@ -220,6 +220,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     }
                     if (spanLerter) {
                         if (death) {
+                            totalProjectiles = bossRush ? 18 : 12;
+                            radians = MathHelper.TwoPi / totalProjectiles;
                             for (int j = 0; j < 5; j++) {
                                 for (int k = 0; k < totalProjectiles; k++) {
                                     Vector2 laserFireDirection = spinningPoint.RotatedBy(radians * k);
@@ -246,7 +248,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        public override bool? AI(NPC npc, Mod mod) {
+        public override bool? AI() {
             bossRush = BossRushEvent.BossRushActive;
             masterMode = Main.masterMode || bossRush;
             death = CalamityWorld.death || bossRush;
@@ -280,16 +282,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private int frame;
-        public override bool? Draw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            BrutalSkeletronPrimeAI.DrawArm(spriteBatch, NPC, screenPos);
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            BrutalSkeletronPrimeAI.DrawArm(spriteBatch, npc, screenPos);
             Texture2D mainValue = BrutalSkeletronPrimeAI.BSPlaser.Value;
             Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPlaserGlow.Value;
-            Main.EntitySpriteDraw(mainValue, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 1)
-                , drawColor, NPC.rotation, CWRUtils.GetOrig(mainValue, 1), NPC.scale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(mainValue2, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 1)
-                , Color.White, NPC.rotation, CWRUtils.GetOrig(mainValue, 1), NPC.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 1)
+                , drawColor, npc.rotation, CWRUtils.GetOrig(mainValue, 1), npc.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 1)
+                , Color.White, npc.rotation, CWRUtils.GetOrig(mainValue, 1), npc.scale, SpriteEffects.None, 0);
             return false;
         }
-        public override bool PostDraw(Mod mod, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
+        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
     }
 }

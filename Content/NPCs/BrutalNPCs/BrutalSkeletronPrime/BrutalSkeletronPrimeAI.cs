@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        public override bool? AI(NPC npc, Mod mod) {
+        public override bool? AI() {
             bossRush = BossRushEvent.BossRushActive;
             death = CalamityWorld.death || bossRush;
             player = Main.player[npc.target];
@@ -795,18 +795,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
         #endregion
 
-        public override bool? Draw(Mod mod, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
-        public override bool PostDraw(Mod mod, NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             Texture2D mainValue = HandAsset.Value;
             Texture2D mainValue2 = HandAssetGlow.Value;
 
-            Main.EntitySpriteDraw(mainValue, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
-                , drawColor, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(mainValue2, NPC.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
-                , Color.White, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
+                , drawColor, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
+                , Color.White, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
             if (noArm && ai10 > 2 && player != null) {
-                Vector2 toD = player.Center.To(NPC.Center);
+                Vector2 toD = player.Center.To(npc.Center);
                 Vector2 origpos = player.Center - Main.screenPosition;
                 float alp = toD.Length() / 400f;
                 if (alp > 1) {
@@ -814,13 +814,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
                 Vector2 drawPos1 = new Vector2(-toD.X, toD.Y) + origpos;
                 Main.EntitySpriteDraw(mainValue, drawPos1, CWRUtils.GetRec(mainValue, frame, 6)
-                , drawColor * alp, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
+                , drawColor * alp, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
                 Vector2 drawPos2 = new Vector2(-toD.X, -toD.Y) + origpos;
                 Main.EntitySpriteDraw(mainValue, drawPos2, CWRUtils.GetRec(mainValue, frame, 6)
-                , drawColor * alp, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
+                , drawColor * alp, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
                 Vector2 drawPos3 = new Vector2(toD.X, -toD.Y) + origpos;
                 Main.EntitySpriteDraw(mainValue, drawPos3, CWRUtils.GetRec(mainValue, frame, 6)
-                , drawColor * alp, NPC.rotation, CWRUtils.GetOrig(mainValue, 6), NPC.scale, SpriteEffects.None, 0);
+                , drawColor * alp, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
             }
 
             return false;

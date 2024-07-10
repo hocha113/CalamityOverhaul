@@ -13,12 +13,38 @@ namespace CalamityOverhaul.Content.NPCs.Core
     {
         public virtual int TargetID => NPCID.None;
 
+        private NPC _npc;
+
+        private Mod mod => CWRMod.Instance;
+
+        public NPC npc {
+            get {
+                if (_npc == null) {
+                    foreach (var entity in Main.npc) {
+                        if (!entity.active) {
+                            continue;
+                        }
+                        if (entity.type == TargetID) {
+                            _npc = entity;
+                        }
+                    }
+                }
+                if (_npc.type != TargetID && _npc.type != NPCID.None) {
+                    _npc = null;
+                }
+                return _npc;
+            }
+            internal set => _npc = value;
+        }
+
         public virtual bool CanLoad() { return true; }
 
-        public virtual bool? AI(NPC npc, Mod mod) { return null; }
+        public virtual void SetProperty() { }
 
-        public virtual bool? Draw(Mod mod, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return null; }
+        public virtual bool? AI() { return null; }
 
-        public virtual bool PostDraw(Mod mod, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return true; }
+        public virtual bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return null; }
+
+        public virtual bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return true; }
     }
 }
