@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Common
 
         [BackgroundColor(35, 185, 78, 192)]
         [ReloadRequired]
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         public bool BiobehavioralOverlay { get; set; }
 
         /// <summary>

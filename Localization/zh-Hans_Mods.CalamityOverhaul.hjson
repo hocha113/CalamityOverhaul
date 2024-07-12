@@ -3396,6 +3396,7 @@ Projectiles: {
 	// ChainGunHeldProj.DisplayName: Chain Gun Held Proj
 	// RocketSkeleton.DisplayName: Rocket Skeleton
 	// DeadLaser.DisplayName: Dead Laser
+	// MoltenFuryHeldProj.DisplayName: Molten Fury Held Proj
 }
 
 Configs: {
@@ -3601,10 +3602,11 @@ Configs: {
 		}
 
 		BiobehavioralOverlay: {
-			Label: 生物行为修改
+			Label: 生物行为修改[c/06e33f:(实验性)]
 			Tooltip:
 				'''
-				默认开启，会修改一些生物的AI行为，比如死亡模组下的BossAI
+				[c/c20909:未完成]
+				默认关闭，会修改一些生物的AI行为，比如死亡模组下的BossAI
 				这可能会让游戏的挑战性剧增，可以根据个人喜好选择是否关闭
 				'''
 		}
@@ -4332,6 +4334,11 @@ TextContent: {
 			右键全功率发射星旋导弹
 			'''
 		Wap_ChainGun_Text: 火力压制
+		Wap_MoltenFury_Text:
+			'''
+			将木箭转化为火矢
+			将烈焰箭转化为狱炎箭
+			'''
 	}
 }
 

@@ -3377,6 +3377,7 @@ Projectiles: {
 	ChainGunHeldProj.DisplayName: Chain Gun Held Proj
 	RocketSkeleton.DisplayName: Rocket Skeleton
 	DeadLaser.DisplayName: Dead Laser
+	MoltenFuryHeldProj.DisplayName: Molten Fury Held Proj
 }
 
 Configs: {
@@ -3588,9 +3589,10 @@ Configs: {
 		}
 
 		BiobehavioralOverlay: {
-			Label: Biobehavioral Modification
+			Label: Biobehavioral Modification [c/06e33f:(Experimental)]
 			Tooltip:
 				'''
+				[c/c20909:unfinished]
 				Enabled by default, this will modify the AI behavior of certain creatures, such as bosses in death mode.
 				This might significantly increase the game's difficulty, so you can choose to disable it based on your personal preference.
 				'''
@@ -4339,6 +4341,11 @@ TextContent: {
 			Right click launch Vortex Rocket at full power
 			'''
 		Wap_ChainGun_Text: Suppression by fire
+		Wap_MoltenFury_Text:
+			'''
+			Convert wood arrows into fire arrows
+			Turn the flame arrow into a prison arrow
+			'''
 	}
 }
 
