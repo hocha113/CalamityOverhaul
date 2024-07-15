@@ -36,6 +36,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             "啊,胖子" + textElement3,
             "星星之火" + textElement3,
             "众星环绕" + textElement3,
+            "respect" + textElement3,
             "鱼过海洋" + textElement3,
             "浮云落日" + textElement3,
             "生物音素" + textElement3,

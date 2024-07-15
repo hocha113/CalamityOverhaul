@@ -3436,18 +3436,6 @@ Configs: {
 				'''
 		}
 
-		ReplaceAsset: {
-			Label: 材质替换
-			Tooltip:
-				'''
-				如果启用，灾厄大修将更新一些物品的纹理，赋予它们新的风格。
-				其中，一些纹理可能来自于老版本灾厄，这些纹理曾经被废弃。
-				将这些纹理重新引入的原因是，部分玩家对当前版本的纹理表达不满意。
-				为满足各种审美偏好，灾厄大修提供了这一功能，
-				默认情况下是开启的，但您可以根据个人喜好进行设置
-				'''
-		}
-
 		ResetItemReminder: {
 			Label: 重置物品温馨提示
 			Tooltip:
@@ -3654,21 +3642,10 @@ NPCs: {
 	// RavagerALegLeft.DisplayName: Ravager A Leg Left
 	// RavagerALegRight.DisplayName: Ravager A Leg Right
 	// EvilSoul.DisplayName: Evil Soul
-	HEBody.DisplayName: 天堂吞噬者
-	HEBodyAlt.DisplayName: 天堂吞噬者
-	HEHead.DisplayName: 天堂吞噬者
-	HETail.DisplayName: 天堂吞噬者
 	MarbleElemental.DisplayName: 大理石精
 }
 
 Keybinds: {
-	Mods: {
-		CalamityOverhaul: {
-			// Common.CWRKeySystem.HeavenfallLongbowSkillKey.DisplayName: Mods. Calamity Weapon Remake. Common. C W R Key System. Heavenfall Longbow Skill Key
-			// CWRKeySystem.HeavenfallLongbowSkillKey.DisplayName: Mods. Calamity Weapon Remake. C W R Key System. Heavenfall Longbow Skill Key
-		}
-	}
-
 	HeavenfallLongbowSkillKey.DisplayName: 天堂陨落长弓:万象审判
 	InfinitePickSkillKey.DisplayName: 无尽之镐:形态切换
 	TOM_OneClickP.DisplayName: 欧米茄合成:一键摆放

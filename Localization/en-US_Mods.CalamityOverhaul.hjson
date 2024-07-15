@@ -3417,19 +3417,6 @@ Configs: {
 				'''
 		}
 
-		ReplaceAsset: {
-			Label: Replace Asset
-			Tooltip:
-				'''
-				If enabled, Calamity Overhaul Mod will update the textures of some items, giving them a new style.
-				Some of these textures may come from older versions of the disaster, which were once discarded.
-				The reason for the reintroduction of these textures is that some players are 
-				not satisfied with the texture expression in the current version.
-				To meet a variety of aesthetic preferences, Calamity Overhaul Mod provides this function,
-				It is turned on by default, but you can set it as you like
-				'''
-		}
-
 		ResetItemReminder: {
 			Label: Reset Item Reminder
 			Tooltip:
@@ -3641,21 +3628,10 @@ NPCs: {
 	RavagerALegLeft.DisplayName: Ravager A Leg Left
 	RavagerALegRight.DisplayName: Ravager A Leg Right
 	EvilSoul.DisplayName: Evil Soul
-	HEBody.DisplayName: H E Body
-	HEBodyAlt.DisplayName: H E Body Alt
-	HEHead.DisplayName: H E Head
-	HETail.DisplayName: H E Tail
 	MarbleElemental.DisplayName: Marble Elemental
 }
 
 Keybinds: {
-	Mods: {
-		CalamityOverhaul: {
-			Common.CWRKeySystem.HeavenfallLongbowSkillKey.DisplayName: Mods. Calamity Weapon Remake. Common. C W R Key System. Heavenfall Longbow Skill Key
-			CWRKeySystem.HeavenfallLongbowSkillKey.DisplayName: Mods. Calamity Weapon Remake. C W R Key System. Heavenfall Longbow Skill Key
-		}
-	}
-
 	HeavenfallLongbowSkillKey.DisplayName: HeavenfallLongbow Skill Key
 	InfinitePickSkillKey.DisplayName: Endless Pick form switch key
 	TOM_OneClickP.DisplayName: Omega synthesis: One-click placement
