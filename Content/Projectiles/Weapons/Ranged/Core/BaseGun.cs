@@ -687,9 +687,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new(arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
                 Vector2 drawPos = Projectile.Center - Main.screenPosition + offsetDrawPos;
 
+                Color drawColor = Color.White;
+                if (CWRServerConfig.Instance.WeaponAdaptiveIllumination || !CanFire) {
+                    drawColor = Lighting.GetColor(new Point((int)(Projectile.position.X / 16), (int)(Projectile.position.Y / 16)));
+                }
+
                 void drawArrow(float overOffsetRot = 0, Vector2 overOffsetPos = default) => Main.EntitySpriteDraw(arrowValue
                     , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos) + norlValue
-                    , null, Color.White, drawRot + overOffsetRot + DrawCrossArrowOffsetRot, drawOrig, Projectile.scale * DrawCrossArrowSize, SpriteEffects.FlipVertically);
+                    , null, drawColor, drawRot + overOffsetRot + DrawCrossArrowOffsetRot, drawOrig, Projectile.scale * DrawCrossArrowSize, SpriteEffects.FlipVertically);
 
                 if (DrawCrossArrowNum == 1) {
                     drawArrow();

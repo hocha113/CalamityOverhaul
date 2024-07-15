@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.penetrate = -1;
             Projectile.timeLeft = 380;
             Projectile.alpha = 0;
-            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
+            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 99999;
             sengs = 0;
         }
 

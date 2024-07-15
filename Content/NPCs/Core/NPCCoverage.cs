@@ -29,6 +29,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
                         }
                     }
                 }
+                if (_npc == null) {
+                    return null;
+                }
                 if (_npc.type != TargetID && _npc.type != NPCID.None) {
                     _npc = null;
                 }

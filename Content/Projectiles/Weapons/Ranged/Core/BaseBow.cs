@@ -295,7 +295,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public sealed override bool PreDraw(ref Color lightColor) {
             if (OnHandheldDisplayBool) {
-                BowDraw(ref lightColor);
+                Color color = lightColor;
+                if (!CWRServerConfig.Instance.WeaponAdaptiveIllumination && CanFire) {
+                    color = Color.White;
+                }
+                BowDraw(ref color);
             }
 
             if (CWRServerConfig.Instance.BowArrowDraw && BowArrowDrawBool) {
@@ -306,7 +310,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public virtual void BowDraw(ref Color lightColor) {
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition
-                , null, CanFire ? Color.White : lightColor
+                , null, lightColor
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
@@ -369,9 +373,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new(arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
                 Vector2 drawPos = Projectile.Center - Main.screenPosition + offsetDrawPos;
 
+                Color drawColor = Color.White;
+                if (CWRServerConfig.Instance.WeaponAdaptiveIllumination || !CanFire) {
+                    drawColor = Lighting.GetColor(new Point((int)(Projectile.position.X / 16), (int)(Projectile.position.Y / 16)));
+                }
+
                 void drawArrow(float overOffsetRot = 0, Vector2 overOffsetPos = default) => Main.EntitySpriteDraw(arrowValue
-                    , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos)
-                    , null, Color.White, drawRot + DrawArrowOffsetRot + overOffsetRot, drawOrig, Projectile.scale, SpriteEffects.FlipVertically);
+                    , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos), null, drawColor
+                    , drawRot + DrawArrowOffsetRot + overOffsetRot, drawOrig, Projectile.scale, SpriteEffects.FlipVertically);
 
                 switch (BowArrowDrawNum) {
                     case 2:

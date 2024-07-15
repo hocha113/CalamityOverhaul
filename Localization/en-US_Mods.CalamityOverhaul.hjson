@@ -3560,7 +3560,7 @@ Configs: {
 
 		EnableCasingsEntity: {
 			Label: Enable Casings Entity
-			Tooltip: ""
+			Tooltip: If you find the casings rolling around an eyesore, it's a good idea to turn this option off
 		}
 
 		LoadingAA_Volume: {
@@ -3592,7 +3592,7 @@ Configs: {
 			Label: Biobehavioral Modification [c/06e33f:(Experimental)]
 			Tooltip:
 				'''
-				[c/c20909:unfinished]
+				[c/c20909:Unfinished]
 				Enabled by default, this will modify the AI behavior of certain creatures, such as bosses in death mode.
 				This might significantly increase the game's difficulty, so you can choose to disable it based on your personal preference.
 				'''

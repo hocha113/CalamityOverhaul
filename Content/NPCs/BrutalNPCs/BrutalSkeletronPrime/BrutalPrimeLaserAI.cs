@@ -140,9 +140,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.TargetClosest();
                     float laserSpeed = bossRush ? 5f : 4f;
                     int type = ProjectileID.DeathLaser;
-                    if (death) {
-                        type = ModContent.ProjectileType<DeadLaser>();
-                    }
                     int damage = BrutalSkeletronPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
                     BrutalSkeletronPrimeAI.SpanFireLerterDustEffect(npc, 3);
                     laserArmTargetDist = laserSpeed / laserArmTargetDist;
@@ -151,6 +148,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     Vector2 laserVelocity = new Vector2(laserArmTargetX, laserArmTargetY);
                     Vector2 lerSpanPos = laserArmPosition + laserVelocity.SafeNormalize(Vector2.UnitY) * 100f;
                     laserVelocity *= 1 + (float)(lerterFireIndex * 0.1f);
+                    if (death) {
+                        type = ModContent.ProjectileType<DeadLaser>();
+                        laserVelocity *= 0.65f;
+                    }
                     Projectile.NewProjectile(npc.GetSource_FromAI(), lerSpanPos, laserVelocity, type, damage, 0f, Main.myPlayer, 1f, 0f);
                     npc.localAI[0] = 0f;
                     lerterFireIndex++;

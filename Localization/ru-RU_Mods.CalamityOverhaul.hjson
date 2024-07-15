@@ -3,12 +3,12 @@ CWRRecipes: {
 	// GodEaterWeapon: God Eater weapon
 }
 
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
-Tools.RecipesLoseText: 你无法直接制作这个东西
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Бесконечная боль
+Tools.RecipesLoseText: Ты не можешь просто сделать это
 
 Items: {
 	BrinyBaronEcType: {
-		DisplayName: 海爵剑
+		DisplayName: Морской барон
 		Tooltip:
 			'''
 			左键挥舞巨刃，击中敌人后向两侧发射水龙卷
@@ -18,7 +18,7 @@ Items: {
 	}
 
 	CosmicShivEcType: {
-		DisplayName: 宇宙短剑
+		DisplayName: Космическая заточка
 		Tooltip:
 			'''
 			击中敌人后在玩家前方生成数个浩渺之眼
@@ -28,7 +28,7 @@ Items: {
 	}
 
 	DragonsBreath: {
-		DisplayName: 巨龙之息
+		DisplayName: Дыхание дракона
 		Tooltip:
 			'''
 			发射大量高温子弹
@@ -38,7 +38,7 @@ Items: {
 	}
 
 	BansheeHookEcType: {
-		DisplayName: 女妖之爪
+		DisplayName: Крюк Банши
 		Tooltip:
 			'''
 			攻击时生成大量哀怨之镰，并发射一个追杀敌人的惊惧巨镰
@@ -49,7 +49,7 @@ Items: {
 	}
 
 	BlightedCleaverEcType: {
-		DisplayName: 凋亡屠刀
+		DisplayName: Гибельный рассекатель
 		Tooltip:
 			'''
 			刀刃击中敌人会积攒暴君能量，并生成大量的屠杀之镰
@@ -58,7 +58,7 @@ Items: {
 	}
 
 	BurntSiennaEcType: {
-		DisplayName: 沙之刃
+		DisplayName: Сиена жжёная
 		Tooltip:
 			'''
 			挥舞会抛舞出三个沙球
@@ -72,16 +72,16 @@ Items: {
 	}
 
 	CometQuasherEcType: {
-		DisplayName: 彗星陨刃
+		DisplayName: Кометный крушитель
 		Tooltip:
 			'''
-			发射陨石，真近战击中敌人让更多的陨石从天而降
+			让大量流星从天而降
 			"中国古代有个人能够不射出箭就让鸟掉下来，终于我们的刀也能做到类似的事了"
 			'''
 	}
 
 	DefiledGreatswordEcType: {
-		DisplayName: 神殇巨剑
+		DisplayName: Осквернённый двуручный меч
 		Tooltip:
 			'''
 			刀刃击中敌人会积攒暴君能量，并生成大量的丛林之镰
@@ -90,7 +90,7 @@ Items: {
 	}
 
 	EntropicClaymoreEcType: {
-		DisplayName: 熵之舞
+		DisplayName: Энтропийный клеймор
 		Tooltip:
 			'''
 			刀光之间群星可见
@@ -99,7 +99,7 @@ Items: {
 	}
 
 	GildedProboscisEcType: {
-		DisplayName: 镀金鸟喙
+		DisplayName: Позолоченный хоботок
 		Tooltip:
 			'''
 			攻击时分裂出带电羽毛
@@ -109,7 +109,7 @@ Items: {
 	}
 
 	TerratomereEcType: {
-		DisplayName: 泰拉巨刃
+		DisplayName: Терратомир
 		Tooltip:
 			'''
 			挥舞释放生命洪流
@@ -118,7 +118,7 @@ Items: {
 	}
 
 	TerrorBladeEcType: {
-		DisplayName: 惊惧魂刃
+		DisplayName: Клинок ужаса
 		Tooltip:
 			'''
 			挥舞释放惊惧爆弹
@@ -128,12 +128,12 @@ Items: {
 	}
 
 	ArkoftheCosmosEcType: {
-		DisplayName: 鸿蒙方舟
+		DisplayName: Ковчег космоса
 		Tooltip: '''"它还在沉睡"'''
 	}
 
 	StreamGougeEcType: {
-		DisplayName: 宇宙暗流
+		DisplayName: Потоковый высекатель
 		Tooltip:
 			'''
 			挥刺时发射宇宙暗光矢，击中敌人后爆出六团弑神者飞镖
@@ -143,7 +143,7 @@ Items: {
 	}
 
 	ElementalLanceEcType: {
-		DisplayName: 元素长枪
+		DisplayName: Элементальный протазан
 		Tooltip:
 			'''
 			挥刺时发射多次分裂的元素弹
@@ -153,7 +153,7 @@ Items: {
 	}
 
 	AirSpinnerEcType: {
-		DisplayName: 天蓝悠悠球
+		DisplayName: Воздушный волчок
 		Tooltip:
 			'''
 			向附近的敌人发射散射的羽毛
@@ -162,7 +162,7 @@ Items: {
 	}
 
 	GoldplumeSpearEcType: {
-		DisplayName: 金羽
+		DisplayName: Копьё золотого пера
 		Tooltip:
 			'''
 			挥刺发射追踪的小型羽刃
@@ -172,7 +172,7 @@ Items: {
 	}
 
 	WindBladeEcType: {
-		DisplayName: 风之流
+		DisplayName: Клинок ветра
 		Tooltip:
 			'''
 			挥舞发射扰乱大范围气流的气旋
@@ -182,19 +182,18 @@ Items: {
 	}
 
 	ArbalestEcType: {
-		DisplayName: 劲弩
+		DisplayName: Арбалест
 		Tooltip:
 			'''
 			发射6支高速箭
 			箭矢随着持续发射时间增大体积
 			箭矢体积越大，伤害和击退越高，但扩散范围更大
-			右键进行单发速射
 			"它齿轮仍旧嘎吱嘎吱的转动个不停"
 			'''
 	}
 
 	DeathwindEcType: {
-		DisplayName: 死亡之风
+		DisplayName: Ветер смерти
 		Tooltip:
 			'''
 			木箭会被转化为死亡激光束
@@ -204,7 +203,7 @@ Items: {
 	}
 
 	DragonRageEcType: {
-		DisplayName: 巨龙之怒
+		DisplayName: Ярость дракона
 		Tooltip:
 			'''
 			刀锋旋转之间灭杀周围的敌人
@@ -214,7 +213,7 @@ Items: {
 	}
 
 	WhiplashGalactica: {
-		DisplayName: 银河鞭挞
+		DisplayName: Галактические петарды
 		Tooltip:
 			'''
 			击中敌人后进行死亡标记，并发射宇宙火球
@@ -223,7 +222,7 @@ Items: {
 	}
 
 	TradewindsEcType: {
-		DisplayName: 信风
+		DisplayName: Пассаты
 		Tooltip:
 			'''
 			发射减速的天之羽
@@ -233,7 +232,7 @@ Items: {
 	}
 
 	DeathhailStaffEcType: {
-		DisplayName: 死亡冰雹
+		DisplayName: Посох смертельного града
 		Tooltip:
 			'''
 			令大量的死亡冰雹从天而降
@@ -242,7 +241,7 @@ Items: {
 	}
 
 	ExcelsusEcType: {
-		DisplayName: 宙宇波能刃
+		DisplayName: Эксельсус
 		Tooltip:
 			'''
 			挥舞发射数个宇宙之刃
@@ -252,7 +251,7 @@ Items: {
 	}
 
 	GhastlyVisageEcType: {
-		DisplayName: 鬼之形
+		DisplayName: Призрачный лик
 		Tooltip:
 			'''
 			发射数个怨魂爆弹
@@ -261,7 +260,7 @@ Items: {
 	}
 
 	GaleforceEcType: {
-		DisplayName: 烈风
+		DisplayName: Штормовая сила
 		Tooltip:
 			'''
 			攻击附带发射三发羽毛
@@ -271,7 +270,7 @@ Items: {
 	}
 
 	ElementWhip: {
-		DisplayName: 元素长鞭
+		DisplayName: Элемент кнута
 		Tooltip:
 			'''
 			让敌人被元素之火灼烧
@@ -280,7 +279,7 @@ Items: {
 	}
 
 	ElementalShivEcType: {
-		DisplayName: 元素短剑
+		DisplayName: Короткий меч элемента
 		Tooltip:
 			'''
 
@@ -321,7 +320,7 @@ Items: {
 		Tooltip:
 			'''
 			一把很长的鞭子，由地牢冤魂的怒火编制而成
-			[c/d4bc75:纯粹的热情从地狱散发出来，鼓励你找出谁冤枉了你]
+			[c/d4bc75:在地狱击败噬魂幽花后掉落]
 			'''
 	}
 
@@ -332,11 +331,7 @@ Items: {
 
 	DivineSourceBlade: {
 		DisplayName: 金源灭却刃
-		Tooltip:
-			'''
-			挥舞金源之力
-			"生命不息"
-			'''
+		Tooltip: ""
 	}
 
 	FatesRevealEcType: {
@@ -525,17 +520,15 @@ Items: {
 	}
 
 	MurasamaEcType: {
-		DisplayName: 鬼妖村正
+		DisplayName: 高分子斩切刃
 		Tooltip:
 			'''
-			右键瞄准并积蓄剑之能量。左键进行真近战攻击击中目标时，将为剑之能量充能。
-			如果周围存在强大的敌人，剑之能量将会缓慢自行充能。
-			当剑之能量蓄满后，按下[KEY1]发射刀身。在刀身飞行过程中，按下左键执行升龙斩击 [Lang1]
-			升龙斩击命中敌人后会为武器1充能。按下[KEY2]消耗1点武器充能值，进行一次下砸攻击 [Lang2]
-			当武器充能值达到最大值10点后，再次用升龙斩击命中敌人将触发终结技  [Lang3]
-			legend_Text
+			右键进行瞄准，按下扳机键[KEY1]发射刀身，在刀身飞行过程中按下左键执行升龙斩击 [Lang1]
+			按下[KEY2]消耗1点充能值，进行一次下砸 [Lang2]
+			升龙斩击中敌人后将给予武器1充能值，充能达到最大值10点后再次升龙斩中敌人将触发终结技 [Lang3]
+			[c/fff08c:随着旅途的遥远而变强]
 			[c/ff4500:"如果有链锯剑会更好"]
-			[Lang4]
+			[Lang4]:
 			[Text]
 			'''
 	}
@@ -562,11 +555,7 @@ Items: {
 
 	CelestialClaymoreEcType: {
 		DisplayName: 天神之剑
-		Tooltip:
-			'''
-			挥舞时在周围生成爆炸烁星
-			如果刀刃击中烁星会将其向鼠标位置击飞出去
-			'''
+		Tooltip: 挥舞时在周围生成爆炸烁星
 	}
 
 	TheEnforcerEcType: {
@@ -641,34 +630,22 @@ Items: {
 
 	DecayParticles: {
 		DisplayName: 虚粒子
-		Tooltip:
-			'''
-			对物质本源的一丝窥视
-			存在本身便是一种奇迹
-			'''
+		Tooltip: ""
 	}
 
 	DecaySubstance: {
 		DisplayName: 衰变物质
-		Tooltip:
-			'''
-			它在无穷无尽的衰败着
-			循环着毁灭与新生
-			'''
+		Tooltip: ""
 	}
 
 	DissipationSubstance: {
 		DisplayName: 消渐物质
-		Tooltip:
-			'''
-			现实已经难以捕捉它的本质
-			它不断的消散，但又无比庞大
-			'''
+		Tooltip: ""
 	}
 
 	SpectralMatter: {
 		DisplayName: 幽灵物质
-		Tooltip: 大约3700000亿吨吧
+		Tooltip: ""
 	}
 
 	InfiniteToiletItem: {
@@ -869,7 +846,7 @@ Items: {
 	}
 
 	AstralPikeEcType: {
-		DisplayName: 幻星矛
+		DisplayName: 幻星长矛
 		Tooltip:
 			'''
 			发射三颗璀璨幻星
@@ -967,7 +944,7 @@ Items: {
 		Tooltip:
 			'''
 			发射追踪敌人的叶流，攻击速度会愈发加快
-			受击会让速度加成清零，同时清空飞行时间
+			受击会让速度加成清零
 			右键蓄力发射强大的丛林爆弹
 			'''
 	}
@@ -997,8 +974,7 @@ Items: {
 		Tooltip:
 			'''
 			将木箭转化为海洋箭矢
-			右键蓄力以海洋千钧之力摧毁敌人
-			如果使用木箭，右键攻击会将箭矢转化为更多的海洋箭
+			右键蓄力以海洋之千钧力摧毁敌人
 			'''
 	}
 
@@ -1138,7 +1114,7 @@ Items: {
 			会给子弹染上纳垢剧毒
 			每射出八发子弹就会触发一轮污染物的呕吐攻击
 			右键进行切换为半自动，发射污秽肉球
-			"那是一场大瘟疫..."老猪鲨回忆着过去，喃喃自语
+			"那是一场大瘟疫..."老猪鲨回忆着过去，喃喃自语着
 			"我曾经是一名海洋大学的教授，那条大比目鱼就是我的学生，直到瘟疫到来后，
 			海洋大学变成了硫磺海开发部，我就退休了...对了，你想不想见识一下我能一下吞多少子弹？"
 			'''
@@ -1227,7 +1203,7 @@ Items: {
 		DisplayName: 诅咒手枪
 		Tooltip:
 			'''
-			发射诅咒子弹
+			发射灵液子弹
 			"你绝对不会想知道它是从哪里掏出来的"
 			'''
 	}
@@ -1257,7 +1233,7 @@ Items: {
 		Tooltip:
 			'''
 			发射一发巨大石性毒箭
-			"一种奇怪的疾病，不管是动物还是植物都会在感染后逐渐变成石头"
+			"一种奇怪的疾病，不管是生物还是植物都会在感染后逐渐变成石头"
 			'''
 	}
 
@@ -1282,10 +1258,11 @@ Items: {
 	}
 
 	GoldenEagleEcType: {
-		DisplayName: 黄金之鹰
+		DisplayName: 黄金波洛克
 		Tooltip:
 			'''
 			一次发射五颗子弹
+			右键进行速射，在鼠标处生成大量伴生弹
 			"你不会想知道这把枪是怎么制作的"
 			'''
 	}
@@ -1799,11 +1776,7 @@ Items: {
 
 	StellarCannonEcType: {
 		DisplayName: 新星炮
-		Tooltip:
-			'''
-			使用坠落之星作为弹药
-			发射一个爆炸幻星水晶
-			'''
+		Tooltip: 发射一个爆炸幻星水晶
 	}
 
 	SvantechnicalEcType: {
@@ -1873,7 +1846,7 @@ Items: {
 
 	BladedgeGreatbowEcType: {
 		DisplayName: 锋叶十字弩
-		Tooltip: 一次发射两支箭和四片锋叶
+		Tooltip: 一次发射四支箭和三片锋叶
 	}
 
 	CleansingBlazeEcType: {
@@ -1933,7 +1906,7 @@ Items: {
 	}
 
 	Marshmallows: {
-		DisplayName: 云锦
+		DisplayName: 棉花糖
 		Tooltip:
 			'''
 			发射可以追踪敌人的棉花糖，击中后会黏在敌人身上持续造成伤害
@@ -1956,7 +1929,7 @@ Items: {
 		Tooltip:
 			'''
 			发射五发并排的箭矢，有概率射出鲨鱼或者海洋箭矢
-			右键蓄力发射大量箭矢
+			右键需要爆发出大量箭矢
 			'''
 	}
 
@@ -2045,7 +2018,6 @@ Items: {
 		DisplayName: 雪崩 M60
 		Tooltip:
 			'''
-			使用雪球作为弹药
 			发射大量雪球，火力随着弹药减少而变强
 			每开火20次进入一次超频爆发，制造一次小型的雪崩
 			"电次，我们来打雪仗吧"
@@ -2053,20 +2025,18 @@ Items: {
 	}
 
 	CrystalDimming: {
-		DisplayName: 冰河时代
+		DisplayName: 绝晶黯涌
 		Tooltip:
 			'''
-			使用雪球作为弹药
 			发射极寒冰雹和雪球，冰晶在撞击墙壁后会高速反弹，然后追踪敌人
 			每开火20次进入一次超频爆发，在鼠标处生成一个巨大的冰柱
 			'''
 	}
 
 	DarkFrostSolstice: {
-		DisplayName: 暗寒狂涌
+		DisplayName: 玄冥寒朔
 		Tooltip:
 			'''
-			使用雪球作为弹药
 			发射冰雹和极地幽火
 			每开火20次进入一次超频爆发，在鼠标处召唤凛冬神性
 			'''
@@ -2074,11 +2044,7 @@ Items: {
 
 	SnowQuay: {
 		DisplayName: 雪蝰 M16
-		Tooltip:
-			'''
-			使用雪球作为弹药
-			一把大口径雪炮，发射冰雪混合炮弹
-			'''
+		Tooltip: 一把大口径雪炮，发射冰雪混合炮弹
 	}
 
 	StorageBatteryI: {
@@ -2126,7 +2092,7 @@ Items: {
 		DisplayName: 巴淋诺提卡
 		Tooltip:
 			'''
-			将木箭转化为爆炸闪电箭
+			将木箭转化为三束爆炸闪电箭
 			"从那条沙虫的上颌骨拆下来的，但这次更困难"
 			'''
 	}
@@ -2273,7 +2239,7 @@ Items: {
 			发射一连串龙焰火球，发射速度随使用时间增加而加快
 			火球会降下陨石雨，留下龙尘造成伤害。
 			在最大速度时会发射额外的火球，触发“火球激流”效果，火球具有追踪能力
-			火球激流发动时，如果受到伤害，攻击会被打断，同时清空飞行时间
+			火球激流发动时，如果受到伤害，攻击会被打断，同时降低飞行时间
 			右键点击发射五连发EX龙火之矢
 			“区区之事，无伤尔”
 			'''
@@ -2291,484 +2257,492 @@ Items: {
 	}
 
 	Slingshot: {
-		DisplayName: 木制弹弓
-		Tooltip: 原始的蓄能武器
+		// DisplayName: Slingshot
+		// Tooltip: Primitive energy storage weapon
 	}
 
 	CondemnationEcType: {
-		DisplayName: 诘责
-		Tooltip:
+		// DisplayName: Condemnation
+		/* Tooltip:
 			'''
-			左键以六连射进行攻击，有概率发射出追踪目标的爆炸箭矢
-			右键进行蓄力攻击，充能完毕后发射出一连串魔法爆炸箭矢
-			"邪祟的力量侵染着这把弩"
-			'''
+			The left button attacks with a six-shot, with a probability of firing an explosive arrow that tracks the target
+			Right-click for a recharge attack, and after charging, fire a series of magic explosive arrows
+			"The power of the evil stain infuses this Crossbow."
+			''' */
 	}
 
 	BlightSpewerEcType: {
-		DisplayName: 枯萎散播者
-		Tooltip:
+		// DisplayName: Blight Spewer
+		/* Tooltip:
 			'''
-			发射粘附于物块上的瘟疫纳米机器云
-			纳米机器会主动锁定附近的敌人
-			'''
+			Fires a cloud of plague nanomachines that adhere to surfaces. 
+			The nanomachines actively seek out nearby enemies to lock onto.
+			''' */
 	}
 
 	BloodBoilerEcType: {
-		DisplayName: 血祸沸炉
-		Tooltip:
+		// DisplayName: Blood Boiler
+		/* Tooltip:
 			'''
-			发射两股会回到你身边的生命血火
-			使用凝胶作为弹药
-			发射时消耗会生命
-			'''
+			Fired forth two streams of lifeblood fire that will return to your side. 
+			Using gel as ammunition, this launch consumes life upon firing.
+			''' */
 	}
 
 	ElementalEruptionEcType: {
-		DisplayName: 元素喷射器
-		Tooltip:
+		// DisplayName: Elemental Eruption
+		/* Tooltip:
 			'''
-			蓄力喷射彩色火焰和成对的追踪元素耀斑
-			使用凝胶作为弹药
-			'''
+			Harness the power to unleash streams of vibrant colored flames and paired tracking bursts of elemental brilliance. 
+			Using gel as ammunition
+			''' */
 	}
 
 	HavocsBreathEcType: {
-		DisplayName: 混乱之息
-		Tooltip:
+		// DisplayName: Havocs Breath
+		/* Tooltip:
 			'''
-			射出一束锥形高温硫磺火
-			使用凝胶作为弹药
-			'''
+			Fires a cone of high-temperature sulfur flames, 
+			Using gel as ammunition
+			''' */
 	}
 
 	PristineFuryEcType: {
-		DisplayName: 纯元怒焰
-		Tooltip:
+		// DisplayName: Pristine Fury
+		/* Tooltip:
 			'''
-			射出一束猛烈的烈焰螺旋，爆炸成一列火柱
-			右键发射一团短程余晖烈焰
-			使用凝胶作为弹药
-			'''
+			Unleashes a fierce spiral of flames that explode into a column of fire. 
+			Additionally, right-clicking launches a burst of short-range radiant flames. 
+			Using gel as ammunition.
+			''' */
 	}
 
 	ShadethrowerEcType: {
-		DisplayName: 影流喷射器
-		Tooltip:
+		// DisplayName: Shadethrower
+		/* Tooltip:
 			'''
-			喷射影流之云，使敌人的大脑溃烂
-			使用凝胶作为弹药
-			'''
+			Emitting a shadowy cloud of psychic flux, causing enemies' minds to decay. 
+			Using gel as ammunition.
+			''' */
 	}
 
 	TerraFlamebursterEcType: {
-		DisplayName: 泰拉喷火器
-		Tooltip:
+		// DisplayName: Terra Flameburster
+		/* Tooltip:
 			'''
-			充能发射一束活性火焰和成对的追踪泰拉火球
-			使用凝胶作为弹药
-			'''
+			Harnessing energy to launch a beam of reactive flames along with paired tracking Terra fireballs. 
+			Using gel as ammunition.
+			''' */
 	}
 
 	AcidGunEcType: {
-		DisplayName: 酸液枪
-		Tooltip: 喷出酸液流
+		// DisplayName: Acid Gun
+		// Tooltip: Spewed forth a cascade of acidic flow.
 	}
 
 	ApoctosisArrayEcType: {
-		DisplayName: 凋亡射线
-		Tooltip:
+		// DisplayName: Apoctosis Array
+		/* Tooltip:
 			'''
-			发射会加速并爆炸的离子冲击波
-			你的魔力值越高，它的威力越大
-			使用星幻注射剂会削减加成幅度
-			'''
+			Fires an ion shockwave that accelerates and explodes upon impact. 
+			Its power increases with your mana level. 
+			Using Stardust Infusion reduces the magnitude of this boost.
+			''' */
 	}
 
 	CryophobiaEcType: {
-		DisplayName: 恐寒症
-		Tooltip:
+		// DisplayName: Cryophobia
+		/* Tooltip:
 			'''
-			发射会多次分裂并爆炸成碎片的寒冰冲击波
-			“战栗”
-			'''
+			Launches a chilling ice shockwave that repeatedly splits and explodes into fragments, causing 
+			"frostburn".
+			''' */
 	}
 
 	EffervescenceEcType: {
-		DisplayName: 泡沫冲锋枪
-		Tooltip:
+		// DisplayName: Effervescence
+		/* Tooltip:
 			'''
-			射出一大串泡沫
-			"泡泡!!!!!!!"
-			'''
+			Fires a long string of bubbles!
+			"BUBBLES!!!!!!"
+			''' */
 	}
 
 	EidolicWailEcType: {
-		DisplayName: 幻妖龙吟
-		Tooltip:
+		// DisplayName: Eidolic Wail
+		/* Tooltip:
 			'''
-			在光标处生成数道回声波
-			回声波撞到物块后会反弹
-			如果生成位置是实心物块则会转而从枪口发射
-			"且听龙吟"
-			'''
+			Generates several echowaves at the cursor's location.
+			Echowaves will bounce off blocks upon impact.
+			If the point of generation is a solid block, they will instead emit from the gun's muzzle.
+			"Listen to the dragon's roar."
+			''' */
 	}
 
 	GenisisEcType: {
-		DisplayName: 源
-		Tooltip: 发射Y形毁灭能量束和一簇激光
+		// DisplayName: Genisis
+		// Tooltip: Launch a Y-shaped destructive energy beam and a cluster of lasers
 	}
 
 	IonBlasterEcType: {
-		DisplayName: 离子冲击波
-		Tooltip:
+		// DisplayName: Ion Blaster
+		/* Tooltip:
 			'''
-			发射会加速并爆炸的离子冲击波
-			你的魔力值越高，它的威力越大
-			使用星幻注射剂会减弱加成幅度
-			'''
+			Fires an ion shockwave that accelerates and explodes upon impact. 
+			Its power increases with your magic level. 
+			Using Stardust Infusion weakens this enhancement effect.
+			''' */
 	}
 
 	LazharEcType: {
-		DisplayName: 拉扎尔射线
-		Tooltip:
+		// DisplayName: Lazhar
+		/* Tooltip:
 			'''
-			发射高挥发性聚能太阳光束
-			光束有小概率穿透目标
-			'''
+			Emits highly volatile concentrated solar beams
+			The beam has a small probability of penetrating the target
+			''' */
 	}
 
 	NanoPurgeEcType: {
-		DisplayName: 纳米净化
-		Tooltip:
+		// DisplayName: Nano Purge
+		/* Tooltip:
 			'''
-			发射纳米激光弹幕
-			右键进行单发速射
-			'''
+			Launch a nanolaser barrage
+			Right-click for a single rapid fire
+			''' */
 	}
 
 	PlasmaRifleEcType: {
-		DisplayName: 等离子步枪
-		Tooltip:
+		// DisplayName: Plasma Rifle
+		/* Tooltip:
 			'''
-			发射会爆炸的离子射线
-			右键快速发射离子束
-			"看着和等离子没关系"
-			'''
+			Fires an exploding ion beam.
+			Right-click rapidly to shoot ion bursts.
+			"Looks nothing like plasma."
+			''' */
 	}
 
 	SHPCEcType: {
-		DisplayName: SHPC
-		Tooltip:
+		// DisplayName: SHPC
+		/* Tooltip:
 			'''
-			发射会停留在空中并引发巨大爆炸的相位激光球
-			右键发射强大的能量束
+			Launch a phase laser ball that stays in the air and causes a huge explosion
+			Right click to fire a powerful energy beam
 			legend_Text
 			[Lang4]
 			[Text]
-			'''
+			''' */
 	}
 
 	WingmanEcType: {
-		DisplayName: 侧翼
-		Tooltip:
+		// DisplayName: Wingman
+		/* Tooltip:
 			'''
-			发射集中的激光束
-			"这并没有什么用处"
-			'''
+			A focused laser beam is emitted
+			"It doesn't do any good."
+			''' */
 	}
 
 	EternalBlizzardEcType: {
-		DisplayName: 恒吹雪
-		Tooltip:
+		// DisplayName: Eternal Blizzard
+		/* Tooltip:
 			'''
-			拥有四连发的多联射击，发射爆裂的冰锥箭
-			右键进行单发速射，箭矢将拥有追踪能力
-			'''
+			Has four rounds of multiple shots, firing exploding ice pick arrows
+			Right-click for a single rapid fire, arrows will have tracking ability
+			''' */
 	}
 
 	SlagMagnumEcType: {
-		DisplayName: 熔渣马格南
-		Tooltip:
+		// DisplayName: Slag Magnum
+		/* Tooltip:
 			'''
-			将火枪子弹转化为化石碎片，命中后生成额外的化石碎片
-			"这里没有特殊感染者"
-			'''
+			Converts musket bullets into fossil fragments, which generate additional fossil fragments when hit
+			"There are no special infected people here."
+			''' */
 	}
 
 	SparkSpreaderEcType: {
-		DisplayName: 火花喷射器
-		Tooltip:
+		// DisplayName: Spark Spreader
+		/* Tooltip:
 			'''
-			用火花点燃你的敌人
-			使用凝胶作为弹药
-			'''
+			Ignite your enemy with a spark
+			Using gel as ammunition
+			''' */
 	}
 
 	CosmicDischargeEcType: {
-		DisplayName: 寒宙弹刃
-		Tooltip:
+		// DisplayName: Cosmic Discharge
+		/* Tooltip:
 			'''
-			用能引发冰川爆破的弹鞭击打敌人并使玩家获得寒宙增益
-			此增益会令玩家在站定不动时增加生命再生速度并冻结周围敌人
-			'''
+			Hit enemies with a projectile that causes glacier explosions and gives players a cryostat boost
+			This bonus will allow the player to increase health regeneration and freeze surrounding enemies while standing still
+			''' */
 	}
 
 	NeutronGlaive: {
-		DisplayName: 黑域斩切
-		Tooltip:
+		// DisplayName: Black Zone Cleaver
+		/* Tooltip:
 			'''
-			挥舞将发射强大的引力波剑气，击中目标后生成一次中子星爆炸
-			右键持剑蓄力，蓄力完成后松开可以在光标处引发一次大型的中子星爆炸
-			蓄力未完成松开则会让能量倾泻而出
-			'''
+			Swinging releases powerful gravitational sword waves, causing a neutron star explosion upon hitting a target.
+			Right-click to charge the blade; releasing it when fully charged triggers a large neutron star explosion at the cursor.
+			Releasing before fully charged will cause the energy to spill out.
+			''' */
 	}
 
 	NeutronBow: {
-		DisplayName: 洛希之弦
-		Tooltip:
+		// DisplayName: Roche's String
+		/* Tooltip:
 			'''
-			发射重力箭矢，击中目标后生成数道伽马射线
-			右键进行三级蓄力，蓄满能量后将发射三发强大的引力箭矢
-			'''
+			Fires gravity arrows that generate gamma rays upon hitting a target.
+			Right-click to perform a three-level charge, releasing three powerful gravity arrows when fully charged.
+			''' */
 	}
 
 	NeutronGun: {
-		DisplayName: 恒星猎手
-		Tooltip:
+		// DisplayName: Stellar Hunter
+		/* Tooltip:
 			'''
-			发射重力弹丸，击中目标后生成翘曲点
-			右键切换为狙击形态，发射更为强大引力子弹，引力子弹击中目标后将让数道伽马射线降落
-			每次开火都会给枪械充能，充能满格后再次开火会在鼠标处引发一次中子星爆炸
-			"把太阳射下来!"
-			'''
+			Fires gravity projectiles that create warp points upon hitting a target.
+			Right-click to switch to sniper mode, firing more powerful gravity bullets that summon gamma rays upon impact.
+			Each shot charges the gun, and when fully charged, the next shot triggers a neutron star explosion at the cursor.
+			"Shoot the sun down!"
+			''' */
 	}
 
 	NeutronWand: {
-		DisplayName: 星墓之光
-		Tooltip:
+		// DisplayName: Light of the Star Tomb
+		/* Tooltip:
 			'''
-			发射四颗强大引力星星
-			右键在鼠标处施展重力魔法
-			"传说在远古时期，有一位强大的灵能者用这根法杖将恒星压缩成了黑洞，
-			但已经无从考证，成为星际游牧者口中吟唱的残诗"
-			'''
+			Fires four powerful gravity stars.
+			Right-click to cast gravity magic at the cursor.
+			"Legend says that in ancient times, a powerful psychic used this wand to compress stars into black holes,
+			but this tale is lost to time, now just a fragment of song sung by interstellar nomads."
+			''' */
 	}
 
 	FlakKrakenEcType: {
-		DisplayName: 海妖克拉肯
-		Tooltip:
+		// DisplayName: Flak Kraken
+		/* Tooltip:
 			'''
-			发射深渊高爆弹，炸弹会爆炸产生数个锥形散步的墨水破片
-			深渊高爆弹会在抵达光标位置时爆炸
-			炮弹直接命中会让破片伤害降低
-			"来自一条海妖，租借合同为期3年06月23天6小时"
-			'''
+			Fire a deep high explosive bomb, which explodes into several conical walks of ink shards
+			The abyssal high explosive will explode when it reaches the cursor position
+			A direct hit from a shell reduces splinter damage
+			"From a sirens, lease for 3 years, 6 months, 23 days, 6 hours."
+			''' */
 	}
 
 	GrandGuardianEcType: {
-		DisplayName: 大守卫者
-		Tooltip:
+		// DisplayName: Grand Guardian
+		/* Tooltip:
 			'''
-			真近战会从玩家后方飞出强大的剑刃
-			非真近战时将会主动发射剑刃，击中目标时刺入目标的躯体
-			目标的防御值会加入到真近战暴击伤害中
-			"我的王，我将守护"
-			'''
+			True melee sends powerful blades flying from behind the player
+			Non-close combat will actively fire the blade, piercing the target's body when it hits
+			The target's defense value is added to true Melee critical damage
+			"My king, I will guard."
+			''' */
 	}
 
 	MajesticGuardEcType: {
-		DisplayName: 雄伟之护
-		Tooltip:
+		// DisplayName: Majestic Guard
+		/* Tooltip:
 			'''
-			非真近战时将会主动发射剑刃，剑刃将会刺入墙中
-			"我的王，我将守护"
-			'''
+			Non-true proximity battles will actively fire the blade, which will plunge into the wall
+			"My king, I will guard."
+			''' */
 	}
 
 	FadingGlory: {
-		DisplayName: 残怨
-		Tooltip:
+		// DisplayName: Fading Glory
+		/* Tooltip:
 			'''
-			真近战击中目标，如果目标是有机体，将会治疗玩家，如果目标是无机体，将会释放大量火花
-			非真近战时将会主动发射剑刃，击中目标后额外生成追踪的孤魂切并在爆炸时释放出一条血触手
-			'''
+			True melee hits a target that heals the player if the target is an organism, 
+			and releases a lot of sparks if the target is non-organism
+			Non-true proximity battles will actively fire the blade, 
+			which will generate an extra bell chasing ghost cut after 
+			hitting the target and release a blood tentacle when exploding
+			''' */
 	}
 
 	LucreciaEcType: {
-		DisplayName: 卢克雷西亚
-		Tooltip: 发射魔能水晶刺
+		// DisplayName: Lucrecia
+		// Tooltip: Launch the Demon Crystal sting
 	}
 
 	MirrorBladeEcType: {
-		DisplayName: 镜之刃
-		Tooltip: 发射翻飞的魔能镜刃
+		// DisplayName: Mirror Blade
+		// Tooltip: Launch a flying Magic Mirror blade
 	}
 
 	TheDarkMasterEcType: {
-		DisplayName: 黑暗大师
-		Tooltip:
+		// DisplayName: The Dark Master
+		/* Tooltip:
 			'''
-			真近战击中目标后召唤暗黑契约，三个暗影复制体将协同玩家作战
-			暗黑契约存在时，如果玩家受伤，会立马遣散所有暗影复制体
-			并给予玩家3秒黑暗恐惧减益，此期间玩家将无法再通过真近战召唤暗黑契约
-			'''
+			When True Melee hits the target, summon the Dark Contract, 
+			and three shadow replicas will fight together with the player
+			When Dark Covenants exist, if a player is injured, 
+			all Shadow replicas are immediately disbanded
+			It also gives the player 3 seconds of Dark Fear reduction, 
+			during which the player can no longer summon Dark Covenants through true Melee
+			''' */
 	}
 
 	GraniteRifle: {
-		DisplayName: 花岗岩步枪
-		Tooltip: 将火枪子弹转化为花岗岩碎屑弹丸，会在实心物块中蛇形游走
+		// DisplayName: Granite Rifle
+		// Tooltip: Converting musket bullet into a granite-debris projectile will snake through the solid mass.
 	}
 
 	MarbleRifle: {
-		DisplayName: 大理岩步枪
-		Tooltip: 将火枪子弹转化为大理岩碎屑弹丸，击中物块时弹起并爆炸
+		// DisplayName: Marble Rifle
+		// Tooltip: Converting musket bullet into a marble clastic projectile that bounces and explodes when it hits the mass.
 	}
 
 	FrostcrushValariEcType: {
-		DisplayName: 寒霜回旋镖
-		Tooltip: 潜伏攻击将投掷出一个巨大的回旋镖和两个追踪目标的伴生回旋镖
+		// DisplayName: Frostcrush Valari
+		// Tooltip: A lurking attack throws a giant boomerang and two companion boomerangs that track the target
 	}
 
 	NeutronScythe: {
-		DisplayName: 行星使者
-		Tooltip:
+		// DisplayName: Planet Messenger
+		/* Tooltip:
 			'''
-			镰刀会向敌人发射伽马射线，并在飞行途中留下数个翘曲点
-			潜伏攻击会丢出一圈镰刀
-			'''
+			The scythe fires gamma rays at enemies, leaving several warp points along its path.
+			Stealth attack throws a circle of scythes.
+			''' */
 	}
 
 	DemonshadeHelmMagic: {
-		DisplayName: 魔影兜帽
-		Tooltip: ""
+		// DisplayName: Demonshade Helm Magic
+		// Tooltip: ""
 	}
 
 	DemonshadeHelmRanged: {
-		DisplayName: 魔影羽笠
-		Tooltip: ""
+		// DisplayName: Demonshade Helm Ranged
+		// Tooltip: ""
 	}
 
 	DemonshadeHelmSummon: {
-		DisplayName: 魔影面甲
-		Tooltip: ""
+		// DisplayName: Demonshade Helm Summon
+		// Tooltip: ""
 	}
 
 	DemonshadeHelmRogue: {
-		DisplayName: 魔影面罩
-		Tooltip: ""
+		// DisplayName: Demonshade Helm Rogue
+		// Tooltip: ""
 	}
 
 	Palustris: {
-		DisplayName: 白色欺诈
-		Tooltip: ""
+		// DisplayName: Palustris
+		// Tooltip: ""
 	}
 
 	VioletConjecture: {
-		DisplayName: 紫罗兰幻想
-		Tooltip: ""
+		// DisplayName: Violet Conjecture
+		// Tooltip: ""
 	}
 
 	GraniteSpear: {
-		DisplayName: 花岗岩刺矛
-		Tooltip: ""
+		// DisplayName: Granite Spear
+		// Tooltip: ""
 	}
 
 	MarbleSpear: {
-		DisplayName: 大理岩刺矛
-		Tooltip: ""
+		// DisplayName: Marble Spear
+		// Tooltip: ""
 	}
 
 	RebelBlade: {
-		DisplayName: 叛逆之刃
-		Tooltip:
+		// DisplayName: Rebel Blade
+		/* Tooltip:
 			'''
-			真近战会在目标周围生成大量恶魔光球
-			右键操控剑刃飞行，并向光标处进行斩切
-			'''
+			True melee generates a large number of demon light balls around the target
+			Right click to control blade flight and cut towards the cursor
+			''' */
 	}
 
 	GraniteDart: {
-		DisplayName: 花岗岩投镖
-		Tooltip:
+		// DisplayName: Granite Dart
+		/* Tooltip:
 			'''
-			快而准的投掷飞镖
-			潜伏攻击将掷出强有力的一镖
-			'''
+			Throw darts quickly and accurately
+			A lurking attack will throw a powerful dart
+			''' */
 	}
 
 	MarbleDagger: {
-		DisplayName: 大理岩匕首
-		Tooltip:
+		// DisplayName: Marble Dagger
+		/* Tooltip:
 			'''
-			命中目标后会额外投掷三枚大理岩匕首
-			潜伏攻击将掷出强有力的一镖
-			'''
+			Three additional marble daggers are thrown after hitting the target
+			A lurking attack will throw a powerful dart
+			''' */
 	}
 
 	ApoctolithEcType: {
-		DisplayName: 末渊石板
-		Tooltip:
+		// DisplayName: Apoctolith
+		/* Tooltip:
 			'''
-			潜伏攻击会生成巨浪
-			往天上丢，然后用脸去接，你就会相信板砖的力量
-			'''
+			A lurking attack creates a giant wave
+			Throw it in the sky, catch it with your face, 
+			and you'll believe in the power of a brick
+			''' */
 	}
 
 	ThrowingBrickEcType: {
-		DisplayName: 板砖
-		Tooltip:
+		// DisplayName: Throwing Brick
+		/* Tooltip:
 			'''
-			潜伏攻击会碎成数块
-			往天上丢，然后用脸去接，你就会相信板砖的力量
-			'''
+			A latent attack breaks into pieces
+			Throw it in the sky, catch it with your face, 
+			and you'll believe in the power of a brick
+			''' */
 	}
 
 	GuardianTerra: {
-		DisplayName: 泰拉守护者
-		Tooltip:
+		// DisplayName: Guardian Terra
+		/* Tooltip:
 			'''
-			发射强大的泰拉生命源质
-			右键进行强力挥舞
-			'''
+			Launch powerful Terra biogenic material
+			Right click for a powerful swing
+			''' */
 	}
 
 	NitroExpressRifleEcType: {
-		DisplayName: NE猎枪
-		Tooltip:
+		// DisplayName: Nitro Express Rifle
+		/* Tooltip:
 			'''
-			适合崩碎熊的颅骨
-			将火枪子弹转化为动能弹
-			"老旧，但实用"
-			'''
+			For crushing a bear's skull
+			Turning musket bullets into kinetic energy rounds
+			"Old, but useful."
+			''' */
 	}
 
 	LifehuntScytheEcType: {
-		DisplayName: 猎命镰刀
-		Tooltip:
+		// DisplayName: Lifehunt Scythe
+		/* Tooltip:
 			'''
-			每轮挥舞都会掷出一圈生命镰刀
-			每三轮挥舞会将巨大化的镰刀掷出
-			'''
+			Each swing throws a life scythe
+			Every third swing will throw a giant scythe
+			''' */
 	}
 
 	DeathsAscensionEcType: {
-		DisplayName: 死神擢升
-		Tooltip:
+		// DisplayName: Deaths Ascension
+		/* Tooltip:
 			'''
-			每轮挥舞都会掷出收割灵魂的死神之镰
-			每三轮挥舞会将巨大化的飞镰掷出
-			按住左键让飞镰追寻光标位置，松开左键触发死神半月
-			'''
+			Each wave throws the sickle of Death, which reaps souls
+			Every three swings will throw the giant flying sickle
+			Press and hold the left button to allow the sickle to track the cursor. 
+			Release the left button to trigger the Death Half Moon
+			''' */
 	}
 
 	MG42: {
-		DisplayName: MG42
-		Tooltip:
+		// DisplayName: MG42
+		/* Tooltip:
 			'''
-			连续射击会让枪管过热
-			将火枪子弹转化为穿甲弹
-			'''
+			Continuous firing causes the barrel to overheat
+			Turning musket bullets into armor-piercing bullets
+			''' */
 	}
 
 	DarkmatterJetpack: {
@@ -2966,8 +2940,8 @@ Projectiles: {
 	// DarkIceZeros.DisplayName: Dark Ice Zeros
 	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
 	// WaningMoonLight.DisplayName: Waning Moon Light
-	MurasamaHeldProj.DisplayName: 分子斩切
-	MurasamaBreakOut.DisplayName: 分子斩切
+	MurasamaHeldProj.DisplayName: 高分子斩切刃
+	MurasamaBreakOut.DisplayName: 高分子斩切刃
 	MurasamaBreakSwing.DisplayName: 升龙半月
 	MurasamaEndSilkOrb.DisplayName: 次元斩-终
 	MurasamaEndSilkOrbOnSpan.DisplayName: 次元斩-始
@@ -3370,16 +3344,16 @@ Projectiles: {
 	// NeutronScytheHeld.DisplayName: Neutron Scythe
 	// GraniteSpearHeld.DisplayName: Granite Spear
 	// MarbleSpearHeld.DisplayName: Marble Spear
-	RebelBladeFlyAttcke.DisplayName: 叛逆之刃
+	// RebelBladeFlyAttcke.DisplayName: Rebel Blade
 	// GraniteDartHeld.DisplayName: Granite Dart
 	// MarbleDaggerHeld.DisplayName: Marble Dagger
 	// PalustrisHeldProj.DisplayName: Palustris
 	// PalustrisOrb.DisplayName: Palustris Orb
 	// VioletConjectureHeldProj.DisplayName: Violet Conjecture
 	// VioletConjectureOrb.DisplayName: Violet Conjecture Orb
-	RebelBladeOrb.DisplayName: 恶魔光球
-	RebelBladeBack.DisplayName: 叛逆之刃
-	RebelBladeSlash.DisplayName: 叛逆之刃
+	// RebelBladeOrb.DisplayName: Rebel Blade Orb
+	// RebelBladeBack.DisplayName: Rebel Blade
+	// RebelBladeSlash.DisplayName: Rebel Blade
 	// ApoctolithHeld.DisplayName: Apoctolith
 	// ThrowingBrickHeld.DisplayName: Throwing Brick
 	// Spindrift.DisplayName: Spindrift
@@ -3418,16 +3392,16 @@ Configs: {
 		}
 
 		AddExtrasContent: {
-			Label: 是否添加额外内容
-			Tooltip:
+			// Label: Add Extras Content
+			/* Tooltip:
 				'''
-				是否将一些具有争议性的内容添加进游戏，比如无尽科技
-				默认开启，禁用后可以让和灾厄主题相容性较差的内容从游戏中移除
-				'''
+				Whether to add controversial content to the game, such as Endless Technology
+				Enabled by default, when disabled, content that is not compatible with the theme of disaster can be removed from the game
+				''' */
 		}
 
 		WeaponEnhancementSystem: {
-			Label: 是否启用传奇武器内容
+			Label: 是否开启传奇武器增强系统
 			Tooltip:
 				'''
 				如果开启，一些武器将重新获得传奇称号，这会影响其获取难度
@@ -3460,7 +3434,7 @@ Configs: {
 		}
 
 		MurasamaScaleOffset: {
-			Label: 鬼妖村正大小调节
+			Label: 高分子斩切刃大小调节
 			Tooltip:
 				'''
 				一个额外的挥刀范围矫正因子，单位以百分比%为基准
@@ -3475,10 +3449,10 @@ Configs: {
 		}
 
 		MurasamaSpaceFragmentationBool: {
-			Label: 鬼妖村正终结技碎屏效果
+			Label: 高分子斩切刃终结技碎屏效果
 			Tooltip:
 				'''
-				默认开启，鬼妖村正进行终结技时会制造屏幕破碎的特效用于增强打击感
+				默认开启，高分子斩切刃进行终结技时会制造屏幕破碎的特效用于增强打击感
 				如果关闭便会禁用这些特效，可以根据您的喜好设置
 				'''
 		}
@@ -3490,7 +3464,7 @@ Configs: {
 		}
 
 		MurasamaRisingDragonCoolDownBarSize: {
-			Label: 鬼妖村正充能UI大小
+			Label: 高分子斩切刃升龙冷却UI大小
 			Tooltip:
 				'''
 				一个额外的UI大小矫正因子，单位以百分比%为基准
@@ -3525,12 +3499,12 @@ Configs: {
 		}
 
 		ActivateGunRecoil: {
-			Label: 枪械后坐力
-			Tooltip:
+			// Label: Activate Gun Recoil
+			/* Tooltip:
 				'''
-				开启后，枪械开火会具有后坐力效果，禁用以关闭这些效果
-				默认开启，禁用后可能会让一些游戏内容失去意义
-				'''
+				When turned on, the gun will have a recoil effect when fired. Disable to turn off these effects
+				Enabled by default, disabled may make some game content meaningless
+				''' */
 		}
 
 		MagazineSystem: {
@@ -3542,7 +3516,6 @@ Configs: {
 				[c/fff08c:值得注意的是]，大修的游戏平衡是在[c/fff08c:开启了弹匣系统]的基础上调整的
 				如果您选择关闭，可能会让一些远程武器变得[c/de0808:过分强大]
 				因此，如果关闭此项功能，[c/de0808:远程武器的游戏平衡将不再具有讨论意义]
-				[c/fff08c:如果更改了该选项，请重新进入世界以保证所有效果正确变动]
 				'''
 		}
 
@@ -3556,59 +3529,61 @@ Configs: {
 		}
 
 		WeaponAdaptiveIllumination: {
-			Label: 武器适应性光照[c/06e33f:(实验性)]
-			Tooltip:
+			// Label: Weapon Adaptive Illumination [c/06e33f:(Experimental)]
+			/* Tooltip:
 				'''
-				默认开启，使用时武器将正常使用环境光混合绘制
-				如果关闭，武器将在使用时无视环境明暗度保持高亮
-				'''
+				Turned on by default, weapons will normally be drawn using ambient light mixing when used
+				If turned off, the weapon will remain bright when used regardless of ambient brightness
+				''' */
 		}
 
 		WeaponAdaptiveVolumeScaling: {
-			Label: 武器适应性缩放[c/06e33f:(实验性)]
-			Tooltip:
+			// Label: Weapon Adaptive Volume Scaling [c/06e33f:(Experimental)]
+			/* Tooltip:
 				'''
-				默认开启，武器将具备不同的绘制缩放，以保持视觉自然并防止过度遮挡
-				考虑到像素敏感的不统一问题，玩家可以选择关闭以保持像素块的平滑
-				'''
+				Turned on by default, weapons will have different drawing scales to keep the vision natural and prevent excessive occlusion
+				Given the ununiformity of pixel sensitivity, players can choose to turn off to keep the pixel blocks smooth
+				''' */
 		}
 
 		EnableCasingsEntity: {
-			Label: 启用弹壳实体
-			Tooltip: 如果觉得滚动一地的弹壳很碍眼，关掉这个选项将是一个好主意
+			// Label: Enable Casings Entity
+			// Tooltip: If you find the casings rolling around an eyesore, it's a good idea to turn this option off
 		}
 
 		LoadingAA_Volume: {
-			Label: 枪械换弹音效音量系数
-			Tooltip: 值越大声音越明显，1为原音量
+			// Label: Gun Reload Sound Volume Coefficient
+			// Tooltip: The larger the value, the more prominent the sound; 1 is the original volume
 		}
 
 		OpeningOukModification: {
-			Label: 启用开局物品袋修改[c/06e33f:(实验性)]
-			Tooltip:
+			// Label: Opening Ouk Modification [c/06e33f:(Experimental)]
+			/* Tooltip:
 				'''
-				如果开启，会完全修改初始角色的背包物品，比如，铜质工具会变成石头工具
-				在当前版本归纳为实验性功能，默认关闭，如果开启，将只会在新创建的角色上生效
-				'''
+				If enabled, it will completely modify the starting inventory of new characters; 
+				for example, copper tools will be replaced with stone tools.
+				In the current version, this is classified as an experimental feature and is disabled by default. 
+				If enabled, it will only affect newly created characters.
+				''' */
 		}
 
 		ShotgunFireForcedReloadInterruption: {
-			Label: 霰弹枪开火强制打断子弹装填[c/06e33f:(实验性)]
-			Tooltip:
+			// Label: Shotgun Fire Forced Reload Interruption [c/06e33f:(Experimental)]
+			/* Tooltip:
 				'''
-				小部分的霰弹枪类拥有这个特性，在装填子弹时，如果玩家试图开火将打断装填动作
-				这个选项如果开启，将令所有霰弹枪武器具备该特性
-				'''
+				A small number of shotguns have this feature where attempting to fire while reloading will interrupt the reload action. 
+				If enabled, this option will give all shotgun weapons this feature.
+				''' */
 		}
 
 		BiobehavioralOverlay: {
-			Label: 生物行为修改[c/06e33f:(实验性)]
-			Tooltip:
+			// Label: Biobehavioral Modification [c/06e33f:(Experimental)]
+			/* Tooltip:
 				'''
-				[c/c20909:未完成]
-				默认开启，会修改一些生物的AI行为，比如死亡模组下的BossAI
-				这可能会让游戏的挑战性剧增，可以根据个人喜好选择是否关闭
-				'''
+				[c/c20909:Unfinished]
+				Enabled by default, this will modify the AI behavior of certain creatures, such as bosses in death mode.
+				This might significantly increase the game's difficulty, so you can choose to disable it based on your personal preference.
+				''' */
 		}
 	}
 }
@@ -3640,8 +3615,8 @@ Buffs: {
 	}
 
 	VoidErosion: {
-		DisplayName: 虚空侵蚀
-		Description: 逐渐化为虚无
+		// DisplayName: Void Erosion
+		// Description: The nothingness is eating you away
 	}
 }
 
@@ -3658,7 +3633,7 @@ NPCs: {
 	HEBodyAlt.DisplayName: 天堂吞噬者
 	HEHead.DisplayName: 天堂吞噬者
 	HETail.DisplayName: 天堂吞噬者
-	MarbleElemental.DisplayName: 大理石精
+	// MarbleElemental.DisplayName: Marble Elemental
 }
 
 Keybinds: {
@@ -3675,17 +3650,17 @@ Keybinds: {
 	TOM_QuickFetch.DisplayName: 欧米茄合成:快速拿取
 	TOM_GatheringItem.DisplayName: 欧米茄合成:聚拢物品
 	TOM_GlobalRecall.DisplayName: 欧米茄合成:全部收回
-	Murasama_TriggerKey.DisplayName: 鬼妖村正:扳机键
-	Murasama_DownKey.DisplayName: 鬼妖村正:下砸
+	Murasama_TriggerKey.DisplayName: 高分子斩切刃:扳机键
+	Murasama_DownKey.DisplayName: 高分子斩切刃:下砸
 	ADS_Key.DisplayName: 打开瞄准镜
 	KreLoad_Key.DisplayName: 换弹
 }
 
 TextContent: {
 	CWRLocText: {
-		Event_TungstenRiot_Name: 钨钢暴乱
-		Event_TungstenRiot_Text_1: 大量钨钢生物正在入侵!
-		Event_TungstenRiot_Text_2: 钨钢军团已被击退!
+		// Event_TungstenRiot_Name: Tungsten Riot
+		// Event_TungstenRiot_Text_1: A large number of tungsten creatures are invading!
+		// Event_TungstenRiot_Text_2: The Tungsten Army has been beaten back!
 		Item_LegendOnMouseLang: 按下[Shift]聆听故事...
 		BloodAltar_Text1: 深红的注视正在降临...
 		BloodAltar_Text2: 你身上的血珠不够向深红之王进行朝贡...
@@ -3711,7 +3686,7 @@ TextContent: {
 			妖龙现身，我们将与异行邪祟展开全面冲突，凭借那块从海沟中得到的石头。新兵，这是最后一战！
 			好样的，新兵
 			'''
-		Murasama_Text_Lang_0: 试炼:
+		Murasama_Text_Lang_0: 试炼
 		Murasama_TextDictionary_Content_0:
 			'''
 			新兵，向我证明你自己
@@ -3732,13 +3707,13 @@ TextContent: {
 		Murasama_TextDictionary_Content_3:
 			'''
 			腐化的大地还在像心脏一样颤动，血肉的寄生者还在活动，腐化的肿瘤仍旧在思考，去将他们彻底放逐！
-			地牢门口的诅咒已经松动，我感觉到灵能在深牢中蠢动，夹杂着惨叫、哀嚎、低语
+			地牢门口的诅咒已经松动，我感觉到灵能在深牢中蠢动，夹杂着惨叫、哀嚎、低语....
 			'''
 		Murasama_TextDictionary_Content_4: 记得那个头戴宝石冠的蓝胖子吗？现在，让我们去干掉它们那虚伪的神
 		Murasama_TextDictionary_Content_5:
 			'''
 			臻冰壁垒中的监狱，那里关押着一个强大的灵能者，释放他，他会成为我们收复泰拉的一大助力
-			硫磺之海的弃儿阻挡了我们探寻深渊的宝藏，去终结它的吞噬和游荡
+			硫磺之海的弃儿阻挡了我们探寻深渊的宝藏，去，终结它的吞噬和游荡
 			我怀念硫火之崖的火焰淬炼，去会会那儿的守护者吧
 			'''
 		Murasama_TextDictionary_Content_6:
@@ -3751,11 +3726,11 @@ TextContent: {
 			'''
 			血肉交织的躯壳，古战场含恨的冤魂，不休止毁灭的魔像，它毁灭万物，而我们毁灭它
 			丛林中，某人以前的拙劣作品还在游荡，作为失败品，它理应像一堆废铁一样
-			昔日的星神游龙早已陨落，如今所剩的不过堪堪一条蛆虫，让我们结束彻底星神的时代
+			昔日的星神游龙早已陨落，如今所剩的不过堪堪一条蛆虫，让我们结束彻底星神的时代吧
 			'''
 		Murasama_TextDictionary_Content_8:
 			'''
-			那个机械教异端的拙劣仿造物、愚蠢的克隆体，在丛林里游荡，消灭它
+			那个机械教异端的拙劣仿造物、愚蠢的克隆体，那只傻鸟，在丛林里游荡，消灭它
 			地底出现了另一个太阳，它似乎想把这种神圣的火焰通过神圣之地带到地表，
 			驱逐它的使徒，泰拉只允许一种信仰之火的存在
 			'''
@@ -3796,85 +3771,89 @@ TextContent: {
 			我们的征途已经攀登至巅峰，就连那曾经统治泰拉的暴君也不及我们万一
 			现在，展开你的双臂，拥抱这个由胜利带给你的世界
 			'''
-		Murasama_No_legend_Content_1: 刀鞘将在巨龙陨落后解锁
-		Murasama_No_legend_Content_2: 新兵，我认可你的能力，现在，让我们去斩碎那帮异形
-		Murasama_No_legend_Content_3: "[c/fff08c:随着旅途的遥远而变强]"
-		Murasama_No_legend_Content_4: "[c/00707d:传奇的光辉已经暗淡...]"
-		SHPC_No_legend_Content_1: "[c/fff08c:巨龙陨落后解锁使用]"
-		SHPC_No_legend_Content_2: "[c/fff08c:蓄势待发!]"
-		SHPC_No_legend_Content_3: "[c/fff08c:随着旅途的遥远而变强]"
-		SHPC_No_legend_Content_4: "[c/00707d:传奇的光辉已经暗淡...]"
-		SHPC_TextDictionary_Content_0:
+		// Murasama_No_legend_Content_1: The sheath will be unlocked after the dragon falls
+		// Murasama_No_legend_Content_2: Recruit, I approve of your abilities. Now, let's go chop up the aliens
+		// Murasama_No_legend_Content_3: "[c/fff08c:Stronger with the distance of the journey]"
+		// Murasama_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
+		/* SHPC_No_legend_Content_1:
 			'''
-			朋友，复兴文明的任务终于落在了我两手上，这是一件光荣的事情...
-			我们的第一个目标是一坨蓝色的凝胶聚合物，它非常的巨大，把它从内部轰开
+			Launch a phase laser ball that stays in the air and causes a huge explosion
+			Right click to fire a powerful energy beam
+			''' */
+		// SHPC_No_legend_Content_2: "[c/fff08c:Return of the legendary weapon! :)]"
+		// SHPC_No_legend_Content_3: "[c/fff08c:Grows stronger with the distance of the journey]"
+		// SHPC_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
+		/* SHPC_TextDictionary_Content_0:
 			'''
-		SHPC_TextDictionary_Content_1:
+			Friend, the task of reviving civilization finally falls into our hands. This is an honorable duty...
+			Our first target is a massive blob of blue gel polymer. Blast it open from the inside.
+			''' */
+		/* SHPC_TextDictionary_Content_1:
 			'''
-			我们需要干掉那只大眼球，它来自一个强大的生命体
-			我需要解剖它，看看它是如何实现反重力的
+			We need to take down that giant eyeball. It comes from a powerful entity.
+			I need to dissect it to see how it achieves anti-gravity.
+			''' */
+		/* SHPC_TextDictionary_Content_2:
 			'''
-		SHPC_TextDictionary_Content_2:
+			The jungle hives are becoming very agitated, and the bee idols are about to hatch.
+			I urgently need to study its metamorphic process. Go and take a look.
+			''' */
+		/* SHPC_TextDictionary_Content_3:
 			'''
-			丛林的蜂巢变得非常焦躁，蜂俑即将孵化
-			我迫切需要研究它的变性过程，去看看吧
+			Giant bones floating in the air... it's very unscientific.
+			We need to head to the deep dungeon at the world's end.
+			''' */
+		/* SHPC_TextDictionary_Content_4:
 			'''
-		SHPC_TextDictionary_Content_3:
+			The earth trembles, gears roar, and currents surge.
+			A bunch of robots are waiting for us. It's time to show them the power of technology.
+			''' */
+		/* SHPC_TextDictionary_Content_5:
 			'''
-			巨大的骨头能漂浮在空中，这非常的不科学
-			我们需要前往世界尽头的深牢
+			A few flamboyant large flower buds have bloomed underground in the jungle.
+			We need to check them out and collect some experimental data.
+			''' */
+		/* SHPC_TextDictionary_Content_6:
 			'''
-		SHPC_TextDictionary_Content_4:
+			Ancient robots deep within the temple await a recharge activation.
+			Let's pay them a visit and reverse-engineer ancient technology while we're at it.
+			''' */
+		/* SHPC_TextDictionary_Content_7:
 			'''
-			大地颤动，齿轮轰鸣，电流涌动
-			有一堆机器人在等着我们，是时候让它们见识一下科技的力量了
+			The secrets on the dark side of the moon will be revealed to us.
+			The world will return to its original state.
+			''' */
+		/* SHPC_TextDictionary_Content_8:
 			'''
-		SHPC_TextDictionary_Content_5:
+			The deity parasitizing the earth's core has noticed us.
+			Go to the underworld. I need knowledge on thermal energy utilization.
+			''' */
+		/* SHPC_TextDictionary_Content_9:
 			'''
-			丛林地下有几朵妖艳的大花苞已经盛开
-			我们需要去看看，收集一些实验资料
+			The spirits of the dungeon are gathering into a massive symbiotic entity.
+			This is fascinating. We need to check it out immediately.
+			''' */
+		/* SHPC_TextDictionary_Content_10:
 			'''
-		SHPC_TextDictionary_Content_6:
+			It's certain that it’s not a carbon-based lifeform; it can tear open space membranes with its body alone.
+			It devours gods, but we are not gods. I think it will invite us for tea.
+			''' */
+		/* SHPC_TextDictionary_Content_11:
 			'''
-			神庙深处的远古机器人等待着一次充能启动
-			让我们去拜访一下，顺带逆向出远古科技
+			The last dragonborn in the world, wow, that's so cool!
+			Take me to see it. I need to get its feathers.
+			''' */
+		/* SHPC_TextDictionary_Content_12:
 			'''
-		SHPC_TextDictionary_Content_7:
+			It's time to visit my creator.
+			Or that witch, her existence troubles me.
+			''' */
+		/* SHPC_TextDictionary_Content_13:
 			'''
-			月亮背面的秘密将被我们知晓
-			世界将回到原来的样子
-			'''
-		SHPC_TextDictionary_Content_8:
-			'''
-			寄生在地核中的神明注意到了我们
-			去地狱看看，我需要热能利用的知识
-			'''
-		SHPC_TextDictionary_Content_9:
-			'''
-			地牢的怨灵聚集起来了，它们组成了一个庞大的共生体
-			这太有趣了，我们现在就得去看看
-			'''
-		SHPC_TextDictionary_Content_10:
-			'''
-			可以确定它不是碳基生命，仅靠身体就能撕开空间膜
-			它吞噬神明，但我们不是神，我想它会请我们喝茶的
-			'''
-		SHPC_TextDictionary_Content_11:
-			'''
-			世界上仅存的龙裔，哇这太酷了！
-			带我去看看，我要得到它的羽毛
-			'''
-		SHPC_TextDictionary_Content_12:
-			'''
-			是时候拜访我的造物主了
-			或者那个女巫，她的存在让我感到困扰
-			'''
-		SHPC_TextDictionary_Content_13:
-			'''
-			大混战！曾经被我们击败过的敌人联合了起来，准备向我们发起总攻
-			做好准备，我们需要一次完美的胜利
-			'''
-		SHPC_TextDictionary_Content_14: HMOI-0001协议已解锁
+			A grand melee! The enemies we once defeated have united and are preparing for a total assault on us.
+			Get ready; we need a perfect victory.
+			''' */
+		// SHPC_TextDictionary_Content_14: HMOI-0001 protocol unlocked
 		RemakeItem_Remind_TextContent:
 			'''
 			【作者提醒】
@@ -3956,7 +3935,7 @@ TextContent: {
 		CWRRecipes_ApostolicRelics: 使徒遗物
 		CWRRecipes_GodEaterWeapon: 噬神者武器
 		CWRRecipes_FishGroup: 鱼
-		LoadItemRecipe_Condition_Text1: 背包中需要存在一本大修宝典
+		// LoadItemRecipe_Condition_Text1: Need to have an Overhaul The Bible Book in your backpack
 		Murasama_Text0: 已解锁
 		Murasama_Text1: 未解锁 需要通过试炼2
 		Murasama_Text2: 未解锁 需要通过试炼5
@@ -3965,18 +3944,20 @@ TextContent: {
 		CWRItem_IsInfiniteItem_TextContent: 只有高级合成能让其稳定下来，否则会触及的一刻引发可怕的塌缩
 		CWRItem_IsRemakeItem_TextContent: -大修-
 		OnEnterWorld_TextContent: 个武器重置已经装载
-		OnEnterWorld_TextContent2:
+		/* OnEnterWorld_TextContent2:
 			'''
-			检测到您安装了[更好的体验]，但您的[更好的体验]版本过旧
-			为了保证游戏正常运行，请保证[更好的体验]版本不低于1.7.1.7
-			'''
+			It has been detected that you have installed [Quality of Terraria Mod], 
+			but your [Quality of Terraria Mod] version is outdated.
+			To ensure the game runs properly, please make sure your 
+			[Quality of Terraria Mod] version is at least 1.7.1.7.
+			''' */
 		CaseEjection_TextContent: 空弹
 		SupertableUI_Text1: 关闭
 		SupertableUI_Text2: 查看配方
 		SupertableUI_Text3: 无
 		OverhaulTheBibleUI_Text:
 			'''
-			滑动鼠标滚轮或者拖动左侧进度条，上下浏览被重置过的物品
+			滑动鼠标滚轮，在这里查看已经被重置过的物品
 			这些仅作为参考，因为许多局部改动并不会出现在这个名单中
 			'''
 		OverhaulTheBibleUI_Text1: 监视战士
@@ -3997,7 +3978,11 @@ TextContent: {
 		Wap_TheUndertaker_Text: “当入殓师发现他们的客户不配合时，他们往往会使用这个让他们安静下来”
 		Wap_RedRyder_Text: “别把自己的眼球射出来了！”
 		Wap_FlareGun_Text: '''"别把它和发令枪搞混了"'''
-		Wap_PhoenixBlaster_Text: “狱石武器却不能掌控火焰？事实上子弹无法承受这股热量”
+		Wap_PhoenixBlaster_Text:
+			'''
+			右键发射燃烧的子弹碎片
+			“狱石武器却不能掌控火焰？事实上子弹无法承受这股热量”
+			'''
 		Wap_Sandgun_Text:
 			'''
 			右键喷出更多沙弹
@@ -4011,10 +3996,10 @@ TextContent: {
 		Wap_SuperStarCannon_Text:
 			'''
 			发射星辰
-			"现在我们有了更大更强的星星发射器"
+			"星光将会照亮前方"
 			'''
-		Wap_ZapinatorGray_Text: 这是你的幸运光
-		Wap_ZapinatorOrange_Text: 这是你的幸运光
+		Wap_ZapinatorGray_Text: ""
+		Wap_ZapinatorOrange_Text: ""
 		Wap_QuadBarrelShotgun_Text:
 			'''
 			一次射出5发不准确的子弹
@@ -4074,8 +4059,10 @@ TextContent: {
 			'''
 		Wap_NailGun_Text:
 			'''
-			发射一颗大钉子，击中敌人时在敌人的头上爆出三颗爆炸钉子
+			暴击不造成额外伤害
+			发射一颗大钉子，击中敌人时在敌人的头上爆出一颗爆炸钉子
 			未击中敌人的大钉子也会在一段时间之后爆炸
+			每有20%暴击几率将额外生成一颗爆炸钉子
 			“从钉子头的头上拔下来的钉子，效果拔群，现在让我们试试制造更多的钉子头”
 			'''
 		Wap_DartPistol_Text:
@@ -4134,7 +4121,7 @@ TextContent: {
 			'''
 			蓄势发射快速的箭矢
 			将使箭矢额外穿透两个敌人
-			“由精金制成的连弩，强而有力，强而有力啊！”
+			“由秘银制成的连弩，强而有力，强而有力啊！”
 			'''
 		Wap_TitaniumRepeater_Text:
 			'''
@@ -4190,28 +4177,28 @@ TextContent: {
 		AmmoBox_Text: 已到达部署上限
 		AmmoBox_Text2: 正在部署
 		AmmoBox_Text3: 已部署
-		HellfireExplosion_DeadLang_Text: 在地狱的烈火中化为灰烬
-		SupMUI_OneClick_Text1: 快捷放置材料
-		SupMUI_OneClick_Text2: 快捷拿取材料
-		TemporaryVersion_Text:
+		// HellfireExplosion_DeadLang_Text: To burn in the flames of hell
+		// SupMUI_OneClick_Text1: Quick placement material
+		// SupMUI_OneClick_Text2: Quick access to material
+		/* TemporaryVersion_Text:
 			'''
-			[CalamityOverhaul-0.3.6.1.2]:
-			当前版本为临时性版本，用于适配新版本，进行调整和错误修复以保证最基本的游玩体验，直到在0.4版本到来
-			更新较为仓促，所以仍可能存在一些明显的错误
-			如果您在游玩过程中发现问题，请在Github上向模组提交issue，
-			或者前往模组创意工坊Feedback on Issues反馈帖寻求帮助
-			'''
-		IconUI_Text0: 前往模组的开源库 :)
-		IconUI_Text1: 问题反馈
-		IconUI_Text2: 致谢名单
-		IconUI_Text3: 画师
-		IconUI_Text4: 代码援助
-		IconUI_Text5: 捐赠者
-		IconUI_Text6: 平衡测试
+			[CalamityOverhaul-0.3.6.1.2]: 
+			This current version is a temporary release used for adapting to the new version, 
+			making adjustments, and fixing errors to ensure a basic gameplay experience until version 0.4 arrives. 
+			The update was somewhat rushed, so there may still be some noticeable issues. 
+			If you encounter any problems during gameplay, please submit an issue on the mod's GitHub page 
+			or visit the mod's Steam Workshop 'Feedback on Issues' thread for assistance.
+			''' */
+		// IconUI_Text0: Go to the mod's open source repository :)
+		// IconUI_Text1: Issue Feedback
+		// IconUI_Text2: Acknowledgments
+		// IconUI_Text3: Artist
+		// IconUI_Text4: Code Assistance
+		// IconUI_Text5: Donor
+		// IconUI_Text6: Balance Tester
 		Wap_BubbleGun_Text:
 			'''
 			喷出大量会爆炸的海洋泡泡
-			少量泡泡会追踪敌人
 			谁不喜欢玩泡泡呢?
 			'''
 		Wap_Tsunami_Text:
@@ -4289,7 +4276,6 @@ TextContent: {
 		Wap_Marrow_Text:
 			'''
 			骨!
-			将木箭转化为骸骨箭
 			箭矢击中目标后抛出几根骨头
 			'''
 		Wap_LeadBow_Text:
@@ -4319,32 +4305,32 @@ TextContent: {
 			发射五发可以分裂的并排箭矢
 			对空中的目标造成更高的伤害
 			'''
-		Wap_NeutronBow_LoadingText1: 正在捕捉引力
-		Wap_NeutronBow_LoadingText2: 正在使引力屈服
-		Wap_NeutronBow_LoadingText3: 就绪!!
-		Wap_Gladius_Text: 快速而锋利
-		Wap_WoodenBoomerang_Text: 潜伏攻击将快速投掷三个回旋镖
-		Wap_Flamarang_Text: 潜伏攻击将快速投掷三个回旋镖
-		Wap_EnchantedBoomerang_Text: 潜伏攻击将快速投掷三个回旋镖，击中目标后召唤落星
-		Wap_Shroomerang_Text: 潜伏攻击将释放蘑菇孢子炸弹
-		Wap_Spear_Text: 潜伏攻击将掷出强有力的一矛
-		Wap_VortexBeater_Text:
+		// Wap_NeutronBow_LoadingText1: Catching gravity
+		// Wap_NeutronBow_LoadingText2: Is Making Gravity Yield
+		// Wap_NeutronBow_LoadingText3: READY!!
+		// Wap_Gladius_Text: Fast and sharp
+		// Wap_WoodenBoomerang_Text: A lurking attack will quickly throw three boomerangs
+		// Wap_Flamarang_Text: A lurking attack will quickly throw three boomerangs
+		// Wap_EnchantedBoomerang_Text: The lurking attack will quickly throw three boomerangs, which will summon a falling star after hitting the target
+		// Wap_Shroomerang_Text: A latent attack will release the mushroom spore bomb
+		// Wap_Spear_Text: A lurking attack will throw a powerful spear
+		/* Wap_VortexBeater_Text:
 			'''
-			按一定频率发射星旋导弹
-			右键全功率发射星旋导弹
+			Launch Vortex Rocket at a certain frequency
+			Right click launch Vortex Rocket at full power
+			''' */
+		// Wap_ChainGun_Text: Suppression by fire
+		/* Wap_MoltenFury_Text:
 			'''
-		Wap_ChainGun_Text: 火力压制
-		Wap_MoltenFury_Text:
-			'''
-			将木箭转化为火矢
-			将烈焰箭转化为狱炎箭
-			'''
+			Convert wood arrows into fire arrows
+			Turn the flame arrow into a prison arrow
+			''' */
 	}
 }
 
 Biomes: {
 	TungstenBiome: {
-		DisplayName: 钨钢暴乱
-		TownNPCDialogueName: 钨钢生物群系
+		// DisplayName: Tungsten Biome
+		// TownNPCDialogueName: the Tungsten Biome
 	}
 }

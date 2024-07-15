@@ -663,24 +663,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.velocity *= 0.99f;
                 }
 
-                if (++npc.Calamity().newAI[1] > 90) {
-                    Vector2 toD = npc.Center.To(player.Center) + player.velocity;
-                    toD = toD.UnitVector();
-                    npc.velocity += toD * 23;
-                    
-                    if (Main.npc[primeCannon].active)
-                        Main.npc[primeCannon].velocity += toD * 33;
-                    if (Main.npc[primeSaw].active)
-                        Main.npc[primeSaw].velocity += toD * 53;
-                    if (Main.npc[primeLaser].active)
-                        Main.npc[primeLaser].velocity += toD * 33;
-                    if (Main.npc[primeVice].active)
-                        Main.npc[primeVice].velocity += toD * 53;
+                if (death || Main.masterMode) {
+                    if (++npc.Calamity().newAI[1] > 90) {
+                        Vector2 toD = npc.Center.To(player.Center) + player.velocity;
+                        toD = toD.UnitVector();
+                        npc.velocity += toD * 23;
+                        if (Main.npc[primeCannon].active)
+                            Main.npc[primeCannon].velocity += toD * 33;
+                        if (Main.npc[primeSaw].active)
+                            Main.npc[primeSaw].velocity += toD * 53;
+                        if (Main.npc[primeLaser].active)
+                            Main.npc[primeLaser].velocity += toD * 33;
+                        if (Main.npc[primeVice].active)
+                            Main.npc[primeVice].velocity += toD * 53;
 
-                    npc.Calamity().newAI[2] = 60;
-                    npc.Calamity().newAI[1] = 0;
-                    npc.netUpdate = true;
-                    SendExtraAI(npc);
+                        npc.Calamity().newAI[2] = 60;
+                        npc.Calamity().newAI[1] = 0;
+                        npc.netUpdate = true;
+                        SendExtraAI(npc);
+                    }
                 }
             }
             else {
