@@ -1493,9 +1493,6 @@ Items: {
 			'''
 	}
 
-	PumplerEcType: {
-	}
-
 	ScorpioEcType: {
 		DisplayName: 天蝎座
 		Tooltip: “BOOM”
@@ -1504,11 +1501,6 @@ Items: {
 	ArcherfishEcType: {
 		DisplayName: 射水鱼
 		Tooltip: 将火枪子弹转化为一束水流
-	}
-
-	ArcNovaDiffuserEcType: {
-		// DisplayName: Arc Nova Diffuser Ec Type
-		// Tooltip: ""
 	}
 
 	AstralBlasterEcType: {
@@ -1573,9 +1565,6 @@ Items: {
 			发射数颗子弹
 			“胶泥座人”
 			'''
-	}
-
-	MagnaCannonEcType: {
 	}
 
 	NorfleetEcType: {
@@ -1929,25 +1918,6 @@ Items: {
 			长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
 			特种弹药可以和原来的子弹效果叠加
 			让弹头变得极度易燃，击中目标时发生爆燃
-			'''
-	}
-
-	Marshmallows: {
-		DisplayName: 云锦
-		Tooltip:
-			'''
-			发射可以追踪敌人的棉花糖，击中后会黏在敌人身上持续造成伤害
-			"云彩面包生成器！"
-			'''
-	}
-
-	RainbowMarshmallows: {
-		DisplayName: 彩虹棉花糖
-		Tooltip:
-			'''
-			发射可以追踪敌人的棉花糖，击中后会黏在敌人身上持续造成伤害
-			右键可以食用
-			"大号云彩面包生成器！"
 			'''
 	}
 

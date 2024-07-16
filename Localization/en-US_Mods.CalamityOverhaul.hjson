@@ -1464,9 +1464,6 @@ Items: {
 			'''
 	}
 
-	PumplerEcType: {
-	}
-
 	ScorpioEcType: {
 		DisplayName: Scorpio
 		Tooltip: “BOOM”
@@ -1475,11 +1472,6 @@ Items: {
 	ArcherfishEcType: {
 		DisplayName: Archerfish
 		Tooltip: Converts musket bullets into a jet of water
-	}
-
-	ArcNovaDiffuserEcType: {
-		DisplayName: Arc Nova Diffuser Ec Type
-		Tooltip: ""
 	}
 
 	AstralBlasterEcType: {
@@ -1540,9 +1532,6 @@ Items: {
 	GunkShotEcType: {
 		DisplayName: Gunk Shot
 		Tooltip: Fires several bullets
-	}
-
-	MagnaCannonEcType: {
 	}
 
 	NorfleetEcType: {
@@ -1897,20 +1886,6 @@ Items: {
 			Special ammo can be overlaid with the original bullet effect
 			It makes the warhead highly flammable and explodes when it hits the target
 			'''
-	}
-
-	Marshmallows: {
-		DisplayName: Marshmallows
-		Tooltip:
-			'''
-			Fire marshmallows that track enemies and stick to them for sustained damage after hitting them
-			"Cloud Bread Generator!"
-			'''
-	}
-
-	RainbowMarshmallows: {
-		DisplayName: Rainbow Marshmallows
-		Tooltip: ""
 	}
 
 	MonsoonEcType: {
