@@ -58,11 +58,6 @@ Items: {
 		Tooltip: Swinging will sometimes throw 3 Sand blocks in an arc towards your enemies. Killing enemies summon healing orbs that float.
 	}
 
-	BurntSienna: {
-		DisplayName: Burnt Sienna
-		Tooltip: ""
-	}
-
 	CometQuasherEcType: {
 		DisplayName: Comet Quasher
 		Tooltip:

@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RBurntSienna : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BurntSienna>();
-        public override int ProtogenesisID => ModContent.ItemType<BurntSienna>();
+        public override int ProtogenesisID => ModContent.ItemType<BurntSiennaEcType>();
         public override string TargetToolTipItemName => "BurntSiennaEcType";
         public override void SetDefaults(Item item) {
             item.width = 42;

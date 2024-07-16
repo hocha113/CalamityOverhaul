@@ -3,66 +3,66 @@ CWRRecipes: {
 	// GodEaterWeapon: God Eater weapon
 }
 
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
-Tools.RecipesLoseText: 你无法直接制作这个东西
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Ohne grenzen
+Tools.RecipesLoseText: Und man kann diese sache nicht einfach machen
 
 Items: {
 	BrinyBaronEcType: {
-		DisplayName: 海爵剑
+		DisplayName: Meeresritter-Schwert
 		Tooltip:
 			'''
-			左键挥舞巨刃，击中敌人后向两侧发射水龙卷
-			右键发射三发水漩涡
-			"用那头猪鲨的鳍制成，显然我们并不屑于只用那个会吹泡泡的猪头当武器"
+			Linksklick schwingt die riesige Klinge, die bei einem Treffer Wasserwirbel auf beiden Seiten abschießt
+			Rechtsklick feuert drei Wasserwirbel ab
+			"Hergestellt aus den Flossen des Schweinehais, offensichtlich sind wir nicht bereit, nur den blubbernden Schweinekopf als Waffe zu verwenden"
 			'''
 	}
 
 	CosmicShivEcType: {
-		DisplayName: 宇宙短剑
+		DisplayName: Kosmischer Dolch
 		Tooltip:
 			'''
-			击中敌人后在玩家前方生成数个浩渺之眼
-			召唤宇宙射线灼烧敌人
-			"划破宇宙的帷幕，引出强大的射线，在中国古代，这叫做凿壁借光"
+			Bei einem Treffer entstehen vor dem Spieler mehrere Augen des Universums
+			Ruft kosmische Strahlen herbei, die die Feinde verbrennen
+			"Durchbricht den Schleier des Universums und erzeugt mächtige Strahlen, in der alten chinesischen Zeit wurde dies als 'Durchbohren der Wand, um Licht zu leihen' bezeichnet"
 			'''
 	}
 
 	DragonsBreath: {
-		DisplayName: 巨龙之息
+		DisplayName: Drachenatem
 		Tooltip:
 			'''
-			发射大量高温子弹
-			右键喷射灼热的龙息
-			"这头龙死后残余的火焰可以很好的加热这些子弹，而不像凤凰爆破枪一样把子弹烧成碎片"
+			Feuert eine große Menge heißer Kugeln ab
+			Rechtsklick sprüht brennenden Drachenatem
+			"Das verbleibende Feuer dieses Drachen nach seinem Tod kann diese Kugeln gut erhitzen, anstatt wie der Phönix-Buster die Kugeln in Stücke zu brennen"
 			'''
 	}
 
 	BansheeHookEcType: {
-		DisplayName: 女妖之爪
+		DisplayName: Banshee-Kralle
 		Tooltip:
 			'''
-			攻击时生成大量哀怨之镰，并发射一个追杀敌人的惊惧巨镰
-			右键积蓄惊惧能量，在能量耗尽前将在鼠标位置召唤大量憎恶镰刀，
-			憎恶镰刀击中敌人后会额外生成大量的怨灵，给予多种增益
-			"这个爪子当年在伸出电视机一半的时候因为停电而卡住了，或许它的怨念就是来源于这儿"
+			Beim Angriff entstehen zahlreiche Klauen des Kummers und ein schrecklicher Riesenklau wird abgeschossen, der den Feind verfolgt
+			Rechtsklick speichert Schreckensenergie, und vor dem Energieverbrauch werden zahlreiche Hassklauen an der Mausposition herbeigerufen,
+			Die Hassklauen erzeugen bei einem Treffer zusätzliche Geister, die verschiedene Buffs gewähren
+			"Diese Klaue blieb damals, als sie zur Hälfte aus dem Fernseher ragte, wegen eines Stromausfalls stecken, vielleicht kommt ihr Groll daher"
 			'''
 	}
 
 	BlightedCleaverEcType: {
-		DisplayName: 凋亡屠刀
+		DisplayName: Verderbtes Hackmesser
 		Tooltip:
 			'''
-			刀刃击中敌人会积攒暴君能量，并生成大量的屠杀之镰
-			"只有让这把刀痛饮鲜血，它才会会想起当年被魔君使用时的强大力量"
+			Die Klinge sammelt bei einem Treffer Tyrannenenergie und erzeugt zahlreiche Klingen des Massakers
+			"Nur wenn dieses Messer Blut trinkt, wird es sich an die mächtige Kraft erinnern, die es einst in den Händen des Dämonenkönigs besaß"
 			'''
 	}
 
 	BurntSiennaEcType: {
-		DisplayName: 沙之刃
+		DisplayName: Sandklinge
 		Tooltip:
 			'''
-			挥舞会抛舞出三个沙球
-			"时间或许会让其它武器锈迹斑斑，但是这把刀永远不会改变"
+			Beim Schwingen werden drei Sandbälle geschleudert
+			"Die Zeit mag andere Waffen rosten lassen, aber diese Klinge wird sich niemals ändern"
 			'''
 	}
 

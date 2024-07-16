@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 沙之刃
     /// </summary>
-    internal class BurntSienna : EctypeItem
+    internal class BurntSiennaEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BurntSienna";
 

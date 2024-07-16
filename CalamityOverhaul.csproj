@@ -23,7 +23,7 @@
     <AdditionalFiles Remove="Assets\Projectiles\Magic\GhastlyVisageBall.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="0.4.0.2.2.txt" />
+    <None Remove="0.4.0.2.5.txt" />
     <None Remove="Assets\Effects\ColorGradient.fx" />
     <None Remove="Assets\Effects\InShootGlow.fx" />
     <None Remove="Assets\Effects\NeutronRingShader.fx" />
