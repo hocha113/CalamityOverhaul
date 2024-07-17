@@ -53,13 +53,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
                 FireTime = 2;
                 if (++fireIndex2 >= 4) {
                     randomShootRotset = Main.rand.NextFloat(-0.3f, 0.3f);
-                    FireTime = 20;
+                    FireTime = 24;
                     fireIndex2 = 0;
                 }
                 return;
             }
             EjectCasingProjSize = 1;
-            FireTime = 4;
+            FireTime = 5;
             if (Projectile.IsOwnedByLocalPlayer()) {
                 randomShootRotset = Main.rand.NextFloat(-0.16f, 0.16f);
                 NetUpdate();

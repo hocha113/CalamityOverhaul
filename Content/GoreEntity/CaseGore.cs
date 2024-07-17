@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.GoreEntity
 {
     internal class CaseGore : ModGore, ILoader
     {
-        public override string Texture => CWRConstant.Projectile_Ranged + "GunCasing";
+        public override string Texture => CWRConstant.Asset + "CaseGore";
         public static int PType;
         public void SetupData() {
             PType = ModContent.GoreType<CaseGore>();

@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistance = 25;
             HandFireDistanceY = -15;
             ShootPosNorlLengValue = -2;
-            ShootPosToMouLengValue = 10;
+            ShootPosToMouLengValue = 20;
             RepeatedCartridgeChange = true;
             GunPressure = 0;
             ControlForce = 0;
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PostFiringShoot() {
             if (++fireIndex >= 5) {
-                FireTime = 30;
+                FireTime = 50;
                 SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/DudFire") 
                     with { Pitch = -0.7f, PitchVariance = 0.1f }, Projectile.Center);
                 fireIndex = 0;

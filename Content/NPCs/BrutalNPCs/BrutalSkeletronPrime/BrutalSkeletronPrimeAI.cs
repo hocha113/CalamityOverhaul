@@ -368,16 +368,44 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             if (npc.life < npc.lifeMax - 20) {
                 if (cannonAlive) {
-                    npc.life += 2;
+                    npc.life += 1;
                 }
                 if (laserAlive) {
-                    npc.life += 2;
+                    npc.life += 1;
                 }
                 if (sawAlive) {
-                    npc.life += 2;
+                    npc.life += 1;
                 }
                 if (viceAlive) {
-                    npc.life += 2;
+                    npc.life += 1;
+                }
+            }
+
+            if (npc.life < npc.lifeMax / 2) {
+                foreach (NPC index in Main.npc) {
+                    if (!index.active) {
+                        continue;
+                    }
+                    if (index.type == NPCID.PrimeCannon) {
+                        index.life = 0;
+                        index.HitEffect();
+                        index.active = false;
+                    }
+                    if (index.type == NPCID.PrimeVice) {
+                        index.life = 0;
+                        index.HitEffect();
+                        index.active = false;
+                    }
+                    if (index.type == NPCID.PrimeSaw) {
+                        index.life = 0;
+                        index.HitEffect();
+                        index.active = false;
+                    }
+                    if (index.type == NPCID.PrimeLaser) {
+                        index.life = 0;
+                        index.HitEffect();
+                        index.active = false;
+                    }
                 }
             }
 
@@ -407,7 +435,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                     int totalProjectiles = bossRush ? 9 : 6;
                                     Vector2 laserFireDirection = npc.Center.To(player.Center).UnitVector();
                                     for (int j = 0; j < totalProjectiles; j++) {
-                                        Vector2 vector = laserFireDirection.RotatedBy((totalProjectiles / -2 + j) * 0.2f) * 9;
+                                        Vector2 vector = laserFireDirection.RotatedBy((totalProjectiles / -2 + j) * 0.2f) * 6;
+                                        if (bossRush) {
+                                            vector *= 1.45f;
+                                        }
                                         int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + vector.SafeNormalize(Vector2.UnitY) * 100f
                                             , vector, ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
                                     }

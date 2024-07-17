@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostFiringShoot() {
-            if (++fireIndex >= 8) {
+            if (++fireIndex >= 5) {
                 FireTime = 60;
                 SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/DudFire") 
                     with { Volume = 0.8f, Pitch = -0.7f, PitchVariance = 0.1f }, Projectile.Center);

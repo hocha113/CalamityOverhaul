@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override string TargetToolTipItemName => "FlakToxicannonEcType";
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<FlakToxicannonHeldProj>(160);
+            item.damage = 62;
             item.useAmmo = AmmoID.Bullet;
             item.CWR().Scope = true;
         }
