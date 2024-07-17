@@ -40,6 +40,7 @@ namespace CalamityOverhaul
         internal Mod narakuEye = null;
         internal Mod coolerItemVisualEffect = null;
         internal Mod gravityDontFlipScreen = null;
+        internal Mod infernum = null;
 
         internal static bool Suitableversion_improveGame { get; private set; }
 
@@ -52,6 +53,15 @@ namespace CalamityOverhaul
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook { get; private set; }
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook { get; private set; }
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_UseItem_Hook { get; private set; }
+
+        internal static bool InfernumModeOpenState {
+            get {
+                if (Instance.infernum == null) {
+                    return false;
+                }
+                return (bool)Instance.infernum.Call("GetInfernumActive");
+            }
+        }
 
         internal enum CallType
         {
@@ -219,6 +229,7 @@ namespace CalamityOverhaul
             narakuEye = null;
             coolerItemVisualEffect = null;
             gravityDontFlipScreen = null;
+            infernum = null;
         }
 
         public void FindMod() {
@@ -237,6 +248,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("NarakuEye", out narakuEye);
             ModLoader.TryGetMod("CoolerItemVisualEffect", out coolerItemVisualEffect);
             ModLoader.TryGetMod("GravityDontFlipScreen", out gravityDontFlipScreen);
+            ModLoader.TryGetMod("InfernumMode", out infernum);
         }
 
         public void LoadClient() {

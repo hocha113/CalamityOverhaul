@@ -248,7 +248,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        public override bool? AI() {
+        public override bool? CheckDead() => true;
+
+        public override bool AI() {
             bossRush = BossRushEvent.BossRushActive;
             masterMode = Main.masterMode || bossRush;
             death = CalamityWorld.death || bossRush;

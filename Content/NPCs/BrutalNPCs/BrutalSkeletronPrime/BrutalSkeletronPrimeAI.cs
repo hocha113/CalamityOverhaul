@@ -236,11 +236,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        public override bool? AI() {
+        public override bool AI() {
             bossRush = BossRushEvent.BossRushActive;
             death = CalamityWorld.death || bossRush;
             player = Main.player[npc.target];
             npc.defense = npc.defDefense;
+
             if (npc.ai[3] != 0f) {
                 NPC.mechQueen = npc.whoAmI;
             }
@@ -491,7 +492,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                 for (int i = 0; i < 12; i++) {
                                     float rotoffset = MathHelper.TwoPi / 12f * i;
                                     Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
-                                    if (death && Main.masterMode || bossRush) {
+                                    if (death && Main.masterMode || bossRush || CWRMod.InfernumModeOpenState) {
                                         Projectile.NewProjectile(npc.GetSource_FromAI()
                                         , npc.Center, perturbedSpeed
                                         , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f

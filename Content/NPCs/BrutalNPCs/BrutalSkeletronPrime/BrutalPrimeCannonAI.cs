@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private int frame;
         private Player player;
         public override bool CanLoad() => true;
+        public override bool? CheckDead() => true;
         internal void Movement(NPC npc) {
             float acceleration = (bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f));
             float accelerationMult = 1f;
@@ -122,7 +123,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     cannonArmTargetY *= cannonArmTargetDist;
 
                     Vector2 rocketVelocity = new Vector2(cannonArmTargetX, cannonArmTargetY);
-                    if (death && masterMode || bossRush) {
+                    if (death && masterMode || bossRush || CWRMod.InfernumModeOpenState) {
                         int proj = Projectile.NewProjectile(npc.GetSource_FromAI()
                         , cannonArmPosition + rocketVelocity.SafeNormalize(Vector2.UnitY) * 40f, rocketVelocity
                         , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
@@ -168,7 +169,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     for (int i = 0; i < numProj; i++) {
                         float rotoffset = MathHelper.Lerp(-rotation, rotation, i / (float)(numProj - 1));
                         Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
-                        if (death && masterMode || bossRush) {
+                        if (death && masterMode || bossRush || CWRMod.InfernumModeOpenState) {
                             Projectile.NewProjectile(npc.GetSource_FromAI()
                             , npc.Center, perturbedSpeed
                             , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
@@ -184,7 +185,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
         }
-        public override bool? AI() {
+        public override bool AI() {
             bossRush = BossRushEvent.BossRushActive;
             masterMode = Main.masterMode || bossRush;
             death = CalamityWorld.death || bossRush;
@@ -254,7 +255,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            // Movement
             Movement(npc);
 
             if (fireSlower) {

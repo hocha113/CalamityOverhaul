@@ -44,7 +44,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         public virtual void SetProperty() { }
 
-        public virtual bool? AI() { return null; }
+        public virtual bool AI() { return true; }
+
+        public virtual bool? CheckDead() { return null; }
 
         public virtual bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return null; }
 

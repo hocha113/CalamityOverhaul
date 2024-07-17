@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             return false;
         }
 
-        public override bool? AI() {
+        public override bool AI() {
             return false;
         }
     }

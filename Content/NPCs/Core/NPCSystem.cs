@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.NPCs.Core
     /// </summary>
     internal class NPCSystem : ModSystem
     {
-        internal delegate bool On_NPCDelegate(NPC npc);
+        internal delegate void On_NPCDelegate(NPC npc);
+        internal delegate bool On_NPCDelegate2(NPC npc);
         internal delegate bool On_DrawDelegate(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor);
         internal delegate void On_DrawDelegate2(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor);
         internal delegate void On_OnHitByProjectileDelegate(NPC npc, Projectile projectile, in NPC.HitInfo hit, int damageDone);
@@ -25,9 +26,10 @@ namespace CalamityOverhaul.Content.NPCs.Core
         public static List<NPCCoverage> NPCSets { get; private set; }
         public static MethodInfo onHitByProjectile_Method;
         public static MethodInfo modifyIncomingHit_Method;
-        public static MethodInfo onPreAI_Method;
+        public static MethodInfo onNPCAI_Method;
         public static MethodInfo onPreDraw_Method;
         public static MethodInfo onPostDraw_Method;
+        public static MethodInfo onCheckDead_Method;
 
         public override void PostSetupContent() {
             //加载生物定义
@@ -65,9 +67,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
                 }
             }
             {
-                onPreAI_Method = getMethodInfo("PreAI");
-                if (onPreAI_Method != null) {
-                    MonoModHooks.Add(onPreAI_Method, OnPreAIHook);
+                onNPCAI_Method = getMethodInfo("NPCAI");
+                if (onNPCAI_Method != null) {
+                    MonoModHooks.Add(onNPCAI_Method, OnNPCAIHook);
                 }
             }
             {
@@ -80,6 +82,12 @@ namespace CalamityOverhaul.Content.NPCs.Core
                 onPostDraw_Method = getMethodInfo("PostDraw");
                 if (onPostDraw_Method != null) {
                     MonoModHooks.Add(onPostDraw_Method, OnPostDrawHook);
+                }
+            }
+            {
+                onCheckDead_Method = getMethodInfo("CheckDead");
+                if (onCheckDead_Method != null) {
+                    MonoModHooks.Add(onCheckDead_Method, OnCheckDeadHook);
                 }
             }
         }
@@ -99,19 +107,35 @@ namespace CalamityOverhaul.Content.NPCs.Core
             }
         }
 
-        public static bool OnPreAIHook(On_NPCDelegate orig, NPC npc) {
+        public static bool OnCheckDeadHook(On_NPCDelegate2 orig, NPC npc) {
             foreach (var set in NPCSets) {
                 if (set.npc == null) {
                     continue;
                 }
                 if (npc.type == set.TargetID) {
-                    bool? reset = set.AI();
+                    bool? reset = set.CheckDead();
                     if (reset.HasValue) {
                         return reset.Value;
                     }
                 }
             }
             return orig.Invoke(npc);
+        }
+
+        public static void OnNPCAIHook(On_NPCDelegate orig, NPC npc) {
+            int type = npc.type;
+            foreach (var set in NPCSets) {
+                if (set.npc == null) {
+                    continue;
+                }
+                if (npc.type == set.TargetID) {
+                    if (!set.AI()) {
+                        return;
+                    }
+                }
+            }
+            npc.type = type;
+            orig.Invoke(npc);
         }
 
         public static bool OnPreDrawHook(On_DrawDelegate orig, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

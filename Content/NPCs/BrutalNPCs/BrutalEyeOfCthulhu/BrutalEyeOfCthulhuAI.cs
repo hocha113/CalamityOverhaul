@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
         }
 
         //首先，重构这个东西便是一场彻彻底底的灾难
-        public override bool? AI() {
+        public override bool AI() {
             return false;
         }
     }
