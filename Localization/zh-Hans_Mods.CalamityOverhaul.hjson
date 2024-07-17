@@ -362,11 +362,6 @@ Items: {
 			'''
 	}
 
-	CleansingBlaze: {
-		// DisplayName: Cleansing Blaze
-		// Tooltip: ""
-	}
-
 	AnnihilatingUniverse: {
 		DisplayName: 湮宇星矢
 		Tooltip:
@@ -442,81 +437,6 @@ Items: {
 	DarkMatterCompressorItem: {
 		DisplayName: 暗物质压缩机
 		Tooltip: 如黑洞般重构物质
-	}
-
-	AerialiteMetalSingularity: {
-		// DisplayName: Aerialite Metal Singularity
-		// Tooltip: ""
-	}
-
-	AscendantSpiritEssenceSingularity: {
-		// DisplayName: Ascendant Spirit Essence Singularity
-		// Tooltip: ""
-	}
-
-	AstralMetalSingularity: {
-		// DisplayName: Astral Metal Singularity
-		// Tooltip: ""
-	}
-
-	BloodstoneCoreSingularity: {
-		// DisplayName: Bloodstone Core Singularity
-		// Tooltip: ""
-	}
-
-	CoreofCalamitySingularity: {
-		// DisplayName: Coreof Calamity Singularity
-		// Tooltip: ""
-	}
-
-	CoreofEleumSingularity: {
-		// DisplayName: Coreof Eleum Singularity
-		// Tooltip: ""
-	}
-
-	CoreofHavocSingularity: {
-		// DisplayName: Coreof Havoc Singularity
-		// Tooltip: ""
-	}
-
-	CoreofSunlightSingularity: {
-		// DisplayName: Coreof Sunlight Singularity
-		// Tooltip: ""
-	}
-
-	DepthCellsSingularity: {
-		// DisplayName: Depth Cells Singularity
-		// Tooltip: ""
-	}
-
-	DivineGeodeSingularity: {
-		// DisplayName: Divine Geode Singularity
-		// Tooltip: ""
-	}
-
-	DubiousPlatingSingularity: {
-		// DisplayName: Dubious Plating Singularity
-		// Tooltip: ""
-	}
-
-	PolterplasmSingularity: {
-		// DisplayName: Polterplasm Singularity
-		// Tooltip: ""
-	}
-
-	RuinousSoulSingularity: {
-		// DisplayName: Ruinous Soul Singularity
-		// Tooltip: ""
-	}
-
-	ShadowspecSingularity: {
-		// DisplayName: Shadowspec Singularity
-		// Tooltip: ""
-	}
-
-	UnholyEssenceSingularity: {
-		// DisplayName: Unholy Essence Singularity
-		// Tooltip: ""
 	}
 
 	MurasamaEcType: {
@@ -712,19 +632,6 @@ Items: {
 			掷出追踪的银河灾虫
 			潜伏攻击造成一次热射十字爆
 			'''
-	}
-
-	Weapons: {
-		Rogue: {
-			WaveSkipperEcType: {
-				DisplayName: 越浪蛟
-				Tooltip:
-					'''
-					左键发射在沙地中潜跃的沙牙，潜行攻击发射三发巨大的沙牙
-					右键发射弹跳沙牙，潜行攻击令数个疾速的沙牙从天而降
-					'''
-			}
-		}
 	}
 
 	Gangarus: {

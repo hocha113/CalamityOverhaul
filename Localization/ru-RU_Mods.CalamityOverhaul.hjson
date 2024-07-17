@@ -357,11 +357,6 @@ Items: {
 			'''
 	}
 
-	CleansingBlaze: {
-		// DisplayName: Cleansing Blaze
-		// Tooltip: ""
-	}
-
 	AnnihilatingUniverse: {
 		DisplayName: Звездный стрелок уничтожения
 		Tooltip:
@@ -437,81 +432,6 @@ Items: {
 	DarkMatterCompressorItem: {
 		DisplayName: Компрессор темной материи
 		Tooltip: Реконструировать материю, как чёрная дыра
-	}
-
-	AerialiteMetalSingularity: {
-		// DisplayName: Aerialite Metal Singularity
-		// Tooltip: ""
-	}
-
-	AscendantSpiritEssenceSingularity: {
-		// DisplayName: Ascendant Spirit Essence Singularity
-		// Tooltip: ""
-	}
-
-	AstralMetalSingularity: {
-		// DisplayName: Astral Metal Singularity
-		// Tooltip: ""
-	}
-
-	BloodstoneCoreSingularity: {
-		// DisplayName: Bloodstone Core Singularity
-		// Tooltip: ""
-	}
-
-	CoreofCalamitySingularity: {
-		// DisplayName: Coreof Calamity Singularity
-		// Tooltip: ""
-	}
-
-	CoreofEleumSingularity: {
-		// DisplayName: Coreof Eleum Singularity
-		// Tooltip: ""
-	}
-
-	CoreofHavocSingularity: {
-		// DisplayName: Coreof Havoc Singularity
-		// Tooltip: ""
-	}
-
-	CoreofSunlightSingularity: {
-		// DisplayName: Coreof Sunlight Singularity
-		// Tooltip: ""
-	}
-
-	DepthCellsSingularity: {
-		// DisplayName: Depth Cells Singularity
-		// Tooltip: ""
-	}
-
-	DivineGeodeSingularity: {
-		// DisplayName: Divine Geode Singularity
-		// Tooltip: ""
-	}
-
-	DubiousPlatingSingularity: {
-		// DisplayName: Dubious Plating Singularity
-		// Tooltip: ""
-	}
-
-	PolterplasmSingularity: {
-		// DisplayName: Polterplasm Singularity
-		// Tooltip: ""
-	}
-
-	RuinousSoulSingularity: {
-		// DisplayName: Ruinous Soul Singularity
-		// Tooltip: ""
-	}
-
-	ShadowspecSingularity: {
-		// DisplayName: Shadowspec Singularity
-		// Tooltip: ""
-	}
-
-	UnholyEssenceSingularity: {
-		// DisplayName: Unholy Essence Singularity
-		// Tooltip: ""
 	}
 
 	MurasamaEcType: {
@@ -696,19 +616,6 @@ Items: {
 			Выбросьте отслеживаемого галактического червя
 			Скрытая атака вызвала тепловой удар
 			'''
-	}
-
-	Weapons: {
-		Rogue: {
-			WaveSkipperEcType: {
-				DisplayName: Улей-лодка
-				Tooltip:
-					'''
-					Левый ключ запускает песочные зубы, которые ныряют в песок, подкрадывается к ним незаметно и выпускает три гигантских песочных зуба
-					Правый ключ запускает скачущие песчаные зубы, которые могут выпасть с неба из-за атаки
-					'''
-			}
-		}
 	}
 
 	Gangarus: {
@@ -2780,10 +2687,10 @@ Projectiles: {
 	}
 
 	// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
-	CosmicRay_0.DisplayName: 宇宙射线
-	CosmicRay.DisplayName: 宇宙射线
-	RemakeCosmicShivBall.DisplayName: 寰宇球
-	MightyStar.DisplayName: 宇宙之火
+	CosmicRay_0.DisplayName: Космический луч
+	CosmicRay.DisplayName: Космический луч
+	RemakeCosmicShivBall.DisplayName: Космический шар
+	MightyStar.DisplayName: Могучая звезда
 	// StarDust.DisplayName: Star Dust
 	// RenderDistort.DisplayName: Render Distort
 	// RenderGap.DisplayName: Render Gap
@@ -2954,18 +2861,18 @@ Projectiles: {
 	// DarkIceZeros.DisplayName: Dark Ice Zeros
 	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
 	// WaningMoonLight.DisplayName: Waning Moon Light
-	MurasamaHeldProj.DisplayName: 分子斩切
-	MurasamaBreakOut.DisplayName: 分子斩切
-	MurasamaBreakSwing.DisplayName: 升龙半月
-	MurasamaEndSilkOrb.DisplayName: 次元斩-终
-	MurasamaEndSilkOrbOnSpan.DisplayName: 次元斩-始
-	MurasamaDownSkill.DisplayName: 坠地
-	MurasamaEndSkillOrb.DisplayName: 次元斩-终
-	MurasamaEndSkillOrbOnSpan.DisplayName: 次元斩-始
+	MurasamaHeldProj.DisplayName: Молекулярный разрез
+	MurasamaBreakOut.DisplayName: Молекулярный разрез
+	MurasamaBreakSwing.DisplayName: Полумесяц восходящего дракона
+	MurasamaEndSilkOrb.DisplayName: Разрез измерений - Конец
+	MurasamaEndSilkOrbOnSpan.DisplayName: Разрез измерений - Начало
+	MurasamaDownSkill.DisplayName: Падение на землю
+	MurasamaEndSkillOrb.DisplayName: Разрез измерений - Конец
+	MurasamaEndSkillOrbOnSpan.DisplayName: Разрез измерений - Начало
 	// ExaProj.DisplayName: Exa Proj
 	// MOnSound.DisplayName: MonSound
-	EndSkillEffectStart.DisplayName: 次元斩-始
-	EndSkillMakeDamage.DisplayName: 次元斩-终
+	EndSkillEffectStart.DisplayName: Начало разреза измерений
+	EndSkillMakeDamage.DisplayName: Конец разреза измерений
 	// PowerSoundEgg.DisplayName: Power Sound Egg
 	// TitleMusicBoxEasterEggProj.DisplayName: Title Music Box Easter Egg Proj
 	// BlossomFluxHeldProj.DisplayName: Blossom Flux
