@@ -1,17 +1,17 @@
-﻿using CalamityMod.Graphics.Primitives;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Events;
+using CalamityMod.Graphics.Primitives;
+using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.Graphics.Shaders;
-using Terraria.ModLoader;
-using Terraria.ID;
 using System;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using CalamityMod.Events;
-using CalamityOverhaul.Content.Buffs;
+using Terraria;
 using Terraria.Audio;
+using Terraria.Graphics.Shaders;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {

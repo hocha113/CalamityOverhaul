@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
             Vector2 playerRotatedPoint = player.RotatedRelativePoint(player.MountedCenter, true);
             if (Main.myPlayer == Projectile.owner) {
-                if (player.channel && !player.noItems && !player.CCed 
+                if (player.channel && !player.noItems && !player.CCed
                     && player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] <= 0) {
                     HandleChannelMovement(player, playerRotatedPoint);
                 }

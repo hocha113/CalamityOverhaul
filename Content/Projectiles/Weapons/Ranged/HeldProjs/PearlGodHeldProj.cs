@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Projectiles;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Ranged;

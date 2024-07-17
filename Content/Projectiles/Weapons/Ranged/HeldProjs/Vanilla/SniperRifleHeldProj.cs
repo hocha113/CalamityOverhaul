@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void PreInOwnerUpdate() {
             criticalStrike = BulletNum == 1;
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<SniperRifleOnSpan>()] > 0) {
-                ShootCoolingValue=2;
+                ShootCoolingValue = 2;
             }
         }
 

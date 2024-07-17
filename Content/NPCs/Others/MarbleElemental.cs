@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -77,7 +76,7 @@ namespace CalamityOverhaul.Content.NPCs.Others
                 if (Math.Abs(Speed) > 16f) {
                     Speed = Math.Abs(Speed) * 16f;
                 }
-                    
+
                 Speed = Math.Abs(Speed) * (player.Center.X - NPC.Center.X > 0).ToDirectionInt();
             }
 
@@ -91,7 +90,7 @@ namespace CalamityOverhaul.Content.NPCs.Others
                 }
                 if (Time % 220f == 219f) {
                     Jump = true;
-                }  
+                }
             }
 
             if (Time % 220f > 180f && Jump) {

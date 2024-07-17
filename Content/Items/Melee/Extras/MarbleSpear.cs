@@ -1,9 +1,9 @@
-﻿using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
-using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.Extras
 {

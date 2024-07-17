@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
                 Main.projectile[proj].extraUpdates += 1;
             }
-            
+
             UpdateConsumeAmmo();
         }
     }

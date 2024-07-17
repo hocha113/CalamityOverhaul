@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (AmmoTypes == ProjectileID.Bullet) {
                 AmmoTypes = ModContent.ProjectileType<UniversalGenesisStarcaller>();
             }
-                
+
             for (int i = 0; i < 5; i++) {
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedBy((-2 + i) * 0.03f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

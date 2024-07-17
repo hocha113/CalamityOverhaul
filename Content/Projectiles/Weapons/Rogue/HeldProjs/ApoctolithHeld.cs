@@ -1,15 +1,12 @@
-﻿using CalamityMod.Projectiles.Rogue;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Buffs.StatDebuffs;
 using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityMod.Projectiles.Melee;
-using System;
-using CalamityMod.Particles;
-using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Buffs.StatDebuffs;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
 {
@@ -44,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             }
             if (stealthStrike) {
                 target.AddBuff(ModContent.BuffType<Eutrophication>(), 120);
-            }                
+            }
         }
 
         public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers) {

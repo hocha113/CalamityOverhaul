@@ -1,16 +1,13 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Particles;
-using CalamityMod;
+﻿using CalamityMod;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
-using System.IO;
+using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
 {
@@ -18,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
     {
         public override string Texture => "CalamityMod/Projectiles/Melee/MendedBiomeBlade_GestureForTheDrownedWave";
         public Player Owner => Main.player[Projectile.owner];
-        public ref float HasLanded => ref Projectile.ai[0]; 
+        public ref float HasLanded => ref Projectile.ai[0];
         public ref float TimeSinceLanding => ref Projectile.ai[1];
         public float Timer => MaxTime - Projectile.timeLeft;
         public const float MaxTime = 160f;

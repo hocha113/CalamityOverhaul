@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (Orbs == null) {
                 Orbs = new List<ElectrosphereLauncherOrb>();
             }
-            
+
             Projectile orb = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.52f) * Main.rand.NextFloat(0.9f, 1.5f)
                 , ModContent.ProjectileType<ElectrosphereLauncherOrb>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
 

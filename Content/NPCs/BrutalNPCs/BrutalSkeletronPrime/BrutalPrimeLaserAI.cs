@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -269,7 +268,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 modNPC.newAI[2]++;
                 if (modNPC.newAI[2] >= timeToNotAttack) {
                     BrutalSkeletronPrimeAI.SendExtraAI(npc);
-                } 
+                }
             }
             Movement(npc);
             if (npc.ai[2] == 0f) {

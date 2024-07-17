@@ -1,7 +1,7 @@
-﻿using Terraria.Audio;
-using Terraria.ID;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Microsoft.Xna.Framework;
+using Terraria.Audio;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
 {

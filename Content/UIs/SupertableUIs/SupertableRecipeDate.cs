@@ -242,14 +242,14 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <summary>
         /// 恒星猎手
         /// </summary>
-        public static string[] FullItems18 = new string[] {"0", "0", "0", "0", "0", "0", "0", "0", "0", 
-            "0", "0", "0", "0", "0", "0", "0", "0", "0", 
-            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", 
-            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", 
-            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", 
-            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", 
-            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", 
-            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", 
+        public static string[] FullItems18 = new string[] {"0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
+            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/NeutronGun"
         };
@@ -310,5 +310,5 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0",
                 "CalamityOverhaul/InfiniteToiletItem"
             };
-        }
+    }
 }

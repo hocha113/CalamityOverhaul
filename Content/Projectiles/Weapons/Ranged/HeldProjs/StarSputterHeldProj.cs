@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            
+
             if (chargeIndex > 3) {
                 Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<SputterCometBig>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].usesLocalNPCImmunity = true;
             Main.projectile[proj].localNPCHitCooldown = -1;
-            
+
         }
 
         public override void PostFiringShoot() => fireIndex++;

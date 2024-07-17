@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 ShootCoolingValue = 2;
                 noFireTime--;
                 if (noFireTime == 30) {
-                    SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot 
+                    SoundEngine.PlaySound(CWRSound.Gun_HandGun_SlideInShoot
                         with { PitchRange = (-0.1f, 0.1f), Volume = 0.4f }, Projectile.Center);
                     for (int i = 0; i < maxFireCount; i++) {
                         CaseEjection();
@@ -55,10 +55,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (noFireTime > 0) {
                 return;
             }
-            
+
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage
                 , WeaponKnockback, Owner.whoAmI, (indexFire == 1 || indexFire == 5) ? 1 : 0);
-            
+
             _ = UpdateConsumeAmmo();
         }
 

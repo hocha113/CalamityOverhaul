@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, ai0);
             Main.projectile[proj].CWR().SpanTypes = (byte)ShootSpanTypeValue;
             Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
-            
+
         }
 
         public override void PostBowShoot() {

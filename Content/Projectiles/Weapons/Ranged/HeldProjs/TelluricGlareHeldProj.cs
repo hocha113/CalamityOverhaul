@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
         public override void BowShoot() {
             Vector2 norlShoot = ShootVelocity.UnitVector();
-            FireOffsetPos = norlShoot * -53 + 
+            FireOffsetPos = norlShoot * -53 +
                 norlShoot.GetNormalVector() * Main.rand.Next(-16, 16);
             base.BowShoot();
         }

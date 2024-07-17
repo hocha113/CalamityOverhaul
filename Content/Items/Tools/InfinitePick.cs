@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Tools;
-using CalamityMod.Tiles.Abyss;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Materials;

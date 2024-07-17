@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 nolegendStart = InWorldBossPhase.Instance.level11;
             }
-            
+
             Projectile.Center = Owner.Center + new Vector2(0, 5) * safeGravDir;
             Projectile.timeLeft = 2;
             Projectile.scale = 0.7f;
@@ -216,7 +216,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 armRotSengsFront = Projectile.hide ? 60 : 70;
             }
             float armRotSengsBack = Projectile.hide ? 110 : 110 + MathF.Sin(Time * CWRUtils.atoR * 45) * 50;
-            
+
             Projectile.rotation = MathHelper.ToRadians(heldRotSengs * DirSign * safeGravDir);
 
             if (onFireR) {//玩家按下右键触发这些技能，同时需要避免在左键按下的时候触发

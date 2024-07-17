@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             if (stealthStrike && !accompanying && Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 2; i++) {
                     Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center
-                        , Projectile.velocity.RotatedBy(i == 0? -0.3f : 0.3f), Type, Projectile.damage, 0.2f, Owner.whoAmI, 0, 0, 1);
+                        , Projectile.velocity.RotatedBy(i == 0 ? -0.3f : 0.3f), Type, Projectile.damage, 0.2f, Owner.whoAmI, 0, 0, 1);
                 }
             }
             return base.PreThrowOut();
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             target.AddBuff(BuffID.Frostburn2, 120);
             if (stealthStrike) {
                 target.AddBuff(ModContent.BuffType<GlacialState>(), 45);
-            } 
+            }
         }
 
         public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac) {

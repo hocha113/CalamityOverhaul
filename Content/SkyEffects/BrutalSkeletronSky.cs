@@ -1,7 +1,5 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Graphics.Effects;
@@ -20,7 +18,7 @@ namespace CalamityOverhaul.Content.SkyEffects
         private PGBolt[] bolts;
         private int ticksUntilNextBolt;
         private UnifiedRandom random = new UnifiedRandom();
-        
+
         void ILoader.LoadData() {
             if (CWRUtils.isServer) {
                 return;
@@ -28,7 +26,7 @@ namespace CalamityOverhaul.Content.SkyEffects
             SkyManager.Instance[name] = this;
             Filters.Scene[name] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.15f, 0.1f, 0.1f).UseOpacity(0.3f), EffectPriority.High);
         }
-        
+
 
         public override void Activate(Vector2 position, params object[] args) {
             active = true;

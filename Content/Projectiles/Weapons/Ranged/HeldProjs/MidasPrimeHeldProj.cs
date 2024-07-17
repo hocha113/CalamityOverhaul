@@ -45,8 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void HanderPlaySound() {
             if (onFireR) {
-                SoundEngine.PlaySound(new("CalamityMod/Sounds/Custom/Ultrabling") 
-                { PitchVariance = 0.5f }, Projectile.Center);
+                SoundEngine.PlaySound(new("CalamityMod/Sounds/Custom/Ultrabling") { PitchVariance = 0.5f }, Projectile.Center);
                 return;
             }
             SoundEngine.PlaySound(Item.UseSound, Projectile.Center);

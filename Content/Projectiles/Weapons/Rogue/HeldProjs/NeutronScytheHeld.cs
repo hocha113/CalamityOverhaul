@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
@@ -59,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
                 if (Projectile.Distance(Owner.Center) < 32) {
                     Projectile.Kill();
                 }
-                
+
             }
             if (Projectile.Distance(Owner.Center) < 1200) {
                 if (++fireIndex > 15) {

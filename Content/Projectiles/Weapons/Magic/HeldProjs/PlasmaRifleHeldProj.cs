@@ -3,7 +3,6 @@ using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Content.Items.Magic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs

@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
             Projectile.alpha = 255;
             HandOnTwringMode = -15;
             OnThrowingGetRotation = (float a) => ToMouseA;
-            OnThrowingGetCenter = (float armRotation) 
-                => Owner.GetPlayerStabilityCenter() + Vector2.UnitY.RotatedBy(armRotation * Owner.gravDir) 
+            OnThrowingGetCenter = (float armRotation)
+                => Owner.GetPlayerStabilityCenter() + Vector2.UnitY.RotatedBy(armRotation * Owner.gravDir)
                 * HandOnTwringMode * Owner.gravDir + UnitToMouseV * 6;
         }
 
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
                 tileRot = Projectile.rotation;
                 onTIle = true;
             }
-            
+
             Projectile.alpha -= 15;
             return false;
         }

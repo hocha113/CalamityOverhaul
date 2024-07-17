@@ -1,12 +1,12 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Buffs;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             Projectile.scale += 0.012f;
-            
+
             if (Projectile.DistanceSQ(Main.LocalPlayer.Center) < 1600 * 1600) {
                 if (CWRParticleHandler.FreeSpacesAvailable() > 10) {
                     CWRParticle spark = new HeavenfallStarParticle(Projectile.Center, Projectile.velocity * 0.7f, false, 20, 1.2f, Color.Gold);
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     dust.scale *= Main.rand.NextFloat(0.3f, 1.2f);
                 }
             }
-            
+
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {

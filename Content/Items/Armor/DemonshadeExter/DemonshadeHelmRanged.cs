@@ -1,12 +1,12 @@
-﻿using CalamityMod.Items.Armor.Demonshade;
+﻿using CalamityMod.Items;
+using CalamityMod.Items.Armor.Demonshade;
 using CalamityMod.Items.Materials;
-using CalamityMod.Items;
 using CalamityMod.Rarities;
-using Terraria;
-using Terraria.ModLoader;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Armor.DemonshadeExter
 {

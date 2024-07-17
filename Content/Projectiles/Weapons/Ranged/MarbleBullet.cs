@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 float spikeAmplitude = 22f;
                 float scale = Main.rand.NextFloat(1f, 1.35f);
                 for (float spikeAngle = 0f; spikeAngle < MathF.PI * 2f; spikeAngle += 0.05f) {
-                    Vector2 offset = spikeAngle.ToRotationVector2() * (2f + 
+                    Vector2 offset = spikeAngle.ToRotationVector2() * (2f +
                         (float)(Math.Sin(angle + spikeAngle * numSpikes) + 1.0) * spikeAmplitude) * 0.15f;
                     Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.WhiteTorch, offset, 0, default, scale);
                     dust.shader = EffectsRegistry.StreamerDustShader;

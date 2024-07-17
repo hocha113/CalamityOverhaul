@@ -1,13 +1,13 @@
 ﻿using CalamityMod;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.Audio;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 using CalamityOverhaul.Content.Items.Melee;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
+using Terraria;
+using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 CurrentFrame++;
                 if (frameX >= 2) {
                     CurrentFrame = 0;
-                }  
+                }
             }
 
             if (frameX == 0 && frameY == 3 && Projectile.frameCounter % 3 == 0) {
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     , (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 20f, 6f, 20, 1000f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
                 SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 0.35f }, Projectile.Center);
-                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.6f , Volume = 1.25f, MaxInstances = 2 }, Projectile.position);
+                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.6f, Volume = 1.25f, MaxInstances = 2 }, Projectile.position);
                 Projectile.timeLeft = 30;
             }
 
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             else {
                 Projectile.Right = Owner.MountedCenter;
             }
-                
+
             Projectile.position.X += Projectile.spriteDirection == -1 ? 26f : -26f;
             Projectile.position.Y -= Projectile.scale * 2f;
             Owner.ChangeDir(Projectile.direction);

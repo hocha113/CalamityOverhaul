@@ -1,9 +1,7 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
-using CalamityOverhaul.Content.Tiles;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

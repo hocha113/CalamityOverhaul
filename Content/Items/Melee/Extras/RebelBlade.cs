@@ -33,11 +33,11 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] == 0;
 
         public override void HoldItem(Player player) {
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeBack>()] == 0 
-                && Main.myPlayer == player.whoAmI 
+            if (player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeBack>()] == 0
+                && Main.myPlayer == player.whoAmI
                 && player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeFlyAttcke>()] == 0
                 && player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeSlash>()] == 0
-                && !player.PressKey() ) {
+                && !player.PressKey()) {
                 Projectile.NewProjectileDirect(player.parent(), player.Center
                     , Vector2.Zero, ModContent.ProjectileType<RebelBladeBack>(), 0, 0, player.whoAmI);
             }

@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
-using CalamityMod.Items.Accessories;
 using CalamityMod.NPCs;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.Core;
@@ -245,7 +244,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (npc.ai[3] != 0f) {
                 NPC.mechQueen = npc.whoAmI;
             }
-            
+
             npc.reflectsProjectiles = false;
             if (npc.ai[0] == 0f) {
                 ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = 0;
@@ -429,7 +428,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     case 0:
                         if (++ai5 > 90) {
                             npc.TargetClosest();
-                            
+
                             if (!CWRUtils.isClient) {
                                 if (ai9 % 2 == 0) {
                                     int totalProjectiles = bossRush ? 9 : 6;

@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 , Color.Black * _sengs * 0.85f, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
 
             spriteBatch.Draw(githubOAC.Value, githubPos, null
-                , (onGithub ? color : Color.White)  * _sengs, 0f, Vector2.Zero, githubSiz, SpriteEffects.None, 0);
+                , (onGithub ? color : Color.White) * _sengs, 0f, Vector2.Zero, githubSiz, SpriteEffects.None, 0);
             spriteBatch.Draw(steamOAC.Value, steamPos, null
                 , (onSteam ? color : Color.White) * _sengs, 0f, Vector2.Zero, githubSiz, SpriteEffects.None, 0);
         }

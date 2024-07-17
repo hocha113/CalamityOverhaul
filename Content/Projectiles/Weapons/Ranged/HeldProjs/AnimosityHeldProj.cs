@@ -1,7 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Projectiles;
-using CalamityMod.Sounds;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
@@ -65,7 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 EnableRecoilRetroEffect = true;
                 RecoilRetroForceMagnitude = 6;
             }
-            
+
         }
         public override void FiringShoot() {
             for (int i = 0; i < 2; i++) {

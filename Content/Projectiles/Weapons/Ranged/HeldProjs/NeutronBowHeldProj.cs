@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void HanderPlaySound() {
             if (onFireR) {
-                SoundEngine.PlaySound(CWRSound.Gun_Magnum_Shoot 
+                SoundEngine.PlaySound(CWRSound.Gun_Magnum_Shoot
                     with { Pitch = 0.7f, Volume = 0.6f }, Projectile.Center);
                 return;
             }

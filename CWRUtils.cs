@@ -33,7 +33,6 @@ using Terraria.Social;
 using Terraria.UI;
 using Terraria.WorldBuilding;
 using static CalamityMod.CalamityUtils;
-using static System.Net.WebRequestMethods;
 
 namespace CalamityOverhaul
 {
@@ -67,7 +66,7 @@ namespace CalamityOverhaul
         public static void Domp(this object obj, Color color = default) {
             if (color == default) {
                 color = Color.White;
-            }  
+            }
             if (obj == null) {
                 Text("ERROR Is Null", Color.Red);
                 return;
@@ -2467,7 +2466,7 @@ namespace CalamityOverhaul
                 if (progress < startX) {
                     continue;
                 }
-                   
+
 
                 if (progress >= endX) {
                     continue;

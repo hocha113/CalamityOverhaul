@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
     internal abstract class BaseThrowable : BaseHeldProj
     {
         public virtual Texture2D TextureValue => GetT2DValue(Texture);
-        
+
         protected float OverallProgress => 1 - Projectile.timeLeft / (float)TotalLifetime; // 总体进度
         protected float CurrentThrowProgress => 1 - Projectile.timeLeft / (float)TotalLifetime; // 当前投掷进度
         protected int ThrowStorage {
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         protected Func<float, Vector2> OnThrowingGetCenter {
             get {
                 if (_onThrowingGetCenter == null) {
-                    _onThrowingGetCenter = (float armRotation) => Owner.GetPlayerStabilityCenter() + 
+                    _onThrowingGetCenter = (float armRotation) => Owner.GetPlayerStabilityCenter() +
                     Vector2.UnitY.RotatedBy(armRotation * Owner.gravDir) * HandOnTwringMode * Owner.gravDir;
                 }
                 return _onThrowingGetCenter;
@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             Projectile.rotation = OnThrowingGetRotation.Invoke(armRotation);
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.Pi + armRotation);
         }
-        
+
         public virtual void ThrowOut() {
             SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
             Projectile.Center = Owner.Center + UnitToMouseV * 8;
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
                 Projectile.soundDelay = 8;
             }
 
-            Projectile.rotation += (MathHelper.PiOver4 / 4f + MathHelper.PiOver4 / 2f * 
+            Projectile.rotation += (MathHelper.PiOver4 / 4f + MathHelper.PiOver4 / 2f *
                 Math.Clamp(CurrentThrowProgress * 2f, 0, 1)) * Math.Sign(Projectile.velocity.X);
 
             if (BounceCount == 0f) {
@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
                     Projectile.numHits = 0;
                 }
 
-                if (ReturnProgress == 0f && Projectile.velocity.Length() > 2f 
+                if (ReturnProgress == 0f && Projectile.velocity.Length() > 2f
                     && Projectile.timeLeft < (205 + ChargeUpTime)) {
                     Projectile.velocity *= 0.88f;
                 }
@@ -251,7 +251,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             if (Projectile.timeLeft == TotalLifetime) {
                 if (PreThrowOut()) {
                     ThrowOut();
-                }              
+                }
             }
 
             FlyToMovementAI();

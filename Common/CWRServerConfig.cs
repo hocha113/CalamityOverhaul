@@ -1,7 +1,4 @@
-﻿using CalamityMod.Projectiles.Ranged;
-using Microsoft.Xna.Framework;
-using System.ComponentModel;
-using Terraria;
+﻿using System.ComponentModel;
 using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Common

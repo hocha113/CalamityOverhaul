@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void HanderPlaySound() {
-            SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot 
+            SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot
                 with { Volume = 0.35f, Pitch = -0.6f }, Projectile.Center);
         }
 

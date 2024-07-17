@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Particles;
-using CalamityMod.Tiles.Abyss;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
@@ -35,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.hostile = false;
         }
 
-        
+
 
         public override void AI() {
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3() * (Projectile.ai[0] == 1 ? 1.2f : 10));
@@ -72,7 +71,7 @@ namespace CalamityOverhaul.Content.Projectiles
                             CWRUtils.SafeSquareTileFrame(tilePos, tile);
                             if (Main.netMode != NetmodeID.SinglePlayer) {
                                 NetMessage.SendTileSquare(own.whoAmI, x, y);
-                            }  
+                            }
                         }
                     }
                 }

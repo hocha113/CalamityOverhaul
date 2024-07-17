@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.TileEntitys
                                 CWRParticleHandler.AddParticle(particle);
                             }
                         }
-                        
+
                         orb.position = Center;
                     }
                     else {
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.TileEntitys
                                     CWRParticleHandler.AddParticle(particle);
                                 }
                             }
-                            
+
                             chest.AddItem(orb);
                             orb.TurnToAir();
                         }
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.TileEntitys
                     if (!UseInPlayerBloodOrb(player)) {
                         return;
                     }
-                    
+
                     if (!CWRUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.Roar, Center);
                         for (int i = 0; i < 63; i++) {

@@ -8,7 +8,6 @@ using System;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -68,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (Projectile.localAI[1] == 0) {
                 base.AI();
             }
-                
+
             if (Projectile.localAI[1] == 1) {
                 Projectile.MaxUpdates = 2;
                 if (Time == 0f) {

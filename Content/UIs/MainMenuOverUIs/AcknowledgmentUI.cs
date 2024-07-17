@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 if (--startTime > 0 || position.Y < -200) {
                     return;
                 }
-                
+
                 float textAlp = sengs * (alp / 255f);
                 if (index == 0) {
                     spriteBatch.Draw(Logo.Value, position + new Vector2(0, Logo1.Size().Y * -0.7f), null, Color.White * textAlp, 0f
@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
             public EffectEntity(int index, int timeLeft, float size, int alp, Color color
                 , Vector2 position, Vector2 velocity, string text, Texture2D texture, int startTime
-                , int ai0, float rotation, int itemID, float rotSpeed) 
+                , int ai0, float rotation, int itemID, float rotSpeed)
                 : base(index, timeLeft, size, alp, color, position, velocity, text, texture, startTime) {
                 this.ai0 = ai0;
                 this.rotation = rotation;
@@ -227,8 +227,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 Rectangle? rectangle = null;
                 Vector2 orig = texture.Size() / 2;
                 if (item != null) {
-                    rectangle = Main.itemAnimations[item.type] != null ? 
-                        Main.itemAnimations[item.type].GetFrame(TextureAssets.Item[item.type].Value) 
+                    rectangle = Main.itemAnimations[item.type] != null ?
+                        Main.itemAnimations[item.type].GetFrame(TextureAssets.Item[item.type].Value)
                         : TextureAssets.Item[item.type].Value.Frame(1, 1, 0, 0);
                 }
                 if (rectangle.HasValue) {

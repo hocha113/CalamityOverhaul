@@ -10,7 +10,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using CalamityOverhaul.Content.Tiles;
 using System.Collections.Generic;
 using Terraria;

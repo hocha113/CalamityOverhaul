@@ -56,13 +56,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PostFiringShoot() {
             if (++fireIndex >= 5) {
                 FireTime = 50;
-                SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/DudFire") 
+                SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/DudFire")
                     with { Pitch = -0.7f, PitchVariance = 0.1f }, Projectile.Center);
                 fireIndex = 0;
                 return;
             }
-            SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/FlakKrakenShoot") 
-            { Volume = 0.5f }, Projectile.Center);
+            SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/FlakKrakenShoot") { Volume = 0.5f }, Projectile.Center);
         }
     }
 }

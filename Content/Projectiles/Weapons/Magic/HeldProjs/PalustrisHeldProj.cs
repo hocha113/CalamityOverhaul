@@ -1,10 +1,10 @@
-﻿using CalamityOverhaul.Content.Items.Magic.Extras;
-using Terraria.ModLoader;
-using Terraria;
+﻿using CalamityOverhaul.Common.Effects;
+using CalamityOverhaul.Content.Items.Magic.Extras;
 using Microsoft.Xna.Framework;
-using Terraria.ID;
-using CalamityOverhaul.Common.Effects;
 using System;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 {

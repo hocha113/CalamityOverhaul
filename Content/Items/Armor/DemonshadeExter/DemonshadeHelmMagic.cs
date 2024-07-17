@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Armor.DemonshadeExter
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs) {
-            return body.type == ModContent.ItemType<DemonshadeBreastplate>() 
+            return body.type == ModContent.ItemType<DemonshadeBreastplate>()
                 && legs.type == ModContent.ItemType<DemonshadeGreaves>();
         }
 

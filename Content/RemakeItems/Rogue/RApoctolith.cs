@@ -2,11 +2,11 @@
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Terraria.DataStructures;
-using Terraria.ModLoader;
-using Terraria;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Rogue
 {

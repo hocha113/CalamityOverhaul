@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.OthermodMROs.Thorium.Core;
-using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.Structures;
 using CalamityOverhaul.Content.UIs;
@@ -162,7 +161,7 @@ namespace CalamityOverhaul
 
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
             CWRLoad.Load();
-            foreach (var i in ILoaders) { 
+            foreach (var i in ILoaders) {
                 i.SetupData();
                 if (!Main.dedServ) {
                     i.LoadAsset();
@@ -243,7 +242,7 @@ namespace CalamityOverhaul
         public void LoadClient() {
             if (Main.dedServ)
                 return;
-            
+
             EffectsRegistry.LoadEffects();
             ILMainMenuModification.Load();
             Filters.Scene["CWRMod:TungstenSky"] = new Filter(new TungstenSkyDate("FilterMiniTower").UseColor(0.5f, 0f, 0.5f).UseOpacity(0.2f), EffectPriority.VeryHigh);

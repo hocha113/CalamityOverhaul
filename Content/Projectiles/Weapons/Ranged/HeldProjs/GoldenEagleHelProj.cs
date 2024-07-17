@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            
+
             base.FiringShoot();
             const float spread = 0.0425f;
             for (int i = 0; i < 2; i++) {
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            
+
             base.FiringShootR();
 
             Vector2 shoot2Vr = ShootVelocity.GetNormalVector();

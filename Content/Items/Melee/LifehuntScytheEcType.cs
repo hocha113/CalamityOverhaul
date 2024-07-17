@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool CanUseItem(Player player) {
-            return player.ownedProjectileCounts[Item.shoot] <= 0 
+            return player.ownedProjectileCounts[Item.shoot] <= 0
                 && player.ownedProjectileCounts[ModContent.ProjectileType<LifehuntScytheThrowable>()] <= 0;
         }
 

@@ -13,7 +13,7 @@ public record Ammo(ItemTypeData ItemData, int Times) : TagSerializable
     public static Func<TagCompound, Ammo> DESERIALIZER = s => DeserializeAmmo(s);
 
     public static Ammo DeserializeAmmo(TagCompound tag) =>
-        new (tag.Get<ItemTypeData>("item"), tag.GetInt("times"));
+        new(tag.Get<ItemTypeData>("item"), tag.GetInt("times"));
 
     public TagCompound SerializeData() => throw new UnreachableException("This method should never be called");
 }

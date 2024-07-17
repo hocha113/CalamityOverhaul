@@ -1,6 +1,6 @@
-﻿using Terraria.ModLoader;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
 using Terraria.ID;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Extras
 {
