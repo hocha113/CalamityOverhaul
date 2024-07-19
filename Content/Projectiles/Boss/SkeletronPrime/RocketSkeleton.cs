@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.Buffs;
+﻿using CalamityMod.Events;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
@@ -18,7 +20,13 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.hostile = true;
             Projectile.friendly = false;
             Projectile.timeLeft = 600;
-            Projectile.extraUpdates = 6;
+            Projectile.extraUpdates = 4;
+            if (ModGanged.InfernumModeOpenState) {
+                Projectile.extraUpdates += 1;
+            }
+            if (BossRushEvent.BossRushActive || Main.getGoodWorld || Main.zenithWorld) {
+                Projectile.extraUpdates += 1;
+            }
             Projectile.tileCollide = false;
             CooldownSlot = ImmunityCooldownID.Bosses;
         }
@@ -47,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             CWRParticle pulse3 = new DimensionalWave(spanPos, vr, Color.Red
             , new Vector2(0.7f, 1.3f) * 0.8f, vr.ToRotation(), 1.18f, 3.32f, 60);
             CWRParticleHandler.AddParticle(pulse3);
-            target.AddBuff(ModContent.BuffType<HellfireExplosion>(), 120);
+            target.AddBuff(ModContent.BuffType<HellfireExplosion>(), 60);
         }
 
         public override void OnKill(int timeLeft) {

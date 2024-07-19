@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<HellfireExplosion>(), 120);
+            target.AddBuff(ModContent.BuffType<HellfireExplosion>(), 60);
             for (int i = 0; i < 13; i++) {
                 CWRParticle spark = new HeavenfallStarParticle(Projectile.Center
                     , CWRUtils.randVr(13, 23), false, 26, Main.rand.NextFloat(1.6f, 2.8f), Color.Gold);

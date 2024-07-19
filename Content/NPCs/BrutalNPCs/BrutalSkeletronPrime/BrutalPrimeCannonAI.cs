@@ -2,6 +2,7 @@
 using CalamityMod.Events;
 using CalamityMod.NPCs;
 using CalamityMod.World;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework;
@@ -123,7 +124,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     cannonArmTargetY *= cannonArmTargetDist;
 
                     Vector2 rocketVelocity = new Vector2(cannonArmTargetX, cannonArmTargetY);
-                    if (death && masterMode || bossRush || CWRMod.InfernumModeOpenState) {
+                    if (death && masterMode || bossRush || ModGanged.InfernumModeOpenState) {
                         int proj = Projectile.NewProjectile(npc.GetSource_FromAI()
                         , cannonArmPosition + rocketVelocity.SafeNormalize(Vector2.UnitY) * 40f, rocketVelocity
                         , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
@@ -169,7 +170,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     for (int i = 0; i < numProj; i++) {
                         float rotoffset = MathHelper.Lerp(-rotation, rotation, i / (float)(numProj - 1));
                         Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
-                        if (death && masterMode || bossRush || CWRMod.InfernumModeOpenState) {
+                        if (death && masterMode || bossRush || ModGanged.InfernumModeOpenState) {
                             Projectile.NewProjectile(npc.GetSource_FromAI()
                             , npc.Center, perturbedSpeed
                             , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
@@ -268,6 +269,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (!BrutalSkeletronPrimeAI.canLoaderAssetZunkenUp) {
+                return false;
+            }
+
             BrutalSkeletronPrimeAI.DrawArm(spriteBatch, npc, screenPos);
             Texture2D mainValue = BrutalSkeletronPrimeAI.BSPCannon.Value;
             Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPCannonGlow.Value;

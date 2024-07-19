@@ -12,6 +12,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
+    //老实说，这样的完全不利于扩展，如果想加入一条新的词条会非常麻烦，更别说如果想更换词条之间的顺序，更好的选择是将每个词条抽象成类实例管理 -hocah113 2024/6/28
     internal class IconUI : BaseMainMenuOverUI
     {
         #region Date
