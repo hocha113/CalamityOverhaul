@@ -54,15 +54,6 @@ namespace CalamityOverhaul
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook { get; private set; }
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_UseItem_Hook { get; private set; }
 
-        internal static bool InfernumModeOpenState {
-            get {
-                if (Instance.infernum == null) {
-                    return false;
-                }
-                return (bool)Instance.infernum.Call("GetInfernumActive");
-            }
-        }
-
         internal enum CallType
         {
             SupertableRecipeDate,

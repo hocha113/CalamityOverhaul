@@ -2,6 +2,7 @@
 using CalamityMod.Events;
 using CalamityMod.NPCs;
 using CalamityMod.World;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework;
@@ -224,10 +225,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                             radians = MathHelper.TwoPi / totalProjectiles;
                             for (int j = 0; j < 5; j++) {
                                 for (int k = 0; k < totalProjectiles; k++) {
+                                    float speedMode = 0.5f + j * 0.2f;
+                                    if (ModGanged.InfernumModeOpenState) {
+                                        speedMode = 0.5f + j * 0.25f;
+                                    }
+                                    if (bossRush) {
+                                        speedMode = 0.75f + j * 0.25f;
+                                    }
                                     Vector2 laserFireDirection = spinningPoint.RotatedBy(radians * k);
-                                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + laserFireDirection.SafeNormalize(Vector2.UnitY) * 100f
-                                        , laserFireDirection * (1 + j * 0.25f), ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
-                                    Main.projectile[proj].timeLeft = 900;
+                                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + laserFireDirection.SafeNormalize(Vector2.UnitY) * 100f
+                                        , laserFireDirection * speedMode, ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
                                 }
                             }
                             BrutalSkeletronPrimeAI.SpanFireLerterDustEffect(npc, 33);
@@ -285,6 +292,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private int frame;
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (!BrutalSkeletronPrimeAI.canLoaderAssetZunkenUp) {
+                return false;
+            }
+
             BrutalSkeletronPrimeAI.DrawArm(spriteBatch, npc, screenPos);
             Texture2D mainValue = BrutalSkeletronPrimeAI.BSPlaser.Value;
             Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPlaserGlow.Value;

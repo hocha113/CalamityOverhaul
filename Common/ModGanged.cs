@@ -72,6 +72,15 @@ namespace CalamityOverhaul.Common
 
         public static MethodBase BossHealthBarManager_Draw_Method;
 
+        internal static bool InfernumModeOpenState {
+            get {
+                if (CWRMod.Instance.infernum == null) {
+                    return false;
+                }
+                return (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
+            }
+        }
+
         public static Type[] GetModType(Mod mod) {
             return AssemblyManager.GetLoadableTypes(mod.Code);
         }

@@ -314,6 +314,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (!BrutalSkeletronPrimeAI.canLoaderAssetZunkenUp) {
+                return false;
+            }
+
             BrutalSkeletronPrimeAI.DrawArm(spriteBatch, npc, screenPos);
             Texture2D mainValue = BrutalSkeletronPrimeAI.BSPPliers.Value;
             Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPPliersGlow.Value;

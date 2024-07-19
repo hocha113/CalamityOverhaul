@@ -1,5 +1,8 @@
 ﻿using CalamityMod;
+using CalamityMod.Events;
 using CalamityMod.NPCs;
+using CalamityMod.Particles;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
@@ -15,6 +18,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     internal class SetPosingStarm : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
+        //让我们疯狂起来!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        public FireParticleSet FireDrawer = null;
         private float modeings = 5000;
         private float sengs;
         public override void SetDefaults() {
@@ -38,6 +43,20 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(0, 1200)
                     , new Vector2(0, -53), ModContent.ProjectileType<Mechanicalworm>(), Projectile.damage, 2, -1);
             }
+
+            if (Projectile.ai[0] % 15 == 0) {
+                Vector2 pos = Projectile.Center;
+                float rand = Main.rand.NextFloat(MathHelper.TwoPi);
+                for (int i = 0; i < 4; i++) {
+                    float rot1 = MathHelper.PiOver2 * i + rand;
+                    Vector2 vr = rot1.ToRotationVector2();
+                    for (int j = 0; j < 33; j++) {
+                        CWRParticle spark = new HeavenfallStarParticle(pos, vr * (0.1f + j * 0.34f), false, 13, Main.rand.NextFloat(5.2f, 6.3f), Color.Red);
+                        CWRParticleHandler.AddParticle(spark);
+                    }
+                }
+            }
+
             if (Projectile.timeLeft <= 30) {
                 modeings = 1200 * (Projectile.timeLeft / 30f);
             }
@@ -49,11 +68,11 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     if (!p.active) {
                         continue;
                     }
+
                     if (p.Distance(Projectile.Center) > modeings) {
                         p.AddBuff(ModContent.BuffType<HellfireExplosion>(), 2);
                         p.HealEffect(-1);
                     }
-
                 }
             }
 
@@ -68,18 +87,6 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 }
             }
 
-            if (Projectile.ai[0] % 15 == 0) {
-                Vector2 pos = Projectile.Center;
-                float rand = Main.rand.NextFloat(MathHelper.TwoPi);
-                for (int i = 0; i < 4; i++) {
-                    float rot1 = MathHelper.PiOver2 * i + rand;
-                    Vector2 vr = rot1.ToRotationVector2();
-                    for (int j = 0; j < 33; j++) {
-                        CWRParticle spark = new HeavenfallStarParticle(pos, vr * (0.1f + j * 0.34f), false, 13, Main.rand.NextFloat(5.2f, 6.3f), Color.Red);
-                        CWRParticleHandler.AddParticle(spark);
-                    }
-                }
-            }
             Projectile.ai[0]++;
         }
 
@@ -103,13 +110,25 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     if (Main.npc[CalamityGlobalNPC.primeLaser].active)
                         Main.npc[CalamityGlobalNPC.primeLaser].Center = Projectile.Center;
                 }
-                for (int i = 0; i < 33; i++) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI()
-                            , Projectile.Center, (MathHelper.TwoPi / 33f * i).ToRotationVector2() * 3
-                            , ModContent.ProjectileType<PrimeCannonOnSpan>(), Projectile.damage, 0f
-                            , Main.myPlayer, -1, -1, 0);
+                //不 要 在 客 户 端 上 生 成 射 弹
+                if (!CWRUtils.isClient) {
+                    float maxProjSanShootNum = 28;
+                    if (ModGanged.InfernumModeOpenState) {
+                        maxProjSanShootNum += 4;
+                    }
+                    if (BossRushEvent.BossRushActive) {
+                        maxProjSanShootNum += 4;
+                    }
+
+                    int type = ModContent.ProjectileType<PrimeCannonOnSpan>();
+                    for (int i = 0; i < maxProjSanShootNum; i++) {
+                        Projectile.NewProjectile(Projectile.GetSource_FromAI()
+                                , Projectile.Center, (MathHelper.TwoPi / maxProjSanShootNum * i).ToRotationVector2() * 3
+                                , type, Projectile.damage, 0f, Main.myPlayer, -1, -1, 0);
+                    }
                 }
             }
+            FireDrawer = null;
         }
 
         public override void PostDraw(Color lightColor) {
@@ -151,6 +170,28 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
             Main.spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.Placeholder2)
                 , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Red * sengs);
+
+            if (sengs > 0) {
+                float num1 = Main.screenWidth * 0.6f;
+                if (num1 < 10f) {
+                    num1 = 10f;
+                }
+
+                float num2 = Main.screenWidth / 100f;
+                if (num2 > 2.75f) {
+                    num2 = 2.75f;
+                }
+
+                if (FireDrawer is null) {
+                    FireDrawer = new FireParticleSet(int.MaxValue, 1, Color.Gold * 1.25f, Color.Red, num1, num2);
+                }
+
+                FireDrawer?.DrawSet(Main.LocalPlayer.Bottom - Vector2.UnitY * 122);
+                FireDrawer?.Update();
+            }
+            else {
+                FireDrawer = null;
+            }
         }
     }
 }

@@ -2446,6 +2446,7 @@ Items: {
 		DisplayName: Garde Majestueux
 		Tooltip:
 			'''
+			Véritable attaque mêlée avec probabilité de guérir les joueurs
 			En dehors d'une véritable attaque au corps à corps, il tirera automatiquement une lame qui transpercera le mur
 			"Mon roi, je vous protégerai"
 			'''

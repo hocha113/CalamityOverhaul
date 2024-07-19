@@ -2434,6 +2434,7 @@ Items: {
 		DisplayName: Majestic Guard
 		Tooltip:
 			'''
+			True melee attacks have a chance to heal players
 			Non-true proximity battles will actively fire the blade, which will plunge into the wall
 			"My king, I will guard."
 			'''

@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Common.Effects;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
@@ -16,6 +18,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
         public override void ExtraShoot() {
             if (HitNPCs.Count > 0) {
+                if (Main.rand.NextBool(2)) {
+                    Owner.HealEffect(1);
+                }
+                CWRDust.SplashDust(Projectile, 31, DustID.FireworkFountain_Yellow, DustID.FireworkFountain_Yellow
+                    , 13, Color.Gold, EffectsRegistry.StreamerDustShader);
+                return;
+            }
+            if (stabIndex % 2 != 0 || stabIndex < 1) {
                 return;
             }
             int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity.UnitVector() * 13

@@ -2441,6 +2441,7 @@ Items: {
 		DisplayName: Majestätischer Wächter
 		Tooltip:
 			'''
+			Ist die chance, dass so was möglich ist
 			Bei nicht echten Nahkämpfen feuert es automatisch Schwertklingen ab, die in die Wand eindringen
 			"Mein König, ich werde beschützen"
 			'''

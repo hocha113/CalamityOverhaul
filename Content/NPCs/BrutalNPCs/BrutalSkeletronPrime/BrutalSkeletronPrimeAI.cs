@@ -2,6 +2,7 @@
 using CalamityMod.Events;
 using CalamityMod.NPCs;
 using CalamityMod.World;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
@@ -43,6 +44,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static int ai9;
         internal static int ai10;
         internal static int fireIndex;
+        internal static bool canLoaderAssetZunkenUp;
         internal static Asset<Texture2D> HandAsset;
         internal static Asset<Texture2D> BSPCannon;
         internal static Asset<Texture2D> BSPlaser;
@@ -73,6 +75,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         internal static void DrawArm(SpriteBatch spriteBatch, NPC rCurrentNPC, Vector2 screenPos) {
+            if (!canLoaderAssetZunkenUp) {
+                return;
+            }
+
             Vector2 vector7 = new Vector2(rCurrentNPC.position.X + rCurrentNPC.width * 0.5f - 5f * rCurrentNPC.ai[0], rCurrentNPC.position.Y + 20f);
             for (int k = 0; k < 2; k++) {
                 float num21 = Main.npc[(int)rCurrentNPC.ai[1]].position.X + Main.npc[(int)rCurrentNPC.ai[1]].width / 2 - vector7.X;
@@ -118,10 +124,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        void ILoader.LoadData() {
-            if (Main.dedServ) {
-                return;
-            }
+        void ILoader.LoadAsset() {
             string path = CWRConstant.NPC + "BSP/";
             HandAsset = CWRUtils.GetT2DAsset(path + "BrutalSkeletron");
             BSPCannon = CWRUtils.GetT2DAsset(path + "BSPCannon");
@@ -135,6 +138,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPPliersGlow = CWRUtils.GetT2DAsset(path + "BSPPliersGlow");
             BSPSAWGlow = CWRUtils.GetT2DAsset(path + "BSPSAWGlow");
             BSPRAMGlow = CWRUtils.GetT2DAsset(path + "BSPRAMGlow");
+            canLoaderAssetZunkenUp = true;
         }
 
         void ILoader.UnLoadData() {
@@ -150,6 +154,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPPliersGlow = null;
             BSPSAWGlow = null;
             BSPRAMGlow = null;
+            canLoaderAssetZunkenUp = false;
         }
 
         public override bool CanLoad() => true;
@@ -236,6 +241,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
+        public override void SetProperty() {
+            fireIndex = ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = 0;
+            for (int i = 0; i < npc.buffImmune.Length; i++) {
+                npc.buffImmune[i] = true;
+            }
+        }
+
         public override bool AI() {
             bossRush = BossRushEvent.BossRushActive;
             death = CalamityWorld.death || bossRush;
@@ -248,9 +260,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             npc.reflectsProjectiles = false;
             if (npc.ai[0] == 0f) {
-                ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = 0;
                 if (Main.netMode != NetmodeID.MultiplayerClient) {
-                    fireIndex = 0;
                     npc.TargetClosest();
                     spanArm(npc);
                     SendExtraAI(npc);
@@ -311,15 +321,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
 
                 if (Main.expertMode) {
-                    verticalAcceleration = Main.masterMode ? 0.05f : 0.03f;
+                    verticalAcceleration = Main.masterMode ? 0.04f : 0.03f;
                     maxVerticalSpeed = Main.masterMode ? 5f : 4f;
-                    horizontalAcceleration = Main.masterMode ? 0.15f : 0.12f;
-                    maxHorizontalSpeed = Main.masterMode ? 11f : 9.5f;
+                    horizontalAcceleration = Main.masterMode ? 0.1f : 0.08f;
+                    maxHorizontalSpeed = Main.masterMode ? 10f : 9.5f;
                     if (death) {
                         verticalAcceleration += 0.01f;
-                        maxVerticalSpeed += 1f;
-                        horizontalAcceleration += 0.2f;
-                        maxHorizontalSpeed += 3f;
+                        maxVerticalSpeed += 0.5f;
+                        horizontalAcceleration += 0.1f;
+                        maxHorizontalSpeed += 1f;
+                    }
+                    if (bossRush) {
+                        verticalAcceleration += 0.01f;
+                        maxVerticalSpeed += 0.5f;
+                        horizontalAcceleration += 0.1f;
+                        maxHorizontalSpeed += 1f;
+                    }
+                    if (noArm) {
+                        verticalAcceleration += 0.01f;
+                        maxVerticalSpeed += 0.125f;
+                        horizontalAcceleration += 0.025f;
+                        maxHorizontalSpeed += 0.25f;
                     }
                 }
 
@@ -492,7 +514,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                 for (int i = 0; i < 12; i++) {
                                     float rotoffset = MathHelper.TwoPi / 12f * i;
                                     Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
-                                    if (death && Main.masterMode || bossRush || CWRMod.InfernumModeOpenState) {
+                                    if (death && Main.masterMode || bossRush || ModGanged.InfernumModeOpenState) {
                                         Projectile.NewProjectile(npc.GetSource_FromAI()
                                         , npc.Center, perturbedSpeed
                                         , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
@@ -664,17 +686,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void UpdateRotation(NPC npc) {
-            if (NPC.IsMechQueenUp)
+            if (NPC.IsMechQueenUp || ai4 == 3) {
                 npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
-            else
+            }
+            else {
                 npc.rotation += npc.direction * 0.3f;
+            }   
         }
 
         private float CalculateSpeedMultiplier(float distance, float initialSpeed) {
             if (Main.expertMode) {
-                float speed = Main.masterMode ? 7f : 6f;
-                float speedFactor = Main.masterMode ? 1.15f : 1.1f;
-                if (distance > 150f) speed *= Main.masterMode ? 1.075f : 1.05f;
+                float speed = Main.masterMode ? 6.5f : 5f;
+                float speedFactor = Main.masterMode ? 1.125f : 1.1f;
+                if (distance > 150f) speed *= Main.masterMode ? 1.05f : 1.025f;
                 for (int threshold = 200; threshold <= 600; threshold += 50) {
                     if (distance > threshold) speed *= speedFactor;
                 }
@@ -830,6 +854,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (!canLoaderAssetZunkenUp) {
+                return false;
+            }
+
             Texture2D mainValue = HandAsset.Value;
             Texture2D mainValue2 = HandAssetGlow.Value;
 
