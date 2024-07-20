@@ -143,8 +143,9 @@ namespace CalamityOverhaul.Content
             }
 
             if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
-                _ = Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
-                        , (int)CalamityDusts.Necroplasm, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);//TODO:这里的粒子失效了，需要注意后续完善
+                int dust = Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
+                        , DustID.GreenTorch, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
+                Main.dust[dust].noGravity= true;
             }
             if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
                 if (Main.rand.NextBool()) {

@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.alpha = 255;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 60;
+            Projectile.tileCollide = false;
             Projectile.DamageType = DamageClass.Ranged;
         }
 

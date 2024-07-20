@@ -44,12 +44,50 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 Item.mana = 20;
                 GunPressure = 0.3f;
                 RecoilRetroForceMagnitude = 0;
+                switch (level) {
+                    case 0:
+                        Item.useTime = 60;
+                        break;
+                    case 1:
+                    case 2:
+                    case 3:
+                        Item.useTime = 55;
+                        break;
+                    case 4:
+                    case 5:
+                        Item.useTime = 50;
+                        break;
+                    default:
+                        Item.useTime = 45;
+                        break;
+                }
             }
             else if (onFireR) {
                 Item.useTime = 7;
                 Item.mana = 6;
                 GunPressure = 0f;
                 RecoilRetroForceMagnitude = 6;
+                switch (level) {
+                    case 0:
+                        Item.mana = 3;
+                        Item.useTime = 10;
+                        break;
+                    case 1:
+                    case 2:
+                    case 3:
+                        Item.mana = 4;
+                        Item.useTime = 9;
+                        break;
+                    case 4:
+                    case 5:
+                        Item.mana = 5;
+                        Item.useTime = 8;
+                        break;
+                    default:
+                        Item.mana = 6;
+                        Item.useTime = 7;
+                        break;
+                }
             }
         }
 
@@ -65,6 +103,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 case 4:
                 case 5:
                 case 6:
+                    if (level == 4 && NPC.AnyNPCs(NPCID.WallofFlesh)) {
+                        Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                        , ModContent.ProjectileType<SHPB>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                        break;
+                    }
                     for (int i = 0; i < 2; i++) {
                         Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1f)
                             , ModContent.ProjectileType<SHPB>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -91,6 +134,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 case 4:
                 case 5:
                 case 6:
+                    if (level == 4 && NPC.AnyNPCs(NPCID.WallofFlesh)) {
+                        Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
+                        , ModContent.ProjectileType<SHPL>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                        break;
+                    }
                     for (int i = 0; i < 2; i++) {
                         Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.08f) * Main.rand.NextFloat(0.8f, 1f)
                             , ModContent.ProjectileType<SHPL>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);

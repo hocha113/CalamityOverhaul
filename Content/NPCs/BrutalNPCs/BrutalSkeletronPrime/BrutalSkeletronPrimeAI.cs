@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     internal class BrutalSkeletronPrimeAI : NPCCoverage, ILoader
     {
+        #region Data
         public override int TargetID => NPCID.SkeletronPrime;
         private const int maxfindModes = 6000;
         private Player player;
@@ -57,6 +58,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static Asset<Texture2D> BSPPliersGlow;
         internal static Asset<Texture2D> BSPSAWGlow;
         internal static Asset<Texture2D> BSPRAMGlow;
+        #endregion
 
         internal void NetAISend() {
             if (CWRUtils.isServer) {
