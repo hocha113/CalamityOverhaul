@@ -424,7 +424,7 @@ Items: {
 			'''
 	}
 
-	HolyCollider: {
+	HolyColliderEcType: {
 		DisplayName: Holy Collider
 		Tooltip: Spawns Profaned Flames to surround you upon swinging. Getting close to enemies will have the profaned flames home in on them.
 	}
@@ -3260,6 +3260,7 @@ Projectiles: {
 	RocketSkeleton.DisplayName: Rocket Skeleton
 	DeadLaser.DisplayName: Dead Laser
 	MoltenFuryHeldProj.DisplayName: Molten Fury Held Proj
+	DragonRageHeld.DisplayName: Dragon Rage Held
 }
 
 Configs: {

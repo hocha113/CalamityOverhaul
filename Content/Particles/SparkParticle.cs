@@ -11,19 +11,21 @@ namespace CalamityOverhaul.Content.Particles
     {
         public Color InitialColor;
         public bool AffectedByGravity;
+        public Entity entity;
         public override bool SetLifetime => true;
         public override bool UseCustomDraw => true;
         public override bool UseAdditiveBlend => true;
 
         public override string Texture => "CalamityMod/Projectiles/StarProj";
 
-        public SparkParticle(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
+        public SparkParticle(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity = null) {
             Position = relativePosition;
             Velocity = velocity;
             AffectedByGravity = affectedByGravity;
             Scale = scale;
             Lifetime = lifetime;
             Color = InitialColor = color;
+            this.entity = entity;
         }
 
         public override void AI() {
@@ -35,6 +37,12 @@ namespace CalamityOverhaul.Content.Particles
                 Velocity.Y += 0.25f;
             }
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
+
+            if (entity != null) {
+                if (entity.active) {
+                    Position += entity.velocity;
+                }
+            }
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {

@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Particles;
@@ -16,8 +17,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RHolyCollider : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.HolyCollider>();
-        public override int ProtogenesisID => ModContent.ItemType<HolyCollider>();
+        public override int TargetID => ModContent.ItemType<HolyCollider>();
+        public override int ProtogenesisID => ModContent.ItemType<HolyColliderEcType>();
         public override void Load() {
             SetReadonlyTargetID = TargetID;
         }

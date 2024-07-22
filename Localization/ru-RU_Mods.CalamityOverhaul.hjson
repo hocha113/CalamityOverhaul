@@ -450,7 +450,7 @@ Items: {
 			'''
 	}
 
-	HolyCollider: {
+	HolyColliderEcType: {
 		DisplayName: Большой меч святого света
 		Tooltip: Пусть огонь святой обрушится на тебя
 	}
@@ -3293,6 +3293,7 @@ Projectiles: {
 	// RocketSkeleton.DisplayName: Rocket Skeleton
 	// DeadLaser.DisplayName: Dead Laser
 	// MoltenFuryHeldProj.DisplayName: Molten Fury Held Proj
+	// DragonRageHeld.DisplayName: Dragon Rage Held
 }
 
 Configs: {

@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 圣火巨刃
     /// </summary>
-    internal class HolyCollider : EctypeItem
+    internal class HolyColliderEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HolyCollider";
         public override void SetDefaults() {

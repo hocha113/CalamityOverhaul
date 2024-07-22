@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityMod.Particles;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -21,6 +22,34 @@ namespace CalamityOverhaul.Content.Particles.Core
         private static List<CWRParticle> batchedAdditiveBlendParticles;
 
         public static int GetParticlesCount() => particles.Count;
+        public static int GetParticlesCount(int fxType) {
+            int num = 0;
+            foreach (var particle in particles) {
+                if (particle.Type == fxType) {
+                    num++;
+                }
+            }
+            return num;
+        }
+        public static int GetParticlesCount(Vector2 targetPos, float maxFindDistance) {
+            int num = 0;
+            foreach (var particle in particles) {
+                if (particle.Position.Distance(targetPos) <= maxFindDistance) {
+                    num++;
+                }
+            }
+            return num;
+        }
+        public static int GetParticlesCount(Vector2 targetPos, float maxFindDistance, int fxType) {
+            int num = 0;
+            foreach (var particle in particles) {
+                if (particle.Position.Distance(targetPos) <= maxFindDistance && particle.Type == fxType) {
+                    num++;
+                }
+            }
+            return num;
+        }
+
         public override void PostUpdateEverything() => Update();
         public static void CWRDrawForegroundParticles(Terraria.On_Main.orig_DrawInfernoRings orig, Main self) {
             DrawAll(Main.spriteBatch);
@@ -66,6 +95,10 @@ namespace CalamityOverhaul.Content.Particles.Core
             On_Main.DrawInfernoRings -= CWRDrawForegroundParticles;
         }
 
+        public static int GetParticleType(Type sType) {
+            return ParticleTypesDic[sType];
+        }
+
         /// <summary>
         /// 生成提供给世界的粒子实例。如果达到颗粒限值，但该颗粒被标记为重要，它将尝试替换不重要的颗粒
         /// </summary>
@@ -78,7 +111,7 @@ namespace CalamityOverhaul.Content.Particles.Core
             }
 
             particles.Add(particle);
-            particle.Type = ParticleTypesDic[particle.GetType()];
+            particle.Type = GetParticleType(particle.GetType());
         }
 
         public static void Update() {

@@ -451,7 +451,7 @@ Items: {
 			'''
 	}
 
-	HolyCollider: {
+	HolyColliderEcType: {
 		DisplayName: Lame du Saint Collider
 		Tooltip: Lorsque balancée, elle rassemble les flammes sacrées vers vous
 	}
@@ -3264,6 +3264,7 @@ Projectiles: {
 	// RocketSkeleton.DisplayName: Rocket Skeleton
 	// DeadLaser.DisplayName: Dead Laser
 	// MoltenFuryHeldProj.DisplayName: Molten Fury Held Proj
+	// DragonRageHeld.DisplayName: Dragon Rage Held
 }
 
 Configs: {

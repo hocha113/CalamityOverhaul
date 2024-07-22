@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<HeavenfallLongbow>();
 
         private Player Owners => CWRUtils.GetPlayerInstance(Projectile.owner);
-        private HeavenfallLongbow HFBow => (HeavenfallLongbow)Owners.HeldItem.ModItem;
+        private HeavenfallLongbow HFBow => (HeavenfallLongbow)Owners.ActiveItem().ModItem;
         private Vector2 toMou = Vector2.Zero;
 
         private ref float Time => ref Projectile.ai[0];

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
@@ -76,11 +77,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Projectile.localAI[1]++;
 
                 Owner.heldProj = Projectile.whoAmI;
+                
                 if (Projectile.IsOwnedByLocalPlayer()) {
+                    if (PlayerInput.Triggers.Current.MouseRight) {
+                        Projectile.timeLeft = 2;
+                    }
+                    Owner.direction = Owner.Center.To(Main.MouseWorld).X > 0 ? 1 : -1;
                     float frontArmRotation = (MathHelper.PiOver2 - 0.31f) * -Owner.direction;
                     Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, frontArmRotation);
-                    if (PlayerInput.Triggers.Current.MouseRight) Projectile.timeLeft = 2;
-                    Owner.direction = Owner.Center.To(Main.MouseWorld).X > 0 ? 1 : -1;
                 }
 
                 if (Projectile.ai[2] == 0) {
@@ -102,13 +106,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                         Projectile.rotation = toMous.ToRotation();
                         Vector2 vr = Projectile.rotation.ToRotationVector2();
                         if (Time % 30 == 0) {
+                            SoundEngine.PlaySound(SoundID.Item9, Projectile.Center);
                             for (int i = 0; i < 4; i++) {
                                 int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vr * 3
                                     , ModContent.ProjectileType<PlagueSeeker>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
                                 Main.projectile[proj].extraUpdates += i;
 
                                 int proj2 = Projectile.NewProjectile(Projectile.GetSource_FromThis()
-                                    , Main.MouseWorld + new Vector2(Main.rand.Next(-133, 133), -320), new Vector2(Main.rand.Next(-3, 3), 13)
+                                    , Main.MouseWorld + new Vector2(Main.rand.Next(-133, 133), -620), new Vector2(Main.rand.Next(-3, 3), 13)
                                     , ModContent.ProjectileType<PlagueSeeker>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
                                 Main.projectile[proj2].extraUpdates += i;
                             }

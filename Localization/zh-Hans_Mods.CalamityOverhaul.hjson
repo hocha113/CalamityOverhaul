@@ -455,7 +455,7 @@ Items: {
 			'''
 	}
 
-	HolyCollider: {
+	HolyColliderEcType: {
 		DisplayName: 圣光巨刃
 		Tooltip: 挥舞时让圣之烈焰向你聚拢
 	}
@@ -3270,6 +3270,7 @@ Projectiles: {
 	// RocketSkeleton.DisplayName: Rocket Skeleton
 	// DeadLaser.DisplayName: Dead Laser
 	// MoltenFuryHeldProj.DisplayName: Molten Fury Held Proj
+	// DragonRageHeld.DisplayName: Dragon Rage Held
 }
 
 Configs: {
