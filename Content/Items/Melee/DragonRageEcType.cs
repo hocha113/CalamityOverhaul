@@ -1,4 +1,6 @@
-﻿using CalamityMod.NPCs.SupremeCalamitas;
+﻿using CalamityMod;
+using CalamityMod.NPCs.SupremeCalamitas;
+using CalamityMod.Rarities;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Microsoft.Xna.Framework;
@@ -25,7 +27,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.width = 74;
             Item.height = 74;
-            Item.rare = ItemRarityID.Purple;
             Item.value = Item.sellPrice(gold: 75);
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.useAnimation = 32;
@@ -36,11 +37,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.crit = 16;
             Item.knockBack = 7.5f;
             Item.noUseGraphic = true;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
             Item.noMelee = true;
             Item.channel = true;
             Item.shootSpeed = 10f;
             Item.shoot = ModContent.ProjectileType<DragonRageHeld>();
+            Item.rare = ModContent.RarityType<Violet>();
             Level = 0;
         }
 

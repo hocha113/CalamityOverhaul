@@ -52,11 +52,9 @@
     <None Remove="Assets\Sky\PGFlash.png" />
     <None Remove="Assets\UIs\ScrollbarInner.png" />
     <None Remove="Assets\UIs\SliderBar.png" />
-    <None Remove="Content\Projectiles\Weapons\Melee\DragonRageProj\DragonRageHeld.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Players\" />
-    <Folder Include="Content\Projectiles\Weapons\Melee\DragonRageProj\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CalamityMod">

@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class DragonRageHeld : BaseHeldProj, ILoader
     {
-        public override string Texture => CWRConstant.Projectile_Melee + "DragonRageHeld";
+        public override string Texture => CWRConstant.Cay_Proj_Melee + "DragonRageStaff";
         private Vector2 vector;
         private Vector2 startVector;
         public ref float Length => ref Projectile.localAI[0];
@@ -58,6 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override bool ShouldUpdatePosition() => false;
         public override void SetDefaults() {
             Projectile.CloneDefaults(ProjectileID.Spear);
+            Projectile.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
             AIType = Projectile.aiStyle = 0;
             Projectile.scale = 1f;
             Projectile.width = 48;
@@ -220,7 +221,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
             else if (Projectile.ai[0] == 4) {
                 if (Timer++ == 0) {
-                    distanceToOwner = 125;
+                    distanceToOwner = 105;
                     trailTopWidth = 190;
                     InitializeCaches();
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
@@ -233,7 +234,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Rot += speed * Projectile.spriteDirection;
                     speed *= 1 + 0.2f / updateCount;
                     vector = startVector.RotatedBy(Rot) * Length;
-                    Projectile.scale += 0.025f;
+                    Projectile.scale += 0.03f;
                 }
                 else {
                     Length *= 1 - 0.01f / updateCount;
@@ -253,7 +254,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
             else if (Projectile.ai[0] == 5) {
                 if (Timer++ == 0) {
-                    distanceToOwner = 125;
+                    distanceToOwner = 105;
                     trailTopWidth = 190;
                     InitializeCaches();
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
@@ -266,7 +267,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Rot -= speed * Projectile.spriteDirection;
                     speed *= 1 + 0.2f / updateCount;
                     vector = startVector.RotatedBy(Rot) * Length;
-                    Projectile.scale += 0.025f;
+                    Projectile.scale += 0.03f;
                 }
                 else {
                     Length *= 1 - 0.01f / updateCount;
@@ -510,7 +511,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float point = 0f;
             float rotding = Owner.Center.To(Projectile.Center).ToRotation();
-            Vector2 endPos = rotding.ToRotationVector2() * Length * Projectile.scale * 1.25f + Projectile.Center;
+            Vector2 endPos = rotding.ToRotationVector2() * Length * Projectile.scale * 1.3f + Projectile.Center;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, endPos, 25 * Projectile.scale, ref point);
         }
 
@@ -636,12 +637,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Texture2D texture = CWRUtils.GetT2DValue(Texture);
             Rectangle rect = new(0, 0, texture.Width, texture.Height);
             Vector2 drawOrigin = new(texture.Width / 2, texture.Height / 2);
-            var effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            var effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
             Vector2 v = Projectile.Center - RodingToVer(48, (Projectile.Center - Owner.Center).ToRotation());
 
+            float drawRoting = Projectile.rotation;
+            if (Projectile.spriteDirection == -1) {
+                drawRoting += MathHelper.Pi;
+            }
+            //烦人的对角线翻转代码，我凑出来了这个效果，它很稳靠，但我仍旧不想细究这其中的数学逻辑
+            if (Projectile.ai[0] == 1 || Projectile.ai[0] == 5) {
+                effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                drawRoting += MathHelper.PiOver2;
+            }
+
             Main.EntitySpriteDraw(texture, v - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY, new Rectangle?(rect)
-                , Color.White, Projectile.rotation, drawOrigin, Projectile.scale, effects, 0);
+                , Color.White, drawRoting, drawOrigin, Projectile.scale, effects, 0);
             return false;
         }
     }
