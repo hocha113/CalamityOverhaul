@@ -16,15 +16,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.DamageType = DamageClass.Melee;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
-            Projectile.timeLeft = 1220;
             Projectile.penetrate = 2;
-            Projectile.extraUpdates = 3;
+            Projectile.extraUpdates = 6;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 20;
+            Projectile.timeLeft = 1220 * Projectile.extraUpdates;
         }
 
         public override bool? CanHitNPC(NPC target) {
-            if (Time < 15) {
+            if (Time < 15 * Projectile.extraUpdates) {
                 return false;
             }
             return base.CanHitNPC(target);
@@ -63,19 +63,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 GeneralParticleHandler.SpawnParticle(spark);
             }
             if (targetDist < 1400f) {
-                ModContent.GetInstance<DragonsBreathFlameMetaball2>().SpawnParticle(Projectile.Center, Time * 0.12f + 0.2f);
-                ModContent.GetInstance<DragonsBreathFlameMetaball>().SpawnParticle(Projectile.Center + Projectile.velocity, Time * 0.15f + 0.1f);
+                ModContent.GetInstance<DragonsBreathFlameMetaball2>().SpawnParticle(Projectile.Center, Time * 0.1f + 0.2f);
+                ModContent.GetInstance<DragonsBreathFlameMetaball>().SpawnParticle(Projectile.Center + Projectile.velocity, Time * 0.09f + 0.15f);
             }
-            if (Time > 360) {
+            if (Time > 160 * Projectile.extraUpdates) {
                 NPC target = Projectile.Center.FindClosestNPC(1600);
                 if (target != null) {
-                    if (Time < 510) {
-                        Projectile.ChasingBehavior2(target.Center, 1.005f, 0.08f);
+                    if (Time < 290 * Projectile.extraUpdates) {
+                        Projectile.ChasingBehavior2(target.Center, 1, 0.08f);
                     }
                     else {
                         Projectile.ChasingBehavior(target.Center, Projectile.velocity.Length());
                     }
                 }
+            }
+            else {
+                Projectile.velocity = Projectile.velocity.RotatedBy(Projectile.ai[1]);
             }
             Time++;
             return false;

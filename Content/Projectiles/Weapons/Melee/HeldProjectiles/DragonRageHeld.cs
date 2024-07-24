@@ -1,11 +1,11 @@
 ﻿using CalamityMod;
-using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -18,174 +18,111 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
-    internal class DragonRageHeld : BaseHeldProj, ILoader
+    internal class DragonRageHeld : BaseSwing
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "DragonRageStaff";
-        private Vector2 vector;
-        private Vector2 startVector;
-        public ref float Length => ref Projectile.localAI[0];
-        public ref float Rot => ref Projectile.localAI[1];
-        private float oldRot;
-        private float rotSpeed;
-        public int Timer;
-        private float speed;
-        int trailCount;
-        int distanceToOwner;
-        int hitNum;
-        float trailTopWidth;
-        private float[] oldRotate;
-        private float[] oldLength;
-        private float[] oldDistanceToOwner;
         private static Asset<Texture2D> trailTexture;
         private static Asset<Texture2D> gradientTexture;
-        void ILoader.LoadAsset() {
-            trailTexture = CWRUtils.GetT2DAsset(CWRConstant.Masking + "MotionTrail3");
-            gradientTexture = CWRUtils.GetT2DAsset(CWRConstant.Masking + "DragonRageEffectColorBar");
-        }
-        void ILoader.UnLoadData() {
-            trailTexture = null;
-            gradientTexture = null;
-        }
-        public Vector2 RodingToVer(float radius, float theta) {
-            Vector2 vector2 = theta.ToRotationVector2();
-            vector2.X *= radius;
-            vector2.Y *= radius;
-            return vector2;
-        }
-        private int getExtraUpdatesCount() {
-            int num = Projectile.extraUpdates;
-            num += 1;
-            return num;
-        }
-        public override bool ShouldUpdatePosition() => false;
-        public override void SetDefaults() {
+        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
+        public override string gradientTexturePath => CWRConstant.Masking + "DragonRageEffectColorBar";
+        public override void SetSwingProperty() {
             Projectile.CloneDefaults(ProjectileID.Spear);
+            Projectile.extraUpdates = 3;
             Projectile.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
-            AIType = Projectile.aiStyle = 0;
-            Projectile.scale = 1f;
             Projectile.width = 48;
             Projectile.height = 48;
-            Projectile.friendly = true;
-            Projectile.penetrate = -1;
             Projectile.alpha = 255;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 15 * getExtraUpdatesCount();
-            Projectile.extraUpdates = 3;
-            trailCount = 15 * getExtraUpdatesCount();
+            Projectile.localNPCHitCooldown = 15;
             distanceToOwner = 125;
             trailTopWidth = 90;
-            oldRotate = new float[trailCount];
-            oldDistanceToOwner = new float[trailCount];
-            oldLength = new float[trailCount];
-            InitializeCaches();
-            Rot = MathHelper.ToRadians(3);
             Length = 80;
         }
 
-        public override void AI() {
-            float updateCount = getExtraUpdatesCount();
-            Projectile.Calamity().timesPierced = 0;
-            Owner.heldProj = Projectile.whoAmI;
-            Owner.itemTime = 2;
-            Owner.itemAnimation = 2;
-            Projectile.Center = Owner.MountedCenter + vector;
-
-            if (Projectile.ai[0] != 6) {
-                Projectile.spriteDirection = Owner.direction;
-                Owner.SetCompositeArmFront(true, Length >= 80 ? Player.CompositeArmStretchAmount.Full : Player.CompositeArmStretchAmount.Quarter
-                    , (Owner.Center - Projectile.Center).ToRotation() + MathHelper.PiOver2);
-            }
-
-            if (Projectile.spriteDirection == 1) {
-                Projectile.rotation = (Projectile.Center - Owner.Center).ToRotation() + MathHelper.PiOver4;
-            }
-            else {
-                Projectile.rotation = (Projectile.Center - Owner.Center).ToRotation() - MathHelper.Pi - MathHelper.PiOver4;
-            }
-
+        public override void SwingAI() {
             if (Projectile.ai[0] == 0) {
-                if (Timer++ == 0) {
+                if (Time == 0) {
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
                     speed = MathHelper.ToRadians(6);
                 }
 
-                if (Timer < 10) {
+                if (Time < 10) {
                     Length *= 1 + 0.1f / updateCount;
-                    Rot += speed * Projectile.spriteDirection;
+                    Rotation += speed * Projectile.spriteDirection;
                     speed *= 1 + 0.2f / updateCount;
-                    vector = startVector.RotatedBy(Rot) * Length;
+                    vector = startVector.RotatedBy(Rotation) * Length;
                 }
                 else {
                     Length *= 1 - 0.01f / updateCount;
-                    Rot += speed * Projectile.spriteDirection;
+                    Rotation += speed * Projectile.spriteDirection;
                     speed *= 1 - 0.2f / updateCount;
-                    vector = startVector.RotatedBy(Rot) * Length;
+                    vector = startVector.RotatedBy(Rotation) * Length;
                 }
-                if (Timer >= 22 * updateCount) {
+                if (Time >= 22 * updateCount) {
                     Projectile.Kill();
                 }
-                if (Timer % updateCount == updateCount - 1) {
+                if (Time % updateCount == updateCount - 1) {
                     Length = MathHelper.Clamp(Length, 120, 160);
                 }
             }
             else if (Projectile.ai[0] == 1) {
-                if (Timer++ == 0) {
+                if (Time == 0) {
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() + MathHelper.PiOver2 * Projectile.spriteDirection);
                     speed = MathHelper.ToRadians(6);
                 }
 
-                if (Timer < 10) {
+                if (Time < 10) {
                     Length *= 1 + 0.1f / updateCount;
-                    Rot -= speed * Projectile.spriteDirection;
+                    Rotation -= speed * Projectile.spriteDirection;
                     speed *= 1 + 0.2f / updateCount;
-                    vector = startVector.RotatedBy(Rot) * Length;
+                    vector = startVector.RotatedBy(Rotation) * Length;
                 }
                 else {
                     Length *= 1 - 0.01f / updateCount;
-                    Rot -= speed * Projectile.spriteDirection;
+                    Rotation -= speed * Projectile.spriteDirection;
                     speed *= 1 - 0.2f / updateCount;
-                    vector = startVector.RotatedBy(Rot) * Length;
+                    vector = startVector.RotatedBy(Rotation) * Length;
                 }
-                if (Timer >= 22 * updateCount) {
+                if (Time >= 22 * updateCount) {
                     Projectile.Kill();
                 }
-                if (Timer % updateCount == updateCount - 1) {
+                if (Time % updateCount == updateCount - 1) {
                     Length = MathHelper.Clamp(Length, 110, 120);
                 }
             }
             else if (Projectile.ai[0] == 2) {
-                if (Timer++ == 0) {
+                if (Time == 0) {
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
                     speed = MathHelper.ToRadians(6);
                 }
 
-                if (Timer < 10) {
+                if (Time < 10) {
                     Length *= 1 + 0.11f / updateCount;
-                    Rot += speed * Projectile.spriteDirection;
+                    Rotation += speed * Projectile.spriteDirection;
                     speed *= 1 + 0.3f / updateCount;
-                    vector = startVector.RotatedBy(Rot) * Length;
+                    vector = startVector.RotatedBy(Rotation) * Length;
                 }
                 else {
                     Length *= 1 - 0.01f / updateCount;
-                    Rot += speed * Projectile.spriteDirection;
+                    Rotation += speed * Projectile.spriteDirection;
                     speed *= 1 - 0.11f / updateCount;
-                    vector = startVector.RotatedBy(Rot) * Length;
+                    vector = startVector.RotatedBy(Rotation) * Length;
                 }
 
-                if (Timer >= 26 * updateCount) {
+                if (Time >= 26 * updateCount) {
                     Projectile.Kill();
                 }
-                if (Timer % updateCount == updateCount - 1) {
+                if (Time % updateCount == updateCount - 1) {
                     Length = MathHelper.Clamp(Length, 60, 120);
                 }
             }
             else if (Projectile.ai[0] == 3) {
-                if (Timer++ == 0) {
+                if (Time == 0) {
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation());
                     speed = 1 + 0.6f / updateCount;
                 }
 
-                if (Timer < 6 * updateCount) {
+                if (Time < 6 * updateCount) {
                     Vector2 position = Projectile.Center + startVector * Projectile.scale;
                     Dust dust = Main.dust[Dust.NewDust(Owner.position, Owner.width, Owner.height, DustID.CopperCoin)];
                     dust.position = position;
@@ -212,83 +149,83 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 vector = startVector * Length;
                 speed -= 0.015f / updateCount;
 
-                if (Timer >= 26 * updateCount) {
+                if (Time >= 26 * updateCount) {
                     Projectile.Kill();
                 }
                 float toTargetSengs = Projectile.Center.To(Owner.Center).Length();
                 Projectile.scale = 0.8f + toTargetSengs / 520f;
-                if (Timer % updateCount == updateCount - 1) {
+                if (Time % updateCount == updateCount - 1) {
                     Length = MathHelper.Clamp(Length, 30, 260);
                 }
             }
             else if (Projectile.ai[0] == 4) {
-                if (Timer++ == 0) {
+                if (Time == 0) {
                     distanceToOwner = 105;
                     trailTopWidth = 190;
                     InitializeCaches();
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
                     speed = MathHelper.ToRadians(6);
-                    Rot = MathHelper.ToRadians(-30 * Projectile.spriteDirection);
+                    Rotation = MathHelper.ToRadians(-30 * Projectile.spriteDirection);
                 }
 
-                if (Timer < 10) {
+                if (Time < 10) {
                     Length *= 1 + 0.1f / updateCount;
-                    Rot += speed * Projectile.spriteDirection;
+                    Rotation += speed * Projectile.spriteDirection;
                     speed *= 1 + 0.2f / updateCount;
-                    vector = startVector.RotatedBy(Rot) * Length;
+                    vector = startVector.RotatedBy(Rotation) * Length;
                     Projectile.scale += 0.03f;
                 }
                 else {
                     Length *= 1 - 0.01f / updateCount;
-                    Rot += speed * Projectile.spriteDirection;
+                    Rotation += speed * Projectile.spriteDirection;
                     speed *= 1 - 0.2f / updateCount;
-                    vector = startVector.RotatedBy(Rot) * Length;
-                    if (Timer >= 20 * updateCount) {
+                    vector = startVector.RotatedBy(Rotation) * Length;
+                    if (Time >= 20 * updateCount) {
                         Projectile.scale -= 0.001f;
                     }
                 }
-                if (Timer >= 22 * updateCount) {
+                if (Time >= 22 * updateCount) {
                     Projectile.Kill();
                 }
-                if (Timer % updateCount == updateCount - 1) {
+                if (Time % updateCount == updateCount - 1) {
                     Length = MathHelper.Clamp(Length, 120, 260);
                 }
             }
             else if (Projectile.ai[0] == 5) {
-                if (Timer++ == 0) {
+                if (Time == 0) {
                     distanceToOwner = 105;
                     trailTopWidth = 190;
                     InitializeCaches();
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
                     speed = MathHelper.ToRadians(6);
-                    Rot = MathHelper.ToRadians(-110 * Projectile.spriteDirection);
+                    Rotation = MathHelper.ToRadians(-110 * Projectile.spriteDirection);
                 }
 
-                if (Timer < 10) {
+                if (Time < 10) {
                     Length *= 1 + 0.1f / updateCount;
-                    Rot -= speed * Projectile.spriteDirection;
+                    Rotation -= speed * Projectile.spriteDirection;
                     speed *= 1 + 0.2f / updateCount;
-                    vector = startVector.RotatedBy(Rot) * Length;
+                    vector = startVector.RotatedBy(Rotation) * Length;
                     Projectile.scale += 0.03f;
                 }
                 else {
                     Length *= 1 - 0.01f / updateCount;
-                    Rot -= speed * Projectile.spriteDirection;
+                    Rotation -= speed * Projectile.spriteDirection;
                     speed *= 1 - 0.2f / updateCount;
-                    vector = startVector.RotatedBy(Rot) * Length;
-                    if (Timer >= 20 * updateCount) {
+                    vector = startVector.RotatedBy(Rotation) * Length;
+                    if (Time >= 20 * updateCount) {
                         Projectile.scale -= 0.001f;
                     }
                 }
-                if (Timer >= 22 * updateCount) {
+                if (Time >= 22 * updateCount) {
                     Projectile.Kill();
                 }
-                if (Timer % updateCount == updateCount - 1) {
+                if (Time % updateCount == updateCount - 1) {
                     Length = MathHelper.Clamp(Length, 120, 260);
                 }
             }
             else if (Projectile.ai[0] == 6) {
-                if (Timer++ == 0) {
+                if (Time == 0) {
                     distanceToOwner = 155;
                     trailTopWidth = 60;
                     InitializeCaches();
@@ -297,25 +234,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     speed = MathHelper.ToRadians(6);
                 }
 
-                if (Timer < 10) {
+                if (Time < 10) {
                     Length *= 1 + 0.11f / updateCount;
-                    Rot += speed * Projectile.spriteDirection;
+                    Rotation += speed * Projectile.spriteDirection;
                     speed *= 1 + 0.3f / updateCount;
-                    vector = startVector.RotatedBy(Rot) * Length;
+                    vector = startVector.RotatedBy(Rotation) * Length;
                     Projectile.scale += 0.011f;
                 }
                 else {
-                    Rot += speed * Projectile.spriteDirection;
+                    Rotation += speed * Projectile.spriteDirection;
                     if (!DownRight) {
                         speed *= 1 - 0.01f / updateCount;
-                        if (Timer >= 60 * updateCount) {
+                        if (Time >= 60 * updateCount) {
                             Length *= 1 - 0.01f / updateCount;
                             Projectile.scale -= 0.001f;
                         }
                     }
                     else {
-                        if (Timer > 30 * updateCount) {
-                            Timer = (int)(30 * updateCount);
+                        if (Time > 30 * updateCount) {
+                            Time = (int)(30 * updateCount);
                         }
                         if (Projectile.soundDelay <= 0) {
                             SoundEngine.PlaySound(SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 0.45f }, Owner.Center);
@@ -327,28 +264,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Quarter
                         , Owner.direction < 0 ? MathHelper.PiOver4 : MathHelper.PiOver4 + MathHelper.Pi + MathHelper.PiOver2);
 
-                    vector = startVector.RotatedBy(Rot) * Length;
-                    if (Timer % updateCount == 0) {
+                    vector = startVector.RotatedBy(Rotation) * Length;
+                    if (Time % updateCount == 0) {
                         SpawnDust(Owner, Owner.direction);
                     }
                 }
 
-                if (Timer >= 90 * updateCount && !DownRight) {
+                if (Time >= 90 * updateCount && !DownRight) {
                     Projectile.Kill();
                 }
-                if (Timer % updateCount == updateCount - 1) {
+                if (Time % updateCount == updateCount - 1) {
                     Length = MathHelper.Clamp(Length, 60, 220);
                 }
             }
 
-            UpdateCaches();
-
-            rotSpeed = Rot - oldRot;
-            oldRot = Rot;
-
-            if (Timer > 1) {
+            if (Time > 1) {
                 Projectile.alpha = 0;
             }
+
+            canDrawSlashTrail = Projectile.ai[0] != 3;
         }
 
         private void SpawnDust(Player player, int direction) {
@@ -411,7 +345,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             else {
                 ownerToTargetSetDir = 1;
             }
-            
+
             if (rotSpeed > 0) {
                 norlToTarget *= -1;
             }
@@ -453,7 +387,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 else if (Projectile.ai[0] == 3) {
                     sparkVelocity2 *= 1.28f;
                 }
-                else if(Projectile.ai[0] == 4 || Projectile.ai[0] == 5) {
+                else if (Projectile.ai[0] == 4 || Projectile.ai[0] == 5) {
                     sparkVelocity2 *= 1.28f;
                     sparkScale2 *= 1.19f;
                     sparkLifetime2 = Main.rand.Next(23, 35);
@@ -490,11 +424,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 target.AddBuff(ModContent.BuffType<HellfireExplosion>(), 300);
             }
 
-            else if (Projectile.ai[0] == 6 && Projectile.IsOwnedByLocalPlayer() && Owner.ownedProjectileCounts[type] < 15) {
-                float randomRoting = Main.rand.NextFloat(MathHelper.TwoPi);
-                Vector2 vr = randomRoting.ToRotationVector2();
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center + vr * Main.rand.Next(22, 38), vr.RotatedByRandom(0.32f) * 3
-                    , type, Projectile.damage / 6, Projectile.knockBack, Projectile.owner, 0f, 0.85f + Main.rand.NextFloat() * 1.15f);
+            else if (Projectile.ai[0] == 6 && Projectile.IsOwnedByLocalPlayer() && Projectile.numHits % 3 == 0 && DragonRageEcType.coolWorld) {
+                for (int i = 0; i < 3; i++) {
+                    Vector2 vr = (MathHelper.TwoPi / 3f * i + Main.GameUpdateCount * 0.1f).ToRotationVector2();
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center + vr * Main.rand.Next(22, 38), vr.RotatedByRandom(0.32f) * 3
+                    , type, Projectile.damage / 6, Projectile.knockBack, Projectile.owner, 0f, rotSpeed * 0.1f);
+                }
             }
 
             HitEffect(target, CWRLoad.NPCValue.TheofSteel[target.type]);
@@ -536,116 +471,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, endPos, 25 * Projectile.scale, ref point);
         }
 
-        private void InitializeCaches() {
-            for (int j = trailCount - 1; j >= 0; j--) {
-                oldRotate[j] = 100f;
-                oldDistanceToOwner[j] = distanceToOwner;
-                oldLength[j] = Projectile.height * Projectile.scale;
+        public override void DrawTrail(List<VertexPositionColorTexture> bars) {
+            Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "KnifeRendering").Value;
+
+            effect.Parameters["transformMatrix"].SetValue(GetTransfromMaxrix());
+            effect.Parameters["sampleTexture"].SetValue(TrailTexture);
+            effect.Parameters["gradientTexture"].SetValue(GradientTexture);
+            //应用shader，并绘制顶点
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars.ToArray(), 0, bars.Count - 2);
+                Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars.ToArray(), 0, bars.Count - 2);
             }
         }
 
-        private void UpdateCaches() {
-            if (Timer < 2) {
-                return;
-            }
-
-            for (int i = trailCount - 1; i > 0; i--) {
-                oldRotate[i] = oldRotate[i - 1];
-                oldDistanceToOwner[i] = oldDistanceToOwner[i - 1];
-                oldLength[i] = oldLength[i - 1];
-            }
-
-            oldRotate[0] = (Projectile.Center - Owner.Center).ToRotation();
-            oldDistanceToOwner[0] = distanceToOwner;
-            oldLength[0] = Projectile.height * Projectile.scale;
-        }
-
-        private float ControlTrailBottomWidth(float factor) {
-            return 70 * Projectile.scale;
-        }
-
-        private void GetCurrentTrailCount(out float count) {
-            count = 0f;
-            if (oldRotate == null)
-                return;
-
-            for (int i = 0; i < oldRotate.Length; i++)
-                if (oldRotate[i] != 100f)
-                    count += 1f;
-        }
-
-        public static void DrawTrail(GraphicsDevice device, Action draw
-            , BlendState blendState = null, SamplerState samplerState = null, RasterizerState rasterizerState = null) {
-            RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
-            BlendState originalBlendState = Main.graphics.GraphicsDevice.BlendState;
-            SamplerState originalSamplerState = Main.graphics.GraphicsDevice.SamplerStates[0];
-
-            device.BlendState = blendState ?? originalBlendState;
-            device.SamplerStates[0] = samplerState ?? originalSamplerState;
-            device.RasterizerState = rasterizerState ?? originalState;
-
-            draw();
-
-            device.RasterizerState = originalState;
-            device.BlendState = originalBlendState;
-            device.SamplerStates[0] = originalSamplerState;
-            Main.pixelShader.CurrentTechnique.Passes[0].Apply();
-        }
-
-        public static Matrix GetTransfromMaxrix() {
-            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-            Matrix view = Main.GameViewMatrix.TransformationMatrix;
-            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-            return world * view * projection;
-        }
-
-        private void DrawSlashTrail() {
-            List<VertexPositionColorTexture> bars = new List<VertexPositionColorTexture>();
-            GetCurrentTrailCount(out float count);
-
-            for (int i = 0; i < count; i++) {
-                if (oldRotate[i] == 100f)
-                    continue;
-
-                float factor = 1f - i / count;
-                Vector2 Center = Owner.GetPlayerStabilityCenter();
-                Vector2 Top = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] + trailTopWidth + oldDistanceToOwner[i]);
-                Vector2 Bottom = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i]);
-
-                var topColor = Color.Lerp(new Color(238, 218, 130, 200), new Color(167, 127, 95, 0), 1 - factor);
-                var bottomColor = Color.Lerp(new Color(109, 73, 86, 200), new Color(83, 16, 85, 0), 1 - factor);
-                bars.Add(new(Top.Vec3(), topColor, new Vector2(factor, 0)));
-                bars.Add(new(Bottom.Vec3(), bottomColor, new Vector2(factor, 1)));
-            }
-
-            if (bars.Count > 2) {
-                DrawTrail(Main.graphics.GraphicsDevice, () => {
-                    Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "KnifeRendering").Value;
-
-                    effect.Parameters["transformMatrix"].SetValue(GetTransfromMaxrix());
-                    effect.Parameters["sampleTexture"].SetValue(trailTexture.Value);
-                    effect.Parameters["gradientTexture"].SetValue(gradientTexture.Value);
-
-                    foreach (EffectPass pass in effect.CurrentTechnique.Passes) //应用shader，并绘制顶点
-                    {
-                        pass.Apply();
-                        Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars.ToArray(), 0, bars.Count - 2);
-                        Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
-                        Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars.ToArray(), 0, bars.Count - 2);
-                    }
-                }, BlendState.NonPremultiplied, SamplerState.PointWrap, RasterizerState.CullNone);
-
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-            }
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            if (Projectile.ai[0] != 3) {
-                DrawSlashTrail();
-            }
+        public override void DrawSwing(SpriteBatch spriteBatch, Color lightColor) {
             if (Projectile.ai[0] == 6) {
                 Texture2D value = ModContent.Request<Texture2D>("CalamityMod/Particles/SemiCircularSmear").Value;
                 Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
@@ -655,26 +496,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     , scale: Projectile.scale * 3.15f, effects: SpriteEffects.None);
                 Main.spriteBatch.ExitShaderRegion();
             }
-            Texture2D texture = CWRUtils.GetT2DValue(Texture);
-            Rectangle rect = new(0, 0, texture.Width, texture.Height);
-            Vector2 drawOrigin = new(texture.Width / 2, texture.Height / 2);
-            var effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
-
-            Vector2 v = Projectile.Center - RodingToVer(48, (Projectile.Center - Owner.Center).ToRotation());
-
-            float drawRoting = Projectile.rotation;
-            if (Projectile.spriteDirection == -1) {
-                drawRoting += MathHelper.Pi;
-            }
-            //烦人的对角线翻转代码，我凑出来了这个效果，它很稳靠，但我仍旧不想细究这其中的数学逻辑
-            if (Projectile.ai[0] == 1 || Projectile.ai[0] == 5) {
-                effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-                drawRoting += MathHelper.PiOver2;
-            }
-
-            Main.EntitySpriteDraw(texture, v - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY, new Rectangle?(rect)
-                , Color.White, drawRoting, drawOrigin, Projectile.scale, effects, 0);
-            return false;
+            base.DrawSwing(spriteBatch, lightColor);
         }
     }
 }

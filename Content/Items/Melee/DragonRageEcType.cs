@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DragonRage";
         private int Level;
         private int LevelAlt;
+        internal static bool coolWorld => Main.zenithWorld || Main.getGoodWorld || Main.drunkWorld || Main.worldName == "HoCha113";
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         }
@@ -53,8 +54,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                     SoundEngine.PlaySound(SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 0.6f }, position);
                     int newLevel = 4 + LevelAlt;
                     int newDmg = damage;
-                    if (newLevel == 6) {
-                        newDmg = (int)(damage * 0.7f);
+                    if (newLevel == 6 && coolWorld) {
+                        newDmg = (int)(damage * 0.6f);
                     }
                     Projectile.NewProjectile(source, position, velocity, type, newDmg, knockback, player.whoAmI, newLevel);
                     LevelAlt++;

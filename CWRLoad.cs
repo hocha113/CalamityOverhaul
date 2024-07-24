@@ -37,6 +37,7 @@ namespace CalamityOverhaul
 {
     public static class CWRLoad
     {
+        #region Data
         public static bool OnLoadContentBool;
 
         public static int DarkMatterBall;
@@ -285,6 +286,7 @@ namespace CalamityOverhaul
         /// 蠕虫类体节
         /// </summary>
         public static int[] WormBodys;
+        #endregion
 
         public static class NPCValue
         {
