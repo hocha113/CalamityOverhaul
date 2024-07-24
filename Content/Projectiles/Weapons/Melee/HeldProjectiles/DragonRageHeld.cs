@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Buffs;
@@ -30,6 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         private float speed;
         int trailCount;
         int distanceToOwner;
+        int hitNum;
         float trailTopWidth;
         private float[] oldRotate;
         private float[] oldLength;
@@ -326,8 +328,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                         , Owner.direction < 0 ? MathHelper.PiOver4 : MathHelper.PiOver4 + MathHelper.Pi + MathHelper.PiOver2);
 
                     vector = startVector.RotatedBy(Rot) * Length;
-
-                    SpawnDust(Owner, Owner.direction);
+                    if (Timer % updateCount == 0) {
+                        SpawnDust(Owner, Owner.direction);
+                    }
                 }
 
                 if (Timer >= 90 * updateCount && !DownRight) {
@@ -468,12 +471,30 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<HellfireExplosion>(), 300);
+            int type = ModContent.ProjectileType<DragonRageFireOrb>();
             if (Projectile.ai[0] == 3) {
+                float OrbSize = Main.rand.NextFloat(0.5f, 0.8f) * Projectile.numHits;
+                if (OrbSize > 2.2f) {
+                    OrbSize = 2.2f;
+                }
+                CalamityMod.Particles.Particle orb = new CalamityMod.Particles.GenericBloom(target.Center, Vector2.Zero, Color.OrangeRed, OrbSize + 0.6f, 8, true);
+                CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(orb);
+                CalamityMod.Particles.Particle orb2 = new CalamityMod.Particles.GenericBloom(target.Center, Vector2.Zero, Color.White, OrbSize + 0.2f, 8, true);
+                CalamityMod.Particles.GeneralParticleHandler.SpawnParticle(orb2);
+
                 int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center
                     , Vector2.Zero, ModContent.ProjectileType<FuckYou>(), Projectile.damage / 4
                     , Projectile.knockBack, Projectile.owner, 0f, 0.85f + Main.rand.NextFloat() * 1.15f);
                 Main.projectile[proj].DamageType = DamageClass.Melee;
+
+                target.AddBuff(ModContent.BuffType<HellfireExplosion>(), 300);
+            }
+
+            else if (Projectile.ai[0] == 6 && Projectile.IsOwnedByLocalPlayer() && Owner.ownedProjectileCounts[type] < 15) {
+                float randomRoting = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 vr = randomRoting.ToRotationVector2();
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center + vr * Main.rand.Next(22, 38), vr.RotatedByRandom(0.32f) * 3
+                    , type, Projectile.damage / 6, Projectile.knockBack, Projectile.owner, 0f, 0.85f + Main.rand.NextFloat() * 1.15f);
             }
 
             HitEffect(target, CWRLoad.NPCValue.TheofSteel[target.type]);

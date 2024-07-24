@@ -3294,6 +3294,7 @@ Projectiles: {
 	// DeadLaser.DisplayName: Dead Laser
 	// MoltenFuryHeldProj.DisplayName: Molten Fury Held Proj
 	// DragonRageHeld.DisplayName: Dragon Rage Held
+	// DragonRageFireOrb.DisplayName: Dragon Rage Fire Orb
 }
 
 Configs: {

@@ -42,43 +42,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.shootSpeed = 10f;
             item.shoot = ModContent.ProjectileType<DragonRageHeld>();
             item.rare = ModContent.RarityType<Violet>();
-            Level = 0;
+            LevelAlt = Level = 0;
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            if (player.altFunctionUse == 2) {
-                if (LevelAlt < 2) {
-                    SoundEngine.PlaySound(SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 0.6f }, position);
-                    Projectile.NewProjectile(source, position, velocity, item.shoot, damage, knockback, player.whoAmI, 4 + LevelAlt);
-                    LevelAlt++;
-                    return false;
-                }
-                SoundEngine.PlaySound(in CommonCalamitySounds.MeatySlashSound, player.Center);
-                SoundEngine.PlaySound(SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 1.06f }, position);
-                Projectile.NewProjectile(source, position, velocity, item.shoot, damage, knockback, player.whoAmI, 6);
-                LevelAlt = 0;
-                return false;
-            }
-            if (!Main.dedServ) {
-                SoundStyle sound = MurasamaEcType.BigSwing with { Pitch = (0.3f + Level * 0.25f) };
-                if (Level == 3) {
-                    sound = SoundID.Item71 with { Volume = 1.5f, Pitch = 0.75f };
-                }
-                SoundEngine.PlaySound(sound, player.position);
-            }
-            int newdmg = damage;
-            if (Level == 2) {
-                newdmg = (int)(damage * 1.25f);
-            }
-            else if (Level == 3) {
-                newdmg = (int)(damage * 2.05f);
-            }
-            Projectile.NewProjectile(source, position, velocity, item.shoot, newdmg, knockback, player.whoAmI, Level);
-            if (++Level > 3) {
-                Level = 0;
-            }
-            LevelAlt = 0;
-            return false;
+            return DragonRageEcType.ShootFunc(ref Level, ref LevelAlt, item, player, source, position, velocity, type, damage, knockback);
         }
 
         public override bool? AltFunctionUse(Item item, Player player) => true;
