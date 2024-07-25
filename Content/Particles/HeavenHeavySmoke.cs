@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class HeavenHeavySmoke : CWRParticle
+    internal class HeavenHeavySmoke : BaseParticle
     {
         public override bool SetLifetime => true;
         public override int FrameVariants => 7;

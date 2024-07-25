@@ -54,9 +54,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3());
             if (!CWRUtils.isServer) {
-                CWRParticle energyLeak = new LightParticle(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(3), Projectile.velocity * 0.25f
+                BaseParticle energyLeak = new PRK_Light(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(3), Projectile.velocity * 0.25f
                                 , Main.rand.NextFloat(0.3f, 0.5f), ProjColor, 50, 1, 1.5f, hueShift: 0.0f);
-                CWRParticleHandler.AddParticle(energyLeak);
+                DRKLoader.AddParticle(energyLeak);
             }
             CalamityUtils.HomeInOnNPC(Projectile, true, 200f, 18f, 20f);
         }

@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.Particles.Core
     /// <summary>
     /// 一个粒子的基类，它主要来自于灾厄本体
     /// </summary>
-    internal abstract class CWRParticle
+    internal abstract class BaseParticle
     {
         /// <summary>
         /// 由一般粒子处理程序注册的粒子类型的ID,这是在粒子处理器loadsl时自动设置的
@@ -73,6 +73,6 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// <summary>
         /// 从处理程序中移除粒子
         /// </summary>
-        public void Kill() => CWRParticleHandler.RemoveParticle(this);
+        public void Kill() => DRKLoader.RemoveParticle(this);
     }
 }

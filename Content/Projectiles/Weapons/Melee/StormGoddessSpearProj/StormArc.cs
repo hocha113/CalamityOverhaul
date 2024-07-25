@@ -118,9 +118,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 for (int i = 0; i < Main.rand.Next(3, 16); i++) {
                     Vector2 pos = target.Center + Main.rand.NextVector2Unit() * Main.rand.Next(target.width);
                     Vector2 particleSpeed = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(15.5f, 37.7f);
-                    CWRParticle energyLeak = new LightParticle(pos, particleSpeed
+                    BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
                         , 0.3f, light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
-                    CWRParticleHandler.AddParticle(energyLeak);
+                    DRKLoader.AddParticle(energyLeak);
                 }
                 SoundEngine.PlaySound(SoundID.Item94, target.position);
             }

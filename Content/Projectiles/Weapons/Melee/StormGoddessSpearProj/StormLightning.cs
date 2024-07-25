@@ -74,9 +74,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                 for (int i = 0; i < Main.rand.Next(13, 26); i++) {
                     Vector2 pos = Projectile.Center;
                     Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.NextFloat(15.5f, 37.7f);
-                    CWRParticle energyLeak = new LightParticle(pos, particleSpeed
+                    BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
                         , 0.3f, Light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
-                    CWRParticleHandler.AddParticle(energyLeak);
+                    DRKLoader.AddParticle(energyLeak);
                 }
             }
             if (Projectile.numHits == 0 && Projectile.IsOwnedByLocalPlayer()) {

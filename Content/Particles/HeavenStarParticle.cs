@@ -8,7 +8,7 @@ using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class HeavenStarParticle : CWRParticle
+    internal class HeavenStarParticle : BaseParticle
     {
         public override string Texture => "CalamityMod/Particles/ThinSparkle";
         public override bool UseAdditiveBlend => true;

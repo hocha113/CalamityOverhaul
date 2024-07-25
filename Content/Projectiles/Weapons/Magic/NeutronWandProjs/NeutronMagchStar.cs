@@ -37,10 +37,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             }
             Lighting.AddLight(Projectile.Center, Color.Blue.ToVector3());
             Projectile.rotation += Projectile.velocity.X * 0.1f;
-            CWRParticle spark2 = new HeavenfallStarParticle(Projectile.Center + CWRUtils.randVr(8)
+            BaseParticle spark2 = new HeavenfallStarParticle(Projectile.Center + CWRUtils.randVr(8)
                         , Projectile.velocity.UnitVector() * Main.rand.Next(6, 16), false
                         , 7, Main.rand.NextFloat(0.2f, 0.3f), Color.BlueViolet);
-            CWRParticleHandler.AddParticle(spark2);
+            DRKLoader.AddParticle(spark2);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

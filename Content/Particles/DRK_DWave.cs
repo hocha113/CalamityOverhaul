@@ -8,7 +8,7 @@ using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class DimensionalWave : CWRParticle
+    internal class DRK_DWave : BaseParticle
     {
         public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
         public override bool UseAdditiveBlend => true;
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Particles
         private Vector2 Squish;
         private Color BaseColor;
 
-        public DimensionalWave(Vector2 position, Vector2 velocity, Color color, Vector2 squish, float rotation, float originalScale, float finalScale, int lifeTime) {
+        public DRK_DWave(Vector2 position, Vector2 velocity, Color color, Vector2 squish, float rotation, float originalScale, float finalScale, int lifeTime) {
             Position = position;
             Velocity = velocity;
             BaseColor = color;

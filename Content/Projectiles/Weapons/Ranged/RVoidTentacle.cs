@@ -70,9 +70,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.scale < 2f && Projectile.localAI[1] > 2f) {
                 int dustAmount = 0;
                 while (dustAmount < Projectile.scale * 5f) {
-                    CWRParticle energyLeak = new LightParticle(Projectile.Center, -Projectile.velocity * 0.05f
+                    BaseParticle energyLeak = new PRK_Light(Projectile.Center, -Projectile.velocity * 0.05f
                         , Projectile.scale * 0.75f, Color.DarkBlue, 30, 1, 1.5f, hueShift: 0.0f);
-                    CWRParticleHandler.AddParticle(energyLeak);
+                    DRKLoader.AddParticle(energyLeak);
                     dustAmount++;
                 }
             }

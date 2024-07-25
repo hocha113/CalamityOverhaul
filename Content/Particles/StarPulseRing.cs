@@ -8,7 +8,7 @@ using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class StarPulseRing : CWRParticle
+    internal class StarPulseRing : BaseParticle
     {
         public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
         public override bool UseAdditiveBlend => true;

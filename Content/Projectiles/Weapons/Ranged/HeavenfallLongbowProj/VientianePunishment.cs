@@ -163,9 +163,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * 120;
                     Vector2 particleSpeed = pos.To(Projectile.Center).UnitVector() * 3;
                     Color color = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), VientianeColors);
-                    CWRParticle energyLeak = new LightParticle(pos, particleSpeed
+                    BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
                         , 0.5f, color, 60, 1, 1.5f, hueShift: 0.0f, _entity: Owner, _followingRateRatio: 1);
-                    CWRParticleHandler.AddParticle(energyLeak);
+                    DRKLoader.AddParticle(energyLeak);
                 }
             }
             //对于位置等基本数据的修改需要确保涉及到的数据被正确赋值后，这也就是为什么这一段会放在最后面
@@ -189,9 +189,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                     Vector2 pos = orig + lemniscateOffset * outwardMultiplier;
                     Vector2 particleSpeed = Vector2.Zero;
                     Color color = CWRUtils.MultiStepColorLerp(j / maxNum, colors);
-                    CWRParticle energyLeak = new LightParticle(pos, particleSpeed
+                    BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
                         , prtslp, color, 120, 1, 1.5f, hueShift: 0.0f, _entity: null, _followingRateRatio: 1);
-                    CWRParticleHandler.AddParticle(energyLeak);
+                    DRKLoader.AddParticle(energyLeak);
                 }
             }
         }
@@ -200,9 +200,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             if (!CWRUtils.isServer) {
                 Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Cay_Wap_Ranged + VientianeTex[(int)Projectile.ai[0]]);
                 for (int i = 0; i < 16; i++) {
-                    CWRParticle energyLeak = new LightParticle(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(value.Width), new Vector2(0, -7)
+                    BaseParticle energyLeak = new PRK_Light(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(value.Width), new Vector2(0, -7)
                     , Main.rand.NextFloat(0.3f, 0.7f), vientianeColor, 60, 1, 1.5f, hueShift: 0.0f, _entity: null, _followingRateRatio: 1);
-                    CWRParticleHandler.AddParticle(energyLeak);
+                    DRKLoader.AddParticle(energyLeak);
                 }
             }
         }

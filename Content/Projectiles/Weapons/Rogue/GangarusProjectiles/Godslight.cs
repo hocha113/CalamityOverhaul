@@ -45,9 +45,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                     foreach (Vector2 pos in RayPoint) {
                         Vector2 spanPos = pos + Main.rand.NextVector2Unit() * Main.rand.Next(56);
                         Vector2 vr = new Vector2((Main.rand.NextBool() ? -1 : 1) * Main.rand.Next(7, 51), 0);
-                        LightParticle light = new LightParticle(spanPos
+                        PRK_Light light = new PRK_Light(spanPos
                             , vr, 0.3f, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), colors), 30);
-                        CWRParticleHandler.AddParticle(light);
+                        DRKLoader.AddParticle(light);
                     }
                 }
                 Projectile.ai[0] = 1;
@@ -71,9 +71,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
         public void SpanDeadLightPenms() {
             if (Projectile.IsOwnedByLocalPlayer()) {
                 foreach (Vector2 pos in RayPoint) {
-                    LightParticle light = new LightParticle(pos + Main.rand.NextVector2Unit() * Main.rand.Next(56)
+                    PRK_Light light = new PRK_Light(pos + Main.rand.NextVector2Unit() * Main.rand.Next(56)
                         , new Vector2(0, Main.rand.Next(7, 51)), 0.3f, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), colors), 30);
-                    CWRParticleHandler.AddParticle(light);
+                    DRKLoader.AddParticle(light);
                 }
             }
         }

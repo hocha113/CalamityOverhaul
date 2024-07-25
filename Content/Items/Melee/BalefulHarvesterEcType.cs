@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 vr = rot.ToRotationVector2();
                 for (int j = 0; j < maxSengNum; j++) {
                     HeavenfallStarParticle spark = new HeavenfallStarParticle(origPos, vr * (0.1f + i * 0.1f), false, 37, Main.rand.NextFloat(minScale, maxScale), Color.DarkGoldenrod);
-                    CWRParticleHandler.AddParticle(spark);
+                    DRKLoader.AddParticle(spark);
                 }
             }
         }

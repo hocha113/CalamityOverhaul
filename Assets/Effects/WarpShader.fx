@@ -1,5 +1,6 @@
 ﻿sampler uImage0 : register(s0);
 texture2D tex0;
+bool noBlueshift;
 sampler2D uImage1 = sampler_state
 {
     texture = <tex0>;
@@ -26,7 +27,12 @@ float4 PixelShaderFunction(float2 coords:TEXCOORD0) : COLOR0
         float4 newcolor = tex2D(uImage0, coords + vec);
         newcolor.r = newcolor.r + vec.x * 0.11;
         newcolor.g = newcolor.g + vec.y * 0.11;
-        newcolor.b = newcolor.b + length(vec) * 30.11;
+        float blueValue = 30.11;
+        if (noBlueshift)
+        {
+            blueValue = 0.11;
+        }
+        newcolor.b = newcolor.b + length(vec) * blueValue;
         return newcolor;
     }
 }

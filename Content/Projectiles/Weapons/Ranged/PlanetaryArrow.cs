@@ -28,9 +28,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void AI() {
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3());
             for (int i = 0; i < 3; i++) {
-                CWRParticle particle = new LightParticle(Projectile.Center + (Projectile.velocity.UnitVector() * Main.rand.Next(6))
+                BaseParticle particle = new PRK_Light(Projectile.Center + (Projectile.velocity.UnitVector() * Main.rand.Next(6))
                     , Vector2.Zero, 0.2f, Main.DiscoColor, 12);
-                CWRParticleHandler.AddParticle(particle);
+                DRKLoader.AddParticle(particle);
             }
             CalamityUtils.HomeInOnNPC(Projectile, !Projectile.tileCollide, 200f, 12f, 20f);
         }
@@ -45,15 +45,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.Explode(60, SoundID.Item14);
             int inc;
             for (int i = 0; i < 20; i = inc + 1) {
-                CWRParticle particle = new HeavenStarParticle(Projectile.Center, dustVel * Main.rand.NextFloat()
+                BaseParticle particle = new HeavenStarParticle(Projectile.Center, dustVel * Main.rand.NextFloat()
                     , Main.DiscoColor, Color.Azure, Main.rand.NextFloat() * MathHelper.TwoPi, new Vector2(0.2f, 1), new Vector2(1.45f, 2.1f), 22);
-                CWRParticleHandler.AddParticle(particle);
+                DRKLoader.AddParticle(particle);
                 inc = i;
             }
             for (int j = 0; j < 10; j = inc + 1) {
-                CWRParticle particle = new LightParticle(Projectile.Center + (Projectile.velocity.UnitVector() * Main.rand.Next(6))
+                BaseParticle particle = new PRK_Light(Projectile.Center + (Projectile.velocity.UnitVector() * Main.rand.Next(6))
                     , Vector2.Zero, 0.2f, Main.DiscoColor, 12);
-                CWRParticleHandler.AddParticle(particle);
+                DRKLoader.AddParticle(particle);
                 inc = j;
             }
         }

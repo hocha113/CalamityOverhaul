@@ -59,12 +59,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 float scaleBoost = MathHelper.Clamp(Projectile.ai[1] * 0.005f, 0f, 2f);
                 float outerSparkScale = 3.2f + scaleBoost;
                 HeavenfallStarParticle spark = new HeavenfallStarParticle(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
-                CWRParticleHandler.AddParticle(spark);
+                DRKLoader.AddParticle(spark);
 
                 Color innerSparkColor = CWRUtils.MultiStepColorLerp(Projectile.ai[1] % 30 / 30f, HeavenfallLongbow.rainbowColors);
                 float innerSparkScale = 0.6f + scaleBoost;
                 HeavenfallStarParticle spark2 = new HeavenfallStarParticle(Projectile.Center, Projectile.velocity, false, 7, innerSparkScale, innerSparkColor);
-                CWRParticleHandler.AddParticle(spark2);
+                DRKLoader.AddParticle(spark2);
 
                 //生成彩色的星光粒子
                 if (Main.rand.NextBool(2))
@@ -115,9 +115,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 for (int i = 0; i < 16; i++) {
                     Vector2 particleSpeed = Projectile.velocity * Main.rand.NextFloat(0.5f, 0.7f);
                     Vector2 pos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
-                    CWRParticle energyLeak = new LightParticle(pos, particleSpeed
+                    BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
                         , Main.rand.NextFloat(0.3f, 0.7f), CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 30, 1, 1.5f, hueShift: 0.0f);
-                    CWRParticleHandler.AddParticle(energyLeak);
+                    DRKLoader.AddParticle(energyLeak);
                 }
 
                 for (int i = 0; i < 6; i++)

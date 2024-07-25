@@ -46,9 +46,9 @@ namespace CalamityOverhaul.Content.TileEntitys
                     Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
                         , Scale: Main.rand.NextFloat(0.7f, 1.3f));
                 }
-                LightParticle particle = new LightParticle(Center + Main.rand.NextVector2Unit() * Main.rand.Next(0, 15)
+                PRK_Light particle = new PRK_Light(Center + Main.rand.NextVector2Unit() * Main.rand.Next(0, 15)
                     , new Vector2(0, -1), 0.3f, Color.DarkGreen, 165);
-                CWRParticleHandler.AddParticle(particle);
+                DRKLoader.AddParticle(particle);
             }
         }
 
@@ -72,8 +72,8 @@ namespace CalamityOverhaul.Content.TileEntitys
                         if (!CWRUtils.isServer) {
                             for (int j = 0; j < 62; j++) {
                                 Vector2 spanPos = orb.Center + orbToPosUnit * leng * j;
-                                LightParticle particle = new LightParticle(spanPos, Vector2.Zero, 0.3f, Color.DarkRed, 15);
-                                CWRParticleHandler.AddParticle(particle);
+                                PRK_Light particle = new PRK_Light(spanPos, Vector2.Zero, 0.3f, Color.DarkRed, 15);
+                                DRKLoader.AddParticle(particle);
                             }
                         }
 
@@ -90,8 +90,8 @@ namespace CalamityOverhaul.Content.TileEntitys
                             if (!CWRUtils.isServer) {
                                 for (int j = 0; j < 32; j++) {
                                     Vector2 spanPos = Center + PosToChestUnit * leng * j;
-                                    LightParticle particle = new LightParticle(spanPos, Vector2.Zero, 0.3f, Color.DarkGreen, 15);
-                                    CWRParticleHandler.AddParticle(particle);
+                                    PRK_Light particle = new PRK_Light(spanPos, Vector2.Zero, 0.3f, Color.DarkGreen, 15);
+                                    DRKLoader.AddParticle(particle);
                                 }
                             }
 

@@ -58,9 +58,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         for (int i = 0; i < 6; i++) {
                             Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(133, 140) * Projectile.scale;
                             Vector2 particleSpeed = pos.To(Projectile.Center).UnitVector() * 17;
-                            CWRParticle energyLeak = new LightParticle(pos, particleSpeed
+                            BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
                                 , Main.rand.NextFloat(0.3f, 0.5f), Color.Purple, 16, 1, 1.5f, hueShift: 0.0f);
-                            CWRParticleHandler.AddParticle(energyLeak);
+                            DRKLoader.AddParticle(energyLeak);
                         }
                     }
                 }
@@ -70,9 +70,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                             Vector2 randdom = Main.rand.NextVector2Unit();
                             Vector2 pos = Projectile.Center + randdom * Main.rand.Next(3, 14) * Projectile.scale;
                             Vector2 particleSpeed = randdom * 17;
-                            CWRParticle energyLeak = new LightParticle(pos, particleSpeed
+                            BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
                                 , Main.rand.NextFloat(0.1f, 0.6f), Color.Purple, 16, 1, 1.5f, hueShift: 0.0f);
-                            CWRParticleHandler.AddParticle(energyLeak);
+                            DRKLoader.AddParticle(energyLeak);
                         }
                     }
                 }
@@ -131,9 +131,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 float y = centerY + radius * (float)Math.Sin(angle);
 
                 // 在(x, y)处生成粒子或执行其他操作
-                CWRParticle energyLeak = new LightParticle(new Vector2(x, y), Vector2.Zero
+                BaseParticle energyLeak = new PRK_Light(new Vector2(x, y), Vector2.Zero
                         , 1.5f, CWRUtils.MultiStepColorLerp(angleStep % 1, Color.MediumPurple, Color.White), 120, 1, 1.5f, hueShift: 0.0f);
-                CWRParticleHandler.AddParticle(energyLeak);
+                DRKLoader.AddParticle(energyLeak);
             }
 
             Projectile.Explode(300);

@@ -130,8 +130,8 @@ namespace CalamityOverhaul.Content
             if (Source?.Context == "CWRGunShoot" && cwrItem != null) {
                 if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.armourPiercer) {
                     Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
-                    CWRParticle spark = new SparkParticle(projectile.Center, projectile.velocity * 0.3f, false, 9, 2.3f, color * 0.1f);
-                    CWRParticleHandler.AddParticle(spark);
+                    BaseParticle spark = new PRK_Spark(projectile.Center, projectile.velocity * 0.3f, false, 9, 2.3f, color * 0.1f);
+                    DRKLoader.AddParticle(spark);
                 }
                 else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
                     if (Main.rand.NextBool(3)) {
@@ -590,8 +590,8 @@ namespace CalamityOverhaul.Content
                 else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
                     player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 3, 0f, 0, false, DamageClass.Default, true);
                     for (int i = 0; i < 6; i++) {
-                        CWRParticle particle = new LightParticle(projectile.Center, CWRUtils.randVr(3, 16), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 2, 0.2f);
-                        CWRParticleHandler.AddParticle(particle);
+                        BaseParticle particle = new PRK_Light(projectile.Center, CWRUtils.randVr(3, 16), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 2, 0.2f);
+                        DRKLoader.AddParticle(particle);
                     }
                 }
                 else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {

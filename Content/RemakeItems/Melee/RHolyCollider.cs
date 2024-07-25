@@ -52,9 +52,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 for (int j = 0; j < 3; j++) {
                     Vector2 pos = player.Center + Main.rand.NextVector2Unit() * Main.rand.Next(342, 468);
                     Vector2 particleSpeed = pos.To(player.Center).UnitVector() * 7;
-                    CWRParticle energyLeak = new HolyColliderLightParticle(pos, particleSpeed
+                    BaseParticle energyLeak = new DRK_HolyColliderLight(pos, particleSpeed
                         , Main.rand.NextFloat(0.5f, 0.7f), Color.Gold, 90, 1, 1.5f, hueShift: 0.0f);
-                    CWRParticleHandler.AddParticle(energyLeak);
+                    DRKLoader.AddParticle(energyLeak);
                 }
             }
             return false;

@@ -141,8 +141,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     dust.noGravity = true;
 
                     Vector2 spanSparkPos = Projectile.Center + Projectile.velocity.UnitVector() * Length;
-                    CWRParticle spark = new SparkParticle(spanSparkPos, Projectile.velocity, false, 6, 4.26f, Color.Gold, Owner);
-                    CWRParticleHandler.AddParticle(spark);
+                    BaseParticle spark = new PRK_Spark(spanSparkPos, Projectile.velocity, false, 6, 4.26f, Color.Gold, Owner);
+                    DRKLoader.AddParticle(spark);
                 }
 
                 Length *= speed;
@@ -359,8 +359,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (Projectile.ai[0] == 3) {
                 rotToTargetSpeedTrengsVumVer = Projectile.velocity.RotatedBy(rotToTargetSpeedSengs);
             }
-            SparkParticle inds = new SparkParticle(Vector2.Zero, Vector2.Zero, false, 0, 0, Color.White);
-            int pysCount = CWRParticleHandler.GetParticlesCount(CWRParticleHandler.GetParticleType(inds.GetType()));
+            
+            int pysCount = DRKLoader.GetParticlesCount(DRKLoader.GetParticleType(typeof(PRK_Spark)));
             if (pysCount > 120) {
                 sparkCount = 10;
             }
@@ -398,10 +398,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     sparkColor2 = Main.rand.NextBool(3) ? Color.Gold : Color.Goldenrod;
                 }
 
-                SparkParticle spark = new SparkParticle(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f
+                PRK_Spark spark = new PRK_Spark(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f
                         , target.height * 0.5f) + (Projectile.velocity * 1.2f), sparkVelocity2 * 1f
                         , false, (int)(sparkLifetime2 * 1.2f), sparkScale2 * 1.4f, sparkColor2);
-                CWRParticleHandler.AddParticle(spark);
+                DRKLoader.AddParticle(spark);
             }
         }
 

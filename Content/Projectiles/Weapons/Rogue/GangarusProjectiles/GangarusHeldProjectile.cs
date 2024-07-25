@@ -71,10 +71,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 if (Time % 30 == 0) {
                     Vector2 vr = new Vector2(0, 13);
                     GangarusWave pulse = new GangarusWave(npc.Center + new Vector2(0, -360), vr, Color.Red, new Vector2(1.2f, 3f) * 0.6f, vr.ToRotation(), 0.32f, 0.82f + (slp * 0.001f), 180, npc);
-                    CWRParticleHandler.AddParticle(pulse);
+                    DRKLoader.AddParticle(pulse);
                     Vector2 vr2 = new Vector2(0, -13);
                     GangarusWave pulse2 = new GangarusWave(npc.Center + new Vector2(0, 360), vr2, Color.Red, new Vector2(1.2f, 3f) * 0.6f, vr2.ToRotation(), 0.32f, 0.82f + (slp * 0.001f), 180, npc);
-                    CWRParticleHandler.AddParticle(pulse2);
+                    DRKLoader.AddParticle(pulse2);
                 }
                 npc.CWR().GangarusSign = true;
                 foreach (NPC overNPC in Main.npc) {
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 Vector2 spanStarPos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(33) + Projectile.velocity * 55;
                 Vector2 vr = spanStarPos.To(Projectile.velocity * 198 + Projectile.Center).UnitVector() * 3;
                 GangarusStar spark = new GangarusStar(spanStarPos, vr, false, Main.rand.Next(17, 25), Main.rand.NextFloat(0.9f, 1.1f), Color.Red, Projectile);
-                CWRParticleHandler.AddParticle(spark);
+                DRKLoader.AddParticle(spark);
                 if (modPlayer.rogueStealth >= modPlayer.rogueStealthMax && gangarus.ChargeGrade < 6) {
                     gangarus.ChargeGrade += 1;
                     SoundStyle lightningStrikeSound = HeavenlyGale.LightningStrikeSound;
@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                     SoundEngine.PlaySound(HeavenlyGale.FireSound, Projectile.Center);
                     for (int i = 0; i < gangarus.ChargeGrade; i++) {
                         GangarusWave pulse = new GangarusWave(Projectile.Center + Projectile.velocity * (-0.52f + i * 23), Projectile.velocity / 1.5f, Color.Red, new Vector2(1.5f, 3f) * (0.8f - i * 0.1f), Projectile.velocity.ToRotation(), 0.82f, 0.32f, 60, Projectile);
-                        CWRParticleHandler.AddParticle(pulse);
+                        DRKLoader.AddParticle(pulse);
                     }
                     if (gangarus.ChargeGrade > 6)
                         gangarus.ChargeGrade = 6;

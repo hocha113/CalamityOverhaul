@@ -55,10 +55,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 SoundEngine.PlaySound(belCanto, Projectile.Center);
                 Vector2 vr = new Vector2(0, 13);
                 GangarusWave pulse = new GangarusWave(Projectile.Center + new Vector2(0, -360), vr, Color.Gold, new Vector2(1.2f, 3f), vr.ToRotation(), 0.42f, 0.82f + (Time * 0.002f), 180, Projectile);
-                CWRParticleHandler.AddParticle(pulse);
+                DRKLoader.AddParticle(pulse);
                 Vector2 vr2 = new Vector2(0, -13);
                 GangarusWave pulse2 = new GangarusWave(Projectile.Center + new Vector2(0, 360), vr2, Color.Gold, new Vector2(1.2f, 3f), vr2.ToRotation(), 0.42f, 0.82f + (Time * 0.0015f), 180, Projectile);
-                CWRParticleHandler.AddParticle(pulse2);
+                DRKLoader.AddParticle(pulse2);
             }
 
             Time++;
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 Vector2 vr = rot.ToRotationVector2() * 10;
                 for (int j = 0; j < 116; j++) {
                     HeavenfallStarParticle spark = new HeavenfallStarParticle(Projectile.Center, vr * (0.3f + j * 0.1f), false, 37, Main.rand.Next(3, 17), Color.Gold);
-                    CWRParticleHandler.AddParticle(spark);
+                    DRKLoader.AddParticle(spark);
                 }
             }
         }

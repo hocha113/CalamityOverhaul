@@ -26,9 +26,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 for (int i = 0; i < Main.rand.Next(3, 7); i++) {
                     Vector2 pos = target.Center + Main.rand.NextVector2Unit() * Main.rand.Next(target.width);
                     Vector2 particleSpeed = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(15.5f, 37.7f);
-                    CWRParticle energyLeak = new LightParticle(pos, particleSpeed
+                    BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
                         , 0.3f, Color.Yellow, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
-                    CWRParticleHandler.AddParticle(energyLeak);
+                    DRKLoader.AddParticle(energyLeak);
                 }
                 SoundEngine.PlaySound(SoundID.Item94 with { Volume = 0.75f, Pitch = -0.2f }, target.position);
             }

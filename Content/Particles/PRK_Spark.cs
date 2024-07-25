@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class SparkParticle : CWRParticle
+    internal class PRK_Spark : BaseParticle
     {
         public Color InitialColor;
         public bool AffectedByGravity;
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Particles
 
         public override string Texture => "CalamityMod/Projectiles/StarProj";
 
-        public SparkParticle(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity = null) {
+        public PRK_Spark(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity = null) {
             Position = relativePosition;
             Velocity = velocity;
             AffectedByGravity = affectedByGravity;

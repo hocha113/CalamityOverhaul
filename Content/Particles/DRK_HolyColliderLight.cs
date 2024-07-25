@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class HolyColliderLightParticle : CWRParticle
+    internal class DRK_HolyColliderLight : BaseParticle
     {
         public override string Texture => "CalamityMod/Particles/Light";
         public override bool UseAdditiveBlend => true;
@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Particles
         public float HueShift;
         public float followingRateRatio;
 
-        public HolyColliderLightParticle(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f, float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, float _followingRateRatio = 0.9f) {
+        public DRK_HolyColliderLight(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f, float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, float _followingRateRatio = 0.9f) {
             Position = position;
             Velocity = velocity;
             Scale = scale;

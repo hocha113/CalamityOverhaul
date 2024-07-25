@@ -23,8 +23,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
-            CWRParticle particle = new SoulLight(Projectile.Center, Projectile.velocity, Main.rand.NextFloat(0.2f, 0.8f), Color.White, 23, _flowerProj: Projectile);
-            CWRParticleHandler.AddParticle(particle);
+            BaseParticle particle = new SoulLight(Projectile.Center, Projectile.velocity, Main.rand.NextFloat(0.2f, 0.8f), Color.White, 23, _flowerProj: Projectile);
+            DRKLoader.AddParticle(particle);
             NPC target = Projectile.Center.FindClosestNPC(600);
             if (target != null && Projectile.timeLeft < 480) {
                 if (Projectile.Center.To(target.Center).LengthSquared() > 20000) {
@@ -53,8 +53,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void OnKill(int timeLeft) {
             for (int i = 0; i < 36; i++) {
                 Vector2 vr = CWRUtils.randVr(13);
-                CWRParticle particle = new LightParticle(Projectile.Center, vr, Main.rand.NextFloat(0.2f, 0.8f), Color.White, 23);
-                CWRParticleHandler.AddParticle(particle);
+                BaseParticle particle = new PRK_Light(Projectile.Center, vr, Main.rand.NextFloat(0.2f, 0.8f), Color.White, 23);
+                DRKLoader.AddParticle(particle);
             }
         }
     }

@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class IcePlasmaGas : CWRParticle
+    internal class IcePlasmaGas : BaseParticle
     {
         public override bool SetLifetime => true;
         public override int FrameVariants => 7;

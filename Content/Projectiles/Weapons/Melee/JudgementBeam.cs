@@ -40,9 +40,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 for (int i = 0; i < 5; i++) {
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(6);
                     Vector2 particleSpeed = Projectile.velocity * 0.75f;
-                    CWRParticle lightdust = new LightParticle(pos, particleSpeed
+                    BaseParticle lightdust = new PRK_Light(pos, particleSpeed
                         , Main.rand.NextFloat(0.3f, 0.5f), color, 60, 1, 1.5f, hueShift: 0.0f);
-                    CWRParticleHandler.AddParticle(lightdust);
+                    DRKLoader.AddParticle(lightdust);
                 }
             }
 

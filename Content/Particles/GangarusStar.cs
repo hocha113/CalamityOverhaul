@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class GangarusStar : CWRParticle
+    internal class GangarusStar : BaseParticle
     {
         public Color InitialColor;
         public bool AffectedByGravity;

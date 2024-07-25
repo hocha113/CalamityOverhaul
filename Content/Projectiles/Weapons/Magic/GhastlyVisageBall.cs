@@ -36,8 +36,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Pi;
             Projectile.scale += 0.01f;
             Color color = Color.Lerp(Color.Red, Color.OrangeRed, Main.rand.NextFloat(0.3f, 0.64f));
-            CWRParticle spark = new SparkParticle(Projectile.Center - Projectile.velocity * 8f, -Projectile.velocity * 0.1f, false, 19, 2.3f, color * 0.1f);
-            CWRParticleHandler.AddParticle(spark);
+            BaseParticle spark = new PRK_Spark(Projectile.Center - Projectile.velocity * 8f, -Projectile.velocity * 0.1f, false, 19, 2.3f, color * 0.1f);
+            DRKLoader.AddParticle(spark);
             if (Projectile.scale > 1.15f) {
                 Projectile.scale = 1.15f;
             }
