@@ -2671,6 +2671,16 @@ Items: {
 		// DisplayName: Darkmatter Jetpack
 		// Tooltip: ""
 	}
+
+	TheBurningSkyEcType: {
+		// DisplayName: The Burning Sky Ec Type
+		// Tooltip: ""
+	}
+
+	PhoenixFlameBarrageEcType: {
+		// DisplayName: Phoenix Flame Barrage Ec Type
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3295,6 +3305,10 @@ Projectiles: {
 	// MoltenFuryHeldProj.DisplayName: Molten Fury Held Proj
 	// DragonRageHeld.DisplayName: Dragon Rage Held
 	// DragonRageFireOrb.DisplayName: Dragon Rage Fire Orb
+	// TheBurningSkyHeld.DisplayName: The Burning Sky Held
+	// TheBurningSkyHeldAlt.DisplayName: The Burning Sky Held Alt
+	// PhantomPhoenix.DisplayName: Phantom Phoenix
+	// PhoenixFlameBarrageHeld.DisplayName: Phoenix Flame Barrage Held
 }
 
 Configs: {
@@ -4158,6 +4172,7 @@ TextContent: {
 		IconUI_Text4: Помощь в кодировании
 		IconUI_Text5: Доноры
 		IconUI_Text6: Тестирование баланса
+		// IconUI_Text7: View log
 		Wap_BubbleGun_Text:
 			'''
 			Выбрасывает много взрывающихся морских пузырей

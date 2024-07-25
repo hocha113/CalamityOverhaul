@@ -2650,6 +2650,16 @@ Items: {
 		// DisplayName: Darkmatter Jetpack
 		// Tooltip: ""
 	}
+
+	TheBurningSkyEcType: {
+		// DisplayName: The Burning Sky Ec Type
+		// Tooltip: ""
+	}
+
+	PhoenixFlameBarrageEcType: {
+		// DisplayName: Phoenix Flame Barrage Ec Type
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3274,6 +3284,10 @@ Projectiles: {
 	// MoltenFuryHeldProj.DisplayName: Molten Fury Held Proj
 	// DragonRageHeld.DisplayName: Dragon Rage Held
 	// DragonRageFireOrb.DisplayName: Dragon Rage Fire Orb
+	// TheBurningSkyHeld.DisplayName: The Burning Sky Held
+	// TheBurningSkyHeldAlt.DisplayName: The Burning Sky Held Alt
+	// PhantomPhoenix.DisplayName: Phantom Phoenix
+	// PhoenixFlameBarrageHeld.DisplayName: Phoenix Flame Barrage Held
 }
 
 Configs: {
@@ -4062,6 +4076,7 @@ TextContent: {
 		IconUI_Text4: 代码援助
 		IconUI_Text5: 捐赠者
 		IconUI_Text6: 平衡测试
+		IconUI_Text7: 查看日志
 		Wap_BubbleGun_Text:
 			'''
 			喷出大量会爆炸的海洋泡泡

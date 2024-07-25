@@ -283,6 +283,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
 
             canDrawSlashTrail = Projectile.ai[0] != 3;
+            inDrawFlipdiagonally = Projectile.ai[0] == 1 || Projectile.ai[0] == 5;
         }
 
         private void SpawnDust(Player player, int direction) {

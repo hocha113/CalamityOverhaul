@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 {
@@ -55,6 +56,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 是否绘制弧光，默认为<see langword="false"/>
         /// </summary>
         protected bool canDrawSlashTrail;
+        /// <summary>
+        /// 绘制中是否进行对角线翻转
+        /// </summary>
+        protected bool inDrawFlipdiagonally;
         public virtual string trailTexturePath => "";
         public virtual string gradientTexturePath => "";
         public Texture2D TrailTexture => SwingSystem.trailTextures[Type].Value;
@@ -62,16 +67,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         #endregion
         public sealed override void SetDefaults() {
             if (PreSetSwingProperty()) {
-                SetSwingProperty();
-                AIType = Projectile.aiStyle = 0;
+                Projectile.tileCollide = false;
                 Projectile.scale = 1f;
                 Projectile.friendly = true;
                 Projectile.penetrate = -1;
+                Rotation = MathHelper.ToRadians(3);
+                SetSwingProperty();
                 trailCount = 15 * updateCount;
                 oldRotate = new float[trailCount];
                 oldDistanceToOwner = new float[trailCount];
                 oldLength = new float[trailCount];
-                Rotation = MathHelper.ToRadians(3);
                 InitializeCaches();
             }
             PostSwingProperty();
@@ -84,6 +89,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             vector2.Y *= radius;
             return vector2;
         }
+
+        public float SetSwingSpeed(float speed) => speed / Owner.GetAttackSpeed(Projectile.DamageType);
 
         protected virtual void InitializeCaches() {
             for (int j = trailCount - 1; j >= 0; j--) {
@@ -232,8 +239,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             }
         }
 
@@ -250,7 +255,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 drawRoting += MathHelper.Pi;
             }
             //烦人的对角线翻转代码，我凑出来了这个效果，它很稳靠，但我仍旧不想细究这其中的数学逻辑
-            if (Projectile.ai[0] == 1 || Projectile.ai[0] == 5) {
+            if (inDrawFlipdiagonally) {
                 effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
                 drawRoting += MathHelper.PiOver2;
             }

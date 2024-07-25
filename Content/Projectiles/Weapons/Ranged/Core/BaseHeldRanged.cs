@@ -89,6 +89,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public float Scaling = 1;
         /// <summary>
+        /// 是否启用手持动画，默认为<see langword="true"/>
+        /// </summary>
+        public bool HandheldDisplay = true;
+        /// <summary>
         /// 开火冷切计时器
         /// </summary>
         public float ShootCoolingValue {
