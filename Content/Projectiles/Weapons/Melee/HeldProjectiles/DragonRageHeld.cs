@@ -225,6 +225,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
             }
             else if (Projectile.ai[0] == 6) {
+                canFormOwnerSetDir = false;
+                canSetOwnerArmBver = false;
                 if (Time == 0) {
                     distanceToOwner = 155;
                     trailTopWidth = 60;
@@ -494,7 +496,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Main.EntitySpriteDraw(color: Color.Red * 0.9f
                     , origin: value.Size() * 0.5f, texture: value, position: Owner.Center - Main.screenPosition
                     , sourceRectangle: null, rotation: Projectile.rotation
-                    , scale: Projectile.scale * 3.15f, effects: SpriteEffects.None);
+                    , scale: Projectile.scale * 2.15f, effects: SpriteEffects.None);
                 Main.spriteBatch.ExitShaderRegion();
             }
             base.DrawSwing(spriteBatch, lightColor);

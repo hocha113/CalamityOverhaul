@@ -32,7 +32,54 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Main.dedServ) {
                 return;
             }
+
             Vector2 spanPos = Projectile.Center;
+
+            if (Projectile.ai[0] == 1) {
+                for (int i = 0; i < 20; i++) {
+                    int dust = Dust.NewDust(spanPos, Projectile.width, Projectile.height, DustID.OrangeTorch, Scale: 6);
+                    Main.dust[dust].position = spanPos;
+                    Main.dust[dust].velocity = (MathHelper.TwoPi / 20f * i).ToRotationVector2() * 16;
+                    Main.dust[dust].noGravity = true;
+                }
+                for (int i = 0; i < 30; i++) {
+                    int dust = Dust.NewDust(spanPos, Projectile.width, Projectile.height, DustID.OrangeTorch, Scale: 6);
+                    Main.dust[dust].position = spanPos;
+                    Main.dust[dust].velocity = (MathHelper.TwoPi / 30f * i).ToRotationVector2() * 26;
+                    Main.dust[dust].noGravity = true;
+                }
+                for (int i = 0; i < 40; i++) {
+                    int dust = Dust.NewDust(spanPos, Projectile.width, Projectile.height, DustID.OrangeTorch, Scale: 6);
+                    Main.dust[dust].position = spanPos;
+                    Main.dust[dust].velocity = (MathHelper.TwoPi / 40f * i).ToRotationVector2() * 36;
+                    Main.dust[dust].noGravity = true;
+                }
+
+                for (int i = 0; i < 80; i++) {
+                    DRK_LavaFire lavaFire = new DRK_LavaFire();
+                    lavaFire.Velocity = CWRUtils.randVr(6, 9);
+                    lavaFire.Position = spanPos;
+
+                    lavaFire.Scale = Main.rand.NextFloat(2.9f, 4.6f);
+                    lavaFire.Color = Color.White;
+                    lavaFire.ai[1] = 2;
+                    DRKLoader.AddParticle(lavaFire);
+                }
+                for (int i = 0; i < 20; i++) {
+                    DRK_LavaFire lavaFire = new DRK_LavaFire();
+                    lavaFire.Velocity = CWRUtils.randVr(3, 6);
+                    lavaFire.Position = spanPos;
+                    lavaFire.Scale = Main.rand.NextFloat(0.8f, 1.2f);
+                    lavaFire.Color = Color.White;
+                    lavaFire.ai[0] = 1;
+                    lavaFire.ai[1] = 0;
+                    lavaFire.minLifeTime = 60;
+                    lavaFire.maxLifeTime = 90;
+                    DRKLoader.AddParticle(lavaFire);
+                }
+                return;
+            }
+            
             for (int i = 0; i < 20; i++) {
                 int dust = Dust.NewDust(spanPos, Projectile.width, Projectile.height, DustID.OrangeTorch, Scale: 6);
                 Main.dust[dust].position = spanPos;
@@ -65,7 +112,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void AI() {
             if (Projectile.ai[2] == 0) {
-                SoundEngine.PlaySound(SoundID.Item69, Projectile.Center);
+                if (Projectile.ai[0] != 1) {
+                    SoundEngine.PlaySound(SoundID.Item69, Projectile.Center);
+                }
+                else {
+                    Vector2 origPos = Projectile.Center;
+                    Projectile.width = Projectile.height = 1400;
+                    Projectile.Center = origPos;
+                    SoundEngine.PlaySound(SoundID.Item69 with { Pitch = 1.02f }, Projectile.Center);
+                    if (!CWRUtils.isServer) {
+                        for (int i = 0; i < 156; i++) {
+                            Vector2 pos = Projectile.Center;
+                            Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.Next(13, 34);
+                            BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
+                                , Main.rand.NextFloat(0.5f, 1.3f), Color.DarkRed, 30, 1, 1.5f, hueShift: 0.0f);
+                            DRKLoader.AddParticle(energyLeak);
+                        }
+                    }
+                }
                 SpwanPRKAndDustEffect();
             }
 
@@ -98,7 +162,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Color warpColor = new Color(45, 45, 45) * Projectile.ai[1];
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 drawOrig = warpTex.Size() / 2;
-            for (int i = 0; i < 13; i++) {
+            int num = 13;
+            if (Projectile.ai[0] == 1) {
+                num = 66;
+            }
+            for (int i = 0; i < num; i++) {
                 Main.spriteBatch.Draw(warpTex, drawPos, null, warpColor, Projectile.ai[0] + i * 115f
                     , drawOrig, Projectile.localAI[0] + i * 0.015f, SpriteEffects.None, 0f);
             }

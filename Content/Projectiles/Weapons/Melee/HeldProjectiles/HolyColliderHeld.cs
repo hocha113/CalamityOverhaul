@@ -5,12 +5,10 @@ using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.Graphics.Effects;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
@@ -19,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HolyCollider";
         public override string gradientTexturePath => CWRConstant.Masking + "HolyColliderEffectColorBar";
-        int dirs;
+        
         public override void SetSwingProperty() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.width = 122;
@@ -33,29 +31,38 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             distanceToOwner = 30;
             trailTopWidth = 50;
             canDrawSlashTrail = true;
+            ownerOrientationLock = true;
             Length = 140;
         }
 
-        public override void SwingAI() {
-            if (Time == 0) {
-                dirs = Owner.direction;
-                Rotation = MathHelper.ToRadians(-33 * Owner.direction);
-                startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
-                speed = MathHelper.ToRadians(4) / SetSwingSpeed(1);
+        public override void Shoot() {
+            if (Projectile.ai[0] == 1) {
+                SpwanFireRainProj();
+                return;
             }
-            if (Time == 10 * updateCount && Projectile.IsOwnedByLocalPlayer()) {
-                float lengs = ToMouse.Length();
-                if (lengs < Length * Projectile.scale) {
-                    lengs = Length * Projectile.scale;
+
+            float lengs = ToMouse.Length();
+            if (lengs < Length * Projectile.scale) {
+                lengs = Length * Projectile.scale;
+            }
+            Vector2 targetPos = Owner.GetPlayerStabilityCenter() + ToMouse.UnitVector() * lengs;
+            Vector2 unitToM = UnitToMouseV;
+
+            if (Projectile.ai[0] == 2) {
+                SoundEngine.PlaySound(SoundID.Item125 with { Pitch = 0.8f }, Projectile.Center);
+                Vector2 toMouse2 = Projectile.Center.To(InMousePos);
+                float lengs2 = toMouse2.Length();
+                if (lengs2 < Length * Projectile.scale) {
+                    lengs2 = Length * Projectile.scale;
                 }
-                Vector2 targetPos = Owner.GetPlayerStabilityCenter() + ToMouse.UnitVector() * lengs;
-                Vector2 unitToM = UnitToMouseV;
-                Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos, Vector2.Zero
-                    , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage / 6, Projectile.knockBack, Owner.whoAmI);
-                for (int i = 0; i < lengs / 12; i++) {
+                Vector2 targetPos2 = Projectile.Center + toMouse2.UnitVector() * lengs2;
+                Vector2 unitToM2 = toMouse2.UnitVector();
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos2, Vector2.Zero
+                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1);
+                for (int i = 0; i < lengs2 / 12; i++) {
                     DRK_LavaFire lavaFire = new DRK_LavaFire();
-                    lavaFire.Velocity = ToMouse.UnitVector() * 2;
-                    lavaFire.Position = Owner.GetPlayerStabilityCenter() + unitToM * (1 + i) * 12;
+                    lavaFire.Velocity = toMouse2.UnitVector() * 2;
+                    lavaFire.Position = Projectile.Center + unitToM2 * (1 + i) * 12;
                     lavaFire.Scale = Main.rand.NextFloat(0.8f, 1.2f);
                     lavaFire.Color = Color.White;
                     lavaFire.ai[0] = 1;
@@ -64,30 +71,39 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     lavaFire.maxLifeTime = 30;
                     DRKLoader.AddParticle(lavaFire);
                 }
+                return;
             }
-            if (Time < 10 * SetSwingSpeed(1)) {
-                Length *= 1 + 0.08f / updateCount;
-                Rotation += speed * Projectile.spriteDirection;
-                speed *= 1 + 0.1f / updateCount;
-                vector = startVector.RotatedBy(Rotation) * Length;
-                Projectile.scale += 0.012f;
+            
+            Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos, Vector2.Zero
+                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage / 6, Projectile.knockBack, Owner.whoAmI);
+            for (int i = 0; i < lengs / 12; i++) {
+                DRK_LavaFire lavaFire = new DRK_LavaFire();
+                lavaFire.Velocity = ToMouse.UnitVector() * 2;
+                lavaFire.Position = Owner.GetPlayerStabilityCenter() + unitToM * (1 + i) * 12;
+                lavaFire.Scale = Main.rand.NextFloat(0.8f, 1.2f);
+                lavaFire.Color = Color.White;
+                lavaFire.ai[0] = 1;
+                lavaFire.ai[1] = 0;
+                lavaFire.minLifeTime = 22;
+                lavaFire.maxLifeTime = 30;
+                DRKLoader.AddParticle(lavaFire);
             }
-            else {
-                Length *= 1 - 0.01f / updateCount;
-                Rotation += speed * Projectile.spriteDirection;
-                speed *= 1 - 0.1f / updateCount / SetSwingSpeed(1);
-                vector = startVector.RotatedBy(Rotation) * Length;
-            }
-            if (Time >= 22 * updateCount * SetSwingSpeed(1)) {
-                Projectile.Kill();
-            }
-            if (Time % updateCount == updateCount - 1) {
-                Length = MathHelper.Clamp(Length, 160, 180);
-            }
-            Owner.direction = dirs;
         }
 
-        //模拟出一个勉强符合物理逻辑的命中粒子效果，最好不要动这些，这个效果是我凑出来的，我也不清楚这具体的数学逻辑，代码太乱了
+        public override void SwingAI() {
+            if (Projectile.ai[0] == 1) {
+                SwingBever(33, 6, 0.1f, 0.1f, 0.012f, 0.01f, 0.1f, 0, 0, 0, 16, 32);
+                maxSwingTime = 32;
+                return;
+            }
+            else if (Projectile.ai[0] == 2) {
+                SwingBever(33, 2, 0.1f, 0.1f, 0.006f, 0.016f, 0.16f, 0, 0, 0, 12, 80);
+                maxSwingTime = 80;
+                return;
+            }
+            SwingBever(33, 3, 0.1f, 0.1f, 0.012f, 0.01f, 0.08f, 0, 0, 0, 12, 36);
+        }
+
         private void HitEffect(Entity target, bool theofSteel) {
             if (theofSteel) {
                 SoundEngine.PlaySound(MurasamaEcType.InorganicHit with { Pitch = 0.25f }, target.Center);
@@ -96,64 +112,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 1.15f }, target.Center);
             }
 
-            int sparkCount = 13;
-            Vector2 toTarget = Owner.Center.To(target.Center);
-            Vector2 norlToTarget = toTarget.GetNormalVector();
-            int ownerToTargetSetDir = Math.Sign(toTarget.X);
-            if (ownerToTargetSetDir != DirSign) {
-                ownerToTargetSetDir = -1;
-            }
-            else {
-                ownerToTargetSetDir = 1;
-            }
-
-            if (rotSpeed > 0) {
-                norlToTarget *= -1;
-            }
-            if (rotSpeed < 0) {
-                norlToTarget *= 1;
-            }
-
-            float rotToTargetSpeedSengs = rotSpeed * 3 * ownerToTargetSetDir;
-            Vector2 rotToTargetSpeedTrengsVumVer = norlToTarget.RotatedBy(-rotToTargetSpeedSengs) * 13;
-            if (Projectile.ai[0] == 3) {
-                rotToTargetSpeedTrengsVumVer = Projectile.velocity.RotatedBy(rotToTargetSpeedSengs);
-            }
-
-            int pysCount = DRKLoader.GetParticlesCount(DRKLoader.GetParticleType(typeof(PRK_Spark)));
-            if (pysCount > 120) {
-                sparkCount = 10;
-            }
-            if (pysCount > 220) {
-                sparkCount = 8;
-            }
-            if (pysCount > 350) {
-                sparkCount = 6;
-            }
-            if (pysCount > 500) {
-                sparkCount = 3;
-            }
+            HitEffectValue(target, 13, out Vector2 rotToTargetSpeedTrengsVumVer, out int sparkCount);
 
             for (int i = 0; i < sparkCount; i++) {
                 Vector2 sparkVelocity2 = rotToTargetSpeedTrengsVumVer.RotatedByRandom(0.35f) * Main.rand.NextFloat(0.3f, 1.6f);
                 int sparkLifetime2 = Main.rand.Next(18, 30);
                 float sparkScale2 = Main.rand.NextFloat(0.65f, 1.2f);
                 Color sparkColor2 = Main.rand.NextBool(3) ? Color.OrangeRed : Color.DarkRed;
-
-                if (Projectile.ai[0] == 0 || Projectile.ai[0] == 1) {
-                    sparkVelocity2 *= 0.8f;
-                    sparkScale2 *= 0.9f;
-                    sparkLifetime2 = Main.rand.Next(13, 25);
-                }
-                else if (Projectile.ai[0] == 3) {
-                    sparkVelocity2 *= 1.28f;
-                }
-                else if (Projectile.ai[0] == 4 || Projectile.ai[0] == 5) {
-                    sparkVelocity2 *= 1.28f;
-                    sparkScale2 *= 1.19f;
-                    sparkLifetime2 = Main.rand.Next(23, 35);
-                }
-
                 if (theofSteel) {
                     sparkColor2 = Main.rand.NextBool(3) ? Color.Gold : Color.Goldenrod;
                 }
@@ -164,17 +129,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 DRKLoader.AddParticle(spark);
             }
 
-            if (Projectile.IsOwnedByLocalPlayer()) {
-                for (int i = 0; i < Main.rand.Next(3, 5); i++) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + Main.rand.NextVector2Unit() * Main.rand.Next(342, 468), Projectile.velocity / 3
-                        , ModContent.ProjectileType<HolyColliderHolyFires>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Owner.whoAmI);
-                    for (int j = 0; j < 3; j++) {
-                        Vector2 pos = Owner.Center + Main.rand.NextVector2Unit() * Main.rand.Next(342, 468);
-                        Vector2 particleSpeed = pos.To(Owner.Center).UnitVector() * 7;
-                        BaseParticle energyLeak = new DRK_HolyColliderLight(pos, particleSpeed
-                            , Main.rand.NextFloat(0.5f, 0.7f), Color.Gold, 90, 1, 1.5f, hueShift: 0.0f);
-                        DRKLoader.AddParticle(energyLeak);
-                    }
+            if (Projectile.IsOwnedByLocalPlayer() && Projectile.numHits == 0 && Projectile.ai[0] == 0) {
+                SpwanFireRainProj();
+            }
+        }
+
+        private void SpwanFireRainProj() {
+            for (int i = 0; i < Main.rand.Next(3, 5); i++) {
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + Main.rand.NextVector2Unit() * Main.rand.Next(342, 468), Projectile.velocity / 3
+                    , ModContent.ProjectileType<HolyColliderHolyFires>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Owner.whoAmI);
+                for (int j = 0; j < 3; j++) {
+                    Vector2 pos = Owner.Center + Main.rand.NextVector2Unit() * Main.rand.Next(342, 468);
+                    Vector2 particleSpeed = pos.To(Owner.Center).UnitVector() * 7;
+                    BaseParticle energyLeak = new DRK_HolyColliderLight(pos, particleSpeed
+                        , Main.rand.NextFloat(0.5f, 0.7f), Color.Gold, 90, 1, 1.5f, hueShift: 0.0f);
+                    DRKLoader.AddParticle(energyLeak);
                 }
             }
         }
@@ -206,42 +175,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         bool IDrawWarp.noBlueshift() => true;
 
-        void IDrawWarp.Warp() {
-            List<CustomVertexInfo> bars = new List<CustomVertexInfo>();
-            GetCurrentTrailCount(out float count);
+        void IDrawWarp.Warp() => WarpDraw();
 
-            float w = 1f;
-            for (int i = 0; i < count; i++) {
-                if (oldRotate[i] == 100f)
-                    continue;
-
-                float factor = 1f - i / count;
-                Vector2 Center = Owner.GetPlayerStabilityCenter();
-                float r = oldRotate[i] % 6.18f;
-                float dir = (r >= 3.14f ? r - 3.14f : r + 3.14f) / MathHelper.TwoPi;
-                Vector2 Top = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] + trailTopWidth + oldDistanceToOwner[i]);
-                Vector2 Bottom = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] - ControlTrailBottomWidth(factor) * 1.25f + oldDistanceToOwner[i]);
-
-                bars.Add(new CustomVertexInfo(Top, new Color(dir, w, 0f, 15), new Vector3(factor, 0f, w)));
-                bars.Add(new CustomVertexInfo(Bottom, new Color(dir, w, 0f, 15), new Vector3(factor, 1f, w)));
+        private static void DrawTreasureBagEffect(SpriteBatch spriteBatch, Texture2D tex, ref float drawTimer, Vector2 position
+            , Rectangle? rect, Color color, float rot, Vector2 origin, float scale, SpriteEffects effects = 0) {
+            float time = Main.GlobalTimeWrappedHourly;
+            float timer = drawTimer / 240f + time * 0.04f;
+            time %= 4f;
+            time /= 2f;
+            if (time >= 1f)
+                time = 2f - time;
+            time = time * 0.5f + 0.5f;
+            for (float i = 0f; i < 1f; i += 0.25f) {
+                float radians = (i + timer) * MathHelper.TwoPi;
+                spriteBatch.Draw(tex, position + new Vector2(0f, 8f).RotatedBy(radians) * time, rect, new Color(color.R, color.G, color.B, 50), rot, origin, scale, effects, 0);
             }
-
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
-
-            Matrix projection = Matrix.CreateOrthographicOffCenter(0f, Main.screenWidth, Main.screenHeight, 0f, 0f, 1f);
-            Matrix model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0f)) * Main.GameViewMatrix.TransformationMatrix;
-            Effect effect = EffectsRegistry.KnifeDistortion;
-            effect.Parameters["uTransform"].SetValue(model * projection);
-            Main.graphics.GraphicsDevice.Textures[0] = TrailTexture;
-            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
-            effect.CurrentTechnique.Passes[0].Apply();
-            if (bars.Count >= 3) {
-                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars.ToArray(), 0, bars.Count - 2);
+            for (float i = 0f; i < 1f; i += 0.34f) {
+                float radians = (i + timer) * MathHelper.TwoPi;
+                spriteBatch.Draw(tex, position + new Vector2(0f, 4f).RotatedBy(radians) * time, rect, new Color(color.R, color.G, color.B, 77), rot, origin, scale, effects, 0);
             }
-
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         void IDrawWarp.costomDraw(SpriteBatch spriteBatch) {
@@ -252,15 +204,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
             Vector2 toOwner = Projectile.Center - Owner.GetPlayerStabilityCenter();
             Vector2 offsetOwnerPos = toOwner.GetNormalVector() * 16 * Projectile.spriteDirection;
-            Vector2 v = Projectile.Center - RodingToVer(48, toOwner.ToRotation()) + offsetOwnerPos;
+            Vector2 pos = Projectile.Center - RodingToVer(48, toOwner.ToRotation()) + offsetOwnerPos;
+            Vector2 drawPos = pos - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;
 
             float drawRoting = Projectile.rotation;
             if (Projectile.spriteDirection == -1) {
                 drawRoting += MathHelper.Pi;
             }
 
-            Main.EntitySpriteDraw(texture, v - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY, new Rectangle?(rect)
-                , Color.White, drawRoting, drawOrigin, Projectile.scale, effects, 0);
+            if (Projectile.ai[0] == 2) {
+                float time = Time;
+                DrawTreasureBagEffect(Main.spriteBatch, texture, ref time, drawPos, null, Color.OrangeRed * 0.6f
+                    , drawRoting, drawOrigin, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            }
+
+            Main.EntitySpriteDraw(texture, drawPos, new Rectangle?(rect), Color.White, drawRoting, drawOrigin, Projectile.scale, effects, 0);
         }
 
         public override void DrawSwing(SpriteBatch spriteBatch, Color lightColor) { }
