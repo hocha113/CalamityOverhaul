@@ -26,6 +26,7 @@
     <None Remove="0.4.0.2.8.txt" />
     <None Remove="Assets\Effects\ColorGradient.fx" />
     <None Remove="Assets\Effects\InShootGlow.fx" />
+    <None Remove="assets\effects\KnifeDistortion.fx" />
     <None Remove="Assets\Effects\KnifeRendering.fx" />
     <None Remove="Assets\Effects\NeutronRingShader.fx" />
     <None Remove="Assets\Effects\PrimeHaloShader.fx" />
@@ -34,13 +35,16 @@
     <None Remove="Assets\Effects\WarpShader.fx" />
     <None Remove="Assets\Events\TungstenRiotIcon.png" />
     <None Remove="Assets\Items\Replace\TODO.txt" />
+    <None Remove="Assets\Masking\Circle.png" />
     <None Remove="Assets\Masking\DiffusionCircle.png" />
     <None Remove="Assets\Masking\DiffusionCircle2.png" />
     <None Remove="Assets\Masking\DragonRageEffectColorBar.png" />
+    <None Remove="Assets\Masking\Ember.png" />
     <None Remove="Assets\Masking\Extra_193.png" />
     <None Remove="Assets\Masking\Extra_193_White.png" />
     <None Remove="Assets\Masking\MotionTrail2.png" />
     <None Remove="Assets\Masking\MotionTrail3.png" />
+    <None Remove="Assets\Masking\SoftGlow.png" />
     <None Remove="Assets\Masking\StarTexture.png" />
     <None Remove="Assets\Masking\StarTexture_White.png" />
     <None Remove="Assets\Masking\Streak3.png" />

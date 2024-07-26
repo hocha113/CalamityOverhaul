@@ -52,8 +52,5 @@ namespace CalamityOverhaul.Content.Particles
             spriteBatch.Draw(bloom, pos, null, Color * 0.5f, 0, bloom.Size() / 2f, Scale * properBloomSize * 3, SpriteEffects.None, 0);
             spriteBatch.Draw(star, pos, null, Color, 0, star.Size() / 2f, Scale * 3, SpriteEffects.None, 0);
         }
-
-        public override void CustomDraw(SpriteBatch spriteBatch, Vector2 basePosition) {
-        }
     }
 }

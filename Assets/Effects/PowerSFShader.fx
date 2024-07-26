@@ -26,7 +26,7 @@ float4 PSFunction(float2 coords : TEXCOORD0) : COLOR0
 }
 technique Technique1
 {
-    pass Offset
+    pass PowerSFShaderPass
     {
         PixelShader = compile ps_2_0 PSFunction();
     }

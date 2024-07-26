@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Common.Effects
         public static Effect PrimeHaloShader;
         public static Effect TwistColoringShader;
         public static Effect KnifeRendering;
+        public static Effect KnifeDistortion;
         public static ArmorShaderData StreamerDustShader;
         public static ArmorShaderData InShootGlowShader;
 
@@ -28,6 +29,7 @@ namespace CalamityOverhaul.Common.Effects
             PrimeHaloShader = null;
             TwistColoringShader = null;
             KnifeRendering  = null;
+            KnifeDistortion = null;
             StreamerDustShader = null;
             InShootGlowShader = null;
         }
@@ -40,12 +42,13 @@ namespace CalamityOverhaul.Common.Effects
                 effect = asset.Value;
             }
 
-            loadFiltersEffect("CWRMod:powerSFShader", "PowerSFShader", "Offset", out PowerSFShader);
+            loadFiltersEffect("CWRMod:powerSFShader", "PowerSFShader", "PowerSFShaderPass", out PowerSFShader);
             loadFiltersEffect("CWRMod:warpShader", "WarpShader", "PrimitivesPass", out WarpShader);
             loadFiltersEffect("CWRMod:neutronRingShader", "NeutronRingShader", "NeutronRingPass", out NeutronRingShader);
             loadFiltersEffect("CWRMod:primeHaloShader", "PrimeHaloShader", "PrimeHaloPass", out PrimeHaloShader);
             loadFiltersEffect("CWRMod:twistColoringShader", "TwistColoring", "TwistColoringPass", out TwistColoringShader);
             loadFiltersEffect("CWRMod:knifeRendering", "KnifeRendering", "KnifeRenderingPass", out KnifeRendering);
+            loadFiltersEffect("CWRMod:knifeDistortion", "KnifeDistortion", "KnifeDistortionPass", out KnifeDistortion);
 
             StreamerDustShader = new ArmorShaderData(getEffect("StreamerDust"), "StreamerDustPass");
             InShootGlowShader = new ArmorShaderData(getEffect("InShootGlow"), "InShootGlowPass");

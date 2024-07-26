@@ -111,13 +111,37 @@ namespace CalamityOverhaul.Content.Particles.Core
 
             particles.Add(particle);
             particle.Type = GetParticleType(particle.GetType());
+            particle.SetDRK();
+        }
+
+        /// <summary>
+        /// 使用指定的属性初始化并添加一个新粒子到粒子系统中
+        /// </summary>
+        /// <param name="particle">要初始化和添加的粒子实例</param>
+        /// <param name="position">粒子在二维空间中的初始位置</param>
+        /// <param name="velocity">粒子的初始速度向量</param>
+        /// <param name="color">粒子的颜色，默认为默认颜色</param>
+        /// <param name="scale">粒子的缩放比例，默认为1</param>
+        /// <param name="ai0">粒子的自定义属性 ai0，默认为0</param>
+        /// <param name="ai1">粒子的自定义属性 ai1，默认为0</param>
+        /// <param name="ai2">粒子的自定义属性 ai2，默认为0</param>
+        public static void NewParticle(BaseParticle particle, Vector2 position, Vector2 velocity
+            , Color color = default, float scale = 1f, int ai0 = 0, int ai1 = 0, int ai2 = 0) {
+            particle.Position = position;
+            particle.Velocity = velocity;
+            particle.Scale = scale;
+            particle.Color = color;
+            particle.ai[0] = ai0;
+            particle.ai[1] = ai1;
+            particle.ai[2] = ai2;
+            AddParticle(particle);
         }
 
         public static void Update() {
             if (Main.dedServ) {//不要在服务器上更新逻辑
                 return;
             }
-
+            
             foreach (BaseParticle particle in particles) {
                 if (particle == null) {
                     continue;
@@ -164,6 +188,7 @@ namespace CalamityOverhaul.Content.Particles.Core
                     batchedAlphaBlendParticles.Add(particle);
                 }
             }
+
             if (batchedAlphaBlendParticles.Count > 0) {
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
                 void defaultDraw(BaseParticle particle) {
@@ -214,8 +239,9 @@ namespace CalamityOverhaul.Content.Particles.Core
                     sb.Draw(ParticleIDToTexturesDic[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f, particle.Scale, SpriteEffects.None, 0f);
                 }
                 foreach (BaseParticle particle in batchedAdditiveBlendParticles) {
-                    if (particle.UseCustomDraw)
+                    if (particle.UseCustomDraw) {
                         particle.CustomDraw(sb);
+                    }
                     else {
                         defaultDraw(particle);
                     }

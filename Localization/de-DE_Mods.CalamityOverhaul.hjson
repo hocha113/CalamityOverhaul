@@ -3274,6 +3274,8 @@ Projectiles: {
 	// TheBurningSkyHeldAlt.DisplayName: The Burning Sky Held Alt
 	// PhantomPhoenix.DisplayName: Phantom Phoenix
 	// PhoenixFlameBarrageHeld.DisplayName: Phoenix Flame Barrage Held
+	// HolyColliderHeld.DisplayName: Holy Collider Held
+	// HolyColliderExFire.DisplayName: Holy Collider Ex Fire
 }
 
 Configs: {

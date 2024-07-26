@@ -25,51 +25,47 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// </summary>
         public virtual bool SetLifetime => false;
         /// <summary>
-        /// 一个粒子可以存活的最大时间,单位为tick,一般如果想让其有效需要先将<see cref="SetLifetime"/>设置为<see langword="true"/>
+        /// 将此设置为true以使你的粒子使用additive blending而不是alpha blend。
         /// </summary>
-        public int Lifetime = 0;
-
-        public float LifetimeCompletion => Lifetime != 0 ? Time / (float)Lifetime : 0;
-
+        public virtual bool UseAdditiveBlend => false;
         /// <summary>
-        /// 一个粒子在世界中的位置，这不是在粒子集的上下文中使用的，因为所有的粒子都是根据它们相对于集合原点的位置来计算的
+        /// 将此设置为true以使您的粒子与半透明像素一起工作。如果UseAdditiveBlend被设置为true，则被覆盖
         /// </summary>
-        public Vector2 Position;
-        public Vector2 Velocity;
-
-        public Vector2 Origin;
-        public Color Color;
-        public float Rotation;
-        public float Scale;
-
-        public virtual int FrameVariants => 1;
-        public int Variant = 0;
-        public virtual string Texture => "";
+        public virtual bool UseHalfTransparency => false;
         /// <summary>
         /// 将此设置为true以禁用默认的粒子绘制，因此调用Particle.CustomDraw()
         /// </summary>
         public virtual bool UseCustomDraw => false;
         /// <summary>
+        /// 一个粒子可以存活的最大时间,单位为tick,一般如果想让其有效需要先将<see cref="SetLifetime"/>设置为<see langword="true"/>
+        /// </summary>
+        public int Lifetime = 0;
+        public float LifetimeCompletion => Lifetime != 0 ? Time / (float)Lifetime : 0;
+        /// <summary>
+        /// 一个粒子在世界中的位置，这不是在粒子集的上下文中使用的，因为所有的粒子都是根据它们相对于集合原点的位置来计算的
+        /// </summary>
+        public Vector2 Position;
+        public Vector2 Velocity;
+        public Vector2 Origin;
+        public Color Color;
+        public float Rotation;
+        public float Scale;
+        public virtual int FrameVariants => 1;
+        public int Variant = 0;
+        public virtual string Texture => "";
+        public int[] ai = new int[3];
+        /// <summary>
         /// 如果想自己处理粒子绘制,请使用此方法。只在UseCustomDraw设置为true时调用
         /// </summary>
         public virtual void CustomDraw(SpriteBatch spriteBatch) { }
-
-        public virtual void CustomDraw(SpriteBatch spriteBatch, Vector2 basePosition) { }
+        /// <summary>
+        /// 仅仅在生成粒子的时候被执行一次，用于简单的内部初始化数据
+        /// </summary>
+        public virtual void SetDRK() { }
         /// <summary>
         /// 每次更新粒子处理程序时调用。粒子的速度会自动添加到它的位置，它的时间也会自动增加
         /// </summary>
         public virtual void AI() { }
-
-        /// <summary>
-        /// 将此设置为true以使你的粒子使用additive blending而不是alpha blend。
-        /// </summary>
-        public virtual bool UseAdditiveBlend => false;
-
-        /// <summary>
-        /// 将此设置为true以使您的粒子与半透明像素一起工作。如果UseAdditiveBlend被设置为true，则被覆盖
-        /// </summary>
-        public virtual bool UseHalfTransparency => false;
-
         /// <summary>
         /// 从处理程序中移除粒子
         /// </summary>

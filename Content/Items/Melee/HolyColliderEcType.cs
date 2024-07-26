@@ -1,8 +1,6 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -17,37 +15,43 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class HolyColliderEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HolyCollider";
+        int Level;
         public override void SetDefaults() {
+            SetDefaultsFunc(Item);
+        }
+
+        internal static void SetDefaultsFunc(Item Item) {
             Item.width = 94;
             Item.height = 80;
             Item.scale = 1f;
             Item.damage = 230;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = 16;
-            Item.useStyle = ItemUseStyleID.Swing;
             Item.useTime = 16;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.useTurn = true;
             Item.knockBack = 3.75f;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<HolyColliderHolyFires>();
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.shoot = ModContent.ProjectileType<HolyColliderHeld>();
             Item.shootSpeed = 10f;
             Item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
             Item.rare = ModContent.RarityType<Turquoise>();
-
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            for (int i = 0; i < Main.rand.Next(3, 5); i++) {
-                Projectile.NewProjectile(source, player.Center + Main.rand.NextVector2Unit() * Main.rand.Next(342, 468), velocity / 3, ModContent.ProjectileType<HolyColliderHolyFires>(), (int)(damage * 0.5f), knockback, player.whoAmI);
-                for (int j = 0; j < 3; j++) {
-                    Vector2 pos = player.Center + Main.rand.NextVector2Unit() * Main.rand.Next(342, 468);
-                    Vector2 particleSpeed = pos.To(player.Center).UnitVector() * 7;
-                    BaseParticle energyLeak = new DRK_HolyColliderLight(pos, particleSpeed
-                        , Main.rand.NextFloat(0.5f, 0.7f), Color.Gold, 90, 1, 1.5f, hueShift: 0.0f);
-                    DRKLoader.AddParticle(energyLeak);
-                }
+            return ShootFunc(ref Level, Item, player, source, position, velocity, type, damage, knockback);
+        }
+
+        internal static bool ShootFunc(ref int Level, Item Item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            int newLevel = 1;
+            if (++Level > 1) {
+                newLevel = 0;
+                Level = 0;
             }
+            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<HolyColliderHeld>(), damage, knockback, player.whoAmI, newLevel);
             return false;
         }
     }

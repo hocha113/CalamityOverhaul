@@ -1,5 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Melee;
+using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,8 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class TheBurningSkyHeld : BaseSwing
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheBurningSky";
-        public float progress;
-        Vector2 armCenter;
         public override string gradientTexturePath => CWRConstant.Masking + "DragonRageEffectColorBar";
         public override void SetSwingProperty() {
             Projectile.DamageType = DamageClass.Melee;
@@ -48,12 +48,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     CalamityUtils.ProjectileRain(Projectile.GetSource_FromAI(), InMousePos
                         , 290f, 130f, 850f, 1100f, randomSpeed, ModContent.ProjectileType<BurningMeteor>()
                         , Projectile.damage / 6, 6f, Owner.whoAmI);
-                }
-                for (int i = 0; i < 20; i++) {
-                    int dust = Dust.NewDust(Projectile.Center, Projectile.width, Projectile.height, DustID.OrangeTorch, Scale: 6);
-                    Main.dust[dust].position = Projectile.Center;
-                    Main.dust[dust].velocity = (MathHelper.TwoPi / 20f * i).ToRotationVector2() * 16;
-                    Main.dust[dust].noGravity = true;
                 }
             }
             if (Time < 10) {

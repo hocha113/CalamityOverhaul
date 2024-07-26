@@ -3,6 +3,8 @@ using CalamityMod.Graphics.Metaballs;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Particles;
 using CalamityOverhaul.Content.Items.Magic;
+using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -151,6 +153,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 }
             }
 
+            if (Projectile.Distance(Main.LocalPlayer.Center) < 1400) {
+                DRK_LavaFire lavaFire = new DRK_LavaFire();
+                lavaFire.Velocity = Projectile.velocity * 0.2f;
+                lavaFire.Position = Projectile.Center + CWRUtils.randVr(6);
+                lavaFire.Scale = Main.rand.NextFloat(0.8f, 1.2f);
+                lavaFire.maxLifeTime = 60;
+                lavaFire.minLifeTime = 30;
+                DRKLoader.AddParticle(lavaFire);
+            }
+            
             Time++;
             return false;
         }
