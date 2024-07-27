@@ -28,6 +28,7 @@
     <None Remove="Assets\Effects\InShootGlow.fx" />
     <None Remove="assets\effects\KnifeDistortion.fx" />
     <None Remove="Assets\Effects\KnifeRendering.fx" />
+    <None Remove="Assets\Effects\KR_DevilsDevastation.fx" />
     <None Remove="Assets\Effects\NeutronRingShader.fx" />
     <None Remove="Assets\Effects\PrimeHaloShader.fx" />
     <None Remove="Assets\Effects\StreamerDust.fx" />
@@ -45,6 +46,7 @@
     <None Remove="Assets\Masking\MotionTrail2.png" />
     <None Remove="Assets\Masking\MotionTrail3.png" />
     <None Remove="Assets\Masking\SoftGlow.png" />
+    <None Remove="Assets\Masking\SplitTrail.png" />
     <None Remove="Assets\Masking\StarTexture.png" />
     <None Remove="Assets\Masking\StarTexture_White.png" />
     <None Remove="Assets\Masking\Streak3.png" />

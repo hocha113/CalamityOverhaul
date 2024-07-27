@@ -2652,6 +2652,11 @@ Items: {
 		// DisplayName: Phoenix Flame Barrage Ec Type
 		// Tooltip: ""
 	}
+
+	DevilsDevastationEcType: {
+		// DisplayName: Devils Devastation Ec Type
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3282,6 +3287,10 @@ Projectiles: {
 	// PhoenixFlameBarrageHeld.DisplayName: Phoenix Flame Barrage Held
 	// HolyColliderHeld.DisplayName: Holy Collider Held
 	// HolyColliderExFire.DisplayName: Holy Collider Ex Fire
+	// DevilsDevastationHeld.DisplayName: Devils Devastation Held
+	// EXDemonBlast.DisplayName: E X Demon Blast
+	// EXOathblade.DisplayName: E X Oathblade
+	// EXDemonBlastAlt.DisplayName: E X Demon Blast Alt
 }
 
 Configs: {

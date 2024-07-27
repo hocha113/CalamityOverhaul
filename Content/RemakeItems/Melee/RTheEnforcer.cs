@@ -13,11 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     internal class RTheEnforcer : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.TheEnforcer>();
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override string TargetToolTipItemName => "TheEnforcerEcType";
-
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;
         }

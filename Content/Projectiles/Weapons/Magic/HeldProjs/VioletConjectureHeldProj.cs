@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height
                 , 68, Projectile.velocity.X, Projectile.velocity.Y, 55);
             dust.noGravity = true;
-            dust.shader = EffectsRegistry.InShootGlowShader;
+            dust.shader = EffectLoader.InShootGlowShader;
             dust.shader.UseColor(Color.DarkBlue);
             Projectile.ai[0] += Main.rand.Next(3);
             if (Projectile.ai[0] > 20) {

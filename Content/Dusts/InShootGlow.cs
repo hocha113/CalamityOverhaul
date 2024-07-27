@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Dusts
         public override void OnSpawn(Dust dust) {
             dust.noGravity = true;
             dust.frame = new(0, 0, 66, 66);
-            dust.shader = EffectsRegistry.InShootGlowShader;
+            dust.shader = EffectLoader.InShootGlowShader;
         }
 
         public override Color? GetAlpha(Dust dust, Color lightColor) => dust.color;

@@ -19,9 +19,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         public override int TargetID => ModContent.ItemType<HolyCollider>();
         public override int ProtogenesisID => ModContent.ItemType<HolyColliderEcType>();
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.width = 94;
             item.height = 80;

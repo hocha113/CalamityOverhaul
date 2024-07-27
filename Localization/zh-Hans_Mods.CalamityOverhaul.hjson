@@ -2652,13 +2652,18 @@ Items: {
 	}
 
 	TheBurningSkyEcType: {
-		// DisplayName: The Burning Sky Ec Type
-		// Tooltip: ""
+		DisplayName: 焚灭天惩
+		Tooltip: ""
 	}
 
 	PhoenixFlameBarrageEcType: {
 		// DisplayName: Phoenix Flame Barrage Ec Type
 		// Tooltip: ""
+	}
+
+	DevilsDevastationEcType: {
+		DisplayName: 破灭魔王剑
+		Tooltip: ""
 	}
 }
 
@@ -3290,6 +3295,10 @@ Projectiles: {
 	// PhoenixFlameBarrageHeld.DisplayName: Phoenix Flame Barrage Held
 	// HolyColliderHeld.DisplayName: Holy Collider Held
 	// HolyColliderExFire.DisplayName: Holy Collider Ex Fire
+	// DevilsDevastationHeld.DisplayName: Devils Devastation Held
+	EXDemonBlast.DisplayName: 欢愉之戟
+	EXOathblade.DisplayName: 生命年轮
+	EXDemonBlastAlt.DisplayName: 绯红魔王戟
 }
 
 Configs: {

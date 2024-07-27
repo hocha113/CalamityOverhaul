@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override int TargetID => ModContent.ItemType<SHPC>();
         public override int ProtogenesisID => ModContent.ItemType<SHPCEcType>();
         public override string TargetToolTipItemName => "";
-        private static void onSHPCToolFunc(RItemSystem.On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
+        private static void onSHPCToolFunc(RItemLoader.On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
         void ILoader.LoadData() {
             methodInfo = typeof(SHPC).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
             MonoModHooks.Add(methodInfo, onSHPCToolFunc);

@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height
                 , DustID.SnowBlock, Projectile.velocity.X, Projectile.velocity.Y, 55);
             dust.noGravity = true;
-            dust.shader = EffectsRegistry.InShootGlowShader;
+            dust.shader = EffectLoader.InShootGlowShader;
             dust.shader.UseColor(Color.Blue);
             Projectile.ai[0] += Main.rand.Next(2);
             if (Projectile.ai[0] > 20) {
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 Vector2 offset = spikeAngle.ToRotationVector2() * (2f +
                     (float)(Math.Sin(angle + spikeAngle * numSpikes) + 1.0) * spikeAmplitude) * 0.15f;
                 Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.WhiteTorch, offset, 0, default, scale);
-                dust.shader = EffectsRegistry.StreamerDustShader;
+                dust.shader = EffectLoader.StreamerDustShader;
                 dust.noGravity = true;
                 dust.scale += 0.5f;
             }

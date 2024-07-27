@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         }
 
         public override void OnKill(int timeLeft) {
-            CWRDust.SplashDust(Projectile, 31, DustID.FireworkFountain_Blue, DustID.FireworkFountain_Blue, 13, Color.Blue, EffectsRegistry.StreamerDustShader);
+            CWRDust.SplashDust(Projectile, 31, DustID.FireworkFountain_Blue, DustID.FireworkFountain_Blue, 13, Color.Blue, EffectLoader.StreamerDustShader);
             Projectile.Explode(explosionSound: SoundID.Item14 with { Pitch = 0.6f });
         }
 

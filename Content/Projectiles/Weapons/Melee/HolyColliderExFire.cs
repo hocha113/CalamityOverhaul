@@ -18,12 +18,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.width = Projectile.height = 400;
             Projectile.timeLeft = 20;
             Projectile.aiStyle = -1;
-            Projectile.localNPCHitCooldown = 4;
             Projectile.penetrate = -1;
             Projectile.friendly = true;
             Projectile.netImportant = true;
             Projectile.tileCollide = false;
             Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 2;
             Projectile.DamageType = DamageClass.Melee;
             
         }
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
                 for (int i = 0; i < 80; i++) {
                     DRK_LavaFire lavaFire = new DRK_LavaFire();
-                    lavaFire.Velocity = CWRUtils.randVr(6, 9);
+                    lavaFire.Velocity = CWRUtils.randVr(1, 9);
                     lavaFire.Position = spanPos;
 
                     lavaFire.Scale = Main.rand.NextFloat(2.9f, 4.6f);
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
             for (int i = 0; i < 80; i++) {
                 DRK_LavaFire lavaFire = new DRK_LavaFire();
-                lavaFire.Velocity = CWRUtils.randVr(3, 4);
+                lavaFire.Velocity = CWRUtils.randVr(1, 4);
                 lavaFire.Position = spanPos;
 
                 lavaFire.Scale = Main.rand.NextFloat(0.9f, 1.6f);

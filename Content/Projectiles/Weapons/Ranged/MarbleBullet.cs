@@ -11,13 +11,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         private bool onTile;
         public override void AI() {
             CWRDust.SplashDust(Projectile, 6, DustID.WhiteTorch, DustID.WhiteTorch
-                , 0, Color.White, EffectsRegistry.StreamerDustShader);
+                , 0, Color.White, EffectLoader.StreamerDustShader);
         }
 
         public override void OnKill(int timeLeft) {
             Projectile.rotation = Projectile.velocity.ToRotation();
             CWRDust.SplashDust(Projectile, 36, DustID.WhiteTorch, DustID.WhiteTorch
-                , 10, Color.White, EffectsRegistry.StreamerDustShader);
+                , 10, Color.White, EffectLoader.StreamerDustShader);
             if (onTile) {
                 float angle = Main.rand.NextFloat(MathF.PI * 2f);
                 int numSpikes = 5;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     Vector2 offset = spikeAngle.ToRotationVector2() * (2f +
                         (float)(Math.Sin(angle + spikeAngle * numSpikes) + 1.0) * spikeAmplitude) * 0.15f;
                     Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.WhiteTorch, offset, 0, default, scale);
-                    dust.shader = EffectsRegistry.StreamerDustShader;
+                    dust.shader = EffectLoader.StreamerDustShader;
                     dust.noGravity = true;
                     dust.scale += 2;
                 }

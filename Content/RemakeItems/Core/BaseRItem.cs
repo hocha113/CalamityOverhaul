@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -60,7 +61,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public virtual void Load() {
-            SetReadonlyTargetID = TargetID;//这里默认加载一次，在多数情况使其下不用重写Load()方法
+            
         }
 
         /// <summary>

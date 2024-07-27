@@ -15,10 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.CelestialClaymore>();
         public override int ProtogenesisID => ModContent.ItemType<CelestialClaymoreEcType>();
         public override string TargetToolTipItemName => "CelestialClaymoreEcType";
-
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.width = 80;
             item.height = 82;

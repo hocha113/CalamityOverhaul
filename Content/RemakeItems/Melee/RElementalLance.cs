@@ -15,9 +15,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.ElementalLance>();
         public override int ProtogenesisID => ModContent.ItemType<ElementalLanceEcType>();
         public override string TargetToolTipItemName => "ElementalLanceEcType";
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<CalamityMod.Items.Weapons.Melee.ElementalLance>()] = true;
         }

@@ -16,9 +16,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.StreamGouge>();
         public override int ProtogenesisID => ModContent.ItemType<StreamGougeEcType>();
         public override string TargetToolTipItemName => "StreamGougeEcType";
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[ModContent.ItemType<CalamityMod.Items.Weapons.Melee.StreamGouge>()] = true;
         }

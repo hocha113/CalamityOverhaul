@@ -1,34 +1,42 @@
-﻿using CalamityMod;
-using CalamityMod.Graphics.Renderers.CalamityRenderers;
-using CalamityMod.NPCs;
+﻿using CalamityMod.Graphics.Renderers.CalamityRenderers;
 using CalamityMod.NPCs.Providence;
-using CalamityOverhaul.Content.Projectiles.Weapons;
+using CalamityMod.NPCs;
+using CalamityMod;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
+using CalamityOverhaul.Content.Projectiles.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using ReLogic.Content;
 using System.Collections.Generic;
 using System.Reflection;
-using Terraria;
+using System;
 using Terraria.GameContent;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Common.Effects
 {
-    internal class EffectsSystem : ModSystem
+    public class EffectLoader : ILoader
     {
+        internal static EffectLoader Instance;
         public delegate void On_Draw_Dalegate(object inds, SpriteBatch spriteBatch);
 
-        internal static EffectsSystem Instance;
+        public static Effect WarpShader;
+        public static Effect PowerSFShader;
+        public static Effect NeutronRingShader;
+        public static Effect PrimeHaloShader;
+        public static Effect TwistColoringShader;
+        public static Effect KnifeRendering;
+        public static Effect KnifeDistortion;
+        public static Effect KR_DevilsDevastation;
+        public static ArmorShaderData StreamerDustShader;
+        public static ArmorShaderData InShootGlowShader;
 
         public static Type holyInfernoRendererType;
-
         public static MethodBase onDrawToTargetMethod;
-
         internal static Type MiscShaderDataType;
-
         internal static FieldInfo Shader_Texture_FieldInfo_1;
         internal static FieldInfo Shader_Texture_FieldInfo_2;
         internal static FieldInfo Shader_Texture_FieldInfo_3;
@@ -36,7 +44,45 @@ namespace CalamityOverhaul.Common.Effects
         internal static RenderTarget2D screen;
         internal static float twistStrength = 0f;
 
-        public override void Load() {
+        public static void LoadEffects() {
+            var assets = CWRMod.Instance.Assets;
+            LoadRegularShaders(assets);
+        }
+
+        public static void UnLoad() {
+            WarpShader = null;
+            PowerSFShader = null;
+            NeutronRingShader = null;
+            PrimeHaloShader = null;
+            TwistColoringShader = null;
+            KnifeRendering  = null;
+            KnifeDistortion = null;
+            StreamerDustShader = null;
+            InShootGlowShader = null;
+        }
+
+        public static void LoadRegularShaders(AssetRepository assets) {
+            Asset<Effect> getEffect(string key) => assets.Request<Effect>(CWRConstant.noEffects + key, AssetRequestMode.ImmediateLoad);
+            void loadFiltersEffect(string filtersKey, string filename, string passname, out Effect effect) {
+                Asset<Effect> asset = getEffect(filename);
+                Filters.Scene[filtersKey] = new Filter(new(asset, passname), EffectPriority.VeryHigh);
+                effect = asset.Value;
+            }
+
+            loadFiltersEffect("CWRMod:powerSFShader", "PowerSFShader", "PowerSFShaderPass", out PowerSFShader);
+            loadFiltersEffect("CWRMod:warpShader", "WarpShader", "PrimitivesPass", out WarpShader);
+            loadFiltersEffect("CWRMod:neutronRingShader", "NeutronRingShader", "NeutronRingPass", out NeutronRingShader);
+            loadFiltersEffect("CWRMod:primeHaloShader", "PrimeHaloShader", "PrimeHaloPass", out PrimeHaloShader);
+            loadFiltersEffect("CWRMod:twistColoringShader", "TwistColoring", "TwistColoringPass", out TwistColoringShader);
+            loadFiltersEffect("CWRMod:knifeRendering", "KnifeRendering", "KnifeRenderingPass", out KnifeRendering);
+            loadFiltersEffect("CWRMod:knifeDistortion", "KnifeDistortion", "KnifeDistortionPass", out KnifeDistortion);
+            loadFiltersEffect("CWRMod:kR_DevilsDevastation", "KR_DevilsDevastation", "KnifeDistortionPass", out KR_DevilsDevastation);
+
+            StreamerDustShader = new ArmorShaderData(getEffect("StreamerDust"), "StreamerDustPass");
+            InShootGlowShader = new ArmorShaderData(getEffect("InShootGlow"), "InShootGlowPass");
+        }
+
+        void ILoader.LoadData() {
             Instance = this;
             holyInfernoRendererType = typeof(HolyInfernoRenderer);
             onDrawToTargetMethod = holyInfernoRendererType.GetMethod("DrawToTarget", BindingFlags.Instance | BindingFlags.Public);
@@ -54,7 +100,7 @@ namespace CalamityOverhaul.Common.Effects
             Main.OnResolutionChanged += Main_OnResolutionChanged;
         }
 
-        public override void Unload() {
+        void ILoader.UnLoadData() {
             Shader_Texture_FieldInfo_1 = null;
             Shader_Texture_FieldInfo_2 = null;
             Shader_Texture_FieldInfo_3 = null;
@@ -139,7 +185,8 @@ namespace CalamityOverhaul.Common.Effects
                     Main.spriteBatch.Draw(screen, Vector2.Zero, Color.White);
                     Main.spriteBatch.End();
 
-                    Main.spriteBatch.Begin();
+                    Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState
+                        , default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
                     foreach (IDrawWarp p in warpSetsNoBlueshift) { if (p.canDraw()) { p.costomDraw(Main.spriteBatch); } }
                     Main.spriteBatch.End();
                 }
@@ -160,9 +207,9 @@ namespace CalamityOverhaul.Common.Effects
                 graphicsDevice.SetRenderTarget(Main.screenTarget);
                 graphicsDevice.Clear(Color.Transparent);
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                EffectsRegistry.PowerSFShader.Parameters["tex0"].SetValue(screen);
-                EffectsRegistry.PowerSFShader.Parameters["i"].SetValue(twistStrength);
-                EffectsRegistry.PowerSFShader.CurrentTechnique.Passes[0].Apply();
+                PowerSFShader.Parameters["tex0"].SetValue(screen);
+                PowerSFShader.Parameters["i"].SetValue(twistStrength);
+                PowerSFShader.CurrentTechnique.Passes[0].Apply();
                 Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
                 Main.spriteBatch.End();
             }

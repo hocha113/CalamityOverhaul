@@ -18,9 +18,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BrinyBaron>();
         public override int ProtogenesisID => ModContent.ItemType<BrinyBaronEcType>();
         public override string TargetToolTipItemName => "BrinyBaronEcType";
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.damage = 110;
             item.knockBack = 2f;

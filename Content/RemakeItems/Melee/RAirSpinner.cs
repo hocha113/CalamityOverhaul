@@ -13,9 +13,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.AirSpinner>();
         public override int ProtogenesisID => ModContent.ItemType<AirSpinnerEcType>();
         public override string TargetToolTipItemName => "AirSpinnerEcType";
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.width = 28;
             item.height = 28;

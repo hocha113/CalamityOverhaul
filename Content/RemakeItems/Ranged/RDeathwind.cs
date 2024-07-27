@@ -17,10 +17,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.Deathwind>();
         public override int ProtogenesisID => ModContent.ItemType<DeathwindEcType>();
         public override string TargetToolTipItemName => "DeathwindEcType";
-
-        public override void Load() {
-            SetReadonlyTargetID = TargetID;
-        }
         public override void SetDefaults(Item item) {
             item.damage = 248;
             item.DamageType = DamageClass.Ranged;

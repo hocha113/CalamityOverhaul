@@ -34,6 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 旋转速度
         /// </summary>
         protected float rotSpeed;
+        protected float shootSengs = 0.5f;
         /// <summary>
         /// 基本速度
         /// </summary>
@@ -264,7 +265,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         /// <returns></returns>
         public sealed override bool PreUpdate() {
-            canShoot = Time == maxSwingTime / 2;
+            canShoot = Time == (int)(maxSwingTime * shootSengs);
             if (PreInOwnerUpdate()) {
                 InOwner();
                 SwingAI();
@@ -317,7 +318,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
             Matrix projection = Matrix.CreateOrthographicOffCenter(0f, Main.screenWidth, Main.screenHeight, 0f, 0f, 1f);
             Matrix model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0f)) * Main.GameViewMatrix.TransformationMatrix;
-            Effect effect = EffectsRegistry.KnifeDistortion;
+            Effect effect = EffectLoader.KnifeDistortion;
             effect.Parameters["uTransform"].SetValue(model * projection);
             Main.graphics.GraphicsDevice.Textures[0] = TrailTexture;
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
@@ -377,7 +378,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Main.pixelShader.CurrentTechnique.Passes[0].Apply();
         }
 
-        public virtual void DrawTrail(List<VertexPositionColorTexture> bars) { }
+        public virtual void DrawTrail(List<VertexPositionColorTexture> bars) {
+            Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "KnifeRendering").Value;
+
+            effect.Parameters["transformMatrix"].SetValue(GetTransfromMaxrix());
+            effect.Parameters["sampleTexture"].SetValue(TrailTexture);
+            effect.Parameters["gradientTexture"].SetValue(GradientTexture);
+            //应用shader，并绘制顶点
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars.ToArray(), 0, bars.Count - 2);
+                Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars.ToArray(), 0, bars.Count - 2);
+            }
+        }
 
         public virtual Matrix GetTransfromMaxrix() {
             Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());

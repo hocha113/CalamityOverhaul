@@ -85,6 +85,7 @@ namespace CalamityOverhaul
                             //($"元素{type}成功转换为object并进行分析").DompInConsole();
                             if (inds.CanLoad()) {
                                 //($"正在初始化元素{type}").DompInConsole();
+                                inds.SetReadonlyTargetID = inds.TargetID;//这里默认加载一次，在多数情况使其下不用重写Load()方法
                                 inds.Load();
                                 inds.SetStaticDefaults();
                                 if (inds.TargetID != 0) {
@@ -246,7 +247,7 @@ namespace CalamityOverhaul
             if (Main.dedServ)
                 return;
 
-            EffectsRegistry.LoadEffects();
+            EffectLoader.LoadEffects();
             ILMainMenuModification.Load();
             Filters.Scene["CWRMod:TungstenSky"] = new Filter(new TungstenSkyDate("FilterMiniTower").UseColor(0.5f, 0f, 0.5f).UseOpacity(0.2f), EffectPriority.VeryHigh);
             SkyManager.Instance["CWRMod:TungstenSky"] = new TungstenSky();
@@ -256,7 +257,7 @@ namespace CalamityOverhaul
             if (Main.dedServ)
                 return;
 
-            EffectsRegistry.UnLoad();
+            EffectLoader.UnLoad();
             ILMainMenuModification.Unload();
         }
     }
