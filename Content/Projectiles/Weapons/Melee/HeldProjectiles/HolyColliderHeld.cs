@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class HolyColliderHeld : BaseSwing, IDrawWarp
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HolyCollider";
-        public override string gradientTexturePath => CWRConstant.Masking + "HolyColliderEffectColorBar";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "HolyColliderEffectColorBar";
         
         public override void SetSwingProperty() {
             Projectile.DamageType = DamageClass.Melee;

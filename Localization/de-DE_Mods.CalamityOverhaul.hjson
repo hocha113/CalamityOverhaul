@@ -2651,6 +2651,11 @@ Items: {
 		// DisplayName: Devils Devastation Ec Type
 		// Tooltip: ""
 	}
+
+	DragonsWord: {
+		// DisplayName: Dragons Word
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3285,6 +3290,7 @@ Projectiles: {
 	// EXDemonBlast.DisplayName: E X Demon Blast
 	// EXOathblade.DisplayName: E X Oathblade
 	// EXDemonBlastAlt.DisplayName: E X Demon Blast Alt
+	// DragonsWordProj.DisplayName: Dragons Word Proj
 }
 
 Configs: {

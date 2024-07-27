@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                     path1 = CWRConstant.Masking + "MotionTrail3";
                 }
                 if (path2 == "") {
-                    path2 = CWRConstant.Masking + "NullEffectColorBar";
+                    path2 = CWRConstant.ColorBar + "NullEffectColorBar";
                 }
                 int type = SwingFullNameToType[swing.GetType().Name];
                 trailTextures.TryAdd(type, CWRUtils.GetT2DAsset(path1));

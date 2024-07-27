@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.Explode(60, SoundID.Item14);
             int inc;
             for (int i = 0; i < 20; i = inc + 1) {
-                BaseParticle particle = new HeavenStarParticle(Projectile.Center, dustVel * Main.rand.NextFloat()
+                BaseParticle particle = new PRK_HeavenStar(Projectile.Center, dustVel * Main.rand.NextFloat()
                     , Main.DiscoColor, Color.Azure, Main.rand.NextFloat() * MathHelper.TwoPi, new Vector2(0.2f, 1), new Vector2(1.45f, 2.1f), 22);
                 DRKLoader.AddParticle(particle);
                 inc = i;

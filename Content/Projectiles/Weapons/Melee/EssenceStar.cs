@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 for (int i = 0; i < 6; i++) {
                     Vector2 vector = Projectile.velocity * 1.01f;
                     float slp = Main.rand.NextFloat(0.5f, 1.7f);
-                    DRKLoader.AddParticle(new HeavenStarParticle(Projectile.Center, vector, Color.White
+                    DRKLoader.AddParticle(new PRK_HeavenStar(Projectile.Center, vector, Color.White
                         , new Color(150, 100, 255, 255) * Projectile.Opacity, 0f, new Vector2(0.6f, 1f) * slp
                         , new Vector2(1, 1.7f) * slp, 10 + Main.rand.Next(6), 0f, 3f, 0f, Main.rand.Next(7) * 2, Main.rand.NextFloat(-0.3f, 0.3f)));
                 }
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 for (int i = 0; i < maxNum; i++) {
                     Vector2 vector = Main.rand.NextVector2Unit() * Main.rand.Next(minSp, maxSp);
                     float slp = Main.rand.NextFloat(minSlp, maxSlp);
-                    DRKLoader.AddParticle(new HeavenStarParticle(Projectile.Center, vector, Color.White
+                    DRKLoader.AddParticle(new PRK_HeavenStar(Projectile.Center, vector, Color.White
                         , new Color(150, 100, 255, 255) * Projectile.Opacity, 0f, new Vector2(0.6f, 1f) * slp
                         , new Vector2(1.5f, 2.7f) * slp, 20 + Main.rand.Next(6), 0f, 3f, 0f, Main.rand.Next(7) * 2, Main.rand.NextFloat(-0.3f, 0.3f)));
                 }

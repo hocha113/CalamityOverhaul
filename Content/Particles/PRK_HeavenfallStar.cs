@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class HeavenfallStarParticle : BaseParticle
+    internal class PRK_HeavenfallStar : BaseParticle
     {
         public Color InitialColor;
         public bool AffectedByGravity;
@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Particles
 
         public override string Texture => "CalamityMod/Projectiles/StarProj";
 
-        public HeavenfallStarParticle(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
+        public PRK_HeavenfallStar(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
             Position = relativePosition;
             Velocity = velocity;
             AffectedByGravity = affectedByGravity;

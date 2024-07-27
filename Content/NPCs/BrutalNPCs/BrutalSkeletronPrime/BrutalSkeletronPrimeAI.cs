@@ -220,7 +220,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 float rot1 = MathHelper.PiOver2 * i;
                 Vector2 vr = rot1.ToRotationVector2();
                 for (int j = 0; j < modes; j++) {
-                    BaseParticle spark = new HeavenfallStarParticle(pos, vr * (0.1f + j * 0.34f), false, 13, Main.rand.NextFloat(1.2f, 1.3f), Color.Red);
+                    BaseParticle spark = new PRK_HeavenfallStar(pos, vr * (0.1f + j * 0.34f), false, 13, Main.rand.NextFloat(1.2f, 1.3f), Color.Red);
                     DRKLoader.AddParticle(spark);
                 }
             }

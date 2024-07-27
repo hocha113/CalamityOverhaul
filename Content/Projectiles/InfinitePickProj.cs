@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3() * (Projectile.ai[0] == 1 ? 1.2f : 10));
             if (Projectile.ai[0] == 1 && !CWRUtils.isServer) {
                 for (int i = 0; i < 8; i++) {
-                    HeavenfallStarParticle spark = new HeavenfallStarParticle(Projectile.Center + CWRUtils.randVr(13), Projectile.velocity, false, 13, 1, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
+                    PRK_HeavenfallStar spark = new PRK_HeavenfallStar(Projectile.Center + CWRUtils.randVr(13), Projectile.velocity, false, 13, 1, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
                     DRKLoader.AddParticle(spark);
                 }
                 Player own = Main.player[Projectile.owner];
@@ -91,12 +91,12 @@ namespace CalamityOverhaul.Content.Projectiles
 
                 float scaleBoost = MathHelper.Clamp(Projectile.ai[1] * 0.005f, 0f, 2f);
                 float outerSparkScale = 3.2f + scaleBoost;
-                HeavenfallStarParticle spark = new HeavenfallStarParticle(Projectile.Center, vector, false, 7, outerSparkScale, outerSparkColor);
+                PRK_HeavenfallStar spark = new PRK_HeavenfallStar(Projectile.Center, vector, false, 7, outerSparkScale, outerSparkColor);
                 DRKLoader.AddParticle(spark);
 
                 Color innerSparkColor = CWRUtils.MultiStepColorLerp(Projectile.ai[1] % 30 / 30f, HeavenfallLongbow.rainbowColors);
                 float innerSparkScale = 0.6f + scaleBoost;
-                HeavenfallStarParticle spark2 = new HeavenfallStarParticle(Projectile.Center, vector, false, 7, innerSparkScale, innerSparkColor);
+                PRK_HeavenfallStar spark2 = new PRK_HeavenfallStar(Projectile.Center, vector, false, 7, innerSparkScale, innerSparkColor);
                 DRKLoader.AddParticle(spark2);
             }
         }

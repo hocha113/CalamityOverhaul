@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             if (!CWRUtils.isServer && Main.rand.NextBool(2)) {
                 Vector2 vector = Projectile.velocity * 1.05f;
                 float slp = Main.rand.NextFloat(0.5f, 0.9f);
-                DRKLoader.AddParticle(new HeavenStarParticle(Projectile.Center, vector, Color.White
+                DRKLoader.AddParticle(new PRK_HeavenStar(Projectile.Center, vector, Color.White
                     , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 0f, new Vector2(0.6f, 1f) * slp
                     , new Vector2(1.5f, 2.7f) * slp, 20 + Main.rand.Next(6), 0f, 3f, 0f, Main.rand.Next(7) * 2, Main.rand.NextFloat(-0.3f, 0.3f)));
             }

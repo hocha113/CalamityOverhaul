@@ -2665,6 +2665,11 @@ Items: {
 		DisplayName: 破灭魔王剑
 		Tooltip: ""
 	}
+
+	DragonsWord: {
+		// DisplayName: Dragons Word
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3299,6 +3304,7 @@ Projectiles: {
 	EXDemonBlast.DisplayName: 欢愉之戟
 	EXOathblade.DisplayName: 生命年轮
 	EXDemonBlastAlt.DisplayName: 绯红魔王戟
+	// DragonsWordProj.DisplayName: Dragons Word Proj
 }
 
 Configs: {

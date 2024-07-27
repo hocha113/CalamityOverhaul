@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 DRKLoader.AddParticle(pulse2);
                 BaseParticle pulse3 = new DRK_DWave(Projectile.Center - Projectile.velocity * 0.35f, Projectile.velocity / 1.5f * 0.8f, Color.DarkRed, new Vector2(0.7f, 1.3f) * 0.8f, Projectile.velocity.ToRotation(), 0.58f, 0.22f, 40);
                 DRKLoader.AddParticle(pulse3);
-                HeavenfallStarParticle spark = new HeavenfallStarParticle(Projectile.Center, Projectile.velocity, false, 27, 3, Color.Gold);
+                PRK_HeavenfallStar spark = new PRK_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 27, 3, Color.Gold);
                 DRKLoader.AddParticle(spark);
             }
         }
@@ -104,12 +104,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                             Vector2 vector = Main.rand.NextVector2Unit() * Main.rand.Next(77);
                             float scaleBoost = MathHelper.Clamp(Main.rand.NextFloat(), 0f, 2f);
                             float outerSparkScale = 3.2f + scaleBoost;
-                            HeavenfallStarParticle spark = new HeavenfallStarParticle(Projectile.Center, vector, false, 27, outerSparkScale, outerSparkColor);
+                            PRK_HeavenfallStar spark = new PRK_HeavenfallStar(Projectile.Center, vector, false, 27, outerSparkScale, outerSparkColor);
                             DRKLoader.AddParticle(spark);
 
                             Color innerSparkColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Goldenrod, Color.Red);
                             float innerSparkScale = 0.6f + scaleBoost;
-                            HeavenfallStarParticle spark2 = new HeavenfallStarParticle(Projectile.Center, vector, false, 37, innerSparkScale, innerSparkColor);
+                            PRK_HeavenfallStar spark2 = new PRK_HeavenfallStar(Projectile.Center, vector, false, 37, innerSparkScale, innerSparkColor);
                             DRKLoader.AddParticle(spark2);
                         }
                         SoundEngine.PlaySound(DevourerofGodsHead.DeathExplosionSound, Projectile.Center);

@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 SoundEngine.PlaySound(new SoundStyle(CWRConstant.Sound + "Pedestruct"), Main.MouseWorld);
                 if (!IsPick) {
                     for (int i = 0; i < 188; i++) {
-                        HeavenfallStarParticle spark = new HeavenfallStarParticle(Main.MouseWorld + CWRUtils.randVr(213), new Vector2(0, 3), false, 13, 1, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
+                        PRK_HeavenfallStar spark = new PRK_HeavenfallStar(Main.MouseWorld + CWRUtils.randVr(213), new Vector2(0, 3), false, 13, 1, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
                         DRKLoader.AddParticle(spark);
                     }
                     int maxX = 500;

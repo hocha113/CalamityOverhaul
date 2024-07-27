@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class TheBurningSkyHeld : BaseSwing
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheBurningSky";
-        public override string gradientTexturePath => CWRConstant.Masking + "DragonRageEffectColorBar";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRageEffectColorBar";
         public override void SetSwingProperty() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.width = 72;

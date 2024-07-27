@@ -11,6 +11,7 @@ namespace CalamityOverhaul
         public const string Placeholder2 = Asset + "placeholder2";
         public const string Placeholder3 = Asset + "placeholder3";
         public const string Masking = "CalamityOverhaul/Assets/Masking/";
+        public const string ColorBar = "CalamityOverhaul/Assets/ColorBar/";
         public const string Item = "CalamityOverhaul/Assets/Items/";
         public const string Item_Magic = "CalamityOverhaul/Assets/Items/Magic/";
         public const string Item_Melee = "CalamityOverhaul/Assets/Items/Melee/";

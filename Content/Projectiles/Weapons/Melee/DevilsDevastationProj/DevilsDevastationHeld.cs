@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DevilsDevastation";
         public override string GlowTexture => CWRConstant.Masking + "SplitTrail";
-        public override string gradientTexturePath => CWRConstant.Masking + "DevilsDevastationEffectColorBar";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "DevilsDevastationEffectColorBar";
         public override void SetSwingProperty() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.width = 122;

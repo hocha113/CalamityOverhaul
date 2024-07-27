@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
                     float rot1 = MathHelper.PiOver2 * i;
                     Vector2 vr = rot1.ToRotationVector2();
                     for (int j = 0; j < 133; j++) {
-                        BaseParticle spark = new HeavenfallStarParticle(Projectile.Center
+                        BaseParticle spark = new PRK_HeavenfallStar(Projectile.Center
                             , vr * (0.1f + i * 0.24f), false, 7, Main.rand.NextFloat(1.2f, 2.3f), Color.BlueViolet);
                         DRKLoader.AddParticle(spark);
                     }

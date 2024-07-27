@@ -374,14 +374,20 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         #endregion
 
         public static void ProcessRemakeAction(Item item, Action<BaseRItem> action) {
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (!CWRConstant.ForceReplaceResetContent) {
+                return;
+            }
+            if (RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
                 action(ritem);
             }
         }
 
         public static bool? ProcessRemakeAction(Item item, Func<BaseRItem, bool?> action) {
             bool? result = null;
-            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+            if (!CWRConstant.ForceReplaceResetContent) {
+                return null;
+            }
+            if (RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
                 result = action(ritem);
             }
             return result;

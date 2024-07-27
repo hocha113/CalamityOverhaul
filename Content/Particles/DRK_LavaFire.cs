@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Particles
 {
     internal class DRK_LavaFire : BaseParticle
     {
-        public override string Texture => CWRConstant.Masking + "Circle";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle3";
         public override bool SetLifetime => true;
         public override bool UseCustomDraw => true;
         public override bool UseAdditiveBlend => true;
@@ -81,8 +81,6 @@ namespace CalamityOverhaul.Content.Particles
             float pixelRatio = 1f / 64f;
 
             Vector2 drawPos = Position - Main.screenPosition;
-            //spriteBatch.Draw(glow, drawPos, null, Color.White, 0, Vector2.Zero, 6, SpriteEffects.None, 0);
-
             spriteBatch.Draw(glow, drawPos, new Rectangle(0, 0, 64, 64), glowColor, Rotation
                 , new Vector2(32f, 32f), 1f * size * Scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(circle, drawPos - new Vector2(1.5f, 1.5f), new Rectangle(0, 0, 64, 64), emberColor

@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
                     float rot1 = MathHelper.PiOver2 * i;
                     Vector2 vr = rot1.ToRotationVector2();
                     for (int j = 0; j < 3; j++) {
-                        BaseParticle spark = new HeavenfallStarParticle(Projectile.Center
+                        BaseParticle spark = new PRK_HeavenfallStar(Projectile.Center
                             , vr * (0.1f + i * 0.14f), false, 17, Main.rand.NextFloat(0.2f, 0.3f), Color.BlueViolet);
                         DRKLoader.AddParticle(spark);
                     }
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         public override bool OnTileCollide(Vector2 oldVelocity) {
             Projectile.velocity = oldVelocity * -0.6f;
             for (int j = 0; j < 73; j++) {
-                BaseParticle spark = new HeavenfallStarParticle(Projectile.Center + oldVelocity
+                BaseParticle spark = new PRK_HeavenfallStar(Projectile.Center + oldVelocity
                     , oldVelocity.RotatedByRandom(0.3f) * -Main.rand.NextFloat(0.3f, 1.1f)
                     , false, 7, Main.rand.NextFloat(0.5f, 0.7f), Color.LightBlue);
                 DRKLoader.AddParticle(spark);
