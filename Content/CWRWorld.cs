@@ -68,10 +68,6 @@ namespace CalamityOverhaul.Content
             Gangarus.ZenithWorldAsset();
         }
 
-        public override void PostUpdateEverything() {
-            //BrutalSkeletronPrimeAI.BSP_Main_NPC_Index = -1;
-        }
-
         public override void SaveWorldData(TagCompound tag) {
             tag.Add("_TitleMusicBoxEasterEgg", TitleMusicBoxEasterEgg);
             tag.Add("_Event_DefeatTheTungstenArmy_Tag", DefeatTheTungstenArmy);
