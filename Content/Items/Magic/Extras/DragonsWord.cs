@@ -1,13 +1,15 @@
-﻿using Terraria.ModLoader;
-using Terraria.ID;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
+﻿using CalamityMod.Items;
+using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.Rarities;
+using CalamityMod.Tiles.Furniture.CraftingStations;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
-using Microsoft.Xna.Framework;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
-using Microsoft.Xna.Framework.Graphics;
-using CalamityMod;
-using CalamityMod.NPCs.Providence;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Extras
 {
@@ -18,11 +20,13 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             Item.width = Item.height = 32;
             Item.damage = 122;
             Item.DamageType = DamageClass.Magic;
-            Item.useTime = Item.useAnimation = 36;
+            Item.useTime = Item.useAnimation = 60;
             Item.rare = ItemRarityID.Red;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.UseSound = Providence.HolyRaySound;
-            Item.mana = 20;
+            Item.UseSound = SoundID.Item92;
+            Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
+            Item.rare = ItemRarityID.Red;
+            Item.mana = 80;
             Item.shootSpeed = 6;
             Item.shoot = ModContent.ProjectileType<DragonsWordProj>();
         }
@@ -39,6 +43,14 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
                 , type, damage, knockback, player.whoAmI, 0f, 0.03f);
             }
             return false;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe().
+                AddIngredient<TearsofHeaven> ().
+                AddIngredient<YharonSoulFragment>(6).
+                AddTile(ModContent.TileType<CosmicAnvil>()).
+                Register();
         }
     }
 }

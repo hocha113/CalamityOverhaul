@@ -2673,23 +2673,35 @@ Items: {
 	}
 
 	TheBurningSkyEcType: {
-		// DisplayName: The Burning Sky Ec Type
-		// Tooltip: ""
+		// DisplayName: The Burning Sky
+		// Tooltip: Swing and let a ball of fire fall
 	}
 
 	PhoenixFlameBarrageEcType: {
-		// DisplayName: Phoenix Flame Barrage Ec Type
+		// DisplayName: Phoenix Flame Barrage
 		// Tooltip: ""
 	}
 
 	DevilsDevastationEcType: {
-		// DisplayName: Devils Devastation Ec Type
-		// Tooltip: ""
+		// DisplayName: Devil's Devastation
+		/* Tooltip:
+			'''
+			Each swing generates a Joyous Halberd that floats above the player, 
+			flying towards the cursor and attaching to enemies to deal continuous damage.
+			A heavy slash releases three rounds of Painful Reincarnation, 
+			dealing multiple instances of piercing damage to enemies in its path.
+			Finally, six Crimson Devil Halberds are summoned at the cursor's location, 
+			which float for a while before flying towards the player.
+			''' */
 	}
 
 	DragonsWord: {
-		// DisplayName: Dragons Word
-		// Tooltip: ""
+		// DisplayName: Dragon's Word
+		/* Tooltip:
+			'''
+			Fire Dragon tears and spin for a while to track enemies
+			"A dragon can only shed tears once in his life."
+			''' */
 	}
 }
 
@@ -3308,24 +3320,24 @@ Projectiles: {
 	// DeathsAscensionHeld.DisplayName: Deaths Ascension
 	// DeathsAscensionThrowable.DisplayName: Deaths Ascension
 	// DeathsAscensionBreakSwing.DisplayName: Deaths Ascension
-	// MG42HeldProj.DisplayName: M G42 Held Proj
-	// ChainGunHeldProj.DisplayName: Chain Gun Held Proj
+	// MG42HeldProj.DisplayName: MG42
+	// ChainGunHeldProj.DisplayName: Chain Gun
 	// RocketSkeleton.DisplayName: Rocket Skeleton
 	// DeadLaser.DisplayName: Dead Laser
-	// MoltenFuryHeldProj.DisplayName: Molten Fury Held Proj
+	// MoltenFuryHeldProj.DisplayName: Molten Fury
 	// DragonRageHeld.DisplayName: Dragon Rage Held
 	// DragonRageFireOrb.DisplayName: Dragon Rage Fire Orb
-	// TheBurningSkyHeld.DisplayName: The Burning Sky Held
-	// TheBurningSkyHeldAlt.DisplayName: The Burning Sky Held Alt
+	// TheBurningSkyHeld.DisplayName: The Burning Sky
+	// TheBurningSkyHeldAlt.DisplayName: The Burning Sky
 	// PhantomPhoenix.DisplayName: Phantom Phoenix
-	// PhoenixFlameBarrageHeld.DisplayName: Phoenix Flame Barrage Held
-	// HolyColliderHeld.DisplayName: Holy Collider Held
+	// PhoenixFlameBarrageHeld.DisplayName: Phoenix Flame Barrage
+	// HolyColliderHeld.DisplayName: Holy Collider
 	// HolyColliderExFire.DisplayName: Holy Collider Ex Fire
-	// DevilsDevastationHeld.DisplayName: Devils Devastation Held
-	// EXDemonBlast.DisplayName: E X Demon Blast
-	// EXOathblade.DisplayName: E X Oathblade
-	// EXDemonBlastAlt.DisplayName: E X Demon Blast Alt
-	// DragonsWordProj.DisplayName: Dragons Word Proj
+	// DevilsDevastationHeld.DisplayName: Devil's Devastation
+	// EXDemonBlast.DisplayName: EX Demon Blast
+	// EXOathblade.DisplayName: EX Oathblade
+	// EXDemonBlastAlt.DisplayName: EX Demon Blast
+	// DragonsWordProj.DisplayName: Dragon's tear
 }
 
 Configs: {

@@ -390,7 +390,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 HandleDespawn(npc);
             }
 
-            if (npc.life < npc.lifeMax - 20) {
+            if (npc.life < npc.lifeMax - 20 && bossRush) {
                 if (cannonAlive) {
                     npc.life += 1;
                 }
@@ -434,7 +434,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             if (noArm) {
-                if (ai7 == 0 && ai10 > 2 && death) {
+                if (ai7 == 0 && ai10 > 2 && death && !bossRush) {
                     ai4 = 3;
                     CWRUtils.SpawnBossNetcoded(player, NPCID.Retinazer);
                     CWRUtils.SpawnBossNetcoded(player, NPCID.Spazmatism);

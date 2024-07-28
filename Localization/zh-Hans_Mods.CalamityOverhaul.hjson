@@ -458,8 +458,12 @@ Items: {
 	}
 
 	HolyColliderEcType: {
-		DisplayName: 圣光巨刃
-		Tooltip: 挥舞时让圣之烈焰向你聚拢
+		DisplayName: 圣火之刃
+		Tooltip:
+			'''
+			发射一道渎火射线，在光标出引发一次爆炸
+			每间隔六次会进行一次强化攻击
+			'''
 	}
 
 	Oracle: {
@@ -2653,22 +2657,31 @@ Items: {
 
 	TheBurningSkyEcType: {
 		DisplayName: 焚灭天惩
-		Tooltip: ""
+		Tooltip: 挥舞让一片火球降下
 	}
 
 	PhoenixFlameBarrageEcType: {
-		// DisplayName: Phoenix Flame Barrage Ec Type
+		// DisplayName: Phoenix Flame Barrage
 		// Tooltip: ""
 	}
 
 	DevilsDevastationEcType: {
 		DisplayName: 破灭魔王剑
-		Tooltip: ""
+		Tooltip:
+			'''
+			每次挥舞会生成一个漂浮在玩家上方的欢愉之戟，会向光标方向飞行，击中敌人后附着在其身上造成持续伤害
+			大挥砍会发射三轮痛苦之轮回，对路径上的敌人造成多次穿透伤害
+			最后会在光标出召唤六个绯红魔王戟，飘浮一段时间后向玩家方向飞行
+			'''
 	}
 
 	DragonsWord: {
-		// DisplayName: Dragons Word
-		// Tooltip: ""
+		DisplayName: 龙言
+		Tooltip:
+			'''
+			发射龙泪，自旋一段时间后追踪敌人
+			"龙一生只能流一次泪"
+			'''
 	}
 }
 
@@ -3287,24 +3300,24 @@ Projectiles: {
 	// DeathsAscensionHeld.DisplayName: Deaths Ascension
 	// DeathsAscensionThrowable.DisplayName: Deaths Ascension
 	// DeathsAscensionBreakSwing.DisplayName: Deaths Ascension
-	// MG42HeldProj.DisplayName: M G42 Held Proj
-	// ChainGunHeldProj.DisplayName: Chain Gun Held Proj
+	// MG42HeldProj.DisplayName: MG42
+	// ChainGunHeldProj.DisplayName: Chain Gun
 	// RocketSkeleton.DisplayName: Rocket Skeleton
 	// DeadLaser.DisplayName: Dead Laser
-	// MoltenFuryHeldProj.DisplayName: Molten Fury Held Proj
+	// MoltenFuryHeldProj.DisplayName: Molten Fury
 	// DragonRageHeld.DisplayName: Dragon Rage Held
 	// DragonRageFireOrb.DisplayName: Dragon Rage Fire Orb
-	// TheBurningSkyHeld.DisplayName: The Burning Sky Held
-	// TheBurningSkyHeldAlt.DisplayName: The Burning Sky Held Alt
+	// TheBurningSkyHeld.DisplayName: The Burning Sky
+	// TheBurningSkyHeldAlt.DisplayName: The Burning Sky
 	// PhantomPhoenix.DisplayName: Phantom Phoenix
-	// PhoenixFlameBarrageHeld.DisplayName: Phoenix Flame Barrage Held
-	// HolyColliderHeld.DisplayName: Holy Collider Held
+	// PhoenixFlameBarrageHeld.DisplayName: Phoenix Flame Barrage
+	// HolyColliderHeld.DisplayName: Holy Collider
 	// HolyColliderExFire.DisplayName: Holy Collider Ex Fire
-	// DevilsDevastationHeld.DisplayName: Devils Devastation Held
+	// DevilsDevastationHeld.DisplayName: Devil's Devastation
 	EXDemonBlast.DisplayName: 欢愉之戟
-	EXOathblade.DisplayName: 生命年轮
+	EXOathblade.DisplayName: 痛苦之轮回
 	EXDemonBlastAlt.DisplayName: 绯红魔王戟
-	// DragonsWordProj.DisplayName: Dragons Word Proj
+	// DragonsWordProj.DisplayName: Dragon's tear
 }
 
 Configs: {

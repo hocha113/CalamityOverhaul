@@ -9,6 +9,20 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 {
+    public class _SHPB : SHPB
+    {
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            base.ModifyHitNPC(target, ref modifiers);
+        }
+    }
+
+    public class _SHPL : SHPL
+    {
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            base.ModifyHitNPC(target, ref modifiers);
+        }
+    }
+
     internal class SHPCHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "SHPC";
@@ -92,62 +106,64 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void FiringShoot() {
+            int type = ModContent.ProjectileType<_SHPB>();
             switch (level) {
                 case 0:
                 case 1:
                 case 2:
                 case 3:
                     Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
-                    , ModContent.ProjectileType<SHPB>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     break;
                 case 4:
                 case 5:
                 case 6:
                     if (level == 4 && NPC.AnyNPCs(NPCID.WallofFlesh)) {
                         Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
-                        , ModContent.ProjectileType<SHPB>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                        , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                         break;
                     }
                     for (int i = 0; i < 2; i++) {
                         Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1f)
-                            , ModContent.ProjectileType<SHPB>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                            , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     }
                     break;
                 default:
                     for (int i = 0; i < 3; i++) {
                         Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.22f) * Main.rand.NextFloat(0.8f, 1f)
-                            , ModContent.ProjectileType<SHPB>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                            , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     }
                     break;
             }
         }
 
         public override void FiringShootR() {
+            int type = ModContent.ProjectileType<_SHPL>();
             switch (level) {
                 case 0:
                 case 1:
                 case 2:
                 case 3:
                     Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
-                    , ModContent.ProjectileType<SHPL>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     break;
                 case 4:
                 case 5:
                 case 6:
                     if (level == 4 && NPC.AnyNPCs(NPCID.WallofFlesh)) {
                         Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
-                        , ModContent.ProjectileType<SHPL>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                        , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                         break;
                     }
                     for (int i = 0; i < 2; i++) {
                         Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.08f) * Main.rand.NextFloat(0.8f, 1f)
-                            , ModContent.ProjectileType<SHPL>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                            , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     }
                     break;
                 default:
                     for (int i = 0; i < 3; i++) {
                         Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.8f, 1f)
-                            , ModContent.ProjectileType<SHPL>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                            , type, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     }
                     break;
             }
