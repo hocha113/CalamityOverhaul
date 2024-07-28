@@ -160,6 +160,14 @@ namespace CalamityOverhaul.Content
         /// 是一把弓
         /// </summary>
         public bool IsBow;
+        /// <summary>
+        /// 是否被抛射物控制使用
+        /// </summary>
+        public bool IsShootCountCorlUse;
+        /// <summary>
+        /// 挥舞索引，一般被刀具所使用
+        /// </summary>
+        public int SwingIndex;
         #endregion
 
         private void SmiperItemSet(Item item) {
@@ -507,6 +515,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool CanUseItem(Item item, Player player) {
+            if (IsShootCountCorlUse) {
+                return player.ownedProjectileCounts[item.shoot] <= 0;
+            }
             if (heldProjType > 0 && hasHeldNoCanUseBool) {
                 return false;
             }

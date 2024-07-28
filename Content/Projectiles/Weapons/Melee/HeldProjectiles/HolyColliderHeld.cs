@@ -94,16 +94,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void SwingAI() {
             if (Projectile.ai[0] == 1) {
-                SwingBever(33, 6, 0.1f, 0.1f, 0.012f, 0.01f, 0.1f, 0, 0, 0, 16, 32);
+                SwingBehavior(33, 6, 0.1f, 0.1f, 0.012f, 0.01f, 0.1f, 0, 0, 0, 16, 32);
                 maxSwingTime = 32;
                 return;
             }
             else if (Projectile.ai[0] == 2) {
-                SwingBever(33, 2, 0.1f, 0.1f, 0.006f, 0.016f, 0.16f, 0, 0, 0, 12, 80);
+                SwingBehavior(33, 2, 0.1f, 0.1f, 0.006f, 0.016f, 0.16f, 0, 0, 0, 12, 80);
                 maxSwingTime = 80;
                 return;
             }
-            SwingBever(33, 3, 0.1f, 0.1f, 0.012f, 0.01f, 0.08f, 0, 0, 0, 12, 36);
+            SwingBehavior(33, 3, 0.1f, 0.1f, 0.012f, 0.01f, 0.08f, 0, 0, 0, 12, 36);
         }
 
         private void HitEffect(Entity target, bool theofSteel) {

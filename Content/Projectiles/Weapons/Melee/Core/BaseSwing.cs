@@ -1,13 +1,14 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Common.Effects;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 {
@@ -18,6 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         protected Vector2 vector;
         protected Vector2 startVector;
         int dirs;
+        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         /// <summary>
         /// 弹幕实体中心偏离值，默认为60
         /// </summary>
@@ -50,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 弧光的采样点数，默认为15 * <see cref="updateCount"/>
         /// </summary>
-        protected int trailCount;
+        protected int trailCount = 15;
         /// <summary>
         /// 绝对中心距离玩家的距离，默认为75
         /// </summary>
@@ -59,6 +61,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 弧光宽度，默认为50
         /// </summary>
         protected float trailTopWidth = 50;
+        protected float toProjCoreMode = 48;
+        protected float drawTrailBtommMode = 70;
         protected float[] oldRotate;
         protected float[] oldLength;
         protected float[] oldDistanceToOwner;
@@ -91,23 +95,43 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public virtual string gradientTexturePath => "";
         public Texture2D TrailTexture => SwingSystem.trailTextures[Type].Value;
         public Texture2D GradientTexture => SwingSystem.gradientTextures[Type].Value;
+        
+        public struct SwingDataStruct
+        {
+            public float starArg = 33; 
+            public float baseSwingSpeed = 4;
+            public float ler1_UpLengthSengs = 0.08f;
+            public float ler1_UpSpeedSengs = 0.1f;
+            public float ler1_UpSizeSengs = 0.012f;
+            public float ler2_DownLengthSengs = 0.01f;
+            public float ler2_DownSpeedSengs = 0.1f;
+            public float ler2_DownSizeSengs = 0;
+            public int minClampLength = 0;
+            public int maxClampLength = 0;
+            public int ler1Time = 0;
+            public int maxSwingTime = 0;
+            public float overSpeedUpSengs = 1;
+            public SwingDataStruct() { }
+        }
         #endregion
         public sealed override void SetDefaults() {
             Length = OrigLength;
             if (PreSetSwingProperty()) {
+                Projectile.DamageType = DamageClass.Melee;
+                Projectile.width = Projectile.height = 22;
                 Projectile.tileCollide = false;
                 Projectile.scale = 1f;
                 Projectile.friendly = true;
                 Projectile.penetrate = -1;
                 Rotation = MathHelper.ToRadians(3);
                 SetSwingProperty();
-                trailCount = 15 * updateCount;
-                oldRotate = new float[trailCount];
-                oldDistanceToOwner = new float[trailCount];
-                oldLength = new float[trailCount];
-                InitializeCaches();
             }
             PostSwingProperty();
+            trailCount *= updateCount;
+            oldRotate = new float[trailCount];
+            oldDistanceToOwner = new float[trailCount];
+            oldLength = new float[trailCount];
+            InitializeCaches();
             OrigLength = Length;
         }
 
@@ -174,10 +198,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             rotToTargetSpeedTrengsVumVer = norlToTarget.RotatedBy(-rotToTargetSpeedSengs) * 13;
         }
 
-        public virtual void SwingBever(float starArg = 33, float baseSwingSpeed = 4
+        public virtual void SwingBehavior(float starArg = 33, float baseSwingSpeed = 4
             , float ler1_UpLengthSengs = 0.08f, float ler1_UpSpeedSengs = 0.1f, float ler1_UpSizeSengs = 0.012f
             , float ler2_DownLengthSengs = 0.01f, float ler2_DownSpeedSengs = 0.1f, float ler2_DownSizeSengs = 0
-            , int minClampLength = 0, int maxClampLength = 0, int ler1Time = 10, int maxSwingTime = 0) {
+            , int minClampLength = 0, int maxClampLength = 0, int ler1Time = 0, int maxSwingTime = 0, float overSpeedUpSengs = 1) {
             if (minClampLength == 0) {
                 minClampLength = (int)(OrigLength * 1.2f);
             }
@@ -187,12 +211,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             if (maxSwingTime == 0) {
                 maxSwingTime = this.maxSwingTime;
             }
+            if (ler1Time == 0) {
+                ler1Time = (int)(maxSwingTime * 0.4f);
+            }
+
+            float speedUp = SetSwingSpeed(1);
+            speedUp *= overSpeedUpSengs;
+
             if (Time == 0) {
                 Rotation = MathHelper.ToRadians(starArg * -Owner.direction);
                 startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
-                speed = MathHelper.ToRadians(baseSwingSpeed) / SetSwingSpeed(1);
+                speed = MathHelper.ToRadians(baseSwingSpeed) / speedUp;
             }
-            if (Time < ler1Time * SetSwingSpeed(1)) {
+            if (Time < ler1Time * speedUp) {
                 Length *= 1 + ler1_UpLengthSengs / updateCount;
                 Rotation += speed * Projectile.spriteDirection;
                 speed *= 1 + ler1_UpSpeedSengs / updateCount;
@@ -202,17 +233,32 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             else {
                 Length *= 1 - ler2_DownLengthSengs / updateCount;
                 Rotation += speed * Projectile.spriteDirection;
-                speed *= 1 - ler2_DownSpeedSengs / updateCount / SetSwingSpeed(1);
+                speed *= 1 - ler2_DownSpeedSengs / updateCount / speedUp;
                 vector = startVector.RotatedBy(Rotation) * Length;
                 Projectile.scale -= ler2_DownSizeSengs;
             }
-            if (Time >= maxSwingTime * updateCount * SetSwingSpeed(1)) {
+            if (Time >= maxSwingTime * updateCount * speedUp) {
                 Projectile.Kill();
             }
             if (Time % updateCount == updateCount - 1) {
                 Length = MathHelper.Clamp(Length, minClampLength, maxClampLength);
             }
         }
+
+        public virtual void SwingBehavior(SwingDataStruct swingData) => 
+            SwingBehavior(swingData.starArg,
+                          swingData.baseSwingSpeed,
+                          swingData.ler1_UpLengthSengs,
+                          swingData.ler1_UpSpeedSengs,
+                          swingData.ler1_UpSizeSengs,
+                          swingData.ler2_DownLengthSengs,
+                          swingData.ler2_DownSpeedSengs,
+                          swingData.ler2_DownSizeSengs,
+                          swingData.minClampLength,
+                          swingData.maxClampLength,
+                          swingData.ler1Time,
+                          swingData.maxSwingTime,
+                          swingData.overSpeedUpSengs);
 
         #endregion
         public override bool ShouldUpdatePosition() => false;
@@ -259,6 +305,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         public virtual bool PreInOwnerUpdate() { return true; }
         public virtual void PostInOwnerUpdare() { }
+        public virtual void Initialize() { }
 
         /// <summary>
         /// 几乎所有的逻辑更新都在这里进行
@@ -266,6 +313,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <returns></returns>
         public sealed override bool PreUpdate() {
             canShoot = Time == (int)(maxSwingTime * shootSengs);
+            if (Time == 0) {
+                Initialize();
+            }
             if (PreInOwnerUpdate()) {
                 InOwner();
                 SwingAI();
@@ -275,10 +325,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 UpdateCaches();
                 rotSpeed = Rotation - oldRot;
                 oldRot = Rotation;
-                Time++;
                 canShoot = false;
             }
             PostInOwnerUpdare();
+            Time++;
             return false;
         }
         /// <summary>
@@ -401,7 +451,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public virtual float ControlTrailBottomWidth(float factor) {
-            return 70 * Projectile.scale;
+            return drawTrailBtommMode * Projectile.scale;
         }
 
         public virtual void DrawSlashTrail() {
@@ -432,12 +482,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public virtual void DrawSwing(SpriteBatch spriteBatch, Color lightColor) {
-            Texture2D texture = CWRUtils.GetT2DValue(Texture);
+            Texture2D texture = TextureValue;
             Rectangle rect = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 drawOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
             SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
-            Vector2 v = Projectile.Center - RodingToVer(48, (Projectile.Center - Owner.Center).ToRotation());
+            Vector2 v = Projectile.Center - RodingToVer(toProjCoreMode, (Projectile.Center - Owner.Center).ToRotation());
 
             float drawRoting = Projectile.rotation;
             if (Projectile.spriteDirection == -1) {

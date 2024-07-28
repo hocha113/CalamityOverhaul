@@ -1,0 +1,15 @@
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using Terraria.ID;
+
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles.Vanilla
+{
+    internal class WoodenSwordHeld : BaseKnife
+    {
+        public override int TargetID => Item.type;
+        public override void SetKnifeProperty() {
+            SwingData.baseSwingSpeed = 4;
+            Length = 30;
+            SwingAIType = SwingAITypeEnum.UpAndDown;
+        }
+    }
+}

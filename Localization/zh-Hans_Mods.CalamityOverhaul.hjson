@@ -3324,6 +3324,8 @@ Projectiles: {
 	EXOathblade.DisplayName: 痛苦之轮回
 	EXDemonBlastAlt.DisplayName: 绯红魔王戟
 	// DragonsWordProj.DisplayName: Dragon's tear
+	// BaseKnife.DisplayName: Base Knife
+	// WoodenSwordHeld.DisplayName: Wooden Sword Held
 }
 
 Configs: {

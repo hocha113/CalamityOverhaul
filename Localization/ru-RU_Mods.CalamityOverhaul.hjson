@@ -3344,6 +3344,8 @@ Projectiles: {
 	// EXOathblade.DisplayName: EX Oathblade
 	// EXDemonBlastAlt.DisplayName: EX Demon Blast
 	// DragonsWordProj.DisplayName: Dragon's tear
+	// BaseKnife.DisplayName: Base Knife
+	// WoodenSwordHeld.DisplayName: Wooden Sword Held
 }
 
 Configs: {

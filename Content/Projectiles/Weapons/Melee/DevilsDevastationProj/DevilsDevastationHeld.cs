@@ -95,13 +95,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             }
             
             if (Projectile.ai[0] == 1) {
-                SwingBever(starArg: 63, baseSwingSpeed: 6, ler1_UpLengthSengs: 0.1f, ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.062f
+                SwingBehavior(starArg: 63, baseSwingSpeed: 6, ler1_UpLengthSengs: 0.1f, ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.062f
                 , ler2_DownLengthSengs: 0.01f, ler2_DownSpeedSengs: 0.14f, ler2_DownSizeSengs: 0
                 , minClampLength: 160, maxClampLength: 220, ler1Time: 18, maxSwingTime: 30);
                 return;
             }
             else if (Projectile.ai[0] == 2) {
-                SwingBever(starArg: 63, baseSwingSpeed: -6, ler1_UpLengthSengs: 0.1f, ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.062f
+                SwingBehavior(starArg: 63, baseSwingSpeed: -6, ler1_UpLengthSengs: 0.1f, ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.062f
                 , ler2_DownLengthSengs: 0.01f, ler2_DownSpeedSengs: 0.14f, ler2_DownSizeSengs: 0
                 , minClampLength: 160, maxClampLength: 220, ler1Time: 18, maxSwingTime: 30);
                 return;
@@ -110,13 +110,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 shootSengs = 0.95f;
                 maxSwingTime = 70;
                 canDrawSlashTrail = false;
-                SwingBever(starArg: 13, baseSwingSpeed: 2, ler1_UpLengthSengs: 0.1f, ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.062f
+                SwingBehavior(starArg: 13, baseSwingSpeed: 2, ler1_UpLengthSengs: 0.1f, ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.062f
                 , ler2_DownLengthSengs: 0.01f, ler2_DownSpeedSengs: 0.14f, ler2_DownSizeSengs: 0
                 , minClampLength: 160, maxClampLength: 200, ler1Time: 8, maxSwingTime: 60);
                 return;
             }
 
-            SwingBever(starArg: 63, baseSwingSpeed: 6, ler1_UpLengthSengs: 0.1f, ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.022f
+            SwingBehavior(starArg: 63, baseSwingSpeed: 6, ler1_UpLengthSengs: 0.1f, ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.022f
                 , ler2_DownLengthSengs: 0.01f, ler2_DownSpeedSengs: 0.14f, ler2_DownSizeSengs: 0
                 , minClampLength: 0, maxClampLength: 0, ler1Time: 8, maxSwingTime: 20);
         }

@@ -1173,6 +1173,14 @@ namespace CalamityOverhaul
             }
         }
 
+        public static void SetKnifeHeld<T>(this Item item) where T : ModProjectile {
+            item.noMelee = true;
+            item.noUseGraphic = true;
+            item.CWR().IsShootCountCorlUse = true;
+            item.shootSpeed = 6;
+            item.shoot = ModContent.ProjectileType<T>();
+        }
+
         /// <summary>
         /// 获取玩家对象一个稳定的中心位置，考虑斜坡矫正与坐骑矫正，适合用于处理手持弹幕的位置获取
         /// </summary>
