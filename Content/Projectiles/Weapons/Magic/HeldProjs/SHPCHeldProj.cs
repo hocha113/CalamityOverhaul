@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 {
     public class _SHPB : SHPB
     {
+        public override string Texture => CWRConstant.Cay_Proj_Magic + "SHPB";
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             base.ModifyHitNPC(target, ref modifiers);
         }
@@ -18,6 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 
     public class _SHPL : SHPL
     {
+        public override string Texture => "CalamityMod/Projectiles/LaserProj";
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             base.ModifyHitNPC(target, ref modifiers);
         }

@@ -2978,6 +2978,12 @@ Projectiles: {
 	// FlintSpearProj.DisplayName: Flint Spear Proj
 	// TheUpiSteleHeldProj.DisplayName: The Upi Stele
 	// MagicStar.DisplayName: Magic Star
+
+	Magic: {
+		// _SHPB.DisplayName: _ S H P B
+		// _SHPL.DisplayName: _ S H P L
+	}
+
 	// TheSpiritFlintProjL.DisplayName: The Spirit Flint Proj L
 	// TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
 	// TheSpiritFlintProj.DisplayName: The Spirit Flint Proj
