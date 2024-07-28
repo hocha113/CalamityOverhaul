@@ -2674,6 +2674,11 @@ Items: {
 			"A dragon can only shed tears once in his life."
 			'''
 	}
+
+	DarklightGreatswordEcType: {
+		DisplayName: Darklight Greatsword
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3317,6 +3322,9 @@ Projectiles: {
 	DragonsWordProj.DisplayName: Dragon's tear
 	BaseKnife.DisplayName: Base Knife
 	WoodenSwordHeld.DisplayName: Wooden Sword Held
+	EarlierSwordHeld.DisplayName: Earlier Sword Held
+	DarklightGreatswordHeld.DisplayName: Darklight Greatsword Held
+	AbsoluteZeroHeld.DisplayName: Absolute Zero Held
 }
 
 Configs: {

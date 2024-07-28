@@ -1,9 +1,8 @@
 ﻿using CalamityMod;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ID;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 {
@@ -21,6 +20,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             UpAndDown,
         }
         public sealed override void SetSwingProperty() {
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 10;
             ownerOrientationLock = true;
             Projectile.extraUpdates = 4;
             SetKnifeProperty();
@@ -49,6 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                         SwingBehavior(swingData);
                     }
                     else {
+                        inDrawFlipdiagonally = true;
                         swingData.starArg += 120;
                         swingData.baseSwingSpeed *= -1;
                         SwingBehavior(swingData);

@@ -8,6 +8,9 @@ namespace CalamityOverhaul.Content.Particles.Core
     /// </summary>
     internal abstract class BaseParticle
     {
+        public virtual string Texture => "";
+        public virtual int FrameVariants => 1;
+        public int Variant = 0;
         /// <summary>
         /// 由一般粒子处理程序注册的粒子类型的ID,这是在粒子处理器loadsl时自动设置的
         /// </summary>
@@ -40,19 +43,37 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// 一个粒子可以存活的最大时间,单位为tick,一般如果想让其有效需要先将<see cref="SetLifetime"/>设置为<see langword="true"/>
         /// </summary>
         public int Lifetime = 0;
+        /// <summary>
+        /// 存活时间比例
+        /// </summary>
         public float LifetimeCompletion => Lifetime != 0 ? Time / (float)Lifetime : 0;
         /// <summary>
         /// 一个粒子在世界中的位置，这不是在粒子集的上下文中使用的，因为所有的粒子都是根据它们相对于集合原点的位置来计算的
         /// </summary>
         public Vector2 Position;
+        /// <summary>
+        /// 这个粒子的客观移动速度，一般用于位置更新
+        /// </summary>
         public Vector2 Velocity;
+        /// <summary>
+        /// 应该取得的中心值
+        /// </summary>
         public Vector2 Origin;
+        /// <summary>
+        /// 绘制所通用的全局颜色
+        /// </summary>
         public Color Color;
+        /// <summary>
+        /// 旋转角度
+        /// </summary>
         public float Rotation;
+        /// <summary>
+        /// 体积缩放，并不推荐使用这个属性来控制粒子的死亡
+        /// </summary>
         public float Scale;
-        public virtual int FrameVariants => 1;
-        public int Variant = 0;
-        public virtual string Texture => "";
+        /// <summary>
+        /// 粒子的AI数值，用于交互数据，便于实现更加复杂的行为
+        /// </summary>
         public int[] ai = new int[3];
         /// <summary>
         /// 如果想自己处理粒子绘制,请使用此方法。只在UseCustomDraw设置为true时调用

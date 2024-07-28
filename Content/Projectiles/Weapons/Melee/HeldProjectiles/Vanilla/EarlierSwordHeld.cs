@@ -3,7 +3,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles.Vanilla
 {
-    internal class WoodenSwordHeld : BaseKnife
+    internal class EarlierSwordHeld : BaseKnife
     {
         public override int TargetID => Item.type;
         public override void SetKnifeProperty() {

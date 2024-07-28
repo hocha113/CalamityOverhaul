@@ -2673,8 +2673,8 @@ Items: {
 	}
 
 	TheBurningSkyEcType: {
-		// DisplayName: The Burning Sky
-		// Tooltip: Swing and let a ball of fire fall
+		DisplayName: Небесное Огонь и Наказание
+		Tooltip: Взмах вызывает дождь из огненных шаров
 	}
 
 	PhoenixFlameBarrageEcType: {
@@ -2683,30 +2683,34 @@ Items: {
 	}
 
 	DevilsDevastationEcType: {
-		// DisplayName: Devil's Devastation
-		/* Tooltip:
+		DisplayName: Меч Разрушителя Демонов
+		Tooltip:
 			'''
-			Each swing generates a Joyous Halberd that floats above the player, 
-			flying towards the cursor and attaching to enemies to deal continuous damage.
-			A heavy slash releases three rounds of Painful Reincarnation, 
-			dealing multiple instances of piercing damage to enemies in its path.
-			Finally, six Crimson Devil Halberds are summoned at the cursor's location, 
-			which float for a while before flying towards the player.
-			''' */
+			Каждый взмах создает Радостное Копье, которое парит над игроком, летит в направлении курсора и, 
+			попав во врага, прикрепляется к нему, нанося непрерывный урон.
+			Мощный удар выпускает три раунда Боли Воплощения, нанося многократный проникающий урон врагам на своем пути.
+			Наконец, в месте курсора призываются шесть Малиновых Демонических Копий, 
+			которые некоторое время парят, а затем летят в направлении игрока.
+			'''
 	}
 
 	DragonsWord: {
-		// DisplayName: Dragon's Word
-		/* Tooltip:
+		DisplayName: Драконье Слово
+		Tooltip:
 			'''
-			Fire Dragon tears and spin for a while to track enemies
-			"A dragon can only shed tears once in his life."
-			''' */
+			Выпускает слёзы дракона, которые вращаются некоторое время и преследуют врагов
+			"Дракон может пролить слёзы только раз в жизни."
+			'''
+	}
+
+	DarklightGreatswordEcType: {
+		// DisplayName: Darklight Greatsword
+		// Tooltip: ""
 	}
 }
 
 Projectiles: {
-	SeaBlueBrinySpout.DisplayName: 海之涡流
+	SeaBlueBrinySpout.DisplayName: Вихрь моря
 
 	Melee: {
 		// CosmicShivProjectile.DisplayName: Cosmic Shiv Projectile
@@ -3346,6 +3350,9 @@ Projectiles: {
 	// DragonsWordProj.DisplayName: Dragon's tear
 	// BaseKnife.DisplayName: Base Knife
 	// WoodenSwordHeld.DisplayName: Wooden Sword Held
+	// EarlierSwordHeld.DisplayName: Earlier Sword Held
+	// DarklightGreatswordHeld.DisplayName: Darklight Greatsword Held
+	// AbsoluteZeroHeld.DisplayName: Absolute Zero Held
 }
 
 Configs: {

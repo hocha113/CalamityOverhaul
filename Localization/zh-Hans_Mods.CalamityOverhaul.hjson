@@ -2683,6 +2683,11 @@ Items: {
 			"龙一生只能流一次泪"
 			'''
 	}
+
+	DarklightGreatswordEcType: {
+		DisplayName: 巨剑夜光
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3326,6 +3331,9 @@ Projectiles: {
 	// DragonsWordProj.DisplayName: Dragon's tear
 	// BaseKnife.DisplayName: Base Knife
 	// WoodenSwordHeld.DisplayName: Wooden Sword Held
+	// EarlierSwordHeld.DisplayName: Earlier Sword Held
+	// DarklightGreatswordHeld.DisplayName: Darklight Greatsword Held
+	// AbsoluteZeroHeld.DisplayName: Absolute Zero Held
 }
 
 Configs: {

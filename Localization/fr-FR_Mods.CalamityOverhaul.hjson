@@ -2644,8 +2644,8 @@ Items: {
 	}
 
 	TheBurningSkyEcType: {
-		// DisplayName: The Burning Sky
-		// Tooltip: Swing and let a ball of fire fall
+		DisplayName: Châtiment Céleste Incandescent
+		Tooltip: Agiter fait tomber une pluie de boules de feu
 	}
 
 	PhoenixFlameBarrageEcType: {
@@ -2654,25 +2654,27 @@ Items: {
 	}
 
 	DevilsDevastationEcType: {
-		// DisplayName: Devil's Devastation
-		/* Tooltip:
+		DisplayName: Épée du Roi Démon Dévastateur
+		Tooltip:
 			'''
-			Each swing generates a Joyous Halberd that floats above the player, 
-			flying towards the cursor and attaching to enemies to deal continuous damage.
-			A heavy slash releases three rounds of Painful Reincarnation, 
-			dealing multiple instances of piercing damage to enemies in its path.
-			Finally, six Crimson Devil Halberds are summoned at the cursor's location, 
-			which float for a while before flying towards the player.
-			''' */
+			Chaque coup crée une Hallebarde Joyeuse qui flotte au-dessus du joueur, vole vers le curseur et, en touchant un ennemi, s'attache à lui, infligeant des dégâts continus.
+			Une attaque puissante libère trois séries de Cycle Douloureux, infligeant plusieurs dégâts perforants aux ennemis sur son passage.
+			Enfin, six Hallebardes Démoniaques Cramoises sont invoquées à l'endroit du curseur, flottant un moment avant de voler vers le joueur.
+			'''
 	}
 
 	DragonsWord: {
-		// DisplayName: Dragon's Word
-		/* Tooltip:
+		DisplayName: Parole de Dragon
+		Tooltip:
 			'''
-			Fire Dragon tears and spin for a while to track enemies
-			"A dragon can only shed tears once in his life."
-			''' */
+			Tire des larmes de dragon, qui tournent pendant un moment puis traquent les ennemis.
+			"Un dragon ne peut pleurer qu'une seule fois dans sa vie."
+			'''
+	}
+
+	DarklightGreatswordEcType: {
+		// DisplayName: Darklight Greatsword
+		// Tooltip: ""
 	}
 }
 
@@ -3317,6 +3319,9 @@ Projectiles: {
 	// DragonsWordProj.DisplayName: Dragon's tear
 	// BaseKnife.DisplayName: Base Knife
 	// WoodenSwordHeld.DisplayName: Wooden Sword Held
+	// EarlierSwordHeld.DisplayName: Earlier Sword Held
+	// DarklightGreatswordHeld.DisplayName: Darklight Greatsword Held
+	// AbsoluteZeroHeld.DisplayName: Absolute Zero Held
 }
 
 Configs: {

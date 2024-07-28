@@ -69,9 +69,9 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D circle = ModContent.Request<Texture2D>(Texture).Value;
-            Texture2D ember = ModContent.Request<Texture2D>(CWRConstant.Masking + "StarTexture").Value;
-            Texture2D glow = ModContent.Request<Texture2D>(CWRConstant.Masking + "SoftGlow").Value;
+            Texture2D tex1 = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D tex2 = ModContent.Request<Texture2D>(CWRConstant.Masking + "StarTexture").Value;
+            Texture2D tex3 = ModContent.Request<Texture2D>(CWRConstant.Masking + "SoftGlow").Value;
 
             Color bright = Color.Multiply(new(260, 149, 46, 255), opacity);
             Color mid = Color.Multiply(new(187, 33, 25, 255), opacity);
@@ -81,14 +81,14 @@ namespace CalamityOverhaul.Content.Particles
             float pixelRatio = 1f / 64f;
 
             Vector2 drawPos = Position - Main.screenPosition;
-            spriteBatch.Draw(glow, drawPos, new Rectangle(0, 0, 64, 64), glowColor, Rotation
+            spriteBatch.Draw(tex3, drawPos, new Rectangle(0, 0, 64, 64), glowColor, Rotation
                 , new Vector2(32f, 32f), 1f * size * Scale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(circle, drawPos - new Vector2(1.5f, 1.5f), new Rectangle(0, 0, 64, 64), emberColor
+            spriteBatch.Draw(tex1, drawPos - new Vector2(1.5f, 1.5f), new Rectangle(0, 0, 64, 64), emberColor
                 , Rotation, Vector2.Zero, 1f * pixelRatio * 3f * size * Scale, SpriteEffects.None, 0f);
 
             if (ai[1] < 1) {
-                spriteBatch.Draw(ember, drawPos, null, Color, Rotation
-                    , ember.Size() / 2, 1f * Scale * 0.04f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex2, drawPos, null, Color, Rotation
+                    , tex2.Size() / 2, 1f * Scale * 0.04f, SpriteEffects.None, 0f);
             }
         }
     }

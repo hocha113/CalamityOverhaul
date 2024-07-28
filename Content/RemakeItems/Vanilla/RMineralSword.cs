@@ -1,80 +1,87 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles.Vanilla;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Terraria;
 using Terraria.ID;
+using Terraria;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {
     /// <summary>
-    /// 木剑
+    /// 铅宽剑
     /// </summary>
-    internal class RWoodenSword : BaseRItem
+    internal class RMineralSword : BaseRItem
     {
         public override bool IsVanilla => true;
-        public override int TargetID => ItemID.WoodenSword;
+        public override int TargetID => ItemID.LeadBroadsword;
         public override void SetDefaults(Item item) => item.SetKnifeHeld<EarlierSwordHeld>();
     }
+
     /// <summary>
-    /// 乌木剑
+    /// 锡宽剑
     /// </summary>
-    internal class RWoodenSword2 : BaseRItem
+    internal class RMineralSword2 : BaseRItem
     {
         public override bool IsVanilla => true;
-        public override int TargetID => ItemID.EbonwoodSword;
+        public override int TargetID => ItemID.TinBroadsword;
         public override void SetDefaults(Item item) => item.SetKnifeHeld<EarlierSwordHeld>();
     }
+
     /// <summary>
-    /// 红木剑
+    /// 钨宽剑
     /// </summary>
-    internal class RWoodenSword3 : BaseRItem
+    internal class RMineralSword3 : BaseRItem
     {
         public override bool IsVanilla => true;
-        public override int TargetID => ItemID.RichMahoganySword;
+        public override int TargetID => ItemID.TungstenBroadsword;
         public override void SetDefaults(Item item) => item.SetKnifeHeld<EarlierSwordHeld>();
     }
+
     /// <summary>
-    /// 珍珠木剑
+    /// 铂金宽剑
     /// </summary>
-    internal class RWoodenSword4 : BaseRItem
+    internal class RMineralSword4 : BaseRItem
     {
         public override bool IsVanilla => true;
-        public override int TargetID => ItemID.PearlwoodSword;
+        public override int TargetID => ItemID.PlatinumBroadsword;
         public override void SetDefaults(Item item) => item.SetKnifeHeld<EarlierSwordHeld>();
     }
+
     /// <summary>
-    /// 暗影木剑
+    /// 金阔剑
     /// </summary>
-    internal class RWoodenSword5 : BaseRItem
+    internal class RMineralSword5 : BaseRItem
     {
         public override bool IsVanilla => true;
-        public override int TargetID => ItemID.ShadewoodSword;
+        public override int TargetID => ItemID.GoldBroadsword;
         public override void SetDefaults(Item item) => item.SetKnifeHeld<EarlierSwordHeld>();
     }
+
     /// <summary>
-    /// 棕榈木剑
+    /// 铁阔剑
     /// </summary>
-    internal class RWoodenSword6 : BaseRItem
+    internal class RMineralSword6 : BaseRItem
     {
         public override bool IsVanilla => true;
-        public override int TargetID => ItemID.PalmWoodSword;
+        public override int TargetID => ItemID.IronBroadsword;
         public override void SetDefaults(Item item) => item.SetKnifeHeld<EarlierSwordHeld>();
     }
+
     /// <summary>
-    /// 针叶木剑
+    /// 铜阔剑
     /// </summary>
-    internal class RWoodenSword7 : BaseRItem
+    internal class RMineralSword7 : BaseRItem
     {
         public override bool IsVanilla => true;
-        public override int TargetID => ItemID.BorealWoodSword;
+        public override int TargetID => ItemID.CopperBroadsword;
         public override void SetDefaults(Item item) => item.SetKnifeHeld<EarlierSwordHeld>();
     }
+
     /// <summary>
-    /// 灰烬木剑
+    /// 银阔剑
     /// </summary>
-    internal class RWoodenSword8 : BaseRItem
+    internal class RMineralSword8 : BaseRItem
     {
         public override bool IsVanilla => true;
-        public override int TargetID => ItemID.AshWoodSword;
+        public override int TargetID => ItemID.SilverBroadsword;
         public override void SetDefaults(Item item) => item.SetKnifeHeld<EarlierSwordHeld>();
     }
 }

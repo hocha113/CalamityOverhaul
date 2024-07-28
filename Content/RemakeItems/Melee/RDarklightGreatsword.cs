@@ -9,12 +9,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
-    internal class RAbsoluteZero : BaseRItem
+    internal class RDarklightGreatsword : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<AbsoluteZero>();
-        public override int ProtogenesisID => ModContent.ItemType<AbsoluteZeroEcType>();
-        public override string TargetToolTipItemName => "AbsoluteZeroEcType";
-        public override void SetDefaults(Item item) => item.SetKnifeHeld<AbsoluteZeroHeld>();
+        public override int TargetID => ModContent.ItemType<DarklightGreatsword>();
+        public override int ProtogenesisID => ModContent.ItemType<DarklightGreatswordEcType>();
+        public override void SetDefaults(Item item) => item.SetKnifeHeld<DarklightGreatswordHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
