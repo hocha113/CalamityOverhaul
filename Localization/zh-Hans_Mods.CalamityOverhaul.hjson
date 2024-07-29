@@ -3334,6 +3334,8 @@ Projectiles: {
 	// EarlierSwordHeld.DisplayName: Earlier Sword Held
 	// DarklightGreatswordHeld.DisplayName: Darklight Greatsword Held
 	// AbsoluteZeroHeld.DisplayName: Absolute Zero Held
+	// DragonsWordCut.DisplayName: Dragons Word Cut
+	// DragonsWordMouse.DisplayName: Dragons Word Mouse
 }
 
 Configs: {

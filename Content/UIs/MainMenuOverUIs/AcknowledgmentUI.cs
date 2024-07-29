@@ -156,10 +156,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
                 float textAlp = sengs * (alp / 255f);
                 if (index == 0) {
-                    spriteBatch.Draw(Logo.Value, position + new Vector2(0, Logo1.Size().Y * -0.7f), null, Color.White * textAlp, 0f
+                    spriteBatch.Draw(Logo.Value, position, null, Color.White * textAlp, 0f
                         , new Vector2(Logo.Size().X / 2, Logo.Size().Y), 1, SpriteEffects.None, 0);
-                    spriteBatch.Draw(Logo1.Value, position, null, Color.White * textAlp, 0f
-                        , new Vector2(Logo1.Size().X / 2, Logo1.Size().Y), 1, SpriteEffects.None, 0);
                     return;
                 }
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text
@@ -248,7 +246,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         internal bool _active;
         internal static AcknowledgmentUI Instance { get; private set; }
         private static Asset<Texture2D> Logo;
-        private static Asset<Texture2D> Logo1;
         internal List<ProjItem> projectiles = new List<ProjItem>();
         internal List<EffectEntity> effectEntities = new List<EffectEntity>();
         Vector2 itemPos => new Vector2(Main.screenWidth / 2, Main.screenHeight - 60);
@@ -261,8 +258,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             On_Main.UpdateAudio_DecideOnNewMusic += DecideOnNewMusicEvent;
         }
         void ILoader.LoadAsset() {
-            Logo = CWRUtils.GetT2DAsset("CalamityMod/MainMenu/Logo");
-            Logo1 = CWRUtils.GetT2DAsset("CalamityOverhaul/Logo");
+            Logo = CWRUtils.GetT2DAsset("CalamityOverhaul/IntactLogo");
         }
 
         private void ToMusicFunc() {
@@ -289,7 +285,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override void UnLoad() {
             Instance = null;
             Logo = null;
-            Logo1 = null;
             _sengs = 0;
             On_Main.UpdateAudio_DecideOnTOWMusic -= DecideOnTOWMusicEvent;
             On_Main.UpdateAudio_DecideOnNewMusic -= DecideOnNewMusicEvent;

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
 {
     internal class DragonsWordProj : ModProjectile
     {
@@ -16,10 +16,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.DamageType = DamageClass.Magic;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
-            Projectile.penetrate = 12;
+            Projectile.penetrate = 18;
             Projectile.extraUpdates = 6;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 14;
             Projectile.timeLeft = 1220 * Projectile.extraUpdates;
         }
 
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Player Owner = Main.player[Projectile.owner];
             float targetDist = Vector2.Distance(Owner.Center, Projectile.Center);
             if (Time % 5 == 0 && Time > 35f && targetDist < 1400f) {
-                SparkParticle spark = new SparkParticle(Projectile.Center + Main.rand.NextVector2Circular(1 + (Time * 0.1f), 1 + (Time * 0.1f))
+                SparkParticle spark = new SparkParticle(Projectile.Center + Main.rand.NextVector2Circular(1 + Time * 0.1f, 1 + Time * 0.1f)
                     , -Projectile.velocity * 0.5f, false, 15, Main.rand.NextFloat(0.4f, 0.7f), Main.rand.NextBool() ? Color.DarkOrange : Color.OrangeRed);
                 GeneralParticleHandler.SpawnParticle(spark);
             }
