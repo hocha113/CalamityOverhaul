@@ -3336,6 +3336,8 @@ Projectiles: {
 	// AbsoluteZeroHeld.DisplayName: Absolute Zero Held
 	// DragonsWordCut.DisplayName: Dragons Word Cut
 	// DragonsWordMouse.DisplayName: Dragons Word Mouse
+	// BrinyBaronHeld.DisplayName: Briny Baron Held
+	// BrinyBaronOrb.DisplayName: Briny Baron Orb
 }
 
 Configs: {

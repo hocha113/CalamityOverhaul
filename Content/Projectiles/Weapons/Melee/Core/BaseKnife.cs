@@ -28,6 +28,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             CWRUtils.SafeLoadItem(TargetID);
         }
 
+        protected void updaTrailTexture() => SwingSystem.trailTextures[Type] = CWRUtils.GetT2DAsset(trailTexturePath);
+        protected void updaGradientTexture() => SwingSystem.gradientTextures[Type] = CWRUtils.GetT2DAsset(gradientTexturePath);
+
         public virtual void SetKnifeProperty() { }
 
         public override void Initialize() {

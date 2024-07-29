@@ -88,6 +88,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         protected bool canSetOwnerArmBver = true;
         /// <summary>
+        /// 较为稳妥的获取一个正确的刀尖单位方向向量
+        /// </summary>
+        protected Vector2 safeInSwingUnit => Owner.Center.To(Projectile.Center).UnitVector();
+        /// <summary>
         /// 绘制中是否进行对角线翻转
         /// </summary>
         protected bool inDrawFlipdiagonally;
@@ -98,18 +102,57 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         
         public struct SwingDataStruct
         {
-            public float starArg = 33; 
+            /// <summary>
+            /// 默认值为33
+            /// </summary>
+            public float starArg = 33;
+            /// <summary>
+            /// 默认值为4
+            /// </summary>
             public float baseSwingSpeed = 4;
+            /// <summary>
+            /// 默认值为0.08f
+            /// </summary>
             public float ler1_UpLengthSengs = 0.08f;
+            /// <summary>
+            /// 默认值为0.1f
+            /// </summary>
             public float ler1_UpSpeedSengs = 0.1f;
+            /// <summary>
+            /// 默认值为0.012f
+            /// </summary>
             public float ler1_UpSizeSengs = 0.012f;
+            /// <summary>
+            /// 默认值为0.01f
+            /// </summary>
             public float ler2_DownLengthSengs = 0.01f;
+            /// <summary>
+            /// 默认值为0.1f
+            /// </summary>
             public float ler2_DownSpeedSengs = 0.1f;
+            /// <summary>
+            /// 默认值为0
+            /// </summary>
             public float ler2_DownSizeSengs = 0;
+            /// <summary>
+            /// 默认值为0
+            /// </summary>
             public int minClampLength = 0;
+            /// <summary>
+            /// 默认值为0
+            /// </summary>
             public int maxClampLength = 0;
+            /// <summary>
+            /// 默认值为0
+            /// </summary>
             public int ler1Time = 0;
+            /// <summary>
+            /// 默认值为0
+            /// </summary>
             public int maxSwingTime = 0;
+            /// <summary>
+            /// 默认值为1
+            /// </summary>
             public float overSpeedUpSengs = 1;
             public SwingDataStruct() { }
         }

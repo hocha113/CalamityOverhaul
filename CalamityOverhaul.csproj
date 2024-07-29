@@ -44,6 +44,7 @@
     <None Remove="Assets\Masking\Extra_193_White.png" />
     <None Remove="Assets\Masking\MotionTrail2.png" />
     <None Remove="Assets\Masking\MotionTrail3.png" />
+    <None Remove="Assets\Masking\MotionTrail4.png" />
     <None Remove="Assets\Masking\SoftGlow.png" />
     <None Remove="Assets\Masking\SplitTrail.png" />
     <None Remove="Assets\Masking\StarTexture.png" />

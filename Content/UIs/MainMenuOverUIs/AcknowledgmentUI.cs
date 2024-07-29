@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             "雾梯" + textElement1,
             "子离似槜" + textElement1,
             "Cyrilly" + textElement2,
+            "瓶中微光" + textElement2,
             "Monomon" + textElement2,
             "像樱花一样飘散吧" + textElement4,
             "洛千希" + textElement4,
