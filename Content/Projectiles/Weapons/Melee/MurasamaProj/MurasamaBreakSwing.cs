@@ -269,16 +269,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == NPCID.Creeper) {
                 modifiers.FinalDamage *= 0.75f;
             }
+            if (target.type == NPCID.KingSlime) {
+                modifiers.FinalDamage *= 1.5f;
+            }
             if (target.type == NPCID.QueenBee) {
-                modifiers.FinalDamage *= 0.6f;
+                modifiers.FinalDamage *= 0.85f;
             }
             if (target.type == NPCID.SkeletronHand) {
-                modifiers.FinalDamage *= 0.6f;
+                modifiers.FinalDamage *= 0.75f;
             }
             if (target.type == NPCID.WallofFleshEye || target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 0.35f;
+                modifiers.FinalDamage *= 0.5f;
             }
-            if (target.type == NPCID.QueenSlimeBoss || target.type == CWRLoad.AquaticScourgeBody) {
+            if (target.type == NPCID.QueenSlimeBoss) {
+                modifiers.FinalDamage *= 0.9f;
+            }
+            if (target.type == CWRLoad.AquaticScourgeBody) {
                 modifiers.FinalDamage *= 0.75f;
             }
             if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
@@ -288,9 +294,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                  || target.type == CWRLoad.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == CWRLoad.PerforatorBodySmall) {
                 modifiers.FinalDamage *= 0.5f;
             }
+            if (target.type == NPCID.Retinazer || target.type == NPCID.Spazmatism) {
+                modifiers.FinalDamage *= 1.5f;
+            }
             if (target.type == NPCID.TheDestroyerBody || target.type == CWRLoad.AstrumDeusBody || target.type == CWRLoad.CosmicGuardianTail
-                || target.type == CWRLoad.CosmicGuardianHead || target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
-                modifiers.FinalDamage *= 1.25f;
+                || target.type == CWRLoad.CosmicGuardianHead || target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail || target.type == CWRLoad.StormWeaverBody) {
+                modifiers.FinalDamage *= 1.1f;
             }
             if (target.type == NPCID.TheDestroyer || target.type == CWRLoad.AstrumDeusHead || target.type == CWRLoad.AstrumDeusTail) {
                 modifiers.FinalDamage *= 3f;
@@ -310,7 +319,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 2f;
             }
             if (target.type == CWRLoad.RavagerBody) {
-                modifiers.FinalDamage *= 2f;
+                modifiers.FinalDamage *= 3f;
+            }
+            if (target.type == CWRLoad.RavagerClawLeft || target.type == CWRLoad.RavagerClawRight || target.type == CWRLoad.RavagerHead
+                || target.type == CWRLoad.RavagerLegLeft || target.type == CWRLoad.RavagerLegRight) {
+                modifiers.FinalDamage *= 1.5f;
             }
             if (CWRLoad.targetNpcTypes7_1.Contains(target.type)) {
                 modifiers.SetMaxDamage(target.lifeMax / 4);
@@ -324,11 +337,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == ModContent.NPCType<ProfanedGuardianCommander>()) {
                 modifiers.FinalDamage *= 2.5f;
             }
+            if (target.type == ModContent.NPCType<Providence>()) {
+                modifiers.FinalDamage *= 0.8f;
+            }
+            if (target.type == CWRLoad.StormWeaverTail || target.type == CWRLoad.StormWeaverHead) {
+                modifiers.FinalDamage *= 1.5f;
+            }
+            if (target.type == CWRLoad.StormWeaverBody) {
+                modifiers.FinalDamage *= 0.9f;
+            }
             if (target.type == CWRLoad.Polterghast) {
                 modifiers.FinalDamage *= 0.8f;
             }
             if (target.type == ModContent.NPCType<OldDukeToothBall>() || target.type == ModContent.NPCType<SulphurousSharkron>()) {
-                modifiers.FinalDamage *= 2f;
+                modifiers.FinalDamage *= 3f;
             }
             if (target.type == CWRLoad.Yharon || target.type == CWRLoad.Apollo || target.type == CWRLoad.Artemis) {
                 modifiers.FinalDamage *= 0.5f;
@@ -338,6 +360,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
             if (target.type == CWRLoad.ThanatosHead) {
                 modifiers.FinalDamage *= 5.71f;
+            }
+            if (target.type == ModContent.NPCType<SupremeCataclysm>() || target.type == ModContent.NPCType<SupremeCatastrophe>()) {
+                modifiers.FinalDamage *= 2f;
+            }
+            if (target.type == ModContent.NPCType<SupremeCalamitas>()) {
+                modifiers.FinalDamage *= 1.666666f;
+            }
+            if (target.type == ModContent.NPCType<BrimstoneHeart>()) {
+                modifiers.FinalDamage *= 2f;
             }
             modifiers.DefenseEffectiveness *= 0.5f;
         }
