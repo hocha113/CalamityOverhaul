@@ -1,4 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.NPCs.Crabulon;
+using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.Projectiles.Magic;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Magic;
@@ -13,6 +15,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     {
         public override string Texture => CWRConstant.Cay_Proj_Magic + "SHPB";
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.type == ModContent.NPCType<CrimulanPaladin>() || target.type == ModContent.NPCType<EbonianPaladin>()) {
+                modifiers.FinalDamage *= 0.5f;
+            }
             base.ModifyHitNPC(target, ref modifiers);
         }
     }
@@ -21,6 +26,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     {
         public override string Texture => "CalamityMod/Projectiles/LaserProj";
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.type == ModContent.NPCType<CrimulanPaladin>() || target.type == ModContent.NPCType<EbonianPaladin>()) {
+                modifiers.FinalDamage *= 0.75f;
+            }
             base.ModifyHitNPC(target, ref modifiers);
         }
     }
