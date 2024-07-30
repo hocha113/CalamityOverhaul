@@ -9,9 +9,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
     internal class BaseKnife : BaseSwing
     {
         public override string Texture => CWRConstant.Placeholder3;
-        public Item Item => Owner.ActiveItem();
-        public ref int SwingIndex => ref Item.CWR().SwingIndex;
-        public virtual int TargetID => ItemID.None;
         public override Texture2D TextureValue => TargetID == ItemID.None ? CWRUtils.GetT2DValue(Texture) : TextureAssets.Item[TargetID].Value;
         public SwingDataStruct SwingData = new SwingDataStruct();
         public SwingAITypeEnum SwingAIType;

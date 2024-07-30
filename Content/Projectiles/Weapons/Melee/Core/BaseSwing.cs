@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -20,6 +21,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         protected Vector2 startVector;
         int dirs;
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
+        public Item Item => Owner.ActiveItem();
+        public ref int SwingIndex => ref Item.CWR().SwingIndex;
+        public virtual int TargetID => ItemID.None;
         /// <summary>
         /// 弹幕实体中心偏离值，默认为60
         /// </summary>
@@ -91,6 +95,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 较为稳妥的获取一个正确的刀尖单位方向向量
         /// </summary>
         protected Vector2 safeInSwingUnit => Owner.Center.To(Projectile.Center).UnitVector();
+        protected IEntitySource Source => Owner.GetSource_ItemUse(Item);
+        protected Vector2 ShootVelocity => UnitToMouseV * Item.shootSpeed;
         /// <summary>
         /// 绘制中是否进行对角线翻转
         /// </summary>

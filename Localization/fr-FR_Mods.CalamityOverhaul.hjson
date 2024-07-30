@@ -3326,6 +3326,7 @@ Projectiles: {
 	// DragonsWordMouse.DisplayName: Dragons Word Mouse
 	// BrinyBaronHeld.DisplayName: Briny Baron Held
 	// BrinyBaronOrb.DisplayName: Briny Baron Orb
+	// AegisBladeHeld.DisplayName: Aegis Blade Held
 }
 
 Configs: {
