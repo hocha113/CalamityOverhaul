@@ -2673,6 +2673,11 @@ Items: {
 		// DisplayName: Darklight Greatsword
 		// Tooltip: ""
 	}
+
+	AtaraxiaEcType: {
+		// DisplayName: Ataraxia Ec Type
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3324,6 +3329,7 @@ Projectiles: {
 	// BrinyBaronHeld.DisplayName: Briny Baron Held
 	// BrinyBaronOrb.DisplayName: Briny Baron Orb
 	// AegisBladeHeld.DisplayName: Aegis Blade Held
+	// AtaraxiaHeld.DisplayName: Ataraxia Held
 }
 
 Configs: {

@@ -97,6 +97,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         protected Vector2 safeInSwingUnit => Owner.Center.To(Projectile.Center).UnitVector();
         protected IEntitySource Source => Owner.GetSource_ItemUse(Item);
         protected Vector2 ShootVelocity => UnitToMouseV * Item.shootSpeed;
+        protected Vector2 ShootSpanPos => Owner.GetPlayerStabilityCenter();
         /// <summary>
         /// 绘制中是否进行对角线翻转
         /// </summary>
