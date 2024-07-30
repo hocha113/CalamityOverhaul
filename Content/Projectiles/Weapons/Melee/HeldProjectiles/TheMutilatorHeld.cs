@@ -1,6 +1,5 @@
 ﻿using CalamityMod.CalPlayer;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -15,14 +14,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override int TargetID => ModContent.ItemType<TheMutilator>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "BloodRed_Bar";
         public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 60;
+            SwingAIType = SwingAITypeEnum.UpAndDown;
+            drawTrailHighlight = false;
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
             SwingData.baseSwingSpeed = 5f;
-            distanceToOwner = 64;
+            distanceToOwner = 40;
             trailTopWidth = 30;
-        }
-
-        public override void Shoot() {
+            Length = 86;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 target.position.X -= target.width / 2;
                 target.position.Y -= target.height / 2;
                 for (int i = 0; i < 30; i++) {
-                    int bloodDust = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, 5, 0f, 0f, 100, default, 2f);
+                    int bloodDust = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.Blood, 0f, 0f, 100, default, 2f);
                     Main.dust[bloodDust].velocity *= 3f;
                     if (Main.rand.NextBool()) {
                         Main.dust[bloodDust].scale = 0.5f;
@@ -47,10 +47,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     }
                 }
                 for (int j = 0; j < 50; j++) {
-                    int bloodDust2 = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, 5, 0f, 0f, 100, default, 3f);
+                    int bloodDust2 = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.Blood, 0f, 0f, 100, default, 3f);
                     Main.dust[bloodDust2].noGravity = true;
                     Main.dust[bloodDust2].velocity *= 5f;
-                    bloodDust2 = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, 5, 0f, 0f, 100, default, 2f);
+                    bloodDust2 = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.Blood, 0f, 0f, 100, default, 2f);
                     Main.dust[bloodDust2].velocity *= 2f;
                 }
             }

@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
         public override string GlowTexture => CWRConstant.Masking + "SplitTrail";
         public override string gradientTexturePath => CWRConstant.ColorBar + "DevilsDevastationEffectColorBar";
         public override void SetSwingProperty() {
+            drawTrailHighlight = false;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.width = 122;
             Projectile.height = 122;
@@ -145,22 +146,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             HitEffect(target, false);
-        }
-
-        public override void DrawTrail(List<VertexPositionColorTexture> bars) {
-            Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "KR_DevilsDevastation").Value;
-
-            effect.Parameters["transformMatrix"].SetValue(GetTransfromMaxrix());
-            effect.Parameters["sampleTexture"].SetValue(TrailTexture);
-            effect.Parameters["gradientTexture"].SetValue(GradientTexture);
-            effect.Parameters["Time"].SetValue(Time / 10f);
-            //应用shader，并绘制顶点
-            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
-                pass.Apply();
-                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars.ToArray(), 0, bars.Count - 2);
-                Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
-                Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars.ToArray(), 0, bars.Count - 2);
-            }
         }
 
         public override void DrawSwing(SpriteBatch spriteBatch, Color lightColor) {

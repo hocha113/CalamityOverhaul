@@ -14,11 +14,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override int TargetID => ModContent.ItemType<GeliticBlade>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "Gel_Bar";
         public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 38;
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
-            SwingData.baseSwingSpeed = 5f;
-            distanceToOwner = 48;
-            trailTopWidth = 30;
+            SwingData.baseSwingSpeed = 3.5f;
+            SwingAIType = SwingAITypeEnum.UpAndDown;
+            drawTrailBtommMode = 40;
+            trailCount = 8;
+            distanceToOwner = 24;
+            trailTopWidth = 20;
+            Length = 50;
         }
 
         public override void Shoot() {

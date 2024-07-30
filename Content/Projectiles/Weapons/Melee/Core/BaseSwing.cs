@@ -75,10 +75,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         protected float trailTopWidth = 50;
         protected float toProjCoreMode = 48;
+        /// <summary>
+        /// 弧光内宽度，默认为70
+        /// </summary>
         protected float drawTrailBtommMode = 70;
         protected float[] oldRotate;
         protected float[] oldLength;
         protected float[] oldDistanceToOwner;
+        /// <summary>
+        /// 绘制刀光时是否应用高光渲染
+        /// </summary>
+        protected bool drawTrailHighlight = true;
         /// <summary>
         /// 更新率，值为<see cref="Projectile.extraUpdates"/>+1，使用之前请注意<see cref="Projectile.extraUpdates"/>是否已经被正确设置
         /// </summary>
@@ -494,7 +501,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public virtual void DrawTrail(List<VertexPositionColorTexture> bars) {
-            Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "KnifeRendering").Value;
+            string fileName = drawTrailHighlight ? "KnifeRendering" : "KnifeRenderingNoHighLigth";
+            Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + fileName).Value;
 
             effect.Parameters["transformMatrix"].SetValue(GetTransfromMaxrix());
             effect.Parameters["sampleTexture"].SetValue(TrailTexture);

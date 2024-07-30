@@ -15,13 +15,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override int TargetID => ModContent.ItemType<StormSaber>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "AbsoluteZero_Bar";
         public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 40;
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
-            SwingData.baseSwingSpeed = 5f;
-            distanceToOwner = 24;
-            trailTopWidth = 30;
-
-            Length = 40;
+            SwingData.baseSwingSpeed = 4f;
+            drawTrailBtommMode = 30;
+            distanceToOwner = 14;
+            trailTopWidth = 20;
+            Length = 50;
         }
 
         public override void Shoot() {

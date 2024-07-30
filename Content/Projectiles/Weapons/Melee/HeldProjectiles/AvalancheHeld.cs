@@ -16,11 +16,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override int TargetID => ModContent.ItemType<Avalanche>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "BrinyBaron_Bar";
         public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 44;
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
             SwingData.baseSwingSpeed = 5f;
-            distanceToOwner = 58;
-            trailTopWidth = 30;
+            drawTrailBtommMode = 50;
+            distanceToOwner = 26;
+            trailTopWidth = 20;
         }
 
         public override void Shoot() {

@@ -16,11 +16,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override int TargetID => ModContent.ItemType<ForbiddenOathblade>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "DevilsDevastationEffectColorBar";
         public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 44;
+            drawTrailHighlight = false;
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
             SwingData.baseSwingSpeed = 2.5f;
-            distanceToOwner = 68;
+            drawTrailBtommMode = 50;
+            distanceToOwner = 28;
             trailTopWidth = 30;
+            SwingAIType = SwingAITypeEnum.UpAndDown;
         }
 
         public override void Shoot() {

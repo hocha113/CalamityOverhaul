@@ -1,17 +1,9 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.Audio;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria;
 using Microsoft.Xna.Framework;
-using Mono.Cecil;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
@@ -20,10 +12,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override int TargetID => ModContent.ItemType<EutrophicScimitar>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "BrinyBaron_Bar";
         public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 52;
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
             SwingData.baseSwingSpeed = 3f;
-            distanceToOwner = 76;
+            drawTrailBtommMode = 50;
+            distanceToOwner = 16;
             trailTopWidth = 30;
         }
 
@@ -39,10 +33,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             for (int projectiles = 0; projectiles < 2; projectiles++) {
                 Projectile.NewProjectile(Source, Owner.Center, origVr.RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f)), ModContent.ProjectileType<EutrophicScimitarProj>(), (int)(Projectile.damage * 0.7), Projectile.knockBack, Owner.whoAmI);
             }
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            
         }
     }
 }

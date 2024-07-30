@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Common.Effects
         public static Effect TwistColoringShader;
         public static Effect KnifeRendering;
         public static Effect KnifeDistortion;
-        public static Effect KR_DevilsDevastation;
+        public static Effect KnifeRenderingNoHighLigth;
         public static ArmorShaderData StreamerDustShader;
         public static ArmorShaderData InShootGlowShader;
 
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Common.Effects
             loadFiltersEffect("CWRMod:twistColoringShader", "TwistColoring", "TwistColoringPass", out TwistColoringShader);
             loadFiltersEffect("CWRMod:knifeRendering", "KnifeRendering", "KnifeRenderingPass", out KnifeRendering);
             loadFiltersEffect("CWRMod:knifeDistortion", "KnifeDistortion", "KnifeDistortionPass", out KnifeDistortion);
-            loadFiltersEffect("CWRMod:kR_DevilsDevastation", "KR_DevilsDevastation", "KnifeDistortionPass", out KR_DevilsDevastation);
+            loadFiltersEffect("CWRMod:knifeRenderingNoHighLigth", "KnifeRenderingNoHighLigth", "KnifeRenderingNoHighLigthPass", out KnifeRenderingNoHighLigth);
 
             StreamerDustShader = new ArmorShaderData(getEffect("StreamerDust"), "StreamerDustPass");
             InShootGlowShader = new ArmorShaderData(getEffect("InShootGlow"), "InShootGlowPass");

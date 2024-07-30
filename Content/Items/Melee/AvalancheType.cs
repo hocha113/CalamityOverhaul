@@ -6,6 +6,7 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
+    //TODO
     internal class AvalancheEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Avalanche";

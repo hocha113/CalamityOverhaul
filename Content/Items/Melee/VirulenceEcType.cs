@@ -13,9 +13,5 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.SetCalamitySD<Virulence>();
             Item.SetKnifeHeld<VirulenceHeld>();
         }
-
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return base.Shoot(player, source, position, velocity, type, damage, knockback);
-        }
     }
 }

@@ -22,9 +22,14 @@ namespace CalamityOverhaul.Content
 {
     internal class CWRRecipes : ModSystem
     {
+        public static string Any => Language.GetTextValue("LegacyMisc.37");
+        public static RecipeGroup ARGroup;
+        public static RecipeGroup GodDWGroup;
+        public static RecipeGroup FishGroup;
         public static void SpawnAction(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
             item.TurnToAir();
-            CombatText.NewText(Main.LocalPlayer.Hitbox, Main.DiscoColor, Language.GetTextValue($"Mods.CalamityOverhaul.Tools.RecipesLoseText"));
+            CombatText.NewText(Main.LocalPlayer.Hitbox, Main.DiscoColor
+                , Language.GetTextValue($"Mods.CalamityOverhaul.Tools.RecipesLoseText"));
         }
 
         public static void MouldRecipeEvent(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
@@ -442,11 +447,6 @@ namespace CalamityOverhaul.Content
                 }
             }
         }
-
-        public static string Any => Language.GetTextValue("LegacyMisc.37");
-        public static RecipeGroup ARGroup;
-        public static RecipeGroup GodDWGroup;
-        public static RecipeGroup FishGroup;
 
         public override void AddRecipeGroups() {
             void LoadGroup(ref RecipeGroup group, string key, int[] itemIDs) {
