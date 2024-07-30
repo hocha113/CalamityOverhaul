@@ -21,8 +21,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         protected Vector2 startVector;
         int dirs;
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
+        /// <summary>
+        /// 这个手持刀对应的物品实例
+        /// </summary>
         public Item Item => Owner.ActiveItem();
+        /// <summary>
+        /// 挥舞索引
+        /// </summary>
         public ref int SwingIndex => ref Item.CWR().SwingIndex;
+        /// <summary>
+        /// 目标物品ID
+        /// </summary>
         public virtual int TargetID => ItemID.None;
         /// <summary>
         /// 弹幕实体中心偏离值，默认为60
@@ -102,7 +111,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 绘制中是否进行对角线翻转
         /// </summary>
         protected bool inDrawFlipdiagonally;
+        /// <summary>
+        /// 刀光流形采样图
+        /// </summary>
         public virtual string trailTexturePath => "";
+        /// <summary>
+        /// 颜色采样图
+        /// </summary>
         public virtual string gradientTexturePath => "";
         public Texture2D TrailTexture => SwingSystem.trailTextures[Type].Value;
         public Texture2D GradientTexture => SwingSystem.gradientTextures[Type].Value;
