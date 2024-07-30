@@ -2693,6 +2693,56 @@ Items: {
 		// DisplayName: Ataraxia Ec Type
 		// Tooltip: ""
 	}
+
+	AvalancheEcType: {
+		// DisplayName: Avalanche Ec Type
+		// Tooltip: ""
+	}
+
+	EutrophicScimitarEcType: {
+		// DisplayName: Eutrophic Scimitar Ec Type
+		// Tooltip: ""
+	}
+
+	ForsakenSaberEcType: {
+		// DisplayName: Forsaken Saber Ec Type
+		// Tooltip: ""
+	}
+
+	HellkiteEcType: {
+		// DisplayName: Hellkite Ec Type
+		// Tooltip: ""
+	}
+
+	ForbiddenOathbladeEcType: {
+		// DisplayName: Forbidden Oathblade Ec Type
+		// Tooltip: ""
+	}
+
+	GeliticBladeEcType: {
+		// DisplayName: Gelitic Blade Ec Type
+		// Tooltip: ""
+	}
+
+	SeashineSwordEcType: {
+		// DisplayName: Seashine Sword Ec Type
+		// Tooltip: ""
+	}
+
+	StormSaberEcType: {
+		// DisplayName: Storm Saber Ec Type
+		// Tooltip: ""
+	}
+
+	TheMutilatorEcType: {
+		// DisplayName: The Mutilator Ec Type
+		// Tooltip: ""
+	}
+
+	VirulenceEcType: {
+		// DisplayName: Virulence Ec Type
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3345,6 +3395,16 @@ Projectiles: {
 	// BrinyBaronOrb.DisplayName: Briny Baron Orb
 	// AegisBladeHeld.DisplayName: Aegis Blade Held
 	// AtaraxiaHeld.DisplayName: Ataraxia Held
+	// EutrophicScimitarHeld.DisplayName: Eutrophic Scimitar Held
+	// AvalancheHeld.DisplayName: Avalanche Held
+	// ForsakenSaberHeld.DisplayName: Forsaken Saber Held
+	// HellkiteHeld.DisplayName: Hellkite Held
+	// ForbiddenOathbladeHeld.DisplayName: Forbidden Oathblade Held
+	// GeliticBladeHeld.DisplayName: Gelitic Blade Held
+	// SeashineSwordHeld.DisplayName: Seashine Sword Held
+	// StormSaberHeld.DisplayName: Storm Saber Held
+	// TheMutilatorHeld.DisplayName: The Mutilator Held
+	// VirulenceHeld.DisplayName: Virulence Held
 }
 
 Configs: {
