@@ -166,6 +166,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnEnterWorld() {
+            if (CWRMod.Instance.magicStorage != null) {
+                CWRLocText.GetTextValue("MS_Config_Text").Domp(Color.IndianRed);
+            }
             if (!CWRMod.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");
                 CWRUtils.Text(improvGameText, Color.Red);

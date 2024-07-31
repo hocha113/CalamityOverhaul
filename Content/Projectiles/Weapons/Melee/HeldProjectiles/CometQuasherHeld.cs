@@ -1,0 +1,64 @@
+﻿using CalamityMod.Items.Weapons.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using Terraria.ModLoader;
+using Terraria;
+using CalamityMod.Projectiles.Melee;
+using CalamityMod;
+using Mono.Cecil;
+using Microsoft.Xna.Framework;
+
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
+{
+    internal class CometQuasherHeld : BaseKnife
+    {
+        public override int TargetID => ModContent.ItemType<CometQuasher>();
+        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "BrinyBaron_Bar";
+        public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 36;
+            canDrawSlashTrail = true;
+            distanceToOwner = 20;
+            drawTrailBtommMode = 50;
+            trailTopWidth = 20;
+            trailCount = 6;
+            Length = 52;
+        }
+
+        public override void Shoot() {
+            int proj = Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
+                    , ModContent.ProjectileType<CometQuasherMeteor>(), Projectile.damage / 2
+                    , Projectile.knockBack, Owner.whoAmI, 0f, 0.5f + (float)Main.rand.NextDouble() * 0.3f);
+            Main.projectile[proj].Calamity().lineColor = Main.rand.Next(3);
+        }
+
+        public override bool PreInOwnerUpdate() {
+            return base.PreInOwnerUpdate();
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (Projectile.numHits > 1) {
+                return;
+            }
+            Vector2 offsetVr = CWRUtils.GetRandomVevtor(-75, -105, Main.rand.Next(500, 600));
+            Vector2 spanPos = target.Center + offsetVr;
+            Vector2 vr = offsetVr.UnitVector() * -17;
+            int proj = Projectile.NewProjectile(Source, spanPos, vr
+                , ModContent.ProjectileType<CometQuasherMeteor>(), Projectile.damage / 3
+                , Projectile.knockBack, Owner.whoAmI, 0f, 0.5f + (float)Main.rand.NextDouble() * 0.3f);
+            Main.projectile[proj].Calamity().lineColor = Main.rand.Next(3);
+        }
+
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
+            if (Projectile.numHits > 1) {
+                return;
+            }
+            Vector2 offsetVr = CWRUtils.GetRandomVevtor(-75, -105, Main.rand.Next(500, 600));
+            Vector2 spanPos = target.Center + offsetVr;
+            Vector2 vr = offsetVr.UnitVector() * -17;
+            int proj = Projectile.NewProjectile(Source, spanPos, vr
+                , ModContent.ProjectileType<CometQuasherMeteor>(), Projectile.damage / 3
+                , Projectile.knockBack, Owner.whoAmI, 0f, 0.5f + (float)Main.rand.NextDouble() * 0.3f);
+            Main.projectile[proj].Calamity().lineColor = Main.rand.Next(3);
+        }
+    }
+}

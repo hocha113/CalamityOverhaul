@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -128,15 +129,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
                 int fireCoolding = 48;
                 if (masterMode) {
-                    fireCoolding -= 18;
+                    fireCoolding -= 10;
                 }
                 if (death) {
-                    fireCoolding -= 20;
+                    fireCoolding -= 10;
                 }
                 if (bossRush) {
-                    fireCoolding = 8;
+                    fireCoolding = 10;
                 }
-                if (npc.localAI[0] >= fireCoolding) {
+
+                bool canFire = true;
+                if (CalamityWorld.death) {
+                    canFire = bossRush;
+                }
+
+                if (npc.localAI[0] >= fireCoolding && canFire) {
                     npc.TargetClosest();
                     float laserSpeed = bossRush ? 5f : 4f;
                     int type = ProjectileID.DeathLaser;
@@ -184,7 +191,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float laserRingTargetY = player.Center.Y - laserRingArmPosition.Y;
             npc.rotation = (float)Math.Atan2(laserRingTargetY, laserRingTargetX) - MathHelper.PiOver2;
 
-            if (Main.netMode != NetmodeID.MultiplayerClient && !dontAttack) {
+            int num = 0;
+            int typeSetPosingStarm = ModContent.ProjectileType<SetPosingStarm>();
+            foreach (var proj in Main.projectile) {
+                if (proj.active && proj.type == typeSetPosingStarm) {
+                    num++;
+                }
+            }
+
+            if (Main.netMode != NetmodeID.MultiplayerClient && !dontAttack && num == 0) {
                 npc.localAI[0] += 1f;
                 if (!cannonAlive) {
                     npc.localAI[0] += 0.5f;

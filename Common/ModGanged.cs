@@ -4,6 +4,8 @@ using CalamityMod.UI;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ using Terraria.GameContent.Events;
 using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Config;
 using Terraria.ModLoader.Core;
 using static Terraria.ModLoader.ModContent;
 
@@ -72,6 +75,9 @@ namespace CalamityOverhaul.Common
         public static MethodBase coolerItemVisualEffect_Method;
 
         public static MethodBase BossHealthBarManager_Draw_Method;
+
+        public static Type MS_Config_Type;
+        public static FieldInfo MS_Config_recursionCraftingDepth_FieldInfo;
 
         internal static bool InfernumModeOpenState {
             get {
@@ -247,7 +253,7 @@ namespace CalamityOverhaul.Common
             #region catalystMod
 
             if (CWRMod.Instance.catalystMod != null) {
-
+                
             }
             else {
                 "未加载模组 CatalystMod".DompInConsole();
@@ -304,7 +310,13 @@ namespace CalamityOverhaul.Common
             #region MagicStorage
 
             if (CWRMod.Instance.magicStorage != null) {
-
+                MS_Config_Type = GetTargetTypeInStringKey(GetModType(CWRMod.Instance.magicStorage), "MagicStorageConfig");
+                if (MS_Config_Type != null) {
+                    MS_Config_recursionCraftingDepth_FieldInfo = MS_Config_Type.GetField("recursionCraftingDepth", BindingFlags.Public | BindingFlags.Instance);
+                }
+                else {
+                    "未成功加载 MagicStorage_MagicStorageConfig_Typ 失败 是否是MagicStorage.MagicStorageConfig已经改动?".DompInConsole();
+                }
             }
             else {
                 "未加载模组 MagicStorage".DompInConsole();
@@ -351,6 +363,25 @@ namespace CalamityOverhaul.Common
             trO_itemPowerAttacksTypes_Load_Method = null;
             trO_Broadsword_ShouldApplyItemOverhaul_Method = null;
             trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method = null;
+        }
+
+        internal static bool Set_MS_Config_recursionCraftingDepth() {
+            if (CWRMod.Instance.magicStorage == null) {
+                return false;
+            }
+            if (MS_Config_recursionCraftingDepth_FieldInfo == null) {
+                return false;
+            }
+
+            ModConfig modConfig = CWRMod.Instance.magicStorage.Find<ModConfig>("MagicStorageConfig");
+            int recursionCraftingDepthNum = ((int)MS_Config_recursionCraftingDepth_FieldInfo.GetValue(modConfig));
+            if (recursionCraftingDepthNum == 0) {
+                return false;
+            }
+
+            MS_Config_recursionCraftingDepth_FieldInfo.SetValue(modConfig, 0);
+
+            return true;
         }
 
         private static bool On_ShouldApplyItemOverhaul_Hook(On_TrO_Broadsword_ShouldApplyItemOverhaul_Dalegate orig, object obj, Item item) {

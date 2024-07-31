@@ -74,6 +74,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 弧光宽度，默认为50
         /// </summary>
         protected float trailTopWidth = 50;
+        /// <summary>
+        /// 离心量的绘制矫正模长，默认为48
+        /// </summary>
         protected float toProjCoreMode = 48;
         /// <summary>
         /// 弧光内宽度，默认为70
@@ -83,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         protected float[] oldLength;
         protected float[] oldDistanceToOwner;
         /// <summary>
-        /// 绘制刀光时是否应用高光渲染
+        /// 绘制刀光时是否应用高光渲染，默认为<see langword="true"/>
         /// </summary>
         protected bool drawTrailHighlight = true;
         /// <summary>

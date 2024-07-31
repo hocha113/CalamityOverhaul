@@ -11,8 +11,10 @@ Items: {
 		DisplayName: Briny Baron
 		Tooltip:
 			'''
-			Left Click to swing the blade, upon hitting an enemy summon a water tornado and water spouts that travels horizontally
-			Right Click to repeatedly throw 3 water projectiles that home onto enemies
+			The first six swings release tracking ocean vortices.
+			The seventh swing generates a large number of explosive bubbles.
+			The eighth swing fires three vortex bombs that, upon hitting a target or object, create a water vortex at the impact site.
+			"Made from the fin of that pig shark, clearly we didn't settle for just using that bubble-blowing pig head as a weapon."
 			'''
 	}
 
@@ -753,7 +755,6 @@ Items: {
 		Tooltip:
 			'''
 			Swings a heavy blade that fires a sulfur bomb every 3 attacks.
-			Right click enhances the sword, increasing range while removing the sulfur bomb.
 			'''
 	}
 
@@ -3396,6 +3397,11 @@ Projectiles: {
 	StormSaberHeld.DisplayName: Storm Saber Held
 	TheMutilatorHeld.DisplayName: The Mutilator Held
 	VirulenceHeld.DisplayName: Virulence Held
+	AftershockHeld.DisplayName: Aftershock Held
+	AnarchyBladeHeld.DisplayName: Anarchy Blade Held
+	AstralBladeHeld.DisplayName: Astral Blade Held
+	BurntSiennaHeld.DisplayName: Burnt Sienna Held
+	CometQuasherHeld.DisplayName: Comet Quasher Held
 }
 
 Configs: {
@@ -3601,6 +3607,11 @@ Configs: {
 				Enabled by default, this will modify the AI behavior of certain creatures, such as bosses in death mode.
 				This might significantly increase the game's difficulty, so you can choose to disable it based on your personal preference.
 				'''
+		}
+
+		TemporaryCrisisManagementMatters: {
+			Label: Emergency crisis management
+			Tooltip: ""
 		}
 	}
 }
@@ -4197,6 +4208,13 @@ TextContent: {
 			The update was somewhat rushed, so there may still be some noticeable issues. 
 			If you encounter any problems during gameplay, please submit an issue on the mod's GitHub page 
 			or visit the mod's Steam Workshop 'Feedback on Issues' thread for assistance.
+			'''
+		MS_Config_Text:
+			'''
+			Detected that you have installed the [Magic Storage Mod]. 
+			To resolve conflict issues, it is recommended to set the [Recursion Crafting Depth] in the mod configuration to 0. 
+			This setting for recursive crafting, when interacting with this mod, 
+			would incorrectly trigger all crafting events, severely affecting the gameplay experience.
 			'''
 		IconUI_Text0: Go to the mod's open source repository :)
 		IconUI_Text1: Issue Feedback

@@ -171,13 +171,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         internal static int SetMultiplier(int num) {
-            if (CalamityConfig.Instance.EarlyHardmodeProgressionRework && !BossRushEvent.BossRushActive) {
-                double firstMechMultiplier = CalamityGlobalNPC.EarlyHardmodeProgressionReworkFirstMechStatMultiplier_Expert;
-                double secondMechMultiplier = CalamityGlobalNPC.EarlyHardmodeProgressionReworkSecondMechStatMultiplier_Expert;
-                if (!NPC.downedMechBossAny)
-                    num = (int)(num * firstMechMultiplier);
-                else if ((!NPC.downedMechBoss1 && !NPC.downedMechBoss2) || (!NPC.downedMechBoss2 && !NPC.downedMechBoss3) || (!NPC.downedMechBoss3 && !NPC.downedMechBoss1))
-                    num = (int)(num * secondMechMultiplier);
+            if (!BossRushEvent.BossRushActive) {
+                if (CalamityConfig.Instance.EarlyHardmodeProgressionRework) {
+                    double firstMechMultiplier = CalamityGlobalNPC.EarlyHardmodeProgressionReworkFirstMechStatMultiplier_Expert;
+                    double secondMechMultiplier = CalamityGlobalNPC.EarlyHardmodeProgressionReworkSecondMechStatMultiplier_Expert;
+                    if (!NPC.downedMechBossAny) {
+                        num = (int)(num * firstMechMultiplier);
+                    }
+                    else if ((!NPC.downedMechBoss1 && !NPC.downedMechBoss2) || (!NPC.downedMechBoss2 && !NPC.downedMechBoss3) || (!NPC.downedMechBoss3 && !NPC.downedMechBoss1)) {
+                        num = (int)(num * secondMechMultiplier);
+                    }
+                }
+                if (CalamityWorld.death) {
+                    num = (int)(num * 0.75f);
+                }
             }
             return num;
         }

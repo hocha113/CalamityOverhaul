@@ -114,6 +114,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText SupMUI_OneClick_Text1 { get; private set; }
         public LocalizedText SupMUI_OneClick_Text2 { get; private set; }
         public LocalizedText TemporaryVersion_Text { get; private set; }
+        public LocalizedText MS_Config_Text { get; private set; }
         public LocalizedText IconUI_Text0 { get; private set; }
         public LocalizedText IconUI_Text1 { get; private set; }
         public LocalizedText IconUI_Text2 { get; private set; }

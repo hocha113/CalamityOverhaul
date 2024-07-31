@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
             Projectile.DamageType = DamageClass.Melee;
             Projectile.timeLeft = 300;
             Projectile.penetrate = 1;
-            Projectile.MaxUpdates = 2;
+            Projectile.extraUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 7 * Projectile.MaxUpdates;
             Projectile.tileCollide = false;

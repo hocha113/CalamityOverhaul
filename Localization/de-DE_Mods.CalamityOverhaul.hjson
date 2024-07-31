@@ -11,9 +11,10 @@ Items: {
 		DisplayName: Meeresritter-Schwert
 		Tooltip:
 			'''
-			Linksklick schwingt die riesige Klinge, die bei einem Treffer Wasserwirbel auf beiden Seiten abschießt
-			Rechtsklick feuert drei Wasserwirbel ab
-			"Hergestellt aus den Flossen des Schweinehais, offensichtlich sind wir nicht bereit, nur den blubbernden Schweinekopf als Waffe zu verwenden"
+			Bei den ersten sechs Schlägen wird ein sich verfolgendes Meerwirbel-Projektile abgefeuert.
+			Der siebte Schlag erzeugt eine große Anzahl von Explosionsblasen.
+			Der achte Schlag feuert drei Wirbelgeschosse ab, die beim Aufprall auf ein Ziel oder Objekt einen Wasserstrudel an Ort und Stelle erzeugen.
+			"Aus der Flosse dieses Schweins-Hais gemacht, offensichtlich sind wir nicht damit zufrieden, nur diesen blubbernden Schweinskopf als Waffe zu benutzen"
 			'''
 	}
 
@@ -780,7 +781,6 @@ Items: {
 		Tooltip:
 			'''
 			Feuert bei jedem dritten Schwung eine Schwefelfeuer-Explosion ab
-			Rechtsklick verstärkt die Klinge
 			'''
 	}
 
@@ -3390,6 +3390,11 @@ Projectiles: {
 	// StormSaberHeld.DisplayName: Storm Saber Held
 	// TheMutilatorHeld.DisplayName: The Mutilator Held
 	// VirulenceHeld.DisplayName: Virulence Held
+	// AftershockHeld.DisplayName: Aftershock Held
+	// AnarchyBladeHeld.DisplayName: Anarchy Blade Held
+	// AstralBladeHeld.DisplayName: Astral Blade Held
+	// BurntSiennaHeld.DisplayName: Burnt Sienna Held
+	// CometQuasherHeld.DisplayName: Comet Quasher Held
 }
 
 Configs: {
@@ -3589,6 +3594,11 @@ Configs: {
 				Standardmäßig aktiviert, ändert das Verhalten einiger Kreaturen, z. B. Boss-KIs unter dem Einfluss des Tod-Moduls
 				Dies kann die Spielherausforderung erhöhen, je nach Vorliebe kann dies deaktiviert werden
 				'''
+		}
+
+		TemporaryCrisisManagementMatters: {
+			// Label: Emergency crisis management
+			// Tooltip: ""
 		}
 	}
 }
@@ -4169,6 +4179,13 @@ TextContent: {
 			Da das Update eilig war, können noch einige offensichtliche Fehler vorhanden sein.
 			Wenn Sie Probleme beim Spielen feststellen, reichen Sie bitte ein Problem auf GitHub bei dem Mod ein
 			oder besuchen Sie den Feedback-Thread im Mod-Workshop für Hilfe bei Problemen.
+			'''
+		MS_Config_Text:
+			'''
+			Es wurde festgestellt, dass Sie das [Magic Storage Mod] installiert haben. Um Konflikte zu lösen, 
+			wird empfohlen, die Einstellung [Recursion Crafting Depth] in der Mod-Konfiguration auf 0 zu setzen.  
+			Diese Einstellung ist für rekursives Crafting verantwortlich und kann beim 
+			Interagieren mit diesem Mod alle Crafting-Ereignisse fehlerhaft aufrufen, was das Spielerlebnis erheblich beeinträchtigen würde.
 			'''
 		IconUI_Text0: Zur Mod-Open-Source-Repository gehen :)
 		IconUI_Text1: Problem melden

@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 }
                 for (int i = 0; i < 6; i++) {
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), InMousePos, (MathHelper.TwoPi / 6 * i).ToRotationVector2() * 3
-                    , ModContent.ProjectileType<EXDemonBlastAlt>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+                    , ModContent.ProjectileType<EXDemonBlastAlt>(), Projectile.damage * 5, Projectile.knockBack, Owner.whoAmI);
                 }
                 return;
             }

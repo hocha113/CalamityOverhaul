@@ -1,4 +1,6 @@
 ﻿using CalamityMod.Items;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Events;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -45,14 +47,15 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            ////if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-            ////    TungstenRiot.Instance.CloseEvent();
-            ////}
-            ////else {
-            ////    TungstenRiot.Instance.TryStartEvent();
-            ////}
+            //if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
+            //    TungstenRiot.Instance.CloseEvent();
+            //}
+            //else {
+            //    TungstenRiot.Instance.TryStartEvent();
+            //}
             //Projectile.NewProjectile(player.GetSource_FromAI(), player.Center
             //        , new Vector2(13, 0), ModContent.ProjectileType<FrostcrushValariHeld>(), 2, 2, player.whoAmI);
+            //ModGanged.Set_MS_Config_recursionCraftingDepth();
             return true;
         }
     }

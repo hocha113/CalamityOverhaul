@@ -11,9 +11,10 @@ Items: {
 		DisplayName: Épée du Baron Salé
 		Tooltip:
 			'''
-			Balancer l'épée géante à gauche pour créer des tourbillons d'eau après avoir touché l'ennemi
-			Tirer trois tourbillons d'eau à droite
-			"Fabriqué avec une nageoire de requin porcin, il est clair que nous ne nous contentons pas d'utiliser une tête de cochon qui ne sait que faire des bulles comme arme"
+			Les six premières frappes lancent des vortex marins traçants.  
+			La septième frappe génère une grande quantité de bulles explosives.  
+			La huitième frappe tire trois projectiles en forme de vortex qui, en touchant une cible ou un objet, créent un tourbillon d'eau à l'endroit d'impact.  
+			"Fabriqué à partir de la nageoire de ce requin-cochon, il est clair que nous ne nous contentons pas d'utiliser cette tête de cochon qui fait des bulles comme arme."
 			'''
 	}
 
@@ -781,7 +782,6 @@ Items: {
 		Tooltip:
 			'''
 			À chaque série de trois mouvements, lance une bombe de soufre
-			Clic droit pour renforcer la lame
 			'''
 	}
 
@@ -3393,6 +3393,11 @@ Projectiles: {
 	// StormSaberHeld.DisplayName: Storm Saber Held
 	// TheMutilatorHeld.DisplayName: The Mutilator Held
 	// VirulenceHeld.DisplayName: Virulence Held
+	// AftershockHeld.DisplayName: Aftershock Held
+	// AnarchyBladeHeld.DisplayName: Anarchy Blade Held
+	// AstralBladeHeld.DisplayName: Astral Blade Held
+	// BurntSiennaHeld.DisplayName: Burnt Sienna Held
+	// CometQuasherHeld.DisplayName: Comet Quasher Held
 }
 
 Configs: {
@@ -3593,6 +3598,11 @@ Configs: {
 				Activé par défaut, modifie le comportement de l'IA de certaines créatures, comme les BossAI dans le module de mort
 				Cela peut considérablement augmenter la difficulté du jeu, et peut être désactivé selon les préférences personnelles
 				'''
+		}
+
+		TemporaryCrisisManagementMatters: {
+			// Label: Emergency crisis management
+			// Tooltip: ""
 		}
 	}
 }
@@ -4173,6 +4183,13 @@ TextContent: {
 			La mise à jour a été rapide, donc il peut encore y avoir quelques erreurs évidentes.
 			Si vous rencontrez des problèmes en jouant, veuillez soumettre un problème sur GitHub,
 			ou visiter le fil de feedback sur les problèmes du Workshop du mod pour demander de l'aide.
+			'''
+		MS_Config_Text:
+			'''
+			Il a été détecté que vous avez installé le [Magic Storage Mod]. Pour résoudre les problèmes de conflit, 
+			il est recommandé de définir le paramètre [Recursion Crafting Depth] de la configuration du mod à 0.  
+			Ce paramètre est responsable de l'artisanat récursif et peut, lors de l'interaction avec ce mod, 
+			appeler incorrectement tous les événements d'artisanat, ce qui affecterait gravement l'expérience de jeu.
 			'''
 		IconUI_Text0: Aller à la bibliothèque open-source du mod :)
 		IconUI_Text1: Signaler un problème

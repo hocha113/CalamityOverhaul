@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             Projectile.timeLeft = 60;
             Projectile.alpha = 255;
             Projectile.extraUpdates = 1;
-            Projectile.penetrate = 16;
+            Projectile.penetrate = 8;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
             Rand = Main.rand.Next(50, 100);

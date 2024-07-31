@@ -49,9 +49,6 @@ namespace CalamityOverhaul.Common
         [DefaultValue(true)]
         public bool BiobehavioralOverlay { get; set; }
 
-        /// <summary>
-        /// 传奇武器系统
-        /// </summary>
         [BackgroundColor(35, 185, 78, 192)]
         [DefaultValue(true)]
         public bool WeaponEnhancementSystem { get; set; }
@@ -61,12 +58,9 @@ namespace CalamityOverhaul.Common
         [DefaultValue(false)]
         public bool OpeningOukModification { get; set; }
 
-        /// <summary>
-        /// 重置物品的温馨提示
-        /// </summary>
         [BackgroundColor(35, 185, 78, 192)]
         [DefaultValue(true)]
-        public bool ResetItemReminder { get; set; }
+        public bool ResetItemReminder { get; set; }//温馨提示
 
         [Header("CWRWeapon")]
 
@@ -102,19 +96,13 @@ namespace CalamityOverhaul.Common
         [DefaultValue(false)]
         public bool ShotgunFireForcedReloadInterruption { get; set; }
 
-        /// <summary>
-        /// 武器屏幕振动
-        /// </summary>
         [BackgroundColor(192, 54, 94, 192)]
         [DefaultValue(true)]
-        public bool ScreenVibration { get; set; }
+        public bool ScreenVibration { get; set; }//武器屏幕振动
 
-        /// <summary>
-        /// 鬼妖终结技碎屏效果
-        /// </summary>
         [BackgroundColor(192, 54, 94, 192)]
         [DefaultValue(true)]
-        public bool MurasamaSpaceFragmentationBool { get; set; }
+        public bool MurasamaSpaceFragmentationBool { get; set; }//鬼妖终结技碎屏效果
 
         [BackgroundColor(192, 54, 94, 192)]
         [SliderColor(224, 165, 56, 128)]

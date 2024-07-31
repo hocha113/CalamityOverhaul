@@ -11,8 +11,9 @@ Items: {
 		DisplayName: 海爵剑
 		Tooltip:
 			'''
-			左键挥舞巨刃，击中敌人后向两侧发射水龙卷
-			右键发射三发水漩涡
+			前六下挥舞发射追踪的海洋漩涡
+			第七下挥舞会生成大量爆炸泡泡
+			第八下挥舞会发射三颗漩涡弹，击中目标或者物块后在原地生成水龙卷
 			"用那头猪鲨的鳍制成，显然我们并不屑于只用那个会吹泡泡的猪头当武器"
 			'''
 	}
@@ -58,10 +59,10 @@ Items: {
 	}
 
 	BurntSiennaEcType: {
-		DisplayName: 沙之刃
+		DisplayName: 灼炎弯刀
 		Tooltip:
 			'''
-			挥舞会抛舞出三个沙球
+			挥舞会抛射沙球
 			"时间或许会让其它武器锈迹斑斑，但是这把刀永远不会改变"
 			'''
 	}
@@ -790,7 +791,6 @@ Items: {
 		Tooltip:
 			'''
 			每挥舞三次发射一颗硫火爆弹
-			右键增强剑身
 			'''
 	}
 
@@ -3405,6 +3405,11 @@ Projectiles: {
 	// StormSaberHeld.DisplayName: Storm Saber Held
 	// TheMutilatorHeld.DisplayName: The Mutilator Held
 	// VirulenceHeld.DisplayName: Virulence Held
+	// AftershockHeld.DisplayName: Aftershock Held
+	// AnarchyBladeHeld.DisplayName: Anarchy Blade Held
+	// AstralBladeHeld.DisplayName: Astral Blade Held
+	// BurntSiennaHeld.DisplayName: Burnt Sienna Held
+	// CometQuasherHeld.DisplayName: Comet Quasher Held
 }
 
 Configs: {
@@ -3605,6 +3610,11 @@ Configs: {
 				默认开启，会修改一些生物的AI行为，比如死亡模组下的BossAI
 				这可能会让游戏的挑战性剧增，可以根据个人喜好选择是否关闭
 				'''
+		}
+
+		TemporaryCrisisManagementMatters: {
+			// Label: Emergency crisis management
+			// Tooltip: ""
 		}
 	}
 }
@@ -4185,6 +4195,11 @@ TextContent: {
 			更新较为仓促，所以仍可能存在一些明显的错误
 			如果您在游玩过程中发现问题，请在Github上向模组提交issue，
 			或者前往模组创意工坊Feedback on Issues反馈帖寻求帮助
+			'''
+		MS_Config_Text:
+			'''
+			检测到您安装了 [Magic Storage Mod]，为了解决冲突问题，建议将模组配置中的 [Recursion Crafting Depth] 设置为 0
+			该设置为递归合成，在与本模组交互时，会错误的调用所有合成事件导致严重影响游玩体验
 			'''
 		IconUI_Text0: 前往模组的开源库 :)
 		IconUI_Text1: 问题反馈
