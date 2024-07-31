@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.width = 72;
             Item.height = 72;
             Item.scale = 0.9f;
-            Item.damage = 108;
+            Item.damage = 98;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = Item.useTime = 13;
             Item.useTurn = true;

@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles.Van
             SwingData.baseSwingSpeed = 4;
             Length = 30;
             SwingAIType = SwingAITypeEnum.UpAndDown;
+            Projectile.usesLocalNPCImmunity = false;
         }
     }
 }

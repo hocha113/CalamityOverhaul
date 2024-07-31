@@ -752,10 +752,7 @@ Items: {
 
 	AnarchyBladeEcType: {
 		DisplayName: Anarchy Blade
-		Tooltip:
-			'''
-			Swings a heavy blade that fires a sulfur bomb every 3 attacks.
-			'''
+		Tooltip: Swings a heavy blade that fires a sulfur bomb every 3 attacks.
 	}
 
 	AftershockEcType: {
@@ -3402,6 +3399,8 @@ Projectiles: {
 	AstralBladeHeld.DisplayName: Astral Blade Held
 	BurntSiennaHeld.DisplayName: Burnt Sienna Held
 	CometQuasherHeld.DisplayName: Comet Quasher Held
+	DivineSourceBladeHeld.DisplayName: Divine Source Blade Held
+	DragonsScaleGreatswordHeld.DisplayName: Dragons Scale Greatsword Held
 }
 
 Configs: {

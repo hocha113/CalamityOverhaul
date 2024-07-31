@@ -32,11 +32,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.useTime = 32;
             item.UseSound = SoundID.Item1;
             item.autoReuse = true;
-            item.damage = 950;
+            item.damage = 850;
             item.crit = 16;
             item.knockBack = 7.5f;
             item.noUseGraphic = true;
-            item.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
+            item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             item.noMelee = true;
             item.channel = true;
             item.shootSpeed = 10f;

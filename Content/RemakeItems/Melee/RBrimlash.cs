@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
@@ -14,7 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RBrimlash : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Brimlash>();
+        public override int TargetID => ModContent.ItemType<Brimlash>();
         public override int ProtogenesisID => ModContent.ItemType<BrimlashEcType>();
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[TargetID] = true;

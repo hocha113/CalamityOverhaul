@@ -772,10 +772,7 @@ Items: {
 
 	AnarchyBladeEcType: {
 		DisplayName: Меч хаоса
-		Tooltip:
-			'''
-			Стреляйте по одной серной бомбе за каждый взмах
-			'''
+		Tooltip: Стреляйте по одной серной бомбе за каждый взмах
 	}
 
 	AftershockEcType: {
@@ -3430,6 +3427,8 @@ Projectiles: {
 	// AstralBladeHeld.DisplayName: Astral Blade Held
 	// BurntSiennaHeld.DisplayName: Burnt Sienna Held
 	// CometQuasherHeld.DisplayName: Comet Quasher Held
+	// DivineSourceBladeHeld.DisplayName: Divine Source Blade Held
+	// DragonsScaleGreatswordHeld.DisplayName: Dragons Scale Greatsword Held
 }
 
 Configs: {

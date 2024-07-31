@@ -779,10 +779,7 @@ Items: {
 
 	AnarchyBladeEcType: {
 		DisplayName: Lame de l'Anarchie
-		Tooltip:
-			'''
-			À chaque série de trois mouvements, lance une bombe de soufre
-			'''
+		Tooltip: À chaque série de trois mouvements, lance une bombe de soufre
 	}
 
 	AftershockEcType: {
@@ -3398,6 +3395,8 @@ Projectiles: {
 	// AstralBladeHeld.DisplayName: Astral Blade Held
 	// BurntSiennaHeld.DisplayName: Burnt Sienna Held
 	// CometQuasherHeld.DisplayName: Comet Quasher Held
+	// DivineSourceBladeHeld.DisplayName: Divine Source Blade Held
+	// DragonsScaleGreatswordHeld.DisplayName: Dragons Scale Greatsword Held
 }
 
 Configs: {

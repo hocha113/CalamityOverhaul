@@ -1,7 +1,7 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
-using Microsoft.Xna.Framework;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -32,20 +32,10 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<DivineSourceBladeProjectile>();
             Item.shootSpeed = 18f;
+            Item.SetKnifeHeld<DivineSourceBladeHeld>();
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 10;
-
-        public override void UseAnimation(Player player) {
-            int types = ModContent.ProjectileType<DivineSourceBeam>();
-            Vector2 vector2 = player.Center.To(Main.MouseWorld).UnitVector() * 3;
-            Vector2 position = player.Center;
-            Projectile.NewProjectile(
-                player.parent(), position, vector2, types
-                , (int)(Item.damage * 1.25f)
-                , Item.knockBack
-                , player.whoAmI);
-        }
 
         public override void AddRecipes() {
             CreateRecipe().

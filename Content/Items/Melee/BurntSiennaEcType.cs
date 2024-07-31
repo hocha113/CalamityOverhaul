@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() => SetDefaultsFunc(Item);
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 42;
-            Item.damage = 32;
+            Item.damage = 22;
             Item.DamageType = DamageClass.Melee;
-            Item.useAnimation = Item.useTime = 21;
+            Item.useAnimation = Item.useTime = 22;
             Item.useTurn = true;
             Item.useStyle = 1;
             Item.knockBack = 5.5f;

@@ -788,10 +788,7 @@ Items: {
 
 	AnarchyBladeEcType: {
 		DisplayName: 混乱之刃
-		Tooltip:
-			'''
-			每挥舞三次发射一颗硫火爆弹
-			'''
+		Tooltip: 每挥舞三次发射一颗硫火爆弹
 	}
 
 	AftershockEcType: {
@@ -3410,6 +3407,8 @@ Projectiles: {
 	// AstralBladeHeld.DisplayName: Astral Blade Held
 	// BurntSiennaHeld.DisplayName: Burnt Sienna Held
 	// CometQuasherHeld.DisplayName: Comet Quasher Held
+	// DivineSourceBladeHeld.DisplayName: Divine Source Blade Held
+	// DragonsScaleGreatswordHeld.DisplayName: Dragons Scale Greatsword Held
 }
 
 Configs: {

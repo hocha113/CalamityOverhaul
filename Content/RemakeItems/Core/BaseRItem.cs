@@ -423,6 +423,19 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <param name="type"></param>
         /// <param name="damage"></param>
         /// <param name="knockback"></param>
+        public virtual bool On_ModifyShootStats(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
+            return true;
+        }
+        /// <summary>
+        /// 这个物品射击前进行一些属性修改，比如调整伤害
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="player"></param>
+        /// <param name="position"></param>
+        /// <param name="velocity"></param>
+        /// <param name="type"></param>
+        /// <param name="damage"></param>
+        /// <param name="knockback"></param>
         public virtual void ModifyShootStats(Item item, Player player, ref ShootStats shootStats) {
             ModifyShootStats(item, player, ref shootStats.Position, ref shootStats.Velocity, ref shootStats.Type, ref shootStats.Damage, ref shootStats.Knockback);
         }

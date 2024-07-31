@@ -1,7 +1,12 @@
-﻿using CalamityMod.Items.Weapons.Melee;
+﻿using CalamityMod.Buffs.DamageOverTime;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
@@ -20,28 +25,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             trailTopWidth = 30;
             Length = 90;
             SwingAIType = SwingAITypeEnum.UpAndDown;
-            Projectile.localNPCHitCooldown = 16;
+            Projectile.localNPCHitCooldown = 20;
         }
 
         public override void Shoot() {
             Item.initialize();
             if (++Item.CWR().ai[0] > 2) {
+                SoundEngine.PlaySound(SoundID.Item69 with { Pitch = 0.8f }, Owner.Center);
                 Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
                 , ModContent.ProjectileType<AnarchyBeam>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
                 Item.CWR().ai[0] = 0;
             }
         }
 
-        public override bool PreInOwnerUpdate() {
-            return base.PreInOwnerUpdate();
-        }
-
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitNPC(target, hit, damageDone);
+            Projectile.NewProjectile(Source, target.Center, Vector2.Zero
+                , ModContent.ProjectileType<BrimstoneBoom>(), Item.damage / 3, Item.knockBack, Owner.whoAmI);
+            target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            base.OnHitPlayer(target, info);
+            Projectile.NewProjectile(Source, target.Center, Vector2.Zero
+                , ModContent.ProjectileType<BrimstoneBoom>(), Item.damage / 3, Item.knockBack, Owner.whoAmI);
+            target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300);
         }
     }
 }

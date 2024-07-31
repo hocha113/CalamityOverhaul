@@ -34,11 +34,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useTime = 32;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.damage = 950;
+            Item.damage = 850;
             Item.crit = 16;
             Item.knockBack = 7.5f;
             Item.noUseGraphic = true;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
+            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             Item.noMelee = true;
             Item.channel = true;
             Item.shootSpeed = 10f;
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 newdmg = (int)(damage * 1.25f);
             }
             else if (Level == 3) {
-                newdmg = (int)(damage * 2.05f);
+                newdmg = (int)(damage * 1.55f);
             }
             Projectile.NewProjectile(source, position, velocity, type, newdmg, knockback, player.whoAmI, Level);
             if (++Level > 3) {

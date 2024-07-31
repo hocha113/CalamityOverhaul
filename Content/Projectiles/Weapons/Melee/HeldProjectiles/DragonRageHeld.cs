@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override void SetSwingProperty() {
             Projectile.CloneDefaults(ProjectileID.Spear);
             Projectile.extraUpdates = 3;
-            Projectile.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
+            Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             Projectile.width = 48;
             Projectile.height = 48;
             Projectile.alpha = 255;
@@ -40,13 +40,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void SwingAI() {
+            float speedUp = 1 / Owner.GetAttackSpeed(DamageClass.Melee);
             if (Projectile.ai[0] == 0) {
                 if (Time == 0) {
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
-                    speed = MathHelper.ToRadians(6);
+                    speed = MathHelper.ToRadians(6) / speedUp;
                 }
 
-                if (Time < 10) {
+                if (Time < 10 * speedUp) {
                     Length *= 1 + 0.1f / updateCount;
                     Rotation += speed * Projectile.spriteDirection;
                     speed *= 1 + 0.2f / updateCount;
@@ -55,10 +56,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 else {
                     Length *= 1 - 0.01f / updateCount;
                     Rotation += speed * Projectile.spriteDirection;
-                    speed *= 1 - 0.2f / updateCount;
+                    speed *= 1 - 0.2f / updateCount / speedUp;
                     vector = startVector.RotatedBy(Rotation) * Length;
                 }
-                if (Time >= 22 * updateCount) {
+                if (Time >= 22 * updateCount * speedUp) {
                     Projectile.Kill();
                 }
                 if (Time % updateCount == updateCount - 1) {
@@ -68,10 +69,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             else if (Projectile.ai[0] == 1) {
                 if (Time == 0) {
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() + MathHelper.PiOver2 * Projectile.spriteDirection);
-                    speed = MathHelper.ToRadians(6);
+                    speed = MathHelper.ToRadians(6) / speedUp;
                 }
 
-                if (Time < 10) {
+                if (Time < 10 * speedUp) {
                     Length *= 1 + 0.1f / updateCount;
                     Rotation -= speed * Projectile.spriteDirection;
                     speed *= 1 + 0.2f / updateCount;
@@ -80,10 +81,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 else {
                     Length *= 1 - 0.01f / updateCount;
                     Rotation -= speed * Projectile.spriteDirection;
-                    speed *= 1 - 0.2f / updateCount;
+                    speed *= 1 - 0.2f / updateCount / speedUp;
                     vector = startVector.RotatedBy(Rotation) * Length;
                 }
-                if (Time >= 22 * updateCount) {
+                if (Time >= 22 * updateCount * speedUp) {
                     Projectile.Kill();
                 }
                 if (Time % updateCount == updateCount - 1) {
@@ -93,10 +94,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             else if (Projectile.ai[0] == 2) {
                 if (Time == 0) {
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
-                    speed = MathHelper.ToRadians(6);
+                    speed = MathHelper.ToRadians(6) / speedUp;
                 }
 
-                if (Time < 10) {
+                if (Time < 10 * speedUp) {
                     Length *= 1 + 0.11f / updateCount;
                     Rotation += speed * Projectile.spriteDirection;
                     speed *= 1 + 0.3f / updateCount;
@@ -105,11 +106,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 else {
                     Length *= 1 - 0.01f / updateCount;
                     Rotation += speed * Projectile.spriteDirection;
-                    speed *= 1 - 0.11f / updateCount;
+                    speed *= 1 - (0.13f * speedUp * 1.15f) / updateCount / speedUp;//它今儿个非得转过来不可
                     vector = startVector.RotatedBy(Rotation) * Length;
                 }
 
-                if (Time >= 26 * updateCount) {
+                if (Time >= 26 * updateCount * speedUp) {
                     Projectile.Kill();
                 }
                 if (Time % updateCount == updateCount - 1) {
@@ -164,11 +165,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     trailTopWidth = 190;
                     InitializeCaches();
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
-                    speed = MathHelper.ToRadians(6);
+                    speed = MathHelper.ToRadians(6) / speedUp;
                     Rotation = MathHelper.ToRadians(-30 * Projectile.spriteDirection);
                 }
 
-                if (Time < 10) {
+                if (Time < 10 * speedUp) {
                     Length *= 1 + 0.1f / updateCount;
                     Rotation += speed * Projectile.spriteDirection;
                     speed *= 1 + 0.2f / updateCount;
@@ -178,13 +179,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 else {
                     Length *= 1 - 0.01f / updateCount;
                     Rotation += speed * Projectile.spriteDirection;
-                    speed *= 1 - 0.2f / updateCount;
+                    speed *= 1 - 0.2f / updateCount / speedUp;
                     vector = startVector.RotatedBy(Rotation) * Length;
                     if (Time >= 20 * updateCount) {
                         Projectile.scale -= 0.001f;
                     }
                 }
-                if (Time >= 22 * updateCount) {
+                if (Time >= 22 * updateCount * speedUp) {
                     Projectile.Kill();
                 }
                 if (Time % updateCount == updateCount - 1) {
@@ -197,11 +198,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     trailTopWidth = 190;
                     InitializeCaches();
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
-                    speed = MathHelper.ToRadians(6);
+                    speed = MathHelper.ToRadians(6) / speedUp;
                     Rotation = MathHelper.ToRadians(-110 * Projectile.spriteDirection);
                 }
 
-                if (Time < 10) {
+                if (Time < 10 * speedUp) {
                     Length *= 1 + 0.1f / updateCount;
                     Rotation -= speed * Projectile.spriteDirection;
                     speed *= 1 + 0.2f / updateCount;
@@ -211,13 +212,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 else {
                     Length *= 1 - 0.01f / updateCount;
                     Rotation -= speed * Projectile.spriteDirection;
-                    speed *= 1 - 0.2f / updateCount;
+                    speed *= 1 - 0.2f / updateCount / speedUp;
                     vector = startVector.RotatedBy(Rotation) * Length;
                     if (Time >= 20 * updateCount) {
                         Projectile.scale -= 0.001f;
                     }
                 }
-                if (Time >= 22 * updateCount) {
+                if (Time >= 22 * updateCount * speedUp) {
                     Projectile.Kill();
                 }
                 if (Time % updateCount == updateCount - 1) {
@@ -463,7 +464,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
             }
             else if (Projectile.ai[0] == 6 && isBrimstoneHeart) {
-                modifiers.FinalDamage *= 1.25f;
+                modifiers.FinalDamage *= 1.45f;
             }
         }
 

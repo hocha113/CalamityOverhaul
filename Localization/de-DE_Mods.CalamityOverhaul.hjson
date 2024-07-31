@@ -778,10 +778,7 @@ Items: {
 
 	AnarchyBladeEcType: {
 		DisplayName: Klinge des Chaos
-		Tooltip:
-			'''
-			Feuert bei jedem dritten Schwung eine Schwefelfeuer-Explosion ab
-			'''
+		Tooltip: Feuert bei jedem dritten Schwung eine Schwefelfeuer-Explosion ab
 	}
 
 	AftershockEcType: {
@@ -3395,6 +3392,8 @@ Projectiles: {
 	// AstralBladeHeld.DisplayName: Astral Blade Held
 	// BurntSiennaHeld.DisplayName: Burnt Sienna Held
 	// CometQuasherHeld.DisplayName: Comet Quasher Held
+	// DivineSourceBladeHeld.DisplayName: Divine Source Blade Held
+	// DragonsScaleGreatswordHeld.DisplayName: Dragons Scale Greatsword Held
 }
 
 Configs: {

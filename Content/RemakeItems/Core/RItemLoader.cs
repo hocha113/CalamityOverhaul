@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         #region On and IL
         internal delegate void On_SetDefaults_Dalegate(Item item, bool createModItem = true);
         internal delegate bool On_Shoot_Dalegate(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, bool defaultResult = true);
+        internal delegate void On_ModifyShootStats_Delegate(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback);
         internal delegate void On_HitNPC_Delegate(Item item, Player player, NPC target, in NPC.HitInfo hit, int damageDone);
         internal delegate void On_HitPvp_Delegate(Item item, Player player, Player target, Player.HurtInfo hurtInfo);
         internal delegate void On_ModifyHitNPC_Delegate(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers);
@@ -36,6 +37,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static Type itemLoaderType;
         public static MethodBase onSetDefaultsMethod;
         public static MethodBase onShootMethod;
+        public static MethodBase onModifyShootStatsMethod;
         public static MethodBase onHitNPCMethod;
         public static MethodBase onHitPvpMethod;
         public static MethodBase onModifyHitNPCMethod;
@@ -54,6 +56,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             itemLoaderType = typeof(ItemLoader);
             onSetDefaultsMethod = itemLoaderType.GetMethod("SetDefaults", BindingFlags.NonPublic | BindingFlags.Static);
             onShootMethod = itemLoaderType.GetMethod("Shoot", BindingFlags.Public | BindingFlags.Static);
+            onModifyShootStatsMethod = itemLoaderType.GetMethod("ModifyShootStats", BindingFlags.Public | BindingFlags.Static);
             onHitNPCMethod = itemLoaderType.GetMethod("OnHitNPC", BindingFlags.Public | BindingFlags.Static);
             onHitPvpMethod = itemLoaderType.GetMethod("OnHitPvp", BindingFlags.Public | BindingFlags.Static);
             onModifyHitNPCMethod = itemLoaderType.GetMethod("ModifyHitNPC", BindingFlags.Public | BindingFlags.Static);
@@ -74,6 +77,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
             if (onShootMethod != null) {
                 MonoModHooks.Add(onShootMethod, OnShootHook);
+            }
+            if (onModifyShootStatsMethod != null) {
+                MonoModHooks.Add(onModifyShootStatsMethod, OnModifyShootStatsHook);
             }
             if (onHitNPCMethod != null) {
                 MonoModHooks.Add(onHitNPCMethod, OnHitNPCHook);
@@ -300,6 +306,19 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
 
             return orig.Invoke(item, player, source, position, velocity, type, damage, knockback);
+        }
+        /// <summary>
+        /// 提前于TML的方法执行，这样继承重写<br/><see cref="BaseRItem.On_ModifyShootStats(Item, Player, ref Vector2, ref Vector2, ref int, ref int, ref float)"/><br/>便拥有可以阻断TML后续方法运行的能力，用于进行一些高级修改
+        /// </summary>
+        public void OnModifyShootStatsHook(On_ModifyShootStats_Delegate orig, Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {//
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                bool rasg = ritem.On_ModifyShootStats(item, player, ref position, ref velocity, ref type, ref damage, ref knockback);
+                if (!rasg) {
+                    return;
+                }
+            }
+
+            orig.Invoke(item, player, ref  position, ref velocity, ref type, ref damage, ref knockback);
         }
         /// <summary>
         /// 提前于TML的方法执行，这个钩子可以用来做到<see cref="GlobalItem.CanUseItem"/>无法做到的修改效果，比如让一些原本不可使用的物品可以使用，

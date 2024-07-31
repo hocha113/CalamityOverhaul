@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
         public sealed override void SetSwingProperty() {
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 20;
             ownerOrientationLock = true;
             Projectile.extraUpdates = 4;
             SetKnifeProperty();

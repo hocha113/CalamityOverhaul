@@ -95,8 +95,7 @@ namespace CalamityOverhaul
         /// </summary>
         /// <param name="items">要导出的 Item 数组</param>
         /// <param name="path">写入文件的路径，默认为 "D:\\模组资源\\AAModPrivate\\input.cs"</param>
-        public static void ExportItemTypesToFile(Item[] items, string path = "D:\\模组资源\\input.cs") {
-            path = "D:\\Mod_Resource\\input.cs";
+        public static void ExportItemTypesToFile(Item[] items, string path = "D:\\Mod_Resource\\input.cs") {
             try {
                 int columnIndex = 0;
                 using StreamWriter sw = new(path);
@@ -1589,13 +1588,6 @@ namespace CalamityOverhaul
         /// <returns>如果按下了指定的鼠标键，则返回true，否则返回false</returns>
         public static bool PressKey(this Player player, bool leftCed = true, bool netCed = true) {
             return (!netCed || Main.myPlayer == player.whoAmI) && (leftCed ? PlayerInput.Triggers.Current.MouseLeft : PlayerInput.Triggers.Current.MouseRight);
-        }
-
-        /// <summary>
-        /// 判断是否重写该物品
-        /// </summary>
-        public static bool RemakeByItem<T>(Item item) where T : ModItem {
-            return item.type == ModContent.ItemType<T>() && CWRConstant.ForceReplaceResetContent;
         }
 
         /// <summary>

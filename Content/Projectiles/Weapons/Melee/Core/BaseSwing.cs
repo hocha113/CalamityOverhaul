@@ -82,6 +82,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 弧光内宽度，默认为70
         /// </summary>
         protected float drawTrailBtommMode = 70;
+        /// <summary>
+        /// 一个垂直于手臂的绘制矫正模长，默认为0
+        /// </summary>
+        protected float unitOffsetDrawZkMode;
         protected float[] oldRotate;
         protected float[] oldLength;
         protected float[] oldDistanceToOwner;
@@ -563,8 +567,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Vector2 drawOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
             SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
-            Vector2 v = Projectile.Center - RodingToVer(toProjCoreMode, (Projectile.Center - Owner.Center).ToRotation());
-
+            Vector2 offsetOwnerPos = safeInSwingUnit.GetNormalVector() * unitOffsetDrawZkMode * Projectile.spriteDirection;
             float drawRoting = Projectile.rotation;
             if (Projectile.spriteDirection == -1) {
                 drawRoting += MathHelper.Pi;
@@ -573,9 +576,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             if (inDrawFlipdiagonally) {
                 effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
                 drawRoting += MathHelper.PiOver2;
+                offsetOwnerPos *= -1;
             }
 
-            Main.EntitySpriteDraw(texture, v - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY, new Rectangle?(rect)
+            Vector2 drawPosValue = Projectile.Center - RodingToVer(toProjCoreMode, (Projectile.Center - Owner.Center).ToRotation()) + offsetOwnerPos;
+
+            Main.EntitySpriteDraw(texture, drawPosValue - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY, new Rectangle?(rect)
                 , Color.White, drawRoting, drawOrigin, Projectile.scale, effects, 0);
         }
 
