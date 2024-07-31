@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -40,6 +41,9 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient<BlackMatterStick>(16)
+                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                    amount = 0;
+                })
                 .AddOnCraftCallback(CWRRecipes.SpawnAction)
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();

@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniversePr
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -84,6 +85,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                 .AddIngredient<CosmiliteBar>(11)//宇宙锭
                 .AddIngredient<ShadowspecBar>(16)
                 .AddIngredient<DarkMatterBall>(11)
+                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                    amount = 0;
+                })
                 .AddOnCraftCallback(CWRRecipes.SpawnAction)
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();

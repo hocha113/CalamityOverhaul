@@ -50,7 +50,7 @@ namespace CalamityOverhaul
 
         public const int MaxParticleCount = 10000;
 
-        public static bool ForceReplaceResetContent => ModContent.GetInstance<CWRServerConfig>().ForceReplaceResetContent;
-        public static bool WeaponEnhancementSystem => ModContent.GetInstance<CWRServerConfig>().WeaponEnhancementSystem;
+        public static bool ForceReplaceResetContent => CWRServerConfig.Instance.ForceReplaceResetContent;
+        public static bool WeaponEnhancementSystem => CWRServerConfig.Instance.WeaponEnhancementSystem;
     }
 }

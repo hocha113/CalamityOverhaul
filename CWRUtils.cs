@@ -96,6 +96,7 @@ namespace CalamityOverhaul
         /// <param name="items">要导出的 Item 数组</param>
         /// <param name="path">写入文件的路径，默认为 "D:\\模组资源\\AAModPrivate\\input.cs"</param>
         public static void ExportItemTypesToFile(Item[] items, string path = "D:\\模组资源\\input.cs") {
+            path = "D:\\Mod_Resource\\input.cs";
             try {
                 int columnIndex = 0;
                 using StreamWriter sw = new(path);

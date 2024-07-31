@@ -101,10 +101,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         // <summary>
         /// 无尽锭
         /// </summary>
-        public static string[] FullItems8 = new string[] {"CalamityOverhaul/InfinityCatalyst", "CalamityMod/MiracleFruit", "CalamityMod/Elderberry", "CalamityMod/BloodOrange", "CalamityMod/Dragonfruit", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/ShadowspecBar", "CalamityOverhaul/BlackMatterStick",
-            "CalamityMod/BloodwormItem", "CalamityMod/AuricBar", "CalamityMod/AuricBar", "CalamityMod/AuricBar", "CalamityMod/AuricBar", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/ShadowspecBar", "CalamityOverhaul/BlackMatterStick",
-            "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityOverhaul/BlackMatterStick",
-            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
+        public static string[] FullItems8 = new string[] {"CalamityOverhaul/InfinityCatalyst", "CalamityMod/MiracleFruit", "CalamityMod/Elderberry", "CalamityMod/Dragonfruit", "CalamityMod/Dragonfruit", "CalamityMod/MiracleMatter", "CalamityMod/ShadowspecBar", "CalamityOverhaul/BlackMatterStick", "0",
+            "CalamityMod/BloodwormItem", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/ShadowspecBar", "CalamityOverhaul/BlackMatterStick", "0",
+            "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityOverhaul/BlackMatterStick", "0",
+            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
@@ -295,20 +295,33 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/NeutronScythe"
         };
-
+        /// <summary>
+        /// 龙言
+        /// </summary>
+        public static string[] FullItems22 = new string[] {"0", "0", "0", "0", "CalamityMod/YharonSoulFragment", "0", "0", "0", "0",
+            "0", "0", "0", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "0", "0", "0",
+            "0", "0", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "0", "0",
+            "0", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "0",
+            "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/SubsumingVortex", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment",
+            "0", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/Rock", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "0",
+            "0", "0", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "0", "0",
+            "0", "0", "0", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "CalamityMod/YharonSoulFragment", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityMod/YharonSoulFragment", "0", "0", "0", "0",
+            "CalamityOverhaul/DragonsWord"
+        };
         /// <summary>
         /// 无尽马桶
         /// </summary>
         public static List<string> FullItems1000 = new List<string> {"CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
-                "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
-                "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
-                "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
-                "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0",
-                "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0",
-                "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
-                "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
-                "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0",
-                "CalamityOverhaul/InfiniteToiletItem"
-            };
+            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
+            "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0",
+            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
+            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0",
+            "CalamityOverhaul/InfiniteToiletItem"
+        };
     }
 }

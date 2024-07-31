@@ -247,10 +247,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     OutItem();
                 }
             }
-
-            if (player.PressKey(false)) {
-                CWRUtils.ExportItemTypesToFile(items);
-            }
         }
 
         /// <summary>

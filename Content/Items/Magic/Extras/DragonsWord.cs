@@ -3,8 +3,10 @@ using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj;
+using CalamityOverhaul.Content.Tiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -53,12 +55,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<DragonsWordMouse>()] <= 0;
 
         public override void AddRecipes() {
-            CreateRecipe().
-                AddIngredient<SubsumingVortex> ().
-                AddIngredient<ShadowspecBar>(3).
-                AddIngredient<YharonSoulFragment>(3).
-                AddTile(ModContent.TileType<CosmicAnvil>()).
-                Register();
+            CreateRecipe()
+                .AddIngredient<SubsumingVortex>()
+                .AddIngredient<YharonSoulFragment>(39)
+                .AddIngredient<Rock>()
+                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                    amount = 0;
+                })
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
+                .Register();
         }
     }
 }

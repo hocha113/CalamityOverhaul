@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -118,9 +119,9 @@ namespace CalamityOverhaul.Content.Items.Materials
                 .AddIngredient<Elderberry>(1)
                 .AddIngredient<BloodOrange>(1)
                 .AddIngredient<Dragonfruit>(1)
-                .AddIngredient<MiracleMatter>(4)
-                .AddIngredient<ShadowspecBar>(10)
-                .AddIngredient<BlackMatterStick>(12)
+                .AddIngredient<MiracleMatter>(6)
+                .AddIngredient<ShadowspecBar>(9)
+                .AddIngredient<BlackMatterStick>(11)
                 .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
                     amount = 0;
                 })

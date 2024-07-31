@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Common
 {
     internal class ModGanged
     {
+        public delegate bool On_BOOL_Dalegate();
         public delegate void On_ModPlayerDraw_Dalegate(object obj, ref PlayerDrawSet drawInfo);
         public delegate void On_VoidFunc_Dalegate(ref PlayerDrawSet drawInfo, bool drawOnBack);
         public delegate void On_VoidFunc_Instance_Dalegate(object inds);
@@ -296,6 +297,17 @@ namespace CalamityOverhaul.Common
             }
             else {
                 "未加载模组 CoolerItemVisualEffect".DompInConsole();
+            }
+
+            #endregion
+
+            #region MagicStorage
+
+            if (CWRMod.Instance.magicStorage != null) {
+
+            }
+            else {
+                "未加载模组 MagicStorage".DompInConsole();
             }
 
             #endregion

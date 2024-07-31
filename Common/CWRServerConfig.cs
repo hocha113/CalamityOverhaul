@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Common
     [BackgroundColor(49, 32, 36, 216)]
     public class CWRServerConfig : ModConfig
     {
-        public static CWRServerConfig Instance;
+        public static CWRServerConfig Instance { get; private set; }
 
         public override ConfigScope Mode => ConfigScope.ServerSide;
 

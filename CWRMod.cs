@@ -33,6 +33,7 @@ namespace CalamityOverhaul
         internal Mod weaponOut = null;
         internal Mod weaponDisplay = null;
         internal Mod magicBuilder = null;
+        internal Mod magicStorage = null;
         internal Mod improveGame = null;
         internal Mod luiafk = null;
         internal Mod terrariaOverhaul = null;
@@ -186,7 +187,6 @@ namespace CalamityOverhaul
 
             LoadClient();
             GameLoadCount++;
-            base.Load();
         }
 
         public override void Unload() {
@@ -201,7 +201,6 @@ namespace CalamityOverhaul
                 setup.UnLoadData();
             }
             ILoaders = null;
-            base.Unload();
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI) => CWRNetCode.HandlePacket(this, reader, whoAmI);
@@ -233,6 +232,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("WeaponOut", out weaponOut);
             ModLoader.TryGetMod("WeaponDisplay", out weaponDisplay);
             ModLoader.TryGetMod("MagicBuilder", out magicBuilder);
+            ModLoader.TryGetMod("MagicStorage", out magicStorage);
             ModLoader.TryGetMod("ImproveGame", out improveGame);
             ModLoader.TryGetMod("miningcracks_take_on_luiafk", out luiafk);
             ModLoader.TryGetMod("TerrariaOverhaul", out terrariaOverhaul);
