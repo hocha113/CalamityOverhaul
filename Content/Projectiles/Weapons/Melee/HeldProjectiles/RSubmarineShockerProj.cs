@@ -3,7 +3,9 @@ using CalamityMod.Projectiles.BaseProjectiles;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj;
 using Microsoft.Xna.Framework;
+using System.Linq;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -42,9 +44,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void ExtraBehavior() {
-            if (Projectile.IsOwnedByLocalPlayer() && Timer == TotalDuration / 2 && !trueMelee) {
+            Item item = Owner.ActiveItem();
+            if (item.type == ItemID.None) {
+                return;
+            }
+            item.initialize();
+            if (Projectile.IsOwnedByLocalPlayer() && Timer == TotalDuration / 2 && !trueMelee && ++item.CWR().ai[0] > 1) {
                 Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f)) * 3.5f
                     , ModContent.ProjectileType<LigSpark>(), (int)(Projectile.damage * 0.7f), Projectile.knockBack, Main.myPlayer);
+                item.CWR().ai[0] = 0;
             }
         }
 
@@ -54,6 +62,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             trueMelee = true;
+            if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(5)) {
+                return;
+            }
             var source = Projectile.GetSource_FromThis();
             for (int i = 0; i < 3; i++) {
                 int proj = Projectile.NewProjectile(source, target.Center, Main.rand.NextVector2Unit() * Main.rand.Next(2, 5)

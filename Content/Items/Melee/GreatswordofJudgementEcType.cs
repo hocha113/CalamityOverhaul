@@ -27,7 +27,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<JudgementBeam>();
             Item.shootSpeed = 15f;
-
         }
     }
 }

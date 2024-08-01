@@ -118,10 +118,6 @@ namespace CalamityOverhaul.Content.Items.Materials
                 .AddIngredient<Necroplasm>(QFD(50))//幻魂
                 .AddIngredient<RuinousSoul>(QFD(50))//幽花之魂
                 .AddIngredient<UnholyEssence>(QFD(50))//灼火精华
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    amount = 0;
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
                 .AddTile(TileType<DarkMatterCompressor>())
                 .Register();
         }

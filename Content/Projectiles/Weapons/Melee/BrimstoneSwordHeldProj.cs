@@ -5,7 +5,9 @@ using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -48,8 +50,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.Kill();
                 return;
             }
-            if (Projectile.IsOwnedByLocalPlayer() && Timer == TotalDuration / 2 && !trueMelee) {
-                Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Projectile.velocity * 5.5f, ModContent.ProjectileType<BrimstoneSwordBall>(), Projectile.damage / 2, Projectile.knockBack, Main.myPlayer);
+            Item item = Owner.ActiveItem();
+            if (item.type == ItemID.None) {
+                return;
+            }
+            item.initialize();
+            if (Projectile.IsOwnedByLocalPlayer() && Timer == TotalDuration / 2 && !trueMelee && ++item.CWR().ai[0] > 1) {
+                Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Projectile.velocity * 5.5f
+                    , ModContent.ProjectileType<BrimstoneSwordBall>(), Projectile.damage / 2, Projectile.knockBack, Main.myPlayer);
+                item.CWR().ai[0] = 0;
             }
         }
 
@@ -59,6 +68,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             trueMelee = true;
+            if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(5)) {
+                return;
+            }
             var source = Projectile.GetSource_FromThis();
             target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300);
             Vector2 spanPos = new(target.Center.X + Main.rand.Next(-260, 260), target.Center.Y);
