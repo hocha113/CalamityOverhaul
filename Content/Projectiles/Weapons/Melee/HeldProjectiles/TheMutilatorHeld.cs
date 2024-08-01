@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             SwingData.starArg = 54;
             SwingData.baseSwingSpeed = 5f;
             distanceToOwner = 40;
-            trailTopWidth = 30;
+            drawTrailTopWidth = 30;
             Length = 86;
         }
 

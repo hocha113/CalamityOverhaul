@@ -14,10 +14,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override string gradientTexturePath => CWRConstant.ColorBar + "AbsoluteZero_Bar";
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
-            trailCount = 10;
-            trailTopWidth = 60;
+            drawTrailCount = 10;
+            drawTrailTopWidth = 60;
             distanceToOwner = -22;
-            drawTrailBtommMode = 0;
+            drawTrailBtommWidth = 0;
             SwingData.baseSwingSpeed = 4f;
             Projectile.width = Projectile.height = 46;
             Projectile.usesLocalNPCImmunity = true;

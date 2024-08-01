@@ -17,10 +17,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             UpAndDown,
         }
         public sealed override void SetSwingProperty() {
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 20;
-            ownerOrientationLock = true;
             Projectile.extraUpdates = 4;
+            ownerOrientationLock = true;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 10 * updateCount;
             SetKnifeProperty();
             CWRUtils.SafeLoadItem(TargetID);
         }

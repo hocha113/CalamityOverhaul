@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.width = Projectile.height = 36;
             canDrawSlashTrail = true;
             distanceToOwner = 16;
-            drawTrailBtommMode = 40;
-            trailTopWidth = 16;
-            trailCount = 8;
+            drawTrailBtommWidth = 40;
+            drawTrailTopWidth = 16;
+            drawTrailCount = 8;
             Length = 44;
         }
 

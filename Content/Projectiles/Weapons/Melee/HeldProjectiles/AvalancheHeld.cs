@@ -20,12 +20,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
             SwingData.baseSwingSpeed = 5f;
-            drawTrailBtommMode = 50;
+            drawTrailBtommWidth = 50;
             distanceToOwner = 26;
-            trailTopWidth = 20;
-        }
-
-        public override void Shoot() {
+            drawTrailTopWidth = 20;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

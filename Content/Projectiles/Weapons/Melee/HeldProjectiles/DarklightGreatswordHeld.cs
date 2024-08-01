@@ -15,9 +15,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override string gradientTexturePath => CWRConstant.ColorBar + "DarklightGreatswordEffectColorBar";
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
-            trailTopWidth = 30;
+            drawTrailTopWidth = 30;
             distanceToOwner = 40;
-            drawTrailBtommMode = 60;
+            drawTrailBtommWidth = 60;
             SwingData.baseSwingSpeed = 3.5f;
             Projectile.width = Projectile.height = 66;
             SwingAIType = SwingAITypeEnum.UpAndDown;

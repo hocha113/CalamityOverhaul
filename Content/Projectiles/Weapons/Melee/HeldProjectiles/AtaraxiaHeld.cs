@@ -14,11 +14,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override int TargetID => ModContent.ItemType<Ataraxia>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "Ataraxia_Bar";
         public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 66;
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
             SwingData.baseSwingSpeed = 5f;
-            distanceToOwner = 76;
-            trailTopWidth = 30;
+            distanceToOwner = 26;
+            drawTrailTopWidth = 30;
+            Length = 80;
         }
 
         public override void Shoot() {

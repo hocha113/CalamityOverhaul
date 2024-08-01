@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 15;
             distanceToOwner = 125;
-            trailTopWidth = 90;
+            drawTrailTopWidth = 90;
             Length = 80;
         }
 
@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             else if (Projectile.ai[0] == 4) {
                 if (Time == 0) {
                     distanceToOwner = 105;
-                    trailTopWidth = 190;
+                    drawTrailTopWidth = 190;
                     InitializeCaches();
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
                     speed = MathHelper.ToRadians(6) / speedUp;
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             else if (Projectile.ai[0] == 5) {
                 if (Time == 0) {
                     distanceToOwner = 105;
-                    trailTopWidth = 190;
+                    drawTrailTopWidth = 190;
                     InitializeCaches();
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);
                     speed = MathHelper.ToRadians(6) / speedUp;
@@ -230,7 +230,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 canSetOwnerArmBver = false;
                 if (Time == 0) {
                     distanceToOwner = 155;
-                    trailTopWidth = 60;
+                    drawTrailTopWidth = 60;
                     InitializeCaches();
                     Projectile.spriteDirection = Owner.direction;
                     startVector = RodingToVer(1, Projectile.velocity.ToRotation() - MathHelper.PiOver2 * Projectile.spriteDirection);

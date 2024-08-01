@@ -1,11 +1,13 @@
 ﻿using CalamityMod;
-using CalamityMod.CalPlayer;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -18,13 +20,10 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class TheLastMourningEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheLastMourning";
-        public new string LocalizationCategory => "Items.Weapons.Melee";
-        private bool InTureMelee;
-        public override void SetStaticDefaults() {
-            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
-        }
-
-        public override void SetDefaults() {
+        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
+        public override bool AltFunctionUse(Player player) => true;
+        public override void SetDefaults() => SetDefaultsFunc(Item);
+        public static void SetDefaultsFunc(Item Item) {
             Item.width = 94;
             Item.height = 94;
             Item.scale = 1.5f;
@@ -42,66 +41,62 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.Calamity().donorItem = true;
             Item.shoot = ModContent.ProjectileType<MourningSkull>();
             Item.shootSpeed = 15;
-
+            Item.SetKnifeHeld<TheLastMourningHeld>();
         }
 
-        public override bool AltFunctionUse(Player player) {
-            return true;
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            return ShootFunc(player, source, position, velocity, type, damage, knockback);
         }
 
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
-            damage *= InTureMelee ? 1.75f : 1;
-        }
-
-        public override void ModifyWeaponKnockback(Player player, ref StatModifier knockback) {
-            knockback *= InTureMelee ? 1.25f : 1;
-        }
-
-        public override bool? UseItem(Player player) {
-            Item.useAnimation = Item.useTime = 18;
-            Item.scale = 1f;
-            InTureMelee = false;
+        public static bool ShootFunc(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
-                Item.useAnimation = Item.useTime = 15;
-                Item.scale = 1.5f;
-                InTureMelee = true;
-            }
-
-            return base.UseItem(player);
-        }
-
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            if (player.altFunctionUse == 2) {
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 1);
                 return false;
             }
-            if (Main.rand.NextBool(3)) {
-                _ = Projectile.NewProjectile(source, position + (velocity.RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f)) * Main.rand.Next(5))
-                    , velocity.UnitVector() * 5, ModContent.ProjectileType<GhostSkull>()
-                , damage, knockback, Main.myPlayer, 0f, Main.rand.Next(3), Main.rand.Next(3));
-            }
-            _ = Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MourningSkull2>()
-                , damage / 3, knockback, Main.myPlayer, 0f, Main.rand.Next(3));
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
         }
+    }
 
-        public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers) {
-            modifiers.CritDamage *= 0.5f;
+    internal class TheLastMourningHeld : BaseKnife
+    {
+        public override int TargetID => ModContent.ItemType<TheLastMourning>();
+        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "TheLastMourning_Bar";
+        public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 86;
+            canDrawSlashTrail = true;
+            distanceToOwner = -40;
+            drawTrailBtommWidth = 30;
+            drawTrailTopWidth = 80;
+            drawTrailCount = 16;
+            Length = 110;
+            unitOffsetDrawZkMode = 0;
+            overOffsetCachesRoting = MathHelper.ToRadians(8);
+            SwingData.starArg = 60;
+            SwingData.ler1_UpLengthSengs = 0.1f;
+            SwingData.minClampLength = 120;
+            SwingData.maxClampLength = 130;
+            SwingData.ler1_UpSizeSengs = 0.056f;
+            ShootSpeed = 12;
         }
-        public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone) {
-            if (player.altFunctionUse == 2) {
-                CalamityPlayer.HorsemansBladeOnHit(player, target.whoAmI, Item.damage, Item.knockBack, 0, Item.shoot);
-                CalamityPlayer.HorsemansBladeOnHit(player, target.whoAmI, Item.damage, Item.knockBack, 1);
+
+        public override void Shoot() {
+            if (Projectile.ai[0] == 1) {
+                return;
             }
-        }
-
-        public override void OnHitPvp(Player player, Player target, Player.HurtInfo hurtInfo) {
-            if (player.altFunctionUse == 2) {
-                CalamityPlayer.HorsemansBladeOnHit(player, -1, Item.damage, Item.knockBack, 0, Item.shoot);
-                CalamityPlayer.HorsemansBladeOnHit(player, -1, Item.damage, Item.knockBack, 1);
+            if (Main.rand.NextBool(3)) {
+                _ = Projectile.NewProjectile(Source, ShootSpanPos + (ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f)) * Main.rand.Next(5))
+                    , ShootVelocity.UnitVector() * 5, ModContent.ProjectileType<GhostSkull>()
+                , Projectile.damage, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3), Main.rand.Next(3));
             }
+            _ = Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ModContent.ProjectileType<MourningSkull2>()
+                , Projectile.damage / 3, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));
         }
 
-        public override void MeleeEffects(Player player, Rectangle hitbox) {
+        public override bool PreInOwnerUpdate() {
             if (Main.rand.NextBool(5)) {
                 int dustType = 5;
                 switch (Main.rand.Next(3)) {
@@ -117,8 +112,38 @@ namespace CalamityOverhaul.Content.Items.Melee
                     default:
                         break;
                 }
-                int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, dustType, player.direction * 2, 0f, 150, default, 1.3f);
+                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType, Owner.direction * 2, 0f, 150, default, 1.3f);
                 Main.dust[dust].velocity *= 0.2f;
+            }
+            if (Projectile.ai[0] == 1) {
+                SwingData.starArg = 60;
+                distanceToOwner = -20;
+                drawTrailBtommWidth = 60;
+                SwingData.ler1_UpLengthSengs = 0.16f;
+                SwingData.minClampLength = 150;
+                SwingData.maxClampLength = 160;
+                SwingData.ler1_UpSizeSengs = 0.1f;
+            }
+            return base.PreInOwnerUpdate();
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (Projectile.ai[0] == 1) {
+                SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
+                Vector2 spanPos = ShootSpanPos + CWRUtils.randVr(600, 700);
+                Vector2 ver = spanPos.To(target.Center).UnitVector() * ShootSpeed;
+                Projectile.NewProjectile(Source, spanPos, ver, ModContent.ProjectileType<MourningSkull2>()
+                , Projectile.damage, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));
+            }
+        }
+
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
+            if (Projectile.ai[0] == 1) {
+                SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
+                Vector2 spanPos = ShootSpanPos + CWRUtils.randVr(600, 700);
+                Vector2 ver = spanPos.To(target.Center).UnitVector() * ShootSpeed;
+                Projectile.NewProjectile(Source, spanPos, ver, ModContent.ProjectileType<MourningSkull2>()
+                , Projectile.damage, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));
             }
         }
     }

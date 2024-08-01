@@ -1,11 +1,14 @@
 ﻿using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
-using Microsoft.Xna.Framework;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using Mono.Cecil;
 using Terraria;
-using Terraria.DataStructures;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
@@ -15,8 +18,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class TeardropCleaverEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TeardropCleaver";
-        public new string LocalizationCategory => "Items.Weapons.Melee";
-        public override void SetDefaults() {
+        public override void SetDefaults() => SetDefaultsFunc(Item);
+        public static void SetDefaultsFunc(Item Item) {
             Item.width = 56;
             Item.damage = 25;
             Item.DamageType = DamageClass.Melee;
@@ -32,14 +35,42 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Green;
             Item.shoot = ModContent.ProjectileType<TeardropCleaverProj>();
             Item.shootSpeed = 1;
+            Item.SetKnifeHeld<TeardropCleaverHeld>();
+        }
+    }
+
+    internal class TeardropCleaverHeld : BaseKnife
+    {
+        public override int TargetID => ModContent.ItemType<TeardropCleaver>();
+        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "Greentide_Bar";
+        public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 46;
+            canDrawSlashTrail = true;
+            distanceToOwner = 18;
+            drawTrailBtommWidth = 50;
+            drawTrailTopWidth = 20;
+            drawTrailCount = 6;
+            Length = 52;
+            ShootSpeed = 2f;
         }
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position + velocity * 100, velocity, type, damage / 2, knockback, player.whoAmI);
-            return false;
+        public override void Shoot() {
+            SoundEngine.PlaySound(SoundID.Item13, Owner.Center);
+            Projectile.NewProjectile(Source, ShootSpanPos + ShootVelocity * 30, ShootVelocity
+                , ModContent.ProjectileType<TeardropCleaverProj>(), Projectile.damage / 2
+                , Projectile.knockBack, Owner.whoAmI);
         }
 
-        public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone) {
+        public override bool PreInOwnerUpdate() {
+            return base.PreInOwnerUpdate();
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            target.AddBuff(ModContent.BuffType<TemporalSadness>(), 60);
+        }
+
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             target.AddBuff(ModContent.BuffType<TemporalSadness>(), 60);
         }
     }

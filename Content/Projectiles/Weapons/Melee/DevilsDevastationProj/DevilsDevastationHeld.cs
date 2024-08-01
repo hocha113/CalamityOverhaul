@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
             distanceToOwner = 34;
-            trailTopWidth = 10;
+            drawTrailTopWidth = 10;
             canDrawSlashTrail = true;
             ownerOrientationLock = true;
             Length = 120;

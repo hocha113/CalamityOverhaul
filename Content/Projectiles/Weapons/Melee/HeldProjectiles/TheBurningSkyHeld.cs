@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.extraUpdates = 4;
             Projectile.usesLocalNPCImmunity = true;
             distanceToOwner = 30;
-            trailTopWidth = 60;
+            drawTrailTopWidth = 60;
             canDrawSlashTrail = true;
         }
 

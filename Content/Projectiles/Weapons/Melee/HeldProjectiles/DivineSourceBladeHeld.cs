@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 112;
             canDrawSlashTrail = true;
-            trailCount = 34;
+            drawTrailCount = 34;
             distanceToOwner = -20;
-            trailTopWidth = 86;
+            drawTrailTopWidth = 86;
             ownerOrientationLock = true;
             SwingData.starArg = 70;
             SwingData.baseSwingSpeed = 5.25f;
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 return;
             }
 
-            for (int i = trailCount - 1; i > 0; i--) {
+            for (int i = drawTrailCount - 1; i > 0; i--) {
                 oldRotate[i] = oldRotate[i - 1];
                 oldDistanceToOwner[i] = oldDistanceToOwner[i - 1];
                 oldLength[i] = oldLength[i - 1];

@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 弧光的采样点数，默认为15 * <see cref="updateCount"/>
         /// </summary>
-        protected int trailCount = 15;
+        protected int drawTrailCount = 15;
         /// <summary>
         /// 绝对中心距离玩家的距离，默认为75
         /// </summary>
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 弧光宽度，默认为50
         /// </summary>
-        protected float trailTopWidth = 50;
+        protected float drawTrailTopWidth = 50;
         /// <summary>
         /// 离心量的绘制矫正模长，默认为48
         /// </summary>
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 弧光内宽度，默认为70
         /// </summary>
-        protected float drawTrailBtommMode = 70;
+        protected float drawTrailBtommWidth = 70;
         /// <summary>
         /// 一个垂直于手臂的绘制矫正模长，默认为0
         /// </summary>
@@ -115,12 +115,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         protected bool canSetOwnerArmBver = true;
         /// <summary>
+        /// 额外的矫正刀光采点角度的值，默认为0
+        /// </summary>
+        protected float overOffsetCachesRoting = 0;
+        /// <summary>
+        /// 发射射弹的速度模长，默认为6
+        /// </summary>
+        protected float ShootSpeed = 6f;
+        /// <summary>
         /// 较为稳妥的获取一个正确的刀尖单位方向向量
         /// </summary>
         protected Vector2 safeInSwingUnit => Owner.Center.To(Projectile.Center).UnitVector();
+        protected Vector2 ShootVelocity => UnitToMouseV * ShootSpeed;
+        protected Vector2 ShootSpanPos => Owner.GetPlayerStabilityCenter() + UnitToMouseV * Length * 0.5f;
         protected IEntitySource Source => Owner.GetSource_ItemUse(Item);
-        protected Vector2 ShootVelocity => UnitToMouseV * Item.shootSpeed;
-        protected Vector2 ShootSpanPos => Owner.GetPlayerStabilityCenter();
         /// <summary>
         /// 绘制中是否进行对角线翻转
         /// </summary>
@@ -203,13 +211,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 Projectile.friendly = true;
                 Projectile.penetrate = -1;
                 Rotation = MathHelper.ToRadians(3);
+                Projectile.CWR().NotSubjectToSpecialEffects = true;
                 SetSwingProperty();
             }
             PostSwingProperty();
-            trailCount *= updateCount;
-            oldRotate = new float[trailCount];
-            oldDistanceToOwner = new float[trailCount];
-            oldLength = new float[trailCount];
+            drawTrailCount *= updateCount;
+            oldRotate = new float[drawTrailCount];
+            oldDistanceToOwner = new float[drawTrailCount];
+            oldLength = new float[drawTrailCount];
             InitializeCaches();
             OrigLength = Length;
         }
@@ -225,7 +234,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public float SetSwingSpeed(float speed) => speed / Owner.GetAttackSpeed(Projectile.DamageType);
 
         protected virtual void InitializeCaches() {
-            for (int j = trailCount - 1; j >= 0; j--) {
+            for (int j = drawTrailCount - 1; j >= 0; j--) {
                 oldRotate[j] = 100f;
                 oldDistanceToOwner[j] = distanceToOwner;
                 oldLength[j] = Projectile.height * Projectile.scale;
@@ -435,7 +444,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 Vector2 Center = Owner.GetPlayerStabilityCenter();
                 float r = oldRotate[i] % 6.18f;
                 float dir = (r >= 3.14f ? r - 3.14f : r + 3.14f) / MathHelper.TwoPi;
-                Vector2 Top = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] + trailTopWidth + oldDistanceToOwner[i]);
+                Vector2 Top = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] + drawTrailTopWidth + oldDistanceToOwner[i]);
                 Vector2 Bottom = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] - ControlTrailBottomWidth(factor) * 1.25f + oldDistanceToOwner[i]);
 
                 bars.Add(new CustomVertexInfo(Top, new Color(dir, w, 0f, 15), new Vector3(factor, 0f, w)));
@@ -477,13 +486,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 return;
             }
 
-            for (int i = trailCount - 1; i > 0; i--) {
+            for (int i = drawTrailCount - 1; i > 0; i--) {
                 oldRotate[i] = oldRotate[i - 1];
                 oldDistanceToOwner[i] = oldDistanceToOwner[i - 1];
                 oldLength[i] = oldLength[i - 1];
             }
 
-            oldRotate[0] = (Projectile.Center - Owner.Center).ToRotation();
+            oldRotate[0] = (Projectile.Center - Owner.Center).ToRotation() + overOffsetCachesRoting * Math.Sign(rotSpeed);
             oldDistanceToOwner[0] = distanceToOwner;
             oldLength[0] = Projectile.height * Projectile.scale;
         }
@@ -531,7 +540,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public virtual float ControlTrailBottomWidth(float factor) {
-            return drawTrailBtommMode * Projectile.scale;
+            return drawTrailBtommWidth * Projectile.scale;
         }
 
         public virtual void DrawSlashTrail() {
@@ -544,7 +553,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
                 float factor = 1f - i / count;
                 Vector2 Center = Owner.GetPlayerStabilityCenter();
-                Vector2 Top = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] + trailTopWidth + oldDistanceToOwner[i]);
+                Vector2 Top = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] + drawTrailTopWidth + oldDistanceToOwner[i]);
                 Vector2 Bottom = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i]);
 
                 var topColor = Color.Lerp(new Color(238, 218, 130, 200), new Color(167, 127, 95, 0), 1 - factor);
@@ -582,7 +591,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Vector2 drawPosValue = Projectile.Center - RodingToVer(toProjCoreMode, (Projectile.Center - Owner.Center).ToRotation()) + offsetOwnerPos;
 
             Main.EntitySpriteDraw(texture, drawPosValue - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY, new Rectangle?(rect)
-                , Color.White, drawRoting, drawOrigin, Projectile.scale, effects, 0);
+                , Projectile.GetAlpha(lightColor), drawRoting, drawOrigin, Projectile.scale, effects, 0);
         }
 
         public sealed override bool PreDraw(ref Color lightColor) {

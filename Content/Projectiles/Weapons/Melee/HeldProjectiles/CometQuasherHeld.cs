@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.width = Projectile.height = 36;
             canDrawSlashTrail = true;
             distanceToOwner = 20;
-            drawTrailBtommMode = 50;
-            trailTopWidth = 20;
-            trailCount = 6;
+            drawTrailBtommWidth = 50;
+            drawTrailTopWidth = 20;
+            drawTrailCount = 6;
             Length = 52;
         }
 
@@ -29,10 +29,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     , ModContent.ProjectileType<CometQuasherMeteor>(), Projectile.damage / 2
                     , Projectile.knockBack, Owner.whoAmI, 0f, 0.5f + (float)Main.rand.NextDouble() * 0.3f);
             Main.projectile[proj].Calamity().lineColor = Main.rand.Next(3);
-        }
-
-        public override bool PreInOwnerUpdate() {
-            return base.PreInOwnerUpdate();
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

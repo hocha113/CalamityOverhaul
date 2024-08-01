@@ -21,9 +21,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
             SwingData.baseSwingSpeed = 2.5f;
-            drawTrailBtommMode = 50;
+            drawTrailBtommWidth = 50;
             distanceToOwner = 28;
-            trailTopWidth = 30;
+            drawTrailTopWidth = 30;
             SwingAIType = SwingAITypeEnum.UpAndDown;
         }
 

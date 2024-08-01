@@ -2725,6 +2725,11 @@ Items: {
 		// DisplayName: Virulence Ec Type
 		// Tooltip: ""
 	}
+
+	SolsticeClaymoreEcType: {
+		// DisplayName: Solstice Claymore Ec Type
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -2739,6 +2744,7 @@ Projectiles: {
 		// RStreamGougeProj.DisplayName: R Stream Gouge Proj
 		// MourningSkull2.DisplayName: Mourning Skull2
 		// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
+		// EXSolsticeBeam.DisplayName: E X Solstice Beam
 	}
 
 	// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
@@ -3394,6 +3400,16 @@ Projectiles: {
 	// CometQuasherHeld.DisplayName: Comet Quasher Held
 	// DivineSourceBladeHeld.DisplayName: Divine Source Blade Held
 	// DragonsScaleGreatswordHeld.DisplayName: Dragons Scale Greatsword Held
+	// EntropicClaymoreHeld.DisplayName: Entropic Claymore Held
+	// GreatswordofJudgementHeld.DisplayName: Greatswordof Judgement Held
+	// GreentideHeld.DisplayName: Greentide Held
+	// PlagueKeeperHeld.DisplayName: Plague Keeper Held
+	// SolsticeClaymoreHeld.DisplayName: Solstice Claymore Held
+	// TeardropCleaverHeld.DisplayName: Teardrop Cleaver Held
+	// TheEnforcerHeld.DisplayName: The Enforcer Held
+	// TheLastMourningHeld.DisplayName: The Last Mourning Held
+	// UltimusCleaverHeld.DisplayName: Ultimus Cleaver Held
+	// WindBladeHeld.DisplayName: Wind Blade Held
 }
 
 Configs: {

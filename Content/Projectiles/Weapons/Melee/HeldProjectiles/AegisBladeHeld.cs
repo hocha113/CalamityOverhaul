@@ -14,9 +14,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override string gradientTexturePath => CWRConstant.ColorBar + "AegisBlade_Bar";
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
-            trailCount = 4;
+            drawTrailCount = 4;
             distanceToOwner = 70;
-            trailTopWidth = 20;
+            drawTrailTopWidth = 20;
             ownerOrientationLock = true;
             SwingData.starArg = 60;
             SwingData.baseSwingSpeed = 5.15f;
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
                 SwingAIType = SwingAITypeEnum.UpAndDown;
                 distanceToOwner = 60;
-                trailTopWidth = 60;
+                drawTrailTopWidth = 60;
                 SwingData.baseSwingSpeed = 5.55f;
                 SwingData.ler1_UpSizeSengs = 0.102f;
                 SwingData.minClampLength = 90;
