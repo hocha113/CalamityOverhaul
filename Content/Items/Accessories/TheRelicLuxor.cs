@@ -137,29 +137,33 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 "投掷出高速弹跳的耀界之灵",
                 "Hurl the Spirit of Glory with a high speed bounce"
                 )
-                );
-            newLine1.OverrideColor = Color.Lerp(Color.BlueViolet, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
+                ) {
+                OverrideColor = Color.Lerp(Color.BlueViolet, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f)
+            };
 
             TooltipLine newLine2 = new TooltipLine(Mod, "Assmt", CWRUtils.Translation(
                 "枪口将迸发出耀界闪电",
                 "The muzzle of the gun will burst forth lightning"
                 )
-                );
-            newLine2.OverrideColor = Color.Lerp(Color.AliceBlue, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
+                ) {
+                OverrideColor = Color.Lerp(Color.AliceBlue, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f)
+            };
 
             TooltipLine newLine3 = new TooltipLine(Mod, "Assmt", CWRUtils.Translation(
                 "散落的魔力将凝聚为金源炸弹",
                 "The scattered magic will condense into the gold source bomb"
                 )
-                );
-            newLine3.OverrideColor = Color.Lerp(Color.Gold, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
+                ) {
+                OverrideColor = Color.Lerp(Color.Gold, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f)
+            };
 
             TooltipLine newLine4 = new TooltipLine(Mod, "Assmt", CWRUtils.Translation(
                 "召唤泛金能量体为你而战",
                 "Summon Pangold Energies to fight for you"
                 )
-                );
-            newLine4.OverrideColor = Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
+                ) {
+                OverrideColor = Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f)
+            };
 
             TooltipLine newLine5 = new TooltipLine(Mod, "Assmt", CWRUtils.Translation(
                 "刀刃的挥舞将发射出炽热的灵魂\n"
@@ -167,8 +171,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 "The wave of the blade will emit a fiery soul\n"
                 + "\"Loyal! !\""
                 )
-                );
-            newLine5.OverrideColor = Color.Lerp(Color.Red, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
+                ) {
+                OverrideColor = Color.Lerp(Color.Red, Color.Goldenrod, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f)
+            };
 
             tooltips.Add(newLine1);
             tooltips.Add(newLine2);

@@ -40,9 +40,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
         protected Vector2 IntermediateTransPos = new Vector2(75, 0);
 
-        protected List<NPC> HitNPCs = new();
+        protected List<NPC> HitNPCs = [];
 
-        protected List<SkialithStruct> SkialithEntitys = new();
+        protected List<SkialithStruct> SkialithEntitys = [];
 
         protected Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.Full;
 
@@ -257,18 +257,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                , Owner.Center, Projectile.Center + Projectile.velocity.UnitVector() * overHitModeing)) {
-                return true;
-            }
-            return null;
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
+                , Owner.Center, Projectile.Center + Projectile.velocity.UnitVector() * overHitModeing)
+                ? true
+                : null;
         }
 
         public override bool? CanHitNPC(NPC target) {
-            if (HitNPCs.Contains(target)) {
-                return false;
-            }
-            return null;
+            return HitNPCs.Contains(target) ? false : null;
         }
 
         public virtual void Draw1(Texture2D tex, Vector2 imgsOrig, Vector2 off, float fade, SkialithStruct afterImage, ref Color lightColor) {

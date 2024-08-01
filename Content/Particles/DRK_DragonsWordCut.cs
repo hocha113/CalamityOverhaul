@@ -1,9 +1,9 @@
 ﻿using CalamityOverhaul.Content.Particles.Core;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Particles
             Vector2 scale = new Vector2(Xlength, Ylength) * Scale;
             Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
 
-            
+
             spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color.Gold, Rotation, texture.Size() * 0.5f, scale * new Vector2(0.85f, 1f), 0, 0f);
             spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color, Rotation, texture.Size() * 0.5f, scale, 0, 0f);
         }

@@ -312,7 +312,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <summary>
         /// 无尽马桶
         /// </summary>
-        public static List<string> FullItems1000 = new List<string> {"CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
+        public static List<string> FullItems1000 = ["CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
@@ -322,6 +322,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
             "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0",
             "CalamityOverhaul/InfiniteToiletItem"
-        };
+        ];
     }
 }

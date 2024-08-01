@@ -11,9 +11,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
     internal class NeutronScytheHeld : BaseThrowable
     {
         public override string Texture => CWRConstant.Item + "Rogue/NeutronScythe";
-        Vector2 orig = Vector2.Zero;
-        int fireIndex;
-        int fireIndex2;
+
+        private Vector2 orig = Vector2.Zero;
+        private int fireIndex;
+        private int fireIndex2;
         public override void SetThrowable() {
             HandOnTwringMode = -30;
             TotalLifetime = 1200;

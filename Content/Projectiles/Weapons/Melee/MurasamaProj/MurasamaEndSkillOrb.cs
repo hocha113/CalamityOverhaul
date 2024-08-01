@@ -126,10 +126,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override bool? CanDamage() {
-            if (!EndSkillEffectStart.CanDealDamageToNPCs()) {
-                return false;
-            }
-            return base.CanDamage();
+            return !EndSkillEffectStart.CanDealDamageToNPCs() ? false : base.CanDamage();
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {

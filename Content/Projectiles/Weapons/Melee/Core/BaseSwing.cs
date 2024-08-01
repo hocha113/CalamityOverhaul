@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         private float oldRot;
         protected Vector2 vector;
         protected Vector2 startVector;
-        int dirs;
+        private int dirs;
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         /// <summary>
         /// 这个手持刀对应的物品实例
@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public virtual string gradientTexturePath => "";
         public Texture2D TrailTexture => SwingSystem.trailTextures[Type].Value;
         public Texture2D GradientTexture => SwingSystem.gradientTextures[Type].Value;
-        
+
         public struct SwingDataStruct
         {
             /// <summary>
@@ -252,12 +252,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Vector2 toTarget = Owner.Center.To(target.Center);
             Vector2 norlToTarget = toTarget.GetNormalVector();
             int ownerToTargetSetDir = Math.Sign(toTarget.X);
-            if (ownerToTargetSetDir != DirSign) {
-                ownerToTargetSetDir = -1;
-            }
-            else {
-                ownerToTargetSetDir = 1;
-            }
+            ownerToTargetSetDir = ownerToTargetSetDir != DirSign ? -1 : 1;
 
             if (rotSpeed > 0) {
                 norlToTarget *= -1;
@@ -333,7 +328,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             }
         }
 
-        public virtual void SwingBehavior(SwingDataStruct swingData) => 
+        public virtual void SwingBehavior(SwingDataStruct swingData) =>
             SwingBehavior(swingData.starArg,
                           swingData.baseSwingSpeed,
                           swingData.ler1_UpLengthSengs,
@@ -383,12 +378,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 Owner.direction = Projectile.spriteDirection = dirs;
             }
 
-            if (Projectile.spriteDirection == 1) {
-                Projectile.rotation = (Projectile.Center - Owner.Center).ToRotation() + MathHelper.PiOver4;
-            }
-            else {
-                Projectile.rotation = (Projectile.Center - Owner.Center).ToRotation() - MathHelper.Pi - MathHelper.PiOver4;
-            }
+            Projectile.rotation = Projectile.spriteDirection == 1
+                ? (Projectile.Center - Owner.Center).ToRotation() + MathHelper.PiOver4
+                : (Projectile.Center - Owner.Center).ToRotation() - MathHelper.Pi - MathHelper.PiOver4;
         }
 
         public virtual bool PreInOwnerUpdate() { return true; }
@@ -432,7 +424,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         #region Draw
         public virtual void WarpDraw() {
-            List<CustomVertexInfo> bars = new List<CustomVertexInfo>();
+            List<CustomVertexInfo> bars = [];
             GetCurrentTrailCount(out float count);
 
             float w = 1f;
@@ -544,7 +536,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public virtual void DrawSlashTrail() {
-            List<VertexPositionColorTexture> bars = new List<VertexPositionColorTexture>();
+            List<VertexPositionColorTexture> bars = [];
             GetCurrentTrailCount(out float count);
 
             for (int i = 0; i < count; i++) {

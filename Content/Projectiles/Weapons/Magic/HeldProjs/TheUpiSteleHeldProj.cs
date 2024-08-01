@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void FiringShoot() {
-            List<NPC> npcs = new List<NPC>();
+            List<NPC> npcs = [];
             int dot = 0;
             while (npcs.Count < 5 && dot < 10) {
                 foreach (NPC n in Main.npc) {

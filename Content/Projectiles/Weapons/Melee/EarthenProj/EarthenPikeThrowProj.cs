@@ -80,10 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj
         }
 
         public override bool? CanDamage() {
-            if (Projectile.numHits > 8) {
-                return false;
-            }
-            return base.CanDamage();
+            return Projectile.numHits > 8 ? false : base.CanDamage();
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

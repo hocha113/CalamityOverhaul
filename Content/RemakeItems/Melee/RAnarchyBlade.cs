@@ -1,17 +1,7 @@
-﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.CalPlayer;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.NPCs;
-using CalamityMod.Projectiles.Melee;
+﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.Audio;
-using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee

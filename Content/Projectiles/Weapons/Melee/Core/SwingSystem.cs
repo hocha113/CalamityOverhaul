@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
-using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
@@ -13,10 +12,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         internal static Dictionary<int, Asset<Texture2D>> trailTextures;
         internal static Dictionary<int, Asset<Texture2D>> gradientTextures;
         void ILoader.LoadData() {
-            Swings = new List<BaseSwing>();
-            SwingFullNameToType = new Dictionary<string, int>();
-            trailTextures = new Dictionary<int, Asset<Texture2D>>();
-            gradientTextures = new Dictionary<int, Asset<Texture2D>>();
+            Swings = [];
+            SwingFullNameToType = [];
+            trailTextures = [];
+            gradientTextures = [];
         }
         void ILoader.SetupData() {
             Swings = CWRUtils.HanderSubclass<BaseSwing>();

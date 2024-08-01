@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content
             if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
                 int dust = Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
                         , DustID.GreenTorch, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
-                Main.dust[dust].noGravity= true;
+                Main.dust[dust].noGravity = true;
             }
             if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
                 if (Main.rand.NextBool()) {

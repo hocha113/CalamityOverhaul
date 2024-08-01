@@ -89,12 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
             }
 
-            if (Projectile.timeLeft < 85) {
-                Projectile.alpha = Projectile.timeLeft * 3;
-            }
-            else {
-                Projectile.alpha = 195;
-            }
+            Projectile.alpha = Projectile.timeLeft < 85 ? Projectile.timeLeft * 3 : 195;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -139,8 +134,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Color color = Color.White;
             if (Status == 0) color = Color.DarkRed;
             else if (Status == 1) color = Color.DarkGreen;
-            else if (Status == 2) color = Color.Blue;
-            else color = Color.Gold;
+            else color = Status == 2 ? Color.Blue : Color.Gold;
 
             float alp = Projectile.alpha / 255f;
             color = CWRUtils.RecombinationColor((color, 0.5f), (new Color(255, 255, 255), 0.5f));

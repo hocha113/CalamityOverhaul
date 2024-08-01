@@ -36,11 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
         }
 
         public override bool? CanDamage() {
-            if (Projectile.timeLeft > 150) {
-                return false;
-            }
-
-            return null;
+            return Projectile.timeLeft > 150 ? false : null;
         }
 
         public override void AI() {

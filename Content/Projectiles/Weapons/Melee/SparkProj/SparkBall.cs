@@ -23,17 +23,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
         }
 
         public override bool? CanHitNPC(NPC target) {
-            if (damageScale > 0) {
-                return false;
-            }
-            return base.CanHitNPC(target);
+            return damageScale > 0 ? false : base.CanHitNPC(target);
         }
 
         public override bool CanHitPvp(Player target) {
-            if (damageScale > 0) {
-                return false;
-            }
-            return base.CanHitPvp(target);
+            return damageScale > 0 ? false : base.CanHitPvp(target);
         }
 
         public override void AI() {

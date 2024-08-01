@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {

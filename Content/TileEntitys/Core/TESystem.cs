@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.TileEntitys.Core
         public static List<BaseCWRTE> BaseCWRTEs { get; private set; }
 
         public override void PostSetupContent() {
-            BaseCWRTEs = new();
+            BaseCWRTEs = [];
             BaseCWRTEs = CWRUtils.HanderSubclass<BaseCWRTE>();
         }
 

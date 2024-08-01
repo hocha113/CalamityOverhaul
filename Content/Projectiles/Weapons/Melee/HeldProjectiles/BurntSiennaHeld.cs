@@ -1,11 +1,10 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework;
-using Mono.Cecil;
-using Terraria.ID;
 using CalamityMod.Projectiles.Boss;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {

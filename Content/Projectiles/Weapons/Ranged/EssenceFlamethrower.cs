@@ -128,11 +128,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     else if (flameDrawInterpolant < 0.9f)
                         flameDrawColor = Color.Lerp(midFlameColor, endFlameColor, Utils.GetLerpValue(0.7f, 0.9f, flameDrawInterpolant, true));
 
-                    else if (flameDrawInterpolant < 1f)
-                        flameDrawColor = Color.Lerp(endFlameColor, Color.Transparent, Utils.GetLerpValue(0.9f, 1f, flameDrawInterpolant, true));
-
-                    else
-                        flameDrawColor = Color.Transparent;
+                    else flameDrawColor = flameDrawInterpolant < 1f
+                        ? Color.Lerp(endFlameColor, Color.Transparent, Utils.GetLerpValue(0.9f, 1f, flameDrawInterpolant, true))
+                        : Color.Transparent;
 
                     float flameScale = MathF.Pow(Lerp(0.9f, 1.7f, flameDrawInterpolant), 2f) * 0.8f;
 

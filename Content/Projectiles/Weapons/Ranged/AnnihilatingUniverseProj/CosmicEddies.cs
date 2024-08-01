@@ -23,10 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         private SlotId soundSlot;
         private SoundStyle modSoundtyle;
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public override void SetDefaults() {
             Projectile.height = 24;

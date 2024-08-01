@@ -16,8 +16,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class DeathsAscensionThrowable : BaseThrowable
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DeathsAscension";
-        bool inOut;
-        bool outFive;
+
+        private bool inOut;
+        private bool outFive;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 17;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;

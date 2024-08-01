@@ -255,11 +255,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     }
                     else {
                         if (Time > 30 * updateCount) {
-                            Time = (int)(30 * updateCount);
+                            Time = 30 * updateCount;
                         }
                         if (Projectile.soundDelay <= 0) {
                             SoundEngine.PlaySound(SupremeCalamitas.CatastropheSwing with { MaxInstances = 6, Volume = 0.45f }, Owner.Center);
-                            Projectile.soundDelay = (int)(30 * updateCount);
+                            Projectile.soundDelay = 30 * updateCount;
                         }
                     }
 
@@ -343,12 +343,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Vector2 toTarget = Owner.Center.To(target.Center);
             Vector2 norlToTarget = toTarget.GetNormalVector();
             int ownerToTargetSetDir = Math.Sign(toTarget.X);
-            if (ownerToTargetSetDir != DirSign) {
-                ownerToTargetSetDir = -1;
-            }
-            else {
-                ownerToTargetSetDir = 1;
-            }
+            ownerToTargetSetDir = ownerToTargetSetDir != DirSign ? -1 : 1;
 
             if (rotSpeed > 0) {
                 norlToTarget *= -1;
@@ -362,7 +357,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (Projectile.ai[0] == 3) {
                 rotToTargetSpeedTrengsVumVer = Projectile.velocity.RotatedBy(rotToTargetSpeedSengs);
             }
-            
+
             int pysCount = DRKLoader.GetParticlesCount(DRKLoader.GetParticleType(typeof(PRK_Spark)));
             if (pysCount > 120) {
                 sparkCount = 10;

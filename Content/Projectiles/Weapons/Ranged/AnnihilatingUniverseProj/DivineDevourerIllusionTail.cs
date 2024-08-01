@@ -10,10 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "AnnihilatingUniverseProj/" + "DivineDevourerIllusionTail";
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public override void SetDefaults() {
             Projectile.height = 34;

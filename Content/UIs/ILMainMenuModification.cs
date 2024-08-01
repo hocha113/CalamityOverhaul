@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.UIs
         internal static List<BaseMainMenuOverUI> MainMenuOverUIInstances;
 
         public static void HanderLoadBaseMenuOverUIType() {
-            MainMenuOverUIInstances = new List<BaseMainMenuOverUI>();
+            MainMenuOverUIInstances = [];
             List<Type> rItemIndsTypes = CWRUtils.GetSubclasses(typeof(BaseMainMenuOverUI));
             foreach (Type type in rItemIndsTypes) {
                 if (type != typeof(BaseMainMenuOverUI)) {

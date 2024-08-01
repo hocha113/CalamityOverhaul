@@ -348,11 +348,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     return false;
                 }
             }
-            if (Owner.CCed || !Owner.active || Owner.dead) {
-                return false;
-            }
-
-            return true;
+            return !Owner.CCed && Owner.active && !Owner.dead;
         }
 
         public virtual void InOwner() {

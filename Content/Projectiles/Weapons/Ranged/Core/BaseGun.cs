@@ -9,7 +9,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
@@ -210,10 +209,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 if (!HandheldDisplay && !CanFire) {
                     return false;
                 }
-                if (WeaponHandheldDisplay) {
-                    return true;
-                }
-                return CanFire;
+                return WeaponHandheldDisplay ? true : CanFire;
             }
         }
 
@@ -736,11 +732,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             else if (recoilValue < 2.2f) {
                 recoilKey = "CWRGun_Recoil_Level_4";
             }
-            else if (recoilValue < 3.2f) {
-                recoilKey = "CWRGun_Recoil_Level_5";
-            }
             else {
-                recoilKey = "CWRGun_Recoil_Level_6";
+                recoilKey = recoilValue < 3.2f ? "CWRGun_Recoil_Level_5" : "CWRGun_Recoil_Level_6";
             }
             return recoilKey;
         }

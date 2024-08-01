@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items;
-using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Microsoft.Xna.Framework;
@@ -16,7 +15,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class AegisBladeEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AegisBlade";
-        int Level;
+
+        private int Level;
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         public override void SetDefaults() => SetDefaultsFunc(Item);
         public static void SetDefaultsFunc(Item Item) {

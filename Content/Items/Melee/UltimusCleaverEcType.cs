@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -81,13 +80,13 @@ namespace CalamityOverhaul.Content.Items.Melee
                 for (int i = 0; i < 40; i = increment + 1) {
                     int swingDust = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.InfernoFork, 0f, 0f, 200, default, firstDustScale);
                     Dust dust = Main.dust[swingDust];
-                    dust.position = target.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float)Main.rand.NextDouble() * (float)target.width / 2f;
+                    dust.position = target.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float)Main.rand.NextDouble() * target.width / 2f;
                     dust.noGravity = true;
                     dust.velocity.Y -= 6f;
                     dust.velocity *= 3f;
                     dust.velocity += dustVelocity * Main.rand.NextFloat();
                     swingDust = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.InfernoFork, 0f, 0f, 100, default, secondDustScale);
-                    dust.position = target.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float)Main.rand.NextDouble() * (float)target.width / 2f;
+                    dust.position = target.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float)Main.rand.NextDouble() * target.width / 2f;
                     dust.velocity.Y -= 6f;
                     dust.velocity *= 2f;
                     dust.noGravity = true;
@@ -99,7 +98,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 for (int j = 0; j < 20; j = increment + 1) {
                     int swingDust2 = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.InfernoFork, 0f, 0f, 0, default, thirdDustScale);
                     Dust dust = Main.dust[swingDust2];
-                    dust.position = target.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double)target.velocity.ToRotation(), default) * (float)target.width / 3f;
+                    dust.position = target.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double)target.velocity.ToRotation(), default) * target.width / 3f;
                     dust.noGravity = true;
                     dust.velocity.Y -= 6f;
                     dust.velocity *= 0.5f;

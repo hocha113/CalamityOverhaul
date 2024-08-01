@@ -28,21 +28,15 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override string Texture => CWRConstant.Item + "Rogue/Gangarus";
         public LocalizedText Legend { get; private set; }
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public static void ZenithWorldAsset() {
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return;
             }
-            if (Main.zenithWorld) {
-                TextureAssets.Item[CWRLoad.Gangarus] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3");
-            }
-            else {
-                TextureAssets.Item[CWRLoad.Gangarus] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");
-            }
+            TextureAssets.Item[CWRLoad.Gangarus] = Main.zenithWorld
+                ? CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3")
+                : CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");
         }
 
         public override void SetStaticDefaults() => Legend = this.GetLocalization(nameof(Legend));

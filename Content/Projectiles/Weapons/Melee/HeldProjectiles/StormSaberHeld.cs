@@ -2,10 +2,7 @@
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
-using Mono.Cecil;
 using Terraria;
-using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
@@ -40,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.NewProjectile(Source, ShootSpanPos.X, ShootSpanPos.Y, ShootVelocity.X, ShootVelocity.Y, ModContent.ProjectileType<StormBeam>(), (int)(Projectile.damage * 0.8), Projectile.knockBack, Owner.whoAmI, 0f, 0f);
-            
+
             Vector2 spawnPos = new Vector2(Owner.MountedCenter.X + Main.rand.Next(-200, 201), Owner.MountedCenter.Y - 600f);
             Vector2 targetPos = Main.MouseWorld + new Vector2(Main.rand.Next(-30, 31), Main.rand.Next(-30, 31));
 

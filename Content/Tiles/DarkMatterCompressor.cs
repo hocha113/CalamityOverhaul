@@ -21,10 +21,7 @@ namespace CalamityOverhaul.Content.Tiles
         public const int OriginOffsetY = 1;
         public const int SheetSquare = 18;
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;

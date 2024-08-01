@@ -20,10 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj
         }
 
         public override bool? CanDamage() {
-            if (Projectile.timeLeft > 220) {
-                return false;
-            }
-            return base.CanDamage();
+            return Projectile.timeLeft > 220 ? false : base.CanDamage();
         }
 
         public override void AI() {
@@ -34,8 +31,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Firework_Red, 0, -1);
             for (int i = 0; i < 3; i++) {
                 bool LowVel = Main.rand.NextBool() ? false : true;
-                FlameParticle ballFire = new FlameParticle(Projectile.Center + CWRUtils.randVr(13), Main.rand.Next(13, 22), Main.rand.NextFloat(0.1f, 0.22f), Main.rand.NextFloat(0.02f, 0.07f), Color.Gold, Color.DarkRed);
-                ballFire.Velocity = new Vector2(Projectile.velocity.X * 0.8f, -10).RotatedByRandom(0.005f) * (LowVel ? Main.rand.NextFloat(0.4f, 0.65f) : Main.rand.NextFloat(0.8f, 1f));
+                FlameParticle ballFire = new FlameParticle(Projectile.Center + CWRUtils.randVr(13), Main.rand.Next(13, 22), Main.rand.NextFloat(0.1f, 0.22f), Main.rand.NextFloat(0.02f, 0.07f), Color.Gold, Color.DarkRed) {
+                    Velocity = new Vector2(Projectile.velocity.X * 0.8f, -10).RotatedByRandom(0.005f) * (LowVel ? Main.rand.NextFloat(0.4f, 0.65f) : Main.rand.NextFloat(0.8f, 1f))
+                };
                 GeneralParticleHandler.SpawnParticle(ballFire);
             }
         }

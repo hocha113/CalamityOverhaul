@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.OthermodMROs.Thorium.Core
     {
         public const string Name = "ThoriumMod";
         public static bool Has => ModLoader.HasMod(Name);
-        public static List<LThoriumCall> lThoriumCalls = new List<LThoriumCall>();
+        public static List<LThoriumCall> lThoriumCalls = [];
         public static void LoadData() {
             if (!Has) return;
             CWRMod.Instance.thoriumMod = ModLoader.GetMod(Name);

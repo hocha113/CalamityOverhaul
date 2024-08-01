@@ -89,11 +89,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            if (Projectile.oldPos[0] == Vector2.Zero) {
-                return false;
-            }
-
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.oldPos[0] + Projectile.Size * 0.5f, Projectile.Center);
+            return Projectile.oldPos[0] == Vector2.Zero
+                ? false
+                : Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.oldPos[0] + Projectile.Size * 0.5f, Projectile.Center);
         }
     }
 }

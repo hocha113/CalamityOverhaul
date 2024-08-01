@@ -198,12 +198,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
 
             if (Projectile.numHits == 0) {
-                if (!CWRLoad.NPCValue.TheofSteel[target.type]) {
-                    _ = SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 0.15f }, Projectile.Center);
-                }
-                else {
-                    _ = SoundEngine.PlaySound(MurasamaEcType.InorganicHit with { Pitch = 0.15f }, Projectile.Center);
-                }
+                _ = !CWRLoad.NPCValue.TheofSteel[target.type]
+                    ? SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 0.15f }, Projectile.Center)
+                    : SoundEngine.PlaySound(MurasamaEcType.InorganicHit with { Pitch = 0.15f }, Projectile.Center);
 
                 strikeToFly(target);
 

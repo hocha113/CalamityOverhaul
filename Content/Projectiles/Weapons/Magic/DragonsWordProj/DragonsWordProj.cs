@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
     internal class DragonsWordProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        ref float Time => ref Projectile.ai[0];
+
+        private ref float Time => ref Projectile.ai[0];
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.DamageType = DamageClass.Magic;
@@ -24,10 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
         }
 
         public override bool? CanHitNPC(NPC target) {
-            if (Time < 150 * Projectile.extraUpdates) {
-                return false;
-            }
-            return base.CanHitNPC(target);
+            return Time < 150 * Projectile.extraUpdates ? false : base.CanHitNPC(target);
         }
 
         public override bool PreAI() {

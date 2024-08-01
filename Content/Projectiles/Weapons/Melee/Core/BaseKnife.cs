@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -12,7 +11,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public override Texture2D TextureValue => TargetID == ItemID.None ? CWRUtils.GetT2DValue(Texture) : TextureAssets.Item[TargetID].Value;
         public SwingDataStruct SwingData = new SwingDataStruct();
         public SwingAITypeEnum SwingAIType;
-        public enum SwingAITypeEnum {
+        public enum SwingAITypeEnum
+        {
             None = 0,
             UpAndDown,
         }

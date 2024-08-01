@@ -118,10 +118,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public override bool OnHandheldDisplayBool {
             get {
-                if (WeaponHandheldDisplay) {
-                    return true;
-                }
-                return CanFire;
+                return WeaponHandheldDisplay ? true : CanFire;
             }
         }
         /// <summary>

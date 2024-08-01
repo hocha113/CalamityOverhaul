@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.UIs
             new CartridgeHolderUI().Load();
             new TungstenRiotUI().Load();
 
-            OverhaulTheBibleUI.Instance.ecTypeItemList = new List<Item>();
+            OverhaulTheBibleUI.Instance.ecTypeItemList = [];
             foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
                 Item item = new Item(baseRItem.TargetID);
                 if (item != null) {

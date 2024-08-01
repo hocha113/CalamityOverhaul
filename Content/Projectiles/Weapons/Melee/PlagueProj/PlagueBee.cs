@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
     {
         public override string Texture => CWRConstant.Projectile + "Bee";
 
-        protected List<Bee> bees = new List<Bee>();
+        protected List<Bee> bees = [];
 
         private int Time {
             get => (int)Projectile.ai[0];

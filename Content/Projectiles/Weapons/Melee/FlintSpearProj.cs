@@ -47,14 +47,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
             Projectile.velocity = Vector2.Normalize(Projectile.velocity);
             float halfDuration = duration * 0.5f;
-            float progress;
-            if (Projectile.timeLeft < halfDuration) {
-                progress = Projectile.timeLeft / halfDuration;
-            }
-            else {
-                progress = (duration - Projectile.timeLeft) / halfDuration;
-            }
-
+            float progress = Projectile.timeLeft < halfDuration ? Projectile.timeLeft / halfDuration : (duration - Projectile.timeLeft) / halfDuration;
             Projectile.Center = player.MountedCenter + Projectile.velocity.UnitVector() * 23 + Vector2.SmoothStep(Projectile.velocity * HoldoutRangeMin, Projectile.velocity * HoldoutRangeMax, progress);
             Projectile.rotation = Projectile.velocity.ToRotation();
             player.direction = dirk;

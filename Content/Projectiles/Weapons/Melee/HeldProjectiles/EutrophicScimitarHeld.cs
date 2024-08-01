@@ -3,6 +3,7 @@ using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
@@ -25,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Vector2 origVr = ShootVelocity * 3f;
             for (int i = 0; i <= 21; i++) {
                 Dust dust;
-                dust = Main.dust[Dust.NewDust(new Vector2(Owner.Center.X - 58 / 2, Owner.Center.Y - 58 / 2), 58, 58, 226, 0f, 0f, 0, new Color(255, 255, 255), 0.4605263f)];
+                dust = Main.dust[Dust.NewDust(new Vector2(Owner.Center.X - 58 / 2, Owner.Center.Y - 58 / 2), 58, 58, DustID.Electric, 0f, 0f, 0, new Color(255, 255, 255), 0.4605263f)];
                 dust.noGravity = true;
                 dust.fadeIn = 0.9473684f;
             }

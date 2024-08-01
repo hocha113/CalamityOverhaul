@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override bool PreDraw(ref Color lightColor) {
             Main.spriteBatch.EnterShaderRegion();
             PrepareSlashShader(Flipped);
-            List<Vector2> list = new List<Vector2>();
+            List<Vector2> list = [];
 
             ControlPoints = GenerateSlashPoints(Projectile.velocity.X < 0).ToArray();
 

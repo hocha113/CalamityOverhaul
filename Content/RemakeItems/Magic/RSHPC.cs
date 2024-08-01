@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             List<TooltipLine> newTooltips = new List<TooltipLine>(tooltips);
-            List<TooltipLine> prefixTooltips = new List<TooltipLine>();
+            List<TooltipLine> prefixTooltips = [];
             foreach (TooltipLine line in newTooltips.ToList()) {
                 for (int i = 0; i < 9; i++) {
                     if (line.Name == "Tooltip" + i) {
@@ -58,12 +58,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
                 int index = InWorldBossPhase.Instance.SHPC_Level();
                 TooltipLine newLine = new TooltipLine(CWRMod.Instance, "CWRText", text);
                 if (newLine.Text == "[Text]") {
-                    if (index >= 0 && index <= 14) {
-                        text = CWRLocText.GetTextValue($"SHPC_TextDictionary_Content_{index}");
-                    }
-                    else {
-                        text = "ERROR";
-                    }
+                    text = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"SHPC_TextDictionary_Content_{index}") : "ERROR";
 
                     if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                         text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("SHPC_No_legend_Content_2") : CWRLocText.GetTextValue("SHPC_No_legend_Content_1");

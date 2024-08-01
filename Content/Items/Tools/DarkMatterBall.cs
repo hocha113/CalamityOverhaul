@@ -17,13 +17,10 @@ namespace CalamityOverhaul.Content.Items.Tools
     internal class DarkMatterBall : ModItem
     {
         public override string Texture => CWRConstant.Item + "Tools/DarkMatter";
-        public List<int> dorpTypes = new List<int>();
-        public List<Item> dorpItems = new List<Item>();
+        public List<int> dorpTypes = [];
+        public List<Item> dorpItems = [];
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
 
         public override void SetStaticDefaults() {
@@ -51,18 +48,15 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override bool CanRightClick() {
-            if (dorpItems.Count <= 0) {
-                return false;
-            }
-            return true;
+            return dorpItems.Count > 0;
         }
 
         public void LoadDorp() {
             if (dorpItems == null) {
-                dorpItems = new List<Item>();
+                dorpItems = [];
             }
             if (dorpTypes == null) {
-                dorpTypes = new List<int>();
+                dorpTypes = [];
             }
             if (dorpItems.Count < new HashSet<int>(dorpTypes).Count) {
                 if (dorpTypes.Count > 0) {
@@ -71,8 +65,9 @@ namespace CalamityOverhaul.Content.Items.Tools
                     foreach (var group in groupedDrops) {
                         List<int> items = group.ToList();
                         int types = items[0];
-                        Item dorpItemValue = new Item(types);
-                        dorpItemValue.stack = items.Count;
+                        Item dorpItemValue = new Item(types) {
+                            stack = items.Count
+                        };
                         if (dorpItemValue != null)
                             dorpItems.Add(dorpItemValue);
                     }
@@ -86,8 +81,8 @@ namespace CalamityOverhaul.Content.Items.Tools
                 player.QuickSpawnItem(player.parent(), item, item.stack);
             }
             player.QuickSpawnItem(player.parent(), new Item(Type));
-            dorpTypes = new List<int>();
-            dorpItems = new List<Item>();
+            dorpTypes = [];
+            dorpItems = [];
         }
 
         public override void OnStack(Item source, int numToTransfer) {

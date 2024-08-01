@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override int TargetID => ModContent.ItemType<LifehuntScythe>();
         public override int ProtogenesisID => ModContent.ItemType<LifehuntScytheEcType>();
         public override string TargetToolTipItemName => "LifehuntScytheEcType";
-        int swingIndex = 0;
+
+        private int swingIndex = 0;
         public override void SetDefaults(Item item) {
             swingIndex = 0;
             item.UseSound = null;

@@ -306,12 +306,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.netUpdate = true;
                 }
 
-                if (NPC.IsMechQueenUp) {
-                    npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
-                }
-                else {
-                    npc.rotation = npc.velocity.X / 15f;
-                }
+                npc.rotation = NPC.IsMechQueenUp ? npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f) : npc.velocity.X / 15f;
 
                 float verticalAcceleration = 0.1f;
                 float maxVerticalSpeed = 2f;
@@ -700,7 +695,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             else {
                 npc.rotation += npc.direction * 0.3f;
-            }   
+            }
         }
 
         private float CalculateSpeedMultiplier(float distance, float initialSpeed) {

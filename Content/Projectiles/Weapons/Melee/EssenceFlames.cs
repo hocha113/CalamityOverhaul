@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             SoundEngine.PlaySound(SoundID.Item74, Projectile.Center);
             Projectile.Explode(75);
             for (int i = 0; i < 5; i++) {
-                int essenceDust = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, 173, 0f, 0f, 100, default, 2f);
+                int essenceDust = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, DustID.ShadowbeamStaff, 0f, 0f, 100, default, 2f);
                 Main.dust[essenceDust].velocity *= 3f;
                 if (Main.rand.NextBool()) {
                     Main.dust[essenceDust].scale = 0.5f;
@@ -65,10 +65,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
             }
             for (int j = 0; j < 8; j++) {
-                int essenceDust2 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, 173, 0f, 0f, 100, default, 3f);
+                int essenceDust2 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, DustID.ShadowbeamStaff, 0f, 0f, 100, default, 3f);
                 Main.dust[essenceDust2].noGravity = true;
                 Main.dust[essenceDust2].velocity *= 5f;
-                essenceDust2 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, 173, 0f, 0f, 100, default, 2f);
+                essenceDust2 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, DustID.ShadowbeamStaff, 0f, 0f, 100, default, 2f);
                 Main.dust[essenceDust2].velocity *= 2f;
             }
         }

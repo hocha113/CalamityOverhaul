@@ -37,10 +37,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public LocalizedText Legend { get; private set; }
 
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
 
         public override void SetStaticDefaults() {
@@ -198,7 +195,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                 npc.netUpdate2 = true;
                 npc.active = false;
             }
-            List<List<int>> allTargetNpcTypes = new() {
+            List<List<int>> allTargetNpcTypes = [
                  CWRLoad.targetNpcTypes,
                  CWRLoad.targetNpcTypes2,
                  CWRLoad.targetNpcTypes3,
@@ -214,7 +211,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                  CWRLoad.targetNpcTypes13,
                  CWRLoad.targetNpcTypes14,
                  CWRLoad.targetNpcTypes15
-            };
+            ];
             foreach (NPC npc in Main.npc) {
                 if (npc.Center.To(origPos).LengthSquared() > maxLengthSquared) {
                     continue;

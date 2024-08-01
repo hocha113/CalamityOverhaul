@@ -1,11 +1,9 @@
-﻿using CalamityOverhaul.Common.Effects;
-using CalamityOverhaul.Content.Items.Melee;
+﻿using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -17,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HolyCollider";
         public override string gradientTexturePath => CWRConstant.ColorBar + "HolyColliderEffectColorBar";
-        
+
         public override void SetSwingProperty() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.width = 122;
@@ -41,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 return;
             }
 
-            
+
 
             if (Projectile.ai[0] == 2) {
                 SoundEngine.PlaySound(SoundID.Item125 with { Pitch = 0.8f }, Projectile.Center);
@@ -55,11 +53,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos2, Vector2.Zero
                 , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1);
                 for (int i = 0; i < lengs2 / 12; i++) {
-                    DRK_LavaFire lavaFire = new DRK_LavaFire();
-                    lavaFire.Velocity = toMouse2.UnitVector() * 2;
-                    lavaFire.Position = Projectile.Center + unitToM2 * (1 + i) * 12;
-                    lavaFire.Scale = Main.rand.NextFloat(1.8f, 3.2f);
-                    lavaFire.Color = Color.White;
+                    DRK_LavaFire lavaFire = new DRK_LavaFire {
+                        Velocity = toMouse2.UnitVector() * 2,
+                        Position = Projectile.Center + unitToM2 * (1 + i) * 12,
+                        Scale = Main.rand.NextFloat(1.8f, 3.2f),
+                        Color = Color.White
+                    };
                     lavaFire.ai[0] = 1;
                     lavaFire.ai[1] = 0;
                     lavaFire.minLifeTime = 22;
@@ -79,11 +78,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos, Vector2.Zero
                 , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage / 6, Projectile.knockBack, Owner.whoAmI);
             for (int i = 0; i < lengs / 12; i++) {
-                DRK_LavaFire lavaFire = new DRK_LavaFire();
-                lavaFire.Velocity = ToMouse.UnitVector() * 2;
-                lavaFire.Position = Owner.GetPlayerStabilityCenter() + unitToM * (1 + i) * 12;
-                lavaFire.Scale = Main.rand.NextFloat(0.8f, 1.2f);
-                lavaFire.Color = Color.White;
+                DRK_LavaFire lavaFire = new DRK_LavaFire {
+                    Velocity = ToMouse.UnitVector() * 2,
+                    Position = Owner.GetPlayerStabilityCenter() + unitToM * (1 + i) * 12,
+                    Scale = Main.rand.NextFloat(0.8f, 1.2f),
+                    Color = Color.White
+                };
                 lavaFire.ai[0] = 1;
                 lavaFire.ai[1] = 0;
                 lavaFire.minLifeTime = 22;

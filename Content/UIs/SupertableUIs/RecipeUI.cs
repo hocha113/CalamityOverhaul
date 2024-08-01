@@ -19,9 +19,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public int index;
 
-        private static List<Item> itemTarget = new List<Item>();
+        private static List<Item> itemTarget = [];
 
-        private static List<string[]> itemNameString_FormulaContent_Values = new List<string[]>();
+        private static List<string[]> itemNameString_FormulaContent_Values = [];
 
         private Rectangle mainRec;
 

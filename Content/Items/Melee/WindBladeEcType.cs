@@ -3,7 +3,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
-using Mono.Cecil;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -25,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.damage = 41;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = 20;
-            Item.useStyle = 1;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.useTime = 20;
             Item.useTurn = true;
             Item.knockBack = 5f;

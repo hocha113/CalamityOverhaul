@@ -1,6 +1,4 @@
 ﻿using CalamityMod.Items;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Events;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

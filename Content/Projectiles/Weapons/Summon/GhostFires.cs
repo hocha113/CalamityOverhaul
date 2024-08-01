@@ -37,11 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
         }
 
         public override bool? CanDamage() {
-            if (!ableToHit) {
-                return false;
-            }
-
-            return null;
+            return !ableToHit ? false : null;
         }
 
         public override void AI() {

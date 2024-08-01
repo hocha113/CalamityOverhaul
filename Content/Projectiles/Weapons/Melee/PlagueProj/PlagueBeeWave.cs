@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
         public new string LocalizationCategory => "Projectiles.Melee";
         public override string Texture => "CalamityMod/Projectiles/Melee/VirulentWave";
 
-        private List<Bee> bees = new List<Bee>();
+        private List<Bee> bees = [];
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 4;

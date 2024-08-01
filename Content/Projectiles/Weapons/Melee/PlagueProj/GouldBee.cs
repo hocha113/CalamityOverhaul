@@ -44,10 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
         }
 
         public override bool? CanDamage() {
-            if (Projectile.numHits > 3) {
-                return false;
-            }
-            return base.CanDamage();
+            return Projectile.numHits > 3 ? false : base.CanDamage();
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
@@ -55,10 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
                 Projectile.tileCollide = false;
                 return false;
             }
-            if (!Projectile.tileCollide) {
-                return false;
-            }
-            return base.OnTileCollide(oldVelocity);
+            return !Projectile.tileCollide ? false : base.OnTileCollide(oldVelocity);
         }
     }
 }

@@ -24,10 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool? CanDamage() {
-            if (Projectile.ai[0] > 0) {
-                return false;
-            }
-            return base.CanDamage();
+            return Projectile.ai[0] > 0 ? false : base.CanDamage();
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {

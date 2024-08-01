@@ -51,13 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             }
             Projectile.velocity = Vector2.Normalize(Projectile.velocity);
             float halfDuration = duration * 0.5f;
-            float progress;
-            if (Projectile.timeLeft < halfDuration) {
-                progress = Projectile.timeLeft / halfDuration;
-            }
-            else {
-                progress = (duration - Projectile.timeLeft) / halfDuration;
-            }
+            float progress = Projectile.timeLeft < halfDuration ? Projectile.timeLeft / halfDuration : (duration - Projectile.timeLeft) / halfDuration;
             if (Projectile.timeLeft == duration / 2) {
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity, Projectile.velocity * 15

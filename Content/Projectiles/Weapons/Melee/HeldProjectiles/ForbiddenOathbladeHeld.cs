@@ -48,15 +48,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 SoundEngine.PlaySound(SoundID.Item14, target.Center);
                 int dustIncr;
                 for (int i = 0; i < 40; i = dustIncr + 1) {
-                    int swingDust = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, 173, 0f, 0f, 200, default, firstDustScale);
+                    int swingDust = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.ShadowbeamStaff, 0f, 0f, 200, default, firstDustScale);
                     Dust dust = Main.dust[swingDust];
-                    dust.position = target.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float)Main.rand.NextDouble() * (float)target.width / 2f;
+                    dust.position = target.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float)Main.rand.NextDouble() * target.width / 2f;
                     dust.noGravity = true;
                     dust.velocity.Y -= 4.5f;
                     dust.velocity *= 3f;
                     dust.velocity += dustVelocity * Main.rand.NextFloat();
-                    swingDust = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, 173, 0f, 0f, 100, default, secondDustScale);
-                    dust.position = target.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float)Main.rand.NextDouble() * (float)target.width / 2f;
+                    swingDust = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.ShadowbeamStaff, 0f, 0f, 100, default, secondDustScale);
+                    dust.position = target.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float)Main.rand.NextDouble() * target.width / 2f;
                     dust.velocity.Y -= 3f;
                     dust.velocity *= 2f;
                     dust.noGravity = true;
@@ -66,9 +66,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     dustIncr = i;
                 }
                 for (int j = 0; j < 20; j = dustIncr + 1) {
-                    int swingDust2 = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, 173, 0f, 0f, 0, default, thirdDustScale);
+                    int swingDust2 = Dust.NewDust(new Vector2(target.position.X, target.position.Y), target.width, target.height, DustID.ShadowbeamStaff, 0f, 0f, 0, default, thirdDustScale);
                     Dust dust = Main.dust[swingDust2];
-                    dust.position = target.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double)target.velocity.ToRotation(), default) * (float)target.width / 3f;
+                    dust.position = target.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double)target.velocity.ToRotation(), default) * target.width / 3f;
                     dust.noGravity = true;
                     dust.velocity.Y -= 1.5f;
                     dust.velocity *= 0.5f;
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
             }
         }
-        
+
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             target.AddBuff(ModContent.BuffType<Shadowflame>(), 360);
             target.AddBuff(BuffID.OnFire, 720);

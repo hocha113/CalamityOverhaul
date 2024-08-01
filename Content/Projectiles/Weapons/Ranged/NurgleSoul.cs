@@ -39,12 +39,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (Projectile.timeLeft == 110) {
                     Projectile.velocity = Projectile.velocity.UnitVector() * 23;
                 }
-                if (Projectile.Center.To(npc.Center).LengthSquared() > 80000) {
-                    _ = Projectile.ChasingBehavior(npc.Center, 23);
-                }
-                else {
-                    _ = Projectile.ChasingBehavior2(npc.Center, 1.001f, 0.15f);
-                }
+                _ = Projectile.Center.To(npc.Center).LengthSquared() > 80000
+                    ? Projectile.ChasingBehavior(npc.Center, 23)
+                    : Projectile.ChasingBehavior2(npc.Center, 1.001f, 0.15f);
             }
             else {
                 Player player = CWRUtils.InPosFindPlayer(Projectile.Center);

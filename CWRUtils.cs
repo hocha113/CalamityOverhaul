@@ -192,7 +192,7 @@ namespace CalamityOverhaul
         public static Color[] GetColorDate(Texture2D tex) {
             Color[] colors = new Color[tex.Width * tex.Height];
             tex.GetData(colors);
-            List<Color> nonTransparentColors = new();
+            List<Color> nonTransparentColors = [];
             foreach (Color color in colors) {
                 if ((color.A > 0 || color.R > 0 || color.G > 0 || color.B > 0) && color != Color.White && color != Color.Black) {
                     nonTransparentColors.Add(color);
@@ -208,7 +208,7 @@ namespace CalamityOverhaul
         /// <param name="outInds">输出列表，包含符合条件的类型实例</param>
         /// <param name="inTypes">输入的类型列表，用于创建实例</param>
         public static void HanderInstance<T>(ref List<T> outInds, List<Type> inTypes, bool parameterless = true) {
-            outInds = new List<T>();
+            outInds = [];
             foreach (Type type in inTypes) {
                 if (type != typeof(T)) {
                     object obj = parameterless ? Activator.CreateInstance(type) : RuntimeHelpers.GetUninitializedObject(type);
@@ -225,7 +225,7 @@ namespace CalamityOverhaul
         /// <param name="baseType">基类的类型</param>
         /// <returns>子类列表</returns>
         public static List<Type> GetSubclasses(Type baseType) {
-            List<Type> subclasses = new();
+            List<Type> subclasses = [];
             Assembly assembly = Assembly.GetExecutingAssembly();
             Type[] allTypes = assembly.GetTypes();
 
@@ -243,7 +243,7 @@ namespace CalamityOverhaul
         /// </summary>
         public static List<T> HanderSubclass<T>(bool parameterless = true) {
             List<Type> inTypes = GetSubclasses(typeof(T));
-            List<T> outInds = new List<T>();
+            List<T> outInds = [];
             foreach (Type type in inTypes) {
                 if (type != typeof(T)) {
                     object obj = parameterless ? Activator.CreateInstance(type) : RuntimeHelpers.GetUninitializedObject(type);
@@ -256,7 +256,7 @@ namespace CalamityOverhaul
         }
 
         public static List<T> GetSubInterface<T>(string lname) {
-            List<T> subInterface = new();
+            List<T> subInterface = [];
             Assembly assembly = Assembly.GetExecutingAssembly();
             Type[] allTypes = assembly.GetTypes();
 
@@ -800,7 +800,7 @@ namespace CalamityOverhaul
         /// 获取鞭类弹幕的路径点集
         /// </summary>
         public static List<Vector2> GetWhipControlPoints(this Projectile projectile) {
-            List<Vector2> list = new();
+            List<Vector2> list = [];
             Projectile.FillWhipControlPoints(projectile, list);
             return list;
         }
@@ -826,12 +826,12 @@ namespace CalamityOverhaul
         }
 
         public static void WulfrumAmplifierAI(NPC npc, float maxrg = 495f, int maxchargeTime = 600) {
-            List<int> SuperchargableEnemies = new List<int>(){
+            List<int> SuperchargableEnemies = [
                 ModContent.NPCType<WulfrumDrone>(),
                 ModContent.NPCType<WulfrumGyrator>(),
                 ModContent.NPCType<WulfrumHovercraft>(),
                 ModContent.NPCType<WulfrumRover>()
-            };
+            ];
 
             npc.ai[1] = (int)MathHelper.Lerp(npc.ai[1], maxrg, 0.1f);
 
@@ -1283,9 +1283,9 @@ namespace CalamityOverhaul
         public static AmmoState GetAmmoState(this Player player, int assignAmmoType = 0, bool numSort = false) {
             AmmoState ammoState = new();
             int num = 0;
-            List<Item> itemInds = new List<Item>();
-            List<int> itemTypes = new List<int>();
-            List<int> itemShootTypes = new List<int>();
+            List<Item> itemInds = [];
+            List<int> itemTypes = [];
+            List<int> itemShootTypes = [];
             foreach (Item item in player.inventory) {
                 if (item.ammo == AmmoID.None) {
                     continue;
@@ -1468,11 +1468,10 @@ namespace CalamityOverhaul
             if (Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Chinese) {
                 text = Chinese;
             }
-            else if (Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Russian) {
-                text = Russian;
-            }
             else {
-                text = Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Spanish ? Spanish : English;
+                text = Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Russian
+                    ? Russian
+                    : Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Spanish ? Spanish : English;
             }
             if (text is null or default(string)) {
                 text = "Invalid Character";
@@ -1506,8 +1505,8 @@ namespace CalamityOverhaul
         /// </summary>
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, string key) {
             List<TooltipLine> newTooltips = new(tooltips);
-            List<TooltipLine> overTooltips = new();
-            List<TooltipLine> prefixTooltips = new();
+            List<TooltipLine> overTooltips = [];
+            List<TooltipLine> prefixTooltips = [];
             foreach (TooltipLine line in tooltips.ToList()) {//复制 tooltips 集合，以便在遍历时修改
                 for (int i = 0; i < 9; i++) {
                     if (line.Name == "Tooltip" + i) {
@@ -1538,8 +1537,8 @@ namespace CalamityOverhaul
         /// </summary>
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, LocalizedText value) {
             List<TooltipLine> newTooltips = new(tooltips);
-            List<TooltipLine> overTooltips = new();
-            List<TooltipLine> prefixTooltips = new();
+            List<TooltipLine> overTooltips = [];
+            List<TooltipLine> prefixTooltips = [];
             foreach (TooltipLine line in tooltips.ToList()) {//复制 tooltips 集合，以便在遍历时修改
                 for (int i = 0; i < 9; i++) {
                     if (line.Name == "Tooltip" + i) {
@@ -1571,10 +1570,11 @@ namespace CalamityOverhaul
                     mod = mod1;
                 }
             }
-            TooltipLine line = new TooltipLine(mod, tooltipLine.Name, tooltipLine.Text);
-            line.OverrideColor = tooltipLine.OverrideColor;
-            line.IsModifier = tooltipLine.IsModifier;
-            line.IsModifierBad = tooltipLine.IsModifierBad;
+            TooltipLine line = new TooltipLine(mod, tooltipLine.Name, tooltipLine.Text) {
+                OverrideColor = tooltipLine.OverrideColor,
+                IsModifier = tooltipLine.IsModifier,
+                IsModifierBad = tooltipLine.IsModifierBad
+            };
             return line;
         }
 
@@ -1994,8 +1994,8 @@ namespace CalamityOverhaul
                 throw new ArgumentException("Count of unique numbers cannot be greater than the range of values.");
             }
 
-            List<int> uniqueNumbers = new();
-            HashSet<int> usedNumbers = new();
+            List<int> uniqueNumbers = [];
+            HashSet<int> usedNumbers = [];
 
             for (int i = minValue; i <= maxValue; i++) {
                 _ = usedNumbers.Add(i);
@@ -2249,7 +2249,7 @@ namespace CalamityOverhaul
                 precisionCounter = 1;
             }
 
-            List<float> interpolatedList = new();
+            List<float> interpolatedList = [];
 
             for (int i = 0; i < originalList.Count - 1; i++) {
                 interpolatedList.Add(originalList[i]);
@@ -2322,7 +2322,7 @@ namespace CalamityOverhaul
                 precisionCounter = 1;
             }
 
-            List<Vector2> interpolatedList = new();
+            List<Vector2> interpolatedList = [];
 
             Vector2[] controlPoints = new Vector2[4]; // 用于存储控制点
 
@@ -2650,7 +2650,7 @@ namespace CalamityOverhaul
         public static string GetSafeText(string text, Vector2 textSize, float maxWidth) {
             int charWidth = (int)(textSize.X / text.Length);
             List<char> characters = text.ToList();
-            List<char> wrappedText = new();
+            List<char> wrappedText = [];
             int currentWidth = 0;
 
             foreach (char character in characters) {

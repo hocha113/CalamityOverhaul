@@ -7,8 +7,8 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using static CalamityOverhaul.CWRMod;
 using static CalamityOverhaul.Content.RemakeItems.Core.BaseRItem;
+using static CalamityOverhaul.CWRMod;
 
 namespace CalamityOverhaul.Content.RemakeItems.Core
 {
@@ -318,7 +318,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 }
             }
 
-            orig.Invoke(item, player, ref  position, ref velocity, ref type, ref damage, ref knockback);
+            orig.Invoke(item, player, ref position, ref velocity, ref type, ref damage, ref knockback);
         }
         /// <summary>
         /// 提前于TML的方法执行，这个钩子可以用来做到<see cref="GlobalItem.CanUseItem"/>无法做到的修改效果，比如让一些原本不可使用的物品可以使用，

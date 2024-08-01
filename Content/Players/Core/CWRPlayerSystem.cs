@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Players.Core
 
     internal class CWRPlayerSystem : ModSystem
     {
-        public static List<PlayerSet> PlayerSets = new List<PlayerSet>();
+        public static List<PlayerSet> PlayerSets = [];
         public static Type playerLoaderType;
 
         public static MethodBase onModifyHitNPCWithItemMethod;

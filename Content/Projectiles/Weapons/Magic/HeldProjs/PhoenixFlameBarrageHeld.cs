@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Graphics.Metaballs;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Particles;
 using CalamityOverhaul.Content.Items.Magic;
@@ -11,7 +10,6 @@ using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
@@ -21,7 +19,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Magic + "PhoenixFlameBarrage";
         public override int targetCayItem => ModContent.ItemType<PhoenixFlameBarrage>();
         public override int targetCWRItem => ModContent.ItemType<PhoenixFlameBarrageEcType>();
-        float sengs;
+
+        private float sengs;
         public override void SetMagicProperty() {
             HandDistance = 30;
             HandFireDistance = 72;
@@ -119,7 +118,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
     internal class PhantomPhoenix : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Magic + "PhantomPhoenix";
-        ref float Time => ref Projectile.ai[0];
+
+        private ref float Time => ref Projectile.ai[0];
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.DamageType = DamageClass.Magic;
@@ -132,10 +132,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override bool? CanHitNPC(NPC target) {
-            if (Time < 15 * Projectile.extraUpdates) {
-                return false;
-            }
-            return base.CanHitNPC(target);
+            return Time < 15 * Projectile.extraUpdates ? false : base.CanHitNPC(target);
         }
 
         public override bool PreAI() {
@@ -154,15 +151,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             }
 
             if (Projectile.Distance(Main.LocalPlayer.Center) < 1400) {
-                DRK_LavaFire lavaFire = new DRK_LavaFire();
-                lavaFire.Velocity = Projectile.velocity * 0.2f;
-                lavaFire.Position = Projectile.Center + CWRUtils.randVr(6);
-                lavaFire.Scale = Main.rand.NextFloat(0.8f, 1.2f);
-                lavaFire.maxLifeTime = 60;
-                lavaFire.minLifeTime = 30;
+                DRK_LavaFire lavaFire = new DRK_LavaFire {
+                    Velocity = Projectile.velocity * 0.2f,
+                    Position = Projectile.Center + CWRUtils.randVr(6),
+                    Scale = Main.rand.NextFloat(0.8f, 1.2f),
+                    maxLifeTime = 60,
+                    minLifeTime = 30
+                };
                 DRKLoader.AddParticle(lavaFire);
             }
-            
+
             Time++;
             return false;
         }

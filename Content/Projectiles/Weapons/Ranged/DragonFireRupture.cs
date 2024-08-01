@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
         }
 
-        private List<Ncb> ncbs = new List<Ncb>();
+        private List<Ncb> ncbs = [];
 
         public override void SetDefaults() {
             Projectile.width = 40;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             return upPos;
         }
 
-        private List<Vector2> randomOffsetVr = new List<Vector2>();
+        private List<Vector2> randomOffsetVr = [];
         public override void OnSpawn(IEntitySource source) {
             Behavior++;
             Projectile.rotation = Projectile.velocity.ToRotation();

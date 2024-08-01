@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Projectile.localAI[1]++;
 
                 Owner.heldProj = Projectile.whoAmI;
-                
+
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     if (PlayerInput.Triggers.Current.MouseRight) {
                         Projectile.timeLeft = 2;

@@ -17,12 +17,9 @@ namespace CalamityOverhaul.Content.Projectiles
     internal class InfinitePickProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        public List<int> dorpTypes = new List<int>();
+        public List<int> dorpTypes = [];
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;

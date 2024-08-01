@@ -49,12 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PostInOwnerUpdate() {
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 5);
             CWRUtils.ClockFrame(ref uiframe, 5, 6);
-            if (onFireR) {
-                HandDistance = HandFireDistance = 65;
-            }
-            else {
-                HandDistance = HandFireDistance = 35;
-            }
+            HandDistance = onFireR ? (HandFireDistance = 65) : (HandFireDistance = 35);
 
             if (canattce && Charge > 0) {
                 Charge--;

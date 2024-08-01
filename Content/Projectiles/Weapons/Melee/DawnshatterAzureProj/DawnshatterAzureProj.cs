@@ -24,10 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
         protected float HoldoutRangeMin => -24f;
         protected float HoldoutRangeMax => 96f;
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;
@@ -54,13 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             }
             Projectile.velocity = Vector2.Normalize(Projectile.velocity);
             float halfDuration = duration * 0.5f;
-            float progress;
-            if (Projectile.timeLeft < halfDuration) {
-                progress = Projectile.timeLeft / halfDuration;
-            }
-            else {
-                progress = (duration - Projectile.timeLeft) / halfDuration;
-            }
+            float progress = Projectile.timeLeft < halfDuration ? Projectile.timeLeft / halfDuration : (duration - Projectile.timeLeft) / halfDuration;
             if (Projectile.timeLeft == duration / 2) {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity, Projectile.velocity * 15
                 , ModContent.ProjectileType<TheEndSun>(), Projectile.damage, Projectile.knockBack, Projectile.owner);

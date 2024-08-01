@@ -33,10 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatsw
         }
 
         public override bool? CanHitNPC(NPC target) {
-            if (Projectile.timeLeft >= 90 - startCanHitCooldown) {
-                return false;
-            }
-            return base.CanHitNPC(target);
+            return Projectile.timeLeft >= 90 - startCanHitCooldown ? false : base.CanHitNPC(target);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

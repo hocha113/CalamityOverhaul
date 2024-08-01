@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
@@ -85,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void OnKill(int timeLeft) {
             for (int i = 0; i < 10; i++) {
-                Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, 64, Projectile.velocity.X * 0.1f, Projectile.velocity.Y * 0.1f);
+                Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, DustID.YellowTorch, Projectile.velocity.X * 0.1f, Projectile.velocity.Y * 0.1f);
             }
             if (Status == 2) {
                 Lighting.AddLight(Projectile.Center, Color.Gold.ToVector3());

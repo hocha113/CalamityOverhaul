@@ -14,9 +14,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.VortexBeater].Value;
         public override int targetCayItem => ItemID.VortexBeater;
         public override int targetCWRItem => ItemID.VortexBeater;
-        float randomShootRotset;
-        int fireIndex;
-        int fireIndex2;
+
+        private float randomShootRotset;
+        private int fireIndex;
+        private int fireIndex2;
         public override void SetRangedProperty() {
             FireTime = 4;
             HandDistance = 20;

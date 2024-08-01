@@ -11,8 +11,8 @@ namespace CalamityOverhaul.Content.SkyEffects
         public float Depth;
         public int Life;
         public bool IsAlive;
-        static Asset<Texture2D> boltAsset;
-        static Asset<Texture2D> flashAsset;
+        private static Asset<Texture2D> boltAsset;
+        private static Asset<Texture2D> flashAsset;
         void ILoader.LoadAsset() {
             boltAsset = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/Sky/PGBolt");
             flashAsset = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/Sky/PGFlash");

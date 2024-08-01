@@ -99,30 +99,30 @@ namespace CalamityOverhaul
         /// <summary>
         /// 物块对应掉落物的词典
         /// </summary>
-        public static Dictionary<int, int> TileToItem = new();
+        public static Dictionary<int, int> TileToItem = [];
         /// <summary>
         /// 墙体对应掉落物的词典
         /// </summary>
-        public static Dictionary<int, int> WallToItem = new();
+        public static Dictionary<int, int> WallToItem = [];
         /// <summary>
         /// 物品对应射弹的词典
         /// </summary>
-        public static Dictionary<int, int> ItemToShootID = new();
-        public static Dictionary<int, List<int>> ShootToItemID = new();
-        public static Dictionary<int, int> ItemToHeldProjID = new();
-        public static Dictionary<int, Projectile> ItemToHeldProj = new();
-        internal static Dictionary<int, BaseGun> ItemToBaseGun = new();
-        internal static Dictionary<int, BaseBow> ItemToBaseBow = new();
-        internal static Dictionary<int, BaseHeldRanged> ItemToBaseRanged = new();
-        internal static Dictionary<int, int> ProjectileToSafeAmmoMap = new();
+        public static Dictionary<int, int> ItemToShootID = [];
+        public static Dictionary<int, List<int>> ShootToItemID = [];
+        public static Dictionary<int, int> ItemToHeldProjID = [];
+        public static Dictionary<int, Projectile> ItemToHeldProj = [];
+        internal static Dictionary<int, BaseGun> ItemToBaseGun = [];
+        internal static Dictionary<int, BaseBow> ItemToBaseBow = [];
+        internal static Dictionary<int, BaseHeldRanged> ItemToBaseRanged = [];
+        internal static Dictionary<int, int> ProjectileToSafeAmmoMap = [];
         /// <summary>
         /// 对应ID的武器是否应该判定为一个霰弹枪
         /// </summary>
-        internal static Dictionary<int, bool> WeaponIsShotgunSkt = new();
+        internal static Dictionary<int, bool> WeaponIsShotgunSkt = [];
         /// <summary>
         /// 对应ID的武器是否应该判定为一个弩
         /// </summary>
-        internal static Dictionary<int, bool> WeaponIsCrossbow = new();
+        internal static Dictionary<int, bool> WeaponIsCrossbow = [];
         /// <summary>
         /// 扫地机器人
         /// </summary>
@@ -397,23 +397,23 @@ namespace CalamityOverhaul
             AresTeslaCannon = NPCType<AresTeslaCannon>();
             AresGaussNuke = NPCType<AresGaussNuke>();
 
-            targetNpcTypes = new List<int> { SepulcherHead, SepulcherBody, SepulcherTail };
-            targetNpcTypes2 = new List<int> { StormWeaverHead, StormWeaverBody, StormWeaverTail };
-            targetNpcTypes3 = new List<int> { PrimordialWyrmHead, PrimordialWyrmBody, PrimordialWyrmTail };
-            targetNpcTypes4 = new List<int> { PerforatorHeadLarge, PerforatorBodyLarge, PerforatorTailLarge };
-            targetNpcTypes5 = new List<int> { PerforatorHeadMedium, PerforatorBodyMedium, PerforatorTailMedium };
-            targetNpcTypes6 = new List<int> { ArmoredDiggerHead, ArmoredDiggerBody, ArmoredDiggerTail };
-            targetNpcTypes7 = new List<int> { Apollo, Artemis, AresBody, ThanatosHead, ThanatosBody1, ThanatosBody2, ThanatosTail };
-            targetNpcTypes7_1 = new List<int> { AresBody, AresLaserCannon, AresPlasmaFlamethrower, AresTeslaCannon, AresGaussNuke };
-            targetNpcTypes8 = new List<int> { DevourerofGodsHead, DevourerofGodsBody, DevourerofGodsTail, CosmicGuardianHead, CosmicGuardianBody, CosmicGuardianTail };
-            targetNpcTypes9 = new List<int> { DesertScourgeHead, DesertScourgeBody, DesertScourgeTail, DesertNuisanceHead, DesertNuisanceBody, DesertNuisanceTail };
-            targetNpcTypes10 = new List<int> { AstrumDeusHead, AstrumDeusBody, AstrumDeusTail };
-            targetNpcTypes11 = new List<int> { AquaticScourgeHead, AquaticScourgeBody, AquaticScourgeTail };
-            targetNpcTypes12 = new List<int> { EidolonWyrmHead, EidolonWyrmBody, EidolonWyrmBodyAlt, EidolonWyrmTail };
-            targetNpcTypes13 = new List<int> { NPCID.MoonLordFreeEye, NPCID.MoonLordCore, NPCID.MoonLordHand, NPCID.MoonLordHead, NPCID.MoonLordLeechBlob };
-            targetNpcTypes14 = new List<int> { NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail };
-            targetNpcTypes15 = new List<int> { NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail };
-            targetNpcTypes16 = new List<int> { RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight };
+            targetNpcTypes = [SepulcherHead, SepulcherBody, SepulcherTail];
+            targetNpcTypes2 = [StormWeaverHead, StormWeaverBody, StormWeaverTail];
+            targetNpcTypes3 = [PrimordialWyrmHead, PrimordialWyrmBody, PrimordialWyrmTail];
+            targetNpcTypes4 = [PerforatorHeadLarge, PerforatorBodyLarge, PerforatorTailLarge];
+            targetNpcTypes5 = [PerforatorHeadMedium, PerforatorBodyMedium, PerforatorTailMedium];
+            targetNpcTypes6 = [ArmoredDiggerHead, ArmoredDiggerBody, ArmoredDiggerTail];
+            targetNpcTypes7 = [Apollo, Artemis, AresBody, ThanatosHead, ThanatosBody1, ThanatosBody2, ThanatosTail];
+            targetNpcTypes7_1 = [AresBody, AresLaserCannon, AresPlasmaFlamethrower, AresTeslaCannon, AresGaussNuke];
+            targetNpcTypes8 = [DevourerofGodsHead, DevourerofGodsBody, DevourerofGodsTail, CosmicGuardianHead, CosmicGuardianBody, CosmicGuardianTail];
+            targetNpcTypes9 = [DesertScourgeHead, DesertScourgeBody, DesertScourgeTail, DesertNuisanceHead, DesertNuisanceBody, DesertNuisanceTail];
+            targetNpcTypes10 = [AstrumDeusHead, AstrumDeusBody, AstrumDeusTail];
+            targetNpcTypes11 = [AquaticScourgeHead, AquaticScourgeBody, AquaticScourgeTail];
+            targetNpcTypes12 = [EidolonWyrmHead, EidolonWyrmBody, EidolonWyrmBodyAlt, EidolonWyrmTail];
+            targetNpcTypes13 = [NPCID.MoonLordFreeEye, NPCID.MoonLordCore, NPCID.MoonLordHand, NPCID.MoonLordHead, NPCID.MoonLordLeechBlob];
+            targetNpcTypes14 = [NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail];
+            targetNpcTypes15 = [NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail];
+            targetNpcTypes16 = [RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight];
             WormBodys = new int[] { AquaticScourgeBody, ArmoredDiggerBody, StormWeaverBody, ArmoredDiggerBody
                 , CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
                 , AquaticScourgeBody, NPCID.TheDestroyerBody, SepulcherBody};
@@ -597,13 +597,13 @@ namespace CalamityOverhaul
                             shoots.Add(item.type);
                         }
                         else {
-                            ShootToItemID.Add(item.shoot, new List<int>() { item.type });
+                            ShootToItemID.Add(item.shoot, [item.type]);
                         }
                     }
                 }
             }
 
-            NPCValue.TheofSteel = new Dictionary<int, bool>();
+            NPCValue.TheofSteel = [];
             for (int i = 0; i < NPCLoader.NPCCount; i++) {
                 NPC npc = new NPC();
                 npc.SetDefaults(i);

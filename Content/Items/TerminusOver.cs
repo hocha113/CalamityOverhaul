@@ -22,10 +22,7 @@ namespace CalamityOverhaul.Content.Items
         public new string LocalizationCategory => "Items.SummonItems";
         public override string Texture => "CalamityMod/Items/SummonItems/Terminus_GFB";
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
 
         public override void SetDefaults() {

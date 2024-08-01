@@ -36,13 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void FiringShoot() {
             int damage;
             Item ammoItem = GetSelectedBullets();
-            if (ammoItem.type == ItemID.CursedDart) {
-                damage = (int)(WeaponDamage * 0.7f);
-            }
-            else {
-                damage = WeaponDamage;
-
-            }
+            damage = ammoItem.type == ItemID.CursedDart ? (int)(WeaponDamage * 0.7f) : WeaponDamage;
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, damage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].velocity *= 0.6f;
             Main.projectile[proj].extraUpdates += 1;

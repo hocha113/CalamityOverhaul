@@ -78,9 +78,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override Color? GetAlpha(Color drawColor) {
-            if (Projectile.timeLeft < 30 && Projectile.timeLeft % 10 < 5)
-                return Color.Orange;
-            return Color.White;
+            return Projectile.timeLeft < 30 && Projectile.timeLeft % 10 < 5 ? Color.Orange : Color.White;
         }
 
         public override void OnKill(int timeLeft) {

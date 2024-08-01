@@ -4,7 +4,6 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -94,7 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             if (Time == 0) {
                 SoundEngine.PlaySound(SoundID.Item71, Owner.position);
             }
-            
+
             if (Projectile.ai[0] == 1) {
                 SwingBehavior(starArg: 63, baseSwingSpeed: 6, ler1_UpLengthSengs: 0.1f, ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.062f
                 , ler2_DownLengthSengs: 0.01f, ler2_DownSpeedSengs: 0.14f, ler2_DownSizeSengs: 0
@@ -107,7 +106,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 , minClampLength: 160, maxClampLength: 220, ler1Time: 18, maxSwingTime: 30);
                 return;
             }
-            else if(Projectile.ai[0] == 3) {
+            else if (Projectile.ai[0] == 3) {
                 shootSengs = 0.95f;
                 maxSwingTime = 70;
                 canDrawSlashTrail = false;

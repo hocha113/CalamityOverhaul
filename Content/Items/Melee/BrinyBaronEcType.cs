@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class BrinyBaronEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BrinyBaron";
-        int Level;
+
+        private int Level;
         public override void SetDefaults() => SetDefaultsFunc(Item);
         public static void SetDefaultsFunc(Item Item) {
             Item.damage = 110;

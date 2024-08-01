@@ -32,11 +32,7 @@ public static class QotUtils
     }
 
     public static List<Item> GetBigBagItems(this Player player) {
-        if (!QotLoaded) {
-            return null;
-        }
-
-        return (List<Item>)QotInstance.Call("GetBigBagItems", player);
+        return !QotLoaded ? null : (List<Item>)QotInstance.Call("GetBigBagItems", player);
     }
 
     /// <summary>

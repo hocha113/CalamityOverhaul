@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Summon.Extras
             Item.useTurn = true;
             Item.autoReuse = true;
             Item.value = Item.buyPrice(0, 36, 5, 75);
-            Item.rare = 10;
+            Item.rare = ItemRarityID.Red;
         }
 
         public override bool MeleePrefix() {

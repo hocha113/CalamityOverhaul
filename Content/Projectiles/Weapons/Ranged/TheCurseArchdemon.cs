@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Dusts;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -58,14 +59,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public void SpanDust() {
             for (int i = 0; i < 2; i++) {
                 int num154 = 14;
-                int num155 = Dust.NewDust(new Vector2(Projectile.Center.X, Projectile.Center.Y), Projectile.width - num154 * 2, Projectile.height - num154 * 2, 60, 0f, 0f, 100, default, 1.6f);
+                int num155 = Dust.NewDust(new Vector2(Projectile.Center.X, Projectile.Center.Y), Projectile.width - num154 * 2, Projectile.height - num154 * 2, DustID.RedTorch, 0f, 0f, 100, default, 1.6f);
                 Main.dust[num155].noGravity = true;
                 Main.dust[num155].velocity *= 0.1f;
                 Main.dust[num155].velocity += Projectile.velocity * 0.5f;
             }
             if (Main.rand.NextBool(13)) {
                 int num156 = 16;
-                int num157 = Dust.NewDust(new Vector2(Projectile.Center.X, Projectile.Center.Y), Projectile.width - num156 * 2, Projectile.height - num156 * 2, 60, 0f, 0f, 100, default, 1f);
+                int num157 = Dust.NewDust(new Vector2(Projectile.Center.X, Projectile.Center.Y), Projectile.width - num156 * 2, Projectile.height - num156 * 2, DustID.RedTorch, 0f, 0f, 100, default, 1f);
                 Main.dust[num157].velocity *= 0.25f;
                 Main.dust[num157].velocity += Projectile.velocity * 0.5f;
             }

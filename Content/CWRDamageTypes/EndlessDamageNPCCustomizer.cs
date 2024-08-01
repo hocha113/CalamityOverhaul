@@ -9,23 +9,20 @@ namespace CalamityOverhaul.Content.CWRDamageTypes
 {
     internal class EndlessDamageNPCCustomizer : NPCCustomizer, ILoader
     {
-        private static List<int> nihilityProjs = new List<int>();
+        private static List<int> nihilityProjs = [];
 
         public void SetupData() {
-            nihilityProjs = new List<int>() {
+            nihilityProjs = [
                 ModContent.ProjectileType<Godslight>(),
                 ModContent.ProjectileType<EXNeutronExplode>(),
-            };
+            ];
         }
 
         public override bool On_OnHitByProjectile_IfSpan(Projectile proj) {
             if (proj.DamageType != EndlessDamageClass.Instance) {
                 return false;
             }
-            if (nihilityProjs.Contains(proj.type)) {
-                return false;
-            }
-            return true;
+            return !nihilityProjs.Contains(proj.type);
         }
 
         public override bool? On_OnHitByProjectile(NPC npc, Projectile projectile, in NPC.HitInfo hit, int damageDone) {

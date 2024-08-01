@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 Projectile.ai[0] = Projectile.Center.X;
                 Projectile.ai[1] = Projectile.Center.Y;
                 Projectile.rotation = Projectile.velocity.ToRotation();
-                PosLists = new List<Vector2>();
+                PosLists = [];
                 Vector2 rot = Projectile.velocity.UnitVector();
                 for (int i = 0; i < 100; i++) {
                     PosLists.Add(Projectile.Center + (rot * 50 * i));

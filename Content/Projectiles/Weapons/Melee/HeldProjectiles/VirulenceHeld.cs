@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             drawTrailTopWidth = 18;
             Length = 40;
         }
-        
+
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity * 1.6f
                 , ModContent.ProjectileType<VirulentWave>(), (int)(Projectile.damage * 0.85)

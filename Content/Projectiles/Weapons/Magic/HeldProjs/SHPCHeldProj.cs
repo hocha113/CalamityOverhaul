@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
-using CalamityMod.NPCs.Crabulon;
 using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.Projectiles.Magic;
 using CalamityMod.Sounds;
@@ -38,7 +37,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Magic + "SHPC";
         public override int targetCayItem => ModContent.ItemType<SHPC>();
         public override int targetCWRItem => ModContent.ItemType<SHPCEcType>();
-        int level => InWorldBossPhase.Instance.SHPC_Level();
+
+        private int level => InWorldBossPhase.Instance.SHPC_Level();
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

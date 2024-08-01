@@ -202,13 +202,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC nPC = Main.npc[i];
-                bool flag = Projectile.owner < 255 && (nPC.type == 22 && player.killGuide || nPC.type == 54 && player.killClothier);
+                bool flag = Projectile.owner < 255 && (nPC.type == NPCID.Guide && player.killGuide || nPC.type == NPCID.Clothier && player.killClothier);
                 bool flag2 = Projectile.friendly && (!nPC.friendly || flag);
                 bool flag3 = Projectile.hostile && nPC.friendly && !nPC.dontTakeDamageFromHostiles;
                 if (nPC.active && !nPC.dontTakeDamage && (flag2 || flag3) && (Projectile.owner < 0 || nPC.immune[Projectile.owner] == 0 || Projectile.maxPenetrate == 1) && (nPC.noTileCollide || !Projectile.ownerHitCheck || ProjectileLoader.CanHitNPC(Projectile, nPC).GetValueOrDefault())) {
                     Rectangle hitbox2 = nPC.Hitbox;
                     bool flag4;
-                    if (nPC.type == 414) {
+                    if (nPC.type == NPCID.SolarCrawltipedeTail) {
                         int num = 8;
                         hitbox2.X -= num;
                         hitbox2.Y -= num;
@@ -242,11 +242,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             float f = Projectile.rotation - MathF.PI / 4f * Math.Sign(Projectile.velocity.X);
             float collisionPoint = 0f;
             float num = 110f;
-            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center + f.ToRotationVector2() * (0f - num), Projectile.Center + f.ToRotationVector2() * num, 23f * Projectile.scale, ref collisionPoint)) {
-                return true;
-            }
-
-            return false;
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center + f.ToRotationVector2() * (0f - num), Projectile.Center + f.ToRotationVector2() * num, 23f * Projectile.scale, ref collisionPoint)
+                ? true
+                : false;
         }
 
         public override bool PreDraw(ref Color lightColor) {

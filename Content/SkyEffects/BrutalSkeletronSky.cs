@@ -34,8 +34,9 @@ namespace CalamityOverhaul.Content.SkyEffects
             bolts = new PGBolt[300];
             random = new UnifiedRandom();
             for (int i = 0; i < bolts.Length; i++) {
-                bolts[i] = new PGBolt();
-                bolts[i].IsAlive = false;
+                bolts[i] = new PGBolt {
+                    IsAlive = false
+                };
             }
         }
 

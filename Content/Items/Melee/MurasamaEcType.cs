@@ -225,12 +225,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[Text]") && x.Mod == "Terraria");
             if (legendtops != null) {
                 int index = InWorldBossPhase.Instance.Mura_Level();
-                if (index >= 0 && index <= 14) {
-                    legendtops.Text = CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}");
-                }
-                else {
-                    legendtops.Text = "ERROR";
-                }
+                legendtops.Text = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}") : "ERROR";
 
                 if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                     legendtops.Text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("Murasama_No_legend_Content_2") : CWRLocText.GetTextValue("Murasama_No_legend_Content_1");
@@ -290,13 +285,11 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool CanUseItem(Player player) {
             //在升龙斩或者爆发弹幕存在时不能使用武器
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakSwing>()] > 0
+            return player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakSwing>()] > 0
                 || player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] > 0
-                || player.PressKey(false)//如果玩家按下了右键，也要禁止武器的使用
-                ) {
-                return false;
-            }
-            return player.ownedProjectileCounts[Item.shoot] == 0;
+                || player.PressKey(false)
+                ? false
+                : player.ownedProjectileCounts[Item.shoot] == 0;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

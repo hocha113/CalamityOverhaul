@@ -1,10 +1,10 @@
 ﻿using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Terraria.ModLoader;
-using Terraria;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatswordProj;
-using Terraria.ID;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {

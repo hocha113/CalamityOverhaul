@@ -45,10 +45,7 @@ namespace CalamityOverhaul.Content.Items.Materials
         }
         private static bool hasMod(string name) => Instance.LoadMods.Any(mod => mod.Name == name);
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 9999;

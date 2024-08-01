@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Vector2 vector3 = Projectile.velocity.SafeNormalize(Vector2.UnitY);
             float num5 = 2f;
             for (int i = 0; i < num5; i++) {
-                Dust dust = Dust.NewDustDirect(Projectile.Center, 14, 14, 60, 0f, 0f, 110);
+                Dust dust = Dust.NewDustDirect(Projectile.Center, 14, 14, DustID.RedTorch, 0f, 0f, 110);
                 dust.velocity = player.SafeDirectionTo(dust.position) * 2f;
                 dust.position = Projectile.Center + vector3.RotatedBy(num2 * 2f + i / num5 * (MathF.PI * 2f)) * 10f;
                 dust.scale = 1f + Main.rand.NextFloat(0.6f);
@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
 
             if (Main.rand.NextBool(3)) {
-                Dust dust2 = Dust.NewDustDirect(Projectile.Center, 20, 20, 60, 0f, 0f, 110);
+                Dust dust2 = Dust.NewDustDirect(Projectile.Center, 20, 20, DustID.RedTorch, 0f, 0f, 110);
                 dust2.velocity = player.SafeDirectionTo(dust2.position) * 2f;
                 dust2.position = Projectile.Center + vector2 * -110f;
                 dust2.scale = 0.45f + Main.rand.NextFloat(0.4f);
@@ -371,11 +371,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             float f = Projectile.rotation - MathF.PI / 4f * Math.Sign(Projectile.velocity.X) + (Projectile.spriteDirection == -1).ToInt() * MathF.PI;
             float num = -95f;
             float collisionPoint = 0f;
-            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + f.ToRotationVector2() * num, (TravelSpeed + 1f) * Projectile.scale, ref collisionPoint)) {
-                return true;
-            }
-
-            return false;
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + f.ToRotationVector2() * num, (TravelSpeed + 1f) * Projectile.scale, ref collisionPoint)
+                ? true
+                : false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

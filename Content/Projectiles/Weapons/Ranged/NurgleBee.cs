@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        protected List<Bee> bees = new List<Bee>();
+        protected List<Bee> bees = [];
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -50,9 +50,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Main.rand.NextBool(3)) {
                 bool LowVel = Main.rand.NextBool() ? false : true;
                 FlameParticle fire = new FlameParticle(Projectile.Center + CWRUtils.randVr(13), 20, Main.rand.NextFloat(0.1f, 0.3f), 0.05f
-                    , Color.YellowGreen * (LowVel ? 1.2f : 0.5f), Color.DarkGreen * (LowVel ? 1.2f : 0.5f));
-                fire.Velocity = new Vector2(Projectile.velocity.X * 0.8f, -10).RotatedByRandom(0.005f)
-                    * (LowVel ? Main.rand.NextFloat(0.4f, 0.65f) : Main.rand.NextFloat(0.8f, 1f));
+                    , Color.YellowGreen * (LowVel ? 1.2f : 0.5f), Color.DarkGreen * (LowVel ? 1.2f : 0.5f)) {
+                    Velocity = new Vector2(Projectile.velocity.X * 0.8f, -10).RotatedByRandom(0.005f)
+                    * (LowVel ? Main.rand.NextFloat(0.4f, 0.65f) : Main.rand.NextFloat(0.8f, 1f))
+                };
                 GeneralParticleHandler.SpawnParticle(fire);
             }
             if (Projectile.timeLeft < 330) {

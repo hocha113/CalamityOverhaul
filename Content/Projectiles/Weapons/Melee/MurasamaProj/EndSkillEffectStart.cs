@@ -51,8 +51,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             public float rot;
         }
 
-        private Dictionary<Projectile, EntityStart> ProjDic = new Dictionary<Projectile, EntityStart>();
-        private Dictionary<NPC, EntityStart> NPCDic = new Dictionary<NPC, EntityStart>();
+        private Dictionary<Projectile, EntityStart> ProjDic = [];
+        private Dictionary<NPC, EntityStart> NPCDic = [];
 
         public Vector2 OrigPos {
             get => new Vector2(Projectile.ai[1], Projectile.ai[2]);

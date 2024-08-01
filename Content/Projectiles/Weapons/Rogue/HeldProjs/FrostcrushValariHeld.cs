@@ -14,12 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         internal bool accompanying {
             get => Projectile.ai[2] == 1;
             set {
-                if (value) {
-                    Projectile.ai[2] = 1;
-                }
-                else {
-                    Projectile.ai[2] = 0;
-                }
+                Projectile.ai[2] = value ? 1 : 0;
             }
         }
 

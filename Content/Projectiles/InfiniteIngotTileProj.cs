@@ -13,13 +13,10 @@ namespace CalamityOverhaul.Content.Projectiles
     internal class InfiniteIngotTileProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        public List<Item> items = new List<Item>();
+        public List<Item> items = [];
         private DarkMatterBall darkMatterBall;
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;

@@ -62,12 +62,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[Text]") && x.Mod == "Terraria");
             if (legendtops != null) {
                 int index = InWorldBossPhase.Instance.SHPC_Level();
-                if (index >= 0 && index <= 14) {
-                    legendtops.Text = CWRLocText.GetTextValue($"SHPC_TextDictionary_Content_{index}");
-                }
-                else {
-                    legendtops.Text = "ERROR";
-                }
+                legendtops.Text = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"SHPC_TextDictionary_Content_{index}") : "ERROR";
 
                 if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                     legendtops.Text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("SHPC_No_legend_Content_2") : CWRLocText.GetTextValue("SHPC_No_legend_Content_1");

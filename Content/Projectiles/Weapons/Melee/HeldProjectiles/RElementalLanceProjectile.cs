@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -49,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public int Time { get => (int)Projectile.localAI[1]; set => Projectile.localAI[1] = value; }
-        private List<int> ElementalRayList = new List<int>();
+        private List<int> ElementalRayList = [];
         private int drawUIalp = 0;
         public override void AI() {
             if (Projectile.ai[1] == 0) {
@@ -166,7 +167,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                             Projectile.localAI[2] = 1;
                             Projectile.netUpdate = true;
                             elementalLance.CWR().MeleeCharge = 0;
-                            ElementalRayList = new List<int>();
+                            ElementalRayList = [];
                             SoundEngine.PlaySound(in CommonCalamitySounds.MeatySlashSound, Projectile.Center);
                         }
                     }
@@ -177,7 +178,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public List<NPC> EnemyHunting() {
-            List<NPC> closestNPCs = new List<NPC>();
+            List<NPC> closestNPCs = [];
 
             // 循环遍历所有NPC
             foreach (NPC npc in Main.npc) {
@@ -260,7 +261,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void ExtraBehavior() {
             if (Main.rand.NextBool(5)) {
-                int num = Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, 66, Projectile.direction * 2, 0f, 150, new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB));
+                int num = Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, DustID.RainbowTorch, Projectile.direction * 2, 0f, 150, new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB));
                 Main.dust[num].noGravity = true;
             }
         }

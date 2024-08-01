@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ElectrosphereLauncher].Value;
         public override int targetCayItem => ItemID.ElectrosphereLauncher;
         public override int targetCWRItem => ItemID.ElectrosphereLauncher;
-        public List<ElectrosphereLauncherOrb> Orbs = new List<ElectrosphereLauncherOrb>();
+        public List<ElectrosphereLauncherOrb> Orbs = [];
         public const int MaxOrbNum = 4;
         private int fireIndex;
         public override void SetRangedProperty() {
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override bool KreLoadFulfill() {
             fireIndex = 0;
-            Orbs = new List<ElectrosphereLauncherOrb>();
+            Orbs = [];
             return true;
         }
 
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void FiringShoot() {
             FireTime = 3;
             if (Orbs == null) {
-                Orbs = new List<ElectrosphereLauncherOrb>();
+                Orbs = [];
             }
 
             Projectile orb = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity.RotatedByRandom(0.52f) * Main.rand.NextFloat(0.9f, 1.5f)
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             if (fireIndex >= MaxOrbNum) {
                 FireTime = 60;
                 fireIndex = 0;
-                Orbs = new List<ElectrosphereLauncherOrb>();
+                Orbs = [];
             }
         }
     }

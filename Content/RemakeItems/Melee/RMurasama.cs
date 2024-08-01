@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             // 创建一个新的集合以防修改 tooltips 集合时产生异常
             List<TooltipLine> newTooltips = new List<TooltipLine>(tooltips);
-            List<TooltipLine> prefixTooltips = new List<TooltipLine>();
+            List<TooltipLine> prefixTooltips = [];
             // 遍历 tooltips 集合并隐藏特定的提示行
             foreach (TooltipLine line in newTooltips.ToList()) {
                 for (int i = 0; i < 9; i++) {
@@ -76,12 +76,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 int index = InWorldBossPhase.Instance.Mura_Level();
                 TooltipLine newLine = new TooltipLine(CWRMod.Instance, "CWRText", text);
                 if (newLine.Text == "[Text]") {
-                    if (index >= 0 && index <= 14) {
-                        text = CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}");
-                    }
-                    else {
-                        text = "ERROR";
-                    }
+                    text = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Murasama_TextDictionary_Content_{index}") : "ERROR";
 
                     if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                         text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("Murasama_No_legend_Content_2") : CWRLocText.GetTextValue("Murasama_No_legend_Content_1");
@@ -153,10 +148,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
                 ) {
                 return false;
             }
-            if (!CWRServerConfig.Instance.WeaponEnhancementSystem && !InWorldBossPhase.Instance.level11) {
-                return false;
-            }
-            return player.ownedProjectileCounts[item.shoot] == 0;
+            return !CWRServerConfig.Instance.WeaponEnhancementSystem && !InWorldBossPhase.Instance.level11
+                ? false
+                : player.ownedProjectileCounts[item.shoot] == 0;
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

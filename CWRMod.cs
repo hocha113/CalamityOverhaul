@@ -47,10 +47,10 @@ namespace CalamityOverhaul
 
         internal List<Mod> LoadMods { get; private set; }
         internal List<ILoader> ILoaders { get; private set; }
-        internal static List<BaseRItem> RItemInstances { get; private set; } = new List<BaseRItem>();
-        internal static List<EctypeItem> EctypeItemInstance { get; private set; } = new List<EctypeItem>();
-        internal static List<NPCCustomizer> NPCCustomizerInstances { get; private set; } = new List<NPCCustomizer>();
-        internal static Dictionary<int, BaseRItem> RItemIndsDict { get; private set; } = new Dictionary<int, BaseRItem>();
+        internal static List<BaseRItem> RItemInstances { get; private set; } = [];
+        internal static List<EctypeItem> EctypeItemInstance { get; private set; } = [];
+        internal static List<NPCCustomizer> NPCCustomizerInstances { get; private set; } = [];
+        internal static Dictionary<int, BaseRItem> RItemIndsDict { get; private set; } = [];
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook { get; private set; }
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook { get; private set; }
         internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_UseItem_Hook { get; private set; }
@@ -63,10 +63,7 @@ namespace CalamityOverhaul
 
         public override object Call(params object[] args) {
             CallType callType = (CallType)args[0];
-            if (callType == CallType.SupertableRecipeDate) {
-                return SupertableUI.RpsDataStringArrays;
-            }
-            return null;
+            return callType == CallType.SupertableRecipeDate ? SupertableUI.RpsDataStringArrays : (object)null;
         }
 
         public override void PostSetupContent() {
@@ -75,7 +72,7 @@ namespace CalamityOverhaul
             FromThorium.PostLoadData();
 
             {
-                RItemInstances = new List<BaseRItem>();//这里直接进行初始化，便不再需要进行UnLoad卸载
+                RItemInstances = [];//这里直接进行初始化，便不再需要进行UnLoad卸载
                 List<Type> rItemIndsTypes = CWRUtils.GetSubclasses(typeof(BaseRItem));
                 //($"一共获取到{rItemIndsTypes.Count}个待挑选元素Type").DompInConsole();
                 foreach (Type type in rItemIndsTypes) {
@@ -114,7 +111,7 @@ namespace CalamityOverhaul
             }
 
             {
-                EctypeItemInstance = new List<EctypeItem>();
+                EctypeItemInstance = [];
                 List<Type> ectypeIndsTypes = CWRUtils.GetSubclasses(typeof(BaseRItem));
                 foreach (Type type in ectypeIndsTypes) {
                     if (type != typeof(EctypeItem)) {
@@ -127,7 +124,7 @@ namespace CalamityOverhaul
             }
 
             {
-                NPCCustomizerInstances = new List<NPCCustomizer>();//这里直接进行初始化，便不再需要进行UnLoad卸载
+                NPCCustomizerInstances = [];//这里直接进行初始化，便不再需要进行UnLoad卸载
                 List<Type> npcCustomizerIndsTypes = CWRUtils.GetSubclasses(typeof(NPCCustomizer));
                 foreach (Type type in npcCustomizerIndsTypes) {
                     if (type != typeof(NPCCustomizer)) {
@@ -140,7 +137,7 @@ namespace CalamityOverhaul
             }
 
             {
-                RItemIndsDict = new Dictionary<int, BaseRItem>();
+                RItemIndsDict = [];
                 foreach (BaseRItem ritem in RItemInstances) {
                     RItemIndsDict.Add(ritem.SetReadonlyTargetID, ritem);
                 }

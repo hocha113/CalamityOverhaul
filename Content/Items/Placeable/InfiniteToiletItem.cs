@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Tiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -17,10 +16,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
         public override string Texture => CWRConstant.Item + "Placeable/" + "InfiniteToiletItem";
         public new string LocalizationCategory => "Items.Placeables";
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public override void SetDefaults() {
             Item.width = 28;

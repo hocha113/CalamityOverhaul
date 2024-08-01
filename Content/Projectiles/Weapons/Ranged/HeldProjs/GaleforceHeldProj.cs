@@ -14,12 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<GaleforceEcType>();
         public override void SetRangedProperty() => CanRightClick = true;
         public override void PostInOwner() {
-            if (onFireR) {
-                Item.useTime = 5;
-            }
-            else {
-                Item.useTime = 20;
-            }
+            Item.useTime = onFireR ? 5 : 20;
         }
 
         public override void BowShootR() {

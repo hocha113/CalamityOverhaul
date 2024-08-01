@@ -322,8 +322,8 @@ namespace CalamityOverhaul.Content
 
                 if (!inRItemIndsDict) {
                     List<TooltipLine> newTooltips = new(tooltips);
-                    List<TooltipLine> prefixTooltips = new();
-                    List<TooltipLine> tooltip = new();
+                    List<TooltipLine> prefixTooltips = [];
+                    List<TooltipLine> tooltip = [];
                     foreach (TooltipLine line in tooltips.ToList()) {//复制 tooltips 集合，以便在遍历时修改
                         for (int i = 0; i < 9; i++) {
                             if (line.Name == "Tooltip" + i) {
@@ -518,10 +518,7 @@ namespace CalamityOverhaul.Content
             if (IsShootCountCorlUse) {
                 return player.ownedProjectileCounts[item.shoot] <= 0;
             }
-            if (heldProjType > 0 && hasHeldNoCanUseBool) {
-                return false;
-            }
-            return base.CanUseItem(item, player);
+            return heldProjType > 0 && hasHeldNoCanUseBool ? false : base.CanUseItem(item, player);
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {

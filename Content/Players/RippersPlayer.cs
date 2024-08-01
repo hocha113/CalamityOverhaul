@@ -12,14 +12,14 @@ namespace CalamityOverhaul.Content.Players
 {
     internal class RippersPlayer : PlayerSet
     {
-        public static List<int> noRippersProj = new List<int>();
+        public static List<int> noRippersProj = [];
 
         public static RippersPlayer Instance;
 
         public override void Load() {
             Instance = this;
-            noRippersProj = new List<int>();
-            noRippersProj = new List<int>() {
+            noRippersProj = [];
+            noRippersProj = [
                 ModContent.ProjectileType<CosmicDischargeFlail>(),
                 ModContent.ProjectileType<CosmicIceBurst>(),
                 ModContent.ProjectileType<EndSkillMakeDamage>(),
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Players
                 ModContent.ProjectileType<StormGoddessSpearProj>(),
                 ModContent.ProjectileType<StormArc>(),
                 ModContent.ProjectileType<StormLightning>(),
-            };
+            ];
         }
 
         public override bool On_ModifyHitNPCWithItem(Player player, Item item, NPC target, ref NPC.HitModifiers modifiers) {

@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             cwr.IsKreload = true;
             cwr.NoKreLoadTime += 30;
             int num = 0;
-            List<Item> list = new();
+            List<Item> list = [];
             foreach (Item i in cwr.MagazineContents) {
                 if (i.type != ItemID.None && i.stack > 0) {
                     list.Add(i);

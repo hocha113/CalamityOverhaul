@@ -11,7 +11,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class LifehuntScytheEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "LifehuntScythe";
-        int swingIndex = 0;
+
+        private int swingIndex = 0;
         public override void SetDefaults() {
             Item.SetCalamitySD<LifehuntScythe>();
             Item.UseSound = null;

@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.ChainGun;
         public override int targetCWRItem => ItemID.ChainGun;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.ChainGun].Value;
-        float randomShootRotset;
+
+        private float randomShootRotset;
         public override void SetRangedProperty() {
             FireTime = 4;
             Recoil = 0.3f;

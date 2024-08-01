@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Items.Magic.Extras;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
@@ -45,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 
         public override void AI() {
             Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height
-                , 68, Projectile.velocity.X, Projectile.velocity.Y, 55);
+                , DustID.BlueCrystalShard, Projectile.velocity.X, Projectile.velocity.Y, 55);
             dust.noGravity = true;
             dust.shader = EffectLoader.InShootGlowShader;
             dust.shader.UseColor(Color.DarkBlue);

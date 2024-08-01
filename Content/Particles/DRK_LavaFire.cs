@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Core;
 
 namespace CalamityOverhaul.Content.Particles
 {
@@ -21,8 +20,8 @@ namespace CalamityOverhaul.Content.Particles
         public float size;
         public int minLifeTime;
         public int maxLifeTime;
-        float opacity;
-        float timeLife;
+        private float opacity;
+        private float timeLife;
         public override void SetDRK() {
             if (minLifeTime == 0) {
                 minLifeTime = 90;

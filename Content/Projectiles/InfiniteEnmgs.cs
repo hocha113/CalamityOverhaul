@@ -13,10 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles
     {
         public override string Texture => CWRConstant.Placeholder;
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;

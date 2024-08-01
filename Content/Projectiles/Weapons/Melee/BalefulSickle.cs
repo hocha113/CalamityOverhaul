@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
             for (int j = 0; j < 5; j++) {
-                int deathDust = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, 5, 0f, 0f, 100, default, 2f);
+                int deathDust = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, DustID.Blood, 0f, 0f, 100, default, 2f);
                 Main.dust[deathDust].velocity *= 3f;
                 if (Main.rand.NextBool()) {
                     Main.dust[deathDust].scale = 0.5f;
@@ -73,10 +73,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
             }
             for (int k = 0; k < 10; k++) {
-                int deathDust2 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, 6, 0f, 0f, 100, default, 3f);
+                int deathDust2 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, DustID.Torch, 0f, 0f, 100, default, 3f);
                 Main.dust[deathDust2].noGravity = true;
                 Main.dust[deathDust2].velocity *= 5f;
-                deathDust2 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, 6, 0f, 0f, 100, default, 2f);
+                deathDust2 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, DustID.Torch, 0f, 0f, 100, default, 2f);
                 Main.dust[deathDust2].velocity *= 2f;
             }
         }

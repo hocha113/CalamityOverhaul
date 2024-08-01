@@ -90,12 +90,9 @@ namespace CalamityOverhaul.Content.Items.Melee
                 mouseYDist = Main.screenPosition.Y + Main.screenHeight - Main.mouseY - realPlayerPos.Y;
             }
             float mouseDistance = (float)Math.Sqrt((double)((mouseXDist * mouseXDist) + (mouseYDist * mouseYDist)));
-            if ((float.IsNaN(mouseXDist) && float.IsNaN(mouseYDist)) || (mouseXDist == 0f && mouseYDist == 0f)) {
-                _ = (float)player.direction;
-            }
-            else {
-                _ = cometSpeed / mouseDistance;
-            }
+            _ = (float.IsNaN(mouseXDist) && float.IsNaN(mouseYDist)) || (mouseXDist == 0f && mouseYDist == 0f)
+                ? player.direction
+                : cometSpeed / mouseDistance;
 
             if (crit) {
                 damage /= 2;

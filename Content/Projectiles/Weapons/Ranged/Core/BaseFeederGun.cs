@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
@@ -111,20 +110,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public bool InShotgun_FireForcedReloadInterruption {
             get {
-                if (CWRServerConfig.Instance.ShotgunFireForcedReloadInterruption) {
-                    return true;
-                }
-                return _inShotgun_FireForcedReloadInterruption;
+                return CWRServerConfig.Instance.ShotgunFireForcedReloadInterruption ? true : _inShotgun_FireForcedReloadInterruption;
             }
             set => _inShotgun_FireForcedReloadInterruption = value;
         }
 
         public override bool OnHandheldDisplayBool {
             get {
-                if (WeaponHandheldDisplay) {
-                    return true;
-                }
-                return CanFire || kreloadTimeValue > 0;
+                return WeaponHandheldDisplay ? true : CanFire || kreloadTimeValue > 0;
             }
         }
 
@@ -735,7 +728,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public virtual void LoadBulletsIntoMagazine() {
             CWRItems cwrItem = ModItem;//获取模组物品实例
-            List<Item> loadedItems = new List<Item>();
+            List<Item> loadedItems = [];
             int magazineCapacity = cwrItem.AmmoCapacity;
             if (LoadingQuantity > 0) {
                 magazineCapacity = LoadingQuantity;
@@ -831,7 +824,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
             if (cwritem.MagazineContents[0].stack <= 0) {
                 cwritem.MagazineContents[0] = new Item();
-                List<Item> items = new List<Item>();
+                List<Item> items = [];
                 foreach (Item i in cwritem.MagazineContents) {
                     if (i.type != ItemID.None && i.stack > 0) {
                         items.Add(i);
@@ -1010,7 +1003,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <param name="cutOutNum"></param>
         public void CutOutMagazine(int cutOutNum) {
             int cumulativeQuantity = 0;
-            List<Item> list = new List<Item>();
+            List<Item> list = [];
             foreach (Item i in ModItem.MagazineContents) {
                 if (cumulativeQuantity >= cutOutNum || i == null) {
                     break;
@@ -1052,10 +1045,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if (ModItem.MagazineContents.Length <= 0) {
                 return new Item();
             }
-            if (ModItem.MagazineContents[0] == null) {
-                return new Item();
-            }
-            return ModItem.MagazineContents[0];
+            return ModItem.MagazineContents[0] == null ? new Item() : ModItem.MagazineContents[0];
         }
 
         #endregion

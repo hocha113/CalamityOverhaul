@@ -3,11 +3,8 @@ using CalamityMod.Events;
 using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.NPCs;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.NormalNPCs;
-using CalamityMod.NPCs.Providence;
-using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
@@ -117,10 +114,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool CheckDead(NPC npc) {
-            if (ObliterateBool) {
-                return true;
-            }
-            return base.CheckDead(npc);
+            return ObliterateBool ? true : base.CheckDead(npc);
         }
 
         private void UpdateOverBeatBack(NPC npc) {
@@ -149,10 +143,7 @@ namespace CalamityOverhaul.Content
             }
             UpdateOverBeatBack(npc);
             bool? tungstenset = TungstenRiot.Instance.UpdateNPCPreAISet(npc);
-            if (tungstenset.HasValue) {
-                return tungstenset.Value;
-            }
-            return base.PreAI(npc);
+            return tungstenset.HasValue ? tungstenset.Value : base.PreAI(npc);
         }
 
         public override void PostAI(NPC npc) {

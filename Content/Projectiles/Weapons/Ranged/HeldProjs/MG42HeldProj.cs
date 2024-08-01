@@ -14,10 +14,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class MG42HeldProj : BaseFeederGun, ILoader
     {
         public override string Texture => CWRConstant.Item_Ranged + "MG42";
-        static Asset<Texture2D> masking;
-        static int MG42;
-        float randomShootRotset;
-        float shootValue;
+
+        private static Asset<Texture2D> masking;
+        private static int MG42;
+        private float randomShootRotset;
+        private float shootValue;
         void ILoader.LoadAsset() => masking = CWRUtils.GetT2DAsset(Texture + "_Masking");
         void ILoader.SetupData() => MG42 = ModContent.ItemType<MG42>();
         void ILoader.UnLoadData() {

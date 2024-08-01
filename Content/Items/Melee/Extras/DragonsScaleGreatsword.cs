@@ -2,7 +2,6 @@
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatswordProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

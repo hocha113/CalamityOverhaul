@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class DragonRageFireOrb : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        ref float Time => ref Projectile.ai[0];
+
+        private ref float Time => ref Projectile.ai[0];
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.DamageType = DamageClass.Melee;
@@ -24,10 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool? CanHitNPC(NPC target) {
-            if (Time < 15 * Projectile.extraUpdates) {
-                return false;
-            }
-            return base.CanHitNPC(target);
+            return Time < 15 * Projectile.extraUpdates ? false : base.CanHitNPC(target);
         }
 
         public override bool PreAI() {

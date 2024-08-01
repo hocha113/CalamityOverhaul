@@ -43,10 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
         }
 
         public override bool? CanDamage() {
-            if (Projectile.numHits > 0) {
-                return false;
-            }
-            return base.CanDamage();
+            return Projectile.numHits > 0 ? false : base.CanDamage();
         }
 
         public override void OnKill(int timeLeft) {

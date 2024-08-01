@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override bool PreDraw(ref Color lightColor) {
             Main.spriteBatch.EnterShaderRegion();
             TerratomereHoldoutProj.PrepareSlashShader(Flipped);
-            List<Vector2> list = new List<Vector2>();
+            List<Vector2> list = [];
 
             if (ControlPoints == null)
                 return false;

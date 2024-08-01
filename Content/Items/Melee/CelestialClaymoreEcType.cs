@@ -50,12 +50,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void MeleeEffects(Player player, Rectangle hitbox) {
             if (Main.rand.NextBool(4)) {
                 int dustType = Main.rand.Next(2);
-                if (dustType == 0) {
-                    dustType = 15;
-                }
-                else {
-                    dustType = dustType == 1 ? 73 : 244;
-                }
+                dustType = dustType == 0 ? 15 : dustType == 1 ? 73 : 244;
                 int swingDust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, dustType, player.direction * 2, 0f, 150, default, 1.3f);
                 Main.dust[swingDust].velocity *= 0.2f;
                 foreach (Projectile proj in Main.projectile) {

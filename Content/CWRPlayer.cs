@@ -291,8 +291,9 @@ namespace CalamityOverhaul.Content
                 Vector2 drawPos = Vector2.Zero;
                 drawPos.X = (int)(((int)player.position.X) - Main.screenPosition.X + (player.width / 2) - (9 * player.direction)) - 4f * player.direction + offsetPos.X;
                 drawPos.Y = (int)(((int)player.position.Y) - Main.screenPosition.Y + (player.height / 2) + 2f * player.gravDir - 8f * player.gravDir) + offsetPos.Y + player.gfxOffY;
-                DrawData howDoIDrawThings = new DrawData(value, drawPos, frame, drawInfo.colorArmorBody, player.bodyRotation, orig, size, spriteEffects, 0);
-                howDoIDrawThings.shader = 0;
+                DrawData howDoIDrawThings = new DrawData(value, drawPos, frame, drawInfo.colorArmorBody, player.bodyRotation, orig, size, spriteEffects, 0) {
+                    shader = 0
+                };
                 drawInfo.DrawDataCache.Add(howDoIDrawThings);
             }
         }

@@ -11,7 +11,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class DevilsDevastationEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DevilsDevastation";
-        int Level;
+
+        private int Level;
         public override void SetDefaults() {
             SetDefaultsFunc(Item);
         }

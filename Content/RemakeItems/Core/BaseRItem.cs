@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -39,10 +38,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// </summary>
         public virtual bool FormulaSubstitution {
             get {
-                if (IsVanilla) {
-                    return false;
-                }
-                return true;
+                return !IsVanilla;
             }
         }
 
@@ -61,7 +57,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
 
         public virtual void Load() {
-            
+
         }
 
         /// <summary>

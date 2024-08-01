@@ -1,14 +1,13 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Terraria.ModLoader;
-using Terraria;
-using Mono.Cecil;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;
+﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.Projectiles.Typeless;
-using CalamityMod;
 using CalamityMod.Dusts;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Projectiles.Typeless;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
@@ -41,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             , float maxDistance, float minRandRot = -0.2f, float maxRandRot = 0.2f, float minSpeed = 0.9f, float maxSpeed = 1.1f) {
             if (Main.rand.NextFloat(1f) < chancePerFrame) {
                 float distance = Main.rand.NextFloat(minDistance, maxDistance);
-                Vector2 offset = (safeInSwingUnit.ToRotation() - (MathHelper.PiOver4 * player.direction) 
+                Vector2 offset = (safeInSwingUnit.ToRotation() - (MathHelper.PiOver4 * player.direction)
                     + Main.rand.NextFloat(minRandRot, maxRandRot)).ToRotationVector2() * distance * player.direction;
                 Vector2 pos = player.Center + offset;
                 Vector2 vec = pos - player.Center;

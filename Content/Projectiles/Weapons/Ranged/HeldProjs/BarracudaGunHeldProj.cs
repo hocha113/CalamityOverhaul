@@ -11,7 +11,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BarracudaGun";
         public override int targetCayItem => ModContent.ItemType<BarracudaGun>();
         public override int targetCWRItem => ModContent.ItemType<BarracudaGunEcType>();
-        bool canFire;
+
+        private bool canFire;
         public override void SetRangedProperty() {
             HandDistance = 25;
             HandDistanceY = 5;

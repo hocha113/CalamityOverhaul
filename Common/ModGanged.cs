@@ -4,8 +4,6 @@ using CalamityMod.UI;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
-using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -81,10 +79,7 @@ namespace CalamityOverhaul.Common
 
         internal static bool InfernumModeOpenState {
             get {
-                if (CWRMod.Instance.infernum == null) {
-                    return false;
-                }
-                return (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
+                return CWRMod.Instance.infernum == null ? false : (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
             }
         }
 
@@ -253,7 +248,7 @@ namespace CalamityOverhaul.Common
             #region catalystMod
 
             if (CWRMod.Instance.catalystMod != null) {
-                
+
             }
             else {
                 "未加载模组 CatalystMod".DompInConsole();
@@ -386,17 +381,11 @@ namespace CalamityOverhaul.Common
 
         private static bool On_ShouldApplyItemOverhaul_Hook(On_TrO_Broadsword_ShouldApplyItemOverhaul_Dalegate orig, object obj, Item item) {
             int[] noEffect = new int[] { ItemType<TrueBiomeBlade>(), ItemType<OmegaBiomeBlade>(), ItemType<BrokenBiomeBlade>(), };
-            if (noEffect.Contains(item.type)) {
-                return false;
-            }
-            return orig.Invoke(obj, item);
+            return noEffect.Contains(item.type) ? false : orig.Invoke(obj, item);
         }
 
         private static bool On_AttemptPowerAttackStart_Hook(On_AttemptPowerAttackStart_Dalegate orig, object obj, Item item, Player player) {
-            if (item.IsAir || item.type == ItemID.None) {
-                return false;
-            }
-            return orig.Invoke(obj, item, player);
+            return item.IsAir || item.type == ItemID.None ? false : orig.Invoke(obj, item, player);
         }
 
         private static void On_BossHealthBarManager_Draw_Hook(On_BossHealthBarManager_Draw_Dalegate orig, object obj, SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info) {

@@ -1,17 +1,17 @@
-﻿using CalamityMod.Graphics.Renderers.CalamityRenderers;
-using CalamityMod.NPCs.Providence;
+﻿using CalamityMod;
+using CalamityMod.Graphics.Renderers.CalamityRenderers;
 using CalamityMod.NPCs;
-using CalamityMod;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
+using CalamityMod.NPCs.Providence;
 using CalamityOverhaul.Content.Projectiles.Weapons;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System;
-using Terraria.GameContent;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Common.Effects
             NeutronRingShader = null;
             PrimeHaloShader = null;
             TwistColoringShader = null;
-            KnifeRendering  = null;
+            KnifeRendering = null;
             KnifeDistortion = null;
             StreamerDustShader = null;
             InShootGlowShader = null;
@@ -248,16 +248,12 @@ namespace CalamityOverhaul.Common.Effects
             if (!CWRServerConfig.Instance.MurasamaSpaceFragmentationBool) {//这里，如果配置文件关闭了碎屏效果，那么就不执行这里的特效渲染绘制
                 return false;
             }
-            if (!Main.LocalPlayer.CWR().EndSkillEffectStartBool) {
-                return false;
-            }
-
-            return true;
+            return Main.LocalPlayer.CWR().EndSkillEffectStartBool;
         }
 
         private bool HasWarpEffect(out List<IDrawWarp> warpSets, out List<IDrawWarp> warpSetsNoBlueshift) {
-            warpSets = new List<IDrawWarp>();
-            warpSetsNoBlueshift = new List<IDrawWarp>();
+            warpSets = [];
+            warpSetsNoBlueshift = [];
             foreach (Projectile p in Main.projectile) {
                 if (!p.active) {
                     continue;
@@ -271,11 +267,7 @@ namespace CalamityOverhaul.Common.Effects
                     }
                 }
             }
-            if (warpSets.Count > 0 || warpSetsNoBlueshift.Count > 0) {
-                return true;
-            }
-
-            return false;
+            return warpSets.Count > 0 || warpSetsNoBlueshift.Count > 0;
         }
 
         public static Providence Provi => Main.npc[CalamityGlobalNPC.holyBoss].ModNPC as Providence;

@@ -44,11 +44,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
                 Owner.statMana -= 1;
                 Owner.manaRegenDelay = 6;
                 if (Projectile.ai[1] < 660) {
-                    Projectile.ai[1]+=2;
+                    Projectile.ai[1] += 2;
                 }
             }
             else {
-                Projectile.ai[1]-=6;
+                Projectile.ai[1] -= 6;
                 if (Projectile.ai[1] <= 0) {
                     Projectile.Kill();
                 }
@@ -57,12 +57,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
             if (Projectile.ai[1] >= 0) {
                 for (int i = 0; i < 300; i++) {
                     Vector2 spanPos = (MathHelper.TwoPi / 300f * i + Projectile.ai[0] * 0.1f).ToRotationVector2() * Projectile.ai[1] + Projectile.Center;
-                    DRK_LavaFire lavaFire = new DRK_LavaFire();
-                    lavaFire.Velocity = new Vector2(0, -3);
-                    lavaFire.Position = spanPos;
-                    lavaFire.Scale = Main.rand.NextFloat(0.2f, 0.3f) * (1 + Projectile.ai[1] * 0.006f);
-                    lavaFire.maxLifeTime = 15;
-                    lavaFire.minLifeTime = 10;
+                    DRK_LavaFire lavaFire = new DRK_LavaFire {
+                        Velocity = new Vector2(0, -3),
+                        Position = spanPos,
+                        Scale = Main.rand.NextFloat(0.2f, 0.3f) * (1 + Projectile.ai[1] * 0.006f),
+                        maxLifeTime = 15,
+                        minLifeTime = 10
+                    };
                     DRKLoader.AddParticle(lavaFire);
                 }
                 int num = 255;

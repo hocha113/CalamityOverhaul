@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
 
             for (int i = 0; i < 36; i++) {
-                int dustID = Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height - 16, 173);
+                int dustID = Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height - 16, DustID.ShadowbeamStaff);
                 Dust obj = Main.dust[dustID];
                 obj.velocity *= 3f;
                 Main.dust[dustID].scale *= 2f;
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             for (int i = 0; i < 36; i++) {
-                int dustID = Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height - 16, 173);
+                int dustID = Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height - 16, DustID.ShadowbeamStaff);
                 Dust obj = Main.dust[dustID];
                 obj.velocity *= 3f;
                 Main.dust[dustID].scale *= 2f;

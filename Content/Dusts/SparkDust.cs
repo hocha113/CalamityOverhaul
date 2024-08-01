@@ -19,10 +19,7 @@ namespace CalamityOverhaul.Content.Dusts
 
         public float LifetimeCompletion {
             get {
-                if (Lifetime == 0) {
-                    return 0f;
-                }
-                return Time / (float)Lifetime;
+                return Lifetime == 0 ? 0f : Time / (float)Lifetime;
             }
         }
 

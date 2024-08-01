@@ -26,10 +26,7 @@ namespace CalamityOverhaul.Content.UIs
         private bool onMainP;
         public bool Active {
             get {
-                if (handItem.type == ItemID.None) {
-                    return false;
-                }
-                return handItem.CWR().HasCartridgeHolder;
+                return handItem.type == ItemID.None ? false : handItem.CWR().HasCartridgeHolder;
             }
         }
 

@@ -110,10 +110,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            if (Projectile.timeLeft > 60) {
-                return false;
-            }
-            return base.OnTileCollide(oldVelocity);
+            return Projectile.timeLeft > 60 ? false : base.OnTileCollide(oldVelocity);
         }
 
         public override bool PreDraw(ref Color lightColor) {

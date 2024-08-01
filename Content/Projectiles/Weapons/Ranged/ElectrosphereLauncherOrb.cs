@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class ElectrosphereLauncherOrb : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        public List<Projectile> Orbs = new List<Projectile>();
+        public List<Projectile> Orbs = [];
         public ElectrosphereLauncherOrb[] orbList = new ElectrosphereLauncherOrb[] { };
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 42;

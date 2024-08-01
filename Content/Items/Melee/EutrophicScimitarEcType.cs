@@ -1,13 +1,8 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.DataStructures;
-using Terraria;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {

@@ -1,13 +1,13 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.Particles;
-using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
+using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria;
-using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 2;
             Projectile.DamageType = DamageClass.Melee;
-            
+
         }
 
         private void SpwanPRKAndDustEffect() {
@@ -56,21 +56,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
 
                 for (int i = 0; i < 80; i++) {
-                    DRK_LavaFire lavaFire = new DRK_LavaFire();
-                    lavaFire.Velocity = CWRUtils.randVr(1, 9);
-                    lavaFire.Position = spanPos;
+                    DRK_LavaFire lavaFire = new DRK_LavaFire {
+                        Velocity = CWRUtils.randVr(1, 9),
+                        Position = spanPos,
 
-                    lavaFire.Scale = Main.rand.NextFloat(2.9f, 4.6f);
-                    lavaFire.Color = Color.White;
+                        Scale = Main.rand.NextFloat(2.9f, 4.6f),
+                        Color = Color.White
+                    };
                     lavaFire.ai[1] = 2;
                     DRKLoader.AddParticle(lavaFire);
                 }
                 for (int i = 0; i < 20; i++) {
-                    DRK_LavaFire lavaFire = new DRK_LavaFire();
-                    lavaFire.Velocity = CWRUtils.randVr(3, 6);
-                    lavaFire.Position = spanPos;
-                    lavaFire.Scale = Main.rand.NextFloat(0.8f, 1.2f);
-                    lavaFire.Color = Color.White;
+                    DRK_LavaFire lavaFire = new DRK_LavaFire {
+                        Velocity = CWRUtils.randVr(3, 6),
+                        Position = spanPos,
+                        Scale = Main.rand.NextFloat(0.8f, 1.2f),
+                        Color = Color.White
+                    };
                     lavaFire.ai[0] = 1;
                     lavaFire.ai[1] = 0;
                     lavaFire.minLifeTime = 60;
@@ -79,7 +81,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
                 return;
             }
-            
+
             for (int i = 0; i < 20; i++) {
                 int dust = Dust.NewDust(spanPos, Projectile.width, Projectile.height, DustID.OrangeTorch, Scale: 6);
                 Main.dust[dust].position = spanPos;
@@ -87,21 +89,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Main.dust[dust].noGravity = true;
             }
             for (int i = 0; i < 80; i++) {
-                DRK_LavaFire lavaFire = new DRK_LavaFire();
-                lavaFire.Velocity = CWRUtils.randVr(1, 4);
-                lavaFire.Position = spanPos;
+                DRK_LavaFire lavaFire = new DRK_LavaFire {
+                    Velocity = CWRUtils.randVr(1, 4),
+                    Position = spanPos,
 
-                lavaFire.Scale = Main.rand.NextFloat(0.9f, 1.6f);
-                lavaFire.Color = Color.White;
+                    Scale = Main.rand.NextFloat(0.9f, 1.6f),
+                    Color = Color.White
+                };
                 lavaFire.ai[1] = 2;
                 DRKLoader.AddParticle(lavaFire);
             }
             for (int i = 0; i < 20; i++) {
-                DRK_LavaFire lavaFire = new DRK_LavaFire();
-                lavaFire.Velocity = CWRUtils.randVr(3, 4);
-                lavaFire.Position = spanPos;
-                lavaFire.Scale = Main.rand.NextFloat(0.8f, 1.2f);
-                lavaFire.Color = Color.White;
+                DRK_LavaFire lavaFire = new DRK_LavaFire {
+                    Velocity = CWRUtils.randVr(3, 4),
+                    Position = spanPos,
+                    Scale = Main.rand.NextFloat(0.8f, 1.2f),
+                    Color = Color.White
+                };
                 lavaFire.ai[0] = 1;
                 lavaFire.ai[1] = 0;
                 lavaFire.minLifeTime = 30;
@@ -150,7 +154,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void OnKill(int timeLeft) {
-            
+
         }
 
         public override bool ShouldUpdatePosition() => false;

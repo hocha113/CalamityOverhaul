@@ -93,10 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             Index = reader.ReadInt32();
         }
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public override void SetDefaults() {
             Projectile.width = 4;
@@ -208,17 +205,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            if (Index == 0 && Time > 120) {
-                return CWRUtils.CircularHitboxCollision(OrigPos, 300, targetHitbox);
-            }
-            return base.Colliding(projHitbox, targetHitbox);
+            return Index == 0 && Time > 120
+                ? CWRUtils.CircularHitboxCollision(OrigPos, 300, targetHitbox)
+                : base.Colliding(projHitbox, targetHitbox);
         }
 
         public void GetColorDate() {
             Texture2D tex = CWRUtils.GetT2DValue(CWRConstant.Cay_Wap_Ranged + VientianeTex[(int)Projectile.ai[0]]);
             Color[] colors = new Color[tex.Width * tex.Height];
             tex.GetData(colors);
-            List<Color> nonTransparentColors = new List<Color>();
+            List<Color> nonTransparentColors = [];
             foreach (Color color in colors) {
                 if ((color.A > 0 || color.R > 0 || color.G > 0 || color.B > 0) && (color != Color.White && color != Color.Black)) {
                     nonTransparentColors.Add(color);

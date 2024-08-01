@@ -169,10 +169,11 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         internal class EffectEntity : ProjItem
         {
             protected int ai0;
-            float rotation;
+            private float rotation;
             public float rotSpeed;
             public int itemID;
-            Item item {
+
+            private Item item {
                 get {
                     Item inds = new Item();
                     inds.SetDefaults(itemID);
@@ -247,9 +248,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         internal bool _active;
         internal static AcknowledgmentUI Instance { get; private set; }
         private static Asset<Texture2D> Logo;
-        internal List<ProjItem> projectiles = new List<ProjItem>();
-        internal List<EffectEntity> effectEntities = new List<EffectEntity>();
-        Vector2 itemPos => new Vector2(Main.screenWidth / 2, Main.screenHeight - 60);
+        internal List<ProjItem> projectiles = [];
+        internal List<EffectEntity> effectEntities = [];
+
+        private Vector2 itemPos => new Vector2(Main.screenWidth / 2, Main.screenHeight - 60);
         public bool OnActive() => _active || _sengs > 0;
         public override bool CanLoad() => true;
         public override void Load() {

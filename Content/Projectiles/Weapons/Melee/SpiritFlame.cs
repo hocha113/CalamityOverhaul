@@ -32,12 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             CWRUtils.ClockFrame(ref Projectile.frameCounter, 10, 3);
             if (Projectile.ai[0] == 0) {
                 Player owner = CWRUtils.GetPlayerInstance(Projectile.owner);
-                if (owner != null) {
-                    Projectile.velocity = owner.velocity * 0.9f + new Vector2(0, -2);
-                }
-                else {
-                    Projectile.velocity = new Vector2(0, -2);
-                }
+                Projectile.velocity = owner != null ? owner.velocity * 0.9f + new Vector2(0, -2) : new Vector2(0, -2);
             }
             if (Projectile.ai[0] == 1) {
                 if (Projectile.ai[1] == 0) {

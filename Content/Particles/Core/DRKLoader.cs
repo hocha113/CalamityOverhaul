@@ -56,15 +56,15 @@ namespace CalamityOverhaul.Content.Particles.Core
         }
 
         public override void Load() {
-            particles = new List<BaseParticle>();
-            particlesToKill = new List<BaseParticle>();
-            ParticleTypesDic = new Dictionary<Type, int>();
-            ParticleIDToTexturesDic = new Dictionary<int, Texture2D>();
-            CWRParticleCoreInds = new List<BaseParticle>();
+            particles = [];
+            particlesToKill = [];
+            ParticleTypesDic = [];
+            ParticleIDToTexturesDic = [];
+            CWRParticleCoreInds = [];
 
-            batched_AlphaBlend_DRK = new List<BaseParticle>();
-            batched_NonPremultiplied_DRK = new List<BaseParticle>();
-            batched_AdditiveBlend_DRK = new List<BaseParticle>();
+            batched_AlphaBlend_DRK = [];
+            batched_NonPremultiplied_DRK = [];
+            batched_AdditiveBlend_DRK = [];
 
             CWRParticleCoreInds = CWRUtils.HanderSubclass<BaseParticle>(false);
             foreach (var particleType in CWRParticleCoreInds) {
@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.Particles.Core
             if (Main.dedServ) {//不要在服务器上更新逻辑
                 return;
             }
-            
+
             foreach (BaseParticle particle in particles) {
                 if (particle == null) {
                     continue;
@@ -261,10 +261,7 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// </summary>
         /// <returns></returns>
         public static int FreeSpacesAvailable() {
-            if (Main.dedServ || particles == null) {
-                return 0;
-            }
-            return CWRConstant.MaxParticleCount - particles.Count();
+            return Main.dedServ || particles == null ? 0 : CWRConstant.MaxParticleCount - particles.Count();
         }
     }
 }

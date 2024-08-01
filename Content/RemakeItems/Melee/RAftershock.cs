@@ -1,11 +1,7 @@
-﻿using CalamityMod.Buffs.StatDebuffs;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
+﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework;
-using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -22,7 +18,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetDefaults(Item item) => AftershockEcType.SetDefaultsFunc(item);
         public override bool? AltFunctionUse(Item item, Player player) => true;
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
-            , Vector2 velocity, int type, int damage, float knockback) 
+            , Vector2 velocity, int type, int damage, float knockback)
             => AftershockEcType.ShootFunc(player, source, position, velocity, type, damage, knockback);
         public override bool? On_OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone) => false;
         public override bool? On_OnHitPvp(Item item, Player player, Player target, Player.HurtInfo hurtInfo) => false;

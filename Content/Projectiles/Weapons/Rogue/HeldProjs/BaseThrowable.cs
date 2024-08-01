@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
 
         protected delegate float ToFloatData();
 
-        ToFloatData armAnticipationMovement;
+        private ToFloatData armAnticipationMovement;
         /// <summary>
         /// 一个委托字段，存储一个获取拟合曲线对应高度的逻辑，如果值为<see langword="null"/>，那么会自动赋值为一个默认的拟合逻辑
         /// </summary>
@@ -155,11 +155,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         }
 
         public override bool? CanDamage() {
-            if (ThrowStorageProgress < 1) {
-                return false;
-            }
-
-            return null;
+            return ThrowStorageProgress < 1 ? false : null;
         }
 
         public virtual void OnThrowing() {

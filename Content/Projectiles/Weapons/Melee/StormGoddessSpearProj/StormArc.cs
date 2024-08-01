@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
             Projectile.tileCollide = true;
         }
 
-        private HashSet<NPC> shockedbefore = new HashSet<NPC>();
+        private HashSet<NPC> shockedbefore = [];
         private int prevX = 0;
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {

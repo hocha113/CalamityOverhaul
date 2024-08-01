@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useTurn = true;
             Item.noUseGraphic = true;
             Item.useAnimation = 19;
-            Item.useStyle = 5;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.useTime = 19;
             Item.knockBack = 8.75f;
             Item.UseSound = SoundID.Item1;

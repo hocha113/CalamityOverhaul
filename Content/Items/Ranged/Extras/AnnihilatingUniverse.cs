@@ -8,7 +8,6 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniversePr
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -21,10 +20,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override string Texture => CWRConstant.Item_Ranged + "AnnihilatingUniverse";
         public new string LocalizationCategory => "Items.Weapons.Ranged";
         public override bool IsLoadingEnabled(Mod mod) {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
-                return false;
-            }
-            return base.IsLoadingEnabled(mod);
+            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
 
         public override void SetStaticDefaults() {

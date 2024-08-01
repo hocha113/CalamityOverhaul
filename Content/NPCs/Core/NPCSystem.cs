@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         }
 
         private void LoadNPCSets() {
-            NPCSets = new List<NPCCoverage>();
+            NPCSets = [];
             foreach (Type type in CWRUtils.GetSubclasses(typeof(NPCCoverage))) {
                 if (type != typeof(NPCCoverage)) {
                     object obj = Activator.CreateInstance(type);
@@ -51,9 +51,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
             }
         }
 
-        MethodInfo getMethodInfo(string key) => npcLoaderType.GetMethod(key, BindingFlags.Public | BindingFlags.Static);
+        private MethodInfo getMethodInfo(string key) => npcLoaderType.GetMethod(key, BindingFlags.Public | BindingFlags.Static);
 
-        void LoaderMethodAndHook() {
+        private void LoaderMethodAndHook() {
             {
                 onHitByProjectile_Method = getMethodInfo("OnHitByProjectile");
                 if (onHitByProjectile_Method != null) {

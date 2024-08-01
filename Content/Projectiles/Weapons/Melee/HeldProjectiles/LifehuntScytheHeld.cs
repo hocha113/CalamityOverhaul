@@ -117,10 +117,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
             Projectile.spriteDirection = Math.Sign(ToMouse.X);
             if (Projectile.ai[0] < 2) {
-                if (Projectile.spriteDirection == 1)
-                    Projectile.rotation = (Projectile.Center - Owner.Center).ToRotation() + MathHelper.PiOver4;
-                else
-                    Projectile.rotation = (Projectile.Center - Owner.Center).ToRotation() - MathHelper.Pi - MathHelper.PiOver4;
+                Projectile.rotation = Projectile.spriteDirection == 1
+                    ? (Projectile.Center - Owner.Center).ToRotation() + MathHelper.PiOver4
+                    : (Projectile.Center - Owner.Center).ToRotation() - MathHelper.Pi - MathHelper.PiOver4;
                 glow += 0.03f;
             }
 

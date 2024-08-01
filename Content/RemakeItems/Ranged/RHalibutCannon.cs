@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             // 创建一个新的集合以防修改 tooltips 集合时产生异常
             List<TooltipLine> newTooltips = new List<TooltipLine>(tooltips);
-            List<TooltipLine> prefixTooltips = new List<TooltipLine>();
+            List<TooltipLine> prefixTooltips = [];
             // 遍历 tooltips 集合并隐藏特定的提示行
             foreach (TooltipLine line in newTooltips.ToList()) {
                 for (int i = 0; i < 9; i++) {

@@ -108,10 +108,7 @@ namespace CalamityOverhaul.Content.NPCs.Others
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo) {
-            if (spawnInfo.Player.ZoneMarble) {
-                return Main.worldName == "ForByMarble" ? 10 : 0.5f;
-            }
-            return 0;
+            return spawnInfo.Player.ZoneMarble ? Main.worldName == "ForByMarble" ? 10 : 0.5f : 0;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

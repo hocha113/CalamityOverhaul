@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.UIs
             CloseRec = new Rectangle((int)(DrawPos.X + 470), (int)(DrawPos.Y + 190), 30, 30);
             OnCloseP = CloseRec.Intersects(mouseRec);
 
-            Instance.ecTypeItemList = new List<Item>();
+            Instance.ecTypeItemList = [];
             foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
                 if (!baseRItem.DrawingInfo) {
                     continue;
@@ -310,13 +310,7 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         private Color getSouldColor(bool keyValue, bool onP) {
-            Color color;
-            if (keyValue) {
-                color = new Color(255, 255, 255, 255);
-            }
-            else {
-                color = new Color(0, 0, 0, 155);
-            }
+            Color color = keyValue ? new Color(255, 255, 255, 255) : new Color(0, 0, 0, 155);
             if (onP) {
                 color = new Color(255, 55, 255, 255);
             }

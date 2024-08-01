@@ -12,7 +12,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class DeathsAscensionEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DeathsAscension";
-        int swingIndex = 0;
+
+        private int swingIndex = 0;
         public override void SetDefaults() {
             Item.SetCalamitySD<DeathsAscension>();
             Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();

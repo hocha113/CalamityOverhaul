@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public bool onCloseP;
 
-        public static List<RecipeData> AllRecipes = new List<RecipeData>();
+        public static List<RecipeData> AllRecipes = [];
 
         public override void Load() {
             Instance = this;

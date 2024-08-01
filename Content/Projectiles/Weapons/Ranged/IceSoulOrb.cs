@@ -36,12 +36,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     }
                 }
             }
-            if (Projectile.ai[0] >= 135) {
-                Projectile.ai[2] = Utils.Remap(Projectile.ai[0], 225f, 270, 1.5f, 0f);
-            }
-            else {
-                Projectile.ai[2] = Utils.Remap(Projectile.ai[0], 135, 225f, 0f, 1.5f);
-            }
+            Projectile.ai[2] = Projectile.ai[0] >= 135
+                ? Utils.Remap(Projectile.ai[0], 225f, 270, 1.5f, 0f)
+                : Utils.Remap(Projectile.ai[0], 135, 225f, 0f, 1.5f);
 
             Projectile.ai[0]++;
         }

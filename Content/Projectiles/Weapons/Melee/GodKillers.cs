@@ -99,8 +99,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            if (Projectile.timeLeft > 80 || Projectile.ai[2] > 0) return false;
-            return null;
+            return Projectile.timeLeft > 80 || Projectile.ai[2] > 0 ? false : null;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
