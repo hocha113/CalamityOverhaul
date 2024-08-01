@@ -2679,62 +2679,67 @@ Items: {
 	}
 
 	AtaraxiaEcType: {
-		DisplayName: Ataraxia Ec Type
+		DisplayName: Ataraxia
 		Tooltip: ""
 	}
 
 	AvalancheEcType: {
-		DisplayName: Avalanche Ec Type
+		DisplayName: Avalanche
 		Tooltip: ""
 	}
 
 	EutrophicScimitarEcType: {
-		DisplayName: Eutrophic Scimitar Ec Type
+		DisplayName: Eutrophic Scimitar
 		Tooltip: ""
 	}
 
 	ForsakenSaberEcType: {
-		DisplayName: Forsaken Saber Ec Type
+		DisplayName: Forsaken Saber
 		Tooltip: ""
 	}
 
 	HellkiteEcType: {
-		DisplayName: Hellkite Ec Type
+		DisplayName: Hellkite
 		Tooltip: ""
 	}
 
 	ForbiddenOathbladeEcType: {
-		DisplayName: Forbidden Oathblade Ec Type
+		DisplayName: Forbidden Oathblade
 		Tooltip: ""
 	}
 
 	GeliticBladeEcType: {
-		DisplayName: Gelitic Blade Ec Type
+		DisplayName: Gelitic Blade
 		Tooltip: ""
 	}
 
 	SeashineSwordEcType: {
-		DisplayName: Seashine Sword Ec Type
+		DisplayName: Seashine Sword
 		Tooltip: ""
 	}
 
 	StormSaberEcType: {
-		DisplayName: Storm Saber Ec Type
+		DisplayName: Storm Saber
 		Tooltip: ""
 	}
 
 	TheMutilatorEcType: {
-		DisplayName: The Mutilator Ec Type
+		DisplayName: The Mutilator
 		Tooltip: ""
 	}
 
 	VirulenceEcType: {
-		DisplayName: Virulence Ec Type
+		DisplayName: Virulence
 		Tooltip: ""
 	}
 
 	SolsticeClaymoreEcType: {
-		DisplayName: Solstice Claymore Ec Type
+		DisplayName: Solstice Claymore
+		Tooltip: ""
+	}
+
+	UltimusCleaverEcType: {
+		DisplayName: Ultimus Cleaver Ec Type
 		Tooltip: ""
 	}
 }
