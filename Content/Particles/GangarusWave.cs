@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D tex = DRKLoader.ParticleIDToTexturesDic[Type];
             spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * opacity, Rotation, tex.Size() / 2f, Scale * Squish, SpriteEffects.None, 0);
         }
     }

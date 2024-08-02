@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Particles
         public override void CustomDraw(SpriteBatch spriteBatch) {
             if (SpawnDelay > 0)
                 return;
-            Texture2D sparkTexture = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D sparkTexture = DRKLoader.ParticleIDToTexturesDic[Type];
             Texture2D bloomTexture = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
             float properBloomSize = sparkTexture.Height / (float)bloomTexture.Height;
             Vector2 squish = Vector2.Lerp(OriginalScale, FinalScale, PiecewiseAnimation(LifetimeCompletion, new CurveSegment[] { new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4) }));

@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D tex = DRKLoader.ParticleIDToTexturesDic[Type];
             int animationFrame = (int)Math.Floor(Time / ((float)(Lifetime / (float)FrameAmount)));
             Rectangle frame = new Rectangle(80 * Variant, 80 * animationFrame, 80, 80);
             Vector2 pos = Position - Main.screenPosition;

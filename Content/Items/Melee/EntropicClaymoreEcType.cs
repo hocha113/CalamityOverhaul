@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -46,9 +47,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class EntropicClaymoreProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        public Color InnerColor = Color.LightGreen;
         public ref float Time => ref Projectile.ai[0];
-        public ref float BounceHits => ref Projectile.ai[1];
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 16;
             Projectile.friendly = true;
@@ -64,24 +63,34 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void AI() {
             Time++;
-            Lighting.AddLight(Projectile.Center, InnerColor.ToVector3() * 0.2f);
+            Lighting.AddLight(Projectile.Center, Color.LightGreen.ToVector3() * 0.2f);
             Player Owner = Main.player[Projectile.owner];
             float targetDist = Vector2.Distance(Owner.Center, Projectile.Center);
 
             if (Projectile.timeLeft % 3 == 0 && Time > 12f && targetDist < 1400f) {
-                PRK_Spark2 spark = new PRK_Spark2(Projectile.Center, -Projectile.velocity * 0.05f, false, 13, 1.6f, Color.Black);
+                PRK_Spark2 spark = new PRK_Spark2(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 1.6f, Color.Black);
                 spark.entity = Owner;
                 DRKLoader.AddParticle(spark);
             }
 
             if (Projectile.timeLeft % 3 == 0 && Time > 12f && targetDist < 1400f) {
-                DRK_Line_FormPlayer spark2 = new DRK_Line_FormPlayer(Projectile.Center, -Projectile.velocity * 0.05f, false, 13, 0.6f, InnerColor);
+                DRK_Line_FormPlayer spark2 = new DRK_Line_FormPlayer(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 0.9f, Color.LightGreen);
                 spark2.Owner = Owner;
                 DRKLoader.AddParticle(spark2);
             }
 
             if (Time % (Projectile.extraUpdates + 1) == 0)
             Projectile.position += Owner.CWR().PlayerPositionChange;
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            Projectile.damage -= 15;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (CWRLoad.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.6f;
+            }
         }
     }
 

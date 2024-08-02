@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = ModContent.Request<Texture2D>("CalamityMod/Particles/Light").Value;
+            Texture2D tex = DRKLoader.ParticleIDToTexturesDic[Type];
             Texture2D bloomTex = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
 
             float squish = MathHelper.Clamp(Velocity.Length() / 10f * SquishStrenght, 1f, MaxSquish);

@@ -21,7 +21,8 @@ namespace CalamityOverhaul.Content.Particles
         private Vector2 Squish;
         private Color BaseColor;
 
-        public DRK_DWave(Vector2 position, Vector2 velocity, Color color, Vector2 squish, float rotation, float originalScale, float finalScale, int lifeTime) {
+        public DRK_DWave(Vector2 position, Vector2 velocity, Color color, Vector2 squish
+            , float rotation, float originalScale, float finalScale, int lifeTime) {
             Position = position;
             Velocity = velocity;
             BaseColor = color;
@@ -45,7 +46,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D tex = DRKLoader.ParticleIDToTexturesDic[Type];
             spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * opacity, Rotation, tex.Size() / 2f, Scale * Squish, SpriteEffects.None, 0);
         }
     }
