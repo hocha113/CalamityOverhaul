@@ -39,6 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Cyan;
             Item.shootSpeed = 12f;
             Item.SetKnifeHeld<EntropicClaymoreHeld>();
+            Item.EasySetLocalTextNameOverride("EntropicClaymoreEcType");
         }
     }
 
@@ -58,7 +59,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.timeLeft = 67 * Projectile.extraUpdates;
             Projectile.tileCollide = false;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = 30;
         }
 
         public override void AI() {

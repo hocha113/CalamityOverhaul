@@ -1443,6 +1443,9 @@ namespace CalamityOverhaul
         /// <param name="item"></param>
         /// <param name="key"></param>
         public static void EasySetLocalTextNameOverride(this Item item, string key) {
+            if (Main.GameModeInfo.IsJourneyMode) {
+                return;
+            }
             item.SetNameOverride(Language.GetText($"Mods.CalamityOverhaul.Items.{key}.DisplayName").Value);
         }
 

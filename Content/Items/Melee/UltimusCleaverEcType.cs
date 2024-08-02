@@ -40,10 +40,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 46;
             canDrawSlashTrail = true;
+            drawTrailHighlight = false;
             distanceToOwner = 20;
             drawTrailBtommWidth = 50;
-            drawTrailTopWidth = 30;
-            drawTrailCount = 6;
+            drawTrailTopWidth = 36;
             Length = 70;
             unitOffsetDrawZkMode = -8;
             overOffsetCachesRoting = MathHelper.ToRadians(8);
