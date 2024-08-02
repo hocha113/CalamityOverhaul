@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         // <summary>
         /// 无尽锭
         /// </summary>
-        public static string[] FullItems8 = new string[] {"CalamityOverhaul/InfinityCatalyst", "CalamityMod/MiracleFruit", "CalamityMod/Elderberry", "CalamityMod/Dragonfruit", "CalamityMod/Dragonfruit", "CalamityMod/MiracleMatter", "CalamityMod/ShadowspecBar", "CalamityOverhaul/BlackMatterStick", "0",
+        public static string[] FullItems8 = new string[] {"CalamityOverhaul/InfinityCatalyst", "CalamityMod/MiracleFruit", "CalamityMod/Elderberry", "CalamityMod/BloodOrange", "CalamityMod/Dragonfruit", "CalamityMod/MiracleMatter", "CalamityMod/ShadowspecBar", "CalamityOverhaul/BlackMatterStick", "0",
             "CalamityMod/BloodwormItem", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/ShadowspecBar", "CalamityOverhaul/BlackMatterStick", "0",
             "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "CalamityOverhaul/BlackMatterStick", "0",
             "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",

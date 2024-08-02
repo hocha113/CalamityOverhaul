@@ -101,6 +101,12 @@ namespace CalamityOverhaul.Content
         public bool RustyMedallion_Value;
         public int ReceivingPlatformTime;
         public int NoSemberCloneSpanTime;
+
+        private Vector2 oldPlayerPositionChange;
+        /// <summary>
+        /// 玩家位置变化量
+        /// </summary>
+        public Vector2 PlayerPositionChange;
         #region NetCode
         public bool DompBool;
         public bool RecoilAccelerationAddBool;
@@ -197,6 +203,8 @@ namespace CalamityOverhaul.Content
             if (CWRServerConfig.Instance.AddExtrasContent) {
                 RecipeErrorFullUI.Instance.eyEBool = true;
             }
+
+            oldPlayerPositionChange = oldPlayerPositionChange = Player.position;
         }
 
         public override void OnHurt(Player.HurtInfo info) {
@@ -242,6 +250,9 @@ namespace CalamityOverhaul.Content
                 $"{Player.name}成功进行网络同步:[{Main.GameUpdateCount}]".Domp();
                 DompBool = false;
             }
+
+            PlayerPositionChange = oldPlayerPositionChange.To(Player.position);
+            oldPlayerPositionChange = Player.position;
         }
 
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo) {

@@ -1,5 +1,8 @@
-﻿using CalamityOverhaul;
+﻿using CalamityMod.Items.LoreItems;
+using CalamityMod.Items.Materials;
+using CalamityOverhaul;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -102,6 +105,21 @@ namespace CalamityOverhaul.Content.Items.Tools
                 }
             }
             return true;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<ShadowspecBar>(24)
+                .AddIngredient<AuricBar>(20)
+                .AddIngredient<MiracleMatter>(16)
+                .AddIngredient<YharonSoulFragment>(8)
+                .AddIngredient<LoreCynosure>()
+                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                    amount = 0;
+                })
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
+                .Register();
         }
     }
 }

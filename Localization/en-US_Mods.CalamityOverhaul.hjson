@@ -3422,6 +3422,7 @@ Projectiles: {
 	TheLastMourningHeld.DisplayName: The Last Mourning Held
 	UltimusCleaverHeld.DisplayName: Ultimus Cleaver Held
 	WindBladeHeld.DisplayName: Wind Blade Held
+	EntropicClaymoreProj.DisplayName: Entropic Claymore Proj
 }
 
 Configs: {

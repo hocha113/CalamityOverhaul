@@ -11,7 +11,7 @@ namespace CalamityOverhaul
 
         private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         public override void SetDefaults() {

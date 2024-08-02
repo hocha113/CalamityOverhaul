@@ -1,4 +1,8 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod.Items.LoreItems;
+using CalamityMod.Items.Materials;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,6 +39,37 @@ namespace CalamityOverhaul.Content.Items.Materials
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
             return base.PreDrawInWorld(spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient(ItemID.LunarBar)
+                .AddIngredient(ItemID.SpectreBar)
+                .AddIngredient(ItemID.ChlorophyteBar)
+                .AddIngredient(ItemID.HellstoneBar)
+                .AddIngredient(ItemID.ShroomiteBar)
+                .AddIngredient<ShadowspecBar>()
+                .AddIngredient<AuricBar>()
+                .AddIngredient<AerialiteBar>()
+                .AddIngredient<AstralBar>()
+                .AddIngredient<CosmiliteBar>()
+                .AddIngredient<CryonicBar>()
+                .AddIngredient<PerennialBar>()
+                .AddIngredient<UelibloomBar>()
+                .AddIngredient<ScoriaBar>()
+                .AddIngredient<PestilenceIngot>()
+                .AddIngredient<MiracleMatter>()
+                .AddIngredient<ExoPrism>()
+                .AddIngredient<AshesofAnnihilation>()
+                .AddIngredient<AscendantSpiritEssence>()
+                .AddIngredient<SpectralMatter>()
+                .AddIngredient<DarkMatterBall>(11)
+                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                    amount = 0;
+                })
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
+                .Register();
         }
     }
 }
