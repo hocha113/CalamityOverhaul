@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Items.Melee;
-using Microsoft.Xna.Framework;
 using System.IO;
 using Terraria;
 using Terraria.ID;

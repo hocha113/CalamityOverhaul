@@ -4,7 +4,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileEntitys;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;

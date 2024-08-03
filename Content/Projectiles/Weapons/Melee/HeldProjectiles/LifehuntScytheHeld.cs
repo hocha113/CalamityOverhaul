@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Items.Melee.Extras;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

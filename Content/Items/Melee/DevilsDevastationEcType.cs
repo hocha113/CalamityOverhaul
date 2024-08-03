@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationProj;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

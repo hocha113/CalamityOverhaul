@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -15,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DevilsDevastation";
         public override string GlowTexture => CWRConstant.Masking + "SplitTrail";
-        public override string gradientTexturePath => CWRConstant.ColorBar + "DevilsDevastationEffectColorBar";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "DevilsDevastation_Bar";
         public override void SetSwingProperty() {
             drawTrailHighlight = false;
             Projectile.DamageType = DamageClass.Melee;
@@ -37,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
         public override void Shoot() {
             if (Projectile.ai[0] == 2 || Projectile.ai[0] == 1) {
                 for (int i = 0; i < 3; i++) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, UnitToMouseV.RotatedBy((-1 + i) * 0.1f) * 6
+                    Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV.RotatedBy((-1 + i) * 0.1f) * 6
                         , ModContent.ProjectileType<EXOathblade>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1);
                 }
                 return;
@@ -65,7 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                     }
                 }
                 for (int i = 0; i < 6; i++) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), InMousePos, (MathHelper.TwoPi / 6 * i).ToRotationVector2() * 3
+                    Projectile.NewProjectile(Source, InMousePos, (MathHelper.TwoPi / 6 * i).ToRotationVector2() * 3
                     , ModContent.ProjectileType<EXDemonBlastAlt>(), Projectile.damage * 5, Projectile.knockBack, Owner.whoAmI);
                 }
                 return;
@@ -85,7 +84,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             if (num >= 16) {
                 return;
             }
-            Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, UnitToMouseV * 6
+            Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV * 6
                 , ModContent.ProjectileType<EXDemonBlast>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 

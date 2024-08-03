@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.Items.Rogue;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;

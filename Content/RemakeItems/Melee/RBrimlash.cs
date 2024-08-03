@@ -4,7 +4,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;

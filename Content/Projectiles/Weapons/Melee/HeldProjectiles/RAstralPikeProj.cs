@@ -5,7 +5,6 @@ using CalamityMod.Projectiles.BaseProjectiles;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;
-using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.Audio;

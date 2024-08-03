@@ -11,7 +11,6 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -515,10 +514,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool CanUseItem(Item item, Player player) {
-            if (IsShootCountCorlUse) {
-                return player.ownedProjectileCounts[item.shoot] <= 0;
-            }
-            return heldProjType > 0 && hasHeldNoCanUseBool ? false : base.CanUseItem(item, player);
+            return IsShootCountCorlUse
+                ? player.ownedProjectileCounts[item.shoot] <= 0
+                : heldProjType > 0 && hasHeldNoCanUseBool ? false : base.CanUseItem(item, player);
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {

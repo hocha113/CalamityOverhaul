@@ -2,7 +2,6 @@
 using CalamityMod.Dusts;
 using CalamityMod.Items;
 using CalamityMod.Projectiles.Melee;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;

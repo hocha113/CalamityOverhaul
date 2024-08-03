@@ -2,7 +2,6 @@
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Content.Items.Placeable;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;

@@ -5,7 +5,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 

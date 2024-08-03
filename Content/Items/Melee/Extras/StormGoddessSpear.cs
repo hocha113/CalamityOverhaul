@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;

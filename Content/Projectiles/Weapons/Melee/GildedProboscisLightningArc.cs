@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
-using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 

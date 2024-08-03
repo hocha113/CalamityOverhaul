@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

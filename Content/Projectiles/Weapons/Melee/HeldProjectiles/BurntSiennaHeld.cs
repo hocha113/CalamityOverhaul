@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

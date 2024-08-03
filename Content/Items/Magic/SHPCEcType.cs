@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,7 +2,6 @@
 using CalamityMod.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

@@ -5,7 +5,6 @@ using CalamityMod.Items.Materials;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;

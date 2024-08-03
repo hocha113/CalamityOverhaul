@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Graphics.Primitives;
 using CalamityMod.Projectiles.Melee;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;

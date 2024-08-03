@@ -5,7 +5,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -142,13 +141,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override bool? On_CanUseItem(Item item, Player player) {
             //在升龙斩或者爆发弹幕存在时不能使用武器
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakSwing>()] > 0
+            return player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakSwing>()] > 0
                 || player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] > 0
-                || player.PressKey(false)//如果玩家按下了右键，也要禁止武器的使用
-                ) {
-                return false;
-            }
-            return !CWRServerConfig.Instance.WeaponEnhancementSystem && !InWorldBossPhase.Instance.level11
+                || player.PressKey(false)
+                ? false
+                : !CWRServerConfig.Instance.WeaponEnhancementSystem && !InWorldBossPhase.Instance.level11
                 ? false
                 : player.ownedProjectileCounts[item.shoot] == 0;
         }

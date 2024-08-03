@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

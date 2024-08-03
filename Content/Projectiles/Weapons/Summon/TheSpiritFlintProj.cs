@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityOverhaul.Content.Buffs.Summon;
-using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.ID;

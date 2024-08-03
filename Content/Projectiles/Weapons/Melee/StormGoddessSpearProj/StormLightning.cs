@@ -2,7 +2,6 @@
 using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
-using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.Audio;

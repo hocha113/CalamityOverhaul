@@ -3,7 +3,6 @@ using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -14,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class ForbiddenOathbladeHeld : BaseKnife
     {
         public override int TargetID => ModContent.ItemType<ForbiddenOathblade>();
-        public override string gradientTexturePath => CWRConstant.ColorBar + "DevilsDevastationEffectColorBar";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "DevilsDevastation_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 44;
             drawTrailHighlight = false;

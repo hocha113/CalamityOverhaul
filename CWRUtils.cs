@@ -6,7 +6,6 @@ using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using ReLogic.Utilities;
@@ -1466,16 +1465,11 @@ namespace CalamityOverhaul
         /// 一个根据语言选项返回字符的方法
         /// </summary>
         public static string Translation(string Chinese = null, string English = null, string Spanish = null, string Russian = null) {
-            string text;
-
-            if (Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Chinese) {
-                text = Chinese;
-            }
-            else {
-                text = Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Russian
+            string text = Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Chinese
+                ? Chinese
+                : Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Russian
                     ? Russian
                     : Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Spanish ? Spanish : English;
-            }
             if (text is null or default(string)) {
                 text = "Invalid Character";
             }

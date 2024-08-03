@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Items.Magic.Extras;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

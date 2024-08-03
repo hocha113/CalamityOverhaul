@@ -4,7 +4,6 @@ using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.TileEntitys.Core;
 using CalamityOverhaul.Content.Tiles;
-using Microsoft.Xna.Framework;
 using System;
 using System.IO;
 using Terraria;

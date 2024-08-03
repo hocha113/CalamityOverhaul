@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -14,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class HolyColliderHeld : BaseSwing, IDrawWarp
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HolyCollider";
-        public override string gradientTexturePath => CWRConstant.ColorBar + "HolyColliderEffectColorBar";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "HolyCollider_Bar";
 
         public override void SetSwingProperty() {
             Projectile.DamageType = DamageClass.Melee;

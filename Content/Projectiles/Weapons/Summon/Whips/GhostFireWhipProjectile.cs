@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Dusts;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;

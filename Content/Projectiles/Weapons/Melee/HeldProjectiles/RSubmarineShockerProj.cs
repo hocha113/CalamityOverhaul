@@ -2,7 +2,6 @@
 using CalamityMod.Projectiles.BaseProjectiles;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj;
-using Microsoft.Xna.Framework;
 using System.Linq;
 using Terraria;
 using Terraria.ID;

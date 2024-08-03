@@ -4,7 +4,6 @@ using CalamityMod.Items.Materials;
 using CalamityMod.NPCs.HiveMind;
 using CalamityMod.World;
 using CalamityOverhaul.Content.Items.Placeable;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;

@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Content.Particles.Core;
 using Terraria;
 using Terraria.Graphics.Shaders;
 
@@ -6,6 +6,30 @@ namespace CalamityOverhaul.Content
 {
     internal class CWRDust
     {
+        public static void DrawParticleElectricity(BaseParticle particle, Vector2 point1, Vector2 point2
+            , float scale = 1, int armLength = 30, float density = 0.05f, float ai0 = 0) {
+            int nodeCount = (int)Vector2.Distance(point1, point2) / armLength;
+            Vector2[] nodes = new Vector2[nodeCount + 1];
+
+            nodes[nodeCount] = point2;
+
+            for (int k = 1; k < nodes.Length; k++) {
+                nodes[k] = Vector2.Lerp(point1, point2, k / (float)nodeCount) +
+                    (k == nodes.Length - 1 ? Vector2.Zero : Vector2.Normalize(point1 - point2)
+                    .RotatedBy(1.58f) * Main.rand.NextFloat(-armLength / 2, armLength / 2));
+                Vector2 prevPos = k == 1 ? point1 : nodes[k - 1];
+                for (float i = 0; i < 1; i += density) {
+                    float size = MathHelper.Lerp(scale, 0f, (float)k / nodes.Length);
+                    particle.Position = Vector2.Lerp(prevPos, nodes[k], i);
+                    particle.Velocity = Vector2.Zero;
+                    particle.Color = Color.White;
+                    particle.Scale = size;
+                    particle.ai[0] = ai0;
+                    DRKLoader.AddParticle(particle);
+                }
+            }
+        }
+
         public static void StramDustAI(Dust dust) {
             if (dust.customData is null) {
                 dust.position -= Vector2.One * 32 * dust.scale;
@@ -65,7 +89,7 @@ namespace CalamityOverhaul.Content
 
         public static void SplashDust(Projectile Projectile, int mode, int dustID1, int dustID2, float speed, Color dustColor, ArmorShaderData shader = null) {
             for (int i = 4; i < mode; i++) {
-                Vector2 vector = Projectile.rotation.ToRotationVector2() * speed;
+                Vector2 vector = Projectile.velocity.UnitVector() * speed;
                 float oldXPos = vector.X * (30f / i);
                 float oldYPos = vector.Y * (30f / i);
                 int killDust = Dust.NewDust(new Vector2(Projectile.oldPosition.X - oldXPos, Projectile.oldPosition.Y - oldYPos), 2, 2

@@ -3,7 +3,6 @@ using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj;
 using CalamityOverhaul.Content.Tiles;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;

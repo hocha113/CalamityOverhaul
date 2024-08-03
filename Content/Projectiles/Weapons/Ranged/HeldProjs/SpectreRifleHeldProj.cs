@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Particles;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 

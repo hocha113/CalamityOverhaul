@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -132,9 +131,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override bool PreDraw(ref Color lightColor) {
             Texture2D mainValue = CWRUtils.GetT2DValue(Texture);
             Color color = Color.White;
-            if (Status == 0) color = Color.DarkRed;
-            else if (Status == 1) color = Color.DarkGreen;
-            else color = Status == 2 ? Color.Blue : Color.Gold;
+            color = Status == 0 ? Color.DarkRed : Status == 1 ? Color.DarkGreen : Status == 2 ? Color.Blue : Color.Gold;
 
             float alp = Projectile.alpha / 255f;
             color = CWRUtils.RecombinationColor((color, 0.5f), (new Color(255, 255, 255), 0.5f));

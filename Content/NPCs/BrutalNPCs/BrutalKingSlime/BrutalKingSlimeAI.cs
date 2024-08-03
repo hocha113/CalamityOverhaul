@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Events;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 

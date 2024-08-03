@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

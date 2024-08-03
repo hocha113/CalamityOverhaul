@@ -3,7 +3,6 @@ using CalamityMod.CalPlayer;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;

@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.UIs;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

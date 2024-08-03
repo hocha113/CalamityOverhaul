@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -116,19 +115,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
                 if ((flameDrawInterpolant <= relativeFrameCompletion % 1f || Projectile.frameCounter >= 40f) &&
                     (flameDrawInterpolant >= relativeFrameCompletion % 1f || Projectile.frameCounter < 40f)) {
-                    if (flameDrawInterpolant < 0.1f)
-                        flameDrawColor = Color.Lerp(Color.Transparent, startingFlameColor, Utils.GetLerpValue(0f, 0.1f, flameDrawInterpolant, true));
-
-                    else if (flameDrawInterpolant < 0.35f)
-                        flameDrawColor = startingFlameColor;
-
-                    else if (flameDrawInterpolant < 0.7f)
-                        flameDrawColor = Color.Lerp(startingFlameColor, midFlameColor, Utils.GetLerpValue(0.35f, 0.7f, flameDrawInterpolant, true));
-
-                    else if (flameDrawInterpolant < 0.9f)
-                        flameDrawColor = Color.Lerp(midFlameColor, endFlameColor, Utils.GetLerpValue(0.7f, 0.9f, flameDrawInterpolant, true));
-
-                    else flameDrawColor = flameDrawInterpolant < 1f
+                    flameDrawColor = flameDrawInterpolant < 0.1f
+                        ? Color.Lerp(Color.Transparent, startingFlameColor, Utils.GetLerpValue(0f, 0.1f, flameDrawInterpolant, true))
+                        : flameDrawInterpolant < 0.35f
+                        ? startingFlameColor
+                        : flameDrawInterpolant < 0.7f
+                        ? Color.Lerp(startingFlameColor, midFlameColor, Utils.GetLerpValue(0.35f, 0.7f, flameDrawInterpolant, true))
+                        : flameDrawInterpolant < 0.9f
+                        ? Color.Lerp(midFlameColor, endFlameColor, Utils.GetLerpValue(0.7f, 0.9f, flameDrawInterpolant, true))
+                        : flameDrawInterpolant < 1f
                         ? Color.Lerp(endFlameColor, Color.Transparent, Utils.GetLerpValue(0.9f, 1f, flameDrawInterpolant, true))
                         : Color.Transparent;
 

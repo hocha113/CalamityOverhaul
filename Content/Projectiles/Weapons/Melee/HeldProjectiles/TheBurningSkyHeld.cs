@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
@@ -14,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class TheBurningSkyHeld : BaseSwing
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheBurningSky";
-        public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRageEffectColorBar";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRage_Bar";
         public override void SetSwingProperty() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.width = 72;

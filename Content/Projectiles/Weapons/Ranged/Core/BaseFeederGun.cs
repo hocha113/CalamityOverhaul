@@ -2,7 +2,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.OthermodMROs.ImproveGame;
 using CalamityOverhaul.Content.UIs;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -1039,13 +1038,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         /// <returns></returns>
         public Item GetSelectedBullets() {
-            if (ModItem.MagazineContents == null) {
-                return new Item();
-            }
-            if (ModItem.MagazineContents.Length <= 0) {
-                return new Item();
-            }
-            return ModItem.MagazineContents[0] == null ? new Item() : ModItem.MagazineContents[0];
+            return ModItem.MagazineContents == null
+                ? new Item()
+                : ModItem.MagazineContents.Length <= 0
+                ? new Item()
+                : ModItem.MagazineContents[0] == null ? new Item() : ModItem.MagazineContents[0];
         }
 
         #endregion

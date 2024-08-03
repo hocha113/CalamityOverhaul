@@ -1,3 +1,4 @@
+global using Microsoft.Xna.Framework;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;

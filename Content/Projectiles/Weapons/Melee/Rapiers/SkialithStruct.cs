@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
+﻿namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
     public struct SkialithStruct
     {

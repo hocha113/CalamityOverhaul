@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

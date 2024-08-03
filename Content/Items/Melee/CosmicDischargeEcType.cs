@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Melee;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 

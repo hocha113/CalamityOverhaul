@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content.Items.Magic.Extras;
-using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.ID;

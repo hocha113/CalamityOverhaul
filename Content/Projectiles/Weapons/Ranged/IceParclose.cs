@@ -1,5 +1,4 @@
 ﻿using CalamityMod.NPCs.Cryogen;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;

@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
 {

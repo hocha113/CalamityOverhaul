@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Rogue;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj

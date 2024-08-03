@@ -2,7 +2,6 @@
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -21,6 +20,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         protected Vector2 startVector;
         private int dirs;
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
+        /// <summary>
+        /// 动画帧切换间隔，默认为5
+        /// </summary>
+        public int CuttingFrmeInterval = 5;
+        /// <summary>
+        /// 最大动画帧数，默认为1
+        /// </summary>
+        public int AnimationMaxFrme = 1;
         /// <summary>
         /// 这个手持刀对应的物品实例
         /// </summary>
@@ -126,7 +133,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 较为稳妥的获取一个正确的刀尖单位方向向量
         /// </summary>
         protected Vector2 safeInSwingUnit => Owner.Center.To(Projectile.Center).UnitVector();
-        protected Vector2 ShootVelocity => UnitToMouseV * ShootSpeed;
+        protected Vector2 ShootVelocity => UnitToMouseV * ShootSpeed / SetSwingSpeed(1);
         protected Vector2 ShootSpanPos => Owner.GetPlayerStabilityCenter() + UnitToMouseV * Length * 0.5f;
         protected IEntitySource Source => Owner.GetSource_ItemUse(Item);
         /// <summary>
@@ -403,6 +410,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                     Shoot();
                 }
                 UpdateCaches();
+                if (AnimationMaxFrme > 1) {
+                    CWRUtils.ClockFrame(ref Projectile.frame, CuttingFrmeInterval, AnimationMaxFrme - 1);
+                }
                 rotSpeed = Rotation - oldRot;
                 oldRot = Rotation;
                 canShoot = false;
@@ -564,8 +574,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         public virtual void DrawSwing(SpriteBatch spriteBatch, Color lightColor) {
             Texture2D texture = TextureValue;
-            Rectangle rect = new Rectangle(0, 0, texture.Width, texture.Height);
-            Vector2 drawOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
+            Rectangle rect = CWRUtils.GetRec(texture, Projectile.frame, AnimationMaxFrme);
+            Vector2 drawOrigin = rect.Size() / 2;
             SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
             Vector2 offsetOwnerPos = safeInSwingUnit.GetNormalVector() * unitOffsetDrawZkMode * Projectile.spriteDirection;

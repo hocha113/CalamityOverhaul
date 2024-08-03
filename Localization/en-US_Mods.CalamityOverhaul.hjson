@@ -2742,6 +2742,81 @@ Items: {
 		DisplayName: Ultimus Cleaver Ec Type
 		Tooltip: ""
 	}
+
+	ExaltedOathbladeEcType: {
+		DisplayName: Exalted Oathblade Ec Type
+		Tooltip: ""
+	}
+
+	PerfectDarkEcType: {
+		DisplayName: Perfect Dark Ec Type
+		Tooltip: ""
+	}
+
+	PrismaticBreakerEcType: {
+		DisplayName: Prismatic Breaker Ec Type
+		Tooltip: ""
+	}
+
+	RedSunEcType: {
+		DisplayName: Red Sun Ec Type
+		Tooltip: ""
+	}
+
+	GalactusBladeEcType: {
+		DisplayName: Galactus Blade Ec Type
+		Tooltip: ""
+	}
+
+	FlarefrostBladeEcType: {
+		DisplayName: Flarefrost Blade Ec Type
+		Tooltip: ""
+	}
+
+	FloodtideEcType: {
+		DisplayName: Floodtide Ec Type
+		Tooltip: ""
+	}
+
+	CatastropheClaymoreEcType: {
+		DisplayName: Catastrophe Claymore Ec Type
+		Tooltip: ""
+	}
+
+	DevastationEcType: {
+		DisplayName: Devastation Ec Type
+		Tooltip: ""
+	}
+
+	StormRulerEcType: {
+		DisplayName: Storm Ruler Ec Type
+		Tooltip: ""
+	}
+
+	SwordsplosionEcType: {
+		DisplayName: Swordsplosion Ec Type
+		Tooltip: ""
+	}
+
+	TaintedBladeEcType: {
+		DisplayName: Tainted Blade Ec Type
+		Tooltip: ""
+	}
+
+	TrueCausticEdgeEcType: {
+		DisplayName: True Caustic Edge Ec Type
+		Tooltip: ""
+	}
+
+	VeinBursterEcType: {
+		DisplayName: Vein Burster Ec Type
+		Tooltip: ""
+	}
+
+	VoidEdgeEcType: {
+		DisplayName: Void Edge Ec Type
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3423,6 +3498,23 @@ Projectiles: {
 	UltimusCleaverHeld.DisplayName: Ultimus Cleaver Held
 	WindBladeHeld.DisplayName: Wind Blade Held
 	EntropicClaymoreProj.DisplayName: Entropic Claymore Proj
+	ExaltedOathbladeHeld.DisplayName: Exalted Oathblade Held
+	EXOathblade2.DisplayName: E X Oathblade2
+	PrismaticBreakerHeld.DisplayName: Prismatic Breaker Held
+	PerfectDarkHeld.DisplayName: Perfect Dark Held
+	RedSunHeld.DisplayName: Red Sun Held
+	GalactusBladeHeld.DisplayName: Galactus Blade Held
+	ExcelsusHeld.DisplayName: Excelsus Held
+	FlarefrostBladeHeld.DisplayName: Flarefrost Blade Held
+	FloodtideHeld.DisplayName: Floodtide Held
+	CatastropheClaymoreHeld.DisplayName: Catastrophe Claymore Held
+	DevastationHeld.DisplayName: Devastation Held
+	StormRulerHeld.DisplayName: Storm Ruler Held
+	SwordsplosionHeld.DisplayName: Swordsplosion Held
+	TaintedBladeHeld.DisplayName: Tainted Blade Held
+	TrueCausticEdgeHeld.DisplayName: True Caustic Edge Held
+	VeinBursterHeld.DisplayName: Vein Burster Held
+	VoidEdgeHeld.DisplayName: Void Edge Held
 }
 
 Configs: {

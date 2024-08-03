@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.CalPlayer;
 using CalamityOverhaul.Common;
-using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.Audio;

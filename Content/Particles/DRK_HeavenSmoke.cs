@@ -1,13 +1,11 @@
 ﻿using CalamityOverhaul.Content.Particles.Core;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class HeavenHeavySmoke : BaseParticle
+    internal class DRK_HeavenSmoke : BaseParticle
     {
         public override bool SetLifetime => true;
         public override int FrameVariants => 7;
@@ -32,7 +30,7 @@ namespace CalamityOverhaul.Content.Particles
         private Player player;
         private static int FrameAmount = 6;
 
-        public HeavenHeavySmoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f, bool required = false, Player player = null) {
+        public DRK_HeavenSmoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f, bool required = false, Player player = null) {
             Position = position;
             Velocity = velocity;
             Color = color;

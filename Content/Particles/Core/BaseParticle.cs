@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityOverhaul.Content.Particles.Core
 {
@@ -74,7 +73,7 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// <summary>
         /// 粒子的AI数值，用于交互数据，便于实现更加复杂的行为
         /// </summary>
-        public int[] ai = new int[3];
+        public float[] ai = new float[3];
         /// <summary>
         /// 如果想自己处理粒子绘制,请使用此方法。只在UseCustomDraw设置为true时调用
         /// </summary>

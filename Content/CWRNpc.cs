@@ -17,7 +17,6 @@ using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.NPCs.OverhaulBehavior;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -11,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     {
         public override int TargetID => ModContent.ItemType<DivineSourceBlade>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
-        public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRageEffectColorBar";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRage_Bar";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 112;
             canDrawSlashTrail = true;

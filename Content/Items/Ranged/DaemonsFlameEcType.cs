@@ -2,7 +2,6 @@
 using CalamityMod.Items;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;

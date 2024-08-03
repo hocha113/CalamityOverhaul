@@ -2,8 +2,8 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Microsoft.Xna.Framework;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -24,6 +24,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(3)) {
+                return;
+            }
             var source = Owner.GetSource_ItemUse(Item);
             int totalProjectiles = 4;
             float radians = MathHelper.TwoPi / totalProjectiles;

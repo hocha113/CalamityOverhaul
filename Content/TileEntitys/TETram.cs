@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.TileEntitys.Core;
 using CalamityOverhaul.Content.Tiles;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

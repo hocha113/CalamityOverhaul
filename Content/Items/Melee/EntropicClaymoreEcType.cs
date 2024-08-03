@@ -4,7 +4,6 @@ using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
@@ -68,19 +67,21 @@ namespace CalamityOverhaul.Content.Items.Melee
             float targetDist = Vector2.Distance(Owner.Center, Projectile.Center);
 
             if (Projectile.timeLeft % 3 == 0 && Time > 12f && targetDist < 1400f) {
-                PRK_Spark2 spark = new PRK_Spark2(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 1.6f, Color.Black);
-                spark.entity = Owner;
+                PRK_Spark2 spark = new PRK_Spark2(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 1.6f, Color.Black) {
+                    entity = Owner
+                };
                 DRKLoader.AddParticle(spark);
             }
 
             if (Projectile.timeLeft % 3 == 0 && Time > 12f && targetDist < 1400f) {
-                DRK_Line_FormPlayer spark2 = new DRK_Line_FormPlayer(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 0.9f, Color.LightGreen);
-                spark2.Owner = Owner;
+                DRK_Line_FormPlayer spark2 = new DRK_Line_FormPlayer(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 0.9f, Color.LightGreen) {
+                    Owner = Owner
+                };
                 DRKLoader.AddParticle(spark2);
             }
 
             if (Time % (Projectile.extraUpdates + 1) == 0)
-            Projectile.position += Owner.CWR().PlayerPositionChange;
+                Projectile.position += Owner.CWR().PlayerPositionChange;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

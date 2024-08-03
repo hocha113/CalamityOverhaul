@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common.Effects;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 

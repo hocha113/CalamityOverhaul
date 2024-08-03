@@ -6,7 +6,6 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -24,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         private static Asset<Texture2D> trailTexture;
         private static Asset<Texture2D> gradientTexture;
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
-        public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRageEffectColorBar";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRage_Bar";
         public override void SetSwingProperty() {
             Projectile.CloneDefaults(ProjectileID.Spear);
             Projectile.extraUpdates = 3;

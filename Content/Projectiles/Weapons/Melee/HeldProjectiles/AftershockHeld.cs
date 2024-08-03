@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 

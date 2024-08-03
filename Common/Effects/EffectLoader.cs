@@ -4,7 +4,6 @@ using CalamityMod.NPCs;
 using CalamityMod.NPCs.Providence;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -245,10 +244,7 @@ namespace CalamityOverhaul.Common.Effects
         }
 
         private bool HasPwoerEffect() {
-            if (!CWRServerConfig.Instance.MurasamaSpaceFragmentationBool) {//这里，如果配置文件关闭了碎屏效果，那么就不执行这里的特效渲染绘制
-                return false;
-            }
-            return Main.LocalPlayer.CWR().EndSkillEffectStartBool;
+            return !CWRServerConfig.Instance.MurasamaSpaceFragmentationBool ? false : Main.LocalPlayer.CWR().EndSkillEffectStartBool;
         }
 
         private bool HasWarpEffect(out List<IDrawWarp> warpSets, out List<IDrawWarp> warpSetsNoBlueshift) {

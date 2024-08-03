@@ -2,7 +2,6 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class DarklightGreatswordHeld : BaseKnife
     {
         public override int TargetID => ModContent.ItemType<DarklightGreatsword>();
-        public override string gradientTexturePath => CWRConstant.ColorBar + "DarklightGreatswordEffectColorBar";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "DarklightGreatsword_Bar";
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
             drawTrailTopWidth = 30;

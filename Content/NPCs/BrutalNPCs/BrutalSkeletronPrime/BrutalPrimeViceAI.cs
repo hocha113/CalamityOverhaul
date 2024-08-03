@@ -2,7 +2,6 @@
 using CalamityMod.NPCs;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.Core;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
