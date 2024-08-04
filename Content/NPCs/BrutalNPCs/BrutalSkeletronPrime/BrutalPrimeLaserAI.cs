@@ -276,19 +276,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             death = CalamityWorld.death || bossRush;
             head = Main.npc[(int)npc.ai[1]];
             player = Main.player[npc.target];
-            CalamityGlobalNPC modNPC = npc.Calamity();
+
+            CalamityGlobalNPC calamityNPC = null;
+            if (!npc.TryGetGlobalNPC(out calamityNPC)) {
+                return false;
+            }
+
             CalamityGlobalNPC.primeLaser = npc.whoAmI;
             npc.spriteDirection = -(int)npc.ai[0];
             npc.damage = 0;
-            dontAttack = modNPC.newAI[2] < timeToNotAttack;
+            dontAttack = calamityNPC.newAI[2] < timeToNotAttack;
             normalLaserRotation = npc.localAI[1] % 2f == 0f;
             BrutalSkeletronPrimeAI.FindPlayer(npc);
             BrutalSkeletronPrimeAI.CheakDead(npc, head);
             BrutalSkeletronPrimeAI.CheakRam(out cannonAlive, out viceAlive, out sawAlive, out _);
             npc.aiStyle = -1;
             if (dontAttack) {
-                modNPC.newAI[2]++;
-                if (modNPC.newAI[2] >= timeToNotAttack) {
+                calamityNPC.newAI[2]++;
+                if (calamityNPC.newAI[2] >= timeToNotAttack) {
                     BrutalSkeletronPrimeAI.SendExtraAI(npc);
                 }
             }

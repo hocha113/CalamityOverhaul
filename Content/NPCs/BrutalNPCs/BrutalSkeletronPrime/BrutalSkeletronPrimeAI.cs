@@ -266,6 +266,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 NPC.mechQueen = npc.whoAmI;
             }
 
+            CalamityGlobalNPC calamityNPC = null;
+            if (!npc.TryGetGlobalNPC(out calamityNPC)) {
+                return false;
+            }
+
             npc.reflectsProjectiles = false;
             if (npc.ai[0] == 0f) {
                 if (Main.netMode != NetmodeID.MultiplayerClient) {
@@ -292,11 +297,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 if (npc.ai[2] >= aiThreshold) {
                     npc.ai[2] = 0f;
                     npc.ai[1] = 1f;
-                    npc.Calamity().newAI[0]++;
-                    if (!CWRUtils.isClient && npc.Calamity().newAI[0] >= 2) {
+                    calamityNPC.newAI[0]++;
+                    if (!CWRUtils.isClient && calamityNPC.newAI[0] >= 2) {
                         Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
                             , ModContent.ProjectileType<SetPosingStarm>(), npc.damage, 2, -1, 0, npc.whoAmI);
-                        npc.Calamity().newAI[0] = 0;
+                        calamityNPC.newAI[0] = 0;
                         fireIndex++;
                         SendExtraAI(npc);
                         NetAISend();
@@ -354,7 +359,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             else if (npc.ai[1] == 1f) {
                 npc.defense *= 2;
                 npc.damage = npc.defDamage * 2;
-                npc.Calamity().CurrentlyIncreasingDefenseOrDR = true;
+                calamityNPC.CurrentlyIncreasingDefenseOrDR = true;
 
                 npc.ai[2]++;
                 if (npc.ai[2] == 2f) {
@@ -378,10 +383,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     speedMultiplier *= mechQueenSpeedFactor;
                 }
 
-                UpdateVelocity(npc, targetVector, speedMultiplier, distanceToTarget);
+                UpdateVelocity(calamityNPC, npc, targetVector, speedMultiplier, distanceToTarget);
             }
             else if (npc.ai[1] == 2f) {
-                EnrageNPC(npc);
+                EnrageNPC(calamityNPC, npc);
                 UpdateRotation(npc);
                 MoveTowardsPlayer(npc, 10f, 8f, 32f, 100f);
             }
@@ -710,10 +715,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return initialSpeed;
         }
 
-        private void UpdateVelocity(NPC npc, Vector2 targetVector, float speedMultiplier, float distance) {
+        private void UpdateVelocity(CalamityGlobalNPC calamityNPC, NPC npc, Vector2 targetVector, float speedMultiplier, float distance) {
             float adjustedSpeed = speedMultiplier / distance;
             if (death && fireIndex >= 2) {
-                if (--npc.Calamity().newAI[2] <= 0) {
+                if (--calamityNPC.newAI[2] <= 0) {
                     npc.velocity.X = targetVector.X * adjustedSpeed;
                     npc.velocity.Y = targetVector.Y * adjustedSpeed;
                 }
@@ -722,7 +727,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
 
                 if (death || Main.masterMode) {
-                    if (++npc.Calamity().newAI[1] > 90) {
+                    if (++calamityNPC.newAI[1] > 90) {
                         Vector2 toD = npc.Center.To(player.Center) + player.velocity;
                         toD = toD.UnitVector();
                         npc.velocity += toD * 23;
@@ -735,8 +740,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         if (Main.npc[primeVice].active)
                             Main.npc[primeVice].velocity += toD * 53;
 
-                        npc.Calamity().newAI[2] = 60;
-                        npc.Calamity().newAI[1] = 0;
+                        calamityNPC.newAI[2] = 60;
+                        calamityNPC.newAI[1] = 0;
                         npc.netUpdate = true;
                         SendExtraAI(npc);
                     }
@@ -754,13 +759,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void EnrageNPC(NPC npc) {
+        private void EnrageNPC(CalamityGlobalNPC calamityNPC, NPC npc) {
             // 增加 NPC 的伤害和防御
             npc.damage = 1000;
             npc.defense = 9999;
             // 标记当前正在愤怒状态和增加防御力或伤害减免
-            npc.Calamity().CurrentlyEnraged = true;
-            npc.Calamity().CurrentlyIncreasingDefenseOrDR = true;
+            calamityNPC.CurrentlyEnraged = true;
+            calamityNPC.CurrentlyIncreasingDefenseOrDR = true;
         }
 
         private void MoveTowardsPlayer(NPC npc, float baseSpeed, float minSpeed, float maxSpeed, float speedDivisor) {
