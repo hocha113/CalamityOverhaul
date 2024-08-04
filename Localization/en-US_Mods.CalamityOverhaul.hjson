@@ -2817,6 +2817,21 @@ Items: {
 		DisplayName: Void Edge
 		Tooltip: ""
 	}
+
+	DraconicDestructionEcType: {
+		DisplayName: Draconic Destruction
+		Tooltip: ""
+	}
+
+	EarthEcType: {
+		DisplayName: Earth
+		Tooltip: ""
+	}
+
+	HellionFlowerSpearEcType: {
+		DisplayName: Hellion Flower Spear
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3515,6 +3530,12 @@ Projectiles: {
 	TrueCausticEdgeHeld.DisplayName: True Caustic Edge
 	VeinBursterHeld.DisplayName: Vein Burster
 	VoidEdgeHeld.DisplayName: Void Edge
+	CelestialClaymoreHeld.DisplayName: Celestial Claymore
+	DraconicDestructionHeld.DisplayName: Draconic Destruction
+	EarthHeld.DisplayName: Earth
+	HellionFlowerSpearHeld.DisplayName: Hellion Flower Spear
+	OrderbringerHeld.DisplayName: Orderbringer
+	StellarStrikerHeld.DisplayName: Stellar Striker
 }
 
 Configs: {

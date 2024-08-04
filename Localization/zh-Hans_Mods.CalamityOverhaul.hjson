@@ -2825,6 +2825,21 @@ Items: {
 		DisplayName: 虚渊之锋
 		Tooltip: ""
 	}
+
+	DraconicDestructionEcType: {
+		DisplayName: 龙破斩
+		Tooltip: ""
+	}
+
+	EarthEcType: {
+		DisplayName: 无限大地
+		Tooltip: ""
+	}
+
+	HellionFlowerSpearEcType: {
+		DisplayName: 刺花长矛
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3523,6 +3538,12 @@ Projectiles: {
 	// TrueCausticEdgeHeld.DisplayName: True Caustic Edge
 	// VeinBursterHeld.DisplayName: Vein Burster
 	// VoidEdgeHeld.DisplayName: Void Edge
+	// CelestialClaymoreHeld.DisplayName: Celestial Claymore
+	// DraconicDestructionHeld.DisplayName: Draconic Destruction
+	// EarthHeld.DisplayName: Earth
+	// HellionFlowerSpearHeld.DisplayName: Hellion Flower Spear
+	// OrderbringerHeld.DisplayName: Orderbringer
+	// StellarStrikerHeld.DisplayName: Stellar Striker
 }
 
 Configs: {

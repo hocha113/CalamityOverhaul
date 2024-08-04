@@ -1,6 +1,9 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -16,12 +19,10 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class StellarStrikerEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "StellarStriker";
-        public new string LocalizationCategory => "Items.Weapons.Melee";
-        public override void SetStaticDefaults() {
-            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
-        }
-
-        public override void SetDefaults() {
+        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
+        public override bool AltFunctionUse(Player player) => true;
+        public override void SetDefaults() => SetDefaultsFunc(Item);
+        public static void SetDefaultsFunc(Item Item) {
             Item.width = 90;
             Item.height = 100;
             Item.scale = 1.5f;
@@ -38,43 +39,90 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Red;
             Item.shoot = ProjectileID.LunarFlare;
             Item.shootSpeed = 12f;
-
+            Item.SetKnifeHeld<StellarStrikerHeld>();
         }
 
-        public override bool AltFunctionUse(Player player) {
+        public override bool? UseItem(Player player) => UseItemFunc(Item, player);
+
+        public static bool? UseItemFunc(Item Item, Player player) {
+            Item.useAnimation = Item.useTime = 15;
+            if (player.altFunctionUse == 2) {
+                Item.useAnimation = Item.useTime = 20;
+            }
             return true;
         }
 
-        public override bool? UseItem(Player player) {
-            Item.useAnimation = Item.useTime = 15;
-            Item.scale = 1f;
-            if (player.altFunctionUse == 2) {
-                Item.useAnimation = Item.useTime = 20;
-                Item.scale = 1.5f;
-            }
-
-            return base.UseItem(player);
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            return ShootFunc(player, source, position, velocity, type, damage, knockback);
         }
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+        public static bool ShootFunc(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 1);
                 return false;
             }
-            SoundEngine.PlaySound(SoundID.Item88, player.Center);
-            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<StellarStrikerBeam>()
-                , damage / 3, knockback, Main.myPlayer, 0f, Main.rand.Next(3));
+            
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
         }
+    }
 
-        public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone) {
-            if (player.altFunctionUse == 2)
-                SpawnFlares(Item, player, Item.knockBack, Item.damage, hit.Crit);
+    internal class StellarStrikerHeld : BaseKnife
+    {
+        public override int TargetID => ModContent.ItemType<StellarStriker>();
+        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "StellarStriker_Bar";
+        public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 86;
+            canDrawSlashTrail = true;
+            distanceToOwner = -20;
+            drawTrailBtommWidth = 30;
+            drawTrailTopWidth = 80;
+            drawTrailCount = 16;
+            Length = 110;
+            unitOffsetDrawZkMode = 0;
+            overOffsetCachesRoting = MathHelper.ToRadians(8);
+            SwingData.starArg = 60;
+            SwingData.ler1_UpLengthSengs = 0.1f;
+            SwingData.minClampLength = 120;
+            SwingData.maxClampLength = 130;
+            SwingData.ler1_UpSizeSengs = 0.056f;
+            ShootSpeed = 12;
         }
 
-        public override void OnHitPvp(Player player, Player target, Player.HurtInfo hurtInfo) {
-            if (player.whoAmI == Main.myPlayer && player.altFunctionUse == 2) {
-                SpawnFlares(Item, player, Item.knockBack, Item.damage, true);
+        public override void Shoot() {
+            if (Projectile.ai[0] == 1) {
+                return;
             }
+            SoundEngine.PlaySound(SoundID.Item88, Owner.Center);
+            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
+                , ModContent.ProjectileType<StellarStrikerBeam>(), Projectile.damage / 2
+                , Projectile.knockBack, Owner.whoAmI, 0f, 0);
+        }
+
+        public override bool PreInOwnerUpdate() {
+            if (Projectile.ai[0] == 1) {
+                Projectile.width = Projectile.height = 186;
+                distanceToOwner = -180;
+                SwingData.starArg = 90;
+                SwingData.ler1_UpLengthSengs = 0.15f;
+                SwingData.minClampLength = 160;
+                SwingData.maxClampLength = 170;
+                SwingData.ler1_UpSizeSengs = 0.156f;
+            }
+            if (Main.rand.NextBool(3 * updateCount)) {
+                _ = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Vortex);
+            }
+            return base.PreInOwnerUpdate();
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            SpawnFlares(Item, Owner, Item.knockBack, Item.damage, hit.Crit);
+        }
+
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
+            SpawnFlares(Item, Owner, Item.knockBack, Item.damage, false);
         }
 
         public static void SpawnFlares(Item item, Player player, float knockback, int damage, bool crit) {
@@ -121,12 +169,6 @@ namespace CalamityOverhaul.Content.Items.Melee
                 if (proj.WithinBounds(Main.maxProjectiles)) {
                     Main.projectile[proj].DamageType = DamageClass.Melee;
                 }
-            }
-        }
-
-        public override void MeleeEffects(Player player, Rectangle hitbox) {
-            if (Main.rand.NextBool(3)) {
-                _ = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.Vortex);
             }
         }
     }

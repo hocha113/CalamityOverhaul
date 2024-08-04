@@ -57,15 +57,5 @@ namespace CalamityOverhaul.Content.Items.Melee
                     , ModContent.ProjectileType<JudgementBeam>(), Projectile.damage
                     , Projectile.knockBack, Owner.whoAmI);
         }
-
-        public override bool PreInOwnerUpdate() {
-            return base.PreInOwnerUpdate();
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-        }
-
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-        }
     }
 }

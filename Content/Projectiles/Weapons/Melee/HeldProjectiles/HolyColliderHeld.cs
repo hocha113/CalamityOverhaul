@@ -38,8 +38,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 return;
             }
 
-
-
             if (Projectile.ai[0] == 2) {
                 SoundEngine.PlaySound(SoundID.Item125 with { Pitch = 0.8f }, Projectile.Center);
                 Vector2 toMouse2 = Projectile.Center.To(InMousePos);
