@@ -4,6 +4,7 @@ using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
@@ -22,6 +23,11 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override int TargetID => ModContent.ItemType<GalactusBlade>();
         public override int ProtogenesisID => ModContent.ItemType<GalactusBladeEcType>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<GalactusBladeHeld>();
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            return false;
+        }
     }
 
     internal class GalactusBladeHeld : BaseKnife

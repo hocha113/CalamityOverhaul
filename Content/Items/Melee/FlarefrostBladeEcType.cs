@@ -1,7 +1,9 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -13,6 +15,18 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.SetCalamitySD<FlarefrostBlade>();
             Item.SetKnifeHeld<FlarefrostBladeHeld>();
+        }
+    }
+
+    internal class RFlarefrostBlade : BaseRItem
+    {
+        public override int TargetID => ModContent.ItemType<FlarefrostBlade>();
+        public override int ProtogenesisID => ModContent.ItemType<FlarefrostBladeEcType>();
+        public override void SetDefaults(Item item) => item.SetKnifeHeld<FlarefrostBladeHeld>();
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            return false;
         }
     }
 

@@ -1832,7 +1832,7 @@ Items: {
 	}
 
 	StarnightLanceEcType: {
-		// DisplayName: Starnight Lance Ec Type
+		// DisplayName: Starnight Lance
 		// Tooltip: ""
 	}
 
@@ -2732,82 +2732,82 @@ Items: {
 	}
 
 	UltimusCleaverEcType: {
-		// DisplayName: Ultimus Cleaver Ec Type
+		// DisplayName: Ultimus Cleaver
 		// Tooltip: ""
 	}
 
 	ExaltedOathbladeEcType: {
-		// DisplayName: Exalted Oathblade Ec Type
+		// DisplayName: Exalted Oathblade
 		// Tooltip: ""
 	}
 
 	PerfectDarkEcType: {
-		// DisplayName: Perfect Dark Ec Type
+		// DisplayName: Perfect Dark
 		// Tooltip: ""
 	}
 
 	PrismaticBreakerEcType: {
-		// DisplayName: Prismatic Breaker Ec Type
+		// DisplayName: Prismatic Breaker
 		// Tooltip: ""
 	}
 
 	RedSunEcType: {
-		// DisplayName: Red Sun Ec Type
+		// DisplayName: Red Sun
 		// Tooltip: ""
 	}
 
 	GalactusBladeEcType: {
-		// DisplayName: Galactus Blade Ec Type
+		// DisplayName: Galactus Blade
 		// Tooltip: ""
 	}
 
 	FlarefrostBladeEcType: {
-		// DisplayName: Flarefrost Blade Ec Type
+		// DisplayName: Flarefrost Blade
 		// Tooltip: ""
 	}
 
 	FloodtideEcType: {
-		// DisplayName: Floodtide Ec Type
+		// DisplayName: Floodtide
 		// Tooltip: ""
 	}
 
 	CatastropheClaymoreEcType: {
-		// DisplayName: Catastrophe Claymore Ec Type
+		// DisplayName: Catastrophe Claymore
 		// Tooltip: ""
 	}
 
 	DevastationEcType: {
-		// DisplayName: Devastation Ec Type
+		// DisplayName: Devastation
 		// Tooltip: ""
 	}
 
 	StormRulerEcType: {
-		// DisplayName: Storm Ruler Ec Type
+		// DisplayName: Storm Ruler
 		// Tooltip: ""
 	}
 
 	SwordsplosionEcType: {
-		// DisplayName: Swordsplosion Ec Type
+		// DisplayName: Swordsplosion
 		// Tooltip: ""
 	}
 
 	TaintedBladeEcType: {
-		// DisplayName: Tainted Blade Ec Type
+		// DisplayName: Tainted Blade
 		// Tooltip: ""
 	}
 
 	TrueCausticEdgeEcType: {
-		// DisplayName: True Caustic Edge Ec Type
+		// DisplayName: True Caustic Edge
 		// Tooltip: ""
 	}
 
 	VeinBursterEcType: {
-		// DisplayName: Vein Burster Ec Type
+		// DisplayName: Vein Burster
 		// Tooltip: ""
 	}
 
 	VoidEdgeEcType: {
-		// DisplayName: Void Edge Ec Type
+		// DisplayName: Void Edge
 		// Tooltip: ""
 	}
 }
@@ -3439,7 +3439,7 @@ Projectiles: {
 	// RocketSkeleton.DisplayName: Rocket Skeleton
 	// DeadLaser.DisplayName: Dead Laser
 	// MoltenFuryHeldProj.DisplayName: Molten Fury
-	// DragonRageHeld.DisplayName: Dragon Rage Held
+	// DragonRageHeld.DisplayName: Dragon Rage
 	// DragonRageFireOrb.DisplayName: Dragon Rage Fire Orb
 	// TheBurningSkyHeld.DisplayName: The Burning Sky
 	// TheBurningSkyHeldAlt.DisplayName: The Burning Sky
@@ -3453,61 +3453,61 @@ Projectiles: {
 	// EXDemonBlastAlt.DisplayName: EX Demon Blast
 	// DragonsWordProj.DisplayName: Dragon's tear
 	// BaseKnife.DisplayName: Base Knife
-	// WoodenSwordHeld.DisplayName: Wooden Sword Held
-	// EarlierSwordHeld.DisplayName: Earlier Sword Held
-	// DarklightGreatswordHeld.DisplayName: Darklight Greatsword Held
-	// AbsoluteZeroHeld.DisplayName: Absolute Zero Held
+	// WoodenSwordHeld.DisplayName: Wooden Sword
+	// EarlierSwordHeld.DisplayName: Earlier Sword
+	// DarklightGreatswordHeld.DisplayName: Darklight Greatsword
+	// AbsoluteZeroHeld.DisplayName: Absolute Zero
 	// DragonsWordCut.DisplayName: Dragons Word Cut
 	// DragonsWordMouse.DisplayName: Dragons Word Mouse
-	// BrinyBaronHeld.DisplayName: Briny Baron Held
+	// BrinyBaronHeld.DisplayName: Briny Baron
 	// BrinyBaronOrb.DisplayName: Briny Baron Orb
-	// AegisBladeHeld.DisplayName: Aegis Blade Held
-	// AtaraxiaHeld.DisplayName: Ataraxia Held
-	// EutrophicScimitarHeld.DisplayName: Eutrophic Scimitar Held
-	// AvalancheHeld.DisplayName: Avalanche Held
-	// ForsakenSaberHeld.DisplayName: Forsaken Saber Held
-	// HellkiteHeld.DisplayName: Hellkite Held
-	// ForbiddenOathbladeHeld.DisplayName: Forbidden Oathblade Held
-	// GeliticBladeHeld.DisplayName: Gelitic Blade Held
-	// SeashineSwordHeld.DisplayName: Seashine Sword Held
-	// StormSaberHeld.DisplayName: Storm Saber Held
-	// TheMutilatorHeld.DisplayName: The Mutilator Held
-	// VirulenceHeld.DisplayName: Virulence Held
-	// AftershockHeld.DisplayName: Aftershock Held
-	// AnarchyBladeHeld.DisplayName: Anarchy Blade Held
-	// AstralBladeHeld.DisplayName: Astral Blade Held
-	// BurntSiennaHeld.DisplayName: Burnt Sienna Held
-	// CometQuasherHeld.DisplayName: Comet Quasher Held
-	// DivineSourceBladeHeld.DisplayName: Divine Source Blade Held
-	// DragonsScaleGreatswordHeld.DisplayName: Dragons Scale Greatsword Held
-	// EntropicClaymoreHeld.DisplayName: Entropic Claymore Held
-	// GreatswordofJudgementHeld.DisplayName: Greatswordof Judgement Held
-	// GreentideHeld.DisplayName: Greentide Held
-	// PlagueKeeperHeld.DisplayName: Plague Keeper Held
-	// SolsticeClaymoreHeld.DisplayName: Solstice Claymore Held
-	// TeardropCleaverHeld.DisplayName: Teardrop Cleaver Held
-	// TheEnforcerHeld.DisplayName: The Enforcer Held
-	// TheLastMourningHeld.DisplayName: The Last Mourning Held
-	// UltimusCleaverHeld.DisplayName: Ultimus Cleaver Held
-	// WindBladeHeld.DisplayName: Wind Blade Held
+	// AegisBladeHeld.DisplayName: Aegis Blade
+	// AtaraxiaHeld.DisplayName: Ataraxia
+	// EutrophicScimitarHeld.DisplayName: Eutrophic Scimitar
+	// AvalancheHeld.DisplayName: Avalanche
+	// ForsakenSaberHeld.DisplayName: Forsaken Saber
+	// HellkiteHeld.DisplayName: Hellkite
+	// ForbiddenOathbladeHeld.DisplayName: Forbidden Oathblade
+	// GeliticBladeHeld.DisplayName: Gelitic Blade
+	// SeashineSwordHeld.DisplayName: Seashine Sword
+	// StormSaberHeld.DisplayName: Storm Saber
+	// TheMutilatorHeld.DisplayName: The Mutilator
+	// VirulenceHeld.DisplayName: Virulence
+	// AftershockHeld.DisplayName: Aftershock
+	// AnarchyBladeHeld.DisplayName: Anarchy Blade
+	// AstralBladeHeld.DisplayName: Astral Blade
+	// BurntSiennaHeld.DisplayName: Burnt Sienna
+	// CometQuasherHeld.DisplayName: Comet Quasher
+	// DivineSourceBladeHeld.DisplayName: Divine Source Blade
+	// DragonsScaleGreatswordHeld.DisplayName: Dragons Scale Greatsword
+	// EntropicClaymoreHeld.DisplayName: Entropic Claymore
+	// GreatswordofJudgementHeld.DisplayName: Greatswordof Judgement
+	// GreentideHeld.DisplayName: Greentide
+	// PlagueKeeperHeld.DisplayName: Plague Keeper
+	// SolsticeClaymoreHeld.DisplayName: Solstice Claymore
+	// TeardropCleaverHeld.DisplayName: Teardrop Cleaver
+	// TheEnforcerHeld.DisplayName: The Enforcer
+	// TheLastMourningHeld.DisplayName: The Last Mourning
+	// UltimusCleaverHeld.DisplayName: Ultimus Cleaver
+	// WindBladeHeld.DisplayName: Wind Blade
 	// EntropicClaymoreProj.DisplayName: Entropic Claymore Proj
-	// ExaltedOathbladeHeld.DisplayName: Exalted Oathblade Held
+	// ExaltedOathbladeHeld.DisplayName: Exalted Oathblade
 	// EXOathblade2.DisplayName: E X Oathblade2
-	// PrismaticBreakerHeld.DisplayName: Prismatic Breaker Held
-	// PerfectDarkHeld.DisplayName: Perfect Dark Held
-	// RedSunHeld.DisplayName: Red Sun Held
-	// GalactusBladeHeld.DisplayName: Galactus Blade Held
-	// ExcelsusHeld.DisplayName: Excelsus Held
-	// FlarefrostBladeHeld.DisplayName: Flarefrost Blade Held
-	// FloodtideHeld.DisplayName: Floodtide Held
-	// CatastropheClaymoreHeld.DisplayName: Catastrophe Claymore Held
-	// DevastationHeld.DisplayName: Devastation Held
-	// StormRulerHeld.DisplayName: Storm Ruler Held
-	// SwordsplosionHeld.DisplayName: Swordsplosion Held
-	// TaintedBladeHeld.DisplayName: Tainted Blade Held
-	// TrueCausticEdgeHeld.DisplayName: True Caustic Edge Held
-	// VeinBursterHeld.DisplayName: Vein Burster Held
-	// VoidEdgeHeld.DisplayName: Void Edge Held
+	// PrismaticBreakerHeld.DisplayName: Prismatic Breaker
+	// PerfectDarkHeld.DisplayName: Perfect Dark
+	// RedSunHeld.DisplayName: Red Sun
+	// GalactusBladeHeld.DisplayName: Galactus Blade
+	// ExcelsusHeld.DisplayName: Excelsus
+	// FlarefrostBladeHeld.DisplayName: Flarefrost Blade
+	// FloodtideHeld.DisplayName: Floodtide
+	// CatastropheClaymoreHeld.DisplayName: Catastrophe Claymore
+	// DevastationHeld.DisplayName: Devastation
+	// StormRulerHeld.DisplayName: Storm Ruler
+	// SwordsplosionHeld.DisplayName: Swordsplosion
+	// TaintedBladeHeld.DisplayName: Tainted Blade
+	// TrueCausticEdgeHeld.DisplayName: True Caustic Edge
+	// VeinBursterHeld.DisplayName: Vein Burster
+	// VoidEdgeHeld.DisplayName: Void Edge
 }
 
 Configs: {

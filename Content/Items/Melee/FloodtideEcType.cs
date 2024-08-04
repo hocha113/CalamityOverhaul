@@ -3,6 +3,8 @@ using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
@@ -21,6 +23,11 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override int TargetID => ModContent.ItemType<Floodtide>();
         public override int ProtogenesisID => ModContent.ItemType<FloodtideEcType>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<FloodtideHeld>();
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            return false;
+        }
     }
 
     internal class FloodtideHeld : BaseKnife
@@ -42,6 +49,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             ShootSpeed = 18;
         }
 
+        public override void PostInOwnerUpdare() {
+            if (Main.rand.NextBool(5 * updateCount)) {
+                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.FishronWings);
+            }
+        }
+
         public override void Shoot() {
             Vector2 velocity = ShootVelocity;
             for (int i = 0; i < 2; i++) {
@@ -51,14 +64,6 @@ namespace CalamityOverhaul.Content.Items.Melee
                     , ModContent.ProjectileType<FloodtideShark>(), Projectile.damage
                     , Projectile.knockBack, Owner.whoAmI, 0f, 0f);
             }
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-
-        }
-
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-
         }
     }
 }

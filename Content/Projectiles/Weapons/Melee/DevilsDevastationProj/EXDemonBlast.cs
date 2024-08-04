@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 offsetHitRot -= npcRotUpdateSengs;
                 Projectile.rotation = offsetHitRot;
                 Projectile.velocity = Vector2.Zero;
-                Projectile.Center = hitNPC.Center + offsetHitPos;
+                Projectile.Center = hitNPC.Center + offsetHitPos.RotatedBy(offsetHitRot);
             }
 
             Time++;

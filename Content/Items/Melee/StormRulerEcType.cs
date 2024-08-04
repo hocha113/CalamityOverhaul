@@ -1,7 +1,10 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
@@ -20,6 +23,11 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override int TargetID => ModContent.ItemType<StormRuler>();
         public override int ProtogenesisID => ModContent.ItemType<StormRulerEcType>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<StormRulerHeld>();
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            return false;
+        }
     }
 
     internal class StormRulerHeld : BaseKnife
@@ -36,24 +44,24 @@ namespace CalamityOverhaul.Content.Items.Melee
             drawTrailCount = 6;
             Length = 82;
             SwingData.starArg = 54;
-            SwingData.baseSwingSpeed = 5;
-            ShootSpeed = 11;
+            SwingData.baseSwingSpeed = 4.65f;
+            ShootSpeed = 20;
+            SwingAIType = SwingAITypeEnum.UpAndDown;
         }
 
         public override void Shoot() {
-
+            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
+                , ModContent.ProjectileType<StormRulerProj>()
+                , Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 
         public override bool PreInOwnerUpdate() {
+            if (Main.rand.NextBool(5 * updateCount)) {
+                int swingDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height
+                    , DustID.Flare_Blue, Owner.direction * 2, 0f, 150, default, 1.3f);
+                Main.dust[swingDust].velocity *= 0.2f;
+            }
             return base.PreInOwnerUpdate();
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-
-        }
-
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-
         }
     }
 }
