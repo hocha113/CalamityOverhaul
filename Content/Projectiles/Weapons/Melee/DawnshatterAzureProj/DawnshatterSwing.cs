@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             Projectile.velocity *= 0.98f;
             Projectile.rotation += 0.1f;
             Projectile.scale += 0.01f;
-            BaseParticle particle2 = new PRK_Smoke(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), CWRUtils.randVr(3, (int)(26 * Projectile.scale))
+            BaseParticle particle2 = new DRK_Smoke(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), CWRUtils.randVr(3, (int)(26 * Projectile.scale))
                     , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.DarkRed)
                     , 23, Main.rand.NextFloat(0.2f, 1.1f), 0.5f, 0.1f);
             DRKLoader.AddParticle(particle2);
@@ -69,9 +69,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             }
             Projectile.Explode(2220, Supernova.ExplosionSound with { Pitch = -0.7f });
             for (int i = 0; i < 132; i++) {
-                BaseParticle particle = new PRK_Light(Projectile.Center, CWRUtils.randVr(3, 116), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 12, 0.2f);
+                BaseParticle particle = new DRK_Light(Projectile.Center, CWRUtils.randVr(3, 116), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 12, 0.2f);
                 DRKLoader.AddParticle(particle);
-                BaseParticle particle2 = new PRK_Smoke(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), CWRUtils.randVr(3, 16)
+                BaseParticle particle2 = new DRK_Smoke(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), CWRUtils.randVr(3, 16)
                     , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.DarkRed)
                     , 15, Main.rand.NextFloat(0.2f, 1.1f), 0.5f, 0.1f);
                 DRKLoader.AddParticle(particle2);

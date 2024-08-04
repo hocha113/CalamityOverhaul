@@ -5,23 +5,25 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRK_Spark2 : BaseParticle
+    internal class DRK_Spark : BaseParticle
     {
         public Color InitialColor;
         public bool AffectedByGravity;
+        public Entity entity;
         public override bool SetLifetime => true;
         public override bool UseCustomDraw => true;
-        public override bool UseAdditiveBlend => false;
-        public Entity entity;
+        public override bool UseAdditiveBlend => true;
+
         public override string Texture => "CalamityMod/Projectiles/StarProj";
 
-        public PRK_Spark2(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
+        public DRK_Spark(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity = null) {
             Position = relativePosition;
             Velocity = velocity;
             AffectedByGravity = affectedByGravity;
             Scale = scale;
             Lifetime = lifetime;
             Color = InitialColor = color;
+            this.entity = entity;
         }
 
         public override void AI() {
@@ -33,6 +35,7 @@ namespace CalamityOverhaul.Content.Particles
                 Velocity.Y += 0.25f;
             }
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
+
             if (entity != null) {
                 if (entity.active) {
                     Position += entity.velocity;

@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 norlToTarget *= 1;
             }
 
-            int pysCount = DRKLoader.GetParticlesCount(DRKLoader.GetParticleType(typeof(PRK_Spark)));
+            int pysCount = DRKLoader.GetParticlesCount(DRKLoader.GetParticleType(typeof(DRK_Spark)));
             if (pysCount > 120) {
                 sparkCount = 10;
             }

@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
 
             if (Projectile.Center.To(Main.player[Projectile.owner].Center).LengthSquared() <= 1500 * 1500) {
-                PRK_Light particle = new PRK_Light(Projectile.Center, Vector2.Zero, 0.2f, Main.DiscoColor, 22);
+                DRK_Light particle = new DRK_Light(Projectile.Center, Vector2.Zero, 0.2f, Main.DiscoColor, 22);
                 DRKLoader.AddParticle(particle);
             }
         }

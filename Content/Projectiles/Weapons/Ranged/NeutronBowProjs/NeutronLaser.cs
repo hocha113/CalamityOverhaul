@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
                     return;
                 }
             }
-            BaseParticle spark = new PRK_HeavenfallStar(Projectile.Center
+            BaseParticle spark = new DRK_HeavenfallStar(Projectile.Center
                         , Projectile.velocity, false, 10, Main.rand.NextFloat(1.2f, 2.3f), Color.BlueViolet);
             DRKLoader.AddParticle(spark);
         }

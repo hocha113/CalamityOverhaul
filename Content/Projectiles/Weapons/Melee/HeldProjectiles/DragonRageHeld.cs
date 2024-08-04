@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     dust.noGravity = true;
 
                     Vector2 spanSparkPos = Projectile.Center + Projectile.velocity.UnitVector() * Length;
-                    BaseParticle spark = new PRK_Spark(spanSparkPos, Projectile.velocity, false, 6, 4.26f, Color.Gold, Owner);
+                    BaseParticle spark = new DRK_Spark(spanSparkPos, Projectile.velocity, false, 6, 4.26f, Color.Gold, Owner);
                     DRKLoader.AddParticle(spark);
                 }
 
@@ -357,7 +357,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 rotToTargetSpeedTrengsVumVer = Projectile.velocity.RotatedBy(rotToTargetSpeedSengs);
             }
 
-            int pysCount = DRKLoader.GetParticlesCount(DRKLoader.GetParticleType(typeof(PRK_Spark)));
+            int pysCount = DRKLoader.GetParticlesCount(DRKLoader.GetParticleType(typeof(DRK_Spark)));
             if (pysCount > 120) {
                 sparkCount = 10;
             }
@@ -395,7 +395,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     sparkColor2 = Main.rand.NextBool(3) ? Color.Gold : Color.Goldenrod;
                 }
 
-                PRK_Spark spark = new PRK_Spark(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f
+                DRK_Spark spark = new DRK_Spark(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f
                         , target.height * 0.5f) + (Projectile.velocity * 1.2f), sparkVelocity2 * 1f
                         , false, (int)(sparkLifetime2 * 1.2f), sparkScale2 * 1.4f, sparkColor2);
                 DRKLoader.AddParticle(spark);

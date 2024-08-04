@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
             if (Projectile.DistanceSQ(Main.LocalPlayer.Center) < 1600 * 1600) {
                 if (DRKLoader.FreeSpacesAvailable() > 10) {
-                    BaseParticle spark = new PRK_HeavenfallStar(Projectile.Center, Projectile.velocity * 0.7f, false, 20, 1.2f, Color.Gold);
+                    BaseParticle spark = new DRK_HeavenfallStar(Projectile.Center, Projectile.velocity * 0.7f, false, 20, 1.2f, Color.Gold);
                     DRKLoader.AddParticle(spark);
                 }
                 else {

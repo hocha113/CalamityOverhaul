@@ -7,7 +7,7 @@ using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRK_HeavenStar : BaseParticle
+    internal class DRK_HeavenStar : BaseParticle
     {
         public override string Texture => "CalamityMod/Particles/ThinSparkle";
         public override bool UseAdditiveBlend => true;
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Particles
         private int SpawnDelay;
         private float RotationalSpeed;
 
-        public PRK_HeavenStar(Vector2 position, Vector2 velocity, Color color, Color bloom, float angle, Vector2 scale, Vector2 finalScale, int lifeTime, float rotationSpeed = 0f, float bloomScale = 1f, float hueShift = 0f, int spawnDelay = 0, float rotationalSpeed = 0) {
+        public DRK_HeavenStar(Vector2 position, Vector2 velocity, Color color, Color bloom, float angle, Vector2 scale, Vector2 finalScale, int lifeTime, float rotationSpeed = 0f, float bloomScale = 1f, float hueShift = 0f, int spawnDelay = 0, float rotationalSpeed = 0) {
             Position = position;
             Velocity = velocity;
             Color = color;

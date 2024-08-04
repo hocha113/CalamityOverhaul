@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 float rot = MathHelper.PiOver2 * i + randomRot;
                 Vector2 vr = rot.ToRotationVector2();
                 for (int j = 0; j < maxSengNum; j++) {
-                    PRK_HeavenfallStar spark = new PRK_HeavenfallStar(origPos, vr * (0.1f + i * 0.1f), false, 37, Main.rand.NextFloat(minScale, maxScale), Color.DarkGoldenrod);
+                    DRK_HeavenfallStar spark = new DRK_HeavenfallStar(origPos, vr * (0.1f + i * 0.1f), false, 37, Main.rand.NextFloat(minScale, maxScale), Color.DarkGoldenrod);
                     DRKLoader.AddParticle(spark);
                 }
             }

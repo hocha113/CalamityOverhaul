@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 for (int i = 0; i < 16; i++) {
                     Vector2 particleSpeed = (Main.rand.Next(70, 110) * CWRUtils.atoR).ToRotationVector2() * -Main.rand.Next(11, 17);
                     Vector2 pos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
-                    BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
+                    BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
                         , Main.rand.NextFloat(0.1f, 0.3f), Color.Red, 30, 1, 1.5f, hueShift: 0.0f);
                     DRKLoader.AddParticle(energyLeak);
                 }

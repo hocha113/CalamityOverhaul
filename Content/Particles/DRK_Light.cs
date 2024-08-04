@@ -6,7 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRK_Light : BaseParticle, ILoader
+    internal class DRK_Light : BaseParticle, ILoader
     {
         public override string Texture => "CalamityMod/Particles/Light";
         public override bool UseAdditiveBlend => true;
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Particles
             Tex = null;
             BloomTex = null;
         }
-        public PRK_Light(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f, float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, Entity _entity = null, float _followingRateRatio = 0.9f) {
+        public DRK_Light(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f, float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, Entity _entity = null, float _followingRateRatio = 0.9f) {
             Position = position;
             Velocity = velocity;
             Scale = scale;

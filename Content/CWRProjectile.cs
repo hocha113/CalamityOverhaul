@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content
             if (Source?.Context == "CWRGunShoot" && cwrItem != null) {
                 if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.armourPiercer) {
                     Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
-                    BaseParticle spark = new PRK_Spark(projectile.Center, projectile.velocity * 0.3f, false, 9, 2.3f, color * 0.1f);
+                    BaseParticle spark = new DRK_Spark(projectile.Center, projectile.velocity * 0.3f, false, 9, 2.3f, color * 0.1f);
                     DRKLoader.AddParticle(spark);
                 }
                 else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
@@ -589,7 +589,7 @@ namespace CalamityOverhaul.Content
                 else if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
                     player.ApplyDamageToNPC(target, player.GetShootState().WeaponDamage / 3, 0f, 0, false, DamageClass.Default, true);
                     for (int i = 0; i < 6; i++) {
-                        BaseParticle particle = new PRK_Light(projectile.Center, CWRUtils.randVr(3, 16), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 2, 0.2f);
+                        BaseParticle particle = new DRK_Light(projectile.Center, CWRUtils.randVr(3, 16), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 2, 0.2f);
                         DRKLoader.AddParticle(particle);
                     }
                 }

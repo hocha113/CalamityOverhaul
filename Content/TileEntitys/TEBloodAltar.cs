@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.TileEntitys
                     Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
                         , Scale: Main.rand.NextFloat(0.7f, 1.3f));
                 }
-                PRK_Light particle = new PRK_Light(Center + Main.rand.NextVector2Unit() * Main.rand.Next(0, 15)
+                DRK_Light particle = new DRK_Light(Center + Main.rand.NextVector2Unit() * Main.rand.Next(0, 15)
                     , new Vector2(0, -1), 0.3f, Color.DarkGreen, 165);
                 DRKLoader.AddParticle(particle);
             }
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.TileEntitys
                         if (!CWRUtils.isServer) {
                             for (int j = 0; j < 62; j++) {
                                 Vector2 spanPos = orb.Center + orbToPosUnit * leng * j;
-                                PRK_Light particle = new PRK_Light(spanPos, Vector2.Zero, 0.3f, Color.DarkRed, 15);
+                                DRK_Light particle = new DRK_Light(spanPos, Vector2.Zero, 0.3f, Color.DarkRed, 15);
                                 DRKLoader.AddParticle(particle);
                             }
                         }
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.TileEntitys
                             if (!CWRUtils.isServer) {
                                 for (int j = 0; j < 32; j++) {
                                     Vector2 spanPos = Center + PosToChestUnit * leng * j;
-                                    PRK_Light particle = new PRK_Light(spanPos, Vector2.Zero, 0.3f, Color.DarkGreen, 15);
+                                    DRK_Light particle = new DRK_Light(spanPos, Vector2.Zero, 0.3f, Color.DarkGreen, 15);
                                     DRKLoader.AddParticle(particle);
                                 }
                             }

@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 {
                     Vector2 particleSpeed = CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(6, 9));
                     Vector2 pos = Projectile.Center;
-                    BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
+                    BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
                         , Main.rand.NextFloat(0.3f, 0.7f), Color.Purple, 30, 1, 1.5f, hueShift: 0.0f);
                     DRKLoader.AddParticle(energyLeak);
                 }

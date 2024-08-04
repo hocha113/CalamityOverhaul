@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     float sparkScale = Main.rand.NextFloat(1f, 1.3f);
                     Color sparkColor = Main.DiscoColor;
                     Vector2 sparkVelocity = Projectile.velocity * (0.5f - (i * 0.1f));
-                    BaseParticle spark = new PRK_Spark(Projectile.Center + (Projectile.velocity * i), sparkVelocity, false, sparkLifetime, sparkScale, sparkColor);
+                    BaseParticle spark = new DRK_Spark(Projectile.Center + (Projectile.velocity * i), sparkVelocity, false, sparkLifetime, sparkScale, sparkColor);
                     DRKLoader.AddParticle(spark);
                 }
             }

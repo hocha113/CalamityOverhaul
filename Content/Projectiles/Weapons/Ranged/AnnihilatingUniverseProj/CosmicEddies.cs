@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
 
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next((int)rgs);
                     Vector2 particleSpeed = pos.To(Projectile.Center + Projectile.velocity).UnitVector() * Main.rand.NextFloat(5.5f, 7.7f);
-                    BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
+                    BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
                         , Main.rand.NextFloat(0.3f, 0.3f + Projectile.ai[1] / 1000f), Color.Purple, 30, 1, 1.5f, hueShift: 0.0f, _entity: Projectile);
                     DRKLoader.AddParticle(energyLeak);
                 }

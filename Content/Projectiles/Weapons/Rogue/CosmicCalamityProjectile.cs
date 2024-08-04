@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
 
             if (Main.netMode != NetmodeID.Server) {
                 Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
-                BaseParticle spark = new PRK_Spark(Projectile.Center - Projectile.velocity * 8f, -Projectile.velocity * 0.1f, false, 9, 2.3f, color * 0.1f);
+                BaseParticle spark = new DRK_Spark(Projectile.Center - Projectile.velocity * 8f, -Projectile.velocity * 0.1f, false, 9, 2.3f, color * 0.1f);
                 DRKLoader.AddParticle(spark);
             }
             if (Time > (Projectile.Calamity().stealthStrike ? 0 : 60)) {

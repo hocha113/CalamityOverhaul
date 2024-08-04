@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 DRKLoader.AddParticle(pulse2);
                 BaseParticle pulse3 = new DRK_DWave(Projectile.Center - Projectile.velocity * 0.35f, Projectile.velocity / 1.5f * 0.8f, Color.DarkRed, new Vector2(0.7f, 1.3f) * 0.8f, Projectile.velocity.ToRotation(), 0.58f, 0.22f, 40);
                 DRKLoader.AddParticle(pulse3);
-                PRK_HeavenfallStar spark = new PRK_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 27, 3, Color.Gold);
+                DRK_HeavenfallStar spark = new DRK_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 27, 3, Color.Gold);
                 DRKLoader.AddParticle(spark);
             }
         }
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                             for (int j = 0; j < 134; j++) {
                                 Vector2 pos = Projectile.Center + new Vector2(Main.rand.Next(-spanPrestMaxWid, spanPrestMaxWid), Main.rand.Next(-spanPrestMaxWid, spanPrestMaxWid));
                                 Vector2 particleSpeed = pos.To(Projectile.Center + vr * 130).UnitVector() * Main.rand.NextFloat(11.3f, 54f);
-                                BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
+                                BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
                                     , Main.rand.NextFloat(0.3f, 2.5f), Main.rand.NextBool(2) ? Color.Red : Color.DarkRed, 60, 1, 1.5f, hueShift: 0.0f);
                                 DRKLoader.AddParticle(energyLeak);
                             }
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                         for (int j = 0; j < 64; j++) {
                             Vector2 pos = Projectile.Center;
                             Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.NextFloat(5.3f, 24f);
-                            BaseParticle energyLeak = new PRK_Light(pos, particleSpeed
+                            BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
                                 , Main.rand.NextFloat(0.3f, 2.5f), Main.rand.NextBool(2) ? Color.Red : Color.Gold, 90, 1, 1.5f, hueShift: 0.0f);
                             DRKLoader.AddParticle(energyLeak);
                         }
@@ -103,12 +103,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                             Vector2 vector = Main.rand.NextVector2Unit() * Main.rand.Next(77);
                             float scaleBoost = MathHelper.Clamp(Main.rand.NextFloat(), 0f, 2f);
                             float outerSparkScale = 3.2f + scaleBoost;
-                            PRK_HeavenfallStar spark = new PRK_HeavenfallStar(Projectile.Center, vector, false, 27, outerSparkScale, outerSparkColor);
+                            DRK_HeavenfallStar spark = new DRK_HeavenfallStar(Projectile.Center, vector, false, 27, outerSparkScale, outerSparkColor);
                             DRKLoader.AddParticle(spark);
 
                             Color innerSparkColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Goldenrod, Color.Red);
                             float innerSparkScale = 0.6f + scaleBoost;
-                            PRK_HeavenfallStar spark2 = new PRK_HeavenfallStar(Projectile.Center, vector, false, 37, innerSparkScale, innerSparkColor);
+                            DRK_HeavenfallStar spark2 = new DRK_HeavenfallStar(Projectile.Center, vector, false, 37, innerSparkScale, innerSparkColor);
                             DRKLoader.AddParticle(spark2);
                         }
                         SoundEngine.PlaySound(DevourerofGodsHead.DeathExplosionSound, Projectile.Center);
