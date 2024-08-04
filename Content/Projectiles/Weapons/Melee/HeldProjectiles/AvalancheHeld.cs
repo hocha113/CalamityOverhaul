@@ -17,10 +17,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.width = Projectile.height = 44;
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
-            SwingData.baseSwingSpeed = 5f;
+            SwingData.baseSwingSpeed = 4f;
             drawTrailBtommWidth = 50;
             distanceToOwner = 26;
             drawTrailTopWidth = 20;
+            Incandescence = true;
+            SwingAIType = SwingAITypeEnum.UpAndDown;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

@@ -36,17 +36,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 6f;
             Item.SetKnifeHeld<OrderbringerHeld>();
         }
-
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            _ = Projectile.NewProjectile(source, position, velocity, Item.shoot, damage, knockback, player.whoAmI);
-            return false;
-        }
-
-        public override void MeleeEffects(Player player, Rectangle hitbox) {
-            if (Main.rand.NextBool(3)) {
-                _ = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.GoldCoin, 0f, 0f, 0, new Color(255, Main.DiscoG, 53));
-            }
-        }
     }
 
     internal class OrderbringerHeld : BaseKnife

@@ -70,6 +70,10 @@ namespace CalamityOverhaul.Common
 
         [BackgroundColor(192, 54, 94, 192)]
         [DefaultValue(true)]
+        public bool EnableSwordLight { get; set; }
+
+        [BackgroundColor(192, 54, 94, 192)]
+        [DefaultValue(true)]
         public bool ActivateGunRecoil { get; set; }
 
         [BackgroundColor(192, 54, 94, 192)]

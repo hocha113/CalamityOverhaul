@@ -3529,6 +3529,7 @@ Projectiles: {
 	// HellionFlowerSpearHeld.DisplayName: Hellion Flower Spear
 	// OrderbringerHeld.DisplayName: Orderbringer
 	// StellarStrikerHeld.DisplayName: Stellar Striker
+	// PhasebladeHeld.DisplayName: Phaseblade Held
 }
 
 Configs: {
@@ -3732,6 +3733,11 @@ Configs: {
 
 		TemporaryCrisisManagementMatters: {
 			// Label: Emergency crisis management
+			// Tooltip: ""
+		}
+
+		EnableSwordLight: {
+			// Label: Enable Sword Light
 			// Tooltip: ""
 		}
 	}

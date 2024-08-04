@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using System;
@@ -103,8 +102,11 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool PreInOwnerUpdate() {
             if (Projectile.ai[0] == 1) {
+                if (Time == 0) {
+                    Length = 150;
+                }
                 Projectile.width = Projectile.height = 186;
-                distanceToOwner = -180;
+                distanceToOwner = -200;
                 SwingData.starArg = 90;
                 SwingData.ler1_UpLengthSengs = 0.15f;
                 SwingData.minClampLength = 160;

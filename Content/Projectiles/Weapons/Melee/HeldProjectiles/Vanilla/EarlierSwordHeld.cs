@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles.Vanilla
 {

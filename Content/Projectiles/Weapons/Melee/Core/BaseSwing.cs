@@ -1,10 +1,12 @@
 ﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -20,6 +22,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         protected Vector2 startVector;
         private int dirs;
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
+        /// <summary>
+        /// 自发光
+        /// </summary>
+        public bool Incandescence;
+        /// <summary>
+        /// 刀光纹理倾斜采样
+        /// </summary>
+        public bool ObliqueSampling;
         /// <summary>
         /// 动画帧切换间隔，默认为5
         /// </summary>
@@ -104,10 +114,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 更新率，值为<see cref="Projectile.extraUpdates"/>+1，使用之前请注意<see cref="Projectile.extraUpdates"/>是否已经被正确设置
         /// </summary>
         internal int updateCount => Projectile.extraUpdates + 1;
+        private bool _canDrawSlashTrail;
         /// <summary>
         /// 是否绘制弧光，默认为<see langword="false"/>
         /// </summary>
-        protected bool canDrawSlashTrail;
+        protected bool canDrawSlashTrail {
+            get {
+                if (!CWRServerConfig.Instance.EnableSwordLight) {
+                    return false;
+                }
+                return _canDrawSlashTrail;
+            }
+            set => _canDrawSlashTrail = value;
+        }
         protected bool canShoot;
         /// <summary>
         /// 是否跟随玩家进行朝向纠正，默认为<see langword="true"/>
@@ -222,15 +241,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 SetSwingProperty();
             }
             PostSwingProperty();
+            LoadTrailCountData();
+            OrigLength = Length;
+        }
+
+        #region Utils
+        public void LoadTrailCountData() {
             drawTrailCount *= updateCount;
             oldRotate = new float[drawTrailCount];
             oldDistanceToOwner = new float[drawTrailCount];
             oldLength = new float[drawTrailCount];
             InitializeCaches();
-            OrigLength = Length;
         }
 
-        #region Utils
         public Vector2 RodingToVer(float radius, float theta) {
             Vector2 vector2 = theta.ToRotationVector2();
             vector2.X *= radius;
@@ -519,10 +542,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public virtual void DrawTrail(List<VertexPositionColorTexture> bars) {
-            string fileName = drawTrailHighlight ? "KnifeRendering" : "KnifeRenderingNoHighLigth";
-            Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + fileName).Value;
+            Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "KnifeRendering").Value;
 
             effect.Parameters["transformMatrix"].SetValue(GetTransfromMaxrix());
+            effect.Parameters["drawTrailHighlight"].SetValue(drawTrailHighlight);
+            effect.Parameters["obliqueSampling"].SetValue(ObliqueSampling);
             effect.Parameters["sampleTexture"].SetValue(TrailTexture);
             effect.Parameters["gradientTexture"].SetValue(GradientTexture);
             //应用shader，并绘制顶点
@@ -591,9 +615,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             }
 
             Vector2 drawPosValue = Projectile.Center - RodingToVer(toProjCoreMode, (Projectile.Center - Owner.Center).ToRotation()) + offsetOwnerPos;
+            Color color = Projectile.GetAlpha(lightColor);
+            if (Incandescence || !CWRServerConfig.Instance.WeaponAdaptiveIllumination) {
+                color = Color.White;
+            }
 
             Main.EntitySpriteDraw(texture, drawPosValue - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY, new Rectangle?(rect)
-                , Projectile.GetAlpha(lightColor), drawRoting, drawOrigin, Projectile.scale, effects, 0);
+                , color, drawRoting, drawOrigin, Projectile.scale, effects, 0);
         }
 
         public sealed override bool PreDraw(ref Color lightColor) {

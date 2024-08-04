@@ -28,7 +28,6 @@
     <None Remove="Assets\Effects\InShootGlow.fx" />
     <None Remove="assets\effects\KnifeDistortion.fx" />
     <None Remove="Assets\Effects\KnifeRendering.fx" />
-    <None Remove="Assets\Effects\KnifeRenderingNoHighLigth.fx" />
     <None Remove="Assets\Effects\NeutronRingShader.fx" />
     <None Remove="Assets\Effects\PrimeHaloShader.fx" />
     <None Remove="Assets\Effects\StreamerDust.fx" />
