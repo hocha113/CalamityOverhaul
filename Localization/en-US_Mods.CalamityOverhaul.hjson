@@ -1343,7 +1343,7 @@ Items: {
 		DisplayName: Midas Prime
 		Tooltip:
 			'''
-			Convert musket bullets into marksman bullets
+			Fire the marksman bullet
 			Right-click to toss a gold or silver coin into the air
 			Bullets that hit the coin will aim towards the nearest enemy
 			You can throw up to 4 coins, and bullets will bounce between multiple coins if possible
@@ -2745,7 +2745,11 @@ Items: {
 
 	ExaltedOathbladeEcType: {
 		DisplayName: Exalted Oathblade
-		Tooltip: ""
+		Tooltip:
+			'''
+			Each wave will generate a floating cycle of pain
+			Creates a shadow flame explosion on critical strike
+			'''
 	}
 
 	PerfectDarkEcType: {

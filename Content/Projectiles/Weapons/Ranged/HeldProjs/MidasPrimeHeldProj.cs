@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
@@ -15,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MidasPrime";
         public override int targetCayItem => ModContent.ItemType<MidasPrime>();
         public override int targetCWRItem => ModContent.ItemType<MidasPrimeEcType>();
-
+        private bool oldRsD;
         private bool nextShotGoldCoin = false;
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
@@ -32,13 +33,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 1.2f;
             RangeOfStress = 25;
             CanRightClick = true;
+            LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Revolver;
         }
 
         public override void PreInOwnerUpdate() {
-            CanUpdateMagazineContentsInShootBool = CanCreateRecoilBool = onFire;
+            CanRightClick = true;
+            long cashAvailable2 = Utils.CoinsCount(out bool overflow2, Owner.inventory);
+            if (cashAvailable2 < 100 && !overflow2 || Owner.GetActiveRicoshotCoinCount() >= 4) {
+                if (!oldRsD && DownRight) {
+                    SoundEngine.PlaySound(CWRSound.Ejection, Projectile.Center);
+                }
+                oldRsD = DownRight;
+                CanRightClick = false;
+            }
         }
 
         public override void SetShootAttribute() {
+            CanUpdateMagazineContentsInShootBool = CanCreateRecoilBool = onFire;
             FireTime = onFireR ? 12 : 22;
             CanCreateCaseEjection = CanCreateSpawnGunDust = onFire;
         }
@@ -52,22 +63,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            if (AmmoTypes == ProjectileID.Bullet) {
-                AmmoTypes = ModContent.ProjectileType<MarksmanShot>();
-            }
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
-                , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                , ModContent.ProjectileType<MarksmanShot>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
         public override void FiringShootR() {
-            long cashAvailable2 = Utils.CoinsCount(out bool overflow2, Owner.inventory);
-            if (cashAvailable2 < 100 && !overflow2) {
-                return;
-            }
-            if (Owner.GetActiveRicoshotCoinCount() >= 4) {
-                return;
-            }
-
             long cashAvailable = Utils.CoinsCount(out bool overflow, Owner.inventory);
 
             if (overflow || cashAvailable > 10000) {

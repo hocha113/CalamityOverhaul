@@ -1359,7 +1359,7 @@ Items: {
 		DisplayName: Midas Prime
 		Tooltip:
 			'''
-			Convertit les balles de fusil en balles de tireur d'élite
+			Lancer des projectiles d'archer divin
 			Clic droit pour lancer une pièce d'or ou d'argent dans les airs
 			Les balles touchant la pièce de monnaie visent les ennemis les plus proches
 			Jusqu'à quatre pièces peuvent être lancées, dans les cas possibles, les balles rebondiront entre les pièces de monnaie
@@ -2740,8 +2740,12 @@ Items: {
 	}
 
 	ExaltedOathbladeEcType: {
-		// DisplayName: Exalted Oathblade
-		// Tooltip: ""
+		DisplayName: Exalted Oathblade
+		Tooltip:
+			'''
+			Chaque agitation générera un cycle flottant de souffrance
+			Provoque une explosion de flamme d’ombre lors d’un coup critique
+			'''
 	}
 
 	PerfectDarkEcType: {

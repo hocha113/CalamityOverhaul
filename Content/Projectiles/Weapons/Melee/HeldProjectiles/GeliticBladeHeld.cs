@@ -17,18 +17,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             canDrawSlashTrail = true;
             SwingData.starArg = 54;
             SwingData.baseSwingSpeed = 3.5f;
-            SwingAIType = SwingAITypeEnum.UpAndDown;
             drawTrailBtommWidth = 40;
-            drawTrailCount = 8;
+            drawTrailCount = 12;
             distanceToOwner = 24;
             drawTrailTopWidth = 20;
             Length = 50;
+            ShootSpeed = 9;
         }
 
         public override void Shoot() {
             SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
-            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity * 1.5f
-                , ModContent.ProjectileType<GelWave>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
+            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
+                , ModContent.ProjectileType<GelWave>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

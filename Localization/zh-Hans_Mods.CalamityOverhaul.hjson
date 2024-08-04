@@ -1369,7 +1369,7 @@ Items: {
 		DisplayName: 迈达斯统帅
 		Tooltip:
 			'''
-			将火枪子弹转化为神射手弹
+			发射神射手弹
 			右键将一枚金币或银币抛向空中
 			击中硬币的子弹会向着最近的敌人瞄准
 			至多可抛出4枚硬币，在可能的情况下，子弹会在多枚硬币之间反弹
@@ -2753,7 +2753,11 @@ Items: {
 
 	ExaltedOathbladeEcType: {
 		DisplayName: 崇高誓约之剑
-		Tooltip: ""
+		Tooltip:
+			'''
+			每次挥舞将生成一个漂浮的痛苦轮回
+			暴击时造成暗影焰爆炸
+			'''
 	}
 
 	PerfectDarkEcType: {

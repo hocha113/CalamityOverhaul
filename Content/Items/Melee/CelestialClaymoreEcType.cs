@@ -2,7 +2,6 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using Mono.Cecil;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

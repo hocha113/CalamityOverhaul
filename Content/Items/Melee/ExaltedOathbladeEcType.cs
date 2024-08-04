@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RExaltedOathblade : BaseRItem
     {
         public override int TargetID => ModContent.ItemType<ExaltedOathblade>();
+        public override string TargetToolTipItemName => "ExaltedOathbladeEcType";
         public override int ProtogenesisID => ModContent.ItemType<ExaltedOathbladeEcType>();
         public override void SetDefaults(Item item) => item.SetKnifeHeld<ExaltedOathbladeHeld>();
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source

@@ -1355,7 +1355,7 @@ Items: {
 		DisplayName: Midas Prime
 		Tooltip:
 			'''
-			Verwandelt Gewehrkugeln in Scharfschützenkugeln
+			Feuert die leuchtrakete ab
 			Rechtsklick wirft eine Gold- oder Silbermünze in die Luft
 			Kugeln, die die Münze treffen, zielen auf den nächsten Feind
 			Es können maximal 4 Münzen geworfen werden, und in einigen Fällen prallen die Kugeln zwischen den Münzen ab
@@ -2737,8 +2737,12 @@ Items: {
 	}
 
 	ExaltedOathbladeEcType: {
-		// DisplayName: Exalted Oathblade
-		// Tooltip: ""
+		DisplayName: Exalted Oathblade
+		Tooltip:
+			'''
+			Damit ergibt sich bei jedem schwung eine düstere wiederkehr schwebender schmerzen
+			Ein flammenfeuer, das vom blitz getroffen wurde
+			'''
 	}
 
 	PerfectDarkEcType: {
