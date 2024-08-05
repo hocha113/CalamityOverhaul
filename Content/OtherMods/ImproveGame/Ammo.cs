@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.OthermodMROs.ImproveGame;
+namespace CalamityOverhaul.Content.OtherMods.ImproveGame;
 
 public record Ammo(ItemTypeData ItemData, int Times) : TagSerializable
 {

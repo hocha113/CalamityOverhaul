@@ -3,6 +3,7 @@ using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj;
 using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
@@ -27,6 +28,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             Item.mana = 80;
             Item.shootSpeed = 6;
             Item.shoot = ModContent.ProjectileType<DragonsWordProj>();
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems22;
         }
 
         public override bool AltFunctionUse(Player player) => true;

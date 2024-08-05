@@ -1,10 +1,10 @@
-﻿using CalamityOverhaul.Content.OthermodMROs.Thorium.Core;
-using CalamityOverhaul.Content.OthermodMROs.Thorium.ProjectileSet.Helds;
+﻿using CalamityOverhaul.Content.OtherMods.Thorium.Core;
+using CalamityOverhaul.Content.OtherMods.Thorium.ProjectileSet.Helds;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.OthermodMROs.Thorium.ItemSet
+namespace CalamityOverhaul.Content.OtherMods.Thorium.ItemSet
 {
     internal class RFrostFury : BaseRItem, LThoriumCall
     {

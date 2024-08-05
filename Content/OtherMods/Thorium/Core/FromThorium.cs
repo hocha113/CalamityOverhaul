@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.OthermodMROs.Thorium.Core
+namespace CalamityOverhaul.Content.OtherMods.Thorium.Core
 {
     internal static class FromThorium
     {

@@ -5,7 +5,7 @@ using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.OthermodMROs.Thorium.Core;
+using CalamityOverhaul.Content.OtherMods.Thorium.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.Structures;
 using CalamityOverhaul.Content.UIs;
@@ -69,46 +69,46 @@ namespace CalamityOverhaul
 
         public override void PostSetupContent() {
             LoadMods = ModLoader.Mods.ToList();
-            //¶îÍâÄ£×éCallĞèÒªÏÈĞĞ¼ÓÔØ
+            //é¢å¤–æ¨¡ç»„Calléœ€è¦å…ˆè¡ŒåŠ è½½
             FromThorium.PostLoadData();
 
             {
-                RItemInstances = [];//ÕâÀïÖ±½Ó½øĞĞ³õÊ¼»¯£¬±ã²»ÔÙĞèÒª½øĞĞUnLoadĞ¶ÔØ
+                RItemInstances = [];//è¿™é‡Œç›´æ¥è¿›è¡Œåˆå§‹åŒ–ï¼Œä¾¿ä¸å†éœ€è¦è¿›è¡ŒUnLoadå¸è½½
                 List<Type> rItemIndsTypes = CWRUtils.GetSubclasses(typeof(BaseRItem));
-                //($"Ò»¹²»ñÈ¡µ½{rItemIndsTypes.Count}¸ö´ıÌôÑ¡ÔªËØType").DompInConsole();
+                //($"ä¸€å…±è·å–åˆ°{rItemIndsTypes.Count}ä¸ªå¾…æŒ‘é€‰å…ƒç´ Type").DompInConsole();
                 foreach (Type type in rItemIndsTypes) {
-                    //($"Ö¸ÏòÔªËØ{type}½øĞĞ·ÖÎö").DompInConsole();
+                    //($"æŒ‡å‘å…ƒç´ {type}è¿›è¡Œåˆ†æ").DompInConsole();
                     if (type != typeof(BaseRItem)) {
                         object obj = Activator.CreateInstance(type);
                         if (obj is BaseRItem inds) {
-                            //($"ÔªËØ{type}³É¹¦×ª»»Îªobject²¢½øĞĞ·ÖÎö").DompInConsole();
+                            //($"å…ƒç´ {type}æˆåŠŸè½¬æ¢ä¸ºobjectå¹¶è¿›è¡Œåˆ†æ").DompInConsole();
                             if (inds.CanLoad()) {
-                                //($"ÕıÔÚ³õÊ¼»¯ÔªËØ{type}").DompInConsole();
-                                inds.SetReadonlyTargetID = inds.TargetID;//ÕâÀïÄ¬ÈÏ¼ÓÔØÒ»´Î£¬ÔÚ¶àÊıÇé¿öÊ¹ÆäÏÂ²»ÓÃÖØĞ´Load()·½·¨
+                                //($"æ­£åœ¨åˆå§‹åŒ–å…ƒç´ {type}").DompInConsole();
+                                inds.SetReadonlyTargetID = inds.TargetID;//è¿™é‡Œé»˜è®¤åŠ è½½ä¸€æ¬¡ï¼Œåœ¨å¤šæ•°æƒ…å†µä½¿å…¶ä¸‹ä¸ç”¨é‡å†™Load()æ–¹æ³•
                                 inds.Load();
                                 inds.SetStaticDefaults();
                                 if (inds.TargetID != 0) {
-                                    //($"³É¹¦¼ÓÈëÔªËØ{type}").DompInConsole();
+                                    //($"æˆåŠŸåŠ å…¥å…ƒç´ {type}").DompInConsole();
                                     //("______________________________").DompInConsole();
                                     RItemInstances.Add(inds);
-                                }//×îºóÔÙÅĞ¶ÏÒ»ÏÂTargetIDÊÇ·ñÎª0£¬ÒòÎªÈç¹ûÕâÊÇÒ»¸öÓĞĞ§µÄRitemÊµÀı£¬ÄÇÃ´ËüµÄTargetID¾Í²»¿ÉÄÜÎª0£¬·ñÔò½«ÆäÌí¼Ó½øÈ¥»áµ¼ÖÂLoadRecipe²¿·Ö±¨´í
+                                }//æœ€åå†åˆ¤æ–­ä¸€ä¸‹TargetIDæ˜¯å¦ä¸º0ï¼Œå› ä¸ºå¦‚æœè¿™æ˜¯ä¸€ä¸ªæœ‰æ•ˆçš„Ritemå®ä¾‹ï¼Œé‚£ä¹ˆå®ƒçš„TargetIDå°±ä¸å¯èƒ½ä¸º0ï¼Œå¦åˆ™å°†å…¶æ·»åŠ è¿›å»ä¼šå¯¼è‡´LoadRecipeéƒ¨åˆ†æŠ¥é”™
                                 else {
-                                    //($"ÔªËØ{type}µÄTargetID·µ»Ø0£¬ÔØÈëÊ§°Ü").DompInConsole();
+                                    //($"å…ƒç´ {type}çš„TargetIDè¿”å›0ï¼Œè½½å…¥å¤±è´¥").DompInConsole();
                                 }
                             }
                             else {
-                                //($"ÔªËØ{type}CanLoad·µ»Øfalse").DompInConsole();
+                                //($"å…ƒç´ {type}CanLoadè¿”å›false").DompInConsole();
                             }
                         }
                         else {
-                            //($"ÔªËØ{type}×ª»»BaseRItemÊ§°Ü").DompInConsole();
+                            //($"å…ƒç´ {type}è½¬æ¢BaseRItemå¤±è´¥").DompInConsole();
                         }
                     }
                     else {
-                        //($"ÔªËØ{type}ÊÇ{typeof(BaseRItem)}").DompInConsole();
+                        //($"å…ƒç´ {type}æ˜¯{typeof(BaseRItem)}").DompInConsole();
                     }
                 }
-                //($"{RItemInstances.Count}¸öÔªËØÒÑ¾­×°ÔØ½øRItemInstances").DompInConsole();
+                //($"{RItemInstances.Count}ä¸ªå…ƒç´ å·²ç»è£…è½½è¿›RItemInstances").DompInConsole();
             }
 
             {
@@ -125,7 +125,7 @@ namespace CalamityOverhaul
             }
 
             {
-                NPCCustomizerInstances = [];//ÕâÀïÖ±½Ó½øĞĞ³õÊ¼»¯£¬±ã²»ÔÙĞèÒª½øĞĞUnLoadĞ¶ÔØ
+                NPCCustomizerInstances = [];//è¿™é‡Œç›´æ¥è¿›è¡Œåˆå§‹åŒ–ï¼Œä¾¿ä¸å†éœ€è¦è¿›è¡ŒUnLoadå¸è½½
                 List<Type> npcCustomizerIndsTypes = CWRUtils.GetSubclasses(typeof(NPCCustomizer));
                 foreach (Type type in npcCustomizerIndsTypes) {
                     if (type != typeof(NPCCustomizer)) {
@@ -142,7 +142,7 @@ namespace CalamityOverhaul
                 foreach (BaseRItem ritem in RItemInstances) {
                     RItemIndsDict.Add(ritem.SetReadonlyTargetID, ritem);
                 }
-                ($"{RItemIndsDict.Count}¸ö¼ü¶ÔÒÑ¾­×°ÔØ½øRItemIndsDict").DompInConsole();
+                ($"{RItemIndsDict.Count}ä¸ªé”®å¯¹å·²ç»è£…è½½è¿›RItemIndsDict").DompInConsole();
             }
 
             {
@@ -160,7 +160,7 @@ namespace CalamityOverhaul
                 }
             }
 
-            //¼ÓÔØÒ»´ÎIDÁĞ±í£¬´ÓÕâÀï¼ÓÔØ¿ÉÒÔ±£ÕÏËùÓĞÄÚÈİÒÑ¾­Ìí¼ÓºÃÁË
+            //åŠ è½½ä¸€æ¬¡IDåˆ—è¡¨ï¼Œä»è¿™é‡ŒåŠ è½½å¯ä»¥ä¿éšœæ‰€æœ‰å†…å®¹å·²ç»æ·»åŠ å¥½äº†
             CWRLoad.Load();
             foreach (var i in ILoaders) {
                 i.SetupData();

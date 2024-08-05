@@ -1,11 +1,11 @@
-﻿using CalamityOverhaul.Content.OthermodMROs.Thorium.Core;
-using CalamityOverhaul.Content.OthermodMROs.Thorium.ItemSet;
+﻿using CalamityOverhaul.Content.OtherMods.Thorium.Core;
+using CalamityOverhaul.Content.OtherMods.Thorium.ItemSet;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.OthermodMROs.Thorium.ProjectileSet.Helds
+namespace CalamityOverhaul.Content.OtherMods.Thorium.ProjectileSet.Helds
 {
     internal class FrostFuryHeldProj : BaseBow
     {

@@ -1,6 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.OthermodMROs.ImproveGame;
+using CalamityOverhaul.Content.OtherMods.ImproveGame;
 using CalamityOverhaul.Content.UIs;
 using System;
 using System.Collections.Generic;
