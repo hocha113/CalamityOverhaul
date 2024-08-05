@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
             if (Time == 10 * updateCount && Projectile.IsOwnedByLocalPlayer()) {
                 float meleeSpeedAf = SetSwingSpeed(1);
-                float count = 9 / meleeSpeedAf;
+                float count = 12 / meleeSpeedAf;
                 SoundEngine.PlaySound(SoundID.Item70, Owner.Center);
                 float speed = 9 / meleeSpeedAf;
                 for (int i = 0; i < count; ++i) {

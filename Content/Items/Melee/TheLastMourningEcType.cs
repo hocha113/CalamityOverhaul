@@ -5,6 +5,7 @@ using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -27,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.height = 94;
             Item.scale = 1.5f;
             Item.DamageType = DamageClass.Melee;
-            Item.damage = 280;
+            Item.damage = 220;
             Item.knockBack = 8.5f;
             Item.useAnimation = 18;
             Item.useTime = 18;
@@ -51,7 +52,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static bool ShootFunc(Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
-                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 1);
+                Projectile.NewProjectile(source, position, velocity, type, (int)(damage * 1.25f), knockback, player.whoAmI, 1);
                 return false;
             }
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
@@ -91,7 +92,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     , ShootVelocity.UnitVector() * 5, ModContent.ProjectileType<GhostSkull>()
                 , Projectile.damage, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3), Main.rand.Next(3));
             }
-            _ = Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ModContent.ProjectileType<MourningSkull2>()
+            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ModContent.ProjectileType<MourningSkull2>()
                 , Projectile.damage / 3, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));
         }
 
@@ -127,6 +128,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if ((CWRLoad.WormBodys.Contains(target.type) || target.type == NPCID.Probe) && !Main.rand.NextBool(4)) {
+                return;
+            }
             if (Projectile.ai[0] == 1) {
                 SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
                 Vector2 spanPos = ShootSpanPos + CWRUtils.randVr(600, 700);

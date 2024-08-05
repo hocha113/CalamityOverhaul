@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
@@ -26,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(3)) {
+            if ((CWRLoad.WormBodys.Contains(target.type) || target.type == NPCID.Probe) && !Main.rand.NextBool(5)) {
                 return;
             }
             var source = Owner.GetSource_ItemUse(Item);

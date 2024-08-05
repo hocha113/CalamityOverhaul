@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 80;
             Item.height = 82;
-            Item.damage = 75;
+            Item.damage = 65;
             Item.DamageType = DamageClass.Melee;
-            Item.useAnimation = 19;
-            Item.useTime = 19;
+            Item.useAnimation = 22;
+            Item.useTime = 22;
             Item.useTurn = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 5.25f;
@@ -103,11 +103,11 @@ namespace CalamityOverhaul.Content.Items.Melee
                 foreach (Projectile proj in Main.projectile) {
                     if (proj.type == ModContent.ProjectileType<CosmicSpiritBombs>()) {
                         if (proj.Hitbox.Intersects(Projectile.Hitbox)) {
-                            Vector2 toMou = proj.Center.To(Main.MouseWorld).UnitVector();
                             proj.ai[0] += 1;
-                            proj.velocity = toMou * 15;
+                            proj.velocity = UnitToMouseV * 20;
                             proj.timeLeft = 150;
-                            proj.damage = (int)(proj.originalDamage * 0.3f);
+                            proj.damage = (int)(proj.originalDamage / 3f);
+                            proj.usesLocalNPCImmunity = false;
                             proj.netUpdate = true;
                         }
                     }

@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             if (player.Calamity().adrenalineModeActive) {
                 sengs = 12;
             }
-            Projectile.NewProjectile(source, position.X, position.Y, velocity.X * sengs, velocity.Y * sengs, type, damage, knockback, player.whoAmI, 0f, ai3);
+            Projectile.NewProjectile(source, position.X, position.Y, velocity.X * sengs, velocity.Y * sengs
+                , type, damage, knockback, player.whoAmI, 0f, ai3);
             return false;
         }
     }
