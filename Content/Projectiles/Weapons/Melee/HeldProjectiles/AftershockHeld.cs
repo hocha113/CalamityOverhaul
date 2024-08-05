@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override int TargetID => ModContent.ItemType<Aftershock>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Aftershock_Bar";
+        bool canShoot2;
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 36;
             canDrawSlashTrail = true;
@@ -20,6 +21,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             drawTrailCount = 6;
             Length = 44;
             SwingAIType = SwingAITypeEnum.UpAndDown;
+            canShoot2 = true;
+            shootSengs = 0.9f;
         }
 
         public override void Shoot() {
@@ -30,9 +33,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
                 return;
             }
-            for (int i = 0; i < 4; i++) {
-                Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity + new Vector2(0, -Main.rand.Next(0, 6))
-                , ModContent.ProjectileType<MeleeFossilShard>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
+            if (canShoot2) {
+                for (int i = 0; i < 4; i++) {
+                    Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity + new Vector2(0, -Main.rand.Next(0, 6))
+                    , ModContent.ProjectileType<MeleeFossilShard>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
+                }
             }
         }
 
@@ -48,11 +53,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitNPC(target, hit, damageDone);
+            canShoot2 = false;
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            base.OnHitPlayer(target, info);
+            canShoot2 = false;
         }
     }
 }

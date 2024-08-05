@@ -163,18 +163,11 @@ namespace CalamityOverhaul.Content
         /// 是否被抛射物控制使用
         /// </summary>
         public bool IsShootCountCorlUse;
-        /// <summary>
-        /// 挥舞索引，一般被刀具所使用
-        /// </summary>
-        public int SwingIndex;
         #endregion
 
         private void SmiperItemSet(Item item) {
             int type = item.type;
-            if (type == ModContent.ItemType<Ataraxia>()) {
-                item.damage = 305;
-            }
-            else if (type == ModContent.ItemType<Nadir>()) {
+            if (type == ModContent.ItemType<Nadir>()) {
                 item.damage = 190;
                 item.useTime = item.useAnimation = 15;
             }

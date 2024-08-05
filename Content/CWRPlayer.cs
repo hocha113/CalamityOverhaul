@@ -87,6 +87,10 @@ namespace CalamityOverhaul.Content
         public int RisingDragonCharged;
         public int SafeHeldProjIndex;
         public int TETramContrType;
+        /// <summary>
+        /// 挥舞索引，一般被刀具所使用
+        /// </summary>
+        public int SwingIndex;
 
         /// <summary>
         /// 是否受伤
@@ -130,6 +134,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void Initialize() {
+            SwingIndex = 0;
             TETramContrType = 0;
             ReceivingPlatformTime = 0;
             InitialCreation = true;

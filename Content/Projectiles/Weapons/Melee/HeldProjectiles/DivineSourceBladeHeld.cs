@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             SwingData.baseSwingSpeed = 5.25f;
             unitOffsetDrawZkMode = 16;
             Length = 124;
+            ShootSpeed = 18;
             SwingAIType = SwingAITypeEnum.UpAndDown;
         }
 
@@ -46,12 +47,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Vector2 vector2 = Owner.Center.To(Main.MouseWorld).UnitVector() * 3;
             Vector2 position = Owner.Center;
             Projectile.NewProjectile(
-                Owner.parent(), position, vector2, types
+                Source, position, vector2, types
                 , (int)(Item.damage * 1.25f)
                 , Item.knockBack
                 , Owner.whoAmI);
             int type = ModContent.ProjectileType<DivineSourceBladeProjectile>();
-            Projectile proj = Projectile.NewProjectileDirect(Source, ShootSpanPos, ShootVelocity.UnitVector() * 22, type, Item.damage / 2, 0, Owner.whoAmI);
+            Projectile proj = Projectile.NewProjectileDirect(Source, ShootSpanPos, ShootVelocity, type, Projectile.damage, 0, Owner.whoAmI);
             proj.SetArrowRot();
         }
 

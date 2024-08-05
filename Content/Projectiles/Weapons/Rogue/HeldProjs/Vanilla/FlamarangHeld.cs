@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Flamarang].Value;
+        bool onHit = true;
         public override void SetThrowable() {
             CWRUtils.SafeLoadItem(ItemID.Flamarang);
             HandOnTwringMode = -30;
@@ -32,7 +33,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (stealthStrike && Projectile.ai[2] == 0 && Projectile.numHits == 0) {
+            if (stealthStrike && Projectile.ai[2] == 0 && onHit) {
+                onHit = false;
                 Projectile.Explode();
                 Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), target.Bottom, new Vector2(0, -6)
                         , ProjectileID.DD2ExplosiveTrapT3Explosion, Projectile.damage, 0.2f, Owner.whoAmI, ai2: 1);

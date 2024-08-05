@@ -6,7 +6,6 @@ using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Security.Policy;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -22,6 +21,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         protected Vector2 startVector;
         private int dirs;
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
+        /// <summary>
+        /// 刀光弧度全局缩放，默认为1
+        /// </summary>
+        public float oldLengthOffsetSizeValue = 1f;
         /// <summary>
         /// 自发光
         /// </summary>
@@ -45,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 挥舞索引
         /// </summary>
-        public ref int SwingIndex => ref Item.CWR().SwingIndex;
+        public ref int SwingIndex => ref Owner.CWR().SwingIndex;
         /// <summary>
         /// 目标物品ID
         /// </summary>
@@ -66,6 +69,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 旋转速度
         /// </summary>
         protected float rotSpeed;
+        /// <summary>
+        /// 射击时间比例，默认为0.5f
+        /// </summary>
         protected float shootSengs = 0.5f;
         /// <summary>
         /// 基本速度
@@ -519,7 +525,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
             oldRotate[0] = (Projectile.Center - Owner.Center).ToRotation() + overOffsetCachesRoting * Math.Sign(rotSpeed);
             oldDistanceToOwner[0] = distanceToOwner;
-            oldLength[0] = Projectile.height * Projectile.scale;
+            oldLength[0] = Projectile.height * Projectile.scale * oldLengthOffsetSizeValue;
         }
 
         public void DrawTrailHander(List<VertexPositionColorTexture> bars, GraphicsDevice device, BlendState blendState = null

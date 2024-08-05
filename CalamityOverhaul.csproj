@@ -20,10 +20,10 @@
     <None Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
   </ItemGroup>
   <ItemGroup>
+    <AdditionalFiles Remove="0.4.0.3.5.txt" />
     <AdditionalFiles Remove="Assets\Projectiles\Magic\GhastlyVisageBall.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="0.4.0.3.1.txt" />
     <None Remove="Assets\Effects\ColorGradient.fx" />
     <None Remove="Assets\Effects\InShootGlow.fx" />
     <None Remove="assets\effects\KnifeDistortion.fx" />

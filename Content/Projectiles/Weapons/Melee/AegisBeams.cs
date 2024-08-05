@@ -50,8 +50,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Main.dust[num458].velocity += Projectile.velocity * 0.1f;
             if (Projectile.timeLeft < 90) {
                 NPC npc = Projectile.Center.FindClosestNPC(250);
-                if (npc != null)
-                    Projectile.ChasingBehavior2(npc.Center, 1.001f, 0.045f);
+                if (npc != null) {
+                    float power = 0.045f;
+                    if (Projectile.ai[0] == 1) {
+                        power = 0.085f;
+                    }
+                    Projectile.ChasingBehavior2(npc.Center, 1.001f, power);
+                }
             }
         }
 

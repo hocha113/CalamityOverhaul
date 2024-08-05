@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         {
             None = 0,
             UpAndDown,
+            Sceptre,
         }
         public sealed override void SetSwingProperty() {
             Projectile.extraUpdates = 4;
@@ -55,6 +56,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                         swingData.baseSwingSpeed *= -1;
                         SwingBehavior(swingData);
                     }
+                    break;
+                case SwingAITypeEnum.Sceptre:
+                    shootSengs = 0.95f;
+                    maxSwingTime = 70;
+                    canDrawSlashTrail = false;
+                    SwingBehavior(starArg: 13, baseSwingSpeed: 2, ler1_UpLengthSengs: 0.1f
+                        , ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.062f
+                    , ler2_DownLengthSengs: 0.01f, ler2_DownSpeedSengs: 0.14f, ler2_DownSizeSengs: 0
+                    , minClampLength: 160, maxClampLength: 200, ler1Time: 8, maxSwingTime: 60);
                     break;
             }
         }

@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -22,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.width = 72;
             Item.height = 72;
             Item.scale = 0.9f;
-            Item.damage = 98;
+            Item.damage = 72;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = Item.useTime = 13;
             Item.useTurn = true;
@@ -47,6 +48,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public static bool ShootFunc(ref int Level, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
+                SoundEngine.PlaySound(SoundID.Item69 with { Pitch = 0.76f }, player.Center);
                 Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<AegisBladeProj>(), damage, knockback, player.whoAmI);
                 return false;
             }

@@ -3534,6 +3534,8 @@ Projectiles: {
 	// OrderbringerHeld.DisplayName: Orderbringer
 	// StellarStrikerHeld.DisplayName: Stellar Striker
 	// PhasebladeHeld.DisplayName: Phaseblade Held
+	// FrostbrandHeld.DisplayName: Frostbrand Held
+	// IceBladeHeld.DisplayName: Ice Blade Held
 }
 
 Configs: {

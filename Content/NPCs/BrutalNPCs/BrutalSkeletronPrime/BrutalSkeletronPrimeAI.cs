@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             CalamityGlobalNPC calamityNPC = null;
             if (!npc.TryGetGlobalNPC(out calamityNPC)) {
-                return false;
+                return true;
             }
 
             npc.reflectsProjectiles = false;

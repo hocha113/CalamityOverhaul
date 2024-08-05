@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             ownerOrientationLock = true;
             SwingData.starArg = 60;
             SwingData.baseSwingSpeed = 5.15f;
+            ShootSpeed = 8;
         }
 
         public override bool PreInOwnerUpdate() {
@@ -50,8 +51,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
             else if (Projectile.ai[0] == 2 || Projectile.ai[0] == 3) {
                 for (int i = 0; i < 3; i++) {
-                    Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedBy((-1 + i) * 0.3f) * 2
-                , ModContent.ProjectileType<AegisBeams>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
+                    Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedBy((-1 + i) * 0.3f) * 1.25f
+                , ModContent.ProjectileType<AegisBeams>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI, 1);
                 }
                 return;
             }
