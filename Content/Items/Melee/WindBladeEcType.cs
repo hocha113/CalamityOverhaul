@@ -72,8 +72,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             ShootSpeed = 3f;
         }
 
-        public override void Initialize() {
-            base.Initialize();
+        public override void KnifeInitialize() {
             if (Projectile.ai[0] == 0) {
                 SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
             }

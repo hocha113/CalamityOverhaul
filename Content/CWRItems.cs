@@ -68,10 +68,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool closeCombat;
         /// <summary>
-        /// 正在手持这个物品的玩家实例
-        /// </summary>
-        public Player HoldOwner = null;
-        /// <summary>
         /// 一般用于近战类武器的充能值
         /// </summary>
         public float MeleeCharge;
@@ -165,6 +161,38 @@ namespace CalamityOverhaul.Content
         public bool IsShootCountCorlUse;
         #endregion
 
+        public CWRItems CloneCWRItem(CWRItems cwr) {
+            cwr.ai = ai;
+            cwr.remakeItem = remakeItem;
+            cwr.closeCombat = closeCombat;
+            cwr.MeleeCharge = MeleeCharge;
+            cwr.isHeldItem = isHeldItem;
+            cwr.heldProjType = heldProjType;
+            cwr.hasHeldNoCanUseBool = hasHeldNoCanUseBool;
+            cwr.IsKreload = IsKreload;
+            cwr.HasCartridgeHolder = HasCartridgeHolder;
+            cwr.CartridgeEnum = CartridgeEnum;
+            cwr.SpecialAmmoState = SpecialAmmoState;
+            cwr.MagazineContents = MagazineContents;
+            cwr.NumberBullets = NumberBullets;
+            cwr.AmmoCapacity = AmmoCapacity;
+            cwr.NoKreLoadTime = NoKreLoadTime;
+            cwr.Scope = Scope;
+            cwr.AmmoProjectileReturn = AmmoProjectileReturn;
+            cwr.isInfiniteItem = isInfiniteItem;
+            cwr.noDestruct = noDestruct;
+            cwr.destructTime = destructTime;
+            cwr.OmigaSnyContent = OmigaSnyContent;
+            cwr.DrawOmigaSnyUIBool = DrawOmigaSnyUIBool;
+            cwr.PowerInteractionValue = PowerInteractionValue;
+            cwr.IsStorageBattery = IsStorageBattery;
+            cwr.IsBow = IsBow;
+            cwr.IsShootCountCorlUse = IsShootCountCorlUse;
+            return cwr;
+        }
+
+        public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItems)base.Clone(from, to));
+
         private void SmiperItemSet(Item item) {
             int type = item.type;
             if (type == ModContent.ItemType<Nadir>()) {
@@ -183,10 +211,15 @@ namespace CalamityOverhaul.Content
             if (AmmoCapacity == 0) {
                 AmmoCapacity = 1;
             }
+            
             remakeItem = (item.ModItem as EctypeItem) != null;
             InitializeMagazine();
             SmiperItemSet(item);
             CWRLoad.SetAmmoItem(item);
+
+            if (CWRLoad.WeaponIsHeldRanged.TryGetValue(item.type, out bool isRanged) && isRanged) {
+                item.noUseGraphic = true;
+            }
         }
 
         public void InitializeMagazine() {

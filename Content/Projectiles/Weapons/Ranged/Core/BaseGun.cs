@@ -365,6 +365,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Projectile.rotation = GetGunBodyRot();
             Projectile.timeLeft = 2;
             if (ShootCoolingValue > 0) {
+                SetWeaponOccupancyStatus();
                 ShootCoolingValue--;
             }
             SetHeld();

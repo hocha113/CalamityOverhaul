@@ -1192,6 +1192,7 @@ namespace CalamityOverhaul
         /// <typeparam name="T"></typeparam>
         /// <param name="item"></param>
         public static void SetHeldProj<T>(this Item item) where T : ModProjectile {
+            item.noUseGraphic = true;
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = ModContent.ProjectileType<T>();
         }
@@ -1200,6 +1201,7 @@ namespace CalamityOverhaul
         /// 快捷的将一个物品实例设置为手持对象
         /// </summary>
         public static void SetHeldProj(this Item item, int id) {
+            item.noUseGraphic = true;
             item.CWR().hasHeldNoCanUseBool = true;
             item.CWR().heldProjType = id;
         }

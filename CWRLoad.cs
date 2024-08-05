@@ -116,6 +116,22 @@ namespace CalamityOverhaul
         internal static Dictionary<int, BaseHeldRanged> ItemToBaseRanged = [];
         internal static Dictionary<int, int> ProjectileToSafeAmmoMap = [];
         /// <summary>
+        /// 对应ID的武器是否应该判定为一个手持类远程武器
+        /// </summary>
+        internal static Dictionary<int, bool> WeaponIsHeldRanged = [];
+        /// <summary>
+        /// 对应ID的武器是否应该判定为一个弓
+        /// </summary>
+        internal static Dictionary<int, bool> WeaponIsBow = [];
+        /// <summary>
+        /// 对应ID的武器是否应该判定为一个枪
+        /// </summary>
+        internal static Dictionary<int, bool> WeaponIsGun = [];
+        /// <summary>
+        /// 对应ID的武器是否应该判定为一个装填类枪
+        /// </summary>
+        internal static Dictionary<int, bool> WeaponIsFeederGun = [];
+        /// <summary>
         /// 对应ID的武器是否应该判定为一个霰弹枪
         /// </summary>
         internal static Dictionary<int, bool> WeaponIsShotgunSkt = [];
@@ -544,6 +560,10 @@ namespace CalamityOverhaul
                 if (item != null && item.type != ItemID.None) {//验证物品是否有效
                     WeaponIsShotgunSkt.TryAdd(item.type, false);
                     WeaponIsCrossbow.TryAdd(item.type, false);
+                    WeaponIsFeederGun.TryAdd(item.type, false);
+                    WeaponIsGun.TryAdd(item.type, false);
+                    WeaponIsBow.TryAdd(item.type, false);
+                    WeaponIsHeldRanged.TryAdd(item.type, false);
 
                     if (item.createTile != -1 && !TileToItem.ContainsKey(item.createTile)) {
                         TileToItem.Add(item.createTile, item.type);
@@ -565,12 +585,14 @@ namespace CalamityOverhaul
                             BaseGun gun = projectile.ModProjectile as BaseGun;
                             if (gun != null) {
                                 ItemToBaseGun.Add(item.type, gun);
+                                WeaponIsGun[item.type] = true;
                                 if (gun.IsCrossbow) {
                                     WeaponIsCrossbow[item.type] = true;
                                 }
                             }
                             BaseFeederGun baseFeederGun = projectile.ModProjectile as BaseFeederGun;
                             if (baseFeederGun != null) {
+                                WeaponIsFeederGun[item.type] = true;
                                 if (baseFeederGun.LoadingAmmoAnimation == BaseFeederGun.LoadingAmmoAnimationEnum.Shotgun) {
                                     WeaponIsShotgunSkt[item.type] = true;
                                 }
@@ -579,12 +601,14 @@ namespace CalamityOverhaul
                         if (!ItemToBaseBow.ContainsKey(item.type)) {
                             BaseBow bow = projectile.ModProjectile as BaseBow;
                             if (bow != null) {
+                                WeaponIsBow[item.type] = true;
                                 ItemToBaseBow.Add(item.type, bow);
                             }
                         }
                         if (!ItemToBaseRanged.ContainsKey(item.type)) {
                             BaseHeldRanged ranged = projectile.ModProjectile as BaseHeldRanged;
                             if (ranged != null) {
+                                WeaponIsHeldRanged[item.type] = true;
                                 ItemToBaseRanged.Add(item.type, ranged);
                             }
                         }

@@ -14,8 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles.Van
             Projectile.usesLocalNPCImmunity = false;
         }
 
-        public override void Initialize() {
-            base.Initialize();
+        public override void KnifeInitialize() {
             if (TargetID == ItemID.CactusSword) {
                 Projectile.width = Projectile.height = 40;
                 Length = 50;

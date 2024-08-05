@@ -301,6 +301,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
         }
 
+        public void SetWeaponOccupancyStatus() {
+            Owner.itemTime = 2;
+        }
+
         public override bool PreUpdate() {
             if (!CheckAlive()) {
                 Projectile.Kill();
@@ -313,7 +317,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             CalOwner = Owner.Calamity();
             UpdateSafeMouseInterfaceValue();
             if (CanFire && _safeMouseInterfaceValue) {
-                Owner.itemTime = 2;
+                SetWeaponOccupancyStatus();
                 UpdateRogueStealth();
             }
             if (ModItem.Scope && Projectile.IsOwnedByLocalPlayer()) {

@@ -420,8 +420,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public virtual bool PreInOwnerUpdate() { return true; }
-        public virtual void PostInOwnerUpdare() { }
+        public virtual void PostInOwnerUpdate() { }
         public virtual void Initialize() { }
+        public virtual void UpdateFrame() {
+            if (AnimationMaxFrme > 1) {
+                CWRUtils.ClockFrame(ref Projectile.frame, CuttingFrmeInterval, AnimationMaxFrme - 1);
+            }
+        }
+        public virtual void NoServUpdate() {
+            
+        }
 
         /// <summary>
         /// 几乎所有的逻辑更新都在这里进行
@@ -439,14 +447,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                     Shoot();
                 }
                 UpdateCaches();
-                if (AnimationMaxFrme > 1) {
-                    CWRUtils.ClockFrame(ref Projectile.frame, CuttingFrmeInterval, AnimationMaxFrme - 1);
-                }
-                rotSpeed = Rotation - oldRot;
-                oldRot = Rotation;
-                canShoot = false;
             }
-            PostInOwnerUpdare();
+            PostInOwnerUpdate();
+            UpdateFrame();
+            if (!CWRUtils.isServer) {
+                NoServUpdate();
+            }
+            rotSpeed = Rotation - oldRot;
+            oldRot = Rotation;
+            canShoot = false;
             Time++;
             return false;
         }

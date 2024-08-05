@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public override Texture2D TextureValue => TargetID == ItemID.None ? CWRUtils.GetT2DValue(Texture) : TextureAssets.Item[TargetID].Value;
         public SwingDataStruct SwingData = new SwingDataStruct();
         public SwingAITypeEnum SwingAIType;
+        protected bool autoSetShoot;
         public enum SwingAITypeEnum
         {
             None = 0,
@@ -31,41 +32,75 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         public virtual void SetKnifeProperty() { }
 
-        public override void Initialize() {
+        public sealed override void Initialize() {
             maxSwingTime = Item.useTime;
             SwingData.maxSwingTime = maxSwingTime;
             toProjCoreMode = Projectile.width / 2f;
+            if (autoSetShoot) {
+                ShootSpeed = Item.shootSpeed;
+            }
             if (++SwingIndex > 1) {
                 SwingIndex = 0;
             }
+            KnifeInitialize();
         }
 
-        public override void SwingAI() {
+        public virtual void KnifeInitialize() {
+
+        }
+
+        public virtual void WaveUADBehavior() {
+
+        }
+
+        public virtual void SceptreBehavior() {
+
+        }
+
+        public virtual void MeleeEffect() {
+
+        }
+
+        public sealed override void SwingAI() {
             switch (SwingAIType) {
                 case SwingAITypeEnum.None:
                     SwingBehavior(SwingData);
                     break;
                 case SwingAITypeEnum.UpAndDown:
                     SwingDataStruct swingData = SwingData;
-                    if (SwingIndex == 0) {
-                        SwingBehavior(swingData);
-                    }
-                    else {
+                    if (SwingIndex == 1) {
                         inDrawFlipdiagonally = true;
                         swingData.starArg += 120;
                         swingData.baseSwingSpeed *= -1;
-                        SwingBehavior(swingData);
                     }
+                    WaveUADBehavior();
+                    SwingBehavior(swingData);
                     break;
                 case SwingAITypeEnum.Sceptre:
                     shootSengs = 0.95f;
                     maxSwingTime = 70;
                     canDrawSlashTrail = false;
-                    SwingBehavior(starArg: 13, baseSwingSpeed: 2, ler1_UpLengthSengs: 0.1f
-                        , ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.062f
-                    , ler2_DownLengthSengs: 0.01f, ler2_DownSpeedSengs: 0.14f, ler2_DownSizeSengs: 0
-                    , minClampLength: 160, maxClampLength: 200, ler1Time: 8, maxSwingTime: 60);
+                    SwingData.starArg = 13;
+                    SwingData.baseSwingSpeed = 2;
+                    SwingData.ler1_UpLengthSengs = 0.1f;
+                    SwingData.ler1_UpSpeedSengs = 0.1f;
+                    SwingData.ler1_UpSizeSengs = 0.062f;
+                    SwingData.ler2_DownLengthSengs = 0.01f;
+                    SwingData.ler2_DownSpeedSengs = 0.14f;
+                    SwingData.ler2_DownSizeSengs = 0;
+                    SwingData.minClampLength = 160;
+                    SwingData.maxClampLength = 200;
+                    SwingData.ler1Time = 8;
+                    SwingData.maxSwingTime = 60;
+                    SceptreBehavior();
+                    SwingBehavior(SwingData);
                     break;
+            }
+        }
+
+        public sealed override void NoServUpdate() {
+            if (Time % updateCount == 0) {
+                MeleeEffect();
             }
         }
     }

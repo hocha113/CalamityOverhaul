@@ -98,8 +98,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles.Van
             Lighting.AddLight(Owner.Center, color.ToVector3() * slp);
         }
 
-        public override void Initialize() {
-            base.Initialize();
+        public override void KnifeInitialize() {
             if (TargetID == ItemID.WhitePhasesaber
                 || TargetID == ItemID.PurplePhasesaber
                 || TargetID == ItemID.OrangePhasesaber
@@ -122,6 +121,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles.Van
             LoadGradientTex();
         }
 
-        public override void PostInOwnerUpdare() => AddLight();
+        public override void PostInOwnerUpdate() => AddLight();
     }
 }

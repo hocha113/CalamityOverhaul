@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Length = 124;
         }
 
-        public override void PostInOwnerUpdare() {
+        public override void PostInOwnerUpdate() {
             int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.JungleSpore);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].scale = Main.rand.NextFloat(0.5f, 2.2f);

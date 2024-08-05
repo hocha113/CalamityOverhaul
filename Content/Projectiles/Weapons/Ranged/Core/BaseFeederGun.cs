@@ -567,6 +567,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Projectile.timeLeft = 2;
 
             if (ShootCoolingValue > 0) {
+                SetWeaponOccupancyStatus();
                 ShootCoolingValue--;
             }
             if (ModItem.NoKreLoadTime > 0) {
@@ -681,6 +682,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                         ModItem.SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
                     }
                 }
+                SetWeaponOccupancyStatus();
             }
 
             if (DownLeft) {
