@@ -3753,18 +3753,12 @@ Configs: {
 				'''
 		}
 
-		TemporaryCrisisManagementMatters: {
-			// Label: Emergency crisis management
-			// Tooltip: ""
-		}
-
 		EnableSwordLight: {
 			Label: 启用刀光
 			Tooltip:
 				'''
 				默认开启，许多刀剑类武器将会拥有炫彩亮丽的刀光
 				在绝大多数情况下，这会让游戏变得更酷
-				关闭以禁用这一些
 				'''
 		}
 	}

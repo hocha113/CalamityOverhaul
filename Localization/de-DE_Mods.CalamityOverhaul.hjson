@@ -3737,14 +3737,13 @@ Configs: {
 				'''
 		}
 
-		TemporaryCrisisManagementMatters: {
-			// Label: Emergency crisis management
-			// Tooltip: ""
-		}
-
 		EnableSwordLight: {
-			// Label: Enable Sword Light
-			// Tooltip: ""
+			Label: Schwertlicht aktivieren
+			Tooltip:
+				'''
+				Standardmäßig aktiviert, viele Schwertwaffen werden schillernde Lichteffekte haben.
+				In den meisten Fällen wird dies das Spiel cooler machen.
+				'''
 		}
 	}
 }

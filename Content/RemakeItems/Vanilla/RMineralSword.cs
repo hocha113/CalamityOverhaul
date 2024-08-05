@@ -84,4 +84,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override int TargetID => ItemID.SilverBroadsword;
         public override void SetDefaults(Item item) => item.SetKnifeHeld<EarlierSwordHeld>();
     }
+
+    /// <summary>
+    /// 仙人掌剑
+    /// </summary>
+    internal class RMineralSword9 : BaseRItem
+    {
+        public override bool IsVanilla => true;
+        public override int TargetID => ItemID.CactusSword;
+        public override void SetDefaults(Item item) => item.SetKnifeHeld<EarlierSwordHeld>();
+    }
 }
