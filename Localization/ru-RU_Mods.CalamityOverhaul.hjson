@@ -3799,14 +3799,13 @@ Configs: {
 				'''
 		}
 
-		TemporaryCrisisManagementMatters: {
-			// Label: Emergency crisis management
-			// Tooltip: ""
-		}
-
 		EnableSwordLight: {
-			// Label: Enable Sword Light
-			// Tooltip: ""
+			Label: Включить свет меча
+			Tooltip:
+				'''
+				Включено по умолчанию, многие мечи будут иметь яркие световые эффекты.
+				В большинстве случаев это сделает игру круче.
+				'''
 		}
 	}
 }

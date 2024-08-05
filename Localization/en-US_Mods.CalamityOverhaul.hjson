@@ -3750,14 +3750,13 @@ Configs: {
 				'''
 		}
 
-		TemporaryCrisisManagementMatters: {
-			Label: Emergency crisis management
-			Tooltip: ""
-		}
-
 		EnableSwordLight: {
 			Label: Enable Sword Light
-			Tooltip: ""
+			Tooltip:
+				'''
+				Turned on by default, many sword weapons will have a dazzling bright knife light
+				In the vast majority of cases, this makes the game cooler
+				'''
 		}
 	}
 }

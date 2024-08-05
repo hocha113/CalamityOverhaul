@@ -3741,14 +3741,13 @@ Configs: {
 				'''
 		}
 
-		TemporaryCrisisManagementMatters: {
-			// Label: Emergency crisis management
-			// Tooltip: ""
-		}
-
 		EnableSwordLight: {
-			// Label: Enable Sword Light
-			// Tooltip: ""
+			Label: Activer l'éclat de l'épée
+			Tooltip:
+				'''
+				Activé par défaut, de nombreuses épées auront des effets lumineux éclatants.
+				Dans la plupart des cas, cela rendra le jeu plus cool.
+				'''
 		}
 	}
 }
