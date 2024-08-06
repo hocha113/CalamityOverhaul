@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.Structures
         public static void Load() {
             Type draedonStructures = typeof(DraedonStructures);
             MethodInfo getMethod(string key) => draedonStructures.GetMethod(key, BindingFlags.Public | BindingFlags.Static);
-            MonoModHooks.Add(getMethod("FillPlanetoidLaboratoryChest"), OnPlanetoidChest);
-            //MonoModHooks.Add(getMethod("FillPlagueLaboratoryChest"), OnPlagueChest);
+            CWRHook.Add(getMethod("FillPlanetoidLaboratoryChest"), OnPlanetoidChest);
+            //CWRHook.Add(getMethod("FillPlagueLaboratoryChest"), OnPlagueChest);
         }
 
         public static void UnLoad() { }

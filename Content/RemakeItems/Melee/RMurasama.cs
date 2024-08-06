@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
@@ -20,7 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RMurasama : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>();
+        public override int TargetID => ModContent.ItemType<Murasama>();
         public override int ProtogenesisID => ModContent.ItemType<MurasamaEcType>();
         public int frameCounter = 0;
         public int frame = 0;
@@ -95,16 +96,16 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             tooltips.AddRange(prefixTooltips);
         }
 
-        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-            float oldMultiplicative = damage.Multiplicative;
-            damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
-            damage /= oldMultiplicative;
-        }
-        //因为方法表现不稳定，所以重新使用回 ModifyWeaponDamage 而不是 On_ModifyWeaponDamage
-        //public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+        //public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+        //    float oldMultiplicative = damage.Multiplicative;
         //    damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
-        //    return false;
+        //    damage /= oldMultiplicative;
         //}
+        //因为方法表现不稳定，所以重新使用回 ModifyWeaponDamage 而不是 On_ModifyWeaponDamage
+        public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+            damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
+            return false;
+        }
 
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
             crit += MurasamaEcType.GetOnCrit;

@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Common
                     weaponOut_WeaponLayer_1_Method = weaponOut_WeaponLayer_1_Type.GetMethod("Draw", BindingFlags.Instance | BindingFlags.NonPublic);
                 }
                 if (weaponOut_WeaponLayer_1_Method != null) {
-                    MonoModHooks.Add(weaponOut_WeaponLayer_1_Method, On_MP_Draw_1_Hook);
+                    CWRHook.Add(weaponOut_WeaponLayer_1_Method, On_MP_Draw_1_Hook);
                 }
                 else {
                     Domp1("weaponOut_WeaponLayer_1_Method", "WeaponLayer1.Draw");
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Common
                     weaponOut_WeaponLayer_2_Method = weaponOut_WeaponLayer_2_Type.GetMethod("Draw", BindingFlags.Instance | BindingFlags.NonPublic);
                 }
                 if (weaponOut_WeaponLayer_2_Method != null) {
-                    MonoModHooks.Add(weaponOut_WeaponLayer_2_Method, On_MP_Draw_2_Hook);
+                    CWRHook.Add(weaponOut_WeaponLayer_2_Method, On_MP_Draw_2_Hook);
                 }
                 else {
                     Domp1("weaponOut_WeaponLayer_2_Method", "WeaponLayer12.Draw");
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Common
                     Domp1("weaponDisplay_ModifyDrawInfo_Method", "WeaponDisplayPlayer.ModifyDrawInfo");
                 }
                 if (weaponDisplay_ModifyDrawInfo_Method != null) {
-                    MonoModHooks.Add(weaponDisplay_ModifyDrawInfo_Method, On_MP_Draw_3_Hook);
+                    CWRHook.Add(weaponDisplay_ModifyDrawInfo_Method, On_MP_Draw_3_Hook);
                 }
             }
             else {
@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Common
                 if (trO_PlayerHoldOutAnimation_Type != null) {
                     trO_PlayerHoldOutAnimation_Method = trO_PlayerHoldOutAnimation_Type.GetMethod("ShouldForceUseAnim", BindingFlags.Static | BindingFlags.NonPublic);
                     if (trO_PlayerHoldOutAnimation_Method != null) {
-                        MonoModHooks.Add(trO_PlayerHoldOutAnimation_Method, On_ShouldForceUseAnim_Hook);
+                        CWRHook.Add(trO_PlayerHoldOutAnimation_Method, On_ShouldForceUseAnim_Hook);
                     }
                     else {
                         Domp1("trO_PlayerHoldOutAnimation_Method", "PlayerHoldOutAnimation.ShouldForceUseAnim");
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Common
                 if (trO_itemPowerAttacksTypes != null) {
                     trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method = trO_itemPowerAttacksTypes.GetMethod("AttemptPowerAttackStart", BindingFlags.Instance | BindingFlags.Public);
                     if (trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method != null) {
-                        MonoModHooks.Add(trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method, On_AttemptPowerAttackStart_Hook);
+                        CWRHook.Add(trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method, On_AttemptPowerAttackStart_Hook);
                     }
                     else {
                         Domp1("trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method", "TerrariaOverhaul.ItemPowerAttacks.AttemptPowerAttackStart");
@@ -240,7 +240,7 @@ namespace CalamityOverhaul.Common
                 if (trO_Broadsword_Type != null) {
                     trO_Broadsword_ShouldApplyItemOverhaul_Method = trO_Broadsword_Type.GetMethod("ShouldApplyItemOverhaul", BindingFlags.Instance | BindingFlags.Public);
                     if (trO_Broadsword_ShouldApplyItemOverhaul_Method != null) {
-                        MonoModHooks.Add(trO_Broadsword_ShouldApplyItemOverhaul_Method, On_ShouldApplyItemOverhaul_Hook);
+                        CWRHook.Add(trO_Broadsword_ShouldApplyItemOverhaul_Method, On_ShouldApplyItemOverhaul_Hook);
                     }
                     else {
                         Domp1("trO_Broadsword_ShouldApplyItemOverhaul_Method", "TerrariaOverhaul.Broadsword.ShouldApplyItemOverhaul");
@@ -276,7 +276,7 @@ namespace CalamityOverhaul.Common
                     fS_Utils_OnSpawnEnchCanAffectProjectile_Method = fargowiltasSouls_Utils_Type.GetMethod("OnSpawnEnchCanAffectProjectile", BindingFlags.Static | BindingFlags.Public);
                 }
                 if (fS_Utils_OnSpawnEnchCanAffectProjectile_Method != null) {
-                    MonoModHooks.Add(fS_Utils_OnSpawnEnchCanAffectProjectile_Method, On_OnSpawnEnchCanAffectProjectile_Hook);
+                    CWRHook.Add(fS_Utils_OnSpawnEnchCanAffectProjectile_Method, On_OnSpawnEnchCanAffectProjectile_Hook);
                 }
                 else {
                     Domp1("fS_Utils_OnSpawnEnchCanAffectProjectile_Method", "FargoSoulsUtil.OnSpawnEnchCanAffectProjectile");
@@ -301,7 +301,7 @@ namespace CalamityOverhaul.Common
                     coolerItemVisualEffect_Method = coolerItemVisualEffectPlayerType.GetMethod("ModifyDrawInfo", BindingFlags.Instance | BindingFlags.Public);
                 }
                 if (coolerItemVisualEffect_Method != null) {
-                    MonoModHooks.Add(coolerItemVisualEffect_Method, On_MP_Draw_4_Hook);
+                    CWRHook.Add(coolerItemVisualEffect_Method, On_MP_Draw_4_Hook);
                 }
                 else {
                     Domp1("coolerItemVisualEffect_Method", "CoolerItemVisualEffectPlayer.ModifyDrawInfo");
@@ -335,7 +335,7 @@ namespace CalamityOverhaul.Common
             //这一切不该发生，灾厄没有在这里留下任何可扩展的接口，如果想要那该死血条的为第三方事件靠边站，只能这么做，至少这是我目前能想到的方法
             BossHealthBarManager_Draw_Method = typeof(BossHealthBarManager).GetMethod("Draw", BindingFlags.Instance | BindingFlags.Public);
             if (BossHealthBarManager_Draw_Method != null) {
-                MonoModHooks.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
+                CWRHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
             }
             else {
                 Domp1("BossHealthBarManager_Draw_Method", "CalamityMod.BossHealthBarManager");

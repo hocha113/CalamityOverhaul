@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Common.Effects
             holyInfernoRendererType = typeof(HolyInfernoRenderer);
             onDrawToTargetMethod = holyInfernoRendererType.GetMethod("DrawToTarget", BindingFlags.Instance | BindingFlags.Public);
             if (onDrawToTargetMethod != null) {
-                MonoModHooks.Add(onDrawToTargetMethod, OnDrawToTargetHook);
+                CWRHook.Add(onDrawToTargetMethod, OnDrawToTargetHook);
             }
 
             MiscShaderDataType = typeof(MiscShaderData);

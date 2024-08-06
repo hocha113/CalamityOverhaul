@@ -7,13 +7,10 @@ using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.CameraModifiers;
@@ -188,6 +185,19 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnEnterWorld() {
+            int hookDownNum = 0;
+            foreach (var hook in CWRHook.Hooks.Values) {
+                if (!hook.IsApplied) {
+                    (hook + CWRUtils.Translation("挂载失效", "Mount failure")).DompInConsole();
+                    hookDownNum++;
+                }
+            }
+            if (hookDownNum > 0) {
+                string hookDownText1 = $"有{hookDownNum}个钩子失效了，为了游戏正常，请关闭游戏并重新进入" +
+                    $"，如果这仍旧没有恢复正常，请带上导出的日志寻找模组开发者";
+                hookDownText1.Domp(Color.Red);
+            }
+
             if (CWRMod.Instance.magicStorage != null) {
                 CWRLocText.GetTextValue("MS_Config_Text").Domp(Color.IndianRed);
             }

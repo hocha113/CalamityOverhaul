@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         private static void onSHPCToolFunc(RItemLoader.On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
         void ILoader.LoadData() {
             methodInfo = typeof(SHPC).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
-            MonoModHooks.Add(methodInfo, onSHPCToolFunc);
+            CWRHook.Add(methodInfo, onSHPCToolFunc);
         }
         void ILoader.UnLoadData() => methodInfo = null;
         public override void SetDefaults(Item item) {

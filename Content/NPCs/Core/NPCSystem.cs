@@ -56,37 +56,37 @@ namespace CalamityOverhaul.Content.NPCs.Core
             {
                 onHitByProjectile_Method = getMethodInfo("OnHitByProjectile");
                 if (onHitByProjectile_Method != null) {
-                    MonoModHooks.Add(onHitByProjectile_Method, OnHitByProjectileHook);
+                    CWRHook.Add(onHitByProjectile_Method, OnHitByProjectileHook);
                 }
             }
             {
                 modifyIncomingHit_Method = getMethodInfo("ModifyIncomingHit");
                 if (modifyIncomingHit_Method != null) {
-                    MonoModHooks.Add(modifyIncomingHit_Method, ModifyIncomingHitHook);
+                    CWRHook.Add(modifyIncomingHit_Method, ModifyIncomingHitHook);
                 }
             }
             {
                 onNPCAI_Method = getMethodInfo("NPCAI");
                 if (onNPCAI_Method != null) {
-                    MonoModHooks.Add(onNPCAI_Method, OnNPCAIHook);
+                    CWRHook.Add(onNPCAI_Method, OnNPCAIHook);
                 }
             }
             {
                 onPreDraw_Method = getMethodInfo("PreDraw");
                 if (onPreDraw_Method != null) {
-                    MonoModHooks.Add(onPreDraw_Method, OnPreDrawHook);
+                    CWRHook.Add(onPreDraw_Method, OnPreDrawHook);
                 }
             }
             {
                 onPostDraw_Method = getMethodInfo("PostDraw");
                 if (onPostDraw_Method != null) {
-                    MonoModHooks.Add(onPostDraw_Method, OnPostDrawHook);
+                    CWRHook.Add(onPostDraw_Method, OnPostDrawHook);
                 }
             }
             {
                 onCheckDead_Method = getMethodInfo("CheckDead");
                 if (onCheckDead_Method != null) {
-                    MonoModHooks.Add(onCheckDead_Method, OnCheckDeadHook);
+                    CWRHook.Add(onCheckDead_Method, OnCheckDeadHook);
                 }
             }
         }

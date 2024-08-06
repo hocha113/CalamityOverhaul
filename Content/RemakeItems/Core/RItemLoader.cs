@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework.Graphics;
+using MonoMod.RuntimeDetour;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -72,52 +74,52 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
             if (onSetDefaultsMethod != null && !ModLoader.HasMod("MagicBuilder")) {
                 //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发生严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
-                //MonoModHooks.Add(onSetDefaultsMethod, OnSetDefaultsHook);
+                //CWRHook.Add(onSetDefaultsMethod, OnSetDefaultsHook);
             }
             if (onShootMethod != null) {
-                MonoModHooks.Add(onShootMethod, OnShootHook);
+                CWRHook.Add(onShootMethod, OnShootHook);
             }
             if (onModifyShootStatsMethod != null) {
-                MonoModHooks.Add(onModifyShootStatsMethod, OnModifyShootStatsHook);
+                CWRHook.Add(onModifyShootStatsMethod, OnModifyShootStatsHook);
             }
             if (onHitNPCMethod != null) {
-                MonoModHooks.Add(onHitNPCMethod, OnHitNPCHook);
+                CWRHook.Add(onHitNPCMethod, OnHitNPCHook);
             }
             if (onHitPvpMethod != null) {
-                MonoModHooks.Add(onHitPvpMethod, OnHitPvpHook);
+                CWRHook.Add(onHitPvpMethod, OnHitPvpHook);
             }
             if (onModifyHitNPCMethod != null) {
-                MonoModHooks.Add(onModifyHitNPCMethod, OnModifyHitNPCHook);
+                CWRHook.Add(onModifyHitNPCMethod, OnModifyHitNPCHook);
             }
             if (onCanUseItemMethod != null) {
-                MonoModHooks.Add(onCanUseItemMethod, OnCanUseItemHook);
+                CWRHook.Add(onCanUseItemMethod, OnCanUseItemHook);
             }
             if (onPreDrawInInventoryMethod != null) {
-                MonoModHooks.Add(onPreDrawInInventoryMethod, OnPreDrawInInventoryHook);
+                CWRHook.Add(onPreDrawInInventoryMethod, OnPreDrawInInventoryHook);
             }
             if (onUseItemMethod != null) {
-                MonoModHooks.Add(onUseItemMethod, OnUseItemHook);
+                CWRHook.Add(onUseItemMethod, OnUseItemHook);
             }
             if (onUseAnimationMethod != null) {
-                MonoModHooks.Add(onUseAnimationMethod, OnUseAnimationHook);
+                CWRHook.Add(onUseAnimationMethod, OnUseAnimationHook);
             }
             if (onModifyWeaponCritMethod != null) {
-                MonoModHooks.Add(onModifyWeaponCritMethod, OnModifyWeaponCritHook);
+                CWRHook.Add(onModifyWeaponCritMethod, OnModifyWeaponCritHook);
             }
             if (onModifyItemLootMethod != null) {
-                MonoModHooks.Add(onModifyItemLootMethod, OnModifyItemLootHook);
+                CWRHook.Add(onModifyItemLootMethod, OnModifyItemLootHook);
             }
             if (onCanConsumeAmmoMethod != null) {
-                MonoModHooks.Add(onCanConsumeAmmoMethod, OnCanConsumeAmmoHook);
+                CWRHook.Add(onCanConsumeAmmoMethod, OnCanConsumeAmmoHook);
             }
             if (onModifyWeaponDamageMethod != null) {
-                MonoModHooks.Add(onModifyWeaponDamageMethod, OnModifyWeaponDamageHook);
+                CWRHook.Add(onModifyWeaponDamageMethod, OnModifyWeaponDamageHook);
             }
             if (onUpdateAccessoryMethod != null) {
-                MonoModHooks.Add(onUpdateAccessoryMethod, OnUpdateAccessoryHook);
+                CWRHook.Add(onUpdateAccessoryMethod, OnUpdateAccessoryHook);
             }
             if (onAltFunctionUseMethod != null) {
-                MonoModHooks.Add(onAltFunctionUseMethod, OnAltFunctionUseHook);
+                CWRHook.Add(onAltFunctionUseMethod, OnAltFunctionUseHook);
             }
         }
 
