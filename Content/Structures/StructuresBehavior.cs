@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.World;
+using CalamityOverhaul.Common;
 using System;
 using System.Reflection;
 using Terraria;

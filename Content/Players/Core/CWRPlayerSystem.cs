@@ -1,4 +1,5 @@
 ﻿using CalamityMod.CalPlayer;
+using CalamityOverhaul.Common;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
