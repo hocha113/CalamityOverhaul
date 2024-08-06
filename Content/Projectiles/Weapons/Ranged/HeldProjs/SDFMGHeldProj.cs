@@ -20,12 +20,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShoot() {
-            Vector2 gundir = Projectile.rotation.ToRotationVector2();
-
-            Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             if (Main.rand.NextBool(5)) {
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center + gundir * 3, ShootVelocity
+                Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , ModContent.ProjectileType<FishronRPG>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
             }

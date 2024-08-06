@@ -28,28 +28,27 @@ namespace CalamityOverhaul.Content.UIs
             }
         }
 
-        public static void ILMenuLoadDrawFunc() {
-            IL_Main.DrawMenu += context => {
-                ILCursor potlevel = new(context);
+        public static void ILMenuLoadDrawFunc(ILContext il) {
+            ILCursor potlevel = new(il);
 
-                if (!potlevel.TryGotoNext(
-                    i => i.MatchLdsfld(typeof(Main), nameof(Main.spriteBatch)),
-                    i => i.Match(OpCodes.Ldc_I4_0),
-                    i => i.MatchLdsfld(typeof(BlendState), nameof(BlendState.AlphaBlend)),
-                    i => i.MatchLdsfld(typeof(Main), nameof(Main.SamplerStateForCursor)),
-                    i => i.MatchLdsfld(typeof(DepthStencilState), nameof(DepthStencilState.None)),
-                    i => i.MatchLdsfld(typeof(RasterizerState), nameof(RasterizerState.CullCounterClockwise)),
-                    i => i.Match(OpCodes.Ldnull),
-                    i => i.MatchCall(typeof(Main), $"get_{nameof(Main.UIScaleMatrix)}")
-                )) {
-                    string errortext = $"{nameof(ILMainMenuModification)}: IL 挂载失败，是否是目标流已经更改或者移除框架?";
-                    errortext.DompInConsole();
-                    throw new Exception(errortext);
+            if (!potlevel.TryGotoNext(
+                i => i.MatchLdsfld(typeof(Main), nameof(Main.spriteBatch)),
+                i => i.Match(OpCodes.Ldc_I4_0),
+                i => i.MatchLdsfld(typeof(BlendState), nameof(BlendState.AlphaBlend)),
+                i => i.MatchLdsfld(typeof(Main), nameof(Main.SamplerStateForCursor)),
+                i => i.MatchLdsfld(typeof(DepthStencilState), nameof(DepthStencilState.None)),
+                i => i.MatchLdsfld(typeof(RasterizerState), nameof(RasterizerState.CullCounterClockwise)),
+                i => i.Match(OpCodes.Ldnull),
+                i => i.MatchCall(typeof(Main), $"get_{nameof(Main.UIScaleMatrix)}")
+            )) {
+                string conxt2 = CWRUtils.Translation("IL 挂载失败，是否是目标流已经更改或者移除框架?"
+                    , "IL mount failed. Has the target stream changed or the frame has been removed?");
+                string errortext = $"{nameof(ILMainMenuModification)}: {conxt2} ";
+                errortext.DompInConsole();
+                throw new Exception(errortext);
+            }
 
-                }
-
-                _ = potlevel.EmitDelegate(() => Draw(Main.spriteBatch));
-            };
+            _ = potlevel.EmitDelegate(() => Draw(Main.spriteBatch));
         }
 
         /// <summary>
@@ -57,13 +56,14 @@ namespace CalamityOverhaul.Content.UIs
         /// </summary>
         public static void Load() {
             HanderLoadBaseMenuOverUIType();
-            ILMenuLoadDrawFunc();
+            IL_Main.DrawMenu += ILMenuLoadDrawFunc;
         }
 
         public static void Unload() {
             foreach (BaseMainMenuOverUI baseMainMenuOverUI in MainMenuOverUIInstances) {
                 baseMainMenuOverUI.UnLoad();
             }
+            IL_Main.DrawMenu -= ILMenuLoadDrawFunc;
             MainMenuOverUIInstances = null;
         }
 

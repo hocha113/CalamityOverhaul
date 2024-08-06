@@ -15,5 +15,9 @@ namespace CalamityOverhaul.Content.Players.Core
         public virtual bool On_ModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers) {
             return true;
         }
+
+        public virtual bool? CanSwitchWeapon(Player player) {
+            return null;
+        }
     }
 }

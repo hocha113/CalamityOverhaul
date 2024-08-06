@@ -97,6 +97,17 @@ namespace CalamityOverhaul.Common
             return reset;
         }
 
+        static string text1 => CWRUtils.Translation("未成功加载", "Failed load");
+        static string text2 => CWRUtils.Translation("是否是", "whether it is");
+        static string text3 => CWRUtils.Translation("已经改动?", "Has it been changed?");
+        static string text4 => CWRUtils.Translation("未加载模组", "The mod is not loaded");
+        static void Domp1(string value1, string value2) {
+            $"{text1} {value1} {text2} {value2} {text3}".DompInConsole();
+        }
+        static void Domp2(string value1) {
+            $"{text4} {value1}".DompInConsole();
+        }
+
         public static void Load() {
             #region weaponOut
             if (CWRMod.Instance.weaponOut != null) {
@@ -120,7 +131,7 @@ namespace CalamityOverhaul.Common
                     MonoModHooks.Add(weaponOut_WeaponLayer_1_Method, On_MP_Draw_1_Hook);
                 }
                 else {
-                    "未成功加载 weaponOut_WeaponLayer_1_Method 是否是WeaponLayer1.Draw已经改动?".DompInConsole();
+                    Domp1("weaponOut_WeaponLayer_1_Method", "WeaponLayer1.Draw");
                 }
 
                 if (weaponOut_WeaponLayer_2_Type != null) {
@@ -130,11 +141,11 @@ namespace CalamityOverhaul.Common
                     MonoModHooks.Add(weaponOut_WeaponLayer_2_Method, On_MP_Draw_2_Hook);
                 }
                 else {
-                    "未成功加载 weaponOut_WeaponLayer_2_Method 是否是WeaponLayer12.Draw已经改动?".DompInConsole();
+                    Domp1("weaponOut_WeaponLayer_2_Method", "WeaponLayer12.Draw");
                 }
             }
             else {
-                "未加载模组 WeaponOut".DompInConsole();
+                Domp2("WeaponOut");
             }
             #endregion
 
@@ -151,14 +162,14 @@ namespace CalamityOverhaul.Common
                     weaponDisplay_ModifyDrawInfo_Method = weaponDisplay_ModifyDrawInfo_Type.GetMethod("ModifyDrawInfo", BindingFlags.Instance | BindingFlags.Public);
                 }
                 else {
-                    "未成功加载 weaponDisplay_ModifyDrawInfo_Method 是否是WeaponDisplayPlayer.ModifyDrawInfo已经改动?".DompInConsole();
+                    Domp1("weaponDisplay_ModifyDrawInfo_Method", "WeaponDisplayPlayer.ModifyDrawInfo");
                 }
                 if (weaponDisplay_ModifyDrawInfo_Method != null) {
                     MonoModHooks.Add(weaponDisplay_ModifyDrawInfo_Method, On_MP_Draw_3_Hook);
                 }
             }
             else {
-                "未加载模组 WeaponDisplay".DompInConsole();
+                Domp2("WeaponDisplay");
             }
             #endregion
 
@@ -193,11 +204,11 @@ namespace CalamityOverhaul.Common
                         MonoModHooks.Add(trO_PlayerHoldOutAnimation_Method, On_ShouldForceUseAnim_Hook);
                     }
                     else {
-                        "未成功加载 trO_PlayerHoldOutAnimation_Method 是否是 PlayerHoldOutAnimation.ShouldForceUseAnim 已经改动?".DompInConsole();
+                        Domp1("trO_PlayerHoldOutAnimation_Method", "PlayerHoldOutAnimation.ShouldForceUseAnim");
                     }
                 }
                 else {
-                    "未成功加载 trO_PlayerHoldOutAnimation_Type 是否是 TerrariaOverhaul.PlayerHoldOutAnimation 已经改动?".DompInConsole();
+                    Domp1("trO_PlayerHoldOutAnimation_Type", "TerrariaOverhaul.PlayerHoldOutAnimation");
                 }
 
                 if (trO_CrosshairSystem_Type != null) {
@@ -206,11 +217,11 @@ namespace CalamityOverhaul.Common
 
                     }
                     else {
-                        "未成功加载 trO_Crosshair_AddImpulse_Method 是否是 TerrariaOverhaul.CrosshairSystem.AddImpulse 已经改动?".DompInConsole();
+                        Domp1("trO_Crosshair_AddImpulse_Method", "TerrariaOverhaul.CrosshairSystem.AddImpulse");
                     }
                 }
                 else {
-                    "未成功加载 trO_CrosshairSystem_Type 是否是 TerrariaOverhaul.CrosshairSystem 已经改动?".DompInConsole();
+                    Domp1("trO_CrosshairSystem_Type", "TerrariaOverhaul.CrosshairSystem");
                 }
 
                 if (trO_itemPowerAttacksTypes != null) {
@@ -219,11 +230,11 @@ namespace CalamityOverhaul.Common
                         MonoModHooks.Add(trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method, On_AttemptPowerAttackStart_Hook);
                     }
                     else {
-                        "未成功加载 trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method 是否是 TerrariaOverhaul.ItemPowerAttacks.AttemptPowerAttackStart 已经改动?".DompInConsole();
+                        Domp1("trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method", "TerrariaOverhaul.ItemPowerAttacks.AttemptPowerAttackStart");
                     }
                 }
                 else {
-                    "未成功加载 trO_itemPowerAttacksTypes 是否是 TerrariaOverhaul.ItemPowerAttacks 已经改动?".DompInConsole();
+                    Domp1("trO_itemPowerAttacksTypes", "TerrariaOverhaul.ItemPowerAttacks");
                 }
 
                 if (trO_Broadsword_Type != null) {
@@ -232,15 +243,15 @@ namespace CalamityOverhaul.Common
                         MonoModHooks.Add(trO_Broadsword_ShouldApplyItemOverhaul_Method, On_ShouldApplyItemOverhaul_Hook);
                     }
                     else {
-                        "未成功加载 trO_Broadsword_ShouldApplyItemOverhaul_Method 是否是 TerrariaOverhaul.Broadsword.ShouldApplyItemOverhaul 已经改动?".DompInConsole();
+                        Domp1("trO_Broadsword_ShouldApplyItemOverhaul_Method", "TerrariaOverhaul.Broadsword.ShouldApplyItemOverhaul");
                     }
                 }
                 else {
-                    "未成功加载 trO_Broadsword_Type 是否是 TerrariaOverhaul.Broadsword 已经改动?".DompInConsole();
+                    Domp1("trO_Broadsword_Type", "TerrariaOverhaul.Broadsword");
                 }
             }
             else {
-                "未加载模组 TerrariaOverhaul".DompInConsole();
+                Domp2("TerrariaOverhaul");
             }
 
             #endregion
@@ -251,7 +262,7 @@ namespace CalamityOverhaul.Common
 
             }
             else {
-                "未加载模组 CatalystMod".DompInConsole();
+                Domp2("CatalystMod");
             }
 
             #endregion
@@ -268,11 +279,11 @@ namespace CalamityOverhaul.Common
                     MonoModHooks.Add(fS_Utils_OnSpawnEnchCanAffectProjectile_Method, On_OnSpawnEnchCanAffectProjectile_Hook);
                 }
                 else {
-                    "未成功加载 fS_Utils_OnSpawnEnchCanAffectProjectile_Method 是否是 FargoSoulsUtil.OnSpawnEnchCanAffectProjectile已经改动?".DompInConsole();
+                    Domp1("fS_Utils_OnSpawnEnchCanAffectProjectile_Method", "FargoSoulsUtil.OnSpawnEnchCanAffectProjectile");
                 }
             }
             else {
-                "未加载模组 FargowiltasSouls".DompInConsole();
+                Domp2("FargowiltasSouls");
             }
 
             #endregion
@@ -293,11 +304,11 @@ namespace CalamityOverhaul.Common
                     MonoModHooks.Add(coolerItemVisualEffect_Method, On_MP_Draw_4_Hook);
                 }
                 else {
-                    "未成功加载 coolerItemVisualEffect_Method CoolerItemVisualEffectPlayer.ModifyDrawInfo已经改动?".DompInConsole();
+                    Domp1("coolerItemVisualEffect_Method", "CoolerItemVisualEffectPlayer.ModifyDrawInfo");
                 }
             }
             else {
-                "未加载模组 CoolerItemVisualEffect".DompInConsole();
+                Domp2("CoolerItemVisualEffect");
             }
 
             #endregion
@@ -310,11 +321,11 @@ namespace CalamityOverhaul.Common
                     MS_Config_recursionCraftingDepth_FieldInfo = MS_Config_Type.GetField("recursionCraftingDepth", BindingFlags.Public | BindingFlags.Instance);
                 }
                 else {
-                    "未成功加载 MagicStorage_MagicStorageConfig_Typ 失败 是否是MagicStorage.MagicStorageConfig已经改动?".DompInConsole();
+                    Domp1("MagicStorage_MagicStorageConfig_Typ", "MagicStorage.MagicStorageConfig");
                 }
             }
             else {
-                "未加载模组 MagicStorage".DompInConsole();
+                Domp2("MagicStorage");
             }
 
             #endregion
@@ -327,7 +338,7 @@ namespace CalamityOverhaul.Common
                 MonoModHooks.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
             }
             else {
-                "未成功加载 BossHealthBarManager_Draw_Method 是否是 CalamityMod.BossHealthBarManager已经改动?".DompInConsole();
+                Domp1("BossHealthBarManager_Draw_Method", "CalamityMod.BossHealthBarManager");
             }
 
             #endregion

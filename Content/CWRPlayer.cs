@@ -7,10 +7,13 @@ using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.CameraModifiers;
@@ -104,6 +107,10 @@ namespace CalamityOverhaul.Content
         public bool RustyMedallion_Value;
         public int ReceivingPlatformTime;
         public int NoSemberCloneSpanTime;
+        /// <summary>
+        /// 如果该时间大于0，则玩家不能切换武器，这个值每帧会自动减1
+        /// </summary>
+        public int DontSwitchWeaponTime;
 
         private Vector2 oldPlayerPositionChange;
         /// <summary>
@@ -131,6 +138,11 @@ namespace CalamityOverhaul.Content
                 Quiver_back_Asset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Players/Quiver_back");
                 IceGod_back_Asset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Players/IceGod_back");
             }
+        }
+
+        public override void Unload() {
+            Quiver_back_Asset = null;
+            IceGod_back_Asset = null;
         }
 
         public override void Initialize() {
@@ -245,6 +257,9 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostUpdate() {
+            if (DontSwitchWeaponTime > 0) {
+                DontSwitchWeaponTime--;
+            }
             SittingFoodStallChair();
             if (RecoilAccelerationAddBool) {
                 Player.velocity += RecoilAccelerationValue;

@@ -303,6 +303,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public void SetWeaponOccupancyStatus() {
             Owner.itemTime = 2;
+            Owner.CWR().DontSwitchWeaponTime = 2;
         }
 
         public override bool PreUpdate() {
