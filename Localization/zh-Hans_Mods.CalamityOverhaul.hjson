@@ -1938,12 +1938,12 @@ Items: {
 	}
 
 	DarkFrostSolstice: {
-		DisplayName: 暗寒狂涌
+		DisplayName: 凛冬神性
 		Tooltip:
 			'''
 			使用雪球作为弹药
 			发射冰雹和极地幽火
-			每开火20次进入一次超频爆发，在鼠标处召唤凛冬神性
+			每开火20次进入一次超频爆发，在鼠标处生成一个巨大的冰柱
 			'''
 	}
 

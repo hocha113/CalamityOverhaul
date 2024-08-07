@@ -116,7 +116,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public override bool OnHandheldDisplayBool {
             get {
-                return WeaponHandheldDisplay ? true : CanFire || kreloadTimeValue > 0;
+                bool reset = WeaponHandheldDisplay;
+                if (!HandheldDisplay) {
+                    reset = false;
+                }
+                return reset ? true : CanFire || kreloadTimeValue > 0;
             }
         }
 

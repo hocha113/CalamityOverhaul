@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content
                 }
                 //添加瘟疫长矛的合成
                 Recipe.Create(ItemType<DiseasedPike>())
-                    .AddIngredient(ItemType<HellionFlowerSpear>(), 5)//添加花刺长矛
+                    .AddIngredient(ItemType<HellionFlowerSpear>())//添加花刺长矛
                     .AddIngredient(ItemType<PestilenceIngot>(), 5)//添加瘟疫锭
                     .AddTile(TileType<PlagueInfuser>())
                     .Register();

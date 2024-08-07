@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Events;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System.IO;
@@ -57,6 +58,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnWorldLoad() {
+            ModGanged.Set_MS_Config_recursionCraftingDepth();
             if (SupertableUI.Instance != null) {
                 SupertableUI.Instance.loadOrUnLoadZenithWorldAsset = true;
                 SupertableUI.Instance.Active = false;

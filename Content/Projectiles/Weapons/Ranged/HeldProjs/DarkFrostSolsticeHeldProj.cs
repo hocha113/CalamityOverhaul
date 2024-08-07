@@ -36,6 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RecoilRetroForceMagnitude = 5;
             EnableRecoilRetroEffect = true;
             CanCreateCaseEjection = false;
+            HandheldDisplay = false;
             LoadingAA_None.loadingAA_None_Y = 50;
             SpwanGunDustMngsData.dustID1 = 76;
             SpwanGunDustMngsData.dustID2 = 149;

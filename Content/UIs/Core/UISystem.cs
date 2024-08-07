@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
 
-namespace CalamityOverhaul.Content.UIs
+namespace CalamityOverhaul.Content.UIs.Core
 {
     internal class UISystem : ModSystem
     {
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
-            int mouseIndex = layers.FindIndex((GameInterfaceLayer layer) => layer.Name == "Vanilla: Mouse Text");
+            int mouseIndex = layers.FindIndex((layer) => layer.Name == "Vanilla: Mouse Text");
             if (mouseIndex != -1) {
                 layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("Sp UI", delegate {
                     if (CWRServerConfig.Instance.AddExtrasContent && SupertableUI.Instance.Active) {

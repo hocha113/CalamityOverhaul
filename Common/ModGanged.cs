@@ -384,9 +384,8 @@ namespace CalamityOverhaul.Common
             if (recursionCraftingDepthNum == 0) {
                 return false;
             }
-
+            
             MS_Config_recursionCraftingDepth_FieldInfo.SetValue(modConfig, 0);
-
             return true;
         }
 
