@@ -11,8 +11,7 @@ namespace CalamityOverhaul.Common
     /// </summary>
     public class CWRHook : ILoader
     {
-        private static ConcurrentDictionary<(MethodBase, Delegate), Hook> 
-            _hooks = new ConcurrentDictionary<(MethodBase, Delegate), Hook>();
+        private static ConcurrentDictionary<(MethodBase, Delegate), Hook> _hooks = new ConcurrentDictionary<(MethodBase, Delegate), Hook>();
         /// <summary>
         /// 缓存的被添加过的钩子实例，目前没有其他作用，仅仅是延长生命周期
         /// </summary>
@@ -50,7 +49,7 @@ namespace CalamityOverhaul.Common
                 }
             }
             if (hookDownNum > 0) {
-                string hookDownText1 = $"{hookDownNum}个钩子失效了，为了游戏正常，请关闭游戏并重新进入，如果这仍旧没有恢复正常，请带上导出的日志寻找模组开发者";
+                string hookDownText1 = $"{hookDownNum} " + CWRLocText.GetTextValue("Error_1");
                 hookDownText1.Domp(Color.Red);
                 return false;
             }

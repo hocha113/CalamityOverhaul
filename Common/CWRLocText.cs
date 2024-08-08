@@ -122,6 +122,8 @@ namespace CalamityOverhaul.Common
         public LocalizedText IconUI_Text4 { get; private set; }
         public LocalizedText IconUI_Text5 { get; private set; }
         public LocalizedText IconUI_Text6 { get; private set; }
+        public LocalizedText IconUI_Text7 { get; private set; }
+        public LocalizedText Error_1 { get; private set; }
         public LocalizedText Wap_Minishark_Text { get; private set; }
         public LocalizedText Wap_Megashark_Text { get; private set; }
         public LocalizedText Wap_HandGun_Text { get; private set; }
