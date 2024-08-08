@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -20,19 +19,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
             Projectile.ignoreWater = true;
-            Projectile.MaxUpdates = 5;
+            Projectile.extraUpdates = 3;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 16;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
         }
 
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
             SpanDust();
-            if (Main.rand.NextBool(8)) {
-                SpanDust();
-                //Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height
-                //    , Main.rand.NextBool(3) ? 56 : 242, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
-                //Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height
-                //    , DustID.BlueFairy, Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
-            }
+            Projectile.ai[0]++;
         }
 
         public void SpanDust() {
@@ -75,12 +70,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void OnKill(int timeLeft) {
-            SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
+            Projectile.Explode(300);
+
             Lighting.AddLight(Projectile.position, Color.Blue.ToVector3() * 3);
-            Projectile.width = 600;
-            Projectile.height = 600;
-            Projectile.Center = Projectile.position;
-            Projectile.Damage();
+
             for (int j = 0; j < 3; j++) {
                 int dustType = Main.rand.NextBool(3) ? 56 : 242;
                 float scale = Main.rand.NextFloat(1f, 1.35f);
@@ -109,17 +102,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D mainValue = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(
-                mainValue,
-                Projectile.Center - Main.screenPosition,
-                null,
-                Color.White,
-                Projectile.rotation + MathHelper.PiOver4,
-                CWRUtils.GetOrig(mainValue),
-                Projectile.scale,
-                SpriteEffects.None,
-                0
-                );
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 orig = CWRUtils.GetOrig(mainValue);
+            float rot = Projectile.rotation + MathHelper.PiOver4;
+            for (int k = 0; k < Projectile.oldPos.Length; k++) {
+                Vector2 offsetPos = Projectile.oldPos[k].To(Projectile.position);
+                Vector2 drawPos2 = drawPos - offsetPos;
+                Color color = Projectile.GetAlpha(Color.Pink) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+                Main.EntitySpriteDraw(mainValue, drawPos2, null, color, rot, orig, Projectile.scale, SpriteEffects.None, 0);
+            }
+            CWRUtils.DrawMarginEffect(Main.spriteBatch, mainValue, (int)Projectile.ai[0], drawPos, null, Color.Pink, rot, orig, Projectile.scale, 0);
+            Main.EntitySpriteDraw(mainValue, drawPos, null, Color.White, rot, orig, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

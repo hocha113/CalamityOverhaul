@@ -3571,6 +3571,7 @@ Projectiles: {
 	// PhasebladeHeld.DisplayName: Phaseblade Held
 	// FrostbrandHeld.DisplayName: Frostbrand Held
 	// IceBladeHeld.DisplayName: Ice Blade Held
+	// SpwanTextProj.DisplayName: Spwan Text Proj
 }
 
 Configs: {
@@ -4451,6 +4452,7 @@ TextContent: {
 		IconUI_Text5: Доноры
 		IconUI_Text6: Тестирование баланса
 		// IconUI_Text7: View log
+		// Error_1: hook failed, in order to normal the game, please close the game and re-enter, if this still does not return to normal, please bring the exported log to find the module developer
 		Wap_BubbleGun_Text:
 			'''
 			Выбрасывает много взрывающихся морских пузырей

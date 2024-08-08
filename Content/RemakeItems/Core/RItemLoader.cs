@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static CalamityOverhaul.Content.RemakeItems.Core.BaseRItem;
@@ -17,6 +18,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
     internal class RItemLoader : GlobalItem, ILoader
     {
         #region On and IL
+        internal delegate bool On_Item_Dalegate(Item item);
+        internal delegate bool On_AllowPrefix_Dalegate(Item item, int pre);
         internal delegate void On_SetDefaults_Dalegate(Item item, bool createModItem = true);
         internal delegate bool On_Shoot_Dalegate(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, bool defaultResult = true);
         internal delegate void On_ModifyShootStats_Delegate(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback);
@@ -36,6 +39,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         internal delegate void On_ModItem_ModifyTooltips_Delegate(object obj, List<TooltipLine> list);
 
         public static Type itemLoaderType;
+        public static MethodBase onMeleePrefixMethod;
+        public static MethodBase onAllowPrefixMethod;
         public static MethodBase onSetDefaultsMethod;
         public static MethodBase onShootMethod;
         public static MethodBase onModifyShootStatsMethod;
@@ -71,6 +76,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onModifyWeaponDamageMethod = itemLoaderType.GetMethod("ModifyWeaponDamage", BindingFlags.Public | BindingFlags.Static);
             onUpdateAccessoryMethod = itemLoaderType.GetMethod("UpdateAccessory", BindingFlags.Public | BindingFlags.Static);
             onAltFunctionUseMethod = itemLoaderType.GetMethod("AltFunctionUse", BindingFlags.Public | BindingFlags.Static);
+            onAllowPrefixMethod = itemLoaderType.GetMethod("AllowPrefix", BindingFlags.Public | BindingFlags.Static);
+            onMeleePrefixMethod = itemLoaderType.GetMethod("MeleePrefix", BindingFlags.NonPublic | BindingFlags.Static);
 
             if (onSetDefaultsMethod != null && !ModLoader.HasMod("MagicBuilder")) {
                 //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发生严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
@@ -121,6 +128,12 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (onAltFunctionUseMethod != null) {
                 CWRHook.Add(onAltFunctionUseMethod, OnAltFunctionUseHook);
             }
+            if (onAltFunctionUseMethod != null) {
+                CWRHook.Add(onMeleePrefixMethod, OnMeleePrefixHook);
+            }
+            if (onAltFunctionUseMethod != null) {
+                CWRHook.Add(onAllowPrefixMethod, OnAllowPrefixHook);
+            }
         }
 
         void ILoader.UnLoadData() {
@@ -140,6 +153,38 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onModifyWeaponDamageMethod = null;
             onUpdateAccessoryMethod = null;
             onAltFunctionUseMethod = null;
+        }
+
+        public bool OnAllowPrefixHook(On_AllowPrefix_Dalegate orig, Item item, int pre) {
+            if (item.type == ItemID.None) {
+                return false;
+            }
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                bool? rasg = ritem.On_AllowPreFix(item, pre);
+                if (rasg.HasValue) {
+                    return rasg.Value;
+                }
+            }
+            if (item.CWR().GetAllowPrefix) {
+                return true;
+            }
+            return orig.Invoke(item, pre);
+        }
+
+        public bool OnMeleePrefixHook(On_Item_Dalegate orig, Item item) {
+            if (item.type == ItemID.None) {
+                return false;
+            }
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                bool? rasg = ritem.On_MeleePreFix(item);
+                if (rasg.HasValue) {
+                    return rasg.Value;
+                }
+            }
+            if (item.CWR().GetMeleePrefix) {
+                return true;
+            }
+            return orig.Invoke(item);
         }
 
         /// <summary>

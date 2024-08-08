@@ -4,6 +4,7 @@ using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -133,6 +134,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             }
             set => _canDrawSlashTrail = value;
         }
+        /// <summary>
+        /// 控制发射布尔值，在每帧更新末尾自动恢复成<see langword="false"/>
+        /// </summary>
         protected bool canShoot;
         /// <summary>
         /// 是否跟随玩家进行朝向纠正，默认为<see langword="true"/>
@@ -158,23 +162,38 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 较为稳妥的获取一个正确的刀尖单位方向向量
         /// </summary>
         protected Vector2 safeInSwingUnit => Owner.Center.To(Projectile.Center).UnitVector();
+        /// <summary>
+        /// 射弹基本速度，受攻速加成影响
+        /// </summary>
         protected Vector2 ShootVelocity => UnitToMouseV * ShootSpeed / SetSwingSpeed(1);
+        /// <summary>
+        /// 生成抛射物的位置
+        /// </summary>
         protected Vector2 ShootSpanPos => Owner.GetPlayerStabilityCenter() + UnitToMouseV * Length * 0.5f;
+        /// <summary>
+        /// 射弹源
+        /// </summary>
         protected IEntitySource Source => Owner.GetSource_ItemUse(Item);
         /// <summary>
         /// 绘制中是否进行对角线翻转
         /// </summary>
         protected bool inDrawFlipdiagonally;
         /// <summary>
-        /// 刀光流形采样图
+        /// 刀光流形采样图路径
         /// </summary>
         public virtual string trailTexturePath => "";
         /// <summary>
-        /// 颜色采样图
+        /// 颜色采样图路径
         /// </summary>
         public virtual string gradientTexturePath => "";
+        /// <summary>
+        /// 光效遮住图路径
+        /// </summary>
+        public virtual string glowTexturePath => "";
         public Texture2D TrailTexture => SwingSystem.trailTextures[Type].Value;
         public Texture2D GradientTexture => SwingSystem.gradientTextures[Type].Value;
+        public bool canDrawGlow { get; private set; }
+        private Asset<Texture2D> glowTexValue;
 
         public struct SwingDataStruct
         {
@@ -234,6 +253,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
         #endregion
         public sealed override void SetDefaults() {
+            if (!Main.dedServ) {
+                canDrawGlow = SwingSystem.glowTextures.TryGetValue(Type, out glowTexValue);
+            }
             Length = OrigLength;
             if (PreSetSwingProperty()) {
                 Projectile.DamageType = DamageClass.Melee;
@@ -365,19 +387,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public virtual void SwingBehavior(SwingDataStruct swingData) =>
-            SwingBehavior(swingData.starArg,
-                          swingData.baseSwingSpeed,
-                          swingData.ler1_UpLengthSengs,
-                          swingData.ler1_UpSpeedSengs,
-                          swingData.ler1_UpSizeSengs,
-                          swingData.ler2_DownLengthSengs,
-                          swingData.ler2_DownSpeedSengs,
-                          swingData.ler2_DownSizeSengs,
-                          swingData.minClampLength,
-                          swingData.maxClampLength,
-                          swingData.ler1Time,
-                          swingData.maxSwingTime,
-                          swingData.overSpeedUpSengs);
+            SwingBehavior(
+                swingData.starArg,
+                swingData.baseSwingSpeed,
+                swingData.ler1_UpLengthSengs,
+                swingData.ler1_UpSpeedSengs,
+                swingData.ler1_UpSizeSengs,
+                swingData.ler2_DownLengthSengs,
+                swingData.ler2_DownSpeedSengs,
+                swingData.ler2_DownSizeSengs,
+                swingData.minClampLength,
+                swingData.maxClampLength,
+                swingData.ler1Time,
+                swingData.maxSwingTime,
+                swingData.overSpeedUpSengs
+            );
 
         #endregion
         public override bool ShouldUpdatePosition() => false;
@@ -635,8 +659,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 color = Color.White;
             }
 
-            Main.EntitySpriteDraw(texture, drawPosValue - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY, new Rectangle?(rect)
+            Vector2 trueDrawPos = drawPosValue - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;
+
+            Main.EntitySpriteDraw(texture, trueDrawPos, new Rectangle?(rect)
                 , color, drawRoting, drawOrigin, Projectile.scale, effects, 0);
+            if (canDrawGlow) {
+                Main.EntitySpriteDraw(glowTexValue.Value, trueDrawPos, new Rectangle?(rect)
+                    , Color.White, drawRoting, drawOrigin, Projectile.scale, effects, 0);
+            }
         }
 
         public sealed override bool PreDraw(ref Color lightColor) {

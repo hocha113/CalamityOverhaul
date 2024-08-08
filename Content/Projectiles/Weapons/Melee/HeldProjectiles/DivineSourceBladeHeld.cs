@@ -18,12 +18,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             distanceToOwner = -20;
             drawTrailTopWidth = 86;
             ownerOrientationLock = true;
-            SwingData.starArg = 70;
-            SwingData.baseSwingSpeed = 5.25f;
+            SwingData.starArg = 80;
+            SwingData.baseSwingSpeed = 4.65f;
             unitOffsetDrawZkMode = 16;
             Length = 124;
             ShootSpeed = 18;
-            SwingAIType = SwingAITypeEnum.UpAndDown;
         }
 
         public override void UpdateCaches() {

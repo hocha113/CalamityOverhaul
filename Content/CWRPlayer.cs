@@ -188,15 +188,16 @@ namespace CalamityOverhaul.Content
             CWRHook.CheckHookStatus();
 
             if (CWRMod.Instance.magicStorage != null) {
-                CWRLocText.GetTextValue("MS_Config_Text").Domp(Color.IndianRed);
+                SpwanTextProj.New(Player, () => CWRLocText.GetTextValue("MS_Config_Text").Domp(Color.IndianRed));
             }
             if (!CWRMod.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");
-                CWRUtils.Text(improvGameText, Color.Red);
+                SpwanTextProj.New(Player, () => CWRUtils.Text(improvGameText, Color.Red), 210);
                 improvGameText.DompInConsole();
             }
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {
-                CWRUtils.Text(CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent"), Color.GreenYellow);
+                string text = CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
+                SpwanTextProj.New(Player, () => text.Domp(Color.GreenYellow), 240);
             }
             if (InitialCreation) {
                 if (CWRServerConfig.Instance.OpeningOukModification) {

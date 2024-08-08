@@ -35,7 +35,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shoot = ModContent.ProjectileType<ExcelsusMain>();
             Item.shootSpeed = 12f;
             Item.SetKnifeHeld<ExcelsusHeld>();
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
+
+        public override bool AltFunctionUse(Player player) => true;
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI) {
             Item.DrawItemGlowmaskSingleFrame(spriteBatch, rotation
@@ -46,8 +49,9 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class ExcelsusHeld : BaseKnife
     {
         public override int TargetID => ModContent.ItemType<Excelsus>();
-        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail4";
+        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail2";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Excelsus_Bar";
+        public override string glowTexturePath => "CalamityMod/Items/Weapons/Melee/ExcelsusGlow"; 
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 66;
             drawTrailHighlight = false;
@@ -55,15 +59,27 @@ namespace CalamityOverhaul.Content.Items.Melee
             distanceToOwner = 40;
             drawTrailBtommWidth = 70;
             drawTrailTopWidth = 20;
-            drawTrailCount = 6;
-            Length = 82;
-            SwingData.starArg = 84;
-            SwingData.baseSwingSpeed = 5;
+            drawTrailCount = 16;
+            Length = 130;
+            overOffsetCachesRoting = MathHelper.ToRadians(2);
+            Projectile.scale = 1.25f;
+            SwingData.starArg = 60;
+            SwingData.baseSwingSpeed = 4.2f;
+            SwingData.ler1_UpLengthSengs = 0.1f;
+            SwingData.minClampLength = 130;
+            SwingData.maxClampLength = 140;
+            SwingData.ler1_UpSizeSengs = 0.056f;
             ShootSpeed = 12;
         }
 
         public override void Shoot() {
             int type = ModContent.ProjectileType<ExcelsusMain>();
+            if (DownRight) {
+                type = ModContent.ProjectileType<ExcelsusBomb>();
+                Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
+                    , type, (int)(Projectile.damage * 2.25f), Projectile.knockBack, Owner.whoAmI);
+                return;
+            }
             for (int i = 0; i < 3; ++i) {
                 float speedX = ShootVelocity.X + Main.rand.NextFloat(-1.5f, 1.5f);
                 float speedY = ShootVelocity.Y + Main.rand.NextFloat(-1.5f, 1.5f);

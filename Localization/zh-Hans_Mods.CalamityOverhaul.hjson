@@ -3551,6 +3551,7 @@ Projectiles: {
 	// PhasebladeHeld.DisplayName: Phaseblade Held
 	// FrostbrandHeld.DisplayName: Frostbrand Held
 	// IceBladeHeld.DisplayName: Ice Blade Held
+	// SpwanTextProj.DisplayName: Spwan Text Proj
 }
 
 Configs: {

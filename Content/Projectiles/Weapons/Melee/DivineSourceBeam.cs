@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void AI() {
             if (owner != null) {
-                Projectile.position += owner.velocity;
+                Projectile.position += owner.CWR().PlayerPositionChange;
             }
             Projectile.Opacity = Utils.GetLerpValue(Projectile.localAI[0], 26f, Projectile.timeLeft, clamped: true);
             Projectile.velocity *= 0.91f;
