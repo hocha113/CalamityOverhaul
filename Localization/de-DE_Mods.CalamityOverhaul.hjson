@@ -4340,6 +4340,7 @@ TextContent: {
 		IconUI_Text5: Spender
 		IconUI_Text6: Balancing-Tests
 		// IconUI_Text7: View log
+		// Error_1: hook failed, in order to normal the game, please close the game and re-enter, if this still does not return to normal, please bring the exported log to find the module developer
 		Wap_BubbleGun_Text:
 			'''
 			Verschießt eine große Menge an explosiven Meeresschaumblasen

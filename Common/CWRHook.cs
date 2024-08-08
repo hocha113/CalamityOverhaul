@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Common
 {
@@ -24,7 +25,15 @@ namespace CalamityOverhaul.Common
         /// <param name="hookDelegate">钩子委托</param>
         /// <returns>创建的Hook对象</returns>
         public static Hook Add(MethodBase method, Delegate hookDelegate) {
+            if (method == null) {
+                throw new ArgumentException("The MethodBase passed in is Null");
+            }
+            if (hookDelegate == null) {
+                throw new ArgumentException("The HookDelegate passed in is Null");
+            }
+
             Hook hook = new Hook(method, hookDelegate);
+
             if (!hook.IsApplied) {
                 hook.Apply();
             }

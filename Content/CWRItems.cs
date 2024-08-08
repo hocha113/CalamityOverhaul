@@ -60,6 +60,14 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public float[] ai = new float[] { 0, 0, 0 };
         /// <summary>
+        /// 是否强制AllowPrefix返回true，这个属性的优先级低于<see cref="BaseRItem.On_AllowPreFix(Item, int)"/>
+        /// </summary>
+        public bool GetAllowPrefix;
+        /// <summary>
+        /// 是否强制MeleePrefix返回true，这个属性的优先级低于<see cref="BaseRItem.On_MeleePreFix(Item)"/>
+        /// </summary>
+        public bool GetMeleePrefix;
+        /// <summary>
         /// 是否是一个重制物品，在基类为<see cref="EctypeItem"/>时自动启用
         /// </summary>
         public bool remakeItem;
@@ -234,6 +242,10 @@ namespace CalamityOverhaul.Content
             if (!CWRServerConfig.Instance.MagazineSystem) {
                 IsKreload = true;
             }
+        }
+
+        public override bool AllowPrefix(Item item, int pre) {
+            return base.AllowPrefix(item, pre);
         }
 
         //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，该函数会被加载一次

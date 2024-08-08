@@ -1180,6 +1180,10 @@ namespace CalamityOverhaul
             item.noMelee = true;
             item.noUseGraphic = true;
             item.CWR().IsShootCountCorlUse = true;
+            if (item.shoot == ProjectileID.None) {
+                item.CWR().GetMeleePrefix = true;
+                item.CWR().GetAllowPrefix = true;
+            }
             item.shoot = ModContent.ProjectileType<T>();
         }
 

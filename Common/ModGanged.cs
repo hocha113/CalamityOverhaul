@@ -369,6 +369,15 @@ namespace CalamityOverhaul.Common
             trO_itemPowerAttacksTypes_Load_Method = null;
             trO_Broadsword_ShouldApplyItemOverhaul_Method = null;
             trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method = null;
+            fargowiltasSoulsTypes = null;
+            fargowiltasSouls_Utils_Type = null;
+            fS_Utils_OnSpawnEnchCanAffectProjectile_Method = null;
+            coolerItemVisualEffectTypes = null;
+            coolerItemVisualEffectPlayerType = null;
+            coolerItemVisualEffect_Method = null;
+            BossHealthBarManager_Draw_Method = null;
+            MS_Config_Type = null;
+            MS_Config_recursionCraftingDepth_FieldInfo = null;
         }
 
         internal static bool Set_MS_Config_recursionCraftingDepth() {

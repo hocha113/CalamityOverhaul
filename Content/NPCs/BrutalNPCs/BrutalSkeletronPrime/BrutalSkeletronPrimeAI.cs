@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.SkyEffects;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
