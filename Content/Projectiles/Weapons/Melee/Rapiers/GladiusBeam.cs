@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
     internal class GladiusBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-
         private float tileRot;
         private Vector2 tilePos;
         public override void SetStaticDefaults() {

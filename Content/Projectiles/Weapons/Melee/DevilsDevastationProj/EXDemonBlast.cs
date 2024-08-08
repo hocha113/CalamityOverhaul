@@ -53,6 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             MoveVector2.Y = (float)(Math.Cos(angle) * Rand);
             Projectile.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             Projectile.spriteDirection = Main.rand.NextBool() ? 1 : -1;
+            Projectile.CWR().Viscosity = true;
         }
 
         public override bool? CanCutTiles() => Projectile.ai[0] != 0;
@@ -63,85 +64,64 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             if (Time == 0) {
                 FromeOwnerMoveSet = UnitToMouseV * 124;
             }
+
             FromeOwnerMoveSet = Vector2.Lerp(FromeOwnerMoveSet, UnitToMouseV * 124, 0.01f);
-            if (Projectile.ai[2] == 0) {
-                if (!shoot) {
-                    Projectile.rotation += (Projectile.ai[0] == 0 ? 0.01f : 0.2f) * Projectile.spriteDirection;
-                }
-                else {
-                    float targetA = ToMouseA;
-                    if (shoot2) {
-                        targetA = Projectile.velocity.ToRotation();
-                    }
-                    Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetA + MathHelper.PiOver4, 0.1f);
-                    if (++Time2 > 60) {
-                        shoot2 = true;
-                    }
-                }
 
-                if (Projectile.alpha > 0) {
-                    Projectile.alpha -= 5;
-                }
-
-                if (Projectile.ai[1]++ < 60) {
-                    pos *= 0.98f;
-                }
-                else {
-                    if (Projectile.localAI[1] == 0) {
-                        pos.Y += 0.03f;
-                        if (pos.Y > 0.7f) {
-                            Projectile.localAI[1] = 1;
-                        }
-
-                    }
-                    else if (Projectile.localAI[1] == 1) {
-                        pos.Y -= 0.03f;
-                        if (pos.Y < -0.7f) {
-                            Projectile.localAI[1] = 0;
-                        }
-                    }
-                }
-                if (Projectile.ai[0] == 0) {
-                    Projectile.timeLeft = 200;
-                    Projectile.position = Owner.GetPlayerStabilityCenter() + MoveVector2 + FromeOwnerMoveSet;
-                    MoveVector2 += pos;
-                    if (shoot && shoot2 && Projectile.alpha <= 0) {
-                        SoundEngine.PlaySound(SoundID.Item70, Projectile.position);
-                        Projectile.velocity = Projectile.DirectionTo(InMousePos) * 20;
-                        Projectile.ai[0] = 1;
-                    }
-                }
-                if (!DownLeft || Time > 60) {
-                    shoot = true;
-                }
+            if (!shoot) {
+                Projectile.rotation += (Projectile.ai[0] == 0 ? 0.01f : 0.2f) * Projectile.spriteDirection;
             }
             else {
-                if (!hitNPC.Alives()) {
-                    Projectile.Kill();
-                    return;
+                float targetA = ToMouseA;
+                if (shoot2) {
+                    targetA = Projectile.velocity.ToRotation();
                 }
-                npcRotUpdateSengs = oldNPCROt - hitNPC.rotation;
-                oldNPCROt = hitNPC.rotation;
-                offsetHitRot -= npcRotUpdateSengs;
-                Projectile.rotation = offsetHitRot;
-                Projectile.velocity = Vector2.Zero;
-                Projectile.Center = hitNPC.Center + offsetHitPos.RotatedBy(offsetHitRot);
+                Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetA + MathHelper.PiOver4, 0.1f);
+                if (++Time2 > 60) {
+                    shoot2 = true;
+                }
+            }
+
+            if (Projectile.alpha > 0) {
+                Projectile.alpha -= 5;
+            }
+
+            if (Projectile.ai[1]++ < 60) {
+                pos *= 0.98f;
+            }
+            else {
+                if (Projectile.localAI[1] == 0) {
+                    pos.Y += 0.03f;
+                    if (pos.Y > 0.7f) {
+                        Projectile.localAI[1] = 1;
+                    }
+
+                }
+                else if (Projectile.localAI[1] == 1) {
+                    pos.Y -= 0.03f;
+                    if (pos.Y < -0.7f) {
+                        Projectile.localAI[1] = 0;
+                    }
+                }
+            }
+            if (Projectile.ai[0] == 0) {
+                Projectile.timeLeft = 200;
+                Projectile.position = Owner.GetPlayerStabilityCenter() + MoveVector2 + FromeOwnerMoveSet;
+                MoveVector2 += pos;
+                if (shoot && shoot2 && Projectile.alpha <= 0) {
+                    SoundEngine.PlaySound(SoundID.Item70, Projectile.position);
+                    Projectile.velocity = Projectile.DirectionTo(InMousePos) * 20;
+                    Projectile.ai[0] = 1;
+                }
+            }
+            if (!DownLeft || Time > 60) {
+                shoot = true;
             }
 
             Time++;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Projectile.ai[2] == 0) {
-                hitNPC = target;
-                offsetHitPos = target.Center.To(Projectile.Center) + Projectile.velocity;
-                offsetHitRot = Projectile.rotation;
-                Projectile.ai[2]++;
-            }
-        }
-
         public override void OnKill(int timeLeft) {
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, Projectile.position);
+            Projectile.Explode();
             for (int i = 0; i < 10; i++) {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.PurpleMoss,
                     -Projectile.velocity.X * 0.3f, -Projectile.velocity.Y * 0.3f, Scale: 2);

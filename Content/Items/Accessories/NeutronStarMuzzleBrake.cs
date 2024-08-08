@@ -1,8 +1,13 @@
-﻿using CalamityMod.Items.Accessories;
+﻿using CalamityMod;
+using CalamityMod.CalPlayer;
+using CalamityMod.Items.Accessories;
+using CalamityMod.Projectiles.Typeless;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
+using System.Buffers;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -24,8 +29,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.accessory = true;
-            Item.value = Terraria.Item.buyPrice(180, 22, 15, 0);
+            Item.value = Item.buyPrice(180, 22, 15, 0);
             Item.rare = ModContent.RarityType<Turquoise>();
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems23;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
@@ -33,6 +39,25 @@ namespace CalamityOverhaul.Content.Items.Accessories
             modplayer.LoadMuzzleBrake = true;
             modplayer.LoadMuzzleBrakeLevel = 4;
             modplayer.PressureIncrease = 0;
+            CalamityPlayer calPlayer = player.Calamity();
+            calPlayer.rangedAmmoCost *= 0.8f;
+            calPlayer.deadshotBrooch = true;
+            calPlayer.dynamoStemCells = true;
+            calPlayer.MiniSwarmers = true;
+            calPlayer.eleResist = true;
+            player.moveSpeed += 0.25f;
+            player.magicQuiver = true;
+
+            calPlayer.voidField = true;
+            if (player.whoAmI == Main.myPlayer) {
+                var source = player.GetSource_Accessory(Item);
+                if (player.ownedProjectileCounts[ModContent.ProjectileType<VoidFieldGenerator>()] < 4) {
+                    for (int v = 0; v < 4; v++) {
+                        Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero
+                            , ModContent.ProjectileType<VoidFieldGenerator>(), 0, 0f, Main.myPlayer, v);
+                    }
+                }
+            }
         }
 
         public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player) {
@@ -46,8 +71,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 .AddIngredient<ElementMuzzleBrake>()
                 .AddIngredient<ElementalQuiver>()
                 .AddIngredient<DaawnlightSpiritOrigin>()
-                .AddIngredient<BlackMatterStick>(5)
-                .AddTile(ModContent.TileType<DarkMatterCompressor>())
+                .AddIngredient<QuiverofNihility>()
+                .AddIngredient<BlackMatterStick>(20)
+                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
+                    amount = 0;
+                })
+                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();
         }
     }

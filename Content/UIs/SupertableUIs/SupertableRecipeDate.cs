@@ -310,6 +310,20 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             "CalamityOverhaul/DragonsWord"
         };
         /// <summary>
+        /// 中子素态稳定器
+        /// </summary>
+        public static string[] FullItems23 = new string[] {"0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityMod/ElementalQuiver", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityMod/QuiverofNihility", "CalamityOverhaul/ElementMuzzleBrake", "CalamityMod/DynamoStemCells", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityMod/DaawnlightSpiritOrigin", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/NeutronStarMuzzleBrake"
+        };
+        /// <summary>
         /// 无尽马桶
         /// </summary>
         public static List<string> FullItems1000 = ["CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",

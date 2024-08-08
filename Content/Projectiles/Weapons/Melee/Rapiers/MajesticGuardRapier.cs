@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common.Effects;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

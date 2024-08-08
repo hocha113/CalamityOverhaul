@@ -14,6 +14,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -21,6 +22,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
 namespace CalamityOverhaul.Content
@@ -91,6 +93,35 @@ namespace CalamityOverhaul.Content
         public IEntitySource Source;
         public CWRItems cwrItem;
         public bool NotSubjectToSpecialEffects;
+        public bool Viscosity;
+        private Vector2 offsetHitPos;
+        private NPC hitNPC;
+        private float offsetHitRot;
+        private float oldNPCROt;
+        private float npcRotUpdateSengs;
+
+        internal static void NetViscositySend(Projectile proj) {
+            if (CWRUtils.isSinglePlayer) {
+                return;
+            }
+            var netMessage = CWRMod.Instance.GetPacket();
+            CWRProjectile cwrProj = proj.CWR();
+            netMessage.Write((byte)CWRMessageType.ProjViscosityData);
+            netMessage.Write(proj.whoAmI);
+            netMessage.Write(cwrProj.hitNPC.whoAmI);
+            netMessage.Write(cwrProj.offsetHitRot);
+            netMessage.Write(cwrProj.oldNPCROt);
+            netMessage.WriteVector2(cwrProj.offsetHitPos);
+            netMessage.Send(-1, proj.owner);
+        }
+
+        internal static void NetViscosityReceive(BinaryReader reader) {
+            CWRProjectile cwrProj = Main.projectile[reader.ReadInt32()].CWR();
+            cwrProj.hitNPC = Main.npc[reader.ReadInt32()];
+            cwrProj.offsetHitRot = reader.ReadSingle();
+            cwrProj.oldNPCROt = reader.ReadSingle();
+            cwrProj.offsetHitPos = reader.ReadVector2();
+        }
 
         public override void SetDefaults(Projectile projectile) {
             if (projectile.type == ProjectileID.Meowmere) {
@@ -118,6 +149,23 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
+        }
+
+        public override bool PreAI(Projectile projectile) {
+            if (Viscosity && projectile.numHits > 0) {
+                if (!hitNPC.Alives()) {
+                    projectile.Kill();
+                    return false;
+                }
+                npcRotUpdateSengs = oldNPCROt - hitNPC.rotation;
+                oldNPCROt = hitNPC.rotation;
+                offsetHitRot -= npcRotUpdateSengs;
+                projectile.rotation = offsetHitRot;
+                offsetHitPos = offsetHitPos.RotatedBy(npcRotUpdateSengs);
+                projectile.Center = hitNPC.Center + offsetHitPos;
+                return false;
+            }
+            return base.PreAI(projectile);
         }
 
         public override void PostAI(Projectile projectile) {
@@ -251,6 +299,14 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
+            if (Viscosity && projectile.numHits == 0) {
+                hitNPC = target;
+                offsetHitPos = target.Center.To(projectile.Center);
+                offsetHitRot = projectile.rotation;
+                oldNPCROt = target.rotation;
+                NetViscositySend(projectile);
+            }
+
             RMeowmere.SpanDust(projectile);
 
             Player player = Main.player[projectile.owner];

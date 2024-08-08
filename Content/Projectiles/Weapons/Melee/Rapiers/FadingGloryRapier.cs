@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Particles;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;

@@ -46,7 +46,11 @@ namespace CalamityOverhaul
         }
 
         public static LocalizedText SafeGetItemName(int id) {
-            return ItemLoader.GetItem(id).GetLocalization("DisplayName");
+            ModItem item = ItemLoader.GetItem(id);
+            if (item == null) {
+                return CWRLocText.GetText("None");
+            }
+            return item.GetLocalization("DisplayName");
         }
 
         public static void WebRedirection(this string str, bool inSteam = true) {

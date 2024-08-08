@@ -13,9 +13,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
     internal class FadingGloryBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Melee + "FadingGloryGlow";
-
-        private NPC hitnpc;
-        private Vector2 oldnpcPos;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
@@ -32,13 +29,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             Projectile.timeLeft = 380;
             Projectile.extraUpdates = 3;
             Projectile.alpha = 0;
+            Projectile.CWR().Viscosity = true;
         }
 
         public override void AI() {
             Projectile.localAI[1] = (float)Math.Abs(Math.Sin(Projectile.timeLeft * 0.05f));
             Projectile.rotation = Projectile.velocity.ToRotation();
-            if (Projectile.ai[1] <= 0) {
-                if (Projectile.ai[2] > 0) {
+            if (Projectile.ai[2] > 0) {
                     Projectile.penetrate = 1;
                     Projectile.extraUpdates = 5;
                     Projectile.alpha += 15;
@@ -46,51 +43,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                     if (target != null) {
                         Projectile.ChasingBehavior2(target.Center, 1, 0.35f);
                     }
-                }
-                else {
-                    Projectile.alpha = (int)(155 + Projectile.ai[1] * 100);
-                    if (Projectile.ai[0] > 20) {
-                        Projectile.velocity *= 0.98f;
-                    }
-                }
             }
             else {
-                if (hitnpc == null || !hitnpc.active) {
-                    Projectile.Kill();
-                    return;
+                Projectile.alpha = (int)(155 + Projectile.ai[1] * 100);
+                if (Projectile.ai[0] > 20) {
+                    Projectile.velocity *= 0.98f;
                 }
-                Projectile.extraUpdates = 0;
-                Vector2 npcUpdateVer = oldnpcPos.To(hitnpc.position);
-                oldnpcPos = hitnpc.position;
-                Projectile.position += npcUpdateVer;
-                float sengs = 0.9f;
-                if (hitnpc.width > 180) {
-                    sengs += 0.01f;
-                }
-                if (hitnpc.width > 280) {
-                    sengs += 0.01f;
-                }
-                if (hitnpc.width > 320) {
-                    sengs += 0.01f;
-                }
-                if (hitnpc.width > 340) {
-                    sengs += 0.01f;
-                }
-                Projectile.velocity *= sengs;
             }
             Projectile.ai[0]++;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.ai[1] == 0 && Projectile.ai[0] <= 60) {
-                hitnpc = target;
-                oldnpcPos = target.position;
                 Projectile.timeLeft = 90;
-                if (!target.active) {
-                    hitnpc = null;
-                    Projectile.localAI[0] = 0;
-                    return;
-                }
                 if (Projectile.ai[2] <= 0) {
                     for (int i = 0; i < 3; i++) {
                         Vector2 spanPos = Projectile.Center;

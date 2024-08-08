@@ -22,9 +22,10 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override void AddRecipes() {
             _ = CreateRecipe().
                 AddIngredient<CrystalDimming>().
-                AddIngredient<AuricBar>(5).
+                AddIngredient<Kingsbane>().
+                AddIngredient<ShadowspecBar>(5).
                 AddIngredient<EndothermicEnergy>(10).
-                AddTile(ModContent.TileType<CosmicAnvil>()).
+                AddTile(ModContent.TileType<DraedonsForge>()).
                 Register();
         }
     }

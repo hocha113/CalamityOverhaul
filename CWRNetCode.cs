@@ -17,6 +17,7 @@ namespace CalamityOverhaul
         TEBloodAltar,
         OverBeatBack,
         BrutalSkeletronPrimeAI,
+        ProjViscosityData,
     }
 
     public class CWRNetCode
@@ -56,6 +57,9 @@ namespace CalamityOverhaul
                 BrutalSkeletronPrimeAI.ai9 = reader.ReadInt32();
                 BrutalSkeletronPrimeAI.ai10 = reader.ReadInt32();
                 BrutalSkeletronPrimeAI.fireIndex = reader.ReadInt32();
+            }
+            else if (type == CWRMessageType.ProjViscosityData) {
+                CWRProjectile.NetViscositySend(Main.projectile[reader.ReadInt32()]);
             }
         }
     }
