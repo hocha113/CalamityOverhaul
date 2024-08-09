@@ -14,12 +14,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "BrinyBaron_Bar";
         public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 86;
             canDrawSlashTrail = true;
             SwingAIType = SwingAITypeEnum.UpAndDown;
             drawTrailCount = 8;
             distanceToOwner = 60;
             ownerOrientationLock = true;
             SwingData.baseSwingSpeed = 4.55f;
+            IgnoreImpactBoxSize = true;
         }
 
         public override bool PreInOwnerUpdate() {

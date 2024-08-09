@@ -27,6 +27,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         public float oldLengthOffsetSizeValue = 1f;
         /// <summary>
+        /// 是否无视弹幕碰撞箱的大小属性，默认为<see langword="true"/>，而如果为<see langword="false"/>，碰撞箱大小将不会自动影响刀刃的其他设置
+        /// </summary>
+        public bool IgnoreImpactBoxSize;
+        /// <summary>
         /// 自发光
         /// </summary>
         public bool Incandescence;
@@ -295,7 +299,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             for (int j = drawTrailCount - 1; j >= 0; j--) {
                 oldRotate[j] = 100f;
                 oldDistanceToOwner[j] = distanceToOwner;
-                oldLength[j] = Projectile.height * Projectile.scale;
+                oldLength[j] = (IgnoreImpactBoxSize ? 22 : Projectile.height) * Projectile.scale;
             }
         }
 
@@ -558,7 +562,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
             oldRotate[0] = (Projectile.Center - Owner.Center).ToRotation() + overOffsetCachesRoting * Math.Sign(rotSpeed);
             oldDistanceToOwner[0] = distanceToOwner;
-            oldLength[0] = Projectile.height * Projectile.scale * oldLengthOffsetSizeValue;
+            oldLength[0] = (IgnoreImpactBoxSize ? 22 : Projectile.height) * Projectile.scale * oldLengthOffsetSizeValue;
         }
 
         public void DrawTrailHander(List<VertexPositionColorTexture> bars, GraphicsDevice device, BlendState blendState = null

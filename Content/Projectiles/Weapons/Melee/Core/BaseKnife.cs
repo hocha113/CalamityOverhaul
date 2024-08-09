@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public sealed override void Initialize() {
             maxSwingTime = Item.useTime;
             SwingData.maxSwingTime = maxSwingTime;
-            toProjCoreMode = Projectile.width / 2f;
+            toProjCoreMode = (IgnoreImpactBoxSize ? 22 : Projectile.width) / 2f;
             if (autoSetShoot) {
                 ShootSpeed = Item.shootSpeed;
             }

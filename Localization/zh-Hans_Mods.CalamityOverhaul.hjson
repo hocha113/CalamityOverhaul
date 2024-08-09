@@ -2845,6 +2845,11 @@ Items: {
 		DisplayName: 刺花长矛
 		Tooltip: ""
 	}
+
+	RealmSource: {
+		// DisplayName: Realm Source
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3557,6 +3562,7 @@ Projectiles: {
 	// RebelBladeHeld.DisplayName: Rebel Blade Held
 	// BrimlashHeld.DisplayName: Brimlash Held
 	// BrimlashTouch.DisplayName: Brimlash Touch
+	// RealmSourceHeld.DisplayName: Realm Source Held
 }
 
 Configs: {

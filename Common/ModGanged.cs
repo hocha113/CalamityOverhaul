@@ -23,7 +23,9 @@ namespace CalamityOverhaul.Common
 {
     internal class ModGanged
     {
+        #region Data
         public delegate bool On_BOOL_Dalegate();
+        public delegate void On_PostAI_Dalegate(object obj, Projectile projectile);
         public delegate void On_ModPlayerDraw_Dalegate(object obj, ref PlayerDrawSet drawInfo);
         public delegate void On_VoidFunc_Dalegate(ref PlayerDrawSet drawInfo, bool drawOnBack);
         public delegate void On_VoidFunc_Instance_Dalegate(object inds);
@@ -65,8 +67,10 @@ namespace CalamityOverhaul.Common
         public static MethodBase trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method;
 
         public static Type[] fargowiltasSoulsTypes;
-        public static Type fargowiltasSouls_Utils_Type;
-        public static MethodBase fS_Utils_OnSpawnEnchCanAffectProjectile_Method;
+        public static Type FGS_Utils_Type;
+        public static Type FGS_FGSGlobalProj_Type;
+        public static MethodBase FGS_Utils_OnSpawnEnchCanAffectProjectile_Method;
+        public static MethodBase FGS_FGSGlobalProj_PostAI_Method;
 
         public static Type[] coolerItemVisualEffectTypes;
         public static Type coolerItemVisualEffectPlayerType;
@@ -77,12 +81,9 @@ namespace CalamityOverhaul.Common
         public static Type MS_Config_Type;
         public static FieldInfo MS_Config_recursionCraftingDepth_FieldInfo;
 
-        internal static bool InfernumModeOpenState {
-            get {
-                return CWRMod.Instance.infernum == null ? false : (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
-            }
-        }
-
+        internal static bool InfernumModeOpenState => 
+            CWRMod.Instance.infernum == null ? false : (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
+        #endregion
         public static Type[] GetModType(Mod mod) {
             return AssemblyManager.GetLoadableTypes(mod.Code);
         }
@@ -271,15 +272,28 @@ namespace CalamityOverhaul.Common
 
             if (CWRMod.Instance.fargowiltasSouls != null) {
                 fargowiltasSoulsTypes = GetModType(CWRMod.Instance.fargowiltasSouls);
-                fargowiltasSouls_Utils_Type = GetTargetTypeInStringKey(fargowiltasSoulsTypes, "FargoSoulsUtil");
-                if (fargowiltasSouls_Utils_Type != null) {
-                    fS_Utils_OnSpawnEnchCanAffectProjectile_Method = fargowiltasSouls_Utils_Type.GetMethod("OnSpawnEnchCanAffectProjectile", BindingFlags.Static | BindingFlags.Public);
+                FGS_FGSGlobalProj_Type = GetTargetTypeInStringKey(fargowiltasSoulsTypes, "FargoSoulsGlobalProjectile");
+                FGS_Utils_Type = GetTargetTypeInStringKey(fargowiltasSoulsTypes, "FargoSoulsUtil");
+
+                if (FGS_Utils_Type != null) {
+                    FGS_Utils_OnSpawnEnchCanAffectProjectile_Method = FGS_Utils_Type.GetMethod("OnSpawnEnchCanAffectProjectile", BindingFlags.Static | BindingFlags.Public);
                 }
-                if (fS_Utils_OnSpawnEnchCanAffectProjectile_Method != null) {
-                    CWRHook.Add(fS_Utils_OnSpawnEnchCanAffectProjectile_Method, On_OnSpawnEnchCanAffectProjectile_Hook);
+                if (FGS_FGSGlobalProj_Type != null) {
+                    FGS_FGSGlobalProj_PostAI_Method = FGS_FGSGlobalProj_Type.GetMethod("PostAI", BindingFlags.Instance | BindingFlags.Public);
+                }
+
+                if (FGS_Utils_OnSpawnEnchCanAffectProjectile_Method != null) {
+                    CWRHook.Add(FGS_Utils_OnSpawnEnchCanAffectProjectile_Method, On_OnSpawnEnchCanAffectProjectile_Hook);
                 }
                 else {
-                    Domp1("fS_Utils_OnSpawnEnchCanAffectProjectile_Method", "FargoSoulsUtil.OnSpawnEnchCanAffectProjectile");
+                    Domp1("FGS_Utils_OnSpawnEnchCanAffectProjectile_Method", "FargoSoulsUtil.OnSpawnEnchCanAffectProjectile");
+                }
+
+                if (FGS_FGSGlobalProj_PostAI_Method != null) {
+                    CWRHook.Add(FGS_FGSGlobalProj_PostAI_Method, On_FGS_FGSGlobalProj_PostAI_Hook);
+                }
+                else {
+                    Domp1("FGS_FGSGlobalProj_PostAI_Method", "FargoSoulsGlobalProjectile.PostAI");
                 }
             }
             else {
@@ -370,14 +384,23 @@ namespace CalamityOverhaul.Common
             trO_Broadsword_ShouldApplyItemOverhaul_Method = null;
             trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method = null;
             fargowiltasSoulsTypes = null;
-            fargowiltasSouls_Utils_Type = null;
-            fS_Utils_OnSpawnEnchCanAffectProjectile_Method = null;
+            FGS_Utils_Type = null;
+            FGS_Utils_OnSpawnEnchCanAffectProjectile_Method = null;
             coolerItemVisualEffectTypes = null;
             coolerItemVisualEffectPlayerType = null;
             coolerItemVisualEffect_Method = null;
             BossHealthBarManager_Draw_Method = null;
             MS_Config_Type = null;
             MS_Config_recursionCraftingDepth_FieldInfo = null;
+        }
+
+        internal static void On_FGS_FGSGlobalProj_PostAI_Hook(On_PostAI_Dalegate orig, object instance, Projectile projectile) {
+            if (projectile.hide) {
+                if (projectile.ModProjectile is BaseHeldRanged ranged && !ranged.CanFire) {
+                    return;
+                }
+            }
+            orig.Invoke(instance, projectile);
         }
 
         internal static bool Set_MS_Config_recursionCraftingDepth() {
