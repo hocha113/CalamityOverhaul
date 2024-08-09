@@ -2661,8 +2661,9 @@ Items: {
 		DisplayName: Drachensprache
 		Tooltip:
 			'''
-			Schieße Drachentränen ab, die sich eine Zeit lang drehen und dann Feinde verfolgen.
-			"Ein Drache kann in seinem Leben nur einmal weinen."
+			Schieße Drachen Tränen ab, die nach einer Weile der Drehung den Feind verfolgen.
+			Rechtsklick, um Drachenbefehl Magie am Cursor auszuführen und den Feinden im Bereich den Todesbefehl zu erteilen.
+			"Ein Drache kann nur einmal im Leben weinen."
 			'''
 	}
 
@@ -3537,6 +3538,8 @@ Projectiles: {
 	// FrostbrandHeld.DisplayName: Frostbrand Held
 	// IceBladeHeld.DisplayName: Ice Blade Held
 	// SpwanTextProj.DisplayName: Spwan Text Proj
+	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
+	// RebelBladeHeld.DisplayName: Rebel Blade Held
 }
 
 Configs: {

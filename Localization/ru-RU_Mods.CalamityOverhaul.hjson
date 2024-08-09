@@ -2696,8 +2696,10 @@ Items: {
 		DisplayName: Драконье Слово
 		Tooltip:
 			'''
-			Выпускает слёзы дракона, которые вращаются некоторое время и преследуют врагов
-			"Дракон может пролить слёзы только раз в жизни."
+			Выпускает слезы дракона, которые вращаются некоторое время, а затем наводятся на врагов.
+			Щелчок правой кнопкой мыши позволяет применить магию приказа дракона в указанной точке, 
+			отдавая приказ на смерть врагам в радиусе действия.
+			"Дракон может пролить слезы только один раз в жизни."
 			'''
 	}
 
@@ -3572,6 +3574,8 @@ Projectiles: {
 	// FrostbrandHeld.DisplayName: Frostbrand Held
 	// IceBladeHeld.DisplayName: Ice Blade Held
 	// SpwanTextProj.DisplayName: Spwan Text Proj
+	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
+	// RebelBladeHeld.DisplayName: Rebel Blade Held
 }
 
 Configs: {

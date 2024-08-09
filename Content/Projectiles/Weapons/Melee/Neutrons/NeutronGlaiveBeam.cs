@@ -20,13 +20,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         }
 
         public bool canDraw() => true;
-
+        public override void SetStaticDefaults() {
+            
+        }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.timeLeft = 120;
             Projectile.MaxUpdates = 3;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
         }
 
         public override void AI() {
@@ -112,9 +116,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         }
 
         public void costomDraw(SpriteBatch spriteBatch) {
-            Texture2D value = TextureAssets.Projectile[Type].Value;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 6)
-                , Color.White, Projectile.rotation, CWRUtils.GetOrig(value, 6), Projectile.scale, SpriteEffects.None, 0);
+            Texture2D mainValue = TextureAssets.Projectile[Type].Value;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 orig = CWRUtils.GetOrig(mainValue, 6);
+            Rectangle rectangle = CWRUtils.GetRec(mainValue, Projectile.frame, 6);
+            float rot = Projectile.rotation;
+
+            for (int k = 0; k < Projectile.oldPos.Length; k++) {
+                Vector2 offsetPos = Projectile.oldPos[k].To(Projectile.position);
+                Vector2 drawPos2 = drawPos - offsetPos;
+                Color color = Projectile.GetAlpha(Color.Pink) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+                Main.EntitySpriteDraw(mainValue, drawPos2, rectangle, color, rot, orig, Projectile.scale, SpriteEffects.None, 0);
+            }
+
+            CWRUtils.DrawMarginEffect(Main.spriteBatch, mainValue, Projectile.timeLeft, drawPos, rectangle, Color.Blue, rot, orig, Projectile.scale, 0);
+            Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, rectangle
+                , Color.White, Projectile.rotation, orig, Projectile.scale, SpriteEffects.None, 0);
         }
     }
 }

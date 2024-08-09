@@ -108,6 +108,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
             if (Projectile.damage < Projectile.originalDamage * 5) {
                 Projectile.damage += 15;
             }
+            Projectile.velocity = Projectile.velocity.RotatedByRandom(0.6f);
+            Projectile.rotation = Projectile.velocity.ToRotation();
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
