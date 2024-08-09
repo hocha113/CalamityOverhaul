@@ -19,7 +19,7 @@ Boss战斗重制（开发中）：正在对Boss的战斗机制进行重做，带
 更多传奇武器：将添加更多具有独特属性和能力的传奇武器。
 
 [h2] 开源与社区参与 [/h2]
-该模组已在 [url=https://github.com/hocha113/CalamityOverhaul]Github[/url] 上开源。欢迎您在此反馈问题、提出建议，或为模组的本地化翻译贡献力量！
+该模组在 [url=https://github.com/hocha113/CalamityOverhaul]Github[/url] 上开源。欢迎您在此反馈问题、提出建议，或为模组的本地化翻译贡献力量！
 
 [h2] 如何联系作者&加入社区？ [/h2]
 QQ群: 711243165 - 在这里您可以直接联系到我并参与讨论。

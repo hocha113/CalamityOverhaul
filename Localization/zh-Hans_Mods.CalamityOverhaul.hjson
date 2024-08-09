@@ -2487,7 +2487,7 @@ Items: {
 			'''
 			真近战击中目标后召唤暗黑契约，三个暗影复制体将协同玩家作战
 			暗黑契约存在时，如果玩家受伤，会立马遣散所有暗影复制体
-			并给予玩家3秒黑暗恐惧减益，此期间玩家将无法再通过真近战召唤暗黑契约
+			并给予玩家10秒黑暗恐惧减益，此期间玩家将无法再通过真近战召唤暗黑契约
 			'''
 	}
 
@@ -3555,6 +3555,8 @@ Projectiles: {
 	// SpwanTextProj.DisplayName: Spwan Text Proj
 	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
 	// RebelBladeHeld.DisplayName: Rebel Blade Held
+	// BrimlashHeld.DisplayName: Brimlash Held
+	// BrimlashTouch.DisplayName: Brimlash Touch
 }
 
 Configs: {

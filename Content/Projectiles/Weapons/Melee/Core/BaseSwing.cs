@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         public virtual string gradientTexturePath => "";
         /// <summary>
-        /// 光效遮住图路径
+        /// 光效遮盖图路径
         /// </summary>
         public virtual string glowTexturePath => "";
         public Texture2D TrailTexture => SwingSystem.trailTextures[Type].Value;

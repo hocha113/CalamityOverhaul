@@ -11,6 +11,7 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Policy;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.CameraModifiers;
@@ -91,6 +92,7 @@ namespace CalamityOverhaul.Content
         /// 挥舞索引，一般被刀具所使用
         /// </summary>
         public int SwingIndex;
+        
 
         /// <summary>
         /// 是否受伤
@@ -108,6 +110,10 @@ namespace CalamityOverhaul.Content
         /// 如果该时间大于0，则玩家不能切换武器，这个值每帧会自动减1
         /// </summary>
         public int DontSwitchWeaponTime;
+        /// <summary>
+        /// 不能拥有暗影克隆体的时间，这个值每帧会自动减1
+        /// </summary>
+        public int DontHasSemberDarkMasterCloneTime;
 
         private Vector2 oldPlayerPositionChange;
         /// <summary>
@@ -259,6 +265,9 @@ namespace CalamityOverhaul.Content
         public override void PostUpdate() {
             if (DontSwitchWeaponTime > 0) {
                 DontSwitchWeaponTime--;
+            }
+            if (DontHasSemberDarkMasterCloneTime > 0) {
+                DontHasSemberDarkMasterCloneTime--;
             }
             SittingFoodStallChair();
             if (RecoilAccelerationAddBool) {

@@ -2474,7 +2474,7 @@ Items: {
 			'''
 			Une véritable attaque au corps à corps invoque un pacte sombre; trois copies d'ombre se battent aux côtés du joueur
 			Si le joueur est blessé pendant l'existence du pacte sombre, toutes les copies d'ombre sont immédiatement dissipées
-			et accorde au joueur une diminution de la peur des ténèbres de 3 secondes; pendant cette période, le joueur ne peut plus invoquer de pacte sombre par une attaque au corps à corps
+			et accorde au joueur une diminution de la peur des ténèbres de 10 secondes; pendant cette période, le joueur ne peut plus invoquer de pacte sombre par une attaque au corps à corps
 			'''
 	}
 
@@ -3543,6 +3543,8 @@ Projectiles: {
 	// SpwanTextProj.DisplayName: Spwan Text Proj
 	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
 	// RebelBladeHeld.DisplayName: Rebel Blade Held
+	// BrimlashHeld.DisplayName: Brimlash Held
+	// BrimlashTouch.DisplayName: Brimlash Touch
 }
 
 Configs: {

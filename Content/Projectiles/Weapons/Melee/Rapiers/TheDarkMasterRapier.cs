@@ -27,7 +27,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             if (HitNPCs.Count > 0) {
                 if (Owner.ownedProjectileCounts[ModContent.ProjectileType<SemberDarkMasterClone>()] <= 0
                     && !Owner.HasBuff(BuffID.Darkness)
-                    && Owner.ownedProjectileCounts[ModContent.ProjectileType<DarkMasterClone>()] <= 0) {
+                    && Owner.ownedProjectileCounts[ModContent.ProjectileType<DarkMasterClone>()] <= 0
+                    && Owner.CWR().DontHasSemberDarkMasterCloneTime <= 0) {
                     ring = new BloomRing(Owner.Center, Vector2.Zero, Color.Red, 0.4f, 10);
                     GeneralParticleHandler.SpawnParticle(ring);
                     SoundEngine.PlaySound(SoundID.Item71, Owner.Center);
@@ -38,9 +39,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 }
                 return;
             }
-            int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity * Main.rand.NextFloat(10, 16)
+            Item.initialize();
+            if (++Item.CWR().ai[0] > 1) {
+                int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity * Main.rand.NextFloat(10, 16)
                 , ModContent.ProjectileType<DarkMasterBeam>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
-            Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation();
+                Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation();
+                Item.CWR().ai[0] = 0;
+            }
         }
     }
 }

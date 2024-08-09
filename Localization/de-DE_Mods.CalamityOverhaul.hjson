@@ -2469,7 +2469,7 @@ Items: {
 			'''
 			Bei echtem Nahkampf beschwört es nach einem Treffer einen dunklen Pakt, bei dem drei Schattenkopien dem Spieler helfen
 			Während des dunklen Paktes, wenn der Spieler Schaden erleidet, werden alle Schattenkopien sofort aufgelöst
-			und der Spieler erhält 3 Sekunden lang einen dunklen Furcht-Debuff, währenddessen kann der Spieler keine Schattenkopien mehr durch echten Nahkampf beschwören
+			und der Spieler erhält 10 Sekunden lang einen dunklen Furcht-Debuff, währenddessen kann der Spieler keine Schattenkopien mehr durch echten Nahkampf beschwören
 			'''
 	}
 
@@ -3540,6 +3540,8 @@ Projectiles: {
 	// SpwanTextProj.DisplayName: Spwan Text Proj
 	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
 	// RebelBladeHeld.DisplayName: Rebel Blade Held
+	// BrimlashHeld.DisplayName: Brimlash Held
+	// BrimlashTouch.DisplayName: Brimlash Touch
 }
 
 Configs: {

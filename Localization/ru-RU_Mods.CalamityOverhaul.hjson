@@ -2503,7 +2503,7 @@ Items: {
 			'''
 			При реальной ближней атаке, попавшей в цель, вызывает темные контракты, три теневых клона будут сражаться вместе с игроком
 			Когда активен темный контракт и игрок получает урон, все теневые клоны будут немедленно распущены
-			И игрок получит дебафф "Темный страх" на 3 секунды, в этот период игрок не сможет призвать темные контракты через реальную ближнюю атаку
+			И игрок получит дебафф "Темный страх" на 10 секунды, в этот период игрок не сможет призвать темные контракты через реальную ближнюю атаку
 			'''
 	}
 
@@ -3576,6 +3576,8 @@ Projectiles: {
 	// SpwanTextProj.DisplayName: Spwan Text Proj
 	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
 	// RebelBladeHeld.DisplayName: Rebel Blade Held
+	// BrimlashHeld.DisplayName: Brimlash Held
+	// BrimlashTouch.DisplayName: Brimlash Touch
 }
 
 Configs: {

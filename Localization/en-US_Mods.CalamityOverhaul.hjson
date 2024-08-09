@@ -2472,7 +2472,7 @@ Items: {
 			and three shadow replicas will fight together with the player
 			When Dark Covenants exist, if a player is injured, 
 			all Shadow replicas are immediately disbanded
-			It also gives the player 3 seconds of Dark Fear reduction, 
+			It also gives the player 10 seconds of Dark Fear reduction, 
 			during which the player can no longer summon Dark Covenants through true Melee
 			'''
 	}
@@ -3547,6 +3547,8 @@ Projectiles: {
 	SpwanTextProj.DisplayName: Spwan Text Proj
 	NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
 	RebelBladeHeld.DisplayName: Rebel Blade Held
+	BrimlashHeld.DisplayName: Brimlash Held
+	BrimlashTouch.DisplayName: Brimlash Touch
 }
 
 Configs: {
