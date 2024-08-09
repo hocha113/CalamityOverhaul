@@ -1,12 +1,29 @@
-﻿The Calamity Overhaul Mod aims to comprehensively optimize various aspects of the Calamity Mod. 
+﻿[h1] Calamity Overhaul Mod [/h1]
+[strike] The opening music of the preview video might be loud. If you wish to watch, please prepare accordingly or lower your computer's volume. [/strike]
+[b]The Calamity Overhaul Mod aims to comprehensively optimize and expand the gameplay experience of the Calamity Mod.[/b]
 
-The current version has undergone redesigns for hundreds of Calamity Mod weapons, making them more refined, practical, and eye-catching. 
+[h2] What Does This Mod Do? [/h2]
+Gun Overhaul: Nearly all guns have been reworked, featuring new magazine and recoil systems, making combat more realistic.
+Melee Weapon Enhancement: A large number of melee weapons have been thoroughly optimized, with more flashy and practical attack methods added.
+Boss Battle Rework (In Development): Ongoing rework of Boss battle mechanics to provide more challenging and strategic combat experiences.
+New Weapons and Equipment: Dozens of new weapons and equipment have been introduced, along with a new crafting system to enrich gameplay content.
+Terrain Generation Optimization: Adjustments have been made to terrain generation, enhancing the fun and challenge of exploration.
+Expanded Crafting Recipes: Numerous new crafting recipes have been added, offering more crafting options.
+Gameplay Smoothing: Numerical optimizations have been applied to smooth out the gameplay experience and provide better balance.
+Other Weapon Reworks: Hundreds of unmentioned weapons have been reworked, giving players more choices and gameplay variety.
 
-Additionally, adjustments have been made to hundreds of aspects of the Calamity Mod, including the addition of more craftable recipes and extensive numerical balancing to provide a smoother gaming experience. 
+[h2] Upcoming & Planned Content [/h2]
+Major Class Overhauls: Comprehensive reworks of other classes are in progress, including weapon and mechanic optimizations.
+Death Mode AI Rework: All AI in Death Mode will be reworked to bring a fresh combat experience.
+Game Balance Optimization: Further adjustments and optimizations to game balance are planned to ensure every player can enjoy both challenge and fun.
+More Legendary Weapons: Additional legendary weapons with unique attributes and abilities will be added.
 
-This mod introduces multiple new expanded weapons along with a brand-new crafting system to further enrich the gameplay progression. 
+[h2] Open Source & Community Participation [/h2]
+This mod is open-source on [url=https://github.com/hocha113/CalamityOverhaul]Github[/url]. Feel free to report any issues, provide suggestions, or contribute to the localization of the mod!
 
-Future updates will continue to reset a significant number of Calamity Mod weapons and mechanics, bringing players a fresh Calamity experience.
-
-The Mod is Open-Source In Github: https://github.com/hocha113/CalamityOverhaul
+[h2] How to Contact the Author & Join the Community [/h2]
+QQ Group: 711243165 - Here you can contact me directly and participate in discussions.
+Video Homepage: [url=https://space.bilibili.com/441452460?spm_id_from=333.1007.0.0]RedTeaObject's Profile[/url] - Get more real-time updates and video content!
+Independent Wiki: (Coming Soon) - Provides detailed information and guides about the mod.
+Discord: (Coming Soon) - Join our community and share your experiences with other players.
 
