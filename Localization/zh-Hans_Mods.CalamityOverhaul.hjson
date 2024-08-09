@@ -2677,6 +2677,7 @@ Items: {
 		Tooltip:
 			'''
 			发射龙泪，自旋一段时间后追踪敌人
+			右键在光标处施展龙令魔法，对范围内的敌人下达死亡的命令
 			"龙一生只能流一次泪"
 			'''
 	}
@@ -3552,6 +3553,8 @@ Projectiles: {
 	// FrostbrandHeld.DisplayName: Frostbrand Held
 	// IceBladeHeld.DisplayName: Ice Blade Held
 	// SpwanTextProj.DisplayName: Spwan Text Proj
+	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
+	// RebelBladeHeld.DisplayName: Rebel Blade Held
 }
 
 Configs: {

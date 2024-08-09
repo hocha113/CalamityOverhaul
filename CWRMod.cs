@@ -142,7 +142,7 @@ namespace CalamityOverhaul
                 foreach (BaseRItem ritem in RItemInstances) {
                     RItemIndsDict.Add(ritem.SetReadonlyTargetID, ritem);
                 }
-                ($"{RItemIndsDict.Count}个键对已经装载进RItemIndsDict").DompInConsole();
+                ($"{RItemIndsDict.Count} key pair is loaded into the RItemIndsDict").DompInConsole();
             }
 
             {

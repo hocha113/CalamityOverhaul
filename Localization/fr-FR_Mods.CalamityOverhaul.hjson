@@ -2664,7 +2664,8 @@ Items: {
 		DisplayName: Parole de Dragon
 		Tooltip:
 			'''
-			Tire des larmes de dragon, qui tournent pendant un moment puis traquent les ennemis.
+			Lancez des Larmes de Dragon, qui suivront les ennemis après un certain temps de rotation.
+			Clic droit pour lancer la magie de Commande du Dragon à l'emplacement du curseur et donner l'ordre de mort aux ennemis dans la zone.
 			"Un dragon ne peut pleurer qu'une seule fois dans sa vie."
 			'''
 	}
@@ -3540,6 +3541,8 @@ Projectiles: {
 	// FrostbrandHeld.DisplayName: Frostbrand Held
 	// IceBladeHeld.DisplayName: Ice Blade Held
 	// SpwanTextProj.DisplayName: Spwan Text Proj
+	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
+	// RebelBladeHeld.DisplayName: Rebel Blade Held
 }
 
 Configs: {

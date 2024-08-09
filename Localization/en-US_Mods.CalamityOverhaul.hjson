@@ -2668,8 +2668,9 @@ Items: {
 		DisplayName: Dragon's Word
 		Tooltip:
 			'''
-			Fire Dragon tears and spin for a while to track enemies
-			"A dragon can only shed tears once in his life."
+			Fires dragon tears that spin for a while before homing in on enemies.
+			Right-click to cast Dragon Command Magic at the cursor, issuing a death command to enemies within the area.
+			"A dragon can shed tears only once in its lifetime."
 			'''
 	}
 
@@ -3544,6 +3545,8 @@ Projectiles: {
 	FrostbrandHeld.DisplayName: Frostbrand Held
 	IceBladeHeld.DisplayName: Ice Blade Held
 	SpwanTextProj.DisplayName: Spwan Text Proj
+	NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
+	RebelBladeHeld.DisplayName: Rebel Blade Held
 }
 
 Configs: {

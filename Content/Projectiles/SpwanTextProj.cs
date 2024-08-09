@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles
         public override bool PreDraw(ref Color lightColor) => false;
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer()) {
-                text.Invoke();
+                text?.Invoke();
             }
         }
     }

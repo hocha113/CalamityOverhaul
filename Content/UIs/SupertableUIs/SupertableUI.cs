@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 AllRecipes.Add(recipeData);
             }
 
-            ($"得到配方表容量：{AllRecipes.Count}").DompInConsole();
+            ($"Get the recipe table capacity: {AllRecipes.Count}").DompInConsole();
         }
 
         public void UpdateUIElementPos() {

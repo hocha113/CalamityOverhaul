@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 {
-    internal class NeutronGlaiveHeld : BaseHeldProj, ILoader
+    internal class NeutronGlaiveHeldAlt : BaseHeldProj, ILoader
     {
         public override string Texture => CWRConstant.Item_Melee + "NeutronGlaive";
 

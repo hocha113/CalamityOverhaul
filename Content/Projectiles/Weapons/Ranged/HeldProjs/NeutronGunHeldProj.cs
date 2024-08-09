@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void GunDraw(ref Color lightColor) {
             if (Item != null && !Item.IsAir && Item.type == NeutronGun.PType) {
-                NeutronGlaiveHeld.DrawBar(Owner, Charge, uiframe);
+                NeutronGlaiveHeldAlt.DrawBar(Owner, Charge, uiframe);
             }
             Texture2D setValue = TextureValue;
             if (onFireR) {
