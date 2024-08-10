@@ -60,7 +60,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             drawTrailBtommWidth = 70;
             drawTrailTopWidth = 20;
             drawTrailCount = 16;
-            Length = 130;
             overOffsetCachesRoting = MathHelper.ToRadians(2);
             Projectile.scale = 1.25f;
             SwingData.starArg = 60;
@@ -70,6 +69,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             SwingData.maxClampLength = 140;
             SwingData.ler1_UpSizeSengs = 0.056f;
             ShootSpeed = 12;
+            Length = 130;
         }
 
         public override void Shoot() {
