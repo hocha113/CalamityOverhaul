@@ -2838,6 +2838,11 @@ Items: {
 		// DisplayName: Realm Source
 		// Tooltip: ""
 	}
+
+	FeralthornClaymoreEcType: {
+		// DisplayName: Feralthorn Claymore Ec Type
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {

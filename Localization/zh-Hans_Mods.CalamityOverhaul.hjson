@@ -2850,6 +2850,11 @@ Items: {
 		DisplayName: 境-源
 		Tooltip: ""
 	}
+
+	FeralthornClaymoreEcType: {
+		DisplayName: 荆棘长刃
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
