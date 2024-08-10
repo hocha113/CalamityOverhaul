@@ -96,18 +96,18 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             tooltips.AddRange(prefixTooltips);
         }
 
-        //public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-        //    float oldMultiplicative = damage.Multiplicative;
-        //    damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
-        //    damage /= oldMultiplicative;
-        //}
-        //因为方法表现不稳定，所以重新使用回 ModifyWeaponDamage 而不是 On_ModifyWeaponDamage
-        public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
             float oldMultiplicative = damage.Multiplicative;
             damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
             damage /= oldMultiplicative;
-            return false;
         }
+        //因为方法表现不稳定，所以重新使用回 ModifyWeaponDamage 而不是 On_ModifyWeaponDamage
+        //public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
+        //    float oldMultiplicative = damage.Multiplicative;
+        //    damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
+        //    damage /= oldMultiplicative;
+        //    return false;
+        //}
 
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
             crit += MurasamaEcType.GetOnCrit;

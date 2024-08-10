@@ -3584,6 +3584,10 @@ Projectiles: {
 	// BrimlashHeld.DisplayName: Brimlash Held
 	// BrimlashTouch.DisplayName: Brimlash Touch
 	// RealmSourceHeld.DisplayName: Realm Source Held
+	// BlightedCleaverHeld.DisplayName: Blighted Cleaver Held
+	// DefiledGreatswordHeld2.DisplayName: Defiled Greatsword Held2
+	// FeralthornClaymoreHeld.DisplayName: Feralthorn Claymore Held
+	// TerrorBladeHeld2.DisplayName: Terror Blade Held2
 }
 
 Configs: {

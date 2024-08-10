@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         public float oldLengthOffsetSizeValue = 1f;
         /// <summary>
-        /// 是否无视弹幕碰撞箱的大小属性，默认为<see langword="true"/>，而如果为<see langword="false"/>，碰撞箱大小将不会自动影响刀刃的其他设置
+        /// 是否无视弹幕碰撞箱的大小属性，默认为<see langword="false"/>，而如果为<see langword="true"/>，碰撞箱大小将不会自动影响刀刃的其他设置
         /// </summary>
         public bool IgnoreImpactBoxSize;
         /// <summary>

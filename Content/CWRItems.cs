@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content
             int type = item.type;
             if (type == ModContent.ItemType<Nadir>()) {
                 item.damage = 190;
-                item.useTime = item.useAnimation = 15;
+                item.useTime = item.useAnimation = 18;
             }
             else if (type == ItemID.Zenith) {
                 item.damage = 105;

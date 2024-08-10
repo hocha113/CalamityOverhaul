@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<GouldBee>(), Projectile.damage / 2, 0, Owner.whoAmI);
+                , ModContent.ProjectileType<GouldBee>(), (int)(Projectile.damage * 0.75f), 0, Owner.whoAmI);
         }
 
         public override bool PreInOwnerUpdate() {

@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         private static Asset<Texture2D> gradientTexture;
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRage_Bar";
+        private int Time2;
         public override void SetSwingProperty() {
             Projectile.CloneDefaults(ProjectileID.Spear);
             Projectile.extraUpdates = 3;
@@ -271,8 +272,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                         SpawnDust(Owner, Owner.direction);
                     }
                 }
-
-                if (Time >= 90 * updateCount && !DownRight) {
+                Projectile.timeLeft = 1200;
+                if (Time >= 90 * updateCount && !DownRight || (rotSpeed <= 0.06f && Time2 >= 90 * updateCount)) {
                     Projectile.Kill();
                 }
                 if (Time % updateCount == updateCount - 1) {
@@ -283,7 +284,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (Time > 1) {
                 Projectile.alpha = 0;
             }
-
+            Time2++;
             canDrawSlashTrail = Projectile.ai[0] != 3;
             inDrawFlipdiagonally = Projectile.ai[0] == 1 || Projectile.ai[0] == 5;
         }

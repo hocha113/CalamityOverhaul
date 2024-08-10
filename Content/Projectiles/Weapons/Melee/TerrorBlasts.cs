@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System.Linq;
+using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -7,8 +8,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class TerrorBlasts : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Melee";
-
         public override string Texture => CWRConstant.Placeholder;
 
         public override void SetDefaults() {
@@ -28,8 +27,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             return null;
         }
 
-        public override void AI() {
-            base.AI();
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (CWRLoad.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage /= 10;
+            }
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {

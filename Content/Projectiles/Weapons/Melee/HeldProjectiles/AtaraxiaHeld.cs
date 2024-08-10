@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             SoundEngine.PlaySound(SoundID.Item60, Owner.Center);
             Vector2 origVr = ShootVelocity * 1.5f;
             Projectile.NewProjectile(Source, ShootSpanPos + origVr * 2, origVr
-                , ModContent.ProjectileType<AtaraxiaMain>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
+                , ModContent.ProjectileType<AtaraxiaMain>(), (int)(Projectile.damage * 0.65f), Projectile.knockBack, Owner.whoAmI);
             Vector2 offsetPos = ShootVelocity.GetNormalVector() * 15;
             Projectile.NewProjectile(Source, ShootSpanPos + offsetPos, origVr
                 , ModContent.ProjectileType<AtaraxiaSide>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI, 0, 2);

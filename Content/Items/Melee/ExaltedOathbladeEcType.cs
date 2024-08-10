@@ -57,7 +57,8 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV * 6
-                , ModContent.ProjectileType<EXOathblade2>(), Projectile.damage * 3, Projectile.knockBack, Owner.whoAmI);
+                , ModContent.ProjectileType<EXOathblade2>(), (int)(Projectile.damage * 2.55f)
+                , Projectile.knockBack, Owner.whoAmI);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

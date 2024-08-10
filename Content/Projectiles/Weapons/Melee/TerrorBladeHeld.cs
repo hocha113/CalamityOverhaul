@@ -1,7 +1,9 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Melee;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
@@ -9,9 +11,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class TerrorBladeHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
+        private bool oldChargeSet;
+        private int oldItemType;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 11;
-            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
         }
         public override void AI() {
             Player player = Main.player[Projectile.owner];
@@ -45,8 +50,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
             }
 
-            TerrorBladeEcType.UpdateBar(item);
+            if (item.CWR().MeleeCharge > TerrorBladeEcType.TerrorBladeMaxRageEnergy) {
+                item.CWR().MeleeCharge = TerrorBladeEcType.TerrorBladeMaxRageEnergy;
+            }
+                
             Projectile.Center = player.GetPlayerStabilityCenter();
+
+            if (Projectile.ai[0] > 2) {
+                int type = item.type;
+                if (type != oldItemType) {//如果不一样就说明切换了武器，这里就同步一次状态
+                    oldChargeSet = item.CWR().MeleeCharge > 0;
+                }
+                oldItemType = type;
+                bool set = item.CWR().MeleeCharge > 0;
+                if (set && !oldChargeSet) {
+                    SoundEngine.PlaySound(CWRSound.Pecharge with { Volume = 0.4f }, Owner.Center);
+                }
+                if (!set && oldChargeSet) {
+                    SoundEngine.PlaySound(CWRSound.Peuncharge with { Volume = 0.4f }, Owner.Center);
+                }
+                oldChargeSet = set;
+            }
+            Projectile.ai[0]++;
         }
         public override bool ShouldUpdatePosition() => false;
         public override bool PreDraw(ref Color lightColor) {

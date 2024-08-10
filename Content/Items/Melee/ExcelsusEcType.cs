@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (DownRight) {
                 type = ModContent.ProjectileType<ExcelsusBomb>();
                 Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                    , type, (int)(Projectile.damage * 2.25f), Projectile.knockBack, Owner.whoAmI);
+                    , type, (int)(Projectile.damage * 3.55f), Projectile.knockBack, Owner.whoAmI);
                 return;
             }
             for (int i = 0; i < 3; ++i) {

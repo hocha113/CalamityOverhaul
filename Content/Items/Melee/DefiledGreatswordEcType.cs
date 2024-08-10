@@ -5,11 +5,11 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Linq;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -23,11 +23,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DefiledGreatsword";
 
         public const float DefiledGreatswordMaxRageEnergy = 15000;
-
-        private float rageEnergy {
-            get => Item.CWR().MeleeCharge;
-            set => Item.CWR().MeleeCharge = value;
-        }
 
         private static Asset<Texture2D> rageEnergyTopAsset;
         private static Asset<Texture2D> rageEnergyBarAsset;
@@ -45,7 +40,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             rageEnergyBackAsset = null;
         }
 
-        public override void SetDefaults() {
+        public override void SetDefaults() => SetDefaultsFunc(Item);
+        public static void SetDefaultsFunc(Item Item) {
             Item.width = 102;
             Item.damage = 112;
             Item.DamageType = DamageClass.Melee;
@@ -62,17 +58,81 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shoot = ModContent.ProjectileType<BlazingPhantomBlade>();
             Item.shootSpeed = 12f;
             Item.CWR().heldProjType = ModContent.ProjectileType<DefiledGreatswordHeld>();
+            Item.SetKnifeHeld<DefiledGreatswordHeld2>();
         }
 
-        internal static void UpdateBar(Item item) {
-            if (item.CWR().MeleeCharge > DefiledGreatswordMaxRageEnergy)
-                item.CWR().MeleeCharge = DefiledGreatswordMaxRageEnergy;
-        }
-
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            if (Item.CWR().MeleeCharge > DefiledGreatswordMaxRageEnergy) {
-                Item.CWR().MeleeCharge = DefiledGreatswordMaxRageEnergy;
+        public static void DrawRageEnergyChargeBar(Player player, float alp) {
+            Item item = player.ActiveItem();
+            if (item.IsAir) {
+                return;
             }
+            Texture2D rageEnergyTop = rageEnergyTopAsset.Value;
+            Texture2D rageEnergyBar = rageEnergyBarAsset.Value;
+            Texture2D rageEnergyBack = rageEnergyBackAsset.Value;
+            float slp = 3;
+            int offsetwid = 4;
+            float max = DefiledGreatswordMaxRageEnergy;
+            if (item.type == ModContent.ItemType<BlightedCleaverEcType>() || item.type == ModContent.ItemType<BlightedCleaver>()) {
+                max = BlightedCleaverEcType.BlightedCleaverMaxRageEnergy;
+            }
+            Vector2 drawPos = CWRUtils.WDEpos(player.GetPlayerStabilityCenter() + new Vector2(rageEnergyBar.Width / -2 * slp, 135));
+            Rectangle backRec = new(offsetwid, 0, (int)((rageEnergyBar.Width - (offsetwid * 2)) * (item.CWR().MeleeCharge / max)), rageEnergyBar.Height);
+
+            Main.EntitySpriteDraw(rageEnergyBack, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(rageEnergyBar, drawPos + (new Vector2(offsetwid, 0) * slp)
+                , backRec, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
+
+            Main.EntitySpriteDraw(rageEnergyTop, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
+        }
+    }
+
+    internal class DefiledGreatswordHeld2 : BaseKnife
+    {
+        public override int TargetID => ModContent.ItemType<DefiledGreatsword>();
+        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail4";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "BlightedCleaver_Bar";
+        private float rageEnergy {
+            get => Item.CWR().MeleeCharge;
+            set => Item.CWR().MeleeCharge = value;
+        }
+        public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 66;
+            drawTrailHighlight = false;
+            canDrawSlashTrail = true;
+            distanceToOwner = 40;
+            drawTrailBtommWidth = 70;
+            drawTrailTopWidth = 70;
+            drawTrailCount = 16;
+            Length = 130;
+            unitOffsetDrawZkMode = -6;
+            SwingData.starArg = 60;
+            SwingData.baseSwingSpeed = 4.2f;
+            SwingData.ler1_UpLengthSengs = 0.1f;
+            SwingData.minClampLength = 130;
+            SwingData.maxClampLength = 140;
+            SwingData.ler1_UpSizeSengs = 0.026f;
+            ShootSpeed = 12;
+            IgnoreImpactBoxSize = false;
+        }
+
+        public override void MeleeEffect() {
+            if (Main.rand.NextBool(5)) {
+                Dust.NewDust(Projectile.position, Projectile.width
+                    , Projectile.height, DustID.RuneWizard);
+            }
+        }
+
+        public override bool PreInOwnerUpdate() {
+            if (rageEnergy > 0) {
+                SwingData.baseSwingSpeed = 12.45f;
+            }
+            return base.PreInOwnerUpdate();
+        }
+
+        public override void Shoot() {
+            int damage = Projectile.damage;
+            Player player = Owner;
+
             if (!Item.CWR().closeCombat) {
                 rageEnergy -= damage * 1.25f;
                 if (rageEnergy < 0) {
@@ -83,30 +143,27 @@ namespace CalamityOverhaul.Content.Items.Melee
                     float adjustedItemScale = player.GetAdjustedItemScale(Item);
                     float ai1 = 40;
                     float velocityMultiplier = 2;
-                    Projectile.NewProjectile(source, player.MountedCenter, velocity * velocityMultiplier, ModContent.ProjectileType<BlazingPhantomBlade>(), (int)(damage * 0.75)
-                        , knockback * 0.5f, player.whoAmI, player.direction * player.gravDir, ai1, adjustedItemScale);
+                    Projectile.NewProjectile(Source, player.GetPlayerStabilityCenter(), ShootVelocity * velocityMultiplier
+                        , ModContent.ProjectileType<BlazingPhantomBlade>(), (int)(damage * 0.75)
+                        , Projectile.knockBack * 0.5f, player.whoAmI, player.direction * player.gravDir, ai1, adjustedItemScale);
                 }
                 else {
                     float adjustedItemScale = player.GetAdjustedItemScale(Item);
                     for (int i = 0; i < 3; i++) {
                         float ai1 = 40 + i * 8;
                         float velocityMultiplier = 1f - i / (float)3;
-                        Projectile.NewProjectile(source, player.MountedCenter, velocity * velocityMultiplier, ModContent.ProjectileType<BlazingPhantomBlade>(), (int)(damage * 0.75)
-                            , knockback * 0.5f, player.whoAmI, player.direction * player.gravDir, ai1, adjustedItemScale);
+                        Projectile.NewProjectile(Source, player.GetPlayerStabilityCenter()
+                            , ShootVelocity.RotatedByRandom(MathHelper.TwoPi) * velocityMultiplier
+                            , ModContent.ProjectileType<BlazingPhantomBlade>(), damage
+                            , Projectile.knockBack * 0.5f, player.whoAmI, player.direction * player.gravDir, ai1, adjustedItemScale);
                     }
                 }
             }
             Item.CWR().closeCombat = false;
-            return false;
         }
 
-        public override void MeleeEffects(Player player, Rectangle hitbox) {
-            if (Main.rand.NextBool(5)) {
-                _ = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.RuneWizard);
-            }
-        }
-
-        public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            Player player = Owner;
             Item.CWR().closeCombat = true;
             float addnum = hit.Damage;
             if (addnum > target.lifeMax) {
@@ -117,6 +174,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             rageEnergy += addnum;
+            if (rageEnergy > DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy) {
+                rageEnergy = DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy;
+            }
 
             player.AddBuff(ModContent.BuffType<BrutalCarnage>(), 300);
             target.AddBuff(70, 150);
@@ -144,7 +204,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        public override void OnHitPvp(Player player, Player target, Player.HurtInfo hurtInfo) {
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
+            Player player = Owner;
             Item.CWR().closeCombat = true;
             int type = ModContent.ProjectileType<SunlightBlades>();
             int offsety = 180;
@@ -176,30 +237,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             player.AddBuff(ModContent.BuffType<BrutalCarnage>(), 300);
             target.AddBuff(70, 150);
-        }
-
-        public static void DrawRageEnergyChargeBar(Player player, float alp) {
-            Item item = player.ActiveItem();
-            if (item.IsAir) {
-                return;
-            }
-            Texture2D rageEnergyTop = rageEnergyTopAsset.Value;
-            Texture2D rageEnergyBar = rageEnergyBarAsset.Value;
-            Texture2D rageEnergyBack = rageEnergyBackAsset.Value;
-            float slp = 3;
-            int offsetwid = 4;
-            float max = DefiledGreatswordMaxRageEnergy;
-            if (item.type == ModContent.ItemType<BlightedCleaverEcType>() || item.type == ModContent.ItemType<BlightedCleaver>()) {
-                max = BlightedCleaverEcType.BlightedCleaverMaxRageEnergy;
-            }
-            Vector2 drawPos = CWRUtils.WDEpos(player.GetPlayerStabilityCenter() + new Vector2(rageEnergyBar.Width / -2 * slp, 135));
-            Rectangle backRec = new(offsetwid, 0, (int)((rageEnergyBar.Width - (offsetwid * 2)) * (item.CWR().MeleeCharge / max)), rageEnergyBar.Height);
-
-            Main.EntitySpriteDraw(rageEnergyBack, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(rageEnergyBar, drawPos + (new Vector2(offsetwid, 0) * slp)
-                , backRec, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
-
-            Main.EntitySpriteDraw(rageEnergyTop, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
         }
     }
 }

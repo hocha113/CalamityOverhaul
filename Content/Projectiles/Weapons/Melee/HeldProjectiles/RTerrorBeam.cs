@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -23,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.height = 16;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.penetrate = 6;
+            Projectile.penetrate = 13;
             Projectile.alpha = 255;
             Projectile.timeLeft = 500;
             Projectile.light = 1f;
@@ -93,7 +94,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                             Vector2 pos = Main.rand.NextFloat(rot - offsetrot, rot + offsetrot)
                                     .ToRotationVector2() * lengs + Main.player[Projectile.owner].Center;
                             Projectile.NewProjectileDirect(
-                                Projectile.parent(),
+                                Projectile.GetSource_FromAI(),
                                 pos,
                                 pos.To(target.Center).UnitVector() * 17,
                                 Type,
@@ -153,6 +154,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
 
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (CWRLoad.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage /= 10;
+            }
         }
 
         public override Color? GetAlpha(Color lightColor) {

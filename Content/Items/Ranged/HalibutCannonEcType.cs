@@ -99,8 +99,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += GetOnCrit;
 
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => ModifyWeaponDamageFunc(player, ref damage);
+        public static void ModifyWeaponDamageFunc(Player player, ref StatModifier damage) {
+            float oldMultiplicative = damage.Multiplicative;
             damage *= GetOnDamage / (float)GetStartDamage;
+            damage /= oldMultiplicative;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {

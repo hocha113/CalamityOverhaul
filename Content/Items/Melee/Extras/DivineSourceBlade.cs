@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override void SetDefaults() {
             Item.height = 154;
             Item.width = 154;
-            Item.damage = 480;
+            Item.damage = 500;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = Item.useTime = 15;
             Item.scale = 1;
