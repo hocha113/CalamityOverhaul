@@ -218,6 +218,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BrutalSkeletronPrimeAI.CheakDead(npc, head);
             BrutalSkeletronPrimeAI.CheakRam(out cannonAlive, out viceAlive, out _, out laserAlive);
             npc.aiStyle = -1;
+            npc.dontTakeDamage = false;
+            if (head.ai[1] == 1) {
+                if (BrutalSkeletronPrimeAI.SetArmRot(npc, head, 2)) {
+                    return false;
+                }
+            }
+
             Vector2 sawArmLocation = npc.Center;
             float sawArmIdleXPos = head.Center.X - 200f * npc.ai[0] - sawArmLocation.X;
             float sawArmIdleYPos = head.position.Y + 230f - sawArmLocation.Y;

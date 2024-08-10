@@ -4,10 +4,12 @@ using CalamityMod.NPCs;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -68,6 +70,10 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                         continue;
                     }
 
+                    if (!CWRUtils.isServer && !p.dead && p.active) {
+                        p.Calamity().infiniteFlight = true;
+                    }
+
                     if (p.Distance(Projectile.Center) > modeings) {
                         p.AddBuff(ModContent.BuffType<HellfireExplosion>(), 2);
                         p.HealEffect(-1);
@@ -91,7 +97,10 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
         public override void OnKill(int timeLeft) {
             NPC boss = Main.npc[(int)Projectile.ai[1]];
-            if (boss.type == NPCID.SkeletronPrime && boss.active) {
+            //如果ai1为3说明是正在消失，这个时候就不要再tp过来了
+            if (boss.type == NPCID.SkeletronPrime && boss.active && boss.ai[1] != 3) {
+                SoundEngine.PlaySound(SoundID.Item78 with { Pitch = 1.24f });
+
                 boss.Center = Projectile.Center;
                 if (CalamityGlobalNPC.primeCannon != -1) {
                     if (Main.npc[CalamityGlobalNPC.primeCannon].active)
@@ -125,6 +134,11 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                                 , Projectile.Center, (MathHelper.TwoPi / maxProjSanShootNum * i).ToRotationVector2() * 3
                                 , type, Projectile.damage, 0f, Main.myPlayer, -1, -1, 0);
                     }
+
+                    //这些逻辑不可以在客户端上调用，以确保运行结果唯一且不会混乱
+                    BrutalSkeletronPrimeAI.ai5 = 0;
+                    BrutalSkeletronPrimeAI.ai11 = 90;
+                    BrutalSkeletronPrimeAI.NetAISend();
                 }
             }
             FireDrawer = null;
