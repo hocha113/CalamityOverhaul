@@ -2840,7 +2840,7 @@ Items: {
 	}
 
 	FeralthornClaymoreEcType: {
-		// DisplayName: Feralthorn Claymore Ec Type
+		// DisplayName: Feralthorn Claymore
 		// Tooltip: ""
 	}
 }
@@ -3547,19 +3547,19 @@ Projectiles: {
 	// HellionFlowerSpearHeld.DisplayName: Hellion Flower Spear
 	// OrderbringerHeld.DisplayName: Orderbringer
 	// StellarStrikerHeld.DisplayName: Stellar Striker
-	// PhasebladeHeld.DisplayName: Phaseblade Held
-	// FrostbrandHeld.DisplayName: Frostbrand Held
-	// IceBladeHeld.DisplayName: Ice Blade Held
+	// PhasebladeHeld.DisplayName: Phaseblade
+	// FrostbrandHeld.DisplayName: Frostbrand
+	// IceBladeHeld.DisplayName: Ice Blade
 	// SpwanTextProj.DisplayName: Spwan Text Proj
-	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
-	// RebelBladeHeld.DisplayName: Rebel Blade Held
-	// BrimlashHeld.DisplayName: Brimlash Held
+	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive
+	// RebelBladeHeld.DisplayName: Rebel Blade
+	// BrimlashHeld.DisplayName: Brimlash
 	// BrimlashTouch.DisplayName: Brimlash Touch
-	// RealmSourceHeld.DisplayName: Realm Source Held
-	// BlightedCleaverHeld.DisplayName: Blighted Cleaver Held
-	// DefiledGreatswordHeld2.DisplayName: Defiled Greatsword Held2
-	// FeralthornClaymoreHeld.DisplayName: Feralthorn Claymore Held
-	// TerrorBladeHeld2.DisplayName: Terror Blade Held2
+	// RealmSourceHeld.DisplayName: Realm Source
+	// BlightedCleaverHeld.DisplayName: Blighted Cleaver
+	// DefiledGreatswordHeld2.DisplayName: Defiled Greatsword
+	// FeralthornClaymoreHeld.DisplayName: Feralthorn Claymore
+	// TerrorBladeHeld2.DisplayName: Terror Blade
 }
 
 Configs: {
