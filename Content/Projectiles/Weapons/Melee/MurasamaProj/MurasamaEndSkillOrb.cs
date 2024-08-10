@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.SetMaxDamage(6000);
             }
             if (CWRLoad.WormBodys.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.5f;
+                modifiers.FinalDamage *= 0.1f;
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatswordProj;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -37,6 +38,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(5)) {
+                return;
+            }
             int type = ModContent.ProjectileType<SporeCloud>();
             target.AddBuff(BuffID.Poisoned, 1200);
             if (Owner.ownedProjectileCounts[type] < 220) {

@@ -2847,8 +2847,8 @@ Items: {
 	}
 
 	RealmSource: {
-		// DisplayName: Realm Source
-		// Tooltip: ""
+		DisplayName: 境-源
+		Tooltip: ""
 	}
 }
 

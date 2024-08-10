@@ -4,6 +4,7 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -120,6 +121,12 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (Projectile.ai[0] != 1) {
+                return;
+            }
+            if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(5)) {
+                return;
+            }
             SpawnFlares(Item, Owner, Item.knockBack, Item.damage, hit.Crit);
         }
 
