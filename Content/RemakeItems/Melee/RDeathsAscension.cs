@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.noMelee = true;
             item.useStyle = ItemUseStyleID.Shoot;
             item.shoot = ModContent.ProjectileType<DeathsAscensionHeld>();
+            item.CWR().GetAllowPrefix = true;
+            item.CWR().GetMeleePrefix = true;
         }
 
         public override bool? On_AltFunctionUse(Item item, Player player) => false;

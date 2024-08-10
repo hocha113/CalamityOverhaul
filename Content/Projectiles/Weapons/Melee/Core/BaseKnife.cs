@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -12,6 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public SwingDataStruct SwingData = new SwingDataStruct();
         public SwingAITypeEnum SwingAIType;
         protected bool autoSetShoot;
+        protected float inWormBodysDamageFaul = 0.5f;
         public enum SwingAITypeEnum
         {
             None = 0,
@@ -101,6 +103,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public sealed override void NoServUpdate() {
             if (Time % updateCount == 0) {
                 MeleeEffect();
+            }
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (CWRLoad.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage *= inWormBodysDamageFaul;
             }
         }
     }

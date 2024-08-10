@@ -116,8 +116,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             SoundEngine.PlaySound(sound with { Pitch = Projectile.ai[2] * 0.15f, Volume = 0.45f }, Projectile.Center);
             int dir = -Math.Sign(rotSpeed);
             Vector2 spwanPos = ShootSpanPos + ShootVelocity.GetNormalVector() * (Projectile.ai[2] * 20 * dir) - ShootVelocity * (Projectile.ai[2] * 6) + ShootVelocity.UnitVector() * 100;
-            Projectile.NewProjectile(Source, spwanPos, ShootVelocity.RotatedBy((-2 + Projectile.ai[2]) * 0.1f * -dir) * (1 + Projectile.ai[2] * 0.1f)
-                , ModContent.ProjectileType<EntropicClaymoreProj>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+            Projectile.NewProjectile(Source, spwanPos, ShootVelocity, ModContent.ProjectileType<EntropicClaymoreProj>(), (int)(Projectile.damage * 0.65f), Projectile.knockBack, Projectile.owner);
         }
 
         public override bool PreInOwnerUpdate() {

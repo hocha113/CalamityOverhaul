@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.noMelee = true;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.shoot = ModContent.ProjectileType<DeathsAscensionHeld>();
+            Item.CWR().GetAllowPrefix = true;
+            Item.CWR().GetMeleePrefix = true;
         }
 
         public override bool CanUseItem(Player player) {
