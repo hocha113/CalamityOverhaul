@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.TileEntitys;
 using System.IO;
@@ -17,6 +18,7 @@ namespace CalamityOverhaul
         TEBloodAltar,
         OverBeatBack,
         BrutalSkeletronPrimeAI,
+        BrutalTwinsAI,
         ProjViscosityData,
     }
 
@@ -58,6 +60,19 @@ namespace CalamityOverhaul
                 BrutalSkeletronPrimeAI.ai10 = reader.ReadInt32();
                 BrutalSkeletronPrimeAI.ai11 = reader.ReadInt32();
                 BrutalSkeletronPrimeAI.ai12 = reader.ReadInt32();
+            }
+            else if (type == CWRMessageType.BrutalTwinsAI) {
+                bool isSpazmatism = reader.ReadBoolean();
+                if (isSpazmatism) {
+                    for (int i = 0; i < SpazmatismAI.ai.Length; i++) {
+                        SpazmatismAI.ai[i] = reader.ReadInt32();
+                    }
+                }
+                else {
+                    for (int i = 0; i < RetinazerAI.ai.Length; i++) {
+                        RetinazerAI.ai[i] = reader.ReadInt32();
+                    }
+                }
             }
             else if (type == CWRMessageType.ProjViscosityData) {
                 CWRProjectile.NetViscositySend(Main.projectile[reader.ReadInt32()]);

@@ -4473,6 +4473,10 @@ TextContent: {
 		IconUI_Text5: Доноры
 		IconUI_Text6: Тестирование баланса
 		// IconUI_Text7: View log
+		// Spazmatism_Text1: EUX_001 deployed successfully, behavior logged: Collaborate with PCZ_001 to neutralize the target.
+		// Spazmatism_Text2: EUX_002 deployed successfully, behavior logged: Collaborate with PCZ_001 to neutralize the target.
+		// Spazmatism_Text3: EUX_001 main structure damaged, attempting to retreat from the battlefield...
+		// Spazmatism_Text4: EUX_002 main structure damaged, attempting to retreat from the battlefield...
 		// Error_1: hook failed, in order to normal the game, please close the game and re-enter, if this still does not return to normal, please bring the exported log to find the module developer
 		Wap_BubbleGun_Text:
 			'''

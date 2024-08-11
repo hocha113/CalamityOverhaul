@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             NPC head = Main.npc[(int)rCurrentNPC.ai[1]];
-            if (head.ai[1] == 1 && ai12 >= 2) {
+            if (head.ai[1] == 1 && ai12 >= 1) {
                 int num24 = Dust.NewDust(rCurrentNPC.Center, 10, 10, DustID.FireworkFountain_Red, 0, 0, 0, Color.Gold, 0.5f);
                 Main.dust[num24].noGravity = false;
                 return;
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override bool CanLoad() => true;
 
         internal static bool SetArmRot(NPC arm, NPC head, int type) {
-            if (ai12 < 2) {
+            if (ai12 < 1) {
                 return false;
             }
             float rot = ai10 * 0.1f + MathHelper.TwoPi / 4 * type;
@@ -338,9 +338,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.life = npc.lifeMax;
                 }
 
-                SmokeDrawer.ParticleSpawnRate = 3;
-                SmokeDrawer.BaseMoveRotation = MathHelper.ToRadians(90);
-                SmokeDrawer.SpawnAreaCompactness = 80f;
+                if (noArm) {
+                    SmokeDrawer.ParticleSpawnRate = 3;
+                    SmokeDrawer.BaseMoveRotation = MathHelper.ToRadians(90);
+                    SmokeDrawer.SpawnAreaCompactness = 80f;
+                }
                 SmokeDrawer.Update();
 
                 ai11--;
@@ -428,7 +430,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
                 }
 
-                if (npc.ai[2] == 38f && ai12 >= 2 && !noArm) {//只有当ai12的值大于等于2后才会进行冲刺
+                if (npc.ai[2] == 38f && ai12 >= 1 && !noArm) {//只有当ai12的值大于等于1后才会进行冲刺
                     SoundStyle sound = new SoundStyle("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged");
                     SoundEngine.PlaySound(sound with { Pitch = 1.18f }, npc.Center);
                 }
@@ -594,8 +596,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         if (++ai5 > 90 && primeCannonOnSpanCount == 0 && ai6 <= 2) {
                             npc.TargetClosest();
                             if (!CWRUtils.isClient) {
-                                for (int i = 0; i < 12; i++) {
-                                    float rotoffset = MathHelper.TwoPi / 12f * i;
+                                float maxLerNum = 9f;
+                                for (int i = 0; i < maxLerNum; i++) {
+                                    float rotoffset = MathHelper.TwoPi / maxLerNum * i;
                                     Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
                                     if (death && Main.masterMode || bossRush || ModGanged.InfernumModeOpenState) {
                                         Projectile.NewProjectile(npc.GetSource_FromAI()
@@ -807,7 +810,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private void UpdateVelocity(CalamityGlobalNPC calamityNPC, NPC npc, Vector2 targetVector, float speedMultiplier, float distance) {
             float adjustedSpeed = speedMultiplier / distance;
-            if (death && ai12 >= 2) {
+            if (death && ai12 >= 1) {
                 if (--calamityNPC.newAI[2] <= 0) {
                     npc.velocity.X = targetVector.X * adjustedSpeed;
                     npc.velocity.Y = targetVector.Y * adjustedSpeed;
@@ -965,7 +968,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 , drawColor, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
                 , Color.White, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
-            if (noArm && ai10 > 2 && player != null) {
+
+            bool noEye = !NPC.AnyNPCs(NPCID.Retinazer) && !NPC.AnyNPCs(NPCID.Spazmatism);
+
+            if (noArm && ai10 > 2 && player != null && noEye) {
                 Vector2 toD = player.Center.To(npc.Center);
                 Vector2 origpos = player.Center - Main.screenPosition;
                 float alp = toD.Length() / 400f;

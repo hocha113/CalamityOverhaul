@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.NPCs.NormalNPCs;
+using CalamityMod.NPCs.VanillaNPCAIOverrides.Bosses;
 using CalamityOverhaul;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
@@ -7,6 +8,7 @@ using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
 using ReLogic.Utilities;
 using Steamworks;
@@ -1167,6 +1169,19 @@ namespace CalamityOverhaul
             }
         }
 
+        public static NPC FindNPC(int type) {
+            NPC npc = null;
+            foreach (var n in Main.npc) {
+                if (!n.active) {
+                    continue;
+                }
+                if (n.type == type) {
+                    npc = n;
+                }
+            }
+            return npc;
+        }
+
         public static void ActivateSky(string key) {
             if (Main.dedServ) {
                 return;
@@ -1466,11 +1481,12 @@ namespace CalamityOverhaul
         /// <param name="message">要发送的消息文本</param>
         /// <param name="colour">（可选）消息的颜色,默认为 null</param>
         public static void Text(string message, Color? colour = null) {
+            Color newColor = (Color)(colour == null ? Color.White : colour);
             if (Main.netMode == NetmodeID.Server) {
                 ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), (Color)(colour == null ? Color.White : colour));
                 return;
             }
-            Main.NewText(message, colour);
+            Main.NewText(message, newColor);
         }
 
         /// <summary>

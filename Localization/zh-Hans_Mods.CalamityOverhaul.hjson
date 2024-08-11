@@ -4375,6 +4375,10 @@ TextContent: {
 		IconUI_Text5: 捐赠者
 		IconUI_Text6: 平衡测试
 		IconUI_Text7: 查看日志
+		Spazmatism_Text1: EUX_001部署成功，行为写入:协同PCZ_001无效化目标
+		Spazmatism_Text2: EUX_002部署成功，行为写入:协同PCZ_001无效化目标
+		Spazmatism_Text3: EUX_001主结构受损，尝试从战场脱离...
+		Spazmatism_Text4: EUX_002主结构受损，尝试从战场脱离...
 		Error_1: 个钩子失效了，为了游戏正常，请关闭游戏并重新进入，如果这仍旧没有恢复正常，请带上导出的日志寻找模组开发者
 		Wap_BubbleGun_Text:
 			'''
