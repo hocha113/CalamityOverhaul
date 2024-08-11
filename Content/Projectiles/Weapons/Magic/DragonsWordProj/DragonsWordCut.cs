@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<HellfireExplosion>(), 180);
+            target.AddBuff(ModContent.BuffType<EXHellfire>(), 180);
         }
 
         public override void OnKill(int timeLeft) {

@@ -3572,6 +3572,8 @@ Projectiles: {
 	// DefiledGreatswordHeld2.DisplayName: Defiled Greatsword
 	// FeralthornClaymoreHeld.DisplayName: Feralthorn Claymore
 	// TerrorBladeHeld2.DisplayName: Terror Blade
+	// Fireball.DisplayName: Fireball
+	// DeadLaser2.DisplayName: Dead Laser2
 }
 
 Configs: {
@@ -3791,7 +3793,7 @@ Buffs: {
 		Description: 来自地狱的火焰
 	}
 
-	HellfireExplosion: {
+	EXHellfire: {
 		DisplayName: 地狱炎爆
 		Description: 来自地狱的火焰
 	}

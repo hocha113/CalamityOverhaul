@@ -3593,6 +3593,8 @@ Projectiles: {
 	// DefiledGreatswordHeld2.DisplayName: Defiled Greatsword
 	// FeralthornClaymoreHeld.DisplayName: Feralthorn Claymore
 	// TerrorBladeHeld2.DisplayName: Terror Blade
+	// Fireball.DisplayName: Fireball
+	// DeadLaser2.DisplayName: Dead Laser2
 }
 
 Configs: {
@@ -3838,7 +3840,7 @@ Buffs: {
 		Description: Из пламени Ада
 	}
 
-	HellfireExplosion: {
+	EXHellfire: {
 		DisplayName: Адский жар
 		Description: Из пламени Ада
 	}

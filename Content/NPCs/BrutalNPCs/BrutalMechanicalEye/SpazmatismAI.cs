@@ -2,7 +2,9 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -15,9 +17,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         public static Color textColor1 => new(155, 255, 255);
         public static Color textColor2 => new(213, 4, 11);
         public static int[] ai = new int[8];
+        private int frame;
+        private static int frameIndex;
+        private static int frameCount;
         public override void SetProperty() {
             SetAccompany(npc, out Accompany);
             ai = new int[8];
+            frameIndex = 3;
         }
         public static void SetAccompany(NPC npc, out bool accompany) {
             accompany = false;
@@ -66,11 +72,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         }
 
         public static void SetEyeValue(NPC eye, Player player, Vector2 toPoint, Vector2 toTarget) {
+            float roting = toTarget.ToRotation() - MathHelper.PiOver2;
             eye.damage = 0;
             eye.position += player.velocity;
             eye.Center = Vector2.Lerp(eye.Center, toPoint, 0.1f);
-            eye.velocity = Vector2.Zero;
-            eye.EntityToRot(toTarget.ToRotation() - MathHelper.PiOver2, 0.1f);
+            eye.velocity = toTarget.UnitVector() * 0.01f;
+            eye.EntityToRot(roting, 0.2f);
         }
 
         public static bool AccompanyAI(NPC eye, ref int[] ai, bool accompany) {
@@ -142,9 +149,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
             if (isDestroyer) {
                 toPoint = player.Center + (ai[4] * 0.04f + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 760;
-                if (++ai[5] > 20) {
-                    if (!CWRUtils.isClient && !isSpazmatism) {
-                        int type = ProjectileID.EyeLaser;
+                if (++ai[5] > 10) {
+                    if (!CWRUtils.isClient) {
+                        int type = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
                         Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center, toTarget.UnitVector() * 9, type, 32, 0);
                     }
                     ai[5] = 0;
@@ -162,7 +169,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                         if (ai[2] == 30 && !CWRUtils.isClient) {
                             int type = ProjectileID.EyeLaser;
                             if (isSpazmatism) {
-                                type = ProjectileID.CursedFlameHostile;
+                                type = ModContent.ProjectileType<Fireball>();
                             }
                             for (int i = 0; i < 6; i++) {
                                 Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center
@@ -183,7 +190,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                             if (!CWRUtils.isClient) {
                                 int type = ProjectileID.EyeLaser;
                                 if (isSpazmatism) {
-                                    type = ProjectileID.CursedFlameHostile;
+                                    type = ModContent.ProjectileType<Fireball>();
                                 }
                                 Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center, toTarget.UnitVector() * 11, type, 32, 0);
                             }
@@ -217,11 +224,53 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         }
 
         public override bool AI() {
+            if (++frameCount > 5) {
+                if (++frameIndex > 5) {
+                    frameIndex = 3;
+                }
+                frameCount = 0;
+            }
+
             npc.dontTakeDamage = false;
             if (AccompanyAI(npc, ref ai, Accompany)) {
                 return false;
             }
+            
             ai[0]++;
+            return true;
+        }
+
+        internal static bool IsCCK(NPC eye, int[] ai) {
+            NPC skeletronPrime = CWRUtils.FindNPC(NPCID.SkeletronPrime);
+            
+            if (!skeletronPrime.Alives()) {
+                return false;
+            }
+            if (ai[7] > 0 || skeletronPrime.ai[1] == 1) {
+                return true;
+            }
+
+            int num = 0;
+            foreach (var p in Main.projectile) {
+                if (!p.active) {
+                    continue;
+                }
+                if (p.type == ModContent.ProjectileType<SetPosingStarm>()) {
+                    num++;
+                }
+            }
+
+            return num > 0;
+        }
+
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (Accompany && IsCCK(npc, ai)) {
+                Main.instance.LoadNPC(npc.type);
+                Texture2D mainValue = TextureAssets.Npc[npc.type].Value;
+                Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frameIndex, 6)
+                , drawColor, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
+                return false;
+            }
             return true;
         }
     }

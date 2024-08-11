@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.OnFire, 30);
             target.AddBuff(BuffID.OnFire3, 30);
-            target.AddBuff(ModContent.BuffType<HellfireExplosion>(), 30);
+            target.AddBuff(ModContent.BuffType<EXHellfire>(), 30);
         }
 
         public override void OnKill(int timeLeft) {

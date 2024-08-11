@@ -586,14 +586,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         }
                         break;
                     case 1:
-                        int primeCannonOnSpanCount = 0;
+                        int setPosingStarmCount = 0;
+                        int typeSetPosingStarm = ModContent.ProjectileType<SetPosingStarm>();
                         foreach (Projectile proj in Main.projectile) {
-                            if (proj.type == ModContent.ProjectileType<PrimeCannonOnSpan>() && proj.active) {
-                                primeCannonOnSpanCount++;
+                            if (!proj.active) {
+                                continue;
+                            }
+                            if (proj.type == typeSetPosingStarm) {
+                                setPosingStarmCount++;
                             }
                         }
 
-                        if (++ai5 > 90 && primeCannonOnSpanCount == 0 && ai6 <= 2) {
+                        if (++ai5 > 90 && setPosingStarmCount == 0 && ai6 <= 2 && ai11 <= 0) {
                             npc.TargetClosest();
                             if (!CWRUtils.isClient) {
                                 float maxLerNum = 9f;
@@ -686,7 +690,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                             }
                         }
 
-                        if (++ai6 > 90) {
+                        if (++ai6 > 120) {
                             npc.damage = npc.defDamage * 2;
                             ai4 = 0;
                             ai5 = 0;

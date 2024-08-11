@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     }
 
                     if (p.Distance(Projectile.Center) > modeings) {
-                        p.AddBuff(ModContent.BuffType<HellfireExplosion>(), 2);
+                        p.AddBuff(ModContent.BuffType<EXHellfire>(), 2);
                         p.HealEffect(-1);
                     }
                 }

@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
             Projectile.Center = targetPos;
             if (DownRight && Owner.CheckMana(Owner.ActiveItem())) {
                 if (Owner.name == "Sakura") {
-                    Owner.AddBuff(ModContent.BuffType<HellfireExplosion>(), 60);
+                    Owner.AddBuff(ModContent.BuffType<EXHellfire>(), 60);
                     if (Main.rand.NextBool(300)) {
                         Owner.AddBuff(BuffID.Darkness, 60);
                     }

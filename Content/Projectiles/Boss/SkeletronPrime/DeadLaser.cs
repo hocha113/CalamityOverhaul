@@ -52,10 +52,10 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<HellfireExplosion>(), 60);
+            target.AddBuff(ModContent.BuffType<EXHellfire>(), 60);
             for (int i = 0; i < 13; i++) {
                 BaseParticle spark = new DRK_HeavenfallStar(Projectile.Center
-                    , CWRUtils.randVr(13, 23), false, 26, Main.rand.NextFloat(1.6f, 2.8f), Color.Gold);
+                    , CWRUtils.randVr(13, 23), false, 26, Main.rand.NextFloat(2.6f, 2.8f), Color.Gold);
                 DRKLoader.AddParticle(spark);
             }
             Projectile.timeLeft = 30;

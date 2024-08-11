@@ -5,9 +5,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Buffs
 {
-    internal class HellfireExplosion : ModBuff
+    internal class EXHellfire : ModBuff
     {
-        public override string Texture => CWRConstant.Buff + "HellfireExplosion";
+        public override string Texture => CWRConstant.Buff + "EXHellfire";
 
         public override void SetStaticDefaults() {
             Main.debuff[Type] = true;
