@@ -35,6 +35,8 @@ namespace CalamityOverhaul.Common
         public static SoundStyle DeploymentSound = new SoundStyle(CWRConstant.Asset + "Sounds/DeploymentSound");
         public static SoundStyle DeploymentSound_Fire = new SoundStyle(CWRConstant.Asset + "Sounds/DeploymentSound_Fire");
         public static SoundStyle DeploymentSound_AP = new SoundStyle(CWRConstant.Asset + "Sounds/DeploymentSound_AP");
+        public static SoundStyle MechanicalFullBloodFlow = new SoundStyle(CWRConstant.Asset + "Sounds/MechanicalFullBloodFlow");
+        public static SoundStyle SpawnArmMgs = new SoundStyle(CWRConstant.Asset + "Sounds/SpawnArmMgs");
         public static SoundStyle Gun_50CAL_Shoot = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/50CAL_Shoot");
         public static SoundStyle Gun_AUTO_Shoot = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/AUTO_Shoot");
         public static SoundStyle Gun_AWP_Shoot = new SoundStyle(CWRConstant.Asset + "Sounds/Gun/AWP_Shoot");
