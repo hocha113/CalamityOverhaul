@@ -148,8 +148,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
 
             if (isDestroyer) {
-                toPoint = player.Center + (ai[4] * 0.04f + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 760;
-                if (++ai[5] > 10) {
+                Projectile projectile = null;
+                foreach (var p in Main.projectile) {
+                    if (!p.active) {
+                        continue;
+                    }
+                    if (p.type == ModContent.ProjectileType<SetPosingStarm>()) {
+                        projectile = p;
+                    }
+                }
+
+                int fireTime = 10;
+                if (projectile.Alives()) {
+                    fireTime = 5;
+                    toTarget = eye.Center.To(projectile.Center);
+                    toPoint = projectile.Center + (ai[4] * 0.02f + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 1060;
+                }
+                else {
+                    toPoint = player.Center + (ai[4] * 0.04f + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 760;
+                }
+
+                if (++ai[5] > fireTime) {
                     if (!CWRUtils.isClient) {
                         int type = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
                         Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center, toTarget.UnitVector() * 9, type, 32, 0);

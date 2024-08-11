@@ -51,15 +51,7 @@ namespace CalamityOverhaul
                 modnpc.OverBeatBackAttenuationForce = reader.ReadSingle();
             }
             else if (type == CWRMessageType.BrutalSkeletronPrimeAI) {
-                BrutalSkeletronPrimeAI.ai4 = reader.ReadInt32();
-                BrutalSkeletronPrimeAI.ai5 = reader.ReadInt32();
-                BrutalSkeletronPrimeAI.ai6 = reader.ReadInt32();
-                BrutalSkeletronPrimeAI.ai7 = reader.ReadInt32();
-                BrutalSkeletronPrimeAI.ai8 = reader.ReadInt32();
-                BrutalSkeletronPrimeAI.ai9 = reader.ReadInt32();
-                BrutalSkeletronPrimeAI.ai10 = reader.ReadInt32();
-                BrutalSkeletronPrimeAI.ai11 = reader.ReadInt32();
-                BrutalSkeletronPrimeAI.ai12 = reader.ReadInt32();
+                BrutalSkeletronPrimeAI.NetAIReceive(reader);
             }
             else if (type == CWRMessageType.BrutalTwinsAI) {
                 bool isSpazmatism = reader.ReadBoolean();
@@ -75,7 +67,7 @@ namespace CalamityOverhaul
                 }
             }
             else if (type == CWRMessageType.ProjViscosityData) {
-                CWRProjectile.NetViscositySend(Main.projectile[reader.ReadInt32()]);
+                CWRProjectile.NetViscosityReceive(reader);
             }
         }
     }

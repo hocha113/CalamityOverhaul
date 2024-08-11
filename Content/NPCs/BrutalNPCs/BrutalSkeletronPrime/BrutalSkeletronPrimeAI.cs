@@ -11,6 +11,7 @@ using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -25,8 +26,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override int TargetID => NPCID.SkeletronPrime;
         public ThanatosSmokeParticleSet SmokeDrawer;
         private const int maxfindModes = 6000;
+        private CalamityGlobalNPC calamityNPC;
         private Player player;
         private int frame = 0;
+        private int frameCount;
         private int primeCannon;
         private int primeSaw;
         private int primeVice;
@@ -38,6 +41,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool bossRush;
         private bool death;
         private bool noArm => !cannonAlive && !laserAlive && !sawAlive && !viceAlive;
+        private bool noEye;
+        internal static int ai1;
+        internal static int ai2;
+        internal static int ai3;
         internal static int ai4;
         internal static int ai5;
         internal static int ai6;
@@ -66,6 +73,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (CWRUtils.isServer) {
                 var netMessage = CWRMod.Instance.GetPacket();
                 netMessage.Write((byte)CWRMessageType.BrutalSkeletronPrimeAI);
+                netMessage.Write(ai1);
+                netMessage.Write(ai2);
+                netMessage.Write(ai3);
                 netMessage.Write(ai4);
                 netMessage.Write(ai5);
                 netMessage.Write(ai6);
@@ -79,13 +89,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
+        internal static void NetAIReceive(BinaryReader reader) {
+            ai1 = reader.ReadInt32();
+            ai2 = reader.ReadInt32();
+            ai3 = reader.ReadInt32();
+            ai4 = reader.ReadInt32();
+            ai5 = reader.ReadInt32();
+            ai6 = reader.ReadInt32();
+            ai7 = reader.ReadInt32();
+            ai8 = reader.ReadInt32();
+            ai9 = reader.ReadInt32();
+            ai10 = reader.ReadInt32();
+            ai11 = reader.ReadInt32();
+            ai12 = reader.ReadInt32();
+        }
+
         internal static void DrawArm(SpriteBatch spriteBatch, NPC rCurrentNPC, Vector2 screenPos) {
             if (!canLoaderAssetZunkenUp) {
                 return;
             }
 
             NPC head = Main.npc[(int)rCurrentNPC.ai[1]];
-            if (head.ai[1] == 1 && ai12 >= 1) {
+            if ((head.ai[1] == 1 || head.ai[1] == 2) && ai12 >= 1) {
+                float rCurrentNPCRotation = rCurrentNPC.rotation;
+                Vector2 drawPos = rCurrentNPC.Center + (rCurrentNPCRotation + MathHelper.PiOver2).ToRotationVector2() * -120;
+                Rectangle drawRec = CWRUtils.GetRec(BSPRAM.Value);
+                Vector2 drawOrig = drawRec.Size() / 2;
+                SpriteEffects spriteEffects = SpriteEffects.None;
+                float rotation7 = rCurrentNPCRotation;
+                Color color7 = Lighting.GetColor((int)drawPos.X / 16, (int)(drawPos.Y / 16f));
+                drawPos.X -= Main.screenPosition.X;
+                drawPos.Y -= Main.screenPosition.Y;
+                spriteBatch.Draw(BSPRAM.Value, drawPos, drawRec, color7, rotation7, drawOrig, 1f, spriteEffects, 0f);
+                spriteBatch.Draw(BSPRAMGlow.Value, drawPos, drawRec, Color.White, rotation7, drawOrig, 1f, spriteEffects, 0f);
+
+
                 int num24 = Dust.NewDust(rCurrentNPC.Center, 10, 10, DustID.FireworkFountain_Red, 0, 0, 0, Color.Gold, 0.5f);
                 Main.dust[num24].noGravity = false;
                 return;
@@ -172,7 +210,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override bool CanLoad() => true;
 
         internal static bool SetArmRot(NPC arm, NPC head, int type) {
-            if (ai12 < 1) {
+            if ((head.ai[1] != 1 && head.ai[1] != 2) || ai12 < 1) {
                 return false;
             }
             float rot = ai10 * 0.1f + MathHelper.TwoPi / 4 * type;
@@ -257,7 +295,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void FindePlayer(NPC npc) {
+        private void ThisFromeFindPlayer(NPC npc) {
             if (Main.player[npc.target].dead || Math.Abs(npc.position.X - Main.player[npc.target].position.X) > maxfindModes
                 || Math.Abs(npc.position.Y - Main.player[npc.target].position.Y) > maxfindModes) {
                 npc.TargetClosest();
@@ -273,9 +311,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.SyncExtraAI();
             }
         }
-
+        //这个教训告诉我们，ai的使用最好去用上数组，而不是一个一个枚举值，不然集中管理时会较为麻烦
         public override void SetProperty() {
-            ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = ai11 = ai12 = 0;
+            ai1 = ai2 = ai3 = ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = ai11 = ai12 = 0;
             SmokeDrawer = new ThanatosSmokeParticleSet(-1, 3, 0f, 16f, 1.5f);
             for (int i = 0; i < npc.buffImmune.Length; i++) {
                 npc.buffImmune[i] = true;
@@ -288,71 +326,135 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             death = CalamityWorld.death || bossRush;
             player = Main.player[npc.target];
             npc.defense = npc.defDefense;
+            npc.reflectsProjectiles = false;
+            npc.dontTakeDamage = false;
+            noEye = !NPC.AnyNPCs(NPCID.Retinazer) && !NPC.AnyNPCs(NPCID.Spazmatism);
 
             if (npc.ai[3] != 0f) {
                 NPC.mechQueen = npc.whoAmI;
             }
 
-            CalamityGlobalNPC calamityNPC = null;
+            calamityNPC = null;
             if (!npc.TryGetGlobalNPC(out calamityNPC)) {
                 return true;
             }
 
-            npc.reflectsProjectiles = false;
+            //0-初始阶段
+            //1-登场表演
+            //2-初元阶段
+            //3-攻击更加猛烈的二阶段
             if (npc.ai[0] == 0f) {
                 if (Main.netMode != NetmodeID.MultiplayerClient) {
                     npc.TargetClosest();
-                    spanArm(npc);
                     SendExtraAI(npc);
                     NetAISend();
                 }
+                //设置为1，表明完成了首次初始化
                 npc.ai[0] = 1f;
             }
 
-            FindePlayer(npc);
+            ThisFromeFindPlayer(npc);
             CheakRam(out cannonAlive, out viceAlive, out sawAlive, out laserAlive);
-            if (Main.IsItDay() && npc.ai[1] != 3f && npc.ai[1] != 2f) {
-                npc.ai[1] = 2f;
-                SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
-            }
+            DealingDaytimeRage();
 
             //这个部分是机械骷髅王刚刚进行tp传送后的行为，由ai11属性控制，在这个期间，
             //它不应该做任何攻击性的事情，要防止npc.ai[1]为3，而ai11这个值会自动消减
-            if (npc.ai[1] != 3 && ai11 > 0) {
-                npc.damage = 0;
-
-                if (ai5 == 0) {
-                    npc.velocity = new Vector2(0, -6);
-                }
-                if (++ai5 < 30) {
-                    npc.velocity *= 0.98f;
-                }
-                else {
-                    MoveToPoint(npc, player.Center + new Vector2(0, -300));
-                }
-
-                npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
-
-                npc.life += 10;
-                if (npc.life > npc.lifeMax) {
-                    npc.life = npc.lifeMax;
-                }
-
-                if (noArm) {
-                    SmokeDrawer.ParticleSpawnRate = 3;
-                    SmokeDrawer.BaseMoveRotation = MathHelper.ToRadians(90);
-                    SmokeDrawer.SpawnAreaCompactness = 80f;
-                }
-                SmokeDrawer.Update();
-
-                ai11--;
-                if (ai11 <= 0) {
-                    npc.damage = npc.defDamage * (noArm ? 2 : 1);
-                    ai5 = 0;
-                }
+            if (InIdleAI()) {
                 return false;
             }
 
+            switch (npc.ai[0]) {
+                case 1:
+                    Debut();
+                    break;
+                case 2:
+                    ProtogenesisAI();
+                    break;
+                case 3:
+                    if (TwoStageAI()) {
+                        return false;
+                    }
+                    ProtogenesisAI();
+                    break;
+            }
+
+            if (npc.life < npc.lifeMax - 20 && bossRush) {
+                LifeRecovery();
+            }
+            if (npc.life < npc.lifeMax / 2) {
+                KillArm_OneToTwoStages();
+            }
+
+            //如果手臂已经没了并且还是处于阶段二，那么就手动切换至三阶段
+            if (noArm && npc.ai[0] == 2) {
+                SoundEngine.PlaySound(SoundID.Roar, npc.Center);
+                npc.ai[0] = 3;
+            }
+
+            FindFrame();
+
+            ai10++;
+            return false;
+        }
+
+        private void Debut() {
+            if (ai1 == 0) {
+                npc.life = 1;
+            }
+            
+            npc.damage = 0;
+            npc.dontTakeDamage = true;
+
+            Vector2 toTarget = npc.Center.To(player.Center);
+            npc.rotation = npc.rotation.AngleLerp(toTarget.X / 115f * 0.5f, 0.75f);
+            npc.velocity = Vector2.Zero;
+            npc.position += player.velocity;
+            Vector2 toPoint = player.Center;
+
+            if (ai1 < 60) {
+                toPoint = player.Center + new Vector2(0, 500);
+            }
+            else {
+                toPoint = player.Center + new Vector2(0, -500);
+                if (ai1 == 90 && !CWRUtils.isServer) {
+                    SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
+                }
+                if (ai1 > 90) {
+                    int addNum = (int)(npc.lifeMax / 80f);
+                    if (npc.life >= npc.lifeMax) {
+                        npc.life = npc.lifeMax;
+                    }
+                    else {
+                        npc.life += addNum;
+                        CombatText.NewText(npc.Hitbox, CombatText.HealLife, addNum);
+                    }
+                }
+            }
+
+            if (ai1 == 172 && !CWRUtils.isServer) {
+                for (int i = 0; i < 333; i++) {
+                    DRK_Light particle = new DRK_Light(npc.Center + CWRUtils.randVr(0, npc.width), new Vector2(0, -5), 3.2f, Color.Red, 122);
+                    DRKLoader.AddParticle(particle);
+                }
+                SoundEngine.PlaySound(CWRSound.SpawnArmMgs, Main.LocalPlayer.Center);
+            }
+            if (ai1 == 180) {
+                spanArm(npc);
+            }
+            if (ai1 > 220) {
+                npc.dontTakeDamage = false;
+                npc.damage = npc.defDamage;
+                npc.ai[0] = 2;
+                ai1 = 0;
+                return;
+            }
+
+            npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.065f);
+
+            ai1++;
+        }
+
+        private void ProtogenesisAI() {
             if (npc.ai[1] == 0f) {
                 npc.damage = 0;
 
@@ -461,150 +563,81 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             else {
                 if (npc.ai[1] != 3f) {
-                    return false;
-                } 
+                    return;
+                }
                 HandleDespawn(npc);
             }
+        }
 
-            if (npc.life < npc.lifeMax - 20 && bossRush) {
-                if (cannonAlive) {
-                    npc.life += 1;
-                }
-                if (laserAlive) {
-                    npc.life += 1;
-                }
-                if (sawAlive) {
-                    npc.life += 1;
-                }
-                if (viceAlive) {
-                    npc.life += 1;
+        private bool TwoStageAI() {
+            if (ai7 == 0 && ai10 > 2 && death && !bossRush) {
+                ai4 = 3;
+                CWRUtils.SpawnBossNetcoded(player, NPCID.Retinazer);
+                CWRUtils.SpawnBossNetcoded(player, NPCID.Spazmatism);
+                ai7 = 1;
+                NetAISend();
+            }
+
+            int type = ProjectileID.RocketSkeleton;
+            int damage = SetMultiplier(npc.GetProjectileDamage(type));
+            float rocketSpeed = 10f;
+            Vector2 cannonSpreadTargetDist = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY) * rocketSpeed;
+            int numProj = bossRush ? 5 : 3;
+            float rotation = MathHelper.ToRadians(bossRush ? 15 : 9);
+
+            if (npc.ai[1] != 1 || ai4 == 3) {
+                SmokeDrawer.ParticleSpawnRate = 3;
+                SmokeDrawer.BaseMoveRotation = MathHelper.ToRadians(90);
+                SmokeDrawer.SpawnAreaCompactness = 80f;
+            }
+            SmokeDrawer.Update();
+
+            int setPosingStarmCount = 0;
+            int typeSetPosingStarm = ModContent.ProjectileType<SetPosingStarm>();
+            foreach (var value in Main.projectile) {
+                if (value.type == typeSetPosingStarm && value.active) {
+                    setPosingStarmCount++;
                 }
             }
 
-            if (npc.life < npc.lifeMax / 2) {
-                foreach (NPC index in Main.npc) {
-                    if (!index.active) {
-                        continue;
-                    }
-                    if (index.type == NPCID.PrimeCannon) {
-                        index.life = 0;
-                        index.HitEffect();
-                        index.active = false;
-                    }
-                    if (index.type == NPCID.PrimeVice) {
-                        index.life = 0;
-                        index.HitEffect();
-                        index.active = false;
-                    }
-                    if (index.type == NPCID.PrimeSaw) {
-                        index.life = 0;
-                        index.HitEffect();
-                        index.active = false;
-                    }
-                    if (index.type == NPCID.PrimeLaser) {
-                        index.life = 0;
-                        index.HitEffect();
-                        index.active = false;
-                    }
+            if (setPosingStarmCount > 0) {
+                npc.damage = 0;
+                MoveToPoint(npc, player.Center + new Vector2(0, -300));
+                npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
+
+                npc.life += 10;
+                if (npc.life > npc.lifeMax) {
+                    npc.life = npc.lifeMax;
                 }
+
+                ai4 = 1;
+                return true;
             }
 
-            if (noArm) {
-                if (ai7 == 0 && ai10 > 2 && death && !bossRush) {
-                    ai4 = 3;
-                    CWRUtils.SpawnBossNetcoded(player, NPCID.Retinazer);
-                    CWRUtils.SpawnBossNetcoded(player, NPCID.Spazmatism);
-                    ai7 = 1;
-                    NetAISend();
-                }
+            switch (ai4) {
+                case 0:
+                    if (++ai5 > 90) {
+                        npc.TargetClosest();
 
-                int type = ProjectileID.RocketSkeleton;
-                int damage = SetMultiplier(npc.GetProjectileDamage(type));
-                float rocketSpeed = 10f;
-                Vector2 cannonSpreadTargetDist = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY) * rocketSpeed;
-                int numProj = bossRush ? 5 : 3;
-                float rotation = MathHelper.ToRadians(bossRush ? 15 : 9);
-
-                if (npc.ai[1] != 1 || ai4 == 3) {
-                    SmokeDrawer.ParticleSpawnRate = 3;
-                    SmokeDrawer.BaseMoveRotation = MathHelper.ToRadians(90);
-                    SmokeDrawer.SpawnAreaCompactness = 80f;
-                }
-                SmokeDrawer.Update();
-
-                switch (ai4) {
-                    case 0:
-                        if (++ai5 > 90) {
-                            npc.TargetClosest();
-
-                            if (!CWRUtils.isClient) {
-                                if (ai9 % 2 == 0) {
-                                    int totalProjectiles = bossRush ? 9 : 6;
-                                    Vector2 laserFireDirection = npc.Center.To(player.Center).UnitVector();
-                                    for (int j = 0; j < totalProjectiles; j++) {
-                                        Vector2 vector = laserFireDirection.RotatedBy((totalProjectiles / -2 + j) * 0.2f) * 6;
-                                        if (bossRush) {
-                                            vector *= 1.45f;
-                                        }
-                                        int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + vector.SafeNormalize(Vector2.UnitY) * 100f
-                                            , vector, ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
+                        if (!CWRUtils.isClient) {
+                            if (ai9 % 2 == 0) {
+                                int totalProjectiles = bossRush ? 9 : 6;
+                                Vector2 laserFireDirection = npc.Center.To(player.Center).UnitVector();
+                                for (int j = 0; j < totalProjectiles; j++) {
+                                    Vector2 vector = laserFireDirection.RotatedBy((totalProjectiles / -2 + j) * 0.2f) * 6;
+                                    if (bossRush) {
+                                        vector *= 1.45f;
                                     }
-                                    SpanFireLerterDustEffect(npc, 73);
+                                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + vector.SafeNormalize(Vector2.UnitY) * 100f
+                                        , vector, ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
                                 }
-                                else {
-                                    for (int i = 0; i < numProj; i++) {
-                                        float rotoffset = MathHelper.Lerp(-rotation, rotation, i / (float)(numProj - 1));
-                                        Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
-                                        if (death && Main.masterMode || bossRush) {
-                                            Projectile.NewProjectile(npc.GetSource_FromAI()
-                                            , npc.Center, perturbedSpeed
-                                            , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
-                                            , Main.myPlayer, npc.whoAmI, npc.target, rotoffset);
-                                        }
-                                        else {
-                                            SoundEngine.PlaySound(SoundID.Item62, npc.Center);
-                                            int proj = Projectile.NewProjectile(npc.GetSource_FromAI()
-                                                , npc.Center + perturbedSpeed.SafeNormalize(Vector2.UnitY) * 40f
-                                                , perturbedSpeed, type, damage, 0f, Main.myPlayer, npc.target, 2f);
-                                            Main.projectile[proj].timeLeft = 600;
-                                        }
-                                    }
-                                }
+                                SpanFireLerterDustEffect(npc, 73);
                             }
-
-                            ai5 = 0;
-                            ai6++;
-                            NetAISend();
-                        }
-
-                        if (ai6 > 3 || npc.ai[1] == 1) {
-                            ai4 = 1;
-                            ai5 = 0;
-                            ai6 = 0;
-                            ai9++;
-                            NetAISend();
-                        }
-                        break;
-                    case 1:
-                        int setPosingStarmCount = 0;
-                        int typeSetPosingStarm = ModContent.ProjectileType<SetPosingStarm>();
-                        foreach (Projectile proj in Main.projectile) {
-                            if (!proj.active) {
-                                continue;
-                            }
-                            if (proj.type == typeSetPosingStarm) {
-                                setPosingStarmCount++;
-                            }
-                        }
-
-                        if (++ai5 > 90 && setPosingStarmCount == 0 && ai6 <= 2 && ai11 <= 0) {
-                            npc.TargetClosest();
-                            if (!CWRUtils.isClient) {
-                                float maxLerNum = 9f;
-                                for (int i = 0; i < maxLerNum; i++) {
-                                    float rotoffset = MathHelper.TwoPi / maxLerNum * i;
+                            else {
+                                for (int i = 0; i < numProj; i++) {
+                                    float rotoffset = MathHelper.Lerp(-rotation, rotation, i / (float)(numProj - 1));
                                     Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
-                                    if (death && Main.masterMode || bossRush || ModGanged.InfernumModeOpenState) {
+                                    if (death && Main.masterMode || bossRush) {
                                         Projectile.NewProjectile(npc.GetSource_FromAI()
                                         , npc.Center, perturbedSpeed
                                         , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
@@ -619,105 +652,207 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                     }
                                 }
                             }
-                            ai5 = 0;
-                            ai6++;
                         }
 
-                        if (npc.ai[1] != 1 && ai6 > 2 && ++ai8 > 60) {
-                            ai4 = 2;
-                            ai5 = 0;
-                            ai6 = 0;
-                            ai8 = 0;
-                            NetAISend();
-                        }
+                        ai5 = 0;
+                        ai6++;
+                        NetAISend();
+                    }
 
-                        break;
-                    case 2:
-                        npc.damage = 0;
-                        if (ai8 == 0) {
-                            int count = 0;
-                            foreach (var value in Main.projectile) {
-                                if (value.type == ModContent.ProjectileType<SetPosingStarm>() && value.active) {
-                                    count++;
-                                }
-                            }
-                            if (count > 0 || !death) {
-                                ai4 = 0;
-                                ai5 = 0;
-                                ai6 = 0;
-                                ai8 = 0;
-                                NetAISend();
-                                return false;
-                            }
-
-                            npc.TargetClosest();
-                            Vector2 pos2 = player.Center;
-
-                            if (!CWRUtils.isClient) {
-                                int maxShootNum = 40;
-                                for (int i = 0; i < maxShootNum; i++) {
-                                    int maxD = 200;
-                                    int maxF = maxD * maxShootNum;
-                                    int toL = maxF / -2;
-                                    Vector2 spanPos = pos2 + new Vector2(toL + maxD * i, 1800);
-                                    Vector2 vr1 = new Vector2(0, -6);
+                    if (ai6 > 3 || npc.ai[1] == 1) {
+                        ai4 = 1;
+                        ai5 = 0;
+                        ai6 = 0;
+                        ai9++;
+                        NetAISend();
+                    }
+                    break;
+                case 1:
+                    if (++ai5 > 90 && setPosingStarmCount == 0 && ai6 <= 2 && ai11 <= 0) {
+                        npc.TargetClosest();
+                        if (!CWRUtils.isClient) {
+                            float maxLerNum = 9f;
+                            for (int i = 0; i < maxLerNum; i++) {
+                                float rotoffset = MathHelper.TwoPi / maxLerNum * i;
+                                Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
+                                if (death && Main.masterMode || bossRush || ModGanged.InfernumModeOpenState) {
                                     Projectile.NewProjectile(npc.GetSource_FromAI()
-                                            , spanPos, vr1
-                                            , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
-                                            , Main.myPlayer, -1, -1, vr1.ToRotation());
+                                    , npc.Center, perturbedSpeed
+                                    , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
+                                    , Main.myPlayer, npc.whoAmI, npc.target, rotoffset);
                                 }
-                                for (int i = 0; i < maxShootNum; i++) {
-                                    int maxD = 200;
-                                    int maxF = maxD * maxShootNum;
-                                    int toL = maxF / -2;
-                                    Vector2 spanPos = pos2 + new Vector2(-1800, toL + maxD * i);
-                                    Vector2 vr1 = new Vector2(6, 0);
-                                    Projectile.NewProjectile(npc.GetSource_FromAI()
-                                            , spanPos, vr1
-                                            , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
-                                            , Main.myPlayer, -1, -1, vr1.ToRotation());
+                                else {
+                                    SoundEngine.PlaySound(SoundID.Item62, npc.Center);
+                                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI()
+                                        , npc.Center + perturbedSpeed.SafeNormalize(Vector2.UnitY) * 40f
+                                        , perturbedSpeed, type, damage, 0f, Main.myPlayer, npc.target, 2f);
+                                    Main.projectile[proj].timeLeft = 600;
                                 }
                             }
-                            ai8++;
                         }
+                        ai5 = 0;
+                        ai6++;
+                    }
 
-                        if (!CWRUtils.isServer) {
-                            foreach (Player p in Main.player) {
-                                if (p.dead || !p.active) {
-                                    continue;
-                                }
-                                p.Calamity().infiniteFlight = true;
-                            }
-                        }
+                    if (npc.ai[1] != 1 && ai6 > 2 && ++ai8 > 60) {
+                        ai4 = 2;
+                        ai5 = 0;
+                        ai6 = 0;
+                        ai8 = 0;
+                        NetAISend();
+                    }
 
-                        if (++ai6 > 120) {
-                            npc.damage = npc.defDamage * 2;
+                    break;
+                case 2:
+                    npc.damage = 0;
+                    if (ai8 == 0) {
+                        if (setPosingStarmCount > 0 || !death) {
                             ai4 = 0;
                             ai5 = 0;
                             ai6 = 0;
                             ai8 = 0;
                             NetAISend();
+                            return false;
                         }
 
-                        break;
-                    case 3:
-                        npc.damage = 0;
-                        MoveToPoint(npc, player.Center + new Vector2(0, -300));
-                        npc.life += (int)(npc.lifeMax / 300f);
-                        if (npc.life > npc.lifeMax) {
-                            npc.life = npc.lifeMax;
+                        npc.TargetClosest();
+                        Vector2 pos2 = player.Center;
+
+                        if (!CWRUtils.isClient) {
+                            int maxShootNum = 40;
+                            for (int i = 0; i < maxShootNum; i++) {
+                                int maxD = 200;
+                                int maxF = maxD * maxShootNum;
+                                int toL = maxF / -2;
+                                Vector2 spanPos = pos2 + new Vector2(toL + maxD * i, 1800);
+                                Vector2 vr1 = new Vector2(0, -6);
+                                Projectile.NewProjectile(npc.GetSource_FromAI()
+                                        , spanPos, vr1
+                                        , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
+                                        , Main.myPlayer, -1, -1, vr1.ToRotation());
+                            }
+                            for (int i = 0; i < maxShootNum; i++) {
+                                int maxD = 200;
+                                int maxF = maxD * maxShootNum;
+                                int toL = maxF / -2;
+                                Vector2 spanPos = pos2 + new Vector2(-1800, toL + maxD * i);
+                                Vector2 vr1 = new Vector2(6, 0);
+                                Projectile.NewProjectile(npc.GetSource_FromAI()
+                                        , spanPos, vr1
+                                        , ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f
+                                        , Main.myPlayer, -1, -1, vr1.ToRotation());
+                            }
                         }
-                        ai5++;
-                        if (ai5 > 300 && npc.life >= npc.lifeMax) {
-                            npc.damage = npc.defDamage * 2;
-                            ai4 = 0;
-                            ai5 = 0;
+                        ai8++;
+                    }
+
+                    if (!CWRUtils.isServer) {
+                        foreach (Player p in Main.player) {
+                            if (p.dead || !p.active) {
+                                continue;
+                            }
+                            p.Calamity().infiniteFlight = true;
                         }
-                        break;
-                }
+                    }
+
+                    if (++ai6 > 120) {
+                        npc.damage = npc.defDamage * 2;
+                        ai4 = 0;
+                        ai5 = 0;
+                        ai6 = 0;
+                        ai8 = 0;
+                        NetAISend();
+                    }
+
+                    break;
+                case 3:
+                    npc.damage = 0;
+                    npc.dontTakeDamage = true;
+
+                    Vector2 toTarget = npc.Center.To(player.Center);
+                    npc.rotation = npc.rotation.AngleLerp(toTarget.X / 115f * 0.5f, 0.75f);
+                    npc.velocity = Vector2.Zero;
+                    npc.position += player.velocity;
+                    Vector2 toPoint = player.Center;
+
+                    toPoint = player.Center + new Vector2(0, -500);
+                    int addNum = (int)(npc.lifeMax / 80f);
+                    if (npc.life >= npc.lifeMax) {
+                        npc.life = npc.lifeMax;
+                    }
+                    else {
+                        npc.life += addNum;
+                        CombatText.NewText(npc.Hitbox, CombatText.HealLife, addNum);
+                    }
+
+                    npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.065f);
+
+                    if (ai5 == 0 && CWRUtils.isServer) {
+                        SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
+                    }
+
+                    ai5++;
+                    if (ai5 > 300 && npc.life >= npc.lifeMax) {
+                        npc.dontTakeDamage = false;
+                        npc.damage = npc.defDamage * 2;
+                        ai4 = 0;
+                        ai5 = 0;
+                    }
+                    break;
             }
 
-            if (ai10 % 10 == 0) {
+            return false;
+        }
+
+        private void KillArm_OneToTwoStages() {
+            if (npc.ai[0] != 2) {//2表明是初元阶段，这个杀死手臂的函数在这个时候才能运行
+                return;
+            }
+            foreach (NPC index in Main.npc) {
+                if (!index.active) {
+                    continue;
+                }
+                if (index.type == NPCID.PrimeCannon) {
+                    index.life = 0;
+                    index.HitEffect();
+                    index.active = false;
+                }
+                if (index.type == NPCID.PrimeVice) {
+                    index.life = 0;
+                    index.HitEffect();
+                    index.active = false;
+                }
+                if (index.type == NPCID.PrimeSaw) {
+                    index.life = 0;
+                    index.HitEffect();
+                    index.active = false;
+                }
+                if (index.type == NPCID.PrimeLaser) {
+                    index.life = 0;
+                    index.HitEffect();
+                    index.active = false;
+                }
+            }
+            npc.ai[0] = 3;//杀死手臂后表明进入三阶段
+        }
+
+        private void LifeRecovery() {
+            if (cannonAlive) {
+                npc.life += 1;
+            }
+            if (laserAlive) {
+                npc.life += 1;
+            }
+            if (sawAlive) {
+                npc.life += 1;
+            }
+            if (viceAlive) {
+                npc.life += 1;
+            }
+        }
+
+        private void FindFrame() {
+            if (++frameCount > 10) {
                 if (npc.ai[1] == 0) {
                     if (noArm && ai10 > 2) {
                         if (++frame > 4) {
@@ -735,11 +870,59 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         frame = 2;
                     }
                 }
+                frameCount = 0;
             }
+        }
 
-            ai10++;
-            
+        private bool InIdleAI() {
+            if (npc.ai[1] != 3 && ai11 > 0) {
+                npc.damage = 0;
+
+                if (ai5 == 0) {
+                    npc.velocity = new Vector2(0, -6);
+                }
+                if (++ai5 < 30) {
+                    npc.velocity *= 0.98f;
+                }
+                else {
+                    MoveToPoint(npc, player.Center + new Vector2(0, -300));
+                }
+
+                npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
+
+                npc.life += 10;
+                if (npc.life > npc.lifeMax) {
+                    npc.life = npc.lifeMax;
+                }
+
+                if (noArm) {
+                    SmokeDrawer.ParticleSpawnRate = 3;
+                    SmokeDrawer.BaseMoveRotation = MathHelper.ToRadians(90);
+                    SmokeDrawer.SpawnAreaCompactness = 80f;
+                }
+                SmokeDrawer.Update();
+
+                ai11--;
+                if (ai11 <= 0) {
+                    npc.damage = npc.defDamage * (noArm ? 2 : 1);
+                    ai5 = 0;
+                }
+                return true;
+            }
             return false;
+        }
+
+        private void DealingDaytimeRage() {
+            if (Main.IsItDay()) {
+                if (npc.ai[1] != 3f && npc.ai[1] != 2f) {
+                    npc.ai[1] = 2f;
+                    SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
+                }
+            }
+            else if (npc.ai[1] == 2f) {
+                npc.ai[1] = 0;
+                SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
+            }
         }
 
         #region SetFromeAIFunc
@@ -923,6 +1106,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void spanArm(NPC npc, int limit = 0) {
+            if (CWRUtils.isClient) {
+                return;
+            }
             if (limit == 1 || limit == 0) {
                 primeCannon = NPC.NewNPC(npc.GetSource_FromAI(), (int)npc.Center.X, (int)npc.Center.Y, NPCID.PrimeCannon, npc.whoAmI);
                 Main.npc[primeCannon].ai[0] = -1f;
@@ -963,6 +1149,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return false;
             }
 
+            if (npc.ai[0] == 1 && npc.life < npc.lifeMax) {
+                return true;
+            }
+
             Texture2D mainValue = HandAsset.Value;
             Texture2D mainValue2 = HandAssetGlow.Value;
 
@@ -973,9 +1163,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
                 , Color.White, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
 
-            bool noEye = !NPC.AnyNPCs(NPCID.Retinazer) && !NPC.AnyNPCs(NPCID.Spazmatism);
-
-            if (noArm && ai10 > 2 && player != null && noEye) {
+            if (player != null && noEye && npc.ai[0] == 3) {
                 Vector2 toD = player.Center.To(npc.Center);
                 Vector2 origpos = player.Center - Main.screenPosition;
                 float alp = toD.Length() / 400f;
