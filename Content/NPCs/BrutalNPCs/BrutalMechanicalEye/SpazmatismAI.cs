@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             bool skeletronPrimeIsDead = !skeletronPrime.Alives();
             bool skeletronPrimeIsTwo = skeletronPrimeIsDead ? false : (skeletronPrime.ai[0] == 3);
             int projType = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
-            int projDamage = (int)(eye.GetProjectileDamage(projType) * 0.7f);
+            int projDamage = eye.GetProjectileDamage(projType);  
 
             Player player = skeletronPrimeIsDead ? Main.player[eye.target] : Main.player[skeletronPrime.target];
 
@@ -128,6 +128,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 if (Debut(eye, player, ref ai)) {
                     return true;
                 }
+            }
+
+            if (IsCCK(eye, ai)) {
+                eye.HitSound = SoundID.NPCHit4;
             }
 
             if (skeletronPrimeIsDead || skeletronPrime?.ai[1] == 3 || lifeRog < 0.7f) {
@@ -298,6 +302,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             return false;
         }
 
+        public static bool ProtogenesisAI(NPC eye, ref int[] ai) {
+            return false;
+        }
+
         private static bool Debut(NPC npc, Player player, ref int[] ai) {
             ref int ai1 = ref ai[1];
             if (ai1 == 0) {
@@ -361,7 +369,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
 
             npc.dontTakeDamage = false;
+
             if (AccompanyAI(npc, ref ai, Accompany)) {
+                return false;
+            }
+
+            if (ProtogenesisAI(npc, ref ai)) {
                 return false;
             }
 
@@ -369,25 +382,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         }
 
         internal static bool IsCCK(NPC eye, int[] ai) {
-            //NPC skeletronPrime = CWRUtils.FindNPC(NPCID.SkeletronPrime);
-            
-            //if (!skeletronPrime.Alives()) {
-            //    return false;
-            //}
-            //if (ai[7] > 0 || skeletronPrime.ai[1] == 1) {
-            //    return true;
-            //}
-
-            //int num = 0;
-            //foreach (var p in Main.projectile) {
-            //    if (!p.active) {
-            //        continue;
-            //    }
-            //    if (p.type == ModContent.ProjectileType<SetPosingStarm>()) {
-            //        num++;
-            //    }
-            //}
-
+            /*
+            NPC skeletronPrime = CWRUtils.FindNPC(NPCID.SkeletronPrime);
+            if (!skeletronPrime.Alives()) {
+                return false;
+            }
+            if (ai[7] > 0 || skeletronPrime.ai[1] == 1) {
+                return true;
+            }
+            int num = 0;
+            foreach (var p in Main.projectile) {
+                if (!p.active) {
+                    continue;
+                }
+                if (p.type == ModContent.ProjectileType<SetPosingStarm>()) {
+                    num++;
+                }
+            }
+            */
             return ai[0] == 2;
         }
 

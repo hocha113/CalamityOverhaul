@@ -1182,6 +1182,26 @@ namespace CalamityOverhaul
             return npc;
         }
 
+        public static int GetDamage(float defValue, float expertModeValue = 0, float masterModeValue = 0) {
+            float value = defValue;
+            if (Main.expertMode) {
+                if (expertModeValue != 0) {
+                    value = expertModeValue;
+                }
+                value /= 4f;
+            }
+            if (Main.masterMode) {
+                if (expertModeValue != 0) {
+                    value = expertModeValue;
+                }
+                if (masterModeValue != 0) {
+                    value = masterModeValue;
+                }
+                value /= 5.2f;
+            }
+            return (int)value;
+        }
+
         public static void ActivateSky(string key) {
             if (Main.dedServ) {
                 return;

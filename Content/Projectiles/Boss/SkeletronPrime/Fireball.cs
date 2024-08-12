@@ -15,13 +15,11 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     {
         public override string Texture => CWRConstant.Projectile + "Fireball";
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 22;
+            Projectile.width = Projectile.height = 32;
             Projectile.hostile = true;
             Projectile.friendly = false;
-            Projectile.timeLeft = 600;
-            if (BossRushEvent.BossRushActive || Main.zenithWorld || Main.getGoodWorld) {
-                Projectile.extraUpdates += 1;
-            }
+            Projectile.timeLeft = 800;
+            Projectile.extraUpdates = 1;
             Projectile.tileCollide = false;
             Projectile.maxPenetrate = Projectile.penetrate = 1;
             CooldownSlot = ImmunityCooldownID.Bosses;
@@ -30,12 +28,13 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         public override void AI() {
             if (Projectile.ai[0] == 0) {
                 SoundEngine.PlaySound(SoundID.Item8, Projectile.Center);
+                Projectile.velocity /= 2;
             }
-            if (Projectile.ai[0] <= 30) {
-                Projectile.velocity *= 0.98f;
+            if (Projectile.ai[0] <= 60) {
+                Projectile.velocity *= 0.99f;
             }
-            if (Projectile.ai[0] > 30 && Projectile.ai[0] < 180) {
-                Projectile.velocity *= 1.05f;
+            if (Projectile.ai[0] > 60 && Projectile.ai[0] < 360) {
+                Projectile.velocity *= 1.025f;
             }
             Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 4);
