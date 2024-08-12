@@ -54,17 +54,7 @@ namespace CalamityOverhaul
                 BrutalSkeletronPrimeAI.NetAIReceive(reader);
             }
             else if (type == CWRMessageType.BrutalTwinsAI) {
-                bool isSpazmatism = reader.ReadBoolean();
-                if (isSpazmatism) {
-                    for (int i = 0; i < SpazmatismAI.ai.Length; i++) {
-                        SpazmatismAI.ai[i] = reader.ReadInt32();
-                    }
-                }
-                else {
-                    for (int i = 0; i < RetinazerAI.ai.Length; i++) {
-                        RetinazerAI.ai[i] = reader.ReadInt32();
-                    }
-                }
+                SpazmatismAI.NetAIReceive(reader);
             }
             else if (type == CWRMessageType.ProjViscosityData) {
                 CWRProjectile.NetViscosityReceive(reader);

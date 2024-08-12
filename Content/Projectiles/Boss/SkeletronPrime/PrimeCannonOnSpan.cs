@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Player player = CWRUtils.GetPlayerInstance((int)Projectile.ai[1]);
             if (player.Alives()) {
                 Vector2 toSet = Projectile.Center.To(player.Center);
-                Projectile.EntityToRot(toSet.ToRotation() + Projectile.ai[2], 0.05f);
+                Projectile.EntityToRot(toSet.ToRotation() + Projectile.ai[2], 0.03f);
             }
 
             Projectile.scale += 0.05f;
