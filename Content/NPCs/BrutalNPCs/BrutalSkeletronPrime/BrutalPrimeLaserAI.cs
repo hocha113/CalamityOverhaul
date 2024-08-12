@@ -234,20 +234,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     }
                     if (spanLerter) {
                         if (death) {
-                            totalProjectiles = bossRush ? 18 : 12;
+                            totalProjectiles = bossRush ? 12 : 6;
                             radians = MathHelper.TwoPi / totalProjectiles;
-                            for (int j = 0; j < 5; j++) {
-                                for (int k = 0; k < totalProjectiles; k++) {
-                                    float speedMode = 0.5f + j * 0.2f;
-                                    if (ModGanged.InfernumModeOpenState) {
-                                        speedMode = 0.5f + j * 0.25f;
+                            if (ModGanged.InfernumModeOpenState) {
+                                for (int j = 0; j < 5; j++) {
+                                    for (int k = 0; k < totalProjectiles; k++) {
+                                        float speedMode = 1.55f + j * 0.3f;
+                                        if (bossRush) {
+                                            speedMode = 1.7f + j * 0.35f;
+                                        }
+                                        Vector2 laserFireDirection = spinningPoint.RotatedBy(radians * k);
+                                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + laserFireDirection.SafeNormalize(Vector2.UnitY) * 100f
+                                            , laserFireDirection * speedMode, ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
                                     }
-                                    if (bossRush) {
-                                        speedMode = 0.75f + j * 0.25f;
-                                    }
-                                    Vector2 laserFireDirection = spinningPoint.RotatedBy(radians * k);
+                                }
+                            }
+                            else {
+                                Vector2 toTarget = npc.Center.To(player.Center).UnitVector();
+                                for (int i = 0; i < 3; i++) {
+                                    int index = i - 1;
+                                    Vector2 laserFireDirection = spinningPoint.RotatedBy(index * 0.12f);
+                                    Vector2 ver = toTarget.RotatedBy(index * 0.12f) * 3;
                                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + laserFireDirection.SafeNormalize(Vector2.UnitY) * 100f
-                                        , laserFireDirection * speedMode, ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
+                                            , ver, ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
                                 }
                             }
                             BrutalSkeletronPrimeAI.SpanFireLerterDustEffect(npc, 33);

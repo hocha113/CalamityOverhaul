@@ -102,6 +102,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 SoundEngine.PlaySound(SoundID.Item78 with { Pitch = 1.24f });
 
                 boss.Center = Projectile.Center;
+                boss.damage = 0;
+
                 if (CalamityGlobalNPC.primeCannon != -1) {
                     if (Main.npc[CalamityGlobalNPC.primeCannon].active)
                         Main.npc[CalamityGlobalNPC.primeCannon].Center = Projectile.Center;
@@ -118,6 +120,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     if (Main.npc[CalamityGlobalNPC.primeLaser].active)
                         Main.npc[CalamityGlobalNPC.primeLaser].Center = Projectile.Center;
                 }
+                BrutalSkeletronPrimeAI.SpawnHouengEffect(boss);
                 //不 要 在 客 户 端 上 生 成 射 弹
                 if (!CWRUtils.isClient) {
                     float maxProjSanShootNum = 28;
