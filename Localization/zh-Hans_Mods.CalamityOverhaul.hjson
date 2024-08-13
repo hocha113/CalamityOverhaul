@@ -4384,6 +4384,7 @@ TextContent: {
 		Spazmatism_Text5: 目标已被终结
 		Spazmatism_Text6: 正在撤离...
 		Spazmatism_Text7: 任务失败，尝试从战场撤离...
+		Spazmatism_Text8: 已经部署
 		Error_1: 个钩子失效了，为了游戏正常，请关闭游戏并重新进入，如果这仍旧没有恢复正常，请带上导出的日志寻找模组开发者
 		Config_1: 用户
 		Config_2: 修改了服务端配置

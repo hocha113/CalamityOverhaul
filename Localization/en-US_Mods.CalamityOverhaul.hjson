@@ -4399,6 +4399,7 @@ TextContent: {
 		Spazmatism_Text5: Target has been terminated.
 		Spazmatism_Text6: Initiating extraction...
 		Spazmatism_Text7: Mission failed, attempting to retreat from the battlefield...
+		Spazmatism_Text8: Have been deployed
 		Error_1: hook failed, in order to normal the game, please close the game and re-enter, if this still does not return to normal, please bring the exported log to find the module developer
 		Config_1: User
 		Config_2: The server configuration is modified

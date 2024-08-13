@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
-using CalamityMod.Projectiles.Melee;
+using CalamityMod.Events;
+using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
@@ -53,6 +54,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 if (skeletronPrime.Alives()) {
                     ai[11] = skeletronPrime.ai[0] != 3 ? 1 : 0;
                 }
+            }
+            else {
+                npc.lifeMax *= 2;
+                npc.life = npc.lifeMax;
             }
         }
 
@@ -122,9 +127,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             if (!accompany) {
                 return false;
             }
+
             NPC skeletronPrime = CWRUtils.FindNPC(NPCID.SkeletronPrime);
             float lifeRog = eye.life / (float)eye.lifeMax;
-
+            bool bossRush = BossRushEvent.BossRushActive;
+            bool death = CalamityWorld.death || bossRush;
             bool isSpazmatism = eye.type == NPCID.Spazmatism;
             bool lowBloodVolume = lifeRog < 0.7f;
             bool skeletronPrimeIsDead = !skeletronPrime.Alives();
@@ -227,9 +234,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
                 int fireTime = 10;
                 if (projectile.Alives()) {
-                    fireTime = 5;
+                    fireTime = death ? 5 : 8;
                     toTarget = eye.Center.To(projectile.Center);
-                    toPoint = projectile.Center + (ai[4] * 0.02f + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 1060;
+                    float speedRot = death ? 0.02f : 0.03f;
+                    int modelong = death ? 1060 : 1160;
+                    toPoint = projectile.Center + (ai[4] * speedRot + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 1060;
                 }
                 else {
                     toPoint = player.Center + (ai[4] * 0.04f + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 760;
@@ -251,11 +260,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             if (skeletronPrimeInSprint || ai[7] > 0) {
                 switch (ai[1]) {
                     case 0:
-                        toPoint = player.Center + new Vector2(isSpazmatism ? 500 : -500, -650);
+                        toPoint = player.Center + new Vector2(isSpazmatism ? 600 : -600, -650);
+                        if (death) {
+                            toPoint = player.Center + new Vector2(isSpazmatism ? 500 : -500, -650);
+                        }
                         if (ai[2] == 30 && !CWRUtils.isClient) {
+                            float shootSpeed = death ? 9 : 7;
                             for (int i = 0; i < 6; i++) {
-                                Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center
-                                    , (MathHelper.TwoPi / 6 * i).ToRotationVector2() * 9, projType, projDamage, 0);
+                                Vector2 ver = (MathHelper.TwoPi / 6f * i).ToRotationVector2() * shootSpeed;
+                                Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center, ver, projType, projDamage, 0);
                             }
                         }
                         if (ai[2] > 60) {
@@ -327,59 +340,232 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         }
 
         public static bool ProtogenesisAI(NPC eye, ref int[] ai) {
-            return false;
+            float lifeRog = eye.life / (float)eye.lifeMax;
+            bool isSpazmatism = eye.type == NPCID.Spazmatism;
+            Player player = Main.player[eye.target];
+            eye.dontTakeDamage = false;
+            eye.damage = eye.defDamage;
+            if (!player.Alives()) {
+                eye.TargetClosest();
+                player = Main.player[eye.target];
+                if (!player.Alives()) {
+                    ai[0] = 4;
+                    NetAISend(eye);
+                }
+            }
+            int projDamage = 40;
+            int projType = 0;
+            switch (ai[0]) {
+                case 0:
+                    //这里应该做点什么，比如初始化
+                    ai[0] = 1;
+                    NetAISend(eye);
+                    break;
+                case 1:
+                    Debut(eye, player, ref ai);
+                    break;
+                case 2:
+                    if (!CalamityWorld.death && !BossRushEvent.BossRushActive) {
+                        ai[0] = 3;
+                        break;
+                    }
+                    //ai1作为子阶段计数
+                    //ai2作为一个全局时间点滴
+                    //ai3作为位置关键值
+                    //ai4作为一个攻击计数器
+                    //ai5作为一个镜像索引
+                    //ai6作为阶段切换的计数，从0切换到1会加一次值，用于判定是否切换到冲刺阶段
+                    //ai7在这里仅仅用作一个备用计数器
+                    Vector2 toPoint = player.Center;
+                    Vector2 offset = Vector2.Zero;
+                    Vector2 toTarget = eye.Center.To(player.Center);
+                    if (ai[5] == 0) {
+                        ai[5] = 1;
+                    }
+                    if (ai[1] == 0) {
+                        eye.damage = 0;
+                        offset = isSpazmatism ? new Vector2(600, ai[3]) : new Vector2(-600, ai[3]);
+                        offset.X *= ai[5];
+                        projType = isSpazmatism ? ProjectileID.DD2BetsyFireball : ProjectileID.DeathLaser;
+                        if (!CWRUtils.isClient && ai[2] > 30) {
+                            if (isSpazmatism) {
+                                for (int i = 0; i < 6; i++) {
+                                    Vector2 origVer = toTarget.UnitVector() * 9;
+                                    Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center
+                                    , origVer + new Vector2(origVer.X * 0.2f * i, -0.1f * i), projType, projDamage, 0);
+                                }
+                            }
+                            else {
+                                for (int i = 0; i < ai[4]; i++) {
+                                    Vector2 origVer = toTarget.UnitVector() * 9;
+                                    Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center
+                                    , origVer.RotatedBy((ai[4] / -2 + i) * 0.1f), projType, projDamage, 0);
+                                }
+                            }
+                            
+                            ai[2] = 0;
+                            if (isSpazmatism) {
+                                if (ai[3] == 0) {
+                                    ai[3] = -860;
+                                }
+                                ai[3] += 160;
+                            }
+                            else {
+                                if (ai[3] == 0) {
+                                    ai[3] = 420;
+                                }
+                            }
+                            if (++ai[4] > 7) {
+                                ai[4] = 0;
+                                ai[3] = 0;
+                                ai[2] = 0;
+                                ai[1] = 1;
+                                ai[5] *= -1;
+                                ai[6] ++;
+                            }
+                            NetAISend(eye);
+                        }
+                        SetEyeValue(eye, player, toPoint + offset, toTarget);
+                    }
+                    else if (ai[1] == 1) {
+                        eye.damage = 0;
+                        offset = isSpazmatism ? new Vector2(600 + ai[3] / 2, -500 + ai[3]) : new Vector2(-600 - ai[3] / 2, -500 + ai[3]);
+                        offset.X *= ai[5];
+                        projType = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
+                        float maxNum = 6f;
+                        if (ai[2] > 30) {
+                            for (int i = 0; i < maxNum; i++) {
+                                Vector2 ver = (MathHelper.TwoPi / maxNum * i).ToRotationVector2() * (6 + ai[4]);
+                                Projectile.NewProjectile(eye.GetSource_FromAI()
+                                    , eye.Center, ver, projType, projDamage, 0);
+                            }
+                            ai[2] = 0;
+                            ai[3] += 160;
+                            if (++ai[4] > 6) {
+                                ai[4] = 0;
+                                ai[3] = 0;
+                                ai[2] = 0;
+                                ai[1] = 0;
+                                if (ai[6] >= 2) {
+                                    ai[1] = 2;//如果轮回了2次，那么就切换到2吧，开始冲刺
+                                }
+                            }
+                            NetAISend(eye);
+                        }
+                        SetEyeValue(eye, player, toPoint + offset, toTarget);
+                    }
+                    else if (ai[1] == 2) {
+                        eye.damage = eye.defDamage * 2;
+                        if (ai[2] < 80) {
+                            if (ai[2] == 2) {
+                                SoundEngine.PlaySound(SoundID.Roar);
+                            }
+                            offset = isSpazmatism ? new Vector2(600, -500) : new Vector2(-600, -500);
+                            SetEyeValue(eye, player, toPoint + offset, toTarget);
+                        }
+                        else if (ai[2] < 120) {
+                            if (ai[2] == 82) {
+                                SoundEngine.PlaySound(SoundID.ForceRoar);
+                                eye.velocity = toTarget.UnitVector() * 35;
+                                eye.rotation = toTarget.ToRotation() - MathHelper.PiOver2;
+                            }
+                        }
+                        else {
+                            eye.VanillaAI();
+                            if (ai[2] > 300) {
+                                ai[4] = 0;
+                                ai[3] = 0;
+                                ai[2] = 0;
+                                ai[1] = 0;
+                                ai[5] = 1;
+                                ai[6] = 0;
+                                eye.damage = 0;
+                                NetAISend(eye);
+                            }
+                        }
+                    }
+                    
+                    ai[2]++;
+                    break;
+                case 3:
+                    return false;
+                case 4:
+                    if (isSpazmatism && !CWRUtils.isServer && ai[2] == 2) {
+                        CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), textColor1);
+                        CWRUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), textColor2);
+                    }
+                    eye.dontTakeDamage = true;
+                    eye.damage = 0;
+                    eye.velocity = new Vector2(0, -33);
+                    if (++ai[2] > 200) {
+                        eye.active = false;
+                    }
+                    break;
+            }
+            if (lifeRog < 0.6f && ai[0] == 2) {
+                ai[6] = 0;
+                ai[5] = 0;
+                ai[4] = 0;
+                ai[3] = 0;
+                ai[2] = 0;
+                ai[1] = 0;
+                ai[0] = 3;
+                NetAISend(eye);
+            }
+            SetEyeRealLife(eye);
+            return true;
         }
 
-        private static bool Debut(NPC npc, Player player, ref int[] ai) {
+        private static bool Debut(NPC eye, Player player, ref int[] ai) {
             ref int ai1 = ref ai[1];
             if (ai1 == 0) {
-                npc.life = 1;
-                npc.Center = player.Center;
-                npc.Center += npc.type == NPCID.Spazmatism ? new Vector2(-1200, 1000) : new Vector2(1200, 1000);
+                eye.life = 1;
+                eye.Center = player.Center;
+                eye.Center += eye.type == NPCID.Spazmatism ? new Vector2(-1200, 1000) : new Vector2(1200, 1000);
             }
 
-            npc.damage = 0;
-            npc.dontTakeDamage = true;
+            eye.damage = 0;
+            eye.dontTakeDamage = true;
 
-            Vector2 toTarget = npc.Center.To(player.Center);
-            npc.rotation = toTarget.ToRotation() - MathHelper.PiOver2;
-            npc.velocity = Vector2.Zero;
-            npc.position += player.velocity;
+            Vector2 toTarget = eye.Center.To(player.Center);
+            eye.rotation = toTarget.ToRotation() - MathHelper.PiOver2;
+            eye.velocity = Vector2.Zero;
+            eye.position += player.velocity;
             Vector2 toPoint = player.Center;
 
             if (ai1 < 60) {
-                toPoint = player.Center + new Vector2(npc.type == NPCID.Spazmatism ? 500 : -500, 500);
+                toPoint = player.Center + new Vector2(eye.type == NPCID.Spazmatism ? 500 : -500, 500);
             }
             else {
-                toPoint = player.Center + new Vector2(npc.type == NPCID.Spazmatism ? -500 : 500, -500);
-                if (ai1 == 90 && !CWRUtils.isServer) {
+                toPoint = player.Center + new Vector2(eye.type == NPCID.Spazmatism ? -500 : 500, -500);
+                if (ai1 == 90 && !CWRUtils.isServer && !Accompany) {
                     SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
                 }
                 if (ai1 > 90) {
-                    int addNum = (int)(npc.lifeMax / 80f);
-                    if (npc.life >= npc.lifeMax) {
-                        npc.life = npc.lifeMax;
+                    int addNum = (int)(eye.lifeMax / 80f);
+                    if (eye.life >= eye.lifeMax) {
+                        eye.life = eye.lifeMax;
                     }
                     else {
-                        npc.life += addNum;
-                        CombatText.NewText(npc.Hitbox, CombatText.HealLife, addNum);
+                        eye.life += addNum;
+                        CombatText.NewText(eye.Hitbox, CombatText.HealLife, addNum);
                     }
                 }
             }
 
-            if (ai1 == 180 && !CWRUtils.isServer) {
-                SoundEngine.PlaySound(CWRSound.SpawnArmMgs, Main.LocalPlayer.Center);
-            }
-
-            if (ai1 > 200) {
-                npc.dontTakeDamage = false;
-                npc.damage = npc.defDamage;
+            if (ai1 > 180) {
+                if (!CWRUtils.isServer && !Accompany) {
+                    SoundEngine.PlaySound(CWRSound.SpawnArmMgs, Main.LocalPlayer.Center);
+                }
+                eye.dontTakeDamage = false;
+                eye.damage = eye.defDamage;
                 ai[0] = 2;
                 ai1 = 0;
+                NetAISend(eye);
                 return false;
             }
 
-            npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.065f);
+            eye.Center = Vector2.Lerp(eye.Center, toPoint, 0.065f);
 
             ai1++;
 
