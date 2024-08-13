@@ -26,6 +26,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             if (SpazmatismAI.AccompanyAI(npc, ref ai, Accompany)) {
                 return false;
             }
+            if (SpazmatismAI.ProtogenesisAI(npc, ref ai)) {
+                return false;
+            }
 
             return true;
         }

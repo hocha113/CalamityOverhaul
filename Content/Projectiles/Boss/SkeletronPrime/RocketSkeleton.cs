@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Vector2 spanPos = Projectile.Center;
             Vector2 vr = Vector2.Zero;
             BaseParticle pulse3 = new DRK_DWave(spanPos, vr, Color.Red
-            , new Vector2(0.7f, 1.3f) * 0.8f, vr.ToRotation(), 1.18f, 3.32f, 60);
+            , new Vector2(1.2f, 1.3f) * 0.8f, vr.ToRotation(), 1.18f, 3.32f, 60);
             DRKLoader.AddParticle(pulse3);
             target.AddBuff(ModContent.BuffType<EXHellfire>(), 60);
         }
