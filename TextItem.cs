@@ -55,10 +55,10 @@ namespace CalamityOverhaul
             //Projectile.NewProjectile(player.GetSource_FromAI(), player.Center
             //        , new Vector2(13, 0), ModContent.ProjectileType<FrostcrushValariHeld>(), 2, 2, player.whoAmI);
             //ModGanged.Set_MS_Config_recursionCraftingDepth();
-            Projectile Projectile = Projectile.NewProjectileDirect(player.GetSource_FromAI(), player.Center
-                    , player.Center.To(Main.MouseWorld).UnitVector() * 6, ProjectileID.Bullet, CWRUtils.GetDamage(100, 150, 100), 2, player.whoAmI);
-            Projectile.friendly = false;
-            Projectile.hostile = true;
+            //Projectile Projectile = Projectile.NewProjectileDirect(player.GetSource_FromAI(), player.Center
+            //        , player.Center.To(Main.MouseWorld).UnitVector() * 6, ProjectileID.Bullet, CWRUtils.GetDamage(100, 150, 100), 2, player.whoAmI);
+            //Projectile.friendly = false;
+            //Projectile.hostile = true;
             return true;
         }
     }

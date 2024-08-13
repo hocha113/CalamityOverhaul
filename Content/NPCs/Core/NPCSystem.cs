@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         public static MethodInfo onHitByProjectile_Method;
         public static MethodInfo modifyIncomingHit_Method;
         public static MethodInfo onNPCAI_Method;
+        public static MethodInfo onPreKill_Method;
         public static MethodInfo onPreDraw_Method;
         public static MethodInfo onPostDraw_Method;
         public static MethodInfo onCheckDead_Method;
@@ -89,12 +90,30 @@ namespace CalamityOverhaul.Content.NPCs.Core
                     CWRHook.Add(onCheckDead_Method, OnCheckDeadHook);
                 }
             }
+            {
+                onPreKill_Method = getMethodInfo("PreKill");
+                if (onPreKill_Method != null) {
+                    CWRHook.Add(onPreKill_Method, OnPreKillHook);
+                }
+            }
         }
 
         public override void Load() {
             npcLoaderType = typeof(NPCLoader);
             LoadNPCSets();
             LoaderMethodAndHook();
+        }
+
+        public static bool OnPreKillHook(On_NPCDelegate2 orig, NPC npc) {
+            foreach (var set in NPCSets) {
+                if (npc.type == set.TargetID) {
+                    bool? reset = set.On_PreKill(npc);
+                    if (reset.HasValue) {
+                        return reset.Value;
+                    }
+                }
+            }
+            return orig.Invoke(npc);
         }
 
         public static void OnSetPropertyHook(NPC npc) {

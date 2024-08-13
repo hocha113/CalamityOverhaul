@@ -56,12 +56,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient<InfiniteIngot>(15)
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    if (type == ModContent.ItemType<InfiniteIngot>()) {
-                        amount = 0;
-                    }
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddBlockingSynthesisEvent()
                 .Register();
         }
     }

@@ -58,10 +58,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
                 .AddIngredient<SubsumingVortex>()
                 .AddIngredient<YharonSoulFragment>(39)
                 .AddIngredient<Rock>()
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    amount = 0;
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();
         }

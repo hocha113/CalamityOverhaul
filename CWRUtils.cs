@@ -1200,6 +1200,10 @@ namespace CalamityOverhaul
             return (int)value;
         }
 
+        public static Recipe AddBlockingSynthesisEvent(this Recipe recipe) => 
+            recipe.AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => { amount = 0; })
+            .AddOnCraftCallback(CWRRecipes.SpawnAction);
+
         public static void ActivateSky(string key) {
             if (Main.dedServ) {
                 return;

@@ -62,10 +62,7 @@ namespace CalamityOverhaul.Content.Items.Materials
                 .AddIngredient<AscendantSpiritEssence>()
                 .AddIngredient<SpectralMatter>()
                 .AddIngredient<DarkMatterBall>(11)
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    amount = 0;
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();
         }

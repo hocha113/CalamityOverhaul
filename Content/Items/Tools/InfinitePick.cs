@@ -169,10 +169,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 .AddIngredient<CrystylCrusher>()
                 .AddIngredient<DarkMatterBall>(12)
                 .AddIngredient<InfiniteIngot>(18)
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    amount = 0;
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();
         }

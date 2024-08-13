@@ -92,10 +92,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
                 .AddIngredient<CosmicCalamity>(1)
                 .AddIngredient(ItemID.Gungnir, 1)
                 .AddIngredient<BlackMatterStick>(3)
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    amount = 0;
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();
         }

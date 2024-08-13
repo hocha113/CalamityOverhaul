@@ -241,10 +241,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                 .AddIngredient<CalamityMod.Items.Weapons.Magic.Eternity>()
                 .AddIngredient<DarkMatterBall>(7)
                 .AddIngredient<InfiniteIngot>(19)
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    amount = 0;
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();
         }

@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
 
             npc.dontTakeDamage = false;
+
             if (SpazmatismAI.AccompanyAI(npc, ref ai, Accompany)) {
                 return false;
             }

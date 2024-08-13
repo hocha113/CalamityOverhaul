@@ -54,10 +54,7 @@ namespace CalamityOverhaul.Content.Items.Materials
                 .AddIngredient(ItemID.SoulofMight, 1)
                 .AddIngredient(ItemID.SoulofSight, 1)
                 .AddIngredient(ItemID.SoulofFlight, 1)
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    amount = 0;
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();
         }

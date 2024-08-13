@@ -45,6 +45,8 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         public virtual bool AI() { return true; }
 
+        public virtual bool? On_PreKill(NPC npc) { return null; }
+
         public virtual bool? CheckDead() { return null; }
 
         public virtual bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return null; }

@@ -117,10 +117,7 @@ namespace CalamityOverhaul.Content.Items.Materials
                 .AddIngredient<MiracleMatter>(6)
                 .AddIngredient<ShadowspecBar>(9)
                 .AddIngredient<BlackMatterStick>(11)
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    amount = 0;
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddBlockingSynthesisEvent()
                 .AddTile(TileType<TransmutationOfMatter>())
                 .Register();
         }

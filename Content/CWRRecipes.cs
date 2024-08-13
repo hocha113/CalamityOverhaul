@@ -327,10 +327,7 @@ namespace CalamityOverhaul.Content
                     .AddIngredient<DragonPow>(1)
                     .AddIngredient<DragonRage>(1)
                     .AddIngredient<BlackMatterStick>(3)
-                    .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                        amount = 0;
-                    })
-                    .AddOnCraftCallback(SpawnAction)
+                    .AddBlockingSynthesisEvent()
                     .AddTile(TileType<TransmutationOfMatter>())
                     .Register();
                 }

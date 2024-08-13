@@ -113,10 +113,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 .AddIngredient<MiracleMatter>(16)
                 .AddIngredient<YharonSoulFragment>(8)
                 .AddIngredient<LoreCynosure>()
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    amount = 0;
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();
         }

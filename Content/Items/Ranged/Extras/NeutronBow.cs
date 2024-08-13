@@ -47,10 +47,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient<BlackMatterStick>(25)
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    amount = 0;
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();
         }

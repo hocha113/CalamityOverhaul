@@ -4,6 +4,7 @@ using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.OtherMods.Thorium.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;

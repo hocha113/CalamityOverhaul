@@ -73,10 +73,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 .AddIngredient<DaawnlightSpiritOrigin>()
                 .AddIngredient<QuiverofNihility>()
                 .AddIngredient<BlackMatterStick>(20)
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    amount = 0;
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();
         }

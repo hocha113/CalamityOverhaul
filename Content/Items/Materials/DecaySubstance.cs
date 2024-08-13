@@ -45,10 +45,7 @@ namespace CalamityOverhaul.Content.Items.Materials
                 .AddIngredient(ItemID.FragmentStardust, 1)
                 .AddIngredient(ItemID.LunarBar, 4)
                 .AddIngredient<DecayParticles>(1)
-                .AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => {
-                    amount = 0;
-                })
-                .AddOnCraftCallback(CWRRecipes.SpawnAction)
+                .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();
         }

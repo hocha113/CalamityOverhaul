@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         public override void SetProperty() => SetAccompany(npc, ref ai, out Accompany);
         public static void SetAccompany(NPC npc, ref int[] ai, out bool accompany) {
             npc.realLife = -1;
-
+            
             ai = new int[maxAINum];
             for (int i = 0; i < ai.Length; i++) {
                 ai[i] = 0;
