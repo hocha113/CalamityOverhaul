@@ -16,7 +16,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 {
-    internal class SpazmatismAI : NPCCoverage
+    internal class SpazmatismAI : NPCOverride
     {
         public override int TargetID => NPCID.Spazmatism;
         public static bool Accompany;

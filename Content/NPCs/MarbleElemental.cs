@@ -8,7 +8,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.NPCs.Others
+namespace CalamityOverhaul.Content.NPCs
 {
     internal class MarbleElemental : ModNPC
     {

@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 {
-    internal class RetinazerAI : NPCCoverage
+    internal class RetinazerAI : NPCOverride
     {
         public override int TargetID => NPCID.Retinazer;
         public static bool Accompany;

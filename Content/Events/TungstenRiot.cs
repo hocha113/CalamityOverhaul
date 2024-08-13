@@ -33,6 +33,22 @@ namespace CalamityOverhaul.Content.Events
             }
         }
 
+        public static void SetEventNPC(NPC npc) {
+            if (!Instance.TungstenRiotIsOngoing) {
+                return;
+            }
+            if (TungstenEventNPCDic.ContainsKey(npc.type)) {
+                npc.life = npc.lifeMax = (int)(npc.lifeMax * 1.2f);
+                npc.defense += 3;
+            }
+            if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
+                npc.life = npc.lifeMax = npc.lifeMax * 10;
+                npc.defense += 10;
+                npc.scale += 0.5f;
+                npc.boss = true;
+            }
+        }
+
         public void Load() {
             Instance = this;
             TungstenEventNPCDic = new Dictionary<int, TungstenEventNPCValue>() {

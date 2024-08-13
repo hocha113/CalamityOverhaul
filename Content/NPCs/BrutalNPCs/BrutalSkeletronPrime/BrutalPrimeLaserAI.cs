@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class BrutalPrimeLaserAI : NPCCoverage
+    internal class BrutalPrimeLaserAI : NPCOverride
     {
         public override int TargetID => NPCID.PrimeLaser;
 

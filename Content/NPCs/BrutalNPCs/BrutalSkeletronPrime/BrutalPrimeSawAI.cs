@@ -9,7 +9,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class BrutalPrimeSawAI : NPCCoverage
+    internal class BrutalPrimeSawAI : NPCOverride
     {
         public override int TargetID => NPCID.PrimeSaw;
 
