@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.NPCs.NormalNPCs;
-using CalamityMod.NPCs.VanillaNPCAIOverrides.Bosses;
 using CalamityOverhaul;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
@@ -8,7 +7,6 @@ using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
 using ReLogic.Utilities;
 using Steamworks;

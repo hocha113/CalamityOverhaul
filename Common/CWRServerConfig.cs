@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Common
@@ -216,8 +218,10 @@ namespace CalamityOverhaul.Common
 
         public override void OnLoaded() => Instance = this;
 
-        [System.Obsolete]
-        public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref string message) {
+        public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message) {
+            string text = CWRLocText.GetTextValue("Config_1")
+                + Main.player[whoAmI].name + CWRLocText.GetTextValue("Config_2");
+            CWRUtils.Text(text);
             return true;
         }
     }

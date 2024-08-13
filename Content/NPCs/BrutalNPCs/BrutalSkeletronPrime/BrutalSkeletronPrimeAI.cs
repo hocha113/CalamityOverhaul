@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 arm.damage = 0;
             }
             if (setPosingStarmCount > 0) {
-                float rot2 = MathHelper.TwoPi / 4 * type;
+                float rot2 = MathHelper.TwoPi / 4 * type + head.rotation;
                 Vector2 toPoint2 = head.Center + rot2.ToRotationVector2() * head.width;
                 arm.Center = Vector2.Lerp(arm.Center, toPoint2, 0.2f);
                 arm.rotation = head.Center.To(arm.Center).ToRotation() - MathHelper.PiOver2;
@@ -239,12 +239,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             float rot = ai10 * 0.1f + MathHelper.TwoPi / 4 * type;
             Vector2 toPoint = head.Center + rot.ToRotationVector2() * head.width * 2;
+            float origeRot = head.Center.To(arm.Center).ToRotation();
             arm.Center = Vector2.Lerp(arm.Center, toPoint, 0.2f);
-            arm.rotation = head.Center.To(arm.Center).ToRotation() - MathHelper.PiOver2;
+            arm.rotation = origeRot - MathHelper.PiOver2;
             arm.velocity = Vector2.Zero;
             arm.position += head.velocity;
             arm.dontTakeDamage = true;
             arm.damage = 0;
+            if (!CWRUtils.isClient && NPC.IsMechQueenUp && ai10 % 6 == 0 && setPosingStarmCount <= 0 && ai11 <= 0) {
+                int projType = ProjectileID.DeathLaser;
+                Vector2 ver = origeRot.ToRotationVector2() * 6;
+                Projectile.NewProjectile(arm.GetSource_FromAI(), arm.Center, ver, projType, 36, 2);
+            }
             return true;
         }
 
@@ -336,7 +342,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.SyncExtraAI();
             }
         }
-        //这个教训告诉我们，ai的使用最好去用上数组，而不是一个一个枚举值，不然集中管理时会较为麻烦
+        
         public override void SetProperty() {
             ai1 = ai2 = ai3 = ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = ai11 = ai12 = 0;
             setPosingStarmCount = 0;
@@ -344,7 +350,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             for (int i = 0; i < npc.buffImmune.Length; i++) {
                 npc.buffImmune[i] = true;
             }
-        }
+        }//这个教训告诉我们，ai的使用最好去用上数组，而不是一个一个枚举值，不然集中管理时会较为麻烦
 
         public override bool AI() {
             SmokeDrawer.ParticleSpawnRate = 99999;
@@ -447,6 +453,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void SpawnEye() {
+            if (bossRush || NPC.IsMechQueenUp) {
+                return;
+            }
+            foreach (var npc in Main.npc) {
+                if (npc.active && npc.type == NPCID.Retinazer || npc.type == NPCID.Spazmatism) {
+                    npc.active = false;
+                }
+            }
             CWRUtils.SpawnBossNetcoded(player, NPCID.Retinazer);
             CWRUtils.SpawnBossNetcoded(player, NPCID.Spazmatism);
         }

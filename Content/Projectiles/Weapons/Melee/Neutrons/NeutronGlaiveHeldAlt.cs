@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer() && canatcck2) {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity.UnitVector() * 255
-                    , Vector2.Zero, ModContent.ProjectileType<EXNeutronExplode>(), Projectile.damage, 0);
+                    , Vector2.Zero, ModContent.ProjectileType<EXNeutronExplode>(), Projectile.damage * 10, 0);
             }
         }
 

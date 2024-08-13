@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using CalamityMod.Events;
+using CalamityMod.World;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 

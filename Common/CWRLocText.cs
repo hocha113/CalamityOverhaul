@@ -127,7 +127,12 @@ namespace CalamityOverhaul.Common
         public LocalizedText Spazmatism_Text2 { get; private set; }
         public LocalizedText Spazmatism_Text3 { get; private set; }
         public LocalizedText Spazmatism_Text4 { get; private set; }
+        public LocalizedText Spazmatism_Text5 { get; private set; }
+        public LocalizedText Spazmatism_Text6 { get; private set; }
+        public LocalizedText Spazmatism_Text7 { get; private set; }
         public LocalizedText Error_1 { get; private set; }
+        public LocalizedText Config_1 { get; private set; }
+        public LocalizedText Config_2 { get; private set; }
         public LocalizedText Wap_Minishark_Text { get; private set; }
         public LocalizedText Wap_Megashark_Text { get; private set; }
         public LocalizedText Wap_HandGun_Text { get; private set; }
