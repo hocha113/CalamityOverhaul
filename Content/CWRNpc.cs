@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content
             VoidErosionBool = false;
         }
         public override void SetDefaults(NPC npc) {
-            NPCs.Core.NPCOverride.SetDefaults(NPCOverride, npc, this, npc.Calamity());
+            NPCOverride.SetDefaults(NPCOverride, npc, this, npc.Calamity());
             TungstenRiot.SetEventNPC(npc);
         }
 
