@@ -17,11 +17,37 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
     internal abstract class BaseSwing : BaseHeldProj
     {
         #region Data
+        private int dirs;
         private float oldRot;
+        private float _meleeSize = 0;
         protected Vector2 vector;
         protected Vector2 startVector;
-        private int dirs;
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
+        /// <summary>
+        /// 刀刃是否应该受近战缩放影响
+        /// </summary>
+        public bool AffectedMeleeSize = true;
+        /// <summary>
+        /// 对应的武器近战缩放
+        /// </summary>
+        public float MeleeSize {
+            get {
+                if (_meleeSize == 0) {
+                    _meleeSize = 1f;
+                    if (Item.type != ItemID.None) {
+                        _meleeSize = Owner.GetAdjustedItemScale(Item);
+                    }
+                }
+                if (!AffectedMeleeSize) {
+                    _meleeSize = 1f;
+                }
+                return _meleeSize;
+            }
+        }
+        /// <summary>
+        /// 近战缩放对应的渐进中间值
+        /// </summary>
+        protected float meleeSizeAsymptotic => (1 + (MeleeSize - 1f) / 2f);
         /// <summary>
         /// 刀光弧度全局缩放，默认为1
         /// </summary>
@@ -429,7 +455,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Owner.heldProj = Projectile.whoAmI;
             Owner.itemTime = 2;
             Owner.itemAnimation = 2;
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + vector;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + vector * (1f + (MeleeSize - 1f) / 2f);
 
             if (canFormOwnerSetDir) {
                 Projectile.spriteDirection = Owner.direction;
@@ -497,6 +523,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 暂时弃用的
         /// </summary>
         public sealed override void AI() { }
+
+        public override void ModifyDamageHitbox(ref Rectangle hitbox) {
+            Vector2 recCenter = hitbox.TopLeft() + hitbox.Size() / 2;
+            int wid = (int)(hitbox.Width * MeleeSize);
+            int hig = (int)(hitbox.Height * MeleeSize);
+            Vector2 newRecPos = recCenter - new Vector2(wid / 2, hig / 2);
+            Rectangle newRec = new Rectangle((int)newRecPos.X, (int)newRecPos.Y, wid, hig);
+            hitbox = newRec;
+        }
 
         #region Draw
         public virtual void WarpDraw() {
@@ -622,8 +657,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
                 float factor = 1f - i / count;
                 Vector2 Center = Owner.GetPlayerStabilityCenter();
-                Vector2 Top = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] + drawTrailTopWidth + oldDistanceToOwner[i]);
-                Vector2 Bottom = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i]);
+                Vector2 Top = Center + (oldRotate[i].ToRotationVector2() * (oldLength[i] + drawTrailTopWidth * meleeSizeAsymptotic + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
+                Vector2 Bottom = Center + (oldRotate[i].ToRotationVector2() * (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
 
                 var topColor = Color.Lerp(new Color(238, 218, 130, 200), new Color(167, 127, 95, 0), 1 - factor);
                 var bottomColor = Color.Lerp(new Color(109, 73, 86, 200), new Color(83, 16, 85, 0), 1 - factor);
@@ -645,7 +680,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Vector2 drawOrigin = rect.Size() / 2;
             SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
-            Vector2 offsetOwnerPos = safeInSwingUnit.GetNormalVector() * unitOffsetDrawZkMode * Projectile.spriteDirection;
+            Vector2 offsetOwnerPos = safeInSwingUnit.GetNormalVector() * unitOffsetDrawZkMode * Projectile.spriteDirection * MeleeSize;
             float drawRoting = Projectile.rotation;
             if (Projectile.spriteDirection == -1) {
                 drawRoting += MathHelper.Pi;
@@ -666,10 +701,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Vector2 trueDrawPos = drawPosValue - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;
 
             Main.EntitySpriteDraw(texture, trueDrawPos, new Rectangle?(rect)
-                , color, drawRoting, drawOrigin, Projectile.scale, effects, 0);
+                , color, drawRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
             if (canDrawGlow) {
                 Main.EntitySpriteDraw(glowTexValue.Value, trueDrawPos, new Rectangle?(rect)
-                    , Color.White, drawRoting, drawOrigin, Projectile.scale, effects, 0);
+                    , Color.White, drawRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
             }
         }
 

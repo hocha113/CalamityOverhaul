@@ -89,16 +89,16 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             canDrawSlashTrail = true;
             distanceToOwner = 40;
             drawTrailBtommWidth = 70;
-            drawTrailTopWidth = 20;
+            drawTrailTopWidth = 30;
             drawTrailCount = 16;
-            Length = 130;
+            Length = 140;
             overOffsetCachesRoting = MathHelper.ToRadians(2);
             Projectile.scale = 1.25f;
             SwingData.starArg = 80;
             SwingData.baseSwingSpeed = 5.4f;
             SwingData.ler1_UpLengthSengs = 0.1f;
-            SwingData.minClampLength = 130;
-            SwingData.maxClampLength = 140;
+            SwingData.minClampLength = 140;
+            SwingData.maxClampLength = 150;
             SwingData.ler1_UpSizeSengs = 0.056f;
         }
 
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Vector2 trueDrawPos = drawPosValue - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;
 
             Main.EntitySpriteDraw(texture, trueDrawPos, new Rectangle?(rect)
-                , color, drawRoting, drawOrigin, Projectile.scale, effects, 0);
+                , color, drawRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
         }
 
         public override void DrawSwing(SpriteBatch spriteBatch, Color lightColor) { }
