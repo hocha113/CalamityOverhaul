@@ -2,9 +2,6 @@
 
 namespace CalamityOverhaul.Content.Particles.Core
 {
-    /// <summary>
-    /// 一个粒子的基类，它主要来自于灾厄本体
-    /// </summary>
     internal abstract class BaseParticle
     {
         public virtual string Texture => "";

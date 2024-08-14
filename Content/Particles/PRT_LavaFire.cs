@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Particles
         public override bool SetLifetime => true;
         public override bool UseCustomDraw => true;
         public override bool UseAdditiveBlend => true;
+        public Color[] colors;
         public int timer;
         public float speedX;
         public float mult;
@@ -22,12 +23,20 @@ namespace CalamityOverhaul.Content.Particles
         private float opacity;
         private float timeLife;
         public override void SetDRK() {
+            if (colors == null) {
+                colors = new Color[3];
+                colors[0] = new Color(262, 150, 45, 255);//明
+                colors[1] = new Color(186, 35, 24, 255);//过渡
+                colors[2] = new Color(122, 24, 36, 255);//暗，渐变目标
+            }
+            
             if (minLifeTime == 0) {
                 minLifeTime = 90;
             }
             if (maxLifeTime == 0) {
                 maxLifeTime = 121;
             }
+
             timeLife = timer = Lifetime = Main.rand.Next(minLifeTime, maxLifeTime);
             timer = (int)(timer * Main.rand.NextFloat(0.6f, 1.1f));
             speedX = Main.rand.NextFloat(4f, 9f);
@@ -40,30 +49,34 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void AI() {
-            if (ai[0] <= 0) {
-                opacity = MathHelper.Lerp(1f, 0f, (float)(timeLeftMax / 2f - timeLife) / (timeLeftMax / 2f));
-                if (ai[1] is 1) {
-                    return;
-                }
-                if (ai[1] is 2) {
-                    Velocity *= 0.9f;
-                }
-                else {
-                    float sineX = (float)Math.Sin(Main.GlobalTimeWrappedHourly * speedX);
-                    if (timer == 0) {
-                        timer = Main.rand.Next(50, 100);
-                        speedX = Main.rand.NextFloat(4f, 9f);
-                        mult = Main.rand.NextFloat(10f, 31f) / 200f;
-                    }
-                    Velocity += new Vector2(Main.windSpeedCurrent * (Main.windPhysicsStrength * 3f) * MathHelper.Lerp(1f, 0.1f, Math.Abs(Velocity.X) / 6f), 0f);
-                    Velocity += new Vector2(sineX * mult, -Main.rand.NextFloat(1f, 2f) / 100f);
-                    Utils.Clamp(Velocity.X, -6f, 6f);
-                    Utils.Clamp(Velocity.Y, -6f, 6f);
-                }
-                timer--;
-                timeLife--;
+            if (ai[0] > 0) {
+                ai[0]--;
+                return;
             }
-            ai[0]--;
+
+            opacity = MathHelper.Lerp(1f, 0f, (timeLeftMax / 2f - timeLife) / (timeLeftMax / 2f));
+
+            if (ai[1] == 1) {
+                return;
+            }
+            else if (ai[1] == 2) {
+                Velocity *= 0.9f;
+            }
+            else {
+                if (timer == 0) {
+                    timer = Main.rand.Next(50, 100);
+                    speedX = Main.rand.NextFloat(4f, 9f);
+                    mult = Main.rand.NextFloat(10f, 31f) / 200f;
+                }
+
+                float sineX = (float)Math.Sin(Main.GlobalTimeWrappedHourly * speedX);
+                Velocity += new Vector2(Main.windSpeedCurrent * (Main.windPhysicsStrength * 3f) * MathHelper.Lerp(1f, 0.1f, Math.Abs(Velocity.X) / 6f), 0f);
+                Velocity += new Vector2(sineX * mult, -Main.rand.NextFloat(1f, 2f) / 100f);
+                Velocity = new Vector2(MathHelper.Clamp(Velocity.X, -6f, 6f), MathHelper.Clamp(Velocity.Y, -6f, 6f));
+            }
+
+            timer--;
+            timeLife--;
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
@@ -71,22 +84,18 @@ namespace CalamityOverhaul.Content.Particles
             Texture2D tex2 = ModContent.Request<Texture2D>(CWRConstant.Masking + "StarTexture").Value;
             Texture2D tex3 = ModContent.Request<Texture2D>(CWRConstant.Masking + "SoftGlow").Value;
 
-            Color bright = Color.Multiply(new(260, 149, 46, 255), opacity);
-            Color mid = Color.Multiply(new(187, 33, 25, 255), opacity);
-            Color dark = Color.Multiply(new(121, 23, 37, 255), opacity);
-            Color emberColor = Color.Multiply(Color.Lerp(bright, dark, (float)(timeLeftMax - timeLife) / timeLeftMax), opacity);
-            Color glowColor = Color.Multiply(Color.Lerp(mid, dark, (float)(timeLeftMax - timeLife) / timeLeftMax), 1f);
+            Color emberColor = Color.Lerp(colors[0], colors[2], (float)(timeLeftMax - timeLife) / timeLeftMax) * opacity;
+            Color glowColor = Color.Lerp(colors[1], colors[2], (float)(timeLeftMax - timeLife) / timeLeftMax);
             float pixelRatio = 1f / 64f;
 
             Vector2 drawPos = Position - Main.screenPosition;
-            spriteBatch.Draw(tex3, drawPos, new Rectangle(0, 0, 64, 64), glowColor, Rotation
-                , new Vector2(32f, 32f), 1f * size * Scale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(tex1, drawPos - new Vector2(1.5f, 1.5f), new Rectangle(0, 0, 64, 64), emberColor
-                , Rotation, Vector2.Zero, 1f * pixelRatio * 3f * size * Scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex3, drawPos, new Rectangle(0, 0, 64, 64), glowColor, Rotation,
+                             new Vector2(32f, 32f), size * Scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex1, drawPos - new Vector2(1.5f, 1.5f), new Rectangle(0, 0, 64, 64), emberColor,
+                             Rotation, Vector2.Zero, pixelRatio * 3f * size * Scale, SpriteEffects.None, 0f);
 
             if (ai[1] < 1) {
-                spriteBatch.Draw(tex2, drawPos, null, Color, Rotation
-                    , tex2.Size() / 2, 1f * Scale * 0.04f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex2, drawPos, null, Color, Rotation, tex2.Size() / 2, Scale * 0.04f, SpriteEffects.None, 0f);
             }
         }
     }

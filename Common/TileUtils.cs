@@ -6,7 +6,7 @@ using Terraria.ObjectData;
 using static Terraria.WorldGen;
 namespace CalamityOverhaul.Common
 {
-    //这里的代码来源于TmoadLoader源代码:
+    //这里的代码来源于tModLoader源代码:
     //[https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/ModLoader/TileLoader.cs]
     //与[https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/WorldGen.TML.cs]
     //该部分的代码有一定的修改，用于解决物块挖掘使游戏崩溃的问题，代码的使用遵循TmodLoader所使用的[MIT license]规则:[https://github.com/tModLoader/tModLoader]
@@ -69,9 +69,7 @@ namespace CalamityOverhaul.Common
         }
 
         private static void SetFrameNumber(this Tile tile, byte frameNumber) => tile.TileFrameNumber = frameNumber;
-
         private static byte GetFrameNumber(this Tile tile) => (byte)tile.TileFrameNumber;
-
         private static bool GetInvisibleBlock(this Tile tile) => tile.IsTileInvisible;
 
         public static void DoErrorTile(Vector2 tilePos, Tile tile) {
