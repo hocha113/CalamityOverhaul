@@ -40,14 +40,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.accessory = true;
         }
 
-        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            base.PostDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
-        }
-
-        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI) {
-            base.PostDrawInWorld(spriteBatch, lightColor, alphaColor, rotation, scale, whoAmI);
-        }
-
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             Player player = Main.player[Main.myPlayer];
             if (tooltips == null || player == null) return;

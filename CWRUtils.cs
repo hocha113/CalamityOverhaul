@@ -2912,31 +2912,20 @@ namespace CalamityOverhaul
         public static void SafeSquareTileFrame(Vector2 tilePos, Tile tile, bool resetFrame = true) {
             int i = (int)tilePos.X;
             int j = (int)tilePos.Y;
-            WorldGen.TileFrame(i - 1, j - 1);
-            WorldGen.TileFrame(i - 1, j);
-            WorldGen.TileFrame(i - 1, j + 1);
-            WorldGen.TileFrame(i, j - 1);
+            TileUtils.TileFrame(i - 1, j - 1);
+            TileUtils.TileFrame(i - 1, j);
+            TileUtils.TileFrame(i - 1, j + 1);
+            TileUtils.TileFrame(i, j - 1);
             try {
-                WorldGen.TileFrame(i, j, resetFrame);
+                TileUtils.TileFrame(i, j, resetFrame);
             } catch {
-                DoErrorTile(tilePos, tile);
+                TileUtils.DoErrorTile(tilePos, tile);
                 return;
             }
-            WorldGen.TileFrame(i, j + 1);
-            WorldGen.TileFrame(i + 1, j - 1);
-            WorldGen.TileFrame(i + 1, j);
-            WorldGen.TileFrame(i + 1, j + 1);
-        }
-
-        public static void DoErrorTile(Vector2 tilePos, Tile tile) {
-            string errorT = "";
-            string path = "steamapps\\common\\tModLoader\\tModLoader-Logs";
-            string errorT_CN = $"格式化图格发生异常，位于地图坐标[{(int)tilePos.X}, {(int)tilePos.Y}]，如果需要寻求帮助，请附带上 {path} 文件夹下的client.log文件";
-            string errorT_EN = $"An exception occurred in the formatted grid, located at map coordinates[{(int)tilePos.X}, {(int)tilePos.Y}] {path} subfolder 'client.log' File";
-            errorT = Translation(errorT_CN, errorT_EN);
-            errorT.Domp(Color.Red);
-            errorT.DompInConsole();
-            $"At in InfinitePickProj.AI 69 line 'WorldGen.SquareTileFrame((int)tilePos.X, (int)tilePos.Y);', targetID: {tile.TileType}:{tile}".DompInConsole();
+            TileUtils.TileFrame(i, j + 1);
+            TileUtils.TileFrame(i + 1, j - 1);
+            TileUtils.TileFrame(i + 1, j);
+            TileUtils.TileFrame(i + 1, j + 1);
         }
 
         /// <summary>
