@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class DRK_SoulLight : BaseParticle
+    internal class PRT_SoulLight : BaseParticle
     {
         public override string Texture => "CalamityMod/Particles/Light";
         public override bool UseAdditiveBlend => true;
@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Particles
         public float followingRateRatio;
         public Projectile flowerProj;
 
-        public DRK_SoulLight(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f, float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, Projectile _flowerProj = null, float _followingRateRatio = 0.9f) {
+        public PRT_SoulLight(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f, float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, Projectile _flowerProj = null, float _followingRateRatio = 0.9f) {
             Position = position;
             Velocity = velocity;
             Scale = scale;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = DRKLoader.ParticleIDToTexturesDic[Type];
+            Texture2D tex = PRTLoader.ParticleIDToTexturesDic[Type];
             Texture2D bloomTex = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
 
             float squish = MathHelper.Clamp(Velocity.Length() / 10f * SquishStrenght, 1f, MaxSquish);

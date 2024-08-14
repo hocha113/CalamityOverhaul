@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class DRK_Smoke : BaseParticle
+    internal class PRT_Smoke : BaseParticle
     {
         public override bool SetLifetime => true;
         public override int FrameVariants => 7;
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Particles
         private float HueShift;
         private static int FrameAmount = 6;
 
-        public DRK_Smoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f, bool required = false) {
+        public PRT_Smoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f, bool required = false) {
             Position = position;
             Velocity = velocity;
             Color = color;
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = DRKLoader.ParticleIDToTexturesDic[Type];
+            Texture2D tex = PRTLoader.ParticleIDToTexturesDic[Type];
             int animationFrame = (int)Math.Floor(Time / (float)(Lifetime / (float)FrameAmount));
             Rectangle frame = new Rectangle(80 * Variant, 80 * animationFrame, 80, 80);
 

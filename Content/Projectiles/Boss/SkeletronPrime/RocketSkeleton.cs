@@ -35,9 +35,9 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.scale += 0.012f;
 
             if (Projectile.DistanceSQ(Main.LocalPlayer.Center) < 1600 * 1600) {
-                if (DRKLoader.FreeSpacesAvailable() > 10) {
-                    BaseParticle spark = new DRK_HeavenfallStar(Projectile.Center, Projectile.velocity * 0.7f, false, 20, 1.2f, Color.Gold);
-                    DRKLoader.AddParticle(spark);
+                if (PRTLoader.FreeSpacesAvailable() > 10) {
+                    BaseParticle spark = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity * 0.7f, false, 20, 1.2f, Color.Gold);
+                    PRTLoader.AddParticle(spark);
                 }
                 else {
                     Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.FireworkFountain_Red, Projectile.velocity);
@@ -51,18 +51,18 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             Vector2 spanPos = Projectile.Center;
             Vector2 vr = Vector2.Zero;
-            BaseParticle pulse3 = new DRK_DWave(spanPos, vr, Color.Red
+            BaseParticle pulse3 = new PRT_DWave(spanPos, vr, Color.Red
             , new Vector2(1.2f, 1.3f) * 0.8f, vr.ToRotation(), 1.18f, 3.32f, 60);
-            DRKLoader.AddParticle(pulse3);
+            PRTLoader.AddParticle(pulse3);
             target.AddBuff(ModContent.BuffType<EXHellfire>(), 60);
         }
 
         public override void OnKill(int timeLeft) {
             Vector2 spanPos = Projectile.Center;
             Vector2 vr = Vector2.Zero;
-            BaseParticle pulse3 = new DRK_DWave(spanPos, vr, Color.Red
+            BaseParticle pulse3 = new PRT_DWave(spanPos, vr, Color.Red
             , new Vector2(0.7f, 0.73f), vr.ToRotation(), 2.18f, 6.32f, 60);
-            DRKLoader.AddParticle(pulse3);
+            PRTLoader.AddParticle(pulse3);
         }
 
         public override bool PreDraw(ref Color lightColor) {

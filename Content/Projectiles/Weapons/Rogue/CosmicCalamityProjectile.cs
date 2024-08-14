@@ -46,8 +46,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
 
             if (Main.netMode != NetmodeID.Server) {
                 Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
-                BaseParticle spark = new DRK_Spark(Projectile.Center - Projectile.velocity * 8f, -Projectile.velocity * 0.1f, false, 9, 2.3f, color * 0.1f);
-                DRKLoader.AddParticle(spark);
+                BaseParticle spark = new PRT_Spark(Projectile.Center - Projectile.velocity * 8f, -Projectile.velocity * 0.1f, false, 9, 2.3f, color * 0.1f);
+                PRTLoader.AddParticle(spark);
             }
             if (Time > (Projectile.Calamity().stealthStrike ? 0 : 60)) {
                 for (int i = 0; i < Main.maxNPCs; i++) {
@@ -97,10 +97,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         }
 
         public static void SpanDimensionalWave(Vector2 spanPos, Vector2 vr, Color color1, Color color2, float starS, float endS, float starS2, float endS2) {
-            BaseParticle pulse = new DRK_DWave(spanPos - vr * 0.52f, vr / 1.5f, color1, new Vector2(1f, 2f), vr.ToRotation(), starS, endS, 60);
-            DRKLoader.AddParticle(pulse);
-            BaseParticle pulse2 = new DRK_DWave(spanPos - vr * 0.40f, vr / 1.5f * 0.9f, color2, new Vector2(0.8f, 1.5f), vr.ToRotation(), starS2, starS2, 50);
-            DRKLoader.AddParticle(pulse2);
+            BaseParticle pulse = new PRT_DWave(spanPos - vr * 0.52f, vr / 1.5f, color1, new Vector2(1f, 2f), vr.ToRotation(), starS, endS, 60);
+            PRTLoader.AddParticle(pulse);
+            BaseParticle pulse2 = new PRT_DWave(spanPos - vr * 0.40f, vr / 1.5f * 0.9f, color2, new Vector2(0.8f, 1.5f), vr.ToRotation(), starS2, starS2, 50);
+            PRTLoader.AddParticle(pulse2);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -115,10 +115,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
                             float slp = j / 16f;
                             float slp2 = 16f / j;
                             Vector2 spanPos = Projectile.Center + rot.ToRotationVector2() * 64 * j;
-                            BaseParticle pulse = new DRK_DWave(spanPos - vr * 0.52f, vr / 1.5f, Color.Gold, new Vector2(1f, 2f), vr.ToRotation(), 0.82f * slp, 0.32f, 60);
-                            DRKLoader.AddParticle(pulse);
-                            BaseParticle pulse2 = new DRK_DWave(spanPos - vr * 0.40f, vr / 1.5f * 0.9f, Color.OrangeRed, new Vector2(0.8f, 1.5f), vr.ToRotation(), 0.58f * slp, 0.28f, 50);
-                            DRKLoader.AddParticle(pulse2);
+                            BaseParticle pulse = new PRT_DWave(spanPos - vr * 0.52f, vr / 1.5f, Color.Gold, new Vector2(1f, 2f), vr.ToRotation(), 0.82f * slp, 0.32f, 60);
+                            PRTLoader.AddParticle(pulse);
+                            BaseParticle pulse2 = new PRT_DWave(spanPos - vr * 0.40f, vr / 1.5f * 0.9f, Color.OrangeRed, new Vector2(0.8f, 1.5f), vr.ToRotation(), 0.58f * slp, 0.28f, 50);
+                            PRTLoader.AddParticle(pulse2);
                         }
                     }
                     SoundEngine.PlaySound(BelCanto, Projectile.Center);
@@ -148,10 +148,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             }
 
             if (!Projectile.Calamity().stealthStrike) {
-                BaseParticle pulse = new DRK_DWave(Projectile.Center - Projectile.velocity * 0.52f, Projectile.velocity / 1.5f, Color.Fuchsia, new Vector2(1f, 2f), Projectile.velocity.ToRotation(), 0.82f, 0.32f, 60);
-                DRKLoader.AddParticle(pulse);
-                BaseParticle pulse2 = new DRK_DWave(Projectile.Center - Projectile.velocity * 0.40f, Projectile.velocity / 1.5f * 0.9f, Color.Aqua, new Vector2(0.8f, 1.5f), Projectile.velocity.ToRotation(), 0.58f, 0.28f, 50);
-                DRKLoader.AddParticle(pulse2);
+                BaseParticle pulse = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.52f, Projectile.velocity / 1.5f, Color.Fuchsia, new Vector2(1f, 2f), Projectile.velocity.ToRotation(), 0.82f, 0.32f, 60);
+                PRTLoader.AddParticle(pulse);
+                BaseParticle pulse2 = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.40f, Projectile.velocity / 1.5f * 0.9f, Color.Aqua, new Vector2(0.8f, 1.5f), Projectile.velocity.ToRotation(), 0.58f, 0.28f, 50);
+                PRTLoader.AddParticle(pulse2);
             }
 
             for (int j = 0; j < 4; j++) {

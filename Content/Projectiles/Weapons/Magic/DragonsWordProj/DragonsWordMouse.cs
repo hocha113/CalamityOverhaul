@@ -56,14 +56,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
             if (Projectile.ai[1] >= 0) {
                 for (int i = 0; i < 300; i++) {
                     Vector2 spanPos = (MathHelper.TwoPi / 300f * i + Projectile.ai[0] * 0.1f).ToRotationVector2() * Projectile.ai[1] + Projectile.Center;
-                    DRK_LavaFire lavaFire = new DRK_LavaFire {
+                    PRT_LavaFire lavaFire = new PRT_LavaFire {
                         Velocity = new Vector2(0, -3),
                         Position = spanPos,
                         Scale = Main.rand.NextFloat(0.2f, 0.3f) * (1 + Projectile.ai[1] * 0.006f),
                         maxLifeTime = 15,
                         minLifeTime = 10
                     };
-                    DRKLoader.AddParticle(lavaFire);
+                    PRTLoader.AddParticle(lavaFire);
                 }
                 int num = 255;
                 foreach (var npc in Main.npc) {

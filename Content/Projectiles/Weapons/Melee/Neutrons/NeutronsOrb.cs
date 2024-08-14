@@ -17,8 +17,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         }
 
         public override void AI() {
-            BaseParticle spark = new DRK_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 17, Main.rand.NextFloat(0.2f, 0.3f), Color.BlueViolet);
-            DRKLoader.AddParticle(spark);
+            BaseParticle spark = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 17, Main.rand.NextFloat(0.2f, 0.3f), Color.BlueViolet);
+            PRTLoader.AddParticle(spark);
         }
     }
 }

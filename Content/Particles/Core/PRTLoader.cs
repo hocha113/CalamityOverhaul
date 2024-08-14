@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles.Core
 {
-    internal class DRKLoader : ModSystem
+    internal class PRTLoader : ModSystem
     {
         internal static Dictionary<Type, int> ParticleTypesDic;
         internal static Dictionary<int, Texture2D> ParticleIDToTexturesDic;

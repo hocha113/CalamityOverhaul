@@ -89,6 +89,6 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// <summary>
         /// 从处理程序中移除粒子
         /// </summary>
-        public void Kill() => DRKLoader.RemoveParticle(this);
+        public void Kill() => PRTLoader.RemoveParticle(this);
     }
 }

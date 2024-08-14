@@ -67,17 +67,17 @@ namespace CalamityOverhaul.Content.Items.Melee
             float targetDist = Vector2.Distance(Owner.Center, Projectile.Center);
 
             if (Projectile.timeLeft % 3 == 0 && Time > 12f && targetDist < 1400f) {
-                DRK_Spark2 spark = new DRK_Spark2(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 1.6f, Color.Black) {
+                PRT_Spark2 spark = new PRT_Spark2(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 1.6f, Color.Black) {
                     entity = Owner
                 };
-                DRKLoader.AddParticle(spark);
+                PRTLoader.AddParticle(spark);
             }
 
             if (Projectile.timeLeft % 3 == 0 && Time > 12f && targetDist < 1400f) {
-                DRK_Line_FormPlayer spark2 = new DRK_Line_FormPlayer(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 0.9f, Color.LightGreen) {
+                PRT_Line_FormPlayer spark2 = new PRT_Line_FormPlayer(Projectile.Center, -Projectile.velocity * 0.05f, false, 6, 0.9f, Color.LightGreen) {
                     Owner = Owner
                 };
-                DRKLoader.AddParticle(spark2);
+                PRTLoader.AddParticle(spark2);
             }
 
             if (Time % (Projectile.extraUpdates + 1) == 0)

@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class DRK_HolyColliderLight : BaseParticle
+    internal class PRT_HolyColliderLight : BaseParticle
     {
         public override string Texture => "CalamityMod/Particles/Light";
         public override bool UseAdditiveBlend => true;
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Particles
         public float HueShift;
         public float followingRateRatio;
 
-        public DRK_HolyColliderLight(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f, float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, float _followingRateRatio = 0.9f) {
+        public PRT_HolyColliderLight(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f, float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, float _followingRateRatio = 0.9f) {
             Position = position;
             Velocity = velocity;
             Scale = scale;
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = DRKLoader.ParticleIDToTexturesDic[Type];
+            Texture2D tex = PRTLoader.ParticleIDToTexturesDic[Type];
             Texture2D bloomTex = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
 
             float squish = MathHelper.Clamp(Velocity.Length() / 15f * SquishStrenght, 1f, MaxSquish);

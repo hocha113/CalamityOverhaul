@@ -39,14 +39,14 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 4);
             Lighting.AddLight(Projectile.Center, Color.Red.ToVector3());
-            DRK_LavaFire lavaFire = new DRK_LavaFire {
+            PRT_LavaFire lavaFire = new PRT_LavaFire {
                 Velocity = Projectile.velocity * 0.2f,
                 Position = Projectile.Center + CWRUtils.randVr(6),
                 Scale = Main.rand.NextFloat(0.8f, 1.2f),
                 maxLifeTime = 60,
                 minLifeTime = 30
             };
-            DRKLoader.AddParticle(lavaFire);
+            PRTLoader.AddParticle(lavaFire);
             Projectile.ai[0]++;
         }
 

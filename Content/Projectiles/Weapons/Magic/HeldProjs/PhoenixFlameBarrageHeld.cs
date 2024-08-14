@@ -150,14 +150,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             }
 
             if (Projectile.Distance(Main.LocalPlayer.Center) < 1400) {
-                DRK_LavaFire lavaFire = new DRK_LavaFire {
+                PRT_LavaFire lavaFire = new PRT_LavaFire {
                     Velocity = Projectile.velocity * 0.2f,
                     Position = Projectile.Center + CWRUtils.randVr(6),
                     Scale = Main.rand.NextFloat(0.8f, 1.2f),
                     maxLifeTime = 60,
                     minLifeTime = 30
                 };
-                DRKLoader.AddParticle(lavaFire);
+                PRTLoader.AddParticle(lavaFire);
             }
 
             Time++;

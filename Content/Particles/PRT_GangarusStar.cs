@@ -5,22 +5,28 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class DRK_Line2_FormPlayer : BaseParticle
+    internal class PRT_GangarusStar : BaseParticle
     {
         public Color InitialColor;
         public bool AffectedByGravity;
-        public Player Owner;
         public override bool SetLifetime => true;
         public override bool UseCustomDraw => true;
-        public override bool UseAdditiveBlend => false;
-        public override string Texture => "CalamityMod/Particles/DrainLine";
-        public DRK_Line2_FormPlayer(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
+        public override bool UseAdditiveBlend => true;
+
+        public override string Texture => "CalamityMod/Projectiles/StarProj";
+        private Entity Entity;
+        private Vector2 EntityPos;
+        private Vector2 OldEntityPos;
+        private Vector2 EntityVariation;
+
+        public PRT_GangarusStar(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity) {
             Position = relativePosition;
             Velocity = velocity;
             AffectedByGravity = affectedByGravity;
             Scale = scale;
             Lifetime = lifetime;
             Color = InitialColor = color;
+            Entity = entity;
         }
 
         public override void AI() {
@@ -32,14 +38,20 @@ namespace CalamityOverhaul.Content.Particles
                 Velocity.Y += 0.25f;
             }
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
-            if (Owner != null && Owner.active) {
-                Position += Owner.CWR().PlayerPositionChange;
+
+            if (Entity != null) {
+                OldEntityPos = EntityPos;
+                EntityPos = Entity.Center;
+                if (OldEntityPos != Vector2.Zero) {
+                    EntityVariation = OldEntityPos.To(EntityPos);
+                    Position += EntityVariation;
+                }
             }
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
             Vector2 scale = new Vector2(0.5f, 1.6f) * Scale;
-            Texture2D texture = DRKLoader.ParticleIDToTexturesDic[Type];
+            Texture2D texture = PRTLoader.ParticleIDToTexturesDic[Type];
 
             spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color, Rotation, texture.Size() * 0.5f, scale, 0, 0f);
             spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color, Rotation, texture.Size() * 0.5f, scale * new Vector2(0.45f, 1f), 0, 0f);

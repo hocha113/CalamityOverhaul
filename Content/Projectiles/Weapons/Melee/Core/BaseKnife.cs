@@ -5,7 +5,6 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 {

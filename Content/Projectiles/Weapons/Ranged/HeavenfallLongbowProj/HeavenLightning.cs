@@ -86,13 +86,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 Color outerSparkColor = chromaColor;
                 float scaleBoost = MathHelper.Clamp(Projectile.ai[1] * 0.005f, 0f, 2f);
                 float outerSparkScale = 1.3f + scaleBoost;
-                DRK_HeavenfallStar spark = new DRK_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
-                DRKLoader.AddParticle(spark);
+                PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
+                PRTLoader.AddParticle(spark);
 
                 Color innerSparkColor = CWRUtils.MultiStepColorLerp(Projectile.ai[1] % 30 / 30f, HeavenfallLongbow.rainbowColors);
                 float innerSparkScale = 0.6f + scaleBoost;
-                DRK_HeavenfallStar spark2 = new DRK_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 7, innerSparkScale, innerSparkColor);
-                DRKLoader.AddParticle(spark2);
+                PRT_HeavenfallStar spark2 = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 7, innerSparkScale, innerSparkColor);
+                PRTLoader.AddParticle(spark2);
             }
 
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;

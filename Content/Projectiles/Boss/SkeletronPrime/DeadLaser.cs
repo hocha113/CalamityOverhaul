@@ -45,18 +45,18 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             Lighting.AddLight(Projectile.Center, Color.Gold.ToVector3());
             if (Main.rand.NextBool(6)) {
-                BaseParticle spark = new DRK_HeavenfallStar(Projectile.Center
+                BaseParticle spark = new PRT_HeavenfallStar(Projectile.Center
                     , Projectile.velocity.RotatedByRandom(0.3f) * 0.7f, false, 16, Main.rand.NextFloat(0.6f, 0.8f), Color.Gold);
-                DRKLoader.AddParticle(spark);
+                PRTLoader.AddParticle(spark);
             }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             target.AddBuff(ModContent.BuffType<EXHellfire>(), 60);
             for (int i = 0; i < 13; i++) {
-                BaseParticle spark = new DRK_HeavenfallStar(Projectile.Center
+                BaseParticle spark = new PRT_HeavenfallStar(Projectile.Center
                     , CWRUtils.randVr(13, 23), false, 26, Main.rand.NextFloat(2.6f, 2.8f), Color.Gold);
-                DRKLoader.AddParticle(spark);
+                PRTLoader.AddParticle(spark);
             }
             Projectile.timeLeft = 30;
             Projectile.netUpdate = true;

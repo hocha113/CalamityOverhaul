@@ -6,7 +6,7 @@ using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class DRK_DWave : BaseParticle
+    internal class PRT_GangarusWave : BaseParticle
     {
         public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
         public override bool UseAdditiveBlend => true;
@@ -18,9 +18,12 @@ namespace CalamityOverhaul.Content.Particles
         private float opacity;
         private Vector2 Squish;
         private Color BaseColor;
+        private Entity Entity;
+        private Vector2 EntityPos;
+        private Vector2 OldEntityPos;
+        private Vector2 EntityVariation;
 
-        public DRK_DWave(Vector2 position, Vector2 velocity, Color color, Vector2 squish
-            , float rotation, float originalScale, float finalScale, int lifeTime) {
+        public PRT_GangarusWave(Vector2 position, Vector2 velocity, Color color, Vector2 squish, float rotation, float originalScale, float finalScale, int lifeTime, Entity entity) {
             Position = position;
             Velocity = velocity;
             BaseColor = color;
@@ -30,6 +33,7 @@ namespace CalamityOverhaul.Content.Particles
             Lifetime = lifeTime;
             Squish = squish;
             Rotation = rotation;
+            Entity = entity;
         }
 
         public override void AI() {
@@ -41,10 +45,22 @@ namespace CalamityOverhaul.Content.Particles
             Color = BaseColor * opacity;
             Lighting.AddLight(Position, Color.R / 255f, Color.G / 255f, Color.B / 255f);
             Velocity *= 0.95f;
+
+            if (Entity != null) {
+                OldEntityPos = EntityPos;
+                EntityPos = Entity.Center;
+                if (OldEntityPos != Vector2.Zero) {
+                    EntityVariation = OldEntityPos.To(EntityPos);
+                    Position += EntityVariation;
+                }
+                //Projectile projectile = ((Projectile)Entity);
+                //if (projectile != null)
+                //    Rotation = projectile.rotation;
+            }
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = DRKLoader.ParticleIDToTexturesDic[Type];
+            Texture2D tex = PRTLoader.ParticleIDToTexturesDic[Type];
             spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * opacity, Rotation, tex.Size() / 2f, Scale * Squish, SpriteEffects.None, 0);
         }
     }

@@ -52,9 +52,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         for (int i = 0; i < 6; i++) {
                             Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(133, 140) * Projectile.scale;
                             Vector2 particleSpeed = pos.To(Projectile.Center).UnitVector() * 17;
-                            BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
+                            BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
                                 , Main.rand.NextFloat(0.3f, 0.5f), Color.Gold, 16, 1, 1.5f, hueShift: 0.0f, _entity: Projectile);
-                            DRKLoader.AddParticle(energyLeak);
+                            PRTLoader.AddParticle(energyLeak);
                         }
                     }
                 }
@@ -64,9 +64,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                             Vector2 randdom = Main.rand.NextVector2Unit();
                             Vector2 pos = Projectile.Center + randdom * Main.rand.Next(3, 14) * Projectile.scale;
                             Vector2 particleSpeed = randdom * 19;
-                            BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
+                            BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
                                 , Main.rand.NextFloat(0.1f, 0.6f), Color.DarkGoldenrod, Main.rand.Next(16, 18), 1, 1.5f, hueShift: 0.0f);
-                            DRKLoader.AddParticle(energyLeak);
+                            PRTLoader.AddParticle(energyLeak);
                         }
                     }
                 }
@@ -112,9 +112,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 for (int i = 0; i < 156; i++) {
                     Vector2 pos = Projectile.Center;
                     Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.Next(13, 34);
-                    BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
+                    BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
                         , Main.rand.NextFloat(0.5f, 1.3f), Color.Gold, 30, 1, 1.5f, hueShift: 0.0f);
-                    DRKLoader.AddParticle(energyLeak);
+                    PRTLoader.AddParticle(energyLeak);
                 }
             }
             if (Projectile.IsOwnedByLocalPlayer() && Projectile.scale > 1.6f) {

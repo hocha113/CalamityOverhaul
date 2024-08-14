@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class IcePlasmaGas : BaseParticle
+    internal class PRT_IcePlasmaGas : BaseParticle
     {
         public override bool SetLifetime => true;
         public override int FrameVariants => 7;
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Particles
         private bool Glowing;
         private float sengsValue;
 
-        public IcePlasmaGas(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, bool required = false) {
+        public PRT_IcePlasmaGas(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, bool required = false) {
             Position = position;
             Velocity = velocity;
             Color = color;
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D texture = DRKLoader.ParticleIDToTexturesDic[Type];
+            Texture2D texture = PRTLoader.ParticleIDToTexturesDic[Type];
             Vector2 origin = texture.Size() * 0.5f;
             Vector2 drawPosition = Position - Main.screenPosition;
             float opacity = 0.9f;

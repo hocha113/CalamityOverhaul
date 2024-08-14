@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content
                     particle.Color = Color.White;
                     particle.Scale = size;
                     particle.ai[0] = ai0;
-                    DRKLoader.AddParticle(particle);
+                    PRTLoader.AddParticle(particle);
                 }
             }
         }

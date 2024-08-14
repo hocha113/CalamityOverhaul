@@ -36,9 +36,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                     spanPos.X += Main.rand.Next(-260, 260);
                     spanPos.Y += Main.rand.Next(60, 100);
                     Vector2 vr = new Vector2(0, -Main.rand.Next(3, 19));
-                    BaseParticle pulse3 = new DRK_DWave(spanPos, vr, Color.BlueViolet
+                    BaseParticle pulse3 = new PRT_DWave(spanPos, vr, Color.BlueViolet
                     , new Vector2(0.7f, 1.3f) * 0.8f, vr.ToRotation(), 0.18f, 0.32f, 60);
-                    DRKLoader.AddParticle(pulse3);
+                    PRTLoader.AddParticle(pulse3);
                 }
             }
         }
@@ -56,9 +56,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 proj.scale += Main.rand.NextFloat(-0.2f, 0.2f);
                 proj.velocity *= Main.rand.NextFloat(1, 1.13f);
 
-                BaseParticle pulse3 = new DRK_DWave(GunShootPos, ShootVelocity * (0.3f + i * 0.1f), Color.BlueViolet
+                BaseParticle pulse3 = new PRT_DWave(GunShootPos, ShootVelocity * (0.3f + i * 0.1f), Color.BlueViolet
                 , new Vector2(0.7f, 1.3f) * 0.8f, ShootVelocity.ToRotation(), 0.18f, 0.22f + i * 0.05f, 40);
-                DRKLoader.AddParticle(pulse3);
+                PRTLoader.AddParticle(pulse3);
             }
         }
     }

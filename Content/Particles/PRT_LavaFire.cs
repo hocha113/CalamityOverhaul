@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class DRK_LavaFire : BaseParticle
+    internal class PRT_LavaFire : BaseParticle
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle3";
         public override bool SetLifetime => true;
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex1 = DRKLoader.ParticleIDToTexturesDic[Type];
+            Texture2D tex1 = PRTLoader.ParticleIDToTexturesDic[Type];
             Texture2D tex2 = ModContent.Request<Texture2D>(CWRConstant.Masking + "StarTexture").Value;
             Texture2D tex3 = ModContent.Request<Texture2D>(CWRConstant.Masking + "SoftGlow").Value;
 

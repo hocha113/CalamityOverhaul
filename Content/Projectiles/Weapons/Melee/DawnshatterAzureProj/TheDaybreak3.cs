@@ -22,12 +22,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             Projectile.Explode(1220, Supernova.ExplosionSound with { Pitch = 0.8f });
             Vector2 vr = origPos.To(Projectile.Center).UnitVector();
             for (int i = 0; i < 3; i++) {
-                BaseParticle particle = new DRK_Light(Projectile.Center, vr * (13 * (i + 1)), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 22, 0.2f);
-                DRKLoader.AddParticle(particle);
-                BaseParticle particle2 = new DRK_Smoke(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), CWRUtils.randVr(3, 16)
+                BaseParticle particle = new PRT_Light(Projectile.Center, vr * (13 * (i + 1)), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 22, 0.2f);
+                PRTLoader.AddParticle(particle);
+                BaseParticle particle2 = new PRT_Smoke(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), CWRUtils.randVr(3, 16)
                     , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.DarkRed)
                     , 13, Main.rand.NextFloat(0.2f, 1.1f), 0.5f, 0.1f);
-                DRKLoader.AddParticle(particle2);
+                PRTLoader.AddParticle(particle2);
             }
         }
     }

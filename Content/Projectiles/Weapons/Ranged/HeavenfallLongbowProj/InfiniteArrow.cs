@@ -54,13 +54,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 Color outerSparkColor = chromaColor;
                 float scaleBoost = MathHelper.Clamp(Projectile.ai[1] * 0.005f, 0f, 2f);
                 float outerSparkScale = 3.2f + scaleBoost;
-                DRK_HeavenfallStar spark = new DRK_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
-                DRKLoader.AddParticle(spark);
+                PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
+                PRTLoader.AddParticle(spark);
 
                 Color innerSparkColor = CWRUtils.MultiStepColorLerp(Projectile.ai[1] % 30 / 30f, HeavenfallLongbow.rainbowColors);
                 float innerSparkScale = 0.6f + scaleBoost;
-                DRK_HeavenfallStar spark2 = new DRK_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 7, innerSparkScale, innerSparkColor);
-                DRKLoader.AddParticle(spark2);
+                PRT_HeavenfallStar spark2 = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 7, innerSparkScale, innerSparkColor);
+                PRTLoader.AddParticle(spark2);
 
                 //生成彩色的星光粒子
                 if (Main.rand.NextBool(2))
@@ -111,9 +111,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 for (int i = 0; i < 16; i++) {
                     Vector2 particleSpeed = Projectile.velocity * Main.rand.NextFloat(0.5f, 0.7f);
                     Vector2 pos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
-                    BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
+                    BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
                         , Main.rand.NextFloat(0.3f, 0.7f), CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 30, 1, 1.5f, hueShift: 0.0f);
-                    DRKLoader.AddParticle(energyLeak);
+                    PRTLoader.AddParticle(energyLeak);
                 }
 
                 for (int i = 0; i < 6; i++)

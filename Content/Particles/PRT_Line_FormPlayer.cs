@@ -5,17 +5,16 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class DRK_Spark2 : BaseParticle
+    internal class PRT_Line_FormPlayer : BaseParticle
     {
         public Color InitialColor;
         public bool AffectedByGravity;
+        public Player Owner;
         public override bool SetLifetime => true;
         public override bool UseCustomDraw => true;
-        public override bool UseAdditiveBlend => false;
-        public Entity entity;
-        public override string Texture => "CalamityMod/Projectiles/StarProj";
-
-        public DRK_Spark2(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
+        public override bool UseAdditiveBlend => true;
+        public override string Texture => "CalamityMod/Particles/DrainLineBloom";
+        public PRT_Line_FormPlayer(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
             Position = relativePosition;
             Velocity = velocity;
             AffectedByGravity = affectedByGravity;
@@ -33,16 +32,14 @@ namespace CalamityOverhaul.Content.Particles
                 Velocity.Y += 0.25f;
             }
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
-            if (entity != null) {
-                if (entity.active) {
-                    Position += entity.velocity;
-                }
+            if (Owner != null && Owner.active) {
+                Position += Owner.CWR().PlayerPositionChange;
             }
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
             Vector2 scale = new Vector2(0.5f, 1.6f) * Scale;
-            Texture2D texture = DRKLoader.ParticleIDToTexturesDic[Type];
+            Texture2D texture = PRTLoader.ParticleIDToTexturesDic[Type];
 
             spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color, Rotation, texture.Size() * 0.5f, scale, 0, 0f);
             spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color, Rotation, texture.Size() * 0.5f, scale * new Vector2(0.45f, 1f), 0, 0f);

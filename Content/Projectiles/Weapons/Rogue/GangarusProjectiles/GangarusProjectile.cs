@@ -39,14 +39,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
             if (Projectile.timeLeft % 10 == 0) {
-                BaseParticle pulse = new DRK_DWave(Projectile.Center - Projectile.velocity * 0.52f, Projectile.velocity / 1.5f, Color.Red, new Vector2(1f, 2f) * 0.8f, Projectile.velocity.ToRotation(), 0.82f, 0.32f, 60);
-                DRKLoader.AddParticle(pulse);
-                BaseParticle pulse2 = new DRK_DWave(Projectile.Center - Projectile.velocity * 0.40f, Projectile.velocity / 1.5f * 0.9f, Color.Gold, new Vector2(0.8f, 1.5f) * 0.8f, Projectile.velocity.ToRotation(), 0.58f, 0.28f, 50);
-                DRKLoader.AddParticle(pulse2);
-                BaseParticle pulse3 = new DRK_DWave(Projectile.Center - Projectile.velocity * 0.35f, Projectile.velocity / 1.5f * 0.8f, Color.DarkRed, new Vector2(0.7f, 1.3f) * 0.8f, Projectile.velocity.ToRotation(), 0.58f, 0.22f, 40);
-                DRKLoader.AddParticle(pulse3);
-                DRK_HeavenfallStar spark = new DRK_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 27, 3, Color.Gold);
-                DRKLoader.AddParticle(spark);
+                BaseParticle pulse = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.52f, Projectile.velocity / 1.5f, Color.Red, new Vector2(1f, 2f) * 0.8f, Projectile.velocity.ToRotation(), 0.82f, 0.32f, 60);
+                PRTLoader.AddParticle(pulse);
+                BaseParticle pulse2 = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.40f, Projectile.velocity / 1.5f * 0.9f, Color.Gold, new Vector2(0.8f, 1.5f) * 0.8f, Projectile.velocity.ToRotation(), 0.58f, 0.28f, 50);
+                PRTLoader.AddParticle(pulse2);
+                BaseParticle pulse3 = new PRT_DWave(Projectile.Center - Projectile.velocity * 0.35f, Projectile.velocity / 1.5f * 0.8f, Color.DarkRed, new Vector2(0.7f, 1.3f) * 0.8f, Projectile.velocity.ToRotation(), 0.58f, 0.22f, 40);
+                PRTLoader.AddParticle(pulse3);
+                PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 27, 3, Color.Gold);
+                PRTLoader.AddParticle(spark);
             }
         }
 
@@ -62,10 +62,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                                 float slp = j / 16f;
                                 float slp2 = 16f / j;
                                 Vector2 spanPos = Projectile.Center + rot.ToRotationVector2() * 64 * j;
-                                BaseParticle pulse = new DRK_DWave(spanPos - vr * 0.52f, vr / 1.5f, Color.Red, new Vector2(1f, 2f), vr.ToRotation(), 0.82f * slp, 0.32f * slp2, 60);
-                                DRKLoader.AddParticle(pulse);
-                                BaseParticle pulse2 = new DRK_DWave(spanPos - vr * 0.40f, vr / 1.5f * 0.9f, Color.Gold, new Vector2(0.8f, 1.5f), vr.ToRotation(), 0.58f * slp, 0.28f * slp2, 50);
-                                DRKLoader.AddParticle(pulse2);
+                                BaseParticle pulse = new PRT_DWave(spanPos - vr * 0.52f, vr / 1.5f, Color.Red, new Vector2(1f, 2f), vr.ToRotation(), 0.82f * slp, 0.32f * slp2, 60);
+                                PRTLoader.AddParticle(pulse);
+                                BaseParticle pulse2 = new PRT_DWave(spanPos - vr * 0.40f, vr / 1.5f * 0.9f, Color.Gold, new Vector2(0.8f, 1.5f), vr.ToRotation(), 0.58f * slp, 0.28f * slp2, 50);
+                                PRTLoader.AddParticle(pulse2);
                             }
                             SoundEngine.PlaySound(DevourerofGodsHead.DeathExplosionSound, Projectile.Center);
                             SoundEngine.PlaySound(Gangarus.BelCanto, Projectile.Center);
@@ -86,30 +86,30 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                             for (int j = 0; j < 134; j++) {
                                 Vector2 pos = Projectile.Center + new Vector2(Main.rand.Next(-spanPrestMaxWid, spanPrestMaxWid), Main.rand.Next(-spanPrestMaxWid, spanPrestMaxWid));
                                 Vector2 particleSpeed = pos.To(Projectile.Center + vr * 130).UnitVector() * Main.rand.NextFloat(11.3f, 54f);
-                                BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
+                                BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
                                     , Main.rand.NextFloat(0.3f, 2.5f), Main.rand.NextBool(2) ? Color.Red : Color.DarkRed, 60, 1, 1.5f, hueShift: 0.0f);
-                                DRKLoader.AddParticle(energyLeak);
+                                PRTLoader.AddParticle(energyLeak);
                             }
                         }
                         for (int j = 0; j < 64; j++) {
                             Vector2 pos = Projectile.Center;
                             Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.NextFloat(5.3f, 24f);
-                            BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
+                            BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
                                 , Main.rand.NextFloat(0.3f, 2.5f), Main.rand.NextBool(2) ? Color.Red : Color.Gold, 90, 1, 1.5f, hueShift: 0.0f);
-                            DRKLoader.AddParticle(energyLeak);
+                            PRTLoader.AddParticle(energyLeak);
                         }
                         for (int i = 0; i < 136; i++) {
                             Color outerSparkColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Gold);
                             Vector2 vector = Main.rand.NextVector2Unit() * Main.rand.Next(77);
                             float scaleBoost = MathHelper.Clamp(Main.rand.NextFloat(), 0f, 2f);
                             float outerSparkScale = 3.2f + scaleBoost;
-                            DRK_HeavenfallStar spark = new DRK_HeavenfallStar(Projectile.Center, vector, false, 27, outerSparkScale, outerSparkColor);
-                            DRKLoader.AddParticle(spark);
+                            PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, vector, false, 27, outerSparkScale, outerSparkColor);
+                            PRTLoader.AddParticle(spark);
 
                             Color innerSparkColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Goldenrod, Color.Red);
                             float innerSparkScale = 0.6f + scaleBoost;
-                            DRK_HeavenfallStar spark2 = new DRK_HeavenfallStar(Projectile.Center, vector, false, 37, innerSparkScale, innerSparkColor);
-                            DRKLoader.AddParticle(spark2);
+                            PRT_HeavenfallStar spark2 = new PRT_HeavenfallStar(Projectile.Center, vector, false, 37, innerSparkScale, innerSparkColor);
+                            PRTLoader.AddParticle(spark2);
                         }
                         SoundEngine.PlaySound(DevourerofGodsHead.DeathExplosionSound, Projectile.Center);
                         SpanPrmst = false;

@@ -37,9 +37,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
                     return;
                 }
             }
-            BaseParticle spark = new DRK_HeavenfallStar(Projectile.Center
+            BaseParticle spark = new PRT_HeavenfallStar(Projectile.Center
                         , Projectile.velocity, false, 10, Main.rand.NextFloat(1.2f, 2.3f), Color.BlueViolet);
-            DRKLoader.AddParticle(spark);
+            PRTLoader.AddParticle(spark);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.immune[Projectile.owner] = 0;

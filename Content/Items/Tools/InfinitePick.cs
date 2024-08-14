@@ -100,8 +100,8 @@ namespace CalamityOverhaul.Content.Items.Tools
                 SoundEngine.PlaySound(new SoundStyle(CWRConstant.Sound + "Pedestruct"), Main.MouseWorld);
                 if (!IsPick) {
                     for (int i = 0; i < 188; i++) {
-                        DRK_HeavenfallStar spark = new DRK_HeavenfallStar(Main.MouseWorld + CWRUtils.randVr(213), new Vector2(0, 3), false, 13, 1, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
-                        DRKLoader.AddParticle(spark);
+                        PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Main.MouseWorld + CWRUtils.randVr(213), new Vector2(0, 3), false, 13, 1, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
+                        PRTLoader.AddParticle(spark);
                     }
                     int maxX = 500;
                     int maxY = 500;

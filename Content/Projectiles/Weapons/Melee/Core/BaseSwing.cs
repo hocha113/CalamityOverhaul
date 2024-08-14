@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         private int dirs;
         private float oldRot;
         private float _meleeSize = 0;
+        private bool isInitialize;
         protected Vector2 vector;
         protected Vector2 startVector;
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
@@ -34,20 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 对应的武器近战缩放
         /// </summary>
-        public float MeleeSize {
-            get {
-                if (_meleeSize == 0) {
-                    _meleeSize = 1f;
-                    if (Item.type != ItemID.None) {
-                        _meleeSize = Owner.GetAdjustedItemScale(Item);
-                    }
-                }
-                if (!AffectedMeleeSize) {
-                    _meleeSize = 1f;
-                }
-                return _meleeSize * OtherMeleeSize;
-            }
-        }
+        public float MeleeSize => AffectedMeleeSize ? (_meleeSize * OtherMeleeSize) : 1f;
         /// <summary>
         /// 近战缩放对应的渐进中间值
         /// </summary>
@@ -353,7 +341,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 norlToTarget *= 1;
             }
 
-            int pysCount = DRKLoader.GetParticlesCount(DRKLoader.GetParticleType(typeof(DRK_Spark)));
+            int pysCount = PRTLoader.GetParticlesCount(PRTLoader.GetParticleType(typeof(PRT_Spark)));
             if (pysCount > 120) {
                 sparkCount = 10;
             }
@@ -495,8 +483,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <returns></returns>
         public sealed override bool PreUpdate() {
             canShoot = Time == (int)(maxSwingTime * shootSengs);
-            if (Time == 0) {
+            if (!isInitialize) {
+                _meleeSize = 1f;
+                if (Item.type != ItemID.None) {
+                    _meleeSize = Owner.GetAdjustedItemScale(Item);
+                }
                 Initialize();
+                isInitialize = true;
             }
             if (PreInOwnerUpdate()) {
                 InOwner();

@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos2, Vector2.Zero
                 , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1);
                 for (int i = 0; i < lengs2 / 12; i++) {
-                    DRK_LavaFire lavaFire = new DRK_LavaFire {
+                    PRT_LavaFire lavaFire = new PRT_LavaFire {
                         Velocity = toMouse2.UnitVector() * 2,
                         Position = Projectile.Center + unitToM2 * (1 + i) * 12,
                         Scale = Main.rand.NextFloat(1.8f, 3.2f),
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     lavaFire.ai[1] = 0;
                     lavaFire.minLifeTime = 22;
                     lavaFire.maxLifeTime = 30;
-                    DRKLoader.AddParticle(lavaFire);
+                    PRTLoader.AddParticle(lavaFire);
                 }
                 return;
             }
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos, Vector2.Zero
                 , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage / 6, Projectile.knockBack, Owner.whoAmI);
             for (int i = 0; i < lengs / 12; i++) {
-                DRK_LavaFire lavaFire = new DRK_LavaFire {
+                PRT_LavaFire lavaFire = new PRT_LavaFire {
                     Velocity = ToMouse.UnitVector() * 2,
                     Position = Owner.GetPlayerStabilityCenter() + unitToM * (1 + i) * 12,
                     Scale = Main.rand.NextFloat(0.8f, 1.2f),
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 lavaFire.ai[1] = 0;
                 lavaFire.minLifeTime = 22;
                 lavaFire.maxLifeTime = 30;
-                DRKLoader.AddParticle(lavaFire);
+                PRTLoader.AddParticle(lavaFire);
             }
         }
 
@@ -122,10 +122,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     sparkColor2 = Main.rand.NextBool(3) ? Color.Gold : Color.Goldenrod;
                 }
 
-                DRK_Spark spark = new DRK_Spark(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f
+                PRT_Spark spark = new PRT_Spark(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f
                         , target.height * 0.5f) + (Projectile.velocity * 1.2f), sparkVelocity2 * 1f
                         , false, (int)(sparkLifetime2 * 1.2f), sparkScale2 * 1.4f, sparkColor2);
-                DRKLoader.AddParticle(spark);
+                PRTLoader.AddParticle(spark);
             }
 
             if (Projectile.IsOwnedByLocalPlayer() && Projectile.numHits == 0 && Projectile.ai[0] == 0) {
@@ -140,9 +140,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 for (int j = 0; j < 3; j++) {
                     Vector2 pos = Owner.Center + Main.rand.NextVector2Unit() * Main.rand.Next(342, 468);
                     Vector2 particleSpeed = pos.To(Owner.Center).UnitVector() * 7;
-                    BaseParticle energyLeak = new DRK_HolyColliderLight(pos, particleSpeed
+                    BaseParticle energyLeak = new PRT_HolyColliderLight(pos, particleSpeed
                         , Main.rand.NextFloat(0.5f, 0.7f), Color.Gold, 90, 1, 1.5f, hueShift: 0.0f);
-                    DRKLoader.AddParticle(energyLeak);
+                    PRTLoader.AddParticle(energyLeak);
                 }
             }
         }

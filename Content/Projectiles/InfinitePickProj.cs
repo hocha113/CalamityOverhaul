@@ -36,8 +36,8 @@ namespace CalamityOverhaul.Content.Projectiles
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3() * (Projectile.ai[0] == 1 ? 1.2f : 10));
             if (Projectile.ai[0] == 1 && !CWRUtils.isServer) {
                 for (int i = 0; i < 8; i++) {
-                    DRK_HeavenfallStar spark = new DRK_HeavenfallStar(Projectile.Center + CWRUtils.randVr(13), Projectile.velocity, false, 13, 1, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
-                    DRKLoader.AddParticle(spark);
+                    PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center + CWRUtils.randVr(13), Projectile.velocity, false, 13, 1, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
+                    PRTLoader.AddParticle(spark);
                 }
                 Player own = Main.player[Projectile.owner];
                 for (int x = 0; x < Projectile.width; x++) {
@@ -87,13 +87,13 @@ namespace CalamityOverhaul.Content.Projectiles
 
                 float scaleBoost = MathHelper.Clamp(Projectile.ai[1] * 0.005f, 0f, 2f);
                 float outerSparkScale = 3.2f + scaleBoost;
-                DRK_HeavenfallStar spark = new DRK_HeavenfallStar(Projectile.Center, vector, false, 7, outerSparkScale, outerSparkColor);
-                DRKLoader.AddParticle(spark);
+                PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, vector, false, 7, outerSparkScale, outerSparkColor);
+                PRTLoader.AddParticle(spark);
 
                 Color innerSparkColor = CWRUtils.MultiStepColorLerp(Projectile.ai[1] % 30 / 30f, HeavenfallLongbow.rainbowColors);
                 float innerSparkScale = 0.6f + scaleBoost;
-                DRK_HeavenfallStar spark2 = new DRK_HeavenfallStar(Projectile.Center, vector, false, 7, innerSparkScale, innerSparkColor);
-                DRKLoader.AddParticle(spark2);
+                PRT_HeavenfallStar spark2 = new PRT_HeavenfallStar(Projectile.Center, vector, false, 7, innerSparkScale, innerSparkColor);
+                PRTLoader.AddParticle(spark2);
             }
         }
 

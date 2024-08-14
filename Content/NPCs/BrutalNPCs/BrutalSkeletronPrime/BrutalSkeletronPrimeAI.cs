@@ -287,8 +287,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 float rot1 = MathHelper.PiOver2 * i;
                 Vector2 vr = rot1.ToRotationVector2();
                 for (int j = 0; j < modes; j++) {
-                    BaseParticle spark = new DRK_HeavenfallStar(pos, vr * (0.1f + j * 0.34f), false, 13, Main.rand.NextFloat(1.2f, 1.3f), Color.Red);
-                    DRKLoader.AddParticle(spark);
+                    BaseParticle spark = new PRT_HeavenfallStar(pos, vr * (0.1f + j * 0.34f), false, 13, Main.rand.NextFloat(1.2f, 1.3f), Color.Red);
+                    PRTLoader.AddParticle(spark);
                 }
             }
         }
@@ -317,7 +317,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             for (int i = 0; i < npc.buffImmune.Length; i++) {
                 npc.buffImmune[i] = true;
             }
-        }//这个教训告诉我们，ai的使用最好去用上数组，而不是一个一个枚举值，不然集中管理时会较为麻烦
+        }
 
         public override bool AI() {
             SmokeDrawer.ParticleSpawnRate = 99999;
@@ -414,8 +414,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         internal static void SpawnHouengEffect(NPC npc) {
             for (int i = 0; i < 333; i++) {
-                DRK_Light particle = new DRK_Light(npc.Center + CWRUtils.randVr(0, npc.width), new Vector2(0, -5), 3.2f, Color.Red, 122);
-                DRKLoader.AddParticle(particle);
+                PRT_Light particle = new PRT_Light(npc.Center + CWRUtils.randVr(0, npc.width), new Vector2(0, -5), 3.2f, Color.Red, 122);
+                PRTLoader.AddParticle(particle);
             }
         }
 
@@ -493,7 +493,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private void ProtogenesisAI() {
             if (npc.ai[1] == 0f) {
                 npc.damage = 0;
-
                 npc.ai[2] += 1f;
                 float aiThreshold = Main.masterMode ? 300f : 600f;
                 if (npc.ai[2] >= aiThreshold) {
@@ -501,8 +500,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.ai[1] = 1f;
                     calamityNPC.newAI[0]++;
                     if (!CWRUtils.isClient && calamityNPC.newAI[0] >= 2) {
+                        int damage = SetMultiplier(npc.GetProjectileDamage(ModContent.ProjectileType<SetPosingStarm>()));
                         Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
-                            , ModContent.ProjectileType<SetPosingStarm>(), npc.damage, 2, -1, 0, npc.whoAmI);
+                            , ModContent.ProjectileType<SetPosingStarm>(), damage, 2, -1, 0, npc.whoAmI);
                         calamityNPC.newAI[0] = 0;
                         ai11++;
                         SendExtraAI(npc);

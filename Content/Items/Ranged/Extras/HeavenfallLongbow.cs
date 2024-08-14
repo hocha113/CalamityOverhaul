@@ -166,9 +166,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                     Vector2 pos = player.Center + (lemniscateOffset * outwardMultiplier);
                     Vector2 particleSpeed = Vector2.Zero;
                     Color color = CWRUtils.MultiStepColorLerp(j / 500f, rainbowColors);
-                    BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
+                    BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
                         , 1.5f, color, 120, 1, 1.5f, hueShift: 0.0f, _entity: player, _followingRateRatio: 1);
-                    DRKLoader.AddParticle(energyLeak);
+                    PRTLoader.AddParticle(energyLeak);
                 }
 
                 if (player.ownedProjectileCounts[ModContent.ProjectileType<InfiniteRune>()] == 0) {

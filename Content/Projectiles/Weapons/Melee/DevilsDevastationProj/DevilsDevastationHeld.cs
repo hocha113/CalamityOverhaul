@@ -131,10 +131,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                     sparkColor2 = Main.rand.NextBool(3) ? Color.Gold : Color.Goldenrod;
                 }
 
-                DRK_Spark spark = new DRK_Spark(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f
+                PRT_Spark spark = new PRT_Spark(target.Center + Main.rand.NextVector2Circular(target.width * 0.5f
                         , target.height * 0.5f) + Projectile.velocity * 1.2f, sparkVelocity2 * 1f
                         , false, (int)(sparkLifetime2 * 1.2f), sparkScale2 * 1.4f, sparkColor2);
-                DRKLoader.AddParticle(spark);
+                PRTLoader.AddParticle(spark);
             }
         }
 

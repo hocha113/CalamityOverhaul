@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles
             if (Text.Length > 0) {
                 for (int i = 0; i < 33; i++) {
                     float slp = Main.rand.NextFloat(0.5f, 1.2f);
-                    DRKLoader.AddParticle(new StarPulseRing(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(13, 330)
+                    PRTLoader.AddParticle(new PRT_StarPulseRing(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(13, 330)
                         , Vector2.Zero, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 0.05f * slp, 0.8f * slp, 8));
                 }
                 List<int> rands = CWRUtils.GenerateUniqueNumbers(16, 0, Text.Length - 1);

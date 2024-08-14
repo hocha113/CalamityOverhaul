@@ -129,8 +129,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             for (int i = 0; i < 4; i++) {
                 Vector2 vr = (MathHelper.TwoPi / 4 * i + Projectile.rotation + MathHelper.PiOver4).ToRotationVector2();
                 for (int j = 0; j < 13; j++) {
-                    BaseParticle spark = new DRK_Spark(Projectile.Center, vr * (1 + i), false, 32, 3, Color.Purple);
-                    DRKLoader.AddParticle(spark);
+                    BaseParticle spark = new PRT_Spark(Projectile.Center, vr * (1 + i), false, 32, 3, Color.Purple);
+                    PRTLoader.AddParticle(spark);
                 }
             }
         }

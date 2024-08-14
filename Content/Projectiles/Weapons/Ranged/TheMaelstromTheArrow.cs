@@ -31,8 +31,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             float sparkScale = Main.rand.NextFloat(1f, 1.3f);
             Color sparkColor = Color.Lerp(Color.Cyan, Color.AliceBlue, Main.rand.NextFloat(0.35f));
             Vector2 sparkVelocity = Projectile.velocity;
-            BaseParticle spark = new DRK_Spark(Projectile.Center, sparkVelocity, false, sparkLifetime, sparkScale, sparkColor);
-            DRKLoader.AddParticle(spark);
+            BaseParticle spark = new PRT_Spark(Projectile.Center, sparkVelocity, false, sparkLifetime, sparkScale, sparkColor);
+            PRTLoader.AddParticle(spark);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

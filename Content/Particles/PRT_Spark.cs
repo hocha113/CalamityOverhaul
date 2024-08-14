@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class DRK_Spark : BaseParticle
+    internal class PRT_Spark : BaseParticle
     {
         public Color InitialColor;
         public bool AffectedByGravity;
@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Particles
 
         public override string Texture => "CalamityMod/Projectiles/StarProj";
 
-        public DRK_Spark(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity = null) {
+        public PRT_Spark(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity = null) {
             Position = relativePosition;
             Velocity = velocity;
             AffectedByGravity = affectedByGravity;
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Particles
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
             Vector2 scale = new Vector2(0.5f, 1.6f) * Scale;
-            Texture2D texture = DRKLoader.ParticleIDToTexturesDic[Type];
+            Texture2D texture = PRTLoader.ParticleIDToTexturesDic[Type];
 
             spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color, Rotation, texture.Size() * 0.5f, scale, 0, 0f);
             spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color, Rotation, texture.Size() * 0.5f, scale * new Vector2(0.45f, 1f), 0, 0f);

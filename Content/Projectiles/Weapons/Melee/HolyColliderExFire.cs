@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
 
                 for (int i = 0; i < 80; i++) {
-                    DRK_LavaFire lavaFire = new DRK_LavaFire {
+                    PRT_LavaFire lavaFire = new PRT_LavaFire {
                         Velocity = CWRUtils.randVr(1, 9),
                         Position = spanPos,
 
@@ -63,10 +63,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         Color = Color.White
                     };
                     lavaFire.ai[1] = 2;
-                    DRKLoader.AddParticle(lavaFire);
+                    PRTLoader.AddParticle(lavaFire);
                 }
                 for (int i = 0; i < 20; i++) {
-                    DRK_LavaFire lavaFire = new DRK_LavaFire {
+                    PRT_LavaFire lavaFire = new PRT_LavaFire {
                         Velocity = CWRUtils.randVr(3, 6),
                         Position = spanPos,
                         Scale = Main.rand.NextFloat(0.8f, 1.2f),
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     lavaFire.ai[1] = 0;
                     lavaFire.minLifeTime = 60;
                     lavaFire.maxLifeTime = 90;
-                    DRKLoader.AddParticle(lavaFire);
+                    PRTLoader.AddParticle(lavaFire);
                 }
                 return;
             }
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Main.dust[dust].noGravity = true;
             }
             for (int i = 0; i < 80; i++) {
-                DRK_LavaFire lavaFire = new DRK_LavaFire {
+                PRT_LavaFire lavaFire = new PRT_LavaFire {
                     Velocity = CWRUtils.randVr(1, 4),
                     Position = spanPos,
 
@@ -96,10 +96,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     Color = Color.White
                 };
                 lavaFire.ai[1] = 2;
-                DRKLoader.AddParticle(lavaFire);
+                PRTLoader.AddParticle(lavaFire);
             }
             for (int i = 0; i < 20; i++) {
-                DRK_LavaFire lavaFire = new DRK_LavaFire {
+                PRT_LavaFire lavaFire = new PRT_LavaFire {
                     Velocity = CWRUtils.randVr(3, 4),
                     Position = spanPos,
                     Scale = Main.rand.NextFloat(0.8f, 1.2f),
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 lavaFire.ai[1] = 0;
                 lavaFire.minLifeTime = 30;
                 lavaFire.maxLifeTime = 60;
-                DRKLoader.AddParticle(lavaFire);
+                PRTLoader.AddParticle(lavaFire);
             }
         }
 
@@ -127,9 +127,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         for (int i = 0; i < 156; i++) {
                             Vector2 pos = Projectile.Center;
                             Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.Next(13, 34);
-                            BaseParticle energyLeak = new DRK_Light(pos, particleSpeed
+                            BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
                                 , Main.rand.NextFloat(0.5f, 1.3f), Color.DarkRed, 30, 1, 1.5f, hueShift: 0.0f);
-                            DRKLoader.AddParticle(energyLeak);
+                            PRTLoader.AddParticle(energyLeak);
                         }
                     }
                 }
