@@ -463,7 +463,6 @@ namespace CalamityOverhaul.Content
 
         public int Mura_Level() {
             int level = 0;
-
             if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
                 return 12;
             }

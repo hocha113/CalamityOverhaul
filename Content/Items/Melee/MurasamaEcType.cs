@@ -88,21 +88,21 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// 每个时期阶段对应的升龙冷却的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnRDCD"/>
         /// </summary>
         private static Dictionary<int, int> RDCDDictionary => new Dictionary<int, int>(){
-            {0, 215 },
-            {1, 195 },
-            {2, 180 },
-            {3, 175 },
-            {4, 160 },
-            {5, 150 },
-            {6, 140 },
-            {7, 130 },
-            {8, 120 },
-            {9, 110 },
-            {10, 100 },
-            {11, 90 },
-            {12, 80 },
-            {13, 70 },
-            {14, 60 }
+            {0, 315 },
+            {1, 285 },
+            {2, 260 },
+            {3, 240 },
+            {4, 220 },
+            {5, 200 },
+            {6, 180 },
+            {7, 165 },
+            {8, 155 },
+            {9, 150 },
+            {10, 140 },
+            {11, 125 },
+            {12, 115 },
+            {13, 100 },
+            {14, 90 }
         };
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
         /// <summary>
@@ -201,6 +201,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ModContent.RarityType<Violet>();
             Item.CWR().isHeldItem = true;
             Item.CWR().heldProjType = heldProjType;
+            Item.CWR().GetAllowPrefix = true;
+            Item.CWR().GetMeleePrefix = true;
         }
 
         public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {

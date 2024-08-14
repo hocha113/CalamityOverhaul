@@ -124,10 +124,10 @@ namespace CalamityOverhaul.Content.NPCs.Core
             int type = npc.type;
             bool reset = npc.CWR().NPCOverride.AI();
             npc.CWR().NPCOverride.OtherNetWorkSendHander();
+            npc.type = type;
             if (!reset) {
                 return;
             }
-            npc.type = type;
             orig.Invoke(npc);
         }
 

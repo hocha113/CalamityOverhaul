@@ -2,13 +2,16 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json.Linq;
 using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
@@ -338,11 +341,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     barBG = MuraBarFull.Value;
                     Main.spriteBatch.Draw(barBG, drawPos + new Vector2(0, 2) * scale, CWRUtils.GetRec(barBG, uiFrame, 7), color, 0f, CWRUtils.GetOrig(barBG, 7), scale, 0, 0f);
                 }
+
+                //Vector2 size = MuraBarBottom.Value.Size();
+                //Vector2 uiPos = drawPos - size / 2;
+                //Rectangle mouseTarget = new Rectangle(Main.mouseX, Main.mouseY, 1, 1);
+                //Rectangle uiRec = new Rectangle((int)uiPos.X, (int)uiPos.Y, barBG.Width, barBG.Height);
+
+                //if (uiRec.Contains(mouseTarget)) {
+                //    Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, $"{risingDragon} / {MurasamaEcType.GetOnRDCD}"
+                //    , drawPos.X - size.X / 2, drawPos.Y - 40, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
+                //}
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (!CWRServerConfig.Instance.WeaponHandheldDisplay && !(Owner.PressKey() || Owner.PressKey(false))) {
+            if (!CWRServerConfig.Instance.WeaponHandheldDisplay && !(DownLeft || DownRight)) {
                 return false;
             }
             Texture2D value = CWRUtils.GetT2DValue(Texture + (Projectile.hide ? "" : "2"));

@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Dusts;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.Crabulon;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.ProfanedGuardians;
@@ -46,11 +47,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override void PostAI() => CWRUtils.ClockFrame(ref Projectile.frame, 3, 6);
 
         public override void AI() {
+            if (Projectile.ai[0] == 0) {
+                Projectile.scale = 0.5f + level * 0.0f;
+                Projectile.scale *= MurasamaRSlash.GetMuraSizeInMeleeSengs(Owner);
+            }
             Lighting.AddLight(Projectile.Center, Color.IndianRed.ToVector3() * 2.2f);
             Projectile.scale += (0.05f + level * 0.005f);
             Projectile.position += Owner.velocity;
             Projectile.rotation = Projectile.velocity.ToRotation();
             Owner.direction = Math.Sign(Owner.Center.To(Projectile.Center).X);
+            Projectile.ai[0]++;
         }
 
         private void strikeToFly(NPC npc) {

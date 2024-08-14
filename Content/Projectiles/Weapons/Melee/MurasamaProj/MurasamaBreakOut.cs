@@ -143,9 +143,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         murasama.initialize();
 
                         int sengsDmg = (int)(MurasamaEcType.ActualTrueMeleeDamage * sengs);
-                        int proj = Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
+                        Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
                         , ModContent.ProjectileType<MurasamaBreakSwing>(), sengsDmg, 0, Owner.whoAmI);
-                        Main.projectile[proj].scale = 0.5f + level * 0.0f;
 
                         Projectile.Kill();
                     }

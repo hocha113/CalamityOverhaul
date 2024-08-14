@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.Crabulon;
 using CalamityMod.NPCs.OldDuke;
 using CalamityMod.NPCs.ProfanedGuardians;
@@ -59,11 +60,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             return false;
         }
 
+        public static float GetMuraSizeInMeleeSengs(Player player) {
+            Item mura = player.ActiveItem();
+            if ((mura.type == ModContent.ItemType<MurasamaEcType>()
+                || mura.type == ModContent.ItemType<Murasama>())
+                && mura.type != ItemID.None) {
+                float meleeSizeSengs = player.GetAdjustedItemScale(mura);
+                if (meleeSizeSengs > 1.5f) {
+                    meleeSizeSengs = 1.5f;
+                }
+                if (meleeSizeSengs < 0.5f) {
+                    meleeSizeSengs = 0.5f;
+                }
+                return meleeSizeSengs;
+            }
+            return 1f;
+        }
+
         public override void AI() {
             Projectile.Calamity().timesPierced = 0;
             Player player = Main.player[Projectile.owner];
             if (time == 0) {
                 Projectile.scale = (MurasamaEcType.NameIsSam(player) ? 1.65f : MurasamaEcType.GetOnScale) * MurasamaEcType.ScaleOffset_PercentageValue;
+                Projectile.scale *= GetMuraSizeInMeleeSengs(Owner);
                 Projectile.frame = Main.zenithWorld ? 6 : 10;
                 Projectile.alpha = 0;
                 time++;
@@ -285,7 +304,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
-                Owner.CWR().RisingDragonCharged += MurasamaEcType.GetOnRDCD / 5;
+                Owner.CWR().RisingDragonCharged += (int)(MurasamaEcType.GetOnRDCD / 10f);
                 if (Owner.CWR().RisingDragonCharged > MurasamaEcType.GetOnRDCD) {
                     Owner.CWR().RisingDragonCharged = MurasamaEcType.GetOnRDCD;
                 }
@@ -351,8 +370,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             float point = 0;
             Vector2 toMou = ToMouse;
             Vector2 orig = Owner.Center + toMou.GetNormalVector() * 30;
-            Vector2 endPos = orig + toMou.UnitVector() * (300 * Projectile.scale);
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), orig, endPos, (270 * Projectile.scale), ref point);
+            float lengMode = 220;
+            float lengMode2 = 250;
+            if (Slash3) {
+                lengMode = 300;
+                lengMode2 = 270;
+            }
+            Vector2 endPos = orig + toMou.UnitVector() * (lengMode * Projectile.scale);
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
+                , orig, endPos, (lengMode2 * Projectile.scale), ref point);
         }
     }
 }

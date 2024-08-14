@@ -46,6 +46,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.rare = ModContent.RarityType<Violet>();
             item.CWR().isHeldItem = true;
             item.CWR().heldProjType = MurasamaEcType.heldProjType;
+            item.CWR().GetAllowPrefix = true;
+            item.CWR().GetMeleePrefix = true;
             //CWRUtils.EasySetLocalTextNameOverride(item, "MurasamaEcType");
         }
 
