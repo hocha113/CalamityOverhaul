@@ -7,7 +7,6 @@ using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -22,15 +21,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         public static bool Accompany;
         public static Color textColor1 => new(155, 215, 215);
         public static Color textColor2 => new(200, 54, 91);
-        public const int maxAINum = 12;
-        public static int[] ai = new int[maxAINum];
         private static int frameIndex;
         private static int frameCount;
         public override void SetProperty() => SetAccompany(npc, ref ai, out Accompany);
-        public static void SetAccompany(NPC npc, ref int[] ai, out bool accompany) {
+        public static void SetAccompany(NPC npc, ref float[] ai, out bool accompany) {
             npc.realLife = -1;
-            
-            ai = new int[maxAINum];
+
             for (int i = 0; i < ai.Length; i++) {
                 ai[i] = 0;
             }
@@ -53,45 +49,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 NPC skeletronPrime = CWRUtils.FindNPC(NPCID.SkeletronPrime);
                 if (skeletronPrime.Alives()) {
                     ai[11] = skeletronPrime.ai[0] != 3 ? 1 : 0;
-                }
-            }
-            else {
-                npc.lifeMax *= 2;
-                npc.life = npc.lifeMax;
-            }
-        }
-
-        public static void NetAISend(NPC eye) {
-            if (CWRUtils.isServer) {
-                var netMessage = CWRMod.Instance.GetPacket();
-                netMessage.Write((byte)CWRMessageType.BrutalTwinsAI);
-
-                bool isSpazmatism = eye.type == NPCID.Spazmatism;
-                netMessage.Write(isSpazmatism);
-
-                int[] aiArray = RetinazerAI.ai;
-                if (isSpazmatism) {
-                    aiArray = ai;
-                }
-
-                foreach (var num in aiArray) {
-                    netMessage.Write(num);
-                }
-
-                netMessage.Send();
-            }
-        }
-
-        public static void NetAIReceive(BinaryReader reader) {
-            bool isSpazmatism = reader.ReadBoolean();
-            if (isSpazmatism) {
-                for (int i = 0; i < ai.Length; i++) {
-                    ai[i] = reader.ReadInt32();
-                }
-            }
-            else {
-                for (int i = 0; i < RetinazerAI.ai.Length; i++) {
-                    RetinazerAI.ai[i] = reader.ReadInt32();
                 }
             }
         }
@@ -123,7 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
         }
 
-        public static bool AccompanyAI(NPC eye, ref int[] ai, bool accompany) {
+        public static bool AccompanyAI(NPC eye, ref float[] ai, bool accompany) {
             if (!accompany) {
                 return false;
             }
@@ -205,9 +162,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             Vector2 toPoint = skeletronPrime.Center;
             eye.damage = eye.defDamage;
             bool skeletronPrimeInSprint = skeletronPrime.ai[1] == 1;
-            bool LaserWall = BrutalSkeletronPrimeAI.ai4 == 2;
+            bool LaserWall = skeletronPrime.CWR().NPCOverride.ai[3] == 2;
             bool isDestroyer = BrutalSkeletronPrimeAI.setPosingStarmCount > 0;
-            bool isIdle = BrutalSkeletronPrimeAI.ai11 > 0;
+            bool isIdle = skeletronPrime.CWR().NPCOverride.ai[10] > 0;
 
             if (isIdle) {
                 toPoint = skeletronPrime.Center + new Vector2(isSpazmatism ? 50 : -50, -100);
@@ -339,7 +296,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             return true;
         }
 
-        public static bool ProtogenesisAI(NPC eye, ref int[] ai) {
+        public static bool ProtogenesisAI(NPC eye, ref float[] ai) {
             float lifeRog = eye.life / (float)eye.lifeMax;
             bool isSpazmatism = eye.type == NPCID.Spazmatism;
             Player player = Main.player[eye.target];
@@ -512,12 +469,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 ai[0] = 3;
                 NetAISend(eye);
             }
-            SetEyeRealLife(eye);
             return true;
         }
 
-        private static bool Debut(NPC eye, Player player, ref int[] ai) {
-            ref int ai1 = ref ai[1];
+        private static bool Debut(NPC eye, Player player, ref float[] ai) {
+            ref float ai1 = ref ai[1];
             if (ai1 == 0) {
                 eye.life = 1;
                 eye.Center = player.Center;
@@ -621,7 +577,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             );
         }
 
-        internal static bool IsCCK(NPC eye, int[] ai) {
+        internal static bool IsCCK(NPC eye, float[] ai) {
             /*
             NPC skeletronPrime = CWRUtils.FindNPC(NPCID.SkeletronPrime);
             if (!skeletronPrime.Alives()) {
