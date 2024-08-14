@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<Flarefrost>(), Projectile.damage / 2
+                , ModContent.ProjectileType<Flarefrost>(), Projectile.damage
                 , Projectile.knockBack, Owner.whoAmI, 0f, 0);
         }
 

@@ -182,7 +182,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     , drawRoting, drawOrigin, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             }
 
-            Main.EntitySpriteDraw(texture, drawPos, new Rectangle?(rect), Color.White, drawRoting, drawOrigin, Projectile.scale, effects, 0);
+            Main.EntitySpriteDraw(texture, drawPos, new Rectangle?(rect), Color.White
+                , drawRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
         }
 
         public override void DrawSwing(SpriteBatch spriteBatch, Color lightColor) { }

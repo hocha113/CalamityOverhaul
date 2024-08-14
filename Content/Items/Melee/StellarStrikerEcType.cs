@@ -78,17 +78,17 @@ namespace CalamityOverhaul.Content.Items.Melee
             canDrawSlashTrail = true;
             distanceToOwner = -20;
             drawTrailBtommWidth = 30;
-            drawTrailTopWidth = 80;
+            drawTrailTopWidth = 70;
             drawTrailCount = 16;
-            Length = 110;
+            Length = 100;
             unitOffsetDrawZkMode = 0;
-            overOffsetCachesRoting = MathHelper.ToRadians(8);
             SwingData.starArg = 60;
             SwingData.ler1_UpLengthSengs = 0.1f;
-            SwingData.minClampLength = 120;
-            SwingData.maxClampLength = 130;
-            SwingData.ler1_UpSizeSengs = 0.056f;
+            SwingData.minClampLength = 110;
+            SwingData.maxClampLength = 120;
+            SwingData.ler1_UpSizeSengs = 0.016f;
             ShootSpeed = 12;
+            inWormBodysDamageFaul = 0.5f;
         }
 
         public override void Shoot() {
@@ -103,16 +103,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool PreInOwnerUpdate() {
             if (Projectile.ai[0] == 1) {
-                if (Time == 0) {
-                    Length = 150;
-                }
-                Projectile.width = Projectile.height = 186;
-                distanceToOwner = -200;
-                SwingData.starArg = 90;
-                SwingData.ler1_UpLengthSengs = 0.15f;
-                SwingData.minClampLength = 160;
-                SwingData.maxClampLength = 170;
-                SwingData.ler1_UpSizeSengs = 0.156f;
+                OtherMeleeSize = 1.35f;
             }
             if (Main.rand.NextBool(3 * updateCount)) {
                 _ = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Vortex);
@@ -124,7 +115,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Projectile.ai[0] != 1) {
                 return;
             }
-            if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(5)) {
+            if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(10)) {
                 return;
             }
             SpawnFlares(Item, Owner, Item.knockBack, Item.damage, hit.Crit);

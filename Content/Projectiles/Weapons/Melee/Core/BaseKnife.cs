@@ -1,8 +1,11 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityMod;
+using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 {
@@ -13,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public SwingDataStruct SwingData = new SwingDataStruct();
         public SwingAITypeEnum SwingAIType;
         protected bool autoSetShoot;
-        protected float inWormBodysDamageFaul = 0.5f;
+        protected float inWormBodysDamageFaul = 0.85f;
         public enum SwingAITypeEnum
         {
             None = 0,
@@ -25,6 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             ownerOrientationLock = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10 * updateCount;
+            Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             SetKnifeProperty();
             CWRUtils.SafeLoadItem(TargetID);
         }

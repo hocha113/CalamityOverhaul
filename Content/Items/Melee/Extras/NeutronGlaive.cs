@@ -103,8 +103,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         }
 
         public override void Shoot() {
+            int type = ModContent.ProjectileType<NeutronGlaiveBeam>();
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<NeutronGlaiveBeam>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                , type, Projectile.damage, Projectile.knockBack, Projectile.owner);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

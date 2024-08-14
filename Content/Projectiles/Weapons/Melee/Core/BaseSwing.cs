@@ -28,6 +28,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         public bool AffectedMeleeSize = true;
         /// <summary>
+        /// 一个额外近战大小缩放系数
+        /// </summary>
+        protected float OtherMeleeSize = 1f;
+        /// <summary>
         /// 对应的武器近战缩放
         /// </summary>
         public float MeleeSize {
@@ -41,7 +45,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 if (!AffectedMeleeSize) {
                     _meleeSize = 1f;
                 }
-                return _meleeSize;
+                return _meleeSize * OtherMeleeSize;
             }
         }
         /// <summary>
@@ -319,7 +323,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             return vector2;
         }
 
-        public float SetSwingSpeed(float speed) => speed / Owner.GetAttackSpeed(Projectile.DamageType);
+        public float SetSwingSpeed(float speed) => speed / Owner.GetWeaponAttackSpeed(Item);
 
         protected virtual void InitializeCaches() {
             for (int j = drawTrailCount - 1; j >= 0; j--) {
@@ -386,7 +390,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 ler1Time = (int)(maxSwingTime * 0.4f);
             }
 
-            float speedUp = SetSwingSpeed(1);
+            float speedUp = SetSwingSpeed(1f);
             speedUp *= overSpeedUpSengs;
 
             if (Time == 0) {

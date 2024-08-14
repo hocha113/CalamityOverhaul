@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 drawOrigin = new Vector2(texture.Width / 2, texture.Height / 2);
             SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
-            Vector2 offsetOwnerPos = safeInSwingUnit.GetNormalVector() * unitOffsetDrawZkMode * Projectile.spriteDirection;
+            Vector2 offsetOwnerPos = safeInSwingUnit.GetNormalVector() * unitOffsetDrawZkMode * Projectile.spriteDirection * MeleeSize;
             float drawRoting = Projectile.rotation;
             if (Projectile.spriteDirection == -1) {
                 drawRoting += MathHelper.Pi;
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             Main.EntitySpriteDraw(texture, drawPosValue - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY, new Rectangle?(rect)
                 , Projectile.GetAlpha(Lighting.GetColor(new Point((int)(Projectile.Center.X / 16), (int)(Projectile.Center.Y / 16))))
-                , drawRoting, drawOrigin, Projectile.scale, effects, 0);
+                , drawRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
         }
 
         public override void DrawSwing(SpriteBatch spriteBatch, Color lightColor) { }

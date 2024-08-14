@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
 
             Main.EntitySpriteDraw(texture, v - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY, new Rectangle?(rect)
-                , Color.White, drawRoting, drawOrigin, Projectile.scale, effects, 0);
+                , Color.White, drawRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
         }
     }
 }

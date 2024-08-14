@@ -166,7 +166,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 , null, Color.Red, drawRoting, drawOrigin, Projectile.scale, effects);
             }
 
-            Main.EntitySpriteDraw(texture, drawPos, new Rectangle?(rect), Color.White, drawRoting, drawOrigin, Projectile.scale, effects, 0);
+            Main.EntitySpriteDraw(texture, drawPos, new Rectangle?(rect), Color.White
+                , drawRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
         }
     }
 }

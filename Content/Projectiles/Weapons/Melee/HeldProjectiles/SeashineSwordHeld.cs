@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void Shoot() {
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity * 2.5f
-                , ModContent.ProjectileType<SeashineSwordProj>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
+                , ModContent.ProjectileType<SeashineSwordProj>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
     }
 }
