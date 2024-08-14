@@ -122,7 +122,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         public static void OnNPCAIHook(On_NPCDelegate orig, NPC npc) {
             int type = npc.type;
-            if (!npc.CWR().NPCOverride.AI()) {
+            bool reset = npc.CWR().NPCOverride.AI();
+            npc.CWR().NPCOverride.OtherNetWorkSendHander();
+            if (!reset) {
                 return;
             }
             npc.type = type;
