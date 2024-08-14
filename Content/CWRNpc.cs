@@ -31,7 +31,11 @@ namespace CalamityOverhaul.Content
     public class CWRNpc : GlobalNPC
     {
         public override bool InstancePerEntity => true;
-
+        /// <summary>
+        /// 这个NPC实体的对应修改副本
+        /// </summary>
+        internal NPCOverride NPCOverride = new NPCOverride();
+        #region Data
         public Player CreateHitPlayer;
         public byte ContagionOnHitNum = 0;
         public byte PhosphorescentGauntletOnHitNum = 0;
@@ -42,7 +46,7 @@ namespace CalamityOverhaul.Content
         public byte WhipHitType = 0;
         public bool SprBoss;
         public bool ObliterateBool;
-        public int BSP_Main_NPC_Index;
+        
         /// <summary>
         /// 一个特殊标记，用于朗基努斯识别目标
         /// </summary>
@@ -71,7 +75,7 @@ namespace CalamityOverhaul.Content
         public bool VoidErosionBool;
 
         public static Asset<Texture2D> IceParcloseAsset;
-
+        #endregion
         public override void Load() {
             IceParcloseAsset = CWRUtils.GetT2DAsset(CWRConstant.Projectile + "IceParclose", true);
         }
@@ -80,21 +84,9 @@ namespace CalamityOverhaul.Content
             IceParclose = false;
             VoidErosionBool = false;
         }
-
         public override void SetDefaults(NPC npc) {
-            NPCSystem.OnSetPropertyHook(npc);//这让我感觉非常被动，gNPC的钩子优先级很低，但相对稳定
-            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-                if (TungstenRiot.TungstenEventNPCDic.ContainsKey(npc.type)) {
-                    npc.life = npc.lifeMax = (int)(npc.lifeMax * 1.2f);
-                    npc.defense += 3;
-                }
-                if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
-                    npc.life = npc.lifeMax = npc.lifeMax * 10;
-                    npc.defense += 10;
-                    npc.scale += 0.5f;
-                    npc.boss = true;
-                }
-            }
+            NPCOverride.SetDefaults(npc, this, npc.Calamity());
+            TungstenRiot.SetEventNPC(npc);
         }
 
         public static void MultipleSegmentsLimitDamage(NPC target, ref NPC.HitModifiers modifiers) {

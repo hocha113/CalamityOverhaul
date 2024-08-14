@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.SkyEffects
                     }
                     pGBolt.IsAlive = true;
                     pGBolt.Position.X = random.NextFloat() * (Main.maxTilesX * 16f + 4000f) - 2000f;
-                    pGBolt.Position.Y = random.NextFloat() * 500f;
+                    pGBolt.Position.Y = random.NextFloat() * 1800f;
                     pGBolt.Depth = random.NextFloat() * 8f + 2f;
                     pGBolt.Life = 30;
                 }

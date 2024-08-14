@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
 {
-    internal class BrutalKingSlimeAI : NPCCoverage
+    internal class BrutalKingSlimeAI : NPCOverride
     {
         public override int TargetID => NPCID.KingSlime;
 

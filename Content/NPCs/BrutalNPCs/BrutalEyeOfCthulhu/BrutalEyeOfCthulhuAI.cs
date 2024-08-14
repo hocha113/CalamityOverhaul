@@ -8,7 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
 {
-    internal class BrutalEyeOfCthulhuAI : NPCCoverage
+    internal class BrutalEyeOfCthulhuAI : NPCOverride
     {
         private const float ProjectileOffset = 50f;
         public override int TargetID => NPCID.EyeofCthulhu;

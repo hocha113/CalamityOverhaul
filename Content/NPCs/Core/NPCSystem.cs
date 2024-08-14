@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         internal delegate void On_ModifyIncomingHitDelegate(NPC npc, ref NPC.HitModifiers modifiers);
 
         public static Type npcLoaderType;
-        public static List<NPCCoverage> NPCSets { get; private set; }
+        public static List<NPCOverride> NPCSets { get; private set; }
         public static MethodInfo onHitByProjectile_Method;
         public static MethodInfo modifyIncomingHit_Method;
         public static MethodInfo onNPCAI_Method;
@@ -39,10 +39,10 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         private void LoadNPCSets() {
             NPCSets = [];
-            foreach (Type type in CWRUtils.GetSubclasses(typeof(NPCCoverage))) {
-                if (type != typeof(NPCCoverage)) {
+            foreach (Type type in CWRUtils.GetSubclasses(typeof(NPCOverride))) {
+                if (type != typeof(NPCOverride)) {
                     object obj = Activator.CreateInstance(type);
-                    if (obj is NPCCoverage inds) {
+                    if (obj is NPCOverride inds) {
                         if (inds.CanLoad() && CWRServerConfig.Instance.BiobehavioralOverlay) {//前提是开启了生物修改
                             NPCSets.Add(inds);
                         }
@@ -105,68 +105,36 @@ namespace CalamityOverhaul.Content.NPCs.Core
         }
 
         public static bool OnPreKillHook(On_NPCDelegate2 orig, NPC npc) {
-            foreach (var set in NPCSets) {
-                if (npc.type == set.TargetID) {
-                    bool? reset = set.On_PreKill(npc);
-                    if (reset.HasValue) {
-                        return reset.Value;
-                    }
-                }
+            bool? reset = npc.CWR().NPCOverride.On_PreKill();
+            if (reset.HasValue) {
+                return reset.Value;
             }
             return orig.Invoke(npc);
         }
 
-        public static void OnSetPropertyHook(NPC npc) {
-            foreach (var set in NPCSets) {
-                if (npc.type == set.TargetID) {
-                    set.npc = npc;
-                    set.SetProperty();
-                }
-            }
-        }
-
         public static bool OnCheckDeadHook(On_NPCDelegate2 orig, NPC npc) {
-            foreach (var set in NPCSets) {
-                if (set.npc == null) {
-                    continue;
-                }
-                if (npc.type == set.TargetID) {
-                    bool? reset = set.CheckDead();
-                    if (reset.HasValue) {
-                        return reset.Value;
-                    }
-                }
+            bool? reset = npc.CWR().NPCOverride.CheckDead();
+            if (reset.HasValue) {
+                return reset.Value;
             }
             return orig.Invoke(npc);
         }
 
         public static void OnNPCAIHook(On_NPCDelegate orig, NPC npc) {
             int type = npc.type;
-            foreach (var set in NPCSets) {
-                if (set.npc == null) {
-                    continue;
-                }
-                if (npc.type == set.TargetID) {
-                    if (!set.AI()) {
-                        return;
-                    }
-                }
+            bool reset = npc.CWR().NPCOverride.AI();
+            npc.CWR().NPCOverride.OtherNetWorkSendHander();
+            if (!reset) {
+                return;
             }
             npc.type = type;
             orig.Invoke(npc);
         }
 
         public static bool OnPreDrawHook(On_DrawDelegate orig, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            foreach (var set in NPCSets) {
-                if (set.npc == null) {
-                    continue;
-                }
-                if (npc.type == set.TargetID) {
-                    bool? reset = set.Draw(spriteBatch, screenPos, drawColor);
-                    if (reset.HasValue) {
-                        return reset.Value;
-                    }
-                }
+            bool? reset = npc.CWR().NPCOverride.Draw(spriteBatch, screenPos, drawColor);
+            if (reset.HasValue) {
+                return reset.Value;
             }
 
             try {
@@ -177,16 +145,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
         }
 
         public static void OnPostDrawHook(On_DrawDelegate2 orig, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            foreach (var set in NPCSets) {
-                if (set.npc == null) {
-                    continue;
-                }
-                if (npc.type == set.TargetID) {
-                    bool reset = set.PostDraw(spriteBatch, screenPos, drawColor);
-                    if (!reset) {
-                        return;
-                    }
-                }
+            bool reset = npc.CWR().NPCOverride.PostDraw(spriteBatch, screenPos, drawColor);
+            if (!reset) {
+                return;
             }
 
             orig.Invoke(npc, spriteBatch, screenPos, drawColor);

@@ -6,11 +6,10 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 {
-    internal class RetinazerAI : NPCCoverage
+    internal class RetinazerAI : NPCOverride
     {
         public override int TargetID => NPCID.Retinazer;
         public static bool Accompany;
-        public static int[] ai = new int[SpazmatismAI.maxAINum];
         private static int frameIndex;
         private static int frameCount;
         public override void SetProperty() => SpazmatismAI.SetAccompany(npc, ref ai, out Accompany);

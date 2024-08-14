@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.TileEntitys;
 using System.IO;
 using Terraria;
@@ -17,8 +18,8 @@ namespace CalamityOverhaul
         TungstenRiot,
         TEBloodAltar,
         OverBeatBack,
-        BrutalSkeletronPrimeAI,
-        BrutalTwinsAI,
+        NPCOverrideAI,
+        NPCOverrideOtherAI,
         ProjViscosityData,
     }
 
@@ -50,11 +51,11 @@ namespace CalamityOverhaul
                 modnpc.OverBeatBackVr = reader.ReadVector2();
                 modnpc.OverBeatBackAttenuationForce = reader.ReadSingle();
             }
-            else if (type == CWRMessageType.BrutalSkeletronPrimeAI) {
-                BrutalSkeletronPrimeAI.NetAIReceive(reader);
+            else if (type == CWRMessageType.NPCOverrideAI) {
+                NPCOverride.NetAIReceive(reader);
             }
-            else if (type == CWRMessageType.BrutalTwinsAI) {
-                SpazmatismAI.NetAIReceive(reader);
+            else if (type == CWRMessageType.NPCOverrideOtherAI) {
+                NPCOverride.OtherNetWorkReceiveHander(reader);
             }
             else if (type == CWRMessageType.ProjViscosityData) {
                 CWRProjectile.NetViscosityReceive(reader);
