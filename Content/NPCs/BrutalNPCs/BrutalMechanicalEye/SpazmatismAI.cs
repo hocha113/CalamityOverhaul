@@ -312,7 +312,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     NetAISend(eye);
                 }
             }
-            int projDamage = 40;
+            int projDamage = death ? 36 : 30;
             int projType = 0;
             switch (ai[0]) {
                 case 0:
@@ -424,7 +424,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                             SetEyeValue(eye, player, toPoint + offset, toTarget);
                         }
                         else if (ai[2] < 90) {
-                            eye.damage = eye.defDamage * 2;
+                            eye.damage = (int)(eye.defDamage * 1.25f);
                             if (ai[2] == 42) {
                                 SoundEngine.PlaySound(SoundID.ForceRoar);
                                 eye.velocity = toTarget.UnitVector() * (death ? 30 : 25);
@@ -462,7 +462,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                             SetEyeValue(eye, player, toPoint + offset, toTarget);
                         }
                         else if (ai[2] < 90) {
-                            eye.damage = eye.defDamage * 2;
+                            eye.damage = (int)(eye.defDamage * 1.25f);
                             if (ai[2] == 42) {
                                 SoundEngine.PlaySound(SoundID.ForceRoar);
                                 eye.velocity = toTarget.UnitVector() * (death ? 32 : 26);
@@ -549,6 +549,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                         eye.life = eye.lifeMax;
                     }
                     else {
+                        Lighting.AddLight(eye.Center, (eye.type == NPCID.Spazmatism ? Color.OrangeRed : Color.BlueViolet).ToVector3());
                         eye.life += addNum;
                         CombatText.NewText(eye.Hitbox, CombatText.HealLife, addNum);
                     }

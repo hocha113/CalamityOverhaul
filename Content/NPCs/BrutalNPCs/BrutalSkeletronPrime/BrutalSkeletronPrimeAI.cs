@@ -462,6 +462,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         npc.life = npc.lifeMax;
                     }
                     else {
+                        Lighting.AddLight(npc.Center, Color.White.ToVector3());
                         npc.life += addNum;
                         CombatText.NewText(npc.Hitbox, CombatText.HealLife, addNum);
                     }

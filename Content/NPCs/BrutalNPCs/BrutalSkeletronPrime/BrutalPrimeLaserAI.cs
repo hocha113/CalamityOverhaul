@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 if (npc.localAI[0] >= 120f) {
                     npc.TargetClosest();
 
-                    int totalProjectiles = bossRush ? 32 : (masterMode ? 24 : 16);
+                    int totalProjectiles = bossRush ? 22 : (masterMode ? 13 : 10);
                     float radians = MathHelper.TwoPi / totalProjectiles;
                     int type = ProjectileID.DeathLaser;
                     int damage = BrutalSkeletronPrimeAI.SetMultiplier(npc.GetProjectileDamage(type));
@@ -222,16 +222,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     double angleB = MathHelper.ToRadians(90f) - angleA;
                     float laserVelocityX = (float)(velocity * Math.Sin(angleA) / Math.Sin(angleB));
                     Vector2 spinningPoint = normalLaserRotation ? new Vector2(0f, -velocity) : new Vector2(-laserVelocityX, -velocity);
-                    bool spanLerter = true;
-                    foreach (var p in Main.projectile) {
-                        if (!p.active) {
-                            continue;
-                        }
-                        if (p.type == ModContent.ProjectileType<SetPosingStarm>()) {
-                            spanLerter = false;
-                            break;
-                        }
-                    }
+                    bool spanLerter = BrutalSkeletronPrimeAI.setPosingStarmCount <= 0;
                     if (spanLerter) {
                         if (death) {
                             totalProjectiles = bossRush ? 12 : 6;
