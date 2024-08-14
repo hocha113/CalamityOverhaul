@@ -29,6 +29,18 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         public CalamityGlobalNPC calNPC { get; private set; }
 
+        private bool _netWorkSend;
+
+        public bool netWorkSend {
+            get {
+                if (!CWRUtils.isServer) {
+                    return false;
+                }
+                return _netWorkSend;
+            }
+            set => _netWorkSend = value;
+        }
+
         public NPCOverride Clone() => (NPCOverride)Activator.CreateInstance(GetType());
 
         public virtual bool CanLoad() { return true; }
@@ -49,6 +61,30 @@ namespace CalamityOverhaul.Content.NPCs.Core
             npc.CWR().NPCOverride = inds;
         }
 
+        #region NetWork
+
+        internal void OtherNetWorkSendHander() {
+            if (!CWRUtils.isServer || !netWorkSend) {
+                return;
+            }
+            var netMessage = CWRMod.Instance.GetPacket();
+            netMessage.Write((byte)CWRMessageType.NPCOverrideOtherAI);
+            netMessage.Write(npc.whoAmI);
+            OtherNetWorkSend(netMessage);
+            netWorkSend = false;
+        }
+
+        internal virtual void OtherNetWorkSend(ModPacket netMessage) { }
+
+        internal static void OtherNetWorkReceiveHander(BinaryReader reader) {
+            NPC npc = Main.npc[reader.ReadInt32()];
+            npc.CWR().NPCOverride.OtherNetWorkReceive(reader);
+        }
+
+        internal virtual void OtherNetWorkReceive(BinaryReader reader) {
+
+        }
+
         internal void NetAISend() {
             if (CWRUtils.isServer) {
                 var netMessage = CWRMod.Instance.GetPacket();
@@ -58,18 +94,10 @@ namespace CalamityOverhaul.Content.NPCs.Core
                 NPCOverride pCOverride = npc.CWR().NPCOverride;
                 float[] ai = pCOverride.ai;
 
-                netMessage.Write(ai[0]);
-                netMessage.Write(ai[1]);
-                netMessage.Write(ai[2]);
-                netMessage.Write(ai[3]);
-                netMessage.Write(ai[4]);
-                netMessage.Write(ai[5]);
-                netMessage.Write(ai[6]);
-                netMessage.Write(ai[7]);
-                netMessage.Write(ai[8]);
-                netMessage.Write(ai[9]);
-                netMessage.Write(ai[10]);
-                netMessage.Write(ai[11]);
+                foreach (var aiValue in ai) {
+                    netMessage.Write(aiValue);
+                }
+
                 netMessage.Send();
             }
         }
@@ -83,52 +111,29 @@ namespace CalamityOverhaul.Content.NPCs.Core
                 NPCOverride pCOverride = npc.CWR().NPCOverride;
                 float[] ai = pCOverride.ai;
 
-                netMessage.Write(ai[0]);
-                netMessage.Write(ai[1]);
-                netMessage.Write(ai[2]);
-                netMessage.Write(ai[3]);
-                netMessage.Write(ai[4]);
-                netMessage.Write(ai[5]);
-                netMessage.Write(ai[6]);
-                netMessage.Write(ai[7]);
-                netMessage.Write(ai[8]);
-                netMessage.Write(ai[9]);
-                netMessage.Write(ai[10]);
-                netMessage.Write(ai[11]);
+                foreach (var aiValue in ai) {
+                    netMessage.Write(aiValue);
+                }
+
                 netMessage.Send();
             }
         }
 
         internal static void NetAIReceive(BinaryReader reader) {
             NPC npc = Main.npc[reader.ReadInt32()];
-            float ai0 = reader.ReadSingle();
-            float ai1 = reader.ReadSingle();
-            float ai2 = reader.ReadSingle();
-            float ai3 = reader.ReadSingle();
-            float ai4 = reader.ReadSingle();
-            float ai5 = reader.ReadSingle();
-            float ai6 = reader.ReadSingle();
-            float ai7 = reader.ReadSingle();
-            float ai8 = reader.ReadSingle();
-            float ai9 = reader.ReadSingle();
-            float ai10 = reader.ReadSingle();
-            float ai11 = reader.ReadSingle();
+            float[] receiveAI = new float[MaxAISlot];
+            for (int i = 0; i < MaxAISlot; i++) {
+                receiveAI[i] = reader.ReadSingle();
+            }
             if (npc.active) {
                 NPCOverride pCOverride = npc.CWR().NPCOverride;
-                pCOverride.ai[0] = ai0;
-                pCOverride.ai[1] = ai1;
-                pCOverride.ai[2] = ai2;
-                pCOverride.ai[3] = ai3;
-                pCOverride.ai[4] = ai4;
-                pCOverride.ai[5] = ai5;
-                pCOverride.ai[6] = ai6;
-                pCOverride.ai[7] = ai7;
-                pCOverride.ai[8] = ai8;
-                pCOverride.ai[9] = ai9;
-                pCOverride.ai[10] = ai10;
-                pCOverride.ai[11] = ai11;
+                for (int i = 0; i < MaxAISlot; i++) {
+                    pCOverride.ai[i] = receiveAI[i];
+                }
             }
         }
+
+        #endregion
 
         public virtual void SetProperty() { }
 

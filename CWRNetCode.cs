@@ -19,6 +19,7 @@ namespace CalamityOverhaul
         TEBloodAltar,
         OverBeatBack,
         NPCOverrideAI,
+        NPCOverrideOtherAI,
         ProjViscosityData,
     }
 
@@ -52,6 +53,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.NPCOverrideAI) {
                 NPCOverride.NetAIReceive(reader);
+            }
+            else if (type == CWRMessageType.NPCOverrideOtherAI) {
+                NPCOverride.OtherNetWorkReceiveHander(reader);
             }
             else if (type == CWRMessageType.ProjViscosityData) {
                 CWRProjectile.NetViscosityReceive(reader);
