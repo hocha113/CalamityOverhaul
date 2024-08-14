@@ -34,6 +34,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private int primeSaw;
         private int primeVice;
         private int primeLaser;
+        private int oneToTwoPrsAddNumBloodValue;
         private bool cannonAlive;
         private bool viceAlive;
         private bool sawAlive;
@@ -43,18 +44,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool noArm => !cannonAlive && !laserAlive && !sawAlive && !viceAlive;
         private bool noEye;
         internal static int setPosingStarmCount;
-        internal static int ai1;
-        internal static int ai2;
-        internal static int ai3;
-        internal static int ai4;
-        internal static int ai5;
-        internal static int ai6;
-        internal static int ai7;
-        internal static int ai8;
-        internal static int ai9;
-        internal static int ai10;
-        internal static int ai11;
-        internal static int ai12;
+        internal ref float ai0 => ref ai[0];
+        internal ref float ai1 => ref ai[1];
+        internal ref float ai2 => ref ai[2];
+        internal ref float ai3 => ref ai[3];
+        internal ref float ai4 => ref ai[4];
+        internal ref float ai5 => ref ai[5];
+        internal ref float ai6 => ref ai[6];
+        internal ref float ai7 => ref ai[7];
+        internal ref float ai8 => ref ai[8];
+        internal ref float ai9 => ref ai[9];
+        internal ref float ai10 => ref ai[10];
+        internal ref float ai11 => ref ai[11];
         internal static bool canLoaderAssetZunkenUp;
         internal static Asset<Texture2D> HandAsset;
         internal static Asset<Texture2D> BSPCannon;
@@ -70,41 +71,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static Asset<Texture2D> BSPRAMGlow;
         #endregion
 
-        internal static void NetAISend() {
-            if (CWRUtils.isServer) {
-                var netMessage = CWRMod.Instance.GetPacket();
-                netMessage.Write((byte)CWRMessageType.BrutalSkeletronPrimeAI);
-                netMessage.Write(ai1);
-                netMessage.Write(ai2);
-                netMessage.Write(ai3);
-                netMessage.Write(ai4);
-                netMessage.Write(ai5);
-                netMessage.Write(ai6);
-                netMessage.Write(ai7);
-                netMessage.Write(ai8);
-                netMessage.Write(ai9);
-                netMessage.Write(ai10);
-                netMessage.Write(ai11);
-                netMessage.Write(ai12);
-                netMessage.Send();
-            }
-        }
-
-        internal static void NetAIReceive(BinaryReader reader) {
-            ai1 = reader.ReadInt32();
-            ai2 = reader.ReadInt32();
-            ai3 = reader.ReadInt32();
-            ai4 = reader.ReadInt32();
-            ai5 = reader.ReadInt32();
-            ai6 = reader.ReadInt32();
-            ai7 = reader.ReadInt32();
-            ai8 = reader.ReadInt32();
-            ai9 = reader.ReadInt32();
-            ai10 = reader.ReadInt32();
-            ai11 = reader.ReadInt32();
-            ai12 = reader.ReadInt32();
-        }
-
         internal static void DrawArm(SpriteBatch spriteBatch, NPC rCurrentNPC, Vector2 screenPos) {
             if (!canLoaderAssetZunkenUp) {
                 return;
@@ -116,7 +82,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            if ((head.ai[1] == 1 || head.ai[1] == 2) && ai12 >= 1 && setPosingStarmCount <= 0) {
+            if ((head.ai[1] == 1 || head.ai[1] == 2) && head.CWR().NPCOverride.ai[11] >= 1 && setPosingStarmCount <= 0) {
                 float rCurrentNPCRotation = rCurrentNPC.rotation;
                 Vector2 drawPos = rCurrentNPC.Center + (rCurrentNPCRotation + MathHelper.PiOver2).ToRotationVector2() * -120;
                 Rectangle drawRec = CWRUtils.GetRec(BSPRAM.Value);
@@ -216,11 +182,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override bool CanLoad() => true;
 
         internal static bool SetArmRot(NPC arm, NPC head, int type) {
+            NPCOverride pCOverride = head.CWR().NPCOverride;
             for (int i = 0; i < arm.buffImmune.Length; i++) {
                 arm.buffImmune[i] = true;
             }
             arm.damage = arm.defDamage;
-            if (ai11 > 0) {
+            if (pCOverride.ai[10] > 0) {
                 arm.damage = 0;
             }
             if (setPosingStarmCount > 0) {
@@ -234,10 +201,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 arm.damage = 0;
                 return true;
             }
-            if ((head.ai[1] != 1 && head.ai[1] != 2) || ai12 < 1) {
+            if ((head.ai[1] != 1 && head.ai[1] != 2) || pCOverride.ai[11] < 1) {
                 return false;
             }
-            float rot = ai10 * 0.1f + MathHelper.TwoPi / 4 * type;
+            float rot = pCOverride.ai[9] * 0.1f + MathHelper.TwoPi / 4 * type;
             Vector2 toPoint = head.Center + rot.ToRotationVector2() * head.width * 2;
             float origeRot = head.Center.To(arm.Center).ToRotation();
             arm.Center = Vector2.Lerp(arm.Center, toPoint, 0.2f);
@@ -246,7 +213,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             arm.position += head.velocity;
             arm.dontTakeDamage = true;
             arm.damage = 0;
-            if (!CWRUtils.isClient && NPC.IsMechQueenUp && ai10 % 6 == 0 && setPosingStarmCount <= 0 && ai11 <= 0) {
+            if (!CWRUtils.isClient && NPC.IsMechQueenUp && pCOverride.ai[9] % 6 == 0 && setPosingStarmCount <= 0 && pCOverride.ai[10] <= 0) {
                 int projType = ProjectileID.DeathLaser;
                 Vector2 ver = origeRot.ToRotationVector2() * 6;
                 Projectile.NewProjectile(arm.GetSource_FromAI(), arm.Center, ver, projType, 36, 2);
@@ -344,7 +311,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
         
         public override void SetProperty() {
-            ai1 = ai2 = ai3 = ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = ai11 = ai12 = 0;
+            ai0 = ai1 = ai2 = ai3 = ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = ai11 = 0;
             setPosingStarmCount = 0;
             SmokeDrawer = new ThanatosSmokeParticleSet(-1, 3, 0f, 16f, 1.5f);
             for (int i = 0; i < npc.buffImmune.Length; i++) {
@@ -413,7 +380,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         MoveToPoint(npc, player.Center + new Vector2(0, -300));
                         npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
 
-                        ai4 = 0;
+                        ai3 = 0;
                         return false;
                     }
                     ProtogenesisAI();
@@ -441,7 +408,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             FindFrame();
 
-            ai10++;
+            ai9++;
             return false;
         }
 
@@ -466,7 +433,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void Debut() {
-            if (ai1 == 0) {
+            if (ai0 == 0) {
                 SpawnEye();
                 npc.life = 1;
                 npc.Center = player.Center + new Vector2(0, 1200);
@@ -481,15 +448,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.position += player.velocity;
             Vector2 toPoint = player.Center;
 
-            if (ai1 < 60) {
+            if (ai0 < 60) {
                 toPoint = player.Center + new Vector2(0, 500);
             }
             else {
                 toPoint = player.Center + new Vector2(0, -500);
-                if (ai1 == 90 && !CWRUtils.isServer) {
+                if (ai0 == 90 && !CWRUtils.isServer) {
                     SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
                 }
-                if (ai1 > 90) {
+                if (ai0 > 90) {
                     int addNum = (int)(npc.lifeMax / 80f);
                     if (npc.life >= npc.lifeMax) {
                         npc.life = npc.lifeMax;
@@ -501,25 +468,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            if (ai1 == 172 && !CWRUtils.isServer) {
+            if (ai0 == 172 && !CWRUtils.isServer) {
                 SpawnHouengEffect(npc);
                 SoundEngine.PlaySound(CWRSound.SpawnArmMgs, Main.LocalPlayer.Center);
             }
-            if (ai1 == 180 && !CWRUtils.isClient) {
+            if (ai0 == 180 && !CWRUtils.isClient) {
                 spanArm(npc);
             }
 
-            if (ai1 > 220) {
+            if (ai0 > 220) {
                 npc.dontTakeDamage = false;
                 npc.damage = npc.defDamage;
                 npc.ai[0] = 2;
-                ai1 = 0;
+                ai0 = 0;
                 return;
             }
 
             npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.065f);
 
-            ai1++;
+            ai0++;
         }
 
         private void ProtogenesisAI() {
@@ -536,7 +503,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
                             , ModContent.ProjectileType<SetPosingStarm>(), npc.damage, 2, -1, 0, npc.whoAmI);
                         calamityNPC.newAI[0] = 0;
-                        ai12++;
+                        ai11++;
                         SendExtraAI(npc);
                         NetAISend();
                     }
@@ -600,7 +567,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
                 }
 
-                if (npc.ai[2] == 38f && ai12 >= 1 && !noArm) {//只有当ai12的值大于等于1后才会进行冲刺
+                if (npc.ai[2] == 38f && ai11 >= 1 && !noArm) {//只有当ai12的值大于等于1后才会进行冲刺
                     SoundStyle sound = new SoundStyle("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged");
                     SoundEngine.PlaySound(sound with { Pitch = 1.18f }, npc.Center);
                 }
@@ -638,10 +605,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private bool TwoStageAI() {
-            if (ai7 == 0 && ai10 > 2 && death && !bossRush) {
-                ai4 = 3;
+            if (ai6 == 0 && ai9 > 2 && death && !bossRush) {
+                ai3 = 3;
                 SpawnEye();
-                ai7 = 1;
+                ai6 = 1;
                 NetAISend();
             }
 
@@ -652,14 +619,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             int numProj = bossRush ? 5 : 3;
             float rotation = MathHelper.ToRadians(bossRush ? 15 : 9);
 
-            if (npc.ai[1] != 1 || ai4 == 3) {
+            if (npc.ai[1] != 1 || ai3 == 3) {
                 SmokeDrawer.ParticleSpawnRate = 3;
                 SmokeDrawer.BaseMoveRotation = MathHelper.ToRadians(90);
                 SmokeDrawer.SpawnAreaCompactness = 80f;
             }
             SmokeDrawer.Update();
 
-            if (setPosingStarmCount > 0 && !noEye) {
+            if (setPosingStarmCount > 0 && !noEye && ai3 != 3) {
                 npc.damage = 0;
                 MoveToPoint(npc, player.Center + new Vector2(0, -300));
                 npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
@@ -669,17 +636,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.life = npc.lifeMax;
                 }
 
-                ai4 = 1;
+                ai3 = 1;
                 return true;
             }
 
-            switch (ai4) {
+            switch (ai3) {
                 case 0:
-                    if (++ai5 > 90) {
+                    if (++ai4 > 90) {
                         npc.TargetClosest();
 
                         if (!CWRUtils.isClient) {
-                            if (ai9 % 2 == 0) {
+                            if (ai8 % 2 == 0) {
                                 int totalProjectiles = bossRush ? 9 : 6;
                                 Vector2 laserFireDirection = npc.Center.To(player.Center).UnitVector();
                                 for (int j = 0; j < totalProjectiles; j++) {
@@ -713,21 +680,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                             }
                         }
 
-                        ai5 = 0;
-                        ai6++;
+                        ai4 = 0;
+                        ai5++;
                         NetAISend();
                     }
 
-                    if (ai6 > 3 || npc.ai[1] == 1) {
-                        ai4 = 1;
+                    if (ai5 > 3 || npc.ai[1] == 1) {
+                        ai3 = 1;
+                        ai4 = 0;
                         ai5 = 0;
-                        ai6 = 0;
-                        ai9++;
+                        ai8++;
                         NetAISend();
                     }
                     break;
                 case 1:
-                    if (++ai5 > 90 && setPosingStarmCount == 0 && ai6 <= 2 && ai11 <= 0) {
+                    if (++ai4 > 90 && setPosingStarmCount == 0 && ai5 <= 2 && ai10 <= 0) {
                         npc.TargetClosest();
                         if (!CWRUtils.isClient) {
                             float maxLerNum = 9f;
@@ -749,27 +716,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                 }
                             }
                         }
-                        ai5 = 0;
-                        ai6++;
+                        ai4 = 0;
+                        ai5++;
                     }
 
-                    if (npc.ai[1] != 1 && ai6 > 2 && ++ai8 > 60) {
-                        ai4 = 2;
+                    if (npc.ai[1] != 1 && ai5 > 2 && ++ai7 > 60) {
+                        ai3 = 2;
+                        ai4 = 0;
                         ai5 = 0;
-                        ai6 = 0;
-                        ai8 = 0;
+                        ai7 = 0;
                         NetAISend();
                     }
 
                     break;
                 case 2:
                     npc.damage = 0;
-                    if (ai8 == 0) {
+                    if (ai7 == 0) {
                         if (setPosingStarmCount > 0 || !death) {
+                            ai3 = 0;
                             ai4 = 0;
                             ai5 = 0;
-                            ai6 = 0;
-                            ai8 = 0;
+                            ai7 = 0;
                             NetAISend();
                             return false;
                         }
@@ -802,7 +769,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                                         , Main.myPlayer, -1, -1, vr1.ToRotation());
                             }
                         }
-                        ai8++;
+                        ai7++;
                     }
 
                     if (!CWRUtils.isServer) {
@@ -814,12 +781,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         }
                     }
 
-                    if (++ai6 > 120) {
+                    if (++ai5 > 120) {
                         npc.damage = npc.defDamage * 2;
+                        ai3 = 0;
                         ai4 = 0;
                         ai5 = 0;
-                        ai6 = 0;
-                        ai8 = 0;
+                        ai7 = 0;
                         NetAISend();
                     }
 
@@ -834,31 +801,34 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.position += player.velocity;
                     Vector2 toPoint = player.Center;
 
-                    toPoint = player.Center + new Vector2(0, -500);
+                    toPoint = player.Center + new Vector2(0, death ? -400 : -500);
                     int value = npc.lifeMax - npc.life;
-                    int addNum = (int)(value / 80f);
+                    if (ai4 == 0) {
+                        oneToTwoPrsAddNumBloodValue = (int)(value / 160f);
+                    }
                     if (npc.life >= npc.lifeMax) {
                         npc.life = npc.lifeMax;
                     }
                     else {
-                        npc.life += addNum;
-                        CombatText.NewText(npc.Hitbox, CombatText.HealLife, addNum);
+                        npc.life += oneToTwoPrsAddNumBloodValue;
+                        CombatText.NewText(npc.Hitbox, CombatText.HealLife, oneToTwoPrsAddNumBloodValue);
                     }
 
                     npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.065f);
 
-                    if (ai5 == 0 && CWRUtils.isServer) {
+                    if (ai4 == 0 && CWRUtils.isServer) {
                         SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
                     }
 
-                    ai5++;
-                    if (ai5 > 300 && npc.life >= npc.lifeMax) {
+                    ai4++;
+                    if (ai4 > 160 || npc.life >= npc.lifeMax) {
                         npc.dontTakeDamage = false;
                         npc.damage = npc.defDamage * 2;
+                        ai3 = 0;
                         ai4 = 0;
-                        ai5 = 0;
                     }
-                    break;
+
+                    return true;
             }
 
             return false;
@@ -914,7 +884,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private void FindFrame() {
             if (++frameCount > 10) {
                 if (npc.ai[1] == 0) {
-                    if (noArm && ai10 > 2) {
+                    if (noArm && ai9 > 2) {
                         if (++frame > 4) {
                             frame = 5;
                         }
@@ -935,13 +905,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private bool InIdleAI() {
-            if (npc.ai[1] != 3 && ai11 > 0) {
+            if (npc.ai[1] != 3 && ai10 > 0) {
                 npc.damage = 0;
 
-                if (ai5 == 0) {
+                if (ai4 == 0) {
                     npc.velocity = new Vector2(0, -6);
                 }
-                if (++ai5 < 30) {
+                if (++ai4 < 30) {
                     npc.velocity *= 0.98f;
                 }
                 else {
@@ -962,10 +932,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
                 SmokeDrawer.Update();
 
-                ai11--;
-                if (ai11 <= 0) {
+                ai10--;
+                if (ai10 <= 0) {
                     npc.damage = npc.defDamage * (noArm ? 2 : 1);
-                    ai5 = 0;
+                    ai4 = 0;
                 }
                 return true;
             }
@@ -1034,7 +1004,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void UpdateRotation(NPC npc) {
-            if (NPC.IsMechQueenUp || ai4 == 3) {
+            if (NPC.IsMechQueenUp || ai3 == 3) {
                 npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
             }
             else {
@@ -1057,7 +1027,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private void UpdateVelocity(CalamityGlobalNPC calamityNPC, NPC npc, Vector2 targetVector, float speedMultiplier, float distance) {
             float adjustedSpeed = speedMultiplier / distance;
-            if (death && ai12 >= 1) {
+            if (death && ai11 >= 1) {
                 if (--calamityNPC.newAI[2] <= 0) {
                     npc.velocity.X = targetVector.X * adjustedSpeed;
                     npc.velocity.Y = targetVector.Y * adjustedSpeed;
@@ -1134,7 +1104,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             else {
                 npc.velocity = Vector2.Zero;
-                if (++ai2 >= 60) {
+                if (++ai1 >= 60) {
                     SpawnHouengEffect(npc);
                     npc.active = false;
                     return;

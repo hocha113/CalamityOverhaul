@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         }
 
         public static bool OnPreKillHook(On_NPCDelegate2 orig, NPC npc) {
-            bool? reset = npc.CWR().NPCOverride.On_PreKill(npc);
+            bool? reset = npc.CWR().NPCOverride.On_PreKill();
             if (reset.HasValue) {
                 return reset.Value;
             }

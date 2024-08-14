@@ -5,6 +5,7 @@ using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework.Graphics;
@@ -139,9 +140,10 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     }
 
                     //这些逻辑不可以在客户端上调用，以确保运行结果唯一且不会混乱
-                    BrutalSkeletronPrimeAI.ai5 = 0;
-                    BrutalSkeletronPrimeAI.ai11 = 90;
-                    BrutalSkeletronPrimeAI.NetAISend();
+                    NPCOverride pCOverride = boss.CWR().NPCOverride;
+                    pCOverride.ai[4] = 0;
+                    pCOverride.ai[10] = 90;
+                    pCOverride.NetAISend();
                 }
             }
             FireDrawer = null;

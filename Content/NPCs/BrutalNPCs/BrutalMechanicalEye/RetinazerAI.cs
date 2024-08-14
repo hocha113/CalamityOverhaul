@@ -10,7 +10,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
     {
         public override int TargetID => NPCID.Retinazer;
         public static bool Accompany;
-        public static int[] ai = new int[SpazmatismAI.maxAINum];
         private static int frameIndex;
         private static int frameCount;
         public override void SetProperty() => SpazmatismAI.SetAccompany(npc, ref ai, out Accompany);

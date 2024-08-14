@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 这个NPC实体的对应修改副本
         /// </summary>
-        internal NPCOverride NPCOverride;
+        internal NPCOverride NPCOverride = new NPCOverride();
         #region Data
         public Player CreateHitPlayer;
         public byte ContagionOnHitNum = 0;
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content
             VoidErosionBool = false;
         }
         public override void SetDefaults(NPC npc) {
-            NPCOverride.SetDefaults(NPCOverride, npc, this, npc.Calamity());
+            NPCOverride.SetDefaults(npc, this, npc.Calamity());
             TungstenRiot.SetEventNPC(npc);
         }
 
