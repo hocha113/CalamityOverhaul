@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-            => DeathsAscensionEcType.ShootFunc(ref swingIndex, player, source, position
+            => DeathsAscensionEcType.ShootFunc(ref swingIndex, item, player, source, position
                 , velocity, type, damage, knockback);
     }
 }

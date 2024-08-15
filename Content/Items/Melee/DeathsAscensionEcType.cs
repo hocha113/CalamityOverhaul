@@ -44,17 +44,19 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-            => ShootFunc(ref swingIndex, player, source, position, velocity, type, damage, knockback);
+            => ShootFunc(ref swingIndex, Item, player, source, position, velocity, type, damage, knockback);
 
-        public static bool ShootFunc(ref int swingIndex, Player player, EntitySource_ItemUse_WithAmmo source
+        public static bool ShootFunc(ref int swingIndex, Item Item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
+                Item.useTime = Item.useAnimation = 16;
                 swingIndex = 0;
                 Projectile.NewProjectile(source, position, velocity
                     , ModContent.ProjectileType<DeathsAscensionHeld>(), damage, knockback
                 , player.whoAmI, 0, 0, 1);
                 return false;
             }
+            Item.useTime = Item.useAnimation = 22;
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback
                 , player.whoAmI, swingIndex % 2 == 0 ? 0 : 1, swingIndex + 1);
             return false;

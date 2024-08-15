@@ -53,25 +53,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     OtherMeleeSize = 2.24f;
                 }
                 SwingData.baseSwingSpeed = 12;
-                OtherMeleeSize -= 0.012f;
+                OtherMeleeSize -= 0.006f / SetSwingSpeed(1f);
                 return true;
             }
 
             if (Projectile.ai[2] == 0) {
                 if (Time == 0) {
-                    OtherMeleeSize = 2.24f;
+                    OtherMeleeSize = 1.64f;
                 }
                 if (Projectile.ai[0] == 1) {
                     SwingData.baseSwingSpeed = 5;
                     SwingAIType = SwingAITypeEnum.Down;
                 }
-                OtherMeleeSize -= 0.01f;
+
+                if (Time < maxSwingTime / 3) {
+                    OtherMeleeSize += 0.025f / SetSwingSpeed(1f);
+                }
+                else {
+                    OtherMeleeSize -= 0.005f / SetSwingSpeed(1f);
+                }
             }
             else {
                 overOffsetCachesRoting = MathHelper.ToRadians(6);
                 SwingData.starArg = 60;
                 SwingData.baseSwingSpeed = 5;
-                OtherMeleeSize -= 0.006f;
+                OtherMeleeSize -= 0.006f / SetSwingSpeed(1f);
             }
 
             return base.PreInOwnerUpdate();

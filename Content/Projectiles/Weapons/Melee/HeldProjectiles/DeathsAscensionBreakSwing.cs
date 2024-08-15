@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override void SetDefaults() {
             Projectile.width = 159;
             Projectile.height = 230;
-            Projectile.scale = 1.8f;
+            Projectile.scale = 2.2f;
             Projectile.friendly = true;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Projectile.Right = Owner.MountedCenter;
             }
 
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * 66, 0);
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * 86, 0);
             Owner.ChangeDir(Projectile.direction);
 
             Owner.itemRotation = (Projectile.velocity * Projectile.direction).ToRotation();
