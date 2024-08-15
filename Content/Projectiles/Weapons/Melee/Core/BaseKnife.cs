@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         {
             None = 0,
             UpAndDown,
+            Down,
             Sceptre,
         }
         public sealed override void SetSwingProperty() {
@@ -80,6 +81,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                     }
                     WaveUADBehavior();
                     SwingBehavior(swingData);
+                    break;
+                case SwingAITypeEnum.Down:
+                    inDrawFlipdiagonally = true;
+                    SwingData.starArg += 120;
+                    SwingData.baseSwingSpeed *= -1;
+                    SwingBehavior(SwingData);
                     break;
                 case SwingAITypeEnum.Sceptre:
                     shootSengs = 0.95f;

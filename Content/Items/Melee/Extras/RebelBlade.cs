@@ -37,7 +37,6 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             if (player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeBack>()] == 0
                 && Main.myPlayer == player.whoAmI
                 && player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeFlyAttcke>()] == 0
-                && player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeSlash>()] == 0
                 && !player.PressKey()) {
                 Projectile.NewProjectileDirect(player.parent(), player.Center
                     , Vector2.Zero, ModContent.ProjectileType<RebelBladeBack>(), 0, 0, player.whoAmI);

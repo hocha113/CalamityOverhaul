@@ -51,37 +51,48 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rot * -DirSign);
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, rot2 * -DirSign);
 
-            if (DownLeft && Projectile.ai[2] < 60 && !inOut) {
+            if (Projectile.ai[2] > 120) {
                 Owner.direction = Math.Sign(ToMouse.X);
-                Projectile.ChasingBehavior(InMousePos, 33);
+                Projectile.ChasingBehavior(Owner.Center, 33);
                 Projectile.rotation += 0.6f * Owner.direction;
-                if (Projectile.Distance(InMousePos) < 66) {
-                    Projectile.ai[2]++;
+                if (Projectile.Distance(Owner.Center) < 66) {
+                    Projectile.Kill();
                 }
             }
             else {
-                inOut = true;
-                Vector2 toProj = Owner.Center.To(Projectile.Center);
-                if (CWRServerConfig.Instance.LensEasing) {
-                    Main.SetCameraLerp(0.1f, 10);
+                if (DownLeft && !inOut) {
+                    Owner.direction = Math.Sign(ToMouse.X);
+                    Projectile.ChasingBehavior(InMousePos, 33);
+                    Projectile.rotation += 0.6f * Owner.direction;
+                    if (Projectile.Distance(InMousePos) < 166) {
+                        Projectile.ai[2]++;
+                    }
                 }
-                for (int i = 0; i < 13; i++) {
-                    SparkParticle spark = new SparkParticle(Owner.Center, toProj.UnitVector() * 3
-                        , false, 9, 3.3f, Color.DarkBlue);
-                    GeneralParticleHandler.SpawnParticle(spark);
+                else {
+                    inOut = true;
+                    Vector2 toProj = Owner.Center.To(Projectile.Center);
+                    if (CWRServerConfig.Instance.LensEasing) {
+                        Main.SetCameraLerp(0.1f, 10);
+                    }
+                    for (int i = 0; i < 13; i++) {
+                        SparkParticle spark = new SparkParticle(Owner.Center, toProj.UnitVector() * 3
+                            , false, 9, 3.3f, Color.DarkBlue);
+                        GeneralParticleHandler.SpawnParticle(spark);
+                    }
+                    Projectile.velocity = Vector2.Zero;
+                    Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.12f);
+                    Owner.velocity = toProj.UnitVector();
+                    if (Projectile.Distance(Owner.Center) < 86) {
+                        Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, Owner.velocity
+                            , ModContent.ProjectileType<DeathsAscensionBreakSwing>()
+                            , Projectile.damage * 3, Projectile.knockBack, Owner.whoAmI, 0f, 0f);
+                        Owner.GivePlayerImmuneState(30);
+                        Projectile.Kill();
+                    }
+                    Projectile.rotation -= 0.6f * Owner.direction;
                 }
-                Projectile.velocity = Vector2.Zero;
-                Owner.Center = Vector2.Lerp(Owner.Center, Projectile.Center, 0.12f);
-                Owner.velocity = toProj.UnitVector();
-                if (Projectile.Distance(Owner.Center) < 86) {
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, Owner.velocity
-                        , ModContent.ProjectileType<DeathsAscensionBreakSwing>()
-                        , Projectile.damage * 3, Projectile.knockBack, Owner.whoAmI, 0f, 0f);
-                    Owner.GivePlayerImmuneState(30);
-                    Projectile.Kill();
-                }
-                Projectile.rotation -= 0.6f * Owner.direction;
             }
+            
             if (Projectile.soundDelay <= 0) {
                 SoundEngine.PlaySound(SoundID.Item7 with { Pitch = 0.2f }, Projectile.Center);
                 Projectile.soundDelay = 10;

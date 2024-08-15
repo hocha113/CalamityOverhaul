@@ -3574,6 +3574,7 @@ Projectiles: {
 	// TerrorBladeHeld2.DisplayName: Terror Blade
 	// Fireball.DisplayName: Fireball
 	// DeadLaser2.DisplayName: Dead Laser2
+	// SoulCharmerBlade.DisplayName: Soul Charmer Blade
 }
 
 Configs: {

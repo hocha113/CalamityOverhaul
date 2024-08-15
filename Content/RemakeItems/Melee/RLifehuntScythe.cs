@@ -4,7 +4,6 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Melee
@@ -17,12 +16,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         private int swingIndex = 0;
         public override void SetDefaults(Item item) {
-            swingIndex = 0;
+            item.useTime = item.useAnimation = 22;
             item.UseSound = null;
-            item.noUseGraphic = true;
-            item.noMelee = true;
-            item.useStyle = ItemUseStyleID.Shoot;
-            item.shoot = ModContent.ProjectileType<LifehuntScytheHeld>();
+            item.SetKnifeHeld<LifehuntScytheHeld>();
         }
 
         public override bool? CanUseItem(Item item, Player player) {
