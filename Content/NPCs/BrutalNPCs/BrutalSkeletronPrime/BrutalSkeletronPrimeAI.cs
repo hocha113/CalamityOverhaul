@@ -500,7 +500,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.ai[1] = 1f;
                     calamityNPC.newAI[0]++;
                     if (!CWRUtils.isClient && calamityNPC.newAI[0] >= 2) {
-                        int damage = SetMultiplier(npc.GetProjectileDamage(ModContent.ProjectileType<SetPosingStarm>()));
+                        int damage = SetMultiplier(npc.defDamage / 3);
                         Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
                             , ModContent.ProjectileType<SetPosingStarm>(), damage, 2, -1, 0, npc.whoAmI);
                         calamityNPC.newAI[0] = 0;

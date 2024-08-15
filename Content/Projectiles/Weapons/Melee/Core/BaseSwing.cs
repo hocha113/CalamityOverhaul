@@ -542,20 +542,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
                 float factor = 1f - i / count;
                 Vector2 Center = Owner.GetPlayerStabilityCenter();
-                float r = oldRotate[i] % 6.18f;
+                float r = oldRotate[i] % MathHelper.TwoPi;
                 float dir = (r >= 3.14f ? r - 3.14f : r + 3.14f) / MathHelper.TwoPi;
-                Vector2 Top = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] + drawTrailTopWidth + oldDistanceToOwner[i]);
-                Vector2 Bottom = Center + oldRotate[i].ToRotationVector2() * (oldLength[i] - ControlTrailBottomWidth(factor) * 1.25f + oldDistanceToOwner[i]);
+                Vector2 Top = Center + (oldRotate[i].ToRotationVector2() * 
+                    (oldLength[i] + drawTrailTopWidth * meleeSizeAsymptotic + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
+                Vector2 Bottom = Center + (oldRotate[i].ToRotationVector2() * 
+                    (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
 
                 bars.Add(new CustomVertexInfo(Top, new Color(dir, w, 0f, 15), new Vector3(factor, 0f, w)));
                 bars.Add(new CustomVertexInfo(Bottom, new Color(dir, w, 0f, 15), new Vector3(factor, 1f, w)));
             }
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointWrap
+                , DepthStencilState.Default, RasterizerState.CullNone);
 
             Matrix projection = Matrix.CreateOrthographicOffCenter(0f, Main.screenWidth, Main.screenHeight, 0f, 0f, 1f);
-            Matrix model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0f)) * Main.GameViewMatrix.TransformationMatrix;
+            Matrix model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0f)) 
+                * Main.GameViewMatrix.TransformationMatrix;
             Effect effect = EffectLoader.KnifeDistortion;
             effect.Parameters["uTransform"].SetValue(model * projection);
             Main.graphics.GraphicsDevice.Textures[0] = TrailTexture;
@@ -566,7 +570,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             }
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None
+                , RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         public virtual void GetCurrentTrailCount(out float count) {

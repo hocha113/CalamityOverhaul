@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
             distanceToOwner = 30;
-            drawTrailTopWidth = 50;
+            drawTrailTopWidth = 70;
             canDrawSlashTrail = true;
             ownerOrientationLock = true;
             Length = 140;
@@ -60,6 +60,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     lavaFire.ai[1] = 0;
                     lavaFire.minLifeTime = 22;
                     lavaFire.maxLifeTime = 30;
+                    lavaFire.colors = new Color[3];
+                    lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
+                    lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
+                    lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
                     PRTLoader.AddParticle(lavaFire);
                 }
                 return;
@@ -85,6 +89,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 lavaFire.ai[1] = 0;
                 lavaFire.minLifeTime = 22;
                 lavaFire.maxLifeTime = 30;
+                lavaFire.colors = new Color[3];
+                lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
+                lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
+                lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
                 PRTLoader.AddParticle(lavaFire);
             }
         }
@@ -96,6 +104,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 return;
             }
             else if (Projectile.ai[0] == 2) {
+                canDrawSlashTrail = false;
+                OtherMeleeSize = 1.25f;
                 SwingBehavior(33, 2, 0.1f, 0.1f, 0.006f, 0.016f, 0.16f, 0, 0, 0, 12, 80);
                 maxSwingTime = 80;
                 return;
@@ -168,7 +178,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
             Vector2 toOwner = Projectile.Center - Owner.GetPlayerStabilityCenter();
-            Vector2 offsetOwnerPos = toOwner.GetNormalVector() * 16 * Projectile.spriteDirection;
+            Vector2 offsetOwnerPos = toOwner.GetNormalVector() * 16 * Projectile.spriteDirection * MeleeSize;
             Vector2 pos = Projectile.Center - RodingToVer(48, toOwner.ToRotation()) + offsetOwnerPos;
             Vector2 drawPos = pos - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;
 
@@ -178,8 +188,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
 
             if (Projectile.ai[0] == 2) {
-                CWRUtils.DrawMarginEffect(Main.spriteBatch, texture, Time, drawPos, null, Color.OrangeRed * 0.6f
-                    , drawRoting, drawOrigin, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+                CWRUtils.DrawMarginEffect(Main.spriteBatch, texture, Time, drawPos, null, Color.Gold * 0.6f
+                    , drawRoting, drawOrigin, Projectile.scale * MeleeSize, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             }
 
             Main.EntitySpriteDraw(texture, drawPos, new Rectangle?(rect), Color.White

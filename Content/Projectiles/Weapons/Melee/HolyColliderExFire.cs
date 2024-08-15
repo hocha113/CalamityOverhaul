@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 400;
-            Projectile.timeLeft = 20;
+            Projectile.timeLeft = 30;
             Projectile.aiStyle = -1;
             Projectile.penetrate = -1;
             Projectile.friendly = true;
@@ -24,7 +24,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 2;
             Projectile.DamageType = DamageClass.Melee;
-
         }
 
         private void SpwanPRKAndDustEffect() {
@@ -63,6 +62,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         Color = Color.White
                     };
                     lavaFire.ai[1] = 2;
+                    lavaFire.colors = new Color[3];
+                    lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
+                    lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
+                    lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
                     PRTLoader.AddParticle(lavaFire);
                 }
                 for (int i = 0; i < 20; i++) {
@@ -76,6 +79,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     lavaFire.ai[1] = 0;
                     lavaFire.minLifeTime = 60;
                     lavaFire.maxLifeTime = 90;
+                    lavaFire.colors = new Color[3];
+                    lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
+                    lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
+                    lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
                     PRTLoader.AddParticle(lavaFire);
                 }
                 return;
@@ -96,6 +103,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     Color = Color.White
                 };
                 lavaFire.ai[1] = 2;
+                lavaFire.colors = new Color[3];
+                lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
+                lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
+                lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
                 PRTLoader.AddParticle(lavaFire);
             }
             for (int i = 0; i < 20; i++) {
@@ -109,6 +120,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 lavaFire.ai[1] = 0;
                 lavaFire.minLifeTime = 30;
                 lavaFire.maxLifeTime = 60;
+                lavaFire.colors = new Color[3];
+                lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
+                lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
+                lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
                 PRTLoader.AddParticle(lavaFire);
             }
         }
@@ -119,6 +134,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     SoundEngine.PlaySound(SoundID.Item69, Projectile.Center);
                 }
                 else {
+                    Projectile.timeLeft = 40;
                     Vector2 origPos = Projectile.Center;
                     Projectile.width = Projectile.height = 1400;
                     Projectile.Center = origPos;

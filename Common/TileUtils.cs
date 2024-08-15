@@ -68,6 +68,136 @@ namespace CalamityOverhaul.Common
             return num;
         }
 
+        private static void CheckDoorClosed(int i, int j, Tile tileCache, int type) {
+            if (destroyObject) {
+                return;
+            }
+            int num = j;
+            bool flag = false;
+            int frameY = tileCache.TileFrameY;
+            int num2 = frameY / 54;
+            num2 += tileCache.TileFrameX / 54 * 36;
+            num = j - frameY % 54 / 18;
+            Tile tile = Main.tile[i, num - 1];
+            Tile tile2 = Main.tile[i, num];
+            Tile tile3 = Main.tile[i, num + 1];
+            Tile tile4 = Main.tile[i, num + 2];
+            Tile tile5 = Main.tile[i, num + 3];
+            if (tile == null) {
+                tile = default(Tile);
+            }
+            if (tile2 == null) {
+                tile2 = default(Tile);
+            }
+            if (tile3 == null) {
+                tile3 = default(Tile);
+            }
+            if (tile4 == null) {
+                tile4 = default(Tile);
+            }
+            if (tile5 == null) {
+                tile5 = default(Tile);
+            }
+            if (!SolidTile(tile)) {
+                flag = true;
+            }
+            if (!SolidTile(tile5)) {
+                flag = true;
+            }
+            if (!tile2.IsActive() || tile2.TileType != type) {
+                flag = true;
+            }
+            if (!tile3.IsActive() || tile3.TileType != type) {
+                flag = true;
+            }
+            if (!tile4.IsActive() || tile4.TileType != type) {
+                flag = true;
+            }
+            if (flag) {
+                destroyObject = true;
+                bool num3 = TileLoader.Drop(i, j, type);
+                KillTile(i, num);
+                KillTile(i, num + 1);
+                KillTile(i, num + 2);
+                if (num3) {
+                    DropDoorItem(i, j, num2);
+                }
+            }
+            destroyObject = false;
+        }
+
+        private static void CheckDoorOpen(int i, int j, Tile tileCache) {
+            if (destroyObject) {
+                return;
+            }
+            int num = 0;
+            int num2 = i;
+            int num3 = j;
+            short frameX = tileCache.TileFrameX;
+            int frameY = tileCache.TileFrameY;
+            int num4 = frameY / 54;
+            num4 += tileCache.TileFrameX / 72 * 36;
+            num3 = j - frameY % 54 / 18;
+            bool flag = false;
+            switch (frameX % 72) {
+                case 0:
+                    num2 = i;
+                    num = 1;
+                    break;
+                case 18:
+                    num2 = i - 1;
+                    num = 1;
+                    break;
+                case 36:
+                    num2 = i + 1;
+                    num = -1;
+                    break;
+                case 54:
+                    num2 = i;
+                    num = -1;
+                    break;
+            }
+            Tile tile = Main.tile[num2, num3 - 1];
+            Tile tile2 = Main.tile[num2, num3 + 3];
+            if (tile == null) {
+                tile = default(Tile);
+            }
+            if (tile2 == null) {
+                tile2 = default(Tile);
+            }
+            if (!SolidTile(tile) || !SolidTile(tile2)) {
+                flag = true;
+                destroyObject = true;
+                if (TileLoader.Drop(i, j, tileCache.TileType)) {
+                    DropDoorItem(i, j, num4);
+                }
+            }
+            int num5 = num2;
+            if (num == -1) {
+                num5 = num2 - 1;
+            }
+            for (int k = num5; k < num5 + 2; k++) {
+                for (int l = num3; l < num3 + 3; l++) {
+                    if (!flag) {
+                        Tile tile3 = Main.tile[k, l];
+                        if (!tile3.IsActive() || tile3.TileType != 11) {
+                            destroyObject = true;
+                            if (TileLoader.Drop(i, j, tileCache.TileType)) {
+                                DropDoorItem(i, j, num4);
+                            }
+                            flag = true;
+                            k = num5;
+                            l = num3;
+                        }
+                    }
+                    if (flag) {
+                        KillTile(k, l);
+                    }
+                }
+            }
+            destroyObject = false;
+        }
+
         private static void SetFrameNumber(this Tile tile, byte frameNumber) => tile.TileFrameNumber = frameNumber;
         private static byte GetFrameNumber(this Tile tile) => (byte)tile.TileFrameNumber;
         private static bool GetInvisibleBlock(this Tile tile) => tile.IsTileInvisible;
@@ -457,14 +587,14 @@ namespace CalamityOverhaul.Common
                                                 break;
                                             default:
                                                 if (num != 296 && num != 297 && num != 309 && num != 358 && num != 359 && num != 413 && num != 414 && num != 542 && num != 550 && num != 551 && num != 553 && num != 554 && num != 558 && num != 559 && num != 599 && num != 600 && num != 601 && num != 602 && num != 603 && num != 604 && num != 605 && num != 606 && num != 607 && num != 608 && num != 609 && num != 610 && num != 611 && num != 612 && num != 632 && num != 640 && num != 643 && num != 644 && num != 645) {
-                                                    //if (num == 10) {
-                                                    //    CheckDoorClosed(i, j, tile, num);
-                                                    //    break;
-                                                    //}
-                                                    //if (num == 11) {
-                                                    //    CheckDoorOpen(i, j, tile);
-                                                    //    break;
-                                                    //}
+                                                    if (num == 10) {
+                                                        CheckDoorClosed(i, j, tile, num);
+                                                        break;
+                                                    }
+                                                    if (num == 11) {
+                                                        CheckDoorOpen(i, j, tile);
+                                                        break;
+                                                    }
                                                     if (num == 314) {
                                                         Minecart.FrameTrack(i, j, pound: false);
                                                         tile2 = Main.tile[i, j - 1];
