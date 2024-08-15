@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override int TargetID => ModContent.ItemType<Brimlash>();
         public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
-        public override string glowTexturePath => CWRConstant.Item_Melee + "BrimlashGlow";
+        public override string GlowTexturePath => CWRConstant.Item_Melee + "BrimlashGlow";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 40;
             drawTrailHighlight = false;

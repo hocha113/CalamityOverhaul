@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             foreach (var swing in Swings) {
                 string path1 = swing.trailTexturePath;
                 string path2 = swing.gradientTexturePath;
-                string path3 = swing.glowTexturePath;
+                string path3 = swing.GlowTexturePath;
 
                 if (path1 == "") {
                     path1 = CWRConstant.Masking + "MotionTrail3";

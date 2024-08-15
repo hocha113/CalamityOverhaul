@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override int TargetID => ModContent.ItemType<TerrorBlade>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "TerrorBlade_Bar";
-        public override string glowTexturePath => CWRConstant.Cay_Wap_Melee + "TerrorBladeGlow";
+        public override string GlowTexturePath => CWRConstant.Cay_Wap_Melee + "TerrorBladeGlow";
         private float rageEnergy { get => Item.CWR().MeleeCharge; set => Item.CWR().MeleeCharge = value; }
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 86;

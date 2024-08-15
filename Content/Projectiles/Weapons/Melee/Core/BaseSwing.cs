@@ -23,6 +23,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         private bool isInitialize;
         protected Vector2 vector;
         protected Vector2 startVector;
+        /// <summary>
+        /// 主纹理资源
+        /// </summary>
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         /// <summary>
         /// 刀刃是否应该受近战缩放影响
@@ -132,8 +135,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 一个垂直于手臂的绘制矫正模长，默认为0
         /// </summary>
         protected float unitOffsetDrawZkMode;
+        /// <summary>
+        /// 历史旋转角度
+        /// </summary>
         protected float[] oldRotate;
+        /// <summary>
+        /// 历史挥舞模长
+        /// </summary>
         protected float[] oldLength;
+        /// <summary>
+        /// 历史离心距离
+        /// </summary>
         protected float[] oldDistanceToOwner;
         /// <summary>
         /// 绘制刀光时是否应用高光渲染，默认为<see langword="true"/>
@@ -143,6 +155,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 更新率，值为<see cref="Projectile.extraUpdates"/>+1，使用之前请注意<see cref="Projectile.extraUpdates"/>是否已经被正确设置
         /// </summary>
         internal int updateCount => Projectile.extraUpdates + 1;
+        //不要直接设置这个
         private bool _canDrawSlashTrail;
         /// <summary>
         /// 是否绘制弧光，默认为<see langword="false"/>
@@ -211,10 +224,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 光效遮盖图路径
         /// </summary>
-        public virtual string glowTexturePath => "";
+        public virtual string GlowTexturePath => "";
+        /// <summary>
+        /// 关于弧光绘制的流形图，制造刀光的纹路
+        /// </summary>
         public Texture2D TrailTexture => SwingSystem.trailTextures[Type].Value;
+        /// <summary>
+        /// 着色纹理图，用于制造刀光的颜色
+        /// </summary>
         public Texture2D GradientTexture => SwingSystem.gradientTextures[Type].Value;
+        /// <summary>
+        /// 是否可以绘制光效遮罩，如果给<see cref="GlowTexturePath"/>重写了一个合适的路径，将会返回<see cref="true"/>，此时刀体将自动绘制光效遮罩
+        /// </summary>
         public bool canDrawGlow { get; private set; }
+        //光效遮罩纹理缓存，不要直接设置这个
         private Asset<Texture2D> glowTexValue;
 
         public struct SwingDataStruct
