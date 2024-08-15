@@ -1,0 +1,98 @@
+﻿using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Projectiles.Melee;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using CalamityOverhaul.Content.RemakeItems.Core;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.Items.Melee
+{
+    internal class HellfireFlambergeEcType : EctypeItem
+    {
+        public override string Texture => CWRConstant.Cay_Wap_Melee + "HellfireFlamberge";
+        public override void SetDefaults() {
+            Item.SetCalamitySD<HellfireFlamberge>();
+            Item.SetKnifeHeld<HellfireFlambergeHeld>();
+        }
+    }
+
+    internal class RHellfireFlamberge : BaseRItem
+    {
+        public override int TargetID => ModContent.ItemType<HellfireFlamberge>();
+        public override int ProtogenesisID => ModContent.ItemType<HellfireFlambergeEcType>();
+        public override void SetDefaults(Item item) => item.SetKnifeHeld<HellfireFlambergeHeld>();
+        public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            return false;
+        }
+    }
+
+    internal class HellfireFlambergeHeld : BaseKnife
+    {
+        public override int TargetID => ModContent.ItemType<HellfireFlamberge>();
+        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "RedSun_Bar";
+        public override void SetKnifeProperty() {
+            Projectile.width = Projectile.height = 66;
+            canDrawSlashTrail = true;
+            distanceToOwner = -20;
+            drawTrailBtommWidth = 20;
+            drawTrailTopWidth = 40;
+            drawTrailCount = 13;
+            Length = 62;
+            SwingData.starArg = 68;
+            SwingData.baseSwingSpeed = 3.5f;
+            ShootSpeed = 20;
+        }
+
+        public override void Shoot() {
+            SoundEngine.PlaySound(SoundID.Item20, Owner.Center);
+            Vector2 velocity = ShootVelocity;
+            Vector2 position = ShootSpanPos;
+            int type = ModContent.ProjectileType<VolcanicFireball>();
+            for (int index = 0; index < 3; ++index) {
+                float SpeedX = velocity.X + (float)Main.rand.Next(-40, 41) * 0.05f;
+                float SpeedY = velocity.Y + (float)Main.rand.Next(-40, 41) * 0.05f;
+                float damageMult = 0.5f;
+                
+                switch (index) {
+                    case 0:
+                    case 1:
+                        type = ModContent.ProjectileType<VolcanicFireball>();
+                        break;
+                    case 2:
+                        type = ModContent.ProjectileType<VolcanicFireballLarge>();
+                        damageMult = 0.75f;
+                        break;
+                    default:
+                        break;
+                }
+                Projectile.NewProjectile(Source, position.X, position.Y, SpeedX, SpeedY
+                    , type, (int)(Projectile.damage * damageMult)
+                    , Projectile.knockBack, Owner.whoAmI, 0f, 0f);
+            }
+        }
+
+        public override void MeleeEffect() {
+            if (Main.rand.NextBool(3)) {
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, Main.rand.NextBool(3) ? 16 : 174);
+            }
+            if (Main.rand.NextBool(5) && Main.netMode != NetmodeID.Server) {
+                int smoke = Gore.NewGore(Owner.GetSource_ItemUse(Item), Projectile.position, default, Main.rand.Next(375, 378), 0.75f);
+                Main.gore[smoke].behindTiles = true;
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            target.AddBuff(BuffID.OnFire3, 300);
+        }
+
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
+            target.AddBuff(BuffID.OnFire3, 300);
+        }
+    }
+}

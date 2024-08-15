@@ -36,82 +36,82 @@ namespace CalamityOverhaul.Common
         /// <summary>
         /// 是否开启强制内容替换
         /// </summary>
-        [BackgroundColor(35, 185, 78, 192)]
+        [BackgroundColor(35, 185, 78, 255)]
         [ReloadRequired]
         [DefaultValue(true)]
         public bool ForceReplaceResetContent { get; set; }
 
-        [BackgroundColor(35, 185, 78, 192)]
+        [BackgroundColor(35, 185, 78, 255)]
         [ReloadRequired]
         [DefaultValue(true)]
         public bool AddExtrasContent { get; set; }
 
-        [BackgroundColor(35, 185, 78, 192)]
+        [BackgroundColor(35, 185, 78, 255)]
         [ReloadRequired]
         [DefaultValue(true)]
         public bool BiobehavioralOverlay { get; set; }
 
-        [BackgroundColor(35, 185, 78, 192)]
+        [BackgroundColor(35, 185, 78, 255)]
         [DefaultValue(true)]
         public bool WeaponEnhancementSystem { get; set; }
 
-        [BackgroundColor(35, 185, 78, 192)]
+        [BackgroundColor(35, 185, 78, 255)]
         [ReloadRequired]
         [DefaultValue(false)]
         public bool OpeningOukModification { get; set; }
 
-        [BackgroundColor(35, 185, 78, 192)]
+        [BackgroundColor(35, 185, 78, 255)]
         [DefaultValue(true)]
         public bool ResetItemReminder { get; set; }//温馨提示
 
         [Header("CWRWeapon")]
 
-        [BackgroundColor(192, 54, 94, 192)]
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool WeaponHandheldDisplay { get; set; }
 
-        [BackgroundColor(192, 54, 94, 192)]
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool EnableSwordLight { get; set; }
 
-        [BackgroundColor(192, 54, 94, 192)]
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool ActivateGunRecoil { get; set; }
 
-        [BackgroundColor(192, 54, 94, 192)]
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool MagazineSystem { get; set; }
 
-        [BackgroundColor(192, 54, 94, 192)]
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool EnableCasingsEntity { get; set; }
 
-        [BackgroundColor(192, 54, 94, 192)]
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool BowArrowDraw { get; set; }
 
-        [BackgroundColor(192, 54, 94, 192)]
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool WeaponAdaptiveIllumination { get; set; }
 
-        [BackgroundColor(192, 54, 94, 192)]
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool WeaponAdaptiveVolumeScaling { get; set; }
 
-        [BackgroundColor(192, 54, 94, 192)]
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(false)]
         public bool ShotgunFireForcedReloadInterruption { get; set; }
 
-        [BackgroundColor(192, 54, 94, 192)]
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool ScreenVibration { get; set; }//武器屏幕振动
 
-        [BackgroundColor(192, 54, 94, 192)]
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool MurasamaSpaceFragmentationBool { get; set; }//鬼妖终结技碎屏效果
 
-        [BackgroundColor(192, 54, 94, 192)]
-        [SliderColor(224, 165, 56, 128)]
+        [BackgroundColor(192, 54, 94, 255)]
+        [SliderColor(224, 165, 56, 255)]
         [Range(Date.LoadingAA_Volume_MinValue, Date.LoadingAA_Volume_MaxValue)]
         [DefaultValue(1)]
         public float LoadingAA_Volume {
@@ -130,8 +130,8 @@ namespace CalamityOverhaul.Common
         /// <summary>
         /// 鬼妖刀刃大小调节
         /// </summary>
-        [BackgroundColor(192, 54, 94, 192)]
-        [SliderColor(224, 165, 56, 128)]
+        [BackgroundColor(192, 54, 94, 255)]
+        [SliderColor(224, 165, 56, 255)]
         [Range(Date.MScaleOffset_MinValue, Date.MScaleOffset_MaxValue)]
         [DefaultValue(1)]
         public float MurasamaScaleOffset {
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Common
         /// <summary>
         /// 镜头缓动
         /// </summary>
-        [BackgroundColor(192, 54, 94, 192)]
+        [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool LensEasing { get; set; }
 
@@ -159,8 +159,8 @@ namespace CalamityOverhaul.Common
         /// <summary>
         /// 鬼妖升龙冷却UI大小调节
         /// </summary>
-        [BackgroundColor(45, 175, 225, 192)]
-        [SliderColor(224, 165, 56, 128)]
+        [BackgroundColor(45, 175, 225, 255)]
+        [SliderColor(224, 165, 56, 255)]
         [Range(Date.M_RDCD_BarSize_MinValue, Date.M_RDCD_BarSize_MaxValue)]
         [DefaultValue(1)]
         public float MurasamaRisingDragonCoolDownBarSize {
@@ -179,8 +179,8 @@ namespace CalamityOverhaul.Common
         /// <summary>
         /// 弹夹UI位置调节_X
         /// </summary>
-        [BackgroundColor(45, 175, 225, 192)]
-        [SliderColor(224, 165, 56, 128)]
+        [BackgroundColor(45, 175, 225, 255)]
+        [SliderColor(224, 165, 56, 255)]
         [Range(Date.CartridgeUI_Offset_X_MinValue, Date.CartridgeUI_Offset_X_MaxValue)]
         [DefaultValue(1)]
         public int CartridgeUI_Offset_X_Value {
@@ -199,8 +199,8 @@ namespace CalamityOverhaul.Common
         /// <summary>
         /// 弹夹UI位置调节_Y
         /// </summary>
-        [BackgroundColor(45, 175, 225, 192)]
-        [SliderColor(224, 165, 56, 128)]
+        [BackgroundColor(45, 175, 225, 255)]
+        [SliderColor(224, 165, 56, 255)]
         [Range(Date.CartridgeUI_Offset_Y_MinValue, Date.CartridgeUI_Offset_Y_MaxValue)]
         [DefaultValue(1)]
         public int CartridgeUI_Offset_Y_Value {

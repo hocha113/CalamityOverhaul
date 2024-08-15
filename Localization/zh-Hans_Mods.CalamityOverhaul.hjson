@@ -2632,9 +2632,9 @@ Items: {
 		DisplayName: 死神擢升
 		Tooltip:
 			'''
-			每轮挥舞都会掷出收割灵魂的死神之镰
 			每三轮挥舞会将巨大化的飞镰掷出
 			按住左键让飞镰追寻光标位置，松开左键触发死神半月
+			右键挥舞都会掷出收割灵魂的死神之镰
 			'''
 	}
 
@@ -3575,6 +3575,7 @@ Projectiles: {
 	// Fireball.DisplayName: Fireball
 	// DeadLaser2.DisplayName: Dead Laser2
 	// SoulCharmerBlade.DisplayName: Soul Charmer Blade
+	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
 }
 
 Configs: {

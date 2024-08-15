@@ -1,4 +1,5 @@
-﻿using CalamityMod.Events;
+﻿using CalamityMod;
+using CalamityMod.Events;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.UI;
 using CalamityOverhaul.Content;
@@ -12,11 +13,13 @@ using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Events;
+using Terraria.GameContent.Prefixes;
 using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.Core;
+using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Common
@@ -35,6 +38,7 @@ namespace CalamityOverhaul.Common
         public delegate bool On_AttemptPowerAttackStart_Dalegate(object obj, Item item, Player player);
         public delegate bool On_OnSpawnEnchCanAffectProjectile_Dalegate(Projectile projectile, bool allowMinions);
         public delegate void On_BossHealthBarManager_Draw_Dalegate(object obj, SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info);
+        public delegate int On_GetReworkedReforge_Dalegate(Item item, UnifiedRandom rand, int currentPrefix);
 
         public static Type[] weaponOutCodeTypes;
 
@@ -80,6 +84,8 @@ namespace CalamityOverhaul.Common
 
         public static Type MS_Config_Type;
         public static FieldInfo MS_Config_recursionCraftingDepth_FieldInfo;
+
+        public static MethodBase calamityUtils_GetReworkedReforge_Method;
 
         internal static bool InfernumModeOpenState => 
             CWRMod.Instance.infernum == null ? false : (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
@@ -355,6 +361,14 @@ namespace CalamityOverhaul.Common
                 Domp1("BossHealthBarManager_Draw_Method", "CalamityMod.BossHealthBarManager");
             }
 
+            calamityUtils_GetReworkedReforge_Method = typeof(CalamityUtils).GetMethod("GetReworkedReforge", BindingFlags.Static | BindingFlags.NonPublic);
+            if (calamityUtils_GetReworkedReforge_Method != null) {
+                CWRHook.Add(calamityUtils_GetReworkedReforge_Method, OnGetReworkedReforgeHook);
+            }
+            else {
+                Domp1("calamityUtils_GetReworkedReforge_Method", "CalamityUtils.GetReworkedReforge");
+            }
+
             #endregion
         }
 
@@ -392,6 +406,14 @@ namespace CalamityOverhaul.Common
             BossHealthBarManager_Draw_Method = null;
             MS_Config_Type = null;
             MS_Config_recursionCraftingDepth_FieldInfo = null;
+            calamityUtils_GetReworkedReforge_Method = null;
+        }
+
+        internal static int OnGetReworkedReforgeHook(On_GetReworkedReforge_Dalegate orig
+            , Item item, UnifiedRandom rand, int currentPrefix) {
+            int reset = orig.Invoke(item, rand, currentPrefix);
+            reset = OnCalamityReforgeEvent.HandleCalamityReforgeModificationDueToMissingItemLoader(item, rand, currentPrefix);
+            return reset;
         }
 
         internal static void On_FGS_FGSGlobalProj_PostAI_Hook(On_PostAI_Dalegate orig, object instance, Projectile projectile) {
