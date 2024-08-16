@@ -92,7 +92,6 @@ namespace CalamityOverhaul.Content
         /// 挥舞索引，一般被刀具所使用
         /// </summary>
         public int SwingIndex;
-        
 
         /// <summary>
         /// 是否受伤

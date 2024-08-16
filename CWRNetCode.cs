@@ -1,12 +1,11 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.TileEntitys;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
@@ -23,9 +22,57 @@ namespace CalamityOverhaul
         ProjViscosityData,
     }
 
-    public class CWRNetCode
+    public interface INetWork
     {
+        /// <summary>
+        /// 默认为-1值，当返回值小于0时，系统将自动分配一个网络ID用于数据匹配
+        /// ，如果大于0，将会指向性的寻找对应ID的网络接收点
+        /// </summary>
+        public short MessageType => -1;
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        public void NetSend();
+        /// <summary>
+        /// 接收数据
+        /// </summary>
+        /// <param name="mod"></param>
+        /// <param name="reader"></param>
+        /// <param name="whoAmI"></param>
+        public void NetReceive(Mod mod, BinaryReader reader, int whoAmI);
+    }
+
+    public class CWRNetCode : ILoader
+    {
+        internal static List<INetWork> INetWorks { get; private set; }
+        internal static Dictionary<Type, int> NetWorkIDDic { get; private set; }
+        void ILoader.LoadData() {
+            INetWorks = CWRUtils.GetSubInterface<INetWork>();
+            for (int index = 0; index < INetWorks.Count; index++) {
+                INetWork netWork = INetWorks[index];
+                Type instanceType = netWork.GetType();
+                if (!NetWorkIDDic.TryAdd(instanceType, index)) {
+                    string errorText = $"在添加网络对象{instanceType.Name}时出现异常，字典含有重复的值";
+                    CWRMod.Instance.Logger.Info(errorText);
+                }
+            }
+        }
+        void ILoader.UnLoadData() {
+            INetWorks = null;
+        }
+
         public static void HandlePacket(Mod mod, BinaryReader reader, int whoAmI) {
+            short netWorkID = reader.ReadInt16();
+            foreach (var netWork in INetWorks) {
+                int targetNetID = netWork.MessageType;
+                if (targetNetID < 0) {
+                    targetNetID = NetWorkIDDic[netWork.GetType()];
+                }
+                if (targetNetID == netWorkID) {
+                    netWork.NetReceive(mod, reader, whoAmI);
+                }
+            }
+
             CWRMessageType type = (CWRMessageType)reader.ReadByte();
             if (type == CWRMessageType.DompBool) {
                 Main.player[reader.ReadInt32()].CWR().HandleDomp(reader);
@@ -34,22 +81,13 @@ namespace CalamityOverhaul
                 Main.player[reader.ReadInt32()].CWR().HandleRecoilAcceleration(reader);
             }
             else if (type == CWRMessageType.TungstenRiot) {
-                TungstenRiot.Instance.TungstenRiotIsOngoing = reader.ReadBoolean();
-                TungstenRiot.Instance.EventKillPoints = reader.ReadInt32();
+                TungstenRiot.EventNetWorkReceive(reader);
             }
             else if (type == CWRMessageType.TEBloodAltar) {
                 TEBloodAltar.ReadTEData(mod, reader);
             }
             else if (type == CWRMessageType.OverBeatBack) {
-                byte npcIdx = reader.ReadByte();
-                NPC npc = Main.npc[npcIdx];
-                if (npc.type == NPCID.None || !npc.active) {
-                    return;
-                }
-                CWRNpc modnpc = npc.CWR();
-                modnpc.OverBeatBackBool = reader.ReadBoolean();
-                modnpc.OverBeatBackVr = reader.ReadVector2();
-                modnpc.OverBeatBackAttenuationForce = reader.ReadSingle();
+                CWRNpc.OverBeatBackReceive(reader);
             }
             else if (type == CWRMessageType.NPCOverrideAI) {
                 NPCOverride.NetAIReceive(reader);

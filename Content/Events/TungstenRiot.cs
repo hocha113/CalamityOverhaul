@@ -6,6 +6,7 @@ using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -95,7 +96,7 @@ namespace CalamityOverhaul.Content.Events
                 EventKillPoints = (int)MaxEventIntegration;
             }
 
-            EventNetWork();
+            EventNetWorkSend();
 
             return true;
         }
@@ -108,7 +109,7 @@ namespace CalamityOverhaul.Content.Events
             }
             TungstenRiotIsOngoing = false;
             EventKillPoints = 0;
-            EventNetWork();
+            EventNetWorkSend();
             CWRUtils.Text(CWRLocText.GetTextValue("Event_TungstenRiot_Text_2"), MainColor);
         }
 
@@ -124,7 +125,7 @@ namespace CalamityOverhaul.Content.Events
             }
         }
 
-        public void EventNetWork(int ignoreIndex = -1) {
+        public void EventNetWorkSend(int ignoreIndex = -1) {
             if (CWRUtils.isServer) {
                 NetMessage.SendData(MessageID.WorldData);
                 var netMessage = CWRMod.Instance.GetPacket();
@@ -133,6 +134,11 @@ namespace CalamityOverhaul.Content.Events
                 netMessage.Write(EventKillPoints);
                 netMessage.Send(-1, ignoreIndex);
             }
+        }
+
+        public static void EventNetWorkReceive(BinaryReader reader) {
+            Instance.TungstenRiotIsOngoing = reader.ReadBoolean();
+            Instance.EventKillPoints = reader.ReadInt32();
         }
 
         public void ModifyEventNPCLoot(NPC npc, ref NPCLoot npcLoot) {

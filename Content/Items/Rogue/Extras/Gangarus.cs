@@ -33,6 +33,9 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             if (!CWRServerConfig.Instance.AddExtrasContent) {
                 return;
             }
+            if (Main.dedServ) {
+                return;
+            }
             TextureAssets.Item[CWRLoad.Gangarus] = Main.zenithWorld
                 ? CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3")
                 : CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");

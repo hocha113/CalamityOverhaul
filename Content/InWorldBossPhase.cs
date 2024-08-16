@@ -6,12 +6,12 @@ using Terraria;
 namespace CalamityOverhaul.Content
 {
     //这个类是用来进行判断游戏进度的，这很无赖，但我别无他法
-    public class InWorldBossPhase
+    public class InWorldBossPhase : ILoader
     {
         public static InWorldBossPhase Instance { get; private set; }
 
-        public void Load() => Instance = this;
-        public static void UnLoad() => Instance = null;
+        void ILoader.LoadData() => Instance = new InWorldBossPhase();
+        void ILoader.UnLoadData() => Instance = null;
 
         #region Date
 

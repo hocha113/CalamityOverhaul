@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content
             tag.Add("_Event_TungstenRiotIsOngoing", TungstenRiot.Instance.TungstenRiotIsOngoing);
             tag.Add("_Event_EventKillPoints", TungstenRiot.Instance.EventKillPoints);
             if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-                TungstenRiot.Instance.EventNetWork();
+                TungstenRiot.Instance.EventNetWorkSend();
             }
         }
 

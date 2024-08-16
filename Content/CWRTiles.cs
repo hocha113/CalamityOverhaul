@@ -11,6 +11,10 @@ namespace CalamityOverhaul.Content
 {
     internal class CWRTiles : GlobalTile
     {
+        public override bool CanPlace(int i, int j, int type) {
+            return base.CanPlace(i, j, type);
+        }
+
         public override void RightClick(int i, int j, int type) {
             Mod musicMod = CWRMod.Instance.musicMod;
             if (musicMod is not null) {
@@ -24,7 +28,7 @@ namespace CalamityOverhaul.Content
                         }
                     }
 
-                    if (Main.myPlayer == 0) {
+                    if (Main.myPlayer == 255) {
                         Projectile.NewProjectile(Main.LocalPlayer.parent(), new Vector2(i, j) * 16, Vector2.Zero
                             , ModContent.ProjectileType<TitleMusicBoxEasterEggProj>(), 0, 0, 0, 0, i * 16, j * 16);
                     }

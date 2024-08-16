@@ -70,8 +70,6 @@ namespace CalamityOverhaul
 
         public override void PostSetupContent() {
             LoadMods = ModLoader.Mods.ToList();
-            //额外模组Call需要先行加载
-            FromThorium.PostLoadData();
 
             {
                 RItemInstances = [];//这里直接进行初始化，便不再需要进行UnLoad卸载
@@ -173,15 +171,12 @@ namespace CalamityOverhaul
 
         public override void Load() {
             Instance = this;
-            ILoaders = CWRUtils.GetSubInterface<ILoader>("ILoader");
+            ILoaders = CWRUtils.GetSubInterface<ILoader>();
             foreach (var setup in ILoaders) {
                 setup.LoadData();
             }
             FindMod();
-            FromThorium.LoadData();
             ModGanged.Load();
-            new InWorldBossPhase().Load();
-            CWRKeySystem.LoadKeyDate(this);
             StructuresBehavior.Load();
 
             LoadClient();
@@ -189,10 +184,7 @@ namespace CalamityOverhaul
         }
 
         public override void Unload() {
-            FromThorium.UnLoadData();
             ModGanged.UnLoad();
-            InWorldBossPhase.UnLoad();
-            CWRKeySystem.Unload();
             StructuresBehavior.UnLoad();
             emptyMod();
             UnLoadClient();

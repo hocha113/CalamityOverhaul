@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
         public override void SetRapiers() {
             overHitModeing = 113;
             drawOrig = new Vector2(0, 130);
+            StabbingSpread = 0.22f;
             ShurikenOut = CWRSound.ShurikenOut with { Pitch = -0.14f };
         }
 
@@ -22,14 +23,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                     spanPos += Projectile.velocity.UnitVector() * -526;
                     spanPos.Y += Main.rand.Next(-186, 166);
                     int proj2 = Projectile.NewProjectile(Projectile.GetSource_FromAI(), spanPos, Projectile.velocity.UnitVector() * 13
-                    , ModContent.ProjectileType<GrandGuardianBeam>(), Projectile.damage, Projectile.knockBack, Projectile.owner, ai2: 1);
+                    , ModContent.ProjectileType<GrandGuardianBeam>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner, ai2: 1);
                     Main.projectile[proj2].rotation = Main.projectile[proj2].velocity.ToRotation();
                 }
                 return;
             }
-            int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity.UnitVector() * 13
+            Item.initialize();
+            if (++Item.CWR().ai[0] > 1) {
+                int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity.UnitVector() * 13
                 , ModContent.ProjectileType<GrandGuardianBeam>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
-            Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation();
+                Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation();
+                Item.CWR().ai[0] = 0;
+            }
         }
     }
 }

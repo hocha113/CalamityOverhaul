@@ -21,6 +21,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -76,6 +77,31 @@ namespace CalamityOverhaul.Content
 
         public static Asset<Texture2D> IceParcloseAsset;
         #endregion
+
+        public static void OverBeatBackSend(NPC npc, int playerWhoAmI = -1, float power = 0.99f) {
+            if (!CWRUtils.isSinglePlayer) {
+                var netMessage = CWRMod.Instance.GetPacket();
+                netMessage.Write((byte)CWRMessageType.OverBeatBack);
+                netMessage.Write((byte)npc.whoAmI);
+                netMessage.WriteVector2(npc.CWR().OverBeatBackVr);
+                netMessage.Write(power);
+                netMessage.Send(-1, playerWhoAmI);
+            }
+        }
+
+        public static void OverBeatBackReceive(BinaryReader reader) {
+            NPC npc = Main.npc[reader.ReadByte()];
+            Vector2 overBeatBackVr = reader.ReadVector2();
+            float power = reader.ReadSingle();
+            if (npc.type == NPCID.None || !npc.active) {
+                return;
+            }
+            CWRNpc modnpc = npc.CWR();
+            modnpc.OverBeatBackBool = true;
+            modnpc.OverBeatBackVr = overBeatBackVr;
+            modnpc.OverBeatBackAttenuationForce = power;
+        }
+
         public override void Load() {
             IceParcloseAsset = CWRUtils.GetT2DAsset(CWRConstant.Projectile + "IceParclose", true);
         }

@@ -3,12 +3,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.OtherMods.Thorium.Core
 {
-    internal static class FromThorium
+    internal class FromThorium : ILoader
     {
         public const string Name = "ThoriumMod";
         public static bool Has => ModLoader.HasMod(Name);
         public static List<LThoriumCall> lThoriumCalls = [];
-        public static void LoadData() {
+        void ILoader.LoadData() {
             if (!Has) return;
             CWRMod.Instance.thoriumMod = ModLoader.GetMod(Name);
             lThoriumCalls = CWRUtils.GetSubInterface<LThoriumCall>("LThoriumCall");
@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.OtherMods.Thorium.Core
             }
         }
 
-        public static void UnLoadData() {
+        void ILoader.UnLoadData() {
             if (lThoriumCalls != null) {
                 foreach (var call in lThoriumCalls) {
                     call.UnLoadThoData();
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.OtherMods.Thorium.Core
             lThoriumCalls = null;
         }
 
-        public static void PostLoadData() {
+        void ILoader.SetupData() {
             if (!Has) return;
             foreach (var call in lThoriumCalls) {
                 call.PostLoadThoData(CWRMod.Instance.thoriumMod);

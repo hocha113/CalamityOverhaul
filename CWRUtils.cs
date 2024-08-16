@@ -258,8 +258,21 @@ namespace CalamityOverhaul
             return outInds;
         }
 
+        /// <summary>
+        /// 获取当前程序集（Assembly）中实现了接口 `T` 的所有类的实例列表
+        /// </summary>
+        /// <typeparam name="T">要查找实现类的接口类型</typeparam>
+        /// <returns>一个包含所有实现了指定接口 `T` 的类实例的列表</returns>
+        public static List<T> GetSubInterface<T>() => GetSubInterface<T>(typeof(T).Name);
+
+        /// <summary>
+        /// 获取当前程序集（Assembly）中实现了指定接口（通过接口名称 `lname` 指定）的所有类的实例列表
+        /// </summary>
+        /// <typeparam name="T">接口类型，用于检查类是否实现该接口</typeparam>
+        /// <param name="lname">接口的名称，用于匹配实现类</param>
+        /// <returns>一个包含所有实现了指定接口的类实例的列表</returns>
         public static List<T> GetSubInterface<T>(string lname) {
-            List<T> subInterface = [];
+            List<T> subInterface = new List<T>();
             Assembly assembly = Assembly.GetExecutingAssembly();
             Type[] allTypes = assembly.GetTypes();
 

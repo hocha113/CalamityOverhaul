@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Materials
 {
     internal class InfinityCatalyst : ModItem
     {
-        public override string Texture => CWRConstant.Item + "Materials/InfinityCatalyst2";
+        public override string Texture => CWRConstant.Item + "Materials/InfinityCatalyst";
         public static float QFH {
             get {
                 const float baseBonus = 1.0f;
