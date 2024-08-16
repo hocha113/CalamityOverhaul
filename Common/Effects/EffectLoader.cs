@@ -113,6 +113,7 @@ namespace CalamityOverhaul.Common.Effects
         private void FilterManager_EndCapture(On_FilterManager.orig_EndCapture orig, Terraria.Graphics.Effects.FilterManager self
             , RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor) {
             GraphicsDevice graphicsDevice = Main.instance.GraphicsDevice;
+
             if (screen == null) {
                 screen = new RenderTarget2D(graphicsDevice, Main.screenWidth, Main.screenHeight);
             }
@@ -148,7 +149,8 @@ namespace CalamityOverhaul.Common.Effects
                     Main.spriteBatch.Draw(screen, Vector2.Zero, Color.White);
                     Main.spriteBatch.End();
 
-                    Main.spriteBatch.Begin();
+                    Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState
+                        , default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
                     foreach (IDrawWarp p in warpSets) { if (p.canDraw()) { p.costomDraw(Main.spriteBatch); } }
                     Main.spriteBatch.End();
                 }

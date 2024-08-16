@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         public FireParticleSet FireDrawer = null;
         private float modeings = 5000;
         private float sengs;
+        private float drawTime;
         public override void SetDefaults() {
             Projectile.width = 10;
             Projectile.height = 10;
@@ -156,21 +157,21 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             for (int i = 0; i < 33; i++) {
                 float rot = MathHelper.TwoPi / 33f * i + Projectile.ai[0] * 0.03f;
                 Vector2 drawPos = orig + rot.ToRotationVector2() * modeings;
+                float rot2 = drawPos.To(Main.LocalPlayer.Center - Main.screenPosition).ToRotation();
                 Main.EntitySpriteDraw(mainValue, drawPos, null, Color.White
-                , rot + MathHelper.Pi, mainValue.Size() / 2, 3, SpriteEffects.FlipHorizontally, 0);
+                , rot2, mainValue.Size() / 2, 3, SpriteEffects.FlipHorizontally, 0);
             }
-
+            drawTime++;
             var blackTile = TextureAssets.MagicPixel;
             var diagonalNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/HarshNoise");
             var maxOpacity = 1f;
             var shader = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "PrimeHaloShader").Value;
             shader.Parameters["colorMult"].SetValue(11);
-            shader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
+            shader.Parameters["time"].SetValue(drawTime * 0.1f);
             shader.Parameters["radius"].SetValue(modeings + 50);
             shader.Parameters["anchorPoint"].SetValue(Projectile.Center);
             shader.Parameters["screenPosition"].SetValue(Main.screenPosition);
             shader.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2());
-            shader.Parameters["burnIntensity"].SetValue(1);
             shader.Parameters["playerPosition"].SetValue(Main.LocalPlayer.Center);
             shader.Parameters["maxOpacity"].SetValue(maxOpacity);
             shader.Parameters["isVmos"].SetValue(Projectile.timeLeft <= 30);

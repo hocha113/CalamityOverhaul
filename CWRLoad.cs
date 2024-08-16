@@ -25,6 +25,8 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
+using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
@@ -310,7 +312,16 @@ namespace CalamityOverhaul
             /// <summary>
             /// 是否是一个金属性质的存在
             /// </summary>
-            public static Dictionary<int, bool> TheofSteel;
+            internal static Dictionary<int, bool> TheofSteel;
+            public static bool ISTheofSteel(int type) {
+                if (type == NPCID.Spazmatism && SpazmatismAI.Accompany) {
+                    return true;
+                }
+                if (type == NPCID.Retinazer && RetinazerAI.Accompany) {
+                    return true;
+                }
+                return TheofSteel[type];
+            }
         }
 
         public static void Load() {

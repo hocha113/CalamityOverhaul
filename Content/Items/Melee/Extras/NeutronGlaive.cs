@@ -92,7 +92,6 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             drawTrailTopWidth = 30;
             drawTrailCount = 16;
             Length = 140;
-            overOffsetCachesRoting = MathHelper.ToRadians(2);
             Projectile.scale = 1.25f;
             SwingData.starArg = 80;
             SwingData.baseSwingSpeed = 5.4f;

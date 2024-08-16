@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 sincrit += 0.2f;
             }
             (float min, float max) pot = (-0.1f + +sincrit, 0.1f + +sincrit);
-            if (CWRLoad.NPCValue.TheofSteel[target.type]) {
+            if (CWRLoad.NPCValue.ISTheofSteel(target.type)) {
                 SoundEngine.PlaySound(CWRSound.HitTheSteel with { MaxInstances = 3, PitchRange = pot, Volume = 0.5f }, Projectile.Center);
             }
             else {

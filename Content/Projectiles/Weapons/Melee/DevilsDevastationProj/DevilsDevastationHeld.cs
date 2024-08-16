@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            HitEffect(target, CWRLoad.NPCValue.TheofSteel[target.type]);
+            HitEffect(target, CWRLoad.NPCValue.ISTheofSteel(target.type));
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {

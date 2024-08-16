@@ -8,8 +8,9 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using System;
 
-namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
+namespace CalamityOverhaul.Content.Projectiles.Boss.Eye
 {
     internal class Fireball : ModProjectile
     {
@@ -36,17 +37,21 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             if (Projectile.ai[0] > 60 && Projectile.ai[0] < 360) {
                 Projectile.velocity *= 1.025f;
             }
-            Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 4);
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Pi;
+            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
             Lighting.AddLight(Projectile.Center, Color.Red.ToVector3());
-            PRT_LavaFire lavaFire = new PRT_LavaFire {
-                Velocity = Projectile.velocity * 0.2f,
-                Position = Projectile.Center + CWRUtils.randVr(6),
-                Scale = Main.rand.NextFloat(0.8f, 1.2f),
-                maxLifeTime = 60,
-                minLifeTime = 30
-            };
-            PRTLoader.AddParticle(lavaFire);
+            if (Math.Abs(Projectile.position.X - Main.LocalPlayer.position.X) <= Main.screenWidth / 2
+                || Math.Abs(Projectile.position.Y - Main.LocalPlayer.position.Y) <= Main.screenWidth / 2) {
+                PRT_LavaFire lavaFire = new PRT_LavaFire {
+                    Velocity = Projectile.velocity * 0.2f,
+                    Position = Projectile.Center + CWRUtils.randVr(6),
+                    Scale = Main.rand.NextFloat(0.8f, 1.2f),
+                    maxLifeTime = 60,
+                    minLifeTime = 30
+                };
+                PRTLoader.AddParticle(lavaFire);
+            }
+            
             Projectile.ai[0]++;
         }
 
@@ -56,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D mainValue = TextureAssets.Projectile[Type].Value;
-            Rectangle rectangle = CWRUtils.GetRec(mainValue, Projectile.frame, 5);
+            Rectangle rectangle = CWRUtils.GetRec(mainValue, Projectile.frame, 4);
             Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, rectangle, Color.White
                 , Projectile.rotation, rectangle.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             return false;

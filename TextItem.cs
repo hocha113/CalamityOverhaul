@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -59,6 +60,8 @@ namespace CalamityOverhaul
             //        , player.Center.To(Main.MouseWorld).UnitVector() * 6, ProjectileID.Bullet, CWRUtils.GetDamage(100, 150, 100), 2, player.whoAmI);
             //Projectile.friendly = false;
             //Projectile.hostile = true;
+            Projectile.NewProjectile(player.GetSource_FromAI(), player.Center, new Vector2(0, 0)
+                            , ModContent.ProjectileType<SetPosingStarm>(), 44, 2, -1, 0);
             return true;
         }
     }

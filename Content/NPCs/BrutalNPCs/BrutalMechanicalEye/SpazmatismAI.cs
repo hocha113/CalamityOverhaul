@@ -4,6 +4,7 @@ using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
+using CalamityOverhaul.Content.Projectiles.Boss.Eye;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -46,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     npc.buffImmune[i] = true;
                 }
                 ai[11] = 0;
-                NPC skeletronPrime = CWRUtils.FindNPC(NPCID.SkeletronPrime);
+                NPC skeletronPrime = CWRUtils.FindNPCFromeType(NPCID.SkeletronPrime);
                 if (skeletronPrime.Alives()) {
                     ai[11] = skeletronPrime.ai[0] != 3 ? 1 : 0;
                 }
@@ -67,13 +68,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 return;
             }
             if (eye.type == NPCID.Spazmatism) {
-                NPC retinazer = CWRUtils.FindNPC(NPCID.Retinazer);
+                NPC retinazer = CWRUtils.FindNPCFromeType(NPCID.Retinazer);
                 if (retinazer.Alives()) {
                     eye.realLife = retinazer.whoAmI;
                 }
             }
             else {
-                NPC spazmatism = CWRUtils.FindNPC(NPCID.Spazmatism);
+                NPC spazmatism = CWRUtils.FindNPCFromeType(NPCID.Spazmatism);
                 if (spazmatism.Alives()) {
                     eye.realLife = spazmatism.whoAmI;
                 }
@@ -85,7 +86,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 return false;
             }
 
-            NPC skeletronPrime = CWRUtils.FindNPC(NPCID.SkeletronPrime);
+            NPC skeletronPrime = CWRUtils.FindNPCFromeType(NPCID.SkeletronPrime);
             float lifeRog = eye.life / (float)eye.lifeMax;
             bool bossRush = BossRushEvent.BossRushActive;
             bool death = CalamityWorld.death || bossRush;

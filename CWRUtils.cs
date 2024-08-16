@@ -1167,7 +1167,7 @@ namespace CalamityOverhaul
             }
         }
 
-        public static NPC FindNPC(int type) {
+        public static NPC FindNPCFromeType(int type) {
             NPC npc = null;
             foreach (var n in Main.npc) {
                 if (!n.active) {

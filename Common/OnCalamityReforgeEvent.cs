@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using System;
-using System.Reflection;
 using Terraria;
 using Terraria.GameContent.Prefixes;
 using Terraria.ID;

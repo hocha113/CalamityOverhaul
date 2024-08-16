@@ -624,6 +624,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 SmokeDrawer.ParticleSpawnRate = 3;
                 SmokeDrawer.BaseMoveRotation = MathHelper.ToRadians(90);
                 SmokeDrawer.SpawnAreaCompactness = 80f;
+
+                if (npc.life > npc.lifeMax / 10 && noEye) {
+                    npc.life -= 10;
+                }
             }
             SmokeDrawer.Update();
 
@@ -631,11 +635,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.damage = 0;
                 MoveToPoint(npc, player.Center + new Vector2(0, -300));
                 npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
-
-                npc.life += 10;
-                if (npc.life > npc.lifeMax) {
-                    npc.life = npc.lifeMax;
-                }
 
                 ai3 = 1;
                 return true;
@@ -695,10 +694,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     }
                     break;
                 case 1:
-                    if (++ai4 > 90 && setPosingStarmCount == 0 && ai5 <= 2 && ai10 <= 0) {
+                    if (++ai4 > 90 && (setPosingStarmCount == 0 || noEye) && ai5 <= 2 && ai10 <= 0) {
                         npc.TargetClosest();
                         if (!CWRUtils.isClient) {
-                            float maxLerNum = 9f;
+                            float maxLerNum = noEye ? 13 : 9f;
                             for (int i = 0; i < maxLerNum; i++) {
                                 float rotoffset = MathHelper.TwoPi / maxLerNum * i;
                                 Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
@@ -805,7 +804,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     toPoint = player.Center + new Vector2(0, death ? -400 : -500);
                     int value = npc.lifeMax - npc.life;
                     if (ai4 == 0) {
-                        oneToTwoPrsAddNumBloodValue = (int)(value / 160f);
+                        oneToTwoPrsAddNumBloodValue = (int)(value / 360f);
                     }
                     if (npc.life >= npc.lifeMax) {
                         npc.life = npc.lifeMax;
@@ -822,7 +821,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     }
 
                     ai4++;
-                    if (ai4 > 160 || npc.life >= npc.lifeMax) {
+                    if (ai4 > 360f || npc.life >= npc.lifeMax) {
                         npc.dontTakeDamage = false;
                         npc.damage = npc.defDamage * 2;
                         ai3 = 0;
@@ -920,11 +919,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
 
                 npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
-
-                npc.life += 10;
-                if (npc.life > npc.lifeMax) {
-                    npc.life = npc.lifeMax;
-                }
 
                 if (noArm) {
                     SmokeDrawer.ParticleSpawnRate = 3;

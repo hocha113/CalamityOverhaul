@@ -560,20 +560,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
             float w = 1f;
             for (int i = 0; i < count; i++) {
-                if (oldRotate[i] == 100f)
+                if (oldRotate[i] == 100f) {
                     continue;
+                }
 
-                float factor = 1f - i / count;
                 Vector2 Center = Owner.GetPlayerStabilityCenter();
-                float r = oldRotate[i] % MathHelper.TwoPi;
-                float dir = (r >= 3.14f ? r - 3.14f : r + 3.14f) / MathHelper.TwoPi;
-                Vector2 Top = Center + (oldRotate[i].ToRotationVector2() * 
+                float factor = 1f - i / count;
+                float rotate = oldRotate[i] % MathHelper.TwoPi;
+                float twistOrientation = (rotate >= MathHelper.Pi ? rotate - MathHelper.Pi : rotate + MathHelper.Pi) / MathHelper.TwoPi;
+
+                Vector2 Top = Center + (oldRotate[i].ToRotationVector2() *
                     (oldLength[i] + drawTrailTopWidth * meleeSizeAsymptotic + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
-                Vector2 Bottom = Center + (oldRotate[i].ToRotationVector2() * 
+                Vector2 Bottom = Center + (oldRotate[i].ToRotationVector2() *
                     (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
 
-                bars.Add(new CustomVertexInfo(Top, new Color(dir, w, 0f, 15), new Vector3(factor, 0f, w)));
-                bars.Add(new CustomVertexInfo(Bottom, new Color(dir, w, 0f, 15), new Vector3(factor, 1f, w)));
+                bars.Add(new CustomVertexInfo(Top, new Color(twistOrientation, w, 0f, 25), new Vector3(factor, 0f, w)));
+                bars.Add(new CustomVertexInfo(Bottom, new Color(twistOrientation, w, 0f, 25), new Vector3(factor, 1f, w)));
             }
 
             Main.spriteBatch.End();
@@ -599,12 +601,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         public virtual void GetCurrentTrailCount(out float count) {
             count = 0f;
-            if (oldRotate == null)
+            if (oldRotate == null) {
                 return;
+            }
 
-            for (int i = 0; i < oldRotate.Length; i++)
-                if (oldRotate[i] != 100f)
+            for (int i = 0; i < oldRotate.Length; i++) {
+                if (oldRotate[i] != 100f) {
                     count += 1f;
+                }
+            }     
         }
         /// <summary>
         /// 在逻辑帧<see cref="PreUpdate"/>中被最后调用，用于更新弧光相关的点数据

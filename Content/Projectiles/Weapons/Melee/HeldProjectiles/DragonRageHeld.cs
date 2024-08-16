@@ -431,7 +431,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
             }
 
-            HitEffect(target, CWRLoad.NPCValue.TheofSteel[target.type]);
+            HitEffect(target, CWRLoad.NPCValue.ISTheofSteel(target.type));
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
