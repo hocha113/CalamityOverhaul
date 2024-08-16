@@ -1179,6 +1179,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
         #endregion
 
+        public override bool? CheckDead() {
+            if (npc.ai[0] == 1 || npc.ai[0] == 0) {
+                npc.dontTakeDamage = true;
+                npc.life = 1;
+                return false;
+            }
+            return true;
+        }
+
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
