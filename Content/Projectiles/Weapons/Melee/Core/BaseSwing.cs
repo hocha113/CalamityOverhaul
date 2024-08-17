@@ -555,7 +555,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         #region Draw
         public virtual void WarpDraw() {
-            List<CustomVertexInfo> bars = [];
+            List<ColoredTexturedVertexInfo> bars = [];
             GetCurrentTrailCount(out float count);
 
             float w = 1f;
@@ -574,8 +574,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 Vector2 Bottom = Center + (oldRotate[i].ToRotationVector2() *
                     (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
 
-                bars.Add(new CustomVertexInfo(Top, new Color(twistOrientation, w, 0f, 25), new Vector3(factor, 0f, w)));
-                bars.Add(new CustomVertexInfo(Bottom, new Color(twistOrientation, w, 0f, 25), new Vector3(factor, 1f, w)));
+                bars.Add(new ColoredTexturedVertexInfo(Top, new Color(twistOrientation, w, 0f, 25), new Vector3(factor, 0f, w)));
+                bars.Add(new ColoredTexturedVertexInfo(Bottom, new Color(twistOrientation, w, 0f, 25), new Vector3(factor, 1f, w)));
             }
 
             Main.spriteBatch.End();

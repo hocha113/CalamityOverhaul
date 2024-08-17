@@ -2,7 +2,7 @@
 
 namespace CalamityOverhaul
 {
-    public struct CustomVertexInfo : IVertexType
+    public struct ColoredTexturedVertexInfo : IVertexType
     {
         public Vector2 Position;
         public Color Color;
@@ -14,7 +14,7 @@ namespace CalamityOverhaul
             new VertexElement(12,VertexElementFormat.Vector3,VertexElementUsage.TextureCoordinate,0)
         });
 
-        public CustomVertexInfo(Vector2 position, Color color, Vector3 texCoord) {
+        public ColoredTexturedVertexInfo(Vector2 position, Color color, Vector3 texCoord) {
             Position = position;
             Color = color;
             TexCoord = texCoord;

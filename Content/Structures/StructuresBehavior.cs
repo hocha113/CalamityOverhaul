@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Structures
                 if (item.type != ItemID.None) {
                     continue;
                 }
-                text.DompInConsole();
+                CWRMod.Instance.Logger.Info(text);
                 item.SetDefaults(type);
                 item.stack = stack;
                 break;

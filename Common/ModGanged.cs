@@ -112,10 +112,10 @@ namespace CalamityOverhaul.Common
         static string text3 => CWRUtils.Translation("已经改动?", "Has it been changed?");
         static string text4 => CWRUtils.Translation("未加载模组", "The mod is not loaded");
         static void Domp1(string value1, string value2) {
-            $"{text1} {value1} {text2} {value2} {text3}".DompInConsole();
+            CWRMod.Instance.Logger.Info($"{text1} {value1} {text2} {value2} {text3}");
         }
         static void Domp2(string value1) {
-            $"{text4} {value1}".DompInConsole();
+            CWRMod.Instance.Logger.Info($"{text4} {value1}");
         }
 
         void ILoader.LoadData() {

@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Common
             if (!_hooks.TryAdd((method, hookDelegate), hook)) {
                 string ctext = "目标方法已经被该委托挂载";
                 string egtext = "The target method is already mounted by the delegate";
-                CWRUtils.Translation(ctext, egtext).DompInConsole();
+                CWRMod.Instance.Logger.Info(CWRUtils.Translation(ctext, egtext));
             }
             return hook;
         }
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Common
             int hookDownNum = 0;
             foreach (var hook in Hooks.Values) {
                 if (!hook.IsApplied) {
-                    (hook + CWRUtils.Translation("挂载失效", "Mount failure")).DompInConsole();
+                    CWRMod.Instance.Logger.Info((hook + CWRUtils.Translation("挂载失效", "Mount failure")));
                     hookDownNum++;
                 }
             }

@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
+﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Terraria;
 using Terraria.ID;
