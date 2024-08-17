@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Main.spriteBatch.ResetBlendState();
         }
 
-        public override void GunDraw(ref Color lightColor) {
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             if (CanFire) {
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState

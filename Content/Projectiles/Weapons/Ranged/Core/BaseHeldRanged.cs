@@ -84,6 +84,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public override bool CanFire => false;
         /// <summary>
+        /// 手持的绘制矫正值，一般只在绘制函数中获取这个属性的值以确保更新即时
+        /// </summary>
+        public Vector2 SpecialDrawPositionOffset => CanFire ? Vector2.Zero : Owner.CWR().SpecialDrawPositionOffset;
+        /// <summary>
         /// 武器适应性缩放，默认为1
         /// </summary>
         public float Scaling = 1;

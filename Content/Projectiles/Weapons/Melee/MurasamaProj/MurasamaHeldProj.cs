@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 nolegendStart = InWorldBossPhase.Instance.level11;
             }
 
-            Projectile.Center = Owner.Center + new Vector2(0, 5) * safeGravDir;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(0, 5) * safeGravDir;
             Projectile.timeLeft = 2;
             Projectile.scale = 0.7f;
 
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 heldRotSengs = Projectile.hide ? 110 : 110;
             }
             if (Math.Abs(Owner.velocity.X) > 0 && Owner.velocity.Y == 0) {
-                heldRotSengs += MathF.Sin(Time * CWRUtils.atoR * 35);
+                heldRotSengs += Owner.CWR().SpecialDrawPositionOffset.Y >= 0 ? -1 : 2;
             }
             float armRotSengsFront = Projectile.hide ? 70 : 60;
             if (safeGravDir == -1) {
@@ -341,16 +341,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     barBG = MuraBarFull.Value;
                     Main.spriteBatch.Draw(barBG, drawPos + new Vector2(0, 2) * scale, CWRUtils.GetRec(barBG, uiFrame, 7), color, 0f, CWRUtils.GetOrig(barBG, 7), scale, 0, 0f);
                 }
-
-                //Vector2 size = MuraBarBottom.Value.Size();
-                //Vector2 uiPos = drawPos - size / 2;
-                //Rectangle mouseTarget = new Rectangle(Main.mouseX, Main.mouseY, 1, 1);
-                //Rectangle uiRec = new Rectangle((int)uiPos.X, (int)uiPos.Y, barBG.Width, barBG.Height);
-
-                //if (uiRec.Contains(mouseTarget)) {
-                //    Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, $"{risingDragon} / {MurasamaEcType.GetOnRDCD}"
-                //    , drawPos.X - size.X / 2, drawPos.Y - 40, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
-                //}
             }
         }
 
@@ -359,8 +349,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 return false;
             }
             Texture2D value = CWRUtils.GetT2DValue(Texture + (Projectile.hide ? "" : "2"));
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation
-                , CWRUtils.GetOrig(value), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            Vector2 drawPos = Projectile.Center - Main.screenPosition + Owner.CWR().SpecialDrawPositionOffset;
+            Main.EntitySpriteDraw(value, drawPos, null, lightColor, Projectile.rotation
+                , CWRUtils.GetOrig(value), Projectile.scale
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             return false;
         }
     }

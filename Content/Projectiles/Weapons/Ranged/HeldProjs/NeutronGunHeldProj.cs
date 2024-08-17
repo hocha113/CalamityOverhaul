@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void GunDraw(ref Color lightColor) {
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             if (Item != null && !Item.IsAir && Item.type == NeutronGun.PType) {
                 NeutronGlaiveHeldAlt.DrawBar(Owner, Charge, uiframe);
             }
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (onFireR) {
                 setValue = NeutronGun.ShootGun.Value;
             }
-            Main.EntitySpriteDraw(setValue, Projectile.Center - Main.screenPosition
+            Main.EntitySpriteDraw(setValue, drawPos
                 , CWRUtils.GetRec(setValue, Projectile.frame, 6), lightColor
                 , Projectile.rotation, CWRUtils.GetOrig(setValue, 6), Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);

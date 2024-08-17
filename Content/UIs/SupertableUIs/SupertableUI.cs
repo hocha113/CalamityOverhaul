@@ -17,13 +17,16 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    internal class SupertableUI : CWRUIPanel
+    internal class SupertableUI : CWRUIPanel, ILoader
     {
+        #region
+        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue2");
+
         public static SupertableUI Instance { get; private set; }
 
         public static string[][] RpsDataStringArrays;
 
-        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue2");
+        public static string[][] ModCall_OtherRpsData_StringArrays;
 
         public string[] StaticFullItemNames;
 
@@ -37,14 +40,18 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public Item inputItem;
 
+        /// <summary>
+        /// 主UI的面板矩形
+        /// </summary>
+        private Rectangle mainRec;
+        /// <summary>
+        /// 物品放置格子的面板矩形
+        /// </summary>
+        private Rectangle mainRec2;
+
         public Rectangle inputRec;
 
         public Rectangle closeRec;
-
-        public bool Active {
-            get => player.CWR().SupertableUIStartBool;
-            set => player.CWR().SupertableUIStartBool = value;
-        }
 
         public bool loadOrUnLoadZenithWorldAsset = true;
 
@@ -63,14 +70,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         private Point mouseInCellCoord;
 
         private int inCoordIndex => (mouseInCellCoord.Y * maxCellNumX) + mouseInCellCoord.X;
-        /// <summary>
-        /// 主UI的面板矩形
-        /// </summary>
-        private Rectangle mainRec;
-        /// <summary>
-        /// 物品放置格子的面板矩形
-        /// </summary>
-        private Rectangle mainRec2;
+
+        public bool Active {
+            get => player.CWR().SupertableUIStartBool;
+            set => player.CWR().SupertableUIStartBool = value;
+        }
 
         public bool onMainP;
 
@@ -81,10 +85,16 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public bool onCloseP;
 
         public static List<RecipeData> AllRecipes = [];
-
+        #endregion
         public override void Load() {
             Instance = this;
             LoadRecipe();
+        }
+
+        void ILoader.UnLoadData() {
+            RpsDataStringArrays = null;
+            ModCall_OtherRpsData_StringArrays = null;
+            Instance = null;
         }
 
         public static void LoadRecipe() {
@@ -101,6 +111,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 }
                 return null;
             }).Where(array => array != null).ToArray();
+
+            if (ModCall_OtherRpsData_StringArrays?.Length > 0) {
+                RpsDataStringArrays = RpsDataStringArrays.Concat(ModCall_OtherRpsData_StringArrays).ToArray();
+            }
 
             foreach (string[] value in RpsDataStringArrays) {
                 RecipeData recipeData = new RecipeData {

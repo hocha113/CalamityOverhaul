@@ -90,9 +90,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             }
         }
 
-        public override void GunDraw(ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(TextureValue, Projectile.frame, 10), lightColor
-                , Projectile.rotation + MathHelper.PiOver4 * DirSign, CWRUtils.GetOrig(TextureValue, 10), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
+            Main.EntitySpriteDraw(TextureValue, drawPos, CWRUtils.GetRec(TextureValue, Projectile.frame, 10), lightColor
+                , Projectile.rotation + MathHelper.PiOver4 * DirSign, CWRUtils.GetOrig(TextureValue, 10), Projectile.scale
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
 
             if (colers > 0) {
                 Vector2 origPos = firePos - Main.screenPosition;

@@ -43,13 +43,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     , ModContent.ProjectileType<EarthRocketOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
         }
 
-        public override void GunDraw(ref Color lightColor) {
-            base.GunDraw(ref lightColor);
+        public override void PostGunDraw(Vector2 drawPos, ref Color lightColor) {
             if (BulletNum > 0 && BulletNum <= 4 && IsKreload) {
                 string path = CWRConstant.Item_Ranged + "ScorchedEarth_PrimedForAction_" + BulletNum;
                 Texture2D value = CWRUtils.GetT2DValue(path);
-                Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, onFire ? Color.White : lightColor
-                    , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+                Main.EntitySpriteDraw(value, drawPos, null, onFire ? Color.White : lightColor
+                    , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale
+                    , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             }
         }
     }

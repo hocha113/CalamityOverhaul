@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void GunDraw(ref Color lightColor) {
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             Texture2D value = TextureValue;
             if (CanFire) {
                 CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
@@ -86,8 +86,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 maxFrame = 1;
                 value = CWRUtils.GetT2DValue(CWRConstant.Cay_Wap_Ranged + "PristineFury");
             }
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, maxFrame), lightColor
-                , Projectile.rotation, CWRUtils.GetOrig(value, maxFrame), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            Main.EntitySpriteDraw(value, drawPos, CWRUtils.GetRec(value, Projectile.frame, maxFrame), lightColor
+                , Projectile.rotation, CWRUtils.GetOrig(value, maxFrame), Projectile.scale
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }
 }

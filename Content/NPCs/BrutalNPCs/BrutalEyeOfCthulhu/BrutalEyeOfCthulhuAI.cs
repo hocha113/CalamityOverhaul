@@ -1,6 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Events;
-using CalamityMod.NPCs;
+﻿using CalamityMod.Events;
 using CalamityMod.World;
 using CalamityOverhaul.Content.NPCs.Core;
 using Terraria;
@@ -12,8 +10,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
     {
         private const float ProjectileOffset = 50f;
         public override int TargetID => NPCID.EyeofCthulhu;
-
-        private CalamityGlobalNPC calNPC => npc.Calamity();
 
         private float lifeRatio => npc.life / (float)npc.lifeMax;
 

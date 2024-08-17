@@ -115,9 +115,9 @@ namespace CalamityOverhaul.Content
 
         private Vector2 oldPlayerPositionChange;
         /// <summary>
-        /// 一个实时的绘制位置矫正
+        /// 一个实时的绘制矫正值
         /// </summary>
-        internal Vector2 SpecialDrawPosition;
+        internal Vector2 SpecialDrawPositionOffset;
         /// <summary>
         /// 玩家位置变化量
         /// </summary>
@@ -292,8 +292,8 @@ namespace CalamityOverhaul.Content
 
             Player player = drawInfo.drawPlayer;
 
-            SpecialDrawPosition = Head_GetSpecialDrawPosition(ref drawInfo, Vector2.Zero, new Vector2(0f, 8f));
-            SpecialDrawPosition -= (new Vector2(Main.screenWidth / 2, Main.screenHeight / 2));
+            SpecialDrawPositionOffset = Main.OffsetsPlayerHeadgear[player.bodyFrame.Y / player.bodyFrame.Height] * player.Directions;
+            SpecialDrawPositionOffset.Y -= 2;
 
             Item item = player.ActiveItem();
             if (HeldStyle >= 0) {
@@ -341,18 +341,6 @@ namespace CalamityOverhaul.Content
                 };
                 drawInfo.DrawDataCache.Add(howDoIDrawThings);
             }
-        }
-
-        private static Vector2 Head_GetSpecialDrawPosition(ref PlayerDrawSet drawinfo, Vector2 helmetOffset, Vector2 hatOffset) {
-            Vector2 value = Main.OffsetsPlayerHeadgear[drawinfo.drawPlayer.bodyFrame.Y / drawinfo.drawPlayer.bodyFrame.Height] * drawinfo.drawPlayer.Directions;
-            Vector2 vector = drawinfo.Position - Main.screenPosition + helmetOffset + new Vector2((0f - drawinfo.drawPlayer.bodyFrame.Width) 
-                / 2f + drawinfo.drawPlayer.width / 2, drawinfo.drawPlayer.height - drawinfo.drawPlayer.bodyFrame.Height + 4) + hatOffset * drawinfo.drawPlayer.Directions + value;
-            vector = vector.Floor();
-            vector += drawinfo.drawPlayer.headPosition + drawinfo.headVect;
-            if (drawinfo.drawPlayer.gravDir == -1f) {
-                vector.Y += 12f;
-            }
-            return vector.Floor();
         }
 
         internal void HandleRecoilAcceleration(BinaryReader reader) {

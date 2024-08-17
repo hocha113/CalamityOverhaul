@@ -76,8 +76,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 , ModContent.ProjectileType<NanoPurgeLaser>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
         }
 
-        public override void GunDraw(ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(TextureValue, Projectile.frame, 4), lightColor
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
+            Main.EntitySpriteDraw(TextureValue, drawPos, CWRUtils.GetRec(TextureValue, Projectile.frame, 4), lightColor
                 , Projectile.rotation + MathHelper.PiOver2, CWRUtils.GetOrig(TextureValue, 4), Projectile.scale, SpriteEffects.None);
         }
     }

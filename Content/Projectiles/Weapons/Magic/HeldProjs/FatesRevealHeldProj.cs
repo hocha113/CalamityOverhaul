@@ -51,13 +51,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 vr, ModContent.ProjectileType<SpiritFlame>(), Projectile.damage / 4, 0, Owner.whoAmI, 3);
         }
 
-        public override void GunDraw(ref Color lightColor) {
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             float offsetRot = 0;
             if (DownLeft) {
                 offsetRot = DirSign > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4;
             }
-            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, lightColor
-                , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            Main.EntitySpriteDraw(TextureValue, drawPos, null, lightColor, Projectile.rotation + offsetRot
+                , TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }
 }

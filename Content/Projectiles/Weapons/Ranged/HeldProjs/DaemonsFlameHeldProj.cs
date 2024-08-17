@@ -23,16 +23,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
         }
 
-        public override void BowDraw(ref Color lightColor) {
+        public override void BowDraw(Vector2 drawPos, ref Color lightColor) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 4)
+            Main.EntitySpriteDraw(value, drawPos, CWRUtils.GetRec(value, Projectile.frame, 4)
                 , onFire ? Color.White : lightColor, Projectile.rotation, CWRUtils.GetOrig(value, 4), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             value = CWRUtils.GetT2DValue(Texture + "Glow");
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 4)
+            Main.EntitySpriteDraw(value, drawPos, CWRUtils.GetRec(value, Projectile.frame, 4)
                 , Color.White, Projectile.rotation, CWRUtils.GetOrig(value, 4), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             value = CWRUtils.GetT2DValue(Texture + "Fire");
             Vector2 offset = Projectile.rotation.ToRotationVector2() * 20;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition + offset, CWRUtils.GetRec(value, Projectile.frame, 4)
+            Main.EntitySpriteDraw(value, drawPos + offset, CWRUtils.GetRec(value, Projectile.frame, 4)
                 , Color.White, 0, new Vector2(value.Width / 2, value.Height / 4), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
         }
 

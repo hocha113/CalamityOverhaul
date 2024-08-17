@@ -34,8 +34,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void BowDraw(ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(TextureValue, Projectile.frame, 9), onFire ? Color.White : lightColor
+        public override void BowDraw(Vector2 drawPos, ref Color lightColor) {
+            Main.EntitySpriteDraw(TextureValue, drawPos, CWRUtils.GetRec(TextureValue, Projectile.frame, 9), onFire ? Color.White : lightColor
                 , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 9), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }

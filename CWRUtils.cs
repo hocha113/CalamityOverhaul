@@ -2553,6 +2553,24 @@ namespace CalamityOverhaul
 
         #region 普通绘制工具
 
+        public static Vector2 CalculatePlayerHeadDrawPosition(ref PlayerDrawSet drawSet, Vector2 helmetOffset, Vector2 hatOffset) {
+            Player player = drawSet.drawPlayer;
+            Rectangle bodyFrame = player.bodyFrame;
+            Vector2 halfBodyFrameSize = new Vector2(bodyFrame.Width / 2f, bodyFrame.Height);
+            Vector2 bodyPositionOffset = new Vector2(player.width / 2, player.height - bodyFrame.Height + 4);
+
+            Vector2 headgearOffset = Main.OffsetsPlayerHeadgear[bodyFrame.Y / bodyFrame.Height] * player.Directions;
+            Vector2 headgearDrawPosition = (drawSet.Position - halfBodyFrameSize + bodyPositionOffset
+                                            + helmetOffset + hatOffset * player.Directions + headgearOffset
+                                            + player.headPosition + drawSet.headVect).Floor();
+
+            if (player.gravDir == -1f) {
+                headgearDrawPosition.Y += 12f;
+            }
+
+            return headgearDrawPosition - Main.screenPosition;
+        }
+
         public static void DrawMarginEffect(SpriteBatch spriteBatch, Texture2D tex, int drawTimer, Vector2 position
             , Rectangle? rect, Color color, float rot, Vector2 origin, float scale, SpriteEffects effects = 0) {
             float time = Main.GlobalTimeWrappedHourly;

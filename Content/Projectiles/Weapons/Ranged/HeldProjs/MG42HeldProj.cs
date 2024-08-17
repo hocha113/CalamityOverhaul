@@ -89,13 +89,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             }
         }
 
-        public override void GunDraw(ref Color lightColor) {
-            base.GunDraw(ref lightColor);
+        public override void PostGunDraw(Vector2 drawPos, ref Color lightColor) {
             Color maskingColor = lightColor;
             if (shootValue > 0) {
                 maskingColor = CWRUtils.MultiStepColorLerp(shootValue / 16f, lightColor, Color.Red);
             }
-            Main.EntitySpriteDraw(masking.Value, Projectile.Center - Main.screenPosition, null, maskingColor
+            Main.EntitySpriteDraw(masking.Value, drawPos, null, maskingColor
                 , Projectile.rotation, masking.Size() / 2, Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }

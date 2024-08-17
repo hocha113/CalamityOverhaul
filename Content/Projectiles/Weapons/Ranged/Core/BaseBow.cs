@@ -181,8 +181,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR;
             ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR;
 
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + Owner.CWR().SpecialDrawPosition
-                + new Vector2(Owner.direction * HandDistance, HandDistanceY);
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY);
 
             int art = 20;
             if (SafeGravDir < 0) {
@@ -292,23 +291,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public sealed override bool PreDraw(ref Color lightColor) {
+            Vector2 drawPos = Projectile.Center - Main.screenPosition + SpecialDrawPositionOffset;
             if (OnHandheldDisplayBool) {
                 Color color = lightColor;
                 if (!CWRServerConfig.Instance.WeaponAdaptiveIllumination && CanFire) {
                     color = Color.White;
                 }
-                BowDraw(ref color);
+                
+                BowDraw(drawPos, ref color);
             }
 
             if (CWRServerConfig.Instance.BowArrowDraw && BowArrowDrawBool) {
-                ArrowDraw();
+                ArrowDraw(drawPos);
             }
             return false;
         }
 
-        public virtual void BowDraw(ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition
-                , null, lightColor
+        public virtual void BowDraw(Vector2 drawPos, ref Color lightColor) {
+            Main.EntitySpriteDraw(TextureValue, drawPos, null, lightColor
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
@@ -326,7 +326,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public virtual void CustomArrowRP(ref Texture2D value, Item arrow) { }
 
-        public void ArrowDraw() {
+        public void ArrowDraw(Vector2 drawPos) {
             int cooltime = 3;
             if (cooltime > Item.useTime / 3) {
                 cooltime = Item.useTime / 3;
@@ -369,7 +369,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 Vector2 offsetDrawPos = inprojRot * lengsOFstValue;
                 Vector2 norlInRotUnit = inprojRot.GetNormalVector();
                 Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new(arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
-                Vector2 drawPos = Projectile.Center - Main.screenPosition + offsetDrawPos;
+                drawPos += offsetDrawPos;
 
                 Color drawColor = Color.White;
                 if (CWRServerConfig.Instance.WeaponAdaptiveIllumination || !CanFire) {

@@ -303,9 +303,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         /// <returns></returns>
         public virtual Vector2 GetGunBodyPos() {
-            return Owner.GetPlayerStabilityCenter() 
-                + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir
-                 + Owner.CWR().SpecialDrawPosition;
+            return Owner.GetPlayerStabilityCenter()
+                + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir;
         }
 
         protected virtual void setBaseFromeAI() {
@@ -610,17 +609,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 if (!CWRServerConfig.Instance.WeaponAdaptiveIllumination && CanFire) {
                     color = Color.White;
                 }
-                GunDraw(ref color);
+                Vector2 drawPos = Projectile.Center - Main.screenPosition + SpecialDrawPositionOffset;
+                GunDraw(drawPos, ref color);
+                PostGunDraw(drawPos, ref color);
             }
             return false;
         }
 
-        public virtual void GunDraw(ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, lightColor
-                , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+        public virtual void GunDraw(Vector2 drawPos, ref Color lightColor) {
+            Main.EntitySpriteDraw(TextureValue, drawPos, null, lightColor
+                , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             if (IsCrossbow && CanDrawCrossArrow && CWRServerConfig.Instance.BowArrowDraw) {
-                DrawBolt();
+                DrawBolt(drawPos);
             }
+        }
+
+        public virtual void PostGunDraw(Vector2 drawPos, ref Color lightColor) {
+
         }
 
         /// <summary>
@@ -635,7 +641,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             return value1 / Item.useTime;
         }
 
-        public void DrawBolt() {
+        public void DrawBolt(Vector2 drawPos) {
             bool boolvalue = Projectile.ai[1] < Item.useTime - 3;
             if (Item.useTime <= 5) {
                 boolvalue = true;
@@ -684,7 +690,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 Vector2 offsetDrawPos = inprojRot * lengsOFstValue;
                 Vector2 norlValue = inprojRot.GetNormalVector() * (DrawCrossArrowNorlMode + 2) * Owner.direction;
                 Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new(arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
-                Vector2 drawPos = Projectile.Center - Main.screenPosition + offsetDrawPos;
+                drawPos += offsetDrawPos;
 
                 Color drawColor = Color.White;
                 if (CWRServerConfig.Instance.WeaponAdaptiveIllumination || !CanFire) {

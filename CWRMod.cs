@@ -1,14 +1,9 @@
 global using Microsoft.Xna.Framework;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
-using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
-using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.OtherMods.Thorium.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.Structures;
 using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System;
@@ -27,7 +22,7 @@ namespace CalamityOverhaul
         #region Date
         internal static CWRMod Instance;
         internal static int GameLoadCount;
-
+        internal static bool Suitableversion_improveGame { get; private set; }
         internal Mod musicMod = null;
         internal Mod betterWaveSkipper = null;
         internal Mod fargowiltasSouls = null;
@@ -45,9 +40,6 @@ namespace CalamityOverhaul
         internal Mod coolerItemVisualEffect = null;
         internal Mod gravityDontFlipScreen = null;
         internal Mod infernum = null;
-
-        internal static bool Suitableversion_improveGame { get; private set; }
-
         internal List<Mod> LoadMods { get; private set; }
         internal List<ILoader> ILoaders { get; private set; }
         internal static List<BaseRItem> RItemInstances { get; private set; } = [];
@@ -66,7 +58,11 @@ namespace CalamityOverhaul
 
         public override object Call(params object[] args) {
             CallType callType = (CallType)args[0];
-            return callType == CallType.SupertableRecipeDate ? SupertableUI.RpsDataStringArrays : (object)null;
+            //如果要使用这个call，那么它最好在Load环节就调用一次，这样才能保证欧米茄能正常获取到值
+            if (callType == CallType.SupertableRecipeDate) {
+                SupertableUI.ModCall_OtherRpsData_StringArrays = (string[][])args[1];
+            }
+            return null;
         }
 
         public override void PostSetupContent() {
@@ -189,7 +185,15 @@ namespace CalamityOverhaul
                 setup.DompUnLoadText();
             }
             emptyMod();
+            LoadMods = null;
             ILoaders = null;
+            RItemInstances = null;
+            EctypeItemInstance = null;
+            NPCCustomizerInstances = null;
+            RItemIndsDict = null;
+            CWR_InItemLoader_Set_Shoot_Hook = null;
+            CWR_InItemLoader_Set_CanUse_Hook = null;
+            CWR_InItemLoader_Set_UseItem_Hook = null;
             Instance = null;
         }
 
