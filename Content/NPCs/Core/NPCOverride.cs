@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
             if (!CWRUtils.isServer || !netWorkSend) {
                 return;
             }
-            var netMessage = mod.GetPacket();
+            ModPacket netMessage = mod.GetPacket();
             netMessage.Write((byte)CWRMessageType.NPCOverrideOtherAI);
             netMessage.Write(npc.whoAmI);
             OtherNetWorkSend(netMessage);

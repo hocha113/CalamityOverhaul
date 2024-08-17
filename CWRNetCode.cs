@@ -20,6 +20,7 @@ namespace CalamityOverhaul
         NPCOverrideAI,
         NPCOverrideOtherAI,
         ProjViscosityData,
+        NetWorks,
     }
 
     public interface INetWork
@@ -29,10 +30,24 @@ namespace CalamityOverhaul
         /// ，如果大于0，将会指向性的寻找对应ID的网络接收点
         /// </summary>
         public short MessageType => -1;
+        public short messageID {
+            get {
+                if (MessageType > 0) {
+                    return MessageType;
+                }
+                return CWRNetCode.NetWorkIDDic[GetType()];
+            }
+        }
+        internal ModPacket netMessage => CWRMod.Instance.GetPacket();
         /// <summary>
         /// 发送数据
         /// </summary>
-        public void NetSend();
+        public void NetSend() {
+            netMessage.Write((byte)CWRMessageType.NetWorks);
+            netMessage.Write(messageID);
+            NetSendBehavior();
+        }
+        private void NetSendBehavior() { }
         /// <summary>
         /// 接收数据
         /// </summary>
@@ -45,13 +60,13 @@ namespace CalamityOverhaul
     public class CWRNetCode : ILoader
     {
         internal static List<INetWork> INetWorks { get; private set; }
-        internal static Dictionary<Type, int> NetWorkIDDic { get; private set; }
+        internal static Dictionary<Type, short> NetWorkIDDic { get; private set; }
         void ILoader.LoadData() {
             INetWorks = CWRUtils.GetSubInterface<INetWork>();
             for (int index = 0; index < INetWorks.Count; index++) {
                 INetWork netWork = INetWorks[index];
                 Type instanceType = netWork.GetType();
-                if (!NetWorkIDDic.TryAdd(instanceType, index)) {
+                if (!NetWorkIDDic.TryAdd(instanceType, (short)index)) {
                     string errorText = $"在添加网络对象{instanceType.Name}时出现异常，字典含有重复的值";
                     CWRMod.Instance.Logger.Info(errorText);
                 }
@@ -61,7 +76,7 @@ namespace CalamityOverhaul
             INetWorks = null;
         }
 
-        public static void HandlePacket(Mod mod, BinaryReader reader, int whoAmI) {
+        private static void NetWorksReceiveHander(Mod mod, BinaryReader reader, int whoAmI) {
             short netWorkID = reader.ReadInt16();
             foreach (var netWork in INetWorks) {
                 int targetNetID = netWork.MessageType;
@@ -72,7 +87,9 @@ namespace CalamityOverhaul
                     netWork.NetReceive(mod, reader, whoAmI);
                 }
             }
+        }
 
+        public static void HandlePacket(Mod mod, BinaryReader reader, int whoAmI) {
             CWRMessageType type = (CWRMessageType)reader.ReadByte();
             if (type == CWRMessageType.DompBool) {
                 Main.player[reader.ReadInt32()].CWR().HandleDomp(reader);
@@ -97,6 +114,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.ProjViscosityData) {
                 CWRProjectile.NetViscosityReceive(reader);
+            }
+            else if (type == CWRMessageType.NetWorks) {
+                NetWorksReceiveHander(mod, reader, whoAmI);
             }
         }
     }
