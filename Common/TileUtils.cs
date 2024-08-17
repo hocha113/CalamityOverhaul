@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Common
             string errorT_EN = $"An exception occurred in the formatted grid, located at map coordinates[{(int)tilePos.X}, {(int)tilePos.Y}] {path} subfolder 'client.log' File";
             errorT = CWRUtils.Translation(errorT_CN, errorT_EN);
             errorT.Domp(Color.Red);
-            errorT.DompInConsole();
+            CWRMod.Instance.Logger.Info(errorT);
             $"At in InfinitePickProj.AI 69 line 'WorldGen.SquareTileFrame((int)tilePos.X, (int)tilePos.Y);', targetID: {tile.TileType}:{tile}".DompInConsole();
         }
 

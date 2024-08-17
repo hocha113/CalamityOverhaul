@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content
             if (!CWRMod.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");
                 SpwanTextProj.New(Player, () => CWRUtils.Text(improvGameText, Color.Red), 210);
-                improvGameText.DompInConsole();
+                CWRMod.Instance.Logger.Info(improvGameText);
             }
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {
                 string text = CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");

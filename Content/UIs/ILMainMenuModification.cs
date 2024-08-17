@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.UIs
                 string conxt2 = CWRUtils.Translation("IL 挂载失败，是否是目标流已经更改或者移除框架?"
                     , "IL mount failed. Has the target stream changed or the frame has been removed?");
                 string errortext = $"{nameof(ILMainMenuModification)}: {conxt2} ";
-                errortext.DompInConsole();
+                CWRMod.Instance.Logger.Info(errortext);
                 throw new Exception(errortext);
             }
 
