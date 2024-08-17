@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
             base.SetDefaults();
             Projectile.width = Projectile.height = 22;
             Projectile.timeLeft = 56;
+            Projectile.extraUpdates = 2;
             Projectile.penetrate = 3;
             CanDamageTime = Main.rand.Next(13);
         }

@@ -24,7 +24,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Common
 {
-    internal class ModGanged
+    internal class ModGanged : ILoader
     {
         #region Data
         public delegate bool On_BOOL_Dalegate();
@@ -54,6 +54,9 @@ namespace CalamityOverhaul.Common
         public static Type[] weaponDisplayCodeTypes;
         public static Type weaponDisplay_ModifyDrawInfo_Type;
         public static MethodBase weaponDisplay_ModifyDrawInfo_Method;
+
+        public static Type weaponDisplayLite_ModifyDrawInfo_Type;
+        public static MethodBase weaponDisplayLite_ModifyDrawInfo_Method;
 
         public static Type[] trOCodeTypes;
         public static Type trO_itemPowerAttacksTypes;
@@ -115,7 +118,7 @@ namespace CalamityOverhaul.Common
             $"{text4} {value1}".DompInConsole();
         }
 
-        public static void Load() {
+        void ILoader.LoadData() {
             #region weaponOut
             if (CWRMod.Instance.weaponOut != null) {
                 weaponOutCodeTypes = AssemblyManager.GetLoadableTypes(CWRMod.Instance.weaponOut.Code);
@@ -166,7 +169,8 @@ namespace CalamityOverhaul.Common
                 }
 
                 if (weaponDisplay_ModifyDrawInfo_Type != null) {
-                    weaponDisplay_ModifyDrawInfo_Method = weaponDisplay_ModifyDrawInfo_Type.GetMethod("ModifyDrawInfo", BindingFlags.Instance | BindingFlags.Public);
+                    weaponDisplay_ModifyDrawInfo_Method = weaponDisplay_ModifyDrawInfo_Type
+                        .GetMethod("ModifyDrawInfo", BindingFlags.Instance | BindingFlags.Public);
                 }
                 else {
                     Domp1("weaponDisplay_ModifyDrawInfo_Method", "WeaponDisplayPlayer.ModifyDrawInfo");
@@ -178,6 +182,33 @@ namespace CalamityOverhaul.Common
             else {
                 Domp2("WeaponDisplay");
             }
+            #endregion
+
+            #region weaponDisplayLite
+
+            if (CWRMod.Instance.weaponDisplayLite != null) {
+                var codes = AssemblyManager.GetLoadableTypes(CWRMod.Instance.weaponDisplayLite.Code);
+                foreach (Type type in codes) {
+                    if (type.Name == "WeaponDisplayPlayer") {
+                        weaponDisplayLite_ModifyDrawInfo_Type = type;
+                    }
+                }
+
+                if (weaponDisplayLite_ModifyDrawInfo_Type != null) {
+                    weaponDisplayLite_ModifyDrawInfo_Method = weaponDisplayLite_ModifyDrawInfo_Type
+                        .GetMethod("ModifyDrawInfo", BindingFlags.Instance | BindingFlags.Public);
+                }
+                else {
+                    Domp1("weaponDisplayLite_ModifyDrawInfo_Method", "WeaponDisplayPlayerLite.ModifyDrawInfo");
+                }
+                if (weaponDisplayLite_ModifyDrawInfo_Method != null) {
+                    CWRHook.Add(weaponDisplayLite_ModifyDrawInfo_Method, On_MP_Draw_5_Hook);
+                }
+            }
+            else {
+                Domp2("WeaponDisplayLite");
+            }
+
             #endregion
 
             #region terrariaOverhaul
@@ -282,7 +313,8 @@ namespace CalamityOverhaul.Common
                 FGS_Utils_Type = GetTargetTypeInStringKey(fargowiltasSoulsTypes, "FargoSoulsUtil");
 
                 if (FGS_Utils_Type != null) {
-                    FGS_Utils_OnSpawnEnchCanAffectProjectile_Method = FGS_Utils_Type.GetMethod("OnSpawnEnchCanAffectProjectile", BindingFlags.Static | BindingFlags.Public);
+                    FGS_Utils_OnSpawnEnchCanAffectProjectile_Method = FGS_Utils_Type
+                        .GetMethod("OnSpawnEnchCanAffectProjectile", BindingFlags.Static | BindingFlags.Public);
                 }
                 if (FGS_FGSGlobalProj_Type != null) {
                     FGS_FGSGlobalProj_PostAI_Method = FGS_FGSGlobalProj_Type.GetMethod("PostAI", BindingFlags.Instance | BindingFlags.Public);
@@ -318,7 +350,8 @@ namespace CalamityOverhaul.Common
                     }
                 }
                 if (coolerItemVisualEffectPlayerType != null) {
-                    coolerItemVisualEffect_Method = coolerItemVisualEffectPlayerType.GetMethod("ModifyDrawInfo", BindingFlags.Instance | BindingFlags.Public);
+                    coolerItemVisualEffect_Method = coolerItemVisualEffectPlayerType
+                        .GetMethod("ModifyDrawInfo", BindingFlags.Instance | BindingFlags.Public);
                 }
                 if (coolerItemVisualEffect_Method != null) {
                     CWRHook.Add(coolerItemVisualEffect_Method, On_MP_Draw_4_Hook);
@@ -338,7 +371,8 @@ namespace CalamityOverhaul.Common
             if (CWRMod.Instance.magicStorage != null) {
                 MS_Config_Type = GetTargetTypeInStringKey(GetModType(CWRMod.Instance.magicStorage), "MagicStorageConfig");
                 if (MS_Config_Type != null) {
-                    MS_Config_recursionCraftingDepth_FieldInfo = MS_Config_Type.GetField("recursionCraftingDepth", BindingFlags.Public | BindingFlags.Instance);
+                    MS_Config_recursionCraftingDepth_FieldInfo = MS_Config_Type
+                        .GetField("recursionCraftingDepth", BindingFlags.Public | BindingFlags.Instance);
                 }
                 else {
                     Domp1("MagicStorage_MagicStorageConfig_Typ", "MagicStorage.MagicStorageConfig");
@@ -351,28 +385,30 @@ namespace CalamityOverhaul.Common
             #endregion
 
             #region calamityMod_noumenon
+            {
+                //这一切不该发生，灾厄没有在这里留下任何可扩展的接口，如果想要那该死血条的为第三方事件靠边站，只能这么做，至少这是我目前能想到的方法
+                BossHealthBarManager_Draw_Method = typeof(BossHealthBarManager)
+                    .GetMethod("Draw", BindingFlags.Instance | BindingFlags.Public);
+                if (BossHealthBarManager_Draw_Method != null) {
+                    CWRHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
+                }
+                else {
+                    Domp1("BossHealthBarManager_Draw_Method", "CalamityMod.BossHealthBarManager");
+                }
 
-            //这一切不该发生，灾厄没有在这里留下任何可扩展的接口，如果想要那该死血条的为第三方事件靠边站，只能这么做，至少这是我目前能想到的方法
-            BossHealthBarManager_Draw_Method = typeof(BossHealthBarManager).GetMethod("Draw", BindingFlags.Instance | BindingFlags.Public);
-            if (BossHealthBarManager_Draw_Method != null) {
-                CWRHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
+                calamityUtils_GetReworkedReforge_Method = typeof(CalamityUtils)
+                    .GetMethod("GetReworkedReforge", BindingFlags.Static | BindingFlags.NonPublic);
+                if (calamityUtils_GetReworkedReforge_Method != null) {
+                    CWRHook.Add(calamityUtils_GetReworkedReforge_Method, OnGetReworkedReforgeHook);
+                }
+                else {
+                    Domp1("calamityUtils_GetReworkedReforge_Method", "CalamityUtils.GetReworkedReforge");
+                }
             }
-            else {
-                Domp1("BossHealthBarManager_Draw_Method", "CalamityMod.BossHealthBarManager");
-            }
-
-            calamityUtils_GetReworkedReforge_Method = typeof(CalamityUtils).GetMethod("GetReworkedReforge", BindingFlags.Static | BindingFlags.NonPublic);
-            if (calamityUtils_GetReworkedReforge_Method != null) {
-                CWRHook.Add(calamityUtils_GetReworkedReforge_Method, OnGetReworkedReforgeHook);
-            }
-            else {
-                Domp1("calamityUtils_GetReworkedReforge_Method", "CalamityUtils.GetReworkedReforge");
-            }
-
             #endregion
         }
 
-        public static void UnLoad() {
+        void ILoader.UnLoadData() {
             weaponOutCodeTypes = null;
             weaponOut_DrawToolType = null;
             on_weaponOut_DrawTool_Method = null;
@@ -549,6 +585,13 @@ namespace CalamityOverhaul.Common
         }
 
         private static void On_MP_Draw_4_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
+            if (!IFDrawHeld(orig, drawInfo)) {
+                return;
+            }
+            orig.Invoke(obj, ref drawInfo);
+        }
+
+        private static void On_MP_Draw_5_Hook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
             if (!IFDrawHeld(orig, drawInfo)) {
                 return;
             }

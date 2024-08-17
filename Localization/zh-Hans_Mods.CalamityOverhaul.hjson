@@ -2855,6 +2855,11 @@ Items: {
 		DisplayName: 荆棘长刃
 		Tooltip: ""
 	}
+
+	HellfireFlambergeEcType: {
+		DisplayName: 狱火重剑
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

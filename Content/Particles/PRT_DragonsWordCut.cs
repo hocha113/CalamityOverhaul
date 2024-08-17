@@ -17,7 +17,8 @@ namespace CalamityOverhaul.Content.Particles
 
         public override string Texture => "CalamityMod/Particles/LargeSpark";
 
-        public PRT_DragonsWordCut(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
+        public PRT_DragonsWordCut(Vector2 relativePosition, Vector2 velocity
+            , bool affectedByGravity, int lifetime, float scale, Color color) {
             Position = relativePosition;
             Velocity = velocity;
             AffectedByGravity = affectedByGravity;
@@ -43,8 +44,10 @@ namespace CalamityOverhaul.Content.Particles
         public override void CustomDraw(SpriteBatch spriteBatch) {
             Vector2 scale = new Vector2(Xlength, Ylength) * Scale;
             Texture2D texture = PRTLoader.ParticleIDToTexturesDic[Type];
-            spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color.Gold, Rotation, texture.Size() * 0.5f, scale * new Vector2(0.85f, 1f), 0, 0f);
-            spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color, Rotation, texture.Size() * 0.5f, scale, 0, 0f);
+            spriteBatch.Draw(texture, Position - Main.screenPosition, null
+                , Color.Gold, Rotation, texture.Size() * 0.5f, scale * new Vector2(0.85f, 1f), 0, 0f);
+            spriteBatch.Draw(texture, Position - Main.screenPosition
+                , null, Color, Rotation, texture.Size() * 0.5f, scale, 0, 0f);
         }
     }
 }

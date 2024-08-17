@@ -21,5 +21,8 @@
         /// 该方法在CWRUnLoad最后调用
         /// </summary>
         public void UnLoadData() { }
+
+        internal void DompLoadText() => CWRMod.Instance.Logger.Info($"{GetType().Name}已经完成加载操作");
+        internal void DompUnLoadText() => CWRMod.Instance.Logger.Info($"{GetType().Name}已经完成卸载操作");
     }
 }

@@ -354,7 +354,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override Vector2 GetGunBodyPos() {
-            return Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY * SafeGravDir) + FeederOffsetPos;
+            return Owner.GetPlayerStabilityCenter() 
+                + new Vector2(Owner.direction * HandDistance, HandDistanceY * SafeGravDir) 
+                + FeederOffsetPos + Owner.CWR().SpecialDrawPosition;
         }
 
         /// <summary>

@@ -303,7 +303,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         /// <returns></returns>
         public virtual Vector2 GetGunBodyPos() {
-            return Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir;
+            return Owner.GetPlayerStabilityCenter() 
+                + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir
+                 + Owner.CWR().SpecialDrawPosition;
         }
 
         protected virtual void setBaseFromeAI() {

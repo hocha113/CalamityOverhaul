@@ -271,46 +271,48 @@ namespace CalamityOverhaul.Common.Effects
         public void OnDrawToTargetHook(On_Draw_Dalegate orig, object inds, SpriteBatch spriteBatch) {
             var npc = Main.npc[CalamityGlobalNPC.holyBoss];
             var borderDistance = Providence.borderRadius;
-            if (!npc.HasValidTarget)
+            if (!npc.HasValidTarget) {
                 return;
-
-            var target = Main.player[Main.myPlayer];
-            var holyInfernoIntensity = target.Calamity().holyInfernoFadeIntensity;
-            var prov = Provi;
-
-            if (prov != null) {
-                var blackTile = TextureAssets.MagicPixel;
-                var diagonalNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/HarshNoise");
-                var upwardPerlinNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/Perlin");
-                var upwardNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/MeltyNoise");
-
-                var maxOpacity = 1f;
-                if (prov.Dying) {
-                    maxOpacity = MathHelper.Lerp(1f, 0f, Utils.GetLerpValue(0f, 344f, prov.DeathAnimationTimer));
-                }
-
-                var shader = GameShaders.Misc["CalamityMod:HolyInfernoShader"].Shader;
-                shader.Parameters["colorMult"].SetValue(Main.dayTime ? 7.35f : 7.65f);
-                shader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
-                shader.Parameters["radius"].SetValue(borderDistance);
-                shader.Parameters["anchorPoint"].SetValue(npc.Center);
-                shader.Parameters["screenPosition"].SetValue(Main.screenPosition);
-                shader.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2());
-                shader.Parameters["burnIntensity"].SetValue(holyInfernoIntensity);
-                shader.Parameters["playerPosition"].SetValue(target.Center);
-                shader.Parameters["maxOpacity"].SetValue(maxOpacity);
-                shader.Parameters["day"].SetValue(Main.dayTime);
-
-                spriteBatch.GraphicsDevice.Textures[1] = diagonalNoise.Value;
-                spriteBatch.GraphicsDevice.Textures[2] = upwardNoise.Value;
-                spriteBatch.GraphicsDevice.Textures[3] = upwardPerlinNoise.Value;
-
-                spriteBatch.End();
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
-                Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
-                spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() * 0.5f, 0, 0f);
-                spriteBatch.ExitShaderRegion();
             }
+
+            var holyInfernoIntensity = Main.LocalPlayer.Calamity().holyInfernoFadeIntensity;
+
+            if (Provi == null) {
+                return;
+            }
+
+            var blackTile = TextureAssets.MagicPixel;
+            var diagonalNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/HarshNoise");
+            var upwardPerlinNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/Perlin");
+            var upwardNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/MeltyNoise");
+
+            var maxOpacity = 1f;
+            if (Provi.Dying) {
+                maxOpacity = MathHelper.Lerp(1f, 0f, Utils.GetLerpValue(0f, 344f, Provi.DeathAnimationTimer));
+            }
+
+            var shader = GameShaders.Misc["CalamityMod:HolyInfernoShader"].Shader;
+            shader.Parameters["colorMult"].SetValue(Main.dayTime ? 7.35f : 7.65f);
+            shader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
+            shader.Parameters["radius"].SetValue(borderDistance);
+            shader.Parameters["anchorPoint"].SetValue(npc.Center);
+            shader.Parameters["screenPosition"].SetValue(Main.screenPosition);
+            shader.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2());
+            shader.Parameters["burnIntensity"].SetValue(holyInfernoIntensity);
+            shader.Parameters["playerPosition"].SetValue(Main.LocalPlayer.Center);
+            shader.Parameters["maxOpacity"].SetValue(maxOpacity);
+            shader.Parameters["day"].SetValue(Main.dayTime);
+
+            spriteBatch.GraphicsDevice.Textures[1] = diagonalNoise.Value;
+            spriteBatch.GraphicsDevice.Textures[2] = upwardNoise.Value;
+            spriteBatch.GraphicsDevice.Textures[3] = upwardPerlinNoise.Value;
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None
+                , Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
+            Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
+            spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() * 0.5f, 0, 0f);
+            spriteBatch.ExitShaderRegion();
         }
     }
 }

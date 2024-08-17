@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override void ModifyShootStats(Item item, Player player, ref Vector2 position
             , ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
-            => DeathsAscensionEcType.ModifyShootStatsFunc(ref swingIndex, player
+            => DeathsAscensionEcType.ModifyShootStatsFunc(ref swingIndex, item, player
                 , ref position, ref velocity, ref type, ref damage, ref knockback);
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source

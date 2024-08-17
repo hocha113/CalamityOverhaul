@@ -9,17 +9,16 @@ namespace CalamityOverhaul.Content.Particles
 {
     internal class PRT_StarPulseRing : BaseParticle
     {
-        public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
+        public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
         public override bool UseAdditiveBlend => true;
         public override bool UseCustomDraw => true;
         public override bool SetLifetime => true;
-
         private float OriginalScale;
         private float FinalScale;
         private float opacity;
         private Color BaseColor;
-
-        public PRT_StarPulseRing(Vector2 position, Vector2 velocity, Color color, float originalScale, float finalScale, int lifeTime) {
+        public PRT_StarPulseRing(Vector2 position, Vector2 velocity, Color color
+            , float originalScale, float finalScale, int lifeTime) {
             Position = position;
             Velocity = velocity;
             BaseColor = color;
@@ -31,7 +30,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void AI() {
-            float pulseProgress = PiecewiseAnimation(LifetimeCompletion, new CurveSegment[] { new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4) });
+            float pulseProgress = PiecewiseAnimation(LifetimeCompletion, [new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4)]);
             Scale = MathHelper.Lerp(OriginalScale, FinalScale, pulseProgress);
 
             opacity = (float)Math.Sin(MathHelper.PiOver2 + LifetimeCompletion * MathHelper.PiOver2);

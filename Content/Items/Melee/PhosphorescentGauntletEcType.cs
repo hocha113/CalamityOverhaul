@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void SetDefaults() {
             Item.width = Item.height = 40;
-            Item.damage = 2705;
+            Item.damage = 1205;
             Item.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
             Item.noMelee = true;
             Item.noUseGraphic = true;
@@ -41,7 +41,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shoot = ModContent.ProjectileType<PhosphorescentGauntletPunches>();
             Item.shootSpeed = 1f;
             Item.rare = ModContent.RarityType<PureGreen>();
-
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 10;
@@ -72,7 +71,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
-                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+                Projectile.NewProjectile(source, position, velocity, type, damage * 2, knockback, player.whoAmI);
                 return false;
             }
 

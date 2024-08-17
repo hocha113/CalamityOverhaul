@@ -22,7 +22,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
-            BaseParticle particle = new PRT_SoulLight(Projectile.Center, Projectile.velocity, Main.rand.NextFloat(0.2f, 0.8f), Color.White, 23, _flowerProj: Projectile);
+            BaseParticle particle = new PRT_SoulLight(Projectile.Center, Projectile.velocity
+                , Main.rand.NextFloat(0.2f, 0.8f), Color.White, 23, _flowerProj: Projectile);
             PRTLoader.AddParticle(particle);
             NPC target = Projectile.Center.FindClosestNPC(600);
             if (target != null && Projectile.timeLeft < 480) {

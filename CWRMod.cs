@@ -34,6 +34,7 @@ namespace CalamityOverhaul
         internal Mod catalystMod = null;
         internal Mod weaponOut = null;
         internal Mod weaponDisplay = null;
+        internal Mod weaponDisplayLite = null;
         internal Mod magicBuilder = null;
         internal Mod magicStorage = null;
         internal Mod improveGame = null;
@@ -171,27 +172,25 @@ namespace CalamityOverhaul
 
         public override void Load() {
             Instance = this;
+            FindMod();
             ILoaders = CWRUtils.GetSubInterface<ILoader>();
             foreach (var setup in ILoaders) {
                 setup.LoadData();
+                setup.DompLoadText();
             }
-            FindMod();
-            ModGanged.Load();
-            StructuresBehavior.Load();
-
             LoadClient();
             GameLoadCount++;
         }
 
         public override void Unload() {
-            ModGanged.UnLoad();
-            StructuresBehavior.UnLoad();
-            emptyMod();
             UnLoadClient();
             foreach (var setup in ILoaders) {
                 setup.UnLoadData();
+                setup.DompUnLoadText();
             }
+            emptyMod();
             ILoaders = null;
+            Instance = null;
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI) => CWRNetCode.HandlePacket(this, reader, whoAmI);
@@ -222,6 +221,7 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("CatalystMod", out catalystMod);
             ModLoader.TryGetMod("WeaponOut", out weaponOut);
             ModLoader.TryGetMod("WeaponDisplay", out weaponDisplay);
+            ModLoader.TryGetMod("WeaponDisplayLite", out weaponDisplayLite);
             ModLoader.TryGetMod("MagicBuilder", out magicBuilder);
             ModLoader.TryGetMod("MagicStorage", out magicStorage);
             ModLoader.TryGetMod("ImproveGame", out improveGame);

@@ -181,7 +181,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR;
             ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR;
 
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY);
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + Owner.CWR().SpecialDrawPosition
+                + new Vector2(Owner.direction * HandDistance, HandDistanceY);
+
             int art = 20;
             if (SafeGravDir < 0) {
                 art = 340;

@@ -14,7 +14,8 @@ namespace CalamityOverhaul.Content.Particles
         public override bool UseCustomDraw => true;
         public override bool UseAdditiveBlend => true;
         public override string Texture => "CalamityMod/Particles/DrainLineBloom";
-        public PRT_Line_FormPlayer(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color) {
+        public PRT_Line_FormPlayer(Vector2 relativePosition, Vector2 velocity
+            , bool affectedByGravity, int lifetime, float scale, Color color) {
             Position = relativePosition;
             Velocity = velocity;
             AffectedByGravity = affectedByGravity;

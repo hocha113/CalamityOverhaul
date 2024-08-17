@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Particles
         public override bool UseAdditiveBlend => true;
         public override bool UseCustomDraw => true;
         public override bool SetLifetime => true;
-
         private float Spin;
         private float opacity;
         private Color Bloom;
@@ -24,16 +23,15 @@ namespace CalamityOverhaul.Content.Particles
         private Vector2 FinalScale;
         private int SpawnDelay;
         private float RotationalSpeed;
-
-        public PRT_HeavenStar(Vector2 position, Vector2 velocity, Color color, Color bloom, float angle, Vector2 scale, Vector2 finalScale, int lifeTime, float rotationSpeed = 0f, float bloomScale = 1f, float hueShift = 0f, int spawnDelay = 0, float rotationalSpeed = 0) {
+        public PRT_HeavenStar(Vector2 position, Vector2 velocity, Color color, Color bloom, float angle
+            , Vector2 scale, Vector2 finalScale, int lifeTime, float rotationSpeed = 0f, float bloomScale = 1f
+            , float hueShift = 0f, int spawnDelay = 0, float rotationalSpeed = 0) {
             Position = position;
             Velocity = velocity;
             Color = color;
             Bloom = bloom;
-
             OriginalScale = scale;
             FinalScale = finalScale;
-
             Scale = 1f;
             Lifetime = lifeTime;
             Rotation = angle % MathHelper.Pi;

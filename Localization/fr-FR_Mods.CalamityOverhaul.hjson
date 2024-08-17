@@ -2620,9 +2620,10 @@ Items: {
 		DisplayName: Ascension de la Mort
 		Tooltip:
 			'''
-			À chaque balayage, lance une faux de la Mort qui moissonne les âmes
-			Tous les trois balayages, lance une faux volante agrandie
-			Maintenez le clic gauche pour que la faux volante suive le curseur; relâchez pour déclencher la demi-lune de la Mort
+			Chaque troisième coup lance une gigantesque faux.
+			Maintenez le clic gauche enfoncé pour que la faux suive la position du curseur, 
+			puis relâchez pour déclencher le demi-cercle du faucheur.
+			Un clic droit lancera la faux du faucheur qui récolte les âmes à chaque coup.
 			'''
 	}
 
@@ -2841,6 +2842,11 @@ Items: {
 
 	FeralthornClaymoreEcType: {
 		// DisplayName: Feralthorn Claymore
+		// Tooltip: ""
+	}
+
+	HellfireFlambergeEcType: {
+		// DisplayName: Hellfire Flamberge Ec Type
 		// Tooltip: ""
 	}
 }

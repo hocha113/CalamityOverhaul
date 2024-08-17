@@ -44,8 +44,10 @@ namespace CalamityOverhaul.Content.Particles
             Vector2 scale = new Vector2(0.5f, 1.6f) * Scale;
             Texture2D texture = PRTLoader.ParticleIDToTexturesDic[Type];
 
-            spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color, Rotation, texture.Size() * 0.5f, scale, 0, 0f);
-            spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color, Rotation, texture.Size() * 0.5f, scale * new Vector2(0.45f, 1f), 0, 0f);
+            spriteBatch.Draw(texture, Position - Main.screenPosition, null
+                , Color, Rotation, texture.Size() * 0.5f, scale, 0, 0f);
+            spriteBatch.Draw(texture, Position - Main.screenPosition, null
+                , Color, Rotation, texture.Size() * 0.5f, scale * new Vector2(0.45f, 1f), 0, 0f);
         }
     }
 }

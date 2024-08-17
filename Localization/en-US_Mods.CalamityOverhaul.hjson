@@ -2620,10 +2620,10 @@ Items: {
 		DisplayName: Deaths Ascension
 		Tooltip:
 			'''
-			Each wave throws the sickle of Death, which reaps souls
-			Every three swings will throw the giant flying sickle
-			Press and hold the left button to allow the sickle to track the cursor. 
-			Release the left button to trigger the Death Half Moon
+			Every third swing will launch a giant scythe.
+			Hold the left mouse button to have the scythe follow the cursor's position; 
+			release it to trigger the Reaper's Crescent.
+			Right-clicking will throw the soul-reaping Reaper's Scythe with each swing.
 			'''
 	}
 
@@ -2845,6 +2845,11 @@ Items: {
 
 	FeralthornClaymoreEcType: {
 		DisplayName: Feralthorn Claymore
+		Tooltip: ""
+	}
+
+	HellfireFlambergeEcType: {
+		DisplayName: Hellfire Flamberge Ec Type
 		Tooltip: ""
 	}
 }

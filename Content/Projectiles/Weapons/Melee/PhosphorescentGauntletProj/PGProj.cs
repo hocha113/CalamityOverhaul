@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = false;
-            Projectile.MaxUpdates = 2;
+            Projectile.extraUpdates = 3;
             Projectile.timeLeft = 120 * Projectile.MaxUpdates;
         }
 
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
                 Vector2 top = projectile.Center + vr * 70f * salce;
                 Vector2 topRight = projectile.Center + vr.RotatedBy(MathHelper.PiOver2) * 40f * salce;
                 foreach (Vector2 spawnPosition in new BezierCurve(topLeft, top, topRight).GetPoints(50)) {
-                    Dust sulphurousAcid = Dust.NewDustPerfect(spawnPosition + vr * 16f, (int)CalamityDusts.Nightwither);
+                    Dust sulphurousAcid = Dust.NewDustPerfect(spawnPosition + vr * 16f, DustID.JungleTorch);
                     sulphurousAcid.velocity = vr * 4f;
                     sulphurousAcid.noGravity = true;
                     sulphurousAcid.scale = 1.2f * salce;

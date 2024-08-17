@@ -10,6 +10,8 @@ namespace CalamityOverhaul.Common
 {
     internal class OnCalamityReforgeEvent : ILoader
     {
+        private static CalamityMod.CalamityMod mod => (CalamityMod.CalamityMod)ModLoader.GetMod("CalamityMod");
+
         // 获取当前前缀在指定前缀层级中的层级索引
         private static int GetPrefixTier(int[][] tiers, int currentPrefix) {
             for (int checkingTier = 0; checkingTier < tiers.Length; checkingTier++) {
@@ -26,14 +28,10 @@ namespace CalamityOverhaul.Common
             return rand.Next(reforgeTiers[newTier]);
         }
 
+        private static int GetCalPrefix(string name) => mod.TryFind(name, out ModPrefix ret) ? ret.Type : 0;
+
         // 根据物品类型和当前前缀获取重铸后的前缀
         internal static int HandleCalamityReforgeModificationDueToMissingItemLoader(Item item, UnifiedRandom rand, int currentPrefix) {
-            var mod = (CalamityMod.CalamityMod)ModLoader.GetMod("CalamityMod");
-
-            int GetCalPrefix(string name) {
-                return mod.TryFind(name, out ModPrefix ret) ? ret.Type : 0;
-            }
-
             int prefix = -1; // 默认前缀，如果不匹配任何条件则返回此值
 
             // 判断物品类型并为其分配不同的重铸前缀逻辑
@@ -49,7 +47,8 @@ namespace CalamityOverhaul.Common
                 ];
                 prefix = IteratePrefix(rand, accessoryReforgeTiers, currentPrefix);
             }
-            else if (item.CountsAsClass<MeleeDamageClass>() || item.CountsAsClass<MeleeRangedHybridDamageClass>() || item.CountsAsClass<SummonMeleeSpeedDamageClass>()) // 近战
+            else if (item.CountsAsClass<MeleeDamageClass>() || item.CountsAsClass<MeleeRangedHybridDamageClass>() 
+                || item.CountsAsClass<SummonMeleeSpeedDamageClass>()) // 近战
             {
                 int[][] meleeReforgeTiers;
 
@@ -63,7 +62,8 @@ namespace CalamityOverhaul.Common
                     [PrefixID.Legendary2]
                     ];
                 }
-                else if (PrefixLegacy.ItemSets.SwordsHammersAxesPicks[item.type] || (item.ModItem != null && (item.ModItem.MeleePrefix() || item.CWR().GetMeleePrefix))) // 剑、锤子、斧头、镐子等
+                else if (PrefixLegacy.ItemSets.SwordsHammersAxesPicks[item.type] 
+                    || (item.ModItem != null && (item.ModItem.MeleePrefix() || item.CWR().GetMeleePrefix))) // 剑、锤子、斧头、镐子等
                 {
                     meleeReforgeTiers =
                     [

@@ -2614,9 +2614,10 @@ Items: {
 		DisplayName: Aufstieg des Todes
 		Tooltip:
 			'''
-			Jeder Schwung wirft eine Sense des Todes, die Seelen erntet
-			Alle drei Schwünge werfen eine vergrößerte fliegende Sense
-			Halten Sie die linke Maustaste gedrückt, um die fliegende Sense zur Cursorposition zu führen. Lassen Sie die linke Maustaste los, um den Halbmond des Todes auszulösen
+			Jeder dritte Schwung wirft eine riesige Sense.
+			Halte die linke Maustaste gedrückt, damit die Sense dem Mauszeiger folgt, 
+			und lasse die Taste los, um den Halbmond des Schnitters zu aktivieren.
+			Ein Rechtsklick wirft mit jedem Schwung die Seelensammelsense des Schnitters.
 			'''
 	}
 
@@ -2838,6 +2839,11 @@ Items: {
 
 	FeralthornClaymoreEcType: {
 		// DisplayName: Feralthorn Claymore
+		// Tooltip: ""
+	}
+
+	HellfireFlambergeEcType: {
+		// DisplayName: Hellfire Flamberge Ec Type
 		// Tooltip: ""
 	}
 }
