@@ -3,6 +3,8 @@ using CalamityMod.Items.Placeables.Furniture.CraftingStations;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
+using Terraria.DataStructures;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -25,7 +27,8 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.createTile = ModContent.TileType<TransmutationOfMatter>();
-
+            ItemID.Sets.AnimatesAsSoul[Type] = true;
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 11));
             Item.rare = ModContent.RarityType<DarkOrange>();
             Item.value = Terraria.Item.buyPrice(gold: 16);
         }

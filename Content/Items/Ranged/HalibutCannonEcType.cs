@@ -1,8 +1,11 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
 using CalamityMod.Rarities;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -107,7 +110,28 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[Text]") && x.Mod == "Terraria");
+            if (legendtops != null) {
+                int index = InWorldBossPhase.Instance.Halibut_Level();
+                legendtops.Text = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Halibut_TextDictionary_Content_{index}") : "ERROR";
 
+                if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                    legendtops.Text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("Halibut_No_legend_Content_2") : CWRLocText.GetTextValue("Halibut_No_legend_Content_1");
+                }
+                legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
+            }
+            SetTooltip(ref tooltips);
+        }
+
+        public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {
+            if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
+                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{InWorldBossPhase.Instance.Halibut_Level() + 1}]", modName);
+                tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_3"), modName);
+            }
+            else {
+                tooltips.ReplaceTooltip("[Lang4]", "", modName);
+                tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_4"), modName);
+            }
         }
     }
 }

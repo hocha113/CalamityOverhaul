@@ -2943,20 +2943,20 @@ namespace CalamityOverhaul
         public static void SafeSquareTileFrame(Vector2 tilePos, Tile tile, bool resetFrame = true) {
             int i = (int)tilePos.X;
             int j = (int)tilePos.Y;
-            TileUtils.TileFrame(i - 1, j - 1);
-            TileUtils.TileFrame(i - 1, j);
-            TileUtils.TileFrame(i - 1, j + 1);
-            TileUtils.TileFrame(i, j - 1);
+            TMLModifyFromeTileUtilsCode.TileFrame(i - 1, j - 1);
+            TMLModifyFromeTileUtilsCode.TileFrame(i - 1, j);
+            TMLModifyFromeTileUtilsCode.TileFrame(i - 1, j + 1);
+            TMLModifyFromeTileUtilsCode.TileFrame(i, j - 1);
             try {
-                TileUtils.TileFrame(i, j, resetFrame);
+                TMLModifyFromeTileUtilsCode.TileFrame(i, j, resetFrame);
             } catch {
-                TileUtils.DoErrorTile(tilePos, tile);
+                TMLModifyFromeTileUtilsCode.DoErrorTile(tilePos, tile);
                 return;
             }
-            TileUtils.TileFrame(i, j + 1);
-            TileUtils.TileFrame(i + 1, j - 1);
-            TileUtils.TileFrame(i + 1, j);
-            TileUtils.TileFrame(i + 1, j + 1);
+            TMLModifyFromeTileUtilsCode.TileFrame(i, j + 1);
+            TMLModifyFromeTileUtilsCode.TileFrame(i + 1, j - 1);
+            TMLModifyFromeTileUtilsCode.TileFrame(i + 1, j);
+            TMLModifyFromeTileUtilsCode.TileFrame(i + 1, j + 1);
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Common
     // This portion of the code has been modified to address an issue where block mining causes the game to crash.
     // The usage of this code follows the MIT license as specified by TModLoader:
     // [https://github.com/tModLoader/tModLoader]
-    internal static class TileUtils
+    internal static class TMLModifyFromeTileUtilsCode
     {
         private static bool mergeUp;
         private static bool mergeDown;

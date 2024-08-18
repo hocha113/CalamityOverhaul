@@ -4119,6 +4119,81 @@ TextContent: {
 			Будь готов, нам нужна идеальная победа
 			'''
 		SHPC_TextDictionary_Content_14: Протокол HMOI-0001 разблокирован
+		// Halibut_No_legend_Content_1: "[c/fff08c:Unlock it after the dragon falls]"
+		// Halibut_No_legend_Content_2: "[c/fff08c:Return of the legendary weapon! :)]"
+		// Halibut_No_legend_Content_3: "[c/fff08c:Grows stronger with the distance of the journey]"
+		// Halibut_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
+		/* Halibut_TextDictionary_Content_0:
+			'''
+			Friend, the task of reviving civilization finally falls into our hands. This is an honorable duty...
+			Our first target is a massive blob of blue gel polymer. Blast it open from the inside.
+			''' */
+		/* Halibut_TextDictionary_Content_1:
+			'''
+			We need to take down that giant eyeball. It comes from a powerful entity.
+			I need to dissect it to see how it achieves anti-gravity.
+			''' */
+		/* Halibut_TextDictionary_Content_2:
+			'''
+			The jungle hives are becoming very agitated, and the bee idols are about to hatch.
+			I urgently need to study its metamorphic process. Go and take a look.
+			''' */
+		/* Halibut_TextDictionary_Content_3:
+			'''
+			Giant bones floating in the air... it's very unscientific.
+			We need to head to the deep dungeon at the world's end.
+			''' */
+		/* Halibut_TextDictionary_Content_4:
+			'''
+			The earth trembles, gears roar, and currents surge.
+			A bunch of robots are waiting for us. It's time to show them the power of technology.
+			''' */
+		/* Halibut_TextDictionary_Content_5:
+			'''
+			A few flamboyant large flower buds have bloomed underground in the jungle.
+			We need to check them out and collect some experimental data.
+			''' */
+		/* Halibut_TextDictionary_Content_6:
+			'''
+			Ancient robots deep within the temple await a recharge activation.
+			Let's pay them a visit and reverse-engineer ancient technology while we're at it.
+			''' */
+		/* Halibut_TextDictionary_Content_7:
+			'''
+			The secrets on the dark side of the moon will be revealed to us.
+			The world will return to its original state.
+			''' */
+		/* Halibut_TextDictionary_Content_8:
+			'''
+			The deity parasitizing the earth's core has noticed us.
+			Go to the underworld. I need knowledge on thermal energy utilization.
+			''' */
+		/* Halibut_TextDictionary_Content_9:
+			'''
+			The spirits of the dungeon are gathering into a massive symbiotic entity.
+			This is fascinating. We need to check it out immediately.
+			''' */
+		/* Halibut_TextDictionary_Content_10:
+			'''
+			It's certain that it’s not a carbon-based lifeform; it can tear open space membranes with its body alone.
+			It devours gods, but we are not gods. I think it will invite us for tea.
+			''' */
+		/* Halibut_TextDictionary_Content_11:
+			'''
+			The last dragonborn in the world, wow, that's so cool!
+			Take me to see it. I need to get its feathers.
+			''' */
+		/* Halibut_TextDictionary_Content_12:
+			'''
+			It's time to visit my creator.
+			Or that witch, her existence troubles me.
+			''' */
+		/* Halibut_TextDictionary_Content_13:
+			'''
+			A grand melee! The enemies we once defeated have united and are preparing for a total assault on us.
+			Get ready; we need a perfect victory.
+			''' */
+		// Halibut_TextDictionary_Content_14: HMOI-0001 protocol unlocked
 		RemakeItem_Remind_TextContent:
 			'''
 			【Напоминание автора】

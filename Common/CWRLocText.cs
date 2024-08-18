@@ -64,6 +64,25 @@ namespace CalamityOverhaul.Common
         public LocalizedText SHPC_TextDictionary_Content_12 { get; private set; }
         public LocalizedText SHPC_TextDictionary_Content_13 { get; private set; }
         public LocalizedText SHPC_TextDictionary_Content_14 { get; private set; }
+        public LocalizedText Halibut_No_legend_Content_1 { get; private set; }
+        public LocalizedText Halibut_No_legend_Content_2 { get; private set; }
+        public LocalizedText Halibut_No_legend_Content_3 { get; private set; }
+        public LocalizedText Halibut_No_legend_Content_4 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_0 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_1 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_2 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_3 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_4 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_5 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_6 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_7 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_8 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_9 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_10 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_11 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_12 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_13 { get; private set; }
+        public LocalizedText Halibut_TextDictionary_Content_14 { get; private set; }
         public LocalizedText RemakeItem_Remind_TextContent { get; private set; }
         public LocalizedText StarMyriadChanges_TextContent { get; private set; }
         public LocalizedText Destruct_TextContent { get; private set; }
