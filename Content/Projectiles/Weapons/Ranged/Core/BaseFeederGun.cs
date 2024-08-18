@@ -721,10 +721,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if (ModItem.MagazineContents != null && ModItem.MagazineContents.Length > 0 && ReturnRemainingBullets
                 && Projectile.IsOwnedByLocalPlayer()/*这个操作只能在弹幕主人身上来完成，否则会导致多次给予子弹*/) {
                 foreach (Item i in ModItem.MagazineContents) {//在装弹之前返回玩家弹匣中剩余的弹药
-                    if (i.stack > 0 && i.type != ItemID.None) {
-                        if (i.CWR().AmmoProjectileReturn) {
-                            Owner.QuickSpawnItem(Source, new Item(i.type), i.stack);
-                        }
+                    if (i.stack <= 0 || i.type == ItemID.None) {
+                        continue;
+                    }
+                    if (i.CWR().AmmoProjectileReturn) {
+                        Owner.QuickSpawnItem(Source, new Item(i.type), i.stack);
                     }
                 }
             }

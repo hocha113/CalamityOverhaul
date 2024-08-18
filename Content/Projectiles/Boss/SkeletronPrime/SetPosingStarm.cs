@@ -39,6 +39,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             sengs = 0;
         }
 
+        public override bool? CanDamage() => false;
+
         public override void AI() {
             if (Projectile.ai[0] == 0) {
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(-1200, 0)
