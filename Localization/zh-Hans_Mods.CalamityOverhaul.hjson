@@ -3908,7 +3908,11 @@ TextContent: {
 			腐化的大地还在像心脏一样颤动，血肉的寄生者还在活动，腐化的肿瘤仍旧在思考，去将他们彻底放逐！
 			地牢门口的诅咒已经松动，我感觉到灵能在深牢中蠢动，夹杂着惨叫、哀嚎、低语
 			'''
-		Murasama_TextDictionary_Content_4: 记得那个头戴宝石冠的蓝胖子吗？现在，让我们去干掉它们那虚伪的神
+		Murasama_TextDictionary_Content_4:
+			'''
+			史莱姆王国流传着一个传说，它们有一个堕落的异神，现在正处于虚弱状态，正是将其放逐回亚空间的好机会
+			前去地狱释放光明与黑暗之精神，这会引发亚空间风暴，但我们不得不做，新兵！为我们的征途写下宏伟的一笔
+			'''
 		Murasama_TextDictionary_Content_5:
 			'''
 			臻冰壁垒中的监狱，那里关押着一个强大的灵能者，释放他，他会成为我们收复泰拉的一大助力
@@ -4049,81 +4053,72 @@ TextContent: {
 			做好准备，我们需要一次完美的胜利
 			'''
 		SHPC_TextDictionary_Content_14: HMOI-0001协议已解锁
-		// Halibut_No_legend_Content_1: "[c/fff08c:Unlock it after the dragon falls]"
-		// Halibut_No_legend_Content_2: "[c/fff08c:Return of the legendary weapon! :)]"
-		// Halibut_No_legend_Content_3: "[c/fff08c:Grows stronger with the distance of the journey]"
-		// Halibut_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
-		/* Halibut_TextDictionary_Content_0:
+		Halibut_No_legend_Content_1: "[c/fff08c:Unlock it after the dragon falls]"
+		Halibut_No_legend_Content_2: "[c/fff08c:Return of the legendary weapon! :)]"
+		Halibut_No_legend_Content_3: "[c/fff08c:Grows stronger with the distance of the journey]"
+		Halibut_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
+		Halibut_TextDictionary_Content_0: 朋友，让我们去挑战一下那个巨大的黏糊糊的陆地生物
+		Halibut_TextDictionary_Content_1: 有一个大眼睛直盯着我们看，这很不礼貌，我们需要去教训教训它
+		Halibut_TextDictionary_Content_2: 生机盎然的地方不只有深渊，还有丛林，朋友，我们需要去拜访一下哪里的蜜蜂头头
+		Halibut_TextDictionary_Content_3:
 			'''
-			Friend, the task of reviving civilization finally falls into our hands. This is an honorable duty...
-			Our first target is a massive blob of blue gel polymer. Blast it open from the inside.
-			''' */
-		/* Halibut_TextDictionary_Content_1:
+			被诅咒的不化白骨，我们需要让它彻底安息
+			来自地狱的求救越发频繁，我们需要尽快启程，我想向导兄弟不会介意的
 			'''
-			We need to take down that giant eyeball. It comes from a powerful entity.
-			I need to dissect it to see how it achieves anti-gravity.
-			''' */
-		/* Halibut_TextDictionary_Content_2:
+		Halibut_TextDictionary_Content_4:
 			'''
-			The jungle hives are becoming very agitated, and the bee idols are about to hatch.
-			I urgently need to study its metamorphic process. Go and take a look.
-			''' */
-		/* Halibut_TextDictionary_Content_3:
+			你知道无机物是怎么动起来的吗，我曾经制造过一个巨大的水下机器，它可以发生由泡泡组成的核弹头，
+			以及数不清的热核聚变鱼雷，我曾经用它来捕猎生活在海底10000米下的巨型生物，直到我遇到了....
+			哦说偏了，我想，一会儿会有四个机器朋友来拜访我们，我想我们需要做好准备
+			另外，你知道深渊上方被污染的海域里，有一条变异的巨型海虫，它曾经是硫磺海大学的门卫
+			它现在应该还是挺友善的，我们可以去找它喝喝下午茶
 			'''
-			Giant bones floating in the air... it's very unscientific.
-			We need to head to the deep dungeon at the world's end.
-			''' */
-		/* Halibut_TextDictionary_Content_4:
-			'''
-			The earth trembles, gears roar, and currents surge.
-			A bunch of robots are waiting for us. It's time to show them the power of technology.
-			''' */
-		/* Halibut_TextDictionary_Content_5:
+		Halibut_TextDictionary_Content_5:
 			'''
 			A few flamboyant large flower buds have bloomed underground in the jungle.
 			We need to check them out and collect some experimental data.
-			''' */
-		/* Halibut_TextDictionary_Content_6:
+			'''
+		Halibut_TextDictionary_Content_6:
 			'''
 			Ancient robots deep within the temple await a recharge activation.
 			Let's pay them a visit and reverse-engineer ancient technology while we're at it.
-			''' */
-		/* Halibut_TextDictionary_Content_7:
+			'''
+		Halibut_TextDictionary_Content_7:
 			'''
 			The secrets on the dark side of the moon will be revealed to us.
 			The world will return to its original state.
-			''' */
-		/* Halibut_TextDictionary_Content_8:
+			'''
+		Halibut_TextDictionary_Content_8:
 			'''
 			The deity parasitizing the earth's core has noticed us.
 			Go to the underworld. I need knowledge on thermal energy utilization.
-			''' */
-		/* Halibut_TextDictionary_Content_9:
+			'''
+		Halibut_TextDictionary_Content_9:
 			'''
 			The spirits of the dungeon are gathering into a massive symbiotic entity.
 			This is fascinating. We need to check it out immediately.
-			''' */
-		/* Halibut_TextDictionary_Content_10:
+			'''
+		Halibut_TextDictionary_Content_10:
 			'''
 			It's certain that it’s not a carbon-based lifeform; it can tear open space membranes with its body alone.
 			It devours gods, but we are not gods. I think it will invite us for tea.
-			''' */
-		/* Halibut_TextDictionary_Content_11:
+			'''
+		Halibut_TextDictionary_Content_11:
 			'''
 			The last dragonborn in the world, wow, that's so cool!
 			Take me to see it. I need to get its feathers.
-			''' */
-		/* Halibut_TextDictionary_Content_12:
+			'''
+		Halibut_TextDictionary_Content_12:
 			'''
 			It's time to visit my creator.
 			Or that witch, her existence troubles me.
-			''' */
-		/* Halibut_TextDictionary_Content_13:
+			'''
+		Halibut_TextDictionary_Content_13:
 			'''
 			A grand melee! The enemies we once defeated have united and are preparing for a total assault on us.
 			Get ready; we need a perfect victory.
-			''' */
-		// Halibut_TextDictionary_Content_14: HMOI-0001 protocol unlocked
+			'''
+		Halibut_TextDictionary_Content_14: HMOI-0001 protocol unlocked
 		RemakeItem_Remind_TextContent:
 			'''
 			【作者提醒】

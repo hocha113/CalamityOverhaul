@@ -7,11 +7,6 @@ namespace CalamityOverhaul.Common
     internal class CWRLocText : ModType, ILocalizedModType
     {
         public string LocalizationCategory => "TextContent";
-        protected override void Register() { }
-        #region Utils
-        public static string GetTextValue(string key) => Language.GetTextValue($"Mods.CalamityOverhaul.TextContent.CWRLocText.{key}");
-        public static LocalizedText GetText(string key) => Language.GetText($"Mods.CalamityOverhaul.TextContent.CWRLocText.{key}");
-        #endregion
         //不要被吓到，这些只是必须的
         #region 字段内容
         public LocalizedText Event_TungstenRiot_Name { get; private set; }
@@ -230,6 +225,11 @@ namespace CalamityOverhaul.Common
         public LocalizedText Wap_VortexBeater_Text { get; private set; }
         public LocalizedText Wap_ChainGun_Text { get; private set; }
         public LocalizedText Wap_MoltenFury_Text { get; private set; }
+        #endregion
+        protected override void Register() { }
+        #region Utils
+        public static string GetTextValue(string key) => Language.GetTextValue($"Mods.CalamityOverhaul.TextContent.CWRLocText.{key}");
+        public static LocalizedText GetText(string key) => Language.GetText($"Mods.CalamityOverhaul.TextContent.CWRLocText.{key}");
         #endregion
         public override void Load() {
             //使用反射进行属性的自动加载

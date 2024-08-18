@@ -381,7 +381,7 @@ namespace CalamityOverhaul.Content
                 return level;
             }
 
-            if (DownedV4.Invoke()) {
+            if (DownedV4.Invoke() && Main.hardMode) {
                 level = 4;
             }
             else {
@@ -495,7 +495,7 @@ namespace CalamityOverhaul.Content
                 return level;
             }
 
-            if (level4) {
+            if (level4 && Main.hardMode) {
                 level = 5;
             }
             else {
