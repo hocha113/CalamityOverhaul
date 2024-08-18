@@ -3585,6 +3585,7 @@ Projectiles: {
 	// DeadLaser2.DisplayName: Dead Laser2
 	// SoulCharmerBlade.DisplayName: Soul Charmer Blade
 	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
+	// Probe.DisplayName: Probe
 }
 
 Configs: {

@@ -1009,7 +1009,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         private float CalculateSpeedMultiplier(float distance, float initialSpeed) {
             if (Main.expertMode) {
-                float speed = Main.masterMode ? 6.5f : 5f;
+                float speed = Main.masterMode ? 5.5f : 4f;
                 float speedFactor = Main.masterMode ? 1.125f : 1.1f;
                 if (distance > 150f) speed *= Main.masterMode ? 1.05f : 1.025f;
                 for (int threshold = 200; threshold <= 600; threshold += 50) {

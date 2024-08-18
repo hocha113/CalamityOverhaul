@@ -59,8 +59,13 @@ namespace CalamityOverhaul
             //        , player.Center.To(Main.MouseWorld).UnitVector() * 6, ProjectileID.Bullet, CWRUtils.GetDamage(100, 150, 100), 2, player.whoAmI);
             //Projectile.friendly = false;
             //Projectile.hostile = true;
-            Projectile.NewProjectile(player.GetSource_FromAI(), player.Center, new Vector2(0, 0)
-                            , ModContent.ProjectileType<SetPosingStarm>(), 44, 2, -1, 0);
+            int maxProjSanShootNum = 22;
+            int type = ModContent.ProjectileType<Probe>();
+            for (int i = 0; i < maxProjSanShootNum; i++) {
+                Projectile.NewProjectile(player.GetSource_FromAI()
+                        , player.Center, (MathHelper.TwoPi / maxProjSanShootNum * i).ToRotationVector2() * Main.rand.Next(3, 16)
+                        , type, 42, 0f, Main.myPlayer, 0, Main.rand.Next(30, 60));
+            }
             return true;
         }
     }

@@ -135,11 +135,11 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                         maxProjSanShootNum += 4;
                     }
 
-                    int type = ModContent.ProjectileType<PrimeCannonOnSpan>();
+                    int type = ModContent.ProjectileType<Probe>();
                     for (int i = 0; i < maxProjSanShootNum; i++) {
                         Projectile.NewProjectile(Projectile.GetSource_FromAI()
-                                , Projectile.Center, (MathHelper.TwoPi / maxProjSanShootNum * i).ToRotationVector2() * 3
-                                , type, Projectile.damage, 0f, Main.myPlayer, -1, -1, 0);
+                                , Projectile.Center, (MathHelper.TwoPi / maxProjSanShootNum * i).ToRotationVector2() * Main.rand.Next(3, 16)
+                                , type, Projectile.damage, 0f, Main.myPlayer, 0, Main.rand.Next(30, 60));
                     }
 
                     //这些逻辑不可以在客户端上调用，以确保运行结果唯一且不会混乱
