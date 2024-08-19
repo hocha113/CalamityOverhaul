@@ -119,7 +119,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             int slashCreatorID = ModContent.ProjectileType<TerratomereSlashCreator>();
             if (Owner.ownedProjectileCounts[slashCreatorID] < 4) {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero
-                    , slashCreatorID, Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI, Main.rand.NextFloat(MathHelper.TwoPi));
+                    , slashCreatorID, Projectile.damage, Projectile.knockBack, Projectile.owner
+                    , target.whoAmI, Main.rand.NextFloat(MathHelper.TwoPi));
                 Owner.ownedProjectileCounts[slashCreatorID]++;
             }
         }

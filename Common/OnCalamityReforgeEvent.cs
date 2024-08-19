@@ -8,7 +8,7 @@ using Terraria.Utilities;
 
 namespace CalamityOverhaul.Common
 {
-    internal class OnCalamityReforgeEvent : ILoader
+    internal class OnCalamityReforgeEvent
     {
         private static CalamityMod.CalamityMod mod => (CalamityMod.CalamityMod)ModLoader.GetMod("CalamityMod");
 
@@ -29,6 +29,17 @@ namespace CalamityOverhaul.Common
         }
 
         private static int GetCalPrefix(string name) => mod.TryFind(name, out ModPrefix ret) ? ret.Type : 0;
+
+        //修改的关键，决定什么物品可以获得近战加成前缀
+        private static bool OverWeaponFixMeleePerg(Item item) {
+            if (item.type == ItemID.None) {
+                return false;
+            }
+            if (item.ModItem == null) {
+                return false;
+            }
+            return item.ModItem.MeleePrefix() || item.CWR().GetMeleePrefix;
+        }
 
         // 根据物品类型和当前前缀获取重铸后的前缀
         internal static int HandleCalamityReforgeModificationDueToMissingItemLoader(Item item, UnifiedRandom rand, int currentPrefix) {
@@ -63,7 +74,7 @@ namespace CalamityOverhaul.Common
                     ];
                 }
                 else if (PrefixLegacy.ItemSets.SwordsHammersAxesPicks[item.type] 
-                    || (item.ModItem != null && (item.ModItem.MeleePrefix() || item.CWR().GetMeleePrefix))) // 剑、锤子、斧头、镐子等
+                    || (item.ModItem != null && OverWeaponFixMeleePerg(item))) // 剑、锤子、斧头、镐子等
                 {
                     meleeReforgeTiers =
                     [

@@ -1225,17 +1225,21 @@ namespace CalamityOverhaul
                 SkyManager.Instance.Activate(key);
             }
         }
-
+        /// <summary>
+        /// 用于将一个武器设置为手持刀剑类，这个函数若要正确设置物品的近战属性，需要让其在初始化函数中最后调用
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
         public static void SetKnifeHeld<T>(this Item item) where T : ModProjectile {
-            item.noMelee = true;
-            item.noUseGraphic = true;
-            item.CWR().IsShootCountCorlUse = true;
             if (item.shoot == ProjectileID.None 
                 || item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
                 || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
                 item.CWR().GetMeleePrefix = true;
                 item.CWR().GetAllowPrefix = true;
             }
+            item.noMelee = true;
+            item.noUseGraphic = true;
+            item.CWR().IsShootCountCorlUse = true;
             item.shoot = ModContent.ProjectileType<T>();
         }
 
