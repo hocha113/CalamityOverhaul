@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content
             CWRHook.CheckHookStatus();
 
             if (CWRMod.Instance.magicStorage != null) {
-                SpwanTextProj.New(Player, () => CWRLocText.GetTextValue("MS_Config_Text").Domp(Color.IndianRed));
+                SpwanTextProj.New(Player, () => CWRUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
             }
             if (!CWRMod.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");
@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content
             }
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {
                 string text = CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
-                SpwanTextProj.New(Player, () => text.Domp(Color.GreenYellow), 240);
+                SpwanTextProj.New(Player, () => CWRUtils.Text(text, Color.GreenYellow), 240);
             }
             if (InitialCreation) {
                 if (CWRServerConfig.Instance.OpeningOukModification) {

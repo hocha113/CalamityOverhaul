@@ -51,15 +51,15 @@ namespace CalamityOverhaul.Content.Items.Melee
             IgnoreImpactBoxSize = true;
             drawTrailHighlight = false;
             canDrawSlashTrail = true;
+            Incandescence = true;
             drawTrailBtommWidth = 30;
             drawTrailTopWidth = 32;
             distanceToOwner = 40;
-            Length = 54;
             OtherMeleeSize = 1f;
             unitOffsetDrawZkMode = 0;
-            Incandescence = true;
             SwingData.baseSwingSpeed = 0;
             ShootSpeed = 20;
+            Length = 54;
         }
 
         public override void Shoot() {
