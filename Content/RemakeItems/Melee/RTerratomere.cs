@@ -1,7 +1,7 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.ID;
@@ -11,10 +11,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 {
     internal class RTerratomere : BaseRItem
     {
-        public override int TargetID => ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Terratomere>();
+        public override int TargetID => ModContent.ItemType<Terratomere>();
         public override int ProtogenesisID => ModContent.ItemType<TerratomereEcType>();
         public override string TargetToolTipItemName => "TerratomereEcType";
-        public override bool CanLoad() => false;//TODO:在当前版本暂时移除
         public override void SetDefaults(Item item) {
             item.width = 60;
             item.height = 66;
@@ -30,13 +29,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.noMelee = true;
             item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
             item.rare = ModContent.RarityType<Turquoise>();
-            item.shoot = ModContent.ProjectileType<RTerratomereHoldoutProj>();
-            item.shootSpeed = 60f;
+            item.SetKnifeHeld<TerratomereHeld>();
             CWRUtils.EasySetLocalTextNameOverride(item, "TerratomereEcType");
-        }
-
-        public override bool? UseItem(Item item, Player player) {
-            return player.ownedProjectileCounts[item.shoot] == 0;
         }
     }
 }

@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
+using CalamityOverhaul.Content.Projectiles.Boss.Eye;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -43,6 +44,15 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
         public override void AI() {
             if (Projectile.ai[0] == 0) {
+                foreach (var p in Main.projectile) {
+                    if (!p.active) {
+                        continue;
+                    }
+                    if ((!p.friendly || p.hostile) && p.type != Type) {
+                        p.timeLeft = 2;
+                        p.Kill();
+                    }
+                }
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(-1200, 0)
                     , new Vector2(53, 0), ModContent.ProjectileType<Mechanicalworm>(), Projectile.damage, 2, -1);
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(0, 1200)
@@ -145,7 +155,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     //这些逻辑不可以在客户端上调用，以确保运行结果唯一且不会混乱
                     NPCOverride pCOverride = boss.CWR().NPCOverride;
                     pCOverride.ai[4] = 0;
-                    pCOverride.ai[10] = 90;
+                    pCOverride.ai[10] = 180;
                     pCOverride.NetAISend();
                 }
             }

@@ -3572,6 +3572,7 @@ Projectiles: {
 	// SoulCharmerBlade.DisplayName: Soul Charmer Blade
 	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
 	// Probe.DisplayName: Probe
+	// TerratomereHeld.DisplayName: Terratomere Held
 }
 
 Configs: {
@@ -3873,6 +3874,7 @@ TextContent: {
 			Bon travail, nouvelle recrue.
 			'''
 		Murasama_Text_Lang_0: Épreuves :
+		Murasama_Text_Lang_End: A été adopté
 		Murasama_TextDictionary_Content_0:
 			'''
 			Nouvelle recrue, prouve-toi à moi
@@ -4036,81 +4038,72 @@ TextContent: {
 			Soyez prêt, nous avons besoin d'une victoire parfaite cette fois-ci
 			'''
 		SHPC_TextDictionary_Content_14: Protocole HMOI-0001 déverrouillé
-		// Halibut_No_legend_Content_1: "[c/fff08c:Unlock it after the dragon falls]"
-		// Halibut_No_legend_Content_2: "[c/fff08c:Return of the legendary weapon! :)]"
-		// Halibut_No_legend_Content_3: "[c/fff08c:Grows stronger with the distance of the journey]"
-		// Halibut_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
-		/* Halibut_TextDictionary_Content_0:
+		Halibut_No_legend_Content_1: "[c/fff08c:Déverrouillé après la chute du grand dragon]"
+		Halibut_No_legend_Content_2: "[c/fff08c:Mec, j'ai été là tout le temps]"
+		Halibut_No_legend_Content_3: "[c/fff08c:Devenu plus fort au fil des voyages]"
+		Halibut_No_legend_Content_4: "[c/00707d:La lueur de la légende s'est estompée...]"
+		Halibut_TextDictionary_Content_0: Ami, allons défier cette énorme créature gluante qui rampe sur la terre ferme.
+		Halibut_TextDictionary_Content_1: Il y a un grand œil qui nous fixe, c'est impoli, nous devons lui donner une leçon.
+		Halibut_TextDictionary_Content_2: La vie ne se trouve pas seulement dans les abysses, mais aussi dans la jungle. Ami, nous devons rendre visite au chef des abeilles là-bas.
+		Halibut_TextDictionary_Content_3:
 			'''
-			Friend, the task of reviving civilization finally falls into our hands. This is an honorable duty...
-			Our first target is a massive blob of blue gel polymer. Blast it open from the inside.
-			''' */
-		/* Halibut_TextDictionary_Content_1:
+			Le géant maudit fait d'os immortels doit être mis au repos.
+			Les appels à l'aide de l'enfer deviennent de plus en plus fréquents. Nous devons partir rapidement, je pense que le guide ne nous en voudra pas.
 			'''
-			We need to take down that giant eyeball. It comes from a powerful entity.
-			I need to dissect it to see how it achieves anti-gravity.
-			''' */
-		/* Halibut_TextDictionary_Content_2:
+		Halibut_TextDictionary_Content_4:
 			'''
-			The jungle hives are becoming very agitated, and the bee idols are about to hatch.
-			I urgently need to study its metamorphic process. Go and take a look.
-			''' */
-		/* Halibut_TextDictionary_Content_3:
+			Sais-tu comment les objets inorganiques se déplacent ? Une fois, j'ai construit une énorme machine sous-marine capable de tirer des ogives atomiques faites de bulles,
+			ainsi qu'une multitude de torpilles thermonucléaires. Je l'ai utilisée pour chasser des créatures géantes vivant à 10 000 mètres sous la mer, jusqu'à ce que je rencontre...
+			Oh, je m'égare. Je pense que quatre amis mécaniques viendront bientôt nous rendre visite, nous devrions être prêts.
+			De plus, il y a un ver marin géant et muté dans les eaux contaminées au-dessus de l'abîme. Il était autrefois le gardien de l'Université de la Mer de Soufre.
+			Il est probablement encore assez amical ; nous pourrions le rencontrer pour le thé de l'après-midi.
 			'''
-			Giant bones floating in the air... it's very unscientific.
-			We need to head to the deep dungeon at the world's end.
-			''' */
-		/* Halibut_TextDictionary_Content_4:
+		Halibut_TextDictionary_Content_5:
 			'''
-			The earth trembles, gears roar, and currents surge.
-			A bunch of robots are waiting for us. It's time to show them the power of technology.
-			''' */
-		/* Halibut_TextDictionary_Content_5:
+			J'aime la jungle ; c'est presque ma seconde maison, remplie d'une énergie vitale
+			qui n'est pas inférieure à celle des profondeurs abyssales. Mais d'abord, nous devons trouver un moyen de la libérer.
+			Tu te souviens de ces énormes bourgeons sous terre ? Cueille-les — ils m'aideront à obtenir mon diplôme de botanique.
 			'''
-			A few flamboyant large flower buds have bloomed underground in the jungle.
-			We need to check them out and collect some experimental data.
-			''' */
-		/* Halibut_TextDictionary_Content_6:
+		Halibut_TextDictionary_Content_6:
 			'''
-			Ancient robots deep within the temple await a recharge activation.
-			Let's pay them a visit and reverse-engineer ancient technology while we're at it.
-			''' */
-		/* Halibut_TextDictionary_Content_7:
+			J'adore l'archéologie. La dernière fois que je me suis promené dans la jungle, j'ai vu d'immenses ruines.
+			Nous devrions maintenant avoir la clé pour ouvrir la porte de ces ruines. Allons voir.
+			À l'intérieur, il y a une ancienne machine que nous devons mettre en marche, comme une télécommande de climatisation.
+			De plus, une peste extraterrestre se répand à la surface, infectant la terre et la plupart des objets inorganiques.
+			Chaque nuit, une machine minière souffrante erre, infectée depuis longtemps. Allons la libérer.
 			'''
-			The secrets on the dark side of the moon will be revealed to us.
-			The world will return to its original state.
-			''' */
-		/* Halibut_TextDictionary_Content_8:
+		Halibut_TextDictionary_Content_7:
 			'''
-			The deity parasitizing the earth's core has noticed us.
-			Go to the underworld. I need knowledge on thermal energy utilization.
-			''' */
-		/* Halibut_TextDictionary_Content_9:
+			Connais-tu le secret de l'autre côté de la lune ? Il y a là-bas un énorme poulpe, une éponge et une étoile de mer...
+			Oh, je voulais dire, la crise lunaire est imminente.
 			'''
-			The spirits of the dungeon are gathering into a massive symbiotic entity.
-			This is fascinating. We need to check it out immediately.
-			''' */
-		/* Halibut_TextDictionary_Content_10:
+		Halibut_TextDictionary_Content_8:
 			'''
-			It's certain that it’s not a carbon-based lifeform; it can tear open space membranes with its body alone.
-			It devours gods, but we are not gods. I think it will invite us for tea.
-			''' */
-		/* Halibut_TextDictionary_Content_11:
+			Maintenant, c'est au tour de la crise solaire. Une puissante entité énergétique s'est échappée de l'autre côté du soleil et s'est réfugiée dans le noyau de cette planète.
+			Nous devons descendre et lui donner une douche froide pour la calmer.
 			'''
-			The last dragonborn in the world, wow, that's so cool!
-			Take me to see it. I need to get its feathers.
-			''' */
-		/* Halibut_TextDictionary_Content_12:
+		Halibut_TextDictionary_Content_9:
 			'''
-			It's time to visit my creator.
-			Or that witch, her existence troubles me.
-			''' */
-		/* Halibut_TextDictionary_Content_13:
+			D'innombrables âmes invincibles des anciens champs de bataille se sont maintenant rassemblées et se cachent profondément dans le donjon, devenant de plus en plus agitées.
+			Nous pouvons y aller et éliminer quelques âmes perdues. Cela pourrait provoquer une petite tempête dans le sous-espace, mais cela pourrait aussi les faire sortir.
 			'''
-			A grand melee! The enemies we once defeated have united and are preparing for a total assault on us.
-			Get ready; we need a perfect victory.
-			''' */
-		// Halibut_TextDictionary_Content_14: HMOI-0001 protocol unlocked
+		Halibut_TextDictionary_Content_10:
+			'''
+			Il existe une catégorie de créatures qui naissent et grandissent dans l'espace, dont le corps peut supporter des radiations cosmiques intenses et des énergies de niveau planétaire.
+			Il y a longtemps, nous avons rencontré l'une d'entre elles, et maintenant, nous allons affronter l'une des plus puissantes d'entre elles — une créature qui aurait dévoré des dieux.
+			'''
+		Halibut_TextDictionary_Content_11: La température dans la jungle a augmenté récemment; je pense que ce puissant dragon est de retour.
+		Halibut_TextDictionary_Content_12:
+			'''
+			Nous allons bientôt affronter le summum des créations inorganiques, dotées d'une puissance de feu et d'une défense impressionnantes.
+			De plus, il semble que quelque chose puisse être invoqué à l'autel du Feu de Soufre.
+			'''
+		Halibut_TextDictionary_Content_13:
+			'''
+			Dans les profondeurs, il y a une pierre spéciale — utilise-la pour affronter la bataille finale.
+			Il y a aussi une puissante créature marine qui a détruit ma machine ; vengeons-nous.
+			'''
+		Halibut_TextDictionary_Content_14: Honnêtement, j'aimerais bien retourner à la mer.
 		RemakeItem_Remind_TextContent:
 			'''
 			[Auteur rappelle]

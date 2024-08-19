@@ -3586,6 +3586,7 @@ Projectiles: {
 	// SoulCharmerBlade.DisplayName: Soul Charmer Blade
 	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
 	// Probe.DisplayName: Probe
+	// TerratomereHeld.DisplayName: Terratomere Held
 }
 
 Configs: {
@@ -3887,6 +3888,7 @@ TextContent: {
 			好样的，新兵
 			'''
 		Murasama_Text_Lang_0: 试炼:
+		Murasama_Text_Lang_End: 已通过
 		Murasama_TextDictionary_Content_0:
 			'''
 			新兵，向我证明你自己
@@ -4054,10 +4056,10 @@ TextContent: {
 			做好准备，我们需要一次完美的胜利
 			'''
 		SHPC_TextDictionary_Content_14: HMOI-0001协议已解锁
-		Halibut_No_legend_Content_1: "[c/fff08c:Unlock it after the dragon falls]"
-		Halibut_No_legend_Content_2: "[c/fff08c:Return of the legendary weapon! :)]"
-		Halibut_No_legend_Content_3: "[c/fff08c:Grows stronger with the distance of the journey]"
-		Halibut_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
+		Halibut_No_legend_Content_1: "[c/fff08c:在巨龙陨落后解锁]"
+		Halibut_No_legend_Content_2: "[c/fff08c:老兄，我一直在这里]"
+		Halibut_No_legend_Content_3: "[c/fff08c:随着旅途的遥远而变强]"
+		Halibut_No_legend_Content_4: "[c/00707d:传奇的光辉已经暗淡...]"
 		Halibut_TextDictionary_Content_0: 朋友，让我们去挑战一下那个巨大的黏糊糊的陆地生物
 		Halibut_TextDictionary_Content_1: 有一个大眼睛直盯着我们看，这很不礼貌，我们需要去教训教训它
 		Halibut_TextDictionary_Content_2: 生机盎然的地方不只有深渊，还有丛林，朋友，我们需要去拜访一下哪里的蜜蜂头头
@@ -4070,56 +4072,56 @@ TextContent: {
 			'''
 			你知道无机物是怎么动起来的吗，我曾经制造过一个巨大的水下机器，它可以发生由泡泡组成的核弹头，
 			以及数不清的热核聚变鱼雷，我曾经用它来捕猎生活在海底10000米下的巨型生物，直到我遇到了....
-			哦说偏了，我想，一会儿会有四个机器朋友来拜访我们，我想我们需要做好准备
-			另外，你知道深渊上方被污染的海域里，有一条变异的巨型海虫，它曾经是硫磺海大学的门卫
+			哦说偏了，我想，一会儿会有四个机器朋友来拜访我们，我们需要做好准备
+			另外，深渊上方被污染的海域里，有一条变异的巨型海虫，它曾经是硫磺海大学的门卫
 			它现在应该还是挺友善的，我们可以去找它喝喝下午茶
 			'''
 		Halibut_TextDictionary_Content_5:
 			'''
-			A few flamboyant large flower buds have bloomed underground in the jungle.
-			We need to check them out and collect some experimental data.
+			我喜欢丛林，它简直是我的第二家园，里面充斥这生命的能量，
+			不弱于深渊底层，不过我们需要先找办法释放它们，
+			还记得那些地下的巨型花苞吗，去摘下它们，这助于我获得植物学学位
 			'''
 		Halibut_TextDictionary_Content_6:
 			'''
-			Ancient robots deep within the temple await a recharge activation.
-			Let's pay them a visit and reverse-engineer ancient technology while we're at it.
+			我喜欢考古发掘，上次在丛林里面转悠的时候我看到了一个巨大的遗迹
+			我们现在应该有打开那扇遗迹之门的钥匙，去看看吧，
+			里面有一台巨大的远古机械等待我们给它塞电池，就像空调遥控器那样
+			除此之外，地表还散布着一种外星瘟疫，能够感染大地和绝大多数的无机物，
+			每到夜晚会有一台痛苦的采矿机器在徘徊，它以被感染许久，让我们给它一个解脱
 			'''
 		Halibut_TextDictionary_Content_7:
 			'''
-			The secrets on the dark side of the moon will be revealed to us.
-			The world will return to its original state.
+			你知道月球背面的秘密吗，哪里有一只大章鱼，还有一块海绵和海星...
+			哦，我是说，月亮的危机将会降临
 			'''
 		Halibut_TextDictionary_Content_8:
 			'''
-			The deity parasitizing the earth's core has noticed us.
-			Go to the underworld. I need knowledge on thermal energy utilization.
+			现在又到了太阳危机了，一个强大的能量体从太阳的背面逃到了这颗星球的地核之中，
+			我们需要一直往下，找到它，然后给它洗一个冷水澡
 			'''
 		Halibut_TextDictionary_Content_9:
 			'''
-			The spirits of the dungeon are gathering into a massive symbiotic entity.
-			This is fascinating. We need to check it out immediately.
+			古战场的无数不屈之魂现在聚集了起来，它们藏在地牢的深处，并且现在十分的躁动。
+			我们可以去哪里击杀一些落单的冤魂，这可能会让亚空间的小型风暴提前到来，但也能引出它们
 			'''
 		Halibut_TextDictionary_Content_10:
 			'''
-			It's certain that it’s not a carbon-based lifeform; it can tear open space membranes with its body alone.
-			It devours gods, but we are not gods. I think it will invite us for tea.
+			有一类生物在太空中诞生并成长，它们的身躯能承受强大的宇宙辐射和天体级的能量
+			在很早以前我们遇到过一只，而现在，我们要面对它们中间的佼佼者，一个号称吞噬过神明的家伙
 			'''
-		Halibut_TextDictionary_Content_11:
-			'''
-			The last dragonborn in the world, wow, that's so cool!
-			Take me to see it. I need to get its feathers.
-			'''
+		Halibut_TextDictionary_Content_11: 丛林的温度最近有所上升，我想是那条强大的龙回来了
 		Halibut_TextDictionary_Content_12:
 			'''
-			It's time to visit my creator.
-			Or that witch, her existence troubles me.
+			我们将要面对无机造物的巅峰，它们有着强大的火力与防御。
+			此外，硫磺火的祭坛似乎可以召唤些什么
 			'''
 		Halibut_TextDictionary_Content_13:
 			'''
-			A grand melee! The enemies we once defeated have united and are preparing for a total assault on us.
-			Get ready; we need a perfect victory.
+			在深渊里面有一块特殊的石头，使用它来面对最终的战役
+			还有一头强大的海洋生物，它摧毁了我的机器，让我们去找它复仇
 			'''
-		Halibut_TextDictionary_Content_14: HMOI-0001 protocol unlocked
+		Halibut_TextDictionary_Content_14: 老实说，我想回海里一趟
 		RemakeItem_Remind_TextContent:
 			'''
 			【作者提醒】

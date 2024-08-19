@@ -3603,6 +3603,7 @@ Projectiles: {
 	// SoulCharmerBlade.DisplayName: Soul Charmer Blade
 	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
 	// Probe.DisplayName: Probe
+	// TerratomereHeld.DisplayName: Terratomere Held
 }
 
 Configs: {
@@ -3930,6 +3931,7 @@ TextContent: {
 			Молодец, салага.
 			'''
 		Murasama_Text_Lang_0: Испытание:
+		Murasama_Text_Lang_End: Принято
 		Murasama_TextDictionary_Content_0:
 			'''
 			Новобранец, докажи свою ценность передо мной.
@@ -4120,81 +4122,72 @@ TextContent: {
 			Будь готов, нам нужна идеальная победа
 			'''
 		SHPC_TextDictionary_Content_14: Протокол HMOI-0001 разблокирован
-		// Halibut_No_legend_Content_1: "[c/fff08c:Unlock it after the dragon falls]"
-		// Halibut_No_legend_Content_2: "[c/fff08c:Return of the legendary weapon! :)]"
-		// Halibut_No_legend_Content_3: "[c/fff08c:Grows stronger with the distance of the journey]"
-		// Halibut_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
-		/* Halibut_TextDictionary_Content_0:
+		Halibut_No_legend_Content_1: "[c/fff08c:Разблокируется после падения великого дракона]"
+		Halibut_No_legend_Content_2: "[c/fff08c:Эй, я здесь с самого начала]"
+		Halibut_No_legend_Content_3: "[c/fff08c:Становлюсь сильнее с каждым шагом пути]"
+		Halibut_No_legend_Content_4: "[c/00707d:Легендарное сияние угасло...]"
+		Halibut_TextDictionary_Content_0: Друг, давай бросим вызов этому огромному, слизкому существу на суше.
+		Halibut_TextDictionary_Content_1: Там большой глаз, который на нас пялится. Это неуважительно; мы должны преподать ему урок.
+		Halibut_TextDictionary_Content_2: Жизнь процветает не только в Бездне, но и в Джунглях. Нам нужно навестить там королеву пчел.
+		Halibut_TextDictionary_Content_3:
 			'''
-			Friend, the task of reviving civilization finally falls into our hands. This is an honorable duty...
-			Our first target is a massive blob of blue gel polymer. Blast it open from the inside.
-			''' */
-		/* Halibut_TextDictionary_Content_1:
+			Проклятый скелет, который никогда не разложится, мы должны успокоить его.
+			Крики о помощи из Ада становятся все чаще. Нам нужно поскорее отправляться. Думаю, проводник не будет против.
 			'''
-			We need to take down that giant eyeball. It comes from a powerful entity.
-			I need to dissect it to see how it achieves anti-gravity.
-			''' */
-		/* Halibut_TextDictionary_Content_2:
+		Halibut_TextDictionary_Content_4:
 			'''
-			The jungle hives are becoming very agitated, and the bee idols are about to hatch.
-			I urgently need to study its metamorphic process. Go and take a look.
-			''' */
-		/* Halibut_TextDictionary_Content_3:
+			Ты знаешь, как оживают неорганические объекты? Однажды я построил огромную подводную машину, которая могла запускать ядерные боеголовки из пузырей
+			и бесчисленные термоядерные торпеды. Я использовал ее для охоты на гигантских существ, живущих на глубине 10 000 метров под водой, пока не встретил....
+			О, я отвлекся. Думаю, вскоре к нам в гости придут четыре механических друга, так что нам нужно подготовиться.
+			Также в загрязненных водах над Бездной есть мутировавший гигантский морской червь. Раньше он был сторожем в Университете Серного Моря.
+			Он должен быть все еще довольно дружелюбным; можем пойти с ним выпить послеобеденный чай.
 			'''
-			Giant bones floating in the air... it's very unscientific.
-			We need to head to the deep dungeon at the world's end.
-			''' */
-		/* Halibut_TextDictionary_Content_4:
+		Halibut_TextDictionary_Content_5:
 			'''
-			The earth trembles, gears roar, and currents surge.
-			A bunch of robots are waiting for us. It's time to show them the power of technology.
-			''' */
-		/* Halibut_TextDictionary_Content_5:
+			Я люблю Джунгли; это почти мой второй дом, наполненный жизненной энергией,
+			не уступающей глубинам Бездны. Однако, сначала нам нужно найти способ освободить их.
+			Помнишь те огромные бутоны под землей? Собери их — они помогут мне получить степень по ботанике.
 			'''
-			A few flamboyant large flower buds have bloomed underground in the jungle.
-			We need to check them out and collect some experimental data.
-			''' */
-		/* Halibut_TextDictionary_Content_6:
+		Halibut_TextDictionary_Content_6:
 			'''
-			Ancient robots deep within the temple await a recharge activation.
-			Let's pay them a visit and reverse-engineer ancient technology while we're at it.
-			''' */
-		/* Halibut_TextDictionary_Content_7:
+			Мне нравятся археологические раскопки. В последний раз, когда я бродил по Джунглям, я увидел огромные руины.
+			У нас должна быть ключ, чтобы открыть дверь в эти руины. Давай проверим.
+			Внутри нас ждет древняя машина, которую нужно включить, как пульт управления кондиционером.
+			Кроме того, на поверхности распространяется инопланетная чума, заражающая землю и большинство неорганических объектов.
+			Каждую ночь по округе бродит мучающаяся горнодобывающая машина, которая давно инфицирована. Давай освободим её.
 			'''
-			The secrets on the dark side of the moon will be revealed to us.
-			The world will return to its original state.
-			''' */
-		/* Halibut_TextDictionary_Content_8:
+		Halibut_TextDictionary_Content_7:
 			'''
-			The deity parasitizing the earth's core has noticed us.
-			Go to the underworld. I need knowledge on thermal energy utilization.
-			''' */
-		/* Halibut_TextDictionary_Content_9:
+			Ты знаешь секрет на обратной стороне Луны? Там есть гигантский осьминог, губка и морская звезда...
+			Ой, я хотел сказать, что лунный кризис приближается.
 			'''
-			The spirits of the dungeon are gathering into a massive symbiotic entity.
-			This is fascinating. We need to check it out immediately.
-			''' */
-		/* Halibut_TextDictionary_Content_10:
+		Halibut_TextDictionary_Content_8:
 			'''
-			It's certain that it’s not a carbon-based lifeform; it can tear open space membranes with its body alone.
-			It devours gods, but we are not gods. I think it will invite us for tea.
-			''' */
-		/* Halibut_TextDictionary_Content_11:
+			Наступает солнечный кризис. Мощное энергетическое существо сбежало с обратной стороны Солнца и пробралось в ядро планеты.
+			Нам нужно идти вниз и устроить ему холодный душ.
 			'''
-			The last dragonborn in the world, wow, that's so cool!
-			Take me to see it. I need to get its feathers.
-			''' */
-		/* Halibut_TextDictionary_Content_12:
+		Halibut_TextDictionary_Content_9:
 			'''
-			It's time to visit my creator.
-			Or that witch, her existence troubles me.
-			''' */
-		/* Halibut_TextDictionary_Content_13:
+			Бесчисленные неукротимые души с древних полей сражений сейчас собрались и прячутся глубоко в подземелье, становясь все более беспокойными.
+			Мы можем пойти туда и уничтожить некоторых заблудших духов. Это может вызвать небольшой шторм в Подпространстве, но и выманить их наружу.
 			'''
-			A grand melee! The enemies we once defeated have united and are preparing for a total assault on us.
-			Get ready; we need a perfect victory.
-			''' */
-		// Halibut_TextDictionary_Content_14: HMOI-0001 protocol unlocked
+		Halibut_TextDictionary_Content_10:
+			'''
+			Есть вид существ, которые рождаются и растут в космосе, их тела могут выдерживать сильнейшую космическую радиацию и энергию планетарного масштаба.
+			Давно мы уже встречали одного из них, а сейчас мы столкнемся с лучшим из них — существом, которое, по слухам, поглотило богов.
+			'''
+		Halibut_TextDictionary_Content_11: Температура в Джунглях недавно повысилась; думаю, та могучая драконица вернулась.
+		Halibut_TextDictionary_Content_12:
+			'''
+			Мы скоро столкнемся с вершиной неорганических творений, обладающих мощным огневым потенциалом и защитой.
+			Кроме того, кажется, что на алтаре Серного Огня можно вызвать кое-что.
+			'''
+		Halibut_TextDictionary_Content_13:
+			'''
+			В Бездне есть особый камень — используй его, чтобы столкнуться с последней битвой.
+			Есть также мощное морское существо, которое уничтожило мою машину; давай отомстим ему.
+			'''
+		Halibut_TextDictionary_Content_14: Честно говоря, мне хочется снова вернуться в море.
 		RemakeItem_Remind_TextContent:
 			'''
 			【Напоминание автора】

@@ -8,12 +8,8 @@ namespace CalamityOverhaul.Content
     //这个类是用来进行判断游戏进度的，这很无赖，但我别无他法
     public class InWorldBossPhase : ILoader
     {
-        public static InWorldBossPhase Instance { get; private set; }
-
-        void ILoader.LoadData() => Instance = new InWorldBossPhase();
-        void ILoader.UnLoadData() => Instance = null;
-
         #region Date
+        public static InWorldBossPhase Instance { get; private set; }
 
         public bool level0 => DownedV0.Invoke() || Downed0.Invoke() || Downed2.Invoke();
 
@@ -245,6 +241,9 @@ namespace CalamityOverhaul.Content
         public static readonly Func<bool> Downed32 = () => DownedBossSystem.downedBossRush;
 
         #endregion
+
+        void ILoader.LoadData() => Instance = new InWorldBossPhase();
+        void ILoader.UnLoadData() => Instance = null;
 
         public int SHPC_Level() {
             int level = 0;
