@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
             
             int projType = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
-            int projDamage = eye.GetProjectileDamage(projType);  
+            int projDamage = 36;  
 
             Player player = skeletronPrimeIsDead ? Main.player[eye.target] : Main.player[skeletronPrime.target];
 

@@ -3578,6 +3578,7 @@ Projectiles: {
 	SoulCharmerBlade.DisplayName: Soul Charmer Blade
 	HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
 	Probe.DisplayName: Probe
+	TerratomereHeld.DisplayName: Terratomere Held
 }
 
 Configs: {
@@ -3884,6 +3885,7 @@ TextContent: {
 			Well done, rookie.
 			'''
 		Murasama_Text_Lang_0: Trial:
+		Murasama_Text_Lang_End: Already passed
 		Murasama_TextDictionary_Content_0:
 			'''
 			Recruit, You need to prove yourself to me.
@@ -4060,81 +4062,72 @@ TextContent: {
 			Get ready; we need a perfect victory.
 			'''
 		SHPC_TextDictionary_Content_14: HMOI-0001 protocol unlocked
-		Halibut_No_legend_Content_1: "[c/fff08c:Unlock it after the dragon falls]"
-		Halibut_No_legend_Content_2: "[c/fff08c:Return of the legendary weapon! :)]"
-		Halibut_No_legend_Content_3: "[c/fff08c:Grows stronger with the distance of the journey]"
-		Halibut_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
-		Halibut_TextDictionary_Content_0:
-			'''
-			Friend, the task of reviving civilization finally falls into our hands. This is an honorable duty...
-			Our first target is a massive blob of blue gel polymer. Blast it open from the inside.
-			'''
-		Halibut_TextDictionary_Content_1:
-			'''
-			We need to take down that giant eyeball. It comes from a powerful entity.
-			I need to dissect it to see how it achieves anti-gravity.
-			'''
-		Halibut_TextDictionary_Content_2:
-			'''
-			The jungle hives are becoming very agitated, and the bee idols are about to hatch.
-			I urgently need to study its metamorphic process. Go and take a look.
-			'''
+		Halibut_No_legend_Content_1: "[c/fff08c:Unlocked after the fall of the great dragon]"
+		Halibut_No_legend_Content_2: "[c/fff08c:Hey, I've been here all along]"
+		Halibut_No_legend_Content_3: "[c/fff08c:Growing stronger with each step of the journey]"
+		Halibut_No_legend_Content_4: "[c/00707d:The legendary glow has faded...]"
+		Halibut_TextDictionary_Content_0: Friend, let's challenge that enormous, slimy land creature.
+		Halibut_TextDictionary_Content_1: There's a big eye staring at us. That's quite rude; we should teach it a lesson.
+		Halibut_TextDictionary_Content_2: Life thrives not only in the Abyss but also in the Jungle. We should pay a visit to the queen bee there.
 		Halibut_TextDictionary_Content_3:
 			'''
-			Giant bones floating in the air... it's very unscientific.
-			We need to head to the deep dungeon at the world's end.
+			A cursed skeleton that never decays—we need to put it to rest.
+			The cries for help from Hell are becoming more frequent. We should leave soon. I'm sure the Guide won't mind.
 			'''
 		Halibut_TextDictionary_Content_4:
 			'''
-			The earth trembles, gears roar, and currents surge.
-			A bunch of robots are waiting for us. It's time to show them the power of technology.
+			Do you know how inanimate objects come to life? I once built a massive underwater machine that could launch nuclear warheads made of bubbles
+			and countless thermonuclear torpedoes. I used it to hunt gigantic creatures living 10,000 meters below the sea—until I met...
+			Oh, I digress. I think we’ll soon have four mechanical friends visiting us, so we should be prepared.
+			Also, there's a mutated giant sea worm in the polluted waters above the Abyss. It used to be a gatekeeper at the Sulphurous Sea University.
+			It should still be quite friendly; we can go have some afternoon tea with it.
 			'''
 		Halibut_TextDictionary_Content_5:
 			'''
-			A few flamboyant large flower buds have bloomed underground in the jungle.
-			We need to check them out and collect some experimental data.
+			I love the Jungle; it’s practically my second home, filled with life energy,
+			rivaling the depths of the Abyss. However, we need to find a way to unleash it first.
+			Remember those giant buds underground? Go pick them—they'll help me earn a degree in botany.
 			'''
 		Halibut_TextDictionary_Content_6:
 			'''
-			Ancient robots deep within the temple await a recharge activation.
-			Let's pay them a visit and reverse-engineer ancient technology while we're at it.
+			I enjoy archaeological digs. Last time I was wandering through the Jungle, I saw a massive ruin.
+			We should now have the key to open the door to that ruin. Let’s go check it out.
+			Inside, there’s an ancient machine waiting for us to power it up, just like a remote control for an air conditioner.
+			Besides that, there’s an alien plague spreading on the surface, infecting the land and most inorganic objects.
+			Every night, a tormented mining machine roams around, long since infected. Let's put it out of its misery.
 			'''
 		Halibut_TextDictionary_Content_7:
 			'''
-			The secrets on the dark side of the moon will be revealed to us.
-			The world will return to its original state.
+			Do you know the secret on the far side of the Moon? There’s a giant octopus, a sponge, and a starfish...
+			Oh, I mean, the lunar crisis is coming.
 			'''
 		Halibut_TextDictionary_Content_8:
 			'''
-			The deity parasitizing the earth's core has noticed us.
-			Go to the underworld. I need knowledge on thermal energy utilization.
+			Now it’s time for the solar crisis. A powerful energy being escaped from the far side of the Sun and burrowed into the planet’s core.
+			We need to head down there and give it a cold shower.
 			'''
 		Halibut_TextDictionary_Content_9:
 			'''
-			The spirits of the dungeon are gathering into a massive symbiotic entity.
-			This is fascinating. We need to check it out immediately.
+			Countless indomitable souls from ancient battlefields have gathered now, hidden deep within the dungeon, and are becoming restless.
+			We can go down there and slay some of the wandering spirits. This might bring about a small storm in the Subspace, but it’ll also lure them out.
 			'''
 		Halibut_TextDictionary_Content_10:
 			'''
-			It's certain that it’s not a carbon-based lifeform; it can tear open space membranes with its body alone.
-			It devours gods, but we are not gods. I think it will invite us for tea.
+			There’s a species that is born and grows in space, capable of withstanding intense cosmic radiation and celestial-level energy.
+			We encountered one a long time ago, but now we face the champion among them—a being that claims to have devoured gods.
 			'''
-		Halibut_TextDictionary_Content_11:
-			'''
-			The last dragonborn in the world, wow, that's so cool!
-			Take me to see it. I need to get its feathers.
-			'''
+		Halibut_TextDictionary_Content_11: The Jungle's temperature has risen lately; I think that powerful dragon has returned.
 		Halibut_TextDictionary_Content_12:
 			'''
-			It's time to visit my creator.
-			Or that witch, her existence troubles me.
+			We’re about to face the pinnacle of inorganic creations, with unmatched firepower and defense.
+			Additionally, the Sulphurous Fire Altar seems capable of summoning something.
 			'''
 		Halibut_TextDictionary_Content_13:
 			'''
-			A grand melee! The enemies we once defeated have united and are preparing for a total assault on us.
-			Get ready; we need a perfect victory.
+			In the Abyss lies a special stone—use it to face the final battle.
+			There's also a powerful sea creature that destroyed my machine; let’s seek revenge.
 			'''
-		Halibut_TextDictionary_Content_14: HMOI-0001 protocol unlocked
+		Halibut_TextDictionary_Content_14: Honestly, I feel like going back to the sea.
 		RemakeItem_Remind_TextContent:
 			'''
 			【From the Author】

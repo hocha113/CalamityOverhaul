@@ -73,7 +73,12 @@ namespace CalamityOverhaul.Content.Items.Magic
 
         public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {
             if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{InWorldBossPhase.Instance.SHPC_Level() + 1}]", modName);
+                int level = InWorldBossPhase.Instance.SHPC_Level();
+                string num = (level + 1).ToString();
+                if (level == 14) {
+                    num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
+                }
+                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]", modName);
                 tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("SHPC_No_legend_Content_3"), modName);
             }
             else {

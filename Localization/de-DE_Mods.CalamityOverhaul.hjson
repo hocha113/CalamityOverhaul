@@ -3569,6 +3569,7 @@ Projectiles: {
 	// SoulCharmerBlade.DisplayName: Soul Charmer Blade
 	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
 	// Probe.DisplayName: Probe
+	// TerratomereHeld.DisplayName: Terratomere Held
 }
 
 Configs: {
@@ -3869,6 +3870,7 @@ TextContent: {
 			Gut gemacht, Rekrut
 			'''
 		Murasama_Text_Lang_0: Prüfung:
+		Murasama_Text_Lang_End: Bereits durch die
 		Murasama_TextDictionary_Content_0:
 			'''
 			Rekrut, beweise mir deine Fähigkeiten
@@ -4032,81 +4034,72 @@ TextContent: {
 			Mach dich bereit, wir brauchen einen perfekten Sieg.
 			'''
 		SHPC_TextDictionary_Content_14: HMOI-0001-Protokoll wurde entsperrt.
-		// Halibut_No_legend_Content_1: "[c/fff08c:Unlock it after the dragon falls]"
-		// Halibut_No_legend_Content_2: "[c/fff08c:Return of the legendary weapon! :)]"
-		// Halibut_No_legend_Content_3: "[c/fff08c:Grows stronger with the distance of the journey]"
-		// Halibut_No_legend_Content_4: "[c/00707d:The glory of the legend has dimmed...]"
-		/* Halibut_TextDictionary_Content_0:
+		Halibut_No_legend_Content_1: "[c/fff08c:Freigeschaltet nach dem Fall des großen Drachen]"
+		Halibut_No_legend_Content_2: "[c/fff08c:Kumpel, ich war die ganze Zeit hier]"
+		Halibut_No_legend_Content_3: "[c/fff08c:Stärker geworden mit jeder Reise]"
+		Halibut_No_legend_Content_4: "[c/00707d:Der Glanz der Legende ist verblasst...]"
+		Halibut_TextDictionary_Content_0: Freund, lass uns dieses riesige, schleimige Landwesen herausfordern.
+		Halibut_TextDictionary_Content_1: Da ist ein großes Auge, das uns anstarrt. Das ist unhöflich, wir müssen ihm eine Lektion erteilen.
+		Halibut_TextDictionary_Content_2: Leben gibt es nicht nur in der Tiefe, sondern auch im Dschungel. Freund, wir müssen den Anführer der Bienen besuchen.
+		Halibut_TextDictionary_Content_3:
 			'''
-			Friend, the task of reviving civilization finally falls into our hands. This is an honorable duty...
-			Our first target is a massive blob of blue gel polymer. Blast it open from the inside.
-			''' */
-		/* Halibut_TextDictionary_Content_1:
+			Der verfluchte, unsterbliche Knochenriese muss zur Ruhe gebracht werden.
+			Die Hilferufe aus der Hölle werden immer häufiger. Wir müssen schnell aufbrechen, ich denke, der Guide wird nichts dagegen haben.
 			'''
-			We need to take down that giant eyeball. It comes from a powerful entity.
-			I need to dissect it to see how it achieves anti-gravity.
-			''' */
-		/* Halibut_TextDictionary_Content_2:
+		Halibut_TextDictionary_Content_4:
 			'''
-			The jungle hives are becoming very agitated, and the bee idols are about to hatch.
-			I urgently need to study its metamorphic process. Go and take a look.
-			''' */
-		/* Halibut_TextDictionary_Content_3:
+			Weißt du, wie sich anorganische Objekte bewegen? Ich habe einmal eine riesige Unterwassermaschine gebaut, die aus Blasen bestehende Atomsprengköpfe
+			und unzählige thermonukleare Torpedos abfeuern konnte. Ich habe sie benutzt, um riesige Kreaturen zu jagen, die 10.000 Meter unter dem Meer lebten, bis ich auf...
+			Oh, ich schweife ab. Ich denke, vier mechanische Freunde werden uns bald besuchen, wir sollten vorbereitet sein.
+			Außerdem gibt es über der verseuchten Tiefsee einen mutierten, gigantischen Seewurm. Er war früher der Türsteher der Schwefelmeeres-Universität.
+			Er ist wahrscheinlich immer noch recht freundlich; wir könnten ihn zum Nachmittagstee treffen.
 			'''
-			Giant bones floating in the air... it's very unscientific.
-			We need to head to the deep dungeon at the world's end.
-			''' */
-		/* Halibut_TextDictionary_Content_4:
+		Halibut_TextDictionary_Content_5:
 			'''
-			The earth trembles, gears roar, and currents surge.
-			A bunch of robots are waiting for us. It's time to show them the power of technology.
-			''' */
-		/* Halibut_TextDictionary_Content_5:
+			Ich liebe den Dschungel; er ist fast mein zweites Zuhause, erfüllt von Lebensenergie,
+			die der in den Tiefen der See in nichts nachsteht. Aber zuerst müssen wir einen Weg finden, sie freizusetzen.
+			Erinnerst du dich an die riesigen Knospen unter der Erde? Pflücke sie — sie werden mir helfen, meinen Abschluss in Botanik zu machen.
 			'''
-			A few flamboyant large flower buds have bloomed underground in the jungle.
-			We need to check them out and collect some experimental data.
-			''' */
-		/* Halibut_TextDictionary_Content_6:
+		Halibut_TextDictionary_Content_6:
 			'''
-			Ancient robots deep within the temple await a recharge activation.
-			Let's pay them a visit and reverse-engineer ancient technology while we're at it.
-			''' */
-		/* Halibut_TextDictionary_Content_7:
+			Ich liebe archäologische Ausgrabungen. Beim letzten Mal, als ich durch den Dschungel wanderte, sah ich riesige Ruinen.
+			Wir sollten jetzt den Schlüssel haben, um die Tür zu diesen Ruinen zu öffnen. Lass uns nachsehen.
+			Drinnen wartet eine antike Maschine, die wir wie eine Klimaanlagenfernbedienung in Gang setzen müssen.
+			Außerdem breitet sich auf der Oberfläche eine außerirdische Seuche aus, die die Erde und die meisten anorganischen Objekte infiziert.
+			Jede Nacht wandert eine schmerzerfüllte Bergbaumaschine umher, die schon lange infiziert ist. Lass uns sie erlösen.
 			'''
-			The secrets on the dark side of the moon will be revealed to us.
-			The world will return to its original state.
-			''' */
-		/* Halibut_TextDictionary_Content_8:
+		Halibut_TextDictionary_Content_7:
 			'''
-			The deity parasitizing the earth's core has noticed us.
-			Go to the underworld. I need knowledge on thermal energy utilization.
-			''' */
-		/* Halibut_TextDictionary_Content_9:
+			Kennst du das Geheimnis auf der Rückseite des Mondes? Dort gibt es einen riesigen Oktopus, einen Schwamm und einen Seestern...
+			Oh, ich meinte, die Mondkrise naht.
 			'''
-			The spirits of the dungeon are gathering into a massive symbiotic entity.
-			This is fascinating. We need to check it out immediately.
-			''' */
-		/* Halibut_TextDictionary_Content_10:
+		Halibut_TextDictionary_Content_8:
 			'''
-			It's certain that it’s not a carbon-based lifeform; it can tear open space membranes with its body alone.
-			It devours gods, but we are not gods. I think it will invite us for tea.
-			''' */
-		/* Halibut_TextDictionary_Content_11:
+			Jetzt kommt die Sonnenkrise. Ein mächtiges Energie-Wesen ist von der Rückseite der Sonne entkommen und in den Kern dieses Planeten geflohen.
+			Wir müssen nach unten gehen und es mit einer kalten Dusche abkühlen.
 			'''
-			The last dragonborn in the world, wow, that's so cool!
-			Take me to see it. I need to get its feathers.
-			''' */
-		/* Halibut_TextDictionary_Content_12:
+		Halibut_TextDictionary_Content_9:
 			'''
-			It's time to visit my creator.
-			Or that witch, her existence troubles me.
-			''' */
-		/* Halibut_TextDictionary_Content_13:
+			Unzählige unbezwingbare Seelen von den alten Schlachtfeldern haben sich jetzt versammelt und verstecken sich tief im Dungeon, sie werden immer unruhiger.
+			Wir können dorthin gehen und einige der verlorenen Seelen eliminieren. Das könnte einen kleinen Sturm im Subraum auslösen, aber auch sie hervorlocken.
 			'''
-			A grand melee! The enemies we once defeated have united and are preparing for a total assault on us.
-			Get ready; we need a perfect victory.
-			''' */
-		// Halibut_TextDictionary_Content_14: HMOI-0001 protocol unlocked
+		Halibut_TextDictionary_Content_10:
+			'''
+			Es gibt eine Art von Kreaturen, die im Weltraum geboren werden und dort wachsen, ihre Körper können starke kosmische Strahlung und planetarische Energie aushalten.
+			Vor langer Zeit haben wir einem von ihnen begegnet, und jetzt stehen wir einem der mächtigsten von ihnen gegenüber — einer Kreatur, die angeblich Götter verschlungen hat.
+			'''
+		Halibut_TextDictionary_Content_11: Die Temperatur im Dschungel ist in letzter Zeit gestiegen; ich denke, dieser mächtige Drache ist zurückgekehrt.
+		Halibut_TextDictionary_Content_12:
+			'''
+			Wir werden bald dem Höhepunkt der anorganischen Schöpfungen gegenüberstehen, die über starke Feuerkraft und Verteidigung verfügen.
+			Außerdem scheint es, dass man am Altar des Schwefelfeuers etwas beschwören kann.
+			'''
+		Halibut_TextDictionary_Content_13:
+			'''
+			In der Tiefe gibt es einen besonderen Stein — benutze ihn, um der letzten Schlacht zu begegnen.
+			Es gibt auch eine mächtige Meereskreatur, die meine Maschine zerstört hat; lass uns Rache nehmen.
+			'''
+		Halibut_TextDictionary_Content_14: Ehrlich gesagt, ich möchte wieder ins Meer zurückkehren.
 		RemakeItem_Remind_TextContent:
 			'''
 			[Autorerinnerung]

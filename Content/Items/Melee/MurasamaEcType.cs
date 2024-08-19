@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class MurasamaEcType : EctypeItem
     {
+        #region Data
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
@@ -172,9 +173,11 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static readonly SoundStyle InorganicHit = new("CalamityMod/Sounds/Item/MurasamaHitInorganic") { Volume = 0.55f };
         public static readonly SoundStyle Swing = new("CalamityMod/Sounds/Item/MurasamaSwing") { Volume = 0.2f };
         public static readonly SoundStyle BigSwing = new("CalamityMod/Sounds/Item/MurasamaBigSwing") { Volume = 0.25f };
+        private static string[] samNameList = new string[] { "激流山姆", "山姆", "Samuel Rodrigues", "Jetstream Sam", "Sam" };
+        #endregion
 
         public static bool NameIsVergil(Player player) => player.name == "维吉尔" || player.name == "Vergil";
-        private static string[] samNameList = new string[] { "激流山姆", "山姆", "Samuel Rodrigues", "Jetstream Sam", "Sam" };
+        
         public static bool NameIsSam(Player player) => samNameList.Contains(player.name);
 
         public override void SetStaticDefaults() {
@@ -213,7 +216,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             tooltips.ReplaceTooltip("[Lang2]", UnlockSkill2 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text2")}]", modName);
             tooltips.ReplaceTooltip("[Lang3]", UnlockSkill3 ? $"[c/00ff00:{text2}]" : $"[c/808080:{CWRLocText.GetTextValue("Murasama_Text3")}]", modName);
             if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{InWorldBossPhase.Instance.Mura_Level() + 1}]", modName);
+                int level = InWorldBossPhase.Instance.Mura_Level();
+                string num = (level + 1).ToString();
+                if (level == 14) {
+                    num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
+                }
+                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]", modName);
                 tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Murasama_No_legend_Content_3"), modName);
             }
             else {

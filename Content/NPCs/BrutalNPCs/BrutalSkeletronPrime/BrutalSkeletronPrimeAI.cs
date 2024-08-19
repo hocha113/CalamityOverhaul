@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (pCOverride.ai[10] > 0) {
                 arm.damage = 0;
             }
-            if (setPosingStarmCount > 0) {
+            if (setPosingStarmCount > 0 || pCOverride.ai[10] > 0) {
                 float rot2 = MathHelper.TwoPi / 4 * type + head.rotation;
                 Vector2 toPoint2 = head.Center + rot2.ToRotationVector2() * head.width;
                 arm.Center = Vector2.Lerp(arm.Center, toPoint2, 0.2f);
@@ -794,6 +794,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 case 3:
                     npc.damage = 0;
                     npc.dontTakeDamage = true;
+                    npc.ai[1] = 0;
 
                     Vector2 toTarget = npc.Center.To(player.Center);
                     npc.rotation = npc.rotation.AngleLerp(toTarget.X / 115f * 0.5f, 0.75f);

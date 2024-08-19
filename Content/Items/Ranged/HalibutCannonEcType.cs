@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 {
     internal class HalibutCannonEcType : EctypeItem
     {
+        #region Data
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
 
         /// <summary>
@@ -78,6 +79,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// 获取时期对应的额外暴击
         /// </summary>
         public static int GetOnCrit => SetLevelCritDictionary[Level];
+        #endregion
         public override void SetDefaults() {
             Item.damage = 3;
             Item.DamageType = DamageClass.Ranged;
@@ -125,7 +127,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {
             if (CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{InWorldBossPhase.Instance.Halibut_Level() + 1}]", modName);
+                int level = InWorldBossPhase.Instance.Halibut_Level();
+                string num = (level + 1).ToString();
+                if (level == 14) {
+                    num = CWRLocText.GetTextValue("Murasama_Text_Lang_End");
+                }
+                tooltips.ReplaceTooltip("[Lang4]", $"[c/00736d:{CWRLocText.GetTextValue("Murasama_Text_Lang_0") + " "}{num}]", modName);
                 tooltips.ReplaceTooltip("legend_Text", CWRLocText.GetTextValue("Halibut_No_legend_Content_3"), modName);
             }
             else {

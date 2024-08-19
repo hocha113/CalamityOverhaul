@@ -520,7 +520,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 if (Projectile.IsOwnedByLocalPlayer() && canShoot) {
                     Shoot();
                 }
-                UpdateCaches();
+                if (canDrawSlashTrail) {
+                    UpdateCaches();
+                }
             }
             PostInOwnerUpdate();
             UpdateFrame();
