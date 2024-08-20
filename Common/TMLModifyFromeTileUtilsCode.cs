@@ -19,6 +19,13 @@ namespace CalamityOverhaul.Common
     // [https://github.com/tModLoader/tModLoader]
     internal static class TMLModifyFromeTileUtilsCode
     {
+        private static string text = 
+            "// The following code is derived from the TModLoader source code:\r\n    " +
+            "// [https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/ModLoader/TileLoader.cs]\r\n    " +
+            "// and [https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/WorldGen.TML.cs]\r\n    " +
+            "// This portion of the code has been modified to address an issue where block mining causes the game to crash.\r\n    " +
+            "// The usage of this code follows the MIT license as specified by TModLoader:\r\n    " +
+            "// [https://github.com/tModLoader/tModLoader]";
         private static bool mergeUp;
         private static bool mergeDown;
         private static bool mergeLeft;

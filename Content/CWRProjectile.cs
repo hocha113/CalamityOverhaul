@@ -221,21 +221,22 @@ namespace CalamityOverhaul.Content
                 }
 
                 if (SpanTypes == (byte)SpanTypesEnum.Marksman) {
-                    int proj = Projectile.NewProjectile(projectile.parent(), projectile.Center, projectile.velocity
+                    int proj = Projectile.NewProjectile(projectile.GetSource_FromAI(), projectile.Center, projectile.velocity
                         , ProjectileID.LostSoulFriendly, projectile.damage / 2, projectile.knockBack / 2, projectile.owner, 0);
                     Main.projectile[proj].DamageType = DamageClass.Ranged;
                     Main.projectile[proj].timeLeft = 60;
                     NetMessage.SendData(MessageID.SyncProjectile, -1, projectile.owner, null, proj);
                 }
                 if (SpanTypes == (byte)SpanTypesEnum.BarrenBow) {
-                    _ = Projectile.NewProjectile(projectile.parent(), projectile.Center, CWRUtils.randVr(6, 9)
-                        , ModContent.ProjectileType<BarrenOrb>(), projectile.damage, 0, projectile.owner, 0);
+                    _ = Projectile.NewProjectile(projectile.GetSource_FromAI(), projectile.Center, CWRUtils.randVr(6, 9)
+                        , ModContent.ProjectileType<BarrenOrb>(), projectile.damage / 2, 0, projectile.owner, 0);
                 }
                 if (SpanTypes == (byte)SpanTypesEnum.AngelicShotgun) {
                     if (Main.rand.NextBool()) {
                         return;
                     }
-                    int proj = Projectile.NewProjectile(projectile.parent(), projectile.Center + new Vector2(Main.rand.Next(-32, 32), 0), new Vector2(0, -7)
+                    int proj = Projectile.NewProjectile(projectile.GetSource_FromAI()
+                        , projectile.Center + new Vector2(Main.rand.Next(-32, 32), 0), new Vector2(0, -7)
                         , ModContent.ProjectileType<AngelicBeam>(), projectile.damage / 2, 0, projectile.owner, 0);
                     Main.projectile[proj].timeLeft = 90;
                 }

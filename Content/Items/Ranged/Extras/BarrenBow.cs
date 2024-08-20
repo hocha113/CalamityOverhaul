@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
     {
         public override string Texture => CWRConstant.Item_Ranged + "BarrenBow";
         public override void SetDefaults() {
-            Item.damage = 39;
+            Item.damage = 28;
             Item.width = 32;
             Item.height = 58;
             Item.useTime = 15;

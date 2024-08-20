@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Common
                 ];
                 prefix = IteratePrefix(rand, summonReforgeTiers, currentPrefix);
             }
-            else if (item.CountsAsClass<ThrowingDamageClass>()) // 投掷
+            else if (item.CountsAsClass<ThrowingDamageClass>()) // 投掷/盗贼
             {
                 int[][] rogueReforgeTiers =
                 [

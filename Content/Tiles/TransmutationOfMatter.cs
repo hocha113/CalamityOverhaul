@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.Tiles
         public const int OriginOffsetX = 1;
         public const int OriginOffsetY = 1;
         public const int SheetSquare = 16;
+        private int frameIndex = 1;
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
@@ -37,7 +38,8 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.Width = Width;
             TileObjectData.newTile.Height = Height;
             TileObjectData.newTile.Origin = new Point16(OriginOffsetX, OriginOffsetY);
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile 
+                | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
 
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.newTile.LavaDeath = false;
@@ -54,6 +56,12 @@ namespace CalamityOverhaul.Content.Tiles
                 TileID.Tables,
                 TileID.Anvils,
                 TileID.MythrilAnvil,
+                TileID.Furnaces,
+                TileID.Hellforge,
+                TileID.AdamantiteForge,
+                TileID.TinkerersWorkbench,
+                TileID.LunarCraftingStation,
+                TileID.DemonAltar,
                 ModContent.TileType<CosmicAnvil>(),
                 ModContent.TileType<SCalAltarLarge>(),
                 ModContent.TileType<AncientAltar>(),
@@ -65,12 +73,6 @@ namespace CalamityOverhaul.Content.Tiles
                 ModContent.TileType<WulfrumLabstation>(),
                 ModContent.TileType<StaticRefiner>(),
                 ModContent.TileType<DraedonsForge>(),
-                TileID.Furnaces,
-                TileID.Hellforge,
-                TileID.AdamantiteForge,
-                TileID.TinkerersWorkbench,
-                TileID.LunarCraftingStation,
-                TileID.DemonAltar
             };
         }
         public override bool CanExplode(int i, int j) => false;
@@ -95,7 +97,8 @@ namespace CalamityOverhaul.Content.Tiles
         public override bool RightClick(int i, int j) {
             TileEntity.InitializeAll();
             SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
-            if (SupertableUI.Instance.Active && !Main.playerInventory) {//如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
+            if (SupertableUI.Instance.Active && !Main.playerInventory) {
+                //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
                 Main.playerInventory = true;
             }
             Tile t = Main.tile[i, j];
@@ -110,7 +113,6 @@ namespace CalamityOverhaul.Content.Tiles
             return true;
         }
 
-        private int frameIndex = 1;
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;
