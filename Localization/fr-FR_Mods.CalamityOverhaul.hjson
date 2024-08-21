@@ -3878,7 +3878,8 @@ TextContent: {
 		Murasama_TextDictionary_Content_0:
 			'''
 			Nouvelle recrue, prouve-toi à moi
-			Le gros bleu collant, les restes des monstres marins sous le désert de sable, les crabes zombies dans la grotte aux champignons
+			Le gros bleu collant, les restes des monstres marins sous le désert de sable, 
+			les crabes zombies dans la grotte aux champignons
 			Élimine-en un, c'est ton premier pas
 			'''
 		Murasama_TextDictionary_Content_1:
@@ -3888,31 +3889,45 @@ TextContent: {
 			'''
 		Murasama_TextDictionary_Content_2:
 			'''
-			Le cadavre du faux dieu souille la terre sacrée de Terraria, l'hérésie prolifère aux confins du monde, les aberrations se propagent sur le continent
+			Le cadavre du faux dieu souille la terre sacrée de Terraria, 
+			l'hérésie prolifère aux confins du monde, les aberrations se propagent sur le continent
 			Libère la terre corrompue ! Brise le cerveau du faux dieu, écrase le ver violet !
 			Je veux voir ton épée danser dans les airs, pour Terraria sacrée !
 			'''
 		Murasama_TextDictionary_Content_3:
 			'''
-			La terre corrompue tremble encore comme un cœur, les parasites de chair et de sang sont encore actifs, les tumeurs corrompues continuent de penser, bannis-les complètement !
-			La malédiction à l'entrée du donjon s'est affaiblie, je sens les énergies psychiques s'agiter dans les profondeurs, mêlées de cris, de gémissements et de chuchotements
+			La terre corrompue tremble encore comme un cœur, les parasites de chair et de sang sont encore actifs, 
+			les tumeurs corrompues continuent de penser, bannis-les complètement !
+			La malédiction à l'entrée du donjon s'est affaiblie, je sens les énergies psychiques s'agiter dans les profondeurs, 
+			mêlées de cris, de gémissements et de chuchotements
 			'''
-		Murasama_TextDictionary_Content_4: Te souviens-tu du gros bleu avec la couronne de pierres précieuses ? Maintenant, allons le tuer, ce faux dieu
+		Murasama_TextDictionary_Content_4:
+			'''
+			Te souviens-tu de ces stupides slimes? Je sens qu'une agrégation spéciale est apparue parmi eux. 
+			Élimine-la pour éviter des problèmes futurs. En même temps, 
+			nous devons vaincre ce Mur de Chair dans les Enfers pour libérer les pouvoirs scellés du monde.
+			'''
 		Murasama_TextDictionary_Content_5:
 			'''
-			La prison dans le rempart de glace renferme un puissant psychique, libère-le, il sera d'une grande aide pour notre reconquête de Terraria
-			Les parias de la mer de soufre nous empêchent de découvrir le trésor des abysses, mettons fin à leur voracité et à leurs errances
+			La prison dans le rempart de glace renferme un puissant psychique, libère-le, 
+			il sera d'une grande aide pour notre reconquête de Terraria
+			Les parias de la mer de soufre nous empêchent de découvrir le trésor des abysses, 
+			mettons fin à leur voracité et à leurs errances
 			Je me languis du feu infernal des falaises de soufre, allons rencontrer leur gardien
 			'''
 		Murasama_TextDictionary_Content_6:
 			'''
-			Cette sorcière plongée dans le chaos, elle a une sœur jumelle déformée, tue cette aberration avec le sang et les flammes de ton épée
-			Les chants envoûtants résonnent depuis le bord de la mer, ce sont les parents des sirènes, tranchons la tête des monstres marins et accomplissons des exploits sur les mers
-			Les stupides lézards ne jurent que par ces pierres obstinées, réduisons-les en poussière, détruisons leur foi, nous sommes ceux qu'ils devraient adorer
+			Cette sorcière plongée dans le chaos, elle a une sœur jumelle déformée, 
+			tue cette aberration avec le sang et les flammes de ton épée
+			Les chants envoûtants résonnent depuis le bord de la mer, ce sont les parents des sirènes, 
+			tranchons la tête des monstres marins et accomplissons des exploits sur les mers
+			Les stupides lézards ne jurent que par ces pierres obstinées, réduisons-les en poussière, 
+			détruisons leur foi, nous sommes ceux qu'ils devraient adorer
 			'''
 		Murasama_TextDictionary_Content_7:
 			'''
-			Corps de chair et de sang, âmes tourmentées des anciens champs de bataille, golems de destruction incessante, ils détruisent tout, et nous les détruisons
+			Corps de chair et de sang, âmes tourmentées des anciens champs de bataille, golems de destruction incessante, 
+			ils détruisent tout, et nous les détruisons
 			Dans la jungle, une ancienne création continue d'errer, un échec qui devrait être aussi utile qu'un tas de ferraille
 			Le dragon divin autrefois vénéré est maintenant une misérable larve, mettons fin à l'ère du dragon divin une fois pour toutes
 			'''
@@ -3927,12 +3942,14 @@ TextContent: {
 			La misérable divinité qui survit en absorbant l'énergie des étoiles, son feu hérétique doit être complètement éteint
 			Le ver de tempête qui chasse les dragons féroces au bord du ciel, il a une carapace bien armée
 			La faille dimensionnelle scellée dans les profondeurs du donjon, peut-être un bon moyen d'obtenir de la matière sombre
-			L'apôtre hérétique de l'au-delà, il porte avec lui un vide distordu rare, une bonne occasion pour nous de comprendre la nature de l'au-delà
+			L'apôtre hérétique de l'au-delà, il porte avec lui un vide distordu rare, 
+			une bonne occasion pour nous de comprendre la nature de l'au-delà
 			'''
 		Murasama_TextDictionary_Content_10:
 			'''
 			Le python cosmique arrogant remue derrière le rideau du monde, mettons fin à ses ambitions
-			Le monstre le plus ancien qui hante la mer de soufre se réveille avec la tempête psychique, faisons-le partie intégrante de notre gloire
+			Le monstre le plus ancien qui hante la mer de soufre se réveille avec la tempête psychique, 
+			faisons-le partie intégrante de notre gloire
 			'''
 		Murasama_TextDictionary_Content_11:
 			'''
@@ -3944,7 +3961,8 @@ TextContent: {
 			'''
 			Ce hérétique de la secte mécanique, il croit que sa création, le Titan de l'Etoile, surpasse la puissance divine
 			Cette croyance est absurde, ramenons ces titans à l'état naturel - un tas de ferraille
-			La sorcière qui autrefois avait un talent psychique exceptionnel aurait dû devenir une grande alliée pour protéger Terraria, mais elle s'est depuis longtemps perdue dans le chaos
+			La sorcière qui autrefois avait un talent psychique exceptionnel aurait dû devenir une grande alliée pour protéger Terraria, 
+			mais elle s'est depuis longtemps perdue dans le chaos
 			Par conséquent, nous devons l'exiler, planter notre lame dans son cœur et laisser le feu de la loyauté consumer son âme pourrie
 			Cette guerre entrera dans l'histoire de Terraria, et notre voyage commencera à travers les galaxies
 			'''

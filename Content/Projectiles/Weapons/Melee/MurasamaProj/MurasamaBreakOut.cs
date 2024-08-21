@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 overValue = level * 0.2f;
             }
             murasama.initialize();
-            return 2.2f + murasama.CWR().ai[0] * 0.2f + level * 0.16f + overValue;
+            return 2.2f + murasama.CWR().ai[0] * 0.2f + level * 0.15f + overValue;
         }
 
         public override void AI() {

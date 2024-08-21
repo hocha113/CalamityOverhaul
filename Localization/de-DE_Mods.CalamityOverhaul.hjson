@@ -3893,7 +3893,12 @@ TextContent: {
 			Das verdorbene Land pulsiert wie ein Herz, Fleisch und Blut Parasiten sind noch aktiv, verdorbene Tumore denken immer noch nach, vertreibe sie für immer!
 			Der Fluch am Eingang des Verlieses hat sich gelockert, ich spüre die Psionik tief im Kerker, durchdrungen von Schreien, Heulen und Flüstern
 			'''
-		Murasama_TextDictionary_Content_4: Erinnerst du dich an den blauen Fatty mit der Edelsteinkrone? Jetzt lass uns ihn und seinen falschen Gott erledigen
+		Murasama_TextDictionary_Content_4:
+			'''
+			Erinnerst du dich an diese törichten Schleime? Ich spüre, dass eine besondere Agglomeration unter ihnen aufgetaucht ist. 
+			Nimm sie aus dem Weg, um zukünftige Probleme zu vermeiden. 
+			Gleichzeitig müssen wir diese Fleischwand in der Unterwelt besiegen, um die versiegelten Kräfte der Welt freizusetzen.
+			'''
 		Murasama_TextDictionary_Content_5:
 			'''
 			In der eisigen Bastion liegt ein Gefängnis, wo ein mächtiger Psioniker gefangen gehalten wird, befreie ihn, er wird uns helfen, Terraria zurückzuerobern
