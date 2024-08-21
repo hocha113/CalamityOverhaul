@@ -473,7 +473,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                         else {
                             eye.damage = eye.defDamage;
                             eye.VanillaAI();
-                            if (ai[2] > 160) {
+                            if (ai[2] > 380) {
                                 ai[4]++;
                                 ai[3] = 0;
                                 ai[2] = 0;

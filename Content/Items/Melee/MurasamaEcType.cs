@@ -69,41 +69,41 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// </summary>
         private static Dictionary<int, int> SetLevelCritDictionary => new Dictionary<int, int>(){
             {0, 1 },
-            {1, 6 },
-            {2, 11 },
-            {3, 13 },
-            {4, 15 },
-            {5, 18 },
-            {6, 21 },
-            {7, 24 },
-            {8, 28 },
-            {9, 31 },
-            {10, 34 },
-            {11, 37 },
-            {12, 41 },
-            {13, 46 },
-            {14, 96 }
+            {1, 5 },
+            {2, 8 },
+            {3, 10 },
+            {4, 12 },
+            {5, 15 },
+            {6, 18 },
+            {7, 20 },
+            {8, 22 },
+            {9, 24 },
+            {10, 28 },
+            {11, 32 },
+            {12, 36 },
+            {13, 40 },
+            {14, 46 }
         };
 
         /// <summary>
         /// 每个时期阶段对应的升龙冷却的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnRDCD"/>
         /// </summary>
         private static Dictionary<int, int> RDCDDictionary => new Dictionary<int, int>(){
-            {0, 315 },
-            {1, 285 },
-            {2, 260 },
-            {3, 240 },
-            {4, 220 },
-            {5, 200 },
-            {6, 180 },
-            {7, 165 },
-            {8, 155 },
+            {0, 325 },
+            {1, 300 },
+            {2, 280 },
+            {3, 260 },
+            {4, 240 },
+            {5, 220 },
+            {6, 200 },
+            {7, 180 },
+            {8, 160 },
             {9, 150 },
             {10, 140 },
-            {11, 125 },
-            {12, 115 },
-            {13, 100 },
-            {14, 90 }
+            {11, 130 },
+            {12, 120 },
+            {13, 110 },
+            {14, 100 }
         };
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
         /// <summary>
