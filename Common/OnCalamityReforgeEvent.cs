@@ -30,6 +30,8 @@ namespace CalamityOverhaul.Common
 
         private static int GetCalPrefix(string name) => mod.TryFind(name, out ModPrefix ret) ? ret.Type : 0;
 
+        private static bool IsTool(Item item) => item.pick > 0 || item.axe > 0 || item.hammer > 0;
+
         //修改的关键，决定什么物品可以获得近战加成前缀
         private static bool OverWeaponFixMeleePerg(Item item) {
             if (item.type == ItemID.None) {
@@ -85,6 +87,18 @@ namespace CalamityOverhaul.Common
                     [PrefixID.Demonic, PrefixID.Deadly2, PrefixID.Godly],
                     [PrefixID.Legendary]
                     ];
+                    
+                    if (IsTool(item)) {//我暂时没能考虑到这一点，原灾厄考虑到了，所以便补上这个，对于工具来讲，轻和传奇是一样重要的，在最后一行添加上轻的标签让一切看起来显得合理
+                        meleeReforgeTiers =
+                        [
+                        [PrefixID.Keen, PrefixID.Nimble, PrefixID.Nasty, PrefixID.Heavy, PrefixID.Forceful, PrefixID.Strong],
+                        [PrefixID.Hurtful, PrefixID.Ruthless, PrefixID.Zealous, PrefixID.Quick, PrefixID.Pointy, PrefixID.Bulky],
+                        [PrefixID.Murderous, PrefixID.Agile, PrefixID.Large, PrefixID.Dangerous, PrefixID.Sharp],
+                        [PrefixID.Massive, PrefixID.Unpleasant, PrefixID.Savage, PrefixID.Superior],
+                        [PrefixID.Demonic, PrefixID.Deadly2, PrefixID.Godly],
+                        [PrefixID.Legendary, PrefixID.Light]
+                        ];
+                    }
                 }
                 else // 其他近战武器
                 {

@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.HalibutCannon>();
         public override int targetCWRItem => ModContent.ItemType<HalibutCannonEcType>();
-
         private int level => HalibutCannonEcType.Level;
         public override void SetRangedProperty() {
             ControlForce = 0.05f;
@@ -21,6 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 8;
             HandFireDistance = 40;
             HandFireDistanceY = -3;
+            CanCreateSpawnGunDust = false;
         }
 
         private void Shoot(int num) {

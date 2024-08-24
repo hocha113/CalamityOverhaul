@@ -82,7 +82,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            if ((head.ai[1] == 1 || head.ai[1] == 2) && head.CWR().NPCOverride.ai[11] >= 1 && setPosingStarmCount <= 0) {
+            if ((head.ai[1] == 1 || head.ai[1] == 2 || head.CWR().NPCOverride.ai[10] > 0) 
+                && head.CWR().NPCOverride.ai[11] >= 1 && setPosingStarmCount <= 0) {
                 float rCurrentNPCRotation = rCurrentNPC.rotation;
                 Vector2 drawPos = rCurrentNPC.Center + (rCurrentNPCRotation + MathHelper.PiOver2).ToRotationVector2() * -120;
                 Rectangle drawRec = CWRUtils.GetRec(BSPRAM.Value);
@@ -317,6 +318,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             for (int i = 0; i < npc.buffImmune.Length; i++) {
                 npc.buffImmune[i] = true;
             }
+            int newMaxLife = (int)(npc.lifeMax * 0.7f);
+            npc.life = npc.lifeMax = newMaxLife;
         }
 
         public override bool AI() {
@@ -364,8 +367,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             CheakRam(out cannonAlive, out viceAlive, out sawAlive, out laserAlive);
             DealingDaytimeRage();
 
-            //这个部分是机械骷髅王刚刚进行tp传送后的行为，由ai11属性控制，在这个期间，
-            //它不应该做任何攻击性的事情，要防止npc.ai[1]为3，而ai11这个值会自动消减
+            //这个部分是机械骷髅王刚刚进行tp传送后的行为，由ai10属性控制，在这个期间，
+            //它不应该做任何攻击性的事情，要防止npc.ai[1]为3，而ai10这个值会自动消减
             if (InIdleAI()) {
                 return false;
             }
@@ -568,7 +571,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     SoundEngine.PlaySound(SoundID.ForceRoar, npc.Center);
                 }
 
-                if (npc.ai[2] == 38f && ai11 >= 1 && !noArm) {//只有当ai12的值大于等于1后才会进行冲刺
+                if (npc.ai[2] == 38f && ai11 >= 1 && !noArm) {//只有当ai11的值大于等于1后才会进行冲刺
                     SoundStyle sound = new SoundStyle("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged");
                     SoundEngine.PlaySound(sound with { Pitch = 1.18f }, npc.Center);
                 }
@@ -648,6 +651,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         if (!CWRUtils.isClient) {
                             if (ai8 % 2 == 0) {
                                 int totalProjectiles = bossRush ? 9 : 6;
+                                if (!noEye) {
+                                    totalProjectiles = 3;
+                                }
                                 Vector2 laserFireDirection = npc.Center.To(player.Center).UnitVector();
                                 for (int j = 0; j < totalProjectiles; j++) {
                                     Vector2 vector = laserFireDirection.RotatedBy((totalProjectiles / -2 + j) * 0.2f) * 6;
@@ -694,10 +700,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     }
                     break;
                 case 1:
-                    if (++ai4 > 90 && (setPosingStarmCount == 0 || noEye) && ai5 <= 2 && ai10 <= 0) {
+                    if (ai4 > 90 && noEye && ai5 <= 2 && ai10 <= 0) {
                         npc.TargetClosest();
                         if (!CWRUtils.isClient) {
-                            float maxLerNum = noEye ? 13 : 9f;
+                            float maxLerNum = death ? 13 : 9f;
                             for (int i = 0; i < maxLerNum; i++) {
                                 float rotoffset = MathHelper.TwoPi / maxLerNum * i;
                                 Vector2 perturbedSpeed = cannonSpreadTargetDist.RotatedBy(rotoffset);
@@ -728,6 +734,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         NetAISend();
                     }
 
+                    ai4++;
                     break;
                 case 2:
                     npc.damage = 0;
