@@ -16,48 +16,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         #region Data
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HalibutCannon";
-
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
-        private static Dictionary<int, int> DamageDictionary => new Dictionary<int, int>(){
-            {0, 3 },
-            {1, 4 },
-            {2, 5 },
-            {3, 7 },
-            {4, 8 },
-            {5, 10 },
-            {6, 13 },
-            {7, 15 },
-            {8, 18 },
-            {9, 22 },
-            {10, 25 },
-            {11, 28 },
-            {12, 32 },
-            {13, 36 },
-            {14, 40 }
-        };
-
+        private static Dictionary<int, int> DamageDictionary = new Dictionary<int, int>();
         /// <summary>
         /// 每个时期阶段对应的额外暴击振幅的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnCrit"/>
         /// </summary>
-        private static Dictionary<int, int> SetLevelCritDictionary => new Dictionary<int, int>(){
-            {0, 0 },
-            {1, 1 },
-            {2, 1 },
-            {3, 2 },
-            {4, 2 },
-            {5, 5 },
-            {6, 5 },
-            {7, 8 },
-            {8, 9 },
-            {9, 9 },
-            {10, 10 },
-            {11, 11 },
-            {12, 13 },
-            {13, 15 },
-            {14, 20 }
-        };
+        private static Dictionary<int, int> SetLevelCritDictionary = new Dictionary<int, int>();
         public static int Level => InWorldBossPhase.Instance.Halibut_Level();
         /// <summary>
         /// 获取开局的伤害
@@ -80,8 +46,47 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// </summary>
         public static int GetOnCrit => SetLevelCritDictionary[Level];
         #endregion
-        public override void SetDefaults() {
-            Item.damage = 3;
+        public static void LoadWeaponData() {
+            DamageDictionary = new Dictionary<int, int>(){
+                {0, 3 },
+                {1, 4 },
+                {2, 5 },
+                {3, 7 },
+                {4, 8 },
+                {5, 10 },
+                {6, 13 },
+                {7, 15 },
+                {8, 18 },
+                {9, 22 },
+                {10, 25 },
+                {11, 28 },
+                {12, 32 },
+                {13, 36 },
+                {14, 40 }
+            };
+            SetLevelCritDictionary = new Dictionary<int, int>(){
+                {0, 0 },
+                {1, 1 },
+                {2, 1 },
+                {3, 2 },
+                {4, 2 },
+                {5, 5 },
+                {6, 5 },
+                {7, 8 },
+                {8, 9 },
+                {9, 9 },
+                {10, 10 },
+                {11, 11 },
+                {12, 13 },
+                {13, 15 },
+                {14, 20 }
+            };
+        }
+        public override void SetStaticDefaults() => LoadWeaponData();
+        public override void SetDefaults() => SetDefaultsFunc(Item);
+        public static void SetDefaultsFunc(Item Item) {
+            LoadWeaponData();
+            Item.damage = GetStartDamage;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 118;
             Item.height = 56;
@@ -104,12 +109,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += GetOnCrit;
 
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => ModifyWeaponDamageFunc(player, ref damage);
-        public static void ModifyWeaponDamageFunc(Player player, ref StatModifier damage) {
-            float oldMultiplicative = damage.Multiplicative;
-            damage *= GetOnDamage / (float)GetStartDamage;
-            damage /= oldMultiplicative;
-        }
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) 
+            => CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage, GetStartDamage, ref damage);
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[Text]") && x.Mod == "Terraria");
@@ -118,7 +119,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 legendtops.Text = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Halibut_TextDictionary_Content_{index}") : "ERROR";
 
                 if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                    legendtops.Text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("Halibut_No_legend_Content_2") : CWRLocText.GetTextValue("Halibut_No_legend_Content_1");
+                    legendtops.Text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("Halibut_No_legend_Content_2") 
+                        : CWRLocText.GetTextValue("Halibut_No_legend_Content_1");
                 }
                 legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
             }

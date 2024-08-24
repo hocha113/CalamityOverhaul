@@ -1180,6 +1180,14 @@ namespace CalamityOverhaul
             }
         }
 
+        public static void ModifyLegendWeaponDamageFunc(Player player, Item item, int GetOnDamage, int GetStartDamage, ref StatModifier damage) {
+            float oldMultiplicative = damage.Multiplicative;
+            damage *= GetOnDamage / (float)GetStartDamage;
+            damage /= oldMultiplicative;
+            //首先，因为SD的运行优先级并不可靠，有的模组的修改在SD之后运行，比如炼狱模式，这个基础伤害缩放保证一些情况不会发生
+            damage *= GetStartDamage / (float)item.damage;
+        }
+
         public static NPC FindNPCFromeType(int type) {
             NPC npc = null;
             foreach (var n in Main.npc) {

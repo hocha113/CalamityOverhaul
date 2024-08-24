@@ -26,12 +26,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
             CWRHook.Add(methodInfo, onSHPCToolFunc);
         }
         void ILoader.UnLoadData() => methodInfo = null;
-        public override void SetDefaults(Item item) {
-            item.damage = SHPCEcType.GetStartDamage;
-            item.SetHeldProj<SHPCHeldProj>();
-        }
+        public override void SetDefaults(Item item) => SHPCEcType.SetDefaultsFunc(item);
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-            SHPCEcType.SHPCDamage(ref damage);
+            SHPCEcType.SHPCDamage(player, item, ref damage);
             return false;
         }
 

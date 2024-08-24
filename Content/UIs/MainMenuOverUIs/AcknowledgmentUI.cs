@@ -19,92 +19,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         internal static string textElement2 => $" [{CWRLocText.GetTextValue("IconUI_Text4")}]";
         internal static string textElement3 => $" [{CWRLocText.GetTextValue("IconUI_Text5")}]";
         internal static string textElement4 => $" [{CWRLocText.GetTextValue("IconUI_Text6")}]";
-        internal static string[] names => [
-            "[icon]",
-            "雾梯" + textElement1,
-            "子离似槜" + textElement1,
-            "Cyrilly" + textElement2,
-            "瓶中微光" + textElement2,
-            "Monomon" + textElement2,
-            "像樱花一样飘散吧" + textElement4,
-            "洛千希" + textElement4,
-            "闪耀£星辰" + textElement4,
-            "蒹葭" + textElement4,
-            "悬剑" + textElement4,
-            "CataStrophe" + textElement4,
-            "摸鱼的龙虾" + textElement3,
-            "啊,胖子" + textElement3,
-            "星星之火" + textElement3,
-            "众星环绕" + textElement3,
-            "respect" + textElement3,
-            "鱼过海洋" + textElement3,
-            "浮云落日" + textElement3,
-            "生物音素" + textElement3,
-            "快乐肥宅橘九" + textElement3,
-            "半生浮云半生闲" + textElement3,
-            "吐司" + textElement3,
-            "冰冷小龙" + textElement3,
-            "心酱" + textElement3,
-            "天空之城" + textElement3,
-            "Svetlana" + textElement3,
-            "Murainm" + textElement3,
-            "Sergei" + textElement3,
-            "森林之心" + textElement3,
-            "流浪者" + textElement3,
-            "黑夜之光" + textElement3,
-            "秋叶" + textElement3,
-            "青空" + textElement3,
-            "月光下的影子" + textElement3,
-            "逐风者" + textElement3,
-            "Ivan" + textElement3,
-            "Olga" + textElement3,
-            "Alexander" + textElement3,
-            "Natalia" + textElement3,
-            "Dmitry" + textElement3,
-            "悠然见南山" + textElement3,
-            "星河影" + textElement3,
-            "ShadowHunter" + textElement3,
-            "MysticWarrior" + textElement3,
-            "StormBringer" + textElement3,
-            "IceQueen" + textElement3,
-            "Yelena" + textElement3,
-            "Viktor" + textElement3,
-            "白日梦想家" + textElement3,
-            "追梦少年" + textElement3,
-            "PhoenixRising" + textElement3,
-            "DragonSlayer" + textElement3,
-            "Vladislav" + textElement3,
-            "Anastasia" + textElement3,
-            "行者无疆" + textElement3,
-            "蓝色星辰" + textElement3,
-            "BlazeKnight" + textElement3,
-            "ThunderGod" + textElement3,
-            "StarLord" + textElement3,
-            "天涯海角" + textElement3,
-            "梦幻旅人" + textElement3,
-            "风中的歌" + textElement3,
-            "花间一壶酒" + textElement3,
-            "凌云壮志" + textElement3,
-            "Maxim" + textElement3,
-            "Nikolai" + textElement3,
-            "Tatiana" + textElement3,
-            "寂静春天Ogger1943" + textElement3,
-            "无尽之海" + textElement3,
-            "Yuri" + textElement3,
-            "Sasha" + textElement3,
-            "苍穹之翼" + textElement3,
-            "淮海不是明月" + textElement3,
-            "剑心" + textElement3,
-            "Ekaterina" + textElement3,
-            "Mikhail" + textElement3,
-            "Igor" + textElement3,
-            "Lyudmila" + textElement3,
-            "Artem" + textElement3,
-            "Katerina" + textElement3,
-            "Oleg" + textElement3,
-            "烂柯棋缘" + textElement3,
-            "华屋丘墟" + textElement3,
-        ];
+        internal static string[] names = [];
 
         internal class ProjItem
         {
@@ -225,6 +140,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
                 Rectangle? rectangle = null;
                 Vector2 orig = texture.Size() / 2;
+                Color newColor = color * sengs * (alp / 255f);
                 if (item != null) {
                     rectangle = Main.itemAnimations[item.type] != null ?
                         Main.itemAnimations[item.type].GetFrame(TextureAssets.Item[item.type].Value)
@@ -233,12 +149,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 if (rectangle.HasValue) {
                     orig = rectangle.Value.Size() / 2;
                 }
-                if (itemID == ModContent.ItemType<Murasama>()) {
-                    spriteBatch.Draw(texture, position, CWRUtils.GetRec(texture, Instance.time / 5 % 13, 13), color * sengs * (alp / 255f)
-                        , rotation, CWRUtils.GetOrig(texture, 13), size, SpriteEffects.None, 0);
-                    return;
-                }
-                spriteBatch.Draw(texture, position, rectangle, color * sengs * (alp / 255f), rotation, orig, size, SpriteEffects.None, 0);
+                spriteBatch.Draw(texture, position, rectangle, newColor, rotation, orig, size, SpriteEffects.None, 0);
             }
         }
 
@@ -262,7 +173,95 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         void ILoader.LoadAsset() {
             Logo = CWRUtils.GetT2DAsset("CalamityOverhaul/IntactLogo");
         }
-
+        void ILoader.SetupData() => LoadName();
+        private void LoadName() {
+            names = [
+            "[icon]",
+            "雾梯" + textElement1,
+            "子离似槜" + textElement1,
+            "Cyrilly" + textElement2,
+            "瓶中微光" + textElement2,
+            "Monomon" + textElement2,
+            "像樱花一样飘散吧" + textElement4,
+            "洛千希" + textElement4,
+            "闪耀£星辰" + textElement4,
+            "蒹葭" + textElement4,
+            "悬剑" + textElement4,
+            "CataStrophe" + textElement4,
+            "摸鱼的龙虾" + textElement3,
+            "啊,胖子" + textElement3,
+            "星星之火" + textElement3,
+            "众星环绕" + textElement3,
+            "respect" + textElement3,
+            "鱼过海洋" + textElement3,
+            "浮云落日" + textElement3,
+            "生物音素" + textElement3,
+            "快乐肥宅橘九" + textElement3,
+            "半生浮云半生闲" + textElement3,
+            "吐司" + textElement3,
+            "冰冷小龙" + textElement3,
+            "心酱" + textElement3,
+            "天空之城" + textElement3,
+            "Svetlana" + textElement3,
+            "Murainm" + textElement3,
+            "Sergei" + textElement3,
+            "森林之心" + textElement3,
+            "流浪者" + textElement3,
+            "黑夜之光" + textElement3,
+            "秋叶" + textElement3,
+            "青空" + textElement3,
+            "月光下的影子" + textElement3,
+            "逐风者" + textElement3,
+            "Ivan" + textElement3,
+            "Olga" + textElement3,
+            "Alexander" + textElement3,
+            "Natalia" + textElement3,
+            "Dmitry" + textElement3,
+            "悠然见南山" + textElement3,
+            "星河影" + textElement3,
+            "ShadowHunter" + textElement3,
+            "MysticWarrior" + textElement3,
+            "StormBringer" + textElement3,
+            "IceQueen" + textElement3,
+            "Yelena" + textElement3,
+            "Viktor" + textElement3,
+            "白日梦想家" + textElement3,
+            "追梦少年" + textElement3,
+            "PhoenixRising" + textElement3,
+            "DragonSlayer" + textElement3,
+            "Vladislav" + textElement3,
+            "Anastasia" + textElement3,
+            "行者无疆" + textElement3,
+            "蓝色星辰" + textElement3,
+            "BlazeKnight" + textElement3,
+            "ThunderGod" + textElement3,
+            "StarLord" + textElement3,
+            "天涯海角" + textElement3,
+            "梦幻旅人" + textElement3,
+            "风中的歌" + textElement3,
+            "花间一壶酒" + textElement3,
+            "凌云壮志" + textElement3,
+            "Maxim" + textElement3,
+            "Nikolai" + textElement3,
+            "Tatiana" + textElement3,
+            "寂静春天Ogger1943" + textElement3,
+            "无尽之海" + textElement3,
+            "Yuri" + textElement3,
+            "Sasha" + textElement3,
+            "苍穹之翼" + textElement3,
+            "淮海不是明月" + textElement3,
+            "剑心" + textElement3,
+            "Ekaterina" + textElement3,
+            "Mikhail" + textElement3,
+            "Igor" + textElement3,
+            "Lyudmila" + textElement3,
+            "Artem" + textElement3,
+            "Katerina" + textElement3,
+            "Oleg" + textElement3,
+            "烂柯棋缘" + textElement3,
+            "华屋丘墟" + textElement3,
+        ];
+        }
         private void ToMusicFunc() {
             if (Main.gameMenu && OnActive()) {
                 int targetID = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/ED_WEH");
@@ -290,6 +289,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             _sengs = 0;
             On_Main.UpdateAudio_DecideOnTOWMusic -= DecideOnTOWMusicEvent;
             On_Main.UpdateAudio_DecideOnNewMusic -= DecideOnNewMusicEvent;
+            names = null;
         }
         public override void Initialize() {
             if (_active) {
@@ -304,6 +304,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
 
             try {
+                LoadName();
                 if (projectiles.Count < 50) {
                     Texture2D pts = CWRUtils.GetT2DValue(CWRConstant.Placeholder);
                     for (int i = 0; i < names.Length; i++) {
@@ -325,6 +326,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
 
                 foreach (ProjItem projItem in projectiles) {
+                    if (projItem.index >= 0 && projItem.index < names.Length) {
+                        projItem.text = names[projItem.index];
+                    }
                     if (projItem.active) {
                         continue;
                     }

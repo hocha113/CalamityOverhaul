@@ -25,86 +25,19 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
-        private static Dictionary<int, int> DamageDictionary => new Dictionary<int, int>(){
-            {0, 10 },
-            {1, 15 },
-            {2, 25 },
-            {3, 30 },
-            {4, 40 },
-            {5, 70 },
-            {6, 100 },
-            {7, 150 },
-            {8, 200 },
-            {9, 480 },
-            {10, 800 },
-            {11, 1700 },
-            {12, 2022 },
-            {13, 2500 },
-            {14, 8000 }
-        };
-
+        private static Dictionary<int, int> DamageDictionary = new Dictionary<int, int>();
         /// <summary>
         /// 每个时期阶段对应的挥舞范围大小，这个成员一般不需要直接访问，而是使用<see cref="GetOnScale"/>
         /// </summary>
-        private static Dictionary<int, float> BladeVolumeRatioDictionary => new Dictionary<int, float>(){
-            {0, 0.6f },
-            {1, 0.65f },
-            {2, 0.7f },
-            {3, 0.75f },
-            {4, 0.8f },
-            {5, 0.85f },
-            {6, 0.9f },
-            {7, 1f },
-            {8, 1.1f },
-            {9, 1.2f },
-            {10, 1.3f },
-            {11, 1.35f },
-            {12, 1.4f },
-            {13, 1.45f },
-            {14, 1.5f }
-        };
-
+        private static Dictionary<int, float> BladeVolumeRatioDictionary = new Dictionary<int, float>();
         /// <summary>
         /// 每个时期阶段对应的额外暴击增幅的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnCrit"/>
         /// </summary>
-        private static Dictionary<int, int> SetLevelCritDictionary => new Dictionary<int, int>(){
-            {0, 1 },
-            {1, 5 },
-            {2, 8 },
-            {3, 10 },
-            {4, 12 },
-            {5, 15 },
-            {6, 18 },
-            {7, 20 },
-            {8, 22 },
-            {9, 24 },
-            {10, 28 },
-            {11, 32 },
-            {12, 36 },
-            {13, 40 },
-            {14, 46 }
-        };
-
+        private static Dictionary<int, int> SetLevelCritDictionary = new Dictionary<int, int>();
         /// <summary>
         /// 每个时期阶段对应的升龙冷却的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnRDCD"/>
         /// </summary>
-        private static Dictionary<int, int> RDCDDictionary => new Dictionary<int, int>(){
-            {0, 325 },
-            {1, 300 },
-            {2, 280 },
-            {3, 260 },
-            {4, 240 },
-            {5, 220 },
-            {6, 200 },
-            {7, 180 },
-            {8, 160 },
-            {9, 150 },
-            {10, 140 },
-            {11, 130 },
-            {12, 120 },
-            {13, 110 },
-            {14, 100 }
-        };
+        private static Dictionary<int, int> RDCDDictionary = new Dictionary<int, int>();
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
         /// <summary>
         /// 获取开局的伤害
@@ -145,7 +78,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         public new string LocalizationCategory => "Items.Weapons.Melee";
         public int frameCounter = 0;
         public int frame = 0;
-
         public int Charge {//在外部编辑时不必操纵Charge这个特有属性，而是可以编辑ai槽位这个通用数据，这将让项目的通用性更加的好
             get {
                 Item.initialize();
@@ -168,7 +100,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// 是否解锁终结技
         /// </summary>
         public static bool UnlockSkill3 => InWorldBossPhase.Instance.Mura_Level() >= 9;
-
         public static readonly SoundStyle OrganicHit = new("CalamityMod/Sounds/Item/MurasamaHitOrganic") { Volume = 0.45f };
         public static readonly SoundStyle InorganicHit = new("CalamityMod/Sounds/Item/MurasamaHitInorganic") { Volume = 0.55f };
         public static readonly SoundStyle Swing = new("CalamityMod/Sounds/Item/MurasamaSwing") { Volume = 0.2f };
@@ -177,15 +108,85 @@ namespace CalamityOverhaul.Content.Items.Melee
         #endregion
 
         public static bool NameIsVergil(Player player) => player.name == "维吉尔" || player.name == "Vergil";
-        
         public static bool NameIsSam(Player player) => samNameList.Contains(player.name);
-
+        public static void LoadWeaponData() {
+            DamageDictionary = new Dictionary<int, int>(){
+                {0, 10 },
+                {1, 15 },
+                {2, 25 },
+                {3, 30 },
+                {4, 40 },
+                {5, 70 },
+                {6, 100 },
+                {7, 150 },
+                {8, 200 },
+                {9, 480 },
+                {10, 800 },
+                {11, 1700 },
+                {12, 2022 },
+                {13, 2500 },
+                {14, 8000 }
+            };
+            BladeVolumeRatioDictionary = new Dictionary<int, float>(){
+                {0, 0.6f },
+                {1, 0.65f },
+                {2, 0.7f },
+                {3, 0.75f },
+                {4, 0.8f },
+                {5, 0.85f },
+                {6, 0.9f },
+                {7, 1f },
+                {8, 1.1f },
+                {9, 1.2f },
+                {10, 1.3f },
+                {11, 1.35f },
+                {12, 1.4f },
+                {13, 1.45f },
+                {14, 1.5f }
+            };
+            SetLevelCritDictionary = new Dictionary<int, int>(){
+                {0, 1 },
+                {1, 5 },
+                {2, 8 },
+                {3, 10 },
+                {4, 12 },
+                {5, 15 },
+                {6, 18 },
+                {7, 20 },
+                {8, 22 },
+                {9, 24 },
+                {10, 28 },
+                {11, 32 },
+                {12, 36 },
+                {13, 40 },
+                {14, 46 }
+            };
+            RDCDDictionary = new Dictionary<int, int>(){
+                {0, 325 },
+                {1, 300 },
+                {2, 280 },
+                {3, 260 },
+                {4, 240 },
+                {5, 220 },
+                {6, 200 },
+                {7, 180 },
+                {8, 160 },
+                {9, 150 },
+                {10, 140 },
+                {11, 130 },
+                {12, 120 },
+                {13, 110 },
+                {14, 100 }
+            };
+        }
         public override void SetStaticDefaults() {
-            Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 14));
+            LoadWeaponData();
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 13));
             ItemID.Sets.AnimatesAsSoul[Type] = true;
         }
-
-        public override void SetDefaults() {
+        public override void SetDefaults() => SetDefaultsFunc(Item);
+        public static void SetDefaultsFunc(Item Item) {
+            LoadWeaponData();
             Item.height = 134;
             Item.width = 90;
             Item.damage = GetStartDamage;
@@ -207,7 +208,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.CWR().GetAllowPrefix = true;
             Item.CWR().GetMeleePrefix = true;
         }
-
         public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {
             tooltips.SetHotkey(CWRKeySystem.Murasama_TriggerKey, "[KEY1]", modName);
             tooltips.SetHotkey(CWRKeySystem.Murasama_DownKey, "[KEY2]", modName);
@@ -247,9 +247,8 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += GetOnCrit;
 
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
-            damage *= GetOnDamage / (float)GetStartDamage;
-        }
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) 
+            => CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage, GetStartDamage, ref damage);
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frameI, Color drawColor, Color itemColor, Vector2 origin, float scale) {
             Texture2D texture;

@@ -1,16 +1,12 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Rarities;
+﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -20,35 +16,14 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
     {
         public override int TargetID => ModContent.ItemType<HalibutCannon>();
         public override int ProtogenesisID => ModContent.ItemType<HalibutCannonEcType>();
-        public override void SetDefaults(Item item) {
-            item.damage = 3;
-            item.DamageType = DamageClass.Ranged;
-            item.width = 118;
-            item.height = 56;
-            item.useTime = 10;
-            item.useAnimation = 20;
-            item.useStyle = ItemUseStyleID.Shoot;
-            item.rare = ModContent.RarityType<HotPink>();
-            item.noMelee = true;
-            item.knockBack = 1f;
-            item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
-            item.UseSound = SoundID.Item38;
-            item.autoReuse = true;
-            item.shoot = ProjectileID.Bullet;
-            item.shootSpeed = 12f;
-            item.useAmmo = AmmoID.Bullet;
-            item.Calamity().canFirePointBlankShots = true;
-            item.CWR().hasHeldNoCanUseBool = true;
-            item.CWR().heldProjType = ModContent.ProjectileType<HalibutCannonHeldProj>();
-        }
-
+        public override void SetDefaults(Item item) => HalibutCannonEcType.SetDefaultsFunc(item);
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
             crit += HalibutCannonEcType.GetOnCrit;
             return false;
         }
 
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-            damage *= HalibutCannonEcType.GetOnDamage / (float)HalibutCannonEcType.GetStartDamage;
+            CWRUtils.ModifyLegendWeaponDamageFunc(player, item, HalibutCannonEcType.GetOnDamage, HalibutCannonEcType.GetStartDamage, ref damage);
             return false;
         }
 

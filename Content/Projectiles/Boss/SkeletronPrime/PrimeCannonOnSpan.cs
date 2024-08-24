@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     internal class PrimeCannonOnSpan : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile + "DeathLaser";
+        private bool formeNPC;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
             Projectile.width = 10;
@@ -23,13 +24,21 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override void AI() {
+            NPC npc = CWRUtils.GetNPCInstance((int)Projectile.ai[0]);
             if (Projectile.localAI[0] == 0) {
+                if (npc.Alives()) {
+                    formeNPC = true;
+                }
                 Projectile.rotation = Projectile.velocity.ToRotation();
             }
-            NPC npc = CWRUtils.GetNPCInstance((int)Projectile.ai[0]);
+
             if (npc.Alives()) {
                 Projectile.Center = npc.Center;
             }
+            else if (formeNPC) {
+                Projectile.Kill();
+            }
+
             Player player = CWRUtils.GetPlayerInstance((int)Projectile.ai[1]);
             if (player.Alives()) {
                 Vector2 toSet = Projectile.Center.To(player.Center);

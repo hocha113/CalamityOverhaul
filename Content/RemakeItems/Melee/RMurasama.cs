@@ -1,7 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Rarities;
+﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
@@ -23,33 +20,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         public override int TargetID => ModContent.ItemType<Murasama>();
         public override int ProtogenesisID => ModContent.ItemType<MurasamaEcType>();
-        public int frameCounter = 0;
-        public int frame = 0;
-
-        public override void SetStaticDefaults() => Main.RegisterItemAnimation(TargetID, new DrawAnimationVertical(5, 14));
-        public override void SetDefaults(Item item) {
-            item.height = 134;
-            item.width = 90;
-            item.damage = MurasamaEcType.GetStartDamage;
-            item.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
-            item.noMelee = true;
-            item.noUseGraphic = true;
-            item.channel = true;
-            item.useAnimation = 25;
-            item.useStyle = ItemUseStyleID.Shoot;
-            item.useTime = 5;
-            item.knockBack = 6.5f;
-            item.autoReuse = false;
-            item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
-            item.shoot = ModContent.ProjectileType<MurasamaRSlash>();
-            item.shootSpeed = 24f;
-            item.rare = ModContent.RarityType<Violet>();
-            item.CWR().isHeldItem = true;
-            item.CWR().heldProjType = MurasamaEcType.heldProjType;
-            item.CWR().GetAllowPrefix = true;
-            item.CWR().GetMeleePrefix = true;
-            //CWRUtils.EasySetLocalTextNameOverride(item, "MurasamaEcType");
+        public override void SetStaticDefaults() {
+            Main.RegisterItemAnimation(TargetID, new DrawAnimationVertical(5, 13));
+            ItemID.Sets.AnimatesAsSoul[TargetID] = true;
         }
+        public override void SetDefaults(Item item) => MurasamaEcType.SetDefaultsFunc(item);
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             // 创建一个新的集合以防修改 tooltips 集合时产生异常
@@ -98,11 +73,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             tooltips.AddRange(prefixTooltips);
         }
 
-        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-            float oldMultiplicative = damage.Multiplicative;
-            damage *= MurasamaEcType.GetOnDamage / (float)MurasamaEcType.GetStartDamage;
-            damage /= oldMultiplicative;
-        }
+        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) 
+            => CWRUtils.ModifyLegendWeaponDamageFunc(player, item, MurasamaEcType.GetOnDamage, MurasamaEcType.GetStartDamage, ref damage);
         //因为方法表现不稳定，所以重新使用回 ModifyWeaponDamage 而不是 On_ModifyWeaponDamage
         //public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
         //    float oldMultiplicative = damage.Multiplicative;

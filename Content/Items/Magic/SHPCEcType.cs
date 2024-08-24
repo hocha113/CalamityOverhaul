@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Players.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
 using System;
 using System.Collections.Generic;
@@ -14,23 +15,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
         /// </summary>
-        private static Dictionary<int, int> DamageDictionary => new Dictionary<int, int>(){
-            {0, 8 },
-            {1, 10 },
-            {2, 15 },
-            {3, 20 },
-            {4, 30 },
-            {5, 35 },
-            {6, 45 },
-            {7, 65 },
-            {8, 95 },
-            {9, 120 },
-            {10, 170 },
-            {11, 230 },
-            {12, 300 },
-            {13, 450 },
-            {14, 1120 }
-        };
+        private static Dictionary<int, int> DamageDictionary = new Dictionary<int, int>();
         /// <summary>
         /// 获取开局的伤害
         /// </summary>
@@ -41,21 +26,44 @@ namespace CalamityOverhaul.Content.Items.Magic
         public static int GetOnDamage => DamageDictionary[InWorldBossPhase.Instance.SHPC_Level()];
         public override string Texture => CWRConstant.Cay_Wap_Magic + "SHPC";
         public static bool IsLegend => Main.zenithWorld || CWRServerConfig.Instance.WeaponEnhancementSystem;
+        public static void LoadWeaponData() {
+            DamageDictionary = new Dictionary<int, int>(){
+                {0, 8 },
+                {1, 10 },
+                {2, 15 },
+                {3, 20 },
+                {4, 30 },
+                {5, 35 },
+                {6, 45 },
+                {7, 65 },
+                {8, 95 },
+                {9, 120 },
+                {10, 170 },
+                {11, 230 },
+                {12, 300 },
+                {13, 450 },
+                {14, 1120 }
+            };
+        }
+        public override void SetStaticDefaults() => SetDefaultsFunc(Item);
         public override void SetDefaults() {
             Item.SetCalamitySD<SHPC>();
+            SetDefaultsFunc(Item);
+        }
+        public static void SetDefaultsFunc(Item Item) {
+            LoadWeaponData();
             Item.damage = GetStartDamage;
             Item.SetHeldProj<SHPCHeldProj>();
         }
 
-        public static void SHPCDamage(ref StatModifier damage) {
-            if (IsLegend) {
-                damage *= GetOnDamage / (float)GetStartDamage;
+        public static void SHPCDamage(Player player, Item Item, ref StatModifier damage) {
+            if (!IsLegend) {
+                return;
             }
+            CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage, GetStartDamage, ref damage);
         }
 
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
-            SHPCDamage(ref damage);
-        }
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => SHPCDamage(player, Item, ref damage);
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[Text]") && x.Mod == "Terraria");
