@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
-using MonoMod.RuntimeDetour;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

@@ -38,7 +38,8 @@ namespace CalamityOverhaul.Content.Tiles
             }
             else {
                 for (int o = 0; o < Main.rand.Next(37, 53); o++) {
-                    Dust.NewDust(new Vector2(i, j) * 16, 16, 16, DustID.GemEmerald, Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
+                    Dust.NewDust(new Vector2(i, j) * 16, 16, 16, DustID.GemEmerald
+                        , Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
                 }
             }
         }

@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileEntitys;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -16,7 +17,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Tiles
 {
-    internal class TransmutationOfMatter : ModTile
+    internal class TransmutationOfMatter : ModTile, ILoader
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "TransmutationOfMatter";
         public const int Width = 5;
@@ -24,7 +25,9 @@ namespace CalamityOverhaul.Content.Tiles
         public const int OriginOffsetX = 1;
         public const int OriginOffsetY = 1;
         public const int SheetSquare = 16;
-        private int frameIndex = 1;
+        private static Asset<Texture2D> assetValue;
+        void ILoader.LoadAsset() => assetValue = ModContent.Request<Texture2D>(Texture);
+        void ILoader.UnLoadData() => assetValue = null;
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
@@ -119,9 +122,8 @@ namespace CalamityOverhaul.Content.Tiles
             frameXPos = frameXPos / 18 * 16;
             int frameYPos = t.TileFrameY;
             frameYPos = frameYPos / 18 * 16;
-            frameIndex = (int)(Main.GameUpdateCount / 10 % 11);
-            frameYPos += frameIndex % 11 * (Height * SheetSquare);
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            frameYPos += (int)(Main.GameUpdateCount / 10 % 11) % 11 * (Height * SheetSquare);
+            Texture2D tex = assetValue.Value;
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             offset -= new Vector2(-2, 0);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;

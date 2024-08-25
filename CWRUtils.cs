@@ -5,7 +5,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using ReLogic.Utilities;
@@ -1186,6 +1185,7 @@ namespace CalamityOverhaul
             damage /= oldMultiplicative;
             //首先，因为SD的运行优先级并不可靠，有的模组的修改在SD之后运行，比如炼狱模式，这个基础伤害缩放保证一些情况不会发生
             damage *= GetStartDamage / (float)item.damage;
+            damage *= item.GetPrefixAddition().damageMult;
         }
 
         public static NPC FindNPCFromeType(int type) {
@@ -1314,6 +1314,340 @@ namespace CalamityOverhaul
             return result;
         }
 
+        /// <summary>
+        /// 计算并获取物品的前缀附加属性。
+        /// 根据物品的前缀ID，确定前缀所提供的各种属性加成，包括伤害倍率、击退倍率、使用时间倍率、尺寸倍率、射速倍率、法力消耗倍率以及暴击加成，
+        /// 并根据这些加成计算出前缀的总体强度。对于模组的前缀，使用自定义的逻辑处理属性加成
+        /// </summary>
+        /// <param name="item">带有前缀的物品实例。</param>
+        /// <returns>
+        /// 返回包含前缀附加属性的结构体<see cref="PrefixAddition"/>，
+        /// 该结构体中包括前缀ID以及计算得到的属性加成与前缀强度
+        /// </returns>
+        public static PrefixAddition GetPrefixAddition(this Item item) {
+            int prefixID = item.prefix;
+
+            PrefixAddition additionStruct = new PrefixAddition();
+
+            float strength;
+            float damageMult = 1f;
+            float knockbackMult = 1f;
+            float useTimeMult = 1f;
+            float scaleMult = 1f;
+            float shootSpeedMult = 1f;
+            float manaMult = 1f;
+            int critBonus = 0;
+
+            if (prefixID >= PrefixID.Count && prefixID < PrefixLoader.PrefixCount) {
+                additionStruct.isModPreFix = true;
+                PrefixLoader.GetPrefix(prefixID).SetStats(ref damageMult, ref knockbackMult
+                    , ref useTimeMult, ref scaleMult, ref shootSpeedMult, ref manaMult, ref critBonus);
+            }
+            else {
+                additionStruct.isModPreFix = false;
+                switch (prefixID) {
+                    case 1:
+                        scaleMult = 1.12f;
+                        break;
+                    case 2:
+                        scaleMult = 1.18f;
+                        break;
+                    case 3:
+                        damageMult = 1.05f;
+                        critBonus = 2;
+                        scaleMult = 1.05f;
+                        break;
+                    case 4:
+                        damageMult = 1.1f;
+                        scaleMult = 1.1f;
+                        knockbackMult = 1.1f;
+                        break;
+                    case 5:
+                        damageMult = 1.15f;
+                        break;
+                    case 6:
+                        damageMult = 1.1f;
+                        break;
+                    case 81:
+                        knockbackMult = 1.15f;
+                        damageMult = 1.15f;
+                        critBonus = 5;
+                        useTimeMult = 0.9f;
+                        scaleMult = 1.1f;
+                        break;
+                    case 7:
+                        scaleMult = 0.82f;
+                        break;
+                    case 8:
+                        knockbackMult = 0.85f;
+                        damageMult = 0.85f;
+                        scaleMult = 0.87f;
+                        break;
+                    case 9:
+                        scaleMult = 0.9f;
+                        break;
+                    case 10:
+                        damageMult = 0.85f;
+                        break;
+                    case 11:
+                        useTimeMult = 1.1f;
+                        knockbackMult = 0.9f;
+                        scaleMult = 0.9f;
+                        break;
+                    case 12:
+                        knockbackMult = 1.1f;
+                        damageMult = 1.05f;
+                        scaleMult = 1.1f;
+                        useTimeMult = 1.15f;
+                        break;
+                    case 13:
+                        knockbackMult = 0.8f;
+                        damageMult = 0.9f;
+                        scaleMult = 1.1f;
+                        break;
+                    case 14:
+                        knockbackMult = 1.15f;
+                        useTimeMult = 1.1f;
+                        break;
+                    case 15:
+                        knockbackMult = 0.9f;
+                        useTimeMult = 0.85f;
+                        break;
+                    case 16:
+                        damageMult = 1.1f;
+                        critBonus = 3;
+                        break;
+                    case 17:
+                        useTimeMult = 0.85f;
+                        shootSpeedMult = 1.1f;
+                        break;
+                    case 18:
+                        useTimeMult = 0.9f;
+                        shootSpeedMult = 1.15f;
+                        break;
+                    case 19:
+                        knockbackMult = 1.15f;
+                        shootSpeedMult = 1.05f;
+                        break;
+                    case 20:
+                        knockbackMult = 1.05f;
+                        shootSpeedMult = 1.05f;
+                        damageMult = 1.1f;
+                        useTimeMult = 0.95f;
+                        critBonus = 2;
+                        break;
+                    case 21:
+                        knockbackMult = 1.15f;
+                        damageMult = 1.1f;
+                        break;
+                    case 82:
+                        knockbackMult = 1.15f;
+                        damageMult = 1.15f;
+                        critBonus = 5;
+                        useTimeMult = 0.9f;
+                        shootSpeedMult = 1.1f;
+                        break;
+                    case 22:
+                        knockbackMult = 0.9f;
+                        shootSpeedMult = 0.9f;
+                        damageMult = 0.85f;
+                        break;
+                    case 23:
+                        useTimeMult = 1.15f;
+                        shootSpeedMult = 0.9f;
+                        break;
+                    case 24:
+                        useTimeMult = 1.1f;
+                        knockbackMult = 0.8f;
+                        break;
+                    case 25:
+                        useTimeMult = 1.1f;
+                        damageMult = 1.15f;
+                        critBonus = 1;
+                        break;
+                    case 58:
+                        useTimeMult = 0.85f;
+                        damageMult = 0.85f;
+                        break;
+                    case 26:
+                        manaMult = 0.85f;
+                        damageMult = 1.1f;
+                        break;
+                    case 27:
+                        manaMult = 0.85f;
+                        break;
+                    case 28:
+                        manaMult = 0.85f;
+                        damageMult = 1.15f;
+                        knockbackMult = 1.05f;
+                        break;
+                    case 83:
+                        knockbackMult = 1.15f;
+                        damageMult = 1.15f;
+                        critBonus = 5;
+                        useTimeMult = 0.9f;
+                        manaMult = 0.9f;
+                        break;
+                    case 29:
+                        manaMult = 1.1f;
+                        break;
+                    case 30:
+                        manaMult = 1.2f;
+                        damageMult = 0.9f;
+                        break;
+                    case 31:
+                        knockbackMult = 0.9f;
+                        damageMult = 0.9f;
+                        break;
+                    case 32:
+                        manaMult = 1.15f;
+                        damageMult = 1.1f;
+                        break;
+                    case 33:
+                        manaMult = 1.1f;
+                        knockbackMult = 1.1f;
+                        useTimeMult = 0.9f;
+                        break;
+                    case 34:
+                        manaMult = 0.9f;
+                        knockbackMult = 1.1f;
+                        useTimeMult = 1.1f;
+                        damageMult = 1.1f;
+                        break;
+                    case 35:
+                        manaMult = 1.2f;
+                        damageMult = 1.15f;
+                        knockbackMult = 1.15f;
+                        break;
+                    case 52:
+                        manaMult = 0.9f;
+                        damageMult = 0.9f;
+                        useTimeMult = 0.9f;
+                        break;
+                    case 84:
+                        knockbackMult = 1.17f;
+                        damageMult = 1.17f;
+                        critBonus = 8;
+                        break;
+                    case 36:
+                        critBonus = 3;
+                        break;
+                    case 37:
+                        damageMult = 1.1f;
+                        critBonus = 3;
+                        knockbackMult = 1.1f;
+                        break;
+                    case 38:
+                        knockbackMult = 1.15f;
+                        break;
+                    case 53:
+                        damageMult = 1.1f;
+                        break;
+                    case 54:
+                        knockbackMult = 1.15f;
+                        break;
+                    case 55:
+                        knockbackMult = 1.15f;
+                        damageMult = 1.05f;
+                        break;
+                    case 59:
+                        knockbackMult = 1.15f;
+                        damageMult = 1.15f;
+                        critBonus = 5;
+                        break;
+                    case 60:
+                        damageMult = 1.15f;
+                        critBonus = 5;
+                        break;
+                    case 61:
+                        critBonus = 5;
+                        break;
+                    case 39:
+                        damageMult = 0.7f;
+                        knockbackMult = 0.8f;
+                        break;
+                    case 40:
+                        damageMult = 0.85f;
+                        break;
+                    case 56:
+                        knockbackMult = 0.8f;
+                        break;
+                    case 41:
+                        knockbackMult = 0.85f;
+                        damageMult = 0.9f;
+                        break;
+                    case 57:
+                        knockbackMult = 0.9f;
+                        damageMult = 1.18f;
+                        break;
+                    case 42:
+                        useTimeMult = 0.9f;
+                        break;
+                    case 43:
+                        damageMult = 1.1f;
+                        useTimeMult = 0.9f;
+                        break;
+                    case 44:
+                        useTimeMult = 0.9f;
+                        critBonus = 3;
+                        break;
+                    case 45:
+                        useTimeMult = 0.95f;
+                        break;
+                    case 46:
+                        critBonus = 3;
+                        useTimeMult = 0.94f;
+                        damageMult = 1.07f;
+                        break;
+                    case 47:
+                        useTimeMult = 1.15f;
+                        break;
+                    case 48:
+                        useTimeMult = 1.2f;
+                        break;
+                    case 49:
+                        useTimeMult = 1.08f;
+                        break;
+                    case 50:
+                        damageMult = 0.8f;
+                        useTimeMult = 1.15f;
+                        break;
+                    case 51:
+                        knockbackMult = 0.9f;
+                        useTimeMult = 0.9f;
+                        damageMult = 1.05f;
+                        critBonus = 2;
+                        break;
+                }
+            }
+
+            strength = 1f * damageMult * (2f - useTimeMult) * (2f - manaMult) * scaleMult
+                * knockbackMult * shootSpeedMult * (1f + critBonus * 0.02f);
+            if (prefixID == 62 || prefixID == 69 || prefixID == 73 || prefixID == 77)
+                strength *= 1.05f;
+
+            if (prefixID == 63 || prefixID == 70 || prefixID == 74 || prefixID == 78 || prefixID == 67)
+                strength *= 1.1f;
+
+            if (prefixID == 64 || prefixID == 71 || prefixID == 75 || prefixID == 79 || prefixID == 66)
+                strength *= 1.15f;
+
+            if (prefixID == 65 || prefixID == 72 || prefixID == 76 || prefixID == 80 || prefixID == 68)
+                strength *= 1.2f;
+
+            additionStruct.prefixID = prefixID;
+            additionStruct.damageMult = damageMult;
+            additionStruct.knockbackMult = knockbackMult;
+            additionStruct.useTimeMult = useTimeMult;
+            additionStruct.scaleMult = scaleMult;
+            additionStruct.shootSpeedMult = shootSpeedMult;
+            additionStruct.manaMult = manaMult;
+            additionStruct.critBonus = critBonus;
+            additionStruct.strength = strength;
+
+            return additionStruct;
+        }
+
         public static ShootState GetShootState(this Player player, string shootKey = "Null") {
             ShootState shootState = new();
             Item item = player.ActiveItem();
@@ -1336,21 +1670,6 @@ namespace CalamityOverhaul
             }
             shootState.Source = new EntitySource_ItemUse_WithAmmo(player, item, shootState.UseAmmoItemType, shootKey);
             return shootState;
-        }
-
-        /// <summary>
-        /// 判断该弹药物品是否应该被视为无限弹药
-        /// </summary>
-        /// <param name="ammoItem">要检查的弹药物品</param>
-        /// <returns>如果弹药物品是无限的，返回<see langword="true"/>；否则返回<see langword="false"/></returns>
-        public static bool IsAmmunitionUnlimited(Item ammoItem) {
-            bool result = !ammoItem.consumable;
-            if (CWRMod.Instance.luiafk != null || CWRMod.Instance.improveGame != null) {
-                if (ammoItem.stack >= 3996) {
-                    result = true;
-                }
-            }
-            return result;
         }
 
         public static AmmoState GetAmmoState(this Player player, int assignAmmoType = 0, bool numSort = false) {
@@ -1402,6 +1721,21 @@ namespace CalamityOverhaul
                 ammoState.MinAmountToItem = new Item();
             }
             return ammoState;
+        }
+
+        /// <summary>
+        /// 判断该弹药物品是否应该被视为无限弹药
+        /// </summary>
+        /// <param name="ammoItem">要检查的弹药物品</param>
+        /// <returns>如果弹药物品是无限的，返回<see langword="true"/>；否则返回<see langword="false"/></returns>
+        public static bool IsAmmunitionUnlimited(Item ammoItem) {
+            bool result = !ammoItem.consumable;
+            if (CWRMod.Instance.luiafk != null || CWRMod.Instance.improveGame != null) {
+                if (ammoItem.stack >= 3996) {
+                    result = true;
+                }
+            }
+            return result;
         }
 
         public static bool IsRectangleIntersectingFan(Rectangle targetHitbox, Vector2 fanOrigin, float fanRadius, float startAngle, float endAngle) {

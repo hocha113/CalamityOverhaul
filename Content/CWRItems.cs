@@ -50,15 +50,14 @@ namespace CalamityOverhaul.Content
 
     public class CWRItems : GlobalItem
     {
-        public override bool InstancePerEntity => true;
-
         #region Date
+        public override bool InstancePerEntity => true;
         /// <summary>
         /// 用于存储物品的状态值，对这个数组的使用避免了额外类成员的创建
         /// (自建类成员数据对于修改物品而言总是令人困惑)
         /// 这个数组不会自动的网络同步，需要在合适的时机下调用同步指令
         /// </summary>
-        public float[] ai = new float[] { 0, 0, 0 };
+        public float[] ai = [0, 0, 0];
         /// <summary>
         /// 是否强制AllowPrefix返回true，这个属性的优先级低于<see cref="BaseRItem.On_AllowPreFix(Item, int)"/>
         /// </summary>
@@ -88,7 +87,9 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int heldProjType;
         /// <summary>
-        /// 在有手持弹幕存在时还可以使用武器吗？设置为<see langword="true"/>在拥有手持弹幕时禁止物品使用，设置为<see langword="false"/>默认物品的原使用
+        /// 在有手持弹幕存在时还可以使用武器吗？和<see cref="heldProjType"/>配合使用，
+        /// 设置为<see langword="true"/>在拥有手持弹幕时禁止物品使用，
+        /// 设置为<see langword="false"/>默认物品的原使用
         /// </summary>
         public bool hasHeldNoCanUseBool;
         /// <summary>
@@ -164,7 +165,7 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool IsBow;
         /// <summary>
-        /// 是否被抛射物控制使用
+        /// 是否被抛射物控制使用，优先级高于<see cref="hasHeldNoCanUseBool"/>，且不受<see cref="heldProjType"/>影响
         /// </summary>
         public bool IsShootCountCorlUse;
         #endregion

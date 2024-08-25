@@ -15,18 +15,13 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class GildedProboscisEcType : EctypeItem
     {
-        public const float TargetingDistance = 2084f;
-
-        public const int LightningArea = 2800;
-
         public override string Texture => CWRConstant.Cay_Wap_Melee + "GildedProboscis";
-
         public override void SetStaticDefaults() {
             ItemID.Sets.Spears[Type] = true;
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         }
-
-        public override void SetDefaults() {
+        public override void SetDefaults() => SetDefaultsFunc(Item);
+        public static void SetDefaultsFunc(Item Item) {
             Item.width = 66;
             Item.damage = 315;
             Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
@@ -44,13 +39,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Purple;
             Item.shoot = ModContent.ProjectileType<RGildedProboscisProj>();
             Item.shootSpeed = 13f;
-
+            Item.CWR().IsShootCountCorlUse = true;
         }
 
-        public override bool AltFunctionUse(Player player) {
-            return true;
-        }
-
+        public override bool AltFunctionUse(Player player) => true;
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             if (player.altFunctionUse == 2) {
@@ -58,10 +50,6 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Main.projectile[proj].ai[1] = 1;
             }
             return false;
-        }
-
-        public override bool CanUseItem(Player player) {
-            return player.ownedProjectileCounts[Item.shoot] <= 0;
         }
     }
 }
