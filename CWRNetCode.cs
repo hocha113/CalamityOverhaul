@@ -46,12 +46,12 @@ namespace CalamityOverhaul
             }
             netMessage.Write((byte)CWRMessageType.NetWorks);
             netMessage.Write(messageID);
-            NetSendBehavior();
+            NetSendBehavior(netMessage);
         }
         /// <summary>
         /// 发送数据的具体行为
         /// </summary>
-        public void NetSendBehavior();
+        public void NetSendBehavior(ModPacket netMessage);
         /// <summary>
         /// 接收数据
         /// </summary>

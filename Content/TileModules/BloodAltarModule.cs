@@ -201,14 +201,13 @@ namespace CalamityOverhaul.Content.TileModules
             Time++;
         }
 
-        void INetWork.NetSendBehavior() {
+        void INetWork.NetSendBehavior(ModPacket netMessage) {
             if (Main.myPlayer != startPlayerWhoAmI) {
                 return;
             }
-            var data = INetWork.netMessage;
-            data.Write(WhoAmI);
-            data.Write(OnBoolMoon);
-            data.Send(-1, startPlayerWhoAmI);
+            netMessage.Write(WhoAmI);
+            netMessage.Write(OnBoolMoon);
+            netMessage.Send(-1, startPlayerWhoAmI);
         }
 
         void INetWork.NetReceive(Mod mod, BinaryReader reader, int whoAmI) {
