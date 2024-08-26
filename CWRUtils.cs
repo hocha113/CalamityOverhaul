@@ -3345,6 +3345,25 @@ namespace CalamityOverhaul
             return point.X == i && point.Y == j;
         }
 
+        /// <summary>
+        /// 安全的获取多结构物块左上角的位置
+        /// </summary>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public static bool SafeGetTopLeft(int i, int j, out Point16 point) {
+            Point16? topLeft = GetTopLeftOrNull(i, j);
+            if (topLeft.HasValue) {
+                point = topLeft.Value;
+                return true;
+            }
+            else {
+                point = new Point16(0, 0);
+                return false;
+            }
+        }
+
         public static void SafeSquareTileFrame(Vector2 tilePos, Tile tile, bool resetFrame = true) {
             int i = (int)tilePos.X;
             int j = (int)tilePos.Y;

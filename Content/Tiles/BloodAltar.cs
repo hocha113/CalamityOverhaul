@@ -60,15 +60,16 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override bool RightClick(int i, int j) {
-            BloodAltarModule module = TileModuleLoader.FindModulePreciseSearch
-                <BloodAltarModule>(TileModuleLoader.GetModuleID(typeof(BloodAltarModule)), i, j);
-            if (module != null) {
-                module.OnBoolMoon = !module.OnBoolMoon;
-                module.startPlayerWhoAmI = Main.LocalPlayer.whoAmI;
-                module.DoNetSend();
+            if (CWRUtils.SafeGetTopLeft(i, j, out var point)) {
+                BloodAltarModule module = TileModuleLoader.FindModulePreciseSearch
+                <BloodAltarModule>(TileModuleLoader.GetModuleID(typeof(BloodAltarModule)), point.X, point.Y);
+                if (module != null) {
+                    module.OnBoolMoon = !module.OnBoolMoon;
+                    module.startPlayerWhoAmI = Main.LocalPlayer.whoAmI;
+                    module.DoNetSend();
+                }
             }
 
-            TileEntity.InitializeAll();
             Recipe.FindRecipes();
             return true;
         }
@@ -78,10 +79,12 @@ namespace CalamityOverhaul.Content.Tiles
             int frameXPos = t.TileFrameX;
             int frameYPos = t.TileFrameY;
 
-            BloodAltarModule module = TileModuleLoader.FindModulePreciseSearch
-                <BloodAltarModule>(TileModuleLoader.GetModuleID(typeof(BloodAltarModule)), i, j);
-            if (module != null) {
-                frameYPos += module.frameIndex % 4 * (Height * SheetSquare);
+            if (CWRUtils.SafeGetTopLeft(i, j, out var point)) {
+                BloodAltarModule module = TileModuleLoader.FindModulePreciseSearch
+                <BloodAltarModule>(TileModuleLoader.GetModuleID(typeof(BloodAltarModule)), point.X, point.Y);
+                if (module != null) {
+                    frameYPos += module.frameIndex % 4 * (Height * SheetSquare);
+                }
             }
 
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;

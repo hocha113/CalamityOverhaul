@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
         }
 
         public override void PlaceInWorld(int i, int j, int type, Item item) {
-            if (CWRUtils.IsTopLeft(i, j, out var point)) {
+            if (CWRUtils.SafeGetTopLeft(i, j, out var point)) {
                 AddInWorld(type, point, item);
             }
         }
