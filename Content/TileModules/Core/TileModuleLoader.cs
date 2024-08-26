@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
         /// <param name="position">该模块的左上角位置</param>
         /// <param name="item">用于跟踪该模块的物品，可以为 null</param>
         /// <remarks>
-        /// 该方法会首先尝试从 Tile ID 获取对应的模块模板，然后克隆该模块并设置其位置、跟踪物品和激活状态
+        /// 该方法会首先尝试从 <see cref="TileModuleID"/> 获取对应的模块模板，然后克隆该模块并设置其位置、跟踪物品和激活状态
         /// 如果有空闲的模块槽位，会将新模块放入该槽位，否则会添加到列表的末尾
         /// </remarks>
         internal static void AddInWorld(int tileID, Point16 position, Item item) {
@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
         /// <param name="ID">要查找的模块的ID</param>
         /// <param name="x">要查找的模块的x坐标</param>
         /// <param name="y">要查找的模块的y坐标</param>
-        /// <returns>返回与指定ID及坐标对应的模块，如果未找到则返回null</returns>
+        /// <returns>返回与指定ID及坐标对应的模块，如果未找到则返回<see cref="null"/></returns>
         public static T FindModulePreciseSearch<T>(int ID, int x, int y)
             where T : BaseTileModule => FindModulePreciseSearch(ID, x, y) as T;
         /// <summary>
@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
         /// <param name="ID">要查找的模块的ID</param>
         /// <param name="x">要查找的模块的x坐标</param>
         /// <param name="y">要查找的模块的y坐标</param>
-        /// <returns>返回与指定ID及坐标对应的 <see cref="BaseTileModule"/>，如果未找到则返回null</returns>
+        /// <returns>返回与指定ID及坐标对应的 <see cref="BaseTileModule"/>，如果未找到则返回<see cref="null"/></returns>
         public static BaseTileModule FindModulePreciseSearch(int ID, int x, int y) {
             BaseTileModule module = null;
             // 判断坐标是否为多结构物块的左上角，并获取其左上角位置
@@ -186,7 +186,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
         /// <param name="x">要查找的模块的x坐标</param>
         /// <param name="y">要查找的模块的y坐标</param>
         /// <param name="maxFindLeng">搜索范围的最大距离</param>
-        /// <returns>返回与指定ID及坐标最接近的模块，如果未找到则返回null</returns>
+        /// <returns>返回与指定ID及坐标最接近的模块，如果未找到则返回<see cref="null"/></returns>
         public static T FindModuleRangeSearch<T>(int ID, int x, int y, int maxFindLeng)
             where T : BaseTileModule => FindModuleRangeSearch(ID, x, y, maxFindLeng) as T;
         /// <summary>
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
         /// <param name="x">要查找的模块的x坐标</param>
         /// <param name="y">要查找的模块的y坐标</param>
         /// <param name="maxFindLeng">搜索范围的最大距离</param>
-        /// <returns>返回与指定ID及坐标最接近的 <see cref="BaseTileModule"/>，如果未找到则返回null</returns>
+        /// <returns>返回与指定ID及坐标最接近的 <see cref="BaseTileModule"/>，如果未找到则返回<see cref="null"/></returns>
         public static BaseTileModule FindModuleRangeSearch(int ID, int x, int y, int maxFindLeng) {
             BaseTileModule module = null;
             float findValue = maxFindLeng;
