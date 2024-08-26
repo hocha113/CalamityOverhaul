@@ -1165,6 +1165,8 @@ namespace CalamityOverhaul
 
         #region GameUtils
 
+        public static bool IsTool(this Item item) => item.pick > 0 || item.axe > 0 || item.hammer > 0;
+
         public static Item GetItem(this Player player) => Main.mouseItem.IsAir ? player.inventory[player.selectedItem] : Main.mouseItem;
 
         public static void SafeLoadItem(int id) {
