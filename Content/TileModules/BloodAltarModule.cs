@@ -23,8 +23,6 @@ namespace CalamityOverhaul.Content.TileModules
         public bool OldOnBoolMoon;
         public long Time = 0;
         public int frameIndex = 1;
-        public float rot;
-        public float drawGstPos;
         public void DoNetSend() => ((INetWork)this).NetSend();
         public override void OnKill() {
             Main.dayTime = true;

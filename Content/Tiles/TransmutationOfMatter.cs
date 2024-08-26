@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Tiles
             int left = i - t.TileFrameX % (Width * SheetSquare) / SheetSquare;
             int top = j - t.TileFrameY % (Height * SheetSquare) / SheetSquare;
 
-            BaseTileModule module = TileModuleLoader.FindModuleRangeSearch(TileModuleLoader.GetModuleID(typeof(TramModule)), i, j, 120);
+            BaseTileModule module = TileModuleLoader.FindModulePreciseSearch(TileModuleLoader.GetModuleID(typeof(TramModule)), i, j);
             if (module != null) {
                 Main.LocalPlayer.CWR().TETramContrType = module.WhoAmI;
             }

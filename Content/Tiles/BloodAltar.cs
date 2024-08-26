@@ -60,8 +60,8 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override bool RightClick(int i, int j) {
-            BloodAltarModule module = TileModuleLoader.FindModuleRangeSearch
-                <BloodAltarModule>(TileModuleLoader.GetModuleID(typeof(BloodAltarModule)), i, j, 160);
+            BloodAltarModule module = TileModuleLoader.FindModulePreciseSearch
+                <BloodAltarModule>(TileModuleLoader.GetModuleID(typeof(BloodAltarModule)), i, j);
             if (module != null) {
                 module.OnBoolMoon = !module.OnBoolMoon;
                 module.startPlayerWhoAmI = Main.LocalPlayer.whoAmI;
@@ -78,8 +78,8 @@ namespace CalamityOverhaul.Content.Tiles
             int frameXPos = t.TileFrameX;
             int frameYPos = t.TileFrameY;
 
-            BloodAltarModule module = TileModuleLoader.FindModuleRangeSearch
-                <BloodAltarModule>(TileModuleLoader.GetModuleID(typeof(BloodAltarModule)), i, j, 160);
+            BloodAltarModule module = TileModuleLoader.FindModulePreciseSearch
+                <BloodAltarModule>(TileModuleLoader.GetModuleID(typeof(BloodAltarModule)), i, j);
             if (module != null) {
                 frameYPos += module.frameIndex % 4 * (Height * SheetSquare);
             }
