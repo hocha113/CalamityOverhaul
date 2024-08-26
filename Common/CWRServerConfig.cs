@@ -216,6 +216,10 @@ namespace CalamityOverhaul.Common
             set => Date.CartridgeUI_Offset_Y = value;
         }
 
+        [BackgroundColor(45, 175, 225, 255)]
+        [DefaultValue(false)]
+        public bool TileModuleBosSizeDraw { get; set; }
+
         public override void OnLoaded() => Instance = this;
 
         public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message) {

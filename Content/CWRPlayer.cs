@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.RemakeItems.Ranged;
+using CalamityOverhaul.Content.TileModules.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -197,6 +198,7 @@ namespace CalamityOverhaul.Content
 
         public override void OnEnterWorld() {
             CWRHook.CheckHookStatus();
+            TileModuleLoader.LoadWorldTileModule();
 
             if (CWRMod.Instance.magicStorage != null) {
                 SpwanTextProj.New(Player, () => CWRUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));

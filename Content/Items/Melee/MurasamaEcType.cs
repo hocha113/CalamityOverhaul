@@ -112,19 +112,19 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static void LoadWeaponData() {
             DamageDictionary = new Dictionary<int, int>(){
                 {0, 10 },
-                {1, 15 },
-                {2, 25 },
-                {3, 30 },
+                {1, 14 },
+                {2, 23 },
+                {3, 28 },
                 {4, 40 },
-                {5, 70 },
-                {6, 100 },
-                {7, 150 },
-                {8, 200 },
-                {9, 480 },
-                {10, 800 },
-                {11, 1700 },
-                {12, 2022 },
-                {13, 2500 },
+                {5, 65 },
+                {6, 90 },
+                {7, 140 },
+                {8, 280 },
+                {9, 450 },
+                {10, 750 },
+                {11, 1600 },
+                {12, 1900 },
+                {13, 2400 },
                 {14, 8000 }
             };
             BladeVolumeRatioDictionary = new Dictionary<int, float>(){

@@ -3840,6 +3840,11 @@ Configs: {
 				В большинстве случаев это сделает игру круче.
 				'''
 		}
+
+		TileModuleBosSizeDraw: {
+			// Label: Tile Module Bos Size Draw
+			// Tooltip: ""
+		}
 	}
 }
 

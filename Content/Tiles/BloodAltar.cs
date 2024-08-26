@@ -1,5 +1,5 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.TileEntitys;
+﻿using CalamityOverhaul.Content.TileModules;
+using CalamityOverhaul.Content.TileModules.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
@@ -33,9 +33,6 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.newTile.LavaDeath = false;
-            ModTileEntity te = ModContent.GetInstance<TEBloodAltar>();
-            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(te.Hook_AfterPlacement, -1, 0, true);
-
             TileObjectData.addTile(Type);
             AddMapEntry(Color.Red, CWRUtils.SafeGetItemName<Items.Placeable.BloodAltar>());
             AnimationFrameHeight = 54;
@@ -48,7 +45,7 @@ namespace CalamityOverhaul.Content.Tiles
         public override bool CanExplode(int i, int j) => false;
 
         public override bool CreateDust(int i, int j, ref int type) {
-            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.Electric);
+            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.Blood);
             return false;
         }
 
@@ -57,18 +54,18 @@ namespace CalamityOverhaul.Content.Tiles
         public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {
-            Tile t = Main.tile[i, j];
-            int left = i - t.TileFrameX % (Width * SheetSquare) / SheetSquare;
-            int top = j - t.TileFrameY % (Height * SheetSquare) / SheetSquare;
-            TEBloodAltar te = CalamityUtils.FindTileEntity<TEBloodAltar>(i, j, Width, Height, SheetSquare);
-            te?.Kill(left, top);
+            for (int z = 0; z < 33; z++) {
+                Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.Blood);
+            }
         }
 
         public override bool RightClick(int i, int j) {
-            TEBloodAltar bloodAltarEntity = CalamityUtils.FindTileEntity<TEBloodAltar>(i, j, Width, Height, SheetSquare);
-            if (bloodAltarEntity != null) {
-                bloodAltarEntity.OnBoolMoon = !bloodAltarEntity.OnBoolMoon;
-                bloodAltarEntity.SendTEData();
+            BloodAltarModule module = TileModuleLoader.FindModuleRangeSearch
+                <BloodAltarModule>(TileModuleLoader.GetModuleID(typeof(BloodAltarModule)), i, j, 160);
+            if (module != null) {
+                module.OnBoolMoon = !module.OnBoolMoon;
+                module.startPlayerWhoAmI = Main.LocalPlayer.whoAmI;
+                module.DoNetSend();
             }
 
             TileEntity.InitializeAll();
@@ -81,9 +78,10 @@ namespace CalamityOverhaul.Content.Tiles
             int frameXPos = t.TileFrameX;
             int frameYPos = t.TileFrameY;
 
-            TEBloodAltar bloodAltarEntity = CalamityUtils.FindTileEntity<TEBloodAltar>(i, j, Width, Height, SheetSquare);
-            if (bloodAltarEntity != null) {
-                frameYPos += bloodAltarEntity.frameIndex % 4 * (Height * SheetSquare);
+            BloodAltarModule module = TileModuleLoader.FindModuleRangeSearch
+                <BloodAltarModule>(TileModuleLoader.GetModuleID(typeof(BloodAltarModule)), i, j, 160);
+            if (module != null) {
+                frameYPos += module.frameIndex % 4 * (Height * SheetSquare);
             }
 
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;

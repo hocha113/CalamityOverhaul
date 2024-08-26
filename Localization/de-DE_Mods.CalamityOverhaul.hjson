@@ -3779,6 +3779,11 @@ Configs: {
 				In den meisten Fällen wird dies das Spiel cooler machen.
 				'''
 		}
+
+		TileModuleBosSizeDraw: {
+			// Label: Tile Module Bos Size Draw
+			// Tooltip: ""
+		}
 	}
 }
 

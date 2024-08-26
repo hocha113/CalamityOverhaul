@@ -3286,6 +3286,65 @@ namespace CalamityOverhaul
 
         #region TileUtils
 
+        /// <summary>
+        /// 获取给定坐标的物块左上角位置，并判断该位置是否为多结构物块的左上角
+        /// </summary>
+        /// <param name="i">物块的x坐标</param>
+        /// <param name="j">物块的y坐标</param>
+        /// <returns>
+        /// 如果物块存在并且位于一个多结构物块的左上角，返回其左上角坐标，否则返回null
+        /// </returns>
+        public static Point16? GetTopLeftOrNull(int i, int j) {
+            // 获取给定坐标的物块
+            Tile tile = Framing.GetTileSafely(i, j);
+
+            // 如果没有物块，返回null
+            if (!tile.HasTile)
+                return null;
+
+            // 获取物块的数据结构，如果为null则认为是单个物块
+            TileObjectData data = TileObjectData.GetTileData(tile);
+
+            // 如果是单个物块，直接返回当前坐标
+            if (data == null)
+                return new Point16(i, j);
+
+            // 计算物块的帧位置偏移量
+            int frameX = tile.TileFrameX % (data.Width * 18);
+            int frameY = tile.TileFrameY % (data.Height * 18);
+
+            // 计算左上角的位置
+            int topLeftX = i - (frameX / 18);
+            int topLeftY = j - (frameY / 18);
+
+            // 返回左上角位置
+            return new Point16(topLeftX, topLeftY);
+        }
+
+        /// <summary>
+        /// 判断给定坐标是否为多结构物块的左上角位置，并输出左上角的坐标。
+        /// </summary>
+        /// <param name="i">物块的x坐标</param>
+        /// <param name="j">物块的y坐标</param>
+        /// <param name="point">输出的左上角坐标，如果不是左上角则为(0,0)</param>
+        /// <returns>如果是左上角，返回true，否则返回false。</returns>
+        public static bool IsTopLeft(int i, int j, out Point16 point) {
+            // 使用合并后的函数获取左上角位置
+            Point16? topLeft = GetTopLeftOrNull(i, j);
+
+            // 如果没有有效的左上角坐标，返回false，并将输出参数设为(0, 0)
+            if (!topLeft.HasValue) {
+                point = new Point16(0, 0);
+                return false;
+            }
+
+            // 获取左上角的实际坐标
+            point = topLeft.Value;
+
+            // 如果左上角位置与当前坐标相同，说明是左上角
+            return point.X == i && point.Y == j;
+        }
+
         public static void SafeSquareTileFrame(Vector2 tilePos, Tile tile, bool resetFrame = true) {
             int i = (int)tilePos.X;
             int j = (int)tilePos.Y;

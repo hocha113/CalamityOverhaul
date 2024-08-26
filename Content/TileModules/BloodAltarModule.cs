@@ -2,7 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
-using CalamityOverhaul.Content.TileEntitys.Core;
+using CalamityOverhaul.Content.TileModules.Core;
 using CalamityOverhaul.Content.Tiles;
 using System;
 using System.IO;
@@ -12,30 +12,26 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.TileEntitys
+namespace CalamityOverhaul.Content.TileModules
 {
-    internal class TEBloodAltar : BaseCWRTE
+    internal class BloodAltarModule : BaseTileModule, INetWork
     {
-        public override int TileType => ModContent.TileType<BloodAltar>();
-
-        public override int Width => BloodAltar.Width;
-
-        public override int Height => BloodAltar.Height;
-
-        public Vector2 Center => Position.ToWorldCoordinates(8 * BloodAltar.Width, 8 * BloodAltar.Height);
-
+        public override int TargetTileID => ModContent.TileType<BloodAltar>();
+        public Vector2 Center => PosInWorld + new Vector2(32, 16);
         public bool OnBoolMoon;
+        public int startPlayerWhoAmI;
         public bool OldOnBoolMoon;
         public long Time = 0;
         public int frameIndex = 1;
         public float rot;
         public float drawGstPos;
-
+        public void DoNetSend() => ((INetWork)this).NetSend();
         public override void OnKill() {
             Main.dayTime = true;
             if (Main.bloodMoon) {
                 Main.bloodMoon = false;
             }
+            DoNetSend();
         }
 
         private void SpanDustEfset() {
@@ -142,36 +138,7 @@ namespace CalamityOverhaul.Content.TileEntitys
             }
         }
 
-        public override void NetSend(BinaryWriter writer) {
-            writer.Write(OnBoolMoon);
-        }
-
-        public override void NetReceive(BinaryReader reader) {
-            OnBoolMoon = reader.ReadBoolean();
-        }
-
-        internal void SendTEData() {
-            if (Main.netMode == NetmodeID.SinglePlayer)
-                return;
-            ModPacket packet = Mod.GetPacket();
-            packet.Write((byte)CWRMessageType.TEBloodAltar);
-            packet.Write(ID);
-            packet.Write(OnBoolMoon);
-            packet.Send(-1, -1);
-        }
-
-        internal static bool ReadTEData(Mod mod, BinaryReader reader) {
-            int id = reader.ReadInt32();
-            bool hasTE = ByID.TryGetValue(id, out TileEntity te);
-
-            if (hasTE && te is TEBloodAltar bloodAltar) {
-                bloodAltar.OnBoolMoon = reader.ReadBoolean();
-                return true;
-            }
-            return false;
-        }
-
-        public override void AI() {
+        public override void Update() {
             Player player = CWRUtils.InPosFindPlayer(Center);
             if (OnBoolMoon) {
                 if (!Main.bloodMoon && !OldOnBoolMoon && !CWRUtils.isServer) {
@@ -234,6 +201,28 @@ namespace CalamityOverhaul.Content.TileEntitys
                 OldOnBoolMoon = false;
             }
             Time++;
+        }
+
+        void INetWork.NetSendBehavior() {
+            if (Main.myPlayer != startPlayerWhoAmI) {
+                return;
+            }
+            var data = INetWork.netMessage;
+            data.Write(WhoAmI);
+            data.Write(OnBoolMoon);
+            data.Send(-1, startPlayerWhoAmI);
+        }
+
+        void INetWork.NetReceive(Mod mod, BinaryReader reader, int whoAmI) {
+            int moduleIndex = reader.ReadInt32();
+            bool moon = reader.ReadBoolean();
+            if (moduleIndex < 0 || moduleIndex >= TileModuleLoader.TileModuleInWorld.Count) {
+                return;
+            }
+            BloodAltarModule module = TileModuleLoader.TileModuleInWorld[moduleIndex] as BloodAltarModule;
+            if (module != null && module.Active) {
+                module.OnBoolMoon = moon;
+            }
         }
     }
 }

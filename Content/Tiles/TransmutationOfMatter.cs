@@ -1,8 +1,8 @@
-﻿using CalamityMod;
-using CalamityMod.Tiles.Furniture.CraftingStations;
+﻿using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
-using CalamityOverhaul.Content.TileEntitys;
+using CalamityOverhaul.Content.TileModules;
+using CalamityOverhaul.Content.TileModules.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -46,14 +46,12 @@ namespace CalamityOverhaul.Content.Tiles
 
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.newTile.LavaDeath = false;
-            ModTileEntity te = ModContent.GetInstance<TETram>();
-            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(te.Hook_AfterPlacement, -1, 0, true);
 
             TileObjectData.addTile(Type);
             AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<TransmutationOfMatterItem>());
             AnimationFrameHeight = 68;
 
-            AdjTiles = new int[] {
+            AdjTiles = [
                 TileID.WorkBenches,
                 TileID.Chairs,
                 TileID.Tables,
@@ -76,7 +74,7 @@ namespace CalamityOverhaul.Content.Tiles
                 ModContent.TileType<WulfrumLabstation>(),
                 ModContent.TileType<StaticRefiner>(),
                 ModContent.TileType<DraedonsForge>(),
-            };
+            ];
         }
         public override bool CanExplode(int i, int j) => false;
 
@@ -90,11 +88,9 @@ namespace CalamityOverhaul.Content.Tiles
         public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {
-            Tile t = Main.tile[i, j];
-            int left = i - t.TileFrameX % (Width * SheetSquare) / SheetSquare;
-            int top = j - t.TileFrameY % (Height * SheetSquare) / SheetSquare;
-            TETram te = CalamityUtils.FindTileEntity<TETram>(i, j, Width, Height, SheetSquare);
-            te?.Kill(left, top);
+            for (int z = 0; z < 33; z++) {
+                Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.Electric);
+            }
         }
 
         public override bool RightClick(int i, int j) {
@@ -107,10 +103,12 @@ namespace CalamityOverhaul.Content.Tiles
             Tile t = Main.tile[i, j];
             int left = i - t.TileFrameX % (Width * SheetSquare) / SheetSquare;
             int top = j - t.TileFrameY % (Height * SheetSquare) / SheetSquare;
-            TETram te = CalamityUtils.FindTileEntity<TETram>(i, j, Width, Height, SheetSquare);
-            if (te != null) {
-                Main.LocalPlayer.CWR().TETramContrType = te.ID;
+
+            BaseTileModule module = TileModuleLoader.FindModuleRangeSearch(TileModuleLoader.GetModuleID(typeof(TramModule)), i, j, 120);
+            if (module != null) {
+                Main.LocalPlayer.CWR().TETramContrType = module.WhoAmI;
             }
+
             SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });
             Recipe.FindRecipes();
             return true;

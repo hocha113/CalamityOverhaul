@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.TileEntitys;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +14,6 @@ namespace CalamityOverhaul
         DompBool,
         RecoilAcceleration,
         TungstenRiot,
-        TEBloodAltar,
         OverBeatBack,
         NPCOverrideAI,
         NPCOverrideOtherAI,
@@ -38,16 +36,22 @@ namespace CalamityOverhaul
                 return CWRNetCode.NetWorkIDDic[GetType()];
             }
         }
-        internal ModPacket netMessage => CWRMod.Instance.GetPacket();
+        internal static ModPacket netMessage => CWRMod.Instance.GetPacket();
         /// <summary>
         /// 发送数据
         /// </summary>
         public void NetSend() {
+            if (CWRUtils.isSinglePlayer) {
+                return;
+            }
             netMessage.Write((byte)CWRMessageType.NetWorks);
             netMessage.Write(messageID);
             NetSendBehavior();
         }
-        private void NetSendBehavior() { }
+        /// <summary>
+        /// 发送数据的具体行为
+        /// </summary>
+        public void NetSendBehavior();
         /// <summary>
         /// 接收数据
         /// </summary>
@@ -59,8 +63,8 @@ namespace CalamityOverhaul
 
     public class CWRNetCode : ILoader
     {
-        internal static List<INetWork> INetWorks { get; private set; }
-        internal static Dictionary<Type, short> NetWorkIDDic { get; private set; }
+        internal static List<INetWork> INetWorks { get; private set; } = [];
+        internal static Dictionary<Type, short> NetWorkIDDic { get; private set; } = [];
         void ILoader.LoadData() {
             INetWorks = CWRUtils.GetSubInterface<INetWork>();
             for (int index = 0; index < INetWorks.Count; index++) {
@@ -99,9 +103,6 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.TungstenRiot) {
                 TungstenRiot.EventNetWorkReceive(reader);
-            }
-            else if (type == CWRMessageType.TEBloodAltar) {
-                TEBloodAltar.ReadTEData(mod, reader);
             }
             else if (type == CWRMessageType.OverBeatBack) {
                 CWRNpc.OverBeatBackReceive(reader);

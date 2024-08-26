@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             ownerOrientationLock = true;
             SwingData.baseSwingSpeed = 4.55f;
             IgnoreImpactBoxSize = true;
+            autoSetShoot = true;
         }
 
         public override bool PreInOwnerUpdate() {
@@ -61,13 +62,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override void Shoot() {
             int type = ModContent.ProjectileType<Razorwind>();
             if (Projectile.ai[0] == 1) {
-                type = ProjectileID.Bubble;
+                type = ProjectileID.FlaironBubble;
                 for (int i = 0; i < 23; i++) {
-                    int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center
-                    , UnitToMouseV.RotatedByRandom(1.9f) * Item.shootSpeed * Main.rand.NextFloat(1.6f, 2.1f)
-                    , type, Projectile.damage / 2, 2, Owner.whoAmI);
-                    Main.projectile[proj].DamageType = DamageClass.Melee;
-                    Main.projectile[proj].extraUpdates = 2;
+                    Vector2 ver = UnitToMouseV.RotatedByRandom(1.9f) * ShootSpeed * Main.rand.NextFloat(0.6f, 1.1f);
+                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + ver * 40f
+                    , ver, type, Projectile.damage / 3, 2, Owner.whoAmI);
                 }
                 return;
             }
@@ -90,7 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item84, Owner.Center);
-            Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, UnitToMouseV * Item.shootSpeed
+            Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, ShootVelocity
                 , type, (int)(Projectile.damage * 0.5f), (float)(Projectile.knockBack * 0.5), Owner.whoAmI);
         }
     }
