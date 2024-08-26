@@ -100,17 +100,17 @@ namespace CalamityOverhaul.Content.Tiles
                 //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
                 Main.playerInventory = true;
             }
-            Tile t = Main.tile[i, j];
-            int left = i - t.TileFrameX % (Width * SheetSquare) / SheetSquare;
-            int top = j - t.TileFrameY % (Height * SheetSquare) / SheetSquare;
 
-            BaseTileModule module = TileModuleLoader.FindModulePreciseSearch(TileModuleLoader.GetModuleID(typeof(TramModule)), i, j);
-            if (module != null) {
-                Main.LocalPlayer.CWR().TETramContrType = module.WhoAmI;
+            if (CWRUtils.SafeGetTopLeft(i, j, out var point)) {
+                int type = TileModuleLoader.GetModuleID(typeof(TramModule));
+                BaseTileModule module = TileModuleLoader.FindModulePreciseSearch(type, point.X, point.Y);
+                if (module != null) {
+                    Main.LocalPlayer.CWR().TETramContrType = module.WhoAmI;
+                }
+                SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });
+                Recipe.FindRecipes();
             }
 
-            SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });
-            Recipe.FindRecipes();
             return true;
         }
 

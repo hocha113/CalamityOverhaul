@@ -3781,8 +3781,12 @@ Configs: {
 		}
 
 		TileModuleBosSizeDraw: {
-			// Label: Tile Module Bos Size Draw
-			// Tooltip: ""
+			// Label: Tile Module Bos Size Draw [c/06e33f:(Experimental)]
+			/* Tooltip:
+				'''
+				Not recommended for non-developers, 
+				this setting is used to debug and observe the collision structure of block modules
+				''' */
 		}
 	}
 }

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.TileModules
             float leng = PosInWorld.Distance(player.Center);
             if ((leng >= maxleng || player.dead) && modPlayer.TETramContrType == WhoAmI) {
                 modPlayer.SupertableUIStartBool = false;
-                modPlayer.TETramContrType = 0;
+                modPlayer.TETramContrType = -1;
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.2f });
             }
         }
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.TileModules
             CWRPlayer modPlayer = Main.LocalPlayer.CWR();
             if (modPlayer.TETramContrType == WhoAmI) {
                 modPlayer.SupertableUIStartBool = false;
-                modPlayer.TETramContrType = 0;
+                modPlayer.TETramContrType = -1;
             }
         }
     }
