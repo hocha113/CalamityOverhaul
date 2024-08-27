@@ -1,39 +1,47 @@
 ﻿using CalamityOverhaul.Common;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.IO;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileModules.Core
 {
-    internal class TileModuleLoader : GlobalTile, ILoader
+    internal class TileModuleLoader : GlobalTile, ILoader, INetWork
     {
-        public static Dictionary<Type, int> TileModuleID { get; private set; } = [];
-        public static Dictionary<Type, BaseTileModule> TileModuleDict { get; private set; } = [];
-        public static Dictionary<int, BaseTileModule> TileModuleFormeTileID { get; private set; } = [];
         public static List<BaseTileModule> TileModulesList { get; private set; } = [];
-        public static List<BaseTileModule> TileModuleInWorld { get; private set; } = [];
-
+        public static List<BaseTileModule> TileModuleInWorld { get; internal set; } = [];
+        public static Dictionary<Type, int> TileModuleTypeToID { get; private set; } = [];
+        public static Dictionary<Type, BaseTileModule> TileModuleDict { get; private set; } = [];
+        public static Dictionary<int, BaseTileModule> ModuleIDToModuleInstance { get; private set; } = [];
+        public static Dictionary<int, BaseTileModule> TargetTileToModuleInstance { get; private set; } = [];
         internal delegate void On_Tile_KillMultiTile_Dalegate(int i, int j, int frameX, int frameY, int type);
         public static Type tileLoaderType;
         public static MethodBase onTile_KillMultiTile_Method;
-
+        public static INetWork NetInstance;
+        void INetWork.LoadNet() => NetInstance = this;
         void ILoader.LoadData() {
             TileModulesList = CWRUtils.HanderSubclass<BaseTileModule>();
             for (int i = 0; i < TileModulesList.Count; i++) {
                 BaseTileModule module = TileModulesList[i];
                 module.Load();
-                TileModuleID.Add(module.GetType(), i);
+                TileModuleTypeToID.Add(module.GetType(), i);
                 TileModuleDict.Add(module.GetType(), module);
-                TileModuleFormeTileID.Add(module.TargetTileID, module);
+                ModuleIDToModuleInstance.Add(module.ModuleID, module);
+                TargetTileToModuleInstance.Add(module.TargetTileID, module);
             }
 
             tileLoaderType = typeof(TileLoader);
             onTile_KillMultiTile_Method = tileLoaderType
                 .GetMethod("KillMultiTile", BindingFlags.Public | BindingFlags.Static);
             CWRHook.Add(onTile_KillMultiTile_Method, OnKillMultiTileHook);
+
+            WorldGen.Hooks.OnWorldLoad += LoadWorldTileModule;
         }
 
         void ILoader.SetupData() {
@@ -48,9 +56,11 @@ namespace CalamityOverhaul.Content.TileModules.Core
             }
             TileModulesList.Clear();
             TileModuleDict.Clear();
-            TileModuleID.Clear();
+            TileModuleTypeToID.Clear();
             tileLoaderType = null;
             onTile_KillMultiTile_Method = null;
+            NetInstance = null;
+            WorldGen.Hooks.OnWorldLoad -= LoadWorldTileModule;
         }
 
         private static void OnKillMultiTileHook(On_Tile_KillMultiTile_Dalegate orig
@@ -73,12 +83,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
         /// 最后，加载所有处于激活状态的模块
         /// </remarks>
         internal static void LoadWorldTileModule() {
-            foreach (BaseTileModule module in TileModuleInWorld) {
-                if (!module.Active) {
-                    continue;
-                }
-                module.Kill();
-            }
+            TileModuleInWorld = [];
 
             for (int x = 0; x < Main.tile.Width; x++) {
                 for (int y = 0; y < Main.tile.Height; y++) {
@@ -95,6 +100,10 @@ namespace CalamityOverhaul.Content.TileModules.Core
                 }
                 module.LoadInWorld();
             }
+
+            if (CWRUtils.isServer) {
+                TMEInWorldNetWork.NetInstance.NetSend();
+            }
         }
 
         /// <summary>
@@ -104,38 +113,18 @@ namespace CalamityOverhaul.Content.TileModules.Core
         /// <param name="position">该模块的左上角位置</param>
         /// <param name="item">用于跟踪该模块的物品，可以为 null</param>
         /// <remarks>
-        /// 该方法会首先尝试从 <see cref="TileModuleID"/> 获取对应的模块，然后克隆该模块并设置其位置、跟踪物品和激活状态
+        /// 该方法会首先尝试从 <see cref="TileModuleTypeToID"/> 获取对应的模块，然后克隆该模块并设置其位置、跟踪物品和激活状态
         /// 如果有空闲的模块槽位，会将新模块放入该槽位，否则会添加到列表的末尾
         /// </remarks>
         internal static void AddInWorld(int tileID, Point16 position, Item item) {
-            if (TileModuleFormeTileID.TryGetValue(tileID, out BaseTileModule module)) {
+            if (TargetTileToModuleInstance.TryGetValue(tileID, out BaseTileModule module)) {
                 BaseTileModule newModule = module.Clone();
                 newModule.Position = position;
                 newModule.TrackItem = item;
                 newModule.Active = true;
                 newModule.SetProperty();
-
-                foreach (var inds in TileModulesList) {
-                    if (inds.IsDaed()) {
-                        inds.Active = false;
-                    }
-                }
-
-                bool onAdd = true;
-
-                for (int i = 0; i < TileModuleInWorld.Count; i++) {
-                    if (!TileModuleInWorld[i].Active) {
-                        TileModuleInWorld[i] = newModule;
-                        newModule.WhoAmI = i;
-                        onAdd = false;
-                        break;
-                    }
-                }
-
-                if (onAdd) {
-                    newModule.WhoAmI = TileModuleInWorld.Count;
-                    TileModuleInWorld.Add(newModule);
-                }
+                newModule.WhoAmI = TileModuleInWorld.Count;
+                TileModuleInWorld.Add(newModule);
             }
         }
 
@@ -144,7 +133,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
         /// </summary>
         /// <param name="type">模块的类型</param>
         /// <returns>返回该类型对应的模块ID</returns>
-        public static int GetModuleID(Type type) => TileModuleID[type];
+        public static int GetModuleID(Type type) => TileModuleTypeToID[type];
 
         /// <summary>
         /// 使用精确搜索查找与指定ID及坐标对应的模块，并将其转换为指定类型的模块
@@ -218,9 +207,46 @@ namespace CalamityOverhaul.Content.TileModules.Core
         }
 
         public override void PlaceInWorld(int i, int j, int type, Item item) {
-            if (CWRUtils.SafeGetTopLeft(i, j, out var point)) {
+            if (CWRUtils.SafeGetTopLeft(i, j, out Point16 point)) {
                 AddInWorld(type, point, item);
+                $"即将开始同步 TileModuleInWorld最大值为{TileModuleInWorld.Count}".Domp();
+                if (CWRUtils.isClient) {
+                    NetInstance.NetSend(Main.myPlayer, type, point);
+                    TMEInWorldNetWork.NetInstance.NetSend();
+                }
             }
+        }
+
+        void INetWork.NetSendBehavior(ModPacket netMessage, params object[] args) {
+            netMessage.Write((byte)CWRMessageType.NetWorks);
+            netMessage.Write(((INetWork)this).messageID);
+            netMessage.Write((int)args[0]);
+            netMessage.Write((int)args[1]);
+            netMessage.WritePoint16((Point16)args[2]);
+
+            bool isSvr = false;
+            if (args.Length >= 4) {
+                isSvr = (bool)args[3];
+            }
+            netMessage.Write(isSvr);
+
+            if (CWRUtils.isClient && !isSvr) {
+                netMessage.Send();
+            }
+            else if (CWRUtils.isServer) {
+                netMessage.Send(-1, (int)args[0]);
+            }
+        }
+
+        void INetWork.NetReceive(Mod mod, BinaryReader reader, int whoAmI) {
+            int playerIndex = reader.ReadInt32();
+            int type = reader.ReadInt32();
+            Point16 point16 = reader.ReadPoint16();
+            AddInWorld(type, point16, null);
+            if (CWRUtils.isServer) {
+                NetInstance.NetSend(playerIndex, type, point16, true);
+            }
+            $"同步完成 TileModuleInWorld最大值为{TileModuleInWorld.Count}".Domp();
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
@@ -67,9 +68,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     Item item = SupertableUI.InStrGetItem(name, true);
                     items[i] = item;
                 }
+
                 spriteBatch.Draw(mainBookPValue, DrawPos, null, Color.DarkGoldenrod, 0, Vector2.Zero, new Vector2(2.2f, 2.6f), SpriteEffects.None, 0);//绘制出UI主体
                 spriteBatch.Draw(mainCellValue, DrawPos + new Vector2(-25, -25) + offset, null, Color.DarkGoldenrod, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                 spriteBatch.Draw(TOMTex, DrawPos + new Vector2(-70, -80) + offset, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+
                 Vector2 drawText1 = new Vector2(DrawPos.X - 20, DrawPos.Y - 60) + offset;
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value,
                     $"{CWRUtils.Translation("在", "In") + CWRUtils.SafeGetItemName<TransmutationOfMatterItem>() + CWRUtils.Translation("进行终焉合成", "Perform final synthesis")}："

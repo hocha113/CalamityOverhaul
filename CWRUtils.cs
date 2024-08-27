@@ -2180,6 +2180,13 @@ namespace CalamityOverhaul
             }
         }
 
+        public static void WritePoint16(this BinaryWriter writer, Point16 point16) {
+            writer.Write(point16.X);
+            writer.Write(point16.Y);
+        }
+
+        public static Point16 ReadPoint16(this BinaryReader reader) => new Point16(reader.ReadInt16(), reader.ReadInt16());
+
         /// <summary>
         /// 将列表中的元素数量和元素内容写入二进制写入器，使用提供的写入函数
         /// </summary>
@@ -2187,7 +2194,7 @@ namespace CalamityOverhaul
         /// <param name="writer">要写入的二进制写入器</param>
         /// <param name="list">要写入的列表</param>
         /// <param name="writeFunction">用于将类型 T 的元素写入二进制写入器的函数</param>
-        public static void WriteList<T>(this BinaryWriter writer, List<T> list, Action<BinaryWriter, T> writeFunction) {
+        public static void WriteList<T>(this ModPacket writer, List<T> list, Action<ModPacket, T> writeFunction) {
             writer.Write(list.Count);
             foreach (T value in list) {
                 writeFunction(writer, value);

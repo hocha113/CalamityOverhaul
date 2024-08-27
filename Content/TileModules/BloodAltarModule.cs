@@ -29,7 +29,9 @@ namespace CalamityOverhaul.Content.TileModules
             if (Main.bloodMoon) {
                 Main.bloodMoon = false;
             }
-            DoNetSend();
+            if (CWRUtils.isServer) {
+                DoNetSend();
+            }
         }
 
         private void SpanDustEfset() {
@@ -201,24 +203,63 @@ namespace CalamityOverhaul.Content.TileModules
             Time++;
         }
 
-        void INetWork.NetSendBehavior(ModPacket netMessage) {
-            if (Main.myPlayer != startPlayerWhoAmI) {
-                return;
+        void INetWork.NetSendBehavior(ModPacket netMessage, params object[] args) {
+            if (CWRUtils.isServer) {
+                NetMessage.SendData(MessageID.WorldData);
             }
+            "正在同步世界数据".Domp();
+            netMessage.Write((byte)CWRMessageType.NetWorks);
+            netMessage.Write(((INetWork)this).messageID);
+            netMessage.Write(startPlayerWhoAmI);
             netMessage.Write(WhoAmI);
             netMessage.Write(OnBoolMoon);
-            netMessage.Send(-1, startPlayerWhoAmI);
+            netMessage.Write(OldOnBoolMoon);
+
+            bool isSvr = false;
+            if (args.Length > 0) {
+                isSvr = (bool)args[0];
+            }
+
+            if (CWRUtils.isClient && !isSvr) {
+                netMessage.Send();
+            }
+            else if (CWRUtils.isServer) {
+                int index = -1;
+                if (args.Length > 1) {
+                    index = (int)args[1];
+                }
+                netMessage.Send(-1, index);
+            }
         }
 
         void INetWork.NetReceive(Mod mod, BinaryReader reader, int whoAmI) {
+            "正在接受世界数据".Domp();
+            int startPlayerWhoAmI = reader.ReadInt32();
             int moduleIndex = reader.ReadInt32();
             bool moon = reader.ReadBoolean();
+            bool moon2 = reader.ReadBoolean();
             if (moduleIndex < 0 || moduleIndex >= TileModuleLoader.TileModuleInWorld.Count) {
+                "moduleIndex超出范围".Domp();
+                $"TileModuleInWorld最大值为{TileModuleLoader.TileModuleInWorld.Count}".Domp();
+                $"而moduleIndex是{moduleIndex}".Domp();
                 return;
             }
+
+            if (CWRUtils.isServer) {
+                ((INetWork)this).NetSend(true, startPlayerWhoAmI);
+            }
+
             BloodAltarModule module = TileModuleLoader.TileModuleInWorld[moduleIndex] as BloodAltarModule;
-            if (module != null && module.Active) {
+            if (module != null) {
+                "正在接受startPlayerWhoAmI".Domp();
+                "正在接受OnBoolMoon".Domp();
+                module.startPlayerWhoAmI = startPlayerWhoAmI;
                 module.OnBoolMoon = moon;
+                module.OldOnBoolMoon = moon2;
+            }
+            else {
+                "检测到异常，服务器正在尝试实时重载物块系统，这可能会造成短暂的卡顿和数秒钟的网络延迟，属于正常情况".Domp();
+                TileModuleLoader.LoadWorldTileModule();
             }
         }
     }

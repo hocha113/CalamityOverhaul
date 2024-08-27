@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.TileModules
     {
         public override int TargetTileID => ModContent.TileType<TransmutationOfMatter>();
         private const int maxleng = 300;
-
         public override void Update() {
             Player player = Main.LocalPlayer;
             if (!player.active || Main.myPlayer != player.whoAmI) {

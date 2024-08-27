@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
+using CalamityOverhaul.Content.TileModules.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System.IO;
 using Terraria;

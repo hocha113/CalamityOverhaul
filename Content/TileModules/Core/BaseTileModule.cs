@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileModules.Core
 {
@@ -34,7 +36,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
         /// <summary>
         /// 模块的ID，在游戏加载时会给每个模块分配一个唯一的ID值
         /// </summary>
-        public int ModuleID => TileModuleLoader.TileModuleID[GetType()];
+        public int ModuleID => TileModuleLoader.TileModuleTypeToID[GetType()];
         /// <summary>
         /// 这个模块在世界物块坐标系上的位置，通常等价于所跟随的物块的坐标
         /// </summary>
@@ -49,6 +51,18 @@ namespace CalamityOverhaul.Content.TileModules.Core
         /// <returns></returns>
         #endregion
         public virtual BaseTileModule Clone() => (BaseTileModule)Activator.CreateInstance(GetType());
+
+        public virtual void NetCloneSend(ref ModPacket writer) {
+            writer.Write(Active);
+            writer.Write(WhoAmI);
+            writer.WritePoint16(Position);
+        }
+
+        public virtual void NetCloneRead(BinaryReader reader) {
+            Active = reader.ReadBoolean();
+            WhoAmI = reader.ReadInt32();
+            Position = reader.ReadPoint16();
+        }
 
         public virtual void LoadInWorld() { }
 

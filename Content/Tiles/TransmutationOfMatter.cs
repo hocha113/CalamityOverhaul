@@ -94,7 +94,6 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override bool RightClick(int i, int j) {
-            TileEntity.InitializeAll();
             SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
             if (SupertableUI.Instance.Active && !Main.playerInventory) {
                 //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI

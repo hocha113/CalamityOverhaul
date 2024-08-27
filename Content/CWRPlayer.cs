@@ -197,8 +197,8 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnEnterWorld() {
+            base.OnEnterWorld();
             CWRHook.CheckHookStatus();
-            TileModuleLoader.LoadWorldTileModule();
 
             if (CWRMod.Instance.magicStorage != null) {
                 SpwanTextProj.New(Player, () => CWRUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
