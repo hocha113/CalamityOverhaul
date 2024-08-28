@@ -123,8 +123,21 @@ namespace CalamityOverhaul.Content.TileModules.Core
                 newModule.TrackItem = item;
                 newModule.Active = true;
                 newModule.SetProperty();
-                newModule.WhoAmI = TileModuleInWorld.Count;
-                TileModuleInWorld.Add(newModule);
+
+                bool add = true;
+                for (int i = 0; i < TileModuleInWorld.Count; i++) {
+                    if (!TileModuleInWorld[i].Active) {
+                        newModule.WhoAmI = TileModuleInWorld[i].WhoAmI;
+                        TileModuleInWorld[i] = newModule;
+                        add = false;
+                        break;
+                    }
+                }
+
+                if (add) {
+                    newModule.WhoAmI = TileModuleInWorld.Count;
+                    TileModuleInWorld.Add(newModule);
+                }
             }
         }
 

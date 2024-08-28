@@ -35,17 +35,6 @@ namespace CalamityOverhaul.Content.TileModules.Core
                 }
                 module.Update();
             }
-
-            for (int i = 0; i < TileModuleLoader.TileModuleInWorld.Count; i++) {
-                BaseTileModule chekModule = TileModuleLoader.TileModuleInWorld[i];
-                if (!chekModule.Active) {
-                    TileModuleLoader.TileModuleInWorld.Remove(chekModule);
-                }
-            }
-
-            for (int i = 0; i < TileModuleLoader.TileModuleInWorld.Count; i++) {
-                TileModuleLoader.TileModuleInWorld[i].WhoAmI = i;
-            }
         }
 
         public override void PostDrawTiles() {

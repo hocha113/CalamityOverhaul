@@ -267,7 +267,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                 ai[10] *= -1;
                             }
                             else {
-                                ai[9] = Main.rand.Next(140, 280) * (Main.rand.NextBool() ? -1 : 1);
+                                if (!CWRUtils.isClient) {
+                                    ai[9] = Main.rand.Next(140, 280) * (Main.rand.NextBool() ? -1 : 1);
+                                }
+                                NetAISend(eye);
                             }
                         }
 
