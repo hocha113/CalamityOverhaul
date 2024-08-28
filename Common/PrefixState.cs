@@ -3,7 +3,7 @@
 /// 该结构体用于存储与物品前缀相关的所有属性加成，包括伤害倍率、击退倍率、使用时间倍率、尺寸倍率、射速倍率、法力消耗倍率、
 /// 暴击加成以及前缀的总体强度结构体还包括前缀ID和是否为模组前缀的标志
 /// </summary>
-public struct PrefixAddition
+public struct PrefixState
 {
     /// <summary>
     /// 前缀的ID
@@ -58,7 +58,7 @@ public struct PrefixAddition
     /// 默认构造函数
     /// 初始化时不设置任何字段，保留默认值
     /// </summary>
-    public PrefixAddition() {
+    public PrefixState() {
         strength = 0;
         damageMult = 1f;
         knockbackMult = 1f;

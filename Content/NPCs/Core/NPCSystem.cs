@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.Core
@@ -105,6 +106,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
         }
 
         public static bool OnPreKillHook(On_NPCDelegate2 orig, NPC npc) {
+            if (npc.type == NPCID.None || !npc.active) {
+                return orig.Invoke(npc);
+            }
             bool? reset = npc.CWR().NPCOverride.On_PreKill();
             if (reset.HasValue) {
                 return reset.Value;
@@ -113,6 +117,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
         }
 
         public static bool OnCheckDeadHook(On_NPCDelegate2 orig, NPC npc) {
+            if (npc.type == NPCID.None || !npc.active) {
+                return orig.Invoke(npc);
+            }
             bool? reset = npc.CWR().NPCOverride.CheckDead();
             if (reset.HasValue) {
                 return reset.Value;
@@ -121,6 +128,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
         }
 
         public static void OnNPCAIHook(On_NPCDelegate orig, NPC npc) {
+            if (npc.type == NPCID.None || !npc.active) {
+                return;
+            }
             int type = npc.type;
             bool reset = npc.CWR().NPCOverride.AI();
             npc.CWR().NPCOverride.OtherNetWorkSendHander();
@@ -132,6 +142,9 @@ namespace CalamityOverhaul.Content.NPCs.Core
         }
 
         public static bool OnPreDrawHook(On_DrawDelegate orig, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (npc.type == NPCID.None || !npc.active) {
+                return false;
+            }
             bool? reset = npc.CWR().NPCOverride.Draw(spriteBatch, screenPos, drawColor);
             if (reset.HasValue) {
                 return reset.Value;

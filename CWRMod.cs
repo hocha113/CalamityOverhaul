@@ -23,6 +23,15 @@ namespace CalamityOverhaul
         internal static CWRMod Instance;
         internal static int GameLoadCount;
         internal static bool Suitableversion_improveGame { get; private set; }
+        internal static List<Mod> LoadMods { get; private set; }
+        internal static List<ILoader> ILoaders { get; private set; }
+        internal static List<BaseRItem> RItemInstances { get; private set; } = [];
+        internal static List<EctypeItem> EctypeItemInstance { get; private set; } = [];
+        internal static List<NPCCustomizer> NPCCustomizerInstances { get; private set; } = [];
+        internal static Dictionary<int, BaseRItem> RItemIndsDict { get; private set; } = [];
+        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook { get; private set; }
+        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook { get; private set; }
+        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_UseItem_Hook { get; private set; }
         internal Mod musicMod = null;
         internal Mod betterWaveSkipper = null;
         internal Mod fargowiltasSouls = null;
@@ -40,15 +49,6 @@ namespace CalamityOverhaul
         internal Mod coolerItemVisualEffect = null;
         internal Mod gravityDontFlipScreen = null;
         internal Mod infernum = null;
-        internal List<Mod> LoadMods { get; private set; }
-        internal List<ILoader> ILoaders { get; private set; }
-        internal static List<BaseRItem> RItemInstances { get; private set; } = [];
-        internal static List<EctypeItem> EctypeItemInstance { get; private set; } = [];
-        internal static List<NPCCustomizer> NPCCustomizerInstances { get; private set; } = [];
-        internal static Dictionary<int, BaseRItem> RItemIndsDict { get; private set; } = [];
-        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_Shoot_Hook { get; private set; }
-        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_CanUse_Hook { get; private set; }
-        internal static GlobalHookList<GlobalItem> CWR_InItemLoader_Set_UseItem_Hook { get; private set; }
 
         internal enum CallType
         {

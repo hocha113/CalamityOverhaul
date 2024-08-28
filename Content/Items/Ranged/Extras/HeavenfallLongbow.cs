@@ -26,9 +26,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
     internal class HeavenfallLongbow : ModItem
     {
         public const int MaxVientNum = 13;
-        public static Color[] rainbowColors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet };
+        public static Color[] rainbowColors = [Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet];
         public override string Texture => CWRConstant.Item_Ranged + "HeavenfallLongbow";
-        public new string LocalizationCategory => "Items.Weapons.Ranged";
 
         public int ChargeValue;
         public bool spanInfiniteRuneBool = true;

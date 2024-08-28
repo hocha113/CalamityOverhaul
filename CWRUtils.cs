@@ -1187,7 +1187,7 @@ namespace CalamityOverhaul
             damage /= oldMultiplicative;
             //首先，因为SD的运行优先级并不可靠，有的模组的修改在SD之后运行，比如炼狱模式，这个基础伤害缩放保证一些情况不会发生
             damage *= GetStartDamage / (float)item.damage;
-            damage *= item.GetPrefixAddition().damageMult;
+            damage *= item.GetPrefixState().damageMult;
         }
 
         public static NPC FindNPCFromeType(int type) {
@@ -1323,13 +1323,13 @@ namespace CalamityOverhaul
         /// </summary>
         /// <param name="item">带有前缀的物品实例。</param>
         /// <returns>
-        /// 返回包含前缀附加属性的结构体<see cref="PrefixAddition"/>，
+        /// 返回包含前缀附加属性的结构体<see cref="PrefixState"/>，
         /// 该结构体中包括前缀ID以及计算得到的属性加成与前缀强度
         /// </returns>
-        public static PrefixAddition GetPrefixAddition(this Item item) {
+        public static PrefixState GetPrefixState(this Item item) {
             int prefixID = item.prefix;
 
-            PrefixAddition additionStruct = new PrefixAddition();
+            PrefixState additionStruct = new PrefixState();
 
             float strength;
             float damageMult = 1f;

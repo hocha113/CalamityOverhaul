@@ -36,13 +36,13 @@ namespace CalamityOverhaul.Content.Items.Materials
                     {"CalamityPostMLBoots", 0.25f},
                     {"仆从暴击", 0.25f},
                 };
-                float overMdgs = Instance.LoadMods.Count / 10f;
+                float overMdgs = LoadMods.Count / 10f;
                 overMdgs = overMdgs < 0.5f ? 0 : overMdgs;
                 float totalBonus = modBonuses.Sum(pair => hasMod(pair.Key) ? pair.Value : 0);
                 return baseBonus + overMdgs + totalBonus;
             }
         }
-        private static bool hasMod(string name) => Instance.LoadMods.Any(mod => mod.Name == name);
+        private static bool hasMod(string name) => LoadMods.Any(mod => mod.Name == name);
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
