@@ -4463,7 +4463,16 @@ TextContent: {
 		Spazmatism_Text6: Einleitung der Evakuierung...
 		Spazmatism_Text7: Mission fehlgeschlagen, versuche, das Schlachtfeld zu verlassen...
 		Spazmatism_Text8: Wurden eingesetzt.
-		// Error_1: hook failed, in order to normal the game, please close the game and re-enter, if this still does not return to normal, please bring the exported log to find the module developer
+		/* Error_1:
+			'''
+			hook failed, in order to normal the game, please close the game and re-enter, 
+			if this still does not return to normal, please bring the exported log to find the module developer
+			''' */
+		/* Error_2:
+			'''
+			An exception has been detected and the server is attempting to load the block system in real time, 
+			which may cause a brief stutter and a few seconds of network delay
+			''' */
 		// Config_1: User
 		// Config_2: The server configuration is modified
 		Wap_BubbleGun_Text:

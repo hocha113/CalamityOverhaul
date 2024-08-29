@@ -96,7 +96,7 @@ namespace CalamityOverhaul
 
         public static void HandlePacket(Mod mod, BinaryReader reader, int whoAmI) {
             CWRMessageType type = (CWRMessageType)reader.ReadByte();
-            type.Domp();
+            //type.Domp();
             if (type == CWRMessageType.RecoilAcceleration) {
                 Main.player[reader.ReadInt32()].CWR().HandleRecoilAcceleration(reader);
             }

@@ -32,12 +32,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (!set && Projectile.ai[0] > Projectile.ai[1]) {
                 origVer = Projectile.velocity;
                 Projectile.velocity = Vector2.Zero;
-                for (int i = 0; i < 133; i++) {
-                    Vector2 ver = origVer.UnitVector() * ((i / 133f) * 133 + 0.1f);
-                    Color color = Color.OrangeRed;
-                    BaseParticle spark = new PRT_Spark(Projectile.Center, -ver, false, 19, 2.3f, color);
-                    PRTLoader.AddParticle(spark);
-                    BaseParticle spark2 = new PRT_Spark(Projectile.Center, ver, false, 19, 2.3f, color);
+                float maxNum = 233;
+                for (int i = 0; i < maxNum; i++) {
+                    Vector2 ver = origVer.UnitVector() * ((i / maxNum) * maxNum + 0.1f);
+                    Color color = CWRUtils.MultiStepColorLerp(i / maxNum, Color.DarkRed, Color.IndianRed);
+                    BaseParticle spark2 = new PRT_Spark(Projectile.Center, ver, false, 119, 2.3f, color);
                     PRTLoader.AddParticle(spark2);
                 }
                 set = true;

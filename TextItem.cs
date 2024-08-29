@@ -1,5 +1,5 @@
 ﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +12,7 @@ namespace CalamityOverhaul
 
         private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         public override void SetDefaults() {
@@ -52,19 +52,22 @@ namespace CalamityOverhaul
             //else {
             //    TungstenRiot.Instance.TryStartEvent();
             //}
-            //Projectile.NewProjectile(player.GetSource_FromAI(), player.Center
-            //        , new Vector2(13, 0), ModContent.ProjectileType<FrostcrushValariHeld>(), 2, 2, player.whoAmI);
-            //ModGanged.Set_MS_Config_recursionCraftingDepth();
-            //Projectile Projectile = Projectile.NewProjectileDirect(player.GetSource_FromAI(), player.Center
-            //        , player.Center.To(Main.MouseWorld).UnitVector() * 6, ProjectileID.Bullet, CWRUtils.GetDamage(100, 150, 100), 2, player.whoAmI);
-            //Projectile.friendly = false;
-            //Projectile.hostile = true;
-            int maxProjSanShootNum = 22;
-            int type = ModContent.ProjectileType<Probe>();
-            for (int i = 0; i < maxProjSanShootNum; i++) {
-                Projectile.NewProjectile(player.GetSource_FromAI()
-                        , player.Center, (MathHelper.TwoPi / maxProjSanShootNum * i).ToRotationVector2() * Main.rand.Next(3, 16)
-                        , type, 42, 0f, Main.myPlayer, 0, Main.rand.Next(30, 60));
+
+            //int maxProjSanShootNum = 22;
+            //int type = ModContent.ProjectileType<Probe>();
+            //for (int i = 0; i < maxProjSanShootNum; i++) {
+            //    Projectile.NewProjectile(player.GetSource_FromAI()
+            //            , player.Center, (MathHelper.TwoPi / maxProjSanShootNum * i).ToRotationVector2() * Main.rand.Next(3, 16)
+            //            , type, 42, 0f, Main.myPlayer, 0, Main.rand.Next(30, 60));
+            //}
+
+            int maxSpanNum = 13 + 10;
+            for (int i = 0; i < maxSpanNum; i++) {
+                Vector2 spanPos = player.Center + CWRUtils.randVr(1380, 2200);
+                Vector2 vr = spanPos.To(player.Center + CWRUtils.randVr(180, 320 + 10 * 12)).UnitVector() * 12;
+                Projectile.NewProjectile(player.parent(), spanPos
+                    , vr, ModContent.ProjectileType<MurasamaEndSkillOrbOnSpan>()
+                    , (int)(100 * 0.7f), 0, player.whoAmI);
             }
             return true;
         }

@@ -6,6 +6,7 @@ using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json.Linq;
 using ReLogic.Content;
 using ReLogic.Utilities;
 using Steamworks;
@@ -1890,7 +1891,7 @@ namespace CalamityOverhaul
 
         public static Color MultiStepColorLerp(float percent, params Color[] colors) {
             if (colors == null) {
-                "MultiLerpColor: 空的颜色数组!".Domp(Color.Red);
+                Text("MultiLerpColor: 空的颜色数组!");
                 return Color.White;
             }
             float per = 1f / (colors.Length - 1f);
@@ -2056,8 +2057,8 @@ namespace CalamityOverhaul
 
         public static CWRItems CWR(this Item item) {
             if (item.type == ItemID.None) {
-                "ERROR!发生了一次空传递，该物品为None!".Domp();
-                "ERROR!发生了一次空传递，该物品为None!".DompInConsole();
+                Text("ERROR!发生了一次空传递，该物品为None!");
+                CWRMod.Instance.Logger.Info("ERROR!发生了一次空传递，该物品为None!");
                 return null;
             }
             return item.GetGlobalItem<CWRItems>();

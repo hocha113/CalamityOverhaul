@@ -4480,7 +4480,16 @@ TextContent: {
 		Spazmatism_Text6: Initiation de l'extraction...
 		Spazmatism_Text7: Mission échouée, tentative de retraite du champ de bataille...
 		Spazmatism_Text8: Déployés.
-		// Error_1: hook failed, in order to normal the game, please close the game and re-enter, if this still does not return to normal, please bring the exported log to find the module developer
+		/* Error_1:
+			'''
+			hook failed, in order to normal the game, please close the game and re-enter, 
+			if this still does not return to normal, please bring the exported log to find the module developer
+			''' */
+		/* Error_2:
+			'''
+			An exception has been detected and the server is attempting to load the block system in real time, 
+			which may cause a brief stutter and a few seconds of network delay
+			''' */
 		// Config_1: User
 		// Config_2: The server configuration is modified
 		Wap_BubbleGun_Text:

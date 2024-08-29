@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private float maxOrbNinmsWeith;
         private bool onSpan = true;
         private bool onOrb = true;
-
         public override void SetDefaults() {
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 7000;
             Projectile.width = 32;
@@ -41,8 +40,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 Projectile.rotation = Projectile.velocity.ToRotation();
                 PosLists = [];
                 Vector2 rot = Projectile.velocity.UnitVector();
-                for (int i = 0; i < 100; i++) {
-                    PosLists.Add(Projectile.Center + (rot * 50 * i));
+                for (int i = -50; i < 50; i++) {
+                    PosLists.Add(Projectile.Center + (rot * 150 * i));
                 }
                 Vector2 toOwner = Projectile.Center.To(Main.player[Projectile.owner].Center).UnitVector();
                 Projectile.position += toOwner * 1000;

@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
         public override void PlaceInWorld(int i, int j, int type, Item item) {
             if (CWRUtils.SafeGetTopLeft(i, j, out Point16 point)) {
                 AddInWorld(type, point, item);
-                $"即将开始同步 TileModuleInWorld最大值为{TileModuleInWorld.Count}".Domp();
+                //$"即将开始同步 TileModuleInWorld最大值为{TileModuleInWorld.Count}".Domp();
                 if (CWRUtils.isClient) {
                     NetInstance.NetSend(Main.myPlayer, type, point);
                     TMEInWorldNetWork.NetInstance.NetSend();
@@ -290,7 +290,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
             if (CWRUtils.isServer) {
                 NetInstance.NetSend(playerIndex, type, point16, true);
             }
-            $"同步完成 TileModuleInWorld最大值为{TileModuleInWorld.Count}".Domp();
+            //$"同步完成 TileModuleInWorld最大值为{TileModuleInWorld.Count}".Domp();
         }
     }
 }
