@@ -170,6 +170,7 @@ namespace CalamityOverhaul.Content
         public bool IsShootCountCorlUse;
         #endregion
 
+        public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItems)base.Clone(from, to));
         public CWRItems CloneCWRItem(CWRItems cwr) {
             cwr.ai = ai;
             cwr.remakeItem = remakeItem;
@@ -199,8 +200,6 @@ namespace CalamityOverhaul.Content
             cwr.IsShootCountCorlUse = IsShootCountCorlUse;
             return cwr;
         }
-
-        public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItems)base.Clone(from, to));
 
         private void SmiperItemSet(Item item) {
             int type = item.type;
