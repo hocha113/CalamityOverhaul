@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public static string[][] RpsDataStringArrays;
 
-        public static string[][] ModCall_OtherRpsData_StringArrays;
+        public static List<string[]> ModCall_OtherRpsData_StringList = [];
 
         public string[] StaticFullItemNames;
 
@@ -86,14 +86,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public static List<RecipeData> AllRecipes = [];
         #endregion
-        public override void Load() {
-            Instance = this;
-            LoadRecipe();
-        }
-
+        public override void Load() => Instance = this;
+        void ILoader.SetupData() => LoadRecipe();
         void ILoader.UnLoadData() {
             RpsDataStringArrays = null;
-            ModCall_OtherRpsData_StringArrays = null;
+            ModCall_OtherRpsData_StringList = null;
             Instance = null;
         }
 
@@ -112,8 +109,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 return null;
             }).Where(array => array != null).ToArray();
 
-            if (ModCall_OtherRpsData_StringArrays?.Length > 0) {
-                RpsDataStringArrays = RpsDataStringArrays.Concat(ModCall_OtherRpsData_StringArrays).ToArray();
+            if (ModCall_OtherRpsData_StringList?.Count > 0) {
+                RpsDataStringArrays = RpsDataStringArrays.Concat(ModCall_OtherRpsData_StringList).ToArray();
             }
 
             foreach (string[] value in RpsDataStringArrays) {

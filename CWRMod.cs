@@ -60,7 +60,7 @@ namespace CalamityOverhaul
             CallType callType = (CallType)args[0];
             //如果要使用这个call，那么它最好在Load环节就调用一次，这样才能保证欧米茄能正常获取到值
             if (callType == CallType.SupertableRecipeDate) {
-                SupertableUI.ModCall_OtherRpsData_StringArrays = (string[][])args[1];
+                SupertableUI.ModCall_OtherRpsData_StringList.Add((string[])args[1]);
             }
             return null;
         }

@@ -147,6 +147,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText Spazmatism_Text7 { get; private set; }
         public LocalizedText Spazmatism_Text8 { get; private set; }
         public LocalizedText Error_1 { get; private set; }
+        public LocalizedText Error_2 { get; private set; }
         public LocalizedText Config_1 { get; private set; }
         public LocalizedText Config_2 { get; private set; }
         public LocalizedText Wap_Minishark_Text { get; private set; }

@@ -69,8 +69,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (Projectile.timeLeft == 50 && onOrb) {
                 //SoundEngine.PlaySound(ModSound.EndSilkOrbSpanSound with { Volume = 0.1f }, Projectile.Center);
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.NewProjectile(Projectile.parent(), new Vector2(Projectile.ai[0], Projectile.ai[1]), Projectile.velocity, ModContent.ProjectileType<MurasamaEndSkillOrb>()
-                , Projectile.damage, 0, Projectile.owner, Projectile.velocity.ToRotation(), Main.rand.Next(100));
+                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), new Vector2(Projectile.ai[0], Projectile.ai[1])
+                        , Projectile.velocity, ModContent.ProjectileType<MurasamaEndSkillOrb>()
+                        , Projectile.damage, 0, Projectile.owner, 0, Main.rand.Next(30));
                 }
 
                 onOrb = false;

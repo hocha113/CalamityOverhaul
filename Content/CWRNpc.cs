@@ -78,6 +78,26 @@ namespace CalamityOverhaul.Content
         public static Asset<Texture2D> IceParcloseAsset;
         #endregion
 
+        public override GlobalNPC Clone(NPC from, NPC to) => CloneCWRNpc((CWRNpc)base.Clone(from, to));
+        public CWRNpc CloneCWRNpc(CWRNpc cwr) {
+            cwr.CreateHitPlayer = CreateHitPlayer;
+            cwr.ContagionOnHitNum = ContagionOnHitNum;
+            cwr.PhosphorescentGauntletOnHitNum = PhosphorescentGauntletOnHitNum;
+            cwr.TerratomereBoltOnHitNum = TerratomereBoltOnHitNum;
+            cwr.OrderbringerOnHitNum = OrderbringerOnHitNum;
+            cwr.TheEndSunOnHitNum = TheEndSunOnHitNum;
+            cwr.WhipHitNum = WhipHitNum;
+            cwr.WhipHitType = WhipHitType;
+            cwr.SprBoss = SprBoss;
+            cwr.ObliterateBool = ObliterateBool;
+            cwr.GangarusSign = GangarusSign;
+            cwr.OverBeatBackBool = OverBeatBackBool;
+            cwr.OverBeatBackVr = OverBeatBackVr;
+            cwr.OverBeatBackAttenuationForce = OverBeatBackAttenuationForce;
+            cwr.IceParclose = IceParclose;
+            return cwr;
+        }
+
         public static void OverBeatBackSend(NPC npc, int playerWhoAmI = -1, float power = 0.99f) {
             if (CWRUtils.isSinglePlayer) {
                 return;

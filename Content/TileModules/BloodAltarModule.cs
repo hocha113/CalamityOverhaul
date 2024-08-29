@@ -230,7 +230,7 @@ namespace CalamityOverhaul.Content.TileModules
             if (CWRUtils.isServer) {
                 NetMessage.SendData(MessageID.WorldData);
             }
-            "正在同步世界数据".Domp();
+            //"正在同步世界数据".Domp();
             netMessage.Write((byte)CWRMessageType.NetWorks);
             netMessage.Write(((INetWork)this).messageID);
             netMessage.Write(startPlayerWhoAmI);
@@ -256,15 +256,15 @@ namespace CalamityOverhaul.Content.TileModules
         }
 
         void INetWork.NetReceive(Mod mod, BinaryReader reader, int whoAmI) {
-            "正在接受世界数据".Domp();
+            //"正在接受世界数据".Domp();
             int startPlayerWhoAmI = reader.ReadInt32();
             int moduleIndex = reader.ReadInt32();
             bool moon = reader.ReadBoolean();
             bool moon2 = reader.ReadBoolean();
             if (moduleIndex < 0 || moduleIndex >= TileModuleLoader.TileModuleInWorld.Count) {
-                "moduleIndex超出范围".Domp();
-                $"TileModuleInWorld最大值为{TileModuleLoader.TileModuleInWorld.Count}".Domp();
-                $"而moduleIndex是{moduleIndex}".Domp();
+                //"moduleIndex超出范围".Domp();
+                //$"TileModuleInWorld最大值为{TileModuleLoader.TileModuleInWorld.Count}".Domp();
+                //$"而moduleIndex是{moduleIndex}".Domp();
                 return;
             }
 
@@ -274,14 +274,16 @@ namespace CalamityOverhaul.Content.TileModules
 
             BloodAltarModule module = TileModuleLoader.TileModuleInWorld[moduleIndex] as BloodAltarModule;
             if (module != null) {
-                "正在接受startPlayerWhoAmI".Domp();
-                "正在接受OnBoolMoon".Domp();
+                //"正在接受startPlayerWhoAmI".Domp();
+                //"正在接受OnBoolMoon".Domp();
                 module.startPlayerWhoAmI = startPlayerWhoAmI;
                 module.OnBoolMoon = moon;
                 module.OldOnBoolMoon = moon2;
             }
             else {
-                "检测到异常，服务器正在尝试实时重载物块系统，这可能会造成短暂的卡顿和数秒钟的网络延迟，属于正常情况".Domp();
+                string errorText = CWRLocText.GetTextValue("Error_2");
+                CWRUtils.Text(errorText);
+                CWRMod.Instance.Logger.Info(errorText);
                 TileModuleLoader.LoadWorldTileModule();
             }
         }
