@@ -127,7 +127,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public Vector2 PlayerPositionChange;
         #region NetCode
-        public bool DompBool;
         public bool RecoilAccelerationAddBool;
         public Vector2 RecoilAccelerationValue;
         #endregion
@@ -288,10 +287,6 @@ namespace CalamityOverhaul.Content
                 Player.velocity += RecoilAccelerationValue;
                 RecoilAccelerationAddBool = false;
             }
-            if (DompBool) {
-                $"{Player.name}成功进行网络同步:[{Main.GameUpdateCount}]".Domp();
-                DompBool = false;
-            }
 
             PlayerPositionChange = oldPlayerPositionChange.To(Player.position);
             oldPlayerPositionChange = Player.position;
@@ -371,21 +366,6 @@ namespace CalamityOverhaul.Content
             packet.Write(RecoilAccelerationAddBool);
             packet.Write(RecoilAccelerationValue.X);
             packet.Write(RecoilAccelerationValue.Y);
-            Player.SendPacket(packet, server);
-        }
-
-        internal void HandleDomp(BinaryReader reader) {
-            DompBool = reader.ReadBoolean();
-            if (Main.netMode == NetmodeID.Server) {
-                SyncDomp(true);
-            }
-        }
-
-        public void SyncDomp(bool server) {
-            ModPacket packet = Mod.GetPacket(256);
-            packet.Write((byte)CWRMessageType.DompBool);
-            packet.Write(Player.whoAmI);
-            packet.Write(DompBool);
             Player.SendPacket(packet, server);
         }
 

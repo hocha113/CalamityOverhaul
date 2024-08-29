@@ -1,29 +1,56 @@
 ﻿using CalamityOverhaul.Common;
-using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.IO;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileModules.Core
 {
+    /// <summary>
+    /// Tile模块的管理类。此类负责加载、设置和卸载Tile模块，并处理与世界生成和网络通信相关的操作
+    /// </summary>
     internal class TileModuleLoader : GlobalTile, ILoader, INetWork
     {
+        /// <summary>
+        /// 所有Tile模块的列表该列表在加载时初始化，并包含所有Tile模块的实例
+        /// </summary>
         public static List<BaseTileModule> TileModulesList { get; private set; } = [];
+        /// <summary>
+        /// 当前世界中的Tile模块列表此列表在世界加载和操作时动态更新
+        /// </summary>
         public static List<BaseTileModule> TileModuleInWorld { get; internal set; } = [];
+        /// <summary>
+        /// 将Tile模块的类型映射到其对应的ID的字典
+        /// </summary>
         public static Dictionary<Type, int> TileModuleTypeToID { get; private set; } = [];
-        public static Dictionary<Type, BaseTileModule> TileModuleDict { get; private set; } = [];
+        /// <summary>
+        /// 将Tile模块的类型映射到模块实例的字典
+        /// </summary>
+        public static Dictionary<Type, BaseTileModule> ModuleTypeToInstance { get; private set; } = [];
+        /// <summary>
+        /// 记录当前世界中每个模块ID对应的Tile模块数量
+        /// </summary>
+        public static Dictionary<int, int> ModuleIDHanderModuleHasNumInWorld { get; internal set; } = [];
+        /// <summary>
+        /// 将模块ID映射到模块实例的字典
+        /// </summary>
         public static Dictionary<int, BaseTileModule> ModuleIDToModuleInstance { get; private set; } = [];
+        /// <summary>
+        /// 将目标Tile的ID映射到模块实例的字典
+        /// </summary>
         public static Dictionary<int, BaseTileModule> TargetTileToModuleInstance { get; private set; } = [];
+        /// <summary>
+        /// 在世界中的Tile模块的最大存在数量
+        /// </summary>
+        public const int MaxTileModuleInWorldCount = 1000;
         internal delegate void On_Tile_KillMultiTile_Dalegate(int i, int j, int frameX, int frameY, int type);
         public static Type tileLoaderType;
         public static MethodBase onTile_KillMultiTile_Method;
         public static INetWork NetInstance;
+
         void INetWork.LoadNet() => NetInstance = this;
         void ILoader.LoadData() {
             TileModulesList = CWRUtils.HanderSubclass<BaseTileModule>();
@@ -31,8 +58,9 @@ namespace CalamityOverhaul.Content.TileModules.Core
                 BaseTileModule module = TileModulesList[i];
                 module.Load();
                 TileModuleTypeToID.Add(module.GetType(), i);
-                TileModuleDict.Add(module.GetType(), module);
+                ModuleTypeToInstance.Add(module.GetType(), module);
                 ModuleIDToModuleInstance.Add(module.ModuleID, module);
+                ModuleIDHanderModuleHasNumInWorld.Add(module.ModuleID, 0);
                 TargetTileToModuleInstance.Add(module.TargetTileID, module);
             }
 
@@ -55,8 +83,11 @@ namespace CalamityOverhaul.Content.TileModules.Core
                 module.UnLoad();
             }
             TileModulesList.Clear();
-            TileModuleDict.Clear();
             TileModuleTypeToID.Clear();
+            ModuleTypeToInstance.Clear();
+            ModuleIDToModuleInstance.Clear();
+            ModuleIDHanderModuleHasNumInWorld.Clear();
+            TargetTileToModuleInstance.Clear();
             tileLoaderType = null;
             onTile_KillMultiTile_Method = null;
             NetInstance = null;
@@ -134,7 +165,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
                     }
                 }
 
-                if (add) {
+                if (add && TileModuleInWorld.Count < MaxTileModuleInWorldCount) {
                     newModule.WhoAmI = TileModuleInWorld.Count;
                     TileModuleInWorld.Add(newModule);
                 }

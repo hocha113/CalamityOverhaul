@@ -68,6 +68,17 @@ namespace CalamityOverhaul.Content.TileModules.Core
 
         public virtual void UnLoadInWorld() { }
         /// <summary>
+        /// 这个模块在世界中的存在数量
+        /// </summary>
+        /// <returns></returns>
+        public int GetInWorldHasNum() => TileModuleLoader.ModuleIDHanderModuleHasNumInWorld[ModuleID];
+        /// <summary>
+        /// 这个函数是单实例的，在一个更新周期中，它只会运行一次，如果<see cref="GetInWorldHasNum"/>返回0，就不会被调用
+        /// </summary>
+        public virtual void SingleInstanceUpdate() {
+
+        }
+        /// <summary>
         /// 这个函数在跟随的物块被挖掘或者消失时自动调用一次，
         /// 调用这个函数，将会让模块变得不活跃，同时运行<see cref="OnKill"/>设置死亡事件
         /// </summary>

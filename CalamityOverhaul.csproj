@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Players\" />
+    <Folder Include="Assets\TileModules\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CalamityMod">

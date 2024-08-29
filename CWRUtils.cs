@@ -2908,6 +2908,18 @@ namespace CalamityOverhaul
 
         #region 普通绘制工具
 
+        public static void SimpleDrawItem(SpriteBatch spriteBatch, int itemType, Vector2 position, float size, float rotation, Color color, Vector2 orig = default) {
+            Texture2D texture = TextureAssets.Item[itemType].Value;
+            Rectangle? rectangle = Main.itemAnimations[itemType] != null ? Main.itemAnimations[itemType].GetFrame(texture) : texture.Frame(1, 1, 0, 0);
+            if (orig == default) {
+                orig = texture.Size() / 2;
+                if (rectangle.HasValue) {
+                    orig = rectangle.Value.Size() / 2;
+                }
+            }
+            spriteBatch.Draw(texture, position, rectangle, color, rotation, orig, size, SpriteEffects.None, 0);
+        }
+
         public static Vector2 CalculatePlayerHeadDrawPosition(ref PlayerDrawSet drawSet, Vector2 helmetOffset, Vector2 hatOffset) {
             Player player = drawSet.drawPlayer;
             Rectangle bodyFrame = player.bodyFrame;

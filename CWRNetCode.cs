@@ -12,7 +12,6 @@ namespace CalamityOverhaul
 {
     public enum CWRMessageType : byte
     {
-        DompBool,
         RecoilAcceleration,
         TungstenRiot,
         OverBeatBack,
@@ -98,17 +97,14 @@ namespace CalamityOverhaul
         public static void HandlePacket(Mod mod, BinaryReader reader, int whoAmI) {
             CWRMessageType type = (CWRMessageType)reader.ReadByte();
             type.Domp();
-            if (type == CWRMessageType.DompBool) {
-                Main.player[reader.ReadInt32()].CWR().HandleDomp(reader);
-            }
-            else if (type == CWRMessageType.RecoilAcceleration) {
+            if (type == CWRMessageType.RecoilAcceleration) {
                 Main.player[reader.ReadInt32()].CWR().HandleRecoilAcceleration(reader);
             }
             else if (type == CWRMessageType.TungstenRiot) {
                 TungstenRiot.EventNetWorkReceive(reader);
             }
             else if (type == CWRMessageType.OverBeatBack) {
-                CWRNpc.OverBeatBackReceive(reader);
+                CWRNpc.OtherBeatBackReceive(reader);
             }
             else if (type == CWRMessageType.NPCOverrideAI) {
                 NPCOverride.NetAIReceive(reader);
@@ -120,7 +116,6 @@ namespace CalamityOverhaul
                 CWRProjectile.NetViscosityReceive(reader);
             }
             else if (type == CWRMessageType.NetWorks) {
-                "NetWorksReceiveHander".Domp();
                 NetWorksReceiveHander(mod, reader, whoAmI);
             }
         }

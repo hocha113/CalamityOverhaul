@@ -69,9 +69,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     items[i] = item;
                 }
 
-                spriteBatch.Draw(mainBookPValue, DrawPos, null, Color.DarkGoldenrod, 0, Vector2.Zero, new Vector2(2.2f, 2.6f), SpriteEffects.None, 0);//绘制出UI主体
+                Vector2 drawMainUISize = new Vector2(2.2f, 2.6f);
+                spriteBatch.Draw(mainBookPValue, DrawPos, null, Color.DarkGoldenrod, 0, Vector2.Zero, drawMainUISize, SpriteEffects.None, 0);//绘制出UI主体
                 spriteBatch.Draw(mainCellValue, DrawPos + new Vector2(-25, -25) + offset, null, Color.DarkGoldenrod, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-                spriteBatch.Draw(TOMTex, DrawPos + new Vector2(-70, -80) + offset, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                Vector2 drawTOMItemIconPos = DrawPos + new Vector2(-50, mainCellValue.Height) + offset;
+                CWRUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<TransmutationOfMatterItem>(), drawTOMItemIconPos, 1, 0, Color.White);
 
                 Vector2 drawText1 = new Vector2(DrawPos.X - 20, DrawPos.Y - 60) + offset;
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value,

@@ -79,23 +79,31 @@ namespace CalamityOverhaul.Content
         #endregion
 
         public static void OverBeatBackSend(NPC npc, int playerWhoAmI = -1, float power = 0.99f) {
-            if (!CWRUtils.isSinglePlayer) {
-                var netMessage = CWRMod.Instance.GetPacket();
-                netMessage.Write((byte)CWRMessageType.OverBeatBack);
-                netMessage.Write((byte)npc.whoAmI);
-                netMessage.WriteVector2(npc.CWR().OverBeatBackVr);
-                netMessage.Write(power);
-                netMessage.Send(-1, playerWhoAmI);
+            if (CWRUtils.isSinglePlayer) {
+                return;
             }
+            var netMessage = CWRMod.Instance.GetPacket();
+            netMessage.Write((byte)CWRMessageType.OverBeatBack);
+            netMessage.Write((byte)npc.whoAmI);
+            netMessage.WriteVector2(npc.CWR().OverBeatBackVr);
+            netMessage.Write(power);
+            netMessage.Write(playerWhoAmI);
+            netMessage.Send(-1, playerWhoAmI);
         }
 
-        public static void OverBeatBackReceive(BinaryReader reader) {
+        public static void OtherBeatBackReceive(BinaryReader reader) {
             NPC npc = Main.npc[reader.ReadByte()];
             Vector2 overBeatBackVr = reader.ReadVector2();
             float power = reader.ReadSingle();
+            int playerIndex = reader.ReadInt32();
             if (npc.type == NPCID.None || !npc.active) {
                 return;
             }
+
+            if (CWRUtils.isServer) {
+                OverBeatBackSend(npc, playerIndex, power);
+            }
+
             CWRNpc modnpc = npc.CWR();
             modnpc.OverBeatBackBool = true;
             modnpc.OverBeatBackVr = overBeatBackVr;

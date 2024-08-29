@@ -1,8 +1,9 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
-using Terraria.IO;
+using Terraria.Map;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileModules.Core
@@ -23,10 +24,16 @@ namespace CalamityOverhaul.Content.TileModules.Core
                 return;
             }
 
+            foreach (BaseTileModule module in TileModuleLoader.TileModulesList) {
+                TileModuleLoader.ModuleIDHanderModuleHasNumInWorld[module.ModuleID] = 0;
+            }
+
             foreach (BaseTileModule module in TileModuleLoader.TileModuleInWorld) {
                 if (!module.Active) {
                     continue;
                 }
+
+                TileModuleLoader.ModuleIDHanderModuleHasNumInWorld[module.ModuleID]++;
 
                 module.Tile = CWRUtils.GetTile(module.Position.X, module.Position.Y);
                 if (module.IsDaed()) {
@@ -34,6 +41,12 @@ namespace CalamityOverhaul.Content.TileModules.Core
                     continue;
                 }
                 module.Update();
+            }
+
+            foreach (BaseTileModule module in TileModuleLoader.TileModulesList) {
+                if (module.GetInWorldHasNum() > 0) {
+                    module.SingleInstanceUpdate();
+                }
             }
         }
 

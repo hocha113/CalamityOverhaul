@@ -4,6 +4,8 @@ using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.TileModules.Core;
 using CalamityOverhaul.Content.Tiles;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.IO;
 using Terraria;
@@ -14,15 +16,19 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileModules
 {
-    internal class BloodAltarModule : BaseTileModule, INetWork
+    internal class BloodAltarModule : BaseTileModule, INetWork, ILoader
     {
         public override int TargetTileID => ModContent.TileType<BloodAltar>();
-        public Vector2 Center => PosInWorld + new Vector2(32, 16);
+        public Vector2 Center => PosInWorld + new Vector2(BloodAltar.Width * 18, BloodAltar.Height * 18) / 2;
+        public static Asset<Texture2D> BloodAltarEffect;
+        public bool mouseOnTile;
         public bool OnBoolMoon;
         public int startPlayerWhoAmI;
         public bool OldOnBoolMoon;
         public long Time = 0;
         public int frameIndex = 1;
+        void ILoader.LoadAsset() => BloodAltarEffect = CWRUtils.GetT2DAsset(CWRConstant.Asset + "TileModules/BloodAltarEffect");
+        void ILoader.UnLoadData() => BloodAltarEffect = null;
         public void DoNetSend() => ((INetWork)this).NetSend();
         public override void OnKill() {
             Main.dayTime = true;
@@ -140,6 +146,8 @@ namespace CalamityOverhaul.Content.TileModules
 
         public override void Update() {
             Player player = CWRUtils.InPosFindPlayer(Center);
+            Rectangle tileRec = new Rectangle(Position.X * 16, Position.Y * 16, BloodAltar.Width * 18, BloodAltar.Height * 18);
+            mouseOnTile = tileRec.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
             if (OnBoolMoon) {
                 if (!Main.bloodMoon && !OldOnBoolMoon && !CWRUtils.isServer) {
                     if (player == null) {
@@ -201,6 +209,21 @@ namespace CalamityOverhaul.Content.TileModules
                 OldOnBoolMoon = false;
             }
             Time++;
+        }
+
+        public override void Draw(SpriteBatch spriteBatch) {
+            Vector2 drawPos;
+            
+            if (OnBoolMoon) {
+                drawPos = Center + new Vector2(-8, -64) - Main.screenPosition;
+                float slp = MathF.Abs(MathF.Sin(Time * 0.03f) * 0.3f) + 1;
+                CWRUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<BloodOrb>(), drawPos, slp, 0, Color.White);
+            }
+            else if (mouseOnTile) {
+                drawPos = Center + new Vector2(-8, -32) - Main.screenPosition;
+                float slp = MathF.Abs(MathF.Sin(Time * 0.03f) * 0.3f) + 1;
+                CWRUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<BloodOrb>(), drawPos, slp, 0, Color.White);
+            }
         }
 
         void INetWork.NetSendBehavior(ModPacket netMessage, params object[] args) {
