@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Particles.Core;
+using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -44,11 +45,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.ai[0]++;
         }
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (CWRLoad.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.4f;
+            }
+            if (CWRLoad.targetNpcTypes7_1.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+        }
+
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float point = 0f;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
                 , Projectile.Center - origVer.UnitVector() * 1200
-                , Projectile.Center + origVer.UnitVector() * 1200, 38, ref point);
+                , Projectile.Center + origVer.UnitVector() * 2200, 38, ref point);
         }
 
         public override bool PreDraw(ref Color lightColor) {

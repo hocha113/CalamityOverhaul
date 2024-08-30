@@ -89,7 +89,7 @@ Items: {
 		DisplayName: Entropischer Zweihänder
 		Tooltip:
 			'''
-			Zwischen den Klingenblitzen sind Sterne zu sehen
+			Beim Schwingen werden mehrere Plasmastrahlen abgefeuert.
 			"Mit der Zunahme der Entropie verwandelten sich einst majestätische Nebel in das matte, chaotische Staubkorn innerhalb des Schwerts"
 			'''
 	}
@@ -3781,13 +3781,13 @@ Configs: {
 		}
 
 		TileModuleBosSizeDraw: {
-			// Label: Tile Module Bounding Box Draw [c/06e33f:(Developer Option)]
-			/* Tooltip:
+			Label: Kachelmodul-Kollisionsbox-Zeichnung [c/06e33f:(Entwickleroption)]
+			Tooltip:
 				'''
-				[c/c20909:Not recommended for non-developers]
-				Used for debugging and observing the collision structure of TileModule.
-				When enabled, TileModule will draw its bounding boxes, type names, and other data in the world.
-				''' */
+				[c/c20909:ür Nicht-Entwickler wird das Aktivieren nicht empfohlen]
+                Zum Debuggen und Beobachten der Kollisionsstrukturen des TileModules,
+                Nach dem Aktivieren wird das TileModule seine Kollisionsbox, den Typnamen und andere Daten in der Welt darstellen.
+				'''
 		}
 	}
 }

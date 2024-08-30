@@ -233,7 +233,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         for (int i = 0; i < maxSpanNum; i++) {
                             Vector2 spanPos = Projectile.Center + CWRUtils.randVr(1380, 2200);
                             Vector2 vr = spanPos.To(Projectile.Center + CWRUtils.randVr(180, 320 + level * 12)).UnitVector() * 12;
-                            Projectile.NewProjectile(Owner.parent(), spanPos, vr, ModContent.ProjectileType<MurasamaEndSkillOrbOnSpan>(), (int)(Projectile.damage * 0.7f), 0, Owner.whoAmI);
+                            Projectile.NewProjectile(Owner.parent(), spanPos, vr, ModContent.ProjectileType<MurasamaEndSkillOrbOnSpan>(), Projectile.damage / 2, 0, Owner.whoAmI);
                         }
                         //生成一个制造终结技核心效果的弹幕，这样的程序设计是为了减少耦合度
                         Projectile.NewProjectile(Owner.parent(), Owner.Center, Vector2.Zero,

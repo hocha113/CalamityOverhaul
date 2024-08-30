@@ -90,7 +90,7 @@ Items: {
 		DisplayName: Энтропийный клеймор
 		Tooltip:
 			'''
-			Звезды видны между светом ножа
+			Во время взмаха выпускает несколько плазменных лучей
 			"В накоплении энтропии, даже самые величественные туманности прошлого превращаются в пыль от ножа."
 			'''
 	}
@@ -3842,13 +3842,13 @@ Configs: {
 		}
 
 		TileModuleBosSizeDraw: {
-			// Label: Tile Module Bounding Box Draw [c/06e33f:(Developer Option)]
-			/* Tooltip:
+			Label: Рисование коллизионных коробок модуля плиток [c/06e33f:(Опция разработчика)]
+			Tooltip:
 				'''
-				[c/c20909:Not recommended for non-developers]
-				Used for debugging and observing the collision structure of TileModule.
-				When enabled, TileModule will draw its bounding boxes, type names, and other data in the world.
-				''' */
+				[c/c20909:Не рекомендуется для использования не разработчикам]
+                Используется для отладки и наблюдения за структурой коллизий TileModule,
+                При включении TileModule будет отображать в мире свои коллизионные коробки, имя типа и другие данные.
+				'''
 		}
 	}
 }

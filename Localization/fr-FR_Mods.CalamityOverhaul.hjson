@@ -89,7 +89,7 @@ Items: {
 		DisplayName: Danse Entropique
 		Tooltip:
 			'''
-			Les étoiles sont visibles entre les lames
+			Lors de l'agitation, émet plusieurs rayons de plasma
 			"Dans l'accumulation d'entropie, même les nébuleuses les plus grandioses deviennent de la poussière sombre et chaotique dans les lames"
 			'''
 	}
@@ -3785,13 +3785,13 @@ Configs: {
 		}
 
 		TileModuleBosSizeDraw: {
-			// Label: Tile Module Bounding Box Draw [c/06e33f:(Developer Option)]
-			/* Tooltip:
+			Label: Dessin des boîtes de collision du module de tuiles [c/06e33f:(Option développeur)]
+			Tooltip:
 				'''
-				[c/c20909:Not recommended for non-developers]
-				Used for debugging and observing the collision structure of TileModule.
-				When enabled, TileModule will draw its bounding boxes, type names, and other data in the world.
-				''' */
+				 [c/c20909:recommandé pour les non-développeurs]
+                Utilisé pour déboguer et observer la structure de collision du TileModule,
+                Lorsqu'il est activé, TileModule affichera dans le monde ses propres boîtes de collision, noms de type et autres données.
+				'''
 		}
 	}
 }

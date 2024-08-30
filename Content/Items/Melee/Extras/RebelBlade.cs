@@ -85,6 +85,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             SwingData.maxClampLength = 230;
             SwingData.ler1_UpSizeSengs = 0.116f;
             SwingData.baseSwingSpeed = 4.2f;
+            OtherMeleeSize = 0.6f;
             ShootSpeed = 12;
         }
 
