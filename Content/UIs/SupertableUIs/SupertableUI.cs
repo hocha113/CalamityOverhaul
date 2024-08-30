@@ -95,6 +95,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public static void LoadRecipe() {
+            if (!CWRServerConfig.Instance.AddExtrasContent) {
+                return;
+            }
             Type type = typeof(SupertableRecipeDate);
             FieldInfo[] stringArrayFields = type.GetFields(BindingFlags.Public | BindingFlags.Static).Where(f => f.FieldType == typeof(string[])).ToArray();
             PropertyInfo[] stringArrayProperties = type.GetProperties(BindingFlags.Public | BindingFlags.Static).Where(p => p.PropertyType == typeof(string[])).ToArray();
