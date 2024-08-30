@@ -1877,13 +1877,28 @@ namespace CalamityOverhaul
         /// 一个根据语言选项返回字符的方法
         /// </summary>
         public static string Translation(string Chinese = null, string English = null, string Spanish = null, string Russian = null) {
-            string text = Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Chinese
-                ? Chinese
-                : Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Russian
-                    ? Russian
-                    : Language.ActiveCulture.LegacyId == (int)GameCulture.CultureName.Spanish ? Spanish : English;
-            if (text is null or default(string)) {
-                text = "Invalid Character";
+            string text = default(string);
+
+            if (English == null) {
+                English = "Invalid Character";
+            }
+
+            switch (Language.ActiveCulture.LegacyId) {
+                case (int)GameCulture.CultureName.Chinese:
+                    text = Chinese;
+                    break;
+                case (int)GameCulture.CultureName.Russian:
+                    text = Russian;
+                    break;
+                case (int)GameCulture.CultureName.Spanish:
+                    text = Spanish;
+                    break;
+                case (int)GameCulture.CultureName.English:
+                    text = English;
+                    break;
+                default:
+                    text = English;
+                    break;
             }
 
             return text;

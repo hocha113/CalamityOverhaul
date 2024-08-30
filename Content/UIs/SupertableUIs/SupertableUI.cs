@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         void ILoader.SetupData() => LoadRecipe();
         void ILoader.UnLoadData() {
             RpsDataStringArrays = null;
-            ModCall_OtherRpsData_StringList = null;
+            ModCall_OtherRpsData_StringList = [];
             Instance = null;
         }
 
