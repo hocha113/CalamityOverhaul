@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content
             if (AmmoCapacity == 0) {
                 AmmoCapacity = 1;
             }
-            
+
             remakeItem = (item.ModItem as EctypeItem) != null;
             InitializeMagazine();
             SmiperItemSet(item);
@@ -552,9 +552,13 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool CanUseItem(Item item, Player player) {
-            return IsShootCountCorlUse
-                ? player.ownedProjectileCounts[item.shoot] <= 0
-                : heldProjType > 0 && hasHeldNoCanUseBool ? false : base.CanUseItem(item, player);
+            if (IsShootCountCorlUse) {
+                return player.ownedProjectileCounts[item.shoot] <= 0;
+            }
+            if (heldProjType > 0 && hasHeldNoCanUseBool) {
+                return false;
+            }
+            return true;
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {

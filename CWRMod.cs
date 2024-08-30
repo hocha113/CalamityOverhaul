@@ -66,8 +66,8 @@ namespace CalamityOverhaul
 
             CallType callType = default;
             //如果第一个类型选择参数都不对，那么直接返回
-            if (args[0] is CallType set){
-                callType = set;
+            if (Enum.IsDefined(typeof(CallType), args[0])) {
+                callType = (CallType)args[0];
             }
             else {
                 Instance.Logger.Info("Call was made without the correct CallType.");
