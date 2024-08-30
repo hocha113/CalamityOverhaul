@@ -3785,11 +3785,12 @@ Configs: {
 		}
 
 		TileModuleBosSizeDraw: {
-			// Label: Tile Module Bos Size Draw [c/06e33f:(Experimental)]
+			// Label: Tile Module Bounding Box Draw [c/06e33f:(Developer Option)]
 			/* Tooltip:
 				'''
-				Not recommended for non-developers, 
-				this setting is used to debug and observe the collision structure of block modules
+				[c/c20909:Not recommended for non-developers]
+				Used for debugging and observing the collision structure of TileModule.
+				When enabled, TileModule will draw its bounding boxes, type names, and other data in the world.
 				''' */
 		}
 	}
