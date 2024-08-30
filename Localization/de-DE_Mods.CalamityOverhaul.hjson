@@ -3785,8 +3785,8 @@ Configs: {
 			Tooltip:
 				'''
 				[c/c20909:ür Nicht-Entwickler wird das Aktivieren nicht empfohlen]
-                Zum Debuggen und Beobachten der Kollisionsstrukturen des TileModules,
-                Nach dem Aktivieren wird das TileModule seine Kollisionsbox, den Typnamen und andere Daten in der Welt darstellen.
+				                Zum Debuggen und Beobachten der Kollisionsstrukturen des TileModules,
+				                Nach dem Aktivieren wird das TileModule seine Kollisionsbox, den Typnamen und andere Daten in der Welt darstellen.
 				'''
 		}
 	}

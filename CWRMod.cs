@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -57,11 +58,38 @@ namespace CalamityOverhaul
         #endregion
 
         public override object Call(params object[] args) {
-            CallType callType = (CallType)args[0];
+            int contentCount = args.Length;
+            if (contentCount <= 0) {
+                Instance.Logger.Info("Call was made with no parameters.");
+                return null;
+            }
+
+            CallType callType = default;
+            //如果第一个类型选择参数都不对，那么直接返回
+            if (args[0] is CallType set){
+                callType = set;
+            }
+            else {
+                Instance.Logger.Info("Call was made without the correct CallType.");
+                return null;
+            }
+
             //如果要使用这个call，那么它最好在Load环节就调用一次，这样才能保证欧米茄能正常获取到值
             if (callType == CallType.SupertableRecipeDate) {
-                SupertableUI.ModCall_OtherRpsData_StringList.Add((string[])args[1]);
+                if (contentCount < 2) {
+                    Instance.Logger.Info("Call-SupertableRecipeDate was made without additional parameters.");
+                    return null;
+                }
+
+                if (args[1] is string[] addPms) {
+                    SupertableUI.ModCall_OtherRpsData_StringList.Add(addPms);
+                }
+                else {
+                    Instance.Logger.Info("Call-SupertableRecipeDate was made with incorrect parameter types.");
+                    return null;
+                }
             }
+
             return null;
         }
 

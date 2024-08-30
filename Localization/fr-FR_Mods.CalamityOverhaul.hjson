@@ -3789,8 +3789,8 @@ Configs: {
 			Tooltip:
 				'''
 				 [c/c20909:recommandé pour les non-développeurs]
-                Utilisé pour déboguer et observer la structure de collision du TileModule,
-                Lorsqu'il est activé, TileModule affichera dans le monde ses propres boîtes de collision, noms de type et autres données.
+				                Utilisé pour déboguer et observer la structure de collision du TileModule,
+				                Lorsqu'il est activé, TileModule affichera dans le monde ses propres boîtes de collision, noms de type et autres données.
 				'''
 		}
 	}
