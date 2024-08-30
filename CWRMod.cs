@@ -54,6 +54,8 @@ namespace CalamityOverhaul
         internal enum CallType
         {
             SupertableRecipeDate,
+            SupertableSetItem,
+            SetNoRecipeHasFrme,
         }
         #endregion
 
@@ -88,6 +90,42 @@ namespace CalamityOverhaul
                     Instance.Logger.Info("Call-SupertableRecipeDate was made with incorrect parameter types.");
                     return null;
                 }
+            }
+            //如果要使用这个call，在指定物品类的SD函数中调用一次，这样才能进行设置
+            else if (callType == CallType.SupertableSetItem) {
+                if (contentCount < 3) {
+                    Instance.Logger.Info("Call-SupertableSetItem was made without additional parameters.");
+                    return null;
+                }
+
+                Item item = args[1] as Item;
+                if (item == null) {
+                    Instance.Logger.Info("Call-SupertableSetItem this aig[1] not Item type instance");
+                    return null;
+                }
+
+                string[] pms = args[2] as string[];
+                if (item == null) {
+                    Instance.Logger.Info("Call-SupertableSetItem this aig[2] not string[] type instance");
+                    return null;
+                }
+
+                item.CWR().OmigaSnyContent = pms;
+            }
+            //在配方函数中调用这个Call，这个Call用于设置特殊的合成事件
+            else if (callType == CallType.SetNoRecipeHasFrme) {
+                if (contentCount < 2) {
+                    Instance.Logger.Info("Call-SetNoRecipeHasFrme was made without additional parameters.");
+                    return null;
+                }
+
+                Recipe recipe = args[1] as Recipe;
+                if (recipe == null) {
+                    Instance.Logger.Info("Call-SetNoRecipeHasFrme this aig[1] not Recipe type instance");
+                    return null;
+                }
+
+                return recipe.AddBlockingSynthesisEvent();
             }
 
             return null;
