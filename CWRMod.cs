@@ -5,8 +5,6 @@ using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -51,85 +49,9 @@ namespace CalamityOverhaul
         internal Mod gravityDontFlipScreen = null;
         internal Mod infernum = null;
 
-        internal enum CallType
-        {
-            SupertableRecipeDate,
-            SupertableSetItem,
-            SetNoRecipeHasFrme,
-        }
         #endregion
 
-        public override object Call(params object[] args) {
-            int contentCount = args.Length;
-            if (contentCount <= 0) {
-                Instance.Logger.Info("Call was made with no parameters.");
-                return null;
-            }
-
-            CallType callType = default;
-            //如果第一个类型选择参数都不对，那么直接返回
-            if (Enum.IsDefined(typeof(CallType), args[0])) {
-                callType = (CallType)args[0];
-            }
-            else {
-                Instance.Logger.Info("Call was made without the correct CallType.");
-                return null;
-            }
-
-            //如果要使用这个call，那么它最好在Load环节就调用一次，这样才能保证欧米茄能正常获取到值
-            if (callType == CallType.SupertableRecipeDate) {
-                if (contentCount < 2) {
-                    Instance.Logger.Info("Call-SupertableRecipeDate was made without additional parameters.");
-                    return null;
-                }
-
-                if (args[1] is string[] addPms) {
-                    SupertableUI.ModCall_OtherRpsData_StringList.Add(addPms);
-                }
-                else {
-                    Instance.Logger.Info("Call-SupertableRecipeDate was made with incorrect parameter types.");
-                    return null;
-                }
-            }
-            //如果要使用这个call，在指定物品类的SD函数中调用一次，这样才能进行设置
-            else if (callType == CallType.SupertableSetItem) {
-                if (contentCount < 3) {
-                    Instance.Logger.Info("Call-SupertableSetItem was made without additional parameters.");
-                    return null;
-                }
-
-                Item item = args[1] as Item;
-                if (item == null) {
-                    Instance.Logger.Info("Call-SupertableSetItem this aig[1] not Item type instance");
-                    return null;
-                }
-
-                string[] pms = args[2] as string[];
-                if (item == null) {
-                    Instance.Logger.Info("Call-SupertableSetItem this aig[2] not string[] type instance");
-                    return null;
-                }
-
-                item.CWR().OmigaSnyContent = pms;
-            }
-            //在配方函数中调用这个Call，这个Call用于设置特殊的合成事件
-            else if (callType == CallType.SetNoRecipeHasFrme) {
-                if (contentCount < 2) {
-                    Instance.Logger.Info("Call-SetNoRecipeHasFrme was made without additional parameters.");
-                    return null;
-                }
-
-                Recipe recipe = args[1] as Recipe;
-                if (recipe == null) {
-                    Instance.Logger.Info("Call-SetNoRecipeHasFrme this aig[1] not Recipe type instance");
-                    return null;
-                }
-
-                return recipe.AddBlockingSynthesisEvent();
-            }
-
-            return null;
-        }
+        public override object Call(params object[] args) => ModCall.Hander(args);
 
         public override void PostSetupContent() {
             LoadMods = ModLoader.Mods.ToList();
@@ -263,7 +185,7 @@ namespace CalamityOverhaul
             Instance = null;
         }
 
-        public override void HandlePacket(BinaryReader reader, int whoAmI) => CWRNetCode.HandlePacket(this, reader, whoAmI);
+        public override void HandlePacket(BinaryReader reader, int whoAmI) => CWRNetWork.HandlePacket(this, reader, whoAmI);
 
         private void emptyMod() {
             musicMod = null;
@@ -310,8 +232,6 @@ namespace CalamityOverhaul
 
             EffectLoader.LoadEffects();
             ILMainMenuModification.Load();
-            Filters.Scene["CWRMod:TungstenSky"] = new Filter(new TungstenSkyDate("FilterMiniTower").UseColor(0.5f, 0f, 0.5f).UseOpacity(0.2f), EffectPriority.VeryHigh);
-            SkyManager.Instance["CWRMod:TungstenSky"] = new TungstenSky();
         }
 
         public void UnLoadClient() {

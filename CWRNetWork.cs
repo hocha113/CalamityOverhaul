@@ -33,7 +33,7 @@ namespace CalamityOverhaul
                 if (MessageType > 0) {
                     return MessageType;
                 }
-                return CWRNetCode.NetWorkIDDic[GetType()];
+                return CWRNetWork.NetWorkIDDic[GetType()];
             }
         }
         internal static ModPacket netMessage => CWRMod.Instance.GetPacket();
@@ -61,7 +61,7 @@ namespace CalamityOverhaul
         public void LoadNet() { }
     }
 
-    public class CWRNetCode : ILoader
+    public class CWRNetWork : ILoader
     {
         internal static List<INetWork> INetWorks { get; private set; } = [];
         internal static Dictionary<Type, short> NetWorkIDDic { get; private set; } = [];
