@@ -41,6 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override bool PreInOwnerUpdate() {
+            Projectile.DamageType = Item.DamageType;
             if (Projectile.ai[0] == 1) {
                 distanceToOwner = 40;
                 SwingData.ler1_UpLengthSengs = 0.018f;

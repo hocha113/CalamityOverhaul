@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 spanPos = ShootSpanPos + new Vector2(Projectile.spriteDirection * Length, Main.rand.Next(-166, 100));
                 Vector2 ver = spanPos.To(InMousePos + UnitToMouseV * 360).UnitVector() * ShootSpeed;
                 int type = ModContent.ProjectileType<EXSolsticeBeam>();
-                Projectile.NewProjectile(Source, spanPos, ver, type, Projectile.damage / 6, Projectile.knockBack, Owner.whoAmI);
+                Projectile.NewProjectile(Source, spanPos, ver, type, Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
             }
         }
 

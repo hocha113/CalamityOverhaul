@@ -45,9 +45,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override bool PreInOwnerUpdate() {
             if (Time == 0) {
+                Projectile.DamageType = Item.DamageType;
                 SoundEngine.PlaySound(SoundID.Item71, Owner.Center);
             }
-            
+
             if (Projectile.ai[1] == 8) {
                 if (Time == 0) {
                     OtherMeleeSize = 2.24f;
