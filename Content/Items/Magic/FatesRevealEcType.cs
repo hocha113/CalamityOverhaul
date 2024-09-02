@@ -14,10 +14,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// </summary>
     internal class FatesRevealEcType : EctypeItem //或许让其变成主动型的鬼火生成器是个不错的想法
     {
-        public new string LocalizationCategory => "Items.Weapons.Magic";
-
         public override string Texture => CWRConstant.Cay_Wap_Magic + "FatesReveal";
-
         public override void SetStaticDefaults() {
             Item.staff[Item.type] = true;
         }

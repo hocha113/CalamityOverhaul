@@ -760,7 +760,7 @@ Items: {
 		Tooltip:
 			'''
 			Swings causes pieces of the ground to be hurled towards the enemy, crushing their defense
-			Right click to enhance the blade, increasing range and having pieces of earth shower onto you.
+			Right click to enhance the blade, 
 			True Melee strikes with right click causes earthen boulders to fall down from the sky towards your mouse.
 			'''
 	}
@@ -3579,6 +3579,7 @@ Projectiles: {
 	HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
 	Probe.DisplayName: Probe
 	TerratomereHeld.DisplayName: Terratomere Held
+	RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 }
 
 Configs: {

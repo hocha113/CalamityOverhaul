@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Terraria;
@@ -34,11 +35,17 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shoot = ModContent.ProjectileType<MeleeFossilShard>();
             Item.shootSpeed = 12f;
             Item.SetKnifeHeld<AftershockHeld>();
+            if (Item.type == ModContent.ItemType<Aftershock>()) {
+                Item.EasySetLocalTextNameOverride("AftershockEcType");
+            }
         }
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => ShootFunc(player, source, position, velocity, type, damage, knockback);
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) 
+            => ShootFunc(player, source, position, velocity, type, damage, knockback);
         public static bool ShootFunc(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            player.GetItem().GiveMeleeType();
             if (player.altFunctionUse == 2) {
+                player.GetItem().GiveMeleeType(true);
                 Projectile.NewProjectile(source, position, velocity, type, (int)(damage * 1.25f), knockback, player.whoAmI, 1);
                 return false;
             }

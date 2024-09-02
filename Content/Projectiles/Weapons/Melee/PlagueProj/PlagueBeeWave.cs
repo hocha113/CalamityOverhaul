@@ -10,11 +10,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
 {
     internal class PlagueBeeWave : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Melee";
         public override string Texture => "CalamityMod/Projectiles/Melee/VirulentWave";
-
         private List<Bee> bees = [];
-
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 4;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;

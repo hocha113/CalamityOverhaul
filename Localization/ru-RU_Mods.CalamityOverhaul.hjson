@@ -780,7 +780,7 @@ Items: {
 		Tooltip:
 			'''
 			Размахивать пушками с нескольких осколков земли
-			Правая клавиша усиливает меч и, размахивая им, позволяет наземным фрагментам упасть над игроком, 
+			Правая клавиша усиливает меч и, размахивая им,
 			так как настоящий ближний бой попадает в противника и заставляет его упасть с неба
 			'''
 	}
@@ -3604,6 +3604,7 @@ Projectiles: {
 	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
 	// Probe.DisplayName: Probe
 	// TerratomereHeld.DisplayName: Terratomere Held
+	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 }
 
 Configs: {

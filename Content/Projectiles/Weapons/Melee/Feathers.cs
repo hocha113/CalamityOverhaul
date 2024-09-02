@@ -6,10 +6,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class Feathers : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Melee";
-
         public override string Texture => "CalamityMod/Projectiles/Magic/TradewindsProjectile";
-
         public override void SetDefaults() {
             Projectile.width = 14;
             Projectile.height = 14;

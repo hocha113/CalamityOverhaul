@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Content.Items.Materials
     internal class StarMyriadChanges : ModItem
     {
         public override string Texture => "CalamityOverhaul/StarMyriadChanges";
-        public new string LocalizationCategory => "Items.Materials";
         public override bool IsLoadingEnabled(Mod mod) {
             return false;
         }

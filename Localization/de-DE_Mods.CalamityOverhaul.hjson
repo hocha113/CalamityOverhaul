@@ -786,7 +786,7 @@ Items: {
 		Tooltip:
 			'''
 			Schwinge, um mehrere Erdfragmente abzufeuern
-			Rechtsklick verstärkt die Klinge, was Erdfragmente vom Himmel fallen lässt; Treffer im Nahkampf rufen Erdfeuer-Felsbrocken herab
+			Rechtsklick verstärkt die Klinge, Treffer im Nahkampf rufen Erdfeuer-Felsbrocken herab
 			'''
 	}
 
@@ -3570,6 +3570,7 @@ Projectiles: {
 	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
 	// Probe.DisplayName: Probe
 	// TerratomereHeld.DisplayName: Terratomere Held
+	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 }
 
 Configs: {

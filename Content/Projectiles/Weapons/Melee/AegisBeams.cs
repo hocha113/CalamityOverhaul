@@ -14,9 +14,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class AegisBeams : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "AegisBeam";
-
-        public new string LocalizationCategory => "Projectiles.Melee";
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 13;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;

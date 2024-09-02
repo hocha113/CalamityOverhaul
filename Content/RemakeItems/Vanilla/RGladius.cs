@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override string TargetToolTipItemName => "Wap_Gladius_Text";
         public override void SetDefaults(Item item) {
             item.shoot = ModContent.ProjectileType<GladiusRapier>();
+            item.DamageType = DamageClass.Melee;
             item.damage = 10;
             item.useTime = 45;
             item.useAnimation = 45;

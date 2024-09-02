@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class EssenceFlames : ModProjectile
     {
         public override string Texture => "CalamityMod/Projectiles/Healing/EssenceFlame";
-        public new string LocalizationCategory => "Projectiles.Melee";
         public Player Owner => Main.player[Projectile.owner];
         public Texture2D mainValue => CWRUtils.GetT2DValue(Texture);
         public override void SetDefaults() {

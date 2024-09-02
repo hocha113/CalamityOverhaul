@@ -11,15 +11,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
 {
     internal class AstralBall : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Melee";
         public override string Texture => "CalamityMod/Projectiles/Enemy/MantisRing";
-
         private int tileCounter = 5;
-
         private Player player => Main.player[Projectile.owner];
-
         private Item astralBlade => player.ActiveItem();
-
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 3;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;

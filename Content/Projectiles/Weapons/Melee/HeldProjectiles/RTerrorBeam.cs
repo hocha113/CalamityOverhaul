@@ -10,10 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class RTerrorBeam : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Melee";
-
         public override string Texture => CWRConstant.Projectile_Melee + "TerrorBeam";
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;

@@ -19,7 +19,6 @@ namespace CalamityOverhaul.Content.Items.Materials
     internal class InfiniteIngot : ModItem
     {
         public override string Texture => CWRConstant.Item + "Materials/InfiniteIngot";
-        public new string LocalizationCategory => "Items.Materials";
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }

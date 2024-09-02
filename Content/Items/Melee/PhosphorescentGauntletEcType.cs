@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class PhosphorescentGauntletEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "PhosphorescentGauntlet";
-        public new string LocalizationCategory => "Items.Weapons.Melee";
         public const int OnHitIFrames = 15;
 
         public override void SetStaticDefaults() {

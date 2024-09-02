@@ -796,7 +796,7 @@ Items: {
 		Tooltip:
 			'''
 			挥舞发射数个大地碎片
-			右键增强剑身，挥舞时让大地碎片从玩家上方落下，真近战击中敌人让地炎巨石从天而降
+			右键增强剑身，真近战击中敌人让地炎巨石从天而降
 			'''
 	}
 
@@ -3587,6 +3587,7 @@ Projectiles: {
 	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
 	// Probe.DisplayName: Probe
 	// TerratomereHeld.DisplayName: Terratomere Held
+	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 }
 
 Configs: {

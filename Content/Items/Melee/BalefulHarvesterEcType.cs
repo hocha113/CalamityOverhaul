@@ -22,12 +22,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class BalefulHarvesterEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BalefulHarvester";
-        public new string LocalizationCategory => "Items.Weapons.Melee";
         public static int maxCharge = 160;
-        public override void SetStaticDefaults() {
-            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
-        }
-
+        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         public override void SetDefaults() {
             Item.damage = 90;
             Item.width = 74;
@@ -48,7 +44,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 15;
         }
 
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<BalefulHarvesterHeldProj>()] == 0;
+        public override bool CanUseItem(Player player) 
+            => player.ownedProjectileCounts[ModContent.ProjectileType<BalefulHarvesterHeldProj>()] == 0;
 
         public override bool AltFunctionUse(Player player) {
             Item.initialize();

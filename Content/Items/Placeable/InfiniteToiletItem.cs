@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
     internal class InfiniteToiletItem : ModItem
     {
         public override string Texture => CWRConstant.Item + "Placeable/" + "InfiniteToiletItem";
-        public new string LocalizationCategory => "Items.Placeables";
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }

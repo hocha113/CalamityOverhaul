@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class OrderbringerBeams : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "OrderbringerBeam";
-        public new string LocalizationCategory => "Projectiles.Melee";
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

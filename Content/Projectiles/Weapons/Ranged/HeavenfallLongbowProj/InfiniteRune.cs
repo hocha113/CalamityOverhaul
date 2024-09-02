@@ -8,11 +8,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 {
     internal class InfiniteRune : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Magic";
         public override string Texture => CWRConstant.Placeholder;
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
+        public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 63;

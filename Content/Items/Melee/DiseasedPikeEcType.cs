@@ -16,8 +16,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class DiseasedPikeEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DiseasedPike";
-
-        public new string LocalizationCategory => "Items.Weapons.Melee";
         public override void SetStaticDefaults() {
             ItemID.Sets.Spears[Item.type] = true;
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
@@ -26,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.width = 62;
             Item.damage = 65;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Item.DamageType = DamageClass.Melee;
             Item.noMelee = true;
             Item.useTurn = true;
             Item.noUseGraphic = true;

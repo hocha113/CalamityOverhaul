@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override string Texture => CWRConstant.Placeholder;
         Vector2 origVer;
         bool set;
+        bool hasDamage;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.tileCollide = false;
@@ -23,13 +24,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override bool? CanHitNPC(NPC target) {
-            if (Projectile.ai[0] < Projectile.ai[1] || Projectile.ai[0] > Projectile.ai[1] + 30) {
+            if (Projectile.ai[0] < Projectile.ai[1] || Projectile.ai[0] > Projectile.ai[1] + 30 || !hasDamage) {
                 return false;
             }
             return base.CanHitNPC(target);
         }
 
         public override void AI() {
+            hasDamage = EndSkillEffectStart.CanDealDamageToNPCs();
             if (!set && Projectile.ai[0] > Projectile.ai[1]) {
                 origVer = Projectile.velocity;
                 Projectile.velocity = Vector2.Zero;

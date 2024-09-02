@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
+﻿using CalamityMod.Items;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
@@ -24,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override void SetDefaults(Item item) {
             item.width = 62;
             item.damage = 65;
-            item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            item.DamageType = DamageClass.Melee;
             item.noMelee = true;
             item.useTurn = true;
             item.noUseGraphic = true;

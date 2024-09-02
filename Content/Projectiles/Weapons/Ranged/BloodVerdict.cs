@@ -7,13 +7,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class BloodVerdict : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        public new string LocalizationCategory => "Projectiles.Ranged";
-
         private ref float Time => ref Projectile.ai[0];
         private ref float Fuerrs => ref Projectile.ai[1];
         public Vector2 offsetVr;
         public Vector2[] effusionDirection;
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

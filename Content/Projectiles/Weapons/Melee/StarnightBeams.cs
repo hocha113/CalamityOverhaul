@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class StarnightBeams : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "StarnightBeam";
-        public new string LocalizationCategory => "Projectiles.Melee";
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

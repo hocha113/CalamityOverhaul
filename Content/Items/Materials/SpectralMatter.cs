@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Items.Materials
     internal class SpectralMatter : ModItem
     {
         public override string Texture => CWRConstant.Item + "Materials/SpectralMatter";
-        public new string LocalizationCategory => "Items.Materials";
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }

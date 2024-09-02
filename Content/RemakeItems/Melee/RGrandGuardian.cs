@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         public override string TargetToolTipItemName => "GrandGuardianEcType";
         public override void SetDefaults(Item item) {
             item.shoot = ModContent.ProjectileType<GrandGuardianRapier>();
+            item.GiveMeleeType();
             item.useTime = 30;
             item.useAnimation = 30;
             item.autoReuse = true;

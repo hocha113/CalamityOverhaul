@@ -9,12 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class HolyColliderHolyFires : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "HolyColliderHolyFire";
-        public new string LocalizationCategory => "Projectiles.Melee";
-
-        public override void SetStaticDefaults() {
-            Main.projFrames[Projectile.type] = 4;
-        }
-
+        public override void SetStaticDefaults() => Main.projFrames[Projectile.type] = 4;
         public override void SetDefaults() {
             Projectile.width = 26;
             Projectile.height = 26;

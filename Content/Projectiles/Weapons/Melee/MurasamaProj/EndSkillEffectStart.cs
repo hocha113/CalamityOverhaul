@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        public const int CanDamageTime = 50;
+        public const int CanDamageTime = 140;
         public const int CanDamageInNPCCountNum = 30;
 
         public Player player => Main.player[Projectile.owner];
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
-            Projectile.timeLeft = 120;
+            Projectile.timeLeft = 200;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = false;
             Projectile.CWR().NotSubjectToSpecialEffects = true;

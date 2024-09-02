@@ -8,10 +8,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
 {
-    [LegacyName("DuneHopperProjectile")]
     public class RWaveSkipperProjectile : ModProjectile, ILocalizedModType
     {
-        public new string LocalizationCategory => "Projectiles.Rogue";
         public override string Texture => "CalamityMod/Items/Weapons/Rogue/WaveSkipper";
         public int Time = 0;
         public int TimeUnderground = 0;

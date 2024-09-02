@@ -12,13 +12,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class TerratomereBeams : ModProjectile
     {
         public Vector2[] ControlPoints;
-
-        public new string LocalizationCategory => "Projectiles.Melee";
-
         public bool Flipped => Projectile.ai[0] == 1f;
-
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
-
         public override void SetDefaults() {
             Projectile.width = 60;
             Projectile.height = 144;

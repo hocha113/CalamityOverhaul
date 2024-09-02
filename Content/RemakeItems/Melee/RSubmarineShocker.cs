@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.autoReuse = true;
             item.useStyle = ItemUseStyleID.Rapier;
             item.damage = 90;
-            item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            item.DamageType = DamageClass.Melee;
             item.useAnimation = item.useTime = 10;
             item.shoot = ModContent.ProjectileType<RSubmarineShockerProj>();
             item.shootSpeed = 2f;

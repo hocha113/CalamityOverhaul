@@ -14,21 +14,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class TheEnforcerBeam : ModProjectile
     {
         public Vector2[] ControlPoints;
-
         private Player owner => CWRUtils.GetPlayerInstance(Projectile.owner);
-
         public const float EndRot = 60 * CWRUtils.atoR;
         public const float StarRot = -170 * CWRUtils.atoR;
-
         public const float LEndRot = -240 * CWRUtils.atoR;
         public const float LStarRot = -10 * CWRUtils.atoR;
-
-        public new string LocalizationCategory => "Projectiles.Melee";
-
         public bool Flipped => Projectile.ai[0] == 1f;
-
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
-
         public override void SetDefaults() {
             Projectile.width = 60;
             Projectile.height = 144;

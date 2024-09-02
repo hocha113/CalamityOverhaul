@@ -6,7 +6,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
 {
     internal class SparkBall : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Melee";
         public override string Texture => CWRConstant.Placeholder;
         public int damageScale;
         public override void SetDefaults() {

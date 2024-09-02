@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class GodKillers : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Typeless";
-
         public override string Texture => CWRConstant.Projectile_Melee + "GodKiller";
 
         public override void SetStaticDefaults() {

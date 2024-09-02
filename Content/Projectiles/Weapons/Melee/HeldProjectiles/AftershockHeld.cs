@@ -1,4 +1,6 @@
-﻿using CalamityMod.Items.Weapons.Melee;
+﻿using CalamityMod.Buffs.StatDebuffs;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj;
 using Terraria;
@@ -13,11 +15,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override string gradientTexturePath => CWRConstant.ColorBar + "Aftershock_Bar";
         bool canShoot2;
         public override void SetKnifeProperty() {
-            Projectile.width = Projectile.height = 36;
+            Projectile.width = Projectile.height = 86;
+            IgnoreImpactBoxSize = true;
             canDrawSlashTrail = true;
             distanceToOwner = 20;
             drawTrailBtommWidth = 50;
-            drawTrailTopWidth = 20;
+            drawTrailTopWidth = 40;
             drawTrailCount = 6;
             Length = 44;
             SwingAIType = SwingAITypeEnum.UpAndDown;
@@ -27,10 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void Shoot() {
             if (Projectile.ai[0] == 1) {
-                for (int i = 0; i < 3; i++) {
-                    Projectile.NewProjectile(Source, ShootSpanPos + new Vector2(Main.rand.Next(-160, 160), -300), ShootVelocity
-                    , ModContent.ProjectileType<MeleeFossilShard>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
-                }
                 return;
             }
             if (canShoot2) {
@@ -54,10 +53,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             canShoot2 = false;
+            if (Projectile.ai[0] == 1 && Projectile.numHits == 0) {
+                target.AddBuff(ModContent.BuffType<ArmorCrunch>(), 300);
+                Vector2 destination = target.Center;
+                Vector2 position = destination - (Vector2.UnitY * (destination.Y - Main.screenPosition.Y + 80f)) + (Vector2.UnitX * Main.rand.Next(-160, 161));
+                Vector2 velocity = (destination - position).SafeNormalize(Vector2.UnitY) * ShootSpeed * Main.rand.NextFloat(0.9f, 1.1f);
+                int rockDamage = Projectile.damage;
+                Projectile.NewProjectile(Source, position, velocity, ModContent.ProjectileType<AftershockRock>()
+                    , rockDamage, hit.Knockback, Owner.whoAmI, 0f, (float)Main.rand.Next(10), target.Center.Y);
+            }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             canShoot2 = false;
+            if (Projectile.ai[0] == 1 && Projectile.numHits == 0) {
+                target.AddBuff(ModContent.BuffType<ArmorCrunch>(), 300);
+                Vector2 destination = target.Center;
+                Vector2 position = destination - (Vector2.UnitY * (destination.Y - Main.screenPosition.Y + 80f)) + (Vector2.UnitX * Main.rand.Next(-160, 161));
+                Vector2 velocity = (destination - position).SafeNormalize(Vector2.UnitY) * ShootSpeed * Main.rand.NextFloat(0.9f, 1.1f);
+                int rockDamage = Projectile.damage;
+                Projectile.NewProjectile(Source, position, velocity, ModContent.ProjectileType<AftershockRock>()
+                    , rockDamage, info.Knockback, Owner.whoAmI, 0f, (float)Main.rand.Next(10), target.Center.Y);
+            }
         }
     }
 }

@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class OrderbringerBeams2 : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Melee";
         public override string Texture => CWRConstant.Cay_Proj_Melee + "OrderbringerBeam";
         public Color ProjColor;
         public static Color[] richColors = new Color[]{

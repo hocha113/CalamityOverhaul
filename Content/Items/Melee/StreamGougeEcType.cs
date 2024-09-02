@@ -15,21 +15,11 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class StreamGougeEcType : EctypeItem
     {
-        public const int SpinTime = 45;
-
-        public const int SpearFireTime = 24;
-
-        public const int PortalLifetime = 30;
-
-        public new string LocalizationCategory => "Items.Weapons.Melee";
-
         public override string Texture => CWRConstant.Cay_Wap_Melee + "StreamGouge";
-
         public override void SetStaticDefaults() {
             ItemID.Sets.Spears[Type] = true;
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         }
-
         public override void SetDefaults() {
             Item.width = 100;
             Item.height = 100;

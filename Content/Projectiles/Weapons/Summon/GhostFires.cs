@@ -10,13 +10,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
     internal class GhostFires : ModProjectile
     {
         public bool ableToHit = true;
-
         public NPC target;
-
-        public new string LocalizationCategory => "Projectiles.Summon";
-
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.MinionShot[Projectile.type] = true;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

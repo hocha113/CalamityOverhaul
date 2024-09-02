@@ -6,9 +6,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class OrderbringerWhiteOrbs : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Melee";
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
-
         public override void SetDefaults() {
             Projectile.width = 8;
             Projectile.height = 8;

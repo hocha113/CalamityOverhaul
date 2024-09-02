@@ -9,10 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class ElementBallShivs : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Melee";
-
         public override string Texture => CWRConstant.Cay_Proj_Melee + "ElementBallShiv";
-
         public override void SetDefaults() {
             Projectile.width = 20;
             Projectile.height = 20;

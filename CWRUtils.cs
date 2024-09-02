@@ -1170,6 +1170,10 @@ namespace CalamityOverhaul
 
         public static Item GetItem(this Player player) => Main.mouseItem.IsAir ? player.inventory[player.selectedItem] : Main.mouseItem;
 
+        public static void GiveMeleeType(this Item item, bool isGiveTrueMelee = false) => item.DamageType = GiveMeleeType(isGiveTrueMelee);
+
+        public static DamageClass GiveMeleeType(bool isGiveTrueMelee = false) => isGiveTrueMelee ? ModContent.GetInstance<TrueMeleeDamageClass>() : DamageClass.Melee;
+
         public static void SafeLoadItem(int id) {
             if (id > 0 && id < TextureAssets.Item.Length && !Main.dedServ) {
                 Main.instance.LoadItem(id);

@@ -9,11 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
     internal class TheRelicLuxorSummon : ModProjectile
     {
         private int dust = 3;
-
-        public new string LocalizationCategory => "Projectiles.Summon";
-
         public override string Texture => CWRConstant.Projectile + "TheRelicLuxorSummonProj";
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;

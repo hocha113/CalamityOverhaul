@@ -28,6 +28,7 @@ namespace CalamityOverhaul.Content
         public static RecipeGroup FishGroup;
         public static void SpawnAction(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
             item.TurnToAir();
+            Main.LocalPlayer.CWR().InspectOmigaTime = 120;
             CombatText.NewText(Main.LocalPlayer.Hitbox, Main.DiscoColor
                 , Language.GetTextValue($"Mods.CalamityOverhaul.Tools.RecipesLoseText"));
         }

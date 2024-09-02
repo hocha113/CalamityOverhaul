@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
+﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +11,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class BrimstoneSwordEcType : EctypeItem
     {
         public override string Texture => "CalamityMod/Items/Weapons/Melee/BrimstoneSword";
-        public new string LocalizationCategory => "Items.Weapons.Melee";
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
@@ -20,8 +18,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.noUseGraphic = true;
             Item.autoReuse = true;
             Item.useStyle = ItemUseStyleID.Rapier;
-            Item.damage = 90;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Item.damage = 98;
+            Item.DamageType = DamageClass.Melee;
             Item.useAnimation = Item.useTime = 10;
             Item.shoot = ModContent.ProjectileType<BrimstoneSwordHeldProj>();
             Item.shootSpeed = 2f;
@@ -29,7 +27,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = SoundID.Item1;
             Item.value = CalamityGlobalItem.RarityPinkBuyPrice;
             Item.rare = ItemRarityID.Pink;
-
         }
 
         public override bool MeleePrefix() => true;

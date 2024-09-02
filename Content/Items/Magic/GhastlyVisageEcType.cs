@@ -15,8 +15,6 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// </summary>
     internal class GhastlyVisageEcType : EctypeItem
     {
-        public new string LocalizationCategory => "Items.Weapons.Magic";
-
         public override string Texture => CWRConstant.Cay_Wap_Magic + "GhastlyVisage";
 
         public override void SetDefaults() {

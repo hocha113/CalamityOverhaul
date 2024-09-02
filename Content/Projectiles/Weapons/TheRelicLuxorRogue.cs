@@ -7,10 +7,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
 {
     internal class TheRelicLuxorRogue : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Rogue";
-
         public override string Texture => CWRConstant.Projectile + "TheRelicLuxorRogueProj";
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;

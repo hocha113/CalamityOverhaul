@@ -17,19 +17,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
     internal class AnnihilatingUniverse : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "AnnihilatingUniverse";
-        public new string LocalizationCategory => "Items.Weapons.Ranged";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
-
-        public override void SetStaticDefaults() {
-            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
-        }
-
-        public override bool AltFunctionUse(Player player) {
-            return true;
-        }
-
+        public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
+        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
+        public override bool AltFunctionUse(Player player) => true;
         public override void SetDefaults() {
             Item.damage = 1050;
             Item.width = 62;
@@ -53,18 +43,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems4;
         }
 
-        public override void ModifyWeaponCrit(Player player, ref float crit) {
-            crit += 32;
-        }
-
-        public override bool CanUseItem(Player player) {
-            return player.ownedProjectileCounts[Item.shoot] <= 0;
-        }
-
-        public override bool CanConsumeAmmo(Item ammo, Player player) {
-            return Main.rand.NextBool(3) && player.ownedProjectileCounts[Item.shoot] > 0;
-        }
-
+        public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 32;
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
+        public override bool CanConsumeAmmo(Item ammo, Player player) => Main.rand.NextBool(3) && player.ownedProjectileCounts[Item.shoot] > 0;
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             _ = Projectile.NewProjectile(source, position.X, position.Y, velocity.X, velocity.Y
                 , ModContent.ProjectileType<AnnihilatingUniverseHeldProj>(), damage, knockback, player.whoAmI, ai2: player.altFunctionUse == 0 ? 0 : 1);

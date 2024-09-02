@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public int overTextIndex = 1;
         public Player Owner => Main.player[Projectile.owner];
         public override string Texture => CWRConstant.Cay_Proj_Melee + "CosmicSpiritBomb" + overTextIndex;
-        public new string LocalizationCategory => "Projectiles.Melee";
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;

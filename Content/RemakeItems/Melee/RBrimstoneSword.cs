@@ -22,8 +22,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.noUseGraphic = true;
             item.autoReuse = true;
             item.useStyle = ItemUseStyleID.Rapier;
-            item.damage = 90;
-            item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            item.damage = 98;
+            item.DamageType = DamageClass.Melee;
             item.useAnimation = item.useTime = 10;
             item.shoot = ModContent.ProjectileType<BrimstoneSwordHeldProj>();
             item.shootSpeed = 2f;

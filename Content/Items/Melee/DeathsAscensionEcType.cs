@@ -33,8 +33,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static void ModifyShootStatsFunc(ref int swingIndex, Item Item, Player player, ref Vector2 position
             , ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
             Item.useTime = Item.useAnimation = 22;
+            Item.GiveMeleeType(true);
             if (player.altFunctionUse == 2) {
                 Item.useTime = Item.useAnimation = 16;
+                Item.GiveMeleeType();
             }
             else if (++swingIndex > 7) {
                 type = ModContent.ProjectileType<DeathsAscensionThrowable>();

@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Earth";
         public override void SetDefaults() {
             Item.SetCalamitySD<Earth>();
+            Item.GiveMeleeType();
             Item.SetKnifeHeld<EarthHeld>();
         }
     }
@@ -21,7 +22,10 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override int TargetID => ModContent.ItemType<Earth>();
         public override int ProtogenesisID => ModContent.ItemType<EarthEcType>();
-        public override void SetDefaults(Item item) => item.SetKnifeHeld<EarthHeld>();
+        public override void SetDefaults(Item item) {
+            item.GiveMeleeType();
+            item.SetKnifeHeld<EarthHeld>();
+        }
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);

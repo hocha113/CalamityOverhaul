@@ -14,10 +14,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// </summary>
     internal class DeathwindEcType : EctypeItem
     {
-        public new string LocalizationCategory => "Items.Weapons.Ranged";
-
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Deathwind";
-
         public override void SetDefaults() {
             Item.damage = 248;
             Item.DamageType = DamageClass.Ranged;

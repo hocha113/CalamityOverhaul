@@ -10,16 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 {
     internal class GhastlyBlasts : ModProjectile
     {
-        private const float DriftVelocity = 10f;
-
-        private const float FramesBeforeSlowing = 8f;
-
-        private const float MaximumWaitFrames = 360f;
-
-        public new string LocalizationCategory => "Projectiles.Magic";
-
         public override string Texture => CWRConstant.Cay_Proj_Magic + "GhastlyBlast";
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

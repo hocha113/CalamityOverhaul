@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.Items.Materials
     internal class DecaySubstance : ModItem
     {
         public override string Texture => CWRConstant.Item + "Materials/DecaySubstance";
-        public new string LocalizationCategory => "Items.Materials";
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }

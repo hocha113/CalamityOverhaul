@@ -13,10 +13,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
     {
         public override string Texture => "CalamityMod/Items/Weapons/Rogue/WaveSkipper";
         public static int SpreadAngle = 8;
-        public override void SetStaticDefaults() {
-            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
-        }
-
+        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         public override void SetDefaults() {
             Item.width = 44;
             Item.damage = 70;

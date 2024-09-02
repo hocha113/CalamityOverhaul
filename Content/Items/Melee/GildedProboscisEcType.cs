@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 66;
             Item.damage = 315;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Item.DamageType = DamageClass.Melee;
             Item.noMelee = true;
             Item.useTurn = true;
             Item.noUseGraphic = true;

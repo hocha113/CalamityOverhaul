@@ -75,7 +75,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// 用于存储手持弹幕的ID，这个成员在<see cref="CWRLoad.Load"/>中被加载，不需要进行手动的赋值
         /// </summary>
         public static int heldProjType;
-        public new string LocalizationCategory => "Items.Weapons.Melee";
         public int frameCounter = 0;
         public int frame = 0;
         public int Charge {//在外部编辑时不必操纵Charge这个特有属性，而是可以编辑ai槽位这个通用数据，这将让项目的通用性更加的好

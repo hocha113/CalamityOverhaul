@@ -10,9 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class BrimstoneSwordBall : ModProjectile
     {
-        public new string LocalizationCategory => "Projectiles.Melee";
         public override string Texture => "CalamityMod/Items/Weapons/Melee/BrimstoneSword";
-
         public override void SetDefaults() {
             Projectile.width = 10;
             Projectile.height = 10;

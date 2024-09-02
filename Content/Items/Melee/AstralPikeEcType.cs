@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
+﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Terraria;
 using Terraria.ID;
@@ -13,7 +12,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class AstralPikeEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AstralPike";
-        public new string LocalizationCategory => "Items.Weapons.Melee";
         public const int InTargetProjToLang = 1220;
         public const int ShootPeriod = 2;
 
@@ -24,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.width = 44;
             Item.damage = 90;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Item.DamageType = DamageClass.Melee;
             Item.noMelee = true;
             Item.useTurn = true;
             Item.noUseGraphic = true;

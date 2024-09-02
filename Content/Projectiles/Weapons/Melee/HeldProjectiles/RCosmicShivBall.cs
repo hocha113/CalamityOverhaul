@@ -12,19 +12,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class RCosmicShivBall : ModProjectile
     {
         public NPC target;
-
         public const float maxDistanceToTarget = 540f;
-
         public bool initialized;
-
         public float startingVelocityY;
-
         public float randomAngleDelta;
-
         public const float explosionDamageMultiplier = 1.8f;
-
-        public new string LocalizationCategory => "Projectiles.Melee";
-
         public override string Texture => CWRConstant.Projectile_Melee + "CosmicShivBlade";
 
         public override void SetDefaults() {

@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;
-            Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.timeLeft = 90;
             Projectile.friendly = true;
             Projectile.hostile = false;

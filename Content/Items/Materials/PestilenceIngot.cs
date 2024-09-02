@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.Items.Materials
     internal class PestilenceIngot : ModItem
     {
         public override string Texture => CWRConstant.Item + "Materials/PestilenceIngot";
-        public new string LocalizationCategory => "Items.Materials";
-
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 64;
             ItemID.Sets.SortingPriorityMaterials[Type] = 15;

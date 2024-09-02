@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class AirSpinnerEcType : EctypeItem
     {
-        public new string LocalizationCategory => "Items.Weapons.Melee";
-
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AirSpinner";
 
         public override void SetStaticDefaults() {

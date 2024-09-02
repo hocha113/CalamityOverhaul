@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj
     internal class AnarchyBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "BrimlashProj";
-        public new string LocalizationCategory => "Projectiles.Melee";
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

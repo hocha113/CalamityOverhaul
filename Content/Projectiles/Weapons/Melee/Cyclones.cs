@@ -11,11 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class Cyclones : ModProjectile
     {
         public int dustvortex;
-
-        public new string LocalizationCategory => "Projectiles.Melee";
-
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Cyclone";
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

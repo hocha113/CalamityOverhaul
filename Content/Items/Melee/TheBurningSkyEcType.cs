@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Rarities;
+﻿using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using Terraria;
 using Terraria.DataStructures;
@@ -15,20 +14,20 @@ namespace CalamityOverhaul.Content.Items.Melee
         internal static void SetDefaultsFunc(Item Item) {
             Item.width = 74;
             Item.height = 74;
-            Item.value = Terraria.Item.sellPrice(gold: 75);
-            Item.useStyle = ItemUseStyleID.Shoot;
             Item.useAnimation = 32;
             Item.useTime = 32;
-            Item.UseSound = SoundID.Item1;
-            Item.autoReuse = true;
             Item.damage = 950;
             Item.crit = 16;
             Item.knockBack = 7.5f;
+            Item.UseSound = SoundID.Item1;
+            Item.autoReuse = true;
             Item.noUseGraphic = true;
-            Item.DamageType = ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>();
+            Item.DamageType = DamageClass.Melee;
             Item.noMelee = true;
             Item.channel = true;
             Item.shootSpeed = 10f;
+            Item.value = Item.sellPrice(gold: 75);
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.shoot = ModContent.ProjectileType<TheBurningSkyHeld>();
             Item.rare = ModContent.RarityType<Violet>();
         }

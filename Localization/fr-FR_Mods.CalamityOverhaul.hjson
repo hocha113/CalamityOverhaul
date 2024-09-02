@@ -787,7 +787,7 @@ Items: {
 		Tooltip:
 			'''
 			Lance plusieurs éclats de terre en agitant
-			Clic droit pour renforcer la lame, faisant tomber des éclats de terre au-dessus du joueur pendant l'agitation, attaques de mêlée véritables invoquent des rochers de séisme
+			Clic droit pour renforcer la lame, attaques de mêlée véritables invoquent des rochers de séisme
 			'''
 	}
 
@@ -3573,6 +3573,7 @@ Projectiles: {
 	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
 	// Probe.DisplayName: Probe
 	// TerratomereHeld.DisplayName: Terratomere Held
+	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 }
 
 Configs: {

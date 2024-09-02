@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class GoldplumeSpearEcType : EctypeItem
     {
-        public new string LocalizationCategory => "Items.Weapons.Melee";
-
         public override string Texture => CWRConstant.Cay_Wap_Melee + "GoldplumeSpear";
 
         public override void SetStaticDefaults() {

@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class SunlightBlades : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "BlazingPhantomBlade";
-        public new string LocalizationCategory => "Projectiles.Melee";
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 3;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

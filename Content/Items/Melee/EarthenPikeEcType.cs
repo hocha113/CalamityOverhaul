@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class EarthenPikeEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "EarthenPike";
-        public new string LocalizationCategory => "Items.Weapons.Melee";
         public static int maxCharge = 60;
         public override void SetStaticDefaults() {
             ItemID.Sets.Spears[Item.type] = true;

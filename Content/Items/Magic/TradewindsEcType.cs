@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// </summary>
     internal class TradewindsEcType : EctypeItem
     {
-        public new string LocalizationCategory => "Items.Weapons.Magic";
-
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Tradewinds";
 
         public override void SetDefaults() {

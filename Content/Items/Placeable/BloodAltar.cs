@@ -7,7 +7,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
     internal class BloodAltar : ModItem
     {
         public override string Texture => CWRConstant.Asset + "Items/Placeable/" + "BloodAltar";
-        public new string LocalizationCategory => "Items.Placeables";
         public override void SetDefaults() {
             Item.width = 26;
             Item.height = 26;

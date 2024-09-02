@@ -14,11 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class VulcaniteLanceEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "VulcaniteLance";
-        public new string LocalizationCategory => "Items.Weapons.Melee";
-        public override void SetStaticDefaults() {
-            ItemID.Sets.Spears[Item.type] = true;
-        }
-
+        public override void SetStaticDefaults() => ItemID.Sets.Spears[Item.type] = true;
         public override void SetDefaults() {
             Item.width = 44;
             Item.damage = 90;

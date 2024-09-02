@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class DragonsBreathRound : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "DragonsBreathRound";
-        public new string LocalizationCategory => "Projectiles.Ranged";
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

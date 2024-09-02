@@ -4,7 +4,6 @@ using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Materials;
 using CalamityOverhaul;
 using CalamityOverhaul.Content.CWRDamageTypes;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -18,8 +17,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
 {
     internal class TheRelicLuxor : ModItem
     {
-        public new string LocalizationCategory => "Items.Accessories";
-
         public override string Texture => CWRConstant.Item + "TheRelicLuxor";
 
         public override bool IsLoadingEnabled(Mod mod) {

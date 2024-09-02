@@ -12,10 +12,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class ElementalLanceEcType : EctypeItem
     {
-        public new string LocalizationCategory => "Items.Weapons.Melee";
-
         public override string Texture => CWRConstant.Cay_Wap_Melee + "ElementalLance";
-
         public override void SetStaticDefaults() {
             ItemID.Sets.Spears[Type] = true;
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;

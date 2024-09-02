@@ -91,6 +91,7 @@ namespace CalamityOverhaul.Content
         public int RisingDragonCharged;
         public int SafeHeldProjIndex;
         public int TETramContrType;
+        public int InspectOmigaTime;
         /// <summary>
         /// 挥舞索引，一般被刀具所使用
         /// </summary>
@@ -281,6 +282,9 @@ namespace CalamityOverhaul.Content
             }
             if (DontHasSemberDarkMasterCloneTime > 0) {
                 DontHasSemberDarkMasterCloneTime--;
+            }
+            if (InspectOmigaTime > 0) {
+                InspectOmigaTime--;
             }
             SittingFoodStallChair();
             if (RecoilAccelerationAddBool) {

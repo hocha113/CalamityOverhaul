@@ -18,7 +18,6 @@ namespace CalamityOverhaul.Content.Items
 {
     internal class TerminusOver : ModItem
     {
-        public new string LocalizationCategory => "Items.SummonItems";
         public override string Texture => "CalamityMod/Items/SummonItems/Terminus_GFB";
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
