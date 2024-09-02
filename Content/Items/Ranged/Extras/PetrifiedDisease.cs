@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
     internal class PetrifiedDisease : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "PetrifiedDisease";
+        public override bool IsLoadingEnabled(Mod mod) => false;//TODO:移除
         public override void SetDefaults() {
             Item.damage = 539;
             Item.width = 32;

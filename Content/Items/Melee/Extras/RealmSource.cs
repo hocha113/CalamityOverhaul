@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
     internal class RealmSource : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "RealmSource";
+        public override bool IsLoadingEnabled(Mod mod) => false;//TODO:移除
         public override void SetDefaults() {
             Item.width = Item.height = 54;
             Item.shootSpeed = 9;
