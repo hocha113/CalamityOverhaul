@@ -306,7 +306,7 @@ namespace CalamityOverhaul.Content
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<MG42>(), denominator: 5, minQuantity: 1, maxQuantity: 1));
             }
             else if (npc.type == CWRLoad.RavagerBody) {
-                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<PetrifiedDisease>(), denominator: 5, minQuantity: 1, maxQuantity: 1));
+                //npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<PetrifiedDisease>(), denominator: 5, minQuantity: 1, maxQuantity: 1));
             }
             else if (npc.type == NPCID.GraniteFlyer) {
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<VioletConjecture>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
