@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Items.Fishing.SunkenSeaCatches;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
@@ -7,8 +6,6 @@ using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
-using CalamityOverhaul.Content.RemakeItems.Ranged;
-using CalamityOverhaul.Content.TileModules.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -241,6 +238,10 @@ namespace CalamityOverhaul.Content
             if (Main.myPlayer == Player.whoAmI) {
                 Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<Hit>(), 0, 0, Player.whoAmI);
             }
+        }
+
+        public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            return base.Shoot(item, source, position, velocity, type, damage, knockback);
         }
 
         public override void CatchFish(FishingAttempt attempt, ref int itemDrop

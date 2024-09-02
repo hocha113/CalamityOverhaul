@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -711,7 +712,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             ProcessRemakeAction(item, (inds) => inds.SaveData(item, tag));
         }
 
-        public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+        public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            if (player.Calamity().bladeArmEnchant) {//我不知道为什么需要这行代码
+                return false;
+            }
             bool? rest = ProcessRemakeAction(item, (inds) => inds.Shoot(item, player, source, position, velocity, type, damage, knockback));
             return rest ?? base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }
