@@ -72,20 +72,19 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
             distanceToOwner = -20;
-            drawTrailBtommWidth = 130;
-            drawTrailTopWidth = 80;
-            drawTrailCount = 26;
+            drawTrailBtommWidth = 110;
+            drawTrailTopWidth = 120;
+            drawTrailCount = 6;
             Length = 220;
             unitOffsetDrawZkMode = 0;
             Projectile.width = Projectile.height = 186;
             distanceToOwner = -60;
             SwingData.starArg = 70;
-            SwingData.ler1_UpLengthSengs = 0.15f;
+            SwingData.ler1_UpLengthSengs = 0.05f;
             SwingData.minClampLength = 220;
             SwingData.maxClampLength = 230;
-            SwingData.ler1_UpSizeSengs = 0.116f;
+            SwingData.ler1_UpSizeSengs = 0.016f;
             SwingData.baseSwingSpeed = 4.2f;
-            OtherMeleeSize = 0.6f;
             ShootSpeed = 12;
         }
 
@@ -96,10 +95,20 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (target.FromWormBodysRandomSet(5)) {
+                return;
+            }
+
+            int type = ModContent.ProjectileType<RebelBladeOrb>();
+            if (Owner.ownedProjectileCounts[type] > 33) {
+                return;
+            }
+
             for (int i = 0; i < 3; i++) {
                 Vector2 spwanPos = target.position + new Vector2(target.width * Main.rand.NextFloat(), target.height * Main.rand.NextFloat());
                 Projectile.NewProjectile(Source, spwanPos, Vector2.Zero
                     , ModContent.ProjectileType<RebelBladeOrb>(), Item.damage / 5, 0, Owner.whoAmI);
+                Owner.ownedProjectileCounts[type]++;
             }
         }
 

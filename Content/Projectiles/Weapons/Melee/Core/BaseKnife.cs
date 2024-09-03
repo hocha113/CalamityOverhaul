@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.GameContent;
@@ -16,6 +17,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public SwingAITypeEnum SwingAIType;
         protected bool autoSetShoot;
         protected float inWormBodysDamageFaul = 0.85f;
+        protected Dictionary<int, NPC> onHitNPCs = [];
+        protected int formeInHitNPCCoolTime;
         public enum SwingAITypeEnum
         {
             None = 0,
@@ -39,6 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public virtual void SetKnifeProperty() { }
 
         public sealed override void Initialize() {
+            Projectile.DamageType = Item.DamageType;
             maxSwingTime = Item.useTime;
             SwingData.maxSwingTime = maxSwingTime;
             toProjCoreMode = (IgnoreImpactBoxSize ? 22 : Projectile.width) / 2f;
@@ -123,7 +127,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public sealed override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            KnifeHitNPC(target, hit, damageDone);
+            if (onHitNPCs.TryAdd(target.whoAmI, target)) {
+                KnifeHitNPC(target, hit, damageDone);
+            }
         }
         /// <summary>
         /// 在刀刃击中NPC时运行

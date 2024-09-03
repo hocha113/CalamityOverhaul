@@ -58,7 +58,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public static bool ShootFunc(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            player.GetItem().GiveMeleeType();
             if (player.altFunctionUse == 2) {
+                player.GetItem().GiveMeleeType(true);
                 Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 1);
                 return false;
             }
@@ -108,6 +110,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Main.rand.NextBool(3 * updateCount)) {
                 _ = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Vortex);
             }
+
             return base.PreInOwnerUpdate();
         }
 
