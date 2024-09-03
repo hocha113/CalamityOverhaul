@@ -49,14 +49,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             Projectile.ai[0]++;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitNPC(target, hit, damageDone);
-        }
-
-        public override void OnKill(int timeLeft) {
-            base.OnKill(timeLeft);
-        }
-
         public float PrimitiveWidthFunction(float completionRatio) => Projectile.scale * 20f;
 
         public Color PrimitiveColorFunction(float _) => Color.Red;

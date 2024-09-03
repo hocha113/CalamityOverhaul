@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , ModContent.ProjectileType<PrismaticWave>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(ModContent.BuffType<Nightwither>(), 300);
             target.AddBuff(BuffID.Daybreak, 300);
         }

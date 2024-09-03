@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
                 , type, Projectile.damage, Projectile.knockBack, Projectile.owner);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
                 Projectile.NewProjectile(Source, target.Center, Vector2.Zero
                 , ModContent.ProjectileType<NeutronExplode>(), Projectile.damage / 2, 0);

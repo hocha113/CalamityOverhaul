@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             return base.PreInOwnerUpdate();
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             canShoot2 = false;
             if (Projectile.ai[0] == 1 && Projectile.numHits == 0) {
                 target.AddBuff(ModContent.BuffType<ArmorCrunch>(), 300);

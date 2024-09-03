@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 , ModContent.ProjectileType<ForbiddenOathbladeProjectile>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.ShadowFlame, 120);
             target.AddBuff(BuffID.OnFire, 240);
             if (hit.Crit) {

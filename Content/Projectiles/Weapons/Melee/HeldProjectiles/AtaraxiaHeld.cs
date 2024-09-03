@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 , ModContent.ProjectileType<AtaraxiaSide>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI, 0, 1);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.ShadowFlame, 480);
             if (Projectile.numHits == 0) {
                 SoundStyle fire = new("CalamityMod/Sounds/Item/CursedDaggerThrow");

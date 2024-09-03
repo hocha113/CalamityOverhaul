@@ -35,10 +35,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
             Lighting.AddLight(Projectile.Center + Projectile.velocity * 5, Color.Gold.ToVector3());
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitNPC(target, hit, damageDone);
-        }
-
         internal Color ColorFunction(float completionRatio) {
             return Color.Gold;
         }

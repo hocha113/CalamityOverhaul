@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, type, Item.damage / 2, 0, Owner.whoAmI);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (CWRLoad.WormBodys.Contains(target.type) && !Main.rand.NextBool(5)) {
                 return;
             }

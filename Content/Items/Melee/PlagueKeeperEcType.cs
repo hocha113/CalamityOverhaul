@@ -69,11 +69,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , ModContent.ProjectileType<GouldBee>(), (int)(Projectile.damage * 0.75f), 0, Owner.whoAmI);
         }
 
-        public override bool PreInOwnerUpdate() {
-            return base.PreInOwnerUpdate();
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(ModContent.BuffType<Plague>(), 300);
             for (int i = 0; i < 3; i++) {
                 int bee = Projectile.NewProjectile(Source, Owner.Center, Vector2.Zero, Owner.beeType(),

@@ -121,5 +121,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 modifiers.FinalDamage *= inWormBodysDamageFaul;
             }
         }
+
+        public sealed override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            KnifeHitNPC(target, hit, damageDone);
+        }
+        /// <summary>
+        /// 在刀刃击中NPC时运行
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="hit"></param>
+        /// <param name="damageDone"></param>
+        public virtual void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+
+        }
     }
 }

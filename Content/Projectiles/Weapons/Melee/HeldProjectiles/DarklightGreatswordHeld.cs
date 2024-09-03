@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 , (int)(Projectile.damage * 0.8f), Projectile.knockBack * 0.8f, Owner.whoAmI);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(Main.rand.NextBool() ? BuffID.Frostburn2 : BuffID.OnFire3, 240);
             int type = ModContent.ProjectileType<DarklightGreatswordSlashCreator>();
             int damg = (int)(Owner.CalcIntDamage<MeleeDamageClass>(Item.damage) * 0.8f);

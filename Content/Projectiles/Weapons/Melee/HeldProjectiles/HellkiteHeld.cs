@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Length = 80;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Main.zenithWorld) {
                 SoundEngine.PlaySound(Hellkite.UseSound with { Pitch = Main.rand.NextFloat(0.01f, 0.03f) });
                 SoundEngine.PlaySound(SoundID.Item60, Owner.Center);

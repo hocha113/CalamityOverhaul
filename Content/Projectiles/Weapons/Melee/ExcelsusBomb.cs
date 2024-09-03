@@ -66,7 +66,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Lighting.AddLight(Projectile.position, Color.Blue.ToVector3());
-            base.OnHitNPC(target, hit, damageDone);
         }
 
         public override void OnKill(int timeLeft) {

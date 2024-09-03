@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.NewProjectile(Source, target.Center, Vector2.Zero
                 , ModContent.ProjectileType<BrimstoneBoom>(), Item.damage / 3, Item.knockBack, Owner.whoAmI);
             target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300);

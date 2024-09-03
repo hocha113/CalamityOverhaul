@@ -240,12 +240,11 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return base.Shoot(item, source, position, velocity, type, damage, knockback);
-        }
-
         public override void CatchFish(FishingAttempt attempt, ref int itemDrop
             , ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {
+            if (!CWRConstant.ForceReplaceResetContent) {
+                return;
+            }
             if (!attempt.inHoney && !attempt.inLava && Main.rand.NextBool(500)) {
                 itemDrop = ModContent.ItemType<HalibutCannon>();
             }

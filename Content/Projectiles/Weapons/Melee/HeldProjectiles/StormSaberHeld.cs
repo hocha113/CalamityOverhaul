@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.NewProjectile(Source, spawnPos, vec2, ModContent.ProjectileType<StormBeam>(), (int)(Projectile.damage * 0.6), Projectile.knockBack, Owner.whoAmI);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.NewProjectile(Source, ShootSpanPos.X, ShootSpanPos.Y, ShootVelocity.X, ShootVelocity.Y, ModContent.ProjectileType<StormBeam>(), (int)(Projectile.damage * 0.8), Projectile.knockBack, Owner.whoAmI, 0f, 0f);
 
             Vector2 spawnPos = new Vector2(Owner.MountedCenter.X + Main.rand.Next(-200, 201), Owner.MountedCenter.Y - 600f);

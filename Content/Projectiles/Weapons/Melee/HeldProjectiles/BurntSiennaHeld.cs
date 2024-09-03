@@ -30,17 +30,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Main.projectile[proj].friendly = true;
             NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
         }
-
-        public override bool PreInOwnerUpdate() {
-            return base.PreInOwnerUpdate();
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitNPC(target, hit, damageDone);
-        }
-
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            base.OnHitPlayer(target, info);
-        }
     }
 }

@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return base.PreInOwnerUpdate();
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(ModContent.BuffType<TemporalSadness>(), 60);
         }
 

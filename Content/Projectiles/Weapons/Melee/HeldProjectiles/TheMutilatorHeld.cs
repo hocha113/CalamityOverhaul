@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Length = 86;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (target.life <= (target.lifeMax * 0.2f) && target.canGhostHeal) {
                 if (!CalamityPlayer.areThereAnyDamnBosses || Main.rand.NextBool()) {
                     int heartDrop = CalamityPlayer.areThereAnyDamnBosses ? 1 : Main.rand.Next(1, 3);

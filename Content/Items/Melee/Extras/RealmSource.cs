@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             dust.noGravity = true;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(ModContent.BuffType<Nightwither>(), 180);
             target.AddBuff(ModContent.BuffType<ElementalMix>(), 180);
             target.AddBuff(ModContent.BuffType<RiptideDebuff>(), 180);

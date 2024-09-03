@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , ModContent.ProjectileType<GhastlySoulSmall>(), soulDamage, 0f, Owner.whoAmI, 0f, ai1);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => HitEffect(target, damageDone);
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => HitEffect(target, damageDone);
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) => HitEffect(target, info.SourceDamage);
     }

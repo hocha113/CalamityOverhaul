@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             proj.SetArrowRot();
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
                 int proj = Projectile.NewProjectile(Source, Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<TerratomereSlashCreator>(),

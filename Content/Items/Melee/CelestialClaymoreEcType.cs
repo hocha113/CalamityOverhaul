@@ -115,11 +115,5 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             return base.PreInOwnerUpdate();
         }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-        }
-
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-        }
     }
 }

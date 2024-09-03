@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , Projectile.knockBack, Owner.whoAmI, 0f, 0);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (hit.Crit) {
                 Projectile petal = CalamityUtils.ProjectileBarrage(Source, Projectile.Center, target.Center
                     , Main.rand.NextBool(), 800f, 800f, 0f, 800f, 10f, ProjectileID.FlowerPetal

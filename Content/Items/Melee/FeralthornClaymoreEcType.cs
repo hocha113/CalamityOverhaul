@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , ModContent.ProjectileType<ThornBase>(), (int)(Item.damage * 0.5), 0f, Main.myPlayer);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Venom, 300);
             Projectile.NewProjectile(Source, target.Center.X, target.Center.Y
                 , Main.rand.NextFloat(-18f, 18f), Main.rand.NextFloat(-18f, 18f)

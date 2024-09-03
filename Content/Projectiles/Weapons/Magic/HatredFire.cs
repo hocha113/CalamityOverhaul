@@ -117,10 +117,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Time++;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitNPC(target, hit, damageDone);
-        }
-
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
 

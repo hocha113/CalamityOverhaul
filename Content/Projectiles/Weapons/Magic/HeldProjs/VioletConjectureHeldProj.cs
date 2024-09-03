@@ -62,9 +62,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             Projectile.velocity = oldVelocity.RotatedByRandom(0.1f) * 1.01f;
             return false;
         }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitNPC(target, hit, damageDone);
-        }
     }
 }

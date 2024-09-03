@@ -57,10 +57,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitNPC(target, hit, damageDone);
-        }
-
         public override Color? GetAlpha(Color lightColor) {
             if (Projectile.timeLeft < 35) {
                 byte b = (byte)(Projectile.timeLeft * 3);

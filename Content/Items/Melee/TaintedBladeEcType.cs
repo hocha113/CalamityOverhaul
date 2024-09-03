@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Poisoned, 240);
         }
 

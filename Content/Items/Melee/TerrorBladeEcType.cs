@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return base.PreInOwnerUpdate();
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Item.CWR().closeCombat = true;
             target.AddBuff(ModContent.BuffType<SoulBurning>(), 600);
 

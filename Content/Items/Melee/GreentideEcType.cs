@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return base.PreInOwnerUpdate();
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0 && Projectile.ai[0] != 0) {
                 Vector2 destination = target.Center;
 

@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             dust.noGravity = true;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             for (int i = 0; i < 3; i++) {
                 Vector2 spwanPos = target.position + new Vector2(target.width * Main.rand.NextFloat(), target.height * Main.rand.NextFloat());
                 Projectile.NewProjectile(Source, spwanPos, Vector2.Zero

@@ -125,7 +125,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.timeLeft -= 10;
             Projectile.localNPCHitCooldown += 10;
             target.AddBuff(dorFireType, 180);
-            base.OnHitNPC(target, hit, damageDone);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             SwingAIType = SwingAITypeEnum.UpAndDown;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if ((CWRLoad.WormBodys.Contains(target.type) || target.type == NPCID.Probe) && !Main.rand.NextBool(5)) {
                 return;
             }

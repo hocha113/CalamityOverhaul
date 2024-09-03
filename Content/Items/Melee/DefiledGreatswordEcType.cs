@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.CWR().closeCombat = false;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Player player = Owner;
             Item.CWR().closeCombat = true;
             float addnum = hit.Damage;

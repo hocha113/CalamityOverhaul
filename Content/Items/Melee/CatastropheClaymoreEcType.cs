@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , Projectile.damage, Projectile.knockBack, Main.myPlayer, Main.rand.Next(3));
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Main.rand.NextBool(3)) {
                 target.AddBuff(BuffID.Ichor, 60);
                 target.AddBuff(BuffID.OnFire3, 180);

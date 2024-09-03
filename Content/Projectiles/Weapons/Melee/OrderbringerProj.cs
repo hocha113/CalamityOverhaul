@@ -112,10 +112,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 , Projectile.Center + vr * 155, 155, ref point);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            base.OnHitNPC(target, hit, damageDone);
-        }
-
         public override void OnKill(int timeLeft) {
             float angleStep = 0.05f;
             float radiusStep = 10f;
