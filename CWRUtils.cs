@@ -5,6 +5,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
 using ReLogic.Content;
@@ -502,6 +503,30 @@ namespace CalamityOverhaul
             }
             return AmmoTypes;
         }
+
+        /// <summary>
+        /// 如果对象是一个蠕虫体节，那么按机会分母返回布尔值
+        /// </summary>
+        /// <param name="targetNPCType"></param>
+        /// <param name="randomCount"></param>
+        /// <returns></returns>
+        public static bool FromWormBodysRandomSet(int targetNPCType, int randomCount) {
+            return CWRLoad.WormBodys.Contains(targetNPCType) && !Main.rand.NextBool(randomCount);
+        }
+        /// <summary>
+        /// 如果对象是一个蠕虫体节，那么按机会分母返回布尔值
+        /// </summary>
+        /// <param name="targetNPCType"></param>
+        /// <param name="randomCount"></param>
+        /// <returns></returns>
+        public static bool FromWormBodysRandomSet(this NPC npc, int randomCount) 
+            => FromWormBodysRandomSet(npc.type, randomCount);
+        /// <summary>
+        /// 这个NPC是否属于一个蠕虫体节
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <returns></returns>
+        public static bool IsWormBody(this NPC npc) => CWRLoad.WormBodys.Contains(npc.type);
 
         /// <summary>
         /// 世界实体坐标转物块坐标
@@ -1165,7 +1190,6 @@ namespace CalamityOverhaul
         #endregion
 
         #region GameUtils
-
         public static bool IsTool(this Item item) => item.pick > 0 || item.axe > 0 || item.hammer > 0;
 
         public static Item GetItem(this Player player) => Main.mouseItem.IsAir ? player.inventory[player.selectedItem] : Main.mouseItem;
@@ -1185,6 +1209,21 @@ namespace CalamityOverhaul
                 Main.instance.LoadProjectile(id);
             }
         }
+
+        public static int GetProjectileHasNum(int targetProjType, int ownerIndex = -1) {
+            int num = 0;
+            foreach (var proj in Main.ActiveProjectiles) {
+                if (ownerIndex >= 0 && ownerIndex != proj.owner) {
+                    continue;
+                }
+                if (proj.type == targetProjType) {
+                    num++;
+                }
+            }
+            return num;
+        }
+
+        public static int GetProjectileHasNum(this Player player, int targetProjType) => GetProjectileHasNum(targetProjType, player.whoAmI);
 
         public static void ModifyLegendWeaponDamageFunc(Player player, Item item, int GetOnDamage, int GetStartDamage, ref StatModifier damage) {
             float oldMultiplicative = damage.Multiplicative;

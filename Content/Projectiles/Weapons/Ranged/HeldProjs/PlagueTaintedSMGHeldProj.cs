@@ -33,9 +33,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PreInOwnerUpdate() {
-            CanRightClick = BulletNum >= 6;
-            if (DownRight && BulletNum < 6) {
-                SetAutomaticCartridgeChange(true);
+            if (MagazineSystem) {
+                CanRightClick = BulletNum >= 6;
+                if (DownRight && BulletNum < 6) {
+                    SetAutomaticCartridgeChange(true);
+                }
+            }
+            else {
+                CanRightClick = true;
             }
         }
 

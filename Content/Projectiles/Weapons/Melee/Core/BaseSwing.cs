@@ -556,6 +556,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         #region Draw
+        /// <summary>
+        /// 获取刀光绘制中心，这个的返回值不会影响逻辑位置
+        /// </summary>
+        /// <returns></returns>
+        public virtual Vector2 GetInOwnerDrawOrigPosition() => Owner.GetPlayerStabilityCenter();
+
         public virtual void WarpDraw() {
             List<ColoredTexturedVertexInfo> bars = [];
             GetCurrentTrailCount(out float count);
@@ -566,7 +572,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                     continue;
                 }
 
-                Vector2 Center = Owner.GetPlayerStabilityCenter();
+                Vector2 Center = GetInOwnerDrawOrigPosition();
                 float factor = 1f - i / count;
                 float rotate = oldRotate[i] % MathHelper.TwoPi;
                 float twistOrientation = (rotate >= MathHelper.Pi ? rotate - MathHelper.Pi : rotate + MathHelper.Pi) / MathHelper.TwoPi;
@@ -688,7 +694,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                     continue;
 
                 float factor = 1f - i / count;
-                Vector2 Center = Owner.GetPlayerStabilityCenter();
+                Vector2 Center = GetInOwnerDrawOrigPosition();
                 Vector2 Top = Center + (oldRotate[i].ToRotationVector2() * (oldLength[i] + drawTrailTopWidth * meleeSizeAsymptotic + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
                 Vector2 Bottom = Center + (oldRotate[i].ToRotationVector2() * (oldLength[i] - ControlTrailBottomWidth(factor) + oldDistanceToOwner[i])) * meleeSizeAsymptotic;
 
