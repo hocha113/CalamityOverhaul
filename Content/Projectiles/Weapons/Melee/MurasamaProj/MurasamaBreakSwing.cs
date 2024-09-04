@@ -272,8 +272,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == NPCID.SkeletronHand) {
                 modifiers.FinalDamage *= 0.75f;
             }
-            if (target.type == NPCID.WallofFleshEye || target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 0.5f;
+            if (target.type == NPCID.WallofFlesh) {
+                modifiers.FinalDamage *= 0.4f;
+            }
+            if (target.type == NPCID.WallofFleshEye) {
+                modifiers.FinalDamage *= 0.25f;
             }
             if (target.type == NPCID.QueenSlimeBoss) {
                 modifiers.FinalDamage *= 0.9f;

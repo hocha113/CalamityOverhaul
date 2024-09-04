@@ -181,8 +181,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == NPCID.SkeletronHand) {
                 modifiers.FinalDamage *= 0.8f;
             }
-            if (target.type == NPCID.WallofFleshEye || target.type == NPCID.WallofFlesh) {
-                modifiers.FinalDamage *= 0.65f;
+            if (target.type == NPCID.WallofFlesh) {
+                modifiers.FinalDamage *= 0.45f;
+            }
+            if (target.type == NPCID.WallofFleshEye) {
+                modifiers.FinalDamage *= 0.25f;
             }
             if (target.type == NPCID.QueenSlimeBoss) {
                 modifiers.FinalDamage *= 0.9f;
@@ -223,11 +226,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 1.25f;
             }
             if (target.type == CWRLoad.RavagerBody) {
-                modifiers.FinalDamage *= 3f;
+                modifiers.FinalDamage *= 2f;
             }
             if (target.type == CWRLoad.RavagerClawLeft || target.type == CWRLoad.RavagerClawRight || target.type == CWRLoad.RavagerHead
                 || target.type == CWRLoad.RavagerLegLeft || target.type == CWRLoad.RavagerLegRight) {
-                modifiers.FinalDamage *= 1.5f;
+                modifiers.FinalDamage *= 1.25f;
             }
             if (target.type == NPCID.MoonLordFreeEye || target.type == NPCID.MoonLordHand || target.type == NPCID.MoonLordHead || target.type == NPCID.MoonLordCore) {
                 modifiers.FinalDamage *= 1.1f;
@@ -275,10 +278,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == ModContent.NPCType<BrimstoneHeart>()) {
                 modifiers.FinalDamage *= 1.5f;
             }
+
             if (target.boss) {
                 float sengsValue = 0.5f + InWorldBossPhase.Instance.Mura_Level() * 0.03f;
                 modifiers.FinalDamage *= sengsValue;
             }
+
             modifiers.DefenseEffectiveness *= 0.75f;
         }
 
@@ -318,6 +323,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         murasamaHeldProj.noAttenuationTime = 180;
                     }
                 }
+                //一个关于对蠕虫类的削弱，但暂时没有经过测试
+                if (target.IsWormBody()) {
+                    Projectile.damage = Projectile.originalDamage;
+                    if (Projectile.frame == 5 && Projectile.frameCounter % 3 == 0) {
+                        Projectile.damage = Projectile.damage / 2;
+                    }
+                    if (Projectile.frame == 7 && Projectile.frameCounter % 3 == 0) {
+                        Projectile.damage = Projectile.damage / 3;
+                    }
+                }
+
             }
             _ = !CWRLoad.NPCValue.ISTheofSteel(target.type)
                 ? SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center)

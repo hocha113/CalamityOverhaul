@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Archerfish";
         public override void SetDefaults() {
             Item.SetCalamitySD<Archerfish>();
-            Item.SetCartridgeGun<ArcherfishHeldProj>(52);
+            Item.SetCartridgeGun<ArcherfishHeldProj>(82);
         }
     }
 }
