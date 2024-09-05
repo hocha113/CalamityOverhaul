@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Projectile.extraUpdates = 4;
             ownerOrientationLock = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 20 * updateCount;
+            Projectile.localNPCHitCooldown = 14 * updateCount;
             Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             SetKnifeProperty();
             CWRUtils.SafeLoadItem(TargetID);
