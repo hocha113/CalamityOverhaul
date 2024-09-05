@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 0.85f;
             }
             if (target.type == NPCID.SkeletronHand) {
-                modifiers.FinalDamage *= 0.75f;
+                modifiers.FinalDamage *= 0.5f;
             }
             if (target.type == NPCID.WallofFlesh) {
                 modifiers.FinalDamage *= 0.4f;
@@ -282,7 +282,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 0.9f;
             }
             if (target.type == CWRLoad.AquaticScourgeBody) {
-                modifiers.FinalDamage *= 0.75f;
+                modifiers.FinalDamage *= 0.5f;
             }
             if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
                 modifiers.FinalDamage *= 0.75f;
@@ -341,7 +341,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 1.5f;
             }
             if (target.type == CWRLoad.StormWeaverBody) {
-                modifiers.FinalDamage *= 0.9f;
+                modifiers.FinalDamage *= 0.7f;
             }
             if (target.type == CWRLoad.Polterghast) {
                 modifiers.FinalDamage *= 0.8f;
@@ -367,7 +367,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == ModContent.NPCType<BrimstoneHeart>()) {
                 modifiers.FinalDamage *= 2f;
             }
-            modifiers.DefenseEffectiveness *= 0.5f;
+            //饿鬼(被触手连接在肉山身上的状态)
+            if (target.type == NPCID.TheHungry) {
+                modifiers.FinalDamage /= 2f;
+            }
+            //对于蠕虫类身体
+            if (target.IsWormBody()) {
+                modifiers.DisableCrit();
+            }
+            else {
+                modifiers.DefenseEffectiveness *= 0.5f;
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {

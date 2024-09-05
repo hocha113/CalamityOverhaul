@@ -29,6 +29,27 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.03f, 0.03f)) * Main.rand.NextFloat(0.9f, 1.32f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj14].timeLeft = 90;
+                Main.projectile[proj14].CWR().SpanTypes = (byte)SpanTypesEnum.HalibutCannon;
+            }
+        }
+
+        /// <summary>
+        /// 大比目鱼炮射出的子弹会被标记，由这个函数来进行进一步的伤害修改缩放
+        /// </summary>
+        /// <param name="projectile"></param>
+        /// <param name="target"></param>
+        /// <param name="modifiers"></param>
+        public static void ModifyHalibutAmmoHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
+            bool isTorrentialBullet = projectile.type == ModContent.ProjectileType<TorrentialBullet>();
+
+            if (projectile.penetrate > 1 || projectile.penetrate == -1) {
+                if (target.IsWormBody()) {
+                    if (isTorrentialBullet && projectile.penetrate == -1) {
+                        projectile.penetrate = 3;
+                    }
+                    modifiers.FinalDamage *= 0.75f;
+                    modifiers.DisableCrit();
+                }
             }
         }
 
@@ -42,6 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity * Main.rand.NextFloat(0.9f, 1.32f)
                         , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                     Main.projectile[proj].timeLeft = 90;
+                    Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.HalibutCannon;
                     break;
                 case 1:
                 case 2:
