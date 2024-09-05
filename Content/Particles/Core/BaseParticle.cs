@@ -32,6 +32,10 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// </summary>
         public virtual bool UseHalfTransparency => false;
         /// <summary>
+        /// 绘制模式，默认为<see cref="PRTDrawModeEnum.AlphaBlend"/>
+        /// </summary>
+        public PRTDrawModeEnum PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
+        /// <summary>
         /// 将此设置为true以禁用默认的粒子绘制，因此调用Particle.CustomDraw()
         /// </summary>
         public virtual bool UseCustomDraw => false;
@@ -78,7 +82,7 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// <summary>
         /// 仅仅在生成粒子的时候被执行一次，用于简单的内部初始化数据
         /// </summary>
-        public virtual void SetDRK() { }
+        public virtual void SetPRT() { }
         /// <summary>
         /// 每次更新粒子处理程序时调用。粒子的速度会自动添加到它的位置，它的时间也会自动增加
         /// </summary>

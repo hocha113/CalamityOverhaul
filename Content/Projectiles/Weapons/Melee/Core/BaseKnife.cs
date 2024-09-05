@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Projectile.extraUpdates = 4;
             ownerOrientationLock = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10 * updateCount;
+            Projectile.localNPCHitCooldown = 20 * updateCount;
             Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             SetKnifeProperty();
             CWRUtils.SafeLoadItem(TargetID);
@@ -121,7 +121,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (CWRLoad.WormBodys.Contains(target.type)) {
+            if (target.IsWormBody()) {
+                if (Projectile.DamageType != ModContent.GetInstance<TrueMeleeDamageClass>()
+                    && Projectile.DamageType != ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
+                    modifiers.FinalDamage /= 2;
+                }
                 modifiers.FinalDamage *= inWormBodysDamageFaul;
             }
         }

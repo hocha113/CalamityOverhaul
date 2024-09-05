@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Particles
         public int maxLifeTime;
         private float opacity;
         private float timeLife;
-        public override void SetDRK() {
+        public override void SetPRT() {
             if (colors == null) {
                 colors = new Color[3];
                 colors[0] = new Color(262, 150, 45, 255);//明

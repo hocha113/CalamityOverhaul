@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Particles.Core
 
             particles.Add(particle);
             particle.Type = GetParticleType(particle.GetType());
-            particle.SetDRK();
+            particle.SetPRT();
         }
 
         /// <summary>

@@ -179,19 +179,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 1.25f;
             }
             if (target.type == NPCID.SkeletronHand) {
-                modifiers.FinalDamage *= 0.8f;
+                modifiers.FinalDamage *= 0.6f;
             }
             if (target.type == NPCID.WallofFlesh) {
                 modifiers.FinalDamage *= 0.45f;
             }
             if (target.type == NPCID.WallofFleshEye) {
-                modifiers.FinalDamage *= 0.25f;
+                modifiers.FinalDamage *= 0.35f;
             }
             if (target.type == NPCID.QueenSlimeBoss) {
                 modifiers.FinalDamage *= 0.9f;
             }
             if (target.type == CWRLoad.AquaticScourgeBody) {
-                modifiers.FinalDamage *= 0.75f;
+                modifiers.FinalDamage *= 0.5f;
             }
             if (target.type == NPCID.PrimeCannon || target.type == NPCID.PrimeSaw || target.type == NPCID.PrimeVice || target.type == NPCID.PrimeLaser) {
                 modifiers.FinalDamage *= 0.75f;
@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 || target.type == CWRLoad.PerforatorBodyMedium || target.type == NPCID.EaterofWorldsBody || target.type == CWRLoad.PerforatorBodySmall) {
                 modifiers.FinalDamage *= 0.5f;
             }
-            if (target.type == CWRLoad.AstrumDeusBody || target.type == CWRLoad.CosmicGuardianTail || target.type == CWRLoad.CosmicGuardianHead
+            if (target.type == CWRLoad.CosmicGuardianTail || target.type == CWRLoad.CosmicGuardianHead
                 || target.type == CWRLoad.DevourerofGodsHead || target.type == CWRLoad.DevourerofGodsTail) {
                 modifiers.FinalDamage *= 1.33f;
             }
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 modifiers.FinalDamage *= 3.5f;
             }
             if (target.type == NPCID.TheDestroyerBody || target.type == CWRLoad.StormWeaverBody) {
-                modifiers.FinalDamage *= 0.75f;
+                modifiers.FinalDamage *= 0.55f;
             }
             if (target.type == NPCID.TheDestroyer || target.type == NPCID.TheDestroyerTail) {
                 modifiers.FinalDamage *= 2.5f;
@@ -278,13 +278,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == ModContent.NPCType<BrimstoneHeart>()) {
                 modifiers.FinalDamage *= 1.5f;
             }
+            //饿鬼(被触手连接在肉山身上的状态)
+            if (target.type == NPCID.TheHungry) {
+                modifiers.FinalDamage /= 2f;
+            }
+            //对于蠕虫类身体
+            if (target.IsWormBody()) {
+                modifiers.DisableCrit();
+            }
+            else {
+                modifiers.DefenseEffectiveness *= 0.75f;
+            }
 
             if (target.boss) {
                 float sengsValue = 0.5f + InWorldBossPhase.Instance.Mura_Level() * 0.03f;
                 modifiers.FinalDamage *= sengsValue;
             }
-
-            modifiers.DefenseEffectiveness *= 0.75f;
         }
 
         public void HandleChannelMovement(Player player, Vector2 playerRotatedPoint) {
@@ -323,17 +332,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         murasamaHeldProj.noAttenuationTime = 180;
                     }
                 }
-                //一个关于对蠕虫类的削弱，但暂时没有经过测试
-                if (target.IsWormBody()) {
-                    Projectile.damage = Projectile.originalDamage;
-                    if (Projectile.frame == 5 && Projectile.frameCounter % 3 == 0) {
-                        Projectile.damage = Projectile.damage / 2;
-                    }
-                    if (Projectile.frame == 7 && Projectile.frameCounter % 3 == 0) {
-                        Projectile.damage = Projectile.damage / 3;
-                    }
-                }
-
             }
             _ = !CWRLoad.NPCValue.ISTheofSteel(target.type)
                 ? SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = Slash2 ? -0.1f : Slash3 ? 0.1f : Slash1 ? -0.15f : 0 }, Projectile.Center)

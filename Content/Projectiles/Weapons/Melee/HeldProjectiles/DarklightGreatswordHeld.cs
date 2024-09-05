@@ -20,8 +20,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             SwingData.baseSwingSpeed = 3.5f;
             Projectile.width = Projectile.height = 66;
             SwingAIType = SwingAITypeEnum.UpAndDown;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
             Length = 86;
         }
 

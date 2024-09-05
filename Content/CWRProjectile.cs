@@ -11,6 +11,7 @@ using CalamityOverhaul.Content.Particles.Core;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -61,7 +62,8 @@ namespace CalamityOverhaul.Content
         SilverBow,
         GoldBow,
         ShadowFlameBow,
-        AstralRepeater
+        AstralRepeater,
+        HalibutCannon,
     }
 
     public struct HitAttributeStruct
@@ -287,13 +289,15 @@ namespace CalamityOverhaul.Content
                 if (modifiers.SuperArmor || target.defense > 999 || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR) {
                     return;
                 }
-
                 modifiers.DefenseEffectiveness *= 0f;
             }
             if (Source?.Context == "CWRGunShoot" && cwrItem != null) {
                 if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.armourPiercer) {
                     modifiers.DefenseEffectiveness *= 0.75f;
                 }
+            }
+            if (projectile.CWR().SpanTypes == (byte)SpanTypesEnum.HalibutCannon) {
+                HalibutCannonHeldProj.ModifyHalibutAmmoHitNPC(projectile, target, ref modifiers);
             }
 
             InProjTypeSetHitNPC(projectile, target, ref modifiers);
