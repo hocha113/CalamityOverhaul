@@ -503,7 +503,7 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 如果对象是一个蠕虫体节，那么按机会分母返回布尔值
+        /// 如果对象是一个蠕虫体节，那么按机会分母的倒数返回布尔值，如果输入5，那么会有4/5的概率返回<see langword="true"/>
         /// </summary>
         /// <param name="targetNPCType"></param>
         /// <param name="randomCount"></param>
@@ -512,7 +512,7 @@ namespace CalamityOverhaul
             return CWRLoad.WormBodys.Contains(targetNPCType) && !Main.rand.NextBool(randomCount);
         }
         /// <summary>
-        /// 如果对象是一个蠕虫体节，那么按机会分母返回布尔值
+        /// 如果对象是一个蠕虫体节，那么按机会分母的倒数返回布尔值，如果输入5，那么会有4/5的概率返回<see langword="true"/>
         /// </summary>
         /// <param name="targetNPCType"></param>
         /// <param name="randomCount"></param>
