@@ -29,7 +29,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content
 {
-    public class CWRNpc : GlobalNPC
+    public class CWRNpc : GlobalNPC, ILoader
     {
         public override bool InstancePerEntity => true;
         /// <summary>
@@ -130,9 +130,7 @@ namespace CalamityOverhaul.Content
             modnpc.OverBeatBackAttenuationForce = power;
         }
 
-        public override void Load() {
-            IceParcloseAsset = CWRUtils.GetT2DAsset(CWRConstant.Projectile + "IceParclose", true);
-        }
+        void ILoader.LoadAsset() => IceParcloseAsset = CWRUtils.GetT2DAsset(CWRConstant.Projectile + "IceParclose");
 
         public override void ResetEffects(NPC npc) {
             IceParclose = false;

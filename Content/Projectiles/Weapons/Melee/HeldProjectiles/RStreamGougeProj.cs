@@ -16,31 +16,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class RStreamGougeProj : BaseSpearProjectile
     {
         public int Time;
-
         public override float InitialSpeed => 3f;
-
         public override float ReelbackSpeed => 2.4f;
-
         public override float ForwardSpeed => 0.95f;
-
         public Player Owner => Main.player[Projectile.owner];
-
         public float SpinCompletion => Utils.GetLerpValue(0f, 45f, Time, clamped: true);
-
         public ref float InitialDirection => ref Projectile.ai[1];
-
         public ref float SpinDirection => ref Projectile.ai[2];
-
         public override string Texture => CWRConstant.Projectile_Melee + "StreamGougeProj";
-
         public override Action<Projectile> EffectBeforeReelback => delegate {
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 0.8f
+            int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center, Projectile.velocity * 0.8f
                 , ModContent.ProjectileType<StreamBeams>(), Projectile.damage, Projectile.knockBack * 0.85f, Projectile.owner);
+            Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation();
         };
-
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;
-            Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.timeLeft = 90;
             Projectile.friendly = true;
             Projectile.hostile = false;

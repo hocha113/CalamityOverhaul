@@ -472,7 +472,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void DrawTrail(List<VertexPositionColorTexture> bars) {
-            Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "KnifeRendering").Value;
+            Effect effect = CWRUtils.GetEffectValue("KnifeRendering");
 
             effect.Parameters["transformMatrix"].SetValue(GetTransfromMaxrix());
             effect.Parameters["sampleTexture"].SetValue(TrailTexture);

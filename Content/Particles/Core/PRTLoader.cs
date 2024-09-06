@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Particles.Core
                 if (particleType.Texture != "") {
                     texturePath = particleType.Texture;
                 }
-                ParticleIDToTexturesDic[ID] = ModContent.Request<Texture2D>(texturePath, AssetRequestMode.ImmediateLoad).Value;
+                ParticleIDToTexturesDic[ID] = ModContent.Request<Texture2D>(texturePath, AssetRequestMode.AsyncLoad).Value;
             }
 
             On_Main.DrawInfernoRings += CWRDrawForegroundParticles;

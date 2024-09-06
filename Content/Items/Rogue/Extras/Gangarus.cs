@@ -25,7 +25,6 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public static SoundStyle AT = new("CalamityOverhaul/Assets/Sounds/AT") { Volume = 1.5f };
         public int ChargeGrade;
         public override string Texture => CWRConstant.Item + "Rogue/Gangarus";
-        public LocalizedText Legend { get; private set; }
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
@@ -40,8 +39,6 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
                 ? CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3")
                 : CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");
         }
-
-        public override void SetStaticDefaults() => Legend = this.GetLocalization(nameof(Legend));
         public override void SetDefaults() {
             Item.width = 44;
             Item.damage = 2480;
@@ -62,10 +59,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.CWR().isHeldItem = true;
         }
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            ItemSystem.SetItemLegendContentTops(ref tooltips, Name);
-        }
-
+        public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage *= (ChargeGrade + 1);
 
         public override void HoldItem(Player player) {

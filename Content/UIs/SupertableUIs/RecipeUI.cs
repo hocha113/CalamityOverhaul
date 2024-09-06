@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             Instance = this;
 
             for (int i = 0; i < SupertableUI.AllRecipes.Count; i++) {
-                Console.WriteLine($"正在装载配方：{i} --:-- {SupertableUI.AllRecipes.Count}");
+                //CWRMod.Instance.Logger.Info($"正在装载配方：{i} --:-- {SupertableUI.AllRecipes.Count}");
                 itemTarget.Add(new Item(SupertableUI.AllRecipes[i].Target));
                 itemNameString_FormulaContent_Values.Add(SupertableUI.AllRecipes[i].Values);
             }
