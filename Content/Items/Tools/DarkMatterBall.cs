@@ -21,14 +21,14 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override string Texture => CWRConstant.Item + "Tools/DarkMatter";
         public List<int> dorpTypes = [];
         public List<Item> dorpItems = [];
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
+        public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
+        public override ModItem Clone(Item newEntity) {
+            DarkMatterBall ball = (DarkMatterBall)base.Clone(newEntity);
+            ball.dorpTypes = new List<int>(dorpTypes);
+            ball.dorpItems = new List<Item>(dorpItems);
+            return ball;
         }
-
-        public override void SetStaticDefaults() {
-            Item.ResearchUnlockCount = 3;
-        }
-
+        public override void SetStaticDefaults() => Item.ResearchUnlockCount = 9999;
         public override void SetDefaults() {
             Item.maxStack = 99;
             Item.consumable = true;
