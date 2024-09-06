@@ -399,7 +399,7 @@ namespace CalamityOverhaul.Content
 
             if (SpanTypes == (byte)SpanTypesEnum.Alluvion && projectile.numHits == 0) {
                 _ = Projectile.NewProjectile(projectile.GetSource_FromAI(), player.Center
-                    , projectile.velocity, ModContent.ProjectileType<DeepSeaSharks>()
+                    , projectile.velocity.UnitVector() * 16, ModContent.ProjectileType<DeepSeaSharks>()
                     , projectile.damage, projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
             }
 

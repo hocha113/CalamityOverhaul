@@ -5,7 +5,6 @@ using CalamityMod.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -14,12 +13,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class StreamBeams : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "StreamGouge";
-
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
         }
-
         public override void SetDefaults() {
             Projectile.width = 28;
             Projectile.height = 28;
@@ -29,19 +26,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.DamageType = DamageClass.Melee;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = false;
-            Projectile.penetrate = -1;
+            Projectile.penetrate = 1;
             Projectile.MaxUpdates = 3;
             Projectile.timeLeft = 180 * Projectile.MaxUpdates;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = Projectile.MaxUpdates;
-        }
-
-        public override void OnSpawn(IEntitySource source) {
-            base.OnSpawn(source);
-        }
-
-        public override void OnKill(int timeLeft) {
-            base.OnKill(timeLeft);
         }
 
         public override void AI() {
@@ -59,12 +48,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 float randRot = Main.rand.NextFloat(MathHelper.TwoPi);
                 for (int i = 0; i < 5; i++) {
                     Vector2 vr = (MathHelper.TwoPi / 5 * i + randRot).ToRotationVector2() * 15;
-                    Projectile.NewProjectile(
-                        Projectile.GetSource_FromThis(),
-                        target.Center, vr,
-                        ModContent.ProjectileType<GodKillers>(),
-                        Projectile.damage / 2, 0, Projectile.owner
-                        );
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, vr,
+                        ModContent.ProjectileType<GodKillers>(), Projectile.damage / 3, 0, Projectile.owner);
                 }
             }
 

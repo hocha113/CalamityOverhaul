@@ -230,7 +230,6 @@ namespace CalamityOverhaul
             if (Main.dedServ)
                 return;
 
-            EffectLoader.LoadEffects();
             ILMainMenuModification.Load();
         }
 

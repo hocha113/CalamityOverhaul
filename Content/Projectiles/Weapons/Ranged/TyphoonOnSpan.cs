@@ -2,6 +2,7 @@
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
@@ -15,27 +16,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override float MaxCharge => 180;
 
         public override void SpanProjFunc() {
-            int arrowTypes;
-            int weaponDamage;
-            float weaponKnockback;
-            bool haveAmmo = Owner.PickAmmo(Owner.ActiveItem(), out arrowTypes, out _, out weaponDamage, out weaponKnockback, out _, false);
-            if (haveAmmo && !CalamityUtils.CheckWoodenAmmo(arrowTypes, Owner)) {
+            ShootState shootState = Owner.GetShootState();
+            if (shootState.HasAmmo && !Owner.IsWoodenAmmo(shootState.AmmoTypes)) {
+                float speedMode = 17f;
+                ModProjectile targetProj = ProjectileLoader.GetProjectile(shootState.AmmoTypes);
+                if (targetProj != null && targetProj.Projectile.extraUpdates > 3) {
+                    speedMode /= (targetProj.Projectile.extraUpdates - 2);
+                }
                 for (int i = 0; i < 64; i++) {
                     float rot = MathHelper.TwoPi / 64 * i;
-                    Vector2 velocity = rot.ToRotationVector2() * (19 + (-11f + rot % MathHelper.PiOver4) * 17);
-                    Projectile.NewProjectile(Owner.parent(), Projectile.Center, velocity
-                        , arrowTypes, weaponDamage, weaponKnockback, Owner.whoAmI);
+                    Vector2 velocity = rot.ToRotationVector2() * (19 + (-11f + rot % MathHelper.PiOver4) * speedMode);
+                    Projectile.NewProjectile(shootState.Source, Projectile.Center, velocity
+                        , shootState.AmmoTypes, shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI);
                 }
                 return;
             }
-            weaponDamage = Projectile.damage;
-            weaponKnockback = Projectile.knockBack;
+
             for (int i = 0; i < 94; i++) {
                 float rot = MathHelper.TwoPi / 94 * i;
                 Vector2 velocity = rot.ToRotationVector2() * (1 + (-6f + rot % MathHelper.PiOver4) * 2);
                 Projectile.NewProjectile(Owner.parent(), Projectile.Center, velocity
                     , ModContent.ProjectileType<TorrentialArrow>()
-                    , weaponDamage, weaponKnockback, Owner.whoAmI);
+                    , shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI);
             }
         }
     }

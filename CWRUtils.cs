@@ -6,6 +6,7 @@ using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
 using ReLogic.Utilities;
 using Steamworks;
@@ -1193,8 +1194,39 @@ namespace CalamityOverhaul
         public static Item GetItem(this Player player) => Main.mouseItem.IsAir ? player.inventory[player.selectedItem] : Main.mouseItem;
 
         public static void GiveMeleeType(this Item item, bool isGiveTrueMelee = false) => item.DamageType = GiveMeleeType(isGiveTrueMelee);
+        /// <summary>
+        /// 目标弹药是否应该判定为一个木箭
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="ammoType"></param>
+        /// <returns></returns>
+        public static bool IsWoodenAmmo(this Player player, int ammoType) {
+            if (player.hasMoltenQuiver && ammoType == ProjectileID.FireArrow) {
+                return true;
+            }
+            if (ammoType == ProjectileID.WoodenArrowFriendly) {
+                return true;
+            }
+                
+            return false;
+        }
 
         public static DamageClass GiveMeleeType(bool isGiveTrueMelee = false) => isGiveTrueMelee ? ModContent.GetInstance<TrueMeleeDamageClass>() : DamageClass.Melee;
+
+        public static void SetItemLegendContentTops(ref List<TooltipLine> tooltips, string itemKey) {
+            TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[legend]") && x.Mod == "Terraria");
+            if (legendtops != null) {
+                KeyboardState state = Keyboard.GetState();
+                if ((state.IsKeyDown(Keys.LeftShift) || state.IsKeyDown(Keys.RightShift))) {
+                    legendtops.Text = Language.GetTextValue($"Mods.CalamityOverhaul.Items.{itemKey}.Legend");
+                    legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
+                }
+                else {
+                    legendtops.Text = CWRLocText.GetTextValue("Item_LegendOnMouseLang");
+                    legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.Gold, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
+                }
+            }
+        }
 
         public static void SafeLoadItem(int id) {
             if (id > 0 && id < TextureAssets.Item.Length && !Main.dedServ) {
@@ -3270,7 +3302,7 @@ namespace CalamityOverhaul
         /// <param name="texture">纹理路径</param>
         /// <returns></returns>
         public static Texture2D GetT2DValue(string texture, bool immediateLoad = false) {
-            return ModContent.Request<Texture2D>(texture, immediateLoad ? AssetRequestMode.AsyncLoad : AssetRequestMode.ImmediateLoad).Value;
+            return ModContent.Request<Texture2D>(texture, immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad).Value;
         }
 
         /// <summary>
@@ -3279,7 +3311,7 @@ namespace CalamityOverhaul
         /// <param name="texture">纹理路径</param>
         /// <returns></returns>
         public static Asset<Texture2D> GetT2DAsset(string texture, bool immediateLoad = false) {
-            return ModContent.Request<Texture2D>(texture, immediateLoad ? AssetRequestMode.AsyncLoad : AssetRequestMode.ImmediateLoad);
+            return ModContent.Request<Texture2D>(texture, immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad);
         }
 
         #endregion
@@ -3357,6 +3389,12 @@ namespace CalamityOverhaul
 
             return combined;
         }
+        /// <summary>
+        /// 便捷的获取模组内的Effect实例
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static Effect GetEffectValue(string name) => CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + name).Value;
 
         #endregion
 

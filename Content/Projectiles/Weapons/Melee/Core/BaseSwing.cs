@@ -593,7 +593,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Matrix projection = Matrix.CreateOrthographicOffCenter(0f, Main.screenWidth, Main.screenHeight, 0f, 0f, 1f);
             Matrix model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0f)) 
                 * Main.GameViewMatrix.TransformationMatrix;
-            Effect effect = EffectLoader.KnifeDistortion;
+            Effect effect = CWRUtils.GetEffectValue("KnifeDistortion");
             effect.Parameters["uTransform"].SetValue(model * projection);
             Main.graphics.GraphicsDevice.Textures[0] = TrailTexture;
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
@@ -658,7 +658,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public virtual void DrawTrail(List<VertexPositionColorTexture> bars) {
-            Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "KnifeRendering").Value;
+            Effect effect = CWRUtils.GetEffectValue("KnifeRendering");
 
             effect.Parameters["transformMatrix"].SetValue(GetTransfromMaxrix());
             effect.Parameters["drawTrailHighlight"].SetValue(drawTrailHighlight);

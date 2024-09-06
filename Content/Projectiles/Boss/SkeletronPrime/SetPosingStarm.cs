@@ -175,9 +175,9 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             }
             drawTime++;
             var blackTile = TextureAssets.MagicPixel;
-            var diagonalNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/HarshNoise");
+            var diagonalNoise = CWRUtils.GetT2DAsset("CalamityMod/ExtraTextures/GreyscaleGradients/HarshNoise");
             var maxOpacity = 1f;
-            var shader = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "PrimeHaloShader").Value;
+            var shader = CWRUtils.GetEffectValue("PrimeHaloShader");
             shader.Parameters["colorMult"].SetValue(11);
             shader.Parameters["time"].SetValue(drawTime * 0.1f);
             shader.Parameters["radius"].SetValue(modeings + 50);

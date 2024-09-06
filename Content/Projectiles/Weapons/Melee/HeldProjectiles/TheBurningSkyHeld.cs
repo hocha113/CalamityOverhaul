@@ -15,14 +15,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheBurningSky";
         public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRage_Bar";
         public override void SetSwingProperty() {
-            Projectile.DamageType = DamageClass.Melee;
             Projectile.width = 72;
             Projectile.height = 72;
             Projectile.friendly = true;
             Projectile.penetrate = -1;
             Projectile.alpha = 255;
             Projectile.extraUpdates = 4;
-            Projectile.usesLocalNPCImmunity = true;
             distanceToOwner = 30;
             drawTrailTopWidth = 60;
             canDrawSlashTrail = true;
@@ -72,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void DrawTrail(List<VertexPositionColorTexture> bars) {
-            Effect effect = CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + "KnifeRendering").Value;
+            Effect effect = CWRUtils.GetEffectValue("KnifeRendering");
 
             effect.Parameters["transformMatrix"].SetValue(GetTransfromMaxrix());
             effect.Parameters["sampleTexture"].SetValue(TrailTexture);

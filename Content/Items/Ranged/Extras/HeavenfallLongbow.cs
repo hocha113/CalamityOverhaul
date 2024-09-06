@@ -28,25 +28,11 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public const int MaxVientNum = 13;
         public static Color[] rainbowColors = [Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet];
         public override string Texture => CWRConstant.Item_Ranged + "HeavenfallLongbow";
-
         public int ChargeValue;
         public bool spanInfiniteRuneBool = true;
-
-        public LocalizedText Legend { get; private set; }
-
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
-
-        public override void SetStaticDefaults() {
-            Legend = this.GetLocalization(nameof(Legend));
-            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
-        }
-
-        public override bool AltFunctionUse(Player player) {
-            return true;
-        }
-
+        public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
+        public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
+        public override bool AltFunctionUse(Player player) => true;
         public override void SetDefaults() {
             Item.damage = 9999;
             Item.width = 62;
@@ -68,17 +54,11 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems2;
         }
 
-        public override void ModifyWeaponCrit(Player player, ref float crit) {
-            crit = 9999;
-        }
+        public override void ModifyWeaponCrit(Player player, ref float crit) => crit = 9999;
 
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
-            damage = damage.Scale(0);
-        }
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage = damage.Scale(0);
 
-        public override bool CanUseItem(Player player) {
-            return player.ownedProjectileCounts[Item.shoot] <= 0;
-        }
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
 
         public override void HoldItem(Player player) {
             if (ChargeValue >= 200 && Main.myPlayer == player.whoAmI)//当充能达到阈值时，会释放一次无尽符文，此时可以按下技能键触发技能
@@ -139,7 +119,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                 //}
                 */
                 tooltips.IntegrateHotkey(CWRKeySystem.HeavenfallLongbowSkillKey);
-                ItemSystem.SetItemLegendContentTops(ref tooltips, Name);
+                CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
             }
         }
 

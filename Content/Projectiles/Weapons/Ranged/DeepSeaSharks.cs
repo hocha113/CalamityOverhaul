@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             Projectile.alpha = 255;
             Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Ranged;
+            Projectile.timeLeft = 360;
             Projectile.Calamity().pointBlankShotDuration = CalamityGlobalProjectile.DefaultPointBlankDuration;
         }
 

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.Extras
@@ -13,9 +12,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
     internal class StormGoddessSpear : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "StormGoddessSpear";
-        public LocalizedText Legend { get; private set; }
         public override void SetStaticDefaults() {
-            Legend = this.GetLocalization(nameof(Legend));
+            //this.GetLocalization("Legend");
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 5));
         }
@@ -51,7 +49,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            ItemSystem.SetItemLegendContentTops(ref tooltips, Name);
+            CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
         }
 
         public override void AddRecipes() {

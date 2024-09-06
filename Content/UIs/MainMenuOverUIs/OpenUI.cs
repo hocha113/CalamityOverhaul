@@ -48,8 +48,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private Vector2 steamCenter => steamPos + new Vector2(steamOAC.Width(), steamOAC.Height()) / 2 * githubSiz;
         public bool OnActive() => _active || _sengs > 0;
         void ILoader.LoadAsset() {
-            githubOAC = CWRUtils.GetT2DAsset(CWRConstant.UI + "GithubOAC", true);
-            steamOAC = CWRUtils.GetT2DAsset(CWRConstant.UI + "SteamOAC", true);
+            githubOAC = CWRUtils.GetT2DAsset(CWRConstant.UI + "GithubOAC");
+            steamOAC = CWRUtils.GetT2DAsset(CWRConstant.UI + "SteamOAC");
         }
         public override void Load() {
             Instance = this;
