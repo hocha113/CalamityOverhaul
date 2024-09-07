@@ -62,11 +62,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override void Shoot() {
             int type = ModContent.ProjectileType<Razorwind>();
             if (Projectile.ai[0] == 1) {
-                type = ProjectileID.FlaironBubble;
+                type = ProjectileID.Bubble;
                 for (int i = 0; i < 23; i++) {
                     Vector2 ver = UnitToMouseV.RotatedByRandom(1.9f) * ShootSpeed * Main.rand.NextFloat(0.6f, 1.1f);
-                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + ver * 40f
-                    , ver, type, Projectile.damage / 3, 2, Owner.whoAmI);
+                    int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + ver * 40f
+                    , ver, type, Projectile.damage / 2, 2, Owner.whoAmI, 0, 0, 0);
+                    Main.projectile[proj].DamageType = DamageClass.Melee;
                 }
                 return;
             }

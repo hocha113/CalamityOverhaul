@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
             if (projectile.penetrate > 1 || projectile.penetrate == -1) {
                 if (target.IsWormBody()) {
-                    if (isTorrentialBullet && projectile.penetrate == -1) {
+                    if (projectile.penetrate == -1) {
                         projectile.penetrate = 3;
                     }
                     modifiers.FinalDamage *= 0.75f;

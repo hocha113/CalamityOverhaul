@@ -23,7 +23,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
+using Terraria.WorldBuilding;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
 namespace CalamityOverhaul.Content
@@ -298,6 +298,10 @@ namespace CalamityOverhaul.Content
             }
             if (projectile.CWR().SpanTypes == (byte)SpanTypesEnum.HalibutCannon) {
                 HalibutCannonHeldProj.ModifyHalibutAmmoHitNPC(projectile, target, ref modifiers);
+            }
+
+            if (projectile.type == CWRLoad.Projectile_ArcZap && target.IsWormBody()) {
+                modifiers.FinalDamage /= 2;
             }
 
             InProjTypeSetHitNPC(projectile, target, ref modifiers);

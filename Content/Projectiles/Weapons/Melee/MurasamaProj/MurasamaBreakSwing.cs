@@ -371,11 +371,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == NPCID.TheHungry) {
                 modifiers.FinalDamage /= 2f;
             }
-            //对于蠕虫类身体
-            if (target.FromWormBodysRandomSet(3)) {
-                modifiers.DisableCrit();
-            }
-            else {
+
+            if (!target.IsWormBody()) {
                 modifiers.DefenseEffectiveness *= 0.5f;
             }
         }

@@ -19,6 +19,7 @@ using CalamityMod.NPCs.Ravager;
 using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.Yharon;
+using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Placeable;
@@ -67,6 +68,8 @@ namespace CalamityOverhaul
         public static int InfiniteRune;
         public static int ParadiseArrow;
         public static int HeavenLightning;
+
+        public static int Projectile_ArcZap;
 
         /// <summary>
         /// 无尽锭
@@ -423,6 +426,8 @@ namespace CalamityOverhaul
             AresTeslaCannon = NPCType<AresTeslaCannon>();
             AresGaussNuke = NPCType<AresGaussNuke>();
 
+            Projectile_ArcZap = ModContent.ProjectileType<ArcZap>();
+
             targetNpcTypes = [SepulcherHead, SepulcherBody, SepulcherTail];
             targetNpcTypes2 = [StormWeaverHead, StormWeaverBody, StormWeaverTail];
             targetNpcTypes3 = [PrimordialWyrmHead, PrimordialWyrmBody, PrimordialWyrmTail];
@@ -440,11 +445,12 @@ namespace CalamityOverhaul
             targetNpcTypes14 = [NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail];
             targetNpcTypes15 = [NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail];
             targetNpcTypes16 = [RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight];
-            WormBodys = new int[] { AquaticScourgeBody, ArmoredDiggerBody, StormWeaverBody, ArmoredDiggerBody
-                , CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
-                , AquaticScourgeBody, NPCID.TheDestroyerBody, SepulcherBody};
 
-            MaterialsTypes = new int[]{
+            WormBodys = [ AquaticScourgeBody, StormWeaverBody, ArmoredDiggerBody, DesertScourgeBody, DesertNuisanceBody
+                , CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
+                , SepulcherBody, PerforatorBodyLarge, PerforatorBodyMedium, NPCID.TheDestroyerBody, NPCID.EaterofWorldsBody];
+
+            MaterialsTypes = [
                 ItemType<AerialiteBar>(),//水华锭
                 ItemType<AuricBar>(),//圣金源锭
                 ItemType<ShadowspecBar>(),//影魔锭
@@ -478,7 +484,7 @@ namespace CalamityOverhaul
                 ItemType<ArmoredShell>(),//装甲心脏
                 ItemType<YharonSoulFragment>(),//龙魂
                 ItemType<Rock>()//古恒石
-            };
+            ];
 
             MaterialsTypes2 = new int[]{
                 ItemType<CalamityMod.Items.Weapons.Ranged.Deathwind>(),

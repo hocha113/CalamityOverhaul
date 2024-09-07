@@ -278,16 +278,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (target.type == ModContent.NPCType<BrimstoneHeart>()) {
                 modifiers.FinalDamage *= 1.5f;
             }
+
             //饿鬼(被触手连接在肉山身上的状态)
             if (target.type == NPCID.TheHungry) {
                 modifiers.FinalDamage /= 2f;
             }
 
-            //对于蠕虫类身体
-            if (target.FromWormBodysRandomSet(3)) {
-                modifiers.DisableCrit();
-            }
-            else {
+            if (!target.IsWormBody()) {
                 modifiers.DefenseEffectiveness *= 0.75f;
             }
 
