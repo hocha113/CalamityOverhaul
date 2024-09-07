@@ -19,16 +19,9 @@ namespace CalamityOverhaul.Content.Particles
         public float HueShift;
         public float followingRateRatio;
         public Entity entity;
-        internal static Asset<Texture2D> Tex;
         internal static Asset<Texture2D> BloomTex;
-        void ILoader.LoadAsset() {
-            Tex = CWRUtils.GetT2DAsset("CalamityMod/Particles/Light");
-            BloomTex = CWRUtils.GetT2DAsset("CalamityMod/Particles/BloomCircle");
-        }
-        void ILoader.UnLoadData() {
-            Tex = null;
-            BloomTex = null;
-        }
+        void ILoader.LoadAsset() => BloomTex = CWRUtils.GetT2DAsset("CalamityMod/Particles/BloomCircle");
+        void ILoader.UnLoadData() => BloomTex = null;
         public PRT_Light(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f
             , float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, Entity _entity = null, float _followingRateRatio = 0.9f) {
             Position = position;
@@ -59,7 +52,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = Tex.Value;
+            Texture2D tex = PRTLoader.ParticleIDToTexturesDic[Type];
             Texture2D bloomTex = BloomTex.Value;
 
             float squish = MathHelper.Clamp(Velocity.Length() / 10f * SquishStrenght, 1f, MaxSquish);

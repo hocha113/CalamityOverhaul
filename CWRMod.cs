@@ -162,12 +162,10 @@ namespace CalamityOverhaul
                 setup.LoadData();
                 setup.DompLoadText();
             }
-            LoadClient();
             GameLoadCount++;
         }
 
         public override void Unload() {
-            UnLoadClient();
             foreach (var setup in ILoaders) {
                 setup.UnLoadData();
                 setup.DompUnLoadText();
@@ -224,21 +222,6 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("CoolerItemVisualEffect", out coolerItemVisualEffect);
             ModLoader.TryGetMod("GravityDontFlipScreen", out gravityDontFlipScreen);
             ModLoader.TryGetMod("InfernumMode", out infernum);
-        }
-
-        public void LoadClient() {
-            if (Main.dedServ)
-                return;
-
-            ILMainMenuModification.Load();
-        }
-
-        public void UnLoadClient() {
-            if (Main.dedServ)
-                return;
-
-            EffectLoader.UnLoad();
-            ILMainMenuModification.Unload();
         }
     }
 }

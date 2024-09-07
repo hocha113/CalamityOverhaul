@@ -8,7 +8,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.UIs
 {
-    internal class ILMainMenuModification
+    internal class ILMainMenuModification : ILoader
     {
         internal static List<BaseMainMenuOverUI> MainMenuOverUIInstances;
 
@@ -51,15 +51,20 @@ namespace CalamityOverhaul.Content.UIs
             _ = potlevel.EmitDelegate(() => Draw(Main.spriteBatch));
         }
 
-        /// <summary>
-        /// 该类是客户端内容，因此，不要在服务器上调用这个加载函数
-        /// </summary>
-        public static void Load() {
+        void ILoader.LoadData() {
+            if (Main.dedServ) {
+                return;
+            }
+            // 该类是客户端内容，因此，不要在服务器上调用这个加载函数
             HanderLoadBaseMenuOverUIType();
             IL_Main.DrawMenu += ILMenuLoadDrawFunc;
         }
 
-        public static void Unload() {
+        void ILoader.UnLoadData() {
+            if (Main.dedServ) {
+                return;
+            }
+            // 该类是客户端内容，因此，不要在服务器上调用这个卸载函数
             foreach (BaseMainMenuOverUI baseMainMenuOverUI in MainMenuOverUIInstances) {
                 baseMainMenuOverUI.UnLoad();
             }

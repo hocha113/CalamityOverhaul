@@ -35,17 +35,6 @@ namespace CalamityOverhaul.Common.Effects
         internal static RenderTarget2D screen;
         internal static float twistStrength = 0f;
 
-        public static void UnLoad() {
-            holyInfernoRendererType = null;
-            onDrawToTargetMethod = null;
-            MiscShaderDataType = null;
-            Shader_Texture_FieldInfo_1 = null;
-            Shader_Texture_FieldInfo_2 = null;
-            Shader_Texture_FieldInfo_3 = null;
-            StreamerDustShader = null;
-            InShootGlowShader = null;
-        }
-
         public static void LoadRegularShaders(AssetRepository assets) {
             Asset<Effect> getEffect(string key) => assets.Request<Effect>(CWRConstant.noEffects + key, AssetRequestMode.AsyncLoad);
             void loadFiltersEffect(string filtersKey, string filename, string passname) {
@@ -86,6 +75,11 @@ namespace CalamityOverhaul.Common.Effects
         }
 
         void ILoader.UnLoadData() {
+            holyInfernoRendererType = null;
+            onDrawToTargetMethod = null;
+            MiscShaderDataType = null;
+            StreamerDustShader = null;
+            InShootGlowShader = null;
             Shader_Texture_FieldInfo_1 = null;
             Shader_Texture_FieldInfo_2 = null;
             Shader_Texture_FieldInfo_3 = null;
