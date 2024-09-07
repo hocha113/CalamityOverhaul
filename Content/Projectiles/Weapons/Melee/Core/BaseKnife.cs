@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public SwingDataStruct SwingData = new SwingDataStruct();
         public SwingAITypeEnum SwingAIType;
         protected bool autoSetShoot;
-        protected float inWormBodysDamageFaul = 0.85f;
         protected Dictionary<int, NPC> onHitNPCs = [];
         protected int formeInHitNPCCoolTime;
         public enum SwingAITypeEnum
@@ -117,16 +116,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         public sealed override void NoServUpdate() {
             if (Time % updateCount == 0) {
                 MeleeEffect();
-            }
-        }
-
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (target.IsWormBody()) {
-                if (Projectile.DamageType != ModContent.GetInstance<TrueMeleeDamageClass>()
-                    && Projectile.DamageType != ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
-                    modifiers.FinalDamage /= 2;
-                }
-                modifiers.FinalDamage *= inWormBodysDamageFaul;
             }
         }
 

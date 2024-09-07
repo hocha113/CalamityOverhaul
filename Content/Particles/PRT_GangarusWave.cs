@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.Particles
         public override bool UseAdditiveBlend => true;
         public override bool SetLifetime => true;
         public override bool UseCustomDraw => true;
-
         private float OriginalScale;
         private float FinalScale;
         private float opacity;
@@ -22,7 +21,6 @@ namespace CalamityOverhaul.Content.Particles
         private Vector2 EntityPos;
         private Vector2 OldEntityPos;
         private Vector2 EntityVariation;
-
         public PRT_GangarusWave(Vector2 position, Vector2 velocity, Color color, Vector2 squish, float rotation, float originalScale, float finalScale, int lifeTime, Entity entity) {
             Position = position;
             Velocity = velocity;

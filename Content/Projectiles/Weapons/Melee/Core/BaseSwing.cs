@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         private bool isInitialize;
         protected Vector2 vector;
         protected Vector2 startVector;
+        protected float inWormBodysDamageFaul = 0.85f;
         /// <summary>
         /// 主纹理资源
         /// </summary>
@@ -465,7 +466,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             if (Time == 0) {
                 dirs = Projectile.spriteDirection = Owner.direction;
             }
-
+            
             Projectile.Calamity().timesPierced = 0;
             Owner.heldProj = Projectile.whoAmI;
             Owner.itemTime = 2;
@@ -476,16 +477,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 Projectile.spriteDirection = Owner.direction;
             }
             if (canSetOwnerArmBver) {
-                Owner.SetCompositeArmFront(true, Length >= 80 ? Player.CompositeArmStretchAmount.Full : Player.CompositeArmStretchAmount.Quarter
+                Owner.SetCompositeArmFront(true, Length >= 80 ? 
+                    Player.CompositeArmStretchAmount.Full : Player.CompositeArmStretchAmount.Quarter
                     , (Owner.Center - Projectile.Center).ToRotation() + MathHelper.PiOver2);
             }
             if (ownerOrientationLock) {
                 Owner.direction = Projectile.spriteDirection = dirs;
             }
 
-            Projectile.rotation = Projectile.spriteDirection == 1
-                ? (Projectile.Center - Owner.Center).ToRotation() + MathHelper.PiOver4
-                : (Projectile.Center - Owner.Center).ToRotation() - MathHelper.Pi - MathHelper.PiOver4;
+            float toOwnerRoding = (Projectile.Center - Owner.Center).ToRotation();
+            Projectile.rotation = Projectile.spriteDirection == 1 ? 
+                toOwnerRoding + MathHelper.PiOver4 : toOwnerRoding - MathHelper.Pi - MathHelper.PiOver4;
         }
 
         public virtual bool PreInOwnerUpdate() { return true; }
@@ -553,6 +555,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Vector2 newRecPos = recCenter - new Vector2(wid / 2, hig / 2);
             Rectangle newRec = new Rectangle((int)newRecPos.X, (int)newRecPos.Y, wid, hig);
             hitbox = newRec;
+        }
+
+        public sealed override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            modifiers.HitDirectionOverride = safeInSwingUnit.X > 0 ? 1 : -1;
+            if (target.IsWormBody()) {
+                if (Projectile.DamageType != ModContent.GetInstance<TrueMeleeDamageClass>()
+                    && Projectile.DamageType != ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
+                    modifiers.FinalDamage /= 2;
+                }
+                modifiers.FinalDamage *= inWormBodysDamageFaul;
+            }
+            SwingModifyHitNPC(target, ref modifiers);
+        }
+
+        public virtual void SwingModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+
         }
 
         #region Draw

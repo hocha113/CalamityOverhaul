@@ -447,7 +447,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             HitEffect(target, false);
         }
 
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+        public override void SwingModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             bool isBrimstoneHeart = target.type == ModContent.NPCType<BrimstoneHeart>();
             if (Projectile.ai[0] == 3) {
                 if (modifiers.SuperArmor || target.defense > 999

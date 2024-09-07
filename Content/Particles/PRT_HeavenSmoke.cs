@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Particles
 
         public override string Texture => "CalamityMod/Particles/HeavySmoke";
 
-        private Color[] rainbowColors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet };
+        private Color[] rainbowColors = [Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet];
 
         private Color rainColor => CWRUtils.MultiStepColorLerp(sengs % 30 / 30f, rainbowColors);
         private float Opacity;
@@ -30,7 +30,8 @@ namespace CalamityOverhaul.Content.Particles
         private Player player;
         private static int FrameAmount = 6;
 
-        public PRT_HeavenSmoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f, bool required = false, Player player = null) {
+        public PRT_HeavenSmoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, float opacity
+            , float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f, bool required = false, Player player = null) {
             Position = position;
             Velocity = velocity;
             Color = color;

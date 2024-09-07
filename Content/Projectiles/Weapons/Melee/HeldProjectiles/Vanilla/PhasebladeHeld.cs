@@ -25,10 +25,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles.Van
             Length = 60;
         }
 
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (modifiers.SuperArmor || target.defense > 999 
-                || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR)
+        public override void SwingModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (modifiers.SuperArmor || target.defense > 999
+                || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR) {
                 return;
+            } 
             modifiers.DefenseEffectiveness *= 0f;
         }
 

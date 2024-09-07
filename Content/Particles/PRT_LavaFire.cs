@@ -1,12 +1,13 @@
 ﻿using CalamityOverhaul.Content.Particles.Core;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_LavaFire : BaseParticle
+    internal class PRT_LavaFire : BaseParticle, ILoader
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle3";
         public override bool SetLifetime => true;
@@ -22,6 +23,16 @@ namespace CalamityOverhaul.Content.Particles
         public int maxLifeTime;
         private float opacity;
         private float timeLife;
+        private static Asset<Texture2D> StarTexture;
+        private static Asset<Texture2D> SoftGlow;
+        void ILoader.LoadAsset() {
+            StarTexture = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarTexture");
+            SoftGlow = CWRUtils.GetT2DAsset(CWRConstant.Masking + "SoftGlow");
+        }
+        void ILoader.UnLoadData() {
+            StarTexture = null;
+            SoftGlow = null;
+        }
         public override void SetPRT() {
             if (colors == null) {
                 colors = new Color[3];
@@ -81,8 +92,8 @@ namespace CalamityOverhaul.Content.Particles
 
         public override void CustomDraw(SpriteBatch spriteBatch) {
             Texture2D tex1 = PRTLoader.ParticleIDToTexturesDic[Type];
-            Texture2D tex2 = ModContent.Request<Texture2D>(CWRConstant.Masking + "StarTexture").Value;
-            Texture2D tex3 = ModContent.Request<Texture2D>(CWRConstant.Masking + "SoftGlow").Value;
+            Texture2D tex2 = StarTexture.Value;
+            Texture2D tex3 = SoftGlow.Value;
 
             Color emberColor = Color.Lerp(colors[0], colors[2], (float)(timeLeftMax - timeLife) / timeLeftMax) * opacity;
             Color glowColor = Color.Lerp(colors[1], colors[2], (float)(timeLeftMax - timeLife) / timeLeftMax);

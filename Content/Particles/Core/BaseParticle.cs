@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace CalamityOverhaul.Content.Particles.Core
 {
@@ -6,6 +7,7 @@ namespace CalamityOverhaul.Content.Particles.Core
     {
         public virtual string Texture => "";
         public virtual int FrameVariants => 1;
+        //[Obsolete]
         public int Variant = 0;
         /// <summary>
         /// 由一般粒子处理程序注册的粒子类型的ID,这是在粒子处理器loadsl时自动设置的
