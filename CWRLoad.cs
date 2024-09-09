@@ -1,5 +1,7 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Items.LoreItems;
 using CalamityMod.Items.Materials;
+using CalamityMod.Items.PermanentBoosters;
 using CalamityMod.NPCs.Abyss;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.AstrumAureus;
@@ -19,6 +21,7 @@ using CalamityMod.NPCs.Ravager;
 using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.Yharon;
+using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;
@@ -29,6 +32,7 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -70,7 +74,10 @@ namespace CalamityOverhaul
         public static int HeavenLightning;
 
         public static int Projectile_ArcZap;
-
+        /// <summary>
+        /// 关于哪些物品应该被设置为64的最大堆叠数
+        /// </summary>
+        public static int[] AddMaxStackItemsIn64 = [];
         /// <summary>
         /// 无尽锭
         /// </summary>
@@ -659,6 +666,14 @@ namespace CalamityOverhaul
                 }
                 NPCValue.TheofSteel.Add(i, isSteel);
             }
+
+            AddMaxStackItemsIn64 = [
+                ItemType<BloodOrange>(),
+                ItemType<MiracleFruit>(),
+                ItemType<Elderberry>(),
+                ItemType<Dragonfruit>(),
+                ItemType<LoreCynosure>(),
+            ];
 
             OnLoadContentBool = true;
         }

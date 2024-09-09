@@ -225,6 +225,10 @@ namespace CalamityOverhaul.Content
             SmiperItemSet(item);
             CWRLoad.SetAmmoItem(item);
 
+            if (CWRLoad.AddMaxStackItemsIn64.Contains(item.type)) {
+                item.maxStack = 64;
+            }
+
             if (CWRLoad.WeaponIsHeldRanged.TryGetValue(item.type, out bool isRanged) && isRanged) {
                 item.noUseGraphic = true;
             }

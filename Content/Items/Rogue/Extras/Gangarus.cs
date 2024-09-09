@@ -8,36 +8,40 @@ using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Rogue.Extras
 {
-    internal class Gangarus : ModItem
+    internal class Gangarus : ModItem, ILoader
     {
         public static SoundStyle BelCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 3.5f };
         public static SoundStyle AT = new("CalamityOverhaul/Assets/Sounds/AT") { Volume = 1.5f };
+        public static Asset<Texture2D> GangarusAsset;
+        public static Asset<Texture2D> EvaAsset;
         public int ChargeGrade;
         public override string Texture => CWRConstant.Item + "Rogue/Gangarus";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
+        public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
+        void ILoader.LoadAsset() {
+            GangarusAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");
+            EvaAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3");
+        }
+        void ILoader.UnLoadData() {
+            GangarusAsset = null;
+            EvaAsset = null;
         }
         public static void ZenithWorldAsset() {
-            if (!CWRServerConfig.Instance.AddExtrasContent) {
+            if (!CWRServerConfig.Instance.AddExtrasContent || Main.dedServ) {
                 return;
             }
-            if (Main.dedServ) {
-                return;
-            }
-            TextureAssets.Item[CWRLoad.Gangarus] = Main.zenithWorld
-                ? CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3")
-                : CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");
+            TextureAssets.Item[CWRLoad.Gangarus] = Main.zenithWorld ? EvaAsset : GangarusAsset;
         }
         public override void SetDefaults() {
             Item.width = 44;
