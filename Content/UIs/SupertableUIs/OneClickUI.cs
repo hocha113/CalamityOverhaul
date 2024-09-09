@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static OneClickUI Instance;
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/OneClick");
         protected SupertableUI mainUI => SupertableUI.Instance;
-        protected virtual Vector2 offsetDraw => new Vector2(580, 300);
+        protected virtual Vector2 offsetDraw => new Vector2(578, 330);
         private Rectangle mainRec;
         private int useTimeCoolding;
         private int useMuse3AddCount;
@@ -69,7 +69,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
         }
         protected virtual void ClickEvent() {
-            SupertableUI.PlayGrabSound();
             mainUI.OneClickPFunc();
             mainUI.OutItem();
         }

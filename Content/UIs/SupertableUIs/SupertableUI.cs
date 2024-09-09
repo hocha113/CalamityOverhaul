@@ -418,6 +418,7 @@ End:;
         /// 一键放置配方物品
         /// </summary>
         public void OneClickPFunc() {
+            bool onSound = false;
             if (previewItems != null && previewItems?.Length == items.Length) {
                 for (int i = 0; i < items.Length; i++) {
                     Item preItem2 = items[i];
@@ -433,6 +434,7 @@ End:;
                         Item targetItem = Main.mouseItem.Clone();
                         targetItem.stack = 1;
                         items[i] = targetItem;
+                        onSound = true;
                         Main.mouseItem.stack -= 1;
                         if (Main.mouseItem.stack == 0) {
                             Main.mouseItem.TurnToAir();
@@ -455,7 +457,7 @@ End:;
                                     goto End;
                                 }
                             }
-
+                            onSound = true;
                             backItem.stack -= 1;
                             if (backItem.stack == 0) {
                                 backItem.TurnToAir();
@@ -464,6 +466,10 @@ End:;
                         }
                     }
 End:;
+                }
+
+                if (onSound) {
+                    PlayGrabSound();
                 }
             }
         }
@@ -726,11 +732,13 @@ End:;
                     UpdateUIElementPos();
                 }
             }
+
             spriteBatch.Draw(Texture, DrawPos, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
             spriteBatch.Draw(CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon"), DrawPos, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出关闭按键
             if (onCloseP) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("SupertableUI_Text1"), DrawPos.X, DrawPos.Y, Color.Gold, Color.Black, new Vector2(0.3f), 1.1f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.1f));
             }
+
             if (previewItems != null) {
                 for (int i = 0; i < items.Length; i++) {//遍历绘制出UI格中的所有预览物品
                     if (previewItems[i] != null) {
@@ -752,10 +760,10 @@ End:;
                     }
                 }
             }
-
+            
             Texture2D arrow = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/InputArrow2");
             if (inputItem != null && inputItem?.type != 0) {//如果输出格有物品，那么将它画出来
-                DrawItemIcons(spriteBatch, inputItem, DrawPos + new Vector2(555, 215), overSlp: 1.5f);
+                DrawItemIcons(spriteBatch, inputItem, DrawPos + new Vector2(552, 215), overSlp: 1.5f);
                 arrow = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/InputArrow");
             }
             spriteBatch.Draw(arrow, DrawPos + new Vector2(460, 225), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出输出箭头

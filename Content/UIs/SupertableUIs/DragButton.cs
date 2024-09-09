@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public bool onDrag;
 
-        public Vector2 InSupPosOffset => new Vector2(556, 365);
+        public Vector2 InSupPosOffset => new Vector2(554, 380);
 
         public override void Load() {
             Instance = this;
