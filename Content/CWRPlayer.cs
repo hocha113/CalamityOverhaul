@@ -56,8 +56,6 @@ namespace CalamityOverhaul.Content
         /// 设置屏幕振动
         /// </summary>
         public float ScreenShakeValue;
-        //未使用的，这个属性属于一个未完成的UI
-        public int CompressorPanelID = -1;
         /// <summary>
         /// 是否开启超级合成台
         /// </summary>
@@ -93,7 +91,6 @@ namespace CalamityOverhaul.Content
         /// 挥舞索引，一般被刀具所使用
         /// </summary>
         public int SwingIndex;
-
         /// <summary>
         /// 是否受伤
         /// </summary>
@@ -185,13 +182,8 @@ namespace CalamityOverhaul.Content
             HellfireExplosion = false;
         }
 
-        public override void SaveData(TagCompound tag) {
-            tag.Add("_InitialCreation", InitialCreation);
-        }
-
-        public override void LoadData(TagCompound tag) {
-            InitialCreation = tag.GetBool("_InitialCreation");
-        }
+        public override void SaveData(TagCompound tag) => tag.Add("_InitialCreation", InitialCreation);
+        public override void LoadData(TagCompound tag) => InitialCreation = tag.GetBool("_InitialCreation");
 
         public override void OnEnterWorld() {
             base.OnEnterWorld();

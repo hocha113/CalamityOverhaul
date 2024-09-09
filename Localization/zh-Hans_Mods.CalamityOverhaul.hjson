@@ -4,7 +4,7 @@ CWRRecipes: {
 }
 
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
-Tools.RecipesLoseText: 你无法直接制作这个东西
+Tools.RecipesLoseText: 你无法直接制作该物品!
 
 Items: {
 	BrinyBaronEcType: {
