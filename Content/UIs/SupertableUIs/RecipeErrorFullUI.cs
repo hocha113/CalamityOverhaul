@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public bool onMainP;
         public bool eyEBool;
         public override void Update(GameTime gameTime) {
-            DrawPos = mainUI.DrawPos + new Vector2(500, 390);
+            DrawPos = mainUI.DrawPos + new Vector2(460, 420);
             MainRec = new Rectangle((int)DrawPos.X, (int)DrawPos.Y, 30, 30);
             onMainP = MainRec.Intersects(new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1));
             if (onMainP) {

@@ -467,8 +467,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float point = 0f;
             float rotding = Owner.Center.To(Projectile.Center).ToRotation();
-            Vector2 endPos = rotding.ToRotationVector2() * Length * Projectile.scale * 1.3f + Projectile.Center;
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, endPos, 25 * Projectile.scale, ref point);
+            float size = Projectile.scale * MeleeSize;
+            Vector2 endPos = rotding.ToRotationVector2() * Length * size * 1.3f + Projectile.Center;
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, endPos, 25 * size, ref point);
         }
 
         public override void DrawTrail(List<VertexPositionColorTexture> bars) {

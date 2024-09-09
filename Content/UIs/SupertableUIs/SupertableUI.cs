@@ -39,7 +39,14 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public Item[] previewItems;
 
         public Item inputItem;
-
+        /// <summary>
+        /// 最大迭代数量
+        /// </summary>
+        public int MaxIterations;
+        /// <summary>
+        /// 迭代次数的计数器，用于防止无限递归导致堆栈溢出的保险
+        /// </summary>
+        private int iterations;
         /// <summary>
         /// 主UI的面板矩形
         /// </summary>
@@ -239,18 +246,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                         OutItem();
                     }
                 }
-
-                //if (CWRKeySystem.TOM_OneClickP.JustPressed) {
-                //    PlayGrabSound();
-                //    OneClickPFunc();
-                //    OutItem();
-                //}
-
-                //if (CWRKeySystem.TOM_GlobalRecall.JustPressed) {
-                //    PlayGrabSound();
-                //    TakeAllItem();
-                //    OutItem();
-                //}
             }
 
             if (onInputP) {
@@ -260,14 +255,14 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     OutItem();
                 }
             }
+
+            iterations = 0;
         }
 
         /// <summary>
         /// 播放抓取音效
         /// </summary>
-        public static void PlayGrabSound() {
-            _ = SoundEngine.PlaySound(SoundID.Grab);
-        }
+        public static void PlayGrabSound() => SoundEngine.PlaySound(SoundID.Grab);
 
         /// <summary>
         /// 解析字符串键并获取对应的物品类型
@@ -276,8 +271,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <returns>解析后得到的物品类型</returns>
         public static int InStrGetItemType(string key, bool loadVanillaItem = false) {
             if (int.TryParse(key, out int intValue)) {
-                if (loadVanillaItem && !CWRUtils.isServer)
+                if (loadVanillaItem && !CWRUtils.isServer) {
                     Main.instance.LoadItem(intValue);
+                }
                 return (intValue);
             }
             else {
@@ -293,8 +289,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <returns>解析后得到的物品类型</returns>
         public static Item InStrGetItem(string key, bool loadVanillaItem = false) {
             if (int.TryParse(key, out int intValue)) {
-                if (loadVanillaItem && !CWRUtils.isServer)
+                if (loadVanillaItem && !CWRUtils.isServer) {
                     Main.instance.LoadItem(intValue);
+                } 
                 return new Item(intValue);
             }
             else {
@@ -349,7 +346,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             foreach (RecipeData data in AllRecipes) {
                 string[] arg = data.Values;
                 fullItemTypes = FullItem(arg);
-
                 if (items.Length != fullItemTypes.Length - 1) {//如果预装填的物品ID集合的长度对不上物品集合，那么就直接重置
                     ResetInputItem();
                     goto End;
@@ -361,24 +357,40 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                         goto End;
                     }
                 }
-
-                if (inputItem.type == ItemID.None) {//如果材料摆放正确，那么就进行输出行为
-                    Item item = new Item(fullItemTypes[fullItemTypes.Length - 1]);//获取预装填集合的末尾物品，末尾物品就是输出结果
-
-                    if (item.CWR().isInfiniteItem) {//如果这个物品是会湮灭的无尽物品，将其稳定性设置为稳定，即不发生湮灭
-                        item.CWR().noDestruct = true;
-                        item.CWR().destructTime = 10;
-                    }
-                    inputItem = item;
-                    string[] names = new string[fullItemTypes.Length];
-                    for (int i = 0; i < fullItemTypes.Length; i++) {
-                        Item fullItem = new Item(fullItemTypes[i]);
-                        names[i] = fullItem.ModItem == null ? fullItem.type.ToString() : fullItem.ModItem.FullName;
-                    }
-                    StaticFullItemNames = names;
-                    StaticFullItemTypes = fullItemTypes;
-                    break;
+                
+                Item item = new Item(fullItemTypes[fullItemTypes.Length - 1]);//获取预装填集合的末尾物品，末尾物品就是输出结果
+                if (item != null && item.type != ItemID.None && item.CWR().isInfiniteItem) {//如果这个物品是会湮灭的无尽物品，将其稳定性设置为稳定，即不发生湮灭
+                    item.CWR().noDestruct = true;
+                    item.CWR().destructTime = 10;
                 }
+
+                int minNum = int.MaxValue;
+                foreach (var value in items) {
+                    if (value.type == ItemID.None) {
+                        continue;
+                    }
+
+                    if (value.stack < minNum) {
+                        minNum = value.stack;
+                    }
+                }
+
+                item.stack = minNum;
+                if (item.stack > item.maxStack) {
+                    item.stack = item.maxStack;
+                }
+
+                inputItem = item;
+
+                string[] names = new string[fullItemTypes.Length];
+                for (int i = 0; i < fullItemTypes.Length; i++) {
+                    Item fullItem = new Item(fullItemTypes[i]);
+                    names[i] = fullItem.ModItem == null ? fullItem.type.ToString() : fullItem.ModItem.FullName;
+                }
+                StaticFullItemNames = names;
+                StaticFullItemTypes = fullItemTypes;
+
+                break;
 End:;
             }
         }
@@ -412,10 +424,6 @@ End:;
                     if (preItem2 == null) {
                         preItem2 = new Item();
                     }
-                    if (preItem2.type != ItemID.None) {
-                        TakeAllItem();
-                        return;
-                    }
                 }
 
                 for (int i = 0; i < previewItems.Length; i++) {
@@ -433,10 +441,21 @@ End:;
                     }
                     //接着，如果玩家鼠标上是空或者鼠标上没有目标物品，那么再遍历玩家背包内容
                     foreach (var backItem in player.inventory) {
-                        if (preItem.type == backItem.type && backItem.type != ItemID.None) {
+                        if (preItem.type == backItem.type && preItem.type != ItemID.None) {
                             Item targetItem = backItem.Clone();
-                            targetItem.stack = 1;
-                            items[i] = targetItem;
+
+                            if (items[i].type == ItemID.None) {
+                                targetItem.stack = 1;
+                                items[i] = targetItem;
+                            }
+                            else {
+                                items[i].stack++;
+                                if (items[i].stack > items[i].maxStack) {
+                                    items[i].stack = items[i].maxStack;
+                                    goto End;
+                                }
+                            }
+
                             backItem.stack -= 1;
                             if (backItem.stack == 0) {
                                 backItem.TurnToAir();
@@ -462,9 +481,10 @@ End:;
                     SoundEngine.PlaySound(SoundID.Research);
                     for (int i = 0; i < items.Length; i++) {
                         if (items[i].type == StaticFullItemTypes[i]) {
-                            items[i].stack -= 1;
-                            if (items[i].stack <= 0)
+                            items[i].stack -= inputItem.stack;
+                            if (items[i].stack <= 0) {
                                 items[i] = new Item();
+                            }  
                         }
                     }
 
@@ -477,9 +497,10 @@ End:;
                         SoundEngine.PlaySound(SoundID.Research);
                         for (int i = 0; i < items.Length; i++) {
                             if (items[i].type == StaticFullItemTypes[i]) {
-                                items[i].stack -= 1;
-                                if (items[i].stack <= 0)
+                                items[i].stack -= inputItem.stack;
+                                if (items[i].stack <= 0) {
                                     items[i] = new Item();
+                                }   
                             }
                         }
 
@@ -574,21 +595,18 @@ End:;
                 if (holdItem.stack == 0) {
                     holdItem = new Item();
                 }
-                OutItem();
                 return;
             }
             // 不同种物品交换逻辑
             if (onitem.type != holdItem.type && onitem.type != ItemID.None && holdItem.type != ItemID.None) {
                 PlayGrabSound();
                 Utils.Swap(ref holdItem, ref onitem);
-                OutItem();
                 return;
             }
             // 鼠标上有物品且目标格为空物品，进行右键放置逻辑
             if (onitem.type == ItemID.None && holdItem.type != ItemID.None) {
                 PlayGrabSound();
                 PlaceItemOnGrid(ref onitem, ref holdItem);
-                OutItem();
             }
         }
 

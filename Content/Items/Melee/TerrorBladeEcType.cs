@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             drawTrailTopWidth = 80;
             drawTrailCount = 16;
             Length = 110;
-            unitOffsetDrawZkMode = 0;
+            unitOffsetDrawZkMode = -8;
             overOffsetCachesRoting = MathHelper.ToRadians(8);
             SwingData.starArg = 80;
             SwingData.ler1_UpLengthSengs = 0.1f;

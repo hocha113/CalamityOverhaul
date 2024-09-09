@@ -97,8 +97,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
                 LoadPsreviewItems();
 
-                if (SupertableUI.Instance.inputItem == null)//如果输出物品是Null，进行初始化防止空报错
+                if (SupertableUI.Instance.inputItem == null) { //如果输出物品是Null，进行初始化防止空报错
                     SupertableUI.Instance.inputItem = new Item();
+                }
+                    
                 if (SupertableUI.Instance.inputItem.type != ItemID.None && SupertableUI.Instance.StaticFullItemNames != null) {//如果输出物品不是空物品，进行遍历检测预装填列表
                     for (int i = 0; i < itemNameString_FormulaContent_Values.Count; i++) {
                         string[] formulaContent_Values = itemNameString_FormulaContent_Values[i];

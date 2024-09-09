@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 较为稳妥的获取一个正确的刀尖单位方向向量
         /// </summary>
-        protected Vector2 safeInSwingUnit => Owner.Center.To(Projectile.Center).UnitVector();
+        protected Vector2 safeInSwingUnit => GetOwnerCenter().To(Projectile.Center).UnitVector();
         /// <summary>
         /// 射弹基本速度，受攻速加成影响
         /// </summary>
@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 生成抛射物的位置
         /// </summary>
-        protected Vector2 ShootSpanPos => Owner.GetPlayerStabilityCenter() + UnitToMouseV * Length * 0.5f;
+        protected Vector2 ShootSpanPos => GetOwnerCenter() + UnitToMouseV * Length * 0.5f;
         /// <summary>
         /// 射弹源
         /// </summary>
@@ -336,6 +336,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public float SetSwingSpeed(float speed) => speed / Owner.GetWeaponAttackSpeed(Item);
+        /// <summary>
+        /// 一个统一的获取玩家中心位置向量的方法，默认按照方法<see cref="CWRUtils.GetPlayerStabilityCenter"/>去返回值，
+        /// 绘制使用一个独立的方法<see cref="GetInOwnerDrawOrigPosition"/>，但这个两个方法的默认逻辑是一样的
+        /// </summary>
+        /// <returns></returns>
+        public Vector2 GetOwnerCenter() => Owner.GetPlayerStabilityCenter();
 
         protected virtual void InitializeCaches() {
             for (int j = drawTrailCount - 1; j >= 0; j--) {
@@ -353,7 +359,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <param name="rotToTargetSpeedTrengsVumVer"></param>
         /// <param name="newSparkCount"></param>
         protected void HitEffectValue(Entity target, int sparkCount, out Vector2 rotToTargetSpeedTrengsVumVer, out int newSparkCount) {
-            Vector2 toTarget = Owner.Center.To(target.Center);
+            Vector2 toTarget = GetOwnerCenter().To(target.Center);
             Vector2 norlToTarget = toTarget.GetNormalVector();
             int ownerToTargetSetDir = Math.Sign(toTarget.X);
             ownerToTargetSetDir = ownerToTargetSetDir != DirSign ? -1 : 1;
@@ -466,12 +472,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             if (Time == 0) {
                 dirs = Projectile.spriteDirection = Owner.direction;
             }
-            
+
+            Vector2 ownerCenter = GetOwnerCenter();
+
             Projectile.Calamity().timesPierced = 0;
             Owner.heldProj = Projectile.whoAmI;
             Owner.itemTime = 2;
             Owner.itemAnimation = 2;
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + vector * (1f + (MeleeSize - 1f) / 2f);
+            Projectile.Center = ownerCenter + vector * (1f + (MeleeSize - 1f) / 2f);
 
             if (canFormOwnerSetDir) {
                 Projectile.spriteDirection = Owner.direction;
@@ -479,13 +487,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             if (canSetOwnerArmBver) {
                 Owner.SetCompositeArmFront(true, Length >= 80 ? 
                     Player.CompositeArmStretchAmount.Full : Player.CompositeArmStretchAmount.Quarter
-                    , (Owner.Center - Projectile.Center).ToRotation() + MathHelper.PiOver2);
+                    , (ownerCenter - Projectile.Center).ToRotation() + MathHelper.PiOver2);
             }
             if (ownerOrientationLock) {
                 Owner.direction = Projectile.spriteDirection = dirs;
             }
 
-            float toOwnerRoding = (Projectile.Center - Owner.Center).ToRotation();
+            float toOwnerRoding = (Projectile.Center - ownerCenter).ToRotation();
             Projectile.rotation = Projectile.spriteDirection == 1 ? 
                 toOwnerRoding + MathHelper.PiOver4 : toOwnerRoding - MathHelper.Pi - MathHelper.PiOver4;
         }
@@ -651,7 +659,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 oldLength[i] = oldLength[i - 1];
             }
 
-            oldRotate[0] = (Projectile.Center - Owner.Center).ToRotation() + overOffsetCachesRoting * Math.Sign(rotSpeed);
+            oldRotate[0] = (Projectile.Center - GetOwnerCenter()).ToRotation() + overOffsetCachesRoting * Math.Sign(rotSpeed);
             oldDistanceToOwner[0] = distanceToOwner;
             oldLength[0] = (IgnoreImpactBoxSize ? 22 : Projectile.height) * Projectile.scale * oldLengthOffsetSizeValue;
         }
@@ -748,7 +756,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 offsetOwnerPos *= -1;
             }
 
-            Vector2 drawPosValue = Projectile.Center - RodingToVer(toProjCoreMode, (Projectile.Center - Owner.Center).ToRotation()) + offsetOwnerPos;
+            Vector2 drawPosValue = Projectile.Center - RodingToVer(toProjCoreMode, (Projectile.Center - GetOwnerCenter()).ToRotation()) + offsetOwnerPos;
             Color color = Projectile.GetAlpha(lightColor);
             if (Incandescence || !CWRServerConfig.Instance.WeaponAdaptiveIllumination) {
                 color = Color.White;
