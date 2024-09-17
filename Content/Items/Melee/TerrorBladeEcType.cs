@@ -19,21 +19,21 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 惊惧魂刃
     /// </summary>
-    internal class TerrorBladeEcType : EctypeItem, ICWRLoader
+    internal class TerrorBladeEcType : EctypeItem, ILoader
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TerrorBlade";
         public const float TerrorBladeMaxRageEnergy = 5000;
         private static Asset<Texture2D> rageEnergyTopAsset;
         private static Asset<Texture2D> rageEnergyBarAsset;
         private static Asset<Texture2D> rageEnergyBackAsset;
-        void ICWRLoader.Setup() {
+        void ILoader.Setup() {
             if (!Main.dedServ) {
                 rageEnergyTopAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeTop");
                 rageEnergyBarAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeBar");
                 rageEnergyBackAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeBack");
             }
         }
-        void ICWRLoader.UnLoad() {
+        void ILoader.UnLoad() {
             rageEnergyTopAsset = null;
             rageEnergyBarAsset = null;
             rageEnergyBackAsset = null;

@@ -15,7 +15,7 @@ using static CalamityOverhaul.CWRMod;
 namespace CalamityOverhaul.Content.RemakeItems.Core
 {
     //关于物品重置节点的钩子均挂载于此处
-    internal class RItemLoader : GlobalItem, ICWRLoader
+    internal class RItemLoader : GlobalItem, ILoader
     {
         #region On and IL
         internal delegate bool On_Item_Dalegate(Item item);
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onUpdateAccessoryMethod;
         public static MethodBase onAltFunctionUseMethod;
 
-        void ICWRLoader.Load() {
+        void ILoader.Load() {
             itemLoaderType = typeof(ItemLoader);
             onSetDefaultsMethod = itemLoaderType.GetMethod("SetDefaults", BindingFlags.NonPublic | BindingFlags.Static);
             onShootMethod = itemLoaderType.GetMethod("Shoot", BindingFlags.Public | BindingFlags.Static);
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
         }
 
-        void ICWRLoader.UnLoad() {
+        void ILoader.UnLoad() {
             itemLoaderType = null;
             onSetDefaultsMethod = null;
             onShootMethod = null;

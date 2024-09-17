@@ -9,7 +9,7 @@ using Terraria.Utilities;
 
 namespace CalamityOverhaul.Content.SkyEffects
 {
-    internal class BrutalSkeletronSky : CustomSky, ICWRLoader
+    internal class BrutalSkeletronSky : CustomSky, ILoader
     {
         internal static string name => "CWRMod:BrutalSkeletronSky";
         private bool active;
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.SkyEffects
         private int ticksUntilNextBolt;
         private UnifiedRandom random = new UnifiedRandom();
 
-        void ICWRLoader.Load() {
+        void ILoader.Load() {
             if (CWRUtils.isServer) {
                 return;
             }

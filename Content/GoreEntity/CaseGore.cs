@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.GoreEntity
 {
-    internal class CaseGore : ModGore, ICWRLoader
+    internal class CaseGore : ModGore, ILoader
     {
         public override string Texture => CWRConstant.Asset + "CaseGore";
         public static int PType;

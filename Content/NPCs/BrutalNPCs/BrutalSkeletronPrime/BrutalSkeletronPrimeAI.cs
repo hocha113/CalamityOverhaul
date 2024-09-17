@@ -20,7 +20,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    internal class BrutalSkeletronPrimeAI : NPCOverride, ICWRLoader
+    internal class BrutalSkeletronPrimeAI : NPCOverride, ILoader
     {
         #region Data
         public override int TargetID => NPCID.SkeletronPrime;
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        void ICWRLoader.LoadAsset() {
+        void ILoader.LoadAsset() {
             string path = CWRConstant.NPC + "BSP/";
             HandAsset = CWRUtils.GetT2DAsset(path + "BrutalSkeletron");
             BSPCannon = CWRUtils.GetT2DAsset(path + "BSPCannon");
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             canLoaderAssetZunkenUp = true;
         }
 
-        void ICWRLoader.UnLoad() {
+        void ILoader.UnLoad() {
             HandAsset = null;
             BSPCannon = null;
             BSPlaser = null;

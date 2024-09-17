@@ -20,7 +20,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Rogue.Extras
 {
-    internal class Gangarus : ModItem, ICWRLoader
+    internal class Gangarus : ModItem, ILoader
     {
         public static SoundStyle BelCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 3.5f };
         public static SoundStyle AT = new("CalamityOverhaul/Assets/Sounds/AT") { Volume = 1.5f };
@@ -29,11 +29,11 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public int ChargeGrade;
         public override string Texture => CWRConstant.Item + "Rogue/Gangarus";
         public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        void ICWRLoader.LoadAsset() {
+        void ILoader.LoadAsset() {
             GangarusAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");
             EvaAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3");
         }
-        void ICWRLoader.UnLoad() {
+        void ILoader.UnLoad() {
             GangarusAsset = null;
             EvaAsset = null;
         }

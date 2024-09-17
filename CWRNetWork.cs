@@ -61,11 +61,11 @@ namespace CalamityOverhaul
         public void LoadNet() { }
     }
 
-    public class CWRNetWork : ICWRLoader
+    public class CWRNetWork : ILoader
     {
         internal static List<INetWork> INetWorks { get; private set; } = [];
         internal static Dictionary<Type, short> NetWorkIDDic { get; private set; } = [];
-        void ICWRLoader.Load() {
+        void ILoader.Load() {
             INetWorks = CWRUtils.GetSubInterface<INetWork>();
             for (int index = 0; index < INetWorks.Count; index++) {
                 INetWork netWork = INetWorks[index];
@@ -77,7 +77,7 @@ namespace CalamityOverhaul
                 }
             }
         }
-        void ICWRLoader.UnLoad() {
+        void ILoader.UnLoad() {
             INetWorks = null;
         }
 

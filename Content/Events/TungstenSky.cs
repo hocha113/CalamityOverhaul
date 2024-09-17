@@ -6,13 +6,13 @@ using Terraria.Graphics.Effects;
 
 namespace CalamityOverhaul.Content.Events
 {
-    internal class TungstenSky : CustomSky, ICWRLoader
+    internal class TungstenSky : CustomSky, ILoader
     {
         private bool isActive = false;
         private float intensity = 0f;
         private static Asset<Texture2D> back;
 
-        void ICWRLoader.Load() {
+        void ILoader.Load() {
             if (Main.dedServ) {
                 return;
             }

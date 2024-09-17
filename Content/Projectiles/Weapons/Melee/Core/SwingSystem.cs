@@ -5,21 +5,21 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 {
-    internal class SwingSystem : ICWRLoader
+    internal class SwingSystem : ILoader
     {
         internal static List<BaseSwing> Swings;
         internal static Dictionary<string, int> SwingFullNameToType;
         internal static Dictionary<int, Asset<Texture2D>> trailTextures;
         internal static Dictionary<int, Asset<Texture2D>> gradientTextures;
         internal static Dictionary<int, Asset<Texture2D>> glowTextures;
-        void ICWRLoader.Load() {
+        void ILoader.Load() {
             Swings = [];
             SwingFullNameToType = [];
             trailTextures = [];
             gradientTextures = [];
             glowTextures = [];
         }
-        void ICWRLoader.Setup() {
+        void ILoader.Setup() {
             Swings = CWRUtils.HanderSubclass<BaseSwing>();
             foreach (var swing in Swings) {
                 string pathValue = swing.GetType().Name;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 SwingFullNameToType.Add(pathValue, type);
             }
         }
-        void ICWRLoader.LoadAsset() {
+        void ILoader.LoadAsset() {
             foreach (var swing in Swings) {
                 string path1 = swing.trailTexturePath;
                 string path2 = swing.gradientTexturePath;
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 }
             }
         }
-        void ICWRLoader.UnLoad() {
+        void ILoader.UnLoad() {
             Swings = null;
             SwingFullNameToType = null;
             trailTextures = null;

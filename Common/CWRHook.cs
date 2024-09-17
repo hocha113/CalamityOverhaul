@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Common
     /// 这是一个负责管理和应用方法钩子的类
     /// 该类实现了ILoader接口，确保对钩子的正确加载和卸载
     /// </summary>
-    public class CWRHook : ICWRLoader
+    public class CWRHook : ILoader
     {
         private static ConcurrentDictionary<(MethodBase, Delegate), Hook> _hooks = new ConcurrentDictionary<(MethodBase, Delegate), Hook>();
         /// <summary>
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Common
             return true;
         }
 
-        void ICWRLoader.UnLoad() {
+        void ILoader.UnLoad() {
             foreach (var hook in _hooks.Values) {
                 if (hook.IsApplied) {
                     hook.Undo();

@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles.Core
 {
-    internal class PRTLoader : ModSystem, ICWRLoader
+    internal class PRTLoader : ModSystem, ILoader
     {
         internal static Dictionary<Type, int> ParticleTypesDic;
         internal static Dictionary<int, Texture2D> ParticleIDToTexturesDic;
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Particles.Core
             On_Main.DrawInfernoRings += CWRDrawForegroundParticles;
         }
 
-        void ICWRLoader.LoadAsset() {
+        void ILoader.LoadAsset() {
             foreach (var prt in CWRParticleCoreInds) {
                 Type type = prt.GetType();
                 string texturePath = type.Namespace.Replace('.', '/') + "/" + type.Name;

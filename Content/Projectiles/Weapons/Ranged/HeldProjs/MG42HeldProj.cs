@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class MG42HeldProj : BaseFeederGun, ICWRLoader
+    internal class MG42HeldProj : BaseFeederGun, ILoader
     {
         public override string Texture => CWRConstant.Item_Ranged + "MG42";
 
@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private static int MG42;
         private float randomShootRotset;
         private float shootValue;
-        void ICWRLoader.LoadAsset() => masking = CWRUtils.GetT2DAsset(Texture + "_Masking");
-        void ICWRLoader.Setup() => MG42 = ModContent.ItemType<MG42>();
-        void ICWRLoader.UnLoad() {
+        void ILoader.LoadAsset() => masking = CWRUtils.GetT2DAsset(Texture + "_Masking");
+        void ILoader.Setup() => MG42 = ModContent.ItemType<MG42>();
+        void ILoader.UnLoad() {
             masking = null;
             MG42 = ItemID.None;
         }
