@@ -4449,14 +4449,14 @@ TextContent: {
 			Diese Einstellung ist für rekursives Crafting verantwortlich und kann beim 
 			Interagieren mit diesem Mod alle Crafting-Ereignisse fehlerhaft aufrufen, was das Spielerlebnis erheblich beeinträchtigen würde.
 			'''
-		IconUI_Text0: Zur Mod-Open-Source-Repository gehen :)
+		IconUI_Text0: Zum Quellcode-Repository des Mods gehen :)
 		IconUI_Text1: Problem melden
 		IconUI_Text2: Dankeschön-Liste
 		IconUI_Text3: Künstler
 		IconUI_Text4: Code-Hilfe
 		IconUI_Text5: Spender
 		IconUI_Text6: Balancing-Tests
-		// IconUI_Text7: View log
+		IconUI_Text7: Log anzeigen
 		Spazmatism_Text1: EUX_001 erfolgreich eingesetzt, Verhalten protokolliert: Zusammenarbeit mit PCZ_001 zur Neutralisierung des Ziels.
 		Spazmatism_Text2: EUX_002 erfolgreich eingesetzt, Verhalten protokolliert: Zusammenarbeit mit PCZ_001 zur Neutralisierung des Ziels.
 		Spazmatism_Text3: Hauptstruktur von EUX_001 beschädigt, versuche, das Schlachtfeld zu verlassen...

@@ -259,13 +259,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         public override bool? CanDamage() => CanMelee;
 
         protected void ScopeSrecen() {
-            Owner.scope = false;
             if (CWRKeySystem.ADS_Key.Old) {
                 ScopeLeng += 4f;
-                if (ScopeLeng > 30) {
-                    ScopeLeng = 30;
+                if (ScopeLeng > 40f) {
+                    ScopeLeng = 40f;
                 }
-                Main.SetCameraLerp(0.05f, 10);
+                Main.SetCameraLerp(0.15f, 60);
                 ModOwner.OffsetScreenPos = ToMouse.UnitVector() * ScopeLeng;
             }
             else {

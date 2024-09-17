@@ -268,7 +268,16 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        public void SetScope() {
+            Item heldItem = Player.ActiveItem();
+            if (heldItem.type != ItemID.None && heldItem.CWR().Scope) {
+                Player.scope = false;
+            }
+        }
+
         public override void PostUpdate() {
+            SetScope();
+
             if (DontSwitchWeaponTime > 0) {
                 DontSwitchWeaponTime--;
             }

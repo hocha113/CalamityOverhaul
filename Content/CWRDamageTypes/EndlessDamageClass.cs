@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.CWRDamageTypes
 
         public override string LocalizationCategory => "EndlessDamageClassTextContent";
 
-        public string NameText => Language.GetTextValue("Mods.CalamityOverhaul.EndlessDamageClassTextContent.EndlessDamageClass.DisplayName");
-
         public override StatInheritanceData GetModifierInheritance(DamageClass damageClass) {
             return StatInheritanceData.Full;
         }
