@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    internal class AcknowledgmentUI : BaseMainMenuOverUI, ILoader
+    internal class AcknowledgmentUI : BaseMainMenuOverUI, ICWRLoader
     {
         internal static string textElement1 => $" [{CWRLocText.GetTextValue("IconUI_Text3")}]";
         internal static string textElement2 => $" [{CWRLocText.GetTextValue("IconUI_Text4")}]";
@@ -170,10 +170,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             On_Main.UpdateAudio_DecideOnTOWMusic += DecideOnTOWMusicEvent;
             On_Main.UpdateAudio_DecideOnNewMusic += DecideOnNewMusicEvent;
         }
-        void ILoader.LoadAsset() {
+        void ICWRLoader.LoadAsset() {
             Logo = CWRUtils.GetT2DAsset("CalamityOverhaul/IntactLogo");
         }
-        void ILoader.Setup() => LoadName();
+        void ICWRLoader.Setup() => LoadName();
         private void LoadName() {
             names = [
             "[icon]",

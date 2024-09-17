@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
     /// <summary>
     /// Tile模块的管理类。此类负责加载、设置和卸载Tile模块，并处理与世界生成和网络通信相关的操作
     /// </summary>
-    internal class TileModuleLoader : GlobalTile, ILoader, INetWork
+    internal class TileModuleLoader : GlobalTile, ICWRLoader, INetWork
     {
         /// <summary>
         /// 所有Tile模块的列表该列表在加载时初始化，并包含所有Tile模块的实例
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
         public static INetWork NetInstance;
 
         void INetWork.LoadNet() => NetInstance = this;
-        void ILoader.Load() {
+        void ICWRLoader.Load() {
             TileModulesList = CWRUtils.HanderSubclass<BaseTileModule>();
             for (int i = 0; i < TileModulesList.Count; i++) {
                 BaseTileModule module = TileModulesList[i];
@@ -72,13 +72,13 @@ namespace CalamityOverhaul.Content.TileModules.Core
             WorldGen.Hooks.OnWorldLoad += LoadWorldTileModule;
         }
 
-        void ILoader.Setup() {
+        void ICWRLoader.Setup() {
             foreach (var module in TileModulesList) {
                 module.SetStaticProperty();
             }
         }
 
-        void ILoader.UnLoad() {
+        void ICWRLoader.UnLoad() {
             foreach (var module in TileModulesList) {
                 module.UnLoad();
             }

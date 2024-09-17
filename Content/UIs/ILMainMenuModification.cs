@@ -8,7 +8,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.UIs
 {
-    internal class ILMainMenuModification : ILoader
+    internal class ILMainMenuModification : ICWRLoader
     {
         internal static List<BaseMainMenuOverUI> MainMenuOverUIInstances;
 
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.UIs
             _ = potlevel.EmitDelegate(() => Draw(Main.spriteBatch));
         }
 
-        void ILoader.Load() {
+        void ICWRLoader.Load() {
             if (Main.dedServ) {
                 return;
             }
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.UIs
             IL_Main.DrawMenu += ILMenuLoadDrawFunc;
         }
 
-        void ILoader.UnLoad() {
+        void ICWRLoader.UnLoad() {
             if (Main.dedServ) {
                 return;
             }

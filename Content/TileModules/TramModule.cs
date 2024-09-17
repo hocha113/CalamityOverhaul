@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileModules
 {
-    internal class TramModule : BaseTileModule, ILoader
+    internal class TramModule : BaseTileModule, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<TransmutationOfMatter>();
         private const int maxleng = 300;
@@ -20,11 +20,11 @@ namespace CalamityOverhaul.Content.TileModules
         internal static Asset<Texture2D> modeuleBodyAsset;
         internal static Asset<Texture2D> truesFromeAsset;
         internal Vector2 Center => PosInWorld + new Vector2(TransmutationOfMatter.Width, TransmutationOfMatter.Height) * 8;
-        void ILoader.LoadAsset() {
+        void ICWRLoader.LoadAsset() {
             modeuleBodyAsset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Tiles/TransmutationOfMatter");
             truesFromeAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "SupertableUIs/TexturePackButtons");
         }
-        void ILoader.UnLoad() => modeuleBodyAsset = truesFromeAsset = null;
+        void ICWRLoader.UnLoad() => modeuleBodyAsset = truesFromeAsset = null;
         public override void Update() {
             Player player = Main.LocalPlayer;
             if (!player.active || Main.myPlayer != player.whoAmI) {

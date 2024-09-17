@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.SkyEffects
 {
-    internal class PGBolt : ILoader
+    internal class PGBolt : ICWRLoader
     {
         public Vector2 Position;
         public float Depth;
@@ -12,11 +12,11 @@ namespace CalamityOverhaul.Content.SkyEffects
         public bool IsAlive;
         private static Asset<Texture2D> boltAsset;
         private static Asset<Texture2D> flashAsset;
-        void ILoader.LoadAsset() {
+        void ICWRLoader.LoadAsset() {
             boltAsset = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/Sky/PGBolt");
             flashAsset = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/Sky/PGFlash");
         }
-        void ILoader.UnLoad() {
+        void ICWRLoader.UnLoad() {
             boltAsset = null;
             flashAsset = null;
         }

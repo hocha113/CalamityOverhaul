@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 {
-    internal class NeutronGlaiveHeldAlt : BaseHeldProj, ILoader
+    internal class NeutronGlaiveHeldAlt : BaseHeldProj, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Melee + "NeutronGlaive";
 
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         private bool canatcck3 = true;
         private int uiframe;
         private const int maxatcck = 80;
-        void ILoader.Setup() {
+        void ICWRLoader.Setup() {
             if (Main.dedServ) {
                 return;
             }
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
             bar3 = CWRUtils.GetT2DAsset(CWRConstant.UI + "NeutronsBarTop");
             bar4 = CWRUtils.GetT2DAsset(CWRConstant.UI + "NeutronsBarTop2");
         }
-        void ILoader.UnLoad() {
+        void ICWRLoader.UnLoad() {
             bar1 = null;
             bar2 = null;
             bar3 = null;

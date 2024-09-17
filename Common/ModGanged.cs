@@ -23,7 +23,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Common
 {
-    internal class ModGanged : ILoader
+    internal class ModGanged : ICWRLoader
     {
         #region Data
         public delegate bool On_BOOL_Dalegate();
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Common
             CWRMod.Instance.Logger.Info($"{text4} {value1}");
         }
 
-        void ILoader.Load() {
+        void ICWRLoader.Load() {
             #region weaponOut
             if (CWRMod.Instance.weaponOut != null) {
                 weaponOutCodeTypes = AssemblyManager.GetLoadableTypes(CWRMod.Instance.weaponOut.Code);
@@ -407,7 +407,7 @@ namespace CalamityOverhaul.Common
             #endregion
         }
 
-        void ILoader.UnLoad() {
+        void ICWRLoader.UnLoad() {
             weaponOutCodeTypes = null;
             weaponOut_DrawToolType = null;
             on_weaponOut_DrawTool_Method = null;

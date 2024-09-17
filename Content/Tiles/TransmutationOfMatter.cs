@@ -17,7 +17,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Tiles
 {
-    internal class TransmutationOfMatter : ModTile, ILoader
+    internal class TransmutationOfMatter : ModTile, ICWRLoader
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "TransmutationOfMatter";
         public const int Width = 5;
@@ -26,8 +26,8 @@ namespace CalamityOverhaul.Content.Tiles
         public const int OriginOffsetY = 1;
         public const int SheetSquare = 16;
         private static Asset<Texture2D> assetValue;
-        void ILoader.LoadAsset() => assetValue = ModContent.Request<Texture2D>(Texture);
-        void ILoader.UnLoad() => assetValue = null;
+        void ICWRLoader.LoadAsset() => assetValue = ModContent.Request<Texture2D>(Texture);
+        void ICWRLoader.UnLoad() => assetValue = null;
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }

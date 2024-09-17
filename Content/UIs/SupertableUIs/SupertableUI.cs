@@ -17,7 +17,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    internal class SupertableUI : CWRUIPanel, ILoader
+    internal class SupertableUI : CWRUIPanel, ICWRLoader
     {
         #region
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue2");
@@ -94,8 +94,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static List<RecipeData> AllRecipes = [];
         #endregion
         public override void Load() => Instance = this;
-        void ILoader.Setup() => LoadRecipe();
-        void ILoader.UnLoad() {
+        void ICWRLoader.Setup() => LoadRecipe();
+        void ICWRLoader.UnLoad() {
             RpsDataStringArrays = null;
             ModCall_OtherRpsData_StringList = [];
             Instance = null;

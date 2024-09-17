@@ -9,7 +9,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    internal class OpenUI : BaseMainMenuOverUI, ILoader
+    internal class OpenUI : BaseMainMenuOverUI, ICWRLoader
     {
         private float _sengs;
         internal bool _active;
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         private Vector2 steamCenter => steamPos + new Vector2(steamOAC.Width(), steamOAC.Height()) / 2 * githubSiz;
         public bool OnActive() => _active || _sengs > 0;
-        void ILoader.LoadAsset() {
+        void ICWRLoader.LoadAsset() {
             githubOAC = CWRUtils.GetT2DAsset(CWRConstant.UI + "GithubOAC");
             steamOAC = CWRUtils.GetT2DAsset(CWRConstant.UI + "SteamOAC");
         }
