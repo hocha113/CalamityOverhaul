@@ -9,14 +9,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Extras
 {
-    internal class NeutronWand : ModItem, ILoader
+    internal class NeutronWand : ModItem, ICWRLoader
     {
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
         internal static int PType;
-        void ILoader.SetupData() => PType = ModContent.ItemType<NeutronWand>();
+        void ICWRLoader.SetupData() => PType = ModContent.ItemType<NeutronWand>();
         public override void SetStaticDefaults() => CWRUtils.SetAnimation(Type, 5, 10);
         public override void SetDefaults() {
             Item.width = Item.height = 32;

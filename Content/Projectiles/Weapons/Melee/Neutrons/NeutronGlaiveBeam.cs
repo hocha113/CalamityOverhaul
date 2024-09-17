@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 {
-    internal class NeutronGlaiveBeam : ModProjectile, IDrawWarp, ILoader
+    internal class NeutronGlaiveBeam : ModProjectile, IDrawWarp, ICWRLoader
     {
         public override string Texture => CWRConstant.Projectile_Melee + "NeutronGlaiveBeam";
         public static int PType;

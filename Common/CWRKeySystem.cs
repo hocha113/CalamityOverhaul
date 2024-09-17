@@ -2,7 +2,7 @@
 
 namespace CalamityOverhaul.Common
 {
-    internal class CWRKeySystem : ILoader
+    internal class CWRKeySystem : ICWRLoader
     {
         public static ModKeybind HeavenfallLongbowSkillKey { get; private set; }
         public static ModKeybind InfinitePickSkillKey { get; private set; }
@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Common
         public static ModKeybind KreLoad_Key { get; private set; }
         public static ModKeybind ADS_Key { get; private set; }
 
-        void ILoader.LoadData() {
+        void ICWRLoader.LoadData() {
             Mod mod = CWRMod.Instance;
             HeavenfallLongbowSkillKey = KeybindLoader.RegisterKeybind(mod, "HeavenfallLongbowSkillKey", "Q");
             InfinitePickSkillKey = KeybindLoader.RegisterKeybind(mod, "InfinitePickSkillKey", "C");
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Common
             ADS_Key = KeybindLoader.RegisterKeybind(mod, "ADS_Key", "Z");
         }
 
-        void ILoader.UnLoadData() {
+        void ICWRLoader.UnLoadData() {
             HeavenfallLongbowSkillKey = null;
             InfinitePickSkillKey = null;
             TOM_GatheringItem = null;

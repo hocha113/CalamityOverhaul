@@ -10,17 +10,17 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Structures
 {
-    internal class StructuresBehavior : ILoader
+    internal class StructuresBehavior : ICWRLoader
     {
         internal delegate void SetChest_Delegate(Chest chest, int type, bool hasPlacedLogAndSchematic);
-        void ILoader.LoadData() {
+        void ICWRLoader.LoadData() {
             Type draedonStructures = typeof(DraedonStructures);
             MethodInfo getMethod(string key) => draedonStructures.GetMethod(key, BindingFlags.Public | BindingFlags.Static);
             CWRHook.Add(getMethod("FillPlanetoidLaboratoryChest"), OnPlanetoidChest);
             //CWRHook.Add(getMethod("FillPlagueLaboratoryChest"), OnPlagueChest);
         }
 
-        void ILoader.UnLoadData() { }
+        void ICWRLoader.UnLoadData() { }
 
         private static void AddChestContent(Chest chest, int type, int stack, string text) {
             foreach (var item in chest.item) {

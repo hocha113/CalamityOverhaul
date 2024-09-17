@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_LavaFire : BaseParticle, ILoader
+    internal class PRT_LavaFire : BaseParticle, ICWRLoader
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle3";
         public override bool SetLifetime => true;
@@ -25,11 +25,11 @@ namespace CalamityOverhaul.Content.Particles
         private float timeLife;
         private static Asset<Texture2D> StarTexture;
         private static Asset<Texture2D> SoftGlow;
-        void ILoader.LoadAsset() {
+        void ICWRLoader.LoadAsset() {
             StarTexture = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarTexture");
             SoftGlow = CWRUtils.GetT2DAsset(CWRConstant.Masking + "SoftGlow");
         }
-        void ILoader.UnLoadData() {
+        void ICWRLoader.UnLoadData() {
             StarTexture = null;
             SoftGlow = null;
         }

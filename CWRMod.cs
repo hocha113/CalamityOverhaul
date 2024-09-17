@@ -23,7 +23,7 @@ namespace CalamityOverhaul
         internal static int GameLoadCount;
         internal static bool Suitableversion_improveGame { get; private set; }
         internal static List<Mod> LoadMods { get; private set; }
-        internal static List<ILoader> ILoaders { get; private set; }
+        internal static List<ICWRLoader> ILoaders { get; private set; }
         internal static List<BaseRItem> RItemInstances { get; private set; } = [];
         internal static List<EctypeItem> EctypeItemInstance { get; private set; } = [];
         internal static List<NPCCustomizer> NPCCustomizerInstances { get; private set; } = [];
@@ -157,7 +157,7 @@ namespace CalamityOverhaul
         public override void Load() {
             Instance = this;
             FindMod();
-            ILoaders = CWRUtils.GetSubInterface<ILoader>();
+            ILoaders = CWRUtils.GetSubInterface<ICWRLoader>();
             foreach (var setup in ILoaders) {
                 setup.LoadData();
                 setup.DompLoadText();

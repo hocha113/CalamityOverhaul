@@ -16,7 +16,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileModules
 {
-    internal class BloodAltarModule : BaseTileModule, INetWork, ILoader
+    internal class BloodAltarModule : BaseTileModule, INetWork, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<BloodAltar>();
         public Vector2 Center => PosInWorld + new Vector2(BloodAltar.Width * 18, BloodAltar.Height * 18) / 2;
@@ -27,8 +27,8 @@ namespace CalamityOverhaul.Content.TileModules
         public bool OldOnBoolMoon;
         public long Time = 0;
         public int frameIndex = 1;
-        void ILoader.LoadAsset() => BloodAltarEffect = CWRUtils.GetT2DAsset(CWRConstant.Asset + "TileModules/BloodAltarEffect");
-        void ILoader.UnLoadData() => BloodAltarEffect = null;
+        void ICWRLoader.LoadAsset() => BloodAltarEffect = CWRUtils.GetT2DAsset(CWRConstant.Asset + "TileModules/BloodAltarEffect");
+        void ICWRLoader.UnLoadData() => BloodAltarEffect = null;
         public void DoNetSend() => ((INetWork)this).NetSend();
         public override void OnKill() {
             Main.dayTime = true;

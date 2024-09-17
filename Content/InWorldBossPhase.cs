@@ -6,7 +6,7 @@ using Terraria;
 namespace CalamityOverhaul.Content
 {
     //这个类是用来进行判断游戏进度的，这很无赖，但我别无他法
-    public class InWorldBossPhase : ILoader
+    public class InWorldBossPhase : ICWRLoader
     {
         #region Date
         public static InWorldBossPhase Instance { get; private set; }
@@ -242,8 +242,8 @@ namespace CalamityOverhaul.Content
 
         #endregion
 
-        void ILoader.LoadData() => Instance = new InWorldBossPhase();
-        void ILoader.UnLoadData() => Instance = null;
+        void ICWRLoader.LoadData() => Instance = new InWorldBossPhase();
+        void ICWRLoader.UnLoadData() => Instance = null;
 
         public int SHPC_Level() {
             int level = 0;

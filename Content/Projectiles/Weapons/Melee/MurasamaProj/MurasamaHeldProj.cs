@@ -15,7 +15,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
-    internal class MurasamaHeldProj : BaseHeldProj, ILoader
+    internal class MurasamaHeldProj : BaseHeldProj, ICWRLoader
     {
         public override string Texture => CWRConstant.Projectile_Melee + "MurasamaHeldProj";
         private Item murasama => Owner.ActiveItem();
@@ -41,15 +41,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private static Asset<Texture2D> MuraBarTop;
         private static Asset<Texture2D> MuraBarFull;
 
-        void ILoader.SetupData() {
+        void ICWRLoader.SetupData() {
             breakOutType = ModContent.ProjectileType<MurasamaBreakOut>();
         }
-        void ILoader.LoadAsset() {
+        void ICWRLoader.LoadAsset() {
             MuraBarBottom = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarBottom");
             MuraBarTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarTop");
             MuraBarFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarFull");
         }
-        void ILoader.UnLoadData() {
+        void ICWRLoader.UnLoadData() {
             breakOutType = 0;
             MuraBarBottom = null;
             MuraBarTop = null;

@@ -17,7 +17,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Common.Effects
 {
-    public class EffectLoader : ILoader
+    public class EffectLoader : ICWRLoader
     {
         internal static EffectLoader Instance;
         public delegate void On_Draw_Dalegate(object inds, SpriteBatch spriteBatch);
@@ -54,9 +54,9 @@ namespace CalamityOverhaul.Common.Effects
             InShootGlowShader = new ArmorShaderData(getEffect("InShootGlow"), "InShootGlowPass");
         }
 
-        void ILoader.LoadAsset() => LoadRegularShaders(CWRMod.Instance.Assets);
+        void ICWRLoader.LoadAsset() => LoadRegularShaders(CWRMod.Instance.Assets);
 
-        void ILoader.LoadData() {
+        void ICWRLoader.LoadData() {
             Instance = this;
             holyInfernoRendererType = typeof(HolyInfernoRenderer);
             onDrawToTargetMethod = holyInfernoRendererType.GetMethod("DrawToTarget", BindingFlags.Instance | BindingFlags.Public);
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Common.Effects
             Main.OnResolutionChanged += Main_OnResolutionChanged;
         }
 
-        void ILoader.UnLoadData() {
+        void ICWRLoader.UnLoadData() {
             holyInfernoRendererType = null;
             onDrawToTargetMethod = null;
             MiscShaderDataType = null;

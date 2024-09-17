@@ -11,19 +11,19 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Armor.DemonshadeExter
 {
     [AutoloadEquip(EquipType.Head)]
-    internal class DemonshadeHelmMagic : ModItem, ILoader
+    internal class DemonshadeHelmMagic : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item + "Armor/DemonshadeExter/DemonshadeHelmMagic";
         internal static int PType;
         internal static Asset<Texture2D> Hand;
         internal static readonly string TextureFrome = CWRConstant.Item + "Armor/DemonshadeExter/DemonshadeHelmMagic_Head_Frome";
-        void ILoader.SetupData() {
+        void ICWRLoader.SetupData() {
             PType = ModContent.ItemType<DemonshadeHelmMagic>();
             if (!Main.dedServ) {
                 Hand = CWRUtils.GetT2DAsset(TextureFrome);
             }
         }
-        void ILoader.UnLoadData() {
+        void ICWRLoader.UnLoadData() {
             PType = 0;
             Hand = null;
         }
