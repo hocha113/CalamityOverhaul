@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     dust.noGravity = true;
 
                     Vector2 spanSparkPos = Projectile.Center + Projectile.velocity.UnitVector() * Length;
-                    BaseParticle spark = new PRT_Spark(spanSparkPos, Projectile.velocity, false, 6, 4.26f, Color.Gold, Owner);
+                    BasePRT spark = new PRT_Spark(spanSparkPos, Projectile.velocity, false, 6, 4.26f, Color.Gold, Owner);
                     PRTLoader.AddParticle(spark);
                 }
 

@@ -37,9 +37,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
                     RayPoint[i] = Projectile.velocity.ToRotation().ToRotationVector2() * (-pointNum * 30 + 60 * i) + Projectile.Center;
                 }
                 foreach (Vector2 pos in RayPoint) {
-                    BaseParticle pulse = new PRT_DWave(pos - Projectile.velocity * 0.52f, Projectile.velocity / 1.5f, Color.Blue, new Vector2(1f, 2f), Projectile.velocity.ToRotation(), 0.52f, 0.06f, 90);
+                    BasePRT pulse = new PRT_DWave(pos - Projectile.velocity * 0.52f, Projectile.velocity / 1.5f, Color.Blue, new Vector2(1f, 2f), Projectile.velocity.ToRotation(), 0.52f, 0.06f, 90);
                     PRTLoader.AddParticle(pulse);
-                    BaseParticle pulse2 = new PRT_DWave(pos - Projectile.velocity * 0.40f, Projectile.velocity / 1.5f * 0.9f, Color.Gold, new Vector2(0.8f, 1.5f), Projectile.velocity.ToRotation(), 0.28f, 0.02f, 80);
+                    BasePRT pulse2 = new PRT_DWave(pos - Projectile.velocity * 0.40f, Projectile.velocity / 1.5f * 0.9f, Color.Gold, new Vector2(0.8f, 1.5f), Projectile.velocity.ToRotation(), 0.28f, 0.02f, 80);
                     PRTLoader.AddParticle(pulse2);
                 }
                 Projectile.ai[0] = 1;

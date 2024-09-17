@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_IcePlasmaGas : BaseParticle
+    internal class PRT_IcePlasmaGas : BasePRT
     {
         public override bool SetLifetime => true;
         public override int FrameVariants => 7;

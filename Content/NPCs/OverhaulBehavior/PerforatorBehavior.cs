@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.NPCs.OverhaulBehavior
                 for (int i = 0; i < 16; i++) {
                     Vector2 pos = npc.Center;
                     Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.NextFloat(5.5f, 7.7f);
-                    BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
+                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
                         , Main.rand.NextFloat(0.3f, 0.9f), Color.Red, 30, 1, 1.5f, hueShift: 0.0f);
                     PRTLoader.AddParticle(energyLeak);
                 }

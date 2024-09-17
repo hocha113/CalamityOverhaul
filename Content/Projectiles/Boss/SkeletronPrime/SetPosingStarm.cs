@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     float rot1 = MathHelper.PiOver2 * i + rand;
                     Vector2 vr = rot1.ToRotationVector2();
                     for (int j = 0; j < 33; j++) {
-                        BaseParticle spark = new PRT_HeavenfallStar(pos, vr * (0.1f + j * 0.34f), false, 13, Main.rand.NextFloat(5.2f, 6.3f), Color.Red);
+                        BasePRT spark = new PRT_HeavenfallStar(pos, vr * (0.1f + j * 0.34f), false, 13, Main.rand.NextFloat(5.2f, 6.3f), Color.Red);
                         PRTLoader.AddParticle(spark);
                     }
                 }

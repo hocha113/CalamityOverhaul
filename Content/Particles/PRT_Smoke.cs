@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_Smoke : BaseParticle
+    internal class PRT_Smoke : BasePRT
     {
         public override bool SetLifetime => true;
         public override int FrameVariants => 7;

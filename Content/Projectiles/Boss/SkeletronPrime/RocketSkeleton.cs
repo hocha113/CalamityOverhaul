@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
             if (Projectile.DistanceSQ(Main.LocalPlayer.Center) < 1600 * 1600) {
                 if (PRTLoader.FreeSpacesAvailable() > 10) {
-                    BaseParticle spark = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity * 0.7f, false, 20, 1.2f, Color.Gold);
+                    BasePRT spark = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity * 0.7f, false, 20, 1.2f, Color.Gold);
                     PRTLoader.AddParticle(spark);
                 }
                 else {
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             Vector2 spanPos = Projectile.Center;
             Vector2 vr = Vector2.Zero;
-            BaseParticle pulse3 = new PRT_DWave(spanPos, vr, Color.Red
+            BasePRT pulse3 = new PRT_DWave(spanPos, vr, Color.Red
             , new Vector2(1.2f, 1.3f) * 0.8f, vr.ToRotation(), 1.18f, 3.32f, 60);
             PRTLoader.AddParticle(pulse3);
             target.AddBuff(ModContent.BuffType<EXHellfire>(), 60);
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         public override void OnKill(int timeLeft) {
             Vector2 spanPos = Projectile.Center;
             Vector2 vr = Vector2.Zero;
-            BaseParticle pulse3 = new PRT_DWave(spanPos, vr, Color.Red
+            BasePRT pulse3 = new PRT_DWave(spanPos, vr, Color.Red
             , new Vector2(0.7f, 0.73f), vr.ToRotation(), 2.18f, 6.32f, 60);
             PRTLoader.AddParticle(pulse3);
         }

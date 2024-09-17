@@ -6,7 +6,7 @@ using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_GangarusWave : BaseParticle
+    internal class PRT_GangarusWave : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
         public override bool UseAdditiveBlend => true;

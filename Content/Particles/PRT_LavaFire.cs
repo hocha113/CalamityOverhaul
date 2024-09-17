@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_LavaFire : BaseParticle, ICWRLoader
+    internal class PRT_LavaFire : BasePRT, ICWRLoader
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle3";
         public override bool SetLifetime => true;

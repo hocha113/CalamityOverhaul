@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearPr
                     for (int i = 0; i < Main.rand.Next(13, 26); i++) {
                         Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(13);
                         Vector2 particleSpeed = Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)).UnitVector() * Main.rand.NextFloat(15.5f, 37.7f);
-                        BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
+                        BasePRT energyLeak = new PRT_Light(pos, particleSpeed
                             , 0.3f, Light, 6 + Main.rand.Next(5), 1, 1.5f, hueShift: 0.0f);
                         PRTLoader.AddParticle(energyLeak);
                     }

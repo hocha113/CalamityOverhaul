@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
                     float rot1 = MathHelper.PiOver2 * i;
                     Vector2 vr = rot1.ToRotationVector2();
                     for (int j = 0; j < 33; j++) {
-                        BaseParticle spark = new PRT_HeavenfallStar(Projectile.Center
+                        BasePRT spark = new PRT_HeavenfallStar(Projectile.Center
                             , vr * (0.24f), false, 30, Main.rand.NextFloat(1.2f, 2.3f), Color.CadetBlue);
                         PRTLoader.AddParticle(spark);
                     }

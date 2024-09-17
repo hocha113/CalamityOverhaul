@@ -3,7 +3,7 @@ using System;
 
 namespace CalamityOverhaul.Content.Particles.Core
 {
-    internal abstract class BaseParticle
+    internal abstract class BasePRT
     {
         public virtual string Texture => "";
         public virtual int FrameVariants => 1;

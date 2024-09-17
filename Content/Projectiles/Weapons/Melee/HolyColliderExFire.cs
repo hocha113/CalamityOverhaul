@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         for (int i = 0; i < 156; i++) {
                             Vector2 pos = Projectile.Center;
                             Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.Next(13, 34);
-                            BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
+                            BasePRT energyLeak = new PRT_Light(pos, particleSpeed
                                 , Main.rand.NextFloat(0.5f, 1.3f), Color.DarkRed, 30, 1, 1.5f, hueShift: 0.0f);
                             PRTLoader.AddParticle(energyLeak);
                         }

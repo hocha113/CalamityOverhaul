@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 for (int j = 0; j < 3; j++) {
                     Vector2 pos = Owner.Center + Main.rand.NextVector2Unit() * Main.rand.Next(342, 468);
                     Vector2 particleSpeed = pos.To(Owner.Center).UnitVector() * 7;
-                    BaseParticle energyLeak = new PRT_HolyColliderLight(pos, particleSpeed
+                    BasePRT energyLeak = new PRT_HolyColliderLight(pos, particleSpeed
                         , Main.rand.NextFloat(0.5f, 0.7f), Color.Gold, 90, 1, 1.5f, hueShift: 0.0f);
                     PRTLoader.AddParticle(energyLeak);
                 }

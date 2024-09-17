@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_HolyColliderLight : BaseParticle
+    internal class PRT_HolyColliderLight : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/Light";
         public override bool UseAdditiveBlend => true;

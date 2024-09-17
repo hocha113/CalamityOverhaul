@@ -7,7 +7,7 @@ using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_StarPulseRing : BaseParticle
+    internal class PRT_StarPulseRing : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
         public override bool UseAdditiveBlend => true;

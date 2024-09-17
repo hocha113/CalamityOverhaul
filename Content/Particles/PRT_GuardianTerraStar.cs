@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_GuardianTerraStar : BaseParticle
+    internal class PRT_GuardianTerraStar : BasePRT
     {
         public Color InitialColor;
         public bool AffectedByGravity;

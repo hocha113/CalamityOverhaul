@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 for (int i = 0; i < 16; i++) {
                     Vector2 particleSpeed = Projectile.velocity * Main.rand.NextFloat(0.7f, 0.9f);
                     Vector2 pos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
-                    BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
+                    BasePRT energyLeak = new PRT_Light(pos, particleSpeed
                         , Main.rand.NextFloat(0.2f, 0.5f), Main.rand.NextBool(2) ? Color.Red : Color.Gold, 30, 1, 1.5f, hueShift: 0.0f);
                     PRTLoader.AddParticle(energyLeak);
                 }
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Main.netMode != NetmodeID.Server) {
                 Vector2 particleSpeed = Projectile.velocity * Main.rand.NextFloat(0.7f, 0.9f);
                 Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(16) + Projectile.velocity;
-                BaseParticle energyLeak = new PRT_Light(pos, particleSpeed
+                BasePRT energyLeak = new PRT_Light(pos, particleSpeed
                     , Main.rand.NextFloat(0.2f, 0.3f), Main.rand.NextBool(2) ? Color.Red : Color.Gold, 15, 1, 1.5f, hueShift: 0.0f);
                 PRTLoader.AddParticle(energyLeak);
             }

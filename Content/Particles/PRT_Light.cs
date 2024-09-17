@@ -6,7 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_Light : BaseParticle, ICWRLoader
+    internal class PRT_Light : BasePRT, ICWRLoader
     {
         public override string Texture => "CalamityMod/Particles/Light";
         public override bool UseAdditiveBlend => true;

@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGauntletProj
 {
-    internal class PGGlow : BaseParticle
+    internal class PGGlow : BasePRT
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "PhosphorescentGauntlet";
         public override bool UseAdditiveBlend => true;

@@ -33,12 +33,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
                 Vector2 norl = Projectile.velocity.GetNormalVector();
                 float sengs = Projectile.timeLeft * 0.01f;
                 for (int j = 0; j < 53; j++) {
-                    BaseParticle spark = new PRT_HeavenfallStar(Projectile.Center
+                    BasePRT spark = new PRT_HeavenfallStar(Projectile.Center
                         , norl * (0.1f + j * 0.34f) * sengs, false, 20, Main.rand.NextFloat(1.2f, 2.3f), Color.BlueViolet);
                     PRTLoader.AddParticle(spark);
                 }
                 for (int j = 0; j < 53; j++) {
-                    BaseParticle spark = new PRT_HeavenfallStar(Projectile.Center
+                    BasePRT spark = new PRT_HeavenfallStar(Projectile.Center
                         , norl * -(0.1f + j * 0.34f) * sengs, false, 20, Main.rand.NextFloat(1.2f, 2.3f), Color.BlueViolet);
                     PRTLoader.AddParticle(spark);
                 }

@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
-            BaseParticle particle = new PRT_SoulLight(Projectile.Center, Projectile.velocity
+            BasePRT particle = new PRT_SoulLight(Projectile.Center, Projectile.velocity
                 , Main.rand.NextFloat(0.2f, 0.8f), Color.White, 23, _flowerProj: Projectile);
             PRTLoader.AddParticle(particle);
             NPC target = Projectile.Center.FindClosestNPC(600);
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void OnKill(int timeLeft) {
             for (int i = 0; i < 36; i++) {
                 Vector2 vr = CWRUtils.randVr(13);
-                BaseParticle particle = new PRT_Light(Projectile.Center, vr, Main.rand.NextFloat(0.2f, 0.8f), Color.White, 23);
+                BasePRT particle = new PRT_Light(Projectile.Center, vr, Main.rand.NextFloat(0.2f, 0.8f), Color.White, 23);
                 PRTLoader.AddParticle(particle);
             }
         }

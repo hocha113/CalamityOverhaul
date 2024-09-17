@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content
 {
     internal class CWRDust
     {
-        public static void DrawParticleElectricity(BaseParticle particle, Vector2 point1, Vector2 point2
+        public static void DrawParticleElectricity(BasePRT particle, Vector2 point1, Vector2 point2
             , float scale = 1, int armLength = 30, float density = 0.05f, float ai0 = 0) {
             int nodeCount = (int)Vector2.Distance(point1, point2) / armLength;
             Vector2[] nodes = new Vector2[nodeCount + 1];

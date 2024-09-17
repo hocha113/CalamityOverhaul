@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_HeavenfallStar : BaseParticle
+    internal class PRT_HeavenfallStar : BasePRT
     {
         public Color InitialColor;
         public bool AffectedByGravity;

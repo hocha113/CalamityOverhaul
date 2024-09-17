@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         dust.color = color;
                     }
                     if (Projectile.ai[1] > 6) {
-                        BaseParticle spark = new PRT_GuardianTerraStar(Projectile.Center
+                        BasePRT spark = new PRT_GuardianTerraStar(Projectile.Center
                             , Projectile.velocity / 10, false, 12, Main.rand.NextFloat(1.2f, 2.3f), color);
                         PRTLoader.AddParticle(spark);
                     }

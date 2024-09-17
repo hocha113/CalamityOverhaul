@@ -12,12 +12,12 @@ namespace CalamityOverhaul.Content.Particles.Core
     {
         internal static Dictionary<Type, int> ParticleTypesDic;
         internal static Dictionary<int, Texture2D> ParticleIDToTexturesDic;
-        internal static List<BaseParticle> CWRParticleCoreInds;
-        private static List<BaseParticle> particles;
-        private static List<BaseParticle> particlesToKill;
-        private static List<BaseParticle> batched_AlphaBlend_DRK;
-        private static List<BaseParticle> batched_NonPremultiplied_DRK;
-        private static List<BaseParticle> batched_AdditiveBlend_DRK;
+        internal static List<BasePRT> CWRParticleCoreInds;
+        private static List<BasePRT> particles;
+        private static List<BasePRT> particlesToKill;
+        private static List<BasePRT> batched_AlphaBlend_DRK;
+        private static List<BasePRT> batched_NonPremultiplied_DRK;
+        private static List<BasePRT> batched_AdditiveBlend_DRK;
 
         public static int GetParticlesCount() => particles.Count;
         public static int GetParticlesCount(int fxType) {
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Particles.Core
             batched_NonPremultiplied_DRK = [];
             batched_AdditiveBlend_DRK = [];
 
-            CWRParticleCoreInds = CWRUtils.HanderSubclass<BaseParticle>(false);
+            CWRParticleCoreInds = CWRUtils.HanderSubclass<BasePRT>(false);
             foreach (var particleType in CWRParticleCoreInds) {
                 Type type = particleType.GetType();
                 int ID = ParticleTypesDic.Count;
@@ -99,14 +99,14 @@ namespace CalamityOverhaul.Content.Particles.Core
             On_Main.DrawInfernoRings -= CWRDrawForegroundParticles;
         }
 
-        public static int GetParticleType<T>() where T : BaseParticle => ParticleTypesDic[typeof(T)];
+        public static int GetParticleType<T>() where T : BasePRT => ParticleTypesDic[typeof(T)];
 
         public static int GetParticleType(Type sType) => ParticleTypesDic[sType];
 
         /// <summary>
         /// 生成提供给世界的粒子实例。如果达到颗粒限值，但该颗粒被标记为重要，它将尝试替换不重要的颗粒
         /// </summary>
-        public static void AddParticle(BaseParticle particle) {
+        public static void AddParticle(BasePRT particle) {
             if (Main.gamePaused || Main.dedServ || particles == null) {
                 return;
             }
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.Particles.Core
         /// <param name="ai0">粒子的自定义属性 ai0，默认为0</param>
         /// <param name="ai1">粒子的自定义属性 ai1，默认为0</param>
         /// <param name="ai2">粒子的自定义属性 ai2，默认为0</param>
-        public static void NewParticle(BaseParticle particle, Vector2 position, Vector2 velocity
+        public static void NewParticle(BasePRT particle, Vector2 position, Vector2 velocity
             , Color color = default, float scale = 1f, int ai0 = 0, int ai1 = 0, int ai2 = 0) {
             particle.Position = position;
             particle.Velocity = velocity;
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.Particles.Core
                 return;
             }
 
-            foreach (BaseParticle particle in particles) {
+            foreach (BasePRT particle in particles) {
                 if (particle == null) {
                     continue;
                 }
@@ -160,26 +160,26 @@ namespace CalamityOverhaul.Content.Particles.Core
             particlesToKill.Clear();
         }
 
-        public static void ParticleGarbageCollection(ref List<BaseParticle> particles) {
-            bool isGC(BaseParticle p) => p.Time >= p.Lifetime && p.SetLifetime || particlesToKill.Contains(p);
+        public static void ParticleGarbageCollection(ref List<BasePRT> particles) {
+            bool isGC(BasePRT p) => p.Time >= p.Lifetime && p.SetLifetime || particlesToKill.Contains(p);
             particles.RemoveAll(isGC);
         }
-        public static void UpdateParticleVelocity(BaseParticle particle) => particle.Position += particle.Velocity;
-        public static void UpdateParticleTime(BaseParticle particle) => particle.Time++;
-        public static void RemoveParticle(BaseParticle particle) => particlesToKill.Add(particle);
+        public static void UpdateParticleVelocity(BasePRT particle) => particle.Position += particle.Velocity;
+        public static void UpdateParticleTime(BasePRT particle) => particle.Time++;
+        public static void RemoveParticle(BasePRT particle) => particlesToKill.Add(particle);
 
-        public static void DrawAll(SpriteBatch sb) {
+        public static void DrawAll(SpriteBatch spriteBatch) {
             if (particles.Count == 0) {
                 return;
             }
 
-            sb.End();
+            spriteBatch.End();
             var rasterizer = Main.Rasterizer;
             rasterizer.ScissorTestEnable = true;
             Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
             Main.instance.GraphicsDevice.ScissorRectangle = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
 
-            foreach (BaseParticle particle in particles) {
+            foreach (BasePRT particle in particles) {
                 if (particle == null) {
                     continue;
                 }
@@ -195,21 +195,20 @@ namespace CalamityOverhaul.Content.Particles.Core
             }
 
             if (batched_AlphaBlend_DRK.Count > 0) {
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-                void defaultDraw(BaseParticle particle) {
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+                void defaultDraw(BasePRT particle) {
                     Rectangle frame = ParticleIDToTexturesDic[particle.Type].Frame(1, particle.FrameVariants, 0, particle.Variant);
-                    sb.Draw(ParticleIDToTexturesDic[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f,
-                        particle.Scale, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(ParticleIDToTexturesDic[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f, particle.Scale, SpriteEffects.None, 0f);
                 }
-                foreach (BaseParticle particle in batched_AlphaBlend_DRK) {
+                foreach (BasePRT particle in batched_AlphaBlend_DRK) {
                     if (particle.UseCustomDraw) {
-                        particle.CustomDraw(sb);
+                        particle.CustomDraw(spriteBatch);
                     }
                     else {
                         defaultDraw(particle);
                     }
                 }
-                sb.End();
+                spriteBatch.End();
             }
 
 
@@ -218,19 +217,19 @@ namespace CalamityOverhaul.Content.Particles.Core
                 rasterizer.ScissorTestEnable = true;
                 Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
                 Main.instance.GraphicsDevice.ScissorRectangle = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
-                sb.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-                void defaultDraw(BaseParticle particle) {
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+                void defaultDraw(BasePRT particle) {
                     Rectangle frame = ParticleIDToTexturesDic[particle.Type].Frame(1, particle.FrameVariants, 0, particle.Variant);
-                    sb.Draw(ParticleIDToTexturesDic[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f, particle.Scale, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(ParticleIDToTexturesDic[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f, particle.Scale, SpriteEffects.None, 0f);
                 }
-                foreach (BaseParticle particle in batched_NonPremultiplied_DRK) {
+                foreach (BasePRT particle in batched_NonPremultiplied_DRK) {
                     if (particle.UseCustomDraw)
-                        particle.CustomDraw(sb);
+                        particle.CustomDraw(spriteBatch);
                     else {
                         defaultDraw(particle);
                     }
                 }
-                sb.End();
+                spriteBatch.End();
             }
 
             if (batched_AdditiveBlend_DRK.Count > 0) {
@@ -238,27 +237,27 @@ namespace CalamityOverhaul.Content.Particles.Core
                 rasterizer.ScissorTestEnable = true;
                 Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
                 Main.instance.GraphicsDevice.ScissorRectangle = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
-                sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-                void defaultDraw(BaseParticle particle) {
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+                void defaultDraw(BasePRT particle) {
                     Rectangle frame = ParticleIDToTexturesDic[particle.Type].Frame(1, particle.FrameVariants, 0, particle.Variant);
-                    sb.Draw(ParticleIDToTexturesDic[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f, particle.Scale, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(ParticleIDToTexturesDic[particle.Type], particle.Position - Main.screenPosition, frame, particle.Color, particle.Rotation, frame.Size() * 0.5f, particle.Scale, SpriteEffects.None, 0f);
                 }
-                foreach (BaseParticle particle in batched_AdditiveBlend_DRK) {
+                foreach (BasePRT particle in batched_AdditiveBlend_DRK) {
                     if (particle.UseCustomDraw) {
-                        particle.CustomDraw(sb);
+                        particle.CustomDraw(spriteBatch);
                     }
                     else {
                         defaultDraw(particle);
                     }
                 }
-                sb.End();
+                spriteBatch.End();
             }
 
             batched_AlphaBlend_DRK.Clear();
             batched_NonPremultiplied_DRK.Clear();
             batched_AdditiveBlend_DRK.Clear();
 
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
         }
 
         /// <summary>
