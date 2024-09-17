@@ -12,15 +12,15 @@
         /// <summary>
         /// 该方法在CWRLoad中的最后调用
         /// </summary>
-        public void SetupData() { }
+        public void Setup() { }
         /// <summary>
         /// 该方法在CWRLoad前行调用
         /// </summary>
-        public void LoadData() { }
+        public void Load() { }
         /// <summary>
         /// 该方法在CWRUnLoad最后调用
         /// </summary>
-        public void UnLoadData() { }
+        public void UnLoad() { }
 
         internal void DompLoadText() {
             string text = CWRUtils.Translation("已经完成加载操作", "Loading operation completed");

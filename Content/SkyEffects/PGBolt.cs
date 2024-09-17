@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.SkyEffects
             boltAsset = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/Sky/PGBolt");
             flashAsset = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/Sky/PGFlash");
         }
-        void ILoader.UnLoadData() {
+        void ILoader.UnLoad() {
             boltAsset = null;
             flashAsset = null;
         }

@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             canLoaderAssetZunkenUp = true;
         }
 
-        void ILoader.UnLoadData() {
+        void ILoader.UnLoad() {
             HandAsset = null;
             BSPCannon = null;
             BSPlaser = null;

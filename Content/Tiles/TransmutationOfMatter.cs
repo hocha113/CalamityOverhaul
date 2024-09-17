@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Tiles
         public const int SheetSquare = 16;
         private static Asset<Texture2D> assetValue;
         void ILoader.LoadAsset() => assetValue = ModContent.Request<Texture2D>(Texture);
-        void ILoader.UnLoadData() => assetValue = null;
+        void ILoader.UnLoad() => assetValue = null;
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }

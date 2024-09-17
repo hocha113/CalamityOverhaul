@@ -18,13 +18,13 @@ namespace CalamityOverhaul.Content.Items.Armor.DemonshadeExter
         internal static int PType;
         internal static Asset<Texture2D> Hand;
         internal static readonly string TextureFrome = CWRConstant.Item + "Armor/DemonshadeExter/DemonshadeHelmRogue_Head_Frome";
-        void ILoader.SetupData() {
+        void ILoader.Setup() {
             PType = ModContent.ItemType<DemonshadeHelmRogue>();
             if (!Main.dedServ) {
                 Hand = CWRUtils.GetT2DAsset(TextureFrome);
             }
         }
-        void ILoader.UnLoadData() {
+        void ILoader.UnLoad() {
             PType = 0;
             Hand = null;
         }

@@ -242,8 +242,8 @@ namespace CalamityOverhaul.Content
 
         #endregion
 
-        void ILoader.LoadData() => Instance = new InWorldBossPhase();
-        void ILoader.UnLoadData() => Instance = null;
+        void ILoader.Load() => Instance = new InWorldBossPhase();
+        void ILoader.UnLoad() => Instance = null;
 
         public int SHPC_Level() {
             int level = 0;

@@ -27,14 +27,14 @@ namespace CalamityOverhaul.Content.Items.Melee
         private static Asset<Texture2D> rageEnergyTopAsset;
         private static Asset<Texture2D> rageEnergyBarAsset;
         private static Asset<Texture2D> rageEnergyBackAsset;
-        void ILoader.SetupData() {
+        void ILoader.Setup() {
             if (!Main.dedServ) {
                 rageEnergyTopAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyTop");
                 rageEnergyBarAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyBar");
                 rageEnergyBackAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyBack");
             }
         }
-        void ILoader.UnLoadData() {
+        void ILoader.UnLoad() {
             rageEnergyTopAsset = null;
             rageEnergyBarAsset = null;
             rageEnergyBackAsset = null;

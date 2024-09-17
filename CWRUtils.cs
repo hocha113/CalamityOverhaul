@@ -2347,7 +2347,6 @@ namespace CalamityOverhaul
         /// <param name="bossType">要生成的 Boss 的类型</param>
         /// <param name="obeyLocalPlayerCheck">是否要遵循本地玩家检查</param>
         public static void SpawnBossNetcoded(Player player, int bossType, bool obeyLocalPlayerCheck = true) {
-
             if (player.whoAmI == Main.myPlayer || !obeyLocalPlayerCheck) {
                 // 如果使用物品的玩家是客户端
                 // （在此明确排除了服务器端）

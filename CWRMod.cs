@@ -147,7 +147,7 @@ namespace CalamityOverhaul
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
             CWRLoad.Load();
             foreach (var i in ILoaders) {
-                i.SetupData();
+                i.Setup();
                 if (!Main.dedServ) {
                     i.LoadAsset();
                 }
@@ -159,7 +159,7 @@ namespace CalamityOverhaul
             FindMod();
             ILoaders = CWRUtils.GetSubInterface<ILoader>();
             foreach (var setup in ILoaders) {
-                setup.LoadData();
+                setup.Load();
                 setup.DompLoadText();
             }
             GameLoadCount++;
@@ -167,7 +167,7 @@ namespace CalamityOverhaul
 
         public override void Unload() {
             foreach (var setup in ILoaders) {
-                setup.UnLoadData();
+                setup.UnLoad();
                 setup.DompUnLoadText();
             }
             emptyMod();

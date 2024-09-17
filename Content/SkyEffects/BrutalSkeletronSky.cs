@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.SkyEffects
         private int ticksUntilNextBolt;
         private UnifiedRandom random = new UnifiedRandom();
 
-        void ILoader.LoadData() {
+        void ILoader.Load() {
             if (CWRUtils.isServer) {
                 return;
             }

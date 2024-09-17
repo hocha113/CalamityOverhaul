@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public static MethodBase onUpdateAccessoryMethod;
         public static MethodBase onAltFunctionUseMethod;
 
-        void ILoader.LoadData() {
+        void ILoader.Load() {
             itemLoaderType = typeof(ItemLoader);
             onSetDefaultsMethod = itemLoaderType.GetMethod("SetDefaults", BindingFlags.NonPublic | BindingFlags.Static);
             onShootMethod = itemLoaderType.GetMethod("Shoot", BindingFlags.Public | BindingFlags.Static);
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             }
         }
 
-        void ILoader.UnLoadData() {
+        void ILoader.UnLoad() {
             itemLoaderType = null;
             onSetDefaultsMethod = null;
             onShootMethod = null;

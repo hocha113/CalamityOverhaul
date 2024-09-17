@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         private float randomShootRotset;
         private float shootValue;
         void ILoader.LoadAsset() => masking = CWRUtils.GetT2DAsset(Texture + "_Masking");
-        void ILoader.SetupData() => MG42 = ModContent.ItemType<MG42>();
-        void ILoader.UnLoadData() {
+        void ILoader.Setup() => MG42 = ModContent.ItemType<MG42>();
+        void ILoader.UnLoad() {
             masking = null;
             MG42 = ItemID.None;
         }

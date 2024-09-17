@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.OtherMods.Thorium.Core
         public const string Name = "ThoriumMod";
         public static bool Has => ModLoader.HasMod(Name);
         public static List<LThoriumCall> lThoriumCalls = [];
-        void ILoader.LoadData() {
+        void ILoader.Load() {
             if (!Has) return;
             CWRMod.Instance.thoriumMod = ModLoader.GetMod(Name);
             lThoriumCalls = CWRUtils.GetSubInterface<LThoriumCall>("LThoriumCall");
@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.OtherMods.Thorium.Core
             }
         }
 
-        void ILoader.UnLoadData() {
+        void ILoader.UnLoad() {
             if (lThoriumCalls != null) {
                 foreach (var call in lThoriumCalls) {
                     call.UnLoadThoData();
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.OtherMods.Thorium.Core
             lThoriumCalls = null;
         }
 
-        void ILoader.SetupData() {
+        void ILoader.Setup() {
             if (!Has) return;
             foreach (var call in lThoriumCalls) {
                 call.PostLoadThoData(CWRMod.Instance.thoriumMod);

@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Common
             return true;
         }
 
-        void ILoader.UnLoadData() {
+        void ILoader.UnLoad() {
             foreach (var hook in _hooks.Values) {
                 if (hook.IsApplied) {
                     hook.Undo();
