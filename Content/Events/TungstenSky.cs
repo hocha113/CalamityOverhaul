@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Events
         private float intensity = 0f;
         private static Asset<Texture2D> back;
 
-        void ILoader.Load() {
+        void ILoader.LoadData() {
             if (Main.dedServ) {
                 return;
             }

@@ -12,14 +12,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         internal static Dictionary<int, Asset<Texture2D>> trailTextures;
         internal static Dictionary<int, Asset<Texture2D>> gradientTextures;
         internal static Dictionary<int, Asset<Texture2D>> glowTextures;
-        void ILoader.Load() {
+        void ILoader.LoadData() {
             Swings = [];
             SwingFullNameToType = [];
             trailTextures = [];
             gradientTextures = [];
             glowTextures = [];
         }
-        void ILoader.Setup() {
+        void ILoader.SetupData() {
             Swings = CWRUtils.HanderSubclass<BaseSwing>();
             foreach (var swing in Swings) {
                 string pathValue = swing.GetType().Name;
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 }
             }
         }
-        void ILoader.UnLoad() {
+        void ILoader.UnLoadData() {
             Swings = null;
             SwingFullNameToType = null;
             trailTextures = null;

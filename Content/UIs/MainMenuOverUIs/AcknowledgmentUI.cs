@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         void ILoader.LoadAsset() {
             Logo = CWRUtils.GetT2DAsset("CalamityOverhaul/IntactLogo");
         }
-        void ILoader.Setup() => LoadName();
+        void ILoader.SetupData() => LoadName();
         private void LoadName() {
             names = [
             "[icon]",

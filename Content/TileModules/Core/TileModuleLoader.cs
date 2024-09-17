@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.TileModules.Core
         public static INetWork NetInstance;
 
         void INetWork.LoadNet() => NetInstance = this;
-        void ILoader.Load() {
+        void ILoader.LoadData() {
             TileModulesList = CWRUtils.HanderSubclass<BaseTileModule>();
             for (int i = 0; i < TileModulesList.Count; i++) {
                 BaseTileModule module = TileModulesList[i];
@@ -72,13 +72,13 @@ namespace CalamityOverhaul.Content.TileModules.Core
             WorldGen.Hooks.OnWorldLoad += LoadWorldTileModule;
         }
 
-        void ILoader.Setup() {
+        void ILoader.SetupData() {
             foreach (var module in TileModulesList) {
                 module.SetStaticProperty();
             }
         }
 
-        void ILoader.UnLoad() {
+        void ILoader.UnLoadData() {
             foreach (var module in TileModulesList) {
                 module.UnLoad();
             }

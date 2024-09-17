@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         public override string Texture => CWRConstant.Projectile_Melee + "NeutronGlaiveBeam";
         public static int PType;
         internal static Asset<Texture2D> warpTex;
-        public void Setup() {
+        public void SetupData() {
             PType = ModContent.ProjectileType<NeutronGlaiveBeam>();
             warpTex = CWRUtils.GetT2DAsset(CWRConstant.Masking + "DiffusionCircle");
         }

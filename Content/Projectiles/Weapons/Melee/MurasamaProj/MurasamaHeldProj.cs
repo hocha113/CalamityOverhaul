@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private static Asset<Texture2D> MuraBarTop;
         private static Asset<Texture2D> MuraBarFull;
 
-        void ILoader.Setup() {
+        void ILoader.SetupData() {
             breakOutType = ModContent.ProjectileType<MurasamaBreakOut>();
         }
         void ILoader.LoadAsset() {
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             MuraBarTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarTop");
             MuraBarFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarFull");
         }
-        void ILoader.UnLoad() {
+        void ILoader.UnLoadData() {
             breakOutType = 0;
             MuraBarBottom = null;
             MuraBarTop = null;

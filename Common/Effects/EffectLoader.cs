@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Common.Effects
 
         void ILoader.LoadAsset() => LoadRegularShaders(CWRMod.Instance.Assets);
 
-        void ILoader.Load() {
+        void ILoader.LoadData() {
             Instance = this;
             holyInfernoRendererType = typeof(HolyInfernoRenderer);
             onDrawToTargetMethod = holyInfernoRendererType.GetMethod("DrawToTarget", BindingFlags.Instance | BindingFlags.Public);
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Common.Effects
             Main.OnResolutionChanged += Main_OnResolutionChanged;
         }
 
-        void ILoader.UnLoad() {
+        void ILoader.UnLoadData() {
             holyInfernoRendererType = null;
             onDrawToTargetMethod = null;
             MiscShaderDataType = null;

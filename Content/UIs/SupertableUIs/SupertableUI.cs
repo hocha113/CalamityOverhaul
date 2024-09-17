@@ -94,8 +94,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static List<RecipeData> AllRecipes = [];
         #endregion
         public override void Load() => Instance = this;
-        void ILoader.Setup() => LoadRecipe();
-        void ILoader.UnLoad() {
+        void ILoader.SetupData() => LoadRecipe();
+        void ILoader.UnLoadData() {
             RpsDataStringArrays = null;
             ModCall_OtherRpsData_StringList = [];
             Instance = null;

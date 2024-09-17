@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.CWRDamageTypes
     {
         private static List<int> nihilityProjs = [];
 
-        public void Setup() {
+        public void SetupData() {
             nihilityProjs = [
                 ModContent.ProjectileType<Godslight>(),
                 ModContent.ProjectileType<EXNeutronExplode>(),

@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.TileModules
             modeuleBodyAsset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Tiles/TransmutationOfMatter");
             truesFromeAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "SupertableUIs/TexturePackButtons");
         }
-        void ILoader.UnLoad() => modeuleBodyAsset = truesFromeAsset = null;
+        void ILoader.UnLoadData() => modeuleBodyAsset = truesFromeAsset = null;
         public override void Update() {
             Player player = Main.LocalPlayer;
             if (!player.active || Main.myPlayer != player.whoAmI) {

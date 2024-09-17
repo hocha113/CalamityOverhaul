@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Common
         public static ModKeybind KreLoad_Key { get; private set; }
         public static ModKeybind ADS_Key { get; private set; }
 
-        void ILoader.Load() {
+        void ILoader.LoadData() {
             Mod mod = CWRMod.Instance;
             HeavenfallLongbowSkillKey = KeybindLoader.RegisterKeybind(mod, "HeavenfallLongbowSkillKey", "Q");
             InfinitePickSkillKey = KeybindLoader.RegisterKeybind(mod, "InfinitePickSkillKey", "C");
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Common
             ADS_Key = KeybindLoader.RegisterKeybind(mod, "ADS_Key", "Z");
         }
 
-        void ILoader.UnLoad() {
+        void ILoader.UnLoadData() {
             HeavenfallLongbowSkillKey = null;
             InfinitePickSkillKey = null;
             TOM_GatheringItem = null;

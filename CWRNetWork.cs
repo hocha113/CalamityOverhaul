@@ -65,7 +65,7 @@ namespace CalamityOverhaul
     {
         internal static List<INetWork> INetWorks { get; private set; } = [];
         internal static Dictionary<Type, short> NetWorkIDDic { get; private set; } = [];
-        void ILoader.Load() {
+        void ILoader.LoadData() {
             INetWorks = CWRUtils.GetSubInterface<INetWork>();
             for (int index = 0; index < INetWorks.Count; index++) {
                 INetWork netWork = INetWorks[index];
@@ -77,7 +77,7 @@ namespace CalamityOverhaul
                 }
             }
         }
-        void ILoader.UnLoad() {
+        void ILoader.UnLoadData() {
             INetWorks = null;
         }
 

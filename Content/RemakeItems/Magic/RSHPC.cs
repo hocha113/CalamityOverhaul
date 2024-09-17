@@ -21,11 +21,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override int ProtogenesisID => ModContent.ItemType<SHPCEcType>();
         public override string TargetToolTipItemName => "";
         private static void onSHPCToolFunc(RItemLoader.On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
-        void ILoader.Load() {
+        void ILoader.LoadData() {
             methodInfo = typeof(SHPC).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
             CWRHook.Add(methodInfo, onSHPCToolFunc);
         }
-        void ILoader.UnLoad() => methodInfo = null;
+        void ILoader.UnLoadData() => methodInfo = null;
         public override void SetDefaults(Item item) => SHPCEcType.SetDefaultsFunc(item);
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
             SHPCEcType.SHPCDamage(player, item, ref damage);

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.GoreEntity
     {
         public override string Texture => CWRConstant.Asset + "CaseGore";
         public static int PType;
-        public void Setup() {
+        public void SetupData() {
             PType = ModContent.GoreType<CaseGore>();
             ChildSafety.SafeGore[PType] = true;
         }

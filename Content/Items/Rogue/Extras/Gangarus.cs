@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             GangarusAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");
             EvaAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3");
         }
-        void ILoader.UnLoad() {
+        void ILoader.UnLoadData() {
             GangarusAsset = null;
             EvaAsset = null;
         }

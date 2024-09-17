@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.UIs
             _ = potlevel.EmitDelegate(() => Draw(Main.spriteBatch));
         }
 
-        void ILoader.Load() {
+        void ILoader.LoadData() {
             if (Main.dedServ) {
                 return;
             }
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.UIs
             IL_Main.DrawMenu += ILMenuLoadDrawFunc;
         }
 
-        void ILoader.UnLoad() {
+        void ILoader.UnLoadData() {
             if (Main.dedServ) {
                 return;
             }

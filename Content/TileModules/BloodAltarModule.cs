@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.TileModules
         public long Time = 0;
         public int frameIndex = 1;
         void ILoader.LoadAsset() => BloodAltarEffect = CWRUtils.GetT2DAsset(CWRConstant.Asset + "TileModules/BloodAltarEffect");
-        void ILoader.UnLoad() => BloodAltarEffect = null;
+        void ILoader.UnLoadData() => BloodAltarEffect = null;
         public void DoNetSend() => ((INetWork)this).NetSend();
         public override void OnKill() {
             Main.dayTime = true;

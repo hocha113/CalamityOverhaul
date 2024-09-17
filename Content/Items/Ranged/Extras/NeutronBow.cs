@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override string Texture => CWRConstant.Item_Ranged + "NeutronBow";
         public static int PType;
         public float Charge;
-        public void Setup() {
+        public void SetupData() {
             PType = ModContent.ItemType<NeutronBow>();
         }
 

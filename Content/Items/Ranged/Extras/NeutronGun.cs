@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public static int PType;
         public float Charge;
         internal static Asset<Texture2D> ShootGun;
-        public void Setup() {
+        public void SetupData() {
             PType = ModContent.ItemType<NeutronGun>();
             if (!Main.dedServ) {
                 ShootGun = CWRUtils.GetT2DAsset(CWRConstant.Item_Ranged + "NeutronGun2");

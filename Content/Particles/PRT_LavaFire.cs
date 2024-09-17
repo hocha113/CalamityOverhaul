@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Particles
             StarTexture = CWRUtils.GetT2DAsset(CWRConstant.Masking + "StarTexture");
             SoftGlow = CWRUtils.GetT2DAsset(CWRConstant.Masking + "SoftGlow");
         }
-        void ILoader.UnLoad() {
+        void ILoader.UnLoadData() {
             StarTexture = null;
             SoftGlow = null;
         }
