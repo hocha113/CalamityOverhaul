@@ -1,6 +1,6 @@
 ﻿using CalamityMod.Events;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.Particles.Core;
+
 using CalamityOverhaul.Content.Particles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -9,6 +9,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using System;
+using InnoVault.PRT;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.Eye
 {

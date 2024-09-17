@@ -4,8 +4,9 @@ using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -359,7 +360,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 rotToTargetSpeedTrengsVumVer = Projectile.velocity.RotatedBy(rotToTargetSpeedSengs);
             }
 
-            int pysCount = PRTLoader.GetParticlesCount(PRTLoader.GetParticleType(typeof(PRT_Spark)));
+            int pysCount = PRTLoader.PRT_IDToInGame_World_Count[PRTLoader.GetParticleID(typeof(PRT_Spark))];
             if (pysCount > 120) {
                 sparkCount = 10;
             }

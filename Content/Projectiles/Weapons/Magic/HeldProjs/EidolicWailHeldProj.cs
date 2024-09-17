@@ -1,7 +1,7 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.ModLoader;
 

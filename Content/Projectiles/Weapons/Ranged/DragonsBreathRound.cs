@@ -3,7 +3,7 @@ using CalamityMod.Buffs.DamageOverTime;
 using CalamityMod.Projectiles;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

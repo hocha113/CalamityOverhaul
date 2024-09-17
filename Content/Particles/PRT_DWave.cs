@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -9,10 +9,13 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_DWave : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
-        public override bool UseAdditiveBlend => true;
-        public override bool SetLifetime => true;
-        public override bool UseCustomDraw => true;
-
+        //public override bool UseAdditiveBlend => true;
+        //public override bool SetLifetime => true;
+        //public override bool UseCustomDraw => true;
+        public override void SetPRT() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         private float OriginalScale;
         private float FinalScale;
         private float opacity;
@@ -33,7 +36,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override void AI() {
-            float pulseProgress = PiecewiseAnimation(LifetimeCompletion, new CurveSegment[] { new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4) });
+            float pulseProgress = PiecewiseAnimation(LifetimeCompletion, [new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4)]);
             Scale = MathHelper.Lerp(OriginalScale, FinalScale, pulseProgress);
 
             opacity = (float)Math.Sin(MathHelper.PiOver2 + LifetimeCompletion * MathHelper.PiOver2);
@@ -43,9 +46,11 @@ namespace CalamityOverhaul.Content.Particles
             Velocity *= 0.95f;
         }
 
-        public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = PRTLoader.ParticleIDToTexturesDic[Type];
-            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * opacity, Rotation, tex.Size() / 2f, Scale * Squish, SpriteEffects.None, 0);
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * opacity, Rotation
+                , tex.Size() / 2f, Scale * Squish, SpriteEffects.None, 0);
+            return false;
         }
     }
 }

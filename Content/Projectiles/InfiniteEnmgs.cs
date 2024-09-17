@@ -2,7 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.ModLoader;
 

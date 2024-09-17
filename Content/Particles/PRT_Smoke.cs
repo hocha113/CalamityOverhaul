@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -7,13 +7,22 @@ namespace CalamityOverhaul.Content.Particles
 {
     internal class PRT_Smoke : BasePRT
     {
-        public override bool SetLifetime => true;
-        public override int FrameVariants => 7;
-        public override bool UseCustomDraw => true;
-        public override bool Important => StrongVisual;
-        public override bool UseAdditiveBlend => Glowing;
-        public override bool UseHalfTransparency => !Glowing;
-
+        //public override bool SetLifetime => true;
+        //public override int FrameVariants => 7;
+        //public override bool UseCustomDraw => true;
+        //public override bool Important => StrongVisual;
+        //public override bool UseAdditiveBlend => Glowing;
+        //public override bool UseHalfTransparency => !Glowing;
+        public override void SetPRT() {
+            if (Glowing) {
+                PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            }
+            else {
+                PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
+            }
+            Frame = 7;
+            SetLifetime = true;
+        }
         public override string Texture => "CalamityMod/Particles/HeavySmoke";
 
         private float Opacity;
@@ -23,7 +32,8 @@ namespace CalamityOverhaul.Content.Particles
         private float HueShift;
         private static int FrameAmount = 6;
 
-        public PRT_Smoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f, bool required = false) {
+        public PRT_Smoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale
+            , float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f, bool required = false) {
             Position = position;
             Velocity = velocity;
             Color = color;
@@ -53,13 +63,14 @@ namespace CalamityOverhaul.Content.Particles
             Color *= opacity;
         }
 
-        public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = PRTLoader.ParticleIDToTexturesDic[Type];
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             int animationFrame = (int)Math.Floor(Time / (float)(Lifetime / (float)FrameAmount));
             Rectangle frame = new Rectangle(80 * Variant, 80 * animationFrame, 80, 80);
 
 
             spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation, frame.Size() / 2f, Scale, SpriteEffects.None, 0);
+            return false;
         }
     }
 }

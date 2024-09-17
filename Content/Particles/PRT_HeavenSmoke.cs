@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -7,13 +7,22 @@ namespace CalamityOverhaul.Content.Particles
 {
     internal class PRT_HeavenSmoke : BasePRT
     {
-        public override bool SetLifetime => true;
-        public override int FrameVariants => 7;
-        public override bool UseCustomDraw => true;
-        public override bool Important => StrongVisual;
-        public override bool UseAdditiveBlend => Glowing;
-        public override bool UseHalfTransparency => !Glowing;
-
+        //public override bool SetLifetime => true;
+        //public override int FrameVariants => 7;
+        //public override bool UseCustomDraw => true;
+        //public override bool Important => StrongVisual;
+        //public override bool UseAdditiveBlend => Glowing;
+        //public override bool UseHalfTransparency => !Glowing;
+        public override void SetPRT() {
+            if (Glowing) {
+                PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            }
+            else {
+                PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
+            }
+            Frame = 7;
+            SetLifetime = true;
+        }
         public override string Texture => "CalamityMod/Particles/HeavySmoke";
 
         private Color[] rainbowColors = [Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet];
@@ -64,13 +73,14 @@ namespace CalamityOverhaul.Content.Particles
             sengs++;
         }
 
-        public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = PRTLoader.ParticleIDToTexturesDic[Type];
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             int animationFrame = (int)Math.Floor(Time / ((float)(Lifetime / (float)FrameAmount)));
             Rectangle frame = new Rectangle(80 * Variant, 80 * animationFrame, 80, 80);
             Vector2 pos = Position - Main.screenPosition;
             Vector2 org = frame.Size() / 2f;
             spriteBatch.Draw(tex, pos, frame, rainColor * Opacity, Rotation, org, Scale, SpriteEffects.None, 0);
+            return false;
         }
     }
 }

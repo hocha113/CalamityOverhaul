@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -9,10 +9,13 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_SoulLight : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/Light";
-        public override bool UseAdditiveBlend => true;
-        public override bool UseCustomDraw => true;
-        public override bool SetLifetime => true;
-
+        //public override bool UseAdditiveBlend => true;
+        //public override bool UseCustomDraw => true;
+        //public override bool SetLifetime => true;
+        public override void SetPRT() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         public float Opacity;
         public float SquishStrenght;
         public float MaxSquish;
@@ -20,7 +23,8 @@ namespace CalamityOverhaul.Content.Particles
         public float followingRateRatio;
         public Projectile flowerProj;
 
-        public PRT_SoulLight(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f, float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, Projectile _flowerProj = null, float _followingRateRatio = 0.9f) {
+        public PRT_SoulLight(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f
+            , float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, Projectile _flowerProj = null, float _followingRateRatio = 0.9f) {
             Position = position;
             Velocity = velocity;
             Scale = scale;
@@ -48,8 +52,8 @@ namespace CalamityOverhaul.Content.Particles
             }
         }
 
-        public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = PRTLoader.ParticleIDToTexturesDic[Type];
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             Texture2D bloomTex = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
 
             float squish = MathHelper.Clamp(Velocity.Length() / 10f * SquishStrenght, 1f, MaxSquish);
@@ -64,6 +68,7 @@ namespace CalamityOverhaul.Content.Particles
             Main.spriteBatch.Draw(bloomTex, drawPosition, null, Color * Opacity * 0.8f, rot, bloomTex.Size() / 2f, scale * 2 * properBloomSize, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(tex, drawPosition, null, Color * Opacity * 0.8f, rot, origin, scale * 1.1f, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(tex, drawPosition, null, Color.White * Opacity * 0.9f, rot, origin, scale, SpriteEffects.None, 0f);
+            return false;
         }
     }
 }

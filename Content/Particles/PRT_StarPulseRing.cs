@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -10,9 +10,13 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_StarPulseRing : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
-        public override bool UseAdditiveBlend => true;
-        public override bool UseCustomDraw => true;
-        public override bool SetLifetime => true;
+        //public override bool UseAdditiveBlend => true;
+        //public override bool UseCustomDraw => true;
+        //public override bool SetLifetime => true;
+        public override void SetPRT() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         private float OriginalScale;
         private float FinalScale;
         private float opacity;
@@ -39,8 +43,8 @@ namespace CalamityOverhaul.Content.Particles
             Velocity *= 0.95f;
         }
 
-        public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = PRTLoader.ParticleIDToTexturesDic[Type];
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             Vector2 pos = Position - Main.screenPosition;
             spriteBatch.Draw(tex, pos, null, Color * opacity, Rotation, tex.Size() / 2f, Scale, SpriteEffects.None, 0);
 
@@ -49,6 +53,8 @@ namespace CalamityOverhaul.Content.Particles
             float properBloomSize = star.Height / (float)bloom.Height;
             spriteBatch.Draw(bloom, pos, null, Color * 0.5f, 0, bloom.Size() / 2f, Scale * properBloomSize * 3, SpriteEffects.None, 0);
             spriteBatch.Draw(star, pos, null, Color, 0, star.Size() / 2f, Scale * 3, SpriteEffects.None, 0);
+
+            return false;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -8,9 +8,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
     internal class PGGlow : BasePRT
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "PhosphorescentGauntlet";
-        public override bool UseAdditiveBlend => true;
-        public override bool UseCustomDraw => true;
-        public override bool SetLifetime => true;
+        //public override bool UseAdditiveBlend => true;
+        //public override bool UseCustomDraw => true;
+        //public override bool SetLifetime => true;
 
         public float Opacity;
         public float SquishStrenght;
@@ -26,17 +26,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
             SquishStrenght = squishStrenght;
             MaxSquish = maxSquish;
         }
-
+        public override void SetPRT() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         public override void AI() {
             Velocity *= (LifetimeCompletion >= 0.34f) ? 0.93f : 1.02f;
             Rotation = Velocity.ToRotation();
             Opacity = LifetimeCompletion > 0.5f ? ((float)Math.Sin(LifetimeCompletion * MathHelper.Pi) * 0.2f) + 0.8f : (float)Math.Sin(LifetimeCompletion * MathHelper.Pi);
         }
 
-        public override void CustomDraw(SpriteBatch spriteBatch) {
+        public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);
             Main.EntitySpriteDraw(value, Position - Main.screenPosition, null, Color.Gold * Opacity, Rotation + MathHelper.PiOver4 + MathHelper.Pi + (Velocity.X > 0 ? MathHelper.PiOver2 : 0)
                 , value.Size() / 2, Scale, Velocity.X > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            return false;
         }
     }
 }

@@ -1,18 +1,17 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Particles
 {
     internal class PRT_LavaFire : BasePRT, ICWRLoader
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle3";
-        public override bool SetLifetime => true;
-        public override bool UseCustomDraw => true;
-        public override bool UseAdditiveBlend => true;
+        //public override bool SetLifetime => true;
+        //public override bool UseCustomDraw => true;
+        //public override bool UseAdditiveBlend => true;
         public Color[] colors;
         public int timer;
         public float speedX;
@@ -34,6 +33,9 @@ namespace CalamityOverhaul.Content.Particles
             SoftGlow = null;
         }
         public override void SetPRT() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+
             if (colors == null) {
                 colors = new Color[3];
                 colors[0] = new Color(262, 150, 45, 255);//明
@@ -90,8 +92,8 @@ namespace CalamityOverhaul.Content.Particles
             timeLife--;
         }
 
-        public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex1 = PRTLoader.ParticleIDToTexturesDic[Type];
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex1 = PRTLoader.PRT_IDToTexture[ID];
             Texture2D tex2 = StarTexture.Value;
             Texture2D tex3 = SoftGlow.Value;
 
@@ -108,6 +110,8 @@ namespace CalamityOverhaul.Content.Particles
             if (ai[1] < 1) {
                 spriteBatch.Draw(tex2, drawPos, null, Color, Rotation, tex2.Size() / 2, Scale * 0.04f, SpriteEffects.None, 0f);
             }
+
+            return false;
         }
     }
 }

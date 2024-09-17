@@ -1,7 +1,8 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
+using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;

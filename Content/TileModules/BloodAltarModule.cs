@@ -1,9 +1,10 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+
 using CalamityOverhaul.Content.TileModules.Core;
 using CalamityOverhaul.Content.Tiles;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

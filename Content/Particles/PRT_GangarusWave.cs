@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -9,9 +9,13 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_GangarusWave : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
-        public override bool UseAdditiveBlend => true;
-        public override bool SetLifetime => true;
-        public override bool UseCustomDraw => true;
+        //public override bool UseAdditiveBlend => true;
+        //public override bool SetLifetime => true;
+        //public override bool UseCustomDraw => true;
+        public override void SetPRT() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         private float OriginalScale;
         private float FinalScale;
         private float opacity;
@@ -57,9 +61,11 @@ namespace CalamityOverhaul.Content.Particles
             }
         }
 
-        public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = PRTLoader.ParticleIDToTexturesDic[Type];
-            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * opacity, Rotation, tex.Size() / 2f, Scale * Squish, SpriteEffects.None, 0);
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * opacity
+                , Rotation, tex.Size() / 2f, Scale * Squish, SpriteEffects.None, 0);
+            return false;
         }
     }
 }

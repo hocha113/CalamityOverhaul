@@ -2,7 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Projectile.scale += 0.012f;
 
             if (Projectile.DistanceSQ(Main.LocalPlayer.Center) < 1600 * 1600) {
-                if (PRTLoader.FreeSpacesAvailable() > 10) {
+                if (PRTLoader.NumberUsablePRT() > 10) {
                     BasePRT spark = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity * 0.7f, false, 20, 1.2f, Color.Gold);
                     PRTLoader.AddParticle(spark);
                 }

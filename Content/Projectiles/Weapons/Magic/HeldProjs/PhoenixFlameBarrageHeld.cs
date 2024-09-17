@@ -3,7 +3,7 @@ using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Particles;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

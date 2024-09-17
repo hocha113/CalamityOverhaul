@@ -1,7 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;

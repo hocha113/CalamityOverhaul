@@ -1,5 +1,5 @@
 displayName = Calamity Overhaul
-modReferences = CalamityMod@2.0.4.3
+modReferences = CalamityMod@2.0.4.3, InnoVault@0.1
 weakReferences = WeaponOut@1.4.4.9
 author = HoCha113
 version = 0.4054

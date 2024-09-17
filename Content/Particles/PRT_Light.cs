@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -9,10 +9,13 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_Light : BasePRT, ICWRLoader
     {
         public override string Texture => "CalamityMod/Particles/Light";
-        public override bool UseAdditiveBlend => true;
-        public override bool UseCustomDraw => true;
-        public override bool SetLifetime => true;
-
+        //public override bool UseAdditiveBlend => true;
+        //public override bool UseCustomDraw => true;
+        //public override bool SetLifetime => true;
+        public override void SetPRT() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         public float Opacity;
         public float SquishStrenght;
         public float MaxSquish;
@@ -51,8 +54,8 @@ namespace CalamityOverhaul.Content.Particles
             }
         }
 
-        public override void CustomDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = PRTLoader.ParticleIDToTexturesDic[Type];
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             Texture2D bloomTex = BloomTex.Value;
 
             float squish = MathHelper.Clamp(Velocity.Length() / 10f * SquishStrenght, 1f, MaxSquish);
@@ -67,6 +70,7 @@ namespace CalamityOverhaul.Content.Particles
             Main.spriteBatch.Draw(bloomTex, drawPosition, null, Color * Opacity * 0.8f, rot, bloomTex.Size() / 2f, scale * 2 * properBloomSize, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(tex, drawPosition, null, Color * Opacity * 0.8f, rot, origin, scale * 1.1f, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(tex, drawPosition, null, Color.White * Opacity * 0.9f, rot, origin, scale, SpriteEffects.None, 0f);
+            return false;
         }
     }
 }

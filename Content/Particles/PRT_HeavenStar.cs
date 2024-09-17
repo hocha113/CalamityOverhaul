@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -10,9 +10,13 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_HeavenStar : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/ThinSparkle";
-        public override bool UseAdditiveBlend => true;
-        public override bool UseCustomDraw => true;
-        public override bool SetLifetime => true;
+        //public override bool UseAdditiveBlend => true;
+        //public override bool UseCustomDraw => true;
+        //public override bool SetLifetime => true;
+        public override void SetPRT() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         private float Spin;
         private float opacity;
         private Color Bloom;
@@ -61,15 +65,19 @@ namespace CalamityOverhaul.Content.Particles
             Lighting.AddLight(Position, LightColor.R / 255f, LightColor.G / 255f, LightColor.B / 255f);
         }
 
-        public override void CustomDraw(SpriteBatch spriteBatch) {
+        public override bool PreDraw(SpriteBatch spriteBatch) {
             if (SpawnDelay > 0)
-                return;
-            Texture2D sparkTexture = PRTLoader.ParticleIDToTexturesDic[Type];
+                return false;
+            Texture2D sparkTexture = PRTLoader.PRT_IDToTexture[ID];
             Texture2D bloomTexture = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
             float properBloomSize = sparkTexture.Height / (float)bloomTexture.Height;
-            Vector2 squish = Vector2.Lerp(OriginalScale, FinalScale, PiecewiseAnimation(LifetimeCompletion, new CurveSegment[] { new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4) }));
-            spriteBatch.Draw(bloomTexture, Position - Main.screenPosition, null, Bloom * opacity * 0.5f, 0, bloomTexture.Size() / 2f, squish * BloomScale * properBloomSize, SpriteEffects.None, 0);
-            spriteBatch.Draw(sparkTexture, Position - Main.screenPosition, null, Color * opacity, Rotation, sparkTexture.Size() / 2f, squish, SpriteEffects.None, 0);
+            Vector2 squish = Vector2.Lerp(OriginalScale, FinalScale, PiecewiseAnimation(LifetimeCompletion
+                , [new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4)]));
+            spriteBatch.Draw(bloomTexture, Position - Main.screenPosition, null, Bloom * opacity * 0.5f, 0
+                , bloomTexture.Size() / 2f, squish * BloomScale * properBloomSize, SpriteEffects.None, 0);
+            spriteBatch.Draw(sparkTexture, Position - Main.screenPosition, null, Color * opacity, Rotation
+                , sparkTexture.Size() / 2f, squish, SpriteEffects.None, 0);
+            return false;
         }
     }
 }

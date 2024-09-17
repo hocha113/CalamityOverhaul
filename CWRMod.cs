@@ -1,16 +1,12 @@
 global using Microsoft.Xna.Framework;
-using CalamityOverhaul.Common.Effects;
-using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.UIs;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Terraria;
-using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 

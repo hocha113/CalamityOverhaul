@@ -1,7 +1,7 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;

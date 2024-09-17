@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.ModLoader;
 

@@ -2,7 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -371,7 +371,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 norlToTarget *= 1;
             }
 
-            int pysCount = PRTLoader.GetParticlesCount(PRTLoader.GetParticleType(typeof(PRT_Spark)));
+            int pysCount = PRTLoader.PRT_IDToInGame_World_Count[PRTLoader.GetParticleID(typeof(PRT_Spark))];
             if (pysCount > 120) {
                 sparkCount = 10;
             }

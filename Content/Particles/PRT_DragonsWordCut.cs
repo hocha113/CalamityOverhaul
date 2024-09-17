@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Particles.Core;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -11,12 +11,8 @@ namespace CalamityOverhaul.Content.Particles
         public bool AffectedByGravity;
         public float Ylength = 1f;
         public float Xlength = 0.6f;
-        public override bool SetLifetime => true;
-        public override bool UseCustomDraw => true;
-        public override bool UseAdditiveBlend => false;
-
+        //public override bool UseAdditiveBlend => false;
         public override string Texture => "CalamityMod/Particles/LargeSpark";
-
         public PRT_DragonsWordCut(Vector2 relativePosition, Vector2 velocity
             , bool affectedByGravity, int lifetime, float scale, Color color) {
             Position = relativePosition;
@@ -25,6 +21,11 @@ namespace CalamityOverhaul.Content.Particles
             Scale = scale;
             Lifetime = lifetime;
             Color = InitialColor = color;
+        }
+
+        public override void SetPRT() {
+            SetLifetime = true;
+            PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
         }
 
         public override void AI() {
@@ -41,13 +42,14 @@ namespace CalamityOverhaul.Content.Particles
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
         }
 
-        public override void CustomDraw(SpriteBatch spriteBatch) {
+        public override bool PreDraw(SpriteBatch spriteBatch) {
             Vector2 scale = new Vector2(Xlength, Ylength) * Scale;
-            Texture2D texture = PRTLoader.ParticleIDToTexturesDic[Type];
+            Texture2D texture = PRTLoader.PRT_IDToTexture[ID];
             spriteBatch.Draw(texture, Position - Main.screenPosition, null
                 , Color.Gold, Rotation, texture.Size() * 0.5f, scale * new Vector2(0.85f, 1f), 0, 0f);
             spriteBatch.Draw(texture, Position - Main.screenPosition
                 , null, Color, Rotation, texture.Size() * 0.5f, scale, 0, 0f);
+            return false;
         }
     }
 }

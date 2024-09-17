@@ -1,7 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;

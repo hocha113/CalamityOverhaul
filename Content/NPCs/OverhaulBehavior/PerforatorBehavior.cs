@@ -6,7 +6,7 @@ using CalamityMod.Projectiles.Boss;
 using CalamityMod.World;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Particles;
-using CalamityOverhaul.Content.Particles.Core;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
