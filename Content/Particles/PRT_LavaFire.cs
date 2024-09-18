@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Particles
             StarTexture = null;
             SoftGlow = null;
         }
-        public override void SetPRT() {
+        public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             SetLifetime = true;
 

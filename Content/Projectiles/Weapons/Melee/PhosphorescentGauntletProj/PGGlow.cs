@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
             SquishStrenght = squishStrenght;
             MaxSquish = maxSquish;
         }
-        public override void SetPRT() {
+        public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             SetLifetime = true;
         }

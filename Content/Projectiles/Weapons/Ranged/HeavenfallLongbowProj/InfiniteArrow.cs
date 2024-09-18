@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 if (Main.rand.NextBool(2))
                     SpanStarPrt(chromaColor);
             }
-
+            
             if (Projectile.ai[0] < 3) {
                 Projectile.position += Main.player[Projectile.owner].velocity;
             }

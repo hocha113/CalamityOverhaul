@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content.TileModules;
-using CalamityOverhaul.Content.TileModules.Core;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
@@ -62,8 +62,8 @@ namespace CalamityOverhaul.Content.Tiles
 
         public override bool RightClick(int i, int j) {
             if (CWRUtils.SafeGetTopLeft(i, j, out var point)) {
-                BloodAltarModule module = TileModuleLoader.FindModulePreciseSearch
-                <BloodAltarModule>(TileModuleLoader.GetModuleID(typeof(BloodAltarModule)), point.X, point.Y);
+                int id = TileProcessorLoader.GetModuleID(typeof(BloodAltarModule));
+                BloodAltarModule module = TileProcessorLoader.FindModulePreciseSearch<BloodAltarModule>(id, point.X, point.Y);
                 if (module != null) {
                     module.OnBoolMoon = !module.OnBoolMoon;
                     module.startPlayerWhoAmI = Main.LocalPlayer.whoAmI;
@@ -81,8 +81,8 @@ namespace CalamityOverhaul.Content.Tiles
             int frameYPos = t.TileFrameY;
 
             if (CWRUtils.SafeGetTopLeft(i, j, out var point)) {
-                BloodAltarModule module = TileModuleLoader.FindModulePreciseSearch
-                <BloodAltarModule>(TileModuleLoader.GetModuleID(typeof(BloodAltarModule)), point.X, point.Y);
+                int id = TileProcessorLoader.GetModuleID(typeof(BloodAltarModule));
+                BloodAltarModule module = TileProcessorLoader.FindModulePreciseSearch<BloodAltarModule>(id, point.X, point.Y);
                 if (module != null) {
                     frameYPos += module.frameIndex % 4 * (Height * SheetSquare);
                 }

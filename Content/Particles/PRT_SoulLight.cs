@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Particles
         //public override bool UseAdditiveBlend => true;
         //public override bool UseCustomDraw => true;
         //public override bool SetLifetime => true;
-        public override void SetPRT() {
+        public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             SetLifetime = true;
         }

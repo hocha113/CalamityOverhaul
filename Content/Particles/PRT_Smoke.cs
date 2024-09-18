@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Particles
         //public override bool Important => StrongVisual;
         //public override bool UseAdditiveBlend => Glowing;
         //public override bool UseHalfTransparency => !Glowing;
-        public override void SetPRT() {
+        public override void SetProperty() {
             if (Glowing) {
                 PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             }

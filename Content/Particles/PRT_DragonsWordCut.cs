@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Particles
             Color = InitialColor = color;
         }
 
-        public override void SetPRT() {
+        public override void SetProperty() {
             SetLifetime = true;
             PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
         }

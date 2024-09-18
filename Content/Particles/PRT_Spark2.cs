@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Particles
         //public override bool UseAdditiveBlend => false;
         public Entity entity;
         public override string Texture => "CalamityMod/Projectiles/StarProj";
-        public override void SetPRT() {
+        public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             SetLifetime = true;
         }

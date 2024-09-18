@@ -1,10 +1,9 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
-
-using CalamityOverhaul.Content.TileModules.Core;
 using CalamityOverhaul.Content.Tiles;
 using InnoVault.PRT;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -17,7 +16,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileModules
 {
-    internal class BloodAltarModule : BaseTileModule, INetWork, ICWRLoader
+    internal class BloodAltarModule : TileProcessor, INetWork, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<BloodAltar>();
         public Vector2 Center => PosInWorld + new Vector2(BloodAltar.Width * 18, BloodAltar.Height * 18) / 2;
@@ -262,7 +261,7 @@ namespace CalamityOverhaul.Content.TileModules
             int moduleIndex = reader.ReadInt32();
             bool moon = reader.ReadBoolean();
             bool moon2 = reader.ReadBoolean();
-            if (moduleIndex < 0 || moduleIndex >= TileModuleLoader.TileModuleInWorld.Count) {
+            if (moduleIndex < 0 || moduleIndex >= TileProcessorLoader.TP_InWorld.Count) {
                 //"moduleIndex超出范围".Domp();
                 //$"TileModuleInWorld最大值为{TileModuleLoader.TileModuleInWorld.Count}".Domp();
                 //$"而moduleIndex是{moduleIndex}".Domp();
@@ -273,7 +272,7 @@ namespace CalamityOverhaul.Content.TileModules
                 ((INetWork)this).NetSend(true, startPlayerWhoAmI);
             }
 
-            BloodAltarModule module = TileModuleLoader.TileModuleInWorld[moduleIndex] as BloodAltarModule;
+            BloodAltarModule module = TileProcessorLoader.TP_InWorld[moduleIndex] as BloodAltarModule;
             if (module != null) {
                 //"正在接受startPlayerWhoAmI".Domp();
                 //"正在接受OnBoolMoon".Domp();
@@ -285,7 +284,7 @@ namespace CalamityOverhaul.Content.TileModules
                 string errorText = CWRLocText.GetTextValue("Error_2");
                 CWRUtils.Text(errorText);
                 CWRMod.Instance.Logger.Info(errorText);
-                TileModuleLoader.LoadWorldTileModule();
+                TileProcessorLoader.LoadWorldTileModule();
             }
         }
     }

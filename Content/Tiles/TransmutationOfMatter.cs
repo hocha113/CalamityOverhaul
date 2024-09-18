@@ -2,8 +2,8 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileModules;
-using CalamityOverhaul.Content.TileModules.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -101,8 +101,8 @@ namespace CalamityOverhaul.Content.Tiles
             }
 
             if (CWRUtils.SafeGetTopLeft(i, j, out var point)) {
-                int type = TileModuleLoader.GetModuleID(typeof(TramModule));
-                BaseTileModule module = TileModuleLoader.FindModulePreciseSearch(type, point.X, point.Y);
+                int type = TileProcessorLoader.GetModuleID(typeof(TramModule));
+                TileProcessor module = TileProcessorLoader.FindModulePreciseSearch(type, point.X, point.Y);
                 if (module != null) {
                     Main.LocalPlayer.CWR().TETramContrType = module.WhoAmI;
                 }

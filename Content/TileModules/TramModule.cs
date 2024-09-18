@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.Content.TileModules.Core;
-using CalamityOverhaul.Content.Tiles;
+﻿using CalamityOverhaul.Content.Tiles;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileModules
 {
-    internal class TramModule : BaseTileModule, ICWRLoader
+    internal class TramModule : TileProcessor, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<TransmutationOfMatter>();
         private const int maxleng = 300;
