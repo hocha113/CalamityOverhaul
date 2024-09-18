@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Items;
+using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using Terraria;
 using Terraria.ID;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul
 
         private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         public override void SetDefaults() {
@@ -46,12 +47,12 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            //if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-            //    TungstenRiot.Instance.CloseEvent();
-            //}
-            //else {
-            //    TungstenRiot.Instance.TryStartEvent();
-            //}
+            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
+                TungstenRiot.Instance.CloseEvent();
+            }
+            else {
+                TungstenRiot.Instance.TryStartEvent();
+            }
 
             //int maxProjSanShootNum = 22;
             //int type = ModContent.ProjectileType<Probe>();
@@ -61,14 +62,14 @@ namespace CalamityOverhaul
             //            , type, 42, 0f, Main.myPlayer, 0, Main.rand.Next(30, 60));
             //}
 
-            int maxSpanNum = 13 + 10;
-            for (int i = 0; i < maxSpanNum; i++) {
-                Vector2 spanPos = player.Center + CWRUtils.randVr(1380, 2200);
-                Vector2 vr = spanPos.To(player.Center + CWRUtils.randVr(180, 320 + 10 * 12)).UnitVector() * 12;
-                Projectile.NewProjectile(player.parent(), spanPos
-                    , vr, ModContent.ProjectileType<MurasamaEndSkillOrbOnSpan>()
-                    , (int)(100 * 0.7f), 0, player.whoAmI);
-            }
+            //int maxSpanNum = 13 + 10;
+            //for (int i = 0; i < maxSpanNum; i++) {
+            //    Vector2 spanPos = player.Center + CWRUtils.randVr(1380, 2200);
+            //    Vector2 vr = spanPos.To(player.Center + CWRUtils.randVr(180, 320 + 10 * 12)).UnitVector() * 12;
+            //    Projectile.NewProjectile(player.parent(), spanPos
+            //        , vr, ModContent.ProjectileType<MurasamaEndSkillOrbOnSpan>()
+            //        , (int)(100 * 0.7f), 0, player.whoAmI);
+            //}
             return true;
         }
     }

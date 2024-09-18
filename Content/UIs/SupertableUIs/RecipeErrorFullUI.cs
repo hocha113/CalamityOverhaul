@@ -19,9 +19,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public bool onMainP;
         public bool eyEBool;
         public override void Update(GameTime gameTime) {
-            DrawPos = mainUI.DrawPos + new Vector2(460, 420);
-            MainRec = new Rectangle((int)DrawPos.X, (int)DrawPos.Y, 30, 30);
-            onMainP = MainRec.Intersects(new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1));
+            DrawPosition = mainUI.DrawPosition + new Vector2(460, 420);
+            MainRec = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 30, 30);
+            onMainP = MainRec.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
             if (onMainP) {
                 int mouseS = DownStartL();
                 if (mouseS == 1) {
@@ -38,9 +38,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public override void Draw(SpriteBatch spriteBatch) {
             Texture2D eye0 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/Eye0");
             Texture2D eye1 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/Eye1");
-            spriteBatch.Draw(eye0, DrawPos, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(eye0, DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             if (eyEBool) {
-                spriteBatch.Draw(eye1, DrawPos, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(eye1, DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             }
             if (mainUI.items != null) {
                 for (int i = 0; i < mainUI.items.Length; i++) {
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (onMainP) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
                 , eyEBool ? CWRLocText.GetTextValue("SupertableUI_Text4") : CWRLocText.GetTextValue("SupertableUI_Text5")
-                , DrawPos.X - 30, DrawPos.Y + 30, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
+                , DrawPosition.X - 30, DrawPosition.Y + 30, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
             }
         }
     }

@@ -135,25 +135,25 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public void UpdateUIElementPos() {
-            if (DrawPos == Vector2.Zero && initializeBool) {
-                DrawPos = (new Vector2(Main.screenWidth, Main.screenHeight) - new Vector2(Texture.Width - Main.screenWidth / 2, Texture.Height + 400)) / 2;
+            if (DrawPosition == Vector2.Zero && initializeBool) {
+                DrawPosition = (new Vector2(Main.screenWidth, Main.screenHeight) - new Vector2(Texture.Width - Main.screenWidth / 2, Texture.Height + 400)) / 2;
                 initializeBool = false;
             }
-            topLeft = new Vector2(15, 30) + DrawPos;
+            topLeft = new Vector2(15, 30) + DrawPosition;
             cellWid = 48;
             cellHig = 46;
             maxCellNumX = maxCellNumY = 9;
 
-            Vector2 inUIMousePos = MouPos - topLeft;
+            Vector2 inUIMousePos = MousePosition - topLeft;
             int mouseXGrid = (int)(inUIMousePos.X / cellWid);
             int mouseYGrid = (int)(inUIMousePos.Y / cellHig);
             mouseInCellCoord = new Point(mouseXGrid, mouseYGrid);
 
             mainRec = new Rectangle((int)topLeft.X, (int)topLeft.Y, cellWid * maxCellNumX + 200, cellHig * maxCellNumY);
             mainRec2 = new Rectangle((int)topLeft.X, (int)topLeft.Y, cellWid * maxCellNumX, cellHig * maxCellNumY);
-            inputRec = new Rectangle((int)(DrawPos.X + 555), (int)(DrawPos.Y + 215), 92, 90);
-            closeRec = new Rectangle((int)(DrawPos.X), (int)(DrawPos.Y), 30, 30);
-            Rectangle mouseRec = new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1);
+            inputRec = new Rectangle((int)(DrawPosition.X + 555), (int)(DrawPosition.Y + 215), 92, 90);
+            closeRec = new Rectangle((int)(DrawPosition.X), (int)(DrawPosition.Y), 30, 30);
+            Rectangle mouseRec = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
             onMainP = mainRec.Intersects(mouseRec);
             onMainP2 = mainRec2.Intersects(mouseRec);
             onInputP = inputRec.Intersects(mouseRec);
@@ -733,10 +733,10 @@ End:;
                 }
             }
 
-            spriteBatch.Draw(Texture, DrawPos, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
-            spriteBatch.Draw(CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon"), DrawPos, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出关闭按键
+            spriteBatch.Draw(Texture, DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
+            spriteBatch.Draw(CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon"), DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出关闭按键
             if (onCloseP) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("SupertableUI_Text1"), DrawPos.X, DrawPos.Y, Color.Gold, Color.Black, new Vector2(0.3f), 1.1f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.1f));
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("SupertableUI_Text1"), DrawPosition.X, DrawPosition.Y, Color.Gold, Color.Black, new Vector2(0.3f), 1.1f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.1f));
             }
 
             if (previewItems != null) {
@@ -763,10 +763,10 @@ End:;
             
             Texture2D arrow = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/InputArrow2");
             if (inputItem != null && inputItem?.type != 0) {//如果输出格有物品，那么将它画出来
-                DrawItemIcons(spriteBatch, inputItem, DrawPos + new Vector2(552, 215), overSlp: 1.5f);
+                DrawItemIcons(spriteBatch, inputItem, DrawPosition + new Vector2(552, 215), overSlp: 1.5f);
                 arrow = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/InputArrow");
             }
-            spriteBatch.Draw(arrow, DrawPos + new Vector2(460, 225), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出输出箭头
+            spriteBatch.Draw(arrow, DrawPosition + new Vector2(460, 225), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出输出箭头
 
             if (onMainP2 && inCoordIndex >= 0 && inCoordIndex <= 80) { //处理鼠标在UI格中查看物品的事情
                 Item overItem = items[inCoordIndex];

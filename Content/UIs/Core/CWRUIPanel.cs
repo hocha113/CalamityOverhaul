@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.UIs.Core
         /// 获取用户的鼠标在屏幕上的位置，这个属性一般在绘制函数以外的地方使用，
         /// 因为绘制函数中不需要屏幕因子的坐标矫正，直接使用 Main.MouseScreen 即可
         /// </summary>
-        public virtual Vector2 MouPos => Main.MouseScreen;
+        public virtual Vector2 MousePosition => Main.MouseScreen;
 
         /// <summary>
         /// 一个纹理的占位，可以重写它用于获取UI的主要纹理
@@ -29,30 +29,12 @@ namespace CalamityOverhaul.Content.UIs.Core
         /// <summary>
         /// 绘制的位置，这一般意味着UI矩形的左上角
         /// </summary>
-        public Vector2 DrawPos;
+        public Vector2 DrawPosition;
 
         /// <summary>
         /// UI的矩形
         /// </summary>
-        public Rectangle UIRec;
-
-        /// <summary>
-        /// 从左上角到中心点的矫正值，它只是一个数据节点，不会自动给自己赋上正确的值
-        /// </summary>
-        public Vector2 gfkOffset;
-
-        /// <summary>
-        /// 拖拽时会用到的矫正向量，如果UI需要拖拽，请使用这个成员来让UI的移动变得自然
-        /// </summary>
-        public Vector2 offsetDragPos;
-
-        /// <summary>
-        /// UI的中心点，它的正确性在于 gfkOffset 是否被正确处理并赋值
-        /// </summary>
-        public Vector2 UICenter {
-            get => DrawPos + gfkOffset;
-            set => DrawPos += value;
-        }
+        public Rectangle UIHitBox;
 
         /// <summary>
         /// 是否绘制文字
@@ -132,20 +114,20 @@ namespace CalamityOverhaul.Content.UIs.Core
         public virtual void PreventionTransgression() {
             int maxH = Main.maxScreenH - hig;
             int maxW = Main.maxScreenW - wid;
-            if (DrawPos.X < 0) {
-                DrawPos.X = 0;
+            if (DrawPosition.X < 0) {
+                DrawPosition.X = 0;
             }
 
-            if (DrawPos.Y < 0) {
-                DrawPos.Y = 0;
+            if (DrawPosition.Y < 0) {
+                DrawPosition.Y = 0;
             }
 
-            if (DrawPos.X > maxW) {
-                DrawPos.X = maxW;
+            if (DrawPosition.X > maxW) {
+                DrawPosition.X = maxW;
             }
 
-            if (DrawPos.Y > maxH) {
-                DrawPos.Y = maxH;
+            if (DrawPosition.Y > maxH) {
+                DrawPosition.Y = maxH;
             }
         }
 
@@ -153,7 +135,7 @@ namespace CalamityOverhaul.Content.UIs.Core
         /// 检查鼠标是否在UI上
         /// </summary>
         public virtual bool CheckOnMous() {
-            return UIRec.Intersects(new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1));
+            return UIHitBox.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
         }
 
         public virtual int DownStartL() {

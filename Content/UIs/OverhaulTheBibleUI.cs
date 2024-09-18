@@ -1,8 +1,8 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using CalamityOverhaul.Content.UIs.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using InnoVault.UIHanders;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -15,12 +15,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs
 {
-    internal class OverhaulTheBibleUI : CWRUIPanel
+    internal class OverhaulTheBibleUI : UIHander, ICWRLoader
     {
         internal static OverhaulTheBibleUI Instance { get; private set; }
         public override void Load() => Instance = this;
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BookPans");
-
+        private int Time;
         private Texture2D MeleeImage {
             get {
                 Main.instance.LoadItem(4);
@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.UIs
         private float SlideroutVlue;
 
         private bool _active;
-        public bool Active {
+        public override bool Active {
             get => _active;
             set {
                 if (!value) {
@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.UIs
         }
         public Rectangle CloseRec;
         public bool OnCloseP;
-        public Vector2 InCellPos => DrawPos + new Vector2(35, 32);
+        public Vector2 InCellPos => DrawPosition + new Vector2(35, 32);
         public Vector2 CellSlpSize => new Vector2(55, 50);
         public int MaxInFrameXNum => 4;
 
@@ -129,9 +129,19 @@ namespace CalamityOverhaul.Content.UIs
 
         private Rectangle MainRec;
         private bool OnMain;
-
-        public override void Initialize() {
-            DrawPos = new Vector2(600, 300);
+        void ICWRLoader.SetupData() {
+            Instance.ecTypeItemList = [];
+            foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
+                Item item = new Item(baseRItem.TargetID);
+                if (item != null) {
+                    if (item.type != ItemID.None) {
+                        Instance.ecTypeItemList.Add(item);
+                    }
+                }
+            }
+        }
+        public void Initialize() {
+            DrawPosition = new Vector2(600, 300);
 
             if (SlideroutVlue > -35) {
                 SlideroutVlue--;
@@ -139,16 +149,16 @@ namespace CalamityOverhaul.Content.UIs
 
             int frmeInY = 40;
 
-            meleePos = new Vector2(SlideroutVlue, 30 + frmeInY * 0) + DrawPos;
-            rangedPos = new Vector2(SlideroutVlue + 10, 30 + frmeInY * 1) + DrawPos;
-            magicPos = new Vector2(SlideroutVlue, 30 + frmeInY * 2) + DrawPos;
-            summonPos = new Vector2(SlideroutVlue - 10, 30 + frmeInY * 3) + DrawPos;
-            roguePos = new Vector2(SlideroutVlue + 5, 30 + frmeInY * 4) + DrawPos;
-            slivePos = DrawPos + new Vector2(5, 5) + new Vector2(0, SliderValueSengs);
-            LsmogPos = DrawPos + new Vector2(-65 + SlideroutVlue + 35, 100);
-            RsmogPos = DrawPos + new Vector2(-65 - SlideroutVlue - 35 + 570, 100);
+            meleePos = new Vector2(SlideroutVlue, 30 + frmeInY * 0) + DrawPosition;
+            rangedPos = new Vector2(SlideroutVlue + 10, 30 + frmeInY * 1) + DrawPosition;
+            magicPos = new Vector2(SlideroutVlue, 30 + frmeInY * 2) + DrawPosition;
+            summonPos = new Vector2(SlideroutVlue - 10, 30 + frmeInY * 3) + DrawPosition;
+            roguePos = new Vector2(SlideroutVlue + 5, 30 + frmeInY * 4) + DrawPosition;
+            slivePos = DrawPosition + new Vector2(5, 5) + new Vector2(0, SliderValueSengs);
+            LsmogPos = DrawPosition + new Vector2(-65 + SlideroutVlue + 35, 100);
+            RsmogPos = DrawPosition + new Vector2(-65 - SlideroutVlue - 35 + 570, 100);
 
-            MainRec = new Rectangle((int)DrawPos.X, (int)DrawPos.Y, Texture.Width, Texture.Height);
+            MainRec = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, Texture.Width, Texture.Height);
 
             meleeRec = new Rectangle((int)meleePos.X, (int)meleePos.Y, frmeInY, frmeInY);
             rangedRec = new Rectangle((int)rangedPos.X, (int)rangedPos.Y, frmeInY, frmeInY);
@@ -159,7 +169,7 @@ namespace CalamityOverhaul.Content.UIs
             LsmogRec = new Rectangle((int)LsmogPos.X, (int)LsmogPos.Y, 30, 30);
             RsmogRec = new Rectangle((int)RsmogPos.X, (int)RsmogPos.Y, 30, 30);
 
-            Rectangle mouseRec = new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1);
+            Rectangle mouseRec = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
 
             OnMain = MainRec.Intersects(mouseRec);
 
@@ -172,7 +182,7 @@ namespace CalamityOverhaul.Content.UIs
             onLsmogP = LsmogRec.Intersects(mouseRec);
             onRsmogP = RsmogRec.Intersects(mouseRec);
 
-            CloseRec = new Rectangle((int)(DrawPos.X + 470), (int)(DrawPos.Y + 190), 30, 30);
+            CloseRec = new Rectangle((int)(DrawPosition.X + 470), (int)(DrawPosition.Y + 190), 30, 30);
             OnCloseP = CloseRec.Intersects(mouseRec);
 
             Instance.ecTypeItemList = [];
@@ -227,10 +237,11 @@ namespace CalamityOverhaul.Content.UIs
             }
         }
 
-        public override void Update(GameTime gameTime) {
+        public override void Update() {
             Initialize();
 
-            int museS = DownStartL();
+            //int museS = DownStartL();
+            int museS = (int)keyLeftPressState;
 
             if (OnCloseP) {
                 player.mouseInterface = true;
@@ -261,7 +272,7 @@ namespace CalamityOverhaul.Content.UIs
                 //更新上一帧的鼠标状态
                 oldMouseState = currentMouseState;
                 //计算鼠标位置相对于滑轮矩阵左上角的真实位置
-                Vector2 mouseInCellPos = MouPos - DrawPos - new Vector2(16, 16);
+                Vector2 mouseInCellPos = MousePosition - DrawPosition - new Vector2(16, 16);
 
                 if (mouseInCellPos.X > 198) {
                     mouseInCellPos.X = 198;
@@ -273,10 +284,10 @@ namespace CalamityOverhaul.Content.UIs
                 if (onSliveP || onSliveP2) {
                     if (museS == 3) {
                         if (!onSliveP2) {
-                            offsetMouseY = slivePos.Y - MouPos.Y + 6.24f;
+                            offsetMouseY = slivePos.Y - MousePosition.Y + 6.24f;
                         }
                         onSliveP2 = true;
-                        float numY = MouPos.Y + offsetMouseY;
+                        float numY = MousePosition.Y + offsetMouseY;
                         if (numY < 310) {
                             numY = 310;
                         }
@@ -299,7 +310,7 @@ namespace CalamityOverhaul.Content.UIs
                 onIndex = (mouseCellY) * MaxInFrameXNum + mouseCellX;
             }
 
-            time++;
+            Time++;
         }
 
         private Vector2 inIndexGetPos(int index) {
@@ -324,8 +335,8 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (DrawPos == Vector2.Zero) {
-                DrawPos = new Vector2(500, 300);
+            if (DrawPosition == Vector2.Zero) {
+                DrawPosition = new Vector2(500, 300);
             }
 
             Texture2D value13 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/TexturePackButtons");
@@ -340,12 +351,12 @@ namespace CalamityOverhaul.Content.UIs
             spriteBatch.Draw(RogueImage, roguePos, null, getSouldColor(rogue, onRogueP), 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
 
             //绘制UI主体
-            spriteBatch.Draw(Texture, DrawPos, null, Color.White, 0f, Vector2.Zero, new Vector2(2, 1), SpriteEffects.None, 0);
+            spriteBatch.Draw(Texture, DrawPosition, null, Color.White, 0f, Vector2.Zero, new Vector2(2, 1), SpriteEffects.None, 0);
             //进行矩形画布裁剪绘制
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
             Rectangle originalScissorRect = spriteBatch.GraphicsDevice.ScissorRectangle;
-            Rectangle newScissorRect = CWRUtils.GetClippingRectangle(spriteBatch, new((int)DrawPos.X + 9, (int)DrawPos.Y + 9, 239, 213));
+            Rectangle newScissorRect = CWRUtils.GetClippingRectangle(spriteBatch, new((int)DrawPosition.X + 9, (int)DrawPosition.Y + 9, 239, 213));
             spriteBatch.GraphicsDevice.ScissorRectangle = newScissorRect;
             //遍历绘制索引目标的实例
             for (int i = 0; i < ecTypeItemList.Count; i++) {
@@ -370,22 +381,22 @@ namespace CalamityOverhaul.Content.UIs
             }
 
             Texture2D value2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SliderBar");
-            spriteBatch.Draw(value2, DrawPos + new Vector2(5, 5), null, Color.White, 0f, Vector2.Zero, new Vector2(2, 0.88f), SpriteEffects.None, 0);
+            spriteBatch.Draw(value2, DrawPosition + new Vector2(5, 5), null, Color.White, 0f, Vector2.Zero, new Vector2(2, 0.88f), SpriteEffects.None, 0);
             Texture2D value3 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/ScrollbarInner");
             spriteBatch.Draw(value3, slivePos, null, onSliveP2 ? Color.Red : Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
 
             string text = CWRLocText.GetTextValue("OverhaulTheBibleUI_Text");
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRUtils.GetSafeText(text, FontAssets.MouseText.Value.MeasureString(text), 110)
-                , DrawPos.X + 250, DrawPos.Y + 16, Color.Black, Color.White, new Vector2(0.3f), 1);
+                , DrawPosition.X + 250, DrawPosition.Y + 16, Color.Black, Color.White, new Vector2(0.3f), 1);
 
             spriteBatch.Draw(CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon")
-                , DrawPos + new Vector2(470, 190), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出关闭按键
+                , DrawPosition + new Vector2(470, 190), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出关闭按键
 
-            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "1/1", DrawPos.X + 235, DrawPos.Y + 200, Color.White, Color.Black, new Vector2(0.3f), 1.2f);
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "1/1", DrawPosition.X + 235, DrawPosition.Y + 200, Color.White, Color.Black, new Vector2(0.3f), 1.2f);
 
             if (OnCloseP) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("SupertableUI_Text1")
-                    , DrawPos.X + 470, DrawPos.Y + 190, Color.Gold, Color.Black, new Vector2(0.3f), 1.1f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.1f));
+                    , DrawPosition.X + 470, DrawPosition.Y + 190, Color.Gold, Color.Black, new Vector2(0.3f), 1.1f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.1f));
             }
 
             if (onMeleeP) {

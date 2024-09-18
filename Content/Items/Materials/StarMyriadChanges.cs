@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.Items.Materials
 {
     internal class StarMyriadChanges : ModItem
     {
-        public override string Texture => "CalamityOverhaul/StarMyriadChanges";
+        //贴图已经彻底被废弃
+        public override string Texture => CWRConstant.Placeholder3;
         public override bool IsLoadingEnabled(Mod mod) {
             return false;
         }

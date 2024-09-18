@@ -26,19 +26,6 @@ namespace CalamityOverhaul.Content.UIs.Core
                 new TwoClickUI().Load();
             }
             new ResetItemReminderUI().Load();
-            new OverhaulTheBibleUI().Load();
-            new CartridgeHolderUI().Load();
-            new TungstenRiotUI().Load();
-
-            OverhaulTheBibleUI.Instance.ecTypeItemList = [];
-            foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
-                Item item = new Item(baseRItem.TargetID);
-                if (item != null) {
-                    if (item.type != ItemID.None) {
-                        OverhaulTheBibleUI.Instance.ecTypeItemList.Add(item);
-                    }
-                }
-            }
         }
 
         public override void SaveWorldData(TagCompound tag) {
@@ -87,31 +74,6 @@ namespace CalamityOverhaul.Content.UIs.Core
                         RecipeErrorFullUI.Instance.Draw(Main.spriteBatch);
                         OneClickUI.Instance.Draw(Main.spriteBatch);
                         TwoClickUI.Instance.Draw(Main.spriteBatch);
-                    }
-                    return true;
-                }, InterfaceScaleType.UI));
-                layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("Ov UI", delegate {
-                    if (OverhaulTheBibleUI.Instance.Active) {
-                        OverhaulTheBibleUI.Instance.Update(Main.gameTimeCache);
-                        OverhaulTheBibleUI.Instance.Draw(Main.spriteBatch);
-                    }
-                    return true;
-                }, InterfaceScaleType.UI));
-                layers.Insert(mouseIndex, new LegacyGameInterfaceLayer("CH UI", delegate {
-                    if (CartridgeHolderUI.Instance.Active && CWRServerConfig.Instance.MagazineSystem) {
-                        CartridgeHolderUI.Instance.Update(Main.gameTimeCache);
-                        CartridgeHolderUI.Instance.Draw(Main.spriteBatch);
-                    }
-                    return true;
-                }, InterfaceScaleType.UI));
-            }
-
-            int invasionIndex = layers.FindIndex(layer => layer.Name == "Vanilla: Diagnose Net");
-            if (invasionIndex != -1) {
-                layers.Insert(invasionIndex, new LegacyGameInterfaceLayer("TG UI", delegate {
-                    if (TungstenRiotUI.Instance.Active) {
-                        TungstenRiotUI.Instance.Update(Main.gameTimeCache);
-                        TungstenRiotUI.Instance.Draw(Main.spriteBatch);
                     }
                     return true;
                 }, InterfaceScaleType.UI));

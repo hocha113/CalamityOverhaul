@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.UIs.Core;
+using InnoVault.UIHanders;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
@@ -9,7 +10,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    internal class OpenUI : BaseMainMenuOverUI, ICWRLoader
+    internal class OpenUI : UIHander, ICWRLoader
     {
         private float _sengs;
         internal bool _active;
@@ -26,6 +27,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         private Vector2 githubCenter => githubPos + new Vector2(githubOAC.Width(), githubOAC.Height()) / 2 * githubSiz;
 
+        public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
+
+        private int Time;
+
         private float githubSiz1 => 0.001f;
 
         private float githubSiz2 => 0.05f;
@@ -33,9 +38,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private bool old_onGithub;
         private bool old_onSteam;
 
-        private bool onGithub => MouPos.Distance(githubCenter) < githubOAC.Width() * githubSiz2 / 2f;
+        private bool onGithub => MousePosition.Distance(githubCenter) < githubOAC.Width() * githubSiz2 / 2f;
 
-        private bool onSteam => MouPos.Distance(steamCenter) < steamOAC.Width() * githubSiz2 / 2f;
+        private bool onSteam => MousePosition.Distance(steamCenter) < steamOAC.Width() * githubSiz2 / 2f;
 
         private float githubSiz => float.Lerp(githubSiz1, githubSiz2, _sengs);
 
@@ -46,6 +51,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private Vector2 steamPos => Vector2.Lerp(steamPos1, steamPos2, _sengs);
 
         private Vector2 steamCenter => steamPos + new Vector2(steamOAC.Width(), steamOAC.Height()) / 2 * githubSiz;
+        public override bool Active => CWRLoad.OnLoadContentBool;
         public bool OnActive() => _active || _sengs > 0;
         void ICWRLoader.LoadAsset() {
             githubOAC = CWRUtils.GetT2DAsset(CWRConstant.UI + "GithubOAC");
@@ -62,7 +68,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             githubOAC = null;
         }
 
-        public override void Initialize() {
+        public void Initialize() {
             if (_active) {
                 if (_sengs < 1) {
                     _sengs += 0.04f;
@@ -75,7 +81,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
         }
 
-        public override void Update(GameTime gameTime) {
+        public override void Update() {
             Initialize();
 
             if (_sengs >= 1 && githubOAC != null && steamOAC != null) {
@@ -86,7 +92,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 old_onSteam = onSteam;
                 old_onGithub = onGithub;
 
-                int mouS = DownStartL();
+                //int mouS = DownStartL();
+                int mouS = (int)keyLeftPressState;
                 if (mouS == 1) {
                     if (onGithub) {
                         SoundEngine.PlaySound(SoundID.MenuTick);
@@ -112,7 +119,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
             }
 
-            time++;
+            Time++;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -120,7 +127,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 return;
             }
 
-            Color color = CWRUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(time * 0.035f)), Color.Gold, Color.Green);
+            Color color = CWRUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(Time * 0.035f)), Color.Gold, Color.Green);
 
             spriteBatch.Draw(CWRUtils.GetT2DAsset(CWRConstant.Placeholder2).Value, Vector2.Zero
                 , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight)

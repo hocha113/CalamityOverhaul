@@ -38,14 +38,14 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public override void Initialize() {
             if (SupertableUI.Instance != null) {
-                DrawPos = SupertableUI.Instance.DrawPos + new Vector2(545, 80);
+                DrawPosition = SupertableUI.Instance.DrawPosition + new Vector2(545, 80);
             }
-            mainRec = new Rectangle((int)(DrawPos.X), (int)(DrawPos.Y), Texture.Width, Texture.Height);
-            rAow = new Rectangle((int)DrawPos.X + 65, (int)DrawPos.Y + 20, 25, 25);
-            lAow = new Rectangle((int)(DrawPos.X - 30), (int)(DrawPos.Y + 20), 25, 25);
-            onM = mainRec.Intersects(new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1));
-            onR = rAow.Intersects(new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1));
-            onL = lAow.Intersects(new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1));
+            mainRec = new Rectangle((int)(DrawPosition.X), (int)(DrawPosition.Y), Texture.Width, Texture.Height);
+            rAow = new Rectangle((int)DrawPosition.X + 65, (int)DrawPosition.Y + 20, 25, 25);
+            lAow = new Rectangle((int)(DrawPosition.X - 30), (int)(DrawPosition.Y + 20), 25, 25);
+            onM = mainRec.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
+            onR = rAow.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
+            onL = lAow.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
         }
 
         public override void Load() {
@@ -150,16 +150,16 @@ End:;
             }
             Texture2D arow = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BlueArrow");
             Texture2D arow2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BlueArrow2");
-            spriteBatch.Draw(Texture, DrawPos, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
-            spriteBatch.Draw(onR ? arow : arow2, DrawPos + new Vector2(65, 20), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-            spriteBatch.Draw(onL ? arow : arow2, DrawPos + new Vector2(-30, 20), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
+            spriteBatch.Draw(Texture, DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
+            spriteBatch.Draw(onR ? arow : arow2, DrawPosition + new Vector2(65, 20), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(onL ? arow : arow2, DrawPosition + new Vector2(-30, 20), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
             string text2 = $"{index + 1} -:- {itemTarget.Count}";
-            Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text2, DrawPos.X - text2.Length * 5 + 40, DrawPos.Y + 65, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
+            Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text2, DrawPosition.X - text2.Length * 5 + 40, DrawPosition.Y + 65, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
             if (itemTarget != null && SupertableUI.Instance != null && index >= 0 && index < itemTarget.Count) {
-                SupertableUI.DrawItemIcons(spriteBatch, itemTarget[index], DrawPos + new Vector2(5, 5), alp: 0.6f, overSlp: 1.5f);
+                SupertableUI.DrawItemIcons(spriteBatch, itemTarget[index], DrawPosition + new Vector2(5, 5), alp: 0.6f, overSlp: 1.5f);
                 string name = itemTarget[index].HoverName;
                 string text = $"{CWRLocText.GetTextValue("SupertableUI_Text2")}：{(name == "" ? CWRLocText.GetTextValue("SupertableUI_Text3") : name)}";
-                Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, DrawPos.X - text.Length * 5, DrawPos.Y - 25, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
+                Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, DrawPosition.X - text.Length * 5, DrawPosition.Y - 25, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
             }
             if (onM) { //处理鼠标在UI格中查看物品的事情
                 Item overItem = itemTarget[index];

@@ -23,10 +23,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public override void Load() => Instance = this;
         public override void Update(GameTime gameTime) {
             // 更新当前绘制位置和矩形
-            DrawPos = mainUI.DrawPos + offsetDraw;
-            mainRec = new Rectangle((int)DrawPos.X, (int)DrawPos.Y, 30, 30);
+            DrawPosition = mainUI.DrawPosition + offsetDraw;
+            mainRec = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 30, 30);
             // 判断鼠标是否在主矩形内
-            bool isMouseOverMainRec = mainRec.Intersects(new Rectangle((int)MouPos.X, (int)MouPos.Y, 1, 1));
+            bool isMouseOverMainRec = mainRec.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
             int mouseState = DownStartL();
             // 重置鼠标点击计数器
             if (mouseState != 1 && mouseState != 3) {
@@ -77,11 +77,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (onMainP) {
                 color = Color.Gold;
             }
-            spriteBatch.Draw(Texture, DrawPos, null, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(Texture, DrawPosition, null, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             if (onMainP) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
                 , checkSetO ? CWRLocText.GetTextValue("SupMUI_OneClick_Text2") : CWRLocText.GetTextValue("SupMUI_OneClick_Text1")
-                , DrawPos.X - 30, DrawPos.Y + 30, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
+                , DrawPosition.X - 30, DrawPosition.Y + 30, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.UIs.Core;
+using InnoVault.UIHanders;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
@@ -13,14 +14,15 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    internal class AcknowledgmentUI : BaseMainMenuOverUI, ICWRLoader
+    internal class AcknowledgmentUI : UIHander, ICWRLoader
     {
         internal static string textElement1 => $" [{CWRLocText.GetTextValue("IconUI_Text3")}]";
         internal static string textElement2 => $" [{CWRLocText.GetTextValue("IconUI_Text4")}]";
         internal static string textElement3 => $" [{CWRLocText.GetTextValue("IconUI_Text5")}]";
         internal static string textElement4 => $" [{CWRLocText.GetTextValue("IconUI_Text6")}]";
         internal static string[] names = [];
-
+        public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
+        public override bool Active => CWRLoad.OnLoadContentBool;
         internal class ProjItem
         {
             public int index;
@@ -170,9 +172,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             On_Main.UpdateAudio_DecideOnTOWMusic += DecideOnTOWMusicEvent;
             On_Main.UpdateAudio_DecideOnNewMusic += DecideOnNewMusicEvent;
         }
-        void ICWRLoader.LoadAsset() {
-            Logo = CWRUtils.GetT2DAsset("CalamityOverhaul/IntactLogo");
-        }
+        void ICWRLoader.LoadAsset() => Logo = CWRUtils.GetT2DAsset("CalamityOverhaul/IntactLogo");
         void ICWRLoader.SetupData() => LoadName();
         private void LoadName() {
             names = [
@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             On_Main.UpdateAudio_DecideOnNewMusic -= DecideOnNewMusicEvent;
             names = null;
         }
-        public override void Initialize() {
+        public void Initialize() {
             if (_active) {
                 if (_sengs < 1) {
                     _sengs += 0.04f;
@@ -359,7 +359,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 _active = false;
             }
         }
-        public override void Update(GameTime gameTime) {
+        public override void Update() {
             if (!OnActive()) {
                 if (musicFade50 < 120) {
                     musicFade50++;
@@ -380,7 +380,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 effect.AI(_sengs);
             }
 
-            int mouS = DownStartL();
+            //int mouS = DownStartL();
+            int mouS = (int)keyLeftPressState;
 
             if (mouS == 1) {
                 if (_sengs >= 1) {
@@ -397,8 +398,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     _active = false;
                 }
             }
-
-            time++;
         }
         public override void Draw(SpriteBatch spriteBatch) {
             if (!OnActive()) {

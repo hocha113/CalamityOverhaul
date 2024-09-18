@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         private bool oldLeftCtrlPressed;
         public override void Load() {
             Instance = this;
-            Instance.DrawPos = new Vector2(700, 100);
+            Instance.DrawPosition = new Vector2(700, 100);
         }
 
         private static Vector2 origPos => InItemDrawRecipe.Instance.DrawPos;
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (InItemDrawRecipe.Instance.DrawPos == Vector2.Zero) {
                 InItemDrawRecipe.Instance.DrawPos = new Vector2(700, 100);
             }
-            DrawPos = origPos + offset;
+            DrawPosition = origPos + offset;
             if (InItemDrawRecipe.Instance.DrawBool) {
                 if (offset.Y > -30)
                     offset.Y -= 5;
@@ -48,17 +48,17 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 if (offset.Y < 0)
                     offset.Y += 5;
                 if (offset.Y >= 0) {
-                    DrawPos = Main.MouseScreen + new Vector2(0, -50);
+                    DrawPosition = Main.MouseScreen + new Vector2(0, -50);
                 }
             }
             Vector2 uiSize = new Vector2(1.5f, 0.6f);
             string text = CWRLocText.GetTextValue("MouseTextContactPanel_TextContent");
             Vector2 size = FontAssets.MouseText.Value.MeasureString(text);
             float overSizeX = size.X / (uiSize.X * Texture.Width);
-            spriteBatch.Draw(Texture, DrawPos, null, Color.DarkGoldenrod, 0, Vector2.Zero, uiSize * new Vector2(overSizeX * 1.1f, 1), SpriteEffects.None, 0);//绘制出UI主体
+            spriteBatch.Draw(Texture, DrawPosition, null, Color.DarkGoldenrod, 0, Vector2.Zero, uiSize * new Vector2(overSizeX * 1.1f, 1), SpriteEffects.None, 0);//绘制出UI主体
 
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRUtils.GetSafeText(text, size, Texture.Width * uiSize.X)
-                , DrawPos.X + 3, DrawPos.Y + 3, Color.White, Color.Black, new Vector2(0.3f), 1f);
+                , DrawPosition.X + 3, DrawPosition.Y + 3, Color.White, Color.Black, new Vector2(0.3f), 1f);
         }
     }
 }
