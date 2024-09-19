@@ -1,8 +1,7 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
-using CalamityOverhaul.Content.UIs.Core;
-using InnoVault.UIHanders;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -11,7 +10,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs
 {
-    internal class CartridgeHolderUI : UIHander
+    internal class CartridgeHolderUI : UIHandle
     {
         public static class Date
         {

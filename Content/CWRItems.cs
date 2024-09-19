@@ -581,7 +581,7 @@ namespace CalamityOverhaul.Content
             if (CWRServerConfig.Instance.AddExtrasContent && InItemDrawRecipe.Instance != null && SupertableUI.Instance != null) {
                 int offsetX = SupertableUI.Instance.Active ? 0 : 600;
                 if (OmigaSnyContent != null && !SupertableUI.Instance.onMainP) {
-                    MouseTextContactPanel.Instance.UpdateSets();
+                    MouseTextContactPanel.Instance.Update();
                     MouseTextContactPanel.Instance.Draw(Main.spriteBatch);
                     InItemDrawRecipe.Instance.Draw(Main.spriteBatch, new Vector2(offsetX + 100, 100), OmigaSnyContent);
                 }

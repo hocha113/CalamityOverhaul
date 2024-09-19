@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Terraria;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Common

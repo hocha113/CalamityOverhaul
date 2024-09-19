@@ -9,13 +9,6 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_Light : BasePRT, ICWRLoader
     {
         public override string Texture => "CalamityMod/Particles/Light";
-        //public override bool UseAdditiveBlend => true;
-        //public override bool UseCustomDraw => true;
-        //public override bool SetLifetime => true;
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
         public float Opacity;
         public float SquishStrenght;
         public float MaxSquish;
@@ -40,7 +33,10 @@ namespace CalamityOverhaul.Content.Particles
             entity = _entity;
             followingRateRatio = _followingRateRatio;
         }
-
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         public override void AI() {
             Velocity *= (LifetimeCompletion >= 0.34f) ? 0.93f : 1.02f;
 

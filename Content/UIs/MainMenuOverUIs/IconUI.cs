@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.UIs.Core;
-using InnoVault.UIHanders;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using ReLogic.Graphics;
@@ -13,7 +12,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
     //老实说，这样的完全不利于扩展，如果想加入一条新的词条会非常麻烦，更别说如果想更换词条之间的顺序，更好的选择是将每个词条抽象成类实例管理 -hocah113 2024/6/28
-    internal class IconUI : UIHander, ICWRLoader
+    internal class IconUI : UIHandle, ICWRLoader
     {
         #region Date
         internal static Asset<Texture2D> icon;
@@ -32,7 +31,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         private string text0 => CWRLocText.GetTextValue("IconUI_Text0");
         private Vector2 text0Vr => Font.Value.MeasureString(text0);
-        private string text1 => CWRMod.Instance.Name + " v" + CWRMod.Instance.Version;
+        private string text1 => Mod.Name + " v" + Mod.Version;
         private Vector2 text1Vr => Font.Value.MeasureString(text1);
         private Vector2 text1Pos => new Vector2(DrawPosition.X - text1Vr.X + 76, DrawPosition.Y + 6);
         private string text2 => CWRLocText.GetTextValue("IconUI_Text1");

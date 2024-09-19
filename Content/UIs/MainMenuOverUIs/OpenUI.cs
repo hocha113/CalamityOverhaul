@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs.Core;
-using InnoVault.UIHanders;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
@@ -10,7 +9,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    internal class OpenUI : UIHander, ICWRLoader
+    internal class OpenUI : UIHandle, ICWRLoader
     {
         private float _sengs;
         internal bool _active;

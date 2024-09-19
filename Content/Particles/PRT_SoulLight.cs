@@ -9,20 +9,12 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_SoulLight : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/Light";
-        //public override bool UseAdditiveBlend => true;
-        //public override bool UseCustomDraw => true;
-        //public override bool SetLifetime => true;
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
         public float Opacity;
         public float SquishStrenght;
         public float MaxSquish;
         public float HueShift;
         public float followingRateRatio;
         public Projectile flowerProj;
-
         public PRT_SoulLight(Vector2 position, Vector2 velocity, float scale, Color color, int lifetime, float opacity = 1f
             , float squishStrenght = 1f, float maxSquish = 3f, float hueShift = 0f, Projectile _flowerProj = null, float _followingRateRatio = 0.9f) {
             Position = position;
@@ -38,7 +30,10 @@ namespace CalamityOverhaul.Content.Particles
             flowerProj = _flowerProj;
             followingRateRatio = _followingRateRatio;
         }
-
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         public override void AI() {
             Velocity *= (LifetimeCompletion >= 0.34f) ? 0.93f : 1.02f;
 

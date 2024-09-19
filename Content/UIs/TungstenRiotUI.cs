@@ -1,13 +1,13 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Events;
-using InnoVault.UIHanders;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 
 namespace CalamityOverhaul.Content.UIs
 {
-    internal class TungstenRiotUI : UIHander, ICWRLoader
+    internal class TungstenRiotUI : UIHandle, ICWRLoader
     {
         public static TungstenRiotUI Instance;
         public static Asset<Texture2D> icon;

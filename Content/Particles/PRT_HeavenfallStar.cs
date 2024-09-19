@@ -9,9 +9,6 @@ namespace CalamityOverhaul.Content.Particles
     {
         public Color InitialColor;
         public bool AffectedByGravity;
-        //public override bool SetLifetime => true;
-        //public override bool UseCustomDraw => true;
-        //public override bool UseAdditiveBlend => true;
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             SetLifetime = true;

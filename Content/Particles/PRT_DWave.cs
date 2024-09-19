@@ -9,9 +9,6 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_DWave : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
-        //public override bool UseAdditiveBlend => true;
-        //public override bool SetLifetime => true;
-        //public override bool UseCustomDraw => true;
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             SetLifetime = true;

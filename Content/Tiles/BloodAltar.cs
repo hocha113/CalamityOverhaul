@@ -63,15 +63,13 @@ namespace CalamityOverhaul.Content.Tiles
         public override bool RightClick(int i, int j) {
             if (CWRUtils.SafeGetTopLeft(i, j, out var point)) {
                 int id = TileProcessorLoader.GetModuleID(typeof(BloodAltarModule));
+                BloodAltarModule.OnBoolMoon = !BloodAltarModule.OnBoolMoon;
+                BloodAltarModule.startPlayerWhoAmI = Main.LocalPlayer.whoAmI;
                 BloodAltarModule module = TileProcessorLoader.FindModulePreciseSearch<BloodAltarModule>(id, point.X, point.Y);
                 if (module != null) {
-                    module.OnBoolMoon = !module.OnBoolMoon;
-                    module.startPlayerWhoAmI = Main.LocalPlayer.whoAmI;
                     module.DoNetSend();
                 }
             }
-
-            Recipe.FindRecipes();
             return true;
         }
 

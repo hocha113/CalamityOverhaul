@@ -9,9 +9,6 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_LavaFire : BasePRT, ICWRLoader
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle3";
-        //public override bool SetLifetime => true;
-        //public override bool UseCustomDraw => true;
-        //public override bool UseAdditiveBlend => true;
         public Color[] colors;
         public int timer;
         public float speedX;

@@ -7,22 +7,6 @@ namespace CalamityOverhaul.Content.Particles
 {
     internal class PRT_HeavenSmoke : BasePRT
     {
-        //public override bool SetLifetime => true;
-        //public override int FrameVariants => 7;
-        //public override bool UseCustomDraw => true;
-        //public override bool Important => StrongVisual;
-        //public override bool UseAdditiveBlend => Glowing;
-        //public override bool UseHalfTransparency => !Glowing;
-        public override void SetProperty() {
-            if (Glowing) {
-                PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            }
-            else {
-                PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
-            }
-            Frame = 7;
-            SetLifetime = true;
-        }
         public override string Texture => "CalamityMod/Particles/HeavySmoke";
 
         private Color[] rainbowColors = [Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet];
@@ -54,6 +38,17 @@ namespace CalamityOverhaul.Content.Particles
             HueShift = hueshift;
             this.player = player;
             sengs = Main.rand.Next(30);
+        }
+
+        public override void SetProperty() {
+            if (Glowing) {
+                PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            }
+            else {
+                PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
+            }
+            Frame = 7;
+            SetLifetime = true;
         }
 
         public override void AI() {

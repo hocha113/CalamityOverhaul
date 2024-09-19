@@ -6,22 +6,17 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    public class InItemDrawRecipe
+    public class InItemDrawRecipe : ICWRLoader
     {
         public static InItemDrawRecipe Instance { get; private set; }
-
-        public void Load() => Instance = this;
-
         public Vector2 DrawPos;
-
         public Texture2D mainBookPValue => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BookPans");
         public Texture2D mainCellValue => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue3");
         public Texture2D TOMTex => CWRUtils.GetT2DValue(CWRConstant.Asset + "Items/Placeable/" + "TransmutationOfMatterItem");
-
         public bool DrawBool;
-
         public bool OnSupTale => SupertableUI.Instance.onMainP || SupertableUI.Instance.onMainP2 || SupertableUI.Instance.onInputP || SupertableUI.Instance.onCloseP;
-
+        void ICWRLoader.LoadData() => Instance = this;
+        void ICWRLoader.UnLoadData() => Instance = null;
         /// <summary>
         /// 在只利用一个数字索引的情况下反向计算出对应的格坐标
         /// </summary>

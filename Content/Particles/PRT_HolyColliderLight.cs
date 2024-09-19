@@ -9,13 +9,6 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_HolyColliderLight : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/Light";
-        //public override bool UseAdditiveBlend => true;
-        //public override bool UseCustomDraw => true;
-        //public override bool SetLifetime => true;
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
         public float Opacity;
         public float SquishStrenght;
         public float MaxSquish;
@@ -36,7 +29,10 @@ namespace CalamityOverhaul.Content.Particles
             HueShift = hueShift;
             followingRateRatio = _followingRateRatio;
         }
-
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         public override void AI() {
             Velocity *= (LifetimeCompletion >= 0.34f) ? 0.93f : 1.02f;
             Velocity = Velocity.RotatedBy(0.01f);

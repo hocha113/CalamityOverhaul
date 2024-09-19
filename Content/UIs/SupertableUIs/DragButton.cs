@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs.Core;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -7,45 +7,43 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    internal class DragButton : CWRUIPanel
+    internal class DragButton : UIHandle, ICWRLoader
     {
-        public static DragButton Instance { get; private set; }
-
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/HotbarRadial_0");
-
-        public Vector2 supPos => SupertableUI.Instance.DrawPosition;
-
-        public Rectangle mainRec;
-
-        public Vector2 InPosOffsetDragToPos;
-
-        public Vector2 DragVelocity;
-
-        public bool onMain;
-
-        public bool onDrag;
-
-        public Vector2 InSupPosOffset => new Vector2(554, 380);
-
-        public override void Load() {
-            Instance = this;
+        public static DragButton Instance;
+        public override float RenderPriority => 0;
+        public override bool Active {
+            get {
+                if (SupertableUI.Instance == null) {
+                    return false;
+                }
+                return SupertableUI.Instance.Active;
+            }
         }
-
-        public override void Initialize() {
+        public Vector2 supPos => SupertableUI.Instance.DrawPosition;
+        public Vector2 InSupPosOffset => new Vector2(554, 380);
+        public Rectangle mainRec;
+        public Vector2 InPosOffsetDragToPos;
+        public Vector2 DragVelocity;
+        public bool onMain;
+        public static bool onDrag;
+        public override void Load() => Instance = this;
+        void ICWRLoader.UnLoadData() => Instance = null;
+        public void Initialize() {
             DrawPosition = SupertableUI.Instance.DrawPosition + InSupPosOffset;
             mainRec = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 48, 48);
             onMain = mainRec.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
         }
 
-        public override void Update(GameTime gameTime) {
+        public override void Update() {
             if (SupertableUI.Instance == null) {
                 return;
             }
 
             Initialize();
 
-            int museS = DownStartL();//获取按钮点击状态
-
+            //int museS = DownStartL();//获取按钮点击状态
+            int museS = (int)keyLeftPressState;
             if (onMain) {
                 if (museS == 1 && !onDrag) {//如果玩家刚刚按下鼠标左键，并且此时没有开启拖拽状态
                     onDrag = true;
@@ -84,8 +82,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch) {
-            if (onDrag) {//为了防止拖拽状态下出现位置更新的延迟所导致的果冻感，这里用于在拖拽状态下进行一次额外的更新
+        public void ThisDraw(SpriteBatch spriteBatch) {
+            if (onDrag) {
                 Initialize();
             }
             Texture2D value = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/TexturePackButtons");

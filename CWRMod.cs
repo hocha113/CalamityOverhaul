@@ -15,8 +15,16 @@ namespace CalamityOverhaul
     public class CWRMod : Mod
     {
         #region Date
-        internal static CWRMod Instance;
-        internal static int GameLoadCount;
+        //-HoCha113 - 2024/9/19/ 3:45
+        //不要使用惰性加载，这是愚蠢的，要知道有的Mod会在外部调用这个，
+        //或者有的钩子是往InnoVault上挂载的，那个时候这个单例很可能还没来得及加载，然后把一切都毁掉
+        //-Chram - 2024/9/20/13:45
+        //不，只要注意就行，这个字段被调用的频率极高，使用惰性加载是个不错的习惯，我们只需要自己注意
+        //并提醒别人不要在错误的线程上调用这个单例就行了
+        //-HoCha113 - 2024/9/20/ 14:32
+        //神皇在上，这是异端发言，你不能把整个系统的安危寄托在所有人可以遵守开发守则上，况且我们根本没有那个东西
+        internal static CWRMod Instance { get; private set; }
+        internal static int GameLoadCount { get; private set; }
         internal static bool Suitableversion_improveGame { get; private set; }
         internal static List<Mod> LoadMods { get; private set; }
         internal static List<ICWRLoader> ILoaders { get; private set; }

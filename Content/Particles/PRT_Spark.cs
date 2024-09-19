@@ -10,15 +10,7 @@ namespace CalamityOverhaul.Content.Particles
         public Color InitialColor;
         public bool AffectedByGravity;
         public Entity entity;
-        //public override bool SetLifetime => true;
-        //public override bool UseCustomDraw => true;
-        //public override bool UseAdditiveBlend => true;
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
         public override string Texture => "CalamityMod/Projectiles/StarProj";
-
         public PRT_Spark(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity = null) {
             Position = relativePosition;
             Velocity = velocity;
@@ -28,7 +20,10 @@ namespace CalamityOverhaul.Content.Particles
             Color = InitialColor = color;
             this.entity = entity;
         }
-
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         public override void AI() {
             Scale *= 0.95f;
             Color = Color.Lerp(InitialColor, Color.Transparent, (float)Math.Pow(LifetimeCompletion, 3D));

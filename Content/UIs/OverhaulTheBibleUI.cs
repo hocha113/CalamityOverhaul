@@ -2,7 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
-using InnoVault.UIHanders;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -15,7 +15,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs
 {
-    internal class OverhaulTheBibleUI : UIHander, ICWRLoader
+    internal class OverhaulTheBibleUI : UIHandle, ICWRLoader
     {
         internal static OverhaulTheBibleUI Instance { get; private set; }
         public override void Load() => Instance = this;

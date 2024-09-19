@@ -1,33 +1,44 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.UIs.Core;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using System.Linq;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    internal class OneClickUI : CWRUIPanel
+    internal class OneClickUI : UIHandle
     {
-        public static OneClickUI Instance;
-        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/OneClick");
         protected SupertableUI mainUI => SupertableUI.Instance;
+        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/OneClick");
+        public override float RenderPriority => 2;
+        public override bool Active {
+            get {
+                if (SupertableUI.Instance == null) {
+                    return false;
+                }
+                return SupertableUI.Instance.Active;
+            }
+        }
         protected virtual Vector2 offsetDraw => new Vector2(578, 330);
         private Rectangle mainRec;
         private int useTimeCoolding;
         private int useMuse3AddCount;
         private bool onMainP;
         private bool checkSetO => GetType() != typeof(OneClickUI);
-        public override void Load() => Instance = this;
-        public override void Update(GameTime gameTime) {
+        
+        public override void Update() {
             // 更新当前绘制位置和矩形
             DrawPosition = mainUI.DrawPosition + offsetDraw;
             mainRec = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 30, 30);
             // 判断鼠标是否在主矩形内
             bool isMouseOverMainRec = mainRec.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
-            int mouseState = DownStartL();
+            //int mouseState = DownStartL();
+            int mouseState = (int)keyLeftPressState;
             // 重置鼠标点击计数器
             if (mouseState != 1 && mouseState != 3) {
                 useMuse3AddCount = 30;

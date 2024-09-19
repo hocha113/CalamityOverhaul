@@ -1,32 +1,31 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.UIs.Core;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    internal class MouseTextContactPanel : CWRUIPanel
+    internal class MouseTextContactPanel : UIHandle
     {
         internal static MouseTextContactPanel Instance { get; private set; }
-
+        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MouseTextContactPanel");
+        public override LayersModeEnum LayersMode => LayersModeEnum.None;
         private bool oldLeftCtrlPressed;
+        private static Vector2 origPos => InItemDrawRecipe.Instance.DrawPos;
+        private Vector2 offset;
+
         public override void Load() {
             Instance = this;
             Instance.DrawPosition = new Vector2(700, 100);
         }
 
-        private static Vector2 origPos => InItemDrawRecipe.Instance.DrawPos;
-
-        private Vector2 offset;
-
-        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MouseTextContactPanel");
-
-        public void UpdateSets() {
-            int Mus = DownStartR();
+        public override void Update() {
+            int Mus = (int)CheckRightKeyState();
             bool leftCtrlPressed = Main.keyState.IsKeyDown(Keys.LeftControl);
             if (leftCtrlPressed && !oldLeftCtrlPressed) {
                 SoundEngine.PlaySound(SoundID.Chat);

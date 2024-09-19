@@ -6,19 +6,7 @@ namespace CalamityOverhaul.Content.Particles
 {
     internal class PRT_IcePlasmaGas : BasePRT
     {
-        //public override bool SetLifetime => true;
-        //public override int FrameVariants => 7;
-        //public override bool UseCustomDraw => true;
-        //public override bool Important => StrongVisual;
-        //public override bool UseAdditiveBlend => true;
-        //public override bool UseHalfTransparency => !Glowing;
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            Frame = 7;
-            SetLifetime = true;
-        }
         public override string Texture => "CalamityMod/Projectiles/Summon/SmallAresArms/MinionPlasmaGas";
-
         private bool StrongVisual;
         private bool Glowing;
         private float sengsValue;
@@ -33,7 +21,11 @@ namespace CalamityOverhaul.Content.Particles
             StrongVisual = required;
             sengsValue = 0;
         }
-
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            Frame = 7;
+            SetLifetime = true;
+        }
         public override void AI() {
             Scale = 0.5f + (sengsValue * 0.01f);
             Velocity *= 0.85f;

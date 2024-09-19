@@ -7,31 +7,13 @@ namespace CalamityOverhaul.Content.Particles
 {
     internal class PRT_Smoke : BasePRT
     {
-        //public override bool SetLifetime => true;
-        //public override int FrameVariants => 7;
-        //public override bool UseCustomDraw => true;
-        //public override bool Important => StrongVisual;
-        //public override bool UseAdditiveBlend => Glowing;
-        //public override bool UseHalfTransparency => !Glowing;
-        public override void SetProperty() {
-            if (Glowing) {
-                PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            }
-            else {
-                PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
-            }
-            Frame = 7;
-            SetLifetime = true;
-        }
         public override string Texture => "CalamityMod/Particles/HeavySmoke";
-
         private float Opacity;
         private float Spin;
         private bool StrongVisual;
         private bool Glowing;
         private float HueShift;
         private static int FrameAmount = 6;
-
         public PRT_Smoke(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale
             , float opacity, float rotationSpeed = 0f, bool glowing = false, float hueshift = 0f, bool required = false) {
             Position = position;
@@ -47,7 +29,16 @@ namespace CalamityOverhaul.Content.Particles
             HueShift = hueshift;
 
         }
-
+        public override void SetProperty() {
+            if (Glowing) {
+                PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            }
+            else {
+                PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
+            }
+            Frame = 7;
+            SetLifetime = true;
+        }
         public override void AI() {
             if (Time / (float)Lifetime < 0.2f)
                 Scale += 0.01f;

@@ -10,13 +10,6 @@ namespace CalamityOverhaul.Content.Particles
         public Color InitialColor;
         public bool AffectedByGravity;
         public Player Owner;
-        //public override bool SetLifetime => true;
-        //public override bool UseCustomDraw => true;
-        //public override bool UseAdditiveBlend => true;
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
         public override string Texture => "CalamityMod/Particles/DrainLineBloom";
         public PRT_Line_FormPlayer(Vector2 relativePosition, Vector2 velocity
             , bool affectedByGravity, int lifetime, float scale, Color color) {
@@ -27,7 +20,10 @@ namespace CalamityOverhaul.Content.Particles
             Lifetime = lifetime;
             Color = InitialColor = color;
         }
-
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         public override void AI() {
             Scale *= 0.95f;
             Color = Color.Lerp(InitialColor, Color.Transparent, (float)Math.Pow(LifetimeCompletion, 3D));

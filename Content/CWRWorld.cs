@@ -78,6 +78,16 @@ namespace CalamityOverhaul.Content
             if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
                 TungstenRiot.Instance.EventNetWorkSend();
             }
+            if (CWRServerConfig.Instance.AddExtrasContent) {
+                if (SupertableUI.Instance != null && SupertableUI.Instance?.items != null) {
+                    for (int i = 0; i < SupertableUI.Instance.items.Length; i++) {
+                        if (SupertableUI.Instance.items[i] == null) {
+                            SupertableUI.Instance.items[i] = new Item(0);
+                        }
+                    }
+                    tag.Add("SupertableUI_ItemDate", SupertableUI.Instance.items);
+                }
+            }
         }
 
         public override void LoadWorldData(TagCompound tag) {
@@ -85,6 +95,17 @@ namespace CalamityOverhaul.Content
             DefeatTheTungstenArmy = tag.GetBool("_Event_DefeatTheTungstenArmy_Tag");
             TungstenRiot.Instance.TungstenRiotIsOngoing = tag.GetBool("_Event_TungstenRiotIsOngoing");
             TungstenRiot.Instance.EventKillPoints = tag.GetInt("_Event_EventKillPoints");
+            if (CWRServerConfig.Instance.AddExtrasContent) {
+                if (SupertableUI.Instance != null && tag.ContainsKey("SupertableUI_ItemDate")) {
+                    Item[] loadSupUIItems = tag.Get<Item[]>("SupertableUI_ItemDate");
+                    for (int i = 0; i < loadSupUIItems.Length; i++) {
+                        if (loadSupUIItems[i] == null) {
+                            loadSupUIItems[i] = new Item(0);
+                        }
+                    }
+                    SupertableUI.Instance.items = tag.Get<Item[]>("SupertableUI_ItemDate");
+                }
+            }
         }
     }
 }

@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Particles
         public bool AffectedByGravity;
         public float Ylength = 1f;
         public float Xlength = 0.6f;
-        //public override bool UseAdditiveBlend => false;
         public override string Texture => "CalamityMod/Particles/LargeSpark";
         public PRT_DragonsWordCut(Vector2 relativePosition, Vector2 velocity
             , bool affectedByGravity, int lifetime, float scale, Color color) {

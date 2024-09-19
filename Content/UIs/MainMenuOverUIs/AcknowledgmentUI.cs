@@ -1,7 +1,5 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.UIs.Core;
-using InnoVault.UIHanders;
+﻿using CalamityOverhaul.Common;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
@@ -14,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    internal class AcknowledgmentUI : UIHander, ICWRLoader
+    internal class AcknowledgmentUI : UIHandle, ICWRLoader
     {
         internal static string textElement1 => $" [{CWRLocText.GetTextValue("IconUI_Text3")}]";
         internal static string textElement2 => $" [{CWRLocText.GetTextValue("IconUI_Text4")}]";

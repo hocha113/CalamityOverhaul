@@ -186,7 +186,6 @@ namespace CalamityOverhaul.Content
         public override void LoadData(TagCompound tag) => InitialCreation = tag.GetBool("_InitialCreation");
 
         public override void OnEnterWorld() {
-            base.OnEnterWorld();
             CWRHook.CheckHookStatus();
 
             if (CWRMod.Instance.magicStorage != null) {

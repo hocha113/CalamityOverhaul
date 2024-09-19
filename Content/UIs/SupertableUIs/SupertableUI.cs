@@ -2,7 +2,7 @@
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Tools;
-using CalamityOverhaul.Content.UIs.Core;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -14,10 +14,11 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    internal class SupertableUI : CWRUIPanel, ICWRLoader
+    internal class SupertableUI : UIHandle, ICWRLoader
     {
         #region
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue2");
@@ -78,7 +79,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         private int inCoordIndex => (mouseInCellCoord.Y * maxCellNumX) + mouseInCellCoord.X;
 
-        public bool Active {
+        public override bool Active {
             get => player.CWR().SupertableUIStartBool;
             set => player.CWR().SupertableUIStartBool = value;
         }
@@ -93,8 +94,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public static List<RecipeData> AllRecipes = [];
         #endregion
+        
         public override void Load() => Instance = this;
-        void ICWRLoader.SetupData() => LoadRecipe();
+        void ICWRLoader.SetupData() {
+            LoadRecipe();
+            RecipeUI.LoadAllRecipes();
+        }
         void ICWRLoader.UnLoadData() {
             RpsDataStringArrays = null;
             ModCall_OtherRpsData_StringList = [];
@@ -160,7 +165,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             onCloseP = closeRec.Intersects(mouseRec);
         }
 
-        public override void Initialize() {
+        public void Initialize() {
             UpdateUIElementPos();
 
             if (items == null) {
@@ -201,12 +206,13 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
         }
 
-        public override void Update(GameTime gameTime) {
+        public override void Update() {
             Initialize();
 
-            int museS = DownStartL();
-            int museSR = DownStartR();
-
+            //int museS = DownStartL();
+            //int museSR = DownStartR();
+            int museS = (int)keyLeftPressState;
+            int museSR = (int)keyRightPressState;
             if (onCloseP) {
                 player.mouseInterface = true;
                 if (museS == 1) {
@@ -727,12 +733,6 @@ End:;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (DragButton.Instance != null) {
-                if (DragButton.Instance.onDrag) {//为了防止拖拽状态下出现位置更新的延迟所导致的果冻感，这里用于在拖拽状态下进行一次额外的更新
-                    UpdateUIElementPos();
-                }
-            }
-
             spriteBatch.Draw(Texture, DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
             spriteBatch.Draw(CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon"), DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出关闭按键
             if (onCloseP) {
@@ -783,6 +783,10 @@ End:;
             if (onInputP && inputItem != null && inputItem?.type != 0) {//处理查看输出结果物品的事情
                 Main.HoverItem = inputItem.Clone();
                 Main.hoverItemName = inputItem.Name;
+            }
+
+            if (DragButton.Instance != null) {
+                DragButton.Instance.ThisDraw(spriteBatch);
             }
         }
     }

@@ -10,13 +10,6 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_HeavenStar : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/ThinSparkle";
-        //public override bool UseAdditiveBlend => true;
-        //public override bool UseCustomDraw => true;
-        //public override bool SetLifetime => true;
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
         private float Spin;
         private float opacity;
         private Color Bloom;
@@ -45,7 +38,10 @@ namespace CalamityOverhaul.Content.Particles
             SpawnDelay = spawnDelay;
             RotationalSpeed = rotationalSpeed;
         }
-
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         public override void AI() {
             if (SpawnDelay > 0) {
                 Time--;

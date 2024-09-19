@@ -22,15 +22,17 @@ namespace CalamityOverhaul.Content.TileModules
         public Vector2 Center => PosInWorld + new Vector2(BloodAltar.Width * 18, BloodAltar.Height * 18) / 2;
         public static Asset<Texture2D> BloodAltarEffect;
         public bool mouseOnTile;
-        public bool OnBoolMoon;
-        public int startPlayerWhoAmI;
-        public bool OldOnBoolMoon;
+        public static bool OnBoolMoon;
+        public static int startPlayerWhoAmI;
+        public static bool OldOnBoolMoon;
         public long Time = 0;
         public int frameIndex = 1;
         void ICWRLoader.LoadAsset() => BloodAltarEffect = CWRUtils.GetT2DAsset(CWRConstant.Asset + "TileModules/BloodAltarEffect");
         void ICWRLoader.UnLoadData() => BloodAltarEffect = null;
         public void DoNetSend() => ((INetWork)this).NetSend();
         public override void OnKill() {
+            OnBoolMoon = false;
+            OldOnBoolMoon = false;
             Main.dayTime = true;
             if (Main.bloodMoon) {
                 Main.bloodMoon = false;
@@ -230,61 +232,25 @@ namespace CalamityOverhaul.Content.TileModules
             if (CWRUtils.isServer) {
                 NetMessage.SendData(MessageID.WorldData);
             }
-            //"正在同步世界数据".Domp();
             netMessage.Write((byte)CWRMessageType.NetWorks);
             netMessage.Write(((INetWork)this).messageID);
             netMessage.Write(startPlayerWhoAmI);
-            netMessage.Write(WhoAmI);
             netMessage.Write(OnBoolMoon);
-            netMessage.Write(OldOnBoolMoon);
-
-            bool isSvr = false;
-            if (args.Length > 0) {
-                isSvr = (bool)args[0];
-            }
-
-            if (CWRUtils.isClient && !isSvr) {
-                netMessage.Send();
-            }
-            else if (CWRUtils.isServer) {
-                int index = -1;
-                if (args.Length > 1) {
-                    index = (int)args[1];
-                }
-                netMessage.Send(-1, index);
-            }
+            netMessage.Send();
         }
 
         void INetWork.NetReceive(Mod mod, BinaryReader reader, int whoAmI) {
-            //"正在接受世界数据".Domp();
             int startPlayerWhoAmI = reader.ReadInt32();
-            int moduleIndex = reader.ReadInt32();
             bool moon = reader.ReadBoolean();
-            bool moon2 = reader.ReadBoolean();
-            if (moduleIndex < 0 || moduleIndex >= TileProcessorLoader.TP_InWorld.Count) {
-                //"moduleIndex超出范围".Domp();
-                //$"TileModuleInWorld最大值为{TileModuleLoader.TileModuleInWorld.Count}".Domp();
-                //$"而moduleIndex是{moduleIndex}".Domp();
-                return;
-            }
-
+            BloodAltarModule.startPlayerWhoAmI = startPlayerWhoAmI;
+            OnBoolMoon = moon;
             if (CWRUtils.isServer) {
-                ((INetWork)this).NetSend(true, startPlayerWhoAmI);
-            }
-
-            BloodAltarModule module = TileProcessorLoader.TP_InWorld[moduleIndex] as BloodAltarModule;
-            if (module != null) {
-                //"正在接受startPlayerWhoAmI".Domp();
-                //"正在接受OnBoolMoon".Domp();
-                module.startPlayerWhoAmI = startPlayerWhoAmI;
-                module.OnBoolMoon = moon;
-                module.OldOnBoolMoon = moon2;
-            }
-            else {
-                string errorText = CWRLocText.GetTextValue("Error_2");
-                CWRUtils.Text(errorText);
-                CWRMod.Instance.Logger.Info(errorText);
-                TileProcessorLoader.LoadWorldTileModule();
+                ModPacket netMessage = mod.GetPacket();
+                netMessage.Write((byte)CWRMessageType.NetWorks);
+                netMessage.Write(((INetWork)this).messageID);
+                netMessage.Write(startPlayerWhoAmI);
+                netMessage.Write(OnBoolMoon);
+                netMessage.Send(-1, whoAmI);
             }
         }
     }

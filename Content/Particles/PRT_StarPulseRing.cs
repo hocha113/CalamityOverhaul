@@ -10,13 +10,6 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_StarPulseRing : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
-        //public override bool UseAdditiveBlend => true;
-        //public override bool UseCustomDraw => true;
-        //public override bool SetLifetime => true;
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            SetLifetime = true;
-        }
         private float OriginalScale;
         private float FinalScale;
         private float opacity;
@@ -32,7 +25,10 @@ namespace CalamityOverhaul.Content.Particles
             Lifetime = lifeTime;
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
         }
-
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            SetLifetime = true;
+        }
         public override void AI() {
             float pulseProgress = PiecewiseAnimation(LifetimeCompletion, [new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4)]);
             Scale = MathHelper.Lerp(OriginalScale, FinalScale, pulseProgress);

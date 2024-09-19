@@ -1,42 +1,40 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
-using CalamityOverhaul.Content.UIs.Core;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    internal class RecipeUI : CWRUIPanel
+    internal class RecipeUI : UIHandle, ICWRLoader
     {
-        public static RecipeUI Instance { get; private set; }
-
-        public int index;
-
-        private static List<Item> itemTarget = [];
-
-        private static List<string[]> itemNameString_FormulaContent_Values = [];
-
-        private Rectangle mainRec;
-
-        private Rectangle rAow;
-
-        private Rectangle lAow;
-
-        private bool onM;
-
-        private bool onR;
-
-        private bool onL;
-
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/RecPBook");
-
-        public override void Initialize() {
+        public override float RenderPriority => 2;
+        public override bool Active {
+            get {
+                if (SupertableUI.Instance == null) {
+                    return false;
+                }
+                return SupertableUI.Instance.Active;
+            }
+        }
+        public static RecipeUI Instance { get; private set; }
+        private static List<Item> itemTarget = [];
+        private static List<string[]> itemNameString_FormulaContent_Values = [];
+        private Rectangle mainRec;
+        private Rectangle rAow;
+        private Rectangle lAow;
+        public int index;
+        private bool onM;
+        private bool onR;
+        private bool onL;
+        public void Initialize() {
             if (SupertableUI.Instance != null) {
                 DrawPosition = SupertableUI.Instance.DrawPosition + new Vector2(545, 80);
             }
@@ -47,12 +45,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             onR = rAow.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
             onL = lAow.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
         }
-
-        public override void Load() {
-            Instance = this;
-
+        
+        public override void Load() => Instance = this;
+        void ICWRLoader.UnLoadData() => Instance = null;
+        public static void LoadAllRecipes() {
             for (int i = 0; i < SupertableUI.AllRecipes.Count; i++) {
-                //CWRMod.Instance.Logger.Info($"正在装载配方：{i} --:-- {SupertableUI.AllRecipes.Count}");
                 itemTarget.Add(new Item(SupertableUI.AllRecipes[i].Target));
                 itemNameString_FormulaContent_Values.Add(SupertableUI.AllRecipes[i].Values);
             }
@@ -76,9 +73,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
         }
 
-        public override void Update(GameTime gameTime) {
+        public override void Update() {
             Initialize();
-            int museS = DownStartL();
+            //int museS = DownStartL();
+            int museS = (int)keyLeftPressState;
             if (museS == 1) {
                 if (onR) {
                     SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.5f });
@@ -143,11 +141,6 @@ End:;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (DragButton.Instance != null) {
-                if (DragButton.Instance.onDrag) {//为了防止拖拽状态下出现位置更新的延迟所导致的果冻感，这里用于在拖拽状态下进行一次额外的更新
-                    Initialize();
-                }
-            }
             Texture2D arow = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BlueArrow");
             Texture2D arow2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BlueArrow2");
             spriteBatch.Draw(Texture, DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
