@@ -2,16 +2,13 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json.Linq;
 using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
@@ -35,6 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private bool fodingDownKey;
         private int uiFrame;
         private float uiAlape;
+        private int maxFrame = 6;
         internal int noAttenuationTime;
         private static int breakOutType;
         private static Asset<Texture2D> MuraBarBottom;
@@ -106,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         private void UpdateRisingDragon() {
-            CWRUtils.ClockFrame(ref uiFrame, 5, 6);
+            CWRUtils.ClockFrame(ref uiFrame, 5, maxFrame - 1);
 
             bool hasBoss = false;
             foreach (var npc in Main.npc) {
@@ -325,7 +323,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override void PostDraw(Color lightColor) {
-            float scale = CWRServerConfig.Instance.MurasamaRisingDragonCoolDownBarSize;//综合计算UI大小
+            float scale = 1;
             if (!(risingDragon <= 0f) || uiAlape > 0) {//这是一个通用的进度条绘制，用于判断冷却进度
                 Texture2D barBG = MuraBarBottom.Value;
                 Texture2D barFG = MuraBarTop.Value;
@@ -339,7 +337,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
                 else {
                     barBG = MuraBarFull.Value;
-                    Main.spriteBatch.Draw(barBG, drawPos + new Vector2(0, 2) * scale, CWRUtils.GetRec(barBG, uiFrame, 7), color, 0f, CWRUtils.GetOrig(barBG, 7), scale, 0, 0f);
+                    Rectangle rectangle = CWRUtils.GetRec(barBG, uiFrame, maxFrame);
+                    Main.spriteBatch.Draw(barBG, drawPos + new Vector2(0, 2) * scale
+                        , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
                 }
             }
         }

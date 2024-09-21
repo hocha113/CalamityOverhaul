@@ -100,7 +100,8 @@ namespace CalamityOverhaul.Content.UIs
                 DrawPosition = new Vector2(60, Main.screenHeight - 100);
                 TextureValue = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR");
             }
-            DrawPosition += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value, -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
+            DrawPosition += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
+                , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {

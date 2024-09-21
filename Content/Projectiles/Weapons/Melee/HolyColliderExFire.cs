@@ -13,6 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class HolyColliderExFire : BaseHeldProj, IDrawWarp
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
+        private int Time;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 400;
             Projectile.timeLeft = 30;
@@ -24,6 +25,57 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 2;
             Projectile.DamageType = DamageClass.Melee;
+            Time = 0;
+        }
+
+        private void SpwanPRTAndDustEffect_ShootFireShowFromProjEX() {
+            Vector2 origPos = new Vector2(Projectile.ai[1], Projectile.ai[2]);
+            Vector2 ToMouse = origPos.To(InMousePos);
+            float lengs = ToMouse.Length();
+            if (lengs < 140 * Projectile.scale) {
+                lengs = 140 * Projectile.scale;
+            }
+            for (int i = 0; i < lengs / 12; i++) {
+                PRT_LavaFire lavaFire = new PRT_LavaFire {
+                    Velocity = ToMouse.UnitVector() * 2,
+                    Position = origPos + Projectile.velocity * (1 + i) * 12,
+                    Scale = Main.rand.NextFloat(1.8f, 3.2f),
+                    Color = Color.White
+                };
+                lavaFire.ai[0] = 1;
+                lavaFire.ai[1] = 0;
+                lavaFire.minLifeTime = 22;
+                lavaFire.maxLifeTime = 30;
+                lavaFire.colors = new Color[3];
+                lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
+                lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
+                lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
+                PRTLoader.AddParticle(lavaFire);
+            }
+        }
+
+        private void SpwanPRTAndDustEffect_ShootFireShowFromProj() {
+            float lengs = ToMouse.Length();
+            if (lengs < 140 * Projectile.scale) {
+                lengs = 140 * Projectile.scale;
+            }
+            for (int i = 0; i < lengs / 12; i++) {
+                PRT_LavaFire lavaFire = new PRT_LavaFire {
+                    Velocity = ToMouse.UnitVector() * 2,
+                    Position = Owner.GetPlayerStabilityCenter() + Projectile.velocity * (1 + i) * 12,
+                    Scale = Main.rand.NextFloat(0.8f, 1.2f),
+                    Color = Color.White
+                };
+                lavaFire.ai[0] = 1;
+                lavaFire.ai[1] = 0;
+                lavaFire.minLifeTime = 22;
+                lavaFire.maxLifeTime = 30;
+                lavaFire.colors = new Color[3];
+                lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
+                lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
+                lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
+                PRTLoader.AddParticle(lavaFire);
+            }
         }
 
         private void SpwanPRKAndDustEffect() {
@@ -129,9 +181,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void AI() {
-            if (Projectile.ai[2] == 0) {
+            if (Time == 0) {
                 if (Projectile.ai[0] != 1) {
                     SoundEngine.PlaySound(SoundID.Item69, Projectile.Center);
+                    SpwanPRTAndDustEffect_ShootFireShowFromProj();
                 }
                 else {
                     Projectile.timeLeft = 40;
@@ -139,6 +192,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     Projectile.width = Projectile.height = 1400;
                     Projectile.Center = origPos;
                     SoundEngine.PlaySound(SoundID.Item69 with { Pitch = 1.02f }, Projectile.Center);
+                    SpwanPRTAndDustEffect_ShootFireShowFromProjEX();
                     if (!CWRUtils.isServer) {
                         for (int i = 0; i < 156; i++) {
                             Vector2 pos = Projectile.Center;
@@ -149,6 +203,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         }
                     }
                 }
+                
                 SpwanPRKAndDustEffect();
             }
 
@@ -164,12 +219,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             Projectile.localAI[1] += 0.07f;
             Projectile.ai[1] = Math.Clamp(Projectile.ai[1], 0f, 1f);
-            Projectile.ai[2]++;
             Lighting.AddLight(Projectile.Center, new Vector3(1, 1, 1));
-        }
 
-        public override void OnKill(int timeLeft) {
-
+            Time++;
         }
 
         public override bool ShouldUpdatePosition() => false;

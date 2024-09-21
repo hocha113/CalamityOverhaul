@@ -48,25 +48,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
                 Vector2 targetPos2 = Projectile.Center + toMouse2.UnitVector() * lengs2;
                 Vector2 unitToM2 = toMouse2.UnitVector();
-                Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos2, Vector2.Zero
-                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1);
-                for (int i = 0; i < lengs2 / 12; i++) {
-                    PRT_LavaFire lavaFire = new PRT_LavaFire {
-                        Velocity = toMouse2.UnitVector() * 2,
-                        Position = Projectile.Center + unitToM2 * (1 + i) * 12,
-                        Scale = Main.rand.NextFloat(1.8f, 3.2f),
-                        Color = Color.White
-                    };
-                    lavaFire.ai[0] = 1;
-                    lavaFire.ai[1] = 0;
-                    lavaFire.minLifeTime = 22;
-                    lavaFire.maxLifeTime = 30;
-                    lavaFire.colors = new Color[3];
-                    lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
-                    lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
-                    lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
-                    PRTLoader.AddParticle(lavaFire);
-                }
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos2, unitToM2
+                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1, Projectile.Center.X, Projectile.Center.Y);
                 return;
             }
 
@@ -77,25 +60,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Vector2 targetPos = Owner.GetPlayerStabilityCenter() + ToMouse.UnitVector() * lengs;
             Vector2 unitToM = UnitToMouseV;
 
-            Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos, Vector2.Zero
+            Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos, unitToM
                 , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage / 6, Projectile.knockBack, Owner.whoAmI);
-            for (int i = 0; i < lengs / 12; i++) {
-                PRT_LavaFire lavaFire = new PRT_LavaFire {
-                    Velocity = ToMouse.UnitVector() * 2,
-                    Position = Owner.GetPlayerStabilityCenter() + unitToM * (1 + i) * 12,
-                    Scale = Main.rand.NextFloat(0.8f, 1.2f),
-                    Color = Color.White
-                };
-                lavaFire.ai[0] = 1;
-                lavaFire.ai[1] = 0;
-                lavaFire.minLifeTime = 22;
-                lavaFire.maxLifeTime = 30;
-                lavaFire.colors = new Color[3];
-                lavaFire.colors[0] = new Color(255, 180, 60, 255);// 明亮的金红色
-                lavaFire.colors[1] = new Color(220, 120, 40, 255);// 红金色过渡
-                lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
-                PRTLoader.AddParticle(lavaFire);
-            }
         }
 
         public override void SwingAI() {

@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Common
             public static float MScaleOffsetValue;
             internal const float M_RDCD_BarSize_MinValue = 0.5f;
             internal const float M_RDCD_BarSize_MaxValue = 2f;
-            public static float M_RDCD_BarSizeValue;
             public static int CartridgeUI_Offset_X;
             internal const int CartridgeUI_Offset_X_MinValue = 0;
             internal const int CartridgeUI_Offset_X_MaxValue = 1900;
@@ -156,26 +155,6 @@ namespace CalamityOverhaul.Common
         public bool LensEasing { get; set; }
 
         [Header("CWRUI")]
-
-        /// <summary>
-        /// 鬼妖升龙冷却UI大小调节
-        /// </summary>
-        [BackgroundColor(45, 175, 225, 255)]
-        [SliderColor(224, 165, 56, 255)]
-        [Range(Date.M_RDCD_BarSize_MinValue, Date.M_RDCD_BarSize_MaxValue)]
-        [DefaultValue(1)]
-        public float MurasamaRisingDragonCoolDownBarSize {
-            get {
-                if (Date.M_RDCD_BarSizeValue < Date.M_RDCD_BarSize_MinValue) {
-                    Date.M_RDCD_BarSizeValue = Date.M_RDCD_BarSize_MinValue;
-                }
-                if (Date.M_RDCD_BarSizeValue > Date.M_RDCD_BarSize_MaxValue) {
-                    Date.M_RDCD_BarSizeValue = Date.M_RDCD_BarSize_MaxValue;
-                }
-                return Date.M_RDCD_BarSizeValue;
-            }
-            set => Date.M_RDCD_BarSizeValue = value;
-        }
 
         /// <summary>
         /// 弹夹UI位置调节_X

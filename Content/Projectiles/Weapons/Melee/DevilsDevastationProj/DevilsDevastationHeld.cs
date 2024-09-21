@@ -34,42 +34,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
             Length = 120;
         }
 
-        public override void Shoot() {
-            if (Projectile.ai[0] == 2 || Projectile.ai[0] == 1) {
-                for (int i = 0; i < 3; i++) {
-                    Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV.RotatedBy((-1 + i) * 0.1f) * 6
-                        , ModContent.ProjectileType<EXOathblade>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1);
-                }
-                return;
+        internal void EXDemonBlastAltEffect() {
+            SoundEngine.PlaySound(SoundID.Item103 with { Pitch = 0.82f, Volume = 2.2f }, Projectile.Center);
+            float lengs = ToMouse.Length();
+            if (lengs < Length * Projectile.scale) {
+                lengs = Length * Projectile.scale;
             }
-            if (Projectile.ai[0] == 3) {
-                SoundEngine.PlaySound(SoundID.Item103 with { Pitch = 0.82f, Volume = 2.2f }, Projectile.Center);
-                float lengs = ToMouse.Length();
-                if (lengs < Length * Projectile.scale) {
-                    lengs = Length * Projectile.scale;
-                }
-                Vector2 targetPos = Owner.GetPlayerStabilityCenter() + ToMouse.UnitVector() * lengs;
-                Vector2 unitToM = UnitToMouseV;
-                for (int i = 0; i < lengs / 12; i++) {
-                    Vector2 spwanPos = Owner.GetPlayerStabilityCenter() + unitToM * (1 + i) * 12;
-                    Dust dust = Dust.NewDustPerfect(spwanPos, DustID.Blood, UnitToMouseV * 6, 125, Color.OrangeRed, 3);
-                    dust.noGravity = true;
-                    dust.scale = 5;
-                }
-                int bloodQuantity = 10;
-                for (int i = 0; i < bloodQuantity; i++) {
-                    Vector2 target = ((float)Math.PI * 2 / bloodQuantity * i + 1).ToRotationVector2() * 300;
-                    int bloodQuantity2 = 150;
-                    for (int a = 1; a <= bloodQuantity2; a++) {
-                        Dust.NewDust(InMousePos, 0, 0, DustID.Blood, target.X / a, target.Y / a, 0, default, 3);
-                    }
-                }
-                for (int i = 0; i < 6; i++) {
-                    Projectile.NewProjectile(Source, InMousePos, (MathHelper.TwoPi / 6 * i).ToRotationVector2() * 3
-                    , ModContent.ProjectileType<EXDemonBlastAlt>(), Projectile.damage * 5, Projectile.knockBack, Owner.whoAmI);
-                }
-                return;
+            Vector2 targetPos = Owner.GetPlayerStabilityCenter() + ToMouse.UnitVector() * lengs;
+            Vector2 unitToM = UnitToMouseV;
+            for (int i = 0; i < lengs / 12; i++) {
+                Vector2 spwanPos = Owner.GetPlayerStabilityCenter() + unitToM * (1 + i) * 12;
+                Dust dust = Dust.NewDustPerfect(spwanPos, DustID.Blood, UnitToMouseV * 6, 125, Color.OrangeRed, 3);
+                dust.noGravity = true;
+                dust.scale = 5;
             }
+            int bloodQuantity = 10;
+            for (int i = 0; i < bloodQuantity; i++) {
+                Vector2 target = ((float)Math.PI * 2 / bloodQuantity * i + 1).ToRotationVector2() * 300;
+                int bloodQuantity2 = 150;
+                for (int a = 1; a <= bloodQuantity2; a++) {
+                    Dust.NewDust(InMousePos, 0, 0, DustID.Blood, target.X / a, target.Y / a, 0, default, 3);
+                }
+            }
+        }
+
+        internal bool Has16EXDemonBlast() {
             int num = 0;
             foreach (var proj in Main.projectile) {
                 if (!proj.active) {
@@ -83,8 +72,37 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 }
             }
             if (num >= 16) {
+                return true;
+            }
+            return false;
+        }
+
+        public override void PostInOwnerUpdate() {
+            if (canShoot && Projectile.ai[0] == 3) {
+                EXDemonBlastAltEffect();
+            }
+        }
+
+        public override void Shoot() {
+            if (Projectile.ai[0] == 2 || Projectile.ai[0] == 1) {
+                for (int i = 0; i < 3; i++) {
+                    Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV.RotatedBy((-1 + i) * 0.1f) * 6
+                        , ModContent.ProjectileType<EXOathblade>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1);
+                }
                 return;
             }
+            if (Projectile.ai[0] == 3) {
+                for (int i = 0; i < 6; i++) {
+                    Projectile.NewProjectile(Source, InMousePos, (MathHelper.TwoPi / 6 * i).ToRotationVector2() * 3
+                    , ModContent.ProjectileType<EXDemonBlastAlt>(), Projectile.damage * 5, Projectile.knockBack, Owner.whoAmI);
+                }
+                return;
+            }
+
+            if (Has16EXDemonBlast()) {
+                return;
+            }
+
             Projectile.NewProjectile(Source, Owner.Center, UnitToMouseV * 6
                 , ModContent.ProjectileType<EXDemonBlast>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
