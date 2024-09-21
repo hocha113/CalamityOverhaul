@@ -1,6 +1,8 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.UIs;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -34,6 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private float uiAlape;
         private int maxFrame = 6;
         internal int noAttenuationTime;
+        internal Vector2 muraBarDrawPos;
         private static int breakOutType;
         private static Asset<Texture2D> MuraBarBottom;
         private static Asset<Texture2D> MuraBarTop;
@@ -61,6 +64,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.friendly = true;
             Projectile.timeLeft = 300;
             Projectile.hide = true;
+            if (!CWRUtils.isServer) {
+                ((MuraChargeUI)UIHandleLoader.GetUIHandleInstance<MuraChargeUI>()).murasamaHeld = this;
+            }
         }
 
         public override bool? CanDamage() => false;
@@ -322,25 +328,55 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
         }
 
-        public override void PostDraw(Color lightColor) {
+        internal void DrawClentPlayerBarUI() {
             float scale = 1;
             if (!(risingDragon <= 0f) || uiAlape > 0) {//这是一个通用的进度条绘制，用于判断冷却进度
                 Texture2D barBG = MuraBarBottom.Value;
                 Texture2D barFG = MuraBarTop.Value;
                 Vector2 barOrigin = barBG.Size() * 0.5f;
-                Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, -52) * scale - Main.screenPosition;
+                muraBarDrawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, -90) - Main.screenPosition;
                 Color color = Color.White * uiAlape;
                 if (risingDragon < MurasamaEcType.GetOnRDCD) {
                     Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / (float)MurasamaEcType.GetOnRDCD * barFG.Width), barFG.Height);
-                    Main.spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale, 0, 0f);
-                    Main.spriteBatch.Draw(barFG, drawPos + new Vector2(6, 18) * scale, frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
+                    Main.spriteBatch.Draw(barBG, muraBarDrawPos, null, color, 0f, barOrigin, scale, 0, 0f);
+                    Main.spriteBatch.Draw(barFG, muraBarDrawPos + new Vector2(12, 42), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
                 }
                 else {
                     barBG = MuraBarFull.Value;
                     Rectangle rectangle = CWRUtils.GetRec(barBG, uiFrame, maxFrame);
-                    Main.spriteBatch.Draw(barBG, drawPos + new Vector2(0, 2) * scale
+                    Main.spriteBatch.Draw(barBG, muraBarDrawPos
                         , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
                 }
+            }
+        }
+
+        internal void DrawOwnerPlayerBarUI() {
+            float scale = 1;
+            if (!(risingDragon <= 0f) || uiAlape > 0) {//这是一个通用的进度条绘制，用于判断冷却进度
+                Texture2D barBG = MuraBarBottom.Value;
+                Texture2D barFG = MuraBarTop.Value;
+                Vector2 barOrigin = barBG.Size() * 0.5f;
+                muraBarDrawPos = new Vector2(80, Main.screenHeight - 90);
+                muraBarDrawPos += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
+                , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
+                Color color = Color.White * uiAlape;
+                if (risingDragon < MurasamaEcType.GetOnRDCD) {
+                    Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / (float)MurasamaEcType.GetOnRDCD * barFG.Width), barFG.Height);
+                    Main.spriteBatch.Draw(barBG, muraBarDrawPos, null, color, 0f, barOrigin, scale, 0, 0f);
+                    Main.spriteBatch.Draw(barFG, muraBarDrawPos + new Vector2(12, 42), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
+                }
+                else {
+                    barBG = MuraBarFull.Value;
+                    Rectangle rectangle = CWRUtils.GetRec(barBG, uiFrame, maxFrame);
+                    Main.spriteBatch.Draw(barBG, muraBarDrawPos
+                        , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
+                }
+            }
+        }
+
+        public override void PostDraw(Color lightColor) {
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                DrawClentPlayerBarUI();
             }
         }
 
