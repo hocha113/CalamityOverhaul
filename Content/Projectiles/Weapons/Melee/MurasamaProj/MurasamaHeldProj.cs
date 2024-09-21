@@ -22,6 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private ref int risingDragon => ref Owner.CWR().RisingDragonCharged;
         private bool onFireR => DownRight && !DownLeft;
         private int level => InWorldBossPhase.Instance.Mura_Level();
+        private bool initialize;
         private bool oldRisingDragonFullSet;
         private bool risingDragonFullSet;
         private bool noHasDownSkillProj;
@@ -41,6 +42,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private static Asset<Texture2D> MuraBarBottom;
         private static Asset<Texture2D> MuraBarTop;
         private static Asset<Texture2D> MuraBarFull;
+        private static Asset<Texture2D> EXMuraBarBottom;
+        private static Asset<Texture2D> EXMuraBarTop;
+        private static Asset<Texture2D> EXMuraBarFull;
 
         void ICWRLoader.SetupData() {
             breakOutType = ModContent.ProjectileType<MurasamaBreakOut>();
@@ -49,12 +53,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             MuraBarBottom = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarBottom");
             MuraBarTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarTop");
             MuraBarFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarFull");
+            EXMuraBarBottom = CWRUtils.GetT2DAsset(CWRConstant.UI + "EXMuraBarBottom");
+            EXMuraBarTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "EXMuraBarTop");
+            EXMuraBarFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "EXMuraBarFull");
         }
         void ICWRLoader.UnLoadData() {
             breakOutType = 0;
             MuraBarBottom = null;
             MuraBarTop = null;
             MuraBarFull = null;
+            EXMuraBarBottom = null;
+            EXMuraBarTop = null;
+            EXMuraBarFull = null;
         }
 
         public override void SetDefaults() {
@@ -64,9 +74,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.friendly = true;
             Projectile.timeLeft = 300;
             Projectile.hide = true;
-            if (!CWRUtils.isServer) {
-                ((MuraChargeUI)UIHandleLoader.GetUIHandleInstance<MuraChargeUI>()).murasamaHeld = this;
-            }
         }
 
         public override bool? CanDamage() => false;
@@ -74,6 +81,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override bool ShouldUpdatePosition() => false;
 
         public override bool PreUpdate() {
+            if (!initialize) {//每个玩家都拥有自己的实例映射，不要互相干扰
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    ((MuraChargeUI)UIHandleLoader.GetUIHandleInstance<MuraChargeUI>()).murasamaHeld = this;
+                }
+                initialize = true;
+            }
+
             bool heldBool1 = murasama.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>();
             bool heldBool2 = murasama.type != ModContent.ItemType<MurasamaEcType>();
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换
@@ -367,6 +381,34 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
                 else {
                     barBG = MuraBarFull.Value;
+                    Rectangle rectangle = CWRUtils.GetRec(barBG, uiFrame, maxFrame);
+                    Main.spriteBatch.Draw(barBG, muraBarDrawPos
+                        , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
+                }
+            }
+        }
+
+        internal void DrawMassacreBarUI() {
+            float scale = 1;
+            if (murasama.type == ItemID.None) {
+                return;
+            }
+            murasama.initialize();
+            if (uiAlape > 0) {
+                Texture2D barBG = EXMuraBarBottom.Value;
+                Texture2D barFG = EXMuraBarTop.Value;
+                Vector2 barOrigin = barBG.Size() * 0.5f;
+                muraBarDrawPos = new Vector2(120, Main.screenHeight - 50);
+                muraBarDrawPos += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
+                , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
+                Color color = Color.White * uiAlape;
+                if (murasama.CWR().ai[0] < 9) {
+                    Rectangle frameCrop = new Rectangle(0, 0, (int)(murasama.CWR().ai[0] / 9f * barFG.Width), barFG.Height);
+                    Main.spriteBatch.Draw(barBG, muraBarDrawPos, null, color, 0f, barOrigin, scale, 0, 0f);
+                    Main.spriteBatch.Draw(barFG, muraBarDrawPos + new Vector2(48, 6), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
+                }
+                else {
+                    barBG = EXMuraBarFull.Value;
                     Rectangle rectangle = CWRUtils.GetRec(barBG, uiFrame, maxFrame);
                     Main.spriteBatch.Draw(barBG, muraBarDrawPos
                         , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);

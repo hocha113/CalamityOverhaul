@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             npc.CWR().OldNPCPos = npc.position;
             npc.CWR().OverBeatBackVr = flyVr;
             npc.CWR().OverBeatBackAttenuationForce = 0.99f;
-            CWRNpc.OverBeatBackSend(npc, Owner.whoAmI);
+            CWRNpc.OverBeatBackSend(npc);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

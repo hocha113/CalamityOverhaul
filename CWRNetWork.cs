@@ -103,7 +103,7 @@ namespace CalamityOverhaul
                 TungstenRiot.EventNetWorkReceive(reader);
             }
             else if (type == CWRMessageType.OverBeatBack) {
-                CWRNpc.OtherBeatBackReceive(reader);
+                CWRNpc.OtherBeatBackReceive(reader, whoAmI);
             }
             else if (type == CWRMessageType.NPCOverrideAI) {
                 NPCOverride.NetAIReceive(reader);
