@@ -43,6 +43,8 @@ namespace CalamityOverhaul
             if (CWRUtils.isSinglePlayer) {
                 return;
             }
+            netMessage.Write((byte)CWRMessageType.NetWorks);
+            netMessage.Write(messageID);
             NetSendBehavior(netMessage, args);
         }
         /// <summary>

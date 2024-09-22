@@ -4,7 +4,6 @@ using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -161,21 +160,21 @@ namespace CalamityOverhaul.Content.Items.Melee
                 {14, 46 }
             };
             RDCDDictionary = new Dictionary<int, int>(){
-                {0, 325 },
-                {1, 300 },
-                {2, 280 },
-                {3, 260 },
-                {4, 240 },
-                {5, 220 },
-                {6, 200 },
-                {7, 180 },
-                {8, 160 },
-                {9, 150 },
-                {10, 140 },
-                {11, 130 },
-                {12, 120 },
-                {13, 110 },
-                {14, 100 }
+                {0, 420 },
+                {1, 400 },
+                {2, 400 },
+                {3, 380 },
+                {4, 380 },
+                {5, 340 },
+                {6, 340 },
+                {7, 300 },
+                {8, 300 },
+                {9, 280 },
+                {10, 280 },
+                {11, 260 },
+                {12, 240 },
+                {13, 220 },
+                {14, 200 }
             };
         }
         public override void SetStaticDefaults() {
@@ -264,18 +263,18 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            if (!(Charge <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
-                Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;
-                Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;
-                float barScale = 3f;
-                Vector2 barOrigin = barBG.Size() * 0.5f;
-                float yOffset = 50f;
-                Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
-                Rectangle frameCrop = new Rectangle(0, 0, (int)(Charge / 10f * barFG.Width), barFG.Height);
-                Color color = Main.hslToRgb(Main.GlobalTimeWrappedHourly * 0.6f % 1f, 1f, 0.75f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f);
-                spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale * barScale, 0, 0f);
-                spriteBatch.Draw(barFG, drawPos, frameCrop, color * 0.8f, 0f, barOrigin, scale * barScale, 0, 0f);
-            }
+            //if (!(Charge <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
+            //    Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;
+            //    Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;
+            //    float barScale = 3f;
+            //    Vector2 barOrigin = barBG.Size() * 0.5f;
+            //    float yOffset = 50f;
+            //    Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
+            //    Rectangle frameCrop = new Rectangle(0, 0, (int)(Charge / 10f * barFG.Width), barFG.Height);
+            //    Color color = Main.hslToRgb(Main.GlobalTimeWrappedHourly * 0.6f % 1f, 1f, 0.75f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f);
+            //    spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale * barScale, 0, 0f);
+            //    spriteBatch.Draw(barFG, drawPos, frameCrop, color * 0.8f, 0f, barOrigin, scale * barScale, 0, 0f);
+            //}
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {

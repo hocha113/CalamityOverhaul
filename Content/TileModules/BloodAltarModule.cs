@@ -232,8 +232,6 @@ namespace CalamityOverhaul.Content.TileModules
             if (CWRUtils.isServer) {
                 NetMessage.SendData(MessageID.WorldData);
             }
-            netMessage.Write((byte)CWRMessageType.NetWorks);
-            netMessage.Write(((INetWork)this).messageID);
             netMessage.Write(startPlayerWhoAmI);
             netMessage.Write(OnBoolMoon);
             netMessage.Send();

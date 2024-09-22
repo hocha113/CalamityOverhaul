@@ -2158,7 +2158,7 @@ namespace CalamityOverhaul
 
         public static void initialize(this Item item) {
             if (item.CWR().ai == null) {
-                item.CWR().ai = new float[] { 0, 0, 0 };
+                item.CWR().ai = [0, 0, 0];
             }
         }
 

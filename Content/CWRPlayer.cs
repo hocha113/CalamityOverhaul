@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int HeldStyle;
         /// <summary>
-        /// 升龙技冷却时间
+        /// 升龙技充能
         /// </summary>
         public int RisingDragonCharged;
         public int SafeHeldProjIndex;

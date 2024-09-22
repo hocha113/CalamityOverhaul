@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         protected Player Owner => Main.player[Projectile.owner];
         protected Item murasama => Owner.ActiveItem();
         private Vector2 breakOutVector;
+        private int Time;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 5;
@@ -33,6 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 22;
             Projectile.CWR().NotSubjectToSpecialEffects = true;
+            Time = 0;
         }
 
         public override void PostAI() => CWRUtils.ClockFrame(ref Projectile.frame, 5, 12);
@@ -47,6 +49,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override void AI() {
+            if (Time == 0 && !Projectile.IsOwnedByLocalPlayer()) {
+                Owner.CWR().RisingDragonCharged = 0;
+            }
+
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {
                 if (murasama.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>()) {
                     Projectile.Kill();
@@ -71,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             if (Projectile.ai[0] == 0) {//在这一阶段，弹幕负责飞出
                 Projectile.rotation = Projectile.velocity.ToRotation();
                 Projectile.ai[1]++;
-                if (Projectile.ai[1] > (60 + level * 15)) {//级别越高，弹幕的飞行时间便会越加的长
+                if (Projectile.ai[1] > (60 + level * 10)) {//级别越高，弹幕的飞行时间便会越加的长
                     Projectile.ai[0] = 2;
                     Projectile.ai[1] = 0;
                     Projectile.netUpdate = true;
@@ -164,23 +170,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
 
             if (Projectile.ai[0] != 2 && Projectile.ai[0] != 3 && !CWRUtils.isServer) {
-                if (CWRKeySystem.Murasama_DownKey.JustPressed) {//触发下砸技能
-                    if (!MurasamaEcType.UnlockSkill2) {//在击败史莱姆之神前不能使用这个技能
-                        return;
-                    }
-                    murasama.initialize();
-                    if (murasama.CWR().ai[0] >= 2) {
-                        SoundEngine.PlaySound(MurasamaEcType.BigSwing with { Pitch = -0.1f }, Projectile.Center);
-                        if (Projectile.IsOwnedByLocalPlayer()) {
-                            Projectile.NewProjectile(Owner.parent(), Projectile.Center, new Vector2(0, 5)
-                            , ModContent.ProjectileType<MurasamaDownSkill>(), murasama.damage, 0, Owner.whoAmI);
-                        }
-
-                        murasama.CWR().ai[0] -= 2;
-                        Projectile.Kill();
-                        return;
-                    }
-                }
+                //神皇在上，我竟然一直没有发现这个地方有多余的代码 -HoCha113 - 2024/9/22/17:32
+                //if (CWRKeySystem.Murasama_DownKey.JustPressed) {//触发下砸技能
+                //    if (!MurasamaEcType.UnlockSkill2) {//在击败史莱姆之神前不能使用这个技能
+                //        return;
+                //    }
+                //    murasama.initialize();
+                //    if (murasama.CWR().ai[0] >= 2) {
+                //        
+                //        if (Projectile.IsOwnedByLocalPlayer()) {
+                //            Projectile.NewProjectile(Owner.parent(), Projectile.Center, new Vector2(0, 5)
+                //            , ModContent.ProjectileType<MurasamaDownSkill>(), murasama.damage, 0, Owner.whoAmI);
+                //        }
+                //        Projectile.Kill();
+                //        return;
+                //    }
+                //}
 
                 if (Owner.PressKey() && Projectile.ai[2] <= 0) {//如果按下的是左键，那么切换到3状态进行升龙斩的相关代码的执行
                     if (!MurasamaEcType.UnlockSkill1) {//在击败初期Boss之前不能使用这个技能
@@ -198,6 +203,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     breakOutVector = Owner.Center.To(Projectile.Center).UnitVector();
                 }
             }
+
+            Time++;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

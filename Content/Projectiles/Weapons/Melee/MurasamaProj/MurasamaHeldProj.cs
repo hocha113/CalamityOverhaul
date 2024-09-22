@@ -6,6 +6,7 @@ using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -37,6 +38,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private float uiAlape;
         private int maxFrame = 6;
         internal int noAttenuationTime;
+        internal Vector2 origMuraBarDrawPos => new Vector2(220, Main.screenHeight - 140);
+        internal Vector2 CartridgeUI_Offset {
+            get {
+                Vector2 offset = new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
+                , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
+                if (offset.X > 1400) {
+                    offset.X = 1400;
+                }
+                return offset;
+            }
+        }
         internal Vector2 muraBarDrawPos;
         private static int breakOutType;
         private static Asset<Texture2D> MuraBarBottom;
@@ -271,7 +283,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center, UnitToMouseV * (7 + level * 0.2f)
                     , breakOutType, (int)(MurasamaEcType.ActualTrueMeleeDamage * (0.35f + level * 0.05f)), 0, Owner.whoAmI, ai2: 15);
                     }
+
                     risingDragon = 0;
+
                     SpanTriggerEffDust();
                 }
                 else {
@@ -370,9 +384,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 Texture2D barBG = MuraBarBottom.Value;
                 Texture2D barFG = MuraBarTop.Value;
                 Vector2 barOrigin = barBG.Size() * 0.5f;
-                muraBarDrawPos = new Vector2(80, Main.screenHeight - 90);
-                muraBarDrawPos += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
-                , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
+                //muraBarDrawPos = new Vector2(80, Main.screenHeight - 90);
+                muraBarDrawPos = origMuraBarDrawPos + CartridgeUI_Offset;
                 Color color = Color.White * uiAlape;
                 if (risingDragon < MurasamaEcType.GetOnRDCD) {
                     Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / (float)MurasamaEcType.GetOnRDCD * barFG.Width), barFG.Height);
@@ -398,9 +411,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 Texture2D barBG = EXMuraBarBottom.Value;
                 Texture2D barFG = EXMuraBarTop.Value;
                 Vector2 barOrigin = barBG.Size() * 0.5f;
-                muraBarDrawPos = new Vector2(120, Main.screenHeight - 50);
-                muraBarDrawPos += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
-                , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
+                muraBarDrawPos = origMuraBarDrawPos + CartridgeUI_Offset + new Vector2(40, 40);
                 Color color = Color.White * uiAlape;
                 if (murasama.CWR().ai[0] < 9) {
                     Rectangle frameCrop = new Rectangle(0, 0, (int)(murasama.CWR().ai[0] / 9f * barFG.Width), barFG.Height);
@@ -424,6 +435,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override bool PreDraw(ref Color lightColor) {
             if (!CWRServerConfig.Instance.WeaponHandheldDisplay && !(DownLeft || DownRight)) {
+                return false;
+            }
+            if (!noHasDownSkillProj) {
                 return false;
             }
             Texture2D value = CWRUtils.GetT2DValue(Texture + (Projectile.hide ? "" : "2"));
