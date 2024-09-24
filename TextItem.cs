@@ -35,11 +35,11 @@ namespace CalamityOverhaul
 
         public override void UpdateInventory(Player player) {
             //player.velocity.Domp();
-            bool news = player.PressKey(false);
-            if (news && !old) {
-                player.QuickSpawnItem(player.parent(), Main.HoverItem, Main.HoverItem.stack);
-            }
-            old = news;
+            //bool news = player.PressKey(false);
+            //if (news && !old) {
+            //    player.QuickSpawnItem(player.parent(), Main.HoverItem, Main.HoverItem.stack);
+            //}
+            //old = news;
 
         }
 
@@ -47,12 +47,12 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-                TungstenRiot.Instance.CloseEvent();
-            }
-            else {
-                TungstenRiot.Instance.TryStartEvent();
-            }
+            //if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
+            //    TungstenRiot.Instance.CloseEvent();
+            //}
+            //else {
+            //    TungstenRiot.Instance.TryStartEvent();
+            //}
 
             //int maxProjSanShootNum = 22;
             //int type = ModContent.ProjectileType<Probe>();
@@ -70,6 +70,10 @@ namespace CalamityOverhaul
             //        , vr, ModContent.ProjectileType<MurasamaEndSkillOrbOnSpan>()
             //        , (int)(100 * 0.7f), 0, player.whoAmI);
             //}
+
+            Tile tile = CWRUtils.GetTile(Main.MouseWorld / 16);
+            tile.Domp();
+            tile.TileType.Domp();
             return true;
         }
     }

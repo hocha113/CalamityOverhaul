@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Items.Tools;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Stubble.Core.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,12 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     internal class SupertableUI : UIHandle, ICWRLoader
     {
-        #region
+        #region Data
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue2");
 
         public static SupertableUI Instance { get; private set; }
@@ -80,7 +80,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         private int inCoordIndex => (mouseInCellCoord.Y * maxCellNumX) + mouseInCellCoord.X;
 
         public override bool Active {
-            get => player.CWR().SupertableUIStartBool;
+            get {
+                if (!CWRServerConfig.Instance.AddExtrasContent) {
+                    return false;
+                }
+                return player.CWR().SupertableUIStartBool;
+            }
             set => player.CWR().SupertableUIStartBool = value;
         }
 

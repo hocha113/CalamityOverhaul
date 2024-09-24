@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.Particles
             Velocity = velocity;
             Color = color;
             Scale = scale;
-            Variant = Main.rand.Next(7);
             Lifetime = lifetime;
             Opacity = opacity;
             Spin = rotationSpeed;
@@ -36,14 +35,17 @@ namespace CalamityOverhaul.Content.Particles
             else {
                 PRTDrawMode = PRTDrawModeEnum.NonPremultiplied;
             }
-            Frame = 7;
+            ai[0] = Main.rand.Next(7);
             SetLifetime = true;
         }
         public override void AI() {
-            if (Time / (float)Lifetime < 0.2f)
+            if (Time / (float)Lifetime < 0.2f) {
                 Scale += 0.01f;
-            else
+            }
+            else {
                 Scale *= 0.975f;
+            }
+                
 
             Color = Main.hslToRgb((Main.rgbToHsl(Color).X + HueShift) % 1, Main.rgbToHsl(Color).Y, Main.rgbToHsl(Color).Z);
             Opacity *= 0.98f;
@@ -57,9 +59,7 @@ namespace CalamityOverhaul.Content.Particles
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             int animationFrame = (int)Math.Floor(Time / (float)(Lifetime / (float)FrameAmount));
-            Rectangle frame = new Rectangle(80 * Variant, 80 * animationFrame, 80, 80);
-
-
+            Rectangle frame = new Rectangle((int)(80 * ai[0]), 80 * animationFrame, 80, 80);
             spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation, frame.Size() / 2f, Scale, SpriteEffects.None, 0);
             return false;
         }

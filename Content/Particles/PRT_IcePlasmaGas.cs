@@ -16,14 +16,12 @@ namespace CalamityOverhaul.Content.Particles
             Velocity = velocity;
             Color = color;
             Scale = scale;
-            Variant = Main.rand.Next(7);
             Lifetime = lifetime;
             StrongVisual = required;
             sengsValue = 0;
         }
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-            Frame = 7;
             SetLifetime = true;
         }
         public override void AI() {

@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Common;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -15,6 +16,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public override bool Active {
             get {
                 if (SupertableUI.Instance == null) {
+                    return false;
+                }
+                if (!CWRServerConfig.Instance.AddExtrasContent) {
                     return false;
                 }
                 return SupertableUI.Instance.Active;
