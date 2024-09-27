@@ -344,7 +344,7 @@ namespace CalamityOverhaul.Common
             if (CWRMod.Instance.coolerItemVisualEffect != null) {
                 coolerItemVisualEffectTypes = AssemblyManager.GetLoadableTypes(CWRMod.Instance.coolerItemVisualEffect.Code);
                 foreach (Type type in coolerItemVisualEffectTypes) {
-                    if (type.Name == "CoolerItemVisualEffectPlayer") {
+                    if (type.Name == "MeleeModifyPlayer") {
                         coolerItemVisualEffectPlayerType = type;
                     }
                 }
@@ -356,7 +356,7 @@ namespace CalamityOverhaul.Common
                     CWRHook.Add(coolerItemVisualEffect_Method, On_MP_Draw_4_Hook);
                 }
                 else {
-                    Domp1("coolerItemVisualEffect_Method", "CoolerItemVisualEffectPlayer.ModifyDrawInfo");
+                    Domp1("coolerItemVisualEffect_Method", "MeleeModifyPlayer.ModifyDrawInfo");
                 }
             }
             else {

@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.EnchantedBoomerang].Value;
+        private bool onHit;
         public override void SetThrowable() {
             CWRUtils.SafeLoadItem(ItemID.EnchantedBoomerang);
             HandOnTwringMode = -30;
@@ -32,7 +33,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (stealthStrike && Projectile.ai[2] == 0 && Projectile.numHits == 0) {
+            if (stealthStrike && Projectile.ai[2] == 0 && !onHit) {
+                onHit = true;
                 for (int i = 0; i < 6; i++) {
                     Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI()
                         , Projectile.Center + new Vector2(0, -588).RotatedByRandom(0.35f)

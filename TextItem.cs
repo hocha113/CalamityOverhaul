@@ -1,6 +1,4 @@
 ﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Events;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -13,7 +11,7 @@ namespace CalamityOverhaul
 
         private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return true;
+            return false;
         }
 
         public override void SetDefaults() {
@@ -70,10 +68,6 @@ namespace CalamityOverhaul
             //        , vr, ModContent.ProjectileType<MurasamaEndSkillOrbOnSpan>()
             //        , (int)(100 * 0.7f), 0, player.whoAmI);
             //}
-
-            Tile tile = CWRUtils.GetTile(Main.MouseWorld / 16);
-            tile.Domp();
-            tile.TileType.Domp();
             return true;
         }
     }

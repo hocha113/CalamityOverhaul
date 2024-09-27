@@ -13,6 +13,7 @@ namespace CalamityOverhaul
             SupertableSetItem,
             SetNoRecipeHasFrme,
             Config_ForceReplaceResetContent,
+            Config_AddExtrasContent,
         }
 
         public static object Hander(params object[] args) {
@@ -86,6 +87,9 @@ namespace CalamityOverhaul
             //获取设置内容，是否开启强制内容替换
             else if (callType == CallType.Config_ForceReplaceResetContent) {
                 return CWRServerConfig.Instance.ForceReplaceResetContent;
+            }
+            else if (callType == CallType.Config_AddExtrasContent) {
+                return CWRServerConfig.Instance.AddExtrasContent;
             }
 
             return null;
