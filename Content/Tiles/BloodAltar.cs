@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Tiles
                 BloodAltarModule.startPlayerWhoAmI = Main.LocalPlayer.whoAmI;
                 BloodAltarModule module = TileProcessorLoader.FindModulePreciseSearch<BloodAltarModule>(id, point.X, point.Y);
                 if (module != null) {
-                    module.DoNetSend();
+                    module.NetSend();
                 }
             }
             return true;

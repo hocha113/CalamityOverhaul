@@ -16,7 +16,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileModules
 {
-    internal class BloodAltarModule : TileProcessor, INetWork, ICWRLoader
+    internal class BloodAltarModule : TileProcessor, ICWRLoader
     {
         public override int TargetTileID => ModContent.TileType<BloodAltar>();
         public Vector2 Center => PosInWorld + new Vector2(BloodAltar.Width * 18, BloodAltar.Height * 18) / 2;
@@ -29,7 +29,6 @@ namespace CalamityOverhaul.Content.TileModules
         public int frameIndex = 1;
         void ICWRLoader.LoadAsset() => BloodAltarEffect = CWRUtils.GetT2DAsset(CWRConstant.Asset + "TileModules/BloodAltarEffect");
         void ICWRLoader.UnLoadData() => BloodAltarEffect = null;
-        public void DoNetSend() => ((INetWork)this).NetSend();
         public override void OnKill() {
             OnBoolMoon = false;
             OldOnBoolMoon = false;
@@ -37,8 +36,8 @@ namespace CalamityOverhaul.Content.TileModules
             if (Main.bloodMoon) {
                 Main.bloodMoon = false;
             }
-            if (CWRUtils.isServer) {
-                DoNetSend();
+            if (CWRUtils.isClient) {
+                NetSend();
             }
         }
 
@@ -228,24 +227,22 @@ namespace CalamityOverhaul.Content.TileModules
             }
         }
 
-        void INetWork.NetSendBehavior(ModPacket netMessage, params object[] args) {
-            if (CWRUtils.isServer) {
-                NetMessage.SendData(MessageID.WorldData);
-            }
+        internal void NetSend() {
+            ModPacket netMessage = Mod.GetPacket();
+            netMessage.Write((byte)CWRMessageType.BloodAltarModule);
             netMessage.Write(startPlayerWhoAmI);
             netMessage.Write(OnBoolMoon);
             netMessage.Send();
         }
 
-        void INetWork.NetReceive(Mod mod, BinaryReader reader, int whoAmI) {
+        internal static void NetReceive(Mod mod, BinaryReader reader, int whoAmI) {
             int startPlayerWhoAmI = reader.ReadInt32();
             bool moon = reader.ReadBoolean();
             BloodAltarModule.startPlayerWhoAmI = startPlayerWhoAmI;
             OnBoolMoon = moon;
             if (CWRUtils.isServer) {
                 ModPacket netMessage = mod.GetPacket();
-                netMessage.Write((byte)CWRMessageType.NetWorks);
-                netMessage.Write(((INetWork)this).messageID);
+                netMessage.Write((byte)CWRMessageType.BloodAltarModule);
                 netMessage.Write(startPlayerWhoAmI);
                 netMessage.Write(OnBoolMoon);
                 netMessage.Send(-1, whoAmI);

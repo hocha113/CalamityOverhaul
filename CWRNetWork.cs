@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.NPCs.Core;
+using CalamityOverhaul.Content.TileModules;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +18,7 @@ namespace CalamityOverhaul
         NPCOverrideAI,
         NPCOverrideOtherAI,
         ProjViscosityData,
+        BloodAltarModule,
         NetWorks,
     }
 
@@ -115,6 +117,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.ProjViscosityData) {
                 CWRProjectile.NetViscosityReceive(reader);
+            }
+            else if (type == CWRMessageType.BloodAltarModule) {
+                BloodAltarModule.NetReceive(mod, reader, whoAmI);
             }
             else if (type == CWRMessageType.NetWorks) {
                 NetWorksReceiveHander(mod, reader, whoAmI);
