@@ -46,7 +46,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             if (player.altFunctionUse == 2) {
-                SoundEngine.PlaySound(in CommonCalamitySounds.MeatySlashSound, player.Center);
+                SoundStyle sound = CommonCalamitySounds.MeatySlashSound;
+                SoundEngine.PlaySound(sound with { Volume = 0.35f }, player.Center);
                 Main.projectile[proj].ai[1] = 1;
             }
             return false;

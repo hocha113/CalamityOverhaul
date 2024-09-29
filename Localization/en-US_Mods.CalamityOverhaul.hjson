@@ -3580,6 +3580,7 @@ Projectiles: {
 	Probe.DisplayName: Probe
 	TerratomereHeld.DisplayName: Terratomere Held
 	RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
+	ElectrifyFeather.DisplayName: Electrify Feather
 }
 
 Configs: {

@@ -25,7 +25,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public override void Update() {
-            int Mus = (int)CheckRightKeyState();
             bool leftCtrlPressed = Main.keyState.IsKeyDown(Keys.LeftControl);
             if (leftCtrlPressed && !oldLeftCtrlPressed) {
                 SoundEngine.PlaySound(SoundID.Chat);
@@ -38,16 +37,20 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (InItemDrawRecipe.Instance.DrawPos == Vector2.Zero) {
                 InItemDrawRecipe.Instance.DrawPos = new Vector2(700, 100);
             }
+
             DrawPosition = origPos + offset;
+
             if (InItemDrawRecipe.Instance.DrawBool) {
-                if (offset.Y > -30)
+                if (offset.Y > -30) {
                     offset.Y -= 5;
+                } 
             }
             else {
-                if (offset.Y < 0)
+                if (offset.Y < 0) {
                     offset.Y += 5;
+                }   
                 if (offset.Y >= 0) {
-                    DrawPosition = Main.MouseScreen + new Vector2(0, -50);
+                    DrawPosition = Main.MouseScreen + new Vector2(40, -12);
                 }
             }
             Vector2 uiSize = new Vector2(1.5f, 0.6f);

@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content
         private Vector2 offsetHitPos;
         private NPC hitNPC;
         private float offsetHitRot;
-        private float oldNPCROt;
+        private float oldNPCRot;
         private float npcRotUpdateSengs;
 
         internal static void NetViscositySend(Projectile proj) {
@@ -113,17 +113,41 @@ namespace CalamityOverhaul.Content
             netMessage.Write(proj.whoAmI);
             netMessage.Write(cwrProj.hitNPC.whoAmI);
             netMessage.Write(cwrProj.offsetHitRot);
-            netMessage.Write(cwrProj.oldNPCROt);
+            netMessage.Write(cwrProj.oldNPCRot);
             netMessage.WriteVector2(cwrProj.offsetHitPos);
-            netMessage.Send(-1, proj.owner);
+            netMessage.Send();
         }
 
-        internal static void NetViscosityReceive(BinaryReader reader) {
-            CWRProjectile cwrProj = Main.projectile[reader.ReadInt32()].CWR();
-            cwrProj.hitNPC = Main.npc[reader.ReadInt32()];
-            cwrProj.offsetHitRot = reader.ReadSingle();
-            cwrProj.oldNPCROt = reader.ReadSingle();
-            cwrProj.offsetHitPos = reader.ReadVector2();
+        internal static void NetViscosityReceive(Mod mod, BinaryReader reader, int whoAmI) {
+            int projIndex = reader.ReadInt32();
+            int npcIndex = reader.ReadInt32();
+            float offsetHitRot = reader.ReadSingle();
+            float oldNPCRot = reader.ReadSingle();
+            Vector2 offsetHitPos = reader.ReadVector2();
+
+            if (projIndex >= 0 && projIndex < Main.maxProjectiles) {
+                Projectile targetProj = Main.projectile[projIndex];
+                if (targetProj.active) {
+                    CWRProjectile cwrProj = targetProj.CWR();
+                    if (npcIndex >= 0 && npcIndex < Main.maxNPCs) {
+                        cwrProj.hitNPC = Main.npc[npcIndex];
+                        cwrProj.offsetHitRot = offsetHitRot;
+                        cwrProj.oldNPCRot = oldNPCRot;
+                        cwrProj.offsetHitPos = offsetHitPos;
+
+                        if (Main.dedServ) {
+                            var netMessage = mod.GetPacket();
+                            netMessage.Write((byte)CWRMessageType.ProjViscosityData);
+                            netMessage.Write(projIndex);
+                            netMessage.Write(npcIndex);
+                            netMessage.Write(offsetHitRot);
+                            netMessage.Write(oldNPCRot);
+                            netMessage.WriteVector2(offsetHitPos);
+                            netMessage.Send(-1, whoAmI);
+                        }
+                    }
+                }
+            }
         }
 
         public override void SetDefaults(Projectile projectile) {
@@ -160,8 +184,8 @@ namespace CalamityOverhaul.Content
                     projectile.Kill();
                     return false;
                 }
-                npcRotUpdateSengs = oldNPCROt - hitNPC.rotation;
-                oldNPCROt = hitNPC.rotation;
+                npcRotUpdateSengs = oldNPCRot - hitNPC.rotation;
+                oldNPCRot = hitNPC.rotation;
                 offsetHitRot -= npcRotUpdateSengs;
                 projectile.rotation = offsetHitRot;
                 offsetHitPos = offsetHitPos.RotatedBy(npcRotUpdateSengs);
@@ -313,7 +337,7 @@ namespace CalamityOverhaul.Content
                 hitNPC = target;
                 offsetHitPos = target.Center.To(projectile.Center);
                 offsetHitRot = projectile.rotation;
-                oldNPCROt = target.rotation;
+                oldNPCRot = target.rotation;
                 NetViscositySend(projectile);
             }
 

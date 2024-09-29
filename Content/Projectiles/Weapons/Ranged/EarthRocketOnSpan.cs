@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -28,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             BaseOnSpanProj.FlowerAI(Projectile);
             if (Projectile.timeLeft % 5 == 0 && DownLeft) {
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * 7;
-                DragonsBreathRifleHeldProj.SpawnGunDust(Projectile, Projectile.Center, vr);
+                CWRUtils.SpawnGunDust(Projectile, Projectile.Center, vr);
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Projectile.NewProjectile(Owner.GetShootState("CWRGunShoot").Source, Projectile.Center, vr, ModContent.ProjectileType<ScorchedEarthRocket>(), Owner.GetShootState().WeaponDamage, Owner.GetShootState().WeaponKnockback, Owner.whoAmI, 0);
                 }

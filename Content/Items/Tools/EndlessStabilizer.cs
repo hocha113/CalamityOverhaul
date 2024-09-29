@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 {
     internal class EndlessStabilizer : ModItem
     {
-        public override string Texture => CWRConstant.Item + "Tools/EndlessStabilizer";
+        public override string Texture => CWRConstant.Placeholder3;
         public override void SetStaticDefaults() {
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 16));
         }

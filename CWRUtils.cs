@@ -910,6 +910,39 @@ namespace CalamityOverhaul
             }
         }
 
+        public static void SpawnGunDust(Projectile projectile, Vector2 pos, Vector2 velocity, int splNum = 1) {
+            if (Main.myPlayer != projectile.owner) return;
+
+            pos += velocity.SafeNormalize(Vector2.Zero) * projectile.width * projectile.scale * 0.71f;
+            for (int i = 0; i < 30 * splNum; i++) {
+                int dustID;
+                switch (Main.rand.Next(6)) {
+                    case 0:
+                        dustID = 262;
+                        break;
+                    case 1:
+                    case 2:
+                        dustID = 54;
+                        break;
+                    default:
+                        dustID = 53;
+                        break;
+                }
+                float num = Main.rand.NextFloat(3f, 13f) * splNum;
+                float angleRandom = 0.06f;
+                Vector2 dustVel = new Vector2(num, 0f).RotatedBy((double)velocity.ToRotation(), default);
+                dustVel = dustVel.RotatedBy(0f - angleRandom);
+                dustVel = dustVel.RotatedByRandom(2f * angleRandom);
+                if (Main.rand.NextBool(4)) {
+                    dustVel = Vector2.Lerp(dustVel, -Vector2.UnitY * dustVel.Length(), Main.rand.NextFloat(0.6f, 0.85f)) * 0.9f;
+                }
+                float scale = Main.rand.NextFloat(0.5f, 1.5f);
+                int idx = Dust.NewDust(pos, 1, 1, dustID, dustVel.X, dustVel.Y, 0, default, scale);
+                Main.dust[idx].noGravity = true;
+                Main.dust[idx].position = pos;
+            }
+        }
+
         /// <summary>
         /// 让弹幕进行爆炸效果的操作
         /// </summary>

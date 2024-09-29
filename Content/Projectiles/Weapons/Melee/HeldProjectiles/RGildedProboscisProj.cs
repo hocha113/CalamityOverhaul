@@ -68,18 +68,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 base.AI();
                 if (Owner != null) {
                     if (Owner.itemAnimation == Owner.itemAnimationMax / 2 && Projectile.IsOwnedByLocalPlayer()) {
-                        for (int i = 0; i < 3; i++) {
-                            Vector2 vr = Projectile.velocity.UnitVector().RotatedBy(MathHelper.ToRadians(-10 + 10 * i)) * 25f;
-                            Projectile.NewProjectile(
-                                Projectile.parent(),
-                                Projectile.Center,
-                                vr,
-                                ModContent.ProjectileType<RedLightningFeather>(),
-                                Projectile.damage / 2,
-                                Projectile.knockBack,
-                                Main.myPlayer
-                                );
-                        }
+                        Vector2 vr = Projectile.velocity.UnitVector() * 25f;
+                        Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, vr
+                            , ModContent.ProjectileType<ElectrifyFeather>(), Projectile.damage, Projectile.knockBack, Main.myPlayer);
                     }
                 }
             }//如果是左键弹幕，执行原有的基类行为
@@ -119,15 +110,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                             SoundEngine.PlaySound(SoundID.Item102, Projectile.Center);
                             for (int i = 0; i < 6; i++) {
                                 Vector2 vr = CWRUtils.GetRandomVevtor(0, 360, 15);
-                                Projectile.NewProjectile(
-                                    Owner.parent(),
-                                    Owner.Center,
-                                    vr,
-                                    ModContent.ProjectileType<RedLightningFeather>(),
-                                    Projectile.damage,
-                                    0,
-                                    Owner.whoAmI
-                                    );
+                                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, vr
+                                    , ModContent.ProjectileType<ElectrifyFeather>(), Projectile.damage, 0, Owner.whoAmI);
                             }
                             gildedProboscis.CWR().MeleeCharge += 500 / 3;
                         }

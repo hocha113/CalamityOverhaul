@@ -715,15 +715,6 @@ End:;
                 if (item.type == CWRLoad.DarkMatterBall) {
                     DarkMatterBall.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
                 }
-                else if (item.type == CWRLoad.InfiniteStick) {
-                    InfiniteStick.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
-                }
-                else if (item.type == ModContent.ItemType<DecayParticles>()
-                    || item.type == ModContent.ItemType<DecaySubstance>()
-                    || item.type == ModContent.ItemType<DissipationSubstance>()
-                    || item.type == ModContent.ItemType<SpectralMatter>()) {
-                    DecayParticles.DrawItemIcon(spriteBatch, drawpos + offset, drawColor, item.type, alp, slp);
-                }
                 else {
                     float value999 = 1;
                     if (CWRLoad.ItemToBaseBow.ContainsKey(item.type)) {

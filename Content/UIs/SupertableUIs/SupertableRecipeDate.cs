@@ -70,20 +70,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/BlackMatterStick"
         };
-        /// <summary>
-        /// 无尽杆
-        /// </summary>
-        public static string[] FullItems6 = new string[] {"0", "0", "0", "0", "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick",
-            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot",
-            "0", "0", "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
-            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0",
-            "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/InfiniteStick"
-        };
         // <summary>
         /// 暗物质
         /// </summary>
@@ -112,20 +98,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/InfiniteIngot"
         };
-        // <summary>
-        /// 休谟稳定器
-        /// </summary>
-        //public static string[] FullItems9 = new string[] {"0", "0", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "0", "0",
-        //    "0", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteStick", "0",
-        //    "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteStick",
-        //    "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick",
-        //    "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteStick",
-        //    "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick",
-        //    "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteStick",
-        //    "0", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/DarkMatterBall", "CalamityOverhaul/InfiniteStick", "0",
-        //    "0", "0", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteStick", "0", "0",
-        //    "CalamityOverhaul/EndlessStabilizer"
-        //};
         // <summary>
         /// 苍穹破晓
         /// </summary>
@@ -329,7 +301,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static List<string> FullItems1000 = ["CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteStick", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
+            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
             "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0",
             "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0",
             "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",

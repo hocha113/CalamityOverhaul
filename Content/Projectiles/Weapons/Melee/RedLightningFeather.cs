@@ -1,18 +1,21 @@
-﻿using CalamityOverhaul.Content.Particles;
+﻿using CalamityMod.Projectiles.Boss;
+using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
+using ReLogic.Content;
 using Terraria;
-using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class RedLightningFeather : ModProjectile
+    internal class ElectrifyFeather : ModProjectile, ICWRLoader
     {
-        public override string Texture => CWRConstant.Projectile_Melee + "RedLightningFeather";
-
+        public override string Texture => CWRConstant.Placeholder3;
+        private static Asset<Texture2D> FeatherAsset;
+        void ICWRLoader.LoadAsset() => FeatherAsset = TextureAssets.Projectile[ModContent.ProjectileType<RedLightningFeather>()];
+        void ICWRLoader.UnLoadData() => FeatherAsset = null;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
@@ -40,9 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.localAI[0] = value.X;
                 Projectile.localAI[1] = value.Y;
             }
-            get {
-                return new Vector2(Projectile.localAI[0], Projectile.localAI[1]);
-            }
+            get => new Vector2(Projectile.localAI[0], Projectile.localAI[1]);
         }
 
         public override void OnKill(int timeLeft) {
@@ -55,14 +56,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     PRTLoader.AddParticle(energyLeak);
                 }
             }
-        }
-
-        public override void OnSpawn(IEntitySource source) {
-
-        }
-
-        public override bool ShouldUpdatePosition() {
-            return true;
         }
 
         public override void AI() {
@@ -94,28 +87,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            return null;
-        }
-
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D mainValue = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(
-                mainValue,
-                CWRUtils.WDEpos(Projectile.Center),
-                CWRUtils.GetRec(mainValue, Projectile.frameCounter, 4),
-                Color.White,
-                Projectile.rotation,
-                CWRUtils.GetOrig(mainValue, 4),
-                Projectile.scale * 0.6f,
-                SpriteEffects.None,
-                0
-                );
+            Rectangle rectangle = CWRUtils.GetRec(FeatherAsset.Value, Projectile.frameCounter, 4);
+            Main.EntitySpriteDraw(FeatherAsset.Value, Projectile.Center - Main.screenPosition
+                , rectangle, Color.White, Projectile.rotation, rectangle.Size() / 2
+                , Projectile.scale * 0.6f, SpriteEffects.None, 0);
             return false;
-        }
-
-        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) {
-
         }
     }
 }

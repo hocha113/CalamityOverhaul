@@ -45,7 +45,6 @@ namespace CalamityOverhaul
 
         public static int DarkMatterBall;
         public static int BlackMatterStick;
-        public static int InfiniteStick;
         public static int EndlessStabilizer;
         public static int DubiousPlating;
         public static int FoodStallChair;
@@ -339,7 +338,6 @@ namespace CalamityOverhaul
             DubiousPlating = ItemType<DubiousPlating>();
             DarkMatterBall = ItemType<DarkMatterBall>();
             EndlessStabilizer = ItemType<EndlessStabilizer>();
-            InfiniteStick = ItemType<InfiniteStick>();
             BlackMatterStick = ItemType<BlackMatterStick>();
             FoodStallChair = ItemType<FoodStallChair>();
             FoodStallChairTile = TileType<Content.Tiles.FoodStallChair>();

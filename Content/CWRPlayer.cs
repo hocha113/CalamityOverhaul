@@ -354,25 +354,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        internal void HandleRecoilAcceleration(BinaryReader reader) {
-            RecoilAccelerationAddBool = reader.ReadBoolean();
-            RecoilAccelerationValue.X = reader.ReadSingle();
-            RecoilAccelerationValue.Y = reader.ReadSingle();
-            if (Main.netMode == NetmodeID.Server) {
-                SyncRecoilAcceleration(true);
-            }
-        }
-
-        public void SyncRecoilAcceleration(bool server) {
-            ModPacket packet = Mod.GetPacket(256);
-            packet.Write((byte)CWRMessageType.RecoilAcceleration);
-            packet.Write(Player.whoAmI);
-            packet.Write(RecoilAccelerationAddBool);
-            packet.Write(RecoilAccelerationValue.X);
-            packet.Write(RecoilAccelerationValue.Y);
-            Player.SendPacket(packet, server);
-        }
-
         public override void ModifyScreenPosition() {
             Main.screenPosition += OffsetScreenPos;
             if (ScreenShakeValue > 0f) {
