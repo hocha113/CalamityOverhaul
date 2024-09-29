@@ -1,8 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Graphics.Renderers.CalamityRenderers;
-using CalamityMod.NPCs;
-using CalamityMod.NPCs.Providence;
-using CalamityOverhaul.Content.Projectiles.Weapons;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -10,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
@@ -20,13 +15,10 @@ namespace CalamityOverhaul.Common.Effects
     public class EffectLoader : ICWRLoader
     {
         internal static EffectLoader Instance;
-        public delegate void On_Draw_Dalegate(object inds, SpriteBatch spriteBatch);
 
         public static ArmorShaderData StreamerDustShader;
         public static ArmorShaderData InShootGlowShader;
 
-        public static Type holyInfernoRendererType;
-        public static MethodBase onDrawToTargetMethod;
         internal static Type MiscShaderDataType;
         internal static FieldInfo Shader_Texture_FieldInfo_1;
         internal static FieldInfo Shader_Texture_FieldInfo_2;
@@ -58,11 +50,6 @@ namespace CalamityOverhaul.Common.Effects
 
         void ICWRLoader.LoadData() {
             Instance = this;
-            holyInfernoRendererType = typeof(HolyInfernoRenderer);
-            onDrawToTargetMethod = holyInfernoRendererType.GetMethod("DrawToTarget", BindingFlags.Instance | BindingFlags.Public);
-            if (onDrawToTargetMethod != null) {
-                CWRHook.Add(onDrawToTargetMethod, OnDrawToTargetHook);
-            }
 
             MiscShaderDataType = typeof(MiscShaderData);
             FieldInfo miscShaderGetFieldInfo(string key) => MiscShaderDataType.GetField(key, BindingFlags.NonPublic | BindingFlags.Instance);
@@ -70,26 +57,35 @@ namespace CalamityOverhaul.Common.Effects
             Shader_Texture_FieldInfo_2 = miscShaderGetFieldInfo("_uImage2");
             Shader_Texture_FieldInfo_3 = miscShaderGetFieldInfo("_uImage3");
 
-            On_FilterManager.EndCapture += new On_FilterManager.hook_EndCapture(FilterManager_EndCapture);
+            On_FilterManager.EndCapture += FilterManager_EndCapture;
             Main.OnResolutionChanged += Main_OnResolutionChanged;
         }
 
         void ICWRLoader.UnLoadData() {
-            holyInfernoRendererType = null;
-            onDrawToTargetMethod = null;
             MiscShaderDataType = null;
             StreamerDustShader = null;
             InShootGlowShader = null;
             Shader_Texture_FieldInfo_1 = null;
             Shader_Texture_FieldInfo_2 = null;
             Shader_Texture_FieldInfo_3 = null;
-            On_FilterManager.EndCapture -= new On_FilterManager.hook_EndCapture(FilterManager_EndCapture);
+
+            DisposeScreen();
+
+            On_FilterManager.EndCapture -= FilterManager_EndCapture;
             Main.OnResolutionChanged -= Main_OnResolutionChanged;
+
+            Instance = null;
         }
 
         private void Main_OnResolutionChanged(Vector2 obj) {
-            screen?.Dispose();
+            DisposeScreen();
             screen = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+        }
+
+        // 确保旧的RenderTarget2D对象被正确释放
+        private void DisposeScreen() {
+            screen?.Dispose();
+            screen = null;
         }
 
         private void FilterManager_EndCapture(On_FilterManager.orig_EndCapture orig, Terraria.Graphics.Effects.FilterManager self
@@ -247,55 +243,6 @@ namespace CalamityOverhaul.Common.Effects
                 }
             }
             return warpSets.Count > 0 || warpSetsNoBlueshift.Count > 0;
-        }
-
-        public static Providence Provi => Main.npc[CalamityGlobalNPC.holyBoss].ModNPC as Providence;
-
-        public void OnDrawToTargetHook(On_Draw_Dalegate orig, object inds, SpriteBatch spriteBatch) {
-            var npc = Main.npc[CalamityGlobalNPC.holyBoss];
-            var borderDistance = Providence.borderRadius;
-            if (!npc.HasValidTarget) {
-                return;
-            }
-
-            var holyInfernoIntensity = Main.LocalPlayer.Calamity().holyInfernoFadeIntensity;
-
-            if (Provi == null) {
-                return;
-            }
-
-            var blackTile = TextureAssets.MagicPixel;
-            var diagonalNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/HarshNoise");
-            var upwardPerlinNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/Perlin");
-            var upwardNoise = ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/MeltyNoise");
-
-            var maxOpacity = 1f;
-            if (Provi.Dying) {
-                maxOpacity = MathHelper.Lerp(1f, 0f, Utils.GetLerpValue(0f, 344f, Provi.DeathAnimationTimer));
-            }
-
-            var shader = GameShaders.Misc["CalamityMod:HolyInfernoShader"].Shader;
-            shader.Parameters["colorMult"].SetValue(Main.dayTime ? 7.35f : 7.65f);
-            shader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
-            shader.Parameters["radius"].SetValue(borderDistance);
-            shader.Parameters["anchorPoint"].SetValue(npc.Center);
-            shader.Parameters["screenPosition"].SetValue(Main.screenPosition);
-            shader.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2());
-            shader.Parameters["burnIntensity"].SetValue(holyInfernoIntensity);
-            shader.Parameters["playerPosition"].SetValue(Main.LocalPlayer.Center);
-            shader.Parameters["maxOpacity"].SetValue(maxOpacity);
-            shader.Parameters["day"].SetValue(Main.dayTime);
-
-            spriteBatch.GraphicsDevice.Textures[1] = diagonalNoise.Value;
-            spriteBatch.GraphicsDevice.Textures[2] = upwardNoise.Value;
-            spriteBatch.GraphicsDevice.Textures[3] = upwardPerlinNoise.Value;
-
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None
-                , Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
-            Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
-            spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() * 0.5f, 0, 0f);
-            spriteBatch.ExitShaderRegion();
         }
     }
 }

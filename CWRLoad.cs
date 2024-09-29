@@ -21,7 +21,6 @@ using CalamityMod.NPCs.Ravager;
 using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.Yharon;
-using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;
@@ -32,7 +31,6 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -41,8 +39,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul
 {
-    public static class CWRLoad
-    {
+    internal static class CWRLoad {
         #region Data
         public static bool OnLoadContentBool;
 
@@ -77,23 +74,23 @@ namespace CalamityOverhaul
         /// <summary>
         /// 关于哪些物品应该被设置为64的最大堆叠数
         /// </summary>
-        public static int[] AddMaxStackItemsIn64 = [];
+        public static int[] AddMaxStackItemsIn64 { get; private set; } = [];
         /// <summary>
         /// 无尽锭
         /// </summary>
-        public static int[] MaterialsTypes;
+        public static int[] MaterialsTypes { get; private set; }
         /// <summary>
         /// 湮宇星矢
         /// </summary>
-        public static int[] MaterialsTypes2;
+        public static int[] MaterialsTypes2 { get; private set; }
         /// <summary>
         /// 天堂陨落
         /// </summary>
-        public static int[] MaterialsTypes3;
+        public static int[] MaterialsTypes3 { get; private set; }
         /// <summary>
         /// 无尽镐
         /// </summary>
-        public static int[] MaterialsTypes4;
+        public static int[] MaterialsTypes4 { get; private set; }
         /// <summary>
         /// 鬼妖，CWR
         /// </summary>
@@ -106,50 +103,6 @@ namespace CalamityOverhaul
         /// 升龙半月
         /// </summary>
         public static int MurasamaBreakSwing;
-
-        /// <summary>
-        /// 物块对应掉落物的词典
-        /// </summary>
-        public static Dictionary<int, int> TileToItem = [];
-        /// <summary>
-        /// 墙体对应掉落物的词典
-        /// </summary>
-        public static Dictionary<int, int> WallToItem = [];
-        /// <summary>
-        /// 物品对应射弹的词典
-        /// </summary>
-        public static Dictionary<int, int> ItemToShootID = [];
-        public static Dictionary<int, List<int>> ShootToItemID = [];
-        public static Dictionary<int, int> ItemToHeldProjID = [];
-        public static Dictionary<int, Projectile> ItemToHeldProj = [];
-        internal static Dictionary<int, BaseGun> ItemToBaseGun = [];
-        internal static Dictionary<int, BaseBow> ItemToBaseBow = [];
-        internal static Dictionary<int, BaseHeldRanged> ItemToBaseRanged = [];
-        internal static Dictionary<int, int> ProjectileToSafeAmmoMap = [];
-        /// <summary>
-        /// 对应ID的武器是否应该判定为一个手持类远程武器
-        /// </summary>
-        internal static Dictionary<int, bool> WeaponIsHeldRanged = [];
-        /// <summary>
-        /// 对应ID的武器是否应该判定为一个弓
-        /// </summary>
-        internal static Dictionary<int, bool> WeaponIsBow = [];
-        /// <summary>
-        /// 对应ID的武器是否应该判定为一个枪
-        /// </summary>
-        internal static Dictionary<int, bool> WeaponIsGun = [];
-        /// <summary>
-        /// 对应ID的武器是否应该判定为一个装填类枪
-        /// </summary>
-        internal static Dictionary<int, bool> WeaponIsFeederGun = [];
-        /// <summary>
-        /// 对应ID的武器是否应该判定为一个霰弹枪
-        /// </summary>
-        internal static Dictionary<int, bool> WeaponIsShotgunSkt = [];
-        /// <summary>
-        /// 对应ID的武器是否应该判定为一个弩
-        /// </summary>
-        internal static Dictionary<int, bool> WeaponIsCrossbow = [];
         /// <summary>
         /// 扫地机器人
         /// </summary>
@@ -309,10 +262,55 @@ namespace CalamityOverhaul
         public static int RavagerHead;
         public static int RavagerLegLeft;
         public static int RavagerLegRight;
+
         /// <summary>
         /// 蠕虫类体节
         /// </summary>
-        public static int[] WormBodys;
+        public static int[] WormBodys { get; private set; }
+
+        /// <summary>
+        /// 物块对应掉落物的词典
+        /// </summary>
+        public static Dictionary<int, int> TileToItem { get; private set; } = [];
+        /// <summary>
+        /// 墙体对应掉落物的词典
+        /// </summary>
+        public static Dictionary<int, int> WallToItem { get; private set; } = [];
+        /// <summary>
+        /// 物品对应射弹的词典
+        /// </summary>
+        public static Dictionary<int, int> ItemToShootID { get; private set; } = [];
+        public static Dictionary<int, List<int>> ShootToItemID { get; private set; } = [];
+        public static Dictionary<int, int> ItemToHeldProjID { get; private set; } = [];
+        public static Dictionary<int, Projectile> ItemToHeldProj { get; private set; } = [];
+        internal static Dictionary<int, BaseGun> ItemToBaseGun { get; private set; } = [];
+        internal static Dictionary<int, BaseBow> ItemToBaseBow { get; private set; } = [];
+        internal static Dictionary<int, BaseHeldRanged> ItemToBaseRanged { get; private set; } = [];
+        internal static Dictionary<int, int> ProjectileToSafeAmmoMap { get; private set; } = [];
+        /// <summary>
+        /// 对应ID的武器是否应该判定为一个手持类远程武器
+        /// </summary>
+        internal static Dictionary<int, bool> WeaponIsHeldRanged { get; private set; } = [];
+        /// <summary>
+        /// 对应ID的武器是否应该判定为一个弓
+        /// </summary>
+        internal static Dictionary<int, bool> WeaponIsBow { get; private set; } = [];
+        /// <summary>
+        /// 对应ID的武器是否应该判定为一个枪
+        /// </summary>
+        internal static Dictionary<int, bool> WeaponIsGun { get; private set; } = [];
+        /// <summary>
+        /// 对应ID的武器是否应该判定为一个装填类枪
+        /// </summary>
+        internal static Dictionary<int, bool> WeaponIsFeederGun { get; private set; } = [];
+        /// <summary>
+        /// 对应ID的武器是否应该判定为一个霰弹枪
+        /// </summary>
+        internal static Dictionary<int, bool> WeaponIsShotgunSkt { get; private set; } = [];
+        /// <summary>
+        /// 对应ID的武器是否应该判定为一个弩
+        /// </summary>
+        internal static Dictionary<int, bool> WeaponIsCrossbow { get; private set; } = [];
         #endregion
 
         public static class NPCValue
