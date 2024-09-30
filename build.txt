@@ -4,4 +4,4 @@ sortAfter = CalamityMod, InnoVault
 weakReferences = WeaponOut@1.4.4.9
 homepage = https://steamcommunity.com/sharedfiles/filedetails/?id=3161388997
 author = HoCha113
-version = 0.4059
+version = 0.4061

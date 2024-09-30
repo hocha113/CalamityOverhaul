@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Common.Effects
             Shader_Texture_FieldInfo_2 = null;
             Shader_Texture_FieldInfo_3 = null;
 
-            DisposeScreen();
+            screen = null;
 
             On_FilterManager.EndCapture -= FilterManager_EndCapture;
             Main.OnResolutionChanged -= Main_OnResolutionChanged;
