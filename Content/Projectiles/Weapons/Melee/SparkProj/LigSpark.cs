@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), target.Center, Main.rand.NextVector2Unit() * Main.rand.Next(3, 5)
-                    , ModContent.ProjectileType<SparkLightning>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
+                    , ModContent.ProjectileType<SparkLightning>(), Projectile.damage / 3, Projectile.knockBack, Projectile.owner);
             proj.timeLeft = 10;
             proj.penetrate = 3;
             proj.tileCollide = false;
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
                 Main.dust[dust].scale = Main.rand.NextFloat(0.2f, 0.5f);
             }
             Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.Next(3, 5)
-                    , ModContent.ProjectileType<SparkLightning>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
+                    , ModContent.ProjectileType<SparkLightning>(), Projectile.damage / 3, Projectile.knockBack, Projectile.owner);
             proj.timeLeft = 10;
             proj.penetrate = 3;
             proj.tileCollide = false;

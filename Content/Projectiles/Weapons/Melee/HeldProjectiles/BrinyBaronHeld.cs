@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 for (int i = 0; i < 3; i++) {
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center
                     , safeInSwingUnit.RotatedBy((-1 + i) * 0.1f) * 12
-                , type, Projectile.damage, 2, Owner.whoAmI);
+                , type, (int)(Projectile.damage * 0.75f), 2, Owner.whoAmI);
                 }
                 int constant = 36;
                 for (int j = 0; j < constant; j++) {

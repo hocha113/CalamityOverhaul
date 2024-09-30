@@ -956,14 +956,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                         if (CanCreateRecoilBool) {
                             CreateRecoil();
                         }
-
                         if (EnableRecoilRetroEffect) {
                             OffsetPos -= ShootVelocityInProjRot.UnitVector() * RecoilRetroForceMagnitude;
                         }
                         if (FiringDefaultSound) {
                             HanderPlaySound();
                         }
-
                         if (FireLight > 0) {
                             Color fireColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold);
                             Vector3 fireColorToVr3 = fireColor.ToVector3() * Main.rand.NextFloat(0.1f, FireLight);

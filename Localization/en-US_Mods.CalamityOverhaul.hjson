@@ -971,7 +971,7 @@ Items: {
 	}
 
 	AntiMaterielRifleEcType: {
-		DisplayName: Barrett sniper rifle
+		DisplayName: Barrett Sniper Rifle
 		Tooltip:
 			'''
 			A Heavy Anti-Materiel Rifle that converts musket balls to high velocity .50 Caliber Rounds, 

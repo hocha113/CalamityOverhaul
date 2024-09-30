@@ -2221,15 +2221,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 同步整个世界状态
-        /// </summary>
-        public static void SyncWorld() {
-            if (Main.dedServ) {
-                NetMessage.SendData(MessageID.WorldData);
-            }
-        }
-
-        /// <summary>
         /// 将指定数量的元素从二进制读取器读取到列表中，使用提供的读取函数
         /// </summary>
         /// <typeparam name="T">列表中的元素类型</typeparam>

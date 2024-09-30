@@ -104,14 +104,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreInOwnerUpdate() {
+            OtherMeleeSize = 0.8f;
             if (Projectile.ai[0] == 1) {
-                OtherMeleeSize = 1.35f;
+                OtherMeleeSize = 1.1f;
             }
-            if (Main.rand.NextBool(3 * updateCount)) {
-                _ = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Vortex);
-            }
-
             return base.PreInOwnerUpdate();
+        }
+
+        public override void MeleeEffect() {
+            Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Vortex);
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

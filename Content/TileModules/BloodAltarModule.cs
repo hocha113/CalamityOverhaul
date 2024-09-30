@@ -24,14 +24,14 @@ namespace CalamityOverhaul.Content.TileModules
         public bool mouseOnTile;
         public static bool OnBoolMoon;
         public static int startPlayerWhoAmI;
-        public static bool OldOnBoolMoon;
+        public static bool Old_OnBoolMoon;
         public long Time = 0;
         public int frameIndex = 1;
         void ICWRLoader.LoadAsset() => BloodAltarEffect = CWRUtils.GetT2DAsset(CWRConstant.Asset + "TileModules/BloodAltarEffect");
         void ICWRLoader.UnLoadData() => BloodAltarEffect = null;
         public override void OnKill() {
             OnBoolMoon = false;
-            OldOnBoolMoon = false;
+            Old_OnBoolMoon = false;
             Main.dayTime = true;
             if (Main.bloodMoon) {
                 Main.bloodMoon = false;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.TileModules
                 PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(player.name + CWRLocText.GetTextValue("BloodAltar_Text3"));
                 player.Hurt(pd, player.statLifeMax2 / 10, 0);
             }
-            OldOnBoolMoon = OnBoolMoon = false;
+            Old_OnBoolMoon = OnBoolMoon = false;
         }
 
         private void FindOrb() {
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.TileModules
             }
         }
 
-        private bool UseInPlayerBloodOrb(Player player) {
+        internal bool UseInPlayerBloodOrb(Player player) {
             int maxUseOrbNum = 50;
             int orbNum = 0;
 
@@ -150,33 +150,24 @@ namespace CalamityOverhaul.Content.TileModules
             Rectangle tileRec = new Rectangle(Position.X * 16, Position.Y * 16, BloodAltar.Width * 18, BloodAltar.Height * 18);
             mouseOnTile = tileRec.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
             if (OnBoolMoon) {
-                if (!Main.bloodMoon && !OldOnBoolMoon && !CWRUtils.isServer) {
+                if (!Main.bloodMoon && !Old_OnBoolMoon && !CWRUtils.isServer) {
                     if (player == null) {
                         SommonLose(player);
                         return;
                     }
-                    if (!UseInPlayerBloodOrb(player)) {
-                        return;
-                    }
 
-                    if (!CWRUtils.isServer) {
-                        SoundEngine.PlaySound(SoundID.Roar, Center);
-                        for (int i = 0; i < 63; i++) {
-                            Vector2 vr = new Vector2(Main.rand.Next(-12, 12), Main.rand.Next(-23, -3));
-                            Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
-                                , Scale: Main.rand.NextFloat(1.2f, 3.1f));
-                        }
-                        CWRUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text1"), Color.DarkRed);
+                    SoundEngine.PlaySound(SoundID.Roar, Center);
+                    for (int i = 0; i < 63; i++) {
+                        Vector2 vr = new Vector2(Main.rand.Next(-12, 12), Main.rand.Next(-23, -3));
+                        Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
+                            , Scale: Main.rand.NextFloat(1.2f, 3.1f));
                     }
-
+                    CWRUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text1"), Color.DarkRed);
                 }
 
                 Main.dayTime = false;
                 Main.bloodMoon = true;
                 Main.moonPhase = 5;
-                if (CWRUtils.isServer) {
-                    NetMessage.SendData(MessageID.WorldData);
-                }
 
                 FindOrb();
 
@@ -185,10 +176,10 @@ namespace CalamityOverhaul.Content.TileModules
                     CWRUtils.ClockFrame(ref frameIndex, 6, 3);
                     Lighting.AddLight(Center, Color.DarkRed.ToVector3() * (Math.Abs(MathF.Sin(Time * 0.005f)) * 23 + 2));
                 }
-                OldOnBoolMoon = OnBoolMoon;
+                Old_OnBoolMoon = OnBoolMoon;
             }
             else {
-                if (OldOnBoolMoon) {
+                if (Old_OnBoolMoon) {
                     SoundEngine.PlaySound(CWRSound.Peuncharge, Center);
                     if (!CWRUtils.isServer) {
                         for (int i = 0; i < 133; i++) {
@@ -201,13 +192,10 @@ namespace CalamityOverhaul.Content.TileModules
                     if (Main.bloodMoon) {
                         Main.bloodMoon = false;
                     }
-                    if (CWRUtils.isServer) {
-                        NetMessage.SendData(MessageID.WorldData);
-                    }
                 }
                 frameIndex = 0;
                 Lighting.AddLight(Center, Color.DarkRed.ToVector3());
-                OldOnBoolMoon = false;
+                Old_OnBoolMoon = false;
             }
             Time++;
         }
