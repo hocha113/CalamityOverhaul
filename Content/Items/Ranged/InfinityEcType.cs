@@ -12,8 +12,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class InfinityEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Infinity";
-        public override void SetDefaults() {
-            Item.damage = 120;
+        public override void SetDefaults() => SetDefaultsFunc(Item);
+        public static void SetDefaultsFunc(Item Item) {
+            Item.damage = 105;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 56;
             Item.height = 24;
@@ -29,14 +30,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.UseSound = SoundID.Item31;
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<ChargedBlast>();
-            Item.shootSpeed = 12f;
+            Item.shootSpeed = 6f;
             Item.useAmmo = AmmoID.Bullet;
             Item.Calamity().canFirePointBlankShots = true;
-            Item.SetHeldProj<InfinityHeldProj>();
-            Item.CWR().HasCartridgeHolder = true;
-            Item.CWR().AmmoCapacity = 900;
+            Item.SetCartridgeGun<InfinityHeldProj>(900);
             Item.CWR().Scope = true;
         }
-        public override bool CanConsumeAmmo(Item ammo, Player player) => true;
     }
 }

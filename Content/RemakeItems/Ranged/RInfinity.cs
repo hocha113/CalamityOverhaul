@@ -12,10 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override int TargetID => ModContent.ItemType<Infinity>();
         public override int ProtogenesisID => ModContent.ItemType<InfinityEcType>();
         public override string TargetToolTipItemName => "InfinityEcType";
-        public override void SetDefaults(Item item) {
-            item.SetCartridgeGun<InfinityHeldProj>(900);
-            item.CWR().Scope = true;
-        }
+        public override void SetDefaults(Item item) => InfinityEcType.SetDefaultsFunc(item);
         public override bool? On_CanConsumeAmmo(Item weapon, Item ammo, Player player) => true;
     }
 }

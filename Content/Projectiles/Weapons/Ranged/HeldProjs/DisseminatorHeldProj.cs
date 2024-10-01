@@ -32,12 +32,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             else if (onFireR) {
                 GunPressure = 0.1f;
                 Recoil = 0.3f;
-                FireTime = 4;
+                FireTime = 5;
             }
         }
 
         public override void FiringShoot() {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 5; i++) {
                 Projectile.NewProjectile(Source, GunShootPos,
                     ShootVelocity.RotateRandom(0.06f) * Main.rand.NextFloat(0.8f, 1.1f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 targetPos = target.Center;
             }
             Vector2 vr = pos.To(targetPos).UnitVector() * ShootSpeedModeFactor;
-            for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < 8; i++) {
                 Vector2 vr2 = vr.RotateRandom(0.06f) * Main.rand.NextFloat(0.8f, 1.1f);
                 int proj = Projectile.NewProjectile(Source2, pos, vr2, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].tileCollide = false;

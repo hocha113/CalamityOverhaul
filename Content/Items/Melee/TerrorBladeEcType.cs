@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() => SetDefaultsFunc(Item);
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 88;
-            Item.damage = 560;
+            Item.damage = 510;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = 18;
             Item.useTime = 20;
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             SwingData.minClampLength = 120;
             SwingData.maxClampLength = 130;
             SwingData.ler1_UpSizeSengs = 0.056f;
-            ShootSpeed = 20;
+            ShootSpeed = 16;
         }
 
         public override void MeleeEffect() {
