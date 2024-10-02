@@ -134,19 +134,19 @@ namespace CalamityOverhaul.Content
                         cwrProj.offsetHitRot = offsetHitRot;
                         cwrProj.oldNPCRot = oldNPCRot;
                         cwrProj.offsetHitPos = offsetHitPos;
-
-                        if (Main.dedServ) {
-                            var netMessage = mod.GetPacket();
-                            netMessage.Write((byte)CWRMessageType.ProjViscosityData);
-                            netMessage.Write(projIndex);
-                            netMessage.Write(npcIndex);
-                            netMessage.Write(offsetHitRot);
-                            netMessage.Write(oldNPCRot);
-                            netMessage.WriteVector2(offsetHitPos);
-                            netMessage.Send(-1, whoAmI);
-                        }
                     }
                 }
+            }
+
+            if (Main.dedServ) {
+                var netMessage = mod.GetPacket();
+                netMessage.Write((byte)CWRMessageType.ProjViscosityData);
+                netMessage.Write(projIndex);
+                netMessage.Write(npcIndex);
+                netMessage.Write(offsetHitRot);
+                netMessage.Write(oldNPCRot);
+                netMessage.WriteVector2(offsetHitPos);
+                netMessage.Send(-1, whoAmI);
             }
         }
 
@@ -349,40 +349,11 @@ namespace CalamityOverhaul.Content
             InProjTypeSetHitNPC(projectile, target, ref modifiers);
         }
 
-        public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Viscosity && projectile.numHits == 0) {
-                hitNPC = target;
-                offsetHitPos = target.Center.To(projectile.Center);
-                offsetHitRot = projectile.rotation;
-                oldNPCRot = target.rotation;
-                NetViscositySend(projectile);
-            }
-
-            RMeowmere.SpanDust(projectile);
-
-            Player player = Main.player[projectile.owner];
-
-            if (player.CWR().RustyMedallion_Value && Source != null) {
-                if (player.ownedProjectileCounts[ModContent.ProjectileType<AcidEtchedTearDrop>()] < 8) {
-                    if (Source.Context == "CWRGunShoot" || Source.Context == "CWRBow") {
-                        Vector2 startingPosition = Main.MouseWorld - Vector2.UnitY.RotatedByRandom(0.4f) * 1250f;
-                        Vector2 directionToMouse = (Main.MouseWorld - startingPosition).SafeNormalize(Vector2.UnitY).RotatedByRandom(0.1f);
-                        int newdamage = projectile.damage;
-                        newdamage /= 6;
-                        int drop = Projectile.NewProjectile(projectile.parent(), startingPosition, directionToMouse * 15f
-                            , ModContent.ProjectileType<AcidEtchedTearDrop>(), newdamage, 0f, player.whoAmI);
-                        if (drop.WithinBounds(Main.maxProjectiles)) {
-                            Main.projectile[drop].penetrate = 2;
-                            Main.projectile[drop].DamageType = DamageClass.Generic;
-                        }
-                    }
-                }
-            }
-
+        private void SuperAttackOnHitNPC(Projectile projectile, NPC target) {
             if (GetHitAttribute.SuperAttack) {
                 if (projectile.type == 961) {
                     if (!target.boss && !CWRLoad.WormBodys.Contains(target.type) && !target.CWR().IceParclose) {
-                        _ = Projectile.NewProjectile(CWRUtils.parent(projectile), target.Center, Vector2.Zero
+                        Projectile.NewProjectile(CWRUtils.parent(projectile), target.Center, Vector2.Zero
                             , ModContent.ProjectileType<IceParclose>(), 0, 0, projectile.owner, target.whoAmI, target.type, target.rotation);
                     }
                 }
@@ -406,134 +377,182 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
+        }
 
-            if (SpanTypes == (byte)SpanTypesEnum.DeadWing) {
-                int types = ModContent.ProjectileType<DeadWave>();
-
-                if (player.Center.To(target.Center).LengthSquared() < 600 * 600
-                    && projectile.type != types
-                    && projectile.numHits == 0) {
-                    Vector2 vr = player.Center.To(Main.MouseWorld)
-                        .RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-15, 15))).UnitVector() * Main.rand.Next(7, 9);
-                    Vector2 pos = player.Center + (vr * 10);
-                    Projectile.NewProjectileDirect(CWRUtils.parent(player), pos, vr, ModContent.ProjectileType<DeadWave>(),
-                        projectile.damage, projectile.knockBack, projectile.owner).rotation = vr.ToRotation();
+        private void RustyMedallionEffect(Player player, Projectile projectile) {
+            if (player.CWR().RustyMedallion_Value && Source != null) {
+                if (player.ownedProjectileCounts[ModContent.ProjectileType<AcidEtchedTearDrop>()] < 8) {
+                    if (Source.Context == "CWRGunShoot" || Source.Context == "CWRBow") {
+                        Vector2 startingPosition = Main.MouseWorld - Vector2.UnitY.RotatedByRandom(0.4f) * 1250f;
+                        Vector2 directionToMouse = (Main.MouseWorld - startingPosition).SafeNormalize(Vector2.UnitY).RotatedByRandom(0.1f);
+                        int newdamage = projectile.damage;
+                        newdamage /= 6;
+                        int drop = Projectile.NewProjectile(projectile.GetSource_FromAI(), startingPosition, directionToMouse * 15f
+                            , ModContent.ProjectileType<AcidEtchedTearDrop>(), newdamage, 0f, player.whoAmI);
+                        if (drop.WithinBounds(Main.maxProjectiles)) {
+                            Main.projectile[drop].penetrate = 2;
+                            Main.projectile[drop].DamageType = DamageClass.Generic;
+                        }
+                    }
                 }
             }
+        }
 
-            if (SpanTypes == (byte)SpanTypesEnum.ClaretCannon) {
-                Projectile projectile1 = Projectile.NewProjectileDirect(CWRUtils.parent(player), target.position, Vector2.Zero,
+        private void SpanTypesOnHitNPC(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
+            switch ((SpanTypesEnum)SpanTypes) {
+                case SpanTypesEnum.DeadWing: {
+                    int types = ModContent.ProjectileType<DeadWave>();
+
+                    if (player.Center.To(target.Center).LengthSquared() < 600 * 600
+                        && projectile.type != types
+                        && projectile.numHits == 0) {
+                        Vector2 vr = player.Center.To(Main.MouseWorld)
+                            .RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-15, 15))).UnitVector() * Main.rand.Next(7, 9);
+                        Vector2 pos = player.Center + (vr * 10);
+                        Projectile.NewProjectileDirect(CWRUtils.parent(player), pos, vr, ModContent.ProjectileType<DeadWave>(),
+                            projectile.damage, projectile.knockBack, projectile.owner).rotation = vr.ToRotation();
+                    }
+
+                    break;
+                }
+
+                case SpanTypesEnum.ClaretCannon: {
+                    Projectile projectile1 = Projectile.NewProjectileDirect(CWRUtils.parent(player), target.position, Vector2.Zero,
                         ModContent.ProjectileType<BloodVerdict>(), projectile.damage, projectile.knockBack, projectile.owner);
-                if (projectile1.ModProjectile is BloodVerdict bloodVerdict) {
-                    bloodVerdict.offsetVr = new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height));
-                    bloodVerdict.Projectile.ai[1] = target.whoAmI;
-                    Vector2[] vrs = new Vector2[3];
+                    if (projectile1.ModProjectile is BloodVerdict bloodVerdict) {
+                        bloodVerdict.offsetVr = new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height));
+                        bloodVerdict.Projectile.ai[1] = target.whoAmI;
+                        Vector2[] vrs = new Vector2[3];
+                        for (int i = 0; i < 3; i++) {
+                            vrs[i] = Main.rand.NextVector2Unit() * Main.rand.Next(16, 19);
+                        }
+
+                        bloodVerdict.effusionDirection = vrs;
+                    }
+                    break;
+                }
+
+                case SpanTypesEnum.Phantom: {
+                    if (projectile.numHits == 0) {
+                        int proj = Projectile.NewProjectile(projectile.GetSource_FromAI(), player.Center + (projectile.velocity.GetNormalVector() * Main.rand.Next(-130, 130))
+                            , projectile.Center.To(target.Center).UnitVector() * 13, ModContent.ProjectileType<PhantasmArrow>()
+                            , (int)(projectile.damage * 0.8f), projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
+                        Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() - MathHelper.PiOver2;
+                    }
+                    break;
+                }
+
+                case SpanTypesEnum.Alluvion: {
+                    if (projectile.numHits == 0) {
+                        Projectile.NewProjectile(projectile.GetSource_FromAI(), player.Center
+                            , projectile.velocity.UnitVector() * 16, ModContent.ProjectileType<DeepSeaSharks>()
+                            , projectile.damage, projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
+                    }
+                    break;
+                }
+                    
+                   
+                case SpanTypesEnum.RocketLauncher: {
+                    if (projectile.numHits == 0 && projectile.ai[2] > 0) {
+                        if (projectile.ai[2] == 3) {
+                            projectile.damage = (int)(projectile.damage * 0.8f);
+                        }
+                        projectile.ai[2] -= 1;
+                        Vector2 velocity0 = target != null ? (target.Center - player.Center).SafeNormalize(Vector2.Zero) * 30f : projectile.velocity;
+                        if (player.PressKey()) {
+                            int proj = Projectile.NewProjectile(projectile.GetSource_FromAI(), player.Center + ((Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero) * 40f)
+                                , velocity0, projectile.type, projectile.damage / 2, projectile.knockBack, player.whoAmI, 0, target.whoAmI, projectile.ai[2]);
+                            Main.projectile[proj].usesLocalNPCImmunity = true;
+                            Main.projectile[proj].localNPCHitCooldown = 5;
+                            Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.RocketLauncher;
+                            Main.projectile[proj].scale *= 0.5f;
+                        }
+                    }
+                    break;
+                }
+                    
+                case SpanTypesEnum.NailGun: {
+                    if (projectile.numHits == 0) {
+                        int newdamage = projectile.damage;
+                        if (hit.Crit == true) {
+                            newdamage /= 2;
+                        }
+                        for (int i = 0; i < 3; i++) {
+                            int proj = Projectile.NewProjectile(Source, projectile.Center + new Vector2(0, -target.height)
+                                , new Vector2(0, -5).RotatedBy(Main.rand.NextFloat(-0.48f, 0.48f)) * Main.rand.NextFloat(0.7f, 1.5f)
+                                , projectile.type, newdamage, projectile.knockBack, player.whoAmI, 0, 0, -1);
+                            Main.projectile[proj].extraUpdates += 1;
+                        }
+                    }
+                    break;
+                }
+                    
+                case SpanTypesEnum.CrystalDimming: {
+                    bool isSuper = Main.rand.NextBool(projectile.type == ModContent.ProjectileType<Crystal>() ? 4 : 10);
                     for (int i = 0; i < 3; i++) {
-                        vrs[i] = Main.rand.NextVector2Unit() * Main.rand.Next(16, 19);
+                        Vector2 velocity = new(Main.rand.NextFloat(-3, 3), -3);
+                        Projectile proj = Projectile.NewProjectileDirect(player.GetShootState().Source
+                        , projectile.Bottom + new Vector2(Main.rand.Next(-16, 16), Main.rand.Next(-64, 0)), velocity
+                        , 961, projectile.damage / 5, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.8f, 1.1f));
+                        proj.rotation = velocity.ToRotation();
+                        proj.hostile = false;
+                        proj.friendly = true;
+                        proj.penetrate = -1;
+                        proj.usesLocalNPCImmunity = true;
+                        proj.localNPCHitCooldown = 20;
+                        proj.light = 0.75f;
+                        if (isSuper) {
+                            proj.CWR().GetHitAttribute.SuperAttack = true;
+                        }
                     }
-
-                    bloodVerdict.effusionDirection = vrs;
+                    break;
                 }
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.Phantom && projectile.numHits == 0) {
-                int proj = Projectile.NewProjectile(projectile.GetSource_FromAI(), player.Center + (projectile.velocity.GetNormalVector() * Main.rand.Next(-130, 130))
-                    , projectile.Center.To(target.Center).UnitVector() * 13, ModContent.ProjectileType<PhantasmArrow>()
-                    , (int)(projectile.damage * 0.8f), projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
-                Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() - MathHelper.PiOver2;
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.Alluvion && projectile.numHits == 0) {
-                _ = Projectile.NewProjectile(projectile.GetSource_FromAI(), player.Center
-                    , projectile.velocity.UnitVector() * 16, ModContent.ProjectileType<DeepSeaSharks>()
-                    , projectile.damage, projectile.knockBack / 2, player.whoAmI, 0, target.whoAmI);
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.RocketLauncher && projectile.numHits == 0 && projectile.ai[2] > 0) {
-                if (projectile.ai[2] == 3) {
-                    projectile.damage = (int)(projectile.damage * 0.8f);
+                    
+                case SpanTypesEnum.NettlevineGreat: {
+                    target.AddBuff(70, 60);
+                    break;
                 }
-                projectile.ai[2] -= 1;
-                Vector2 velocity0 = target != null ? (target.Center - player.Center).SafeNormalize(Vector2.Zero) * 30f : projectile.velocity;
-                if (player.PressKey()) {
-                    int proj = Projectile.NewProjectile(projectile.GetSource_FromAI(), player.Center + ((Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero) * 40f)
-                        , velocity0, projectile.type, projectile.damage / 2, projectile.knockBack, player.whoAmI, 0, target.whoAmI, projectile.ai[2]);
-                    Main.projectile[proj].usesLocalNPCImmunity = true;
-                    Main.projectile[proj].localNPCHitCooldown = 5;
-                    Main.projectile[proj].CWR().SpanTypes = (byte)SpanTypesEnum.RocketLauncher;
-                    Main.projectile[proj].scale *= 0.5f;
+                    
+                case SpanTypesEnum.TheStorm: {
+                    target.AddBuff(BuffID.Electrified, 120);
+                    break;
                 }
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.NailGun && projectile.numHits == 0) {
-                int newdamage = projectile.damage;
-                if (hit.Crit == true) {
-                    newdamage /= 2;
+                    
+                case SpanTypesEnum.FetidEmesis: {
+                    target.AddBuff(ModContent.BuffType<Plague>(), 60);
+                    break;
                 }
-                for (int i = 0; i < 3; i++) {
-                    int proj = Projectile.NewProjectile(Source, projectile.Center + new Vector2(0, -target.height)
-                        , new Vector2(0, -5).RotatedBy(Main.rand.NextFloat(-0.48f, 0.48f)) * Main.rand.NextFloat(0.7f, 1.5f)
-                        , projectile.type, newdamage, projectile.knockBack, player.whoAmI, 0, 0, -1);
-                    Main.projectile[proj].extraUpdates += 1;
-                }
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.CrystalDimming) {
-                bool isSuper = Main.rand.NextBool(projectile.type == ModContent.ProjectileType<Crystal>() ? 4 : 10);
-                for (int i = 0; i < 3; i++) {
-                    Vector2 velocity = new(Main.rand.NextFloat(-3, 3), -3);
-                    Projectile proj = Projectile.NewProjectileDirect(player.GetShootState().Source
-                    , projectile.Bottom + new Vector2(Main.rand.Next(-16, 16), Main.rand.Next(-64, 0)), velocity
-                    , 961, projectile.damage / 5, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.8f, 1.1f));
-                    proj.rotation = velocity.ToRotation();
-                    proj.hostile = false;
-                    proj.friendly = true;
-                    proj.penetrate = -1;
-                    proj.usesLocalNPCImmunity = true;
-                    proj.localNPCHitCooldown = 20;
-                    proj.light = 0.75f;
-                    if (isSuper) {
-                        proj.CWR().GetHitAttribute.SuperAttack = true;
-                    }
-                }
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
-                target.AddBuff(70, 60);
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
-                target.AddBuff(BuffID.Electrified, 120);
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.FetidEmesis) {
-                target.AddBuff(ModContent.BuffType<Plague>(), 60);
-            }
-
-            if (SpanTypes == (byte)SpanTypesEnum.Voidragon) {
-                _ = Projectile.NewProjectile(projectile.parent(), target.Center
+                    
+                case SpanTypesEnum.Voidragon: {
+                    Projectile.NewProjectile(projectile.parent(), target.Center
                     , CWRUtils.randVr(6, 13), ModContent.ProjectileType<RVoidTentacle>()
                     , projectile.damage, projectile.knockBack / 2, player.whoAmI
                     , Main.rand.Next(-160, 160) * 0.001f, Main.rand.Next(-160, 160) * 0.001f);
-            }
-
-            switch ((SpanTypesEnum)SpanTypes) {
-                case SpanTypesEnum.IronBow:
+                    break;
+                }
+                    
+                case SpanTypesEnum.IronBow: {
                     player.AddBuff(BuffID.Ironskin, 60);
                     break;
-                case SpanTypesEnum.WoodenBow:
+                }
+                    
+                case SpanTypesEnum.WoodenBow: {
                     if (projectile.numHits == 0) {
                         Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -13).RotatedByRandom(0.2f)
                         , ModContent.ProjectileType<SquirrelSquireAcorn>(), 3, projectile.knockBack, projectile.owner);
                         proj.DamageType = DamageClass.Ranged;
                     }
                     break;
-                case SpanTypesEnum.DemonBow:
+                }
+                    
+                case SpanTypesEnum.DemonBow: {
                     Projectile proj2 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, CWRUtils.randVr(0.1f)
                         , 974, projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
                     proj2.DamageType = DamageClass.Ranged;
                     break;
-                case SpanTypesEnum.Marrow:
+                }
+                    
+                case SpanTypesEnum.Marrow: {
                     Projectile proj3 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -13).RotatedByRandom(0.2f)
                         , ProjectileID.Bone, projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
                     proj3.DamageType = DamageClass.Ranged;
@@ -544,16 +563,22 @@ namespace CalamityOverhaul.Content
                         projectile.velocity = projectile.velocity.RotatedByRandom(1f);
                     }
                     break;
-                case SpanTypesEnum.IceBow:
+                }
+                    
+                case SpanTypesEnum.IceBow: {
                     Projectile proj4 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -5).RotatedByRandom(0.2f)
                         , ModContent.ProjectileType<IceExplosionFriend>(), projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
                     proj4.scale += Main.rand.NextFloat(-0.3f, 0);
                     projectile.Kill();
                     break;
-                case SpanTypesEnum.TendonBow:
+                }
+                    
+                case SpanTypesEnum.TendonBow: {
                     player.AddBuff(BuffID.Panic, 60);
                     break;
-                case SpanTypesEnum.PulseBow:
+                }
+                    
+                case SpanTypesEnum.PulseBow: {
                     if (!NotSubjectToSpecialEffects) {
                         for (int i = 0; i < 2; i++) {
                             Projectile proj5 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center - projectile.velocity, projectile.velocity.RotatedByRandom(0.25f)
@@ -565,7 +590,9 @@ namespace CalamityOverhaul.Content
                     }
                     projectile.Kill();
                     break;
-                case SpanTypesEnum.CopperBow:
+                }
+                    
+                case SpanTypesEnum.CopperBow: {
                     if (projectile.numHits == 0) {
                         for (int i = 0; i < 3; i++) {
                             Vector2 spanPos = projectile.Center + CWRUtils.randVr(560, 690);
@@ -577,7 +604,9 @@ namespace CalamityOverhaul.Content
                         }
                     }
                     break;
-                case SpanTypesEnum.SilverBow:
+                }
+                    
+                case SpanTypesEnum.SilverBow: {
                     if (projectile.numHits == 0) {
                         for (int i = 0; i < 4; i++) {
                             Vector2 spanPos = projectile.Center + CWRUtils.randVr(660, 790);
@@ -589,7 +618,9 @@ namespace CalamityOverhaul.Content
                         }
                     }
                     break;
-                case SpanTypesEnum.GoldBow:
+                }
+                    
+                case SpanTypesEnum.GoldBow: {
                     if (projectile.numHits == 0) {
                         for (int i = 0; i < 5; i++) {
                             Vector2 spanPos = projectile.Center + CWRUtils.randVr(760, 790);
@@ -602,7 +633,9 @@ namespace CalamityOverhaul.Content
                         }
                     }
                     break;
-                case SpanTypesEnum.AstralRepeater:
+                }
+                    
+                case SpanTypesEnum.AstralRepeater: {
                     if (projectile.numHits == 0) {
                         for (int i = 0; i < 2; i++) {
                             Vector2 spanPos = projectile.Center + CWRUtils.randVr(860, 990);
@@ -629,8 +662,11 @@ namespace CalamityOverhaul.Content
                         }
                     }
                     break;
+                } 
             }
+        }
 
+        private void WhipHit(Projectile projectile, NPC target) {
             if (projectile.DamageType == DamageClass.Summon && target.CWR().WhipHitNum > 0) {
                 CWRNpc npc = target.CWR();
                 WhipHitTypeEnum wTypes = (WhipHitTypeEnum)npc.WhipHitType;
@@ -657,7 +693,7 @@ namespace CalamityOverhaul.Content
                         break;
                     case WhipHitTypeEnum.BleedingScourge:
                         _ = Projectile.NewProjectile(CWRUtils.parent(projectile), target.Center, Vector2.Zero,
-                                    ModContent.ProjectileType<Content.Projectiles.Weapons.Summon.BloodBlast>(),
+                                    ModContent.ProjectileType<Projectiles.Weapons.Summon.BloodBlast>(),
                                     projectile.damage / 2, 0, projectile.owner);
                         break;
                     case WhipHitTypeEnum.AzureDragonRage:
@@ -674,7 +710,9 @@ namespace CalamityOverhaul.Content
                     npc.WhipHitNum--;
                 }
             }
+        }
 
+        private void SpecialAmmoStateOnHitEffect(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
             if (Source?.Context == "CWRGunShoot" && cwrItem != null) {
                 if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.napalmBomb) {
                     target.AddBuff(BuffID.OnFire3, 60);
@@ -731,6 +769,27 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
+        }
+
+        private void ViscositySD(Projectile projectile, NPC target) {
+            if (Viscosity && projectile.numHits == 0) {
+                hitNPC = target;
+                offsetHitPos = target.Center.To(projectile.Center);
+                offsetHitRot = projectile.rotation;
+                oldNPCRot = target.rotation;
+                NetViscositySend(projectile);
+            }
+        }
+
+        public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
+            Player player = Main.player[projectile.owner];
+            ViscositySD(projectile, target);
+            SuperAttackOnHitNPC(projectile, target);
+            WhipHit(projectile, target);
+            RustyMedallionEffect(player, projectile);
+            SpanTypesOnHitNPC(player, projectile, target, hit);
+            SpecialAmmoStateOnHitEffect(player, projectile, target, hit);
+            RMeowmere.SpanDust(projectile);
         }
 
         public override bool PreDraw(Projectile projectile, ref Color lightColor) {

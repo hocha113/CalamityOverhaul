@@ -47,8 +47,6 @@ namespace CalamityOverhaul
 
         public const string githubUrl = "https://github.com/hocha113/CalamityOverhaul";
 
-        public const int MaxParticleCount = 10000;
-
         public static bool ForceReplaceResetContent => CWRServerConfig.Instance.ForceReplaceResetContent;
         public static bool WeaponEnhancementSystem => CWRServerConfig.Instance.WeaponEnhancementSystem;
     }
