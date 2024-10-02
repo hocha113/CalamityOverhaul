@@ -203,9 +203,12 @@ Items: {
 		DisplayName: Rage du Dragon
 		Tooltip:
 			'''
-			Tourbillonner la lame pour tuer les ennemis environnants
-			Lancer des boules de feu de dragon avec le clic droit
-			"Pourquoi tourner ? C'est trop lourd, frapper avec cette lame vous jettera aussi"
+			Un clic gauche déclenche une combo de trois coups : une frappe vers le haut, une frappe vers le bas, une grande frappe et une estocade.
+			L'estocade possède une portée plus longue et déclenche une explosion de flammes de dragon violente lorsqu'elle touche la cible.
+			Un clic droit effectue deux grandes frappes, suivies d'une rotation continue de la lame, 
+			comprenant une grande frappe vers le haut, une grande frappe vers le bas et une attaque tournoyante.
+			Utiliser le clic gauche réinitialise le niveau d'attaque du clic droit.
+			"Trois coups et retour, le vin est encore chaud."
 			'''
 	}
 
@@ -3570,9 +3573,9 @@ Projectiles: {
 	// Fireball.DisplayName: Fireball
 	// DeadLaser2.DisplayName: Dead Laser2
 	// SoulCharmerBlade.DisplayName: Soul Charmer Blade
-	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
+	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge
 	// Probe.DisplayName: Probe
-	// TerratomereHeld.DisplayName: Terratomere Held
+	// TerratomereHeld.DisplayName: Terratomere
 	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 	// ElectrifyFeather.DisplayName: Electrify Feather
 }

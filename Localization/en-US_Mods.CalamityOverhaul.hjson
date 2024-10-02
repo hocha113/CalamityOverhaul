@@ -196,9 +196,12 @@ Items: {
 		DisplayName: Dragon Rage
 		Tooltip:
 			'''
-			Spins a baton that causes explosions on enemy hits. The 10th hit will cause a ring of draconic fireballs to seek enemies that inflict Dragonfire.
-			Right click to spin the baton closer to you that summons fireballs at a slower pace, but without the need to hit enemies.
-			[c/ff8c1a:"This is my message to my master."]
+			Left-click performs a three-hit combo: an upward slash, a downward slash, a heavy slash, and a thrust.
+			The thrust has a longer attack range and triggers a violent dragon flame explosion upon hitting the target.
+			Right-click performs two powerful slashes, followed by continuous spinning of the blade, 
+			including a heavy upward slash, a heavy downward slash, and a spinning blade attack.
+			Using the left-click resets the right-click attack level.
+			"Three strikes and return, the wine is still warm."
 			'''
 	}
 
@@ -3576,9 +3579,9 @@ Projectiles: {
 	Fireball.DisplayName: Fireball
 	DeadLaser2.DisplayName: Dead Laser2
 	SoulCharmerBlade.DisplayName: Soul Charmer Blade
-	HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
+	HellfireFlambergeHeld.DisplayName: Hellfire Flamberge
 	Probe.DisplayName: Probe
-	TerratomereHeld.DisplayName: Terratomere Held
+	TerratomereHeld.DisplayName: Terratomere
 	RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 	ElectrifyFeather.DisplayName: Electrify Feather
 }

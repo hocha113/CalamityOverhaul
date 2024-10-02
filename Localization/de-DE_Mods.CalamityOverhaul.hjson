@@ -203,9 +203,12 @@ Items: {
 		DisplayName: Drachenwut
 		Tooltip:
 			'''
-			Rotierende Klinge vernichtet Feinde in der Umgebung
-			Rechtsklick feuert Drachenfeuerbälle ab
-			"Warum rotieren? Es ist zu schwer, ein Schlag würde dich auch wegwerfen"
+			Linksklick führt eine Dreier-Kombo aus: ein Aufwärtshieb, ein Abwärtshieb, ein starker Hieb und ein Stich.
+			Der Stich hat eine größere Angriffsreichweite und löst beim Treffen des Ziels eine heftige Drachenflammen-Explosion aus.
+			Rechtsklick führt zwei kräftige Hiebe aus, gefolgt von einer kontinuierlichen Drehung der Klinge, 
+			einschließlich eines starken Aufwärtshiebs, eines starken Abwärtshiebs und eines Drehklingenangriffs.
+			Die Verwendung des Linksklicks setzt das Angriffslevel des Rechtsklicks zurück.
+			"Drei Schläge und zurück, der Wein ist noch warm."
 			'''
 	}
 
@@ -3567,9 +3570,9 @@ Projectiles: {
 	// Fireball.DisplayName: Fireball
 	// DeadLaser2.DisplayName: Dead Laser2
 	// SoulCharmerBlade.DisplayName: Soul Charmer Blade
-	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
+	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge
 	// Probe.DisplayName: Probe
-	// TerratomereHeld.DisplayName: Terratomere Held
+	// TerratomereHeld.DisplayName: Terratomere
 	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 	// ElectrifyFeather.DisplayName: Electrify Feather
 }

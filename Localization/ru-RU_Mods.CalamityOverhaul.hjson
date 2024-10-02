@@ -203,9 +203,12 @@ Items: {
 		DisplayName: Ярость дракона
 		Tooltip:
 			'''
-			Блэйд кружит между вращениями, убивая врагов вокруг себя
-			Огонь дракона справа
-			"Почему? Он слишком тяжелый.
+			Левая кнопка мыши выполняет комбинацию из трёх ударов: верхний удар, нижний удар, мощный удар и укол.
+			Укол имеет больший радиус атаки и вызывает мощный взрыв драконьего пламени при попадании в цель.
+			Правая кнопка мыши выполняет два сильных удара, за которыми следует вращение клинка, 
+			включая мощный верхний удар, мощный нижний удар и вращающийся клинок.
+			Использование левой кнопки мыши сбрасывает уровень атаки правой кнопкой.
+			"Три удара и возврат, вино ещё тёплое."
 			'''
 	}
 
@@ -3601,9 +3604,9 @@ Projectiles: {
 	// Fireball.DisplayName: Fireball
 	// DeadLaser2.DisplayName: Dead Laser2
 	// SoulCharmerBlade.DisplayName: Soul Charmer Blade
-	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
+	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge
 	// Probe.DisplayName: Probe
-	// TerratomereHeld.DisplayName: Terratomere Held
+	// TerratomereHeld.DisplayName: Terratomere
 	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 	// ElectrifyFeather.DisplayName: Electrify Feather
 }

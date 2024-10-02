@@ -23,8 +23,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         }
-
-        public override void SetDefaults() {
+        public override void SetDefaults() => SetDefaultsFunc(Item);
+        public static void SetDefaultsFunc(Item Item) {
             Item.width = 74;
             Item.height = 74;
             Item.value = Item.sellPrice(gold: 75);
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useTime = 32;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.damage = 850;
+            Item.damage = 920;
             Item.crit = 16;
             Item.knockBack = 7.5f;
             Item.noUseGraphic = true;
@@ -43,9 +43,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 10f;
             Item.shoot = ModContent.ProjectileType<DragonRageHeld>();
             Item.rare = ModContent.RarityType<Violet>();
-            LevelAlt = Level = 0;
         }
-
+        
         internal static bool ShootFunc(ref int Level, ref int LevelAlt, Item Item, Player player
             , EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {

@@ -33,6 +33,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             }
             if (CWRLoad.WormBodys.Contains(target.target)) {
                 modifiers.FinalDamage *= 0.5f;
+                if (Projectile.damage > 1) {
+                    Projectile.damage = (int)(Projectile.damage * 0.9f);
+                }
             }
             if (target.type == CWRLoad.Yharon) {
                 modifiers.FinalDamage *= 0.35f;

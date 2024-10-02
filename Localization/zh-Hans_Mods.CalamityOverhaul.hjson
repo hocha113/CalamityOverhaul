@@ -206,7 +206,7 @@ Items: {
 			左键可发动三连挥砍，依次为上劈、下劈、大挥砍和捅刺
 			捅刺拥有较长的攻击距离，击中目标后会引发剧烈的龙焰爆炸
 			右键则进行两次大幅度劈砍，接着持续旋转刀身，依次为大上劈、大下劈和旋刃
-			左键的使用会重置右键的攻击等级，因此，可以尝试左右键配合使用
+			左键的使用会重置右键的攻击等级
 			"三刀而返，酒尚温"
 			'''
 	}
@@ -3584,9 +3584,9 @@ Projectiles: {
 	// Fireball.DisplayName: Fireball
 	// DeadLaser2.DisplayName: Dead Laser2
 	// SoulCharmerBlade.DisplayName: Soul Charmer Blade
-	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge Held
+	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge
 	// Probe.DisplayName: Probe
-	// TerratomereHeld.DisplayName: Terratomere Held
+	// TerratomereHeld.DisplayName: Terratomere
 	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 	// ElectrifyFeather.DisplayName: Electrify Feather
 }

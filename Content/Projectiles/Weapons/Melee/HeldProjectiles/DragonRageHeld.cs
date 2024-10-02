@@ -275,7 +275,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     }
                 }
                 Projectile.timeLeft = 1200;
-                if (Time >= 90 * updateCount && !DownRight || (rotSpeed <= 0.06f && Time2 >= 90 * updateCount)) {
+                if (Time >= 90 * updateCount && !DownRight || (Math.Abs(rotSpeed) <= 0.06f && Time2 >= 90 * updateCount)) {
                     Projectile.Kill();
                 }
                 if (Time % updateCount == updateCount - 1) {
@@ -460,8 +460,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     modifiers.FinalDamage *= 1.25f;
                 }
             }
-            else if (Projectile.ai[0] == 6 && isBrimstoneHeart) {
-                modifiers.FinalDamage *= 1.45f;
+            else if (Projectile.ai[0] == 6) {
+                if (isBrimstoneHeart) {
+                    modifiers.FinalDamage *= 1.45f;
+                    modifiers.DefenseEffectiveness *= 0f;
+                }
             }
         }
 
