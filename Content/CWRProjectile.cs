@@ -24,7 +24,6 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.WorldBuilding;
 using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
 namespace CalamityOverhaul.Content
@@ -102,6 +101,7 @@ namespace CalamityOverhaul.Content
         private float offsetHitRot;
         private float oldNPCRot;
         private float npcRotUpdateSengs;
+        private int halibutAmmoTime;
 
         internal static void NetViscositySend(Projectile proj) {
             if (CWRUtils.isSinglePlayer) {
@@ -195,6 +195,44 @@ namespace CalamityOverhaul.Content
             return base.PreAI(projectile);
         }
 
+        public void SpanTypesPostAI(Projectile projectile) {
+            if (projectile.type == ProjectileID.None) {
+                return;
+            }
+
+            SpanTypesEnum typesEnum = (SpanTypesEnum)SpanTypes;
+
+            switch (typesEnum) {
+                case SpanTypesEnum.NettlevineGreat:
+                    int dust = Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
+                        , DustID.GreenTorch, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
+                    Main.dust[dust].noGravity = true;
+                    break;
+                case SpanTypesEnum.TheStorm:
+                    if (Main.rand.NextBool()) {
+                        int sparkier = Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.UnusedWhiteBluePurple, 0f, 0f, 100, default, 1f);
+                        Main.dust[sparkier].scale += 0.3f + (Main.rand.Next(50) * 0.01f);
+                        Main.dust[sparkier].noGravity = true;
+                        Main.dust[sparkier].velocity *= 0.1f;
+                    }
+                    break;
+                case SpanTypesEnum.FetidEmesis:
+                    int dust2 = Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
+                        , DustID.GemEmerald, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
+                    Main.dust[dust2].noGravity = true;
+                    break;
+                case SpanTypesEnum.BarrenBow:
+                    Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
+                        , DustID.Sand, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
+                    break;
+                case SpanTypesEnum.HalibutCannon:
+                    if (++halibutAmmoTime > 80) {
+                        projectile.Kill();
+                    }
+                    break;
+            }
+        }
+
         public override void PostAI(Projectile projectile) {
             if (projectile.type == ProjectileID.Meowmere) {
                 projectile.velocity.X *= 0.98f;
@@ -216,28 +254,7 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            if (SpanTypes == (byte)SpanTypesEnum.NettlevineGreat) {
-                int dust = Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
-                        , DustID.GreenTorch, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
-                Main.dust[dust].noGravity = true;
-            }
-            if (SpanTypes == (byte)SpanTypesEnum.TheStorm) {
-                if (Main.rand.NextBool()) {
-                    int sparkier = Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.UnusedWhiteBluePurple, 0f, 0f, 100, default, 1f);
-                    Main.dust[sparkier].scale += 0.3f + (Main.rand.Next(50) * 0.01f);
-                    Main.dust[sparkier].noGravity = true;
-                    Main.dust[sparkier].velocity *= 0.1f;
-                }
-            }
-            if (SpanTypes == (byte)SpanTypesEnum.FetidEmesis) {
-                int dust = Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
-                        , DustID.GemEmerald, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
-                Main.dust[dust].noGravity = true;
-            }
-            if (SpanTypes == (byte)SpanTypesEnum.BarrenBow) {
-                _ = Dust.NewDust(projectile.position + projectile.velocity, projectile.width, projectile.height
-                        , DustID.Sand, projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
-            }
+            SpanTypesPostAI(projectile);
         }
 
         public override void OnKill(Projectile projectile, int timeLeft) {

@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistance = 20;
             HandFireDistanceY = -6;
             Recoil = 0.45f;
-            FireTime = 3;
+            FireTime = 4;
             RecoilRetroForceMagnitude = 6;
             RecoilOffsetRecoverValue = 0.6f;
             RangeOfStress = 50;

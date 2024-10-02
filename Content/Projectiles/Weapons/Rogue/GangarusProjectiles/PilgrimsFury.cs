@@ -12,11 +12,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
     {
         public override string Texture => CWRConstant.Placeholder;
         private NPC Target => Main.npc[(int)Projectile.ai[1]];
+        private Vector2 targetEndPos;
+        private float targetEndRot;
+        private Rectangle targetEndFrame;
         private int Time {
             get => (int)Projectile.ai[0];
             set => Projectile.ai[0] = value;
         }
-
         public override void SetDefaults() {
             Projectile.width = 46;
             Projectile.height = 46;
@@ -28,10 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             Projectile.penetrate = -1;
             Projectile.timeLeft = 120;
         }
-
-        private Vector2 targetEndPos;
-        private float targetEndRot;
-        private Rectangle targetEndFrame;
 
         public override void AI() {
             if (!Target.Alives()) {

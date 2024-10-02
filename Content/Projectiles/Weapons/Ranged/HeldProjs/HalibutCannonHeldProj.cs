@@ -28,7 +28,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 int proj14 = Projectile.NewProjectile(Source, GunShootPos
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.03f, 0.03f)) * Main.rand.NextFloat(0.9f, 1.32f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                Main.projectile[proj14].timeLeft = 90;
                 Main.projectile[proj14].CWR().SpanTypes = (byte)SpanTypesEnum.HalibutCannon;
             }
         }
