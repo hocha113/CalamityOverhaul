@@ -164,7 +164,6 @@ namespace CalamityOverhaul
             ILoaders = CWRUtils.GetSubInterface<ICWRLoader>();
             foreach (var setup in ILoaders) {
                 setup.LoadData();
-                setup.DompLoadText();
             }
             GameLoadCount++;
         }
@@ -172,7 +171,6 @@ namespace CalamityOverhaul
         public override void Unload() {
             foreach (var setup in ILoaders) {
                 setup.UnLoadData();
-                setup.DompUnLoadText();
             }
             emptyMod();
             LoadMods = null;

@@ -297,29 +297,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private void InProjTypeSetHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
-            if (projectile.type == ProjectileID.FinalFractal) {
-                if (CWRLoad.WormBodys.Contains(target.type)) {
-                    modifiers.FinalDamage *= 0.75f;
-                }
-                if (target.type == CWRLoad.AresLaserCannon || target.type == CWRLoad.AresPlasmaFlamethrower
-                    || target.type == CWRLoad.AresTeslaCannon || target.type == CWRLoad.AresGaussNuke) {
-                    modifiers.FinalDamage *= 0.7f;
-                }
-                if (target.type == CWRLoad.DevourerofGodsBody || target.type == CWRLoad.DevourerofGodsHead) {
-                    modifiers.FinalDamage *= 0.7f;
-                }
-                if (target.type == CWRLoad.Polterghast) {
-                    modifiers.FinalDamage *= 0.8f;
-                }
-            }
-            else if (projectile.type == ModContent.ProjectileType<CosmicIceBurst>()) {
-                if (target.type == CWRLoad.Yharon) {
-                    modifiers.FinalDamage *= 0.8f;
-                }
-            }
-        }
-
         public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
             if (GetHitAttribute.CertainCrit) {
                 modifiers.SetCrit();
@@ -347,6 +324,29 @@ namespace CalamityOverhaul.Content
             }
 
             InProjTypeSetHitNPC(projectile, target, ref modifiers);
+        }
+
+        private void InProjTypeSetHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
+            if (projectile.type == ProjectileID.FinalFractal) {
+                if (CWRLoad.WormBodys.Contains(target.type)) {
+                    modifiers.FinalDamage *= 0.75f;
+                }
+                if (target.type == CWRLoad.AresLaserCannon || target.type == CWRLoad.AresPlasmaFlamethrower
+                    || target.type == CWRLoad.AresTeslaCannon || target.type == CWRLoad.AresGaussNuke) {
+                    modifiers.FinalDamage *= 0.7f;
+                }
+                if (target.type == CWRLoad.DevourerofGodsBody || target.type == CWRLoad.DevourerofGodsHead) {
+                    modifiers.FinalDamage *= 0.7f;
+                }
+                if (target.type == CWRLoad.Polterghast) {
+                    modifiers.FinalDamage *= 0.8f;
+                }
+            }
+            else if (projectile.type == ModContent.ProjectileType<CosmicIceBurst>()) {
+                if (target.type == CWRLoad.Yharon) {
+                    modifiers.FinalDamage *= 0.8f;
+                }
+            }
         }
 
         private void SuperAttackOnHitNPC(Projectile projectile, NPC target) {
@@ -507,22 +507,7 @@ namespace CalamityOverhaul.Content
                     }
                     break;
                 }
-                    
-                case SpanTypesEnum.NettlevineGreat: {
-                    target.AddBuff(70, 60);
-                    break;
-                }
-                    
-                case SpanTypesEnum.TheStorm: {
-                    target.AddBuff(BuffID.Electrified, 120);
-                    break;
-                }
-                    
-                case SpanTypesEnum.FetidEmesis: {
-                    target.AddBuff(ModContent.BuffType<Plague>(), 60);
-                    break;
-                }
-                    
+
                 case SpanTypesEnum.Voidragon: {
                     Projectile.NewProjectile(projectile.parent(), target.Center
                     , CWRUtils.randVr(6, 13), ModContent.ProjectileType<RVoidTentacle>()
@@ -572,12 +557,7 @@ namespace CalamityOverhaul.Content
                     projectile.Kill();
                     break;
                 }
-                    
-                case SpanTypesEnum.TendonBow: {
-                    player.AddBuff(BuffID.Panic, 60);
-                    break;
-                }
-                    
+
                 case SpanTypesEnum.PulseBow: {
                     if (!NotSubjectToSpecialEffects) {
                         for (int i = 0; i < 2; i++) {
@@ -591,7 +571,7 @@ namespace CalamityOverhaul.Content
                     projectile.Kill();
                     break;
                 }
-                    
+
                 case SpanTypesEnum.CopperBow: {
                     if (projectile.numHits == 0) {
                         for (int i = 0; i < 3; i++) {
@@ -605,7 +585,7 @@ namespace CalamityOverhaul.Content
                     }
                     break;
                 }
-                    
+
                 case SpanTypesEnum.SilverBow: {
                     if (projectile.numHits == 0) {
                         for (int i = 0; i < 4; i++) {
@@ -619,7 +599,7 @@ namespace CalamityOverhaul.Content
                     }
                     break;
                 }
-                    
+
                 case SpanTypesEnum.GoldBow: {
                     if (projectile.numHits == 0) {
                         for (int i = 0; i < 5; i++) {
@@ -634,7 +614,7 @@ namespace CalamityOverhaul.Content
                     }
                     break;
                 }
-                    
+
                 case SpanTypesEnum.AstralRepeater: {
                     if (projectile.numHits == 0) {
                         for (int i = 0; i < 2; i++) {
@@ -662,7 +642,27 @@ namespace CalamityOverhaul.Content
                         }
                     }
                     break;
-                } 
+                }
+
+                case SpanTypesEnum.TendonBow: {
+                    player.AddBuff(BuffID.Panic, 60);
+                    break;
+                }
+
+                case SpanTypesEnum.NettlevineGreat: {
+                    target.AddBuff(70, 60);
+                    break;
+                }
+
+                case SpanTypesEnum.TheStorm: {
+                    target.AddBuff(BuffID.Electrified, 120);
+                    break;
+                }
+
+                case SpanTypesEnum.FetidEmesis: {
+                    target.AddBuff(ModContent.BuffType<Plague>(), 60);
+                    break;
+                }
             }
         }
 

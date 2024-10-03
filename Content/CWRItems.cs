@@ -303,8 +303,9 @@ namespace CalamityOverhaul.Content
 
         public override void HoldItem(Item item, Player player) {
             if (heldProjType > 0) {
-                if (player.ownedProjectileCounts[heldProjType] == 0 && Main.myPlayer == player.whoAmI) {
-                    Projectile.NewProjectileDirect(player.parent(), player.Center, Vector2.Zero, heldProjType, item.damage, item.knockBack, player.whoAmI);
+                if (player.GetProjectileHasNum(heldProjType) <= 0 && Main.myPlayer == player.whoAmI) {//player.ownedProjectileCounts[heldProjType] == 0
+                    Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero
+                        , heldProjType, item.damage, item.knockBack, player.whoAmI);
                 }
                 if (CWRLoad.ItemToBaseRanged.TryGetValue(item.type, out BaseHeldRanged ranged)) {
                     bool lDown = player.PressKey();

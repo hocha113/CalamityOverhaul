@@ -21,14 +21,5 @@
         /// 该方法在CWRUnLoad最后调用
         /// </summary>
         public void UnLoadData() { }
-
-        internal void DompLoadText() {
-            string text = CWRUtils.Translation("已经完成加载操作", "Loading operation completed");
-            //CWRMod.Instance.Logger.Info(GetType().Name + " " + text);
-        }
-        internal void DompUnLoadText() {
-            string text = CWRUtils.Translation("已经完成卸载操作", "Unloading operation completed");
-            //CWRMod.Instance.Logger.Info(GetType().Name + " " + text);
-        }
     }
 }
