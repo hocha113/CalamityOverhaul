@@ -52,15 +52,12 @@ namespace CalamityOverhaul
         public static int Gangarus;
         public static int StarMyriadChanges;
 
-        #region 法狗魔石
+        #region OtherMods
         public static int EternitySoul;
         public static int DevisCurse;
         public static int DeviatingEnergy;
         public static int AbomEnergy;
         public static int EternalEnergy;
-        #endregion
-
-        #region 灾劫
         public static int MetanovaBar;
         #endregion
 
