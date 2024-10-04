@@ -176,7 +176,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             names = [
             "[icon]",
             "雾梯" + textElement1,
-            "子离似槜" + textElement1,
             "Cyrilly" + textElement2,
             "瓶中微光" + textElement2,
             "Monomon" + textElement2,
@@ -199,6 +198,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             "吐司" + textElement3,
             "冰冷小龙" + textElement3,
             "心酱" + textElement3,
+            "圣盗杰布微明" + textElement3,
+            "柳冠希" + textElement3,
             "天空之城" + textElement3,
             "Svetlana" + textElement3,
             "Murainm" + textElement3,
