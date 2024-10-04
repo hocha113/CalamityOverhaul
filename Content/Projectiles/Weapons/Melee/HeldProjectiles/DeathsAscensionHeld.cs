@@ -83,15 +83,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
             return base.PreInOwnerUpdate();
         }
-
-        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Owner.ActiveItem().type == ModContent.ItemType<GuardianTerra>() && Projectile.numHits == 0) {
-                int proj = Projectile.NewProjectile(new EntitySource_ItemUse(Owner, Owner.ActiveItem())
-                    , Projectile.Center, Vector2.Zero
-                    , ModContent.ProjectileType<TerratomereSlashCreator>(),
-                Projectile.damage, 0, Projectile.owner, target.whoAmI, Main.rand.NextFloat(MathHelper.TwoPi));
-                Main.projectile[proj].timeLeft = 130;
-            }
-        }
     }
 }
