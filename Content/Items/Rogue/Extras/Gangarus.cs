@@ -67,10 +67,11 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage *= (ChargeGrade + 1);
 
         public override void HoldItem(Player player) {
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<GangarusHeldProjectile>()] == 0
-                && player.ownedProjectileCounts[ModContent.ProjectileType<GangarusProjectile>()] == 0
+            if (player.GetProjectileHasNum(ModContent.ProjectileType<GangarusHeldProjectile>()) == 0
+                && player.GetProjectileHasNum(ModContent.ProjectileType<GangarusProjectile>()) == 0
                 && Main.myPlayer == player.whoAmI) {
-                Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, ModContent.ProjectileType<GangarusHeldProjectile>(), 0, 0, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, Vector2.Zero
+                    , ModContent.ProjectileType<GangarusHeldProjectile>(), 0, 0, player.whoAmI);
             }
         }
 
