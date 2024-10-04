@@ -48,10 +48,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             }
         }
 
-        public override void OnKill(int timeLeft) {
-            base.OnKill(timeLeft);
-        }
-
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
             Vector2 orig = value.Size() / 2;

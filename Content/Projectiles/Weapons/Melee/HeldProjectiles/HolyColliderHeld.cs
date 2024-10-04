@@ -49,7 +49,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Vector2 targetPos2 = Projectile.Center + toMouse2.UnitVector() * lengs2;
                 Vector2 unitToM2 = toMouse2.UnitVector();
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), targetPos2, unitToM2
-                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1, Projectile.Center.X, Projectile.Center.Y);
+                , ModContent.ProjectileType<HolyColliderExFire>(), Projectile.damage, Projectile.knockBack
+                , Owner.whoAmI, 1, Projectile.Center.X, Projectile.Center.Y);
                 return;
             }
 

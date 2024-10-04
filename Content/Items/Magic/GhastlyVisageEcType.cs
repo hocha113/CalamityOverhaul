@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.Items.Magic
     internal class GhastlyVisageEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "GhastlyVisage";
-
-        public override void SetDefaults() {
-            Item.damage = 69;
+        public override void SetDefaults() => SetDefaultsFunc(Item);
+        public static void SetDefaultsFunc(Item Item) {
+            Item.damage = 102;
             Item.DamageType = DamageClass.Magic;
             Item.noUseGraphic = true;
             Item.channel = true;
@@ -35,13 +35,8 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
             Item.SetHeldProj<GhastlyVisageHeldProj>();
-
         }
-
-        public override void OnConsumeMana(Player player, int manaConsumed) {
-            player.statMana += manaConsumed;
-        }
-
+        public override void OnConsumeMana(Player player, int manaConsumed) => player.statMana += manaConsumed;
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI) {
             Item.DrawItemGlowmaskSingleFrame(spriteBatch, rotation, ModContent.Request<Texture2D>("CalamityMod/Items/Weapons/Magic/GhastlyVisageGlow").Value);
         }

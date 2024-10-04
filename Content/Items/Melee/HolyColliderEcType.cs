@@ -14,12 +14,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class HolyColliderEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HolyCollider";
-
         private int Level;
-        public override void SetDefaults() {
-            SetDefaultsFunc(Item);
-        }
-
+        public override void SetDefaults() => SetDefaultsFunc(Item);
         internal static void SetDefaultsFunc(Item Item) {
             Item.width = 94;
             Item.height = 80;

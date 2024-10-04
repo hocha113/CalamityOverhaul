@@ -44,11 +44,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override void FiringShoot() {
             int type = ModContent.ProjectileType<GhastlyVisageBall>();
             SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
-            for (int i = 0; i < Main.rand.Next(3, 4); i++) {
-                Projectile.NewProjectile(Source2, Projectile.Center,
-                ShootVelocity.RotatedByRandom(0.4f).UnitVector() * 3,
-                type, WeaponDamage, WeaponKnockback, Owner.whoAmI);
-            }
+            Projectile.NewProjectile(Source2, Projectile.Center
+                , ShootVelocity, type, WeaponDamage, WeaponKnockback, Owner.whoAmI);
         }
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {

@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
         public override string Texture => CWRConstant.Cay_Proj_Melee + "DemonBlast";
         public Vector2 MoveVector2;
         public Vector2 FromeOwnerMoveSet;
-        public Vector2 pos = new Vector2(0, -5);
+        public Vector2 pos = new Vector2(0, -1);
         public ref float Rand => ref Projectile.localAI[0];
         private int Time;
         private int Time2;
@@ -62,6 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
 
         public override void AI() {
             if (Time == 0) {
+                pos = UnitToMouseV * 2;
                 FromeOwnerMoveSet = UnitToMouseV * 124;
             }
 

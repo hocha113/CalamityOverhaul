@@ -21,6 +21,7 @@ using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.GameInput;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -1342,6 +1343,23 @@ namespace CalamityOverhaul
                 SkyManager.Instance.Activate(key);
             }
         }
+
+        /// <summary>
+        /// 让一个NPC可以正常的掉落物品而不触发其他死亡事件，只应该在非服务端上调用该方法
+        /// </summary>
+        /// <param name="npc"></param>
+        public static void DropItem(this NPC npc) {
+            DropAttemptInfo dropAttemptInfo = default;
+            dropAttemptInfo.player = Main.LocalPlayer;
+            dropAttemptInfo.npc = npc;
+            dropAttemptInfo.IsExpertMode = Main.expertMode;
+            dropAttemptInfo.IsMasterMode = Main.masterMode;
+            dropAttemptInfo.IsInSimulation = false;
+            dropAttemptInfo.rng = Main.rand;
+            DropAttemptInfo info = dropAttemptInfo;
+            Main.ItemDropSolver.TryDropping(info);
+        }
+
         /// <summary>
         /// 用于将一个武器设置为手持刀剑类，这个函数若要正确设置物品的近战属性，需要让其在初始化函数中最后调用
         /// </summary>

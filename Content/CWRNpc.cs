@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -251,19 +252,17 @@ namespace CalamityOverhaul.Content
         }
 
         public override void HitEffect(NPC npc, NPC.HitInfo hit) {
-            if (npc.life <= 0) {
-                if (TheEndSunOnHitNum) {
-                    if (!BossRushEvent.BossRushActive) {
-                        for (int i = 0; i < Main.rand.Next(16, 33); i++) {
-                            npc.NPCLoot();
-                        }
+            if (npc.life <= 0 && TheEndSunOnHitNum) {
+                if (!BossRushEvent.BossRushActive) {
+                    for (int i = 0; i < Main.rand.Next(16, 23); i++) {
+                        npc.DropItem();
                     }
-                    else {
-                        if (Main.rand.NextBool(5)) {//如果是在BossRush时期，让Boss有一定概率掉落古恒石，这是额外的掉落
-                            int type = Item.NewItem(npc.parent(), npc.Hitbox, ModContent.ItemType<Rock>());
-                            if (CWRUtils.isClient) {
-                                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                            }
+                }
+                else {
+                    if (Main.rand.NextBool(5)) {//如果是在BossRush时期，让Boss有一定概率掉落古恒石，这是额外的掉落
+                        int type = Item.NewItem(npc.parent(), npc.Hitbox, ModContent.ItemType<Rock>());
+                        if (CWRUtils.isClient) {
+                            NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                         }
                     }
                 }

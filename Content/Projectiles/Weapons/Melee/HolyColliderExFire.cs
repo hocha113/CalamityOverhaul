@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
         private int Time;
+        private float sengs;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 400;
             Projectile.timeLeft = 30;
@@ -25,10 +26,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 2;
             Projectile.DamageType = DamageClass.Melee;
-            Time = 0;
+            sengs = Time = 0;
         }
 
         private void SpwanPRTAndDustEffect_ShootFireShowFromProjEX() {
+            if (CWRUtils.isServer) {
+                return;
+            }
+
             Vector2 origPos = new Vector2(Projectile.ai[1], Projectile.ai[2]);
             Vector2 ToMouse = origPos.To(InMousePos);
             float lengs = ToMouse.Length();
@@ -52,9 +57,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
                 PRTLoader.AddParticle(lavaFire);
             }
+            
+            for (int i = 0; i < 156; i++) {
+                Vector2 pos = Projectile.Center;
+                Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.Next(13, 34);
+                BasePRT energyLeak = new PRT_Light(pos, particleSpeed
+                    , Main.rand.NextFloat(0.5f, 1.3f), Color.DarkRed, 30, 1, 1.5f, hueShift: 0.0f);
+                PRTLoader.AddParticle(energyLeak);
+            }
         }
 
         private void SpwanPRTAndDustEffect_ShootFireShowFromProj() {
+            if (CWRUtils.isServer) {
+                return;
+            }
+
             float lengs = ToMouse.Length();
             if (lengs < 140 * Projectile.scale) {
                 lengs = 140 * Projectile.scale;
@@ -188,26 +205,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
                 else {
                     Projectile.timeLeft = 40;
-                    Vector2 origPos = Projectile.Center;
-                    Projectile.width = Projectile.height = 1400;
-                    Projectile.Center = origPos;
                     SoundEngine.PlaySound(SoundID.Item69 with { Pitch = 1.02f }, Projectile.Center);
                     SpwanPRTAndDustEffect_ShootFireShowFromProjEX();
-                    if (!CWRUtils.isServer) {
-                        for (int i = 0; i < 156; i++) {
-                            Vector2 pos = Projectile.Center;
-                            Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.Next(13, 34);
-                            BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                                , Main.rand.NextFloat(0.5f, 1.3f), Color.DarkRed, 30, 1, 1.5f, hueShift: 0.0f);
-                            PRTLoader.AddParticle(energyLeak);
-                        }
-                    }
                 }
                 
                 SpwanPRKAndDustEffect();
             }
 
-            Projectile.ai[0] += 0.25f;
+            sengs += 0.25f;
+
             if (Projectile.timeLeft > 15) {
                 Projectile.localAI[0] += 0.25f;
                 Projectile.ai[1] += 0.2f;
@@ -224,6 +230,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Time++;
         }
 
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            return CWRUtils.CircularHitboxCollision(Projectile.Center, Projectile.ai[0] == 1 ? 300 : 120, targetHitbox);
+        }
+
         public override bool ShouldUpdatePosition() => false;
 
         public override bool PreDraw(ref Color lightColor) => false;
@@ -233,12 +243,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Color warpColor = new Color(45, 45, 45) * Projectile.ai[1];
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 drawOrig = warpTex.Size() / 2;
-            int num = 13;
+            int num = 10;
             if (Projectile.ai[0] == 1) {
-                num = 66;
+                num = 26;
             }
             for (int i = 0; i < num; i++) {
-                Main.spriteBatch.Draw(warpTex, drawPos, null, warpColor, Projectile.ai[0] + i * 115f
+                Main.spriteBatch.Draw(warpTex, drawPos, null, warpColor, sengs + i * 115f
                     , drawOrig, Projectile.localAI[0] + i * 0.015f, SpriteEffects.None, 0f);
             }
         }
