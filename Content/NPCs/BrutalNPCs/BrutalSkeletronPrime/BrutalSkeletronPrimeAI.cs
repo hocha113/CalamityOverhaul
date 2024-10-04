@@ -64,12 +64,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static Asset<Texture2D> BSPPliers;
         internal static Asset<Texture2D> BSPSAW;
         internal static Asset<Texture2D> BSPRAM;
+        internal static Asset<Texture2D> BSPRAM_Forearm;
         internal static Asset<Texture2D> HandAssetGlow;
         internal static Asset<Texture2D> BSPCannonGlow;
         internal static Asset<Texture2D> BSPlaserGlow;
         internal static Asset<Texture2D> BSPPliersGlow;
         internal static Asset<Texture2D> BSPSAWGlow;
         internal static Asset<Texture2D> BSPRAMGlow;
+        internal static Asset<Texture2D> BSPRAM_ForearmGlow;
         #endregion
 
         internal static void DrawArm(SpriteBatch spriteBatch, NPC rCurrentNPC, Vector2 screenPos) {
@@ -108,6 +110,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 float num21 = head.position.X + head.width / 2 - vector7.X;
                 float num22 = head.position.Y + head.height / 2 - vector7.Y;
                 float num23;
+
                 if (k == 0) {
                     num21 -= 200f * rCurrentNPC.ai[0];
                     num22 += 130f;
@@ -124,15 +127,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     vector7.X += num21 * num23;
                     vector7.Y += num22 * num23;
                 }
+
                 float rotation7 = (float)Math.Atan2(num22, num21) - 1.57f;
                 Color color7 = Lighting.GetColor((int)vector7.X / 16, (int)(vector7.Y / 16f));
+
+                Texture2D value = BSPRAM.Value;
+                Texture2D glow = BSPRAMGlow.Value;
+                if (k == 0) {
+                    value = BSPRAM_Forearm.Value;
+                    glow = BSPRAM_ForearmGlow.Value;
+                }
 
                 Vector2 drawPos = new Vector2(vector7.X - screenPos.X, vector7.Y - screenPos.Y);
                 Vector2 drawOrig = new Vector2(TextureAssets.BoneArm.Width() * 0.5f, TextureAssets.BoneArm.Height() * 0.5f);
                 Rectangle drawRec = new Rectangle(0, 0, TextureAssets.BoneArm.Width(), TextureAssets.BoneArm.Height());
                 SpriteEffects spriteEffects = k == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
-                spriteBatch.Draw(BSPRAM.Value, drawPos, drawRec, color7, rotation7, drawOrig, 1f, spriteEffects, 0f);
-                spriteBatch.Draw(BSPRAMGlow.Value, drawPos, drawRec, Color.White, rotation7, drawOrig, 1f, spriteEffects, 0f);
+
+                spriteBatch.Draw(value, drawPos, drawRec, color7, rotation7, drawOrig, 1f, spriteEffects, 0f);
+                spriteBatch.Draw(glow, drawPos, drawRec, Color.White, rotation7, drawOrig, 1f, spriteEffects, 0f);
 
                 if (k == 0) {
                     vector7.X += num21 * num23 / 2f;
@@ -156,12 +168,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPPliers = CWRUtils.GetT2DAsset(path + "BSPPliers");
             BSPSAW = CWRUtils.GetT2DAsset(path + "BSPSAW");
             BSPRAM = CWRUtils.GetT2DAsset(path + "BSPRAM");
+            BSPRAM_Forearm = CWRUtils.GetT2DAsset(path + "BSPRAM_Forearm");
             HandAssetGlow = CWRUtils.GetT2DAsset(path + "BrutalSkeletronGlow");
             BSPCannonGlow = CWRUtils.GetT2DAsset(path + "BSPCannonGlow");
             BSPlaserGlow = CWRUtils.GetT2DAsset(path + "BSPlaserGlow");
             BSPPliersGlow = CWRUtils.GetT2DAsset(path + "BSPPliersGlow");
             BSPSAWGlow = CWRUtils.GetT2DAsset(path + "BSPSAWGlow");
             BSPRAMGlow = CWRUtils.GetT2DAsset(path + "BSPRAMGlow");
+            BSPRAM_ForearmGlow = CWRUtils.GetT2DAsset(path + "BSPRAM_ForearmGlow");
             canLoaderAssetZunkenUp = true;
         }
 
@@ -172,12 +186,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BSPPliers = null;
             BSPSAW = null;
             BSPRAM = null;
+            BSPRAM_Forearm = null;
             HandAssetGlow = null;
             BSPCannonGlow = null;
             BSPlaserGlow = null;
             BSPPliersGlow = null;
             BSPSAWGlow = null;
             BSPRAMGlow = null;
+            BSPRAM_ForearmGlow = null;
             canLoaderAssetZunkenUp = false;
         }
 
@@ -894,19 +910,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (++frameCount > 10) {
                 if (npc.ai[1] == 0) {
                     if (noArm && ai9 > 2) {
-                        if (++frame > 4) {
-                            frame = 5;
+                        if (++frame > 11) {
+                            frame = 8;
                         }
                     }
                     else {
-                        if (++frame > 1) {
+                        if (++frame > 3) {
                             frame = 0;
                         }
                     }
                 }
                 else if (npc.ai[1] == 1) {
-                    if (++frame > 3) {
-                        frame = 2;
+                    if (++frame > 7) {
+                        frame = 4;
                     }
                 }
                 frameCount = 0;
@@ -1213,10 +1229,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             SmokeDrawer?.DrawSet(npc.Center);
 
-            Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
-                , drawColor, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 6)
-                , Color.White, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 12)
+                , drawColor, npc.rotation, CWRUtils.GetOrig(mainValue, 12), npc.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 12)
+                , Color.White, npc.rotation, CWRUtils.GetOrig(mainValue, 12), npc.scale, SpriteEffects.None, 0);
 
             if (player != null && noEye && npc.ai[0] == 3) {
                 Vector2 toD = player.Center.To(npc.Center);

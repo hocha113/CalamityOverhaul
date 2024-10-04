@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
     internal class SpectreRifle : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "SpectreRifle";
+        public override bool IsLoadingEnabled(Mod mod) => false;//TODO: 暂时移除
         public override void SetDefaults() {
             Item.damage = 158;
             Item.DamageType = DamageClass.Ranged;
