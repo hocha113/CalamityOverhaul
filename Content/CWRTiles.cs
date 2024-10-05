@@ -28,10 +28,8 @@ namespace CalamityOverhaul.Content
                         }
                     }
 
-                    if (Main.myPlayer == 255) {
-                        Projectile.NewProjectile(Main.LocalPlayer.parent(), new Vector2(i, j) * 16, Vector2.Zero
+                    Projectile.NewProjectile(Main.LocalPlayer.parent(), new Vector2(i, j) * 16, Vector2.Zero
                             , ModContent.ProjectileType<TitleMusicBoxEasterEggProj>(), 0, 0, 0, 0, i * 16, j * 16);
-                    }
                 }
             }
         }
