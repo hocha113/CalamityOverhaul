@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 {
-    internal class BaseKnife : BaseSwing
+    internal abstract class BaseKnife : BaseSwing
     {
         public override string Texture => CWRConstant.Placeholder3;
         public override Texture2D TextureValue => TargetID == ItemID.None ? CWRUtils.GetT2DValue(Texture) : TextureAssets.Item[TargetID].Value;

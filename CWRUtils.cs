@@ -1263,13 +1263,13 @@ namespace CalamityOverhaul
         }
 
         public static void SafeLoadItem(int id) {
-            if (id > 0 && id < TextureAssets.Item.Length && !Main.dedServ) {
+            if (!Main.dedServ && id > 0 && id < TextureAssets.Item.Length && Main.Assets != null && TextureAssets.Item[id] != null) {
                 Main.instance.LoadItem(id);
             }
         }
 
         public static void SafeLoadProj(int id) {
-            if (id > 0 && id < TextureAssets.Projectile.Length && !Main.dedServ) {
+            if (!Main.dedServ && id > 0 && id < TextureAssets.Projectile.Length && Main.Assets != null && TextureAssets.Projectile[id] != null) {
                 Main.instance.LoadProjectile(id);
             }
         }
