@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -48,7 +47,6 @@ namespace CalamityOverhaul.Content
         public byte WhipHitType = 0;
         public bool SprBoss;
         public bool ObliterateBool;
-        
         /// <summary>
         /// 一个特殊标记，用于朗基努斯识别目标
         /// </summary>
