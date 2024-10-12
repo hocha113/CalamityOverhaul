@@ -130,11 +130,6 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , Projectile.damage, Projectile.knockBack, Owner.whoAmI, (rageEnergy > 0) ? 1 : 0);
         }
 
-        public override bool PreInOwnerUpdate() {
-
-            return base.PreInOwnerUpdate();
-        }
-
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Item.CWR().closeCombat = true;
             target.AddBuff(ModContent.BuffType<SoulBurning>(), 600);

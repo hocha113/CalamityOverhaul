@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<GodKillsFire>(), 240);
+            //target.AddBuff(ModContent.BuffType<GodKillsFire>(), 240); TODO: 这个Buff是占位符，后续用死亡标记来表示，暂时被移除
 
             Main.player[Projectile.owner].MinionAttackTargetNPC = target.whoAmI;
             Projectile.damage = Projectile.damage / 2;

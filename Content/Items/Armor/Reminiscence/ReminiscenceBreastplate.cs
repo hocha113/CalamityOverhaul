@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Armor.Reminiscence
     internal class ReminiscenceBreastplate : ModItem
     {
         public override string Texture => CWRConstant.Item + "Armor/Reminiscence/ReminiscenceBreastplate";
-
+        public override bool IsLoadingEnabled(Mod mod) => false;
         public override void SetDefaults() {
             Item.width = 18;
             Item.height = 18;
