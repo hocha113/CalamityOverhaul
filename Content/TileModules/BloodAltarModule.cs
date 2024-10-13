@@ -216,6 +216,9 @@ namespace CalamityOverhaul.Content.TileModules
         }
 
         internal void NetSend() {
+            if (CWRUtils.isSinglePlayer) {
+                return;
+            }
             ModPacket netMessage = Mod.GetPacket();
             netMessage.Write((byte)CWRMessageType.BloodAltarModule);
             netMessage.Write(startPlayerWhoAmI);
