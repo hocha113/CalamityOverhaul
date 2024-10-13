@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Ranged;
+﻿using CalamityMod.Items.Weapons.Ranged;
+using CalamityOverhaul.Content.Items.Ranged;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -7,7 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
     internal class AntiMaterielRifleHeldProj : TyrannysEndHeldProj
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AntiMaterielRifle";
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.AntiMaterielRifle>();
+        public override int targetCayItem => ModContent.ItemType<AntiMaterielRifle>();
         public override int targetCWRItem => ModContent.ItemType<AntiMaterielRifleEcType>();
         public override void SetRangedProperty() {
             kreloadMaxTime = 120;
@@ -17,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 3.5f;
             HandDistance = 35;
             HandFireDistance = 30;
-            HandFireDistanceY = -8;
+            HandFireDistanceY = -2;
             ShootPosToMouLengValue = 30;
             ShootPosNorlLengValue = -5;
             RangeOfStress = 25;
