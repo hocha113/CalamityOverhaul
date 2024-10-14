@@ -62,6 +62,7 @@
   <ItemGroup>
     <Folder Include="Assets\Players\" />
     <Folder Include="Assets\TileModules\" />
+    <Folder Include="Content\Buffs\Summon\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CalamityMod">

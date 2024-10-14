@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.TreasureBags.MiscGrabBags;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul;
 using CalamityOverhaul.Common;
@@ -298,6 +299,13 @@ namespace CalamityOverhaul.Content
                 if (tag.ContainsKey("_IsKreload")) {
                     IsKreload = tag.GetBool("_IsKreload");
                 }
+            }
+        }
+
+        //当我要删除那么多东西后，使用BaseRitem来修改就没必要了，就这样在这里挂个钩子吧大修宝典放进去吧
+        public override void ModifyItemLoot(Item item, ItemLoot itemLoot) {
+            if (item.type == ModContent.ItemType<StarterBag>()) {
+                itemLoot.Add(ModContent.ItemType<OverhaulTheBibleBook>());
             }
         }
 

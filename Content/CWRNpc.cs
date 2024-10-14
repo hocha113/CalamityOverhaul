@@ -31,12 +31,15 @@ namespace CalamityOverhaul.Content
 {
     public class CWRNpc : GlobalNPC, ICWRLoader
     {
+        #region Data
         public override bool InstancePerEntity => true;
         /// <summary>
         /// 这个NPC实体的对应修改副本
         /// </summary>
         internal NPCOverride NPCOverride = new NPCOverride();
-        #region Data
+        /// <summary>
+        /// 瘟疫命中锚点
+        /// </summary>
         public Player CreateHitPlayer;
         public byte ContagionOnHitNum = 0;
         public byte PhosphorescentGauntletOnHitNum = 0;
@@ -300,21 +303,18 @@ namespace CalamityOverhaul.Content
             else if (npc.type == CWRLoad.ThanatosHead) {
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<MG42>(), denominator: 5, minQuantity: 1, maxQuantity: 1));
             }
-            else if (npc.type == CWRLoad.RavagerBody) {
-                //npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<PetrifiedDisease>(), denominator: 5, minQuantity: 1, maxQuantity: 1));
-            }
-            else if (npc.type == NPCID.GraniteFlyer) {
-                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<VioletConjecture>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
-                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<GraniteRifle>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
-            }
-            else if (npc.type == NPCID.GraniteGolem) {
-                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<GraniteSpear>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
-                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<GraniteDart>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
-            }
-            else if (npc.type == NPCID.GreekSkeleton) {
-                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<MarbleSpear>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
-                npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<MarbleDagger>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
-            }
+            //else if (npc.type == NPCID.GraniteFlyer) {
+            //    npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<VioletConjecture>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
+            //    npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<GraniteRifle>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
+            //}
+            //else if (npc.type == NPCID.GraniteGolem) {
+            //    npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<GraniteSpear>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
+            //    npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<GraniteDart>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
+            //}
+            //else if (npc.type == NPCID.GreekSkeleton) {
+            //    npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<MarbleSpear>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
+            //    npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<MarbleDagger>(), denominator: 55, minQuantity: 1, maxQuantity: 1));
+            //}
 
             TungstenRiot.Instance.ModifyEventNPCLoot(npc, ref npcLoot);
         }
