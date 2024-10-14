@@ -21,7 +21,6 @@
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Remove="0.5.0.1.1.txt" />
-    <AdditionalFiles Remove="Assets\Projectiles\Magic\GhastlyVisageBall.png" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\Effects\ColorGradient.fx" />
