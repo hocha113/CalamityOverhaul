@@ -1,5 +1,5 @@
 displayName = Calamity Overhaul
-modReferences = CalamityMod@2.0.4.3, InnoVault@1.0
+modReferences = CalamityMod@2.0.4.3, InnoVault@1.2
 sortAfter = CalamityMod, InnoVault
 weakReferences = WeaponOut@1.4.4.9
 homepage = https://steamcommunity.com/sharedfiles/filedetails/?id=3161388997
