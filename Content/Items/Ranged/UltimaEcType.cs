@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Ultima";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Ultima>();
+            Item.SetItemCopySD<Ultima>();
             Item.SetHeldProj<UltimaHeldProj>();
         }
     }

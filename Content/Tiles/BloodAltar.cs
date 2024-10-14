@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.TileModules;
+using InnoVault;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -61,7 +62,7 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override bool RightClick(int i, int j) {
-            if (CWRUtils.SafeGetTopLeft(i, j, out var point)) {
+            if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 int id = TileProcessorLoader.GetModuleID(typeof(BloodAltarModule));
                 BloodAltarModule module = TileProcessorLoader.FindModulePreciseSearch<BloodAltarModule>(id, point.X, point.Y);
                 if (module != null && module.UseInPlayerBloodOrb(Main.LocalPlayer)) {
@@ -78,7 +79,7 @@ namespace CalamityOverhaul.Content.Tiles
             int frameXPos = t.TileFrameX;
             int frameYPos = t.TileFrameY;
 
-            if (CWRUtils.SafeGetTopLeft(i, j, out var point)) {
+            if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 int id = TileProcessorLoader.GetModuleID(typeof(BloodAltarModule));
                 BloodAltarModule module = TileProcessorLoader.FindModulePreciseSearch<BloodAltarModule>(id, point.X, point.Y);
                 if (module != null) {

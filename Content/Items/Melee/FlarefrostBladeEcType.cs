@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "FlarefrostBlade";
         public override void SetDefaults() {
-            Item.SetCalamitySD<FlarefrostBlade>();
+            Item.SetItemCopySD<FlarefrostBlade>();
             Item.SetKnifeHeld<FlarefrostBladeHeld>();
         }
     }

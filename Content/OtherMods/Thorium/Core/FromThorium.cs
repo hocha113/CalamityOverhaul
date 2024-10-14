@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.OtherMods.Thorium.Core
         void ICWRLoader.LoadData() {
             if (!Has) return;
             CWRMod.Instance.thoriumMod = ModLoader.GetMod(Name);
-            lThoriumCalls = CWRUtils.GetSubInterface<LThoriumCall>("LThoriumCall");
+            lThoriumCalls = CWRUtils.GetSubInterface<LThoriumCall>();
             foreach (var call in lThoriumCalls) {
                 call.LoadThoData(CWRMod.Instance.thoriumMod);
             }

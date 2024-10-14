@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Norfleet";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Norfleet>();
+            Item.SetItemCopySD<Norfleet>();
             Item.damage = 330;
             Item.SetCartridgeGun<NorfleetHeldProj>(8);
         }

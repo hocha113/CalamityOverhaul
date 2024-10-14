@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
     {
         public override string Texture => CWRConstant.Item_Ranged + "DarkFrostSolstice";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Onyxia>();
+            Item.SetItemCopySD<Onyxia>();
             Item.damage = 102;
             Item.useAmmo = AmmoID.Snowball;
             Item.value = Terraria.Item.buyPrice(0, 35, 5, 5);

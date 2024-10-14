@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TheBallista";
         public override void SetDefaults() {
-            Item.SetCalamitySD<TheBallista>();
+            Item.SetItemCopySD<TheBallista>();
             Item.SetHeldProj<TheBallistaHeldProj>();
         }
     }

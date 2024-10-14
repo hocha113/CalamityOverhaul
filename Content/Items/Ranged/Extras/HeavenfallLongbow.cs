@@ -11,6 +11,7 @@ using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using InnoVault;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
@@ -170,6 +171,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                 npc.checkDead();
                 npc.HitEffect();
                 npc.NPCLoot();
+                if (npc.type == NPCID.TargetDummy) {
+                    VaultUtils.KillPuppet(new Point16((int)(npc.Center.X / 16), (int)(npc.Center.Y / 16)));
+                }
                 npc.netUpdate = true;
                 npc.netUpdate2 = true;
                 npc.active = false;

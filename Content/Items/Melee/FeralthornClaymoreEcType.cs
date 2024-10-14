@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "FeralthornClaymore";
         public override void SetDefaults() {
-            Item.SetCalamitySD<FeralthornClaymore>();
+            Item.SetItemCopySD<FeralthornClaymore>();
             Item.SetKnifeHeld<FeralthornClaymoreHeld>();
         }
     }

@@ -3,6 +3,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileModules;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using InnoVault;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -100,7 +101,7 @@ namespace CalamityOverhaul.Content.Tiles
                 Main.playerInventory = true;
             }
 
-            if (CWRUtils.SafeGetTopLeft(i, j, out var point)) {
+            if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 int type = TileProcessorLoader.GetModuleID(typeof(TramModule));
                 TileProcessor module = TileProcessorLoader.FindModulePreciseSearch(type, point.X, point.Y);
                 if (module != null) {

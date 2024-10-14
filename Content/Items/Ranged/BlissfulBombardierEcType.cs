@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BlissfulBombardier";
         public override void SetDefaults() {
-            Item.SetCalamitySD<BlissfulBombardier>();
+            Item.SetItemCopySD<BlissfulBombardier>();
             Item.SetCartridgeGun<BlissfulBombardierHeldProj>(20);
         }
     }

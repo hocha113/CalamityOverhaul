@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "ApoctosisArray";
         public override void SetDefaults() {
-            Item.SetCalamitySD<ApoctosisArray>();
+            Item.SetItemCopySD<ApoctosisArray>();
             Item.SetHeldProj<ApoctosisArrayHeldProj>();
         }
     }

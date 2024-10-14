@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "StormSaber";
         public override void SetDefaults() {
-            Item.SetCalamitySD<StormSaber>();
+            Item.SetItemCopySD<StormSaber>();
             Item.SetKnifeHeld<StormSaberHeld>();
         }
     }

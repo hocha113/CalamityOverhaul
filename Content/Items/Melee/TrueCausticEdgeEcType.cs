@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TrueCausticEdge";
         public override void SetDefaults() {
-            Item.SetCalamitySD<TrueCausticEdge>();
+            Item.SetItemCopySD<TrueCausticEdge>();
             Item.SetKnifeHeld<TrueCausticEdgeHeld>();
         }
     }

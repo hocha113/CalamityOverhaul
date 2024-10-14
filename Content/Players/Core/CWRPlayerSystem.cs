@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.Players.Core
         public override void Load() {
             IL_Player.Update += Player_Update_Hook;
 
-            CWRUtils.HanderInstance(ref PlayerSets, CWRUtils.GetSubclasses(typeof(PlayerSet)));
+            PlayerSets = CWRUtils.GetSubclass<PlayerSet>();
             playerLoaderType = typeof(PlayerLoader);
 
             MethodBase getPublicStaticMethod(string key) => playerLoaderType.GetMethod(key, BindingFlags.Public | BindingFlags.Static);

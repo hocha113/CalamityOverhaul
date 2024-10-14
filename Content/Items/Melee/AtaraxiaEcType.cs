@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Ataraxia";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Ataraxia>();
+            Item.SetItemCopySD<Ataraxia>();
             Item.damage = 405;
             Item.SetKnifeHeld<AtaraxiaHeld>();
         }

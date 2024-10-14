@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
         public override void SetDefaults() {
-            Item.SetCalamitySD<PrismaticBreaker>();
+            Item.SetItemCopySD<PrismaticBreaker>();
             Item.SetKnifeHeld<PrismaticBreakerHeld>();
         }
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 8;

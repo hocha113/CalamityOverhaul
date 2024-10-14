@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             glowTextures = [];
         }
         void ICWRLoader.SetupData() {
-            Swings = CWRUtils.HanderSubclass<BaseSwing>();
+            Swings = CWRUtils.GetSubclass<BaseSwing>();
             foreach (var swing in Swings) {
                 string pathValue = swing.GetType().Name;
                 int type = CWRMod.Instance.Find<ModProjectile>(pathValue).Type;

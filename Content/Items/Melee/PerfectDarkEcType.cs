@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "PerfectDark";
         public override void SetDefaults() {
-            Item.SetCalamitySD<PerfectDark>();
+            Item.SetItemCopySD<PerfectDark>();
             Item.SetKnifeHeld<PerfectDarkHeld>();
         }
     }

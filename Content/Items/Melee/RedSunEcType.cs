@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "RedSun";
         public override void SetDefaults() {
-            Item.SetCalamitySD<RedSun>();
+            Item.SetItemCopySD<RedSun>();
             Item.useTime = Item.useAnimation = 40;
             Item.SetKnifeHeld<RedSunHeld>();
         }

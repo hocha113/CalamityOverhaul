@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Devastation";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Devastation>();
+            Item.SetItemCopySD<Devastation>();
             Item.SetKnifeHeld<DevastationHeld>();
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(6, 11));
             ItemID.Sets.AnimatesAsSoul[Type] = true;

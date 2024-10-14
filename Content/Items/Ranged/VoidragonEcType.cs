@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Voidragon";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Voidragon>();
+            Item.SetItemCopySD<Voidragon>();
             Item.SetCartridgeGun<VoidragonHeldProj>(800);
         }
     }

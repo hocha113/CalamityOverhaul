@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Earth";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Earth>();
+            Item.SetItemCopySD<Earth>();
             Item.GiveMeleeType();
             Item.SetKnifeHeld<EarthHeld>();
         }

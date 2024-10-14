@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "VoidEdge";
         public override void SetDefaults() {
-            Item.SetCalamitySD<VoidEdge>();
+            Item.SetItemCopySD<VoidEdge>();
             Item.SetKnifeHeld<VoidEdgeHeld>();
         }
     }

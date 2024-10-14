@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Malevolence";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Malevolence>();
+            Item.SetItemCopySD<Malevolence>();
             Item.SetHeldProj<MalevolenceHeldProj>();
         }
     }

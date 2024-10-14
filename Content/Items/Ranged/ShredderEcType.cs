@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Shredder";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Shredder>();
+            Item.SetItemCopySD<Shredder>();
             Item.SetCartridgeGun<ShredderHeldProj>(300);
             Item.CWR().Scope = true;
         }

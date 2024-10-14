@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TheHive";
         public override void SetDefaults() {
-            Item.SetCalamitySD<TheHive>();
+            Item.SetItemCopySD<TheHive>();
             Item.SetCartridgeGun<TheHiveHeldProj>(28);
         }
     }

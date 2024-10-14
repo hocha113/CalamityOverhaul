@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Condemnation";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Condemnation>();
+            Item.SetItemCopySD<Condemnation>();
             Item.SetHeldProj<CondemnationHeldProj>();
         }
     }

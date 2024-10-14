@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheDarkMaster";
         public const int maxDeBuffTime = 600;
         public override void SetDefaults() {
-            Item.SetCalamitySD<TheDarkMaster>();
+            Item.SetItemCopySD<TheDarkMaster>();
             Item.shoot = ModContent.ProjectileType<TheDarkMasterRapier>();
             Item.useTime = 45;
             Item.useAnimation = 45;

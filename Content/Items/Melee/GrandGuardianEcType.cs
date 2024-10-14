@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "GrandGuardian";
         public override void SetDefaults() {
-            Item.SetCalamitySD<GrandGuardian>();
+            Item.SetItemCopySD<GrandGuardian>();
             Item.DamageType = DamageClass.Melee;
             Item.shoot = ModContent.ProjectileType<GrandGuardianRapier>();
             Item.useTime = 30;

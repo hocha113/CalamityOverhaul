@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SparkSpreader";
         public override void SetDefaults() {
-            Item.SetCalamitySD<SparkSpreader>();
+            Item.SetItemCopySD<SparkSpreader>();
             Item.SetCartridgeGun<SparkSpreaderHeldProj>(120);
             Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
         }

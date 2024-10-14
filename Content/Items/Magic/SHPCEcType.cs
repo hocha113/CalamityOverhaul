@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
         public override void SetStaticDefaults() => SetDefaultsFunc(Item);
         public override void SetDefaults() {
-            Item.SetCalamitySD<SHPC>();
+            Item.SetItemCopySD<SHPC>();
             SetDefaultsFunc(Item);
         }
         public static void SetDefaultsFunc(Item Item) {

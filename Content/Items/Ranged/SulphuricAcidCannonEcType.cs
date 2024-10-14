@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SulphuricAcidCannon";
         public override void SetDefaults() {
-            Item.SetCalamitySD<SulphuricAcidCannon>();
+            Item.SetItemCopySD<SulphuricAcidCannon>();
             Item.useAmmo = AmmoID.Bullet;
             Item.SetCartridgeGun<SulphuricAcidCannonHeldProj>(55);
         }

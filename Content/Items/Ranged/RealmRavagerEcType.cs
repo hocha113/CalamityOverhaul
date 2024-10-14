@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "RealmRavager";
         public override void SetDefaults() {
-            Item.SetCalamitySD<RealmRavager>();
+            Item.SetItemCopySD<RealmRavager>();
             Item.SetCartridgeGun<RealmRavagerHeldProj>(180);
         }
     }

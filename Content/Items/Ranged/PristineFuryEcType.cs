@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "PristineFury";
         public override void SetDefaults() {
-            Item.SetCalamitySD<PristineFury>();
+            Item.SetItemCopySD<PristineFury>();
             Item.SetCartridgeGun<PristineFuryHeldProj>(160);
             Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
         }

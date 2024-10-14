@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Lazhar";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Lazhar>();
+            Item.SetItemCopySD<Lazhar>();
             Item.SetHeldProj<LazharHeldProj>();
         }
     }

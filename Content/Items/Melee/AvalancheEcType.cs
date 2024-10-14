@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Avalanche";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Avalanche>();
+            Item.SetItemCopySD<Avalanche>();
             Item.SetKnifeHeld<AvalancheHeld>();
         }
     }

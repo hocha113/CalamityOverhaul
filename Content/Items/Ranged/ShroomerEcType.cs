@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Shroomer";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Shroomer>();
+            Item.SetItemCopySD<Shroomer>();
             Item.damage = 135;
             Item.SetCartridgeGun<ShroomerHeldProj>(12);
             Item.CWR().Scope = true;

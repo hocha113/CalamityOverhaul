@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private int swingIndex = 0;
         public override void SetDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
-            Item.SetCalamitySD<DeathsAscension>();
+            Item.SetItemCopySD<DeathsAscension>();
             Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             Item.SetKnifeHeld<DeathsAscensionHeld>();
         }

@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ClockGatlignum";
         public override void SetDefaults() {
-            Item.SetCalamitySD<ClockGatlignum>();
+            Item.SetItemCopySD<ClockGatlignum>();
             Item.damage = 35;
             Item.SetCartridgeGun<ClockGatlignumHeldProj>(90);
         }

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
     {
         public override string Texture => CWRConstant.Cay_Wap_Rogue + "Apoctolith";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Apoctolith>();
+            Item.SetItemCopySD<Apoctolith>();
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.shoot = ModContent.ProjectileType<ApoctolithHeld>();
         }

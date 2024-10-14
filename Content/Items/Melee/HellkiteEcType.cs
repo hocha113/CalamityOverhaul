@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Hellkite";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Hellkite>();
+            Item.SetItemCopySD<Hellkite>();
             Item.SetKnifeHeld<HellkiteHeld>();
         }
 

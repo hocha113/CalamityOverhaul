@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "StellarCannon";
         public override void SetDefaults() {
-            Item.SetCalamitySD<StellarCannon>();
+            Item.SetItemCopySD<StellarCannon>();
             Item.damage = 115;
             Item.useAmmo = AmmoID.FallenStar;
             Item.SetCartridgeGun<StellarCannonHeldProj>(30);

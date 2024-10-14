@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "CleansingBlaze";
         public override void SetDefaults() {
-            Item.SetCalamitySD<CleansingBlaze>();
+            Item.SetItemCopySD<CleansingBlaze>();
             Item.SetCartridgeGun<CleansingBlazeHeldProj>(160);
             Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
         }

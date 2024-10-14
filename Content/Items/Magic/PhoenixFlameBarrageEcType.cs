@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "PhoenixFlameBarrage";
         public override void SetDefaults() {
-            Item.SetCalamitySD<PhoenixFlameBarrage>();
+            Item.SetItemCopySD<PhoenixFlameBarrage>();
             Item.shoot = ModContent.ProjectileType<PhantomPhoenix>();
             Item.CWR().heldProjType = ModContent.ProjectileType<PhoenixFlameBarrageHeld>();
             Item.CWR().hasHeldNoCanUseBool = true;

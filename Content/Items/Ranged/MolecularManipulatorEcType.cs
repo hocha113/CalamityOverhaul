@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MolecularManipulator";
         public override void SetDefaults() {
-            Item.SetCalamitySD<MolecularManipulator>();
+            Item.SetItemCopySD<MolecularManipulator>();
             Item.SetCartridgeGun<MolecularManipulatorHeldProj>(480);
         }
     }

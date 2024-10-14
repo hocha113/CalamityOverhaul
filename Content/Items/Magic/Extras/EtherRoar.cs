@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
         public override string Texture => CWRConstant.Cay_Wap_Magic + "AethersWhisper";
         public override bool IsLoadingEnabled(Mod mod) => false;
         public override void SetDefaults() {
-            Item.SetCalamitySD<AethersWhisper>();
+            Item.SetItemCopySD<AethersWhisper>();
             Item.useTime = 30;
             Item.SetHeldProj<EtherRoarHeldProj>();
         }

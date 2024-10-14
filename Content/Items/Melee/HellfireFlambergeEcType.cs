@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HellfireFlamberge";
         public override void SetDefaults() {
-            Item.SetCalamitySD<HellfireFlamberge>();
+            Item.SetItemCopySD<HellfireFlamberge>();
             Item.SetKnifeHeld<HellfireFlambergeHeld>();
         }
     }

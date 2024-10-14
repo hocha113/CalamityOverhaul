@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Monsoon";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Monsoon>();
+            Item.SetItemCopySD<Monsoon>();
             Item.SetHeldProj<MonsoonHeldProj>();
         }
     }

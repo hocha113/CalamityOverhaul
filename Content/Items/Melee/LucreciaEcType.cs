@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Lucrecia";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Lucrecia>();
+            Item.SetItemCopySD<Lucrecia>();
             Item.shoot = ModContent.ProjectileType<LucreciaRapier>();
             Item.useTime = 60;
             Item.useAnimation = 60;

@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
     {
         public override string Texture => CWRConstant.Cay_Wap_Rogue + "FrostcrushValari";
         public override void SetDefaults() {
-            Item.SetCalamitySD<FrostcrushValari>();
+            Item.SetItemCopySD<FrostcrushValari>();
             Item.shoot = ModContent.ProjectileType<FrostcrushValariHeld>();
         }
 

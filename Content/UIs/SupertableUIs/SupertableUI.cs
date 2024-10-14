@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Items.Tools;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json.Linq;
 using Stubble.Core.Classes;
 using System;
 using System.Collections.Generic;
@@ -140,8 +141,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 };
                 AllRecipes.Add(recipeData);
             }
-
-            ($"Get the recipe table capacity: {AllRecipes.Count}").DompInConsole();
+            CWRMod.Instance.Logger.Info($"Get the recipe table capacity: {AllRecipes.Count}");
         }
 
         public void UpdateUIElementPos() {

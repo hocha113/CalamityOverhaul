@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Drataliornus";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Drataliornus>();
+            Item.SetItemCopySD<Drataliornus>();
             Item.SetHeldProj<DrataliornusHeldProj>();
         }
     }

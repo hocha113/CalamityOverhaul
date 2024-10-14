@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TheMutilator";
         public override void SetDefaults() {
-            Item.SetCalamitySD<TheMutilator>();
+            Item.SetItemCopySD<TheMutilator>();
             Item.SetKnifeHeld<TheMutilatorHeld>();
         }
 

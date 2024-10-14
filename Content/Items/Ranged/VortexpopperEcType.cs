@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Vortexpopper";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Vortexpopper>();
+            Item.SetItemCopySD<Vortexpopper>();
             Item.SetCartridgeGun<VortexpopperHeldProj>(85);
         }
     }

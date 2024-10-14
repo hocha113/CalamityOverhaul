@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Shellshooter";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Shellshooter>();
+            Item.SetItemCopySD<Shellshooter>();
             Item.SetHeldProj<ShellshooterHeldProj>();
         }
     }

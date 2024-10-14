@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Onyxia";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Onyxia>();
+            Item.SetItemCopySD<Onyxia>();
             Item.SetCartridgeGun<OnyxiaHeldProj>(280);
         }
 

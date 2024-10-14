@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "ExaltedOathblade";
         public override void SetDefaults() {
-            Item.SetCalamitySD<ExaltedOathblade>();
+            Item.SetItemCopySD<ExaltedOathblade>();
             Item.SetKnifeHeld<ExaltedOathbladeHeld>();
         }
     }

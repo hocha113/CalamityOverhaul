@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "EutrophicScimitar";
         public override void SetDefaults() {
-            Item.SetCalamitySD<EutrophicScimitar>();
+            Item.SetItemCopySD<EutrophicScimitar>();
             Item.SetKnifeHeld<EutrophicScimitarHeld>();
         }
 

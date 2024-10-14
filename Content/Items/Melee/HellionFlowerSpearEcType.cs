@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HellionFlowerSpear";
         public override void SetDefaults() {
-            Item.SetCalamitySD<HellionFlowerSpear>();
+            Item.SetItemCopySD<HellionFlowerSpear>();
             Item.SetKnifeHeld<HellionFlowerSpearHeld>();
         }
     }

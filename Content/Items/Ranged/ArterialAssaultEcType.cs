@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ArterialAssault";
         public override void SetDefaults() {
-            Item.SetCalamitySD<ArterialAssault>();
+            Item.SetItemCopySD<ArterialAssault>();
             Item.SetHeldProj<ArterialAssaultHeldProj>();
         }
     }

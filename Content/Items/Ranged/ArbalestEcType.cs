@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Arbalest";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Arbalest>();
+            Item.SetItemCopySD<Arbalest>();
             Item.SetHeldProj<ArbalestHeldProj>();
             Item.CWR().Scope = true;
         }

@@ -2,9 +2,11 @@ global using Microsoft.Xna.Framework;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.ModLoader;
@@ -62,7 +64,7 @@ namespace CalamityOverhaul
 
             {
                 RItemInstances = [];//这里直接进行初始化，便不再需要进行UnLoad卸载
-                List<Type> rItemIndsTypes = CWRUtils.GetSubclasses(typeof(BaseRItem));
+                List<Type> rItemIndsTypes = CWRUtils.GetSubclassTypeList(typeof(BaseRItem));
                 //($"一共获取到{rItemIndsTypes.Count}个待挑选元素Type").DompInConsole();
                 foreach (Type type in rItemIndsTypes) {
                     //($"指向元素{type}进行分析").DompInConsole();
@@ -101,7 +103,7 @@ namespace CalamityOverhaul
 
             {
                 EctypeItemInstance = [];
-                List<Type> ectypeIndsTypes = CWRUtils.GetSubclasses(typeof(BaseRItem));
+                List<Type> ectypeIndsTypes = CWRUtils.GetSubclassTypeList(typeof(BaseRItem));
                 foreach (Type type in ectypeIndsTypes) {
                     if (type != typeof(EctypeItem)) {
                         object obj = Activator.CreateInstance(type);
@@ -114,7 +116,7 @@ namespace CalamityOverhaul
 
             {
                 NPCCustomizerInstances = [];//这里直接进行初始化，便不再需要进行UnLoad卸载
-                List<Type> npcCustomizerIndsTypes = CWRUtils.GetSubclasses(typeof(NPCCustomizer));
+                List<Type> npcCustomizerIndsTypes = CWRUtils.GetSubclassTypeList(typeof(NPCCustomizer));
                 foreach (Type type in npcCustomizerIndsTypes) {
                     if (type != typeof(NPCCustomizer)) {
                         object obj = Activator.CreateInstance(type);
@@ -130,7 +132,7 @@ namespace CalamityOverhaul
                 foreach (BaseRItem ritem in RItemInstances) {
                     RItemIndsDict.Add(ritem.SetReadonlyTargetID, ritem);
                 }
-                ($"{RItemIndsDict.Count} key pair is loaded into the RItemIndsDict").DompInConsole();
+                Instance.Logger.Info($"{RItemIndsDict.Count} key pair is loaded into the RItemIndsDict");
             }
 
             {

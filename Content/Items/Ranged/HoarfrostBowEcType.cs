@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HoarfrostBow";
         public override void SetDefaults() {
-            Item.SetCalamitySD<HoarfrostBow>();
+            Item.SetItemCopySD<HoarfrostBow>();
             Item.SetHeldProj<HoarfrostBowHeldProj>();
         }
     }

@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using Newtonsoft.Json.Linq;
+using Terraria;
 using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -217,7 +218,7 @@ namespace CalamityOverhaul.Common
             errorT = CWRUtils.Translation(errorT_CN, errorT_EN);
             CWRUtils.Text(errorT, Color.Red);
             CWRMod.Instance.Logger.Info(errorT);
-            $"At in InfinitePickProj.AI 69 line 'WorldGen.SquareTileFrame((int)tilePos.X, (int)tilePos.Y);', targetID: {tile.TileType}:{tile}".DompInConsole();
+            CWRMod.Instance.Logger.Info($"At in InfinitePickProj.AI 69 line 'WorldGen.SquareTileFrame((int)tilePos.X, (int)tilePos.Y);', targetID: {tile.TileType}:{tile}");
         }
 
         public static void CheckModTile(int i, int j, int type) {

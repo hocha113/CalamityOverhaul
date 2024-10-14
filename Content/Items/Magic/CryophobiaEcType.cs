@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Cryophobia";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Cryophobia>();
+            Item.SetItemCopySD<Cryophobia>();
             Item.SetHeldProj<CryophobiaHeldProj>();
         }
     }

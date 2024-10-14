@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "SolsticeClaymore";
         public override void SetDefaults() {
-            Item.SetCalamitySD<SolsticeClaymore>();
+            Item.SetItemCopySD<SolsticeClaymore>();
             Item.SetKnifeHeld<SolsticeClaymoreHeld>();
         }
     }

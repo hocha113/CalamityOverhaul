@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BlightSpewer";
         public override void SetDefaults() {
-            Item.SetCalamitySD<BlightSpewer>();
+            Item.SetItemCopySD<BlightSpewer>();
             Item.SetCartridgeGun<BlightSpewerHeldProj>(160);
             Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
         }

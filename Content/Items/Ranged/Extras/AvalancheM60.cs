@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
     {
         public override string Texture => CWRConstant.Item_Ranged + "AvalancheM60";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Onyxia>();
+            Item.SetItemCopySD<Onyxia>();
             Item.damage = 62;
             Item.useAmmo = AmmoID.Snowball;
             Item.UseSound = SoundID.Item36 with { Pitch = 0.2f };

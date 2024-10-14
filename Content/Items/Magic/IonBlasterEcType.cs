@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "IonBlaster";
         public override void SetDefaults() {
-            Item.SetCalamitySD<IonBlaster>();
+            Item.SetItemCopySD<IonBlaster>();
             Item.SetHeldProj<IonBlasterHeldProj>();
         }
     }

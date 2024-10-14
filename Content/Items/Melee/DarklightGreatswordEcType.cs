@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DarklightGreatsword";
         public override void SetDefaults() {
-            Item.SetCalamitySD<DarklightGreatsword>();
+            Item.SetItemCopySD<DarklightGreatsword>();
             Item.SetKnifeHeld<DarklightGreatswordHeld>();
         }
     }

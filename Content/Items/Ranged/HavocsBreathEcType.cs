@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "HavocsBreath";
         public override void SetDefaults() {
-            Item.SetCalamitySD<HavocsBreath>();
+            Item.SetItemCopySD<HavocsBreath>();
             Item.SetCartridgeGun<HavocsBreathHeldProj>(160);
             Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
         }

@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SpectralstormCannon";
         public override void SetDefaults() {
-            Item.SetCalamitySD<SpectralstormCannon>();
+            Item.SetItemCopySD<SpectralstormCannon>();
             Item.SetCartridgeGun<SpectralstormCannonHeldProj>(180);
         }
     }

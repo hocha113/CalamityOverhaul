@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Goobow";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Goobow>();
+            Item.SetItemCopySD<Goobow>();
             Item.SetHeldProj<GoobowHeldProj>();
         }
     }

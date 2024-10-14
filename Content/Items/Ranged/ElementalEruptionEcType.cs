@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "ElementalEruption";
         public override void SetDefaults() {
-            Item.SetCalamitySD<ElementalEruption>();
+            Item.SetItemCopySD<ElementalEruption>();
             Item.SetCartridgeGun<ElementalEruptionHeldProj>(160);
             Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
         }

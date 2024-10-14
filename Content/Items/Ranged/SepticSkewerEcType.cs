@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "SepticSkewer";
         public override void SetDefaults() {
-            Item.SetCalamitySD<SepticSkewer>();
+            Item.SetItemCopySD<SepticSkewer>();
             Item.shoot = ModContent.ProjectileType<SepticSkewerProj>();
             Item.useAmmo = AmmoID.Bullet;
             Item.SetCartridgeGun<SepticSkewerHeldProj>(8);

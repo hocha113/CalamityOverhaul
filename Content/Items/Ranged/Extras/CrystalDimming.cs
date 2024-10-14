@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
     {
         public override string Texture => CWRConstant.Item_Ranged + "CrystalDimming";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Onyxia>();
+            Item.SetItemCopySD<Onyxia>();
             Item.damage = 122;
             Item.useAmmo = AmmoID.Snowball;
             Item.UseSound = SoundID.Item36 with { Pitch = -0.1f };

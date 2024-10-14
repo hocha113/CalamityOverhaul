@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "DarkechoGreatbow";
         public override void SetDefaults() {
-            Item.SetCalamitySD<DarkechoGreatbow>();
+            Item.SetItemCopySD<DarkechoGreatbow>();
             Item.SetHeldProj<DarkechoGreatbowHeldProj>();
         }
     }

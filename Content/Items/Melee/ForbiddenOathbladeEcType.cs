@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "ForbiddenOathblade";
         public override void SetDefaults() {
-            Item.SetCalamitySD<ForbiddenOathblade>();
+            Item.SetItemCopySD<ForbiddenOathblade>();
             Item.SetKnifeHeld<ForbiddenOathbladeHeld>();
         }
 

@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "AcidGun";
         public override void SetDefaults() {
-            Item.SetCalamitySD<AcidGun>();
+            Item.SetItemCopySD<AcidGun>();
             Item.SetHeldProj<AcidGunHeldProj>();
         }
     }

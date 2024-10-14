@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "Effervescence";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Effervescence>();
+            Item.SetItemCopySD<Effervescence>();
             Item.SetHeldProj<EffervescenceHeldProj>();
         }
     }

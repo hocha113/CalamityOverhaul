@@ -99,36 +99,36 @@ namespace CalamityOverhaul
         /// </summary>
         /// <param name="items">要导出的 Item 数组</param>
         /// <param name="path">写入文件的路径，默认为 "D:\\模组资源\\AAModPrivate\\input.cs"</param>
-        public static void ExportItemTypesToFile(Item[] items, string path = "D:\\Mod_Resource\\input.cs") {
-            try {
-                int columnIndex = 0;
-                using StreamWriter sw = new(path);
-                sw.Write("string[] fullItems = new string[] {");
-                foreach (Item item in items) {
-                    columnIndex++;
-                    // 根据是否有 ModItem 决定写入的内容
-                    string itemInfo = item.ModItem == null ? $"\"{item.type}\"" : $"\"{item.ModItem.FullName}\"";
-                    sw.Write(itemInfo);
-                    sw.Write(", ");
-                    // 每行最多写入9个元素，然后换行
-                    if (columnIndex >= 9) {
-                        sw.WriteLine();
-                        columnIndex = 0;
-                    }
-                }
-                sw.Write("};");
-            } catch (UnauthorizedAccessException) {
-                ($"UnauthorizedAccessException: 无法访问文件路径 '{path}'. 权限不足").DompInConsole();
-            } catch (DirectoryNotFoundException) {
-                ($"DirectoryNotFoundException: 文件路径 '{path}' 中的目录不存在").DompInConsole();
-            } catch (PathTooLongException) {
-                ($"PathTooLongException: 文件路径 '{path}' 太长").DompInConsole();
-            } catch (IOException) {
-                ($"IOException: 无法打开文件 '{path}' 进行写入").DompInConsole();
-            } catch (Exception e) {
-                ($"An error occurred: {e.Message}").DompInConsole();
-            }
-        }
+        //public static void ExportItemTypesToFile(Item[] items, string path = "D:\\Mod_Resource\\input.cs") {
+        //    try {
+        //        int columnIndex = 0;
+        //        using StreamWriter sw = new(path);
+        //        sw.Write("string[] fullItems = new string[] {");
+        //        foreach (Item item in items) {
+        //            columnIndex++;
+        //            // 根据是否有 ModItem 决定写入的内容
+        //            string itemInfo = item.ModItem == null ? $"\"{item.type}\"" : $"\"{item.ModItem.FullName}\"";
+        //            sw.Write(itemInfo);
+        //            sw.Write(", ");
+        //            // 每行最多写入9个元素，然后换行
+        //            if (columnIndex >= 9) {
+        //                sw.WriteLine();
+        //                columnIndex = 0;
+        //            }
+        //        }
+        //        sw.Write("};");
+        //    } catch (UnauthorizedAccessException) {
+        //        CWRMod.Instance.Logger.Info($"UnauthorizedAccessException: 无法访问文件路径 '{path}'. 权限不足");
+        //    } catch (DirectoryNotFoundException) {
+        //        CWRMod.Instance.Logger.Info($"DirectoryNotFoundException: 文件路径 '{path}' 中的目录不存在");
+        //    } catch (PathTooLongException) {
+        //        CWRMod.Instance.Logger.Info($"PathTooLongException: 文件路径 '{path}' 太长");
+        //    } catch (IOException) {
+        //        CWRMod.Instance.Logger.Info($"IOException: 无法打开文件 '{path}' 进行写入");
+        //    } catch (Exception e) {
+        //        CWRMod.Instance.Logger.Info($"An error occurred: {e.Message}");
+        //    }
+        //}
 
         public static int GetTileDorp(Tile tile) {
             int stye = TileObjectData.GetTileStyle(tile);
@@ -206,29 +206,11 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 根据给定的类型列表，创建符合条件的类型实例，并将实例添加到输出列表中，该方法默认要求类型拥有无参构造
-        /// </summary>
-        /// <typeparam name="T">期望的类型</typeparam>
-        /// <param name="outInds">输出列表，包含符合条件的类型实例</param>
-        /// <param name="inTypes">输入的类型列表，用于创建实例</param>
-        public static void HanderInstance<T>(ref List<T> outInds, List<Type> inTypes, bool parameterless = true) {
-            outInds = [];
-            foreach (Type type in inTypes) {
-                if (type != typeof(T)) {
-                    object obj = parameterless ? Activator.CreateInstance(type) : RuntimeHelpers.GetUninitializedObject(type);
-                    if (obj is T inds) {
-                        outInds.Add(inds);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// 获取指定基类的所有子类列表
         /// </summary>
         /// <param name="baseType">基类的类型</param>
         /// <returns>子类列表</returns>
-        public static List<Type> GetSubclasses(Type baseType) {
+        public static List<Type> GetSubclassTypeList(Type baseType) {
             List<Type> subclasses = [];
             Assembly assembly = Assembly.GetExecutingAssembly();
             Type[] allTypes = assembly.GetTypes();
@@ -245,8 +227,8 @@ namespace CalamityOverhaul
         /// <summary>
         /// 根据给定的类型列表，创建符合条件的类型实例，并将实例添加到输出列表中，该方法默认要求类型拥有无参构造
         /// </summary>
-        public static List<T> HanderSubclass<T>(bool parameterless = true) {
-            List<Type> inTypes = GetSubclasses(typeof(T));
+        public static List<T> GetSubclass<T>(bool parameterless = true) {
+            List<Type> inTypes = GetSubclassTypeList(typeof(T));
             List<T> outInds = [];
             foreach (Type type in inTypes) {
                 if (type != typeof(T)) {
@@ -260,19 +242,13 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 获取当前程序集（Assembly）中实现了接口 `T` 的所有类的实例列表
-        /// </summary>
-        /// <typeparam name="T">要查找实现类的接口类型</typeparam>
-        /// <returns>一个包含所有实现了指定接口 `T` 的类实例的列表</returns>
-        public static List<T> GetSubInterface<T>() => GetSubInterface<T>(typeof(T).Name);
-
-        /// <summary>
         /// 获取当前程序集（Assembly）中实现了指定接口（通过接口名称 `lname` 指定）的所有类的实例列表
         /// </summary>
         /// <typeparam name="T">接口类型，用于检查类是否实现该接口</typeparam>
         /// <param name="lname">接口的名称，用于匹配实现类</param>
         /// <returns>一个包含所有实现了指定接口的类实例的列表</returns>
-        public static List<T> GetSubInterface<T>(string lname) {
+        public static List<T> GetSubInterface<T>() {
+            string lname = typeof(T).Name;
             List<T> subInterface = new List<T>();
             Assembly assembly = Assembly.GetExecutingAssembly();
             Type[] allTypes = assembly.GetTypes();
@@ -296,43 +272,15 @@ namespace CalamityOverhaul
 
         public const float atoR = MathHelper.Pi / 180;
 
-        public static float AtoR(this float num) {
-            return num * atoR;
-        }
+        public static float AtoR(this float num) => num * atoR;
 
-        public static float RtoA(this float num) {
-            return num / atoR;
-        }
-
-        /// <summary>
-        /// 获取一个实体真正的中心位置,该结果被实体碰撞箱的长宽影响
-        /// </summary>
-        public static Vector2 GetEntityCenter(Entity entity) {
-            Vector2 vector2 = new(entity.width * 0.5f, entity.height * 0.5f);
-            return entity.position + vector2;
-        }
+        public static float RtoA(this float num) => num / atoR;
 
         /// <summary>
         /// 获取生成源
         /// </summary>
         public static EntitySource_Parent parent(this Entity entity) {
             return new EntitySource_Parent(entity);
-        }
-
-        /// <summary>
-        /// 判断是否发生对视
-        /// </summary>
-        public static bool NPCVisualJudgement(Entity targetPlayer, Entity npc) {
-            Vector2 Perspective = Main.MouseWorld - GetEntityCenter(targetPlayer);
-            Vector2 Perspective2 = GetEntityCenter(npc) - GetEntityCenter(targetPlayer);
-            Vector2 Perspective3 = Perspective - Perspective2;
-
-            bool DistanceJudgment = Perspective2.LengthSquared() <= 1600 * 1600;
-            bool PositioningJudgment = targetPlayer.position.X > npc.position.X;
-            bool DirectionJudgment = targetPlayer.direction > npc.direction;
-            bool FacingJudgment = ((PositioningJudgment == true && DirectionJudgment == false) || (PositioningJudgment == false && DirectionJudgment == true)) && targetPlayer.direction != npc.direction;
-            bool PerspectiveJudgment = Perspective3.LengthSquared() <= Perspective2.LengthSquared() * 0.5f;
-            return PerspectiveJudgment && FacingJudgment && DistanceJudgment;
         }
 
         /// <summary>
@@ -519,8 +467,8 @@ namespace CalamityOverhaul
         /// <param name="targetNPCType"></param>
         /// <param name="randomCount"></param>
         /// <returns></returns>
-        public static bool FromWormBodysRandomSet(this NPC npc, int randomCount) 
-            => FromWormBodysRandomSet(npc.type, randomCount);
+        public static bool FromWormBodysRandomSet(this NPC npc, int randomCount) => FromWormBodysRandomSet(npc.type, randomCount);
+
         /// <summary>
         /// 这个NPC是否属于一个蠕虫体节
         /// </summary>
@@ -850,22 +798,6 @@ namespace CalamityOverhaul
 
         #region 行为部分
 
-        public static void Move(this NPC npc, Vector2 vector, float speed, float turnResistance = 10f, bool toPlayer = false) {
-            Player player = Main.player[npc.target];
-            Vector2 moveTo = toPlayer ? player.Center + vector : vector;
-            Vector2 move = moveTo - npc.Center;
-            float magnitude = move.Length();
-            if (magnitude > speed) {
-                move *= speed / magnitude;
-            }
-            move = (npc.velocity * turnResistance + move) / (turnResistance + 1f);
-            magnitude = move.Length();
-            if (magnitude > speed) {
-                move *= speed / magnitude;
-            }
-            npc.velocity = move;
-        }
-
         public static void WulfrumAmplifierAI(NPC npc, float maxrg = 495f, int maxchargeTime = 600) {
             List<int> SuperchargableEnemies = [
                 ModContent.NPCType<WulfrumDrone>(),
@@ -977,81 +909,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 用于NPC的寻敌判断，会试图遍历玩家列表寻找最近的有效玩家
-        /// </summary>
-        /// <param name="NPC">寻找主体</param>
-        /// <param name="maxFindingDg">最大搜寻范围，如果值为-1则不开启范围限制</param>
-        /// <returns>返回一个玩家实例，如果返回的实例为null，则说明玩家无效或者范围内无有效玩家</returns>
-        public static Player NPCFindingPlayerTarget(this Entity NPC, int maxFindingDg) {
-            Player target = null;
-
-            if (Main.netMode == NetmodeID.SinglePlayer) {
-                Player player = Main.player[Main.myPlayer];
-
-                return maxFindingDg == -1 ? player : (NPC.position - player.position).LengthSquared() > maxFindingDg * maxFindingDg ? null : player;
-            }
-            else {
-                float MaxFindingDgSquared = maxFindingDg * maxFindingDg;
-                for (int i = 0; i < Main.player.Length; i++) {
-                    Player player = Main.player[i];
-
-                    if (!player.active || player.dead || player.ghost || player == null) {
-                        continue;
-                    }
-
-                    if (maxFindingDg == -1) {
-                        return player;
-                    }
-
-                    float TargetDg = (player.Center - NPC.Center).LengthSquared();
-
-                    bool FindingBool = TargetDg < MaxFindingDgSquared;
-
-                    if (!FindingBool) {
-                        continue;
-                    }
-
-                    MaxFindingDgSquared = TargetDg;
-                    target = player;
-                }
-                return target;
-            }
-        }
-
-        /// <summary>
-        /// 用于弹幕寻找NPC目标的行为
-        /// </summary>
-        /// <param name="proj">寻找主体</param>
-        /// <param name="maxFindingDg">最大搜寻范围，如果值为 <see cref="-1"/> 则不开启范围限制</param>
-        /// <returns>返回一个NPC实例，如果返回的实例为 <see cref="null"/> ，则说明NPC无效或者范围内无有效NPC</returns>
-        public static NPC ProjFindingNPCTarget(this Projectile proj, int maxFindingDg) {
-            float MaxFindingDgSquared = maxFindingDg * maxFindingDg;
-            NPC target = null;
-
-            for (int i = 0; i < Main.npc.Length; i++) {
-                NPC npc = Main.npc[i];
-
-                if (npc.Alives() == false || npc.friendly == true || npc.dontTakeDamage == true) {
-                    continue;
-                }
-
-                float TargetDg = (npc.Center - proj.Center).LengthSquared();
-                bool FindingBool = TargetDg < MaxFindingDgSquared;
-                if (maxFindingDg == -1) {
-                    FindingBool = true;
-                }
-
-                if (!FindingBool) {
-                    continue;
-                }
-
-                MaxFindingDgSquared = TargetDg;
-                target = npc;
-            }
-            return target;
-        }
-
-        /// <summary>
         /// 普通的追逐行为
         /// </summary>
         /// <param name="entity">需要操纵的实体</param>
@@ -1136,49 +993,6 @@ namespace CalamityOverhaul
             return closestTarget;
         }
 
-        /// <summary>
-        /// 返回一个合适的渐进追击速度
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="TargetCenter"></param>
-        /// <param name="Speed"></param>
-        /// <param name="ShutdownDistance"></param>
-        /// <returns></returns>
-        public static Vector2 GetChasingVelocity(this Entity entity, Vector2 TargetCenter, float Speed, float ShutdownDistance) {
-            if (entity == null) {
-                return Vector2.Zero;
-            }
-
-            Vector2 ToTarget = TargetCenter - entity.Center;
-            Vector2 ToTargetNormalize = ToTarget.SafeNormalize(Vector2.Zero);
-            return ToTargetNormalize * AsymptoticVelocity(entity.Center, TargetCenter, Speed, ShutdownDistance);
-        }
-
-        /// <summary>
-        /// 考虑加速度的追逐行为
-        /// </summary>
-        /// <param name="entity">需要操纵的实体</param>
-        /// <param name="TargetCenter">目标地点</param>
-        /// <param name="acceleration">加速度系数</param>
-        /// <returns></returns>
-        public static void AccelerationBehavior(this Entity entity, Vector2 TargetCenter, float acceleration) {
-            if (entity.Center.X > TargetCenter.X) {
-                entity.velocity.X -= acceleration;
-            }
-
-            if (entity.Center.X < TargetCenter.X) {
-                entity.velocity.X += acceleration;
-            }
-
-            if (entity.Center.Y > TargetCenter.Y) {
-                entity.velocity.Y -= acceleration;
-            }
-
-            if (entity.Center.Y < TargetCenter.Y) {
-                entity.velocity.Y += acceleration;
-            }
-        }
-
         public static void EntityToRot(this NPC entity, float ToRot, float rotSpeed) {
             //entity.rotation = MathHelper.SmoothStep(entity.rotation, ToRot, rotSpeed);
 
@@ -1228,6 +1042,9 @@ namespace CalamityOverhaul
         public static Item GetItem(this Player player) => Main.mouseItem.IsAir ? player.inventory[player.selectedItem] : Main.mouseItem;
 
         public static void GiveMeleeType(this Item item, bool isGiveTrueMelee = false) => item.DamageType = GiveMeleeType(isGiveTrueMelee);
+
+        public static DamageClass GiveMeleeType(bool isGiveTrueMelee = false) => isGiveTrueMelee ? ModContent.GetInstance<TrueMeleeDamageClass>() : DamageClass.Melee;
+
         /// <summary>
         /// 目标弹药是否应该判定为一个木箭
         /// </summary>
@@ -1244,8 +1061,6 @@ namespace CalamityOverhaul
                 
             return false;
         }
-
-        public static DamageClass GiveMeleeType(bool isGiveTrueMelee = false) => isGiveTrueMelee ? ModContent.GetInstance<TrueMeleeDamageClass>() : DamageClass.Melee;
 
         public static void SetItemLegendContentTops(ref List<TooltipLine> tooltips, string itemKey) {
             TooltipLine legendtops = tooltips.FirstOrDefault((TooltipLine x) => x.Text.Contains("[legend]") && x.Mod == "Terraria");
@@ -1311,38 +1126,9 @@ namespace CalamityOverhaul
             return npc;
         }
 
-        public static int GetDamage(float defValue, float expertModeValue = 0, float masterModeValue = 0) {
-            float value = defValue;
-            if (Main.expertMode) {
-                if (expertModeValue != 0) {
-                    value = expertModeValue;
-                }
-                value /= 4f;
-            }
-            if (Main.masterMode) {
-                if (expertModeValue != 0) {
-                    value = expertModeValue;
-                }
-                if (masterModeValue != 0) {
-                    value = masterModeValue;
-                }
-                value /= 5.2f;
-            }
-            return (int)value;
-        }
-
         public static Recipe AddBlockingSynthesisEvent(this Recipe recipe) => 
             recipe.AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => { amount = 0; })
             .AddOnCraftCallback(CWRRecipes.SpawnAction);
-
-        public static void ActivateSky(string key) {
-            if (Main.dedServ) {
-                return;
-            }
-            if (!SkyManager.Instance[key].IsActive()) {
-                SkyManager.Instance.Activate(key);
-            }
-        }
 
         /// <summary>
         /// 让一个NPC可以正常的掉落物品而不触发其他死亡事件，只应该在非服务端上调用该方法
@@ -1416,9 +1202,12 @@ namespace CalamityOverhaul
             item.CWR().AmmoCapacity = ammoCapacity;
         }
 
-        public static void SetCalamitySD<T>(this Item item) where T : ModItem {
-            item.CloneDefaults(ModContent.ItemType<T>());
-        }
+        /// <summary>
+        /// 复制一个物品的属性
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        public static void SetItemCopySD<T>(this Item item) where T : ModItem => item.CloneDefaults(ModContent.ItemType<T>());
 
         /// <summary>
         /// 弹药是否应该被消耗，先行判断武器自带的消耗抵消比率，再在该基础上计算玩家的额外消耗抵消比率，比如弹药箱加成或者药水
@@ -1865,35 +1654,6 @@ namespace CalamityOverhaul
             return result;
         }
 
-        public static bool IsRectangleIntersectingFan(Rectangle targetHitbox, Vector2 fanOrigin, float fanRadius, float startAngle, float endAngle) {
-            // 计算矩形的中心点
-            Vector2 rectCenter = new(targetHitbox.X + targetHitbox.Width / 2, targetHitbox.Y + targetHitbox.Height / 2);
-
-            // 计算矩形中心到扇形原点的向量
-            Vector2 toRectCenter = rectCenter - fanOrigin;
-
-            // 计算矩形中心到扇形原点的距离
-            float distanceToCenter = toRectCenter.Length();
-
-            // 判断距离是否小于等于扇形半径
-            if (distanceToCenter <= fanRadius) {
-                // 计算矩形中心到扇形原点的角度
-                float angleToCenter = MathF.Atan2(toRectCenter.Y, toRectCenter.X);
-
-                // 规范化起始角度和结束角度到 [0, 2π) 范围
-                startAngle = (startAngle + MathHelper.TwoPi) % MathHelper.TwoPi;
-                endAngle = (endAngle + MathHelper.TwoPi) % MathHelper.TwoPi;
-
-                // 规范化角度到 [0, 2π) 范围
-                angleToCenter = (angleToCenter + MathHelper.TwoPi) % MathHelper.TwoPi;
-
-                // 判断角度是否在扇形的范围内
-                return angleToCenter >= startAngle && angleToCenter <= endAngle;
-            }
-
-            return false;
-        }
-
         public static bool IsRangedAmmoFreeThisShot(this Player player, Item ammo) {
             bool flag2 = false;
             if (player.magicQuiver && ammo.ammo == AmmoID.Arrow && Main.rand.NextBool(5)) {
@@ -2043,11 +1803,6 @@ namespace CalamityOverhaul
             return Color.Lerp(colors[currentID], colors[currentID + 1], (percent - (per * currentID)) / per);
         }
 
-        public static string GetPath(string baseTexPath) {
-            string path1 = baseTexPath.Replace("CalamityOverhaul/", string.Empty);
-            return CWRConstant.Asset + path1;
-        }
-
         /// <summary>
         /// 快速修改一个物品的简介文本，从模组本地化文本中拉取资源
         /// </summary>
@@ -2137,55 +1892,6 @@ namespace CalamityOverhaul
             return (!netCed || Main.myPlayer == player.whoAmI) && (leftCed ? PlayerInput.Triggers.Current.MouseLeft : PlayerInput.Triggers.Current.MouseRight);
         }
 
-        /// <summary>
-        /// 检查伤害类型是否与指定类型匹配或继承自指定类型
-        /// </summary>
-        /// <param name="damageClass">要检查的伤害类型</param>
-        /// <param name="intendedClass">目标伤害类型</param>
-        /// <returns>如果匹配或继承，则为 true；否则为 false</returns>
-        public static bool CountsAsClass(this DamageClass damageClass, DamageClass intendedClass) {
-            return damageClass == intendedClass || damageClass.GetEffectInheritance(intendedClass);
-        }
-
-        /// <summary>
-        /// 通过玩家ID、弹幕标识和可选的弹幕类型来获取对应的弹幕索引
-        /// </summary>
-        /// <param name="player">玩家的ID</param>
-        /// <param name="projectileIdentity">弹幕的标识</param>
-        /// <param name="projectileType">可选的弹幕类型</param>
-        /// <returns>找到的弹幕索引，如果未找到则返回 -1</returns>
-        public static int GetProjectileByIdentity(int player, int projectileIdentity, params int[] projectileType) {
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                if (Main.projectile[i].active && Main.projectile[i].identity == projectileIdentity && Main.projectile[i].owner == player
-                    && (projectileType.Length == 0 || projectileType.Contains(Main.projectile[i].type))) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        /// <summary>
-        /// 创建一个新的召唤物投射物，并返回其索引
-        /// </summary>
-        /// <param name="source">实体来源</param>
-        /// <param name="spawn">生成位置</param>
-        /// <param name="velocity">初始速度</param>
-        /// <param name="type">投射物类型</param>
-        /// <param name="rawBaseDamage">原始基础伤害</param>
-        /// <param name="knockback">击退力度</param>
-        /// <param name="owner">所有者ID（默认为255）</param>
-        /// <param name="ai0">自定义AI参数0（默认为0）</param>
-        /// <param name="ai1">自定义AI参数1（默认为0）</param>
-        /// <returns>新投射物的索引</returns>
-        public static int NewSummonProjectile(IEntitySource source, Vector2 spawn, Vector2 velocity, int type, int rawBaseDamage, float knockback, int owner = 255, float ai0 = 0, float ai1 = 0) {
-            int projectileIndex = Projectile.NewProjectile(source, spawn, velocity, type, rawBaseDamage, knockback, owner, ai0, ai1);
-            if (projectileIndex != Main.maxProjectiles) {
-                Main.projectile[projectileIndex].originalDamage = rawBaseDamage;
-                Main.projectile[projectileIndex].ContinuouslyUpdateDamageStats = true;
-            }
-            return projectileIndex;
-        }
-
         public static CWRNpc CWR(this NPC npc) {
             return npc.GetGlobalNPC<CWRNpc>();
         }
@@ -2234,153 +1940,7 @@ namespace CalamityOverhaul
         /// <summary>
         /// 检查一个 Projectile 对象是否属于当前客户端玩家拥有的，如果是，返回true
         /// </summary>
-        public static bool IsOwnedByLocalPlayer(this Projectile projectile) {
-            return projectile.owner == Main.myPlayer;
-        }
-
-        /// <summary>
-        /// 将指定数量的元素从二进制读取器读取到列表中，使用提供的读取函数
-        /// </summary>
-        /// <typeparam name="T">列表中的元素类型</typeparam>
-        /// <param name="reader">要读取的二进制读取器</param>
-        /// <param name="list">要填充读取元素的列表</param>
-        /// <param name="count">要读取的元素数量</param>
-        /// <param name="readFunction">用于从二进制读取器中读取类型 T 的元素的函数</param>
-        public static void ReadToList<T>(this BinaryReader reader, List<T> list, int count, Func<BinaryReader, T> readFunction) {
-            list.Clear();
-            for (int i = 0; i < count; i++) {
-                T value = readFunction(reader);
-                list.Add(value);
-            }
-        }
-
-        /// <summary>
-        /// 从二进制读取器中读取指定数量的整数到列表中
-        /// </summary>
-        /// <param name="reader">要读取的二进制读取器</param>
-        /// <param name="list">要填充读取整数的列表</param>
-        /// <param name="count">要读取的整数数量</param>
-        public static void ReadToList(this BinaryReader reader, List<int> list, int count) {
-            list.Clear();
-            for (int i = 0; i < count; i++) {
-                int value = reader.ReadInt32();
-                list.Add(value);
-            }
-        }
-
-        /// <summary>
-        /// 从二进制读取器中读取指定数量的字节到列表中
-        /// </summary>
-        /// <param name="reader">要读取的二进制读取器</param>
-        /// <param name="list">要填充读取字节的列表</param>
-        /// <param name="count">要读取的字节数量</param>
-        public static void ReadToList(this BinaryReader reader, List<byte> list, int count) {
-            list.Clear();
-            for (int i = 0; i < count; i++) {
-                byte value = reader.ReadByte();
-                list.Add(value);
-            }
-        }
-
-        /// <summary>
-        /// 从二进制读取器中读取指定数量的单精度浮点数到列表中
-        /// </summary>
-        /// <param name="reader">要读取的二进制读取器</param>
-        /// <param name="list">要填充读取单精度浮点数的列表</param>
-        /// <param name="count">要读取的单精度浮点数数量</param>
-        public static void ReadToList(this BinaryReader reader, List<float> list, int count) {
-            list.Clear();
-            for (int i = 0; i < count; i++) {
-                float value = reader.ReadSingle();
-                list.Add(value);
-            }
-        }
-
-        /// <summary>
-        /// 从二进制读取器中读取指定数量的二维向量到列表中
-        /// </summary>
-        /// <param name="reader">要读取的二进制读取器</param>
-        /// <param name="list">要填充读取二维向量的列表</param>
-        /// <param name="count">要读取的二维向量数量</param>
-        public static void ReadToList(this BinaryReader reader, List<Vector2> list, int count) {
-            list.Clear();
-            for (int i = 0; i < count; i++) {
-                float valueX = reader.ReadSingle();
-                float valueY = reader.ReadSingle();
-                list.Add(new Vector2(valueX, valueY));
-            }
-        }
-
-        public static void WritePoint16(this BinaryWriter writer, Point16 point16) {
-            writer.Write(point16.X);
-            writer.Write(point16.Y);
-        }
-
-        public static Point16 ReadPoint16(this BinaryReader reader) => new Point16(reader.ReadInt16(), reader.ReadInt16());
-
-        /// <summary>
-        /// 将列表中的元素数量和元素内容写入二进制写入器，使用提供的写入函数
-        /// </summary>
-        /// <typeparam name="T">列表中的元素类型</typeparam>
-        /// <param name="writer">要写入的二进制写入器</param>
-        /// <param name="list">要写入的列表</param>
-        /// <param name="writeFunction">用于将类型 T 的元素写入二进制写入器的函数</param>
-        public static void WriteList<T>(this ModPacket writer, List<T> list, Action<ModPacket, T> writeFunction) {
-            writer.Write(list.Count);
-            foreach (T value in list) {
-                writeFunction(writer, value);
-            }
-        }
-
-        /// <summary>
-        /// 将整数列表写入二进制写入器
-        /// </summary>
-        /// <param name="writer">要写入的二进制写入器</param>
-        /// <param name="list">要写入的整数列表</param>
-        public static void WriteList(this BinaryWriter writer, List<int> list) {
-            writer.Write(list.Count);
-            foreach (int value in list) {
-                writer.Write(value);
-            }
-        }
-
-        /// <summary>
-        /// 将字节列表写入二进制写入器
-        /// </summary>
-        /// <param name="writer">要写入的二进制写入器</param>
-        /// <param name="list">要写入的字节列表</param>
-        public static void WriteList(this BinaryWriter writer, List<byte> list) {
-            writer.Write(list.Count);
-            foreach (byte value in list) {
-                writer.Write(value);
-            }
-        }
-
-        /// <summary>
-        /// 将单精度浮点数列表写入二进制写入器
-        /// </summary>
-        /// <param name="writer">要写入的二进制写入器</param>
-        /// <param name="list">要写入的单精度浮点数列表</param>
-        public static void WriteList(this BinaryWriter writer, List<float> list) {
-            writer.Write(list.Count);
-            foreach (float value in list) {
-                writer.Write(value);
-            }
-        }
-
-        /// <summary>
-        /// 将二维向量列表写入二进制写入器
-        /// </summary>
-        /// <param name="writer">要写入的二进制写入器</param>
-        /// <param name="list">要写入的二维向量列表</param>
-        public static void WriteList(this BinaryWriter writer, List<Vector2> list) {
-            writer.Write(list.Count);
-            foreach (Vector2 value in list) {
-                writer.Write(value.X);
-                writer.Write(value.Y);
-            }
-        }
-
+        public static bool IsOwnedByLocalPlayer(this Projectile projectile) => projectile.owner == Main.myPlayer;
 
         /// <summary>
         /// 生成Boss级实体，考虑网络状态
@@ -2389,7 +1949,6 @@ namespace CalamityOverhaul
         /// <param name="bossType">要生成的 Boss 的类型</param>
         /// <param name="obeyLocalPlayerCheck">是否要遵循本地玩家检查</param>
         public static void SpawnBossNetcoded(Player player, int bossType, bool obeyLocalPlayerCheck = true) {
-
             if (player.whoAmI == Main.myPlayer || !obeyLocalPlayerCheck) {
                 // 如果使用物品的玩家是客户端
                 // （在此明确排除了服务器端）
@@ -2464,67 +2023,8 @@ namespace CalamityOverhaul
             return Main.rand.NextVector2Unit() * Main.rand.NextFloat(0, max);
         }
 
-        public static Vector3 Vr2ToVr3(this Vector2 vector) {
-            return new Vector3(vector.X, vector.Y, 0);
-        }
-
-        public static float ConvertToClockwiseAngle(float radian) {
-            float clockwiseRadian = radian + MathF.PI;
-            if (clockwiseRadian >= MathHelper.TwoPi) {
-                clockwiseRadian -= MathHelper.TwoPi;
-            }
-            return clockwiseRadian;
-        }
-
         public static float GetCorrectRadian(float minusRadian) {
             return minusRadian < 0 ? (MathHelper.TwoPi + minusRadian) / MathHelper.TwoPi : minusRadian / MathHelper.TwoPi;
-        }
-
-        /// <summary>
-        /// f为0时返回a,为1时返回b
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <param name="f"></param>
-        /// <returns></returns>
-        public static float Lerp(float a, float b, float f) {
-            return (a * (1.0f - f)) + (b * f);
-        }
-
-        /// <summary>
-        /// 两端平滑的贝塞尔曲线
-        /// </summary>
-        /// <param name="time"></param>
-        /// <returns></returns>
-        public static float BezierEase(float time) {
-            return time * time / (2f * (time * time - time) + 1f);
-        }
-
-        public static float SwoopEase(float time) {
-            return 3.75f * (float)Math.Pow(time, 3) - 8.5f * (float)Math.Pow(time, 2) + 5.75f * time;
-        }
-
-        /// <summary>
-        /// 快速到达1后持续增大一小段最后再减小回1的曲线
-        /// </summary>
-        /// <param name="time"></param>
-        /// <returns></returns>
-        public static float HeavyEase(float time) {
-            float x_1 = time - 1;
-            return 1 + (2.6f * x_1 * x_1 * x_1) + (1.6f * x_1 * x_1);
-        }
-
-        /// <summary>
-        /// 由角度和长短半轴长计算得到实际的长度
-        /// </summary>
-        /// <param name="rotation">角度</param>
-        /// <param name="halfShortAxis">短半轴长</param>
-        /// <param name="halfLongAxis">长半轴长</param>
-        /// <returns></returns>
-        public static float EllipticalEase(float rotation, float halfShortAxis, float halfLongAxis) {
-            float halfFocalLength2 = (halfLongAxis * halfLongAxis) - (halfShortAxis * halfShortAxis);
-            float cosX = MathF.Cos(rotation);
-            return halfLongAxis * halfShortAxis / MathF.Sqrt(halfLongAxis * halfLongAxis - halfFocalLength2 * cosX * cosX);
         }
 
         /// <summary>
@@ -2584,16 +2084,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 将给定的角度值转换为以 π 为中心的标准化角度
-        /// </summary>
-        /// <param name="angleIn">输入的角度值</param>
-        /// <returns>标准化的角度，以 π 为中心，范围在 -π 到 π 之间</returns>
-        public static float ConvertAngle(float angleIn) {
-            // 将输入角度与零角度比较，以获得标准化的角度
-            return CompareAngle(0, angleIn) + (float)Math.PI;
-        }
-
-        /// <summary>
         /// 色彩混合
         /// </summary>
         public static Color RecombinationColor(params (Color color, float weight)[] colorWeightPairs) {
@@ -2606,9 +2096,7 @@ namespace CalamityOverhaul
             return new Color(result);
         }
 
-        public static Vector2 To(this Vector2 vr1, Vector2 vr2) {
-            return vr2 - vr1;
-        }
+        public static Vector2 To(this Vector2 vr1, Vector2 vr2) => vr2 - vr1;
 
         /// <summary>
         /// 获取一个随机方向的向量
@@ -2656,57 +2144,11 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 计算两个向量的叉积
-        /// </summary>
-        public static float CrossProduct(this Vector2 vr1, Vector2 vr2) {
-            return (vr1.X * vr2.Y) - (vr1.Y * vr2.X);
-        }
-
-        /// <summary>
-        /// 获取向量与另一个向量的夹角
-        /// </summary>
-        /// <returns>返回劣弧角，即取值范围为 0 到 π 弧度之间</returns>
-        public static float VetorialAngle(this Vector2 vr1, Vector2 vr2) {
-            return (float)Math.Acos(vr1.DotProduct(vr2) / (vr1.Length() * vr2.Length()));
-        }
-
-        /// <summary>
-        /// 一个随机布尔值获取方法
-        /// </summary>
-        /// <param name="ProbabilityDenominator">概率分母</param>
-        /// <param name="ProbabilityExpectation">期望倾向</param>
-        /// <param name="DesiredObject">期望对象</param>
-        /// <returns></returns>
-        public static bool RandomBooleanValue(int ProbabilityDenominator, int ProbabilityExpectation, bool DesiredObject) {
-            int randomInt = rands.Next(0, ProbabilityDenominator);
-            return randomInt == ProbabilityExpectation && DesiredObject;
-        }
-
-        /// <summary>
-        /// 根据向量的Y值来进行比较
-        /// </summary>
-        public class VeYSort : IComparer<Vector2>
-        {
-            public int Compare(Vector2 v1, Vector2 v2) {
-                // 比较两个向量的Y值，根据Y值大小进行排序
-                return v1.Y < v2.Y ? -1 : v1.Y > v2.Y ? 1 : 0;
-            }
-        }
-
-        /// <summary>
         /// 检测索引的合法性
         /// </summary>
         /// <returns>合法将返回 <see cref="true"/></returns>
         public static bool ValidateIndex(this int index, Array array) {
             return index >= 0 && index < array.Length;
-        }
-
-        /// <summary>
-        /// 检测索引的合法性
-        /// </summary>
-        /// <returns>合法将返回 <see cref="true"/></returns>
-        public static bool ValidateIndex(this List<int> ts, int index) {
-            return index >= 0 && index < ts.Count;
         }
 
         /// <summary>
@@ -2733,15 +2175,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 返回一个集合的干净数量，排除数默认为-1，该扩展方法不会影响原集合
-        /// </summary>
-        public static int GetIntListCount(this List<int> list, int valueToReplace = -1) {
-            List<int> result = new(list);
-            _ = result.RemoveAll(item => item == -1);
-            return result.Count;
-        }
-
-        /// <summary>
         /// 返回一个集合的筛选副本，排除数默认为-1，该扩展方法不会影响原集合
         /// </summary>
         public static List<int> GetIntList(this List<int> list, int valueToReplace = -1) {
@@ -2751,172 +2184,7 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 去除目标集合中所有-1元素
-        /// </summary>
-        /// <param name="list"></param>
-        public static void SweepLoadLists(ref List<int> list) {
-            int count = list.Count;
-            int i = 0;
-            while (i < count) {
-                if (list[i] == -1) {
-                    list.RemoveAt(i);
-                    count--;
-                }
-                else {
-                    i++;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 单独的重载集合方法
-        /// </summary>
-        public static void UnLoadList(ref List<int> Lists) {
-            _ = new List<int>();
-        }
-
-        /// <summary>
-        /// 将数组克隆出一份List类型
-        /// </summary>
-        public static List<T> ToList<T>(this T[] array) {
-            return new List<T>(array);
-        }
-
-        /// <summary>
-        /// 对float集合进行平滑插值，precision不应该输入0值或者负值
-        /// </summary>
-        public static List<float> InterpolateFloatList(List<float> originalList, float precision) {
-            if (precision <= 0) {
-                precision = 1;
-            }
-
-            int precisionCounter = (int)(1f / precision);
-            if (precisionCounter < 1) {
-                precisionCounter = 1;
-            }
-
-            List<float> interpolatedList = [];
-
-            for (int i = 0; i < originalList.Count - 1; i++) {
-                interpolatedList.Add(originalList[i]);
-
-                float currentValue = originalList[i];
-                float nextValue = originalList[i + 1];
-                float dis = nextValue - currentValue;
-                int absDis = (int)Math.Abs(dis);
-                int numInterpolations = absDis * precisionCounter;
-
-                for (int j = 1; j <= numInterpolations; j++) {
-                    float t = j / (float)(numInterpolations + 1);
-                    float interpolatedValue = MathHelper.Lerp(currentValue, nextValue, t);
-                    interpolatedList.Add(interpolatedValue);
-                }
-            }
-
-            interpolatedList.Add(originalList[^1]);
-
-            return interpolatedList;
-        }
-
-        /// <summary>
-        /// 对Vector2集合进行平滑插值，precision不应该输入0值或者负值
-        /// </summary>
-        public static List<Vector2> InterpolateVectorList(List<Vector2> originalList, float precision = 1) {
-            if (precision <= 0) {
-                precision = 1;
-            }
-
-            int precisionCounter = Math.Max(1, (int)(1f / precision));
-
-            List<Vector2> interpolatedList = new(originalList.Count * ((2 * precisionCounter) + 1));
-
-            for (int i = 0; i < originalList.Count - 1; i++) {
-                interpolatedList.Add(originalList[i]);
-
-                Vector2 currentValue = originalList[i];
-                Vector2 nextValue = originalList[i + 1];
-                float maxDis = Math.Max(Math.Abs(nextValue.X - currentValue.X), Math.Abs(nextValue.Y - currentValue.Y));
-                int numInterpolations = Math.Max(1, (int)(maxDis * precisionCounter));
-
-                for (int j = 1; j <= numInterpolations; j++) {
-                    float t = j / (float)(numInterpolations + 1);
-                    Vector2 interpolatedValue;
-                    interpolatedValue.X = MathHelper.Lerp(currentValue.X, nextValue.X, t);
-                    interpolatedValue.Y = MathHelper.Lerp(currentValue.Y, nextValue.Y, t);
-                    interpolatedList.Add(interpolatedValue);
-                }
-            }
-
-            interpolatedList.Add(originalList[^1]);
-
-            return interpolatedList;
-        }
-
-        /// <summary>
-        /// 在给定的 Vector2 列表之间使用贝塞尔曲线进行平滑插值
-        /// </summary>
-        /// <param name="originalList">原始的 Vector2 列表</param>
-        /// <param name="precision">插值精度，不能为零或负数</param>
-        /// <returns>包含平滑插值点的新 Vector2 列表</returns>
-        public static List<Vector2> InterpolateVectorListWithBezier(List<Vector2> originalList, float precision = 1) {
-            if (precision <= 0) {
-                precision = 1;
-            }
-
-            int precisionCounter = (int)(1f / precision);
-            if (precisionCounter < 1) {
-                precisionCounter = 1;
-            }
-
-            List<Vector2> interpolatedList = [];
-
-            Vector2[] controlPoints = new Vector2[4]; // 用于存储控制点
-
-            for (int i = 0; i < originalList.Count - 1; i++) {
-                Vector2 startPoint = originalList[i];
-                Vector2 endPoint = originalList[i + 1];
-
-                // 创建贝塞尔曲线的控制点，这里使用中点
-                Vector2 midPoint = (startPoint + endPoint) / 2;
-
-                controlPoints[0] = startPoint;
-                controlPoints[1] = midPoint;
-                controlPoints[2] = midPoint;
-                controlPoints[3] = endPoint;
-
-                for (int j = 0; j <= precisionCounter; j++) {
-                    float t = j / (float)precisionCounter;
-
-                    // 计算贝塞尔曲线点
-                    Vector2 interpolatedValue = CalculateBezierPoint(controlPoints, t);
-                    interpolatedList.Add(interpolatedValue);
-                }
-            }
-
-            interpolatedList.Add(originalList[^1]);
-
-            return interpolatedList;
-        }
-
-        // 计算贝塞尔曲线上的点
-        private static Vector2 CalculateBezierPoint(Vector2[] controlPoints, float t) {
-            float u = 1 - t;
-            float tt = t * t;
-            float uu = u * u;
-            float uuu = uu * u;
-            //float ttu = tt * u;
-            float ttt = tt * t;
-
-            Vector2 p = uuu * controlPoints[0];
-            p += 3 * uu * t * controlPoints[1];
-            p += 3 * u * tt * controlPoints[2];
-            p += ttt * controlPoints[3];
-
-            return p;
-        }
-
-        /// <summary>
-        /// 委托，用于定义曲线的缓动函数。
+        /// 委托，用于定义曲线的缓动函数
         /// </summary>
         /// <param name="progress">进度，范围在0到1之间。</param>
         /// <param name="polynomialDegree">如果缓动模式是多项式，则此为多项式的阶数。</param>
@@ -2924,37 +2192,37 @@ namespace CalamityOverhaul
         public delegate float CurveEasingFunction(float progress, int polynomialDegree);
 
         /// <summary>
-        /// 表示分段函数的一部分。
+        /// 表示分段函数的一部分
         /// </summary>
         public struct AnimationCurvePart
         {
             /// <summary>
-            /// 用于该段的缓动函数类型。
+            /// 用于该段的缓动函数类型
             /// </summary>
             public CurveEasingFunction CurveEasingFunction { get; }
 
             /// <summary>
-            /// 段在动画中的起始位置。
+            /// 段在动画中的起始位置
             /// </summary>
             public float StartX { get; internal set; }
 
             /// <summary>
-            /// 段的起始高度。
+            /// 段的起始高度
             /// </summary>
             public float StartHeight { get; }
 
             /// <summary>
-            /// 段内的高度变化量。设为0时段为平直线。通常在段末应用，但sinebump缓动类型在曲线顶点应用。
+            /// 段内的高度变化量设为0时段为平直线通常在段末应用，但sinebump缓动类型在曲线顶点应用
             /// </summary>
             public float HeightShift { get; }
 
             /// <summary>
-            /// 如果选择的缓动模式是多项式，则此为多项式的阶数。
+            /// 如果选择的缓动模式是多项式，则此为多项式的阶数
             /// </summary>
             public int PolynomialDegree { get; }
 
             /// <summary>
-            /// 在考虑高度变化后的段结束高度。
+            /// 在考虑高度变化后的段结束高度
             /// </summary>
             public float EndHeight => StartHeight + HeightShift;
 
@@ -3051,24 +2319,6 @@ namespace CalamityOverhaul
             spriteBatch.Draw(texture, position, rectangle, color, rotation, orig, size, SpriteEffects.None, 0);
         }
 
-        public static Vector2 CalculatePlayerHeadDrawPosition(ref PlayerDrawSet drawSet, Vector2 helmetOffset, Vector2 hatOffset) {
-            Player player = drawSet.drawPlayer;
-            Rectangle bodyFrame = player.bodyFrame;
-            Vector2 halfBodyFrameSize = new Vector2(bodyFrame.Width / 2f, bodyFrame.Height);
-            Vector2 bodyPositionOffset = new Vector2(player.width / 2, player.height - bodyFrame.Height + 4);
-
-            Vector2 headgearOffset = Main.OffsetsPlayerHeadgear[bodyFrame.Y / bodyFrame.Height] * player.Directions;
-            Vector2 headgearDrawPosition = (drawSet.Position - halfBodyFrameSize + bodyPositionOffset
-                                            + helmetOffset + hatOffset * player.Directions + headgearOffset
-                                            + player.headPosition + drawSet.headVect).Floor();
-
-            if (player.gravDir == -1f) {
-                headgearDrawPosition.Y += 12f;
-            }
-
-            return headgearDrawPosition - Main.screenPosition;
-        }
-
         public static void DrawMarginEffect(SpriteBatch spriteBatch, Texture2D tex, int drawTimer, Vector2 position
             , Rectangle? rect, Color color, float rot, Vector2 origin, float scale, SpriteEffects effects = 0) {
             float time = Main.GlobalTimeWrappedHourly;
@@ -3090,33 +2340,9 @@ namespace CalamityOverhaul
             }
         }
 
-
-        public static void SetAnimation(this Item i, int tickValue, int maxFrame) {
-            ItemID.Sets.AnimatesAsSoul[i.type] = true;
-            Main.RegisterItemAnimation(i.type, new DrawAnimationVertical(tickValue, maxFrame));
-        }
-
         public static void SetAnimation(int type, int tickValue, int maxFrame) {
             ItemID.Sets.AnimatesAsSoul[type] = true;
             Main.RegisterItemAnimation(type, new DrawAnimationVertical(tickValue, maxFrame));
-        }
-
-        public static void DrawBar(Player Owner, float sengs, float slp, int uiframe
-            , int maxFrame, Texture2D tex1, Texture2D tex2, Texture2D tex3, Texture2D tex4) {
-            if (!(sengs <= 0f)) {
-                Texture2D barBG = tex1;
-                Texture2D barFG = tex2;
-                if (sengs >= 1) {
-                    barBG = tex3;
-                    barFG = tex4;
-                }
-                float barScale = slp;
-                Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, 75) - Main.screenPosition;
-                Rectangle frameCrop = new Rectangle(0, 0, (int)(sengs * barFG.Width), barFG.Height);
-                Color color = Color.White;
-                Main.spriteBatch.Draw(barBG, drawPos, GetRec(barBG, uiframe, maxFrame), color, 0f, GetOrig(barBG, maxFrame), barScale, 0, 0f);
-                Main.spriteBatch.Draw(barFG, drawPos, frameCrop, color, 0f, GetOrig(barFG, 1), barScale, 0, 0f);
-            }
         }
 
         /// <summary>
@@ -3436,97 +2662,11 @@ namespace CalamityOverhaul
         }
 
         public static Vector3 Vec3(this Vector2 vector) => new Vector3(vector.X, vector.Y, 0);
-        public static T[] FastUnion<T>(this T[] front, T[] back) {
-            T[] combined = new T[front.Length + back.Length];
-
-            Array.Copy(front, combined, front.Length);
-            Array.Copy(back, 0, combined, front.Length, back.Length);
-
-            return combined;
-        }
         #endregion
 
         #endregion
 
         #region TileUtils
-
-        /// <summary>
-        /// 获取给定坐标的物块左上角位置，并判断该位置是否为多结构物块的左上角
-        /// </summary>
-        /// <param name="i">物块的x坐标</param>
-        /// <param name="j">物块的y坐标</param>
-        /// <returns>
-        /// 如果物块存在并且位于一个多结构物块的左上角，返回其左上角坐标，否则返回null
-        /// </returns>
-        public static Point16? GetTopLeftOrNull(int i, int j) {
-            // 获取给定坐标的物块
-            Tile tile = Framing.GetTileSafely(i, j);
-
-            // 如果没有物块，返回null
-            if (!tile.HasTile)
-                return null;
-
-            // 获取物块的数据结构，如果为null则认为是单个物块
-            TileObjectData data = TileObjectData.GetTileData(tile);
-
-            // 如果是单个物块，直接返回当前坐标
-            if (data == null)
-                return new Point16(i, j);
-
-            // 计算物块的帧位置偏移量
-            int frameX = tile.TileFrameX % (data.Width * 18);
-            int frameY = tile.TileFrameY % (data.Height * 18);
-
-            // 计算左上角的位置
-            int topLeftX = i - (frameX / 18);
-            int topLeftY = j - (frameY / 18);
-
-            // 返回左上角位置
-            return new Point16(topLeftX, topLeftY);
-        }
-
-        /// <summary>
-        /// 判断给定坐标是否为多结构物块的左上角位置，并输出左上角的坐标。
-        /// </summary>
-        /// <param name="i">物块的x坐标</param>
-        /// <param name="j">物块的y坐标</param>
-        /// <param name="point">输出的左上角坐标，如果不是左上角则为(0,0)</param>
-        /// <returns>如果是左上角，返回true，否则返回false。</returns>
-        public static bool IsTopLeft(int i, int j, out Point16 point) {
-            // 使用合并后的函数获取左上角位置
-            Point16? topLeft = GetTopLeftOrNull(i, j);
-
-            // 如果没有有效的左上角坐标，返回false，并将输出参数设为(0, 0)
-            if (!topLeft.HasValue) {
-                point = new Point16(0, 0);
-                return false;
-            }
-
-            // 获取左上角的实际坐标
-            point = topLeft.Value;
-
-            // 如果左上角位置与当前坐标相同，说明是左上角
-            return point.X == i && point.Y == j;
-        }
-
-        /// <summary>
-        /// 安全的获取多结构物块左上角的位置
-        /// </summary>
-        /// <param name="i"></param>
-        /// <param name="j"></param>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        public static bool SafeGetTopLeft(int i, int j, out Point16 point) {
-            Point16? topLeft = GetTopLeftOrNull(i, j);
-            if (topLeft.HasValue) {
-                point = topLeft.Value;
-                return true;
-            }
-            else {
-                point = new Point16(0, 0);
-                return false;
-            }
-        }
 
         public static void SafeSquareTileFrame(Vector2 tilePos, Tile tile, bool resetFrame = true) {
             int i = (int)tilePos.X;
@@ -3545,14 +2685,6 @@ namespace CalamityOverhaul
             TMLModifyFromeTileUtilsCode.TileFrame(i + 1, j - 1);
             TMLModifyFromeTileUtilsCode.TileFrame(i + 1, j);
             TMLModifyFromeTileUtilsCode.TileFrame(i + 1, j + 1);
-        }
-
-        /// <summary>
-        /// 检测是否为一个背景方块
-        /// </summary>
-        public static bool TopSlope(this Tile tile) {
-            byte b = (byte)tile.Slope;
-            return b is 1 or 2;
         }
 
         /// <summary>
@@ -3581,39 +2713,6 @@ namespace CalamityOverhaul
             return tile.HasTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType];
         }
 
-        public static Vector2 FindTopLeft(int x, int y) {
-            Tile tile = Main.tile[x, y];
-            if (tile == null) {
-                return new Vector2(x, y);
-            }
-
-            TileObjectData data = TileObjectData.GetTileData(tile.TileType, 0);
-            x -= tile.TileFrameX / 18 % data.Width;
-            y -= tile.TileFrameY / 18 % data.Height;
-            return new Vector2(x, y);
-        }
-
-        /// <summary>
-        /// 检测方块的一个矩形区域内是否有实心物块
-        /// </summary>
-        /// <param name="tileVr">方块坐标</param>
-        /// <param name="DetectionL">矩形左</param>
-        /// <param name="DetectionR">矩形右</param>
-        /// <param name="DetectionD">矩形上</param>
-        /// <param name="DetectionS">矩形下</param>
-        public static bool TileRectangleDetection(Vector2 tileVr, int DetectionL, int DetectionR, int DetectionD, int DetectionS) {
-            Vector2 newTileVr;
-            for (int x = 0; x < DetectionR - DetectionL; x++) {
-                for (int y = 0; y < DetectionS - DetectionD; y++) {
-                    newTileVr = PTransgressionTile(new Vector2(tileVr.X + x, tileVr.Y + y));
-                    if (Main.tile[(int)newTileVr.X, (int)newTileVr.Y].HasSolidTile()) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
         /// <summary>
         /// 获取一个物块目标，输入世界物块坐标，自动考虑收界情况
         /// </summary>
@@ -3629,48 +2728,9 @@ namespace CalamityOverhaul
             return Main.tile[(int)pos.X, (int)pos.Y];
         }
 
-        /// <summary>
-        /// 在世界中生成矿石
-        /// </summary>
-        /// <param name="tileID">矿石的瓦块ID</param>
-        /// <param name="veinSize">矿脉的大小</param>
-        /// <param name="chanceDenominator">生成机会的分母，值越小生成机会越大</param>
-        public static void CreateOre(int tileID, int veinSize, int chanceDenominator) {
-            // 根据机会分母循环尝试生成矿脉
-            for (int i = 0; i < Main.maxTilesX * Main.maxTilesY / chanceDenominator; i++) {
-                // 随机选择一个位置
-                int x = Main.rand.Next(1, Main.maxTilesX - 1);
-                int y = Main.rand.Next((int)GenVars.rockLayerLow, Main.maxTilesY - 1);
-
-                // 检查位置的瓦块类型是否是可以生成矿脉的类型
-                if (Main.tile[x, y].TileType is TileID.Stone or
-                    TileID.Dirt or
-                    TileID.Ebonstone or
-                    TileID.Crimstone or
-                    TileID.Pearlstone or
-                    TileID.Sand or
-                    TileID.Mud or
-                    TileID.SnowBlock or
-                    TileID.IceBlock) {
-                    // 在符合条件的位置生成矿脉
-                    WorldGen.TileRunner(x, y, veinSize, 15, tileID);
-                }
-            }
-        }
-
         #endregion
 
         #region UIUtils
-
-        /// <summary>
-        /// 对UI版面的布局设置
-        /// </summary>
-        public static void SetRectangle(UIElement uiElement, float left, float top, float width, float height) {
-            uiElement.Left.Set(left, 0f);
-            uiElement.Top.Set(top, 0f);
-            uiElement.Width.Set(width, 0f);
-            uiElement.Height.Set(height, 0f);
-        }
 
         public static Rectangle GetClippingRectangle(SpriteBatch spriteBatch, Rectangle r) {
             Vector2 vector = new(r.X, r.Y);

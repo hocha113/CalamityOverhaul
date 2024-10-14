@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AstralBlaster";
         public override void SetDefaults() {
-            Item.SetCalamitySD<AstralBlaster>();
+            Item.SetItemCopySD<AstralBlaster>();
             Item.SetCartridgeGun<AstralBlasterHeldProj>(30);
         }
     }

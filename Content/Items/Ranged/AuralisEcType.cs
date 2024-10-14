@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Auralis";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Auralis>();
+            Item.SetItemCopySD<Auralis>();
             Item.SetCartridgeGun<AuralisHeldProj>(18);
             Item.CWR().Scope = true;
         }

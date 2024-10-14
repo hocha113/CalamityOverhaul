@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "MajesticGuard";
         public override void SetDefaults() {
-            Item.SetCalamitySD<MajesticGuard>();
+            Item.SetItemCopySD<MajesticGuard>();
             Item.shoot = ModContent.ProjectileType<MajesticGuardRapier>();
             Item.useTime = 30;
             Item.useAnimation = 30;

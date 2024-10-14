@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "LunarianBow";
         public override void SetDefaults() {
-            Item.SetCalamitySD<LunarianBow>();
+            Item.SetItemCopySD<LunarianBow>();
             Item.damage = 15;
             Item.SetHeldProj<LunarianBowHeldProj>();
         }

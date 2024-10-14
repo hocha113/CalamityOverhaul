@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BrimstoneFury";
         public override void SetDefaults() {
-            Item.SetCalamitySD<BrimstoneFury>();
+            Item.SetItemCopySD<BrimstoneFury>();
             Item.SetHeldProj<BrimstoneFuryHeldProj>();
         }
     }

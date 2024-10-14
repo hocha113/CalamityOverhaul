@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "TelluricGlare";
         public override void SetDefaults() {
-            Item.SetCalamitySD<TelluricGlare>();
+            Item.SetItemCopySD<TelluricGlare>();
             Item.SetHeldProj<TelluricGlareHeldProj>();
         }
     }

@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Toxibow";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Toxibow>();
+            Item.SetItemCopySD<Toxibow>();
             Item.SetHeldProj<ToxibowHeldProj>();
         }
     }

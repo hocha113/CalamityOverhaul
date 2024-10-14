@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         private int swingIndex = 0;
         public override void SetDefaults() {
-            Item.SetCalamitySD<LifehuntScythe>();
+            Item.SetItemCopySD<LifehuntScythe>();
             Item.useTime = Item.useAnimation = 22;
             Item.SetKnifeHeld<LifehuntScytheHeld>();
         }

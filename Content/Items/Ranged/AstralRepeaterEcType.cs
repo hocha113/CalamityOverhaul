@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "AstralBow";
         public override void SetDefaults() {
-            Item.SetCalamitySD<AstralBow>();
+            Item.SetItemCopySD<AstralBow>();
             Item.SetHeldProj<AstralRepeaterHeldProj>();
         }
     }

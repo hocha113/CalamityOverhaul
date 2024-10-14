@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "VernalBolter";
         public override void SetDefaults() {
-            Item.SetCalamitySD<VernalBolter>();
+            Item.SetItemCopySD<VernalBolter>();
             Item.SetHeldProj<CosmicBolterHeldProj>();
         }
     }

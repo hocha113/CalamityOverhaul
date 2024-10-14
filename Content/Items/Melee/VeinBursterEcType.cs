@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "VeinBurster";
         public override void SetDefaults() {
-            Item.SetCalamitySD<VeinBurster>();
+            Item.SetItemCopySD<VeinBurster>();
             Item.SetKnifeHeld<VeinBursterHeld>();
         }
     }

@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Shadethrower";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Shadethrower>();
+            Item.SetItemCopySD<Shadethrower>();
             Item.SetCartridgeGun<ShadethrowerHeldProj>(160);
             Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
         }

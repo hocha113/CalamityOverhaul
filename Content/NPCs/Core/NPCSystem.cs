@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         private void LoadNPCSets() {
             NPCSets = [];
-            foreach (Type type in CWRUtils.GetSubclasses(typeof(NPCOverride))) {
+            foreach (Type type in CWRUtils.GetSubclassTypeList(typeof(NPCOverride))) {
                 if (type != typeof(NPCOverride)) {
                     object obj = Activator.CreateInstance(type);
                     if (obj is NPCOverride inds) {

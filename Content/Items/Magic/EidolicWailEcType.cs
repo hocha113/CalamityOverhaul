@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "EidolicWail";
         public override void SetDefaults() {
-            Item.SetCalamitySD<EidolicWail>();
+            Item.SetItemCopySD<EidolicWail>();
             Item.useTime = 95;
             Item.damage = 285;
             Item.mana = 52;

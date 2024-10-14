@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "NitroExpressRifle";
         public override void SetDefaults() {
-            Item.SetCalamitySD<NitroExpressRifle>();
+            Item.SetItemCopySD<NitroExpressRifle>();
             Item.SetCartridgeGun<NitroExpressRifleHeldProj>(8);
         }
     }

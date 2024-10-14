@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Barinautical";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Barinautical>();
+            Item.SetItemCopySD<Barinautical>();
             Item.SetHeldProj<BarinauticalHeldProj>();
         }
     }

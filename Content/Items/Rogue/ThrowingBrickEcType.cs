@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
     {
         public override string Texture => CWRConstant.Cay_Wap_Rogue + "ThrowingBrick";
         public override void SetDefaults() {
-            Item.SetCalamitySD<ThrowingBrick>();
+            Item.SetItemCopySD<ThrowingBrick>();
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.shoot = ModContent.ProjectileType<ThrowingBrickHeld>();
         }

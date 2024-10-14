@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Virulence";
         public override void SetDefaults() {
-            Item.SetCalamitySD<Virulence>();
+            Item.SetItemCopySD<Virulence>();
             Item.SetKnifeHeld<VirulenceHeld>();
         }
     }

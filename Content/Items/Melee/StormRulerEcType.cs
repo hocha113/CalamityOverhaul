@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "StormRuler";
         public override void SetDefaults() {
-            Item.SetCalamitySD<StormRuler>();
+            Item.SetItemCopySD<StormRuler>();
             Item.SetKnifeHeld<StormRulerHeld>();
         }
     }

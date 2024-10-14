@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class CosmicDischargeEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "CosmicDischarge";
-        public override void SetDefaults() => Item.SetCalamitySD<CosmicDischarge>();
+        public override void SetDefaults() => Item.SetItemCopySD<CosmicDischarge>();
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             float ai3 = (Main.rand.NextFloat() - 0.75f) * 0.7853982f;
             int sengs = 1;

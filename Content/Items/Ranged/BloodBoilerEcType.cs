@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BloodBoiler";
         public override void SetDefaults() {
-            Item.SetCalamitySD<BloodBoiler>();
+            Item.SetItemCopySD<BloodBoiler>();
             Item.useAmmo = AmmoID.Gel;
             Item.SetCartridgeGun<BloodBoilerHeldProj>(160);
             Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
