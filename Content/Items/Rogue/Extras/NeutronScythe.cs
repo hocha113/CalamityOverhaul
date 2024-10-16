@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
@@ -8,6 +9,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ID.ContentSamples.CreativeHelper;
 
 namespace CalamityOverhaul.Content.Items.Rogue.Extras
 {
@@ -38,6 +40,10 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.shoot = ModContent.ProjectileType<NeutronScytheHeld>();
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems21;
         }
+
+        public override bool WeaponPrefix() => true;
+        public override bool RangedPrefix() => false;
+        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 22;
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 26;

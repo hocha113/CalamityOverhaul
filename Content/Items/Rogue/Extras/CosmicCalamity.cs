@@ -1,12 +1,14 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
 using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ID.ContentSamples.CreativeHelper;
 
 namespace CalamityOverhaul.Content.Items.Rogue.Extras
 {
@@ -31,6 +33,10 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
         }
 
+        public override bool WeaponPrefix() => true;
+        public override bool RangedPrefix() => false;
+        public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
+
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.Calamity().StealthStrikeAvailable()) {
                 int proj = Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<CosmicCalamityProjectile>(), damage * 2, knockback, player.whoAmI);
@@ -45,7 +51,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override void AddRecipes() {
             CreateRecipe().
                 AddIngredient<CosmiliteBar>(12).
-                AddIngredient<CalamityMod.Items.Weapons.Rogue.WaveSkipper>().
+                AddIngredient<WaveSkipper>().
                 AddTile(ModContent.TileType<CosmicAnvil>()).
                 Register();
         }

@@ -396,7 +396,7 @@ Items: {
 	}
 
 	TransmutationOfMatterItem: {
-		DisplayName: Omega substance polymerizer
+		DisplayName: Omega Substance Polymerizer
 		Tooltip:
 			'''
 			An Experimental Device of Draedon's Creation. Placing it down and right clicking it opens an extended crafting interface to go beyond mortal limits.
@@ -2855,7 +2855,7 @@ Items: {
 	}
 
 	HellfireFlambergeEcType: {
-		DisplayName: Hellfire Flamberge Ec Type
+		DisplayName: Hellfire Flamberge
 		Tooltip: ""
 	}
 }
