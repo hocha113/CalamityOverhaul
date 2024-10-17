@@ -28,6 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
                 ) {
                 Projectile.Kill();
             }
+            Projectile.timeLeft = 2;
             Projectile.Center = Owner.GetPlayerStabilityCenter();
             float rot = 120;
             Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(rot) : MathHelper.ToRadians(180 - rot);
@@ -35,9 +36,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = Projectile.T2DValue();
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor
-                , Projectile.rotation + MathHelper.PiOver4, value.Size() / 2
-                , Projectile.scale, SpriteEffects.None, 0);
+            Vector2 drawPos = Projectile.Center - Main.screenPosition + Owner.CWR().SpecialDrawPositionOffset;
+            Main.EntitySpriteDraw(value, drawPos, null, lightColor, Projectile.rotation + MathHelper.PiOver4, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
 

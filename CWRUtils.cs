@@ -2005,7 +2005,37 @@ namespace CalamityOverhaul
 
         #region MathUtils
 
-        public static Random rands = new();
+        public class PolynomialEase
+        {
+            private Func<float, float> _function;
+            public PolynomialEase(Func<float, float> func) => _function = func;
+            public float Ease(float time) => _function(time);
+        }
+
+        public static readonly PolynomialEase EaseQuadIn = new PolynomialEase((float x) => { return x * x; });
+        public static readonly PolynomialEase EaseQuadOut = new PolynomialEase((float x) => { return 1f - EaseQuadIn.Ease(1f - x); });
+        public static readonly PolynomialEase EaseQuadInOut = new PolynomialEase((float x) 
+            => { return (x < 0.5f) ? 2f * x * x : -2f * x * x + 4f * x - 1f; });
+
+        public static readonly PolynomialEase EaseCubicIn = new PolynomialEase((float x) => { return x * x * x; });
+        public static readonly PolynomialEase EaseCubicOut = new PolynomialEase((float x) => { return 1f - EaseCubicIn.Ease(1f - x); });
+        public static readonly PolynomialEase EaseCubicInOut = new PolynomialEase((float x) 
+            => { return (x < 0.5f) ? 4f * x * x * x : 4f * x * x * x - 12f * x * x + 12f * x - 3f; });
+
+        public static readonly PolynomialEase EaseQuarticIn = new PolynomialEase((float x) => { return x * x * x * x; });
+        public static readonly PolynomialEase EaseQuarticOut = new PolynomialEase((float x) => { return 1f - EaseQuarticIn.Ease(1f - x); });
+        public static readonly PolynomialEase EaseQuarticInOut = new PolynomialEase((float x) 
+            => { return (x < 0.5f) ? 8f * x * x * x * x : -8f * x * x * x * x + 32f * x * x * x - 48f * x * x + 32f * x - 7f; });
+
+        public static readonly PolynomialEase EaseQuinticIn = new PolynomialEase((float x) => { return x * x * x * x * x; });
+        public static readonly PolynomialEase EaseQuinticOut = new PolynomialEase((float x) => { return 1f - EaseQuinticIn.Ease(1f - x); });
+        public static readonly PolynomialEase EaseQuinticInOut = new PolynomialEase((float x) 
+            => { return (x < 0.5f) ? 16f * x * x * x * x * x : 16f * x * x * x * x * x - 80f * x * x * x * x + 160f * x * x * x - 160f * x * x + 80f * x - 15f; });
+
+        public static readonly PolynomialEase EaseCircularIn = new PolynomialEase((float x) => { return 1f - (float)Math.Sqrt(1.0 - Math.Pow(x, 2)); });
+        public static readonly PolynomialEase EaseCircularOut = new PolynomialEase((float x) => { return (float)Math.Sqrt(1.0 - Math.Pow(x - 1.0, 2)); });
+        public static readonly PolynomialEase EaseCircularInOut = new PolynomialEase((float x) 
+            => { return (x < 0.5f) ? (1f - (float)Math.Sqrt(1.0 - Math.Pow(x * 2, 2))) * 0.5f : (float)((Math.Sqrt(1.0 - Math.Pow(-2 * x + 2, 2)) + 1) * 0.5); });
 
         public static Vector2 randVr(int min, int max) {
             return Main.rand.NextVector2Unit() * Main.rand.Next(min, max);

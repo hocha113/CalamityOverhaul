@@ -21,8 +21,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     internal class DragonRageHeld : BaseSwing
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "DragonRageStaff";
-        private static Asset<Texture2D> trailTexture;
-        private static Asset<Texture2D> gradientTexture;
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "DragonRage_Bar";
         private int Time2;

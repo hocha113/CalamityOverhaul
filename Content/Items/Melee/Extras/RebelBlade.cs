@@ -34,12 +34,28 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeFlyAttcke>()] == 0;
 
         public override void HoldItem(Player player) {
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeBack>()] == 0
-                && Main.myPlayer == player.whoAmI
-                && player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeFlyAttcke>()] == 0
-                && !player.PressKey()) {
-                Projectile.NewProjectileDirect(player.parent(), player.Center
-                    , Vector2.Zero, ModContent.ProjectileType<RebelBladeBack>(), 0, 0, player.whoAmI);
+            if (Main.myPlayer != player.whoAmI || player.PressKey()) {
+                return;
+            }
+
+            bool spwan = true;
+
+            int rebelBladeBack = ModContent.ProjectileType<RebelBladeBack>();
+            int rebelBladeFlyAttcke = ModContent.ProjectileType<RebelBladeFlyAttcke>();
+            int rebelBladeHeld = ModContent.ProjectileType<RebelBladeHeld>();
+
+            foreach (var proj in Main.ActiveProjectiles) {
+                if (proj.owner != player.whoAmI) {
+                    continue;
+                }
+                if (proj.type == rebelBladeBack || proj.type == rebelBladeFlyAttcke || proj.type == rebelBladeHeld) {
+                    spwan = false;
+                    break;
+                }
+            }
+
+            if (spwan) {
+                Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero, rebelBladeBack, 0, 0, player.whoAmI);
             }
         }
 
@@ -109,7 +125,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
                 Projectile.NewProjectile(Source, spwanPos, Vector2.Zero
                     , ModContent.ProjectileType<RebelBladeOrb>(), Item.damage / 5, 0, Owner.whoAmI);
                 Owner.ownedProjectileCounts[type]++;
-            }
+        }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {

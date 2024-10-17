@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public void ShootCosmicShivBlade(NPC target) {
             for (int i = 0; i < 4; i++) {
-                Vector2 spanPos = target.Center + CWRUtils.GetRandomVevtor(0, 360, CWRUtils.rands.Next(220, 300));
+                Vector2 spanPos = target.Center + CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(220, 300));
                 Vector2 vr = spanPos.To(Main.MouseWorld).SafeNormalize(Vector2.Zero) * 38f;
                 int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), spanPos, vr, ModContent.ProjectileType<CosmicShivBlade>(), Projectile.damage, Projectile.knockBack * 0.1f, Projectile.owner);
                 Main.projectile[proj].penetrate = 1;
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (Owner.ownedProjectileCounts[ModContent.ProjectileType<CosmicRay>()] <= 12) {
                 float mode = Owner.Center.To(target.Center).Length() * 0.5f;
                 if (mode > 260) mode = 260;
-                Vector2 spanPos = Owner.Center + (Owner.Center.To(target.Center).ToRotation() + MathHelper.ToRadians(CWRUtils.rands.Next(-45, 45))).ToRotationVector2() * mode;
+                Vector2 spanPos = Owner.Center + (Owner.Center.To(target.Center).ToRotation() + MathHelper.ToRadians(Main.rand.Next(-45, 45))).ToRotationVector2() * mode;
                 int proj = Projectile.NewProjectile(Projectile.parent(), spanPos, Vector2.Zero, ModContent.ProjectileType<CosmicRay>(), Projectile.damage * 2, Projectile.knockBack, Owner.whoAmI);
                 Main.projectile[proj].rotation = Main.projectile[proj].Center.To(target.Center + CWRUtils.randVr(130)).ToRotation();
                 Main.projectile[proj].netUpdate = true;
