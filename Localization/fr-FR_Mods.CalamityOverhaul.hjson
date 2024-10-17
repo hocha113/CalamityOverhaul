@@ -2852,6 +2852,11 @@ Items: {
 		// DisplayName: Hellfire Flamberge
 		// Tooltip: ""
 	}
+
+	SnowQuayMK2: {
+		// DisplayName: Snow Quay M K2
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3578,6 +3583,7 @@ Projectiles: {
 	// TerratomereHeld.DisplayName: Terratomere
 	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 	// ElectrifyFeather.DisplayName: Electrify Feather
+	// SnowQuayMK2Held.DisplayName: Snow Quay M K2 Held
 }
 
 Configs: {

@@ -9,13 +9,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
     internal class SnowQuayBall : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder3;
-        public override void SetStaticDefaults() {
-            TextureAssets.Projectile[Type] = TextureAssets.Projectile[ProjectileID.SnowBallFriendly];
-        }
+        public override void SetStaticDefaults() => TextureAssets.Projectile[Type] = TextureAssets.Projectile[ProjectileID.SnowBallFriendly];
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.friendly = true;
             Projectile.light = 0.2f;
+            Projectile.ArmorPenetration = 10;
         }
 
         public override void AI() {
@@ -25,11 +24,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     , DustID.BlueCrystalShard, Projectile.velocity.X, Projectile.velocity.Y, 0, default, 1.1f);
                 Main.dust[index2].noGravity = true;
             }
+            Projectile.velocity.Y += 0.1f;
+            if (++Projectile.ai[0] > 30) {
+                Projectile.velocity.Y += 1f;
+            }
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(BuffID.Frostburn, 180);
-        }
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(BuffID.Frostburn, 180);
 
         public override void OnKill(int timeLeft) {
             var source = Main.player[Projectile.owner].GetShootState().Source;

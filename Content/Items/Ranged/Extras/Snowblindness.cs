@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public override void AddRecipes() {
             _ = CreateRecipe().
-                AddIngredient<AvalancheM60>().
+                AddIngredient<SnowQuayMK2>().
                 AddIngredient(ItemID.LaserRifle).
                 AddIngredient(ItemID.FragmentVortex, 6).
                 AddTile(TileID.LunarCraftingStation).

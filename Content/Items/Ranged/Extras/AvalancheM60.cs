@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public override void AddRecipes() {
             _ = CreateRecipe().
-                AddIngredient<SnowQuay>().
+                AddIngredient<SnowQuayMK2>().
                 AddIngredient(ItemID.ShroomiteBar, 3).
                 AddIngredient<CryonicBar>(3).
                 AddIngredient<CoreofEleum>(5).

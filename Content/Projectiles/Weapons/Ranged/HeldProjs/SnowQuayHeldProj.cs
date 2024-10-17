@@ -13,22 +13,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Item_Ranged + "SnowQuayHeld";
         public override int targetCayItem => ModContent.ItemType<SnowQuay>();
         public override int targetCWRItem => ModContent.ItemType<SnowQuay>();
-
         private int fireIndex;
         public override void SetRangedProperty() {
             Recoil = 0.3f;
             FireTime = 10;
             GunPressure = 0;
-            HandDistance = 42;
-            HandDistanceY = 0;
-            HandFireDistance = 42;
-            HandFireDistanceY = -10;
+            HandDistance = 32;
+            HandDistanceY = 6;
+            HandFireDistance = 32;
+            HandFireDistanceY = -2;
             AngleFirearmRest = -1;
-            ShootPosNorlLengValue = 0;
-            ShootPosToMouLengValue = 20;
+            ShootPosNorlLengValue = -4;
+            ShootPosToMouLengValue = 8;
             RecoilRetroForceMagnitude = 5;
             EnableRecoilRetroEffect = true;
             CanCreateCaseEjection = false;
+            ForcedConversionTargetAmmoFunc = () => true;
+            ToTargetAmmo = ModContent.ProjectileType<SnowQuayBall>();
+            SpwanGunDustMngsData.dustID1 = 76;
+            SpwanGunDustMngsData.dustID2 = 149;
+            SpwanGunDustMngsData.dustID3 = 76;
         }
 
         public override void PostInOwnerUpdate() {
@@ -56,15 +60,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 fireIndex = 0;
                 Projectile.frame = 0;
             }
-        }
-
-        public override void HanderSpwanDust() {
-            SpawnGunFireDust(GunShootPos, ShootVelocity, splNum: 1, dustID1: 76, dustID2: 149, dustID3: 76);
-        }
-
-        public override void FiringShoot() {
-            int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<SnowQuayBall>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            Main.projectile[proj].ArmorPenetration = 10;
         }
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {

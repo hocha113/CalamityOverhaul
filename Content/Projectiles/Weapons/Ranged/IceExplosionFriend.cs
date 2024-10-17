@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             base.SetDefaults();
             Projectile.friendly = true;
             Projectile.hostile = false;
+            Projectile.usesIDStaticNPCImmunity = true;
+            Projectile.idStaticNPCHitCooldown = 20;
         }
         //用击退值设定敌我的想法简直是天才
         public override bool PreAI() => true;
