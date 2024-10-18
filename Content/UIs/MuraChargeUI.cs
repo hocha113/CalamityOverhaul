@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            murasamaHeld.DrawMassacreBarUI();
+            murasamaHeld.DrawSwordStanceBarUI();
             murasamaHeld.DrawOwnerPlayerBarUI();
         }
     }

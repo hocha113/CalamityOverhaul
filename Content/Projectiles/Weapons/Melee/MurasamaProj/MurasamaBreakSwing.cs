@@ -12,6 +12,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
@@ -28,6 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override string Texture => CWRConstant.Projectile_Melee + "MurasamaBreakSwing";
         private Player Owner => Main.player[Projectile.owner];
         private Item murasama => Owner.ActiveItem();
+        private List<NPC> onHitNpcs = [];
         public override void SetDefaults() {
             Projectile.width = 432;
             Projectile.height = 432;
@@ -61,6 +63,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         private void strikeToFly(NPC npc) {
             Vector2 flyVr = new Vector2(Projectile.velocity.X, -16 + (InWorldBossPhase.Instance.Mura_Level() * 0.3f));
+            float modef = npc.Center.To(Owner.Center).Length() / (300 + level * 30);
+            if (modef > 1) {
+                modef = 1f;
+            }
+            flyVr *= 1 - modef;
+
             void spanDust(int maxdustNum, int dustID) {
                 for (int i = 0; i < maxdustNum; i++) {
                     Dust.NewDust(npc.position, npc.width, npc.height, dustID
@@ -194,12 +202,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
             }
 
+            if (!onHitNpcs.Contains(target)) {
+                strikeToFly(target);
+                onHitNpcs.Add(target);
+            }
+
             if (Projectile.numHits == 0) {
                 _ = !CWRLoad.NPCValue.ISTheofSteel(target.type)
                     ? SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 0.15f }, Projectile.Center)
                     : SoundEngine.PlaySound(MurasamaEcType.InorganicHit with { Pitch = 0.15f }, Projectile.Center);
-
-                strikeToFly(target);
 
                 //设置玩家的不可击退性并给予玩家短暂的无敌帧
                 Owner.GivePlayerImmuneState(30);
