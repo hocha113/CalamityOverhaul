@@ -7,15 +7,19 @@
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Remove="Assets\NPCs\Fatuous\**" />
+    <AdditionalFiles Remove="Content\Buffs\Summon\**" />
     <AdditionalFiles Remove="Content\NPCs\HeavenEaters\**" />
     <AdditionalFiles Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
     <Compile Remove="Assets\NPCs\Fatuous\**" />
+    <Compile Remove="Content\Buffs\Summon\**" />
     <Compile Remove="Content\NPCs\HeavenEaters\**" />
     <Compile Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
     <EmbeddedResource Remove="Assets\NPCs\Fatuous\**" />
+    <EmbeddedResource Remove="Content\Buffs\Summon\**" />
     <EmbeddedResource Remove="Content\NPCs\HeavenEaters\**" />
     <EmbeddedResource Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
     <None Remove="Assets\NPCs\Fatuous\**" />
+    <None Remove="Content\Buffs\Summon\**" />
     <None Remove="Content\NPCs\HeavenEaters\**" />
     <None Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
   </ItemGroup>
@@ -61,7 +65,6 @@
   <ItemGroup>
     <Folder Include="Assets\Players\" />
     <Folder Include="Assets\TileModules\" />
-    <Folder Include="Content\Buffs\Summon\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CalamityMod">
