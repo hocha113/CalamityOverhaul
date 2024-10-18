@@ -62,15 +62,17 @@ namespace CalamityOverhaul.Content.UIs
             Mura = null;
         }
         public override void Update() {
-            if (murasama.type == ItemID.None || murasama != null 
-                && murasama.type != ModContent.ItemType<Murasama>() 
-                && murasama.type != ModContent.ItemType<MurasamaEcType>()) {
+            if (murasama.type == ItemID.None 
+                || (murasama != null && murasama.type != ModContent.ItemType<Murasama>() 
+                && murasama.type != ModContent.ItemType<MurasamaEcType>())) {
                 murasamaHeld = null;
                 return;
             }
+
             if (uiAlape < 1) {
                 uiAlape += 0.05f;
             }
+
             murasama.initialize();
             charge = murasama.CWR().ai[0];
             newForCharge = MathHelper.Lerp(newForCharge, charge, 0.2f);
@@ -85,13 +87,11 @@ namespace CalamityOverhaul.Content.UIs
             if (murasamaHeld != null && murasamaHeld.Type == ModContent.ProjectileType<MurasamaHeldProj>()) {
                 uiFrame = murasamaHeld.uiFrame2;
             }
+
             Time++;
         }
         public override void Draw(SpriteBatch spriteBatch) {
             float scale = 1;
-            if (murasama.type == ItemID.None) {
-                return;
-            }
             if (uiAlape > 0) {
                 Texture2D barBG = SwordStanceBottom.Value;
                 Texture2D barFG = SwordStanceTop.Value;
