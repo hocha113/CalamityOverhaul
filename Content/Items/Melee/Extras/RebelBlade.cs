@@ -25,6 +25,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.UseSound = SoundID.Item1;
             Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             Item.shoot = ModContent.ProjectileType<RebelBladeFlyAttcke>();
+            Item.useTurn = true;
+            Item.autoReuse = true;
             Item.CWR().isHeldItem = true;
             Item.SetKnifeHeld<RebelBladeHeld>();
         }

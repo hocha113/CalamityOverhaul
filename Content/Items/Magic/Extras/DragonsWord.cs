@@ -18,6 +18,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.damage = 682;
+            Item.mana = 80;
+            Item.shootSpeed = 6;
+            Item.useTurn = true;
+            Item.autoReuse = true;
             Item.DamageType = DamageClass.Magic;
             Item.useTime = Item.useAnimation = 60;
             Item.rare = ItemRarityID.Red;
@@ -25,8 +29,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             Item.UseSound = SoundID.Item92;
             Item.value = CalamityGlobalItem.RarityHotPinkBuyPrice;
             Item.rare = ItemRarityID.Red;
-            Item.mana = 80;
-            Item.shootSpeed = 6;
             Item.shoot = ModContent.ProjectileType<DragonsWordProj>();
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems22;
         }

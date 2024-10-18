@@ -1951,7 +1951,7 @@ Items: {
 	}
 
 	SnowQuay: {
-		DisplayName: 雪蝰 M16
+		DisplayName: 雪蝰
 		Tooltip:
 			'''
 			使用雪球作为弹药
@@ -2865,8 +2865,12 @@ Items: {
 	}
 
 	SnowQuayMK2: {
-		// DisplayName: Snow Quay M K2
-		// Tooltip: ""
+		DisplayName: 雪蝰MK2
+		Tooltip:
+			'''
+			使用雪球作为弹药
+			一把大口径雪炮，发射冰雪混合炮弹
+			'''
 	}
 }
 

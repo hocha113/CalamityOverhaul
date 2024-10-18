@@ -22,11 +22,11 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = Item.useTime = 15;
             Item.scale = 1;
-            Item.useTurn = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.noMelee = true;
             Item.knockBack = 5.5f;
             Item.UseSound = SoundID.Item60;
+            Item.useTurn = true;
             Item.autoReuse = true;
             Item.value = Item.buyPrice(0, 33, 15, 0);
             Item.rare = ItemRarityID.Red;
