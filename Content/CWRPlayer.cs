@@ -25,10 +25,6 @@ namespace CalamityOverhaul.Content
     {
         #region Date
         /// <summary>
-        /// 是否初始化加载，用于角色文件的第一次创建
-        /// </summary>
-        public bool InitialCreation;
-        /// <summary>
         /// 是否拥有大修宝典
         /// </summary>
         public bool HasOverhaulTheBibleBook;
@@ -153,7 +149,6 @@ namespace CalamityOverhaul.Content
             SwingIndex = 0;
             TETramContrType = 0;
             ReceivingPlatformTime = 0;
-            InitialCreation = true;
             Reset();
         }
 
@@ -183,9 +178,6 @@ namespace CalamityOverhaul.Content
             HellfireExplosion = false;
         }
 
-        public override void SaveData(TagCompound tag) => tag.Add("_InitialCreation", InitialCreation);
-        public override void LoadData(TagCompound tag) => InitialCreation = tag.GetBool("_InitialCreation");
-
         public override void OnEnterWorld() {
             CWRHook.CheckHookStatus();
 
@@ -200,10 +192,6 @@ namespace CalamityOverhaul.Content
             if (CWRServerConfig.Instance.ForceReplaceResetContent) {
                 string text = CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
                 SpwanTextProj.New(Player, () => CWRUtils.Text(text, Color.GreenYellow), 240);
-            }
-            if (InitialCreation) {
-                //TODO 这里暂时没有用处了，用于一次性的初始化加载玩家背包内容，但现在它不干任何事
-                InitialCreation = false;
             }
             if (CWRServerConfig.Instance.AddExtrasContent) {
                 RecipeErrorFullUI.Instance.eyEBool = true;
