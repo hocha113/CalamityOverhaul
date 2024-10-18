@@ -40,6 +40,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
 
         public static Type itemLoaderType;
         public static MethodBase onMeleePrefixMethod;
+        public static MethodBase onRangedPrefixMethod;
         public static MethodBase onAllowPrefixMethod;
         public static MethodBase onSetDefaultsMethod;
         public static MethodBase onShootMethod;
@@ -78,6 +79,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onAltFunctionUseMethod = itemLoaderType.GetMethod("AltFunctionUse", BindingFlags.Public | BindingFlags.Static);
             onAllowPrefixMethod = itemLoaderType.GetMethod("AllowPrefix", BindingFlags.Public | BindingFlags.Static);
             onMeleePrefixMethod = itemLoaderType.GetMethod("MeleePrefix", BindingFlags.NonPublic | BindingFlags.Static);
+            onRangedPrefixMethod = itemLoaderType.GetMethod("RangedPrefix", BindingFlags.NonPublic | BindingFlags.Static);
 
             if (onSetDefaultsMethod != null && !ModLoader.HasMod("MagicBuilder")) {
                 //这个钩子的挂载最终还是被废弃掉，因为会与一些二次继承了ModItem类的第三方模组发生严重的错误，我目前无法解决这个，所以放弃了这个钩子的挂载
@@ -128,10 +130,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (onAltFunctionUseMethod != null) {
                 CWRHook.Add(onAltFunctionUseMethod, OnAltFunctionUseHook);
             }
-            if (onAltFunctionUseMethod != null) {
+            if (onMeleePrefixMethod != null) {
                 CWRHook.Add(onMeleePrefixMethod, OnMeleePrefixHook);
             }
-            if (onAltFunctionUseMethod != null) {
+            if (onRangedPrefixMethod != null) {
+                CWRHook.Add(onRangedPrefixMethod, OnRangedPrefixHook);
+            }
+            if (onAllowPrefixMethod != null) {
                 CWRHook.Add(onAllowPrefixMethod, OnAllowPrefixHook);
             }
         }
@@ -153,6 +158,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             onModifyWeaponDamageMethod = null;
             onUpdateAccessoryMethod = null;
             onAltFunctionUseMethod = null;
+            onMeleePrefixMethod = null;
+            onRangedPrefixMethod = null;
+            onAllowPrefixMethod = null;
         }
 
         public bool OnAllowPrefixHook(On_AllowPrefix_Dalegate orig, Item item, int pre) {
@@ -182,6 +190,22 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
                 }
             }
             if (item.CWR().GetMeleePrefix) {
+                return true;
+            }
+            return orig.Invoke(item);
+        }
+
+        public bool OnRangedPrefixHook(On_Item_Dalegate orig, Item item) {
+            if (item.type == ItemID.None) {
+                return false;
+            }
+            if (CWRConstant.ForceReplaceResetContent && RItemIndsDict.TryGetValue(item.type, out BaseRItem ritem)) {
+                bool? rasg = ritem.On_RangedPreFix(item);
+                if (rasg.HasValue) {
+                    return rasg.Value;
+                }
+            }
+            if (item.CWR().GetRangedPrefix) {
                 return true;
             }
             return orig.Invoke(item);

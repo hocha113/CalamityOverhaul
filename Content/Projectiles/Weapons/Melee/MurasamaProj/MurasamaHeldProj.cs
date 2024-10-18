@@ -34,49 +34,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private bool triggerKeyDown;
         private bool old_FodingDownKey;
         private bool fodingDownKey;
-        private int uiFrame;
+        internal int uiFrame;
+        internal int uiFrame2;
         private float uiAlape;
         private int maxFrame = 6;
         internal int noAttenuationTime;
-        internal Vector2 origMuraBarDrawPos => new Vector2(220, Main.screenHeight - 140) + new Vector2(40, 40);
-        internal Vector2 CartridgeUI_Offset {
-            get {
-                Vector2 offset = new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
-                , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
-                if (offset.X > 1400) {
-                    offset.X = 1400;
-                }
-                return offset;
-            }
-        }
-        internal Vector2 muraBarDrawPos;
         private static int breakOutType;
         private static Asset<Texture2D> MuraBarBottom;
         private static Asset<Texture2D> MuraBarTop;
         private static Asset<Texture2D> MuraBarFull;
-        private static Asset<Texture2D> SwordStanceTop;
-        private static Asset<Texture2D> SwordStanceFull;
-        private static Asset<Texture2D> SwordStanceBottom;
-        private static Asset<Texture2D> Mura;
         void ICWRLoader.SetupData() => breakOutType = ModContent.ProjectileType<MurasamaBreakOut>();
         void ICWRLoader.LoadAsset() {
             MuraBarBottom = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarBottom");
             MuraBarTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarTop");
             MuraBarFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarFull");
-            SwordStanceBottom = CWRUtils.GetT2DAsset(CWRConstant.UI + "SwordStanceBottom");
-            SwordStanceTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "SwordStanceTop");
-            SwordStanceFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "SwordStanceFull");
-            Mura = CWRUtils.GetT2DAsset(CWRConstant.UI + "Mura");
         }
         void ICWRLoader.UnLoadData() {
             breakOutType = 0;
             MuraBarBottom = null;
             MuraBarTop = null;
             MuraBarFull = null;
-            SwordStanceBottom = null;
-            SwordStanceTop = null;
-            SwordStanceFull = null;
-            Mura = null;
         }
 
         public override void SetDefaults() {
@@ -137,6 +114,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         private void UpdateRisingDragon() {
             CWRUtils.ClockFrame(ref uiFrame, 5, maxFrame - 1);
+            CWRUtils.ClockFrame(ref uiFrame2, 5, 8);
 
             bool hasBoss = false;
             foreach (var npc in Main.npc) {
@@ -356,79 +334,26 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
         }
 
-        internal void DrawClentPlayerBarUI() {
-            float scale = 1;
-            if (!(risingDragon <= 0f) || uiAlape > 0) {//这是一个通用的进度条绘制，用于判断冷却进度
-                Texture2D barBG = MuraBarBottom.Value;
-                Texture2D barFG = MuraBarTop.Value;
-                Vector2 barOrigin = barBG.Size() * 0.5f;
-                muraBarDrawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, -90) - Main.screenPosition;
-                Color color = Color.White * uiAlape;
-                if (risingDragon < MurasamaEcType.GetOnRDCD) {
-                    Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / (float)MurasamaEcType.GetOnRDCD * barFG.Width), barFG.Height);
-                    Main.spriteBatch.Draw(barBG, muraBarDrawPos, null, color, 0f, barOrigin, scale, 0, 0f);
-                    Main.spriteBatch.Draw(barFG, muraBarDrawPos + new Vector2(12, 42), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
-                }
-                else {
-                    barBG = MuraBarFull.Value;
-                    Rectangle rectangle = CWRUtils.GetRec(barBG, uiFrame, maxFrame);
-                    Main.spriteBatch.Draw(barBG, muraBarDrawPos
-                        , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
-                }
-            }
-        }
-
-        internal void DrawOwnerPlayerBarUI() {
-            float scale = 1;
-            if (!(risingDragon <= 0f) || uiAlape > 0) {//这是一个通用的进度条绘制，用于判断冷却进度
-                Texture2D barBG = MuraBarBottom.Value;
-                Texture2D barFG = MuraBarTop.Value;
-                Vector2 barOrigin = barBG.Size() * 0.5f;
-                muraBarDrawPos = origMuraBarDrawPos + CartridgeUI_Offset + new Vector2(-160, 38);
-                Color color = Color.White * uiAlape;
-                if (risingDragon < MurasamaEcType.GetOnRDCD) {
-                    Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / (float)MurasamaEcType.GetOnRDCD * barFG.Width), barFG.Height);
-                    Main.spriteBatch.Draw(barBG, muraBarDrawPos, null, color, 0f, barOrigin, scale, 0, 0f);
-                    Main.spriteBatch.Draw(barFG, muraBarDrawPos + new Vector2(12, 42), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
-                }
-                else {
-                    barBG = MuraBarFull.Value;
-                    Rectangle rectangle = CWRUtils.GetRec(barBG, uiFrame, maxFrame);
-                    Main.spriteBatch.Draw(barBG, muraBarDrawPos
-                        , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
-                }
-            }
-        }
-
-        internal void DrawSwordStanceBarUI() {
-            float scale = 1;
-            if (murasama.type == ItemID.None) {
-                return;
-            }
-            murasama.initialize();
-            if (uiAlape > 0) {
-                Texture2D barBG = SwordStanceBottom.Value;
-                Texture2D barFG = SwordStanceTop.Value;
-                Vector2 barOrigin = barBG.Size() * 0.5f;
-                muraBarDrawPos = origMuraBarDrawPos + CartridgeUI_Offset;
-                Color color = Color.White * uiAlape;
-                if (murasama.CWR().ai[0] < 9) {
-                    Rectangle frameCrop = new Rectangle(0, 0, (int)(murasama.CWR().ai[0] / 9f * barFG.Width), barFG.Height);
-                    Main.spriteBatch.Draw(barBG, muraBarDrawPos, null, color, 0f, barOrigin, scale, 0, 0f);
-                    Main.spriteBatch.Draw(barFG, muraBarDrawPos + new Vector2(4, 6), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
-                }
-                else {
-                    barBG = SwordStanceFull.Value;
-                    Rectangle rectangle = CWRUtils.GetRec(barBG, uiFrame, 8);
-                    Main.spriteBatch.Draw(barBG, muraBarDrawPos
-                        , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
-                }
-                Main.spriteBatch.Draw(Mura.Value, muraBarDrawPos - new Vector2(58, 41) * 2, null, color, 0f, barOrigin, scale, 0, 0f);
-            }
-        }
-
         public override void PostDraw(Color lightColor) {
-            DrawClentPlayerBarUI();
+            float scale = 1;
+            if (!(risingDragon <= 0f) || uiAlape > 0) {//这是一个通用的进度条绘制，用于判断进度
+                Texture2D barBG = MuraBarBottom.Value;
+                Texture2D barFG = MuraBarTop.Value;
+                Vector2 barOrigin = barBG.Size() * 0.5f;
+                Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, -90) - Main.screenPosition;
+                Color color = Color.White * uiAlape;
+                if (risingDragon < MurasamaEcType.GetOnRDCD) {
+                    Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / (float)MurasamaEcType.GetOnRDCD * barFG.Width), barFG.Height);
+                    Main.spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale, 0, 0f);
+                    Main.spriteBatch.Draw(barFG, drawPos + new Vector2(12, 42), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
+                }
+                else {
+                    barBG = MuraBarFull.Value;
+                    Rectangle rectangle = CWRUtils.GetRec(barBG, uiFrame, maxFrame);
+                    Main.spriteBatch.Draw(barBG, drawPos
+                        , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
+                }
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {

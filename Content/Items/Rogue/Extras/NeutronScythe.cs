@@ -39,10 +39,9 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
             Item.shoot = ModContent.ProjectileType<NeutronScytheHeld>();
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems21;
+            Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
         }
 
-        public override bool WeaponPrefix() => true;
-        public override bool RangedPrefix() => false;
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 22;

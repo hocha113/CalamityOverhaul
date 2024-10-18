@@ -68,6 +68,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool GetMeleePrefix;
         /// <summary>
+        /// 是否强制RangedPrefix返回true，这个属性的优先级低于<see cref="BaseRItem.On_RangedPreFix(Item)"/>
+        /// </summary>
+        public bool GetRangedPrefix;
+        /// <summary>
         /// 是否是一个重制物品，在基类为<see cref="EctypeItem"/>时自动启用
         /// </summary>
         public bool remakeItem;

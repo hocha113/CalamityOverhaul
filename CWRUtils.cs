@@ -1147,11 +1147,10 @@ namespace CalamityOverhaul
         /// <typeparam name="T"></typeparam>
         /// <param name="item"></param>
         public static void SetKnifeHeld<T>(this Item item) where T : ModProjectile {
-            if (item.shoot == ProjectileID.None 
+            if (item.shoot == ProjectileID.None || !item.noUseGraphic
                 || item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
                 || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
                 item.CWR().GetMeleePrefix = true;
-                item.CWR().GetAllowPrefix = true;
             }
             item.noMelee = true;
             item.noUseGraphic = true;

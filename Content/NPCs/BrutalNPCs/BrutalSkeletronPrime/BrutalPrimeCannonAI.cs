@@ -283,13 +283,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return false;
             }
 
+            bool dir = (npc.rotation + MathHelper.PiOver2).ToRotationVector2().X > 0;
+
             BrutalSkeletronPrimeAI.DrawArm(spriteBatch, npc, screenPos);
             Texture2D mainValue = BrutalSkeletronPrimeAI.BSPCannon.Value;
             Texture2D mainValue2 = BrutalSkeletronPrimeAI.BSPCannonGlow.Value;
-            Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 1)
-                , drawColor, npc.rotation, CWRUtils.GetOrig(mainValue, 1), npc.scale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 1)
-                , Color.White, npc.rotation, CWRUtils.GetOrig(mainValue, 1), npc.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, null, drawColor
+                , npc.rotation, mainValue.Size() / 2, npc.scale
+                , dir ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
+            Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, null, Color.White
+                , npc.rotation, mainValue.Size() / 2, npc.scale
+                , dir ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
             return false;
         }
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;

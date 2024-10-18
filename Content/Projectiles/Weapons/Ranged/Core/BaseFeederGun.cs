@@ -421,7 +421,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     , LoadingAA_Shotgun.loadingAmmoStarg_x, LoadingAA_Shotgun.loadingAmmoStarg_y);
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Revolver) {
-                LoadingAnimation((int)(Time * LoadingAA_Revolver.Rotationratio * DirSign)
+                LoadingAnimation((int)(Time * LoadingAA_Revolver.Rotationratio)
                     , LoadingAA_Revolver.loadingAmmoStarg_x, LoadingAA_Revolver.loadingAmmoStarg_y);
             }
         }

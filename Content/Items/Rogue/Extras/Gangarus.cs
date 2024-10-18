@@ -64,10 +64,9 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems16;
             Item.CWR().isHeldItem = true;
+            Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
         }
 
-        public override bool WeaponPrefix() => true;
-        public override bool RangedPrefix() => false;
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);

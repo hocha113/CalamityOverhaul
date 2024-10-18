@@ -150,6 +150,13 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             return null;
         }
         /// <summary>
+        /// 是否接受远程词缀，返回默认值<see langword="null"/>会默认执行后续代码，而返回有效值会阻止后续所有修改
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool? On_RangedPreFix(Item item) {
+            return null;
+        }
+        /// <summary>
         /// 是否接受词缀，返回默认值<see langword="null"/>会默认执行后续代码，而返回有效值会阻止后续所有修改
         /// </summary>
         /// <returns></returns>
