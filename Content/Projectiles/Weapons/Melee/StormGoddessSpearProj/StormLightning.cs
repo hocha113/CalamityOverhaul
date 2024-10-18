@@ -11,9 +11,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj
 {
-    internal class StormLightning : ModProjectile
+    internal class StormLightning : ModProjectile//TODO
     {
-        public override string Texture => CWRConstant.Projectile + "StormLightning";
+        public override string Texture => CWRConstant.Placeholder;
         public Color Light => Lighting.GetColor((int)(Projectile.position.X + (Projectile.width * 0.5)) / 16, (int)((Projectile.position.Y + (Projectile.height * 0.5)) / 16.0));
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;

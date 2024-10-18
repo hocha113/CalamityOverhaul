@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class DeathLaser : ModProjectile
     {
-        public override string Texture => CWRConstant.Projectile + "RayBeam";
+        public override string Texture => CWRConstant.Cay_Proj_Magic + "ValkyrieRayBeam";
         private Player Owner => Main.player[Projectile.owner];
 
         public override void SetStaticDefaults() {
