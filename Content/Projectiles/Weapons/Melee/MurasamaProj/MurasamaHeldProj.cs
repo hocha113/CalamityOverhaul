@@ -428,9 +428,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override void PostDraw(Color lightColor) {
-            if (!Projectile.IsOwnedByLocalPlayer()) {
-                DrawClentPlayerBarUI();
-            }
+            DrawClentPlayerBarUI();
         }
 
         public override bool PreDraw(ref Color lightColor) {

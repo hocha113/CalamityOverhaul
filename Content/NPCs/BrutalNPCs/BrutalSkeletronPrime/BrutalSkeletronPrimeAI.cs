@@ -1226,13 +1226,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             Texture2D mainValue = HandAsset.Value;
             Texture2D mainValue2 = HandAssetGlow.Value;
+            Rectangle rectangle = CWRUtils.GetRec(mainValue, frame, 12);
+            Vector2 orig = rectangle.Size() / 2;
 
             SmokeDrawer?.DrawSet(npc.Center);
 
-            Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 12)
-                , drawColor, npc.rotation, CWRUtils.GetOrig(mainValue, 12), npc.scale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, frame, 12)
-                , Color.White, npc.rotation, CWRUtils.GetOrig(mainValue, 12), npc.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue, npc.Center - Main.screenPosition, rectangle
+                , drawColor, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(mainValue2, npc.Center - Main.screenPosition, rectangle
+                , Color.White, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
 
             if (player != null && noEye && npc.ai[0] == 3) {
                 Vector2 toD = player.Center.To(npc.Center);
@@ -1242,14 +1244,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     alp = 1;
                 }
                 Vector2 drawPos1 = new Vector2(-toD.X, toD.Y) + origpos;
-                Main.EntitySpriteDraw(mainValue, drawPos1, CWRUtils.GetRec(mainValue, frame, 6)
-                , drawColor * alp, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(mainValue, drawPos1, rectangle
+                , drawColor * alp, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
                 Vector2 drawPos2 = new Vector2(-toD.X, -toD.Y) + origpos;
-                Main.EntitySpriteDraw(mainValue, drawPos2, CWRUtils.GetRec(mainValue, frame, 6)
-                , drawColor * alp, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(mainValue, drawPos2, rectangle
+                , drawColor * alp, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
                 Vector2 drawPos3 = new Vector2(toD.X, -toD.Y) + origpos;
-                Main.EntitySpriteDraw(mainValue, drawPos3, CWRUtils.GetRec(mainValue, frame, 6)
-                , drawColor * alp, npc.rotation, CWRUtils.GetOrig(mainValue, 6), npc.scale, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(mainValue, drawPos3, rectangle
+                , drawColor * alp, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
             }
 
             return false;

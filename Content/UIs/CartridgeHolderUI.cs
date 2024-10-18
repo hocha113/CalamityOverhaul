@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.UIs
         private int bulletNum => player.ActiveItem().CWR().NumberBullets;
         private Rectangle mainRec;
         private bool onMainP;
+        private float otherPotData;
         public override bool Active {
             get {
                 if (!CWRServerConfig.Instance.MagazineSystem) {
@@ -66,6 +67,14 @@ namespace CalamityOverhaul.Content.UIs
                     cwrItem.SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
                 }
             }
+
+            if (player.CWR().PlayerIsKreLoadTime > 0) {
+                otherPotData -= 0.8f;
+            }
+            else {
+                otherPotData = 0;
+            }
+
             Time++;
         }
 
@@ -117,8 +126,9 @@ namespace CalamityOverhaul.Content.UIs
                     , DrawPosition.X + 85, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1.05f);
             }
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.Magazines) {
-                spriteBatch.Draw(TextureValue, DrawPosition, CWRUtils.GetRec(TextureValue, 6 - bulletNum, 7), Color.White
-                    , 0f, CWRUtils.GetOrig(TextureValue, 7), 2, SpriteEffects.None, 0);
+                Rectangle rectangle = CWRUtils.GetRec(TextureValue, 6 - bulletNum, 7);
+                spriteBatch.Draw(TextureValue, DrawPosition + rectangle.Size() / 2, rectangle, Color.White
+                    , otherPotData, rectangle.Size() / 2, 1, SpriteEffects.None, 0);
             }
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.JAR) {
                 Texture2D jar2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR_Full");

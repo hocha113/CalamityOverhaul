@@ -650,6 +650,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     }
                 }
 
+                ModOwner.PlayerIsKreLoadTime = 2;
+
                 if (kreloadTimeValue <= 0) {//时间完成后设置装弹状态并准备下一次发射
                     AmmoState = Owner.GetAmmoState(Item.useAmmo);//再更新一次弹药状态
                     if (PreConsumeAmmoEvent() && Get_LoadingAmmoAnimation_PreConsumeAmmo()) {

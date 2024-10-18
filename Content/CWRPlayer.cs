@@ -107,6 +107,7 @@ namespace CalamityOverhaul.Content
         /// 如果该时间大于0，则玩家不能切换武器，这个值每帧会自动减1
         /// </summary>
         public int DontSwitchWeaponTime;
+        public int PlayerIsKreLoadTime;
         /// <summary>
         /// 不能拥有暗影克隆体的时间，这个值每帧会自动减1
         /// </summary>
@@ -266,6 +267,9 @@ namespace CalamityOverhaul.Content
 
             if (DontSwitchWeaponTime > 0) {
                 DontSwitchWeaponTime--;
+            }
+            if (PlayerIsKreLoadTime > 0) {
+                PlayerIsKreLoadTime--;
             }
             if (DontHasSemberDarkMasterCloneTime > 0) {
                 DontHasSemberDarkMasterCloneTime--;

@@ -118,6 +118,7 @@ namespace CalamityOverhaul.Content.TileModules
                     orbNum += orb.stack;
                 }
             }
+
             if (orbNum < maxUseOrbNum) {
                 SommonLose(player);
                 return false;
@@ -146,16 +147,10 @@ namespace CalamityOverhaul.Content.TileModules
         }
 
         public override void Update() {
-            Player player = CWRUtils.InPosFindPlayer(Center);
             Rectangle tileRec = new Rectangle(Position.X * 16, Position.Y * 16, BloodAltar.Width * 18, BloodAltar.Height * 18);
             mouseOnTile = tileRec.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
             if (OnBoolMoon) {
                 if (!Main.bloodMoon && !Old_OnBoolMoon && !CWRUtils.isServer) {
-                    if (player == null) {
-                        SommonLose(player);
-                        return;
-                    }
-
                     SoundEngine.PlaySound(SoundID.Roar, Center);
                     for (int i = 0; i < 63; i++) {
                         Vector2 vr = new Vector2(Main.rand.Next(-12, 12), Main.rand.Next(-23, -3));
