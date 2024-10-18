@@ -83,25 +83,57 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
     internal class RebelBladeHeld : BaseKnife
     {
         public override int TargetID => ModContent.ItemType<RebelBlade>();
-        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
-        public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
+        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail2";
+        public override string gradientTexturePath => CWRConstant.ColorBar + "RebelBlade_Bar";
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
             distanceToOwner = -20;
             drawTrailBtommWidth = 110;
-            drawTrailTopWidth = 120;
+            drawTrailTopWidth = 150;
             drawTrailCount = 6;
-            Length = 220;
+            Length = 200;
             unitOffsetDrawZkMode = 0;
             Projectile.width = Projectile.height = 186;
             distanceToOwner = -60;
-            SwingData.starArg = 70;
+            SwingData.starArg = 60;
             SwingData.ler1_UpLengthSengs = 0.05f;
-            SwingData.minClampLength = 220;
-            SwingData.maxClampLength = 230;
+            SwingData.minClampLength = 200;
+            SwingData.maxClampLength = 210;
             SwingData.ler1_UpSizeSengs = 0.016f;
             SwingData.baseSwingSpeed = 4.2f;
             ShootSpeed = 12;
+            maxSwingTime = 60;
+        }
+
+        public override bool PreInOwnerUpdate() {
+            if (Time == 0) {
+                OtherMeleeSize = 0.64f;
+            }
+            float swingUp = SetSwingSpeed(1f);
+            int time1 = (int)(maxSwingTime / 3 * updateCount * swingUp);
+            int time2 = (int)(maxSwingTime * 0.6f * updateCount * swingUp);
+            if (Time > time1) {
+                canDrawSlashTrail = true;
+                SwingData.baseSwingSpeed = 6.2f;
+                if (Time == time1 + 1) {
+                    speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingUp;
+                }
+            }
+            else {
+                OtherMeleeSize += 0.01f;
+                SwingData.baseSwingSpeed = 1f;
+                speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingUp;
+                canDrawSlashTrail = false;
+            }
+
+            if (Time > time2) {
+                OtherMeleeSize -= 0.004f;
+                SwingData.baseSwingSpeed = 8f;
+                if (Time == time2 + 1) {
+                    speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingUp;
+                }
+            }
+            return base.PreInOwnerUpdate();
         }
 
         public override void MeleeEffect() {

@@ -173,29 +173,27 @@ namespace CalamityOverhaul.Content.Events
         }
 
         public bool? UpdateNPCPreAISet(NPC npc) {
-            if (Instance.TungstenRiotIsOngoing) {
-                if (npc.target >= 0 && npc.target < Main.player.Length) {
-                    Player player = Main.player[npc.target];
-                    if (TungstenEventNPCDic.ContainsKey(npc.type)) {
-                        if (Main.GameUpdateCount % 60 == 0 && npc.type == ModContent.NPCType<WulfrumDrone>()) {
-                            SoundEngine.PlaySound(SoundID.Item12 with { Volume = 0.7f, Pitch = -0.2f }, npc.Center);
-                            if (!CWRUtils.isClient) {
-                                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
-                                , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerLaser, 12, 0f);
-                            }
+            if (Instance.TungstenRiotIsOngoing && npc.target >= 0 && npc.target < Main.player.Length) {
+                Player player = Main.player[npc.target];
+                if (TungstenEventNPCDic.ContainsKey(npc.type)) {
+                    if (Main.GameUpdateCount % 60 == 0 && npc.type == ModContent.NPCType<WulfrumDrone>()) {
+                        SoundEngine.PlaySound(SoundID.Item12 with { Volume = 0.7f, Pitch = -0.2f }, npc.Center);
+                        if (!CWRUtils.isClient) {
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
+                            , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerLaser, 12, 0f);
                         }
                     }
-                    if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
-                        CWRUtils.WulfrumAmplifierAI(npc, 700, 300);
-                        if (Main.GameUpdateCount % 60 == 0) {
-                            SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Volume = 0.4f, Pitch = 0.6f }, npc.Center);
-                            if (!CWRUtils.isClient) {
-                                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
-                                , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerMissile, 12, 0f);
-                            }
+                }
+                if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
+                    CWRUtils.WulfrumAmplifierAI(npc, 700, 300);
+                    if (Main.GameUpdateCount % 60 == 0) {
+                        SoundEngine.PlaySound(ScorchedEarthEcType.ShootSound with { Volume = 0.4f, Pitch = 0.6f }, npc.Center);
+                        if (!CWRUtils.isClient) {
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + Vector2.UnitX * 6f * npc.spriteDirection
+                            , npc.SafeDirectionTo(player.Center, Vector2.UnitY) * 6f, ProjectileID.SaucerMissile, 12, 0f);
                         }
-                        return false;
                     }
+                    return false;
                 }
             }
             return null;
