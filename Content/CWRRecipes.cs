@@ -83,9 +83,9 @@ namespace CalamityOverhaul.Content
                                 recipe.AddIngredient(CWRLoad.AbomEnergy, InfinityCatalyst.QFD(15));
                                 recipe.AddIngredient(CWRLoad.EternalEnergy, InfinityCatalyst.QFD(15));
                             }
-                            if (recipe.HasResult(CWRLoad.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
-                                recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
-                            }
+                            //if (recipe.HasResult(CWRLoad.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
+                            //    recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
+                            //}
                         }
                         if (CWRLoad.MetanovaBar > ItemID.None) {
                             if (recipe.HasResult(ItemType<InfinityCatalyst>())) {

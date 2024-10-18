@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.NPCs.NormalNPCs;
-using CalamityOverhaul;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
@@ -12,7 +11,6 @@ using ReLogic.Utilities;
 using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -23,15 +21,12 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.GameInput;
-using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.Social;
-using Terraria.UI;
-using Terraria.WorldBuilding;
 using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul

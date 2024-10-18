@@ -164,8 +164,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             const int maxLengthSquared = 90000;
 
             static void killAction(NPC npc) {
-                npc.CWR().ObliterateBool = true;
-                npc.dontTakeDamage = true;
+                npc.dontTakeDamage = false;
                 _ = npc.SimpleStrikeNPC(npc.lifeMax, 0);
                 npc.life = 0;
                 npc.checkDead();

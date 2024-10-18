@@ -426,7 +426,7 @@ namespace CalamityOverhaul
             AresTeslaCannon = NPCType<AresTeslaCannon>();
             AresGaussNuke = NPCType<AresGaussNuke>();
 
-            Projectile_ArcZap = ModContent.ProjectileType<ArcZap>();
+            Projectile_ArcZap = ProjectileType<ArcZap>();
 
             targetNpcTypes = [SepulcherHead, SepulcherBody, SepulcherTail];
             targetNpcTypes2 = [StormWeaverHead, StormWeaverBody, StormWeaverTail];

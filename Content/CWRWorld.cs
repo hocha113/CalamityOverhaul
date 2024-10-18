@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content
 {
     internal class CWRWorld : ModSystem
     {
-        public static bool TitleMusicBoxEasterEgg = true;
         public static bool _defeatTheTungstenArmy;
         public static bool DefeatTheTungstenArmy {
             get => _defeatTheTungstenArmy;
@@ -32,7 +31,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ClearWorld() {
-            TitleMusicBoxEasterEgg = true;
             TungstenRiot.Instance.TungstenRiotIsOngoing = false;
             TungstenRiot.Instance.EventKillPoints = 0;
             Time = 0;
@@ -44,16 +42,14 @@ namespace CalamityOverhaul.Content
 
         public override void NetSend(BinaryWriter writer) {
             BitsByte flags1 = new BitsByte();
-            flags1[0] = TitleMusicBoxEasterEgg;
-            flags1[1] = TungstenRiot.Instance.TungstenRiotIsOngoing;
+            flags1[0] = TungstenRiot.Instance.TungstenRiotIsOngoing;
             writer.Write(flags1);
             writer.Write(TungstenRiot.Instance.EventKillPoints);
         }
 
         public override void NetReceive(BinaryReader reader) {
             BitsByte flags1 = reader.ReadByte();
-            TitleMusicBoxEasterEgg = flags1[0];
-            TungstenRiot.Instance.TungstenRiotIsOngoing = flags1[1];
+            TungstenRiot.Instance.TungstenRiotIsOngoing = flags1[0];
             TungstenRiot.Instance.EventKillPoints = reader.ReadInt32();
         }
 
@@ -73,7 +69,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void SaveWorldData(TagCompound tag) {
-            tag.Add("_TitleMusicBoxEasterEgg", TitleMusicBoxEasterEgg);
             tag.Add("_Event_DefeatTheTungstenArmy_Tag", DefeatTheTungstenArmy);
             tag.Add("_Event_TungstenRiotIsOngoing", TungstenRiot.Instance.TungstenRiotIsOngoing);
             tag.Add("_Event_EventKillPoints", TungstenRiot.Instance.EventKillPoints);
@@ -93,7 +88,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void LoadWorldData(TagCompound tag) {
-            TitleMusicBoxEasterEgg = tag.GetBool("_TitleMusicBoxEasterEgg");
             DefeatTheTungstenArmy = tag.GetBool("_Event_DefeatTheTungstenArmy_Tag");
             TungstenRiot.Instance.TungstenRiotIsOngoing = tag.GetBool("_Event_TungstenRiotIsOngoing");
             TungstenRiot.Instance.EventKillPoints = tag.GetInt("_Event_EventKillPoints");

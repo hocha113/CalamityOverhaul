@@ -45,8 +45,6 @@ namespace CalamityOverhaul.Content
         public bool TheEndSunOnHitNum;
         public byte WhipHitNum = 0;
         public byte WhipHitType = 0;
-        public bool SprBoss;
-        public bool ObliterateBool;
         /// <summary>
         /// 一个特殊标记，用于朗基努斯识别目标
         /// </summary>
@@ -74,7 +72,7 @@ namespace CalamityOverhaul.Content
         public bool HellfireExplosion;
         public bool VoidErosionBool;
 
-        public static Asset<Texture2D> IceParcloseAsset;
+        public static Asset<Texture2D> IceParcloseAsset { get; private set; }
         #endregion
 
         public override GlobalNPC Clone(NPC from, NPC to) => CloneCWRNpc((CWRNpc)base.Clone(from, to));
@@ -87,8 +85,6 @@ namespace CalamityOverhaul.Content
             cwr.TheEndSunOnHitNum = TheEndSunOnHitNum;
             cwr.WhipHitNum = WhipHitNum;
             cwr.WhipHitType = WhipHitType;
-            cwr.SprBoss = SprBoss;
-            cwr.ObliterateBool = ObliterateBool;
             cwr.GangarusSign = GangarusSign;
             cwr.OverBeatBackBool = OverBeatBackBool;
             cwr.OverBeatBackVr = OverBeatBackVr;
@@ -153,10 +149,6 @@ namespace CalamityOverhaul.Content
                 }
                 modifiers.SetMaxDamage(dmownInt + Main.rand.Next(50));
             }
-        }
-
-        public override bool CheckDead(NPC npc) {
-            return ObliterateBool ? true : base.CheckDead(npc);
         }
 
         private void UpdateOverBeatBack(NPC npc) {

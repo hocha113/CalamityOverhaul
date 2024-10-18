@@ -3093,7 +3093,6 @@ Projectiles: {
 	EndSkillEffectStart.DisplayName: Начало разреза измерений
 	EndSkillMakeDamage.DisplayName: Конец разреза измерений
 	// PowerSoundEgg.DisplayName: Power Sound Egg
-	// TitleMusicBoxEasterEggProj.DisplayName: Title Music Box Easter Egg Proj
 	// BlossomFluxHeldProj.DisplayName: Blossom Flux
 	// LeafArrows.DisplayName: Leaf Arrows
 	// SporeBombOnSpan.DisplayName: Spore Bomb
@@ -3195,8 +3194,8 @@ Projectiles: {
 	// MagicStar.DisplayName: Magic Star
 
 	Magic: {
-		// _SHPB.DisplayName: _ S H P B
-		// _SHPL.DisplayName: _ S H P L
+		// _SHPB.DisplayName: Energy Ball
+		// _SHPL.DisplayName: Dissociation Ray
 	}
 
 	// TheSpiritFlintProjL.DisplayName: The Spirit Flint Proj L
