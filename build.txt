@@ -5,3 +5,6 @@ weakReferences = WeaponOut@1.4.4.9
 homepage = https://steamcommunity.com/sharedfiles/filedetails/?id=3161388997
 author = HoCha113
 version = 0.5011
+hideCode = false
+hideResources = false
+includeSource = true
