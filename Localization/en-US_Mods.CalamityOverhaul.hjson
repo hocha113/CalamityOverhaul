@@ -3640,16 +3640,6 @@ Configs: {
 				'''
 		}
 
-		MurasamaScaleOffset: {
-			Label: Murasama Scale Offset
-			Tooltip:
-				'''
-				An additional swing range correction factor in percentage %
-				Set this up for some special needs and generally keep it at 100% size
-				Pull this slider to adjust the percentage data, the maximum is 100%, the original size, the minimum is 20%
-				'''
-		}
-
 		ScreenVibration: {
 			Label: Weapon Screen Vibration
 			Tooltip: If turned on, the screen will vibrate during some attacks, which may make the hit feel more intense
@@ -3813,6 +3803,11 @@ Configs: {
 				Used for debugging and observing the collision structure of TileModule.
 				When enabled, TileModule will draw its bounding boxes, type names, and other data in the world.
 				'''
+		}
+
+		MuraStyleType: {
+			Label: Mura Style Type
+			Tooltip: ""
 		}
 	}
 }

@@ -67,10 +67,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// </summary>
         public static int GetOnRDCD => RDCDDictionary[InWorldBossPhase.Instance.Mura_Level()];
         /// <summary>
-        /// 大小百分比例
-        /// </summary>
-        public static float ScaleOffset_PercentageValue => CWRServerConfig.Instance.MurasamaScaleOffset;
-        /// <summary>
         /// 用于存储手持弹幕的ID，这个成员在<see cref="CWRLoad.Load"/>中被加载，不需要进行手动的赋值
         /// </summary>
         public static int heldProjType;

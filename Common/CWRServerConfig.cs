@@ -29,17 +29,17 @@ namespace CalamityOverhaul.Common
             public static float LoadingAA_VolumeValue;
             internal const int LoadingAA_Volume_MinValue = 0;
             internal const int LoadingAA_Volume_MaxValue = 800;
+            internal const int MuraUIStyleMaxType = 6;
+            internal const int MuraUIStyleMinType = 1;
+            public static int MuraUIStyleValue;
         }
 
         [Header("CWRSystem")]
 
-        /// <summary>
-        /// 是否开启强制内容替换
-        /// </summary>
         [BackgroundColor(35, 185, 78, 255)]
         [ReloadRequired]
         [DefaultValue(true)]
-        public bool ForceReplaceResetContent { get; set; }
+        public bool ForceReplaceResetContent { get; set; }//是否开启强制内容替换
 
         [BackgroundColor(35, 185, 78, 255)]
         [ReloadRequired]
@@ -122,43 +122,34 @@ namespace CalamityOverhaul.Common
             set => Date.LoadingAA_VolumeValue = value;
         }
 
-        /// <summary>
-        /// 鬼妖刀刃大小调节
-        /// </summary>
-        [BackgroundColor(192, 54, 94, 255)]
-        [SliderColor(224, 165, 56, 255)]
-        [Range(Date.MScaleOffset_MinValue, Date.MScaleOffset_MaxValue)]
-        [DefaultValue(1)]
-        public float MurasamaScaleOffset {
-            get {
-                if (Date.MScaleOffsetValue < Date.MScaleOffset_MinValue) {
-                    Date.MScaleOffsetValue = Date.MScaleOffset_MinValue;
-                }
-                if (Date.MScaleOffsetValue > Date.MScaleOffset_MaxValue) {
-                    Date.MScaleOffsetValue = Date.MScaleOffset_MaxValue;
-                }
-                return Date.MScaleOffsetValue;
-            }
-            set => Date.MScaleOffsetValue = value;
-        }
-
-        /// <summary>
-        /// 镜头缓动
-        /// </summary>
         [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
-        public bool LensEasing { get; set; }
+        public bool LensEasing { get; set; }//镜头缓动
 
         [Header("CWRUI")]
 
-        /// <summary>
-        /// 弹夹UI位置调节_X
-        /// </summary>
+        [BackgroundColor(45, 175, 225, 255)]
+        [SliderColor(224, 165, 56, 255)]
+        [Range(Date.MuraUIStyleMinType, Date.MuraUIStyleMaxType)]
+        [DefaultValue(1)]
+        public int MuraStyleType {
+            get {
+                if (Date.MuraUIStyleValue < Date.MuraUIStyleMinType) {
+                    Date.MuraUIStyleValue = Date.MuraUIStyleMinType;
+                }
+                if (Date.MuraUIStyleValue > Date.MuraUIStyleMaxType) {
+                    Date.MuraUIStyleValue = Date.MuraUIStyleMaxType;
+                }
+                return Date.MuraUIStyleValue;
+            }
+            set => Date.MuraUIStyleValue = value;
+        }
+
         [BackgroundColor(45, 175, 225, 255)]
         [SliderColor(224, 165, 56, 255)]
         [Range(Date.CartridgeUI_Offset_X_MinValue, Date.CartridgeUI_Offset_X_MaxValue)]
         [DefaultValue(1)]
-        public int CartridgeUI_Offset_X_Value {
+        public int CartridgeUI_Offset_X_Value {//弹夹UI位置调节_X
             get {
                 if (Date.CartridgeUI_Offset_X < Date.CartridgeUI_Offset_X_MinValue) {
                     Date.CartridgeUI_Offset_X = Date.CartridgeUI_Offset_X_MinValue;
@@ -171,14 +162,11 @@ namespace CalamityOverhaul.Common
             set => Date.CartridgeUI_Offset_X = value;
         }
 
-        /// <summary>
-        /// 弹夹UI位置调节_Y
-        /// </summary>
         [BackgroundColor(45, 175, 225, 255)]
         [SliderColor(224, 165, 56, 255)]
         [Range(Date.CartridgeUI_Offset_Y_MinValue, Date.CartridgeUI_Offset_Y_MaxValue)]
         [DefaultValue(1)]
-        public int CartridgeUI_Offset_Y_Value {
+        public int CartridgeUI_Offset_Y_Value {//弹夹UI位置调节_Y
             get {
                 if (Date.CartridgeUI_Offset_Y < Date.CartridgeUI_Offset_Y_MinValue) {
                     Date.CartridgeUI_Offset_Y = Date.CartridgeUI_Offset_Y_MinValue;
