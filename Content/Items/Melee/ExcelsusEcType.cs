@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override int TargetID => ModContent.ItemType<Excelsus>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail2";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Excelsus_Bar";
-        public override string GlowTexturePath => "CalamityMod/Items/Weapons/Melee/ExcelsusGlow"; 
+        public override string GlowTexturePath => "CalamityMod/Items/Weapons/Melee/ExcelsusGlow";
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 66;
             drawTrailHighlight = false;

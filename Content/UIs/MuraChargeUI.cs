@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityMod.Tiles.Abyss.AbyssAmbient;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
@@ -103,8 +102,8 @@ namespace CalamityOverhaul.Content.UIs
         public override void Load() => Instance = this;
 
         public override void Update() {
-            if (murasama.type == ItemID.None 
-                || (murasama != null && murasama.type != ModContent.ItemType<Murasama>() 
+            if (murasama.type == ItemID.None
+                || (murasama != null && murasama.type != ModContent.ItemType<Murasama>()
                 && murasama.type != ModContent.ItemType<MurasamaEcType>())) {
                 murasamaHeld = null;
                 return;
@@ -145,7 +144,7 @@ namespace CalamityOverhaul.Content.UIs
                 Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, -90) - Main.screenPosition;
                 Color color = Color.White * uiAlape;
                 if (risingDragon < MurasamaEcType.GetOnRDCD) {
-                    Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / (float)MurasamaEcType.GetOnRDCD * barFG.Width), barFG.Height);
+                    Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / MurasamaEcType.GetOnRDCD * barFG.Width), barFG.Height);
                     Main.spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale, 0, 0f);
                     Main.spriteBatch.Draw(barFG, drawPos + new Vector2(12, 42), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
                 }

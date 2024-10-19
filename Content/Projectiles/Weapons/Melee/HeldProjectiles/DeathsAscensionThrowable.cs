@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Projectile.rotation -= 0.6f * Owner.direction;
                 }
             }
-            
+
             if (Projectile.soundDelay <= 0) {
                 SoundEngine.PlaySound(SoundID.Item7 with { Pitch = 0.2f }, Projectile.Center);
                 Projectile.soundDelay = 10;

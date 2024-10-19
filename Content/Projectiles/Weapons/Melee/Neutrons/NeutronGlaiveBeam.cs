@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 
         public bool canDraw() => true;
         public override void SetStaticDefaults() {
-            
+
         }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;

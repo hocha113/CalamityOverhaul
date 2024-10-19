@@ -1053,7 +1053,7 @@ namespace CalamityOverhaul
             if (ammoType == ProjectileID.WoodenArrowFriendly) {
                 return true;
             }
-                
+
             return false;
         }
 
@@ -1121,7 +1121,7 @@ namespace CalamityOverhaul
             return npc;
         }
 
-        public static Recipe AddBlockingSynthesisEvent(this Recipe recipe) => 
+        public static Recipe AddBlockingSynthesisEvent(this Recipe recipe) =>
             recipe.AddConsumeItemCallback((Recipe recipe, int type, ref int amount) => { amount = 0; })
             .AddOnCraftCallback(CWRRecipes.SpawnAction);
 

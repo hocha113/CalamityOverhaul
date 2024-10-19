@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += GetOnCrit;
 
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) 
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
             => CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage, GetStartDamage, ref damage);
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frameI, Color drawColor, Color itemColor, Vector2 origin, float scale) {

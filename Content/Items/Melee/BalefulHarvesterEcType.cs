@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 15;
         }
 
-        public override bool CanUseItem(Player player) 
+        public override bool CanUseItem(Player player)
             => player.ownedProjectileCounts[ModContent.ProjectileType<BalefulHarvesterHeldProj>()] == 0;
 
         public override bool AltFunctionUse(Player player) {

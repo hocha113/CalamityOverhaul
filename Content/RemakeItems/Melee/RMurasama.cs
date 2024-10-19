@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             tooltips.AddRange(prefixTooltips);
         }
 
-        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) 
+        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
             => CWRUtils.ModifyLegendWeaponDamageFunc(player, item, MurasamaEcType.GetOnDamage, MurasamaEcType.GetStartDamage, ref damage);
         //因为方法表现不稳定，所以重新使用回 ModifyWeaponDamage 而不是 On_ModifyWeaponDamage
         //public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {

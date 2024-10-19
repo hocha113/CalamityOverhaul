@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.TileModules
 
         public override void Draw(SpriteBatch spriteBatch) {
             Vector2 drawPos;
-            
+
             if (OnBoolMoon) {
                 drawPos = Center + new Vector2(-8, -64) - Main.screenPosition;
                 float slp = MathF.Abs(MathF.Sin(Time * 0.03f) * 0.3f) + 1;

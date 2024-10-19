@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Events;
+﻿using CalamityMod.Events;
 using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
@@ -99,9 +98,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             if (!skeletronPrimeIsDead && isSpawnFirstStage) {
                 isSpawnFirstStageFromeExeunt = ((skeletronPrime.life / (float)skeletronPrime.lifeMax) < 0.6f);
             }
-            
+
             int projType = isSpazmatism ? ModContent.ProjectileType<Fireball>() : ProjectileID.EyeLaser;
-            int projDamage = 36;  
+            int projDamage = 36;
 
             Player player = skeletronPrimeIsDead ? Main.player[eye.target] : Main.player[skeletronPrime.target];
 
@@ -250,7 +249,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                 else {
                                     Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center, toTarget.UnitVector() * 9, projType, projDamage, 0);
                                 }
-                                
+
                             }
                             ai[3]++;
                             ai[2] = 0;
@@ -366,7 +365,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                     , origVer.RotatedBy((ai[4] / -2 + i) * 0.1f), projType, projDamage, 0);
                                 }
                             }
-                            
+
                             ai[2] = 0;
                             if (isSpazmatism) {
                                 if (ai[3] == 0) {
@@ -385,7 +384,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                                 ai[2] = 0;
                                 ai[1] = 1;
                                 ai[5] *= -1;
-                                ai[6] ++;
+                                ai[6]++;
                             }
                             NetAISend(eye);
                         }
@@ -462,7 +461,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                             else {
                                 offset = isSpazmatism ? new Vector2(600, 500) : new Vector2(-600, -500);
                             }
-                            
+
                             SetEyeValue(eye, player, toPoint + offset, toTarget);
                         }
                         else if (ai[2] < 90) {

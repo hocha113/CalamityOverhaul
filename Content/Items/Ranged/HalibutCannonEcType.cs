@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += GetOnCrit;
 
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) 
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
             => CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage, GetStartDamage, ref damage);
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 legendtops.Text = index >= 0 && index <= 14 ? CWRLocText.GetTextValue($"Halibut_TextDictionary_Content_{index}") : "ERROR";
 
                 if (!CWRServerConfig.Instance.WeaponEnhancementSystem) {
-                    legendtops.Text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("Halibut_No_legend_Content_2") 
+                    legendtops.Text = InWorldBossPhase.Instance.level11 ? CWRLocText.GetTextValue("Halibut_No_legend_Content_2")
                         : CWRLocText.GetTextValue("Halibut_No_legend_Content_1");
                 }
                 legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);

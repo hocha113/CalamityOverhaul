@@ -1,11 +1,11 @@
 ﻿using CalamityMod.Events;
 using CalamityOverhaul.Common;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
 using System;
+using Terraria;
+using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
-            if(Projectile.ai[0] < Projectile.ai[1] + 60) {
+            if (Projectile.ai[0] < Projectile.ai[1] + 60) {
                 Projectile.scale += 0.01f;
                 Projectile.velocity *= 0.99f;
             }
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Main.instance.LoadNPC(NPCID.Probe);
             Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, null, Color.White
                 , Projectile.rotation, mainValue.Size() / 2, Projectile.scale, SpriteEffects.FlipHorizontally, 0);
-            
+
             return false;
         }
     }

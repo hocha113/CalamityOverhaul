@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Particles
             else {
                 Scale *= 0.975f;
             }
-                
+
 
             Color = Main.hslToRgb((Main.rgbToHsl(Color).X + HueShift) % 1, Main.rgbToHsl(Color).Y, Main.rgbToHsl(Color).Z);
             Opacity *= 0.98f;

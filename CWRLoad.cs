@@ -39,7 +39,8 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul
 {
-    internal static class CWRLoad {
+    internal static class CWRLoad
+    {
         #region Data
         public static bool OnLoadContentBool;
 

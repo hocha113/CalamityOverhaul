@@ -36,13 +36,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             Projectile.localAI[1] = (float)Math.Abs(Math.Sin(Projectile.timeLeft * 0.05f));
             Projectile.rotation = Projectile.velocity.ToRotation();
             if (Projectile.ai[2] > 0) {
-                    Projectile.penetrate = 1;
-                    Projectile.extraUpdates = 5;
-                    Projectile.alpha += 15;
-                    NPC target = Projectile.Center.FindClosestNPC(1800);
-                    if (target != null) {
-                        Projectile.ChasingBehavior2(target.Center, 1, 0.35f);
-                    }
+                Projectile.penetrate = 1;
+                Projectile.extraUpdates = 5;
+                Projectile.alpha += 15;
+                NPC target = Projectile.Center.FindClosestNPC(1800);
+                if (target != null) {
+                    Projectile.ChasingBehavior2(target.Center, 1, 0.35f);
+                }
             }
             else {
                 Projectile.alpha = (int)(155 + Projectile.ai[1] * 100);

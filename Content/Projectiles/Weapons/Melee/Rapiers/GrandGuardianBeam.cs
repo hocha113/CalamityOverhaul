@@ -10,7 +10,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
     internal class GrandGuardianBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Melee + "GrandGuardianGlow";
-        Vector2 setVer;
+
+        private Vector2 setVer;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
             ProjectileID.Sets.TrailingMode[Type] = 2;

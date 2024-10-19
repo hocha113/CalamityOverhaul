@@ -55,10 +55,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 position = ShootSpanPos;
             int type = ModContent.ProjectileType<VolcanicFireball>();
             for (int index = 0; index < 3; ++index) {
-                float SpeedX = velocity.X + (float)Main.rand.Next(-40, 41) * 0.05f;
-                float SpeedY = velocity.Y + (float)Main.rand.Next(-40, 41) * 0.05f;
+                float SpeedX = velocity.X + Main.rand.Next(-40, 41) * 0.05f;
+                float SpeedY = velocity.Y + Main.rand.Next(-40, 41) * 0.05f;
                 float damageMult = 0.5f;
-                
+
                 switch (index) {
                     case 0:
                     case 1:

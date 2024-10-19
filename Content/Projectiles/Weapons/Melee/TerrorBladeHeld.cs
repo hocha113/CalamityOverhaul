@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (item.CWR().MeleeCharge > TerrorBladeEcType.TerrorBladeMaxRageEnergy) {
                 item.CWR().MeleeCharge = TerrorBladeEcType.TerrorBladeMaxRageEnergy;
             }
-                
+
             Projectile.Center = player.GetPlayerStabilityCenter();
 
             if (Projectile.ai[0] > 2) {

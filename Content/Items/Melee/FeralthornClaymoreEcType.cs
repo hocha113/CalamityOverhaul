@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Main.rand.NextBool(4)) {
                 Dust.NewDust(Projectile.position, Projectile.width
                     , Projectile.height, DustID.JungleSpore);
-            } 
+            }
         }
 
         public override void Shoot() {

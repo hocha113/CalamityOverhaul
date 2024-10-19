@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 lavaFire.colors[2] = new Color(190, 80, 30, 255);// 深红金色，渐变目标
                 PRTLoader.AddParticle(lavaFire);
             }
-            
+
             for (int i = 0; i < 156; i++) {
                 Vector2 pos = Projectile.Center;
                 Vector2 particleSpeed = Main.rand.NextVector2Unit() * Main.rand.Next(13, 34);
@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     SoundEngine.PlaySound(SoundID.Item69 with { Pitch = 1.02f }, Projectile.Center);
                     SpwanPRTAndDustEffect_ShootFireShowFromProjEX();
                 }
-                
+
                 SpwanPRKAndDustEffect();
             }
 

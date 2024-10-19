@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Particles
                 colors[1] = new Color(186, 35, 24, 255);//过渡
                 colors[2] = new Color(122, 24, 36, 255);//暗，渐变目标
             }
-            
+
             if (minLifeTime == 0) {
                 minLifeTime = 90;
             }

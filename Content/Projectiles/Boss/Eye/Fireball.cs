@@ -1,15 +1,13 @@
-﻿using CalamityMod.Events;
-using CalamityOverhaul.Content.Buffs;
-
+﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System;
-using InnoVault.PRT;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.Eye
 {
@@ -52,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Eye
                 };
                 PRTLoader.AddParticle(lavaFire);
             }
-            
+
             Projectile.ai[0]++;
         }
 

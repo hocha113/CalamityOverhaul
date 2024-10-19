@@ -1,8 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
-using CalamityOverhaul;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using System;
 using System.Collections.Generic;

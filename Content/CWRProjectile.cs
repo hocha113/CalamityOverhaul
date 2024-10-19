@@ -16,7 +16,6 @@ using CalamityOverhaul.Content.RemakeItems.Vanilla;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -448,8 +447,8 @@ namespace CalamityOverhaul.Content
                     }
                     break;
                 }
-                    
-                   
+
+
                 case SpanTypesEnum.RocketLauncher: {
                     if (projectile.numHits == 0 && projectile.ai[2] > 0) {
                         if (projectile.ai[2] == 3) {
@@ -468,7 +467,7 @@ namespace CalamityOverhaul.Content
                     }
                     break;
                 }
-                    
+
                 case SpanTypesEnum.NailGun: {
                     if (projectile.numHits == 0) {
                         int newdamage = projectile.damage;
@@ -484,7 +483,7 @@ namespace CalamityOverhaul.Content
                     }
                     break;
                 }
-                    
+
                 case SpanTypesEnum.CrystalDimming: {
                     bool isSuper = Main.rand.NextBool(projectile.type == ModContent.ProjectileType<Crystal>() ? 4 : 10);
                     for (int i = 0; i < 3; i++) {
@@ -513,12 +512,12 @@ namespace CalamityOverhaul.Content
                     , Main.rand.Next(-160, 160) * 0.001f, Main.rand.Next(-160, 160) * 0.001f);
                     break;
                 }
-                    
+
                 case SpanTypesEnum.IronBow: {
                     player.AddBuff(BuffID.Ironskin, 60);
                     break;
                 }
-                    
+
                 case SpanTypesEnum.WoodenBow: {
                     if (projectile.numHits == 0) {
                         Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -13).RotatedByRandom(0.2f)
@@ -527,14 +526,14 @@ namespace CalamityOverhaul.Content
                     }
                     break;
                 }
-                    
+
                 case SpanTypesEnum.DemonBow: {
                     Projectile proj2 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, CWRUtils.randVr(0.1f)
                         , 974, projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
                     proj2.DamageType = DamageClass.Ranged;
                     break;
                 }
-                    
+
                 case SpanTypesEnum.Marrow: {
                     Projectile proj3 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -13).RotatedByRandom(0.2f)
                         , ProjectileID.Bone, projectile.damage / 3, projectile.knockBack, projectile.owner, 1);
@@ -547,7 +546,7 @@ namespace CalamityOverhaul.Content
                     }
                     break;
                 }
-                    
+
                 case SpanTypesEnum.IceBow: {
                     Projectile proj4 = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, new Vector2(0, -5).RotatedByRandom(0.2f)
                         , ModContent.ProjectileType<IceExplosionFriend>(), projectile.damage / 3, projectile.knockBack, projectile.owner, 1);

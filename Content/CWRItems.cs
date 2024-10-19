@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.TreasureBags.MiscGrabBags;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Materials;

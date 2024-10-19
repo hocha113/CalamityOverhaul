@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using Terraria;
+﻿using Terraria;
 using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -20,7 +19,7 @@ namespace CalamityOverhaul.Common
     // [https://github.com/tModLoader/tModLoader]
     internal static class TMLModifyFromeTileUtilsCode
     {
-        private static string text = 
+        private static string text =
             "// The following code is derived from the TModLoader source code:\r\n    " +
             "// [https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/ModLoader/TileLoader.cs]\r\n    " +
             "// and [https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/WorldGen.TML.cs]\r\n    " +
@@ -1718,7 +1717,7 @@ namespace CalamityOverhaul.Common
                     if (Main.tileMergeDirt[num]) {
                         TileMergeAttempt(-2, TileID.Sets.Dirt, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
                         if (num == 1) {
-                            if ((double)j > Main.rockLayer) {
+                            if (j > Main.rockLayer) {
                                 TileMergeAttemptFrametest(i, j, num, TileID.Sets.Mud, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
                             }
                             TileMergeAttemptFrametest(i, j, num, TileID.Sets.Ash, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
@@ -1851,12 +1850,12 @@ namespace CalamityOverhaul.Common
                                 }
                             }
                             else {
-                                if ((double)j > Main.rockLayer) {
+                                if (j > Main.rockLayer) {
                                     TileMergeAttempt(-2, 1, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
                                 }
                                 TileMergeAttempt(num, TileID.Sets.GrassSpecial, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
                                 TileMergeAttemptFrametest(i, j, num, TileID.Sets.JungleSpecial, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
-                                if ((double)j < Main.rockLayer) {
+                                if (j < Main.rockLayer) {
                                     TileMergeAttemptFrametest(i, j, num, TileID.Sets.Dirt, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
                                 }
                                 else {

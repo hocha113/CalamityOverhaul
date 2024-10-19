@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -485,7 +484,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 Projectile.spriteDirection = Owner.direction;
             }
             if (canSetOwnerArmBver) {
-                Owner.SetCompositeArmFront(true, Length >= 80 ? 
+                Owner.SetCompositeArmFront(true, Length >= 80 ?
                     Player.CompositeArmStretchAmount.Full : Player.CompositeArmStretchAmount.Quarter
                     , (ownerCenter - Projectile.Center).ToRotation() + MathHelper.PiOver2);
             }
@@ -494,7 +493,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             }
 
             float toOwnerRoding = (Projectile.Center - ownerCenter).ToRotation();
-            Projectile.rotation = Projectile.spriteDirection == 1 ? 
+            Projectile.rotation = Projectile.spriteDirection == 1 ?
                 toOwnerRoding + MathHelper.PiOver4 : toOwnerRoding - MathHelper.Pi - MathHelper.PiOver4;
         }
 
@@ -507,7 +506,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             }
         }
         public virtual void NoServUpdate() {
-            
+
         }
 
         /// <summary>
@@ -617,7 +616,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 , DepthStencilState.Default, RasterizerState.CullNone);
 
             Matrix projection = Matrix.CreateOrthographicOffCenter(0f, Main.screenWidth, Main.screenHeight, 0f, 0f, 1f);
-            Matrix model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0f)) 
+            Matrix model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0f))
                 * Main.GameViewMatrix.TransformationMatrix;
             Effect effect = CWRUtils.GetEffectValue("KnifeDistortion");
             effect.Parameters["uTransform"].SetValue(model * projection);
@@ -643,7 +642,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 if (oldRotate[i] != 100f) {
                     count += 1f;
                 }
-            }     
+            }
         }
         /// <summary>
         /// 在逻辑帧<see cref="PreUpdate"/>中被最后调用，用于更新弧光相关的点数据

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles.Van
             if (modifiers.SuperArmor || target.defense > 999
                 || target.Calamity().DR >= 0.95f || target.Calamity().unbreakableDR) {
                 return;
-            } 
+            }
             modifiers.DefenseEffectiveness *= 0f;
         }
 
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles.Van
                 color = Color.Yellow;
             }
 
-            if (TargetID == ItemID.WhitePhasesaber 
+            if (TargetID == ItemID.WhitePhasesaber
                 || TargetID == ItemID.PurplePhasesaber
                 || TargetID == ItemID.OrangePhasesaber
                 || TargetID == ItemID.BluePhasesaber
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles.Van
                     LoadTrailCountData();
                 }
             }
-            
+
             LoadGradientTex();
         }
 

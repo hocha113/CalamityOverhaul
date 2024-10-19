@@ -1,12 +1,11 @@
 ﻿using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Terraria.DataStructures;
-using Terraria.ModLoader;
 using Terraria;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
+using Terraria.DataStructures;
 using Terraria.ID;
-using CalamityMod.Projectiles.Melee;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {

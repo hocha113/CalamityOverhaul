@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
                 Projectile.NewProjectile(Source, spwanPos, Vector2.Zero
                     , ModContent.ProjectileType<RebelBladeOrb>(), Item.damage / 5, 0, Owner.whoAmI);
                 Owner.ownedProjectileCounts[type]++;
-        }
+            }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {

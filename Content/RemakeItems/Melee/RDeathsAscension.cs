@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             item.SetKnifeHeld<DeathsAscensionHeld>();
         }
-        
+
         public override bool? On_UseItem(Item item, Player player) => true;
 
         public override bool? On_CanUseItem(Item item, Player player) {

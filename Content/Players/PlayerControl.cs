@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Players
         public override bool? CanSwitchWeapon(Player player) {
             if (player.CWR().DontSwitchWeaponTime > 0) {
                 return false;
-            }           
+            }
             return null;
         }
     }

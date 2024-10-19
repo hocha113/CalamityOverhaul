@@ -2,7 +2,6 @@ global using Microsoft.Xna.Framework;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;

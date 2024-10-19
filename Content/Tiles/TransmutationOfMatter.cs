@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.Width = Width;
             TileObjectData.newTile.Height = Height;
             TileObjectData.newTile.Origin = new Point16(OriginOffsetX, OriginOffsetY);
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile 
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
                 | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
 
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };

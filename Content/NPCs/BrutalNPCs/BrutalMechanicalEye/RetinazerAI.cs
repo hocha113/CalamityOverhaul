@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Content.NPCs.Core;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye

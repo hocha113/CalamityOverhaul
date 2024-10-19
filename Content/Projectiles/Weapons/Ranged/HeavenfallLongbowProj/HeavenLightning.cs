@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Graphics.Primitives;
-using CalamityOverhaul;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Ranged.Extras;

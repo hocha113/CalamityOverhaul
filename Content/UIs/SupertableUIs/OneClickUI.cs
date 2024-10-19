@@ -6,8 +6,6 @@ using System.Linq;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
@@ -33,7 +31,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         private int useMuse3AddCount;
         private bool onMainP;
         private bool checkSetO => GetType() != typeof(OneClickUI);
-        
+
         public override void Update() {
             // 更新当前绘制位置和矩形
             DrawPosition = mainUI.DrawPosition + offsetDraw;

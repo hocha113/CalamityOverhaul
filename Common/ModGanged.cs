@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Common
 
         public static MethodBase calamityUtils_GetReworkedReforge_Method;
 
-        internal static bool InfernumModeOpenState => 
+        internal static bool InfernumModeOpenState =>
             CWRMod.Instance.infernum == null ? false : (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
         #endregion
         public static Type[] GetModType(Mod mod) {
@@ -106,14 +106,19 @@ namespace CalamityOverhaul.Common
             return reset;
         }
 
-        static string text1 => CWRUtils.Translation("未成功加载", "Failed load");
-        static string text2 => CWRUtils.Translation("是否是", "whether it is");
-        static string text3 => CWRUtils.Translation("已经改动?", "Has it been changed?");
-        static string text4 => CWRUtils.Translation("未加载模组", "The mod is not loaded");
-        static void Domp1(string value1, string value2) {
+        private static string text1 => CWRUtils.Translation("未成功加载", "Failed load");
+
+        private static string text2 => CWRUtils.Translation("是否是", "whether it is");
+
+        private static string text3 => CWRUtils.Translation("已经改动?", "Has it been changed?");
+
+        private static string text4 => CWRUtils.Translation("未加载模组", "The mod is not loaded");
+
+        private static void Domp1(string value1, string value2) {
             CWRMod.Instance.Logger.Info($"{text1} {value1} {text2} {value2} {text3}");
         }
-        static void Domp2(string value1) {
+
+        private static void Domp2(string value1) {
             CWRMod.Instance.Logger.Info($"{text4} {value1}");
         }
 
@@ -473,7 +478,7 @@ namespace CalamityOverhaul.Common
             if (recursionCraftingDepthNum == 0) {
                 return false;
             }
-            
+
             MS_Config_recursionCraftingDepth_FieldInfo.SetValue(modConfig, 0);
             return true;
         }

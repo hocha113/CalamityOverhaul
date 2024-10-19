@@ -11,14 +11,12 @@ using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
-using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Utilities;
 using static Terraria.ID.ContentSamples.CreativeHelper;
 
 namespace CalamityOverhaul.Content.Items.Rogue.Extras

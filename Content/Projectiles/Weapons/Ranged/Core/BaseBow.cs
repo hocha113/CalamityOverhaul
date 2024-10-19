@@ -297,7 +297,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 if (!CWRServerConfig.Instance.WeaponAdaptiveIllumination && CanFire) {
                     color = Color.White;
                 }
-                
+
                 BowDraw(drawPos, ref color);
             }
 

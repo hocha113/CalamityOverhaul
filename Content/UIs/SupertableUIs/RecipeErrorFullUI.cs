@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public Rectangle MainRec;
         public bool onMainP;
         public bool eyEBool;
-        
+
         public override void Load() => Instance = this;
         void ICWRLoader.UnLoadData() => Instance = null;
         public override void Update() {

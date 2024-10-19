@@ -6,7 +6,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
@@ -43,12 +42,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (InItemDrawRecipe.Instance.DrawBool) {
                 if (offset.Y > -30) {
                     offset.Y -= 5;
-                } 
+                }
             }
             else {
                 if (offset.Y < 0) {
                     offset.Y += 5;
-                }   
+                }
                 if (offset.Y >= 0) {
                     DrawPosition = Main.MouseScreen + new Vector2(40, -12);
                 }

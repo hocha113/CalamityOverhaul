@@ -2,7 +2,6 @@
 using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Rarities;
-using CalamityOverhaul;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using Microsoft.Xna.Framework.Input;
 using System;

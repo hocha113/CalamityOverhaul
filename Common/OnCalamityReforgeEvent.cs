@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Common
                 ];
                 prefix = IteratePrefix(rand, accessoryReforgeTiers, currentPrefix);
             }
-            else if (item.CountsAsClass<MeleeDamageClass>() || item.CountsAsClass<MeleeRangedHybridDamageClass>() 
+            else if (item.CountsAsClass<MeleeDamageClass>() || item.CountsAsClass<MeleeRangedHybridDamageClass>()
                 || item.CountsAsClass<SummonMeleeSpeedDamageClass>()) // 近战
             {
                 int[][] meleeReforgeTiers;
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Common
                     [PrefixID.Legendary2]
                     ];
                 }
-                else if (PrefixLegacy.ItemSets.SwordsHammersAxesPicks[item.type] 
+                else if (PrefixLegacy.ItemSets.SwordsHammersAxesPicks[item.type]
                     || (item.ModItem != null && OverWeaponFixMeleePerg(item))) // 剑、锤子、斧头、镐子等
                 {
                     meleeReforgeTiers =
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Common
                     [PrefixID.Demonic, PrefixID.Deadly2, PrefixID.Godly],
                     [PrefixID.Legendary]
                     ];
-                    
+
                     if (item.IsTool()) {//我暂时没能考虑到这一点，原灾厄考虑到了，所以便补上这个，对于工具来讲，轻和传奇是一样重要的，在最后一行添加上轻的标签让一切看起来显得合理
                         meleeReforgeTiers =
                         [

@@ -9,7 +9,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.Flamarang].Value;
-        bool onHit = true;
+
+        private bool onHit = true;
         public override void SetThrowable() {
             CWRUtils.SafeLoadItem(ItemID.Flamarang);
             HandOnTwringMode = -30;

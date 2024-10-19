@@ -1,12 +1,9 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Tools;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Newtonsoft.Json.Linq;
-using Stubble.Core.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,7 +97,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public static List<RecipeData> AllRecipes = [];
         #endregion
-        
+
         public override void Load() => Instance = this;
         void ICWRLoader.SetupData() {
             LoadRecipe();
@@ -302,7 +299,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (int.TryParse(key, out int intValue)) {
                 if (loadVanillaItem && !CWRUtils.isServer) {
                     Main.instance.LoadItem(intValue);
-                } 
+                }
                 return new Item(intValue);
             }
             else {
@@ -368,7 +365,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                         goto End;
                     }
                 }
-                
+
                 Item item = new Item(fullItemTypes[fullItemTypes.Length - 1]);//获取预装填集合的末尾物品，末尾物品就是输出结果
                 if (item != null && item.type != ItemID.None && item.CWR().isInfiniteItem) {//如果这个物品是会湮灭的无尽物品，将其稳定性设置为稳定，即不发生湮灭
                     item.CWR().noDestruct = true;
@@ -501,7 +498,7 @@ End:;
                             items[i].stack -= inputItem.stack;
                             if (items[i].stack <= 0) {
                                 items[i] = new Item();
-                            }  
+                            }
                         }
                     }
 
@@ -517,7 +514,7 @@ End:;
                                 items[i].stack -= inputItem.stack;
                                 if (items[i].stack <= 0) {
                                     items[i] = new Item();
-                                }   
+                                }
                             }
                         }
 
@@ -756,7 +753,7 @@ End:;
                     }
                 }
             }
-            
+
             Texture2D arrow = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/InputArrow2");
             if (inputItem != null && inputItem?.type != 0) {//如果输出格有物品，那么将它画出来
                 DrawItemIcons(spriteBatch, inputItem, DrawPosition + new Vector2(552, 215), overSlp: 1.5f);

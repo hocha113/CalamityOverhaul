@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items;
+﻿using CalamityMod.Items;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using CalamityOverhaul.Content.RemakeItems.Core;

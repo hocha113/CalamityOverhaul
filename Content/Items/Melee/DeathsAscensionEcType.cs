@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , player.whoAmI, 0, 0, 1);
                 return false;
             }
-            
+
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback
                 , player.whoAmI, swingIndex % 2 == 0 ? 0 : 1, swingIndex + 1);
             return false;

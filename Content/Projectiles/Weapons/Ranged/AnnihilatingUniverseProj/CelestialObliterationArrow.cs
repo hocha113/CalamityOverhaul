@@ -5,8 +5,6 @@ using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
-
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

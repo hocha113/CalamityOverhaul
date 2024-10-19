@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 ver = (spwanPos.To(InMousePos)).UnitVector() * 26;
                 ver = ver.RotatedByRandom(0.2f);
                 ver *= Main.rand.NextFloat(0.6f, 1.33f);
-                Projectile.NewProjectile(Source, spwanPos, ver, type, Projectile.damage, Projectile.knockBack, Owner.whoAmI, 0f, (float)Main.rand.Next(10));
+                Projectile.NewProjectile(Source, spwanPos, ver, type, Projectile.damage, Projectile.knockBack, Owner.whoAmI, 0f, Main.rand.Next(10));
             }
         }
 

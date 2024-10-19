@@ -1,11 +1,8 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
+﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 

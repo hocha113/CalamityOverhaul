@@ -8,7 +8,6 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
@@ -48,7 +47,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             onR = rAow.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
             onL = lAow.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
         }
-        
+
         public override void Load() => Instance = this;
         void ICWRLoader.UnLoadData() => Instance = null;
         public static void LoadAllRecipes() {
@@ -101,7 +100,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 if (SupertableUI.Instance.inputItem == null) { //如果输出物品是Null，进行初始化防止空报错
                     SupertableUI.Instance.inputItem = new Item();
                 }
-                    
+
                 if (SupertableUI.Instance.inputItem.type != ItemID.None && SupertableUI.Instance.StaticFullItemNames != null) {//如果输出物品不是空物品，进行遍历检测预装填列表
                     for (int i = 0; i < itemNameString_FormulaContent_Values.Count; i++) {
                         string[] formulaContent_Values = itemNameString_FormulaContent_Values[i];

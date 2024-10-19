@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     float speedX = spawnDist.X + Main.rand.NextFloat(-0.8f, 0.8f);
                     float speedY = spawnDist.Y + Main.rand.NextFloat(-0.8f, 0.8f);
                     int projectileType = GetProjectileTypeByIndex(j);
-                    Projectile.NewProjectile(Source, spawnPos.X, spawnPos.Y, speedX, speedY, projectileType, damage / 2, knockback, player.whoAmI, 0f, (float)Main.rand.Next(5 - j * 2));
+                    Projectile.NewProjectile(Source, spawnPos.X, spawnPos.Y, speedX, speedY, projectileType, damage / 2, knockback, player.whoAmI, 0f, Main.rand.Next(5 - j * 2));
                 }
             }
         }

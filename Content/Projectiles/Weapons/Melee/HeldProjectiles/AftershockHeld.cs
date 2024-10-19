@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override int TargetID => ModContent.ItemType<Aftershock>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
         public override string gradientTexturePath => CWRConstant.ColorBar + "Aftershock_Bar";
-        bool canShoot2;
+
+        private bool canShoot2;
         public override void SetKnifeProperty() {
             Projectile.width = Projectile.height = 86;
             IgnoreImpactBoxSize = true;
@@ -61,7 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Vector2 velocity = (destination - position).SafeNormalize(Vector2.UnitY) * ShootSpeed * Main.rand.NextFloat(0.9f, 1.1f);
                 int rockDamage = Projectile.damage;
                 Projectile.NewProjectile(Source, position, velocity, ModContent.ProjectileType<AftershockRock>()
-                    , rockDamage, hit.Knockback, Owner.whoAmI, 0f, (float)Main.rand.Next(10), target.Center.Y);
+                    , rockDamage, hit.Knockback, Owner.whoAmI, 0f, Main.rand.Next(10), target.Center.Y);
             }
         }
 
@@ -74,7 +75,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 Vector2 velocity = (destination - position).SafeNormalize(Vector2.UnitY) * ShootSpeed * Main.rand.NextFloat(0.9f, 1.1f);
                 int rockDamage = Projectile.damage;
                 Projectile.NewProjectile(Source, position, velocity, ModContent.ProjectileType<AftershockRock>()
-                    , rockDamage, info.Knockback, Owner.whoAmI, 0f, (float)Main.rand.Next(10), target.Center.Y);
+                    , rockDamage, info.Knockback, Owner.whoAmI, 0f, Main.rand.Next(10), target.Center.Y);
             }
         }
     }

@@ -7,7 +7,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
-using System.Buffers;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

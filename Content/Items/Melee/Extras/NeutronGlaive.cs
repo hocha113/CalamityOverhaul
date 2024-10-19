@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
@@ -7,9 +6,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -112,7 +109,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
                 Projectile.NewProjectile(Source, target.Center, Vector2.Zero
                 , ModContent.ProjectileType<NeutronExplode>(), Projectile.damage / 2, 0);
             }
-            
+
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
@@ -120,7 +117,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
                 Projectile.NewProjectile(Source, target.Center, Vector2.Zero
                 , ModContent.ProjectileType<NeutronExplode>(), Projectile.damage / 2, 0);
             }
-                
+
         }
 
         bool IDrawWarp.canDraw() => true;

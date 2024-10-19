@@ -12,7 +12,6 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
-using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -85,7 +84,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            if ((head.ai[1] == 1 || head.ai[1] == 2 || head.CWR().NPCOverride.ai[10] > 0) 
+            if ((head.ai[1] == 1 || head.ai[1] == 2 || head.CWR().NPCOverride.ai[10] > 0)
                 && head.CWR().NPCOverride.ai[11] >= 1 && setPosingStarmCount <= 0) {
                 float rCurrentNPCRotation = rCurrentNPC.rotation;
                 Vector2 drawPos = rCurrentNPC.Center + (rCurrentNPCRotation + MathHelper.PiOver2).ToRotationVector2() * -120;
@@ -327,7 +326,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.SyncExtraAI();
             }
         }
-        
+
         public override void SetProperty() {
             ai0 = ai1 = ai2 = ai3 = ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = ai11 = 0;
             setPosingStarmCount = 0;
@@ -458,7 +457,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.life = 1;
                 npc.Center = player.Center + new Vector2(0, 1200);
             }
-            
+
             npc.damage = 0;
             npc.dontTakeDamage = true;
 

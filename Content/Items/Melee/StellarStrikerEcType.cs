@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 1);
                 return false;
             }
-            
+
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
             return false;
         }
