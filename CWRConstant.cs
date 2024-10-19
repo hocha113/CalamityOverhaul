@@ -48,6 +48,5 @@ namespace CalamityOverhaul
         public const string githubUrl = "https://github.com/hocha113/CalamityOverhaul";
 
         public static bool ForceReplaceResetContent => CWRServerConfig.Instance.ForceReplaceResetContent;
-        public static bool WeaponEnhancementSystem => CWRServerConfig.Instance.WeaponEnhancementSystem;
     }
 }

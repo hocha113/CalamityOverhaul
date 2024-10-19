@@ -27,12 +27,13 @@ namespace CalamityOverhaul.Common.Effects
         internal static RenderTarget2D screen;
         internal static float twistStrength = 0f;
 
-        public static void LoadRegularShaders(AssetRepository assets) {
-            Asset<Effect> getEffect(string key) => assets.Request<Effect>(CWRConstant.noEffects + key, AssetRequestMode.AsyncLoad);
-            void loadFiltersEffect(string filtersKey, string filename, string passname) {
-                Asset<Effect> asset = getEffect(filename);
-                Filters.Scene[filtersKey] = new Filter(new(asset, passname), EffectPriority.VeryHigh);
-            }
+        private static Asset<Effect> getEffect(string key) => CWRMod.Instance.Assets.Request<Effect>(CWRConstant.noEffects + key, AssetRequestMode.AsyncLoad);
+        private static void loadFiltersEffect(string filtersKey, string filename, string passname) {
+            Asset<Effect> asset = getEffect(filename);
+            Filters.Scene[filtersKey] = new Filter(new(asset, passname), EffectPriority.VeryHigh);
+        }
+
+        public static void LoadRegularShaders() {
             //Effect实例的获取被修改，它不再需要存储一个外置的字段值，因为这实际上毫无作用，使用CWRUTils.GetEffectValue()来获取这些实例
             loadFiltersEffect("CWRMod:powerSFShader", "PowerSFShader", "PowerSFShaderPass");
             loadFiltersEffect("CWRMod:warpShader", "WarpShader", "PrimitivesPass");
@@ -41,12 +42,11 @@ namespace CalamityOverhaul.Common.Effects
             loadFiltersEffect("CWRMod:twistColoringShader", "TwistColoring", "TwistColoringPass");
             loadFiltersEffect("CWRMod:knifeRendering", "KnifeRendering", "KnifeRenderingPass");
             loadFiltersEffect("CWRMod:knifeDistortion", "KnifeDistortion", "KnifeDistortionPass");
-
             StreamerDustShader = new ArmorShaderData(getEffect("StreamerDust"), "StreamerDustPass");
             InShootGlowShader = new ArmorShaderData(getEffect("InShootGlow"), "InShootGlowPass");
         }
 
-        void ICWRLoader.LoadAsset() => LoadRegularShaders(CWRMod.Instance.Assets);
+        void ICWRLoader.LoadAsset() => LoadRegularShaders();
 
         void ICWRLoader.LoadData() {
             Instance = this;

@@ -29,19 +29,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             Projectile.usesLocalNPCImmunity = true;
         }
 
+        private void Spwan() {
+            RayPoint = new Vector2[pointNum];
+            for (int i = 0; i < pointNum; i++) {
+                RayPoint[i] = Projectile.velocity.ToRotation().ToRotationVector2() * (-pointNum * 30 + 60 * i) + Projectile.Center;
+            }
+            foreach (Vector2 pos in RayPoint) {
+                BasePRT pulse = new PRT_DWave(pos - Projectile.velocity * 0.52f, Projectile.velocity / 1.5f, Color.Blue, new Vector2(1f, 2f), Projectile.velocity.ToRotation(), 0.52f, 0.06f, 90);
+                PRTLoader.AddParticle(pulse);
+                BasePRT pulse2 = new PRT_DWave(pos - Projectile.velocity * 0.40f, Projectile.velocity / 1.5f * 0.9f, Color.Gold, new Vector2(0.8f, 1.5f), Projectile.velocity.ToRotation(), 0.28f, 0.02f, 80);
+                PRTLoader.AddParticle(pulse2);
+            }
+        }
+
         public override bool PreAI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
             if (Projectile.ai[0] == 0) {
-                RayPoint = new Vector2[pointNum];
-                for (int i = 0; i < pointNum; i++) {
-                    RayPoint[i] = Projectile.velocity.ToRotation().ToRotationVector2() * (-pointNum * 30 + 60 * i) + Projectile.Center;
-                }
-                foreach (Vector2 pos in RayPoint) {
-                    BasePRT pulse = new PRT_DWave(pos - Projectile.velocity * 0.52f, Projectile.velocity / 1.5f, Color.Blue, new Vector2(1f, 2f), Projectile.velocity.ToRotation(), 0.52f, 0.06f, 90);
-                    PRTLoader.AddParticle(pulse);
-                    BasePRT pulse2 = new PRT_DWave(pos - Projectile.velocity * 0.40f, Projectile.velocity / 1.5f * 0.9f, Color.Gold, new Vector2(0.8f, 1.5f), Projectile.velocity.ToRotation(), 0.28f, 0.02f, 80);
-                    PRTLoader.AddParticle(pulse2);
-                }
+                Spwan();
                 Projectile.ai[0] = 1;
             }
             if (Projectile.timeLeft > 60) {

@@ -42,58 +42,98 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         }
 
         public override void AI() {
+            // 更新弹幕旋转方向
             Projectile.rotation = Projectile.velocity.ToRotation();
 
+            // 如果不是服务器模式，创建粒子效果
             if (Main.netMode != NetmodeID.Server) {
-                Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
-                BasePRT spark = new PRT_Spark(Projectile.Center - Projectile.velocity * 8f, -Projectile.velocity * 0.1f, false, 9, 2.3f, color * 0.1f);
-                PRTLoader.AddParticle(spark);
+                CreateSparkEffect();
             }
-            if (Time > (Projectile.Calamity().stealthStrike ? 0 : 60)) {
-                for (int i = 0; i < Main.maxNPCs; i++) {
-                    if (Main.npc[i].CanBeChasedBy(Projectile.GetSource_FromThis(), false))
-                        NPCDestination = Main.npc[i].Center + Main.npc[i].velocity * 5f;
-                }
 
-                TimeUnderground++;
-                Vector3 DustLight = new Vector3(0.171f, 0.124f, 0.086f);
-                Lighting.AddLight(Projectile.Center + Projectile.velocity, DustLight * 4);
-                if (Time % 15 == 0 && TimeUnderground < 120) {
-                    SoundEngine.PlaySound(SoundID.WormDig with { Volume = 0.7f, Pitch = 0.2f }, Projectile.Center);
-                }
-                float returnSpeed = 10;
-                float acceleration = 0.2f;
-                float xDist = NPCDestination.X - Projectile.Center.X;
-                float yDist = NPCDestination.Y - Projectile.Center.Y;
-                float dist = (float)Math.Sqrt(xDist * xDist + yDist * yDist);
-                dist = returnSpeed / dist;
-                xDist *= dist;
-                yDist *= dist;
-                float targetDist = Vector2.Distance(NPCDestination, Projectile.Center);
-                if (targetDist < 1800 && TimeUnderground > 25) {
-                    if (Projectile.velocity.X < xDist) {
-                        Projectile.velocity.X = Projectile.velocity.X + acceleration;
-                        if (Projectile.velocity.X < 0f && xDist > 0f)
-                            Projectile.velocity.X += acceleration;
-                    }
-                    else if (Projectile.velocity.X > xDist) {
-                        Projectile.velocity.X = Projectile.velocity.X - acceleration;
-                        if (Projectile.velocity.X > 0f && xDist < 0f)
-                            Projectile.velocity.X -= acceleration;
-                    }
-                    if (Projectile.velocity.Y < yDist) {
-                        Projectile.velocity.Y = Projectile.velocity.Y + acceleration;
-                        if (Projectile.velocity.Y < 0f && yDist > 0f)
-                            Projectile.velocity.Y += acceleration;
-                    }
-                    else if (Projectile.velocity.Y > yDist) {
-                        Projectile.velocity.Y = Projectile.velocity.Y - acceleration;
-                        if (Projectile.velocity.Y > 0f && yDist < 0f)
-                            Projectile.velocity.Y -= acceleration;
-                    }
+            // 如果时间超过某个值，执行相关行为
+            if (Time > (Projectile.Calamity().stealthStrike ? 0 : 60)) {
+                TrackNearestNPC();
+                UpdateUndergroundBehavior();
+            }
+
+            // 增加计时
+            Time++;
+        }
+
+        private void CreateSparkEffect() {
+            Color color = Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat(0.3f, 0.64f));
+            BasePRT spark = new PRT_Spark(Projectile.Center - Projectile.velocity * 8f, -Projectile.velocity * 0.1f, false, 9, 2.3f, color * 0.1f);
+            PRTLoader.AddParticle(spark);
+        }
+
+        private void TrackNearestNPC() {
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                if (Main.npc[i].CanBeChasedBy(Projectile.GetSource_FromThis(), false)) {
+                    NPCDestination = Main.npc[i].Center + Main.npc[i].velocity * 5f;
                 }
             }
-            Time++;
+        }
+
+        private void UpdateUndergroundBehavior() {
+            TimeUnderground++;
+
+            // 添加光照效果
+            Vector3 DustLight = new Vector3(0.171f, 0.124f, 0.086f);
+            Lighting.AddLight(Projectile.Center + Projectile.velocity, DustLight * 4);
+
+            // 播放地下声音
+            if (Time % 15 == 0 && TimeUnderground < 120) {
+                SoundEngine.PlaySound(SoundID.WormDig with { Volume = 0.7f, Pitch = 0.2f }, Projectile.Center);
+            }
+
+            // 处理弹幕速度调整
+            AdjustProjectileVelocity();
+        }
+
+        private void AdjustProjectileVelocity() {
+            float returnSpeed = 10;
+            float acceleration = 0.2f;
+
+            // 计算NPC的距离和方向
+            float xDist = NPCDestination.X - Projectile.Center.X;
+            float yDist = NPCDestination.Y - Projectile.Center.Y;
+            float dist = (float)Math.Sqrt(xDist * xDist + yDist * yDist);
+            dist = returnSpeed / dist;
+
+            xDist *= dist;
+            yDist *= dist;
+
+            // 如果NPC在距离内且弹幕在地下停留了一段时间
+            if (Vector2.Distance(NPCDestination, Projectile.Center) < 1800 && TimeUnderground > 25) {
+                AdjustVelocityTowardsTarget(xDist, yDist, acceleration);
+            }
+        }
+
+        private void AdjustVelocityTowardsTarget(float xDist, float yDist, float acceleration) {
+            if (Projectile.velocity.X < xDist) {
+                Projectile.velocity.X = AdjustVelocity(Projectile.velocity.X, xDist, acceleration);
+            }
+            else if (Projectile.velocity.X > xDist) {
+                Projectile.velocity.X = AdjustVelocity(Projectile.velocity.X, xDist, -acceleration);
+            }
+
+            if (Projectile.velocity.Y < yDist) {
+                Projectile.velocity.Y = AdjustVelocity(Projectile.velocity.Y, yDist, acceleration);
+            }
+            else if (Projectile.velocity.Y > yDist) {
+                Projectile.velocity.Y = AdjustVelocity(Projectile.velocity.Y, yDist, -acceleration);
+            }
+        }
+
+        private float AdjustVelocity(float velocity, float target, float adjustment) {
+            velocity += adjustment;
+            if (velocity < 0f && target > 0f) {
+                velocity += adjustment;
+            }
+            else if (velocity > 0f && target < 0f) {
+                velocity -= adjustment;
+            }
+            return velocity;
         }
 
         public static void SpanDimensionalWave(Vector2 spanPos, Vector2 vr, Color color1, Color color2, float starS, float endS, float starS2, float endS2) {
@@ -130,21 +170,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
                     Projectile.Explode(90, DevourerofGodsHead.DeathAnimationSound);
                     target.AddBuff(ModContent.BuffType<GodSlayerInferno>(), 300);
                 }
-                /*这段被注释掉的代码实现的效果非常有意思
-                for (int i = 0; i < 4; i++) {
-                    float rot = MathHelper.PiOver2 * i;
-                    Vector2 vr = rot.ToRotationVector2() * 10;
-                    for (int j = 0; j < 16; j++) {
-                        float slp = j / 16f;
-                        float slp2 = 16f / j;
-                        Vector2 spanPos = Projectile.Center + rot.ToRotationVector2() * 64 * j;
-                        CWRParticle pulse = new DimensionalWave(spanPos - vr * 0.52f, vr / 1.5f, Color.Fuchsia, new Vector2(1f, 2f), vr.ToRotation(), 0.82f * slp, 0.32f * slp2, 60);
-                        CWRParticleHandler.SpawnParticle(pulse);
-                        CWRParticle pulse2 = new DimensionalWave(spanPos - vr * 0.40f, vr / 1.5f * 0.9f, Color.Aqua, new Vector2(0.8f, 1.5f), vr.ToRotation(), 0.58f * slp, 0.28f * slp2, 50);
-                        CWRParticleHandler.SpawnParticle(pulse2);
-                    }
-                }
-                */
             }
 
             if (!Projectile.Calamity().stealthStrike) {
