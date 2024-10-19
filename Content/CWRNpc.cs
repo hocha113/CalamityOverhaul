@@ -279,13 +279,14 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot) {
-            if (npc.type == CWRLoad.Polterghast) {
-                npcLoot.DefineConditionalDropSet(CWRDorp.InHellDropRule).Add(ModContent.ItemType<GhostFireWhip>());
-            }
-            else if (npc.type == CWRLoad.Yharon) {
-                npcLoot.DefineConditionalDropSet(CWRDorp.GlodDragonDropRule).Add(CWRDorp.Quantity(ModContent.ItemType<AuricBar>(), 1, 36, 57, 77, 158));
-            }
-            else if (npc.type == CWRLoad.DevourerofGodsHead) {
+            //TODO 这里的掉落规则十分落后，等待重做
+            //if (npc.type == CWRLoad.Polterghast) {
+            //    npcLoot.DefineConditionalDropSet(CWRDorp.InHellDropRule).Add(ModContent.ItemType<GhostFireWhip>());
+            //}
+            //else if (npc.type == CWRLoad.Yharon) {
+            //    npcLoot.DefineConditionalDropSet(CWRDorp.GlodDragonDropRule).Add(CWRDorp.Quantity(ModContent.ItemType<AuricBar>(), 1, 36, 57, 77, 158));
+            //}
+            if (npc.type == CWRLoad.DevourerofGodsHead) {
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<Ataraxia>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
                 npcLoot.Add(DropHelper.PerPlayer(ModContent.ItemType<Nadir>(), denominator: 3, minQuantity: 1, maxQuantity: 1));
             }
