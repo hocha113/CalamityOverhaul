@@ -3648,16 +3648,6 @@ Configs: {
 				'''
 		}
 
-		MurasamaScaleOffset: {
-			Label: 鬼妖村正大小调节
-			Tooltip:
-				'''
-				一个额外的挥刀范围矫正因子，单位以百分比%为基准
-				设置这个用于一些特殊需求，一般保持为100%大小即可
-				拉动这个滑块调节百分比数据，最大为100%，为原大小，最小为20%
-				'''
-		}
-
 		ScreenVibration: {
 			Label: 武器特殊攻击屏幕振动效果
 			Tooltip: 如果开启，在进行一些攻击时会让屏幕发生振动，这或许可以让打击感更加强烈
@@ -3817,6 +3807,11 @@ Configs: {
 				用于调试和观察TileModule的碰撞结构，
 				开启后，TileModule会在世界中绘制出自身的碰撞箱体、类型名等数据
 				'''
+		}
+
+		MuraStyleType: {
+			Label: 鬼妖村正UI样式选择
+			Tooltip: ""
 		}
 	}
 }

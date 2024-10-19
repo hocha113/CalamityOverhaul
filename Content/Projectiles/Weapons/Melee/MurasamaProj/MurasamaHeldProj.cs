@@ -40,21 +40,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private int maxFrame = 6;
         internal int noAttenuationTime;
         private static int breakOutType;
-        private static Asset<Texture2D> MuraBarBottom;
-        private static Asset<Texture2D> MuraBarTop;
-        private static Asset<Texture2D> MuraBarFull;
         void ICWRLoader.SetupData() => breakOutType = ModContent.ProjectileType<MurasamaBreakOut>();
-        void ICWRLoader.LoadAsset() {
-            MuraBarBottom = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarBottom");
-            MuraBarTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarTop");
-            MuraBarFull = CWRUtils.GetT2DAsset(CWRConstant.UI + "MuraBarFull");
-        }
-        void ICWRLoader.UnLoadData() {
-            breakOutType = 0;
-            MuraBarBottom = null;
-            MuraBarTop = null;
-            MuraBarFull = null;
-        }
+        void ICWRLoader.UnLoadData() => breakOutType = 0;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
@@ -334,27 +321,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
         }
 
-        public override void PostDraw(Color lightColor) {
-            float scale = 1;
-            if (!(risingDragon <= 0f) || uiAlape > 0) {//这是一个通用的进度条绘制，用于判断进度
-                Texture2D barBG = MuraBarBottom.Value;
-                Texture2D barFG = MuraBarTop.Value;
-                Vector2 barOrigin = barBG.Size() * 0.5f;
-                Vector2 drawPos = Owner.GetPlayerStabilityCenter() + new Vector2(0, -90) - Main.screenPosition;
-                Color color = Color.White * uiAlape;
-                if (risingDragon < MurasamaEcType.GetOnRDCD) {
-                    Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / (float)MurasamaEcType.GetOnRDCD * barFG.Width), barFG.Height);
-                    Main.spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale, 0, 0f);
-                    Main.spriteBatch.Draw(barFG, drawPos + new Vector2(12, 42), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
-                }
-                else {
-                    barBG = MuraBarFull.Value;
-                    Rectangle rectangle = CWRUtils.GetRec(barBG, uiFrame, maxFrame);
-                    Main.spriteBatch.Draw(barBG, drawPos
-                        , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
-                }
-            }
-        }
+        public override void PostDraw(Color lightColor) => MuraChargeUI.Instance.DrawOverheadSorwdBar(Owner, risingDragon, uiFrame, maxFrame);
 
         public override bool PreDraw(ref Color lightColor) {
             if (!CWRServerConfig.Instance.WeaponHandheldDisplay && !(DownLeft || DownRight)) {

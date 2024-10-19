@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.Calamity().timesPierced = 0;
             Player player = Main.player[Projectile.owner];
             if (time == 0) {
-                Projectile.scale = (MurasamaEcType.NameIsSam(player) ? 1.65f : MurasamaEcType.GetOnScale) * MurasamaEcType.ScaleOffset_PercentageValue;
+                Projectile.scale = (MurasamaEcType.NameIsSam(player) ? 1.65f : MurasamaEcType.GetOnScale);
                 Projectile.scale *= GetMuraSizeInMeleeSengs(Owner);
                 Projectile.frame = Main.zenithWorld ? 6 : 10;
                 Projectile.alpha = 0;

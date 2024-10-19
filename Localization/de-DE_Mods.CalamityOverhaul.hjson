@@ -3629,16 +3629,6 @@ Configs: {
 				'''
 		}
 
-		MurasamaScaleOffset: {
-			Label: Einstellung der Murasama-Größenanpassung
-			Tooltip:
-				'''
-				Ein zusätzlicher Faktor zur Korrektur des Schwertbereichs des Murasama, basierend auf Prozentsätzen
-				Diese Einstellung wird für spezielle Anforderungen verwendet, sollte normalerweise bei 100% bleiben
-				Ziehen Sie den Schieberegler, um den Prozentsatz einzustellen, mit einem Maximum von 100% für die Originalgröße und einem Minimum von 20%
-				'''
-		}
-
 		ScreenVibration: {
 			Label: Bildschirmvibration für spezielle Waffenangriffe
 			Tooltip: Wenn aktiviert, vibriert der Bildschirm bei bestimmten Angriffen, um den Schlag stärker zu betonen
@@ -3798,6 +3788,11 @@ Configs: {
 				                Zum Debuggen und Beobachten der Kollisionsstrukturen des TileModules,
 				                Nach dem Aktivieren wird das TileModule seine Kollisionsbox, den Typnamen und andere Daten in der Welt darstellen.
 				'''
+		}
+
+		MuraStyleType: {
+			// Label: Mura Style Type
+			// Tooltip: ""
 		}
 	}
 }

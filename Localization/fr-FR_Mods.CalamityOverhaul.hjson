@@ -3633,16 +3633,6 @@ Configs: {
 				'''
 		}
 
-		MurasamaScaleOffset: {
-			Label: Ajustement de la taille de Murasama
-			Tooltip:
-				'''
-				Un facteur de correction de la portée supplémentaire, en pourcentage %
-				Réglez ceci pour des besoins spéciaux, généralement maintenu à 100% de la taille originale
-				Faites glisser ce curseur pour ajuster le pourcentage, maximum à 100%, taille d'origine, minimum à 20%
-				'''
-		}
-
 		ScreenVibration: {
 			Label: Effet de vibration de l'écran pour les attaques spéciales des armes
 			Tooltip: Si activé, cela provoquera des vibrations de l'écran lors de certaines attaques, augmentant ainsi la sensation de coup
@@ -3802,6 +3792,11 @@ Configs: {
 				                Utilisé pour déboguer et observer la structure de collision du TileModule,
 				                Lorsqu'il est activé, TileModule affichera dans le monde ses propres boîtes de collision, noms de type et autres données.
 				'''
+		}
+
+		MuraStyleType: {
+			// Label: Mura Style Type
+			// Tooltip: ""
 		}
 	}
 }
