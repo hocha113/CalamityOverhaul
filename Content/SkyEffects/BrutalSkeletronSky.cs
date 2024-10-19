@@ -49,13 +49,16 @@ namespace CalamityOverhaul.Content.SkyEffects
             if (BossRushEvent.BossRushActive) {
                 rectangle = new Rectangle(0, 0, Main.screenWidth * 2, Main.screenHeight * 2);
             }
+
             spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.Placeholder2), rectangle, Color.Black * intensity);
 
-            float scale = Math.Min(1f, (Main.screenPosition.Y - 1000f) / 1000f);
-            Vector2 value3 = Main.screenPosition + new Vector2(Main.screenWidth >> 1, Main.screenHeight >> 1);
-            Rectangle rectangle2 = new Rectangle(-1000, -1000, 4000, 4000);
-            for (int i = 0; i < bolts.Length; i++) {
-                bolts[i].Draw(spriteBatch, rectangle2, value3, intensity, scale, minDepth, maxDepth);
+            if (bolts != null && bolts.Length > 0) {
+                float scale = Math.Min(1f, (Main.screenPosition.Y - 1000f) / 1000f);
+                Vector2 value3 = Main.screenPosition + new Vector2(Main.screenWidth >> 1, Main.screenHeight >> 1);
+                Rectangle rectangle2 = new Rectangle(-1000, -1000, 4000, 4000);
+                for (int i = 0; i < bolts.Length; i++) {
+                    bolts[i].Draw(spriteBatch, rectangle2, value3, intensity, scale, minDepth, maxDepth);
+                }
             }
         }
 
