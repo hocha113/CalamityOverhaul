@@ -3798,6 +3798,16 @@ Configs: {
 			// Label: Mura Style Type
 			// Tooltip: ""
 		}
+
+		MuraUIStyleType: {
+			// Label: Mura U I Style Type
+			// Tooltip: ""
+		}
+
+		MuraPosStyleType: {
+			// Label: Mura Pos Style Type
+			// Tooltip: ""
+		}
 	}
 }
 

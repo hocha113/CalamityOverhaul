@@ -14,21 +14,22 @@ namespace CalamityOverhaul.Content.UIs
 {
     internal class MuraChargeUI : UIHandle, ICWRLoader
     {
-        internal enum MuraStyleEnum
+        internal enum MuraUIStyleEnum
         {
-            delicacy_HasMK_overhead = 1,
-            delicacy_NoMK_overhead,
-            delicacy_HasMK_compact,
-            delicacy_NoMK_compact,
+            delicacy_overhead = 1,
+            delicacy_compact,
             classical_overhead,
             classical_compact,
+        }
+        internal enum MuraPosStyleEnum
+        {
+            right = 1,
+            left,
+            high,
         }
         internal static MuraChargeUI Instance;
         internal MurasamaHeldProj murasamaHeld;
         internal Item murasama => Main.LocalPlayer.GetItem();
-        private bool compact => MuraStyle == MuraStyleEnum.delicacy_HasMK_compact
-                || MuraStyle == MuraStyleEnum.delicacy_NoMK_compact
-                || MuraStyle == MuraStyleEnum.classical_compact;
         private static Asset<Texture2D> classical_SwordStanceTop;
         private static Asset<Texture2D> classical_SwordStanceFull;
         private static Asset<Texture2D> classical_SwordStanceBottom;
@@ -47,22 +48,16 @@ namespace CalamityOverhaul.Content.UIs
         private static float newForCharge;
         private static int Time;
         private static Color fullColor;
-        internal MuraStyleEnum MuraStyle => (MuraStyleEnum)CWRServerConfig.Instance.MuraStyleType;
+        internal MuraUIStyleEnum MuraUIStyle => (MuraUIStyleEnum)CWRServerConfig.Instance.MuraUIStyleType;
+        internal MuraPosStyleEnum MuraPosStyle => (MuraPosStyleEnum)CWRServerConfig.Instance.MuraPosStyleType;
         internal Vector2 origMuraBarDrawPos => new Vector2(180, Main.screenHeight - 40);
         internal Vector2 muraBarDrawPos;
-        internal Vector2 CartridgeUI_Offset {
-            get {
-                Vector2 offset = new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
-                , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
-                if (offset.X > 1400) {
-                    offset.X = 1400;
-                }
-                return offset;
-            }
-        }
+        private bool compact => MuraUIStyle == MuraUIStyleEnum.delicacy_compact || MuraUIStyle == MuraUIStyleEnum.classical_compact;
+        internal bool dontAddUIAlape => 
+            murasamaHeld == null || murasamaHeld.Type != ModContent.ProjectileType<MurasamaHeldProj>() || Main.playerInventory;
         public override bool Active {
             get {
-                if (murasamaHeld == null || murasamaHeld.Type != ModContent.ProjectileType<MurasamaHeldProj>()) {
+                if (dontAddUIAlape) {
                     if (uiAlape > 0) {
                         uiAlape -= 0.05f;
                     }
@@ -109,7 +104,7 @@ namespace CalamityOverhaul.Content.UIs
                 return;
             }
 
-            if (uiAlape < 1) {
+            if (uiAlape < 1 && !dontAddUIAlape) {
                 uiAlape += 0.05f;
             }
 
@@ -146,12 +141,12 @@ namespace CalamityOverhaul.Content.UIs
                 if (risingDragon < MurasamaEcType.GetOnRDCD) {
                     Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / MurasamaEcType.GetOnRDCD * barFG.Width), barFG.Height);
                     Main.spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale, 0, 0f);
-                    Main.spriteBatch.Draw(barFG, drawPos + new Vector2(12, 42), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
+                    Main.spriteBatch.Draw(barFG, drawPos + new Vector2(4, 6), frameCrop, color * 0.8f, 0f, barOrigin, scale, 0, 0f);
                 }
                 else {
                     barBG = MuraBarFull.Value;
                     Rectangle rectangle = CWRUtils.GetRec(barBG, uiFrame, maxFrame);
-                    Main.spriteBatch.Draw(barBG, drawPos
+                    Main.spriteBatch.Draw(barBG, drawPos + new Vector2(0, -3)
                         , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
                 }
             }
@@ -163,13 +158,21 @@ namespace CalamityOverhaul.Content.UIs
                 return;
             }
 
-            muraBarDrawPos = origMuraBarDrawPos + CartridgeUI_Offset;
+            Vector2 otherOffset = new Vector2(Main.screenWidth - SwordStanceBottom.Width() - 40, 0);
+            if (MuraPosStyle == MuraPosStyleEnum.left) {
+                otherOffset = new Vector2(80, 0);
+            }
+            else if (MuraPosStyle == MuraPosStyleEnum.high) {
+                otherOffset = new Vector2(Main.screenWidth / 3 * 2, -Main.screenHeight + 180);
+            }
+            muraBarDrawPos = origMuraBarDrawPos + otherOffset;
+
             Color color = Color.White * uiAlape;
             Vector2 topBarOffset = new Vector2(18, 12);
             Texture2D barBG = SwordStanceBottom.Value;
             Texture2D barFG = SwordStanceTop.Value;
             Texture2D fullFG = SwordStanceFull.Value;
-            if (MuraStyle == MuraStyleEnum.classical_overhead || MuraStyle == MuraStyleEnum.classical_compact) {
+            if (MuraUIStyle == MuraUIStyleEnum.classical_overhead || MuraUIStyle == MuraUIStyleEnum.classical_compact) {
                 topBarOffset = new Vector2(46, 6);
                 barBG = classical_SwordStanceBottom.Value;
                 barFG = classical_SwordStanceTop.Value;
@@ -178,8 +181,8 @@ namespace CalamityOverhaul.Content.UIs
 
             Vector2 barOrigin = barBG.Size() * 0.5f;
 
-            if (MuraStyle == MuraStyleEnum.delicacy_HasMK_overhead || MuraStyle == MuraStyleEnum.delicacy_HasMK_compact) {
-                Main.spriteBatch.Draw(Mura.Value, muraBarDrawPos + new Vector2(0, -138), null, color, 0f, barOrigin, scale, 0, 0f);
+            if (InWorldBossPhase.Instance.Mura_Level() == 14 || MurasamaEcType.NameIsSam(Main.LocalPlayer)) {
+                Main.spriteBatch.Draw(Mura.Value, muraBarDrawPos + new Vector2(-110, -88), null, color, 0f, barOrigin, scale, 0, 0f);
             }
 
             if (charge < 9) {
@@ -202,16 +205,16 @@ namespace CalamityOverhaul.Content.UIs
                     Texture2D muraBarBottom = MuraBarBottom.Value;
                     Texture2D muraBarTop = MuraBarTop.Value;
                     Vector2 barOrigin2 = muraBarBottom.Size() * 0.5f;
-                    Vector2 drawPos = muraBarDrawPos + new Vector2(-20, -50);
+                    Vector2 drawPos = muraBarDrawPos + new Vector2(-20, -40);
                     if (risingDragon < MurasamaEcType.GetOnRDCD) {
                         Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / MurasamaEcType.GetOnRDCD * muraBarTop.Width), muraBarTop.Height);
                         Main.spriteBatch.Draw(muraBarBottom, drawPos, null, color, 0f, barOrigin2, scale, 0, 0f);
-                        Main.spriteBatch.Draw(muraBarTop, drawPos + new Vector2(12, 42), frameCrop, color * 0.8f, 0f, barOrigin2, scale, 0, 0f);
+                        Main.spriteBatch.Draw(muraBarTop, drawPos + new Vector2(4, 6), frameCrop, color * 0.8f, 0f, barOrigin2, scale, 0, 0f);
                     }
                     else {
                         muraBarBottom = MuraBarFull.Value;
                         Rectangle rectangle = CWRUtils.GetRec(muraBarBottom, uiFrame, 6);
-                        Main.spriteBatch.Draw(muraBarBottom, drawPos
+                        Main.spriteBatch.Draw(muraBarBottom, drawPos + new Vector2(0, -3)
                             , rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
                     }
                 }

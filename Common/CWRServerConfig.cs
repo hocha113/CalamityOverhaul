@@ -28,9 +28,12 @@ namespace CalamityOverhaul.Common
             public static float LoadingAA_VolumeValue;
             internal const int LoadingAA_Volume_MinValue = 0;
             internal const int LoadingAA_Volume_MaxValue = 800;
-            internal const int MuraUIStyleMaxType = 6;
+            internal const int MuraUIStyleMaxType = 4;
             internal const int MuraUIStyleMinType = 1;
             public static int MuraUIStyleValue;
+            internal const int MuraPosStyleMaxType = 3;
+            internal const int MuraPosStyleMinType = 1;
+            public static int MuraPosStyleValue;
         }
 
         [Header("CWRSystem")]
@@ -131,7 +134,7 @@ namespace CalamityOverhaul.Common
         [SliderColor(224, 165, 56, 255)]
         [Range(Date.MuraUIStyleMinType, Date.MuraUIStyleMaxType)]
         [DefaultValue(1)]
-        public int MuraStyleType {
+        public int MuraUIStyleType {
             get {
                 if (Date.MuraUIStyleValue < Date.MuraUIStyleMinType) {
                     Date.MuraUIStyleValue = Date.MuraUIStyleMinType;
@@ -142,6 +145,23 @@ namespace CalamityOverhaul.Common
                 return Date.MuraUIStyleValue;
             }
             set => Date.MuraUIStyleValue = value;
+        }
+
+        [BackgroundColor(45, 175, 225, 255)]
+        [SliderColor(224, 165, 56, 255)]
+        [Range(Date.MuraPosStyleMinType, Date.MuraPosStyleMaxType)]
+        [DefaultValue(1)]
+        public int MuraPosStyleType {
+            get {
+                if (Date.MuraPosStyleValue < Date.MuraPosStyleMinType) {
+                    Date.MuraPosStyleValue = Date.MuraPosStyleMinType;
+                }
+                if (Date.MuraPosStyleValue > Date.MuraPosStyleMaxType) {
+                    Date.MuraPosStyleValue = Date.MuraPosStyleMaxType;
+                }
+                return Date.MuraPosStyleValue;
+            }
+            set => Date.MuraPosStyleValue = value;
         }
 
         [BackgroundColor(45, 175, 225, 255)]

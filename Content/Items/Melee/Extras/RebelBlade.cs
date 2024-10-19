@@ -2,12 +2,16 @@
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.Extras
 {
+    /// <summary>
+    /// 叛逆之刃
+    /// </summary>
     internal class RebelBlade : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "RebelBlade";
@@ -16,13 +20,13 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.shootSpeed = 9;
             Item.crit = 8;
             Item.damage = 186;
-            Item.useTime = 15;
+            Item.useTime = 30;
             Item.useAnimation = 15;
             Item.knockBack = 6;
             Item.value = Item.buyPrice(0, 83, 55, 0);
             Item.rare = ItemRarityID.Lime;
             Item.useStyle = ItemUseStyleID.Swing;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();
             Item.shoot = ModContent.ProjectileType<RebelBladeFlyAttcke>();
             Item.useTurn = true;
@@ -87,50 +91,54 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override int TargetID => ModContent.ItemType<RebelBlade>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail2";
         public override string gradientTexturePath => CWRConstant.ColorBar + "RebelBlade_Bar";
+        private bool onSound;
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
             distanceToOwner = -20;
             drawTrailBtommWidth = 110;
-            drawTrailTopWidth = 150;
+            drawTrailTopWidth = 130;
             drawTrailCount = 6;
             Length = 200;
             unitOffsetDrawZkMode = 0;
             Projectile.width = Projectile.height = 186;
             distanceToOwner = -60;
-            SwingData.starArg = 60;
+            SwingData.starArg = 30;
             SwingData.ler1_UpLengthSengs = 0.05f;
             SwingData.minClampLength = 200;
             SwingData.maxClampLength = 210;
             SwingData.ler1_UpSizeSengs = 0.016f;
             SwingData.baseSwingSpeed = 4.2f;
             ShootSpeed = 12;
-            maxSwingTime = 60;
         }
 
         public override bool PreInOwnerUpdate() {
             if (Time == 0) {
-                OtherMeleeSize = 0.64f;
+                OtherMeleeSize = 0.84f;
             }
             float swingUp = SetSwingSpeed(1f);
-            int time1 = (int)(maxSwingTime / 3 * updateCount * swingUp);
+            int time1 = (int)(maxSwingTime / 2 * updateCount * swingUp);
             int time2 = (int)(maxSwingTime * 0.6f * updateCount * swingUp);
             if (Time > time1) {
+                if (!onSound) {
+                    SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.6f }, Owner.Center);
+                    onSound = true;
+                }
                 canDrawSlashTrail = true;
-                SwingData.baseSwingSpeed = 6.2f;
+                SwingData.baseSwingSpeed = 3.2f;
                 if (Time == time1 + 1) {
                     speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingUp;
                 }
             }
             else {
-                OtherMeleeSize += 0.01f;
-                SwingData.baseSwingSpeed = 1f;
+                OtherMeleeSize += 0.002f;
+                SwingData.baseSwingSpeed = -0.4f;
                 speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingUp;
                 canDrawSlashTrail = false;
             }
 
             if (Time > time2) {
-                OtherMeleeSize -= 0.004f;
-                SwingData.baseSwingSpeed = 8f;
+                OtherMeleeSize -= 0.002f;
+                SwingData.baseSwingSpeed = 6f;
                 if (Time == time2 + 1) {
                     speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingUp;
                 }
@@ -140,7 +148,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
 
         public override void MeleeEffect() {
             Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height
-                , DustID.FireworkFountain_Yellow, 0, 0, 55);
+                , DustID.FireworkFountain_Blue, 0, 0, 55);
             dust.noGravity = true;
         }
 

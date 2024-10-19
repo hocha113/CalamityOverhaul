@@ -3809,8 +3809,13 @@ Configs: {
 				'''
 		}
 
-		MuraStyleType: {
+		MuraUIStyleType: {
 			Label: 鬼妖村正UI样式选择
+			Tooltip: ""
+		}
+
+		MuraPosStyleType: {
+			Label: 鬼妖村正UI位置选择
 			Tooltip: ""
 		}
 	}
