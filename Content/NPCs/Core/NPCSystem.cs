@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.OverhaulBehavior;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -31,12 +30,6 @@ namespace CalamityOverhaul.Content.NPCs.Core
         public static MethodInfo onPreDraw_Method;
         public static MethodInfo onPostDraw_Method;
         public static MethodInfo onCheckDead_Method;
-
-        public override void PostSetupContent() {
-            //加载生物定义
-            new PerforatorBehavior().Load();
-            new HiveMindBehavior().Load();
-        }
 
         private void LoadNPCSets() {
             NPCSets = [];

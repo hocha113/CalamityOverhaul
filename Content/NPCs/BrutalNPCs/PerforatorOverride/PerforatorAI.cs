@@ -8,6 +8,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.PerforatorOverride
     internal class PerforatorAI : NPCOverride
     {
         public override int TargetID => ModContent.NPCType<PerforatorHive>();
+        public override bool CanLoad() {
+            return false;
+        }
         public override void SetProperty() {
             base.SetProperty();
         }

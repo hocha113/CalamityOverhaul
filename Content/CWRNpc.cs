@@ -9,7 +9,6 @@ using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.NPCs.OverhaulBehavior;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework.Graphics;
@@ -184,12 +183,6 @@ namespace CalamityOverhaul.Content
                     WhipHitNum = 10;
                 }
             }
-            if (Main.bloodMoon) {//在血月的情况下让一些生物执行特殊的行为，将这段代码写在PostAI中是防止被覆盖
-                if (npc.type == CWRLoad.PerforatorHive)//改动血肉宿主的行为，这会让它在血月更加的暴躁和危险
-                    PerforatorBehavior.Instance.Intensive(npc);
-                if (npc.type == CWRLoad.HiveMind)//改动腐巢意志的行为，这会让它在血月更加的恐怖和强大
-                    HiveMindBehavior.Instance.Intensive(npc);
-            }
         }
 
         public override bool PreKill(NPC npc) {
@@ -235,8 +228,6 @@ namespace CalamityOverhaul.Content
             if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
                 TungstenRiot.Instance.TungstenKillNPC(npc);
             }
-            PerforatorBehavior.Instance.BloodMoonDorp(npc);
-            HiveMindBehavior.Instance.BloodMoonDorp(npc);
         }
 
         public override void HitEffect(NPC npc, NPC.HitInfo hit) {
@@ -350,14 +341,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (Main.bloodMoon) {
-                if (npc.type == CWRLoad.PerforatorHive) {
-                    PerforatorBehavior.Instance.Draw(spriteBatch, npc);
-                }
-                if (npc.type == CWRLoad.HiveMind) {
-                    HiveMindBehavior.Instance.Draw(spriteBatch, npc);
-                }
-            }
             if (IceParclose) {
                 float slp = npc.scale * (npc.height / (float)IceParcloseAsset.Value.Height) * 2;
                 float sengs = 0.3f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.1f) * 0.3f);

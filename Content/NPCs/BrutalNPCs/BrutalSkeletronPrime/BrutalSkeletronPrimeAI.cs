@@ -1212,7 +1212,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return true;
         }
 
-        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) 
+            => npc.ai[0] == 1 && npc.life < npc.lifeMax;
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (!canLoaderAssetZunkenUp) {

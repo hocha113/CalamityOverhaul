@@ -8,6 +8,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.HiveMindOverride
     internal class HiveMindAI : NPCOverride
     {
         public override int TargetID => ModContent.NPCType<HiveMind>();
+        public override bool CanLoad() {
+            return false;
+        }
         public override void SetProperty() {
             base.SetProperty();
         }
