@@ -596,6 +596,7 @@ namespace CalamityOverhaul.Content
                 if (OmigaSnyContent != null && !SupertableUI.Instance.onMainP) {
                     MouseTextContactPanel.Instance.Update();
                     MouseTextContactPanel.Instance.Draw(Main.spriteBatch);
+                    MouseTextContactPanel.doDraw = true;
                     InItemDrawRecipe.Instance.Draw(Main.spriteBatch, new Vector2(offsetX + 100, 100), OmigaSnyContent);
                 }
                 if (CWRServerConfig.Instance.ResetItemReminder && item.CWR().remakeItem) {

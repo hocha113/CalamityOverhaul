@@ -3850,13 +3850,8 @@ Configs: {
 				'''
 		}
 
-		MuraStyleType: {
-			// Label: Mura Style Type
-			// Tooltip: ""
-		}
-
 		MuraUIStyleType: {
-			// Label: Mura U I Style Type
+			// Label: Mura UI Style Type
 			// Tooltip: ""
 		}
 

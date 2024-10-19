@@ -51,7 +51,6 @@ namespace CalamityOverhaul.Content.UIs
         internal MuraUIStyleEnum MuraUIStyle => (MuraUIStyleEnum)CWRServerConfig.Instance.MuraUIStyleType;
         internal MuraPosStyleEnum MuraPosStyle => (MuraPosStyleEnum)CWRServerConfig.Instance.MuraPosStyleType;
         internal Vector2 origMuraBarDrawPos => new Vector2(180, Main.screenHeight - 40);
-        internal Vector2 muraBarDrawPos;
         private bool compact => MuraUIStyle == MuraUIStyleEnum.delicacy_compact || MuraUIStyle == MuraUIStyleEnum.classical_compact;
         internal bool dontAddUIAlape => 
             murasamaHeld == null || murasamaHeld.Type != ModContent.ProjectileType<MurasamaHeldProj>() || Main.playerInventory;
@@ -64,7 +63,7 @@ namespace CalamityOverhaul.Content.UIs
                     return uiAlape > 0;
                 }
                 return murasamaHeld.Projectile.active || uiAlape > 0;
-            }
+            }         
         }
         void ICWRLoader.LoadAsset() {
             classical_SwordStanceBottom = CWRUtils.GetT2DAsset(CWRConstant.UI + "classical_SwordStanceBottom");
@@ -165,7 +164,7 @@ namespace CalamityOverhaul.Content.UIs
             else if (MuraPosStyle == MuraPosStyleEnum.high) {
                 otherOffset = new Vector2(Main.screenWidth / 3 * 2, -Main.screenHeight + 180);
             }
-            muraBarDrawPos = origMuraBarDrawPos + otherOffset;
+            DrawPosition = origMuraBarDrawPos + otherOffset;
 
             Color color = Color.White * uiAlape;
             Vector2 topBarOffset = new Vector2(18, 12);
@@ -182,17 +181,17 @@ namespace CalamityOverhaul.Content.UIs
             Vector2 barOrigin = barBG.Size() * 0.5f;
 
             if (InWorldBossPhase.Instance.Mura_Level() == 14 || MurasamaEcType.NameIsSam(Main.LocalPlayer)) {
-                Main.spriteBatch.Draw(Mura.Value, muraBarDrawPos + new Vector2(-110, -88), null, color, 0f, barOrigin, scale, 0, 0f);
+                Main.spriteBatch.Draw(Mura.Value, DrawPosition + new Vector2(-110, -88), null, color, 0f, barOrigin, scale, 0, 0f);
             }
 
             if (charge < 9) {
                 Rectangle frameCrop = new Rectangle(0, 0, (int)(newForCharge / 9f * barFG.Width), barFG.Height);
-                Main.spriteBatch.Draw(barBG, muraBarDrawPos, null, color, 0f, barOrigin, scale, 0, 0f);
-                Main.spriteBatch.Draw(barFG, muraBarDrawPos + topBarOffset, frameCrop, fullColor * uiAlape, 0f, barOrigin, scale, 0, 0f);
+                Main.spriteBatch.Draw(barBG, DrawPosition, null, color, 0f, barOrigin, scale, 0, 0f);
+                Main.spriteBatch.Draw(barFG, DrawPosition + topBarOffset, frameCrop, fullColor * uiAlape, 0f, barOrigin, scale, 0, 0f);
             }
             else {
                 Rectangle rectangle = CWRUtils.GetRec(fullFG, uiFrame2, 9);
-                Main.spriteBatch.Draw(fullFG, muraBarDrawPos, rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
+                Main.spriteBatch.Draw(fullFG, DrawPosition, rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
             }
 
             //Rectangle numRec = CWRUtils.GetRec(Num.Value, InWorldBossPhase.Instance.Mura_Level(), 15);
@@ -205,7 +204,7 @@ namespace CalamityOverhaul.Content.UIs
                     Texture2D muraBarBottom = MuraBarBottom.Value;
                     Texture2D muraBarTop = MuraBarTop.Value;
                     Vector2 barOrigin2 = muraBarBottom.Size() * 0.5f;
-                    Vector2 drawPos = muraBarDrawPos + new Vector2(-20, -40);
+                    Vector2 drawPos = DrawPosition + new Vector2(-20, -40);
                     if (risingDragon < MurasamaEcType.GetOnRDCD) {
                         Rectangle frameCrop = new Rectangle(0, 0, (int)(risingDragon / MurasamaEcType.GetOnRDCD * muraBarTop.Width), muraBarTop.Height);
                         Main.spriteBatch.Draw(muraBarBottom, drawPos, null, color, 0f, barOrigin2, scale, 0, 0f);

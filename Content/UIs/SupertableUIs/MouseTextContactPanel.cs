@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         internal static MouseTextContactPanel Instance { get; private set; }
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MouseTextContactPanel");
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
+        internal static bool doDraw;
         private bool oldLeftCtrlPressed;
         private static Vector2 origPos => InItemDrawRecipe.Instance.DrawPos;
         private Vector2 offset;
@@ -56,6 +57,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             string text = CWRLocText.GetTextValue("MouseTextContactPanel_TextContent");
             Vector2 size = FontAssets.MouseText.Value.MeasureString(text);
             float overSizeX = size.X / (uiSize.X * Texture.Width);
+
+            if (!doDraw) {
+                return;
+            }
+
             spriteBatch.Draw(Texture, DrawPosition, null, Color.DarkGoldenrod, 0, Vector2.Zero, uiSize * new Vector2(overSizeX * 1.1f, 1), SpriteEffects.None, 0);//绘制出UI主体
 
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRUtils.GetSafeText(text, size, Texture.Width * uiSize.X)
