@@ -212,22 +212,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private void SittingFoodStallChair() {
-            if (Player.sitting.TryGetSittingBlock(Player, out Tile t)) {
-                if (t.TileType == CWRLoad.FoodStallChairTile) {
-                    InFoodStallChair = true;
-                    Main.raining = true;
-                    Main.maxRaining = 0.99f;
-                    Main.cloudAlpha = 0.99f;
-                    Main.windSpeedTarget = 0.8f;
-                    float sengs = Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f));
-                    Lighting.AddLight(Player.Center, new Color(Main.DiscoB, Main.DiscoG, 220 + (sengs * 30)).ToVector3() * sengs * 113);
-                    PunchCameraModifier modifier2 = new(Player.Center, new Vector2(0, Main.rand.NextFloat(-2, 2)), 2f, 3f, 2, 1000f, FullName);
-                    Main.instance.CameraModifiers.Add(modifier2);
-                }
-            }
-        }
-
         public override void PreUpdateMovement() {
             if (ReceivingPlatformTime > 0) {
                 Player.gravity = 0;
@@ -260,7 +244,6 @@ namespace CalamityOverhaul.Content
             if (InspectOmigaTime > 0) {
                 InspectOmigaTime--;
             }
-            SittingFoodStallChair();
             if (RecoilAccelerationAddBool) {
                 Player.velocity += RecoilAccelerationValue;
                 RecoilAccelerationAddBool = false;
