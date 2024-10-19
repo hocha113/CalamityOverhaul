@@ -127,13 +127,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             if (Projectile.ai[1] <= 0) {
                 DrawTrild();
             }
-
+            SpriteEffects spriteEffects = Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             Texture2D mainValue = Projectile.T2DValue();
+            Vector2 drawOrigin = mainValue.Size() / 2;
+            float rotation = Projectile.rotation + (Projectile.velocity.X > 0 ? MathHelper.ToRadians(60) : MathHelper.ToRadians(-240));
+            for (int k = 0; k < 6; k++) {
+                Vector2 offsetPos = Projectile.oldPos[k].To(Projectile.position);
+                Vector2 drawPos = Projectile.Center - Main.screenPosition - offsetPos;
+                Color color2 = Projectile.GetAlpha(Color.Pink) * ((6 - k) / (float)6);
+                Main.EntitySpriteDraw(mainValue, drawPos, null, color2, rotation, drawOrigin, Projectile.scale, spriteEffects, 0);
+            }
             Main.spriteBatch.Draw(mainValue, Projectile.Center - Main.screenPosition
                 , null, Color.White with { R = (byte)(Projectile.localAI[1] * 255) } * (Projectile.alpha / 255f)
-                , Projectile.rotation + (Projectile.velocity.X > 0 ? MathHelper.ToRadians(60) : MathHelper.ToRadians(-240))
-                , mainValue.Size() / 2, Projectile.scale
-                , Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                , rotation, mainValue.Size() / 2, Projectile.scale, spriteEffects, 0);
             return false;
         }
     }

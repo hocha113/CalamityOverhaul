@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.accessory = true;
-            Item.value = Terraria.Item.buyPrice(0, 22, 15, 0);
+            Item.value = Item.buyPrice(0, 22, 15, 0);
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {

@@ -3,7 +3,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -12,13 +11,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
     internal class FadingGlory : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "FadingGlory";
-        public override void SetStaticDefaults() {
-            ItemID.Sets.AnimatesAsSoul[Type] = true;
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 6));
-        }
         public override void SetDefaults() {
             Item.width = Item.height = 35;
-            Item.damage = 882;
+            Item.damage = 282;
             Item.DamageType = DamageClass.Melee;
             Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(2, 53, 75, 0);
@@ -32,9 +27,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.noUseGraphic = true;
             Item.noMelee = true;
             Item.channel = true;
+            Item.CWR().IsShootCountCorlUse = true;
         }
-
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
 
         public override void AddRecipes() {
             CreateRecipe()

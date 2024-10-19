@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Texture2D mainValue = CWRUtils.GetT2DValue(Texture);
             Main.EntitySpriteDraw(
                 mainValue,
-                CWRUtils.WDEpos(Projectile.Center),
+                Projectile.Center - Main.screenPosition,
                 null,
                 CWRUtils.RecombinationColor((Color.Red, 0.3f), (Projectile.GetAlpha(Color.Gold), 0.7f)),
                 Projectile.localAI[0],

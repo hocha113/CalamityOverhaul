@@ -61,6 +61,7 @@
     <None Remove="Assets\Sky\PGFlash.png" />
     <None Remove="Assets\UIs\ScrollbarInner.png" />
     <None Remove="Assets\UIs\SliderBar.png" />
+    <None Remove="localization\es-ES_Mods.CalamityOverhaul.hjson" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Players\" />

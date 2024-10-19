@@ -11,11 +11,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
     internal class FadingGloryRapier : BaseRapiers
     {
-        public override string Texture => CWRConstant.Item_Melee + "FadingGlory2";
+        public override string Texture => CWRConstant.Item_Melee + "FadingGlory";
         public override string GlowPath => CWRConstant.Item_Melee + "FadingGloryGlow";
         public override void SetRapiers() {
             overHitModeing = 93;
             SkialithVarSpeedMode = 23;//非常快的残影移动!
+            StabbingSpread = 0.15f;
             ShurikenOut = CWRSound.ShurikenOut with { Pitch = 0.24f };
         }
 

@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             float slp = 3;
             int offsetwid = 4;
-            Vector2 drawPos = CWRUtils.WDEpos(player.Center + new Vector2(rageEnergyBar.Width / -2 * slp, 135));
+            Vector2 drawPos = player.Center + new Vector2(rageEnergyBar.Width / -2 * slp, 135) - Main.screenPosition;
             Rectangle backRec = new Rectangle(offsetwid, 0, (int)((rageEnergyBar.Width - offsetwid * 2) * (item.CWR().MeleeCharge / TerrorBladeMaxRageEnergy)), rageEnergyBar.Height);
 
             Main.EntitySpriteDraw(rageEnergyBack, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);

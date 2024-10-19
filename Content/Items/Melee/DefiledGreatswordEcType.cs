@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (item.type == ModContent.ItemType<BlightedCleaverEcType>() || item.type == ModContent.ItemType<BlightedCleaver>()) {
                 max = BlightedCleaverEcType.BlightedCleaverMaxRageEnergy;
             }
-            Vector2 drawPos = CWRUtils.WDEpos(player.GetPlayerStabilityCenter() + new Vector2(rageEnergyBar.Width / -2 * slp, 135));
+            Vector2 drawPos = player.GetPlayerStabilityCenter() + new Vector2(rageEnergyBar.Width / -2 * slp, 135) - Main.screenPosition;
             Rectangle backRec = new(offsetwid, 0, (int)((rageEnergyBar.Width - (offsetwid * 2)) * (item.CWR().MeleeCharge / max)), rageEnergyBar.Height);
 
             Main.EntitySpriteDraw(rageEnergyBack, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
