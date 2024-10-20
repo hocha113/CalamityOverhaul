@@ -129,6 +129,12 @@ namespace CalamityOverhaul.Content.UIs
                 Rectangle rectangle = CWRUtils.GetRec(TextureValue, 6 - bulletNum, 7);
                 spriteBatch.Draw(TextureValue, DrawPosition + rectangle.Size() / 2, rectangle, Color.White
                     , otherPotData, rectangle.Size() / 2, 1, SpriteEffects.None, 0);
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, bulletNum.ToString()
+                    , DrawPosition.X + 50, DrawPosition.Y + 0, Color.AliceBlue, Color.Black, Vector2.Zero, 1.3f);
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "Max"
+                    , DrawPosition.X + 50, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1f);
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, cwrItem.AmmoCapacity.ToString()
+                    , DrawPosition.X + 85, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1.05f);
             }
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.JAR) {
                 Texture2D jar2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR_Full");

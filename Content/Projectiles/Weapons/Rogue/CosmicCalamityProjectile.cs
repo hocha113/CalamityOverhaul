@@ -29,8 +29,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         }
 
         public override void SetDefaults() {
-            Projectile.width = 46;
-            Projectile.height = 46;
+            Projectile.width = 86;
+            Projectile.height = 86;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.DamageType = ModContent.GetInstance<RogueDamageClass>();

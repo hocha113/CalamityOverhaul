@@ -33,7 +33,10 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
-        public override void SetStaticDefaults() => Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 16));
+        public override void SetStaticDefaults() {
+            ItemID.Sets.AnimatesAsSoul[Type] = true;
+            Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));
+        }
         public override void SetDefaults() {
             Item.damage = 9999;
             Item.DamageType = EndlessDamageClass.Instance;
@@ -51,21 +54,13 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems3;
         }
 
-        public override bool AltFunctionUse(Player player) {
-            return true;
-        }
+        public override void UseStyle(Player player, Rectangle heldItemFrame) => player.itemLocation = player.GetPlayerStabilityCenter();
 
-        public override void ModifyWeaponCrit(Player player, ref float crit) {
-            crit = 9999;
-        }
+        public override bool AltFunctionUse(Player player) => true;
 
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
-            damage = damage.Scale(0);
-        }
+        public override void ModifyWeaponCrit(Player player, ref float crit) => crit = 9999;
 
-        public override bool? UseItem(Player player) {
-            return base.UseItem(player);
-        }
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage = damage.Scale(0);
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             TooltipLine cumstops = tooltips.FirstOrDefault((TooltipLine x) => x.Name == "Damage" && x.Mod == "Terraria");
@@ -158,11 +153,6 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return false;
             }
             return true;
-        }
-
-        public override void MeleeEffects(Player player, Rectangle hitbox) {
-            //HeavenHeavySmoke spark = new HeavenHeavySmoke(player.Center, Main.rand.NextVector2Unit() * Main.rand.Next(13, 17), CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 30, 1, 1, 0.1f);
-            //CWRParticleHandler.AddParticle(spark);
         }
 
         public override void AddRecipes() {

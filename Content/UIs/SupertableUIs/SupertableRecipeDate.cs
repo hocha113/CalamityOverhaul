@@ -101,15 +101,15 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         // <summary>
         /// 苍穹破晓
         /// </summary>
-        public static string[] FullItems10 = new string[] {"0", "0", "0", "0", "0", "0", "0", "3458", "3458",
+        public static string[] FullItems10 = new string[] {"0", "0", "0", "0", "0", "0", "0", "3458", "CalamityMod/Rock",
             "0", "0", "0", "0", "0", "0", "3458", "3543", "3458",
             "0", "0", "0", "0", "0", "3458", "CalamityMod/RedSun", "3458", "0",
             "0", "0", "0", "0", "3458", "CalamityMod/DraconicDestruction", "3458", "0", "0",
             "0", "0", "0", "3458", "CalamityMod/DragonPow", "3458", "0", "0", "0",
             "0", "0", "3458", "CalamityMod/DragonRage", "3458", "0", "0", "0", "0",
-            "0", "3458", "CalamityOverhaul/BlackMatterStick", "3458", "0", "0", "0", "0", "0",
-            "3458", "CalamityOverhaul/BlackMatterStick", "3458", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/BlackMatterStick", "3458", "0", "0", "0", "0", "0", "0", "0",
+            "0", "3458", "CalamityMod/ShadowspecBar", "3458", "0", "0", "0", "0", "0",
+            "3458", "CalamityMod/ShadowspecBar", "3458", "0", "0", "0", "0", "0", "0",
+            "CalamityMod/ShadowspecBar", "3458", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/DawnshatterAzure"
         };
         // <summary>

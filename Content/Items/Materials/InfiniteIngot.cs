@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.ResearchUnlockCount = 9999;
             ItemID.Sets.SortingPriorityMaterials[Type] = 114;
             ItemID.Sets.AnimatesAsSoul[Type] = true;
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(6, 12));
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(6, 11));
         }
 
         public override void SetDefaults() {

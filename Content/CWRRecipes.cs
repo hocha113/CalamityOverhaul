@@ -1,4 +1,5 @@
-﻿using CalamityMod.Items.DraedonMisc;
+﻿using CalamityMod.Items;
+using CalamityMod.Items.DraedonMisc;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables;
 using CalamityMod.Items.Weapons.Magic;
@@ -312,13 +313,14 @@ namespace CalamityOverhaul.Content
             {
                 if (CWRServerConfig.Instance.AddExtrasContent) {
                     Recipe.Create(ItemType<DawnshatterAzure>())
-                    .AddIngredient(ItemID.FragmentSolar, 17)
+                    .AddIngredient<Rock>(1)
+                    .AddIngredient(ItemID.FragmentSolar, 16)
                     .AddIngredient(ItemID.DayBreak, 1)
                     .AddIngredient<RedSun>(1)
                     .AddIngredient<DraconicDestruction>(1)
                     .AddIngredient<DragonPow>(1)
                     .AddIngredient<DragonRage>(1)
-                    .AddIngredient<BlackMatterStick>(3)
+                    .AddIngredient<ShadowspecBar>(3)
                     .AddBlockingSynthesisEvent()
                     .AddTile(TileType<TransmutationOfMatter>())
                     .Register();

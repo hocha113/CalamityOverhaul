@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
 
         public override void AI() {
             Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width
-                , Projectile.height, DustID.FireworkFountain_Yellow, 0, 0, 55, Main.DiscoColor);
+                , Projectile.height, DustID.FireworkFountain_Blue, 0, 0, 55, Main.DiscoColor);
             dust.noGravity = true;
         }
 
