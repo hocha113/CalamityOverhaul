@@ -4,6 +4,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,11 @@ using Terraria.UI.Chat;
 
 namespace CalamityOverhaul.Content.Items.Tools
 {
-    internal class DarkMatterBall : ModItem
+    internal class DarkMatterBall : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item + "Tools/DarkMatter";
+        internal static Asset<Texture2D> DarkMatter;
+        internal static Asset<Texture2D> Full;
         public List<int> dorpTypes = [];
         public List<Item> dorpItems = [];
         public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
@@ -26,6 +29,14 @@ namespace CalamityOverhaul.Content.Items.Tools
             ball.dorpTypes = new List<int>(dorpTypes);
             ball.dorpItems = new List<Item>(dorpItems);
             return ball;
+        }
+        void ICWRLoader.LoadAsset() {
+            DarkMatter = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/DarkMatter");
+            Full = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/Full");
+        }
+        void ICWRLoader.UnLoadData() {
+            DarkMatter = null;
+            Full = null;
         }
         public override void SetStaticDefaults() => Item.ResearchUnlockCount = 9999;
         public override void SetDefaults() {
@@ -38,9 +49,9 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public static void DrawItemIcon(SpriteBatch spriteBatch, Vector2 position, int Type, float alp = 1) {
-            spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.Item + "Tools/DarkMatter"), position, null, Color.White, 0, TextureAssets.Item[Type].Value.Size() / 2, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(DarkMatter.Value, position, null, Color.White, 0, DarkMatter.Value.Size() / 2, 1, SpriteEffects.None, 0);
             float sngs = Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.01f));
-            spriteBatch.Draw(CWRUtils.GetT2DValue(CWRConstant.Item + "Tools/Full"), position, null, Color.White * sngs * (0.5f + alp * 0.5f), 0, TextureAssets.Item[Type].Value.Size() / 2, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(Full.Value, position, null, Color.White * sngs * (0.5f + alp * 0.5f), 0, Full.Value.Size() / 2, 1, SpriteEffects.None, 0);
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {

@@ -34,6 +34,17 @@ namespace CalamityOverhaul
     public static class CWRUtils
     {
         #region System
+        public static string GenerateRandomString(int length) {
+            const string characters = "!@#$%^&*()-_=+[]{}|;:'\",.<>/?`~0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            char[] result = new char[length];
+
+            for (int i = 0; i < length; i++) {
+                result[i] = characters[Main.rand.Next(characters.Length)];
+            }
+
+            return new string(result);
+        }
+
         public static LocalizedText SafeGetItemName<T>() where T : ModItem {
             Type type = typeof(T);
             return type.BaseType == typeof(EctypeItem)

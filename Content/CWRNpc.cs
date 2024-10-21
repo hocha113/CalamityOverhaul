@@ -206,12 +206,6 @@ namespace CalamityOverhaul.Content
                         }
                     }
                 }
-                if (npc.type == CWRLoad.PrimordialWyrmHead) {
-                    int type = Item.NewItem(npc.parent(), npc.Hitbox, ModContent.ItemType<TerminusOver>());
-                    if (CWRUtils.isClient) {
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-                    }
-                }
                 if (npc.type == CWRLoad.Yharon && InWorldBossPhase.Instance.level11 && Main.zenithWorld && !CWRUtils.isClient) {
                     Player target = CWRUtils.GetPlayerInstance(npc.target);
                     if (target.Alives()) {

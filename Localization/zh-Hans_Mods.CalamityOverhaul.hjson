@@ -3811,12 +3811,23 @@ Configs: {
 
 		MuraUIStyleType: {
 			Label: 鬼妖村正UI样式选择
-			Tooltip: ""
+			Tooltip:
+				'''
+				样式1:精致-悬浮于头顶
+				样式2:精致-紧凑
+				样式3:经典-悬浮于头顶
+				样式4:经典-紧凑
+				'''
 		}
 
 		MuraPosStyleType: {
 			Label: 鬼妖村正UI位置选择
-			Tooltip: ""
+			Tooltip:
+				'''
+				预设1:右下
+				预设2:左下
+				预设3:居高
+				'''
 		}
 	}
 }

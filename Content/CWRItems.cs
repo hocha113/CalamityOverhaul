@@ -4,7 +4,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Items.StorageBattery;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
@@ -157,14 +156,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         internal bool DrawOmigaSnyUIBool;
         /// <summary>
-        /// 电力交互时间
-        /// </summary>
-        public int PowerInteractionValue;
-        /// <summary>
-        /// 是一个蓄电池
-        /// </summary>
-        public bool IsStorageBattery;
-        /// <summary>
         /// 是一把弓
         /// </summary>
         public bool IsBow;
@@ -198,8 +189,6 @@ namespace CalamityOverhaul.Content
             cwr.destructTime = destructTime;
             cwr.OmigaSnyContent = OmigaSnyContent;
             cwr.DrawOmigaSnyUIBool = DrawOmigaSnyUIBool;
-            cwr.PowerInteractionValue = PowerInteractionValue;
-            cwr.IsStorageBattery = IsStorageBattery;
             cwr.IsBow = IsBow;
             cwr.IsShootCountCorlUse = IsShootCountCorlUse;
             return cwr;
@@ -606,13 +595,6 @@ namespace CalamityOverhaul.Content
                 }
             }
             return base.PreDrawTooltip(item, lines, ref x, ref y);
-        }
-
-        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            if (PowerInteractionValue > 0) {
-                BaseStorageBattery.DrawPowerInteractionValue(item.Calamity(), spriteBatch, position, 0.5f, PowerInteractionValue);
-                PowerInteractionValue--;
-            }
         }
     }
 }

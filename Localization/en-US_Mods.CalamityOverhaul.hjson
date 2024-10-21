@@ -3806,13 +3806,24 @@ Configs: {
 		}
 
 		MuraUIStyleType: {
-			Label: Mura UI Style Type
-			Tooltip: ""
+			Label: Mura UI Style Selection
+			Tooltip:
+				'''
+				Style 1: Refined - Floating Above The Head
+				Style 2: Refined - Compact
+				Style 3: Classic - Floating Above The Head
+				Style 4: Classic - Compact
+				'''
 		}
 
 		MuraPosStyleType: {
-			Label: Mura Pos Style Type
-			Tooltip: ""
+			Label: Mura UI Position Selection
+			Tooltip:
+				'''
+				Preset 1: Bottom Right
+				Preset 2: Bottom Left
+				Preset 3: Top Center
+				'''
 		}
 	}
 }

@@ -3791,13 +3791,24 @@ Configs: {
 		}
 
 		MuraUIStyleType: {
-			// Label: Mura UI Style Type
-			// Tooltip: ""
+			Label: Mura UI-Stil Auswahl
+			Tooltip:
+				'''
+				Stil 1: Verfeinert - Schwebend über dem Kopf
+				Stil 2: Verfeinert - Kompakt
+				Stil 3: Klassisch - Schwebend über dem Kopf
+				Stil 4: Klassisch - Kompakt
+				'''
 		}
 
 		MuraPosStyleType: {
-			// Label: Mura Pos Style Type
-			// Tooltip: ""
+			Label: Mura UI-Position Auswahl
+			Tooltip:
+				'''
+				Voreinstellung 1: Unten rechts
+				Voreinstellung 2: Unten links
+				Voreinstellung 3: Oben zentriert
+				'''
 		}
 	}
 }

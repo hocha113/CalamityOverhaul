@@ -16,9 +16,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     internal class CosmicEddies : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-
         private float rgs => Projectile.width * Projectile.ai[1] / 40;
-
+        private int time;
         private SlotId soundSlot;
         private SoundStyle modSoundtyle;
         public override bool IsLoadingEnabled(Mod mod) {
@@ -45,19 +44,27 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             }
 
             if (player.PressKey(false) && ownerProj.Alives() && Projectile.ai[2] == 0) {
-                if (Projectile.ai[1] == 0)
+                if (Projectile.ai[1] == 0) {
                     Projectile.rotation = ownerProj.rotation;
+                }
+
+                time++;
                 Projectile.ai[1]++;
-                if (Projectile.ai[1] > 600)
+                if (Projectile.ai[1] > 600) {
                     Projectile.ai[1] = 600;
+                }
                 Projectile.timeLeft = (int)Projectile.ai[1] + 60;
                 Vector2 targetPos = player.Center + Projectile.rotation.ToRotationVector2() * 156;
                 Projectile.velocity = Projectile.Center.To(targetPos);
                 Projectile.EntityToRot(ownerProj.rotation, 0.1f);
 
-                if (Projectile.ai[1] % 100 == 0 && Projectile.ai[1] > 0 && Projectile.ai[1] < 600 && Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Projectile.Center.To(Main.MouseWorld).UnitVector() * 23
-                    , ModContent.ProjectileType<DivineDevourerIllusionHead>(), Projectile.damage / 2, 3, Projectile.owner, ai1: Projectile.ai[1] / 20);
+                if (time % 100 == 0 && time > 0 && Projectile.IsOwnedByLocalPlayer()) {
+                    float pwer = time / 20;
+                    if (pwer > 40) {
+                        pwer = 40;
+                    }
+                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.Center.To(Main.MouseWorld).UnitVector() * 23
+                    , ModContent.ProjectileType<DivineDevourerIllusionHead>(), Projectile.damage / 2, 3, Projectile.owner, ai1: pwer);
                 }
             }
             else {
@@ -65,14 +72,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 Projectile.damage = Projectile.originalDamage + (int)Projectile.ai[1] * 5;
 
                 if (Projectile.timeLeft <= Projectile.ai[1] + 30) {
-
                     NPC target = Projectile.Center.FindClosestNPC(1900);
                     if (target != null) {
                         Projectile.ChasingBehavior2(target.Center, 1, 0.1f);
                     }
                 }
-                else
+                else {
                     Projectile.velocity = Projectile.rotation.ToRotationVector2() * 22;
+                }
+                    
             }
             if (Main.netMode != NetmodeID.Server) {
                 int maxdustnum = (int)(Projectile.ai[1] / 40f);

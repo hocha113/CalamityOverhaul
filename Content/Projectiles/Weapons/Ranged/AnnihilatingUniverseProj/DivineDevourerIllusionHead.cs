@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniverseProj
 {
-    internal class DivineDevourerIllusionHead : ModProjectile
+    internal class DivineDevourerIllusionHead : BaseHeldProj
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "AnnihilatingUniverseProj/" + "DivineDevourerIllusionHead";
         public override bool IsLoadingEnabled(Mod mod) {
@@ -45,17 +45,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             if (target != null) {
                 Projectile.ChasingBehavior2(target.Center, 1, 0.2f);
             }
-            Projectile.ChasingBehavior2(targetPos, 1.001f, 0.15f);
+            else {
+                Projectile.ChasingBehavior2(InMousePos, 1, 0.2f);
+            }
+
             Projectile.rotation = Projectile.velocity.ToRotation();
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D head = CWRUtils.GetT2DValue(Texture);
-            Main.spriteBatch.SetAdditiveState();
+            int tail = ModContent.ProjectileType<DivineDevourerIllusionTail>();
+            int body = ModContent.ProjectileType<DivineDevourerIllusionBody>();
 
+            //Main.spriteBatch.SetAdditiveState();
+
+            foreach (var proj in Main.ActiveProjectiles) {
+                if (proj.type == tail || proj.type == body) {
+                    Texture2D value = CWRUtils.GetT2DValue(proj.ModProjectile.Texture);
+                    Main.EntitySpriteDraw(value, proj.Center - Main.screenPosition, null, Color.White * (proj.timeLeft / 60f), proj.rotation
+                        , CWRUtils.GetOrig(value), proj.scale, SpriteEffects.None);
+                }
+            }
+            Texture2D head = CWRUtils.GetT2DValue(Texture);
             Main.EntitySpriteDraw(head, Projectile.Center - Main.screenPosition, null, Color.White * (Projectile.timeLeft / 30f), Projectile.rotation + MathHelper.PiOver2
                 , CWRUtils.GetOrig(head) - new Vector2(8, 0), Projectile.scale, SpriteEffects.None);
-            Main.spriteBatch.ResetBlendState();
+
+            //Main.spriteBatch.ResetBlendState();
             return false;
         }
     }

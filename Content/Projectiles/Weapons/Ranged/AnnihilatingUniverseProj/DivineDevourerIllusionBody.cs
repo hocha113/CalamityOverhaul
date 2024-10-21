@@ -12,8 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
         public override void SetDefaults() {
-            Projectile.height = 34;
-            Projectile.width = 34;
+            Projectile.height = Projectile.width = 42;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.friendly = true;
@@ -41,11 +40,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Main.spriteBatch.SetAdditiveState();
-            Texture2D value = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White * (Projectile.timeLeft / 60f), Projectile.rotation
-                , CWRUtils.GetOrig(value), Projectile.scale, SpriteEffects.None);
-            Main.spriteBatch.ResetBlendState();
             return false;
         }
     }
