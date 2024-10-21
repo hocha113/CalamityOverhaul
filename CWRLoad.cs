@@ -7,6 +7,7 @@ using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.AstrumAureus;
 using CalamityMod.NPCs.AstrumDeus;
 using CalamityMod.NPCs.DesertScourge;
+using CalamityMod.NPCs.DevourerofGods;
 using CalamityMod.NPCs.DraedonLabThings;
 using CalamityMod.NPCs.ExoMechs.Apollo;
 using CalamityMod.NPCs.ExoMechs.Ares;
@@ -209,6 +210,9 @@ namespace CalamityOverhaul
         public static int DesertNuisanceHead;
         public static int DesertNuisanceBody;
         public static int DesertNuisanceTail;
+        public static int DesertNuisanceHeadYoung;
+        public static int DesertNuisanceBodyYoung;
+        public static int DesertNuisanceTailYoung;
         /// <summary>
         /// 星神游龙
         /// </summary>
@@ -388,12 +392,12 @@ namespace CalamityOverhaul
             ThanatosBody2 = NPCType<ThanatosBody2>();
             ThanatosTail = NPCType<ThanatosTail>();
 
-            DevourerofGodsHead = NPCType<CalamityMod.NPCs.DevourerofGods.DevourerofGodsHead>();
-            DevourerofGodsBody = NPCType<CalamityMod.NPCs.DevourerofGods.DevourerofGodsBody>();
-            DevourerofGodsTail = NPCType<CalamityMod.NPCs.DevourerofGods.DevourerofGodsTail>();
-            CosmicGuardianHead = NPCType<CalamityMod.NPCs.DevourerofGods.CosmicGuardianHead>();
-            CosmicGuardianBody = NPCType<CalamityMod.NPCs.DevourerofGods.CosmicGuardianBody>();
-            CosmicGuardianTail = NPCType<CalamityMod.NPCs.DevourerofGods.CosmicGuardianTail>();
+            DevourerofGodsHead = NPCType<DevourerofGodsHead>();
+            DevourerofGodsBody = NPCType<DevourerofGodsBody>();
+            DevourerofGodsTail = NPCType<DevourerofGodsTail>();
+            CosmicGuardianHead = NPCType<CosmicGuardianHead>();
+            CosmicGuardianBody = NPCType<CosmicGuardianBody>();
+            CosmicGuardianTail = NPCType<CosmicGuardianTail>();
 
             DesertScourgeHead = NPCType<DesertScourgeHead>();
             DesertScourgeBody = NPCType<DesertScourgeBody>();
@@ -401,6 +405,9 @@ namespace CalamityOverhaul
             DesertNuisanceHead = NPCType<DesertNuisanceHead>();
             DesertNuisanceBody = NPCType<DesertNuisanceBody>();
             DesertNuisanceTail = NPCType<DesertNuisanceTail>();
+            DesertNuisanceHeadYoung = NPCType<DesertNuisanceHeadYoung>();
+            DesertNuisanceBodyYoung = NPCType<DesertNuisanceBodyYoung>();
+            DesertNuisanceTailYoung = NPCType<DesertNuisanceTailYoung>();
 
             AstrumDeusHead = NPCType<AstrumDeusHead>();
             AstrumDeusBody = NPCType<AstrumDeusBody>();
@@ -447,8 +454,8 @@ namespace CalamityOverhaul
             targetNpcTypes15 = [NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail];
             targetNpcTypes16 = [RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight];
 
-            WormBodys = [ AquaticScourgeBody, StormWeaverBody, ArmoredDiggerBody, DesertScourgeBody, DesertNuisanceBody
-                , CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
+            WormBodys = [ AquaticScourgeBody, StormWeaverBody, ArmoredDiggerBody, DesertScourgeBody, DesertNuisanceBody,
+                DesertNuisanceBodyYoung, CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
                 , SepulcherBody, PerforatorBodyLarge, PerforatorBodyMedium, NPCID.TheDestroyerBody, NPCID.EaterofWorldsBody];
 
             MaterialsTypes = [
