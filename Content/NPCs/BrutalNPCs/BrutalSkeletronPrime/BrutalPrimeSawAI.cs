@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             BrutalSkeletronPrimeAI.CheakRam(out cannonAlive, out viceAlive, out _, out laserAlive);
             npc.aiStyle = -1;
             npc.dontTakeDamage = false;
-            if (BrutalSkeletronPrimeAI.SetArmRot(npc, head, 2)) {
+            if (BrutalSkeletronPrimeAI.SetArmRot(npc, head, 3)) {
                 return false;
             }
 

@@ -2861,7 +2861,12 @@ Items: {
 
 	SnowQuayMK2: {
 		DisplayName: Snow Quay MK2
-		Tooltip: ""
+		Tooltip:
+			'''
+			Use snowballs as ammunition
+			A large-caliber snow cannon that fires ice and snow mixed shells
+			No preheating is required to fire
+			'''
 	}
 }
 

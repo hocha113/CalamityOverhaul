@@ -2851,8 +2851,13 @@ Items: {
 	}
 
 	SnowQuayMK2: {
-		// DisplayName: Snow Quay MK2
-		// Tooltip: ""
+		DisplayName: Snow Quay MK2
+		Tooltip:
+			'''
+			Verwenden Sie Schneebälle als Munition
+			Eine großkalibrige Schneekanone, die gemischte Eis- und Schneeshells abfeuert
+			Zum Abfeuern ist keine Vorheizung erforderlich
+			'''
 	}
 }
 

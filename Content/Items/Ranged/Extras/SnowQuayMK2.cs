@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override string Texture => CWRConstant.Item_Ranged + "SnowQuayMK2";
         public override void SetDefaults() {
             Item.SetItemCopySD<Onyxia>();
-            Item.damage = 42;
+            Item.damage = 28;
             Item.useAmmo = AmmoID.Snowball;
             Item.UseSound = SoundID.Item36 with { Pitch = -0.2f };
             Item.SetCartridgeGun<SnowQuayMK2Held>(220);

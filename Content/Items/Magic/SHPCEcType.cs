@@ -34,14 +34,14 @@ namespace CalamityOverhaul.Content.Items.Magic
                 {4, 26 },
                 {5, 32 },
                 {6, 40 },
-                {7, 60 },
-                {8, 86 },
-                {9, 110 },
-                {10, 160 },
-                {11, 210 },
-                {12, 280 },
-                {13, 420 },
-                {14, 1300 }
+                {7, 50 },
+                {8, 66 },
+                {9, 90 },
+                {10, 130 },
+                {11, 160 },
+                {12, 200 },
+                {13, 320 },
+                {14, 1200 }
             };
         }
         public override void SetStaticDefaults() => SetDefaultsFunc(Item);

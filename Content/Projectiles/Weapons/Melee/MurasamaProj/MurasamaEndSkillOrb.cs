@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
     internal class MurasamaEndSkillOrb : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-
         private Vector2 origVer;
         private bool set;
         private bool hasDamage;

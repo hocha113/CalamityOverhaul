@@ -2854,8 +2854,13 @@ Items: {
 	}
 
 	SnowQuayMK2: {
-		// DisplayName: Snow Quay MK2
-		// Tooltip: ""
+		DisplayName: Snow Quay MK2
+		Tooltip:
+			'''
+			Utilisez des boules de neige comme munitions
+			Un gros canon à neige qui tire des obus mélangés de glace et de neige
+			Aucune préchauffe n'est requise pour tirer
+			'''
 	}
 }
 
