@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 6));
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 7));
         }
 
         public override void SetDefaults() {

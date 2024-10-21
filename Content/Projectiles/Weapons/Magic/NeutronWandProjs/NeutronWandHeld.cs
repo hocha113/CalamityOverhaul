@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             }
 
             firePos = Vector2.Lerp(firePos, ToMouse + Owner.GetPlayerStabilityCenter(), 0.1f);
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 9);
+            CWRUtils.ClockFrame(ref Projectile.frame, 5, 11);
         }
 
         public override void HanderPlaySound() {
@@ -91,8 +91,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
         }
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, drawPos, CWRUtils.GetRec(TextureValue, Projectile.frame, 10), lightColor
-                , Projectile.rotation + MathHelper.PiOver4 * DirSign, CWRUtils.GetOrig(TextureValue, 10), Projectile.scale
+            Main.EntitySpriteDraw(TextureValue, drawPos, CWRUtils.GetRec(TextureValue, Projectile.frame, 12), lightColor
+                , Projectile.rotation + MathHelper.PiOver4 * DirSign, CWRUtils.GetOrig(TextureValue, 12), Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
 
             if (colers > 0) {

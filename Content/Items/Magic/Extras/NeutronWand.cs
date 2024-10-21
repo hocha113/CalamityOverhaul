@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
         internal static int PType;
         void ICWRLoader.SetupData() => PType = ModContent.ItemType<NeutronWand>();
-        public override void SetStaticDefaults() => CWRUtils.SetAnimation(Type, 5, 10);
+        public override void SetStaticDefaults() => CWRUtils.SetAnimation(Type, 5, 12);
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.damage = 282;

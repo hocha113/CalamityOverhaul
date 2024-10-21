@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
 
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 6));
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 16));
         }
 
         public override void SetDefaults() {
@@ -81,20 +81,20 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override int TargetID => ModContent.ItemType<NeutronGlaive>();
         public override void SetKnifeProperty() {
             ShootSpeed = 18;
-            AnimationMaxFrme = 6;
+            AnimationMaxFrme = 16;
             Projectile.width = Projectile.height = 66;
             canDrawSlashTrail = true;
-            distanceToOwner = 40;
-            drawTrailBtommWidth = 70;
-            drawTrailTopWidth = 30;
+            distanceToOwner = 20;
+            drawTrailBtommWidth = 50;
+            drawTrailTopWidth = 20;
             drawTrailCount = 16;
-            Length = 140;
+            Length = 120;
             Projectile.scale = 1.25f;
             SwingData.starArg = 80;
             SwingData.baseSwingSpeed = 5.4f;
             SwingData.ler1_UpLengthSengs = 0.1f;
-            SwingData.minClampLength = 140;
-            SwingData.maxClampLength = 150;
+            SwingData.minClampLength = 120;
+            SwingData.maxClampLength = 130;
             SwingData.ler1_UpSizeSengs = 0.056f;
         }
 

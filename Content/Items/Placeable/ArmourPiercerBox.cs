@@ -10,10 +10,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
     internal class ArmourPiercerBox : ModItem
     {
         public override string Texture => CWRConstant.Item + "Placeable/HEATBox";
-        public override void SetStaticDefaults() {
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(6, 38));
-        }
-
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.value = 890;

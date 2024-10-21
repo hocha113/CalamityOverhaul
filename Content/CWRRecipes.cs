@@ -59,7 +59,6 @@ namespace CalamityOverhaul.Content
                         baseRItem.LoadItemRecipe();
                 }
             }
-
             //添加血泪的额外合成
             {
                 Recipe.Create(ItemID.BloodMoonStarter)
@@ -71,43 +70,6 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(ItemType<RottenMatter>(), 50)
                     .AddIngredient(ItemType<BlightedGel>(), 75)
                     .AddTile(TileID.DemonAltar)
-                    .Register();
-            }
-            //添加无尽催化剂的额外联动合成
-            {
-                if (CWRServerConfig.Instance.AddExtrasContent) {
-                    for (int i = 0; i < Recipe.numRecipes; i++) {
-                        Recipe recipe = Main.recipe[i];
-                        if (CWRLoad.EternitySoul > ItemID.None) {
-                            if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
-                                recipe.AddIngredient(CWRLoad.DeviatingEnergy, InfinityCatalyst.QFD(15));
-                                recipe.AddIngredient(CWRLoad.AbomEnergy, InfinityCatalyst.QFD(15));
-                                recipe.AddIngredient(CWRLoad.EternalEnergy, InfinityCatalyst.QFD(15));
-                            }
-                            //if (recipe.HasResult(CWRLoad.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
-                            //    recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
-                            //}
-                        }
-                        if (CWRLoad.MetanovaBar > ItemID.None) {
-                            if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
-                                recipe.AddIngredient(CWRLoad.MetanovaBar, InfinityCatalyst.QFD(15));
-                            }
-                        }
-                    }
-                }
-            }
-            //修改暴政的合成
-            {
-                for (int i = 0; i < Recipe.numRecipes; i++) {
-                    Recipe recipe = Main.recipe[i];
-                    if (recipe.HasResult(ItemType<TheEnforcer>())) {
-                        recipe.DisableRecipe();
-                    }
-                }
-                Recipe.Create(ItemType<TheEnforcer>())
-                    .AddIngredient(ItemType<HolyCollider>())
-                    .AddIngredient(ItemType<CosmiliteBar>(), 5)
-                    .AddTile(TileType<CosmicAnvil>())
                     .Register();
             }
             //添加圣火之刃的合成
@@ -131,50 +93,8 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileID.Anvils)
                     .Register();
             }
-            /*添加水瓶的合成事件
-            {
-                for (int i = 0; i < Recipe.numRecipes; i++) {
-                    Recipe recipe = Main.recipe[i];
-                    if (recipe.HasResult(ItemID.BottledWater)) {
-                        recipe.AddOnCraftCallback(RWaterBottle.OnRecipeBottle);
-                    }
-                }
-            }
-            */
             //修改瘟疫系列的合成
             {
-                for (int i = 0; i < Recipe.numRecipes; i++) {
-                    Recipe recipe = Main.recipe[i];
-                    //瘟疫大剑
-                    if (recipe.HasResult(ItemType<PlagueKeeper>())) {
-                        recipe.RemoveIngredient(ItemID.LunarBar);//移除夜明锭的配方
-                        recipe.AddIngredient(ItemType<Hellkite>());//添加地狱龙锋
-                        recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
-                    }
-                    //瘟疫
-                    if (recipe.HasResult(ItemType<Contagion>())) {
-                        recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
-                        recipe.AddIngredient(ItemType<PestilenceIngot>(), 15);//添加瘟疫锭
-                    }
-                    //瘟疫胸甲
-                    if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerCarapace>())) {
-                        recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
-                        recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
-                        recipe.AddIngredient(ItemType<PestilenceIngot>(), 8);//添加瘟疫锭
-                    }
-                    //瘟疫头盔
-                    if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerVisor>())) {
-                        recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
-                        recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
-                        recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
-                    }
-                    //瘟疫护腿
-                    if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerPistons>())) {
-                        recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
-                        recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
-                        recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
-                    }
-                }
                 //添加瘟疫长矛的合成
                 Recipe.Create(ItemType<DiseasedPike>())
                     .AddIngredient(ItemType<HellionFlowerSpear>())//添加花刺长矛
@@ -225,15 +145,6 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileType<PlagueInfuser>())
                     .Register();
 
-            }
-            //修改月神P的合成
-            {
-                for (int i = 0; i < Recipe.numRecipes; i++) {
-                    Recipe recipe = Main.recipe[i];
-                    if (recipe.HasResult(ItemType<SomaPrime>())) {
-                        recipe.AddIngredient(ItemType<Infinity>());//添加无穷
-                    }
-                }
             }
             //添加闪光皇后鱼的配方
             {
@@ -429,7 +340,86 @@ namespace CalamityOverhaul.Content
                             recipe.AddTile(TileID.LunarCraftingStation);
                         }
                     }
+                    //修改大守卫者的合成
+                    {
+                        if (recipe.HasResult(ItemType<GrandGuardian>())) {
+                            recipe.RemoveIngredient(ItemID.FragmentNebula);//移除星云碎片
+                            recipe.AddIngredient(ItemID.LunarBar, 5);//添加夜明锭
+                        }
+                    }
+                    //修改月神P的合成
+                    {
+                        if (recipe.HasResult(ItemType<SomaPrime>())) {
+                            recipe.AddIngredient(ItemType<Infinity>());//添加无穷
+                        }
+                    }
+                    //添加无尽催化剂的额外联动合成
+                    {
+                        if (CWRServerConfig.Instance.AddExtrasContent) {
+                            if (CWRLoad.EternitySoul > ItemID.None) {
+                                if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
+                                    recipe.AddIngredient(CWRLoad.DeviatingEnergy, InfinityCatalyst.QFD(15));
+                                    recipe.AddIngredient(CWRLoad.AbomEnergy, InfinityCatalyst.QFD(15));
+                                    recipe.AddIngredient(CWRLoad.EternalEnergy, InfinityCatalyst.QFD(15));
+                                }
+                                //if (recipe.HasResult(CWRLoad.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
+                                //    recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
+                                //}
+                            }
+                            if (CWRLoad.MetanovaBar > ItemID.None) {
+                                if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
+                                    recipe.AddIngredient(CWRLoad.MetanovaBar, InfinityCatalyst.QFD(15));
+                                }
+                            }
+                        }
+                    }
+                    //修改暴政的合成
+                    {
+                        if (recipe.HasResult(ItemType<TheEnforcer>())) {
+                            recipe.DisableRecipe();
+                        }
+                    }
+                    //瘟疫系列修改
+                    {
+                        //瘟疫大剑
+                        if (recipe.HasResult(ItemType<PlagueKeeper>())) {
+                            recipe.RemoveIngredient(ItemID.LunarBar);//移除夜明锭的配方
+                            recipe.AddIngredient(ItemType<Hellkite>());//添加地狱龙锋
+                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
+                        }
+                        //瘟疫
+                        if (recipe.HasResult(ItemType<Contagion>())) {
+                            recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
+                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 15);//添加瘟疫锭
+                        }
+                        //瘟疫胸甲
+                        if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerCarapace>())) {
+                            recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
+                            recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
+                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 8);//添加瘟疫锭
+                        }
+                        //瘟疫头盔
+                        if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerVisor>())) {
+                            recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
+                            recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
+                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
+                        }
+                        //瘟疫护腿
+                        if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerPistons>())) {
+                            recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
+                            recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
+                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
+                        }
+                    }
                 }
+            }
+            //添加暴政的新合成
+            {
+                Recipe.Create(ItemType<TheEnforcer>())
+                    .AddIngredient(ItemType<HolyCollider>())
+                    .AddIngredient(ItemType<CosmiliteBar>(), 5)
+                    .AddTile(TileType<CosmicAnvil>())
+                    .Register();
             }
         }
 

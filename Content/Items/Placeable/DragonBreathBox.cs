@@ -8,10 +8,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
 {
     internal class DragonBreathBox : ModItem
     {
-        public override string Texture => CWRConstant.Item + "Placeable/DBCBoxHeld";
-        public override void SetStaticDefaults() {
-        }
-
+        public override string Texture => CWRConstant.Item + "Placeable/DBCBox";
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.value = 890;

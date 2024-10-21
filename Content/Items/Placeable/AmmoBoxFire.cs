@@ -9,10 +9,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
     internal class AmmoBoxFire : ModItem
     {
         public override string Texture => CWRConstant.Item + "Placeable/NapalmBombBox";
-        public override void SetStaticDefaults() {
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(6, 39));
-        }
-
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.value = 890;

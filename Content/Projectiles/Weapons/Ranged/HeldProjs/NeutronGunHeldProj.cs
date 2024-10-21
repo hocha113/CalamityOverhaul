@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostInOwnerUpdate() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 5);
+            CWRUtils.ClockFrame(ref Projectile.frame, 5, 6);
             CWRUtils.ClockFrame(ref uiframe, 5, 6);
             HandDistance = onFireR ? (HandFireDistance = 65) : (HandFireDistance = 35);
 
@@ -118,8 +118,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 setValue = NeutronGun.ShootGun.Value;
             }
             Main.EntitySpriteDraw(setValue, drawPos
-                , CWRUtils.GetRec(setValue, Projectile.frame, 6), lightColor
-                , Projectile.rotation, CWRUtils.GetOrig(setValue, 6), Projectile.scale
+                , CWRUtils.GetRec(setValue, Projectile.frame, 7), lightColor
+                , Projectile.rotation, CWRUtils.GetOrig(setValue, 7), Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }

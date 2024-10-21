@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     Charge = 0;
                     level1 = level2 = level3 = true;
                 }
-                CWRUtils.ClockFrame(ref Projectile.frame, 2, 15);
+                CWRUtils.ClockFrame(ref Projectile.frame, 2, 6);
                 CWRUtils.ClockFrame(ref uiframe, 5, 6);
             }
             else {
@@ -135,8 +135,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (Item != null && !Item.IsAir && Item.type == NeutronBow.PType) {
                 NeutronGlaiveHeldAlt.DrawBar(Owner, Charge, uiframe);
             }
-            Main.EntitySpriteDraw(TextureValue, drawPos, CWRUtils.GetRec(TextureValue, Projectile.frame, 16), CanFire ? Color.White : lightColor
-                , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 16), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            Main.EntitySpriteDraw(TextureValue, drawPos, CWRUtils.GetRec(TextureValue, Projectile.frame, 7), CanFire ? Color.White : lightColor
+                , Projectile.rotation, CWRUtils.GetOrig(TextureValue, 7), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
     }
 }

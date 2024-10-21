@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override string Texture => CWRConstant.Item + "Rogue/NeutronScythe";
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
-            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 18));
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 13));
         }
         public override void SetDefaults() {
             Item.width = Item.height = 32;
