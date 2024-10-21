@@ -464,7 +464,7 @@ Items: {
 	}
 
 	InfinitePick: {
-		DisplayName: Infinite Pick
+		DisplayName: Universal Greed Pickaxe
 		Tooltip:
 			'''
 			Right-click and destroy everything it touches
@@ -594,7 +594,7 @@ Items: {
 	}
 
 	CosmicCalamity: {
-		DisplayName: Cosmic Calamity
+		DisplayName: Galactic Disaster
 		Tooltip: Throws a Javelin infused with the Devourer's power. Stealth strikes causes several laser beams to assail the enemy.
 	}
 
@@ -1792,7 +1792,7 @@ Items: {
 	}
 
 	AmmoBoxFire: {
-		DisplayName: Ammo Box Fire
+		DisplayName: Burning Ammo Box
 		Tooltip:
 			'''
 			Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 

@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     }
                     else if (onSteam) {
                         SoundEngine.PlaySound(SoundID.MenuTick);
-                        "https://steamcommunity.com/workshop/filedetails/discussion/3161388997/4331980200220181304/".WebRedirection(true);
+                        "https://steamcommunity.com/workshop/filedetails/discussion/3161388997/4700161359561532453/".WebRedirection(true);
                     }
                     else {
                         SoundEngine.PlaySound(SoundID.MenuClose);

@@ -1728,7 +1728,7 @@ Items: {
 	}
 
 	ElementMuzzleBrake: {
-		DisplayName: 元素消音器
+		DisplayName: 元素稳定器
 		Tooltip:
 			'''
 			减少65%后坐力与膛压
@@ -1749,7 +1749,7 @@ Items: {
 	}
 
 	PrecisionMuzzleBrake: {
-		DisplayName: 高精密消音器
+		DisplayName: 高精密稳定器
 		Tooltip:
 			'''
 			减少55%后坐力与膛压
@@ -1759,7 +1759,7 @@ Items: {
 	}
 
 	SimpleMuzzleBrake: {
-		DisplayName: 简陋消音器
+		DisplayName: 简陋稳定器
 		Tooltip:
 			'''
 			减少40%后坐力与膛压
