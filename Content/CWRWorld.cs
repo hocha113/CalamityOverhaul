@@ -69,6 +69,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void SaveWorldData(TagCompound tag) {
+            tag.Add("_InWorldBossPhase_YharonKillCount", InWorldBossPhase.YharonKillCount);
             tag.Add("_Event_DefeatTheTungstenArmy_Tag", DefeatTheTungstenArmy);
             tag.Add("_Event_TungstenRiotIsOngoing", TungstenRiot.Instance.TungstenRiotIsOngoing);
             tag.Add("_Event_EventKillPoints", TungstenRiot.Instance.EventKillPoints);
@@ -88,9 +89,19 @@ namespace CalamityOverhaul.Content
         }
 
         public override void LoadWorldData(TagCompound tag) {
-            DefeatTheTungstenArmy = tag.GetBool("_Event_DefeatTheTungstenArmy_Tag");
-            TungstenRiot.Instance.TungstenRiotIsOngoing = tag.GetBool("_Event_TungstenRiotIsOngoing");
-            TungstenRiot.Instance.EventKillPoints = tag.GetInt("_Event_EventKillPoints");
+            if (tag.TryGet("_InWorldBossPhase_YharonKillCount", out int _yharonKillCount)) {
+                InWorldBossPhase.YharonKillCount = _yharonKillCount;
+            }
+            if (tag.TryGet("_Event_DefeatTheTungstenArmy_Tag", out bool _defeatTheTungstenArmy)) {
+                DefeatTheTungstenArmy = _defeatTheTungstenArmy;
+            }
+            if (tag.TryGet("_Event_TungstenRiotIsOngoing", out bool _tungstenRiotIsOngoing)) {
+                TungstenRiot.Instance.TungstenRiotIsOngoing = _tungstenRiotIsOngoing;
+            }
+            if (tag.TryGet("_Event_EventKillPoints", out int _eventKillPoints)) {
+                TungstenRiot.Instance.EventKillPoints = _eventKillPoints;
+            }
+
             if (CWRServerConfig.Instance.AddExtrasContent) {
                 if (SupertableUI.Instance != null && tag.ContainsKey("SupertableUI_ItemDate")) {
                     Item[] loadSupUIItems = tag.Get<Item[]>("SupertableUI_ItemDate");
@@ -99,7 +110,7 @@ namespace CalamityOverhaul.Content
                             loadSupUIItems[i] = new Item(0);
                         }
                     }
-                    SupertableUI.Instance.items = tag.Get<Item[]>("SupertableUI_ItemDate");
+                    SupertableUI.Instance.items = loadSupUIItems;
                 }
             }
         }

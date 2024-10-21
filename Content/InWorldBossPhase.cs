@@ -239,6 +239,10 @@ namespace CalamityOverhaul.Content
         /// 终焉之战
         /// </summary>
         public static readonly Func<bool> Downed32 = () => DownedBossSystem.downedBossRush;
+        /// <summary>
+        /// 丛林龙死亡次数
+        /// </summary>
+        public static int YharonKillCount;
 
         #endregion
 

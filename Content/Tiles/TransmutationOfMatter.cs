@@ -84,6 +84,14 @@ namespace CalamityOverhaul.Content.Tiles
             return false;
         }
 
+        public override void MouseOver(int i, int j) {
+            Player player = Main.LocalPlayer;
+            player.noThrow = 2;
+            player.mouseInterface = true;
+            player.cursorItemIconEnabled = true;
+            player.cursorItemIconID = ModContent.ItemType<TransmutationOfMatterItem>();//当玩家鼠标悬停在物块之上时，显示该物品的材质
+        }
+
         public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
         public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
