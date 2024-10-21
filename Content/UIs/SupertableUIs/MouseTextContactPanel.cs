@@ -53,6 +53,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     DrawPosition = Main.MouseScreen + new Vector2(40, -12);
                 }
             }
+
             Vector2 uiSize = new Vector2(1.5f, 0.6f);
             string text = CWRLocText.GetTextValue("MouseTextContactPanel_TextContent");
             Vector2 size = FontAssets.MouseText.Value.MeasureString(text);
@@ -64,8 +65,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             spriteBatch.Draw(Texture, DrawPosition, null, Color.DarkGoldenrod, 0, Vector2.Zero, uiSize * new Vector2(overSizeX * 1.1f, 1), SpriteEffects.None, 0);//绘制出UI主体
 
-            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRUtils.GetSafeText(text, size, Texture.Width * uiSize.X)
-                , DrawPosition.X + 3, DrawPosition.Y + 3, Color.White, Color.Black, new Vector2(0.3f), 1f);
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, DrawPosition.X + 3, DrawPosition.Y + 3, Color.White, Color.Black, new Vector2(0.3f), 1f);
         }
     }
 }

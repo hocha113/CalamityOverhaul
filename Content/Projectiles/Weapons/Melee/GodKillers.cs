@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class GodKillers : ModProjectile
     {
-        public override string Texture => CWRConstant.Projectile_Melee + "GodKiller";
+        public override string Texture => CWRConstant.Cay_Proj + "Typeless/GodKiller";
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void PostDraw(Color lightColor) {
-            Main.EntitySpriteDraw(origin: new Vector2(11f, 23f), texture: ModContent.Request<Texture2D>(CWRConstant.Projectile_Melee + "GodKillerGlow").Value
+            Main.EntitySpriteDraw(origin: new Vector2(11f, 23f), texture: ModContent.Request<Texture2D>(CWRConstant.Cay_Proj + "Typeless/GodKillerGlow").Value
                 , position: Projectile.Center - Main.screenPosition, sourceRectangle: null, color: Color.White, rotation: Projectile.rotation, scale: 1f, effects: SpriteEffects.None);
         }
 
