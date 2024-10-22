@@ -15,7 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
     internal class NeutronGlaiveHeldAlt : BaseHeldProj, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Melee + "NeutronGlaive";
-
         private static Asset<Texture2D> bar1;
         private static Asset<Texture2D> bar2;
         private static Asset<Texture2D> bar3;
