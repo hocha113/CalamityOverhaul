@@ -84,18 +84,18 @@ namespace CalamityOverhaul.Content.UIs
                 DrawPosition = new Vector2(20, Main.screenHeight - 100);
                 string key = "BulletCard";
                 string key2 = "";
-                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.napalmBomb) {
-                    key2 = "_Fire";
-                }
-                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.armourPiercer) {
-                    key2 = "_AP";
-                }
-                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
-                    key2 = "_SH";
-                }
-                if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
-                    key2 = "_DBC";
-                }
+                //if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.napalmBomb) {
+                //    key2 = "_Fire";
+                //}
+                //if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.armourPiercer) {
+                //    key2 = "_AP";
+                //}
+                //if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.highExplosive) {
+                //    key2 = "_SH";
+                //}
+                //if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
+                //    key2 = "_DBC";
+                //}
                 //if (handItem.useAmmo == AmmoID.Rocket) {
                 //    key = "GrenadeRound";
                 //}

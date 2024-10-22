@@ -113,8 +113,8 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition + drawOffsetPos, CWRUtils.GetRec(value, Projectile.frame, maxFrameNum)
-                , onProj ? Color.Gold : Color.White, Projectile.rotation, CWRUtils.GetOrig(value, maxFrameNum) + new Vector2(0, -2), Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition + drawOffsetPos, CWRUtils.GetRec(value)
+                , onProj ? Color.Gold : Color.White, Projectile.rotation, CWRUtils.GetOrig(value) - new Vector2(0, 2), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

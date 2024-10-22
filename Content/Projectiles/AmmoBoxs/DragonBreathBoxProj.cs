@@ -9,17 +9,10 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public override string Texture => CWRConstant.Item + "Placeable/DBCBox";
         public override void SetAmmoBox() {
             maxFrameNum = 1;
-            drawOffsetPos = new Vector2(0, -18);
         }
 
         public override void ClockFrame() {
-            if (++Projectile.frameCounter > 6 && Projectile.frame <= 20) {
-                Projectile.frame++;
-                Projectile.frameCounter = 0;
-            }
-            if (Projectile.frame >= 20) {
-                Projectile.frame = 20;
-            }
+
         }
 
         public override bool ClickBehavior(Player player, CWRItems cwr) {
