@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
             if (canatcck2) {
                 Projectile.velocity = ToMouse.UnitVector() * 18;
             }
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.velocity.UnitVector() * 53 * Projectile.scale;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.velocity.UnitVector() * 40 * Projectile.scale;
             Projectile.rotation = Projectile.velocity.ToRotation();
             if (!canatcck && Projectile.ai[0] <= maxatcck) {
                 Projectile.ai[0]++;
@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
                 Projectile.scale = 1.5f;
             }
             SetHeld();
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 5);
+            CWRUtils.ClockFrame(ref Projectile.frame, 5, 15);
             if (canatcck2) {
                 CWRUtils.ClockFrame(ref uiframe, 5, 6);
             }
@@ -139,8 +139,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         public override bool PreDraw(ref Color lightColor) {
             DrawBar(Owner, Projectile.ai[0], uiframe);
             Texture2D value = TextureAssets.Projectile[Type].Value;
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 6)
-                , Color.White, Projectile.rotation + MathHelper.PiOver4 * Owner.direction, CWRUtils.GetOrig(value, 6) + new Vector2(0, 5 * Owner.direction)
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(value, Projectile.frame, 16)
+                , Color.White, Projectile.rotation + MathHelper.PiOver4 * Owner.direction, CWRUtils.GetOrig(value, 16) + new Vector2(0, 5 * Owner.direction)
                 , Projectile.scale, Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
             return false;
         }
