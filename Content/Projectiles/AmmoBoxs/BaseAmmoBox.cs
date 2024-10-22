@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public override string Texture => CWRConstant.Item + "Placeable/NapalmBombBox";
 
         private bool onProj;
-        protected int maxFrameNum = 39;
+        protected int maxFrameNum = 1;
         protected Vector2 drawOffsetPos;
         public int FromeThisTImeID;
 

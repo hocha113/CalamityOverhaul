@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
     {
         public override string Texture => CWRConstant.Item + "Placeable/DBCBox";
         public override void SetAmmoBox() {
-            maxFrameNum = 21;
+            maxFrameNum = 1;
             drawOffsetPos = new Vector2(0, -18);
         }
 

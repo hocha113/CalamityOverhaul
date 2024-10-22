@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
     {
         public override string Texture => CWRConstant.Item + "Placeable/HEATBox";
         public override void SetAmmoBox() {
-            maxFrameNum = 38;
+            maxFrameNum = 1;
         }
         public override bool ClickBehavior(Player player, CWRItems cwr) {
             _ = SoundEngine.PlaySound(CWRSound.loadTheRounds, Projectile.Center);
