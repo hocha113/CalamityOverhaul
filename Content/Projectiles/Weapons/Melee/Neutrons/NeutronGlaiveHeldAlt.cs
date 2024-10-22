@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
                 Rectangle frameCrop = new Rectangle(0, 0, (int)(sengs / maxatcck * barFG.Width), barFG.Height);
                 Color color = Color.White;
                 Main.spriteBatch.Draw(barBG, drawPos, CWRUtils.GetRec(barBG, uiframe, 7), color, 0f, CWRUtils.GetOrig(barBG, 7), barScale, 0, 0f);
-                Main.spriteBatch.Draw(barFG, drawPos, frameCrop, color, 0f, CWRUtils.GetOrig(barFG, 1), barScale, 0, 0f);
+                Main.spriteBatch.Draw(barFG, drawPos + new Vector2(2, 4), frameCrop, color, 0f, CWRUtils.GetOrig(barFG, 1), barScale, 0, 0f);
             }
         }
 
