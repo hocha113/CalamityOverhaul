@@ -96,9 +96,9 @@ namespace CalamityOverhaul.Content.UIs
                 if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
                     key2 = "_DBC";
                 }
-                if (handItem.useAmmo == AmmoID.Rocket) {
-                    key = "GrenadeRound";
-                }
+                //if (handItem.useAmmo == AmmoID.Rocket) {
+                //    key = "GrenadeRound";
+                //}
                 TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + key2);
             }
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.Magazines) {
