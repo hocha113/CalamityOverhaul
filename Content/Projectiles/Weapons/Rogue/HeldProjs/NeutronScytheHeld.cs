@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         private int fireIndex2;
         public override void SetThrowable() {
             HandOnTwringMode = -30;
+            OffsetRoting = 20;
             TotalLifetime = 1200;
             Projectile.timeLeft = TotalLifetime + ChargeUpTime;
         }

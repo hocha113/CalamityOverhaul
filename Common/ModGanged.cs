@@ -5,6 +5,7 @@ using CalamityMod.UI;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace CalamityOverhaul.Common
         public delegate void On_PostAI_Dalegate(object obj, Projectile projectile);
         public delegate void On_ModPlayerDraw_Dalegate(object obj, ref PlayerDrawSet drawInfo);
         public delegate void On_VoidFunc_Dalegate(ref PlayerDrawSet drawInfo, bool drawOnBack);
+        public delegate void On_Tooltips_Dalegate(Item item, List<TooltipLine> tooltips);
         public delegate void On_VoidFunc_Instance_Dalegate(object inds);
         public delegate bool On_ShouldForceUseAnim_Dalegate(Player player, Item item);
         public delegate void On_TrO_ItemPowerAttacks_Load_Dalegate(object obj);
@@ -410,6 +412,19 @@ namespace CalamityOverhaul.Common
                 }
             }
             #endregion
+
+            #region InfernumMode
+            {
+                if (CWRMod.Instance.infernum != null) {
+                    Type type = GetTargetTypeInStringKey(GetModType(CWRMod.Instance.infernum), "TooltipChangeGlobalItem");
+                    if (type != null) {
+                        MethodInfo dditEnrageTooltipsMethod = type.GetMethod("EditEnrageTooltips", BindingFlags.Public | BindingFlags.Static);
+                        //这个问题并不一定发生，并且不是模组自己的问题，因此不必要进行挂载
+                        //CWRHook.Add(dditEnrageTooltipsMethod, On_EditEnrageTooltips_Hook);
+                    }
+                }
+            }
+            #endregion
         }
 
         void ICWRLoader.UnLoadData() {
@@ -447,6 +462,10 @@ namespace CalamityOverhaul.Common
             MS_Config_Type = null;
             MS_Config_recursionCraftingDepth_FieldInfo = null;
             calamityUtils_GetReworkedReforge_Method = null;
+        }
+
+        internal static void On_EditEnrageTooltips_Hook(On_Tooltips_Dalegate orig, Item item, List<TooltipLine> tooltips) {
+            orig.Invoke(item, tooltips);
         }
 
         internal static int OnGetReworkedReforgeHook(On_GetReworkedReforge_Dalegate orig

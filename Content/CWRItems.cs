@@ -334,14 +334,6 @@ namespace CalamityOverhaul.Content
                     );
                 tooltips.Add(line);
             }
-            //if (isInfiniteItem) {
-            //    TooltipLine line = new TooltipLine(CWRMod.Instance, "CalamityOverhaul",
-            //        CalamityUtils.ColorMessage(
-            //            CWRLocText.GetTextValue("CWRItem_IsInfiniteItem_TextContent")
-            //            , CWRUtils.MultiStepColorLerp(Main.GameUpdateCount % 120 / 120f, Color.DarkRed, Color.Red, Color.DarkGoldenrod, Color.Gold, Color.Red))
-            //        );
-            //    tooltips.Add(line);
-            //}
         }
 
         public static void OverModifyTool(Item item, List<TooltipLine> tooltips) {

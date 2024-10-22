@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
     internal class FadingGloryBeam : ModProjectile
     {
-        public override string Texture => CWRConstant.Item_Melee + "FadingGloryGlow";
+        public override string Texture => CWRConstant.Item_Melee + "FadingGloryBeam";
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
