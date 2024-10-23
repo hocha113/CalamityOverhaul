@@ -18,11 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
             PType = ModContent.ProjectileType<NeutronGlaiveBeam>();
             warpTex = CWRUtils.GetT2DAsset(CWRConstant.Masking + "DiffusionCircle");
         }
-
-        public bool canDraw() => true;
-        public override void SetStaticDefaults() {
-
-        }
+        
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.friendly = true;
@@ -34,7 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 5);
             Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 0.3f);
 
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
@@ -105,8 +100,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         }
 
         public override bool PreDraw(ref Color lightColor) => false;
-
-        public void Warp() {
+        bool IDrawWarp.canDraw() => true;
+        void IDrawWarp.Warp() {
             Color warpColor = new Color(45, 45, 45) * Projectile.ai[1];
             Vector2 orig = warpTex.Size() / 2;
             for (int i = 0; i < 3; i++) {
@@ -118,8 +113,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         public void costomDraw(SpriteBatch spriteBatch) {
             Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            Vector2 orig = CWRUtils.GetOrig(mainValue, 6);
-            Rectangle rectangle = CWRUtils.GetRec(mainValue, Projectile.frame, 6);
+            Rectangle rectangle = CWRUtils.GetRec(mainValue);
+            Vector2 orig = rectangle.Size() / 2;
             float rot = Projectile.rotation;
 
             for (int k = 0; k < Projectile.oldPos.Length; k++) {
