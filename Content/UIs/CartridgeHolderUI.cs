@@ -138,11 +138,13 @@ namespace CalamityOverhaul.Content.UIs
             }
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.JAR) {
                 Texture2D jar2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR_Full");
+                Texture2D ctb = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR_CTB");
                 Date.JARSengs = MathHelper.Lerp(Date.JARSengs, bulletNum / (float)cwrItem.AmmoCapacity, 0.05f);
                 float sengs = jar2.Height * (1 - Date.JARSengs);
-                Rectangle rectangle = new(0, (int)sengs, jar2.Width, (int)(jar2.Height - sengs));
+                Rectangle rectangle = new(0, (int)sengs, jar2.Width, (int)(jar2.Height - sengs) + 1);
                 spriteBatch.Draw(TextureValue, DrawPosition, null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
-                spriteBatch.Draw(jar2, DrawPosition + new Vector2(29, sengs + 27), rectangle, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(jar2, DrawPosition + new Vector2(4, sengs + 6), rectangle, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(ctb, DrawPosition + new Vector2(4, 6), null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             }
             if (onMainP) {
                 string text = $"{CWRLocText.GetTextValue("CartridgeHolderUI_Text1")}\n";
