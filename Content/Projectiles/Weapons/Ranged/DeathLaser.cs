@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class DeathLaser : ModProjectile
     {
-        public override string Texture => CWRConstant.Cay_Proj_Magic + "ValkyrieRayBeam";
+        public override string Texture => CWRConstant.Placeholder3;
         private Player Owner => Main.player[Projectile.owner];
 
         public override void SetStaticDefaults() {
@@ -88,9 +88,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D body = CWRUtils.GetT2DValue(Texture + "Body");
-            Texture2D head = CWRUtils.GetT2DValue(Texture + "Head");
-            Texture2D dons = CWRUtils.GetT2DValue(Texture + "Don");
+            Texture2D body = CWRUtils.GetT2DValue("CalamityMod/ExtraTextures/Lasers/UltimaRayMid");
+            Texture2D head = CWRUtils.GetT2DValue("CalamityMod/ExtraTextures/Lasers/UltimaRayEnd");
+            Texture2D dons = CWRUtils.GetT2DValue("CalamityMod/ExtraTextures/Lasers/UltimaRayStart");
             Color color = CalamityUtils.ColorSwap(new Color(119, 210, 255), new Color(247, 119, 255), 0.9f); ;
 
             float rots = Projectile.rotation - MathHelper.PiOver2;
