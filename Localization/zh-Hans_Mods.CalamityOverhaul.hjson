@@ -2873,6 +2873,17 @@ Items: {
 			开火不再需要预热
 			'''
 	}
+
+	HghExplosiveBox: {
+		DisplayName: 高爆弹药箱
+		Tooltip:
+			'''
+			长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
+			特种弹药可以和原来的子弹效果叠加
+			弹头将包含高爆炸药，击中目标时制造一次小型爆炸
+			"把他们都炸上天!"
+			'''
+	}
 }
 
 Projectiles: {
@@ -3598,7 +3609,9 @@ Projectiles: {
 	// TerratomereHeld.DisplayName: Terratomere
 	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 	// ElectrifyFeather.DisplayName: Electrify Feather
-	// SnowQuayMK2Held.DisplayName: Snow Quay M K2 Held
+	// SnowQuayMK2Held.DisplayName: Snow Quay MK2
+	// HghExplosiveHeld.DisplayName: Hgh Explosive
+	// HghExplosiveProj.DisplayName: Hgh Explosive
 }
 
 Configs: {

@@ -2859,6 +2859,17 @@ Items: {
 			Zum Abfeuern ist keine Vorheizung erforderlich
 			'''
 	}
+
+	HghExplosiveBox: {
+		DisplayName: Sprengstoffkiste
+		Tooltip:
+			'''
+			Zum Bereitstellen gedrückt halten. Nach dem Einsatz mit einer Waffe das 
+			Munitionslager mit einem Rechtsklick anklicken, um spezielle Munition ins Magazin zu laden.
+			Spezialmunition kann mit der Wirkung von normalen Kugeln kombiniert werden.
+			"Schieß sie in den Himmel!"
+			'''
+	}
 }
 
 Projectiles: {
@@ -3584,7 +3595,9 @@ Projectiles: {
 	// TerratomereHeld.DisplayName: Terratomere
 	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 	// ElectrifyFeather.DisplayName: Electrify Feather
-	// SnowQuayMK2Held.DisplayName: Snow Quay M K2 Held
+	// SnowQuayMK2Held.DisplayName: Snow Quay MK2
+	// HghExplosiveHeld.DisplayName: Hgh Explosive
+	// HghExplosiveProj.DisplayName: Hgh Explosive
 }
 
 Configs: {

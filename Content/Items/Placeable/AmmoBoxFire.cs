@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
+﻿using CalamityMod.Rarities;
+using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -16,6 +17,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.consumable = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.Item1;
+            Item.rare = 4;
             Item.SetHeldProj<NapalmBombHeld>();
         }
 

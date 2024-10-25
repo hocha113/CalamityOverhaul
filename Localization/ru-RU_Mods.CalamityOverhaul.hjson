@@ -2893,6 +2893,17 @@ Items: {
 			Для стрельбы не требуется предварительный разогрев
 			'''
 	}
+
+	HghExplosiveBox: {
+		DisplayName: Взрывной Боекомплект
+		Tooltip:
+			'''
+			Удерживайте для развертывания. После развертывания щелкните правой кнопкой мыши по ящику с патронами, 
+			держа огнестрельное оружие, чтобы зарядить магазин специальными патронами.
+			Специальные патроны могут сочетать эффекты с обычными пулями.
+			"Взорвите их до небес!"
+			'''
+	}
 }
 
 Projectiles: {
@@ -3618,7 +3629,9 @@ Projectiles: {
 	// TerratomereHeld.DisplayName: Terratomere
 	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 	// ElectrifyFeather.DisplayName: Electrify Feather
-	// SnowQuayMK2Held.DisplayName: Snow Quay M K2 Held
+	// SnowQuayMK2Held.DisplayName: Snow Quay MK2
+	// HghExplosiveHeld.DisplayName: Hgh Explosive
+	// HghExplosiveProj.DisplayName: Hgh Explosive
 }
 
 Configs: {

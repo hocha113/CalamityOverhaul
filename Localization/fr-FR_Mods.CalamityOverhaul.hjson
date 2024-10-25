@@ -2862,6 +2862,17 @@ Items: {
 			Aucune préchauffe n'est requise pour tirer
 			'''
 	}
+
+	HghExplosiveBox: {
+		DisplayName: Boîte Explosive
+		Tooltip:
+			'''
+			Maintenez pour déployer. Une fois déployé, faites un clic droit sur la boîte de 
+			munitions en tenant une arme à feu pour charger des munitions spéciales dans le chargeur.
+			Les munitions spéciales peuvent cumuler leurs effets avec les balles normales.
+			"Faites-les exploser jusqu'au ciel !"
+			'''
+	}
 }
 
 Projectiles: {
@@ -3587,7 +3598,9 @@ Projectiles: {
 	// TerratomereHeld.DisplayName: Terratomere
 	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 	// ElectrifyFeather.DisplayName: Electrify Feather
-	// SnowQuayMK2Held.DisplayName: Snow Quay M K2 Held
+	// SnowQuayMK2Held.DisplayName: Snow Quay MK2
+	// HghExplosiveHeld.DisplayName: Hgh Explosive
+	// HghExplosiveProj.DisplayName: Hgh Explosive
 }
 
 Configs: {

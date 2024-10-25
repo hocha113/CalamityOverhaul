@@ -15,7 +15,8 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.consumable = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.Item1;
-            Item.SetHeldProj<ArmourPiercerHeld>();
+            Item.rare = 6;
+            Item.SetHeldProj<HghExplosiveHeld>();
         }
 
         public override void AddRecipes() {

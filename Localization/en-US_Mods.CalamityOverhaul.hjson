@@ -2868,6 +2868,16 @@ Items: {
 			No preheating is required to fire
 			'''
 	}
+
+	HghExplosiveBox: {
+		DisplayName: Hgh Explosive Box
+		Tooltip:
+			'''
+			Hold to deploy. Once deployed, right-click the ammo box with a firearm to load special ammunition into the magazine.
+			Special ammo can stack effects with regular bullets.
+			"Blow them all to the skies!"
+			'''
+	}
 }
 
 Projectiles: {
@@ -3593,7 +3603,9 @@ Projectiles: {
 	TerratomereHeld.DisplayName: Terratomere
 	RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
 	ElectrifyFeather.DisplayName: Electrify Feather
-	SnowQuayMK2Held.DisplayName: Snow Quay M K2 Held
+	SnowQuayMK2Held.DisplayName: Snow Quay MK2
+	HghExplosiveHeld.DisplayName: Hgh Explosive
+	HghExplosiveProj.DisplayName: Hgh Explosive
 }
 
 Configs: {
