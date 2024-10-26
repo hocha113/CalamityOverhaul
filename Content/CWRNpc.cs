@@ -1,13 +1,10 @@
 ﻿using CalamityMod;
 using CalamityMod.Events;
 using CalamityMod.Items;
-using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events;
-using CalamityOverhaul.Content.Items;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;

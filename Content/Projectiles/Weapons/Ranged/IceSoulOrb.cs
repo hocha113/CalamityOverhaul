@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frame, 6, 4);
+            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
             if (Projectile.ai[1] > 0) {
@@ -40,10 +40,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 : Utils.Remap(Projectile.ai[0], 135, 225f, 0f, 1.5f);
 
             Projectile.ai[0]++;
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
@@ -75,8 +71,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Projectile[Type].Value;
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            Main.EntitySpriteDraw(value, drawPosition, CWRUtils.GetRec(value, Projectile.frame, 5)
-                , Color.White, Projectile.rotation, CWRUtils.GetOrig(value, 5), Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(value, drawPosition, CWRUtils.GetRec(value, Projectile.frame, 4)
+                , Color.White, Projectile.rotation, CWRUtils.GetOrig(value, 4), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

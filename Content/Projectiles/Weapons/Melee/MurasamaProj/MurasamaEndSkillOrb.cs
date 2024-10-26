@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.penetrate = -1;
             Projectile.timeLeft = 120;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;
+            Projectile.localNPCHitCooldown = -1;
         }
 
         public override bool? CanHitNPC(NPC target) {
