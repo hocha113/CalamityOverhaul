@@ -1,8 +1,3 @@
-CWRRecipes: {
-	// ApostolicRelics: Apostolic Relics
-	// GodEaterWeapon: God Eater Weapon
-}
-
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Dégâts sans fin
 Tools.RecipesLoseText: Vous ne pouvez pas faire cet objet directement
 
@@ -1236,56 +1231,6 @@ Items: {
 			'''
 	}
 
-	Flint: {
-		DisplayName: Silex
-		Tooltip: Pierre assez dure, utilisée pour fabriquer de meilleurs outils
-	}
-
-	FlintAxe: {
-		DisplayName: Hache de Silex
-		Tooltip: Un outil avancé de l'âge de pierre, assez puissant pour abattre un arbre et s'en sortir indemne !
-	}
-
-	FlintPick: {
-		DisplayName: Pioche de Silex
-		Tooltip: Un outil avancé de l'âge de pierre, assez puissant pour extraire ces minerais étincelants !
-	}
-
-	FlintSpear: {
-		DisplayName: Lance de Silex
-		Tooltip: Une arme avancée de l'âge de pierre, dotée d'une pointe capable de tuer facilement un lapin !
-	}
-
-	TheUpiStele: {
-		DisplayName: Stèle Upi
-		Tooltip: Ici repose une étoile tombée avec les rêves d'antan
-	}
-
-	TheSpiritFlint: {
-		DisplayName: Esprit du Silex
-		Tooltip: Incarnation de la technologie antique avancée des ancêtres pour maîtriser les pierres
-	}
-
-	Pebble: {
-		DisplayName: Caillou
-		Tooltip: Pierre lisse de dureté moyenne, facile à polir
-	}
-
-	PebbleAxe: {
-		DisplayName: Hache de Caillou
-		Tooltip: Un outil primitif de l'âge de pierre, capable de rendre un arbre et son utilisateur égaux en poussière !
-	}
-
-	PebblePick: {
-		DisplayName: Pioche de Caillou
-		Tooltip: Un outil primitif de l'âge de pierre, même si creuser avec une pierre semble stupide !
-	}
-
-	PebbleSpear: {
-		DisplayName: Lance de Caillou
-		Tooltip: Une arme primitive de l'âge de pierre, mais elle n'est pas aussi dure que les os d'animaux !
-	}
-
 	BulletFilledShotgunEcType: {
 		DisplayName: Fusil à pompe plein de balles
 		Tooltip:
@@ -1831,16 +1776,6 @@ Items: {
 	AethersWhisperEcType: {
 		DisplayName: Chuchotement d'Éther
 		Tooltip: Tire des impacts d'énergie radiale qui se divisent plusieurs fois, infligeant plus de dégâts à distance
-	}
-
-	EtherRoar: {
-		// DisplayName: Ether Roar
-		// Tooltip: ""
-	}
-
-	StarnightLanceEcType: {
-		// DisplayName: Starnight Lance
-		// Tooltip: ""
 	}
 
 	PridefulHuntersPlanarRipperEcType: {
@@ -2505,98 +2440,12 @@ Items: {
 			'''
 	}
 
-	DemonshadeHelmMagic: {
-		DisplayName: Casque de Magie d'Ombre
-		Tooltip: ""
-	}
-
-	DemonshadeHelmRanged: {
-		DisplayName: Casque à Flèche d'Ombre
-		Tooltip: ""
-	}
-
-	DemonshadeHelmSummon: {
-		DisplayName: Casque de Soumission d'Ombre
-		Tooltip: ""
-	}
-
-	DemonshadeHelmRogue: {
-		DisplayName: Casque de Cagoule d'Ombre
-		Tooltip: ""
-	}
-
-	Palustris: {
-		DisplayName: Fraude Blanche
-		Tooltip: ""
-	}
-
-	VioletConjecture: {
-		DisplayName: Conjecture Violette
-		Tooltip: ""
-	}
-
-	GraniteSpear: {
-		DisplayName: Lance de Granite
-		Tooltip: ""
-	}
-
-	MarbleSpear: {
-		DisplayName: Lance de Marbre
-		Tooltip: ""
-	}
-
 	RebelBlade: {
 		DisplayName: Lame Rebelle
 		Tooltip:
 			'''
 			Une véritable attaque au corps à corps générera un grand nombre d'orbes de lumière démoniaques autour de la cible
 			Clic droit pour contrôler le vol de la lame et effectuer une coupe vers le curseur
-			'''
-	}
-
-	GraniteDart: {
-		DisplayName: Dard de Granite
-		Tooltip:
-			'''
-			Les dards volent vite et précisément
-			Une attaque furtive lancera un dard puissant
-			'''
-	}
-
-	MarbleDagger: {
-		DisplayName: Dague de Marbre
-		Tooltip:
-			'''
-			Après avoir touché une cible, lance trois dagues de marbre supplémentaires
-			Une attaque furtive lancera un dard puissant
-			'''
-	}
-
-	ApoctolithEcType: {
-		// DisplayName: Apoctolith
-		/* Tooltip:
-			'''
-			A lurking attack creates a giant wave
-			Throw it in the sky, catch it with your face, 
-			and you'll believe in the power of a brick
-			''' */
-	}
-
-	ThrowingBrickEcType: {
-		DisplayName: Brique de Jet
-		Tooltip:
-			'''
-			Une attaque furtive se cassera en plusieurs morceaux
-			Jetez-le au ciel, puis utilisez votre visage pour le recevoir, et vous croirez au pouvoir des briques
-			'''
-	}
-
-	GuardianTerra: {
-		DisplayName: Gardien de Terra
-		Tooltip:
-			'''
-			Tire puissamment l'essence de vie de Terra
-			Clic droit pour une balayette puissante
 			'''
 	}
 
@@ -2639,19 +2488,9 @@ Items: {
 			'''
 	}
 
-	DarkmatterJetpack: {
-		// DisplayName: Darkmatter Jetpack
-		// Tooltip: ""
-	}
-
 	TheBurningSkyEcType: {
 		DisplayName: Châtiment Céleste Incandescent
 		Tooltip: Agiter fait tomber une pluie de boules de feu
-	}
-
-	PhoenixFlameBarrageEcType: {
-		// DisplayName: Phoenix Flame Barrage
-		// Tooltip: ""
 	}
 
 	DevilsDevastationEcType: {
@@ -2876,25 +2715,6 @@ Items: {
 }
 
 Projectiles: {
-	SeaBlueBrinySpout.DisplayName: Vortex de la mer
-
-	Melee: {
-		// CosmicShivProjectile.DisplayName: Cosmic Shiv Projectile
-		// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
-		// RemakeCosmicShivProjectile.DisplayName: Remake Cosmic Shiv Projectile
-		// RemakeStreamGougeProj.DisplayName: Remake Stream Gouge Proj
-		// RCosmicShivProjectile.DisplayName: R Cosmic Shiv Projectile
-		// RStreamGougeProj.DisplayName: R Stream Gouge Proj
-		// MourningSkull2.DisplayName: Mourning Skull2
-		// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
-		// EXSolsticeBeam.DisplayName: E X Solstice Beam
-	}
-
-	// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
-	CosmicRay_0.DisplayName: Rayonnement cosmique
-	CosmicRay.DisplayName: Rayonnement cosmique
-	RemakeCosmicShivBall.DisplayName: Boule cosmique
-	MightyStar.DisplayName: Feu cosmique puissant
 	// StarDust.DisplayName: Star Dust
 	// RenderDistort.DisplayName: Render Distort
 	// RenderGap.DisplayName: Render Gap
@@ -3061,6 +2881,13 @@ Projectiles: {
 	// EarthenBall.DisplayName: Earthen Ball
 	// EarthenPikeThrowProj.DisplayName: Earthen Pike Throw Proj
 	// MeleeFossilShard.DisplayName: Melee Fossil Shard
+
+	Melee: {
+		// EXSolsticeBeam.DisplayName: E X Solstice Beam
+		// MourningSkull2.DisplayName: Mourning Skull2
+		// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
+	}
+
 	// TeardropCleaverProj.DisplayName: Teardrop Cleaver Proj
 	// DarkIceZeros.DisplayName: Dark Ice Zeros
 	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
@@ -3073,8 +2900,6 @@ Projectiles: {
 	MurasamaDownSkill.DisplayName: Chute au sol
 	MurasamaEndSkillOrb.DisplayName: Coupe dimensionnelle - Fin
 	MurasamaEndSkillOrbOnSpan.DisplayName: Coupe dimensionnelle - Début
-	// ExaProj.DisplayName: Exa Proj
-	// MOnSound.DisplayName: MonSound
 	EndSkillEffectStart.DisplayName: Coupe dimensionnelle - Début
 	EndSkillMakeDamage.DisplayName: Coupe dimensionnelle - Fin
 	// PowerSoundEgg.DisplayName: Power Sound Egg
@@ -3851,32 +3676,10 @@ Buffs: {
 		Description: Brûle les âmes
 	}
 
-	TyrantsFury: {
-		DisplayName: Fureur des tyrans
-		Description: Ta colère est incontrôlable
-	}
-
-	SummonInFlint: {
-		DisplayName: Esprit de la pierre à feu
-		Description: Ce petit gars était autrefois conseiller en lutte contre les incendies
-	}
-
 	VoidErosion: {
 		DisplayName: Érosion du vide
 		Description: Se transforme peu à peu en néant
 	}
-}
-
-NPCs: {
-	// Creeper.DisplayName: Creeper
-	// RavagerABody.DisplayName: Ravager A Body
-	// RavagerAClawLeft.DisplayName: Ravager A Claw Left
-	// RavagerAClawRight.DisplayName: Ravager A Claw Right
-	// RavagerAHead2.DisplayName: Ravager A Head2
-	// RavagerALegLeft.DisplayName: Ravager A Leg Left
-	// RavagerALegRight.DisplayName: Ravager A Leg Right
-	// EvilSoul.DisplayName: Evil Soul
-	MarbleElemental.DisplayName: Raffinement de marbre
 }
 
 Keybinds: {

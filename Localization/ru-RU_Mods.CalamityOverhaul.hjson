@@ -1,8 +1,3 @@
-CWRRecipes: {
-	// ApostolicRelics: Apostolic Relics
-	// GodEaterWeapon: God Eater Weapon
-}
-
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Бесконечная боль
 Tools.RecipesLoseText: Ты не можешь просто сделать это
 
@@ -1234,56 +1229,6 @@ Items: {
 			'''
 	}
 
-	Flint: {
-		DisplayName: Кремень
-		Tooltip: Очень твердый камень, из которого можно сделать лучшие инструменты
-	}
-
-	FlintAxe: {
-		DisplayName: Кремневый Топор
-		Tooltip: Современный инструмент каменного века, достаточно мощный, чтобы срубить дерево и остаться целым!
-	}
-
-	FlintPick: {
-		DisplayName: Кремневая Кирка
-		Tooltip: Современный инструмент каменного века, способный добывать блестящие руды!
-	}
-
-	FlintSpear: {
-		DisplayName: Кремневое Копье
-		Tooltip: Современное оружие каменного века, с наконечником, способным легко убить кролика!
-	}
-
-	TheUpiStele: {
-		DisplayName: Арканная Стела
-		Tooltip: Здесь покоится упавшая звезда, следовавшая за мечтой
-	}
-
-	TheSpiritFlint: {
-		DisplayName: Дух Кремня
-		Tooltip: Олицетворяет передовые навыки обращения с камнем древних людей каменного века
-	}
-
-	Pebble: {
-		DisplayName: Галька
-		Tooltip: Гладкий камень средней твердости, легко полируется
-	}
-
-	PebbleAxe: {
-		DisplayName: Гальковый Топор
-		Tooltip: Примитивный инструмент каменного века, достаточно мощный, чтобы срубить дерево и погибнуть вместе с ним!
-	}
-
-	PebblePick: {
-		DisplayName: Гальковая Кирка
-		Tooltip: Примитивный инструмент каменного века, хоть и выглядит глупо, когда используешь камень для добычи камня!
-	}
-
-	PebbleSpear: {
-		DisplayName: Гальковое Копье
-		Tooltip: Примитивное оружие каменного века, но оно не такое прочное, как кости животных!
-	}
-
 	BulletFilledShotgunEcType: {
 		DisplayName: Заряженный Дробовик
 		Tooltip:
@@ -1829,16 +1774,6 @@ Items: {
 	AethersWhisperEcType: {
 		DisplayName: Шепот эфира
 		Tooltip: Чем дальше, тем больнее будет рана
-	}
-
-	EtherRoar: {
-		// DisplayName: Ether Roar
-		// Tooltip: ""
-	}
-
-	StarnightLanceEcType: {
-		// DisplayName: Starnight Lance
-		// Tooltip: ""
 	}
 
 	PridefulHuntersPlanarRipperEcType: {
@@ -2534,97 +2469,12 @@ Items: {
 			'''
 	}
 
-	DemonshadeHelmMagic: {
-		DisplayName: капюшон
-		Tooltip: ""
-	}
-
-	DemonshadeHelmRanged: {
-		DisplayName: огасавари
-		Tooltip: ""
-	}
-
-	DemonshadeHelmSummon: {
-		DisplayName: доспехи
-		Tooltip: ""
-	}
-
-	DemonshadeHelmRogue: {
-		DisplayName: маска
-		Tooltip: ""
-	}
-
-	Palustris: {
-		DisplayName: Белый обман
-		Tooltip: ""
-	}
-
-	VioletConjecture: {
-		DisplayName: Фиалковый фантазия
-		Tooltip: ""
-	}
-
-	GraniteSpear: {
-		DisplayName: Гранитное копье
-		Tooltip: ""
-	}
-
-	MarbleSpear: {
-		DisplayName: Копье из гальки
-		Tooltip: ""
-	}
-
 	RebelBlade: {
 		DisplayName: Меч сопротивления
 		Tooltip:
 			'''
 			Настоящий ближний бой создает много демонических световых шаров вокруг цели
 			Правый ключ управляет лезвием и направляет его на курсор
-			'''
-	}
-
-	GraniteDart: {
-		DisplayName: Гранитные дротики
-		Tooltip:
-			'''
-			Быстрый и точный бросок дротиков
-			Скрытая атака выбросит мощный дротик
-			'''
-	}
-
-	MarbleDagger: {
-		DisplayName: Кинжал из камня
-		Tooltip:
-			'''
-			После попадания в цель будут брошены три дополнительных клинков
-			Скрытая атака выбросит мощный дротик
-			'''
-	}
-
-	ApoctolithEcType: {
-		DisplayName: Доска меркурия
-		Tooltip:
-			'''
-			Скрытая атака создает большие волны
-			Упади в небо, а затем подними его лицом, и ты поверишь в силу кирпича из доски
-			'''
-	}
-
-	ThrowingBrickEcType: {
-		DisplayName: Доск кирпич
-		Tooltip:
-			'''
-			Скрытая атака разбивает на кусочки
-			Упади в небо, а затем подними его лицом, и ты поверишь в силу кирпича из доски
-			'''
-	}
-
-	GuardianTerra: {
-		DisplayName: Тара-хранитель
-		Tooltip:
-			'''
-			Запустить мощный источник жизни тейлы
-			Сильный удар правой клавишей
 			'''
 	}
 
@@ -2667,19 +2517,9 @@ Items: {
 			'''
 	}
 
-	DarkmatterJetpack: {
-		// DisplayName: Darkmatter Jetpack
-		// Tooltip: ""
-	}
-
 	TheBurningSkyEcType: {
 		DisplayName: Небесное Огонь и Наказание
 		Tooltip: Взмах вызывает дождь из огненных шаров
-	}
-
-	PhoenixFlameBarrageEcType: {
-		// DisplayName: Phoenix Flame Barrage
-		// Tooltip: ""
 	}
 
 	DevilsDevastationEcType: {
@@ -2907,25 +2747,6 @@ Items: {
 }
 
 Projectiles: {
-	SeaBlueBrinySpout.DisplayName: Вихрь моря
-
-	Melee: {
-		// CosmicShivProjectile.DisplayName: Cosmic Shiv Projectile
-		// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
-		// RemakeCosmicShivProjectile.DisplayName: Remake Cosmic Shiv Projectile
-		// RemakeStreamGougeProj.DisplayName: Remake Stream Gouge Proj
-		// RCosmicShivProjectile.DisplayName: R Cosmic Shiv Projectile
-		// RStreamGougeProj.DisplayName: R Stream Gouge Proj
-		// MourningSkull2.DisplayName: Mourning Skull2
-		// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
-		// EXSolsticeBeam.DisplayName: E X Solstice Beam
-	}
-
-	// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
-	CosmicRay_0.DisplayName: Космический луч
-	CosmicRay.DisplayName: Космический луч
-	RemakeCosmicShivBall.DisplayName: Космический шар
-	MightyStar.DisplayName: Могучая звезда
 	// StarDust.DisplayName: Star Dust
 	// RenderDistort.DisplayName: Render Distort
 	// RenderGap.DisplayName: Render Gap
@@ -3092,6 +2913,13 @@ Projectiles: {
 	// EarthenBall.DisplayName: Earthen Ball
 	// EarthenPikeThrowProj.DisplayName: Earthen Pike Throw Proj
 	// MeleeFossilShard.DisplayName: Melee Fossil Shard
+
+	Melee: {
+		// EXSolsticeBeam.DisplayName: E X Solstice Beam
+		// MourningSkull2.DisplayName: Mourning Skull2
+		// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
+	}
+
 	// TeardropCleaverProj.DisplayName: Teardrop Cleaver Proj
 	// DarkIceZeros.DisplayName: Dark Ice Zeros
 	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
@@ -3104,8 +2932,6 @@ Projectiles: {
 	MurasamaDownSkill.DisplayName: Падение на землю
 	MurasamaEndSkillOrb.DisplayName: Разрез измерений - Конец
 	MurasamaEndSkillOrbOnSpan.DisplayName: Разрез измерений - Начало
-	// ExaProj.DisplayName: Exa Proj
-	// MOnSound.DisplayName: MonSound
 	EndSkillEffectStart.DisplayName: Начало разреза измерений
 	EndSkillMakeDamage.DisplayName: Конец разреза измерений
 	// PowerSoundEgg.DisplayName: Power Sound Egg
@@ -3907,32 +3733,10 @@ Buffs: {
 		Description: Сжечь душу
 	}
 
-	TyrantsFury: {
-		DisplayName: Гнев тирана
-		Description: Ты был вне себя от ярости
-	}
-
-	SummonInFlint: {
-		DisplayName: Дух камня
-		Description: Этот малыш был пожарным консультантом
-	}
-
 	VoidErosion: {
 		DisplayName: Эрозия пустоты
 		Description: Постепенно превращается в ничто
 	}
-}
-
-NPCs: {
-	// Creeper.DisplayName: Creeper
-	// RavagerABody.DisplayName: Ravager A Body
-	// RavagerAClawLeft.DisplayName: Ravager A Claw Left
-	// RavagerAClawRight.DisplayName: Ravager A Claw Right
-	// RavagerAHead2.DisplayName: Ravager A Head2
-	// RavagerALegLeft.DisplayName: Ravager A Leg Left
-	// RavagerALegRight.DisplayName: Ravager A Leg Right
-	// EvilSoul.DisplayName: Evil Soul
-	MarbleElemental.DisplayName: Мрамор
 }
 
 Keybinds: {

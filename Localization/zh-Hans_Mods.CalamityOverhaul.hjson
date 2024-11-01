@@ -1,8 +1,3 @@
-CWRRecipes: {
-	// ApostolicRelics: Apostolic Relics
-	// GodEaterWeapon: God Eater Weapon
-}
-
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: 无尽伤害
 Tools.RecipesLoseText: 你无法直接制作该物品!
 
@@ -1246,56 +1241,6 @@ Items: {
 			'''
 	}
 
-	Flint: {
-		DisplayName: 燧石
-		Tooltip: 相当硬的石头，可以做成更好一些的工具
-	}
-
-	FlintAxe: {
-		DisplayName: 燧石斧
-		Tooltip: “石器时代的高等工具，足以干掉一棵树然后全身而退！”
-	}
-
-	FlintPick: {
-		DisplayName: 燧石镐
-		Tooltip: “石器时代的高等工具，足以俘获那些闪闪发光的矿石！”
-	}
-
-	FlintSpear: {
-		DisplayName: 燧石矛
-		Tooltip: “石器时代的高等武器，有着能轻易杀死兔兔的矛头！”
-	}
-
-	TheUpiStele: {
-		DisplayName: 奥术石碑
-		Tooltip: “这里沉睡着以前随梦想落下的坠星”
-	}
-
-	TheSpiritFlint: {
-		DisplayName: 火石之灵
-		Tooltip: “凝聚着石器时代古代人先进的驾驭石头的技术”
-	}
-
-	Pebble: {
-		DisplayName: 卵石
-		Tooltip: 圆滑的石头，硬度中等，易于打磨
-	}
-
-	PebbleAxe: {
-		DisplayName: 卵石斧
-		Tooltip: “石器时代的初等工具，足以和树木同归于尽！”
-	}
-
-	PebblePick: {
-		DisplayName: 卵石镐
-		Tooltip: “石器时代的初等工具，虽然用石头挖石头看上去很愚蠢！”
-	}
-
-	PebbleSpear: {
-		DisplayName: 卵石矛
-		Tooltip: “石器时代的初等武器，但是它还没有动物的骨头硬！”
-	}
-
 	BulletFilledShotgunEcType: {
 		DisplayName: 满弹霰弹枪
 		Tooltip:
@@ -1841,16 +1786,6 @@ Items: {
 	AethersWhisperEcType: {
 		DisplayName: 以太之低语
 		Tooltip: 发射会多次分裂的拉德尔灵能冲击，距离越远伤害越高
-	}
-
-	EtherRoar: {
-		// DisplayName: Ether Roar
-		// Tooltip: ""
-	}
-
-	StarnightLanceEcType: {
-		// DisplayName: Starnight Lance
-		// Tooltip: ""
 	}
 
 	PridefulHuntersPlanarRipperEcType: {
@@ -2518,97 +2453,12 @@ Items: {
 			'''
 	}
 
-	DemonshadeHelmMagic: {
-		DisplayName: 魔影兜帽
-		Tooltip: ""
-	}
-
-	DemonshadeHelmRanged: {
-		DisplayName: 魔影羽笠
-		Tooltip: ""
-	}
-
-	DemonshadeHelmSummon: {
-		DisplayName: 魔影面甲
-		Tooltip: ""
-	}
-
-	DemonshadeHelmRogue: {
-		DisplayName: 魔影面罩
-		Tooltip: ""
-	}
-
-	Palustris: {
-		DisplayName: 白色欺诈
-		Tooltip: ""
-	}
-
-	VioletConjecture: {
-		DisplayName: 紫罗兰幻想
-		Tooltip: ""
-	}
-
-	GraniteSpear: {
-		DisplayName: 花岗岩刺矛
-		Tooltip: ""
-	}
-
-	MarbleSpear: {
-		DisplayName: 大理岩刺矛
-		Tooltip: ""
-	}
-
 	RebelBlade: {
 		DisplayName: 叛逆之刃
 		Tooltip:
 			'''
 			真近战会在目标周围生成大量恶魔光球
 			右键操控剑刃飞行，并向光标处进行斩切
-			'''
-	}
-
-	GraniteDart: {
-		DisplayName: 花岗岩投镖
-		Tooltip:
-			'''
-			快而准的投掷飞镖
-			潜伏攻击将掷出强有力的一镖
-			'''
-	}
-
-	MarbleDagger: {
-		DisplayName: 大理岩匕首
-		Tooltip:
-			'''
-			命中目标后会额外投掷三枚大理岩匕首
-			潜伏攻击将掷出强有力的一镖
-			'''
-	}
-
-	ApoctolithEcType: {
-		DisplayName: 末渊石板
-		Tooltip:
-			'''
-			潜伏攻击会生成巨浪
-			往天上丢，然后用脸去接，你就会相信板砖的力量
-			'''
-	}
-
-	ThrowingBrickEcType: {
-		DisplayName: 板砖
-		Tooltip:
-			'''
-			潜伏攻击会碎成数块
-			往天上丢，然后用脸去接，你就会相信板砖的力量
-			'''
-	}
-
-	GuardianTerra: {
-		DisplayName: 泰拉守护者
-		Tooltip:
-			'''
-			发射强大的泰拉生命源质
-			右键进行强力挥舞
 			'''
 	}
 
@@ -2650,19 +2500,9 @@ Items: {
 			'''
 	}
 
-	DarkmatterJetpack: {
-		// DisplayName: Darkmatter Jetpack
-		// Tooltip: ""
-	}
-
 	TheBurningSkyEcType: {
 		DisplayName: 焚灭天惩
 		Tooltip: 挥舞让一片火球降下
-	}
-
-	PhoenixFlameBarrageEcType: {
-		// DisplayName: Phoenix Flame Barrage
-		// Tooltip: ""
 	}
 
 	DevilsDevastationEcType: {
@@ -2887,25 +2727,6 @@ Items: {
 }
 
 Projectiles: {
-	SeaBlueBrinySpout.DisplayName: 海之涡流
-
-	Melee: {
-		// CosmicShivProjectile.DisplayName: Cosmic Shiv Projectile
-		// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
-		// RemakeCosmicShivProjectile.DisplayName: Remake Cosmic Shiv Projectile
-		// RemakeStreamGougeProj.DisplayName: Remake Stream Gouge Proj
-		// RCosmicShivProjectile.DisplayName: R Cosmic Shiv Projectile
-		// RStreamGougeProj.DisplayName: R Stream Gouge Proj
-		// MourningSkull2.DisplayName: Mourning Skull2
-		// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
-		// EXSolsticeBeam.DisplayName: E X Solstice Beam
-	}
-
-	// DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
-	CosmicRay_0.DisplayName: 宇宙射线
-	CosmicRay.DisplayName: 宇宙射线
-	RemakeCosmicShivBall.DisplayName: 寰宇球
-	MightyStar.DisplayName: 宇宙之火
 	// StarDust.DisplayName: Star Dust
 	// RenderDistort.DisplayName: Render Distort
 	// RenderGap.DisplayName: Render Gap
@@ -3072,6 +2893,13 @@ Projectiles: {
 	// EarthenBall.DisplayName: Earthen Ball
 	// EarthenPikeThrowProj.DisplayName: Earthen Pike Throw Proj
 	// MeleeFossilShard.DisplayName: Melee Fossil Shard
+
+	Melee: {
+		// EXSolsticeBeam.DisplayName: E X Solstice Beam
+		// MourningSkull2.DisplayName: Mourning Skull2
+		// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
+	}
+
 	// TeardropCleaverProj.DisplayName: Teardrop Cleaver Proj
 	// DarkIceZeros.DisplayName: Dark Ice Zeros
 	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
@@ -3084,8 +2912,6 @@ Projectiles: {
 	MurasamaDownSkill.DisplayName: 坠地
 	MurasamaEndSkillOrb.DisplayName: 次元斩-终
 	MurasamaEndSkillOrbOnSpan.DisplayName: 次元斩-始
-	// ExaProj.DisplayName: Exa Proj
-	// MOnSound.DisplayName: MonSound
 	EndSkillEffectStart.DisplayName: 次元斩-始
 	EndSkillMakeDamage.DisplayName: 次元斩-终
 	// PowerSoundEgg.DisplayName: Power Sound Egg
@@ -3862,32 +3688,10 @@ Buffs: {
 		Description: 烤灼灵魂
 	}
 
-	TyrantsFury: {
-		DisplayName: 暴君之怒
-		Description: 你怒不可遏
-	}
-
-	SummonInFlint: {
-		DisplayName: 火石之灵
-		Description: 这个小家伙曾经是一名消防顾问
-	}
-
 	VoidErosion: {
 		DisplayName: 虚空侵蚀
 		Description: 逐渐化为虚无
 	}
-}
-
-NPCs: {
-	// Creeper.DisplayName: Creeper
-	// RavagerABody.DisplayName: Ravager A Body
-	// RavagerAClawLeft.DisplayName: Ravager A Claw Left
-	// RavagerAClawRight.DisplayName: Ravager A Claw Right
-	// RavagerAHead2.DisplayName: Ravager A Head2
-	// RavagerALegLeft.DisplayName: Ravager A Leg Left
-	// RavagerALegRight.DisplayName: Ravager A Leg Right
-	// EvilSoul.DisplayName: Evil Soul
-	MarbleElemental.DisplayName: 大理石精
 }
 
 Keybinds: {
@@ -3978,7 +3782,7 @@ TextContent: {
 			'''
 			血肉交织的躯壳，古战场含恨的冤魂，不休止毁灭的魔像，它毁灭万物，而我们毁灭它
 			丛林中，某人以前的拙劣作品还在游荡，作为失败品，它理应像一堆废铁一样
-			昔日的星神游龙早已陨落，如今所剩的不过堪堪一条蛆虫，让我们结束彻底星神的时代
+			昔日的星神早已陨落，如今所剩的不过堪堪一条蛆虫，让我们彻底结束星神的时代
 			'''
 		Murasama_TextDictionary_Content_8:
 			'''

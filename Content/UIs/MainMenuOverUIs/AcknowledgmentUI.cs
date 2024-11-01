@@ -253,10 +253,12 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             "Ekaterina" + textElement3,
             "Mikhail" + textElement3,
             "Igor" + textElement3,
+            "龙辰" + textElement3,
             "Lyudmila" + textElement3,
             "Artem" + textElement3,
             "Katerina" + textElement3,
             "Oleg" + textElement3,
+            "Fwoer'Vmoerd" + textElement3,
             "烂柯棋缘" + textElement3,
             "华屋丘墟" + textElement3,
         ];

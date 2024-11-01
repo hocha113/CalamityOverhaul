@@ -1,8 +1,3 @@
-CWRRecipes: {
-	ApostolicRelics: Apostolic Relics
-	GodEaterWeapon: God Eater Weapon
-}
-
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
 Tools.RecipesLoseText: You can't just make this thing
 
@@ -1223,56 +1218,6 @@ Items: {
 			'''
 	}
 
-	Flint: {
-		DisplayName: Flint
-		Tooltip: A rather hard stone, it can be used to make better tools.
-	}
-
-	FlintAxe: {
-		DisplayName: Flint Axe
-		Tooltip: Advanced tools from the Stone Age, powerful enough to fell a tree and get away unscathed!
-	}
-
-	FlintPick: {
-		DisplayName: Flint Pick
-		Tooltip: Advanced tools from the Stone Age, powerful enough to capture those sparkling ores!
-	}
-
-	FlintSpear: {
-		DisplayName: Flint Spear
-		Tooltip: Advanced weapons from the Stone Age, with spearheads capable of easily killing rabbits!
-	}
-
-	TheUpiStele: {
-		DisplayName: The Upi Stele
-		Tooltip: Here lies a fallen star that once accompanied dreams
-	}
-
-	TheSpiritFlint: {
-		DisplayName: The Spirit Flint
-		Tooltip: “Embodied with the advanced stone manipulation techniques of the ancient people of the Stone Age”
-	}
-
-	Pebble: {
-		DisplayName: Pebble
-		Tooltip: Smooth stone, with medium hardness and easy to grind.
-	}
-
-	PebbleAxe: {
-		DisplayName: Pebble Axe
-		Tooltip: Basic tools from the Stone Age, powerful enough to destroy trees along with yourself!
-	}
-
-	PebblePick: {
-		DisplayName: Pebble Pick
-		Tooltip: Basic tools from the Stone Age, although it seems foolish to dig stones with stones!
-	}
-
-	PebbleSpear: {
-		DisplayName: Pebble Spear
-		Tooltip: Basic weapons from the Stone Age, but they're not even as hard as animal bones!
-	}
-
 	BulletFilledShotgunEcType: {
 		DisplayName: Bullet Filled Shotgun
 		Tooltip:
@@ -1814,16 +1759,6 @@ Items: {
 	AethersWhisperEcType: {
 		DisplayName: Aethers Whisper
 		Tooltip: Fire multiple splintered Radelenergy shocks, the greater the distance the damage
-	}
-
-	EtherRoar: {
-		DisplayName: Ether Roar
-		Tooltip: ""
-	}
-
-	StarnightLanceEcType: {
-		DisplayName: Starnight Lance
-		Tooltip: ""
 	}
 
 	PridefulHuntersPlanarRipperEcType: {
@@ -2507,99 +2442,12 @@ Items: {
 			'''
 	}
 
-	DemonshadeHelmMagic: {
-		DisplayName: Demonshade Helm Magic
-		Tooltip: ""
-	}
-
-	DemonshadeHelmRanged: {
-		DisplayName: Demonshade Helm Ranged
-		Tooltip: ""
-	}
-
-	DemonshadeHelmSummon: {
-		DisplayName: Demonshade Helm Summon
-		Tooltip: ""
-	}
-
-	DemonshadeHelmRogue: {
-		DisplayName: Demonshade Helm Rogue
-		Tooltip: ""
-	}
-
-	Palustris: {
-		DisplayName: Palustris
-		Tooltip: ""
-	}
-
-	VioletConjecture: {
-		DisplayName: Violet Conjecture
-		Tooltip: ""
-	}
-
-	GraniteSpear: {
-		DisplayName: Granite Spear
-		Tooltip: ""
-	}
-
-	MarbleSpear: {
-		DisplayName: Marble Spear
-		Tooltip: ""
-	}
-
 	RebelBlade: {
 		DisplayName: Rebel Blade
 		Tooltip:
 			'''
 			True melee generates a large number of demon light balls around the target
 			Right click to control blade flight and cut towards the cursor
-			'''
-	}
-
-	GraniteDart: {
-		DisplayName: Granite Dart
-		Tooltip:
-			'''
-			Throw darts quickly and accurately
-			A lurking attack will throw a powerful dart
-			'''
-	}
-
-	MarbleDagger: {
-		DisplayName: Marble Dagger
-		Tooltip:
-			'''
-			Three additional marble daggers are thrown after hitting the target
-			A lurking attack will throw a powerful dart
-			'''
-	}
-
-	ApoctolithEcType: {
-		DisplayName: Apoctolith
-		Tooltip:
-			'''
-			A lurking attack creates a giant wave
-			Throw it in the sky, catch it with your face, 
-			and you'll believe in the power of a brick
-			'''
-	}
-
-	ThrowingBrickEcType: {
-		DisplayName: Throwing Brick
-		Tooltip:
-			'''
-			A latent attack breaks into pieces
-			Throw it in the sky, catch it with your face, 
-			and you'll believe in the power of a brick
-			'''
-	}
-
-	GuardianTerra: {
-		DisplayName: Guardian Terra
-		Tooltip:
-			'''
-			Launch powerful Terra biogenic material
-			Right click for a powerful swing
 			'''
 	}
 
@@ -2642,19 +2490,9 @@ Items: {
 			'''
 	}
 
-	DarkmatterJetpack: {
-		DisplayName: Darkmatter Jetpack
-		Tooltip: ""
-	}
-
 	TheBurningSkyEcType: {
 		DisplayName: The Burning Sky
 		Tooltip: Swing and let a ball of fire fall
-	}
-
-	PhoenixFlameBarrageEcType: {
-		DisplayName: Phoenix Flame Barrage
-		Tooltip: ""
 	}
 
 	DevilsDevastationEcType: {
@@ -2881,25 +2719,6 @@ Items: {
 }
 
 Projectiles: {
-	SeaBlueBrinySpout.DisplayName: Sea Blue Briny Spout
-
-	Melee: {
-		CosmicShivProjectile.DisplayName: Cosmic Shiv Projectile
-		DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
-		RemakeCosmicShivProjectile.DisplayName: Remake Cosmic Shiv Projectile
-		RemakeStreamGougeProj.DisplayName: Remake Stream Gouge Proj
-		RCosmicShivProjectile.DisplayName: R Cosmic Shiv Projectile
-		RStreamGougeProj.DisplayName: R Stream Gouge Proj
-		MourningSkull2.DisplayName: Mourning Skull2
-		SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
-		EXSolsticeBeam.DisplayName: E X Solstice Beam
-	}
-
-	DimensionalRuptureProjectile.DisplayName: Dimensional Rupture Projectile
-	CosmicRay_0.DisplayName: Cosmic Ray
-	CosmicRay.DisplayName: Cosmic Ray
-	RemakeCosmicShivBall.DisplayName: Remake Cosmic Shiv Ball
-	MightyStar.DisplayName: Mighty Star
 	StarDust.DisplayName: Star Dust
 	RenderDistort.DisplayName: Render Distort
 	RenderGap.DisplayName: Render Gap
@@ -3066,6 +2885,13 @@ Projectiles: {
 	EarthenBall.DisplayName: Earthen Ball
 	EarthenPikeThrowProj.DisplayName: Earthen Pike Throw Proj
 	MeleeFossilShard.DisplayName: Melee Fossil Shard
+
+	Melee: {
+		EXSolsticeBeam.DisplayName: E X Solstice Beam
+		MourningSkull2.DisplayName: Mourning Skull2
+		SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
+	}
+
 	TeardropCleaverProj.DisplayName: Teardrop Cleaver Proj
 	DarkIceZeros.DisplayName: Dark Ice Zeros
 	RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
@@ -3078,8 +2904,6 @@ Projectiles: {
 	MurasamaDownSkill.DisplayName: Murasama
 	MurasamaEndSkillOrb.DisplayName: Dimensional chopping - end
 	MurasamaEndSkillOrbOnSpan.DisplayName: Dimensional chopping - beginning
-	ExaProj.DisplayName: Exa Proj
-	MOnSound.DisplayName: MonSound
 	EndSkillEffectStart.DisplayName: Dimensional chopping - beginning
 	EndSkillMakeDamage.DisplayName: Dimensional chopping - end
 	PowerSoundEgg.DisplayName: Power Sound Egg
@@ -3861,32 +3685,10 @@ Buffs: {
 		Description: Scorch the soul
 	}
 
-	TyrantsFury: {
-		DisplayName: Tyrants Fury
-		Description: You were furious
-	}
-
-	SummonInFlint: {
-		DisplayName: Summon In Flint
-		Description: This little guy used to be a fire consultant
-	}
-
 	VoidErosion: {
 		DisplayName: Void Erosion
 		Description: The nothingness is eating you away
 	}
-}
-
-NPCs: {
-	Creeper.DisplayName: Creeper
-	RavagerABody.DisplayName: Ravager A Body
-	RavagerAClawLeft.DisplayName: Ravager A Claw Left
-	RavagerAClawRight.DisplayName: Ravager A Claw Right
-	RavagerAHead2.DisplayName: Ravager A Head2
-	RavagerALegLeft.DisplayName: Ravager A Leg Left
-	RavagerALegRight.DisplayName: Ravager A Leg Right
-	EvilSoul.DisplayName: Evil Soul
-	MarbleElemental.DisplayName: Marble Elemental
 }
 
 Keybinds: {

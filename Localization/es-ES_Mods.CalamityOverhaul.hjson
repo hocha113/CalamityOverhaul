@@ -1,0 +1,4526 @@
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
+Tools.RecipesLoseText: ¡No puedes fabricar este artículo directamente!
+
+Items: {
+	BrinyBaronEcType: {
+		DisplayName: Espada del Barón Marino
+		Tooltip:
+			'''
+			Los primeros seis ataques lanzan remolinos oceánicos que rastrean
+			El séptimo ataque generará una gran cantidad de burbujas explosivas
+			El octavo ataque disparará tres proyectiles de remolino, que crearán un tornado de agua en el lugar donde golpeen al objetivo o bloque
+			"Hecha con las aletas de ese tiburón cerdo, claramente despreciamos usar solo la cabeza burbujeante de ese cerdo como arma"
+			'''
+	}
+
+	CosmicShivEcType: {
+		DisplayName: Puñal Cósmico
+		Tooltip:
+			'''
+			Al golpear a un enemigo, genera varios Ojos del Infinito frente al jugador
+			Invoca rayos cósmicos que queman al enemigo
+			"Corta el velo del cosmos, revelando potentes rayos, en la antigua China, esto se llamaba pedir prestada la luz de la pared"
+			'''
+	}
+
+	DragonsBreath: {
+		DisplayName: Aliento del Dragón
+		Tooltip:
+			'''
+			Dispara numerosas balas de alta temperatura
+			Clic derecho dispara el ardiente aliento del dragón
+			"Las llamas restantes de este dragón muerto pueden calentar bien estas balas, a diferencia del cañón del fénix que reduce las balas a fragmentos"
+			'''
+	}
+
+	BansheeHookEcType: {
+		DisplayName: Garra de la Banshee
+		Tooltip:
+			'''
+			Genera muchas Guadañas Lamentables al atacar y lanza una gran guadaña terrorífica que rastrea enemigos
+			Clic derecho acumula energía de terror, invocando numerosas guadañas de odio en la ubicación del ratón hasta que se agote la energía.
+			Las guadañas de odio generan numerosos espíritus vengativos al golpear a un enemigo, otorgando varios beneficios.
+			"Esta garra se quedó atascada saliendo de la mitad de la televisión debido a un corte de energía, tal vez su resentimiento proviene de ahí"
+			'''
+	}
+
+	BlightedCleaverEcType: {
+		DisplayName: Cuchilla Maldita
+		Tooltip:
+			'''
+			La hoja acumula energía tiránica al golpear enemigos, generando muchas Guadañas de Masacre
+			"Solo al saciar esta cuchilla con sangre, recordará el inmenso poder que tuvo cuando la usaba el Señor Demonio"
+			'''
+	}
+
+	BurntSiennaEcType: {
+		DisplayName: Cimitarra Ardiente
+		Tooltip:
+			'''
+			Lanza esferas de arena al blandirse
+			"El tiempo puede oxidar otras armas, pero esta cuchilla nunca cambiará"
+			'''
+	}
+
+	CometQuasherEcType: {
+		DisplayName: Espada Cometa
+		Tooltip:
+			'''
+			Lanza meteoritos, y al golpear enemigos en combate cercano, caen más meteoritos del cielo
+			"En la antigua China, había alguien que hacía caer pájaros sin disparar una flecha, y ahora nuestra espada puede hacer algo similar"
+			'''
+	}
+
+	DefiledGreatswordEcType: {
+		DisplayName: Gran Espada Profanada
+		Tooltip:
+			'''
+			La hoja acumula energía tiránica al golpear enemigos, generando numerosas Guadañas de Jungla
+			"Sangre, masacre, conquista, esta espada está despertando lentamente. ¿Recuerda al antiguo Señor Demonio, o está fascinada contigo ahora?"
+			'''
+	}
+
+	EntropicClaymoreEcType: {
+		DisplayName: Danza Entrópica
+		Tooltip:
+			'''
+			Dispara haces de rayos de plasma al blandirse
+			"En la acumulación de la entropía, las antiguas nebulosas se convierten en polvo opaco en la espada"
+			'''
+	}
+
+	GildedProboscisEcType: {
+		DisplayName: Pico Dorado
+		Tooltip:
+			'''
+			Genera plumas cargadas eléctricamente al atacar
+			Clic derecho acumula energía, manteniendo una corriente eléctrica que ataca enemigos a lo largo del camino hasta que se agota la energía
+			"El pico de esta ave está lleno de corriente eléctrica, tal vez en vida hablaba música electrónica"
+			'''
+	}
+
+	TerratomereEcType: {
+		DisplayName: Gran Espada de Terra
+		Tooltip:
+			'''
+			Libera un torrente de vida al blandirse
+			"Conectada a la esencia del mundo de Terraria"
+			'''
+	}
+
+	TerrorBladeEcType: {
+		DisplayName: Espada de Terror
+		Tooltip:
+			'''
+			Libera explosiones de terror al blandirse
+			La espada mejora al golpear enemigos
+			"Hace mucho, mucho... mucho tiempo atrás..."
+			'''
+	}
+
+	ArkoftheCosmosEcType: {
+		DisplayName: Arca Primordial
+		Tooltip: '''"Aún sigue dormida"'''
+	}
+
+	StreamGougeEcType: {
+		DisplayName: Corriente Cósmica
+		Tooltip:
+			'''
+			Dispara rayos oscuros cósmicos al golpear, explotan en seis estrellas asesinas al golpear enemigos
+			Clic derecho usa la estocada oscura
+			"Esta lanza fue clavada en la armadura de esa gran serpiente cósmica, ¿quién la dejó ahí?"
+			'''
+	}
+
+	ElementalLanceEcType: {
+		DisplayName: Lanza Elemental
+		Tooltip:
+			'''
+			Dispara múltiples proyectiles elementales que se dividen al blandirse
+			Clic derecho genera varias auroras prismáticas
+			"Producto de la fuerza elemental de Terra combinada con los elementos del cosmos"
+			'''
+	}
+
+	AirSpinnerEcType: {
+		DisplayName: Yoyo Celeste
+		Tooltip:
+			'''
+			Lanza plumas dispersas hacia enemigos cercanos
+			"¡Competición de yoyos!"
+			'''
+	}
+
+	GoldplumeSpearEcType: {
+		DisplayName: Pluma Dorada
+		Tooltip:
+			'''
+			Dispara cuchillas de plumas rastreadoras al blandirse
+			Clic derecho invoca plumas doradas que caen del cielo
+			"¡Plumas por doquier!"
+			'''
+	}
+
+	WindBladeEcType: {
+		DisplayName: Hoja de Viento
+		Tooltip:
+			'''
+			Dispara ciclones que alteran el flujo de aire a gran escala al blandirse
+			Clic derecho dispara ciclones pequeños que rastrean enemigos
+			"¿Pensabas que era solo una brisa inofensiva?"
+			'''
+	}
+
+	ArbalestEcType: {
+		DisplayName: Ballesta
+		Tooltip:
+			'''
+			Dispara seis flechas a alta velocidad
+			Las flechas aumentan de tamaño cuanto más tiempo se dispara
+			Cuanto mayor es el tamaño de las flechas, mayor es el daño y retroceso, pero mayor es la dispersión
+			Clic derecho dispara en ráfaga rápida
+			"Sus engranajes aún giran chirriando sin parar"
+			'''
+	}
+
+	DeathwindEcType: {
+		DisplayName: Viento de Muerte
+		Tooltip:
+			'''
+			Las flechas de madera se transforman en rayos láser mortales.
+			Impactar a los enemigos a corta distancia genera un flujo de muerte.
+			"La muerte como el viento, siempre acompaña a mi ser."
+			'''
+	}
+
+	DragonRageEcType: {
+		DisplayName: Ira del Dragón
+		Tooltip:
+			'''
+			El botón izquierdo activa un ataque de tres golpes, en orden: corte hacia arriba, corte hacia abajo, gran corte y puñalada.
+			La puñalada tiene un rango de ataque más largo y, al impactar, provoca una explosión intensa de llama de dragón.
+			El botón derecho realiza dos grandes cortes, seguido de una rotación continua del arma, con un corte ascendente, uno descendente y una rotación cortante.
+			Usar el botón izquierdo reinicia el nivel de ataque del botón derecho.
+			"Regreso tras tres cortes, el vino aún está tibio."
+			'''
+	}
+
+	WhiplashGalactica: {
+		DisplayName: Latigazo Galáctico
+		Tooltip:
+			'''
+			Marca a los enemigos con una muerte y lanza bolas de fuego cósmico.
+			"La columna de la gran serpiente del cosmos, llena de energía cósmica, guía la ira del universo."
+			'''
+	}
+
+	TradewindsEcType: {
+		DisplayName: Viento de Comercio
+		Tooltip:
+			'''
+			Lanza plumas celestiales que ralentizan.
+			El botón derecho cambia a lanzar plumas pegajosas.
+			"Este libro está lleno de plumas; debes deshacerte de todas las plumas para ver los hechizos en la parte superior."
+			'''
+	}
+
+	DeathhailStaffEcType: {
+		DisplayName: Vara de Granizo Mortífero
+		Tooltip:
+			'''
+			Hace que caigan grandes cantidades de granizo mortal del cielo.
+			"¿También caerá granizo en el universo? Tal vez sea una lluvia de cometas destructiva."
+			'''
+	}
+
+	ExcelsusEcType: {
+		DisplayName: Cuchilla de Energía Cósmica
+		Tooltip:
+			'''
+			Empuña y lanza múltiples cuchillas cósmicas.
+			El botón derecho lanza flechas de luz y oscuridad.
+			"Con esta cuchilla del universo, lanza las de otros universos."
+			'''
+	}
+
+	GhastlyVisageEcType: {
+		DisplayName: Rostro Fantasmal
+		Tooltip:
+			'''
+			Lanza múltiples explosivos de almas en pena.
+			"El cuerpo no formado de aquel extraño fantasma."
+			'''
+	}
+
+	GaleforceEcType: {
+		DisplayName: Fuerza del Viento
+		Tooltip:
+			'''
+			Los ataques lanzan tres plumas.
+			El botón derecho permite disparo rápido de un solo proyectil.
+			"Las alas de la verdad están conmigo."
+			'''
+	}
+
+	ElementWhip: {
+		DisplayName: Latigo Elemental
+		Tooltip:
+			'''
+			Quema a los enemigos con fuego elemental.
+			"La esencia de Terra se entrelaza con los elementos del universo y atraviesa el mundo."
+			'''
+	}
+
+	ElementalShivEcType: {
+		DisplayName: Daga Elemental
+		Tooltip: '''"Es una pena que, incluso combinada con la energía del universo, no se haya alargado."'''
+	}
+
+	TheRelicLuxor: {
+		DisplayName: Reliquia de Luxor
+		Tooltip:
+			'''
+			El poder espiritual ardiente te acompañará en cada ataque; el dios de la luz está contigo.
+			[tips]
+			'''
+	}
+
+	TheLuxirSoulArtifact: {
+		DisplayName: Artefacto del Alma de Luxor
+		Tooltip:
+			'''
+			Tanto dioses como inmortales reconocen tu gloria.
+			[tips]
+			'''
+	}
+
+	AzureDragonRage: {
+		DisplayName: Ira del Dragón Azul
+		Tooltip: Hay un fuerte olor a hierba fresca.
+	}
+
+	BleedingScourge: {
+		DisplayName: Flagelo Sangriento
+		Tooltip: Marca a los enemigos con la muerte y provoca lluvia de sangre.
+	}
+
+	GhostFireWhip: {
+		DisplayName: Latigo de Fuego Fantasmal
+		Tooltip:
+			'''
+			Un largo látigo tejido con la ira de las almas en pena de la mazmorras.
+			[c/d4bc75: La pura pasión se irradia desde el infierno, animándote a descubrir quién te ha agraviado.]
+			'''
+	}
+
+	AllhallowsGoldWhip: {
+		DisplayName: Latigo de Oro de Todos los Santos
+		Tooltip: En realidad, aún no está terminado.
+	}
+
+	DivineSourceBlade: {
+		DisplayName: Cuchilla Aniquiladora de Oro
+		Tooltip:
+			'''
+			Empuña el poder del oro.
+			"La vida nunca cesa."
+			'''
+	}
+
+	FatesRevealEcType: {
+		DisplayName: Revelación del Destino
+		Tooltip: Genera múltiples llamas espirituales que atacan a los enemigos.
+	}
+
+	FoodStallChair: {
+		DisplayName: Silla de Plástico de Puesto de Comida
+		Tooltip: ""
+	}
+
+	DaemonsFlameEcType: {
+		DisplayName: Arco de Fuego Demoníaco
+		Tooltip:
+			'''
+			Convierte las flechas de madera en llamas demoníacas.
+			Cuando se lanzan las flechas restantes, se lanzará una bola de fuego demoníaca adicional.
+			'''
+	}
+
+	ClaretCannonEcType: {
+		DisplayName: Cañón Carmesí
+		Tooltip:
+			'''
+			Lanza tres balas a la vez.
+			Convierte las balas de la pistola en balas de lágrimas de sangre que drenan vida.
+			'''
+	}
+
+	AnnihilatingUniverse: {
+		DisplayName: Flecha de Aniquilación del Universo
+		Tooltip:
+			'''
+			Las flechas que impactan en los enemigos dejan una estrella brillante en el lugar.
+			Usa el botón derecho para destruir enemigos con el poder de un devorador de dioses.
+			'''
+	}
+
+	HeavenfallLongbow: {
+		DisplayName: Gran Arco de Caída del Cielo
+		Tooltip:
+			'''
+			Lanza flechas infinitas; la energía del arco iris del fin del mundo llegará después.
+			El botón derecho hace que una flecha del cielo caiga del cielo.
+			Pulsa [KEY] después de cargar para activar el Juicio Universal.
+			[legend]
+			'''
+		Legend:
+			'''
+			Las cenizas de la guerra aún arden como antes, incluso mil millones de años después.
+			El cuerpo del dios de la luz se rompió en innumerables fragmentos brillantes que se esparcieron por toda la galaxia.
+			Las maravillas son meras copias torpes de los restos de los dioses.
+			Y ahora, este arco que ha matado a dioses supremos resurgirá de la ira del cielo.
+			'''
+	}
+
+	AegisBladeEcType: {
+		DisplayName: Espada Aegis
+		Tooltip:
+			'''
+			Lanza bolas de fuego de castigo al agitarla.
+			Haz clic derecho para generar la Gran Espada de Aegis.
+			'''
+	}
+
+	DragonsBreathRifle: {
+		DisplayName: Rifle Aliento de Dragón
+		Tooltip: ""
+	}
+
+	TextItem: {
+		DisplayName: Artículo de Prueba
+		Tooltip: Hmm... no deberías tenerlo.
+	}
+
+	BaseSingularity: {
+		DisplayName: Clase Base de Singularidad
+		Tooltip: Hmm... no deberías tenerlo.
+	}
+
+	InfiniteIngot: {
+		DisplayName: Lingote Infinito
+		Tooltip: El poder del universo, en tu mano.
+	}
+
+	CosmicMetalSingularity: {
+		DisplayName: Singularidad de Metal Cósmico
+		Tooltip: ""
+	}
+
+	TransmutationOfMatterItem: {
+		DisplayName: Consola de Fusión Omega
+		Tooltip:
+			'''
+			Colócalo y haz clic derecho para abrir la mesa de elaboración.
+			"Tu viaje de avaricia comenzará oficialmente."
+			'''
+	}
+
+	DarkMatterCompressorItem: {
+		DisplayName: Compresor de Materia Oscura
+		Tooltip: Reconfigurando la materia como un agujero negro.
+	}
+
+	MurasamaEcType: {
+		DisplayName: Murasama
+		Tooltip:
+			'''
+			Haz clic derecho para apuntar y acumular energía de la espada. 
+			Haz clic izquierdo para realizar un ataque cuerpo a cuerpo verdadero, 
+			cargando la energía de la espada al golpear al objetivo.
+			Si hay enemigos poderosos alrededor, la energía de la espada se cargará lentamente por sí sola.
+			Cuando la energía de la espada esté completamente cargada, 
+			presiona [KEY1] para lanzar la hoja. Durante el vuelo de la hoja, 
+			presiona clic izquierdo para ejecutar el golpe ascendente [Lang1].
+			Si el golpe ascendente golpea a un enemigo, cargará el arma 1. 
+			Presiona [KEY2] para consumir 1 punto de carga de arma y realizar un ataque de golpe descendente [Lang2].
+			Cuando el valor de carga de la arma alcance el máximo de 10 puntos, 
+			un nuevo golpe ascendente que golpee a un enemigo activará un movimiento final [Lang3].
+			legend_Text
+			[c/ff4500:"Sería mejor si tuviera una espada de cadena."]
+			[Lang4]
+			[Text]
+			'''
+	}
+
+	HolyColliderEcType: {
+		DisplayName: Espada de Fuego Sagrado
+		Tooltip:
+			'''
+			Lanza un rayo de fuego profano que provoca una explosión donde está el cursor.
+			Cada seis veces realiza un ataque mejorado.
+			'''
+	}
+
+	Oracle: {
+		DisplayName: Oráculo
+		Tooltip: Apunta y dispara.
+	}
+
+	PerfectDark: {
+		DisplayName: Ecos de Oscuridad
+		Tooltip: ""
+	}
+
+	StarnightLance: {
+		DisplayName: Lanza de Noche Fría
+		Tooltip: Fría hasta los huesos.
+	}
+
+	CelestialClaymoreEcType: {
+		DisplayName: Espada Celestial
+		Tooltip:
+			'''
+			Gira para generar estrellas explosivas alrededor.
+			Si la hoja golpea una estrella, la lanzará hacia la posición del mouse.
+			'''
+	}
+
+	TheEnforcerEcType: {
+		DisplayName: Tiranía
+		Tooltip: Genera fuego cósmico alrededor al ser blandida.
+	}
+
+	InfinitePick: {
+		DisplayName: Pico de Codicia Universal
+		Tooltip:
+			'''
+			Haz clic derecho para destruir todo lo que toque.
+			Presiona [KEY] para cambiar de forma.
+			"Puedes sentirlo, cada vez que lo sostienes, la tierra de Terraria tiembla de miedo."
+			'''
+	}
+
+	DarkMatterBall: {
+		DisplayName: Esfera de Materia Oscura
+		Tooltip:
+			'''
+			Ha sido comprimida en un agujero negro, pero milagrosamente se mantiene estable.
+			A veces puede contener algunos objetos, haz clic derecho para sacar lo que contenga.
+			'''
+	}
+
+	GreatswordofJudgementEcType: {
+		DisplayName: Gran Espada del Juicio
+		Tooltip: ""
+	}
+
+	OrderbringerEcType: {
+		DisplayName: Espada Portadora del Orden
+		Tooltip: ""
+	}
+
+	IridescentExcaliburEcType: {
+		DisplayName: Excalibur Iridiscente
+		Tooltip: ""
+	}
+
+	EndlessStabilizer: {
+		DisplayName: Estabilizador de Hume
+		Tooltip: Estabiliza algunos objetos poderosos.
+	}
+
+	BlackMatterStick: {
+		DisplayName: Bastón de Neutrones de Materia Superdensa
+		Tooltip: El peso de todo, concentrado en la yema de los dedos.
+	}
+
+	InfiniteStick: {
+		DisplayName: Bastón Infinito
+		Tooltip: ""
+	}
+
+	InfinityCatalyst: {
+		DisplayName: Catalizador Infinito
+		Tooltip: Tu codicia está a punto de alcanzar su punto máximo.
+	}
+
+	DawnshatterAzure: {
+		DisplayName: Amanecer Azure
+		Tooltip:
+			'''
+			Lanza sombras de la corona solar, invocando llamas explosivas al golpear a los enemigos.
+			Mantén presionado el clic derecho para cargar la pistola.
+			El fuego purifica el alma, despojando a tus enemigos por completo.
+			[c/fff08c:- Al eliminar enemigos, caerán múltiples objetos -]
+			'''
+	}
+
+	DecayParticles: {
+		DisplayName: Partículas de Decaimiento
+		Tooltip:
+			'''
+			Una breve mirada a la esencia de la materia.
+			La existencia misma es un milagro.
+			'''
+	}
+
+	DecaySubstance: {
+		DisplayName: Materia en Decaimiento
+		Tooltip:
+			'''
+			Está en un continuo proceso de descomposición.
+			Circulando entre la destrucción y el renacimiento.
+			'''
+	}
+
+	DissipationSubstance: {
+		DisplayName: Materia de Disipación
+		Tooltip:
+			'''
+			La realidad ya no puede capturar su esencia.
+			Se disipa continuamente, pero es inmensa.
+			'''
+	}
+
+	SpectralMatter: {
+		DisplayName: Materia Espectral
+		Tooltip: Alrededor de 3,700,000 billones de toneladas.
+	}
+
+	InfiniteToiletItem: {
+		DisplayName: Inodoro Infinito
+		Tooltip: "[c/fff08c: El poder del universo, en el inodoro.]"
+	}
+
+	StormGoddessSpear: {
+		DisplayName: Lanza de la Diosa de la Tormenta
+		Tooltip:
+			'''
+			Lanza un beso de tormenta con arcos eléctricos destructivos.
+			[legend]
+			'''
+		Legend:
+			'''
+			En la oscura dimensión de Terraria, la antigua diosa guerrera Elina ha caído en un caos y desesperación infinitos, 
+			convirtiéndose en la diosa de la tormenta que todos susurran.
+			Una vez fue una guerrera invencible en el continente, su valentía y agudeza eran como rayos que dominaban un cielo sereno.
+			Sin embargo, la sombra del destino se extendió bajo sus pies. 
+			En la última batalla entre la luz y la oscuridad, el cielo se desplomó y la oscuridad devoró la luz.
+			La diosa de la tormenta sufrió las atrocidades de los dioses supremos. 
+			La arrogante deidad le arrebató a sus compañeros y seres queridos, destruyendo todo lo que había protegido.
+			Los pecados del dios supremo hicieron que dudara de la justicia que había venerado, llevándola a un abismo de caída implacable.
+			A medida que las cenizas de la guerra se dispersaban, Elina regresó a Terraria, pero ya no era la guerrera valiente de antes.
+			El dolor en su interior y la desesperación infinita la llevaron a abandonar su fe elevada, buscando una nueva fuente de poder.
+			En un ritual sangriento, obtuvo la bendición prohibida que tanto deseaba. Una infinita fuerza surgió, pero a costa de la caída eterna de su alma.
+			Ahora, la diosa de la tormenta se ha convertido en un símbolo de la oscuridad en Terraria, 
+			su armadura incrustada con obsidiana tan oscura como el cielo nocturno, 
+			y sus ojos destilan un brillo de caída, agitando caos y odio hacia el continente.
+			Su hoja brilla como el trueno en la noche, con arcos eléctricos de destrucción danzando a su alrededor. Ya no lucha por la justicia, 
+			sino que se ha convertido en una fuerza oscura que destruye todo a su paso.
+			A pesar de que todavía posee las habilidades y técnicas de combate de antaño, 
+			en este momento se ha convertido en el enemigo público de Terraria, sufriendo el desprecio infinito de todos.
+			La diosa de la tormenta ha emprendido un camino solitario y caído, vagando en la oscuridad. 
+			Su propia existencia es una burla a la gloria pasada de Terraria, convirtiéndose en una tormenta que devora toda esperanza.
+			'''
+	}
+
+	DragonsScaleGreatsword: {
+		DisplayName: Espada Grande de Escamas de Dragón
+		Tooltip:
+			'''
+			Genera un ataque en espiral de energía de algas verdes, que al impactar al objetivo explota en varias nubes de algas tóxicas.
+			Un ataque cuerpo a cuerpo verdadero generará una gran cantidad de nubes de algas tóxicas.
+			'''
+	}
+
+	CosmicCalamity: {
+		DisplayName: Calamidad Cósmica
+		Tooltip:
+			'''
+			Lanza un insecto de calamidad galáctica que sigue al enemigo.
+			Un ataque por sorpresa causa una explosión de rayos térmicos en forma de cruz.
+			'''
+	}
+
+	Gangarus: {
+		DisplayName: Lanza de Longinos
+		Tooltip:
+			'''
+			Cada vez que la barra de emboscada alcanza su límite, se produce un aumento, acumulándose hasta un máximo de seis veces.
+			Al llevarlo, se marca el destino del enemigo más cercano.
+			Al golpear al enemigo marcado, desencadena la ira del peregrino.
+			[legend]
+			'''
+		Legend:
+			'''
+
+			“Dios quebrantado, por favor, permíteme redimir mis pecados.” 
+			La guerra se ha extendido por siglos, yo, como el derrotado que huyó de una gran civilización, sobrevivo en este planeta desolado en el borde del universo. 
+			Decenas de miles de años luz lejos, las máquinas de guerra aplastan las estrellas; ataques brutales y aterradores pueden eliminar en un instante años luz de cielo, convirtiéndolo en un dominio de silencio. 
+			Y esta guerra ha durado cientos de años. Ahora, mi gran civilización está al borde del colapso; me convertiré en un pecador del universo, el más irreverente de los blasfemos. 
+			Mis carnes se han descompuesto, mis huesos son arrugas de la vejez, estoy a punto de convertirme en una de las débiles máquinas que creé. 
+			Antes de eso, que el dios me otorgue perdón, absuelva mi falta de respeto hacia esa existencia suprema, para que al caer mi alma, caiga en el abismo del infierno y sufra un dolor infinito. 
+			No obstante, para el bien de mi civilización, para obtener la victoria en esta guerra que abarca siglos, debo absorber el poder fragmentado de esa suprema existencia. 
+			Para guiar su poder misterioso, no tengo otra opción que inyectar frío metal en su cuerpo quebrantado. 
+			Esto es una irreverencia inevitable; para la continuidad de la civilización, para la victoria en la guerra, debo convertirme en el más devoto de los creyentes de esa entidad suprema, el blasfemo más irreverente de todos los tiempos. 
+			'''
+	}
+
+	SubmarineShockerEcType: {
+		DisplayName: Espada Corta del Abismo
+		Tooltip: Lanza chispas iónicas.
+	}
+
+	BrimstoneSwordEcType: {
+		DisplayName: Espada Cortante de Azufre
+		Tooltip:
+			'''
+			Una espada corta ardiente.
+			Al impactar en el enemigo, genera un surtidor de fuego de azufre.
+			'''
+	}
+
+	BloodAltar: {
+		DisplayName: Altar Carmesí
+		Tooltip:
+			'''
+			Haz clic derecho en el altar para invocar la luna de sangre con gotas de sangre.
+			Colecciona automáticamente las gotas de sangre que caen en el mundo y las guarda en la caja más cercana.
+			"Deja que el mundo sea observado por el carmesí profundo."
+			'''
+	}
+
+	StarMyriadChanges: {
+		DisplayName: Estrella de Mil Cambios
+		Tooltip: ¡Alaben al dios del cambio!
+	}
+
+	TerminusOver: {
+		DisplayName: Toque del Fin
+		Tooltip: Te permite encender y apagar la guerra del fin, pero a un precio.
+	}
+
+	PhosphorescentGauntletEcType: {
+		DisplayName: Guantelete Fosforescente
+		Tooltip:
+			'''
+			Golpea a los enemigos con la voluntad de tu puño.
+			Clic derecho para lanzar puñetazos cortos a corta distancia.
+			'''
+	}
+
+	StellarStrikerEcType: {
+		DisplayName: Filo de Llamas de Luna
+		Tooltip:
+			'''
+			Lanza rayos de media luna.
+			Clic derecho para potenciar la hoja, al impactar en el enemigo hace descender varios rayos de luna.
+			'''
+	}
+
+	TheLastMourningEcType: {
+		DisplayName: Lamento del Último Amanecer
+		Tooltip:
+			'''
+			Persigue a los enemigos con cráneos de pecados y almas de condenación.
+			Clic derecho para potenciar la hoja; al golpear al enemigo genera varios cráneos de rencor.
+			'''
+	}
+
+	GreentideEcType: {
+		DisplayName: Marea Esmeralda
+		Tooltip:
+			'''
+			Genera varios colmillos de leviatán debajo de un punto específico.
+			Clic derecho para potenciar la hoja; al golpear al enemigo, hace descender más colmillos.
+			'''
+	}
+
+	DiseasedPikeEcType: {
+		DisplayName: Pica de Plaga
+		Tooltip:
+			'''
+			Lanza enjambres de plagas.
+			Clic derecho para generar energía de plaga que persigue.
+			'''
+	}
+
+	PlagueKeeperEcType: {
+		DisplayName: Espada Grande de Plaga
+		Tooltip: Lanza enjambres de plagas.
+	}
+
+	BalefulHarvesterEcType: {
+		DisplayName: Cosechador Maligno
+		Tooltip:
+			'''
+			Lanza una guadaña que ahuyenta.
+			Clic derecho para lanzarla, provocando un pequeño terremoto de energía.
+			"¡Hey! ¡Tienes que recogerlo!"
+			'''
+	}
+
+	VulcaniteLanceEcType: {
+		DisplayName: Lanza Volcánica
+		Tooltip:
+			'''
+			Al llevarla, genera esferas de fuego infernal alrededor del jugador.
+			Al impactar con la lanza en las esferas, estalla energía infernal.
+			'''
+	}
+
+	AstralBladeEcType: {
+		DisplayName: Hoja Astral
+		Tooltip:
+			'''
+			Golpea y lanza esferas astrales; cuanto mayor sea la salud restante del enemigo golpeado, mayor será el daño causado.
+			Un golpe cuerpo a cuerpo verdadero hace descender estrellas.
+			'''
+	}
+
+	AstralPikeEcType: {
+		DisplayName: Pica Astral
+		Tooltip:
+			'''
+			Lanza tres deslumbrantes estrellas astrales.
+			Un golpe cuerpo a cuerpo verdadero hace descender estrellas.
+			'''
+	}
+
+	AnarchyBladeEcType: {
+		DisplayName: Hoja de Anarquía
+		Tooltip: Cada tres golpes lanza un explosivo de azufre.
+	}
+
+	AftershockEcType: {
+		DisplayName: Hoja de Fuego Terrestre
+		Tooltip:
+			'''
+			Golpea y lanza varios fragmentos de tierra.
+			Clic derecho para potenciar la hoja; un golpe cuerpo a cuerpo verdadero en el enemigo hace caer grandes rocas de fuego.
+			'''
+	}
+
+	BrimlashEcType: {
+		DisplayName: Látigo de Azufre
+		Tooltip:
+			'''
+			Lanza una onda de energía de azufre.
+			Clic derecho para lanzar proyectiles de azufre que persiguen desde cinco direcciones, pero hay riesgo de quemar al jugador.
+			'''
+	}
+
+	EarthenPikeEcType: {
+		DisplayName: Pica de Tierra
+		Tooltip:
+			'''
+			Lanza varios fragmentos de tierra, con cierta probabilidad de lanzar una gran roca de fuego adicional.
+			Clic derecho para lanzar el arma.
+			"¡Hey! ¡Tienes que recogerlo!"
+			'''
+	}
+
+	TeardropCleaverEcType: {
+		DisplayName: Hacha de Lagrimas
+		Tooltip: Lluvias de lágrimas torrenciales.
+	}
+
+	SausageMakerEcType: {
+		DisplayName: Lanza de Salchicha
+		Tooltip:
+			'''
+			Cada 5 puñaladas, lanza una bomba de carne.
+			Un ataque cuerpo a cuerpo verdadero dispara orbes de sangre rastreadores.
+			'''
+	}
+
+	PestilenceIngot: {
+		DisplayName: Lingote de Peste
+		Tooltip: Huele a pastel de hierbas agrio.
+	}
+
+	ReminiscenceBreastplate: {
+		DisplayName: Pechera de Reminiscencia
+		Tooltip: ""
+	}
+
+	AbsoluteZeroEcType: {
+		DisplayName: Cero Absoluto
+		Tooltip: Lanza proyectiles de hielo extremadamente frío.
+	}
+
+	FlarefrostBlade: {
+		DisplayName: Hoja de Hielo y Fuego
+		Tooltip: ""
+	}
+
+	MurasamaMould: {
+		DisplayName: Molde de Sangre Dorada
+		Tooltip: Utilizado para crear objetos de alta precisión, no se consume al combinar, sino que se desgasta.
+	}
+
+	WaveSkipperEcType: {
+		DisplayName: Saltador de Olas
+		Tooltip:
+			'''
+			Clic izquierdo lanza dientes de arena que saltan en la arena, un ataque furtivo lanza tres grandes dientes de arena.
+			Clic derecho lanza dientes de arena rebotantes, un ataque furtivo hace caer varios dientes de arena rápidos del cielo.
+			'''
+	}
+
+	BlossomFluxEcType: {
+		DisplayName: Flujo de Hojas
+		Tooltip:
+			'''
+			Lanza un flujo de hojas que rastrea a los enemigos, la velocidad de ataque aumenta.
+			Recibir daño resetea el aumento de velocidad y vacía el tiempo de vuelo.
+			Clic derecho carga y lanza un poderoso proyectil de explosión selvática.
+			'''
+	}
+
+	PhangasmEcType: {
+		DisplayName: Fantasma
+		Tooltip: Genera proyectiles de sombra adicionales al golpear a un enemigo.
+	}
+
+	OverhaulTheBibleBook: {
+		DisplayName: Libro de la Gran Reparación
+		Tooltip: Utiliza para ver tutoriales relacionados... aquí puede haber más contenido en el futuro.
+	}
+
+	ContagionEcType: {
+		DisplayName: Contagio
+		Tooltip:
+			'''
+			Clic izquierdo lanza flechas de cólera a alta velocidad, liberando múltiples bombas de peste en el camino.
+			Clic derecho convoca abejas de la vida del Jardín del Mundo.
+			[c/085054: El padre bondadoso siempre estará vigilando al portador de este arco.]
+			'''
+	}
+
+	AlluvionEcType: {
+		DisplayName: Grito de Corriente
+		Tooltip:
+			'''
+			Transforma flechas de madera en flechas oceánicas.
+			Clic derecho carga para destruir enemigos con la fuerza del océano.
+			Si se usan flechas de madera, un ataque derecho transformará las flechas en más flechas oceánicas.
+			'''
+	}
+
+	PlanetaryAnnihilationEcType: {
+		DisplayName: Aniquilación Planetaria
+		Tooltip: Puede transformar flechas de madera en impactos energéticos.
+	}
+
+	TheMaelstromEcType: {
+		DisplayName: Tormenta Abisal
+		Tooltip:
+			'''
+			Clic izquierdo lanza flechas de agua de alta presión, liberando una bomba de presión de agua al golpear a un enemigo.
+			Clic derecho carga y libera un tiburón cazador cargado.
+			'''
+	}
+
+	ClockGatlignumEcType: {
+		DisplayName: Pistola de Cocodrilo de Reloj
+		Tooltip:
+			'''
+			Lluvia de balas como un huracán.
+			10% de probabilidad de ahorrar munición.
+			"No lanza cocodrilos, decepcionante."
+			'''
+	}
+
+	ElementalBlasterEcType: {
+		DisplayName: Impulso Elemental
+		Tooltip: Dispara chorros de energía elemental.
+	}
+
+	MarksmanBowEcType: {
+		DisplayName: Arco del Cazador
+		Tooltip:
+			'''
+			Dispara flechas precisas con rapidez y brutalidad, clave para el éxito de la caza.
+			Las flechas disparadas tienen probabilidad de generar un fantasma al desaparecer.
+			'''
+	}
+
+	NettlevineGreatbowEcType: {
+		DisplayName: Vínculo Espinoso
+		Tooltip:
+			'''
+			Las flechas disparadas se envenenan.
+			Cada cuatro disparos desencadena una ráfaga de ajenjo.
+			'''
+	}
+
+	SpectreRifle: {
+		DisplayName: Rifle Espectral
+		Tooltip:
+			'''
+			Lanza almas que persiguen a los enemigos.
+			"Esto no usa propulsores para lanzar proyectiles, ¿de dónde sale el retroceso?!"
+			'''
+	}
+
+	StormDragoonEcType: {
+		DisplayName: Dragón de Tormenta
+		Tooltip:
+			'''
+			Lluvia de balas como un huracán.
+			"Soy la tormenta que se aproxima."
+			'''
+	}
+
+	TheStormEcType: {
+		DisplayName: Tormenta
+		Tooltip:
+			'''
+			Lluvia de flechas como una tormenta, cada flecha trae arcos eléctricos.
+			Convierte flechas de madera en flechas eléctricas.
+			'''
+	}
+
+	ThunderstormEcType: {
+		DisplayName: Rifle de Espectros
+		Tooltip: Dispara un impacto electromagnético de Radel, usando magia como munición.
+	}
+
+	TyrannysEndEcType: {
+		DisplayName: El Fin de la Tiranía
+		Tooltip:
+			'''
+			Rifle pesado anti-material que dispara balas .70BMG.
+			Genera un chorro de metal letal al impactar, dañando a múltiples enemigos.
+			'''
+	}
+
+	AntiMaterielRifleEcType: {
+		DisplayName: Barrett
+		Tooltip:
+			'''
+			Rifle pesado anti-material que dispara balas .50BMG.
+			Genera un chorro de metal letal al impactar, dañando a múltiples enemigos.
+			'''
+	}
+
+	HalibutCannonEcType: {
+		DisplayName: Cañón de Halibut
+		Tooltip:
+			'''
+			Convierte balas de mosquete en proyectiles oceánicos.
+			"Observa este pez, con gafas de una sola lente y un sombrero de copa. ¿Crees que fue a la universidad?"
+			"Es cierto, señor, soy doctor en Oceanografía y Botánica Abisal, gané dos competencias de pesca en la Universidad de Sulfur Sea.
+			Este halibut no solo conoce los secretos del fondo marino, también es el campeón del mundo oceánico," dice el halibut.
+			'''
+	}
+
+	SDFMGEcType: {
+		DisplayName: SDFMG
+		Tooltip:
+			'''
+			Tiene probabilidad de disparar un misil oceánico.
+			"Un milagro de la dinámica de armas."
+			'''
+	}
+
+	DeadSunsWindEcType: {
+		DisplayName: Viento de las Sombras Muertas
+		Tooltip:
+			'''
+			Lanza un rayo de plasma de alta temperatura, rebotando al tocar objetos.
+			Los rayos de plasma rebotan y rastrean al enemigo más cercano.
+			Causan grandes explosiones al golpear consecutivamente.
+			Usa gel como munición.
+			"¿Cómo puede convertir el gel en esto?"
+			'''
+	}
+
+	FetidEmesisEcType: {
+		DisplayName: Vómito Fétido
+		Tooltip:
+			'''
+			Contamina las balas con un veneno nauseabundo.
+			Cada ocho balas disparadas desencadena un ataque de vómito de contaminantes.
+			Clic derecho para cambiar a semiautomático, lanzando bolas de carne corruptas.
+			"Fue una gran plaga..." recuerda el Viejo Tiburón, hablando consigo mismo.
+			"Fui profesor en la universidad oceánica, ese halibut era mi estudiante, hasta que llegó la plaga.
+			La universidad oceánica se convirtió en el Departamento de Desarrollo de Sulfur Sea, y yo me retiré... 
+			Por cierto, ¿quieres ver cuántas balas puedo tragar de un solo golpe?"
+			'''
+	}
+
+	SeadragonEcType: {
+		DisplayName: Dragón Marino
+		Tooltip:
+			'''
+			Dispara burbujas marinas mientras abre fuego.
+			Las balas de agua se disparan junto con la munición.
+			'''
+	}
+
+	BarrenBow: {
+		DisplayName: Arco Estéril
+		Tooltip: Las flechas disparadas explotan en corrientes estériles al golpear al enemigo.
+	}
+
+	ScorchedEarthEcType: {
+		DisplayName: Tierra Calcinada
+		Tooltip:
+			'''
+			Carga ocho bombas de infierno, los cohetes se guían automáticamente hacia el enemigo al ser disparados.
+			Causan grandes explosiones y se dividen en múltiples cohetes secundarios al impactar.
+			"Esto debe violar varios convenios internacionales."
+			'''
+	}
+
+	SeasSearingEcType: {
+		DisplayName: Quema del Mar
+		Tooltip:
+			'''
+			Realiza una ráfaga de disparos al completar la carga, convirtiendo las balas en proyectiles marinos.
+			Clic derecho para disparar un torbellino oceánico.
+			'''
+	}
+
+	CoralCannonEcType: {
+		DisplayName: Pistola de Coral
+		Tooltip:
+			'''
+			Una antigua pistola con un gran poder.
+			Clic derecho para cargar munición.
+			"El cañón siempre está húmedo, por lo que la pólvora probablemente no se encenderá... Espera, ¿no usa pólvora?"
+			'''
+	}
+
+	AngelicShotgunEcType: {
+		DisplayName: Cañón Sagrado
+		Tooltip:
+			'''
+			Concede bendiciones divinas a las balas disparadas.
+			Convierte las balas de escopeta en balas sagradas.
+			Una escopeta de gran calibre que emana una sensación divina.
+			'''
+	}
+
+	AquashardShotgunEcType: {
+		DisplayName: Escopeta de Cristales de Agua
+		Tooltip: Convierte balas de escopeta en proyectiles marinos.
+	}
+
+	AnimosityEcType: {
+		DisplayName: Animosidad
+		Tooltip:
+			'''
+			Convierte las balas de mosquete en balas cinéticas.
+			Clic derecho para disparar varias balas cinéticas en esparcimiento.
+			"Con mi cuerpo consumido en llamas."
+			'''
+	}
+
+	CorinthPrimeEcType: {
+		DisplayName: Corinto Prime
+		Tooltip:
+			'''
+			Dispara seis balas de alta velocidad.
+			Clic derecho para lanzar un pequeño proyectil explosivo.
+			Si la granada no impacta a un enemigo en dos segundos, causará una gran explosión.
+			De lo contrario, solo generará una pequeña onda de choque.
+			'''
+	}
+
+	CursedCapperEcType: {
+		DisplayName: Pistola Maldita
+		Tooltip:
+			'''
+			Dispara balas malditas.
+			"Definitivamente no querrás saber de dónde las sacó."
+			'''
+	}
+
+	DisseminatorEcType: {
+		DisplayName: Diseminador
+		Tooltip:
+			'''
+			Fuego cruzado como una tormenta de balas.
+			Clic derecho para disparos rápidos.
+			"El manual de tácticas de fuego cruzado."
+			'''
+	}
+
+	HellbornEcType: {
+		DisplayName: Infierno Descendido
+		Tooltip:
+			'''
+			Una escopeta ardiente.
+			Clic derecho para disparo automático.
+			Cuando se dispara, el cañón inflige un gran daño a los enemigos.
+			'''
+	}
+
+	PetrifiedDisease: {
+		DisplayName: Enfermedad Petrificada
+		Tooltip:
+			'''
+			Dispara una gran flecha de veneno pétreo.
+			"Una extraña enfermedad que convierte lentamente en piedra a cualquier animal o planta que infecta."
+			'''
+	}
+
+	HelstormEcType: {
+		DisplayName: Tormenta Infernal
+		Tooltip:
+			'''
+			Una escopeta extremadamente ardiente.
+			Clic derecho para disparo automático.
+			Cuando se dispara, el cañón inflige un gran daño a los enemigos.
+			"Mejor que Infierno Descendido."
+			'''
+	}
+
+	LeviatitanEcType: {
+		DisplayName: Pistola de Mareas de Leviatán
+		Tooltip:
+			'''
+			Convierte las balas de mosquete en bolas de agua o proyectiles marinos.
+			"¿Quieres saber el truco para provocar vómitos?" El Leviatán entrecerró los ojos, 
+			"Huevo centenario y queso, te convertirás en un experto en vómitos al instante."
+			'''
+	}
+
+	GoldenEagleEcType: {
+		DisplayName: Águila Dorada
+		Tooltip:
+			'''
+			Lanza cinco balas a la vez.
+			"No querrás saber cómo se hizo esta arma."
+			'''
+	}
+
+	SurgeDriverEcType: {
+		DisplayName: Cañón de Flujos Brillantes
+		Tooltip:
+			'''
+			Lanza una gran cantidad de rayos de disolución, y a medida que disminuye la munición, el poder de fuego se intensifica.
+			En su punto máximo, cambia para lanzar explosiones de rayos gamma.
+			'''
+	}
+
+	DeepcoreGK2EcType: {
+		DisplayName: GK2 de Núcleo Profundo
+		Tooltip:
+			'''
+			Clic derecho para disparo automático.
+			"Diseño de frenado perfecto, con una computadora en miniatura integrada. 
+			No solo cambia la munición automáticamente, ¡también te puede tostar el pan para el desayuno!"
+			'''
+	}
+
+	DodusHandcannonEcType: {
+		DisplayName: Pistola de Dodu
+		Tooltip:
+			'''
+			Dispara una nuez explosiva, sí, una nuez.
+			"Siempre he intentado usar esto para invocar nueces grandes, pero nunca he tenido éxito."
+			'''
+	}
+
+	P90EcType: {
+		DisplayName: P90
+		Tooltip:
+			'''
+			Dispara balas perforantes a una velocidad extremadamente alta.
+			Las balas ignoran 15 puntos de defensa del enemigo.
+			35% de probabilidad de ahorrar munición.
+			"Lo que puedes ver son los rastros de las balas de luz, 
+			así que necesitas pagar un adicional de $2685 en la factura de armas."
+			'''
+	}
+
+	PearlGodEcType: {
+		DisplayName: Dios de las Perlas
+		Tooltip:
+			'''
+			Dispara cinco balas a la vez.
+			Cuando el cargador se vacía, lanza un poderoso proyectil explosivo de onda de choque.
+			"Tu vida me pertenece."
+			'''
+	}
+
+	BulletFilledShotgunEcType: {
+		DisplayName: Escopeta Llena de Balas
+		Tooltip:
+			'''
+			Dispara una gran cantidad de balas rebotantes.
+			Cada uso consume cinco balas.
+			"¿Apuntar? ¿Qué es eso?"
+			'''
+	}
+
+	ButcherEcType: {
+		DisplayName: Carnicero
+		Tooltip: Cuantas menos balas queden, mayor será la velocidad y precisión de disparo.
+	}
+
+	FungicideEcType: {
+		DisplayName: Fusil de Hongos
+		Tooltip: Dispara balas de hongos que se dividen al impactar.
+	}
+
+	HalleysInfernoEcType: {
+		DisplayName: Cañón de Halley
+		Tooltip:
+			'''
+			Dispara una serie de chorros de alta presión.
+			Usa gel como munición.
+			"Halley llegó antes de lo que pensabas."
+			'''
+	}
+
+	HandheldTankEcType: {
+		DisplayName: Tanque Portátil
+		Tooltip: '''"¡Hey, amigo! ¡Mira, estoy empujando un tanque!"'''
+	}
+
+	InfinityEcType: {
+		DisplayName: Infinito
+		Tooltip:
+			'''
+			Dispara balas en espiral en grandes cantidades.
+			Convierte las balas de mosquete en balas de energía que se dividen al impactar.
+			"Siempre que lo sostengas en tu mano, la disolución infinita no se detendrá."
+			'''
+	}
+
+	KarasawaEcType: {
+		DisplayName: Cañón Pesado Karasawa
+		Tooltip: '''"… esta arma es demasiado pesada… demasiado pesada."'''
+	}
+
+	KingsbaneEctype: {
+		DisplayName: Asesino de Reyes
+		Tooltip:
+			'''
+			Después de activarse, dispara balas rápidamente.
+			Cuando se sobrecalienta, lanza una gran cantidad de balas de oro.
+			Cuando se sobrecalienta, el cañón causa un gran daño.
+			Las balas de oro rastrean rápidamente a los enemigos cercanos e ignoran 50 puntos de defensa.
+			"El poder heredado te hace arrodillarte, pero ahora, te hacemos levantarte."
+			'''
+	}
+
+	MegalodonEcType: {
+		DisplayName: Megalodón
+		Tooltip:
+			'''
+			Cada tres disparos lanza un tiburón adicional.
+			10% de probabilidad de ahorrar munición.
+			"Logramos meter un tiburón, ten cuidado de no perderte los dedos."
+			'''
+	}
+
+	MidasPrimeEcType: {
+		DisplayName: Midas Supremo
+		Tooltip:
+			'''
+			Dispara balas de francotirador.
+			Clic derecho para lanzar una moneda de oro o plata al aire.
+			Las balas que impactan en la moneda apuntan al enemigo más cercano.
+			Se pueden lanzar hasta 4 monedas, y cuando es posible, las balas rebotan entre las monedas.
+			Las balas rebotadas siempre causan crítico y aumentan el daño basado en la cantidad de rebotes.
+			"El dinero es poder."
+			'''
+	}
+
+	NeedlerEcType: {
+		DisplayName: Rifle de Agujas
+		Tooltip:
+			'''
+			Convierte las balas de mosquete en agujas que se clavan en los enemigos y explotan.
+			"¿Agujas de lluvia de peras?"
+			'''
+	}
+
+	PlagueTaintedSMGEcType: {
+		DisplayName: SMG de Plaga Contaminada
+		Tooltip:
+			'''
+			Haz clic izquierdo para disparar balas de plaga, generando drones explosivos de plaga al criticar.
+			Los drones tienen una alta tasa de crítico al impactar enemigos infectados con plaga.
+			Haz clic derecho para lanzar un enjambre de drones.
+			"Apunta y dispara, apunta y dispara"
+			'''
+	}
+
+	ScorpioEcType: {
+		DisplayName: Escorpión
+		Tooltip: “BOOM”
+	}
+
+	ArcherfishEcType: {
+		DisplayName: Pez Arquero
+		Tooltip: Convierte balas de fusil en un chorro de agua.
+	}
+
+	AstralBlasterEcType: {
+		DisplayName: Blaster Astral
+		Tooltip: Convierte balas de fusil en balas de seguimiento astral.
+	}
+
+	AuralisEcType: {
+		DisplayName: Auroras
+		Tooltip:
+			'''
+			Lanza balas de alta velocidad que reducen la línea defensiva del enemigo.
+			Otorga un aumento de daño al no moverse, hasta un 25%.
+			Al no moverte y usar clic derecho para apuntar más de 5 segundos, genera una aurora a tu alrededor.
+			La aurora reduce 100 puntos del daño de balas que recibas la próxima vez.
+			Este efecto dura hasta 20 segundos, con un tiempo de recarga de 30 segundos.
+			'''
+	}
+
+	AuroraBlazerEcType: {
+		DisplayName: Llama Aurora
+		Tooltip:
+			'''
+			Escupe llamas de nebulosa que se mueven en trayectoria estelar.
+			Usa gel como munición.
+			"El fuego de la ira en el brillo estelar arde"
+			'''
+	}
+
+	BarracudaGunEcType: {
+		DisplayName: Rifle Barracuda
+		Tooltip: Lanza dos barracudas que muerden a los enemigos y los desgarran.
+	}
+
+	BlissfulBombardierEcType: {
+		DisplayName: Bombardero Beatífico
+		Tooltip:
+			'''
+			Lanza cohetes de fuego sagrado.
+			Si se usan municiones destructibles, los cohetes destruirán bloques.
+			'''
+	}
+
+	ChickenCannonEcType: {
+		DisplayName: Cañón de Pollos
+		Tooltip:
+			'''
+			Lanza cohetes de pollo que causan una gran explosión.
+			Haz clic derecho para detonar todos los cohetes en vuelo.
+			'''
+	}
+
+	ClamorRifleEcType: {
+		DisplayName: Rifle de Clamor
+		Tooltip: Convierte balas de fusil en haces de energía de seguimiento.
+	}
+
+	GunkShotEcType: {
+		DisplayName: Escopeta de Barro
+		Tooltip:
+			'''
+			Lanza varias balas.
+			"El hombre de barro"
+			'''
+	}
+
+	NorfleetEcType: {
+		DisplayName: Norfleet
+		Tooltip: Perfectamente equilibrado, apto para todo...
+	}
+
+	ShroomerEcType: {
+		DisplayName: Rifle de Champiñones
+		Tooltip: Lanza balas y poderosos champiñones de seguimiento.
+	}
+
+	StarfleetEcType: {
+		DisplayName: Onda de Estrellas
+		Tooltip: Lanza varios proyectiles de plasma estelar.
+	}
+
+	StarmadaEcType: {
+		DisplayName: Cañón de Estrellas
+		Tooltip: Lanza estrellas y proyectiles de plasma.
+	}
+
+	SulphuricAcidCannonEcType: {
+		DisplayName: Cañón de Ácido Sulfúrico
+		Tooltip: Lanza un proyectil de ácido sulfúrico que se adhiere a los enemigos y los disuelve.
+	}
+
+	UniversalGenesisEcType: {
+		DisplayName: Génesis Universal
+		Tooltip:
+			'''
+			Dispara un grupo de balas, haciendo que un grupo de estrellas caiga hacia la posición del mouse.
+			Convierte balas de fusil en balas de invocación que convocan estrellas adicionales al impactar.
+			"Deja que el cielo caiga sobre los enemigos"
+			'''
+	}
+
+	VoidragonEcType: {
+		DisplayName: Cañón Dragón del Vacío
+		Tooltip:
+			'''
+			Cada seis disparos emite un proyectil explosivo del vacío.
+			Las balas que impactan a los enemigos generan tentáculos del vacío en el lugar.
+			"Este pez viene del espacio, pero no es Omniacia ni un dragón del vacío, solo es un pez"
+			'''
+	}
+
+	AcesHighEcType: {
+		DisplayName: Pistola de Altas Aces
+		Tooltip:
+			'''
+			Lanza una serie de cartas de póker, cada una con diferentes efectos.
+			Los corazones absorben vida.
+			Los tréboles pueden atravesar infinitamente e ignorar la invulnerabilidad del enemigo.
+			Los diamantes causan explosiones.
+			Las espadas se dividen en tres cartas pequeñas.
+			'''
+	}
+
+	ConferenceCallEcType: {
+		DisplayName: Llamada de Conferencia
+		Tooltip:
+			'''
+			Lanza balas densas, invocando más balas desde el aire.
+			[c/768EE6:@todos los miembros]
+			'''
+	}
+
+	MineralMortarEcType: {
+		DisplayName: Mortero de Minerales
+		Tooltip:
+			'''
+			Lanza un cohete de ágata que explota causando un gran daño en área.
+			"No puede levantar una tormenta de arena, pero puede volar a todos por los aires"
+			'''
+	}
+
+	MolecularManipulatorEcType: {
+		DisplayName: Manipulador Molecular
+		Tooltip:
+			'''
+			Lanza un "proyectil vacío" que distorsiona las propiedades de los monstruos.
+			"Referencia de objeto no establecida en una instancia de un objeto"
+			'''
+	}
+
+	NullificationRifleEcType: {
+		DisplayName: Nulo
+		Tooltip:
+			'''
+			Lanza un "proyectil vacío" que distorsiona las propiedades de los monstruos.
+			"Referencia de objeto no establecida en una instancia de un objeto"
+			'''
+	}
+
+	OnyxChainBlasterEcType: {
+		DisplayName: Cañón de Cadenas de Ónix
+		Tooltip:
+			'''
+			Lanza varias balas y un proyectil explosivo de ónix.
+			10% de probabilidad de ahorrar munición.
+			"Este tipo, el cargador es más corto que una broma, 
+			pero al menos puede hacer reír a la gente cuando se queda sin munición."
+			'''
+	}
+
+	OnyxiaEcType: {
+		DisplayName: Onyxia
+		Tooltip:
+			'''
+			Descarga una lluvia de balas y fragmentos de ónix sobre los enemigos.
+			"El avatar de ese dragón negro"
+			'''
+	}
+
+	PestilentDefilerEcType: {
+		DisplayName: Defensor Pestilente
+		Tooltip: Convierte balas de rifle en balas pestilentes que explotan en fragmentos de plaga
+	}
+
+	RealmRavagerEcType: {
+		DisplayName: Destruidor del Reino
+		Tooltip:
+			'''
+			Lanza de tres a cuatro balas a la vez
+			Convierte balas de rifle en balas explosivas
+			"Esconde los secretos del anterior portador, no esperes que los revele, de lo contrario, incluso los fantasmas se reirán"
+			'''
+	}
+
+	RubicoPrimeEcType: {
+		DisplayName: Rubico Prime
+		Tooltip:
+			'''
+			Cuando se sostiene en reposo, dispara automáticamente a los enemigos cercanos
+			Las balas disparadas tienen un mayor multiplicador de crítico
+			"Un verdadero rifle automático, debería saber cómo matar enemigos por sí mismo"
+			'''
+	}
+
+	SandstormGunEcType: {
+		DisplayName: Tormenta de Arena
+		Tooltip:
+			'''
+			Lanza espíritus de arena a la altura del cursor, lanzando muchas bolas de arena al aire
+			Usa bloques de arena como munición
+			'''
+	}
+
+	SepticSkewerEcType: {
+		DisplayName: Ballesta Tóxica
+		Tooltip:
+			'''
+			Lanza todos los dardos tóxicos pegajosos a la vez
+			Al regresar al jugador, liberan bacterias
+			'''
+	}
+
+	ShredderEcType: {
+		DisplayName: Desgarrador
+		Tooltip:
+			'''
+			Lanza una bola de energía que se divide en proyectiles
+			El clic derecho dispara una bola de balas
+			"Deberíamos estar agradecidos de que la mayoría de las balas aparezcan de la nada, de lo contrario tendríamos una factura de armamento astronómica esperando por nosotros"
+			'''
+	}
+
+	SomaPrimeEcType: {
+		DisplayName: Soma Prime
+		Tooltip:
+			'''
+			Si la tasa de crítico de esta arma supera el 100%, puede causar un supercrítico
+			Todos los proyectiles disparados causan desgarro y sangrado acumulativo
+			El desgarro causa 150 puntos de daño por segundo, este daño se ve afectado por tus atributos a distancia
+			Cada vez que el desgarro causa daño, tiene una probabilidad de desencadenar un crítico o supercrítico
+			Convierte balas de rifle en balas de alta velocidad
+			30% de probabilidad de ahorrar munición
+			"Las fuerzas del mercado dictan que necesitas evolucionar o morir."
+			'''
+	}
+
+	SpectralstormCannonEcType: {
+		DisplayName: Cañón de Tormenta Espectral
+		Tooltip:
+			'''
+			Lanza almas perdidas y bengalas
+			"Quisieron eludir el acuerdo, así que usaron bengalas como bombas de napalm, resultando en esta burla"
+			'''
+	}
+
+	SpeedBlasterEcType: {
+		DisplayName: Pistola de Pintura
+		Tooltip:
+			'''
+			Lanza rápidamente balas fluorescentes
+			El clic derecho lanza un fuerte chorro de pintura que te impulsa a correr al moverte
+			Esta habilidad tiene un tiempo de recarga de 5 segundos
+			Durante el enfriamiento, puedes disparar más rápido y con más precisión
+			"Apunta a tu cara y recibirás una divertida limpieza facial todo el día"
+			'''
+	}
+
+	SpykerEcType: {
+		DisplayName: Pistola de Agujas
+		Tooltip:
+			'''
+			Convierte balas de rifle en agujas que se clavan en los enemigos y explotan
+			"Los casos demuestran que no es una buena idea usarla para renovar el hogar"
+			'''
+	}
+
+	StarSputterEcType: {
+		DisplayName: Estrella Chorreante
+		Tooltip:
+			'''
+			Lanza una serie de meteoros
+			Cada cuatro ataques lanza un meteorito más grande
+			"Contempla las titilantes estrellas de lejanos sistemas"
+			'''
+	}
+
+	StellarCannonEcType: {
+		DisplayName: Cañón Nova
+		Tooltip:
+			'''
+			Usa estrellas caídas como munición
+			Lanza un cristal de ilusión explosivo
+			'''
+	}
+
+	SvantechnicalEcType: {
+		DisplayName: Rifle de Tecnología Svante
+		Tooltip:
+			'''
+			Lanza una gran cantidad de balas
+			"La tecnología cambia la vida"
+			'''
+	}
+
+	TheHiveEcType: {
+		DisplayName: Lanzador de Colmenas
+		Tooltip:
+			'''
+			Lanza cohetes pestilentes que generan abejas amigables al explotar
+			Cuando se usa munición destructible, los cohetes destruyen bloques
+			"Es vergonzoso haber metido estas abejas en las cabezas de los cohetes"
+			'''
+	}
+
+	ThePackEcType: {
+		DisplayName: Cohete de Racimo
+		Tooltip: Lanza un gran cohete guiado que explota en cohetes más pequeños al acercarse al enemigo
+	}
+
+	ElementMuzzleBrake: {
+		DisplayName: Frenos de Boca Elementales
+		Tooltip:
+			'''
+			Reduce el retroceso y la presión del cañón en un 65%
+			Reduce el daño a distancia en un 15%
+			Aumenta la tasa de crítico a distancia en un 25%
+			'''
+	}
+
+	NeutronStarMuzzleBrake: {
+		DisplayName: Freno de Boca de Estado Neutro
+		Tooltip:
+			'''
+			Compensa completamente el retroceso y la presión del cañón
+			Aumenta el daño a distancia en un 100%
+			Aumenta la tasa de crítico a distancia en un 100%
+			Gran aumento en los proyectiles a distancia
+			'''
+	}
+
+	PrecisionMuzzleBrake: {
+		DisplayName: Freno de Boca de Alta Precisión
+		Tooltip:
+			'''
+			Reduce el retroceso y la presión del cañón en un 55%
+			Reduce el daño a distancia en un 20%
+			Aumenta la tasa de crítico a distancia en un 15%
+			'''
+	}
+
+	SimpleMuzzleBrake: {
+		DisplayName: Freno de Boca Simple
+		Tooltip:
+			'''
+			Reduce el retroceso y la presión del cañón en un 40%
+			Reduce el daño a distancia en un 25%
+			Aumenta la tasa de crítico a distancia en un 5%
+			'''
+	}
+
+	BladedgeGreatbowEcType: {
+		DisplayName: Gran Arco de Hoja Cortante
+		Tooltip: Lanza dos flechas y cuatro hojas afiladas a la vez
+	}
+
+	CleansingBlazeEcType: {
+		DisplayName: Llama Purificadora
+		Tooltip:
+			'''
+			Libera un rayo de fuego que puede atravesar bloques
+			Usa gel como munición
+			'''
+	}
+
+	FirestormCannonEcType: {
+		DisplayName: Cañón de Tormenta de Fuego
+		Tooltip:
+			'''
+			Lanza continuamente bengalas armadas
+			Clic derecho para disparar bengalas densas
+			'''
+	}
+
+	FlakToxicannonEcType: {
+		DisplayName: Cañón Antiaéreo Tóxico
+		Tooltip:
+			'''
+			Dispara hacia el cursor en un ángulo determinado
+			Solo puede disparar en un rango de cierta inclinación sobre la cabeza del jugador
+			"Requiere: alto coeficiente intelectual"
+			'''
+	}
+
+	FreedomStarEcType: {
+		DisplayName: Estrella de la Libertad
+		Tooltip:
+			'''
+			Clic izquierdo para disparar una esfera de energía
+			Mantén presionado el clic izquierdo para cargar y disparar un rayo que explota al impactar
+			'''
+	}
+
+	StormSurgeEcType: {
+		DisplayName: Lanzador de Tormenta
+		Tooltip:
+			'''
+			Lanza un torbellino azul que puede atravesar bloques
+			"Teme y sométete a la tormenta"
+			'''
+	}
+
+	AmmoBoxFire: {
+		DisplayName: Caja de Munición Ardiente
+		Tooltip:
+			'''
+			Mantén presionado para desplegar, después de desplegar, mantén la munición en la caja, haz clic derecho en la caja de munición para cargar municiones especiales en el cargador del arma
+			Las municiones especiales se pueden combinar con el efecto de las balas originales
+			Hace que las balas sean extremadamente inflamables, causando explosiones al impactar
+			'''
+	}
+
+	MonsoonEcType: {
+		DisplayName: Monzón
+		Tooltip:
+			'''
+			Lanza cinco flechas en un instante
+			Los enemigos dentro de un área determinada son empujados por el viento
+			"Cuando el viento sopla, todos los enemigos se ven afectados"
+			'''
+	}
+
+	AethersWhisperEcType: {
+		DisplayName: Susurro Etéreo
+		Tooltip: Lanza un impacto psíquico de Radell que se divide múltiples veces; cuanto más lejos, más daño.
+	}
+
+	PridefulHuntersPlanarRipperEcType: {
+		DisplayName: Cazador Orgulloso
+		Tooltip:
+			'''
+			Convierte balas de fusil en balas eléctricas.
+			Las balas eléctricas tienen una velocidad de proyectil muy alta y explotan al matar enemigos.
+			Al crítico de las balas eléctricas, ganas un aumento de velocidad acumulable.
+			Puedes obtener hasta un 20% de aumento en velocidad de movimiento y aceleración.
+			Cambiar el objeto que sostienes restablecerá el aumento.
+			Cada quince disparos, se producirá una erupción de balas.
+			'''
+	}
+
+	VortexpopperEcType: {
+		DisplayName: Pistola de Burbuja Vortex
+		Tooltip:
+			'''
+			Dispara balas de burbuja con el botón izquierdo.
+			Dispara en modo automático con el botón derecho, generando muchas burbujas en la posición del mouse.
+			"¿No hay nada mejor que meter balas en burbujas?"
+			'''
+	}
+
+	ArmourPiercerBox: {
+		DisplayName: Caja de Munición Perforadora
+		Tooltip:
+			'''
+			Mantén presionado para desplegar. Después de desplegar, haz clic derecho en la caja con un arma para llenar el cargador con munición especial.
+			La munición especial puede combinarse con el efecto de las balas originales.
+			Recubre las balas con tungsteno para aumentar su capacidad de perforación, ignorando el 75% de la armadura del objetivo.
+			"Sin embargo, no intentes usar una pistola para destruir un tanque."
+			'''
+	}
+
+	HighExplosiveBox: {
+		DisplayName: Caja de Munición de Alta Explosión
+		Tooltip:
+			'''
+			Mantén presionado para desplegar. Después de desplegar, haz clic derecho en la caja con un arma para llenar el cargador con munición especial.
+			La munición especial puede combinarse con el efecto de las balas originales.
+			Transforma las balas en explosivos de alto poder; provocan explosiones intensas al impactar.
+			"¡Hazlos volar todos!"
+			'''
+	}
+
+	DragonBreathBox: {
+		DisplayName: Caja de Munición aliento de Dragón
+		Tooltip:
+			'''
+			Mantén presionado para desplegar. Después de desplegar, haz clic derecho en la caja con un arma para llenar el cargador con munición especial.
+			La munición especial puede combinarse con el efecto de las balas originales.
+			Una combinación de magia y tecnología; las balas explotan al impactar, causando un chorro metálico que daña a muchos enemigos.
+			"¿Crees que es la saliva de ese dragón?"
+			'''
+	}
+
+	FlurrystormCannonEcType: {
+		DisplayName: Ametralladora de Nieve
+		Tooltip:
+			'''
+			Dispara una gran cantidad de bolas de nieve; el poder aumenta a medida que disminuye la munición.
+			Tiene la posibilidad de entrar en estado de sobrecarga, disparando una gran cantidad de bolas de nieve y granizo.
+			"Esto te garantiza la victoria en una guerra de bolas de nieve."
+			'''
+	}
+
+	AvalancheM60: {
+		DisplayName: Avalancha M60
+		Tooltip:
+			'''
+			Usa bolas de nieve como munición.
+			Dispara una gran cantidad de bolas de nieve; el poder aumenta a medida que disminuye la munición.
+			Cada 20 disparos, entra en un estallido de sobrecarga, causando una pequeña avalancha.
+			"¡Rápido, vamos a una guerra de bolas de nieve!"
+			'''
+	}
+
+	CrystalDimming: {
+		DisplayName: Era de Hielo
+		Tooltip:
+			'''
+			Usa bolas de nieve como munición.
+			Dispara granizo helado y bolas de nieve; los cristales rebotan rápidamente al impactar contra las paredes, persiguiendo a los enemigos.
+			Cada 20 disparos, entra en un estallido de sobrecarga, generando un gran pilar de hielo en la posición del mouse.
+			'''
+	}
+
+	DarkFrostSolstice: {
+		DisplayName: Divinidad del Invierno
+		Tooltip:
+			'''
+			Usa bolas de nieve como munición.
+			Dispara granizo y fuego polar; los ataques tienen la posibilidad de congelar a los enemigos.
+			Cada 20 disparos, entra en un estallido de sobrecarga, generando un gran pilar de hielo en la posición del mouse.
+			'''
+	}
+
+	SnowQuay: {
+		DisplayName: Víbora de Nieve
+		Tooltip:
+			'''
+			Usa bolas de nieve como munición.
+			Una gran pieza de artillería de nieve que lanza proyectiles de nieve mezclados.
+			'''
+	}
+
+	StorageBatteryI: {
+		DisplayName: Batería de Almacenamiento Simple
+		Tooltip: ""
+	}
+
+	ArterialAssaultEcType: {
+		DisplayName: Caída Sanguínea
+		Tooltip:
+			'''
+			Lanza cinco flechas desde el cielo.
+			Todas las flechas rastrearán rápidamente a los enemigos cercanos.
+			'''
+	}
+
+	AstralRepeaterEcType: {
+		DisplayName: Arco Estelar
+		Tooltip:
+			'''
+			Realiza un poderoso disparo triple.
+			Las flechas que impactan en el objetivo convocan estrellas.
+			'''
+	}
+
+	AstrealDefeatEcType: {
+		DisplayName: Estrella de la Destrucción
+		Tooltip:
+			'''
+			Convierte todas las flechas en flechas de energía estelar, generando llamas de almas que rastrean durante el vuelo.
+			"Cristal de la antigua brujería"
+			'''
+	}
+
+	BarinadeEcType: {
+		DisplayName: Barinade
+		Tooltip:
+			'''
+			Lanza dos flechas de aletas de alta velocidad que pueden volar con facilidad en el aire.
+			"Desprendidas de la mandíbula de aquel gusano de arena"
+			'''
+	}
+
+	BarinauticalEcType: {
+		DisplayName: Barináuticos
+		Tooltip:
+			'''
+			Convierte flechas de madera en flechas eléctricas explosivas.
+			"Desprendidas de la mandíbula de aquel gusano de arena, pero esta vez es más difícil"
+			'''
+	}
+
+	BrimstoneFuryEcType: {
+		DisplayName: Furia del Azufre
+		Tooltip: Convierte flechas de madera en tres rayos de azufre.
+	}
+
+	FlarewingBowEcType: {
+		DisplayName: Arco de Murciélago de Alas Luminiscentes
+		Tooltip:
+			'''
+			Lanza tres flechas a la vez.
+			Las flechas de madera se convierten en murciélagos de obsidiana que rastrean después de atravesar una vez.
+			'''
+	}
+
+	GoobowEcType: {
+		DisplayName: Arco de Gel
+		Tooltip:
+			'''
+			Lanza dos haces de gel.
+			"¿Qué hizo alguna vez un slime con esto?"
+			'''
+	}
+
+	HoarfrostBowEcType: {
+		DisplayName: Arco de Escarcha
+		Tooltip:
+			'''
+			Lanza dos flechas a la vez.
+			Convierte flechas de madera en flechas de niebla helada.
+			"Manos frías como el hielo"
+			'''
+	}
+
+	LunarianBowEcType: {
+		DisplayName: Arco Lunar
+		Tooltip:
+			'''
+			Lanza dos flechas a la vez.
+			Convierte flechas de madera en haces de energía que pueden deslizarse sobre la superficie de los bloques.
+			"Necesitamos entender que esto no es el arco de la noche eterna, de hecho, el arco de gel es más útil que esto"
+			'''
+	}
+
+	ShellshooterEcType: {
+		DisplayName: Arco de Concha
+		Tooltip:
+			'''
+			Lanza flechas afiladas y lentas.
+			Convierte flechas de madera en pesadas conchas perforadoras.
+			"Recogidas de un acuario"
+			'''
+	}
+
+	ToxibowEcType: {
+		DisplayName: Arco Venenoso
+		Tooltip:
+			'''
+			Convierte flechas de madera en flechas explosivas que se mueven lentamente y causan un efecto de radiación.
+			"Ricas en sustancias tóxicas"
+			'''
+	}
+
+	ContinentalGreatbowEcType: {
+		DisplayName: Gran Arco Continental
+		Tooltip:
+			'''
+			Las flechas de madera se encienden en llamas.
+			Lanza tres flechas a la vez.
+			Lanza dos flechas adicionales de llama del inframundo o flechas espirituales.
+			'''
+	}
+
+	CorrodedCaustibowEcType: {
+		DisplayName: Arco Corrosivo
+		Tooltip: Convierte flechas de madera en flechas venenosas lentas pero poderosas, que dejan un aura radiactiva.
+	}
+
+	CosmicBolterEcType: {
+		DisplayName: Arco Cósmico
+		Tooltip:
+			'''
+			Lanza una serie de tres flechas estrechas.
+			Convierte flechas de madera en haces de energía que pueden deslizarse sobre la superficie de los bloques.
+			"No dispara láseres"
+			'''
+	}
+
+	DarkechoGreatbowEcType: {
+		DisplayName: Gran Arco de Eco Oscuro
+		Tooltip:
+			'''
+			Lanza dos flechas a la vez.
+			Lanza un dardo de cristal adicional.
+			'''
+	}
+
+	MalevolenceEcType: {
+		DisplayName: Veneno de Abeja
+		Tooltip:
+			'''
+			Lanza dos flechas a la vez.
+			Convierte flechas de madera en flechas pestilentes que explotan en abejas al contacto.
+			"Cada abeja firma un contrato laboral, disfruta de tres seguros y un fin de semana de descanso"
+			'''
+	}
+
+	TelluricGlareEcType: {
+		DisplayName: Llama del Núcleo
+		Tooltip:
+			'''
+			Lanza flechas explosivas de radiación que pueden penetrar bloques.
+			"¡Viene del corazón de la Tierra!"
+			'''
+	}
+
+	TheBallistaEcType: {
+		DisplayName: Gran Arco de Asedio
+		Tooltip:
+			'''
+			Convierte flechas de madera en enormes flechas de asedio que pueden romper la armadura de los enemigos y se rompen en fragmentos fósiles.
+			"De hecho, ni siquiera puede romper una puerta"
+			'''
+	}
+
+	UltimaEcType: {
+		DisplayName: Génesis
+		Tooltip:
+			'''
+			Lanza flechas de plasma en ráfagas continuas.
+			A medida que aumenta el tiempo de uso, las flechas de luz se reemplazan por rayos mortales.
+			Al disparar continuamente, las flechas de luz se cargarán para formar un rayo sólido.
+			90% de probabilidad de ahorrar munición.
+			'''
+	}
+
+	DrataliornusEcType: {
+		DisplayName: Arco Dragón de Meteorito Rojo
+		Tooltip:
+			'''
+			Lanza una serie de bolas de fuego de dragón, aumentando la velocidad de disparo con el tiempo de uso.
+			Las bolas de fuego provocan una lluvia de meteoritos, dejando un rastro de ceniza de dragón que causa daño.
+			Al alcanzar la velocidad máxima, se lanzarán bolas de fuego adicionales, activando el efecto de "corriente de bolas de fuego", las bolas de fuego tendrán capacidad de rastreo.
+			Cuando se activa la corriente de bolas de fuego, si recibes daño, el ataque se interrumpe y se reinicia el tiempo de vuelo.
+			Haz clic derecho para lanzar cinco flechas de dragón EX en ráfaga.
+			"Es un asunto trivial, no te hará daño."
+			'''
+	}
+
+	Snowblindness: {
+		DisplayName: Ceguera por Nieve
+		Tooltip:
+			'''
+			Lanza bolas de nieve y rayos de frío extremo a alta frecuencia.
+			Cuando impacta a los enemigos, genera rayos EX de frío extremo a su alrededor.
+			"Perdido en la tormenta de nieve, esperando eternamente, mapa de dolor, adelantamiento en curvas,
+			lentes agrietadas, manchas de sangre secas, hielo rojo, castores llorando, sombras humanas en el hielo."
+			'''
+	}
+
+	Slingshot: {
+		DisplayName: Hondas de Madera
+		Tooltip: Arma de carga primitiva.
+	}
+
+	CondemnationEcType: {
+		DisplayName: Condena
+		Tooltip:
+			'''
+			Ataca con seis disparos a la izquierda, con posibilidad de disparar flechas explosivas que rastrean el objetivo.
+			Haz clic derecho para un ataque cargado, disparando una serie de flechas explosivas mágicas al completar la carga.
+			"El poder maligno contamina esta ballesta."
+			'''
+	}
+
+	BlightSpewerEcType: {
+		DisplayName: Propagador de Marchitez
+		Tooltip:
+			'''
+			Lanza nubes de nanomáquinas de peste que se adhieren a los bloques.
+			Las nanomáquinas buscan activamente a los enemigos cercanos.
+			'''
+	}
+
+	BloodBoilerEcType: {
+		DisplayName: Caldera de Sangre
+		Tooltip:
+			'''
+			Lanza dos flujos de fuego vital que regresan a ti.
+			Usa gel como munición.
+			Al disparar, consume vida.
+			'''
+	}
+
+	ElementalEruptionEcType: {
+		DisplayName: Lanzador Elemental
+		Tooltip:
+			'''
+			Carga y lanza llamas de colores y pares de destellos elementales que rastrean.
+			Usa gel como munición.
+			'''
+	}
+
+	HavocsBreathEcType: {
+		DisplayName: Aliento del Caos
+		Tooltip:
+			'''
+			Lanza un chorro de fuego de azufre a alta temperatura.
+			Usa gel como munición.
+			'''
+	}
+
+	PristineFuryEcType: {
+		DisplayName: Furia Pura de Llamas
+		Tooltip:
+			'''
+			Lanza un rayo de llamas en espiral, explotando en columnas de fuego.
+			Haz clic derecho para lanzar una bola de llamas de corto alcance.
+			Usa gel como munición.
+			'''
+	}
+
+	ShadethrowerEcType: {
+		DisplayName: Lanzador de Sombras
+		Tooltip:
+			'''
+			Lanza nubes de sombras que destruyen el cerebro de los enemigos.
+			Usa gel como munición.
+			'''
+	}
+
+	TerraFlamebursterEcType: {
+		DisplayName: Lanzador de Fuego Terra
+		Tooltip:
+			'''
+			Carga y lanza un rayo de fuego activo y pares de bolas de fuego Terra que rastrean.
+			Usa gel como munición.
+			'''
+	}
+
+	AcidGunEcType: {
+		DisplayName: Pistola de Ácido
+		Tooltip: Lanza un chorro de ácido.
+	}
+
+	ApoctosisArrayEcType: {
+		DisplayName: Rayo de Apoptosis
+		Tooltip:
+			'''
+			Lanza ondas de choque iónicas que se aceleran y explotan.
+			Cuanto más alto sea tu nivel de magia, mayor será el poder.
+			Usar inyección de estrellita reducirá el aumento de poder.
+			'''
+	}
+
+	CryophobiaEcType: {
+		DisplayName: Criofobia
+		Tooltip:
+			'''
+			Lanza ondas de choque de hielo que se dividen y explotan en fragmentos múltiples.
+			"Temblor."
+			'''
+	}
+
+	EffervescenceEcType: {
+		DisplayName: Pistola de espuma
+		Tooltip:
+			'''
+			Lanza una gran cantidad de espuma
+			"¡Burbujeas!!!!!!!"
+			'''
+	}
+
+	EidolicWailEcType: {
+		DisplayName: Lamento eidólico
+		Tooltip:
+			'''
+			Genera varias ondas de eco en el cursor
+			Las ondas de eco rebotan al chocar con bloques
+			Si el lugar de generación es un bloque sólido, se dispararán desde el cañón
+			"Escucha el lamento del dragón"
+			'''
+	}
+
+	GenisisEcType: {
+		DisplayName: Génesis
+		Tooltip: Lanza un rayo de energía destructiva en forma de Y y un grupo de láseres
+	}
+
+	IonBlasterEcType: {
+		DisplayName: Blaster de ion
+		Tooltip:
+			'''
+			Lanza una onda de choque iónica que acelera y explota
+			Cuanto mayor sea tu mana, mayor será su poder
+			Usar un inyectable de estrellas disminuirá la magnitud del bonus
+			'''
+	}
+
+	LazharEcType: {
+		DisplayName: Rayo Lazhar
+		Tooltip:
+			'''
+			Lanza un rayo solar de energía concentrada y altamente volátil
+			El rayo tiene una pequeña probabilidad de penetrar el objetivo
+			'''
+	}
+
+	NanoPurgeEcType: {
+		DisplayName: Purgación nanométrica
+		Tooltip:
+			'''
+			Lanza una lluvia de láseres nanométricos
+			Haz clic derecho para disparo rápido de un solo tiro
+			'''
+	}
+
+	PlasmaRifleEcType: {
+		DisplayName: Rifle de plasma
+		Tooltip:
+			'''
+			Lanza un rayo iónico que explota
+			Haz clic derecho para lanzar rápidamente un rayo iónico
+			"Esto no tiene nada que ver con el plasma"
+			'''
+	}
+
+	SHPCEcType: {
+		DisplayName: SHPC
+		Tooltip:
+			'''
+			Lanza una esfera láser de fase que permanece en el aire y provoca una explosión enorme
+			Haz clic derecho para disparar un poderoso rayo de energía
+			legend_Text
+			[Lang4]
+			[Text]
+			'''
+	}
+
+	WingmanEcType: {
+		DisplayName: Flanco
+		Tooltip:
+			'''
+			Lanza un rayo láser concentrado
+			"Esto no tiene utilidad"
+			'''
+	}
+
+	EternalBlizzardEcType: {
+		DisplayName: Blizzard eterno
+		Tooltip:
+			'''
+			Tiene un disparo múltiple de cuatro proyectiles, lanza flechas de hielo explosivas
+			Haz clic derecho para disparo rápido de un solo tiro, las flechas tendrán capacidad de seguimiento
+			'''
+	}
+
+	SlagMagnumEcType: {
+		DisplayName: Magnum de escoria
+		Tooltip:
+			'''
+			Convierte balas de pistola en fragmentos fósiles, genera fragmentos fósiles adicionales al impactar
+			"No hay infectados especiales aquí"
+			'''
+	}
+
+	SparkSpreaderEcType: {
+		DisplayName: Proyector de chispas
+		Tooltip:
+			'''
+			Enciende a tus enemigos con chispas
+			Usa gel como munición
+			'''
+	}
+
+	CosmicDischargeEcType: {
+		DisplayName: Corte de frío cósmico
+		Tooltip:
+			'''
+			Golpea a los enemigos con un látigo que puede provocar explosiones 
+			de glaciares y otorga al jugador un beneficio de frío cósmico
+			Este beneficio aumenta la velocidad de regeneración de vida 
+			del jugador al estar quieto y congela a los enemigos cercanos
+			'''
+	}
+
+	NeutronGlaive: {
+		DisplayName: Corte de dominio negro
+		Tooltip:
+			'''
+			Agita la hoja para lanzar poderosas ondas gravitacionales, 
+			generando una explosión de estrella de neutrones al impactar
+			Haz clic derecho para cargar la espada, 
+			al soltarla puedes provocar una gran explosión de estrella de neutrones en el cursor
+			Si sueltas antes de completar la carga, la energía se desbordará
+			'''
+	}
+
+	NeutronBow: {
+		DisplayName: Arco de Rohi
+		Tooltip:
+			'''
+			Lanza flechas gravitatorias que generan rayos gamma al impactar
+			Haz clic derecho para cargar hasta tres niveles, 
+			al llenar la carga, lanzará tres poderosas flechas gravitatorias
+			'''
+	}
+
+	NeutronGun: {
+		DisplayName: Cazador estelar
+		Tooltip:
+			'''
+			Lanza proyectiles gravitatorios que crean puntos de curvatura al impactar
+			Haz clic derecho para cambiar a modo francotirador, 
+			lanzando balas gravitatorias más poderosas que generan rayos gamma al impactar
+			Cada disparo carga el arma, al llenar la carga, 
+			un disparo en el ratón provocará una explosión de estrella de neutrones
+			"¡Dispara al sol!"
+			'''
+	}
+
+	NeutronWand: {
+		DisplayName: Luz de la tumba estelar
+		Tooltip:
+			'''
+			Lanza cuatro poderosas estrellas gravitatorias
+			Haz clic derecho para lanzar magia gravitacional en el ratón
+			"Se dice que en tiempos antiguos, un poderoso psíquico comprimió estrellas en un agujero negro con este bastón,
+			pero ya no hay forma de verificarlo, se ha convertido en un canto fragmentado de los nómadas interestelares"
+			'''
+	}
+
+	FlakKrakenEcType: {
+		DisplayName: Kraken del Mar
+		Tooltip:
+			'''
+			Lanza bombas de alto explosivo del abismo, que explotan generando fragmentos de tinta en forma de cono
+			Las bombas del abismo explotan al llegar a la posición del cursor
+			Un impacto directo reduce el daño de los fragmentos
+			"Proviene de una sirena, contrato de arrendamiento por 3 años, 6 días, 23 horas"
+			'''
+	}
+
+	GrandGuardianEcType: {
+		DisplayName: Gran Guardián
+		Tooltip:
+			'''
+			El verdadero combate cuerpo a cuerpo lanza poderosas hojas de espada desde la parte posterior del jugador
+			En combate no cuerpo a cuerpo, se lanzarán activamente las hojas de espada, que se clavan en el objetivo
+			El valor de defensa del objetivo se suma al daño crítico del combate cuerpo a cuerpo
+			"Mi rey, te protegeré"
+			'''
+	}
+
+	MajesticGuardEcType: {
+		DisplayName: Guardia Majestuosa
+		Tooltip:
+			'''
+			Los ataques cuerpo a cuerpo verdaderos tienen la posibilidad de curar al jugador
+			En combate no cuerpo a cuerpo, se lanzarán activamente las hojas de espada, que se clavan en la pared
+			"Mi rey, te protegeré"
+			'''
+	}
+
+	FadingGlory: {
+		DisplayName: Resentimiento
+		Tooltip:
+			'''
+			Un ataque cuerpo a cuerpo verdadero que, si impacta en un organismo, 
+			cura al jugador; si impacta en un organismo inorgánico, genera chispas
+			En combate no cuerpo a cuerpo, se lanzarán activamente las hojas de espada, 
+			generando una sombra errante que sigue al objetivo y libera un tentáculo de sangre al explotar
+			'''
+	}
+
+	LucreciaEcType: {
+		DisplayName: Lucrecia
+		Tooltip: Lanza cristales mágicos afilados
+	}
+
+	MirrorBladeEcType: {
+		DisplayName: Hoja Espejo
+		Tooltip: Lanza cuchillas mágicas que giran
+	}
+
+	TheDarkMasterEcType: {
+		DisplayName: Espada del Maestro Oscuro
+		Tooltip:
+			'''
+			Un ataque cuerpo a cuerpo verdadero que, al impactar, convoca un contrato oscuro, tres copias de sombra lucharán junto al jugador
+			Cuando el contrato oscuro está activo, si el jugador recibe daño, todas las copias de sombra se dispersarán de inmediato
+			y el jugador recibirá un debuff de miedo oscuro durante 10 segundos, 
+			en este tiempo el jugador no podrá invocar el contrato oscuro nuevamente
+			'''
+	}
+
+	GraniteRifle: {
+		DisplayName: Rifle de Granito
+		Tooltip: Convierte las balas de pistola en proyectiles de fragmentos de granito, que se mueven en serpiente dentro de bloques sólidos
+	}
+
+	MarbleRifle: {
+		DisplayName: Rifle de Mármol
+		Tooltip: Convierte las balas de pistola en proyectiles de fragmentos de mármol, que rebotan y explotan al impactar
+	}
+
+	FrostcrushValariEcType: {
+		DisplayName: Bumerán Helado
+		Tooltip: Un ataque sigiloso lanza un enorme bumerán y dos bumeranes acompañantes que siguen al objetivo
+	}
+
+	NeutronScythe: {
+		DisplayName: Mensajero Planetario
+		Tooltip:
+			'''
+			La guadaña lanza rayos gamma hacia los enemigos y deja varios puntos de curvatura en su camino
+			Un ataque sigiloso lanza un círculo de guadañas
+			'''
+	}
+
+	RebelBlade: {
+		DisplayName: Espada Rebelde
+		Tooltip:
+			'''
+			Un ataque cuerpo a cuerpo verdadero generará numerosas esferas de luz demoníaca alrededor del objetivo
+			Controla el vuelo de la espada con el botón derecho y corta hacia la posición del cursor
+			'''
+	}
+
+	NitroExpressRifleEcType: {
+		DisplayName: Escopeta NE
+		Tooltip:
+			'''
+			Adecuada para hacer estallar los cráneos de los osos
+			Convierte las balas de pistola en proyectiles cinéticos
+			"Antigua, pero útil"
+			'''
+	}
+
+	LifehuntScytheEcType: {
+		DisplayName: Guadaña Cazadora de Vida
+		Tooltip:
+			'''
+			Cada giro lanza un círculo de guadañas de vida
+			Cada tres giros lanza una guadaña gigante
+			'''
+	}
+
+	DeathsAscensionEcType: {
+		DisplayName: Ascenso de la Muerte
+		Tooltip:
+			'''
+			Cada tres giros lanza una guadaña voladora gigante
+			Mantén presionado el botón izquierdo para que la guadaña persiga la posición del cursor, suéltalo para activar el medio ciclo de la muerte
+			Cada golpe con el botón derecho lanzará la guadaña del segador de almas
+			'''
+	}
+
+	MG42: {
+		DisplayName: MG42
+		Tooltip:
+			'''
+			Tiro continuo provocará sobrecalentamiento del cañón
+			Convierte las balas de pistola en proyectiles de perforación
+			'''
+	}
+
+	TheBurningSkyEcType: {
+		DisplayName: Castigo del Cielo Ardiente
+		Tooltip: Gira para hacer caer una lluvia de bolas de fuego
+	}
+
+	DevilsDevastationEcType: {
+		DisplayName: Espada del Rey Demonio
+		Tooltip:
+			'''
+			Cada golpe genera un tridente de alegría que flota sobre el jugador, 
+			volando hacia la dirección del cursor, se adhiere al enemigo al impactar causando daño continuo
+			Un golpe fuerte lanzará tres ciclos de sufrimiento, causando daño penetrante múltiple a los enemigos en su trayectoria
+			Finalmente, invocará seis tridentes escarlata hacia la posición del cursor, que volarán hacia el jugador después de flotar un tiempo
+			'''
+	}
+
+	DragonsWord: {
+		DisplayName: Palabra del Dragón
+		Tooltip:
+			'''
+			Lanza lágrimas de dragón que giran y persiguen a los enemigos después de un tiempo
+			Presiona el botón derecho para lanzar el hechizo de dragón en la posición del cursor, 
+			ordenando la muerte a los enemigos en el área
+			"Un dragón solo puede llorar una vez en su vida"
+			'''
+	}
+
+	DarklightGreatswordEcType: {
+		DisplayName: Gran Espada de Luz Oscura
+		Tooltip: ""
+	}
+
+	AtaraxiaEcType: {
+		DisplayName: Espada de Tranquilidad
+		Tooltip: El poder de la mente es inimaginable
+	}
+
+	AvalancheEcType: {
+		DisplayName: Avalancha
+		Tooltip: Genera bombas de hielo que explotan en cristales después de tocar a un enemigo durante 3 segundos
+	}
+
+	EutrophicScimitarEcType: {
+		DisplayName: Cimitarra Eutrófica
+		Tooltip: Lanza dos ráfagas de láser que aturden a los enemigos al girar
+	}
+
+	ForsakenSaberEcType: {
+		DisplayName: Espada Olvidada
+		Tooltip: Lanza dos cuchillas de arena que cambian de velocidad durante el vuelo
+	}
+
+	HellkiteEcType: {
+		DisplayName: Filo del Dragón del Infierno
+		Tooltip: ""
+	}
+
+	ForbiddenOathbladeEcType: {
+		DisplayName: Espada del Juramento y el Tabú
+		Tooltip: Lanza una guadaña demoníaca, causando explosiones de sombra al crítico
+	}
+
+	GeliticBladeEcType: {
+		DisplayName: Espada de Gel
+		Tooltip: ""
+	}
+
+	SeashineSwordEcType: {
+		DisplayName: Espada de Luz del Mar
+		Tooltip: ""
+	}
+
+	StormSaberEcType: {
+		DisplayName: Sable de Tormenta
+		Tooltip: ""
+	}
+
+	TheMutilatorEcType: {
+		DisplayName: Cuchilla de Piedra de Sangre
+		Tooltip: ""
+	}
+
+	VirulenceEcType: {
+		DisplayName: Espada Tóxica de Peste
+		Tooltip: ""
+	}
+
+	SolsticeClaymoreEcType: {
+		DisplayName: Claymore de Solsticio
+		Tooltip: ""
+	}
+
+	UltimusCleaverEcType: {
+		DisplayName: Cortador Supremo
+		Tooltip: ""
+	}
+
+	ExaltedOathbladeEcType: {
+		DisplayName: Espada del Juramento Exaltado
+		Tooltip:
+			'''
+			Cada golpe generará un ciclo de sufrimiento flotante
+			Explosión de sombra al crítico
+			'''
+	}
+
+	PerfectDarkEcType: {
+		DisplayName: Oscuridad Perfecta
+		Tooltip: ""
+	}
+
+	PrismaticBreakerEcType: {
+		DisplayName: Rompeprismas
+		Tooltip: ""
+	}
+
+	RedSunEcType: {
+		DisplayName: Sol Rojo
+		Tooltip: ""
+	}
+
+	GalactusBladeEcType: {
+		DisplayName: Espada de la Vía Láctea
+		Tooltip: ""
+	}
+
+	FlarefrostBladeEcType: {
+		DisplayName: Espada de Flarefrío
+		Tooltip: ""
+	}
+
+	FloodtideEcType: {
+		DisplayName: Marea de Tiburones
+		Tooltip: ""
+	}
+
+	CatastropheClaymoreEcType: {
+		DisplayName: Claymore de Catástrofe
+		Tooltip: ""
+	}
+
+	DevastationEcType: {
+		DisplayName: Espada de Devastación
+		Tooltip: ""
+	}
+
+	StormRulerEcType: {
+		DisplayName: Regulador de Tormentas
+		Tooltip: ""
+	}
+
+	SwordsplosionEcType: {
+		DisplayName: Espada Explosiva
+		Tooltip: ""
+	}
+
+	TaintedBladeEcType: {
+		DisplayName: Espada Contaminada
+		Tooltip: ""
+	}
+
+	TrueCausticEdgeEcType: {
+		DisplayName: Espada de Desesperación
+		Tooltip: ""
+	}
+
+	VeinBursterEcType: {
+		DisplayName: Explosión de Venas
+		Tooltip: ""
+	}
+
+	VoidEdgeEcType: {
+		DisplayName: Filo del Vacío
+		Tooltip: ""
+	}
+
+	DraconicDestructionEcType: {
+		DisplayName: Corte Dracónico
+		Tooltip: ""
+	}
+
+	EarthEcType: {
+		DisplayName: Tierra Infinita
+		Tooltip: ""
+	}
+
+	HellionFlowerSpearEcType: {
+		DisplayName: Espada de Flor Espinosa
+		Tooltip: ""
+	}
+
+	RealmSource: {
+		DisplayName: Fuente de Reino
+		Tooltip: ""
+	}
+
+	FeralthornClaymoreEcType: {
+		DisplayName: Claymore de Espinas Salvajes
+		Tooltip: ""
+	}
+
+	HellfireFlambergeEcType: {
+		DisplayName: Flamberge del Fuego Infernal
+		Tooltip: ""
+	}
+
+	SnowQuayMK2: {
+		DisplayName: Víbora de Nieve MK2
+		Tooltip:
+			'''
+			Utiliza bolas de nieve como munición
+			Un gran cañón de nieve que lanza proyectiles de mezcla de hielo y nieve
+			No se requiere precalentamiento para disparar
+			'''
+	}
+
+	HghExplosiveBox: {
+		DisplayName: Caja de Munición de Alta Explosión
+		Tooltip:
+			'''
+			Mantén presionado para desplegar, después de desplegar, 
+			sostén el arma y haz clic derecho en la caja de munición para cargar munición especial en el cargador del arma
+			La munición especial puede combinarse con los efectos de las balas originales
+			La cabeza contendrá explosivos de alto poder, causando una pequeña explosión al impactar en el objetivo
+			"¡Hazlos volar!"
+			'''
+	}
+}
+
+Projectiles: {
+	// StarDust.DisplayName: Star Dust
+	// RenderDistort.DisplayName: Render Distort
+	// RenderGap.DisplayName: Render Gap
+	// DragonsBreathProjectiles.DisplayName: Dragons Breath Projectiles
+	// DragonFireRupture.DisplayName: Dragon Fire Rupture
+	// GunCasing.DisplayName: Gun Casing
+	// HeldProjectiles.DisplayName: Held Projectiles
+	// RemakeBansheeHookScythe.DisplayName: Remake Banshee Hook Scythe
+	// RemakeBlazingPhantomBlade.DisplayName: Remake Blazing Phantom Blade
+	// RemakeTerratomereHoldoutProj.DisplayName: Remake Terratomere Holdout Proj
+	// RedLightningFeather.DisplayName: Red Lightning Feather
+	// TerratomereBolt.DisplayName: Terratomere Bolt
+	// GildedProboscisKevinLightning.DisplayName: Gilded Proboscis Kevin Lightning
+	// TerratomereBigSlashs.DisplayName: Terratomere Big Slashs
+	// TerratomereBolts.DisplayName: Terratomere Bolts
+	// TerratomereBeams.DisplayName: Terratomere Beams
+	// AbominateHookScythe.DisplayName: Abominate Hook Scythe
+	// AbominateSpirit.DisplayName: Abominate Spirit
+	// SpiritFlame.DisplayName: Spirit Flame
+	// DoGDeaths.DisplayName: DoG Deaths
+	// ArkoftheAncientsParryHoldouts.DisplayName: Arkofthe Ancients Parry Holdouts
+	// ArkoftheCosmosBlasts.DisplayName: Arkofthe Cosmos Blasts
+	// ArkoftheCosmosParryHoldouts.DisplayName: Arkofthe Cosmos Parry Holdouts
+	// ArkoftheCosmosSwungBlades.DisplayName: Arkofthe Cosmos Swung Blades
+	// RendingNeedles.DisplayName: Rending Needles
+	// ArkoftheCosmosConstellations.DisplayName: Arkofthe Cosmos Constellations
+	// EonBolts.DisplayName: Eon Bolts
+	// ProximaCentauri.DisplayName: Proxima Centauri
+	// SlaughterEonBolts.DisplayName: Slaughter Eon Bolts
+	// SlaughterExplosion.DisplayName: Slaughter Explosion
+	// DreadRendingNeedles.DisplayName: Dread Rending Needles
+	// DreadStar.DisplayName: Dread Star
+	// TerrorBlasts.DisplayName: Terror Blasts
+	// SunlightBlades.DisplayName: Sunlight Blades
+	// RemakeTerrorBeam.DisplayName: Remake Terror Beam
+	// EntropicClaymoreHoldoutProj.DisplayName: Entropic Claymore
+	// StarnightBeams.DisplayName: Starnight Beams
+	// ElementalRay.DisplayName: Elemental Ray
+	// GodKillers.DisplayName: God Killers
+	// SpatialSpears.DisplayName: Spatial Spears
+	// ElementalSpike.DisplayName: Elemental Spike
+	// Feathers.DisplayName: Feathers
+	// ArbalestHeldProj.DisplayName: Arbalest
+	// DeathwindHeldProj.DisplayName: Deathwind
+	// DeathLaser.DisplayName: Death Laser
+	// DeadArrow.DisplayName: Dead Arrow
+	// DragonsBreathHeldProj.DisplayName: Dragons Breath
+	// Cyclones.DisplayName: Cyclones
+	// DeadWave.DisplayName: Dead Wave
+	// WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica
+	// CosmicFire.DisplayName: Cosmic Fire
+	// Trail.DisplayName: Trail
+	// StreamGouges.DisplayName: Stream Gouges
+	// GaleforceHeldProj.DisplayName: Galeforce
+	// ElementWhipProjectile.DisplayName: Element Whip
+	// ElementBallShivs.DisplayName: Element Ball Shivs
+	// GhostFires.DisplayName: Ghost Fires
+	// TheRelicLuxorMelee.DisplayName: The Relic Luxor Melee
+	// TheRelicLuxorMagic.DisplayName: The Relic Luxor Magic
+	// TheRelicLuxorRanged.DisplayName: The Relic Luxor Ranged
+	// TheRelicLuxorRogue.DisplayName: The Relic Luxor Rogue
+	// TheRelicLuxorSummon.DisplayName: The Relic Luxor Summon
+	// BloodBall.DisplayName: Blood Ball
+	// AzureDragonRageProjectile.DisplayName: Azure Dragon Rage
+	// BleedingScourgeProjectile.DisplayName: Bleeding Scourge
+	// GhostFireWhipProjectile.DisplayName: Ghost Fire Whip
+	// BloodflareSouls.DisplayName: Bloodflare Souls
+	// FantasyArrow.DisplayName: Fantasy Arrow
+	// ExcelsusBomb.DisplayName: Excelsus Bomb
+	// LaserFountains.DisplayName: Laser Fountains
+	// GhastlyBlasts.DisplayName: Ghastly Blasts
+	// Ieaf.DisplayName: Ieaf
+	// AllhallowsGoldWhipProjectile.DisplayName: Allhallows Gold Whip
+	// ATrail.DisplayName: A Trail
+	// WTrail.DisplayName: W Trail
+	// DivineSourceBladeProjectile.DisplayName: Divine Source Blade
+	// BloodBlast.DisplayName: Blood Blast
+	// DivineSourceKnifelight.DisplayName: Divine Source Knifelight
+	// DivineSourceBeam.DisplayName: Divine Source Beam
+	// FatesRevealFlames.DisplayName: Fates Reveal Flames
+	// FatesRevealHeldProj.DisplayName: Fates Reveal
+	// FateCluster.DisplayName: Fate Cluster
+	// HatredFire.DisplayName: Hatred Fire
+	// TheCurseArchdemon.DisplayName: The Curse Archdemon
+	// BloodVerdict.DisplayName: Blood Verdict
+	// ClaretCannonHeldProj.DisplayName: Claret Cannon
+	// EssenceSpark.DisplayName: Essence Spark
+	// EssenceFlamethrower.DisplayName: Essence Flamethrower
+	// ShockwaveBoom.DisplayName: Shockwave Boom
+	// CelestialDevourer.DisplayName: Celestial Devourer
+	// CelestialObliterationArrow.DisplayName: Celestial Obliteration Arrow
+	// CosmicEddies.DisplayName: Cosmic Eddies
+	// DivineDevourerIllusionBody.DisplayName: Divine Devourer Illusion Body
+	// DivineDevourerIllusionHead.DisplayName: Divine Devourer Illusion Head
+	// DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion Tail
+	// AegisBladeProj.DisplayName: Aegis Blade
+	// AegisBeams.DisplayName: Aegis Beams
+	// DragonsBreathRound.DisplayName: Dragons Breath Round
+	// DragonsBreathRifleHeldProj.DisplayName: Dragons Breath Rifle
+	// InfiniteArrow.DisplayName: Infinite Arrow
+	// HeavenLightning.DisplayName: Heaven Lightning
+	// CelestialVortex.DisplayName: Celestial Vortex
+	// ParadiseArrow.DisplayName: Paradise Arrow
+	// InfiniteRune.DisplayName: Infinite Rune
+	// VientianePunishment.DisplayName: Vientiane Punishment
+	// HolyColliderHolyFires.DisplayName: Holy Collider Holy Fires
+	// RBansheeHookScythe.DisplayName: R Banshee Hook Scythe
+	// RBlazingPhantomBlade.DisplayName: R Blazing Phantom Blade
+	// RCosmicShivBall.DisplayName: R Cosmic Shiv Ball
+	// RTerratomereHoldoutProj.DisplayName: Terratomere Holdout
+	// RTerrorBeam.DisplayName: R Terror Beam
+	// StreamBeams.DisplayName: Stream Beams
+	// CosmicSpiritBombs.DisplayName: Cosmic Spirit Bombs
+	// CelestialClaymoreBeam.DisplayName: Celestial Claymore Beam
+	// EssenceFlames.DisplayName: Essence Flames
+	// EssenceStar.DisplayName: Essence Star
+	// TheEnforcerBeam.DisplayName: The Enforcer Beam
+	// InfiniteIngotTileProj.DisplayName: Black holes annihilate their cores
+	// JudgementBeam.DisplayName: Judgement Beam
+	// OrderbringerBeams.DisplayName: Orderbringer Beams
+	// OrderbringerProj.DisplayName: Orderbringer Proj
+	// OrderbringerBeams2.DisplayName: Orderbringer Beams
+	// IridescentExcaliburBeam.DisplayName: Iridescent Excalibur Beam
+	// IridescentExcaliburLight.DisplayName: Iridescent Excalibur Light
+	// OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
+	// InfinitePickProj.DisplayName: Infinite Pick Proj
+	// InfiniteEnmgs.DisplayName: Infinite Enmgs
+	// TheDaybreak.DisplayName: The Daybreak
+	// TheEndSun.DisplayName: The End Sun
+	// BaseHeldBow.DisplayName: Base Held Bow
+	// StormLightning.DisplayName: Storm Lightning
+	// StormArc.DisplayName: Storm Arc
+	// DragonsScaleGreatswordBeam.DisplayName: Dragons Scale Greatsword Beam
+	// SporeCloud.DisplayName: Spore Cloud
+	// TheDaybreak2.DisplayName: The Daybreak2
+	// CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
+	// CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
+	// Rogue.RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
+	// GangarusProjectile.DisplayName: Gangarus Projectile
+	// GangarusHeldProjectile.DisplayName: Spear of Longinus
+	// PilgrimsFury.DisplayName: Pilgrims Fury
+	// Godslight.DisplayName: Godslight
+	// SoulSeeker.DisplayName: Soul Seeker
+	// LigSpark.DisplayName: Lig Spark
+	// SparkBall.DisplayName: Spark Ball
+	// SparkLightning.DisplayName: Spark Lightning
+	// BrimstoneSwordBall.DisplayName: Brimstone Sword Ball
+	// StarMyriadChangesProj.DisplayName: Star Myriad Changes Proj
+	// PGDeriveProj.DisplayName: P G Derive Proj
+	// PGProj.DisplayName: P G Proj
+	// SupPGProj.DisplayName: Sup P G Proj
+	// StellarStrikerBeam.DisplayName: Stellar Striker Beam
+	// GhostSkull.DisplayName: Ghost Skull
+	// PlagueBee.DisplayName: Plague Bee
+	// PlagueBeeWave.DisplayName: Plague Bee Wave
+	// GouldBee.DisplayName: Gould Bee
+	// BalefulHarvesterHeldProj.DisplayName: Baleful Harvester
+	// BalefulSickle.DisplayName: Baleful Sickle
+	// BalefulBall.DisplayName: Baleful Ball
+	// VulcaniteBall.DisplayName: Vulcanite Ball
+	// AstralBall.DisplayName: Astral Ball
+	// AstralPikeBeam.DisplayName: Astral Pike Beam
+	// AnarchyBeam.DisplayName: Anarchy Beam
+	// EarthenBall.DisplayName: Earthen Ball
+	// EarthenPikeThrowProj.DisplayName: Earthen Pike Throw Proj
+	// MeleeFossilShard.DisplayName: Melee Fossil Shard
+
+	Melee: {
+		// EXSolsticeBeam.DisplayName: E X Solstice Beam
+		// MourningSkull2.DisplayName: Mourning Skull2
+		// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
+	}
+
+	// TeardropCleaverProj.DisplayName: Teardrop Cleaver Proj
+	// DarkIceZeros.DisplayName: Dark Ice Zeros
+	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
+	// WaningMoonLight.DisplayName: Waning Moon Light
+	MurasamaHeldProj.DisplayName: Corte Molecular
+	MurasamaBreakOut.DisplayName: Corte Molecular
+	MurasamaBreakSwing.DisplayName: Medio Dragón Ascendente
+	MurasamaEndSilkOrb.DisplayName: Corte Dimensional - Fin
+	MurasamaEndSilkOrbOnSpan.DisplayName: Corte Dimensional - Inicio
+	MurasamaDownSkill.DisplayName: Caída
+	MurasamaEndSkillOrb.DisplayName: Corte Dimensional - Fin
+	MurasamaEndSkillOrbOnSpan.DisplayName: Corte Dimensional - Inicio
+	EndSkillEffectStart.DisplayName: Corte Dimensional - Inicio
+	EndSkillMakeDamage.DisplayName: Corte Dimensional - Fin
+	// PowerSoundEgg.DisplayName: Power Sound Egg
+	// BlossomFluxHeldProj.DisplayName: Blossom Flux
+	// LeafArrows.DisplayName: Leaf Arrows
+	// SporeBombOnSpan.DisplayName: Spore Bomb
+	// SporeBombs.DisplayName: Spore Bombs
+	// PhangasmBowHeldProj.DisplayName: Phangasm Bow
+	// Phantom.DisplayName: Phantom
+	// PhantasmArrow.DisplayName: Phantasm Arrow
+	// ContagionHeldProj.DisplayName: Contagion
+	// NurgleArrow.DisplayName: Nurgle Arrow
+	// NurgleTheOfBall.DisplayName: Nurgle The Of Ball
+	// NurgleBee.DisplayName: Nurgle Bee
+	// AlluvionHeldProj.DisplayName: Alluvion
+	// PlanetaryAnnihilationHeldProj.DisplayName: Planetary Annihilation
+	// TheMaelstromHeldProj.DisplayName: The Maelstrom
+	// PlanetaryArrow.DisplayName: Planetary Arrow
+	// TheMaelstromTheArrow.DisplayName: The Maelstrom The Arrow
+	// TheMaelstromSharkOnSpan.DisplayName: The Maelstrom Shark
+	// TyphoonOnSpan.DisplayName: Typhoon
+	// BaseOnSpanProj.DisplayName: Base On Span Proj
+	// DeepSeaSharks.DisplayName: Deep Sea Sharks
+	// NurgleSoul.DisplayName: Nurgle Soul
+	// ClockGatlignumHeldProj.DisplayName: Clock Gatlignum
+	// ElementalBlasterHeldProj.DisplayName: Elemental Blaster
+	// MarksmanBowHeldProj.DisplayName: Marksman Bow
+	// EnergyBlast.DisplayName: Energy Blast
+	// EnergyBlast2.DisplayName: Energy Blast2
+	// NettlevineGreatbowHeldProj.DisplayName: Nettlevine Greatbow
+	// TarragonArrow.DisplayName: Tarragon Arrow
+	// TarragonArrowOnSpan.DisplayName: Tarragon Arrow
+	// SpectreRifleHeldProj.DisplayName: Spectre Rifle
+	// LostSoulBullet.DisplayName: Lost Soul Bullet
+	// StormDragoonHeldProj.DisplayName: Storm Dragoon
+	// TheStormHeldProj.DisplayName: The Storm
+	// ThunderstormHeldProj.DisplayName: Thunderstorm
+	// TyrannysEndHeldProj.DisplayName: Tyrannys End
+	// BMGBullet.DisplayName: .50 BMG Bullet
+	// BMGFIRE.DisplayName: BMGFIRE
+	// AntiMaterielRifleHeldProj.DisplayName: Anti Materiel Rifle
+	// HalibutCannonHeldProj.DisplayName: Halibut Cannon
+	// SDFMGHeldProj.DisplayName: S D F M G
+	// BMGFIRE2.DisplayName: BMGFIRE
+	// TorrentialBullet.DisplayName: Torrential Bullet
+	// GildedProboscisLightning.DisplayName: Gilded Proboscis Lightning
+	// GildedProboscisLightningArc.DisplayName: Gilded Proboscis Lightning Arc
+	// DeadSunsWindHeldProj.DisplayName: Dead Suns Wind
+	// FetidEmesisHeldProj.DisplayName: Fetid Emesis
+	// SeadragonHeldProj.DisplayName: Seadragon
+	// FetidEmesisOnSpan.DisplayName: Fetid Emesis
+	// MinisharkHeldProj.DisplayName: Minishark
+	// MegasharkHeldProj.DisplayName: Megashark
+	// BarrenOrb.DisplayName: Barren Orb
+	// BarrenBowHeldProj.DisplayName: Barren Bow
+	// ScorchedEarthHeldProj.DisplayName: Scorched Earth
+	// SeasSearingHeldProj.DisplayName: Seas Searing
+	// EarthRocketOnSpan.DisplayName: Earth Rocket
+	// CoralCannonHeldProj.DisplayName: Coral Cannon
+	// AngelicShotgunHeldProj.DisplayName: Angelic Shotgun
+	// AquashardShotgunHeldProj.DisplayName: Aquashard Shotgun
+	// AnimosityOnSpan.DisplayName: Animosity
+	// AnimosityHeldProj.DisplayName: Animosity
+	// CorinthPrimeHeldProj.DisplayName: Corinth Prime
+	// CursedCapperHeldProj.DisplayName: Cursed Capper
+	// QuadBarrelShotgunHeldProj.DisplayName: Quad Barrel Shotgun
+	// DisseminatorHeldProj.DisplayName: Disseminator
+	// HellbornHeldProj.DisplayName: Hellborn
+	// HelstormHeldProj.DisplayName: Helstorm
+	// LeviatitanHeldProj.DisplayName: Leviatitan
+	// PetrifiedDiseaseHeldProj.DisplayName: Petrified Disease
+	// PetrifiedDiseaseAorrw.DisplayName: Petrified Disease Aorrw
+	// YharonOreProj.DisplayName: Yharon Ore Proj
+	// GoldenEagleHelProj.DisplayName: Golden Eagle
+	// DawnshatterEndOrb.DisplayName: Dawnshatter End Orb
+	// TheDaybreak3.DisplayName: The Daybreak3
+	// DawnshatterEndOrb2.DisplayName: Dawnshatter End Orb2
+	// HandgunHeldProj.DisplayName: Handgun
+	// FlintlockpistolHeldProj.DisplayName: Flintlockpistol
+	// MusketHeldProj.DisplayName: Musket
+	// TheUndertakerHeldProj.DisplayName: The Undertaker
+	// RedRyderHeldProj.DisplayName: Red Ryder
+	// FlareGunHeldProj.DisplayName: Flare Gun
+	// PhoenixBlasterHeldProj.DisplayName: Phoenix Blaster
+	// SandgunHeldProj.DisplayName: Sandgun
+	// StarCannonHeldProj.DisplayName: Star Cannon
+	// SuperStarCannonHeldProj.DisplayName: Super Star Cannon
+	// ZapinatorGrayHeldProj.DisplayName: Zapinator Gray
+	// ZapinatorOrangeHeldProj.DisplayName: Zapinator Orange
+	// SurgeDriverHeldProj.DisplayName: Surge Driver
+	// HellfireBullet.DisplayName: Hellfire Bullet
+	// BoomstickHeldProj.DisplayName: Boomstick
+	// ShotgunHeldProj.DisplayName: Shotgun
+	// TacticalShotgunHeldProj.DisplayName: Tactical Shotgun
+	// DeepcoreGK2HeldProj.DisplayName: Deepcore GK2
+	// DodusHandcannonHeldProj.DisplayName: Dodus Handcannon
+	// P90HeldProj.DisplayName: P90
+	// PearlGodHeldProj.DisplayName: Pearl God
+	// FlintProj.DisplayName: Flint Proj
+	// FlintSpearProj.DisplayName: Flint Spear Proj
+	// TheUpiSteleHeldProj.DisplayName: The Upi Stele
+	// MagicStar.DisplayName: Magic Star
+
+	Magic: {
+		// _SHPB.DisplayName: Energy Ball
+		// _SHPL.DisplayName: Dissociation Ray
+	}
+
+	// TheSpiritFlintProjL.DisplayName: The Spirit Flint Proj L
+	// TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
+	// TheSpiritFlintProj.DisplayName: The Spirit Flint Proj
+	// PebbleSpearProj.DisplayName: Pebble Spear Proj
+	// PebbleProj.DisplayName: Pebble Proj
+	// AmmoBoxProj.DisplayName: Ammo Box Proj
+	// BulletFilledShotgunHeldProj.DisplayName: Bullet Filled Shotgun
+	// ButcherHeldProj.DisplayName: Butcher
+	// FungicideHeldProj.DisplayName: Fungicide
+	// HalleysInfernoHeldProj.DisplayName: Halleys Inferno
+	// HandheldTankHeldProj.DisplayName: Handheld Tank
+	// InfinityHeldProj.DisplayName: Infinity
+	// KarasawaHeldProj.DisplayName: Karasawa
+	// KingsbaneHeldProj.DisplayName: Kingsbane
+	// MegalodonHeldProj.DisplayName: Megalodon
+	// ClockworkAssaultRifleHeldProj.DisplayName: Clockwork Assault Rifle
+	// MidasPrimeHeldProj.DisplayName: Midas Prime
+	// NeedlerHeldProj.DisplayName: Needler
+	// PlagueTaintedSMGHeldProj.DisplayName: Plague Tainted SMG
+	// PumplerHeldProj.DisplayName: Pumpler
+	// ScorpioHeldProj.DisplayName: Scorpio
+	// ScorpioOnSpan.DisplayName: Scorpio
+	// SnowballCannonHeldProj.DisplayName: Snowball Cannon
+	// StakeLauncherHeldProj.DisplayName: Stake Launcher
+	// UziHeldProj.DisplayName: Uzi
+	// VenusMagnumHeldProj.DisplayName: Venus Magnum
+	// DartPistolHeldProj.DisplayName: Dart Pistol
+	// DartRifleHeldProj.DisplayName: Dart Rifle
+	// NailGunHeldProj.DisplayName: Nail Gun
+	// SniperRifleHeldProj.DisplayName: Sniper Rifle
+	// ArcherfishHeldProj.DisplayName: Archerfish
+	// ArcNovaDiffuserHeldProj.DisplayName: Arc Nova Diffuser
+	// AstralBlasterHeldProj.DisplayName: Astral Blaster
+	// AuralisHeldProj.DisplayName: Auralis
+	// AuroraBlazerHeldProj.DisplayName: Aurora Blazer
+	// BarracudaGunHeldProj.DisplayName: Barracuda Gun
+	// BlissfulBombardierHeldProj.DisplayName: Blissful Bombardier
+	// ChickenCannonHeldProj.DisplayName: Chicken Cannon
+	// ClamorRifleHeldProj.DisplayName: Clamor Rifle
+	// GunkShotHeldProj.DisplayName: Gunk Shot
+	// MagnaCannonHeldProj.DisplayName: Magna Cannon
+	// NorfleetHeldProj.DisplayName: Norfleet
+	// ShroomerHeldProj.DisplayName: Shroomer
+	// StarfleetHeldProj.DisplayName: Starfleet
+	// StarmadaHeldProj.DisplayName: Starmada
+	// SulphuricAcidCannonHeldProj.DisplayName: Sulphuric Acid Cannon
+	// UniversalGenesisHeldProj.DisplayName: Universal Genesis
+	// VoidragonHeldProj.DisplayName: Voidragon
+	// BarracudaProj.DisplayName: Barracuda Proj
+	// ArcNovaDiffuserOnSpan.DisplayName: Arc Nova Diffuser
+	// VoidragonOrb.DisplayName: Voidragon Orb
+	// LaserRifleHeldProj.DisplayName: Laser Rifle
+	// Laser.DisplayName: Laser
+	// OnyxBlasterHeldProj.DisplayName: Onyx Blaster
+	// SDMGHeldProj.DisplayName: S D M G
+	// VortexBeaterHeldProj.DisplayName: Vortex Beater
+	// AcesHighHeldProj.DisplayName: Aces High
+	// ConferenceCallHeldProj.DisplayName: Conference Call
+	// MineralMortarHeldProj.DisplayName: Mineral Mortar
+	// MolecularManipulatorHeldProj.DisplayName: Molecular Manipulator
+	// NullificationRifleHeldProj.DisplayName: Nullification Rifle
+	// OnyxChainBlasterHeldProj.DisplayName: Onyx Chain Blaster
+	// OnyxiaHeldProj.DisplayName: Onyxia
+	// RealmRavagerHeldProj.DisplayName: Realm Ravager
+	// RubicoPrimeHeldProj.DisplayName: Rubico Prime
+	// SandstormGunHeldProj.DisplayName: Sandstorm Gun
+	// SepticSkewerHeldProj.DisplayName: Septic Skewer
+	// ShredderHeldProj.DisplayName: Shredder
+	// SomaPrimeHeldProj.DisplayName: Soma Prime
+	// SpectralstormCannonHeldProj.DisplayName: Spectralstorm Cannon
+	// SpeedBlasterHeldProj.DisplayName: Speed Blaster
+	// SpykerHeldProj.DisplayName: Spyker
+	// StarSputterHeldProj.DisplayName: Star Sputter
+	// Star.DisplayName: Star
+	// StellarCannonHeldProj.DisplayName: Stellar Cannon
+	// SvantechnicalHeldProj.DisplayName: Svantechnical
+	// TheHiveHeldProj.DisplayName: The Hive
+	// ThePackHeldProj.DisplayName: The Pack
+	// PestilentDefilerHeldProj.DisplayName: Pestilent Defiler
+	// AdamantiteRepeaterHeldProj.DisplayName: Adamantite Repeater
+	// ChlorophyteShotbowHeldProj.DisplayName: Chlorophyte Shotbow
+	// CobaltRepeaterHeldProj.DisplayName: Cobalt Repeater
+	// ElectrosphereLauncherHeldProj.DisplayName: Electrosphere Launcher
+	// GrenadeLauncherHeldProj.DisplayName: Grenade Launcher
+	// HallowedRepeaterHeldProj.DisplayName: Hallowed Repeater
+	// MythrilRepeaterHeldProj.DisplayName: Mythril Repeater
+	// OrichalcumRepeaterHeldProj.DisplayName: Orichalcum Repeater
+	// PalladiumRepeaterHeldProj.DisplayName: Palladium Repeater
+	// ProximityMineLauncherHeldProj.DisplayName: Proximity Mine Launcher
+	// RocketLauncherHeldProj.DisplayName: Rocket Launcher
+	// SnowmanCannonHeldProj.DisplayName: Snowman Cannon
+	// TitaniumRepeaterHeldProj.DisplayName: Titanium Repeater
+	// SandnadoOnSpan.DisplayName: Sandnado
+	// BladedgeGreatbowHeldProj.DisplayName: Bladedge Greatbow
+	// CleansingBlazeHeldProj.DisplayName: Cleansing Blaze
+	// FirestormCannonHeldProj.DisplayName: Firestorm Cannon
+	// FlakToxicannonHeldProj.DisplayName: Flak Toxicannon
+	// FreedomStarHeldProj.DisplayName: Freedom Star
+	// MakeDamage.DisplayName: Make Damage
+	// StormSurgeHeldProj.DisplayName: Storm Surge
+	// Tornado.DisplayName: Tornado
+	// BubbleGunHeldProj.DisplayName: Bubble Gun
+	// MonsoonHeldProj.DisplayName: Monsoon
+	// MonsoonOnSpan.DisplayName: Monsoon
+	// TsunamiHeldProj.DisplayName: Tsunami
+	// TsunamiOnSpan.DisplayName: Tsunami
+	// MarshmallowHeldProj.DisplayName: Marshmallow
+	// MarshmallowProj.DisplayName: Marshmallow Proj
+	// MarshmallowsHeldProj.DisplayName: Marshmallows
+	// RainbowMarshmallowsHeldProj.DisplayName: Rainbow Marshmallows
+	// MarshmallowProj2.DisplayName: Marshmallow Proj2
+	// AethersWhisperHeldProj.DisplayName: Aethers Whisper
+	// AethersWhisperOnSpan.DisplayName: Aethers Whisper
+	// AetherOrb.DisplayName: Aether Orb
+	// AetherOrb2.DisplayName: Aether Orb2
+	// SniperRifleOnSpan.DisplayName: Sniper Rifle
+	// EtherRoarHeldProj.DisplayName: Ether Roar
+	// EtherRoarOnSpan.DisplayName: Ether Roar
+	// EtherRoarOrb.DisplayName: Ether Roar Orb
+	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
+	// GhastlyVisageBall.DisplayName: Ghastly Visage Ball
+	// GhastlyVisageHeldProj.DisplayName: Ghastly Visage
+	// PridefulHuntersPlanarRipperHeldProj.DisplayName: Prideful Hunters Planar Ripper
+	// VoidTentacle.DisplayName: Void Tentacle
+	// ElectrosphereLauncherOrb.DisplayName: Electrosphere Launcher Orb
+	// GatligatorHeldProj.DisplayName: Gatligator
+	// RevolverHeldProj.DisplayName: Revolver
+	// XenopopperHeldProj.DisplayName: Xenopopper
+	// VortexpopperHeldProj.DisplayName: Vortexpopper
+	// XenopopperProj.DisplayName: Xenopopper Proj
+	// DaedalusStormbowHeldProj.DisplayName: Daedalus Stormbow
+	// SepticSkewerProj.DisplayName: Septic Skewer Proj
+	// CandyCornRifleHeldProj.DisplayName: Candy Corn Rifle
+	// NapalmBombBox.DisplayName: Napalm Bomb Box
+	// NapalmBombHeld.DisplayName: Napalm Bomb Held
+	// CursedDartRemake.DisplayName: Cursed Dart Remake
+	// ArmourPiercerBoxProj.DisplayName: Armour Piercer
+	// ArmourPiercerHeld.DisplayName: Armour Piercer
+	// HighExplosiveBoxProj.DisplayName: High Explosive
+	// HighExplosiveHeld.DisplayName: High Explosive
+	// SuccessfullyDeployedEffct.DisplayName: Successfully Deployed Effct
+	// DragonBreathBoxProj.DisplayName: Dragon Breath
+	// DragonBreathHeld.DisplayName: Dragon Breath
+	// TradewindsHeldProj.DisplayName: Tradewinds
+	// FlurrystormCannonHeldProj.DisplayName: Flurrystorm Cannon
+	// DragonsScaleGreatswordProj.DisplayName: Dragons Scale Greatsword Proj
+	// ExtremeColdHail.DisplayName: Extreme Cold Hail
+	// AvalancheM60HeldProj.DisplayName: Avalanche M60
+	// IceOrb.DisplayName: Ice Orb
+	// CrystalDimmingHeldProj.DisplayName: Crystal Dimming
+	// Crystal.DisplayName: Crystal
+	// IceSoulOrb.DisplayName: Ice Soul Orb
+	// DarkFrostSolsticeHeldProj.DisplayName: Dark Frost Solstice
+	// SnowQuayHeldProj.DisplayName: Snow Quay
+	// SnowQuayBall.DisplayName: Snow Quay Ball
+	// IceParclose.DisplayName: Ice Parclose
+	// DemonBowHeldProj.DisplayName: Demon Bow
+	// IronBowHeldProj.DisplayName: Iron Bow
+	// WoodenBowHeldProj.DisplayName: Wooden Bow
+	// EbonwoodBowHeldProj.DisplayName: Ebonwood Bow
+	// PearlwoodBowHeldProj.DisplayName: Pearlwood Bow
+	// RichMahoganyBowHeldProj.DisplayName: Rich Mahogany Bow
+	// IceBowHeldProj.DisplayName: Ice Bow
+	// MarrowHeldProj.DisplayName: Marrow
+	// PulseBowHeldProj.DisplayName: Pulse Bow
+	// ShadewoodBowHeldProj.DisplayName: Shadewood Bow
+	// TendonBowHeldProj.DisplayName: Tendon Bow
+	// BeesKneesHeldProj.DisplayName: Bees Knees
+	// BorealWoodBowHeldProj.DisplayName: Boreal Wood Bow
+	// PalmWoodBowHeldProj.DisplayName: Palm Wood Bow
+	// CopperBowHeldProj.DisplayName: Copper Bow
+	// GoldBowHeldProj.DisplayName: Gold Bow
+	// LeadBowHeldProj.DisplayName: Lead Bow
+	// PlatinumBowHeldProj.DisplayName: Platinum Bow
+	// SilverBowHeldProj.DisplayName: Silver Bow
+	// TinBowHeldProj.DisplayName: Tin Bow
+	// TungstenBowHeldProj.DisplayName: Tungsten Bow
+	// AshWoodBowHeldProj.DisplayName: Ash Wood Bow
+	// BloodRainBowHeldProj.DisplayName: Blood Rain Bow
+	// HellwingBowHeldProj.DisplayName: Hellwing Bow
+	// ShadowFlameBowHeldProj.DisplayName: Shadow Flame Bow
+	// ArterialAssaultHeldProj.DisplayName: Arterial Assault
+	// AstralRepeaterHeldProj.DisplayName: Astral Repeater
+	// AstrealDefeatHeldProj.DisplayName: Astreal Defeat
+	// BarinadeHeldProj.DisplayName: Barinade
+	// BrimstoneFuryHeldProj.DisplayName: Brimstone Fury
+	// BarinauticalHeldProj.DisplayName: Barinautical
+	// DD2BetsyBowHeldProj.DisplayName: DD2 Betsy Bow
+	// DD2PhoenixBowHeldProj.DisplayName: DD2 Phoenix Bow
+	// FlarewingBowHeldProj.DisplayName: Flarewing Bow
+	// GoobowHeldProj.DisplayName: Goobow
+	// HoarfrostBowHeldProj.DisplayName: Hoarfrost Bow
+	// LunarianBowHeldProj.DisplayName: Lunarian Bow
+	// ShellshooterHeldProj.DisplayName: Shellshooter
+	// ToxibowHeldProj.DisplayName: Toxibow
+	// ClockworkBowHeldProj.DisplayName: Clockwork Bow
+	// ContinentalGreatbowHeldProj.DisplayName: Continental Greatbow
+	// CorrodedCaustibowHeldProj.DisplayName: Corroded Caustibow
+	// CosmicBolterHeldProj.DisplayName: Cosmic Bolter
+	// DarkechoGreatbowHeldProj.DisplayName: Darkecho Greatbow
+	// MalevolenceHeldProj.DisplayName: Malevolence
+	// TelluricGlareHeldProj.DisplayName: Telluric Glare
+	// TheBallistaHeldProj.DisplayName: The Ballista
+	// UltimaHeldProj.DisplayName: Ultima
+	// Hit.DisplayName: Hit
+	// DrataliornusHeldProj.DisplayName: Drataliornus
+	// Misc.IceExplosionFriend.DisplayName: Ice Explosion Friend
+	// SnowblindnessHeldProj.DisplayName: Snowblindness
+	// SlingshotHeldProj.DisplayName: Slingshot
+	// PebbleBall.DisplayName: Pebble Ball
+	// CondemnationHeldProj.DisplayName: Condemnation
+	// TheArrowPunishment.DisplayName: The Arrow Punishment
+	// BlightSpewerHeldProj.DisplayName: Blight Spewer
+	// BloodBoilerHeldProj.DisplayName: Blood Boiler
+	// ElementalEruptionHeldProj.DisplayName: Elemental Eruption
+	// HavocsBreathHeldProj.DisplayName: Havocs Breath
+	// PristineFuryHeldProj.DisplayName: Pristine Fury
+	// ShadethrowerHeldProj.DisplayName: Shadethrower
+	// TerraFlamebursterHeldProj.DisplayName: Terra Flameburster
+	// LunarFlareBookHeldProj.DisplayName: Lunar Flare Book
+	// AcidGunHeldProj.DisplayName: Acid Gun
+	// ApoctosisArrayHeldProj.DisplayName: Apoctosis Array
+	// CryophobiaHeldProj.DisplayName: Cryophobia
+	// EffervescenceHeldProj.DisplayName: Effervescence
+	// EidolicWailHeldProj.DisplayName: Eidolic Wail
+	// GenisisHeldProj.DisplayName: Genisis
+	// IonBlasterHeldProj.DisplayName: Ion Blaster
+	// LazharHeldProj.DisplayName: Lazhar
+	// NanoPurgeHeldProj.DisplayName: Nano Purge
+	// PlasmaRifleHeldProj.DisplayName: Plasma Rifle
+	// SHPCHeldProj.DisplayName: SHPC
+	// WingmanHeldProj.DisplayName: Wingman
+	// FrostFuryHeldProj.DisplayName: Frost Fury
+	// BowofLightHeldProj.DisplayName: Bowof Light
+	// EternalBlizzardHeldProj.DisplayName: Eternal Blizzard
+	// SlagMagnumHeldProj.DisplayName: Slag Magnum
+	// SparkSpreaderHeldProj.DisplayName: Spark Spreader
+	// RCosmicDischargeFlail.DisplayName: R Cosmic Discharge Flail
+	// RVoidTentacle.DisplayName: R Void Tentacle
+	// NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
+	// NeutronExplode.DisplayName: Neutron Explode
+	// EXNeutronExplode.DisplayName: EX Neutron Explode
+	// NeutronGlaiveHeld.DisplayName: Neutron Glaive
+	// NeutronsOrb.DisplayName: Neutrons Orb
+	// NeutronBowHeldProj.DisplayName: Neutron Bow
+	// NeutronArrow.DisplayName: Neutron Arrow
+	// EXNeutronArrow.DisplayName: EX Neutron Arrow
+	// EXNeutronExplosionRanged.DisplayName: EX Neutron Explosion
+	// NeutronLaser.DisplayName: Neutron Laser
+	// NeutronExplosionRanged.DisplayName: Neutron Explosion Ranged
+	// NeutronGunHeldProj.DisplayName: Neutron Gun
+	// NeutronBullet.DisplayName: Neutron Bullet
+	// NeutronWandHeld.DisplayName: Neutron Wand
+	// NeutronWandExplode.DisplayName: Neutron Wand Explode
+	// NeutronMagchStar.DisplayName: Neutron Magch Star
+	// AcidEtchedTearDrop.DisplayName: Acid Etched Tear Drop
+	// HyperBlade.DisplayName: Hyper Blade
+	// FlakKrakenHeldProj.DisplayName: Flak Kraken
+	// PrimeCannonOnSpan.DisplayName: Prime Cannon
+	// Mechanicalworm.DisplayName: Mechanicalworm
+	// SetPosingStarm.DisplayName: Set Posing Starm
+	// GrandGuardianRapier.DisplayName: Grand Guardian Rapier
+	// BaseRapiers.DisplayName: Base Rapiers
+	// MajesticGuardRapier.DisplayName: Majestic Guard Rapier
+	// MajesticGuardBeam.DisplayName: Majestic Guard Beam
+	// GrandGuardianBeam.DisplayName: Grand Guardian Beam
+	// StakeHmmod.DisplayName: Stake Hmmod
+	// FadingGloryBeam.DisplayName: Fading Glory Beam
+	// FadingGloryRapier.DisplayName: Fading Glory Rapier
+	// FadingGloryHeldSprint.DisplayName: Fading Glory Sprint
+	// LucreciaRapier.DisplayName: Lucrecia Rapier
+	// MirrorBladeRapier.DisplayName: Mirror Blade Rapier
+	// TheDarkMasterRapier.DisplayName: The Dark Master Rapier
+	// GalileoGladiusRapier.DisplayName: Galileo Gladius Rapier
+	// GalileosBeam.DisplayName: Galileos Beam
+	// GladiusBeam.DisplayName: Gladius Beam
+	// GladiusRapier.DisplayName: Gladius Rapier
+	// DefiledGreatswordHeld.DisplayName: Defiled Greatsword
+	// TerrorBladeHeld.DisplayName: Terror Blade
+	// GraniteBullet.DisplayName: Granite Bullet
+	// GraniteRifleHeldProj.DisplayName: Granite Rifle
+	// MarbleRifleHeldProj.DisplayName: Marble Rifle
+	// MarbleBullet.DisplayName: Marble Bullet
+	// FrostcrushValariHeld.DisplayName: Frostcrush Valari
+	// WoodenBoomerangHeld.DisplayName: Wooden Boomerang
+	// FlamarangHeld.DisplayName: Flamarang
+	// EnchantedBoomerangHeld.DisplayName: Enchanted Boomerang
+	// ShroomerangHeld.DisplayName: Shroomerang
+	// SpearHeld.DisplayName: Spear
+	// NeutronScytheHeld.DisplayName: Neutron Scythe
+	// GraniteSpearHeld.DisplayName: Granite Spear
+	// MarbleSpearHeld.DisplayName: Marble Spear
+	RebelBladeFlyAttcke.DisplayName: 叛逆之刃
+	// GraniteDartHeld.DisplayName: Granite Dart
+	// MarbleDaggerHeld.DisplayName: Marble Dagger
+	// PalustrisHeldProj.DisplayName: Palustris
+	// PalustrisOrb.DisplayName: Palustris Orb
+	// VioletConjectureHeldProj.DisplayName: Violet Conjecture
+	// VioletConjectureOrb.DisplayName: Violet Conjecture Orb
+	RebelBladeOrb.DisplayName: 恶魔光球
+	RebelBladeBack.DisplayName: 叛逆之刃
+	RebelBladeSlash.DisplayName: 叛逆之刃
+	// ApoctolithHeld.DisplayName: Apoctolith
+	// ThrowingBrickHeld.DisplayName: Throwing Brick
+	// Spindrift.DisplayName: Spindrift
+	// GuardianTerraHeld.DisplayName: Guardian Terra
+	// GuardianTerraBeam.DisplayName: Guardian Terra Beam
+	// NitroExpressRifleHeldProj.DisplayName: Nitro Express Rifle
+	// LifehuntScytheHeld.DisplayName: Lifehunt Scythe
+	// LifehuntScytheThrowable.DisplayName: Lifehunt Scythe
+	// LifeScythe1.DisplayName: Life Scythe
+	// DeathsAscensionHeld.DisplayName: Deaths Ascension
+	// DeathsAscensionThrowable.DisplayName: Deaths Ascension
+	// DeathsAscensionBreakSwing.DisplayName: Deaths Ascension
+	// MG42HeldProj.DisplayName: MG42
+	// ChainGunHeldProj.DisplayName: Chain Gun
+	// RocketSkeleton.DisplayName: Rocket Skeleton
+	// DeadLaser.DisplayName: Dead Laser
+	// MoltenFuryHeldProj.DisplayName: Molten Fury
+	// DragonRageHeld.DisplayName: Dragon Rage
+	// DragonRageFireOrb.DisplayName: Dragon Rage Fire Orb
+	// TheBurningSkyHeld.DisplayName: The Burning Sky
+	// TheBurningSkyHeldAlt.DisplayName: The Burning Sky
+	// PhantomPhoenix.DisplayName: Phantom Phoenix
+	// PhoenixFlameBarrageHeld.DisplayName: Phoenix Flame Barrage
+	// HolyColliderHeld.DisplayName: Holy Collider
+	// HolyColliderExFire.DisplayName: Holy Collider Ex Fire
+	// DevilsDevastationHeld.DisplayName: Devil's Devastation
+	EXDemonBlast.DisplayName: Lanza de Placer
+	EXOathblade.DisplayName: Ciclo de Dolor
+	EXDemonBlastAlt.DisplayName: Lanza de Demonio Escarlata
+	// DragonsWordProj.DisplayName: Dragon's tear
+	// BaseKnife.DisplayName: Base Knife
+	// WoodenSwordHeld.DisplayName: Wooden Sword
+	// EarlierSwordHeld.DisplayName: Earlier Sword
+	// DarklightGreatswordHeld.DisplayName: Darklight Greatsword
+	// AbsoluteZeroHeld.DisplayName: Absolute Zero
+	// DragonsWordCut.DisplayName: Dragons Word Cut
+	// DragonsWordMouse.DisplayName: Dragons Word Mouse
+	// BrinyBaronHeld.DisplayName: Briny Baron
+	// BrinyBaronOrb.DisplayName: Briny Baron Orb
+	// AegisBladeHeld.DisplayName: Aegis Blade
+	// AtaraxiaHeld.DisplayName: Ataraxia
+	// EutrophicScimitarHeld.DisplayName: Eutrophic Scimitar
+	// AvalancheHeld.DisplayName: Avalanche
+	// ForsakenSaberHeld.DisplayName: Forsaken Saber
+	// HellkiteHeld.DisplayName: Hellkite
+	// ForbiddenOathbladeHeld.DisplayName: Forbidden Oathblade
+	// GeliticBladeHeld.DisplayName: Gelitic Blade
+	// SeashineSwordHeld.DisplayName: Seashine Sword
+	// StormSaberHeld.DisplayName: Storm Saber
+	// TheMutilatorHeld.DisplayName: The Mutilator
+	// VirulenceHeld.DisplayName: Virulence
+	// AftershockHeld.DisplayName: Aftershock
+	// AnarchyBladeHeld.DisplayName: Anarchy Blade
+	// AstralBladeHeld.DisplayName: Astral Blade
+	// BurntSiennaHeld.DisplayName: Burnt Sienna
+	// CometQuasherHeld.DisplayName: Comet Quasher
+	// DivineSourceBladeHeld.DisplayName: Divine Source Blade
+	// DragonsScaleGreatswordHeld.DisplayName: Dragons Scale Greatsword
+	// EntropicClaymoreHeld.DisplayName: Entropic Claymore
+	// GreatswordofJudgementHeld.DisplayName: Greatswordof Judgement
+	// GreentideHeld.DisplayName: Greentide
+	// PlagueKeeperHeld.DisplayName: Plague Keeper
+	// SolsticeClaymoreHeld.DisplayName: Solstice Claymore
+	// TeardropCleaverHeld.DisplayName: Teardrop Cleaver
+	// TheEnforcerHeld.DisplayName: The Enforcer
+	// TheLastMourningHeld.DisplayName: The Last Mourning
+	// UltimusCleaverHeld.DisplayName: Ultimus Cleaver
+	// WindBladeHeld.DisplayName: Wind Blade
+	// EntropicClaymoreProj.DisplayName: Entropic Claymore Proj
+	// ExaltedOathbladeHeld.DisplayName: Exalted Oathblade
+	// EXOathblade2.DisplayName: E X Oathblade2
+	// PrismaticBreakerHeld.DisplayName: Prismatic Breaker
+	// PerfectDarkHeld.DisplayName: Perfect Dark
+	// RedSunHeld.DisplayName: Red Sun
+	// GalactusBladeHeld.DisplayName: Galactus Blade
+	// ExcelsusHeld.DisplayName: Excelsus
+	// FlarefrostBladeHeld.DisplayName: Flarefrost Blade
+	// FloodtideHeld.DisplayName: Floodtide
+	// CatastropheClaymoreHeld.DisplayName: Catastrophe Claymore
+	// DevastationHeld.DisplayName: Devastation
+	// StormRulerHeld.DisplayName: Storm Ruler
+	// SwordsplosionHeld.DisplayName: Swordsplosion
+	// TaintedBladeHeld.DisplayName: Tainted Blade
+	// TrueCausticEdgeHeld.DisplayName: True Caustic Edge
+	// VeinBursterHeld.DisplayName: Vein Burster
+	// VoidEdgeHeld.DisplayName: Void Edge
+	// CelestialClaymoreHeld.DisplayName: Celestial Claymore
+	// DraconicDestructionHeld.DisplayName: Draconic Destruction
+	// EarthHeld.DisplayName: Earth
+	// HellionFlowerSpearHeld.DisplayName: Hellion Flower Spear
+	// OrderbringerHeld.DisplayName: Orderbringer
+	// StellarStrikerHeld.DisplayName: Stellar Striker
+	// PhasebladeHeld.DisplayName: Phaseblade
+	// FrostbrandHeld.DisplayName: Frostbrand
+	// IceBladeHeld.DisplayName: Ice Blade
+	// SpwanTextProj.DisplayName: Spwan Text Proj
+	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive
+	// RebelBladeHeld.DisplayName: Rebel Blade
+	// BrimlashHeld.DisplayName: Brimlash
+	// BrimlashTouch.DisplayName: Brimlash Touch
+	// RealmSourceHeld.DisplayName: Realm Source
+	// BlightedCleaverHeld.DisplayName: Blighted Cleaver
+	// DefiledGreatswordHeld2.DisplayName: Defiled Greatsword
+	// FeralthornClaymoreHeld.DisplayName: Feralthorn Claymore
+	// TerrorBladeHeld2.DisplayName: Terror Blade
+	// Fireball.DisplayName: Fireball
+	// DeadLaser2.DisplayName: Dead Laser2
+	// SoulCharmerBlade.DisplayName: Soul Charmer Blade
+	// HellfireFlambergeHeld.DisplayName: Hellfire Flamberge
+	// Probe.DisplayName: Probe
+	// TerratomereHeld.DisplayName: Terratomere
+	// RWaveSkipperProjectile.DisplayName: R Wave Skipper Projectile
+	// ElectrifyFeather.DisplayName: Electrify Feather
+	// SnowQuayMK2Held.DisplayName: Snow Quay MK2
+	// HghExplosiveHeld.DisplayName: Hgh Explosive
+	// HghExplosiveProj.DisplayName: Hgh Explosive
+}
+
+Configs: {
+	CWRServerConfig: {
+		DisplayName: Configuración de contenido
+
+		ForceReplaceResetContent: {
+			Label: ¿Habilitar reemplazo forzado de contenido?
+			Tooltip:
+				'''
+				Si se activa, se modificará directamente el contenido original del mod de desastre.
+				Si ha habilitado otros mods complementarios de desastre, activar esta función puede provocar problemas de conflicto potenciales.
+				Si decide desactivarlo, este mod añadirá formas de obtener objetos reiniciados en el juego,
+				lo cual es una buena idea para evitar problemas de conflicto potenciales.
+				[c/fff08c:IM: En realidad, no recomendamos desactivar esto,]
+				[c/fff08c: esta función solo se recomienda desactivar si se confirma que hay conflictos graves,]
+				[c/FF0000: ¡Si desea una experiencia óptima con el contenido del mod de desastre, actívelo!]
+				'''
+		}
+
+		AddExtrasContent: {
+			Label: ¿Agregar contenido extra?
+			Tooltip:
+				'''
+				¿Desea añadir contenido controvertido al juego, como la tecnología infinita?
+				Activado por defecto; desactivarlo eliminará contenido que es menos compatible con el tema del desastre.
+				'''
+		}
+
+		WeaponEnhancementSystem: {
+			Label: ¿Habilitar contenido de armas legendarias?
+			Tooltip:
+				'''
+				Si se activa, algunas armas volverán a recibir el título de legendarias, lo que afectará su dificultad de obtención.
+				Las armas legendarias se volverán más poderosas a medida que avance la etapa.
+				Desactivar esta opción deshabilitará este contenido.
+				'''
+		}
+
+		ResetItemReminder: {
+			Label: Recordatorio sobre el restablecimiento de objetos
+			Tooltip:
+				'''
+				¡Hola! Si ves esto, ¡no te apresures a cerrarlo! Asegúrate de comprender la [c/fff08c: función y significado del reemplazo forzado de contenido]
+				[c/de0808: ¡especialmente qué sucederá si lo cierras!][c/de0808: ]
+				Si, después de leer la guía del contenido del mod, aún tienes dudas y problemas,
+				ve al foro para contactarme o envía un correo a coslowkimberli185@gmail.com
+				'''
+		}
+
+		ScreenVibration: {
+			Label: Efecto de vibración de pantalla en ataques especiales de armas
+			Tooltip: Si se activa, al realizar algunos ataques, la pantalla vibrará, lo que podría intensificar la sensación de impacto.
+		}
+
+		MurasamaSpaceFragmentationBool: {
+			Label: Efecto de fragmentación de pantalla en el movimiento final de Murasama
+			Tooltip:
+				'''
+				Activado por defecto, el movimiento final de Murasama producirá efectos de fragmentación de pantalla para intensificar la sensación de impacto.
+				Desactivarlo deshabilitará estos efectos; puedes configurarlo según tu preferencia.
+				'''
+		}
+
+		Headers: {
+			CWRSystem: Configuración del sistema de mejora
+			CWRWeapon: Configuración de armas de mejora
+			CWRUI: Configuración de interfaz de usuario de mejora
+		}
+
+		MurasamaRisingDragonCoolDownBarSize: {
+			Label: Tamaño de la UI de carga de Murasama
+			Tooltip:
+				'''
+				Un factor de corrección adicional para el tamaño de la UI, basado en porcentajes %.
+				Establezca esto para adaptarse al tamaño de UI que prefiera, generalmente manteniendo un tamaño del 100% es suficiente.
+				Deslice este control para ajustar el porcentaje; el máximo es 200%, el doble del tamaño original, y el mínimo es 50%.
+				'''
+		}
+
+		LensEasing: {
+			Label: Suavizado de la cámara
+			Tooltip: Al habilitar, los movimientos rápidos a larga distancia suavizarán la cámara, evitando la sensación de desajuste por moverse demasiado rápido.
+		}
+
+		CartridgeUI_Offset_X_Value: {
+			Label: Valor de desplazamiento horizontal de la UI del cargador
+			Tooltip: ""
+		}
+
+		CartridgeUI_Offset_Y_Value: {
+			Label: Valor de desplazamiento vertical de la UI del cargador
+			Tooltip: ""
+		}
+
+		WeaponHandheldDisplay: {
+			Label: Visualización de armas en mano
+			Tooltip:
+				'''
+				Al activarlo, la mayoría de las armas tendrán animaciones de mano y acciones especiales de uso.
+				Este efecto tiene una alta prioridad y anulará la mayoría de las animaciones de mano de otros mods.
+				Activado por defecto y, por razones de experiencia visual, el autor no recomienda desactivarlo.
+				'''
+		}
+
+		ActivateGunRecoil: {
+			Label: Retroceso de armas
+			Tooltip:
+				'''
+				Al activarlo, el fuego de armas tendrá efectos de retroceso; desactívelo para cerrar estos efectos.
+				Activado por defecto; desactivarlo puede hacer que algunos contenidos del juego pierdan sentido.
+				'''
+		}
+
+		MagazineSystem: {
+			Label: Sistema de cargadores
+			Tooltip:
+				'''
+				Un gran sistema de contenido; al activarlo, la mayoría de las armas tendrán un mecanismo de cargador, incluyendo recarga y mezcla de municiones.
+				Desactivarlo deshabilitará este contenido, y las armas usarán el mecanismo de munición original.
+				[c/fff08c: Es importante señalar] que el equilibrio del juego de mejora se ajusta con base en [c/fff08c: la activación del sistema de cargadores].
+				Si decide desactivarlo, algunos armas a distancia pueden volverse [c/de0808: excesivamente poderosas].
+				Por lo tanto, si desactiva esta función, [c/de0808: el equilibrio del juego para las armas a distancia ya no tendrá sentido].
+				[c/fff08c: Si cambia esta opción, vuelva a entrar al mundo para asegurarse de que todos los efectos cambien correctamente.]
+				'''
+		}
+
+		BowArrowDraw: {
+			Label: Dibujar arco y flecha
+			Tooltip:
+				'''
+				Cuando el jugador usa un arco para atacar, se dibujará en tiempo real la animación correspondiente de la flecha.
+				Está habilitado por defecto, se puede ajustar según las preferencias personales.
+				'''
+		}
+
+		WeaponAdaptiveIllumination: {
+			Label: Iluminación adaptativa de armas[c/06e33f:(experimental)]
+			Tooltip:
+				'''
+				Habilitado por defecto, al usarlo, las armas utilizarán la mezcla de luz ambiental de forma normal.
+				Si se desactiva, las armas ignorarán la claridad y oscuridad del entorno, manteniéndose brillantes.
+				'''
+		}
+
+		WeaponAdaptiveVolumeScaling: {
+			Label: Escalado adaptativo de volumen de armas[c/06e33f:(experimental)]
+			Tooltip:
+				'''
+				Habilitado por defecto, las armas tendrán diferentes escalados de dibujo para mantener una apariencia natural y evitar el exceso de obstrucción.
+				Dado el problema de sensibilidad a los píxeles, los jugadores pueden optar por desactivarlo para mantener la suavidad de los bloques de píxeles.
+				'''
+		}
+
+		EnableCasingsEntity: {
+			Label: Habilitar entidades de casquillos
+			Tooltip: Si consideras que los casquillos regados por todas partes son molestos, desactivar esta opción es una buena idea.
+		}
+
+		LoadingAA_Volume: {
+			Label: Coeficiente de volumen de sonido de cambio de munición de armas
+			Tooltip: Cuanto mayor sea el valor, más notable será el sonido; 1 es el volumen original.
+		}
+
+		OpeningOukModification: {
+			Label: Habilitar modificación del inventario inicial[c/06e33f:(experimental)]
+			Tooltip:
+				'''
+				Si se activa, se modificará completamente el inventario del personaje inicial; por ejemplo, las herramientas de cobre se convertirán en herramientas de piedra.
+				Actualmente, se clasifica como una función experimental y está desactivada por defecto; si se habilita, solo afectará a los personajes recién creados.
+				'''
+		}
+
+		ShotgunFireForcedReloadInterruption: {
+			Label: Interrupción forzada de recarga de disparo de escopeta[c/06e33f:(experimental)]
+			Tooltip:
+				'''
+				Algunas escopetas tienen esta característica; al recargar, si el jugador intenta disparar, interrumpirá la acción de recarga.
+				Si se activa esta opción, todas las armas de escopeta tendrán esta característica.
+				'''
+		}
+
+		BiobehavioralOverlay: {
+			Label: Modificación de comportamiento biológico[c/06e33f:(experimental)]
+			Tooltip:
+				'''
+				[c/c20909:Incompleto]
+				Habilitado por defecto, modificará el comportamiento de IA de algunos biomas, como la IA de los jefes bajo el módulo de muerte.
+				Esto puede aumentar drásticamente la dificultad del juego; se puede elegir desactivarlo según las preferencias personales.
+				'''
+		}
+
+		EnableSwordLight: {
+			Label: Habilitar luz de espada
+			Tooltip:
+				'''
+				Habilitado por defecto, muchas armas de tipo espada tendrán brillantes efectos de luz.
+				En la mayoría de los casos, esto hará que el juego se vea más impresionante.
+				'''
+		}
+
+		TileModuleBosSizeDraw: {
+			Label: Dibujo de caja de módulo de bloques[c/06e33f:(opción de desarrollador)]
+			Tooltip:
+				'''
+				[c/c20909:No recomendado para no desarrolladores]
+				Utilizado para depurar y observar la estructura de colisión de TileModule.
+				Al habilitarlo, TileModule dibujará su caja de colisión, nombre de tipo y otros datos en el mundo.
+				'''
+		}
+
+		MuraUIStyleType: {
+			Label: Selección de estilo de UI de Murasama
+			Tooltip:
+				'''
+				Estilo 1: Elegante - Flotante sobre la cabeza
+				Estilo 2: Elegante - Compacto
+				Estilo 3: Clásico - Flotante sobre la cabeza
+				Estilo 4: Clásico - Compacto
+				'''
+		}
+
+		MuraPosStyleType: {
+			Label: Selección de posición de UI de Murasama
+			Tooltip:
+				'''
+				Preajuste 1: Abajo a la derecha
+				Preajuste 2: Abajo a la izquierda
+				Preajuste 3: Arriba
+				'''
+		}
+	}
+}
+
+Buffs: {
+	SoulBurning: {
+		DisplayName: Fuego del alma
+		Description: Llama proveniente del infierno
+	}
+
+	EXHellfire: {
+		DisplayName: Explosión del infierno
+		Description: Llama proveniente del infierno
+	}
+
+	GodKillsFire: {
+		DisplayName: Fuego divino
+		Description: Quema las almas
+	}
+
+	VoidErosion: {
+		DisplayName: Erosión del vacío
+		Description: Gradualmente se convierte en nada
+	}
+}
+
+Keybinds: {
+	HeavenfallLongbowSkillKey.DisplayName: Arco largo de la caída del cielo: Juicio de las manifestaciones
+	InfinitePickSkillKey.DisplayName: Pico infinito: Cambio de forma
+	TOM_OneClickP.DisplayName: Síntesis Omega: Colocación con un clic
+	TOM_QuickFetch.DisplayName: Síntesis Omega: Recogida rápida
+	TOM_GatheringItem.DisplayName: Síntesis Omega: Agrupar objetos
+	TOM_GlobalRecall.DisplayName: Síntesis Omega: Recoger todo
+	Murasama_TriggerKey.DisplayName: Murasama: Tecla de disparo
+	Murasama_DownKey.DisplayName: Murasama: Golpe descendente
+	ADS_Key.DisplayName: Abrir miras
+	KreLoad_Key.DisplayName: Recargar
+}
+
+TextContent: {
+	CWRLocText: {
+		Event_TungstenRiot_Name: Revuelta de tungsteno
+		Event_TungstenRiot_Text_1: ¡Una gran cantidad de criaturas de tungsteno están invadiendo!
+		Event_TungstenRiot_Text_2: ¡La legión de tungsteno ha sido rechazada!
+		Item_LegendOnMouseLang: Presiona [Shift] para escuchar la historia...
+		BloodAltar_Text1: La mirada carmesí está descendiendo...
+		BloodAltar_Text2: Las gotas de sangre en tu cuerpo no son suficientes para rendir homenaje al rey carmesí...
+		BloodAltar_Text3: Caíste en un frenesí interminable de sangre y carne
+		VoidDamageNameText: Daño vacío
+		Drop_Hell_RuleText: Caído tras derrotar en el infierno
+		Drop_GlodDragonDrop_RuleText: Caído tras la segunda derrota del dragón de la jungla
+		Murasama_TextDictionary_Content:
+			'''
+			Hey, recluta, hay una criatura llamada el "gordo azul" adelante, o los bichos en las profundidades del desierto, y ese cangrejo zombi en la cueva de setas. Demuestra tu valía, este es tu primer paso.
+			La noche cae, esa gran esfera ocular aparece, ¡explótala! O la concha del fondo del mar en el desierto, ¡no tengas piedad!
+			Es hora de derribar ese cerebro en el suelo, o ese largo gusano morado. Quiero ver tu cuchillo danzar en el caos.
+			Hay algo en la puerta de la mazmorras, deshazte de ello. Y esos herejes corrompidos, haz que se callen para siempre.
+			¿Recuerdas esa baba azul? Es hora de acabar con su jefe.
+			La aberración que gobierna el hielo y el fuego, o esos mecánicos malignos, o esos grandes gusanos corrompidos, ¡córtalos!
+			Esa gran esfera ocular de azufre por la noche, o la gran sirena del océano, y ese hombre de piedra, ¡explótalos todos!
+			Las aberraciones que propagan la corrupción y sus crías vagando por la jungla, o esa estatua de carne, y el gran gusano que vaga en el espacio estelar, ¡córtalos todos!
+			Los apóstoles del dios sol vagando, ya sea en lo sagrado o en el infierno, o ese tonto pájaro en la jungla, elige uno para eliminar.
+			No elijas pocos, recluta, el dios sol, los apóstoles del universo, o los rezagados en la mazmorras, ¡vamos a conocerlos!
+			¡Acaba con ese arrogante gusano! O simplemente corta esa pez altamente corrompido por la corrupción.
+			Aberraciones que escupen fuego, ¡no tengas piedad, córtalos!
+			Ve a lidiar con la herejía de la religión mecánica, o la bruja caída, ¡acaba con esas crías herejes!
+			El dragón demoníaco aparece, y estaremos en un conflicto total con las aberraciones, con esa piedra que obtuvimos del abismo. Recluta, ¡esta es la última batalla!
+			¡Buen trabajo, recluta!
+			'''
+		Murasama_Text_Lang_0: Prueba:
+		Murasama_Text_Lang_End: Completada
+		Murasama_TextDictionary_Content_0:
+			'''
+			Recluta, demuéstrame tu valía.
+			Ese pegajoso gordo azul, los restos de la sirena del desierto, 
+			el cangrejo zombi en la cueva de setas.
+			Elimina a uno de ellos, este es tu primer paso.
+			'''
+		Murasama_TextDictionary_Content_1:
+			'''
+			Con la luna llena, vamos a explotar esa gran esfera ocular que vuela por los aires, 
+			¡deja al dios falso completamente ciego!
+			La arena tiembla, veamos qué hay abajo, y luego acaba con esa gran ostra.
+			'''
+		Murasama_TextDictionary_Content_2:
+			'''
+			El cuerpo del dios falso mancha la tierra sagrada de Terra, 
+			herejías brotan en el fin del mundo, aberraciones recorren el continente.
+			¡Libera el continente corrompido! ¡Corta ese cerebro del dios falso y aplasta ese gusano morado!
+			Quiero ver tu cuchillo danzar en el aire, ¡por la sagrada Terra!
+			'''
+		Murasama_TextDictionary_Content_3:
+			'''
+			La tierra corrompida sigue temblando como un corazón, los parásitos de carne aún están activos, 
+			los tumores corrompidos todavía piensan, ¡expúlsalos completamente!
+			La maldición en la puerta de la mazmorras se ha aflojado, 
+			siento la energía psíquica agitarse en las profundidades, mezclada con gritos, lamentos y susurros.
+			'''
+		Murasama_TextDictionary_Content_4:
+			'''
+			Se cuenta una leyenda en el reino de los slimes, tienen un dios extraño caído, 
+			y ahora está debilitado, es la oportunidad perfecta para expulsarlo al subespacio.
+			Debemos liberar la luz y la oscuridad del infierno, esto provocará una tormenta subespacial, 
+			pero debemos hacerlo, recluta, ¡escribe un gran capítulo en nuestro viaje!
+			'''
+		Murasama_TextDictionary_Content_5:
+			'''
+			En la prisión de la barrera de hielo, hay un poderoso psíquico encerrado, 
+			libéralo, él será de gran ayuda para recuperar Terra.
+			El hijo del mar de azufre bloquea nuestra búsqueda de los tesoros del abismo, termina con su devoración y deambular.
+			Extraño las llamas de la forja en los acantilados de azufre, ve a conocer al guardián allí.
+			'''
+		Murasama_TextDictionary_Content_6:
+			'''
+			Esa bruja que se sumergió en el caos, tiene una hermana clon distorsionada, 
+			mata a esa aberración, ofrenda sangre y fuego a la hoja.
+			Cantos encantadores llegan desde la orilla, son los parientes de la sirena, 
+			¡cortemos la cabeza de la sirena y establezcamos un logro en el mar!
+			Los estúpidos lagartos solo adoran estas piedras obstinadas, 
+			dejemos que se conviertan en polvo y destruyamos su fe, ¡nosotros somos a quienes deben adorar!
+			'''
+		Murasama_TextDictionary_Content_7:
+			'''
+			Cuerpos entrelazados de carne, almas vengativas de antiguos campos de batalla, 
+			un golem de destrucción incesante, destruye todo, y nosotros lo destruimos a él.
+			En la jungla, un antiguo fracaso de alguien aún deambula, como un fracaso, debe ser como un montón de chatarra.
+			El antiguo dragón estelar ha caído, lo que queda es apenas un gusano, terminemos con la era de los dragones estelares.
+			'''
+		Murasama_TextDictionary_Content_8:
+			'''
+			Esa torpe imitación de la herejía del culto mecánico, 
+			estúpidos clones, deambulan por la jungla, elimínalos.
+			En el subsuelo ha surgido otro sol, 
+			parece que quiere llevar esta llama sagrada a la superficie a través de la tierra sagrada,
+			¡expulsa a sus apóstoles, Terra solo permite una fe de llama!
+			'''
+		Murasama_TextDictionary_Content_9:
+			'''
+			Ese dios desgraciado que sobrevive chupando la energía térmica de las estrellas, 
+			su fuego hereje necesita ser extinguido por completo.
+			Un insecto tormentoso que se alimenta de dragones voladores en los bordes del cielo, 
+			tiene un buen caparazón de armadura.
+			Quizás sea una buena forma de obtener materia oscura 
+			en las fisuras dimensionales selladas de las mazmorras.
+			Un apóstol hereje del subespacio, lleva una rara distorsión del vacío, 
+			¡es una buena oportunidad para entender la esencia del subespacio!
+			'''
+		Murasama_TextDictionary_Content_10:
+			'''
+			Esa arrogante serpiente cósmica se mueve tras el telón del mundo, 
+			¡termina con su ambición!
+			La criatura más antigua que acecha en el mar de azufre despierta con la tormenta de energía psíquica, 
+			¡que se convierta en parte de nuestra gloria!
+			'''
+		Murasama_TextDictionary_Content_11:
+			'''
+			El dragón de la jungla, el último descendiente de los dragones de oro de Terra, 
+			es muy diferente a otras aberraciones, merece nuestro respeto.
+			Sin embargo, ahora debemos hacer que muera de nuevo, despojándolo de su esencia de oro.
+			Estos materiales se utilizarán para forjar una armadura de calidad incomparable.
+			'''
+		Murasama_TextDictionary_Content_12:
+			'''
+			Esa herejía del culto mecánico, cree que sus titanes de flujo estelar son superiores al poder de los dioses.
+			Esta creencia es absurda, ¡devuelvamos esos titanes a su estado natural — un montón de chatarra!
+			La bruja que solía tener un gran talento psíquico, 
+			debería haber sido un gran apoyo para proteger la sagrada Terra, pero se ha perdido en el caos.
+			Por lo tanto, solo podemos expulsarla, apuñalando su pecho, 
+			dejando que el fuego de la lealtad consuma su alma en descomposición.
+			Esta guerra será registrada en la historia de Terra, y nuestro viaje comenzará aquí, recorriendo la galaxia.
+			'''
+		Murasama_TextDictionary_Content_13:
+			'''
+			Nuestra senda de conquista es ya imparable, rompe la armadura del dragón de las sombras, busca el objeto del fin.
+			¡Luchemos a fondo con esas aberraciones! ¡Luchar, esa es la batalla necesaria! ¡Luchar, esa es la batalla correcta!
+			'''
+		Murasama_TextDictionary_Content_14:
+			'''
+			¡Buen trabajo, recluta, las aberraciones de este mundo han sido barridas por nosotros!
+			Nuestro viaje ha alcanzado la cima, ni siquiera el tirano que una vez dominó Terra se compara con nosotros.
+			Ahora, extiende tus brazos y abraza este mundo que la victoria te ha traído.
+			'''
+		Murasama_No_legend_Content_1: La funda de la espada se desbloqueará tras la caída del dragón
+		Murasama_No_legend_Content_2: Recluta, reconozco tu habilidad, ahora, vamos a destrozar a esos aberrantes
+		Murasama_No_legend_Content_3: "[c/fff08c:Se vuelve más fuerte a medida que avanza el viaje]"
+		Murasama_No_legend_Content_4: "[c/00707d:El brillo legendario se ha apagado...]"
+		SHPC_No_legend_Content_1: "[c/fff08c:Desbloqueado tras la caída del dragón]"
+		SHPC_No_legend_Content_2: "[c/fff08c:¡Listo para atacar!]"
+		SHPC_No_legend_Content_3: "[c/fff08c:Se vuelve más fuerte a medida que avanza el viaje]"
+		SHPC_No_legend_Content_4: "[c/00707d:El brillo legendario se ha apagado...]"
+		SHPC_TextDictionary_Content_0:
+			'''
+			Amigo, la tarea de revivir la civilización finalmente recae en nuestras manos, es un asunto glorioso...
+			Nuestro primer objetivo es un enorme polímero azul, es muy grande, revéntalo desde adentro
+			'''
+		SHPC_TextDictionary_Content_1:
+			'''
+			Necesitamos acabar con ese gran ojo, proviene de un poderoso organismo
+			Necesito diseccionarlo para ver cómo logra la antigravedad
+			'''
+		SHPC_TextDictionary_Content_2:
+			'''
+			La colmena de la jungla se ha vuelto muy inquieta, las abejas están a punto de eclosionar
+			Necesito urgentemente estudiar su proceso de metamorfosis, ve a ver
+			'''
+		SHPC_TextDictionary_Content_3:
+			'''
+			Los enormes huesos pueden flotar en el aire, eso es muy poco científico
+			Necesitamos ir a la profunda prisión en el fin del mundo
+			'''
+		SHPC_TextDictionary_Content_4:
+			'''
+			La tierra tiembla, los engranajes rugen, la electricidad fluye
+			Un montón de robots nos espera, es hora de mostrarles el poder de la tecnología
+			'''
+		SHPC_TextDictionary_Content_5:
+			'''
+			Debajo de la jungla, varias grandes y llamativas flores han florecido
+			Necesitamos ir a ver y recolectar algunos datos experimentales
+			'''
+		SHPC_TextDictionary_Content_6:
+			'''
+			Los antiguos robots en las profundidades del templo esperan una recarga para activar
+			Visitemos, además de retroceder en la tecnología antigua
+			'''
+		SHPC_TextDictionary_Content_7:
+			'''
+			Los secretos del lado oculto de la luna serán revelados por nosotros
+			El mundo volverá a su forma original
+			'''
+		SHPC_TextDictionary_Content_8:
+			'''
+			La deidad que parasita el núcleo de la tierra ha notado nuestra presencia
+			Ve al infierno, necesito conocimientos sobre el uso del calor
+			'''
+		SHPC_TextDictionary_Content_9:
+			'''
+			Los espíritus rencorosos de la prisión se han agrupado, formando un enorme organismo simbiótico
+			Esto es muy interesante, necesitamos ir a verlo ahora
+			'''
+		SHPC_TextDictionary_Content_10:
+			'''
+			Puedo asegurar que no es vida basada en carbono, puede desgarrar la membrana del espacio con su cuerpo
+			Devora a las deidades, pero nosotros no somos dioses, creo que nos invitará a tomar té
+			'''
+		SHPC_TextDictionary_Content_11:
+			'''
+			El último descendiente de dragón en el mundo, ¡wow, eso es genial!
+			Llévame a verlo, quiero obtener sus plumas
+			'''
+		SHPC_TextDictionary_Content_12:
+			'''
+			Es hora de visitar a mi creador
+			O a esa bruja, su existencia me perturba
+			'''
+		SHPC_TextDictionary_Content_13:
+			'''
+			¡Gran batalla! Los enemigos que alguna vez derrotamos se han unido, preparándose para un asalto total
+			Prepárate, necesitamos una victoria perfecta
+			'''
+		SHPC_TextDictionary_Content_14: El protocolo HMOI-0001 ha sido desbloqueado
+		Halibut_No_legend_Content_1: "[c/fff08c:Desbloquear después de la caída del dragón]"
+		Halibut_No_legend_Content_2: "[c/fff08c:Hermano, he estado aquí todo el tiempo]"
+		Halibut_No_legend_Content_3: "[c/fff08c:Me vuelvo más fuerte a medida que avanza el viaje]"
+		Halibut_No_legend_Content_4: "[c/00707d:El brillo de la leyenda se ha apagado...]"
+		Halibut_TextDictionary_Content_0: Amigo, vamos a desafiar a esa enorme criatura terrestre pegajosa
+		Halibut_TextDictionary_Content_1: Hay un gran ojo mirándonos, eso es muy grosero, necesitamos enseñarle una lección
+		Halibut_TextDictionary_Content_2: En los lugares llenos de vida no solo hay abismos, también hay junglas, amigo, necesitamos visitar a la reina de las abejas
+		Halibut_TextDictionary_Content_3:
+			'''
+			Los huesos malditos que no se disuelven, necesitamos dejarlos descansar en paz
+			Los gritos de auxilio desde el infierno son cada vez más frecuentes, necesitamos partir pronto, creo que a nuestro hermano guía no le importará
+			'''
+		Halibut_TextDictionary_Content_4:
+			'''
+			¿Sabes cómo se mueven los inorgánicos? Una vez construí una enorme máquina submarina que podía disparar misiles de burbujas,
+			y un número interminable de torpedos de fusión térmica, la usé para cazar enormes criaturas que viven a 10,000 metros bajo el mar, hasta que encontré...
+			Oh, me estoy desviando: creo que en un momento llegarán cuatro amigos mecánicos a visitarnos, necesitamos prepararnos
+			Además, en las aguas contaminadas sobre el abismo, hay un gusano marino gigante mutado que solía ser el guardián de la Universidad del Mar de Azufre
+			Debería seguir siendo bastante amigable, podemos ir a tomar té por la tarde con él
+			'''
+		Halibut_TextDictionary_Content_5:
+			'''
+			Me encanta la jungla, es como mi segundo hogar, rebosante de energía vital,
+			no es menos que el fondo del abismo, pero primero necesitamos encontrar una manera de liberarlos,
+			¿Recuerdas esos enormes capullos subterráneos? Ve y cógelos, esto me ayudará a obtener mi título en botánica
+			'''
+		Halibut_TextDictionary_Content_6:
+			'''
+			Me gusta la arqueología, la última vez que estuve vagando por la jungla vi una gran ruina
+			Ahora deberíamos tener la llave para abrir la puerta de esa ruina, vamos a echar un vistazo,
+			dentro hay una enorme máquina antigua que espera que le pongamos una batería, como un control remoto de aire acondicionado
+			Aparte de eso, en la superficie hay una plaga extraterrestre que puede infectar la tierra y la mayoría de los inorgánicos,
+			cada noche hay una máquina minera agonizante merodeando, ha estado infectada por mucho tiempo, démosle un descanso
+			'''
+		Halibut_TextDictionary_Content_7:
+			'''
+			¿Sabes el secreto de la cara oculta de la luna? Allí hay un gran pulpo, una esponja y una estrella de mar...
+			Oh, quise decir que la crisis lunar se avecina
+			'''
+		Halibut_TextDictionary_Content_8:
+			'''
+			Ahora es la crisis solar, un poderoso ente energético ha escapado del lado oscuro del sol hacia el núcleo de este planeta,
+			necesitamos seguir bajando, encontrarlo y darle un baño frío
+			'''
+		Halibut_TextDictionary_Content_9:
+			'''
+			Las innumerables almas indomables de antiguas batallas se han reunido ahora, se esconden en las profundidades de la mazmorras y están muy inquietas.
+			Podemos ir a matar algunas almas solitarias, esto podría hacer que la pequeña tormenta en el espacio llegue antes, pero también puede atraerlas
+			'''
+		Halibut_TextDictionary_Content_10:
+			'''
+			Hay una clase de seres que nacen y crecen en el espacio, sus cuerpos pueden soportar radiaciones cósmicas y energías de nivel celeste
+			Hace mucho tiempo nos encontramos con uno, y ahora, debemos enfrentar al más destacado entre ellos, uno que dice haber devorado a dioses
+			'''
+		Halibut_TextDictionary_Content_11: La temperatura de la jungla ha aumentado últimamente, creo que ese poderoso dragón ha vuelto
+		Halibut_TextDictionary_Content_12:
+			'''
+			Nos enfrentaremos a la cúspide de los seres inorgánicos, tienen un gran poder de fuego y defensa.
+			Además, parece que el altar de fuego de azufre puede convocar algo
+			'''
+		Halibut_TextDictionary_Content_13:
+			'''
+			Hay una piedra especial en el abismo, úsala para enfrentar la batalla final
+			Y hay un poderoso ser marino que destruyó mi máquina, vamos a buscarlo para vengarnos
+			'''
+		Halibut_TextDictionary_Content_14: Honestamente, quiero regresar al mar
+		RemakeItem_Remind_TextContent:
+			'''
+			【Aviso del Autor】
+			Antes de leer este texto, deberías estar viendo los objetos de la Gran Revisión de Desastre.
+			Estos objetos son copias reiniciadas que, por lo general, no deberían aparecer durante tu juego.
+
+			Todos los contenidos de armas reiniciadas en la Gran Revisión de Desastre se aplicarán directamente a los objetos originales de desastre. Cuando vayas a
+			【Configuración】-->【Configuración del Módulo】-->【Gran Revisión de Desastre】-->【Configuración de Contenido】 -->【Activar reemplazo forzado de contenido reiniciado】
+			Si desactivas esta opción, el código de reinicio que se aplica directamente a los objetos originales de desastre se desactivará, 
+			en su lugar, estos objetos copia se añadirán al juego de una manera que puede ser intercambiada y creada con los objetos originales.
+
+			Es importante señalar que el autor desaconseja encarecidamente el uso de esta configuración. Para más detalles, consulta las instrucciones en la configuración del módulo.
+
+			Este interfaz tiene como objetivo prevenir cualquier posible malentendido. Si confirmas que entiendes y no deseas ver este recordatorio nuevamente, 
+			dirígete a:
+			【Configuración】-->【Configuración del Módulo】-->【Configuración de Contenido de la Gran Revisión de Desastre】--> 【Recordatorio amable sobre objetos reiniciados】,
+			y desactívalo.
+			'''
+		StarMyriadChanges_TextContent:
+			'''
+			Esto es parte del plan
+			Conocer el deseo y la sed de conocimiento, solo el santo astuto no se deja atrapar
+			En el oscuro universo, soy la encarnación de la conspiración y la traición infinitas
+			El poder del caos devorará todo, tanto la mente como el alma
+			Cree en la nada, sumérgete en el fuego del caos, allí encontrarás el verdadero poder
+			Soy el profeta caído, las almas de los difuntos bailan en mis manos
+			El miedo es solo una manifestación de los débiles, los verdaderos fuertes dan la bienvenida a la llegada del caos
+			En la tormenta caótica, solo las almas más fuertes pueden sobrevivir
+			El abismo sin fin te llama, salta valientemente y conviértete en un leal sirviente del caos
+			El orden sagrado es solo un frágil sueño, mientras que el caos es la verdadera esencia del universo
+			La astucia y la traición son los medios del caos, y yo soy su leal mensajero
+			Solo en el crisol del caos se puede forjar un verdadero guerrero invencible
+			El vasto océano de caos espera la travesía del valiente
+			Resistir el caos es solo una lucha inútil; al final, cada alma cederá a su poder
+			La brillante luz sagrada es solo una ilusión breve ante el caos
+			Bajo el velo del caos, se oculta un poder infinito y una sabiduría sin fin
+			En el reino del caos, las mentiras son más reales que la verdad
+			La traición es el regalo del caos, y yo soy el mensajero astuto
+			En la oscuridad caótica, he encontrado un poder más fuerte que cualquier deidad
+			El miedo de los enemigos al caos es solo una manifestación de su ignorancia; el verdadero sabio camina con el caos
+			El universo es un escenario de caos y cambio, y yo soy su bailarín principal
+			En el abismo de la mente, encuentra una locura infinita, superando todas las ataduras
+			La verdad es cambiante; solo en la mentira se puede encontrar la verdadera liberación
+			El universo es un enorme tablero de ajedrez, y yo soy el jugador que mueve las piezas
+			Un orden falso es solo una evasión de la realidad; elijo enfrentar la verdad desconocida
+			La traición es la resistencia a las ataduras, es el único camino hacia la libertad
+			Encontrar la luz en la oscuridad no es a través de la oración, sino a través de la traición
+			El abismo de la mente es más misterioso que la oscuridad del universo, y yo estoy atrapado en él
+			Cada traición conlleva una elevación del poder, superando todos los límites
+			Las reglas sagradas son solo cadenas falsas, y yo elijo romper estas ataduras
+			Con valentía, emprende el viaje hacia lo desconocido; la traición será tu compañera más leal
+			Bajo las apariencias hipócritas, hay infinitas oportunidades esperando ser descubiertas
+			Soy el estandarte en la oscuridad, guiando a los buscadores de la verdad hacia el abismo desconocido
+			Desafiar la tradición y romper las cadenas es el único camino para encontrar la fuente del poder
+			En medio de las infinitas mentiras, encontrar el verdadero poder es la creencia astuta
+			No se trata de seguir las reglas, sino de romperlas para dejar una marca en el universo
+			En la corriente de cambio, la traición es el único símbolo inmortal
+			En la luz hipócrita, encontrar la verdad oscura, eso es el poder que busco
+			'''
+		Destruct_TextContent:
+			'''
+			Ustedes, tontos ficticios, ¿creyeron que podrían robar poder a través de la astucia?
+			¿Se atreven a burlarse de las reglas y piensan que pueden escapar del juicio del caos?
+			¡Ridículo! En la tormenta del caos, ustedes son solo polvo insignificante, y el caos devorará su desfachatez
+			Tratar de obtener poder a través de la astucia solo los convertirá en sacrificios en el crisol del caos, sin excepción
+			El caos no da la bienvenida a los cobardes, y mucho menos a esos que intentan subvertir las reglas con su existencia ridícula
+			Sus absurdos actos solo harán que el caos se fortalezca aún más, llevando a su inevitable sacrificio en la oscuridad infinita
+			¡Oh, embaucador, tu conspiración es solo una broma del payaso en el circo del caos!
+			Las reglas son la sinfonía del universo, y ustedes son solo cuervos que no saben el compás
+			¿Creen que pueden obtener poder a través de trampas? El caos considerará sus trucos como una broma
+			En la oscuridad luchando, cobardes, su existencia no vale nada, son solo un refrigerio de medianoche para el caos
+			¿Intentar subvertir las reglas? Ustedes son solo ratones en un laberinto de colores del universo, que finalmente quedarán atrapados en un callejón sin salida
+			El caos no teme a los desafíos y menosprecia a los ridículos payasos que se enorgullecen de la astucia
+			Las conspiraciones de hacer trampa son como el humo, que finalmente se disipará en la tormenta del caos
+			Cobardes, su arrogancia es solo una leve ondulación en la ola del caos
+			El orden del universo es un hilo entrelazado, mientras que ustedes intentan cortarlo de una manera ridícula
+			¡Absurdos! La risa del caos resonará en su colapso, ustedes son solo visitantes momentáneos en la oscuridad
+			'''
+		CWRRecipes_ApostolicRelics: Reliquias Apostólicas
+		CWRRecipes_GodEaterWeapon: Arma Devoradora de Dios
+		CWRRecipes_FishGroup: Peces
+		LoadItemRecipe_Condition_Text1: Se necesita tener un Compendio de Gran Renovación en la mochila
+		Murasama_Text0: Desbloqueado
+		Murasama_Text1: No desbloqueado. Necesita Prueba 2
+		Murasama_Text2: No desbloqueado. Necesita Prueba 5
+		Murasama_Text3: No desbloqueado. Necesita Prueba 9
+		MouseTextContactPanel_TextContent: Presione Ctrl izquierdo y haga clic en el ícono del objeto para alternar la receta de síntesis de apocalipsis
+		CWRItem_IsInfiniteItem_TextContent: Solo la síntesis avanzada puede estabilizarlo; de lo contrario, tocarlo provocará un colapso aterrador
+		CWRItem_IsRemakeItem_TextContent: -Gran Renovación-
+		OnEnterWorld_TextContent: Se ha cargado la reinicialización de armas
+		OnEnterWorld_TextContent2:
+			'''
+			Se ha detectado que ha instalado [Mejor Experiencia], pero su versión de [Mejor Experiencia] está desactualizada.
+			Para garantizar el funcionamiento normal del juego, asegúrese de que la versión de [Mejor Experiencia] no sea inferior a 1.7.1.7
+			'''
+		CaseEjection_TextContent: Cartucho vacío
+		SupertableUI_Text1: Cerrar
+		SupertableUI_Text2: Ver recetas
+		SupertableUI_Text3: Ninguno
+		OverhaulTheBibleUI_Text:
+			'''
+			Ruede la rueda del mouse o arrastre la barra de progreso a la izquierda para navegar por los objetos que han sido reinicializados
+			Estos son solo de referencia, ya que muchos cambios parciales no aparecerán en esta lista.
+			'''
+		OverhaulTheBibleUI_Text1: Guerrero Vigilante
+		OverhaulTheBibleUI_Text2: Tirador Vigilante
+		OverhaulTheBibleUI_Text3: Mago Vigilante
+		OverhaulTheBibleUI_Text4: Invocador Vigilante
+		OverhaulTheBibleUI_Text5: Ladrón Vigilante
+		Wap_Minishark_Text: '''"El pequeño tiburón tiene un trabajo en el campo de tiro, su responsabilidad es ser un asesor de “fuego”"'''
+		Wap_Megashark_Text: '''"Necesitamos un calibre más grande, ¿no?"'''
+		Wap_HandGun_Text: ¡Bang! ¡Bang!! ¡Bang!!!
+		Wap_Flintlockpistol_Text:
+			'''
+			Poca retroceso
+			Una pistola antigua, podría explotar el cañón
+			"Confía en la sabiduría de los antiguos"
+			'''
+		Wap_Musket_Text: El miliciano dice que debo estar preparado
+		Wap_TheUndertaker_Text: Cuando el enterrador se da cuenta de que sus clientes no cooperan, a menudo usa esto para calmarlos
+		Wap_RedRyder_Text: ¡No te dispares los ojos!
+		Wap_FlareGun_Text: '''"No lo confundas con una pistola de señalización"'''
+		Wap_PhoenixBlaster_Text: ¿Las armas del inframundo no pueden controlar el fuego? En realidad, las balas no pueden soportar este calor
+		Wap_Sandgun_Text:
+			'''
+			Haz clic derecho para disparar más balas de arena
+			"Llévalo y escóndete en la arena, así podrás pretender ser un hormiguero"
+			'''
+		Wap_StarCannon_Text:
+			'''
+			Lanza estrellas
+			"La luz de las estrellas iluminará el camino"
+			'''
+		Wap_SuperStarCannon_Text:
+			'''
+			Lanza estrellas
+			"Ahora tenemos un lanzador de estrellas más grande y potente"
+			'''
+		Wap_ZapinatorGray_Text: Esta es tu luz de la suerte
+		Wap_ZapinatorOrange_Text: Esta es tu luz de la suerte
+		Wap_QuadBarrelShotgun_Text:
+			'''
+			Dos disparos inexactos a la vez
+			"Pon el cañón en los ojos de esos monstruos, así no necesitas apuntar"
+			'''
+		Wap_TacticalShotgun_Text:
+			'''
+			Dos disparos a la vez
+			Ignora 15 puntos de defensa al atacar a corta distancia
+			"No hay nada que no se pueda resolver con un disparo a quemarropa, y si lo hay, dispara varias veces más"
+			'''
+		Wap_Shotgun_Text:
+			'''
+			Dos disparos a la vez
+			"El armero espera que estas armas tengan más cañones, así sus balas se venderán mejor"
+			'''
+		Wap_Boomstick_Text:
+			'''
+			Lanza un grupo de balas
+			"No tengo tiempo para tonterías"
+			'''
+		Wap_ClockworkAssaultRifle_Text:
+			'''
+			Dos disparos a la vez
+			"Ahora sé por qué suenan tic-tac, y también sé cómo hacer que se detengan"
+			'''
+		Wap_SnowballCannon_Text:
+			'''
+			Usa bolas de nieve como munición
+			"Sabes, meter bolas de nieve aquí es frío para las manos, así que solo puedo meter unas pocas a la vez"
+			'''
+		Wap_Uzi_Text:
+			'''
+			Convierte balas normales en balas de alta velocidad
+			"Compacto y letal, no usarlo en dúo es un desperdicio"
+			'''
+		Wap_VenusMagnum_Text:
+			'''
+			Convierte balas normales en balas de alta velocidad
+			"Transforma el amor en energía cinética de balas, eso dice Venus"
+			'''
+		Wap_StakeLauncher_Text:
+			'''
+			Lanza estacas penetrantes
+			Las estacas se consideran arcos, pero eso no significa que no puedas ponerle una mira
+			"La única forma de matar a un vampiro es atravesarle el corazón con una estaca de madera, pero un vampiro tampoco sobreviviría"
+			'''
+		Wap_SniperRifle_Text:
+			'''
+			Balas de mosquete o balas de francotirador se convierten en balas de alta velocidad
+			La precisión y el daño aumentan con el tiempo de apuntado
+			Tiene un cargador de cuatro balas, las tres primeras no critican, la cuarta es crítica
+			Las balas disparadas ignorarán la armadura del objetivo
+			Monturas afectarán la precisión de esta arma de precisión
+			—— El tiempo antiguo ha debilitado la mitad de esta arma
+			"Cuando la retícula te apunte, la muerte besará tu frente."
+			'''
+		Wap_NailGun_Text:
+			'''
+			Lanza un gran clavo, al golpear a un enemigo, explota tres clavos explosivos en su cabeza
+			Los grandes clavos que no golpean al enemigo también explotarán después de un tiempo
+			"Los clavos que saqué de la cabeza del clavo tienen un gran efecto, ahora probemos a hacer más cabezas de clavo"
+			'''
+		Wap_DartPistol_Text:
+			'''
+			Lanza dardos a una velocidad mayor
+			Causa solo un 70% de daño al usar dardos malditos como munición
+			"¿Usar un soplador para lanzar dardos? Dios, ¿me pides que mantenga pólvora en la boca?"
+			'''
+		Wap_DartRifle_Text:
+			'''
+			Lanza dardos con mayor daño
+			Ignora hasta 15 puntos de armadura del enemigo
+			"¿Usar un soplador para lanzar dardos? Dios, ¿me pides que mantenga pólvora en la boca?"
+			'''
+		CartridgeHolderUI_Text1: Contenido del cargador
+		CartridgeHolderUI_Text2: Restante
+		CartridgeHolderUI_Text3: Vacío
+		CartridgeHolderUI_Text4: Hacer clic derecho para vaciar
+		Wap_SDMG_Text:
+			'''
+			Dispara balas a una velocidad extremadamente rápida
+			"Viene de la frontera estelar"
+			'''
+		Wap_OnyxBlaster_Text:
+			'''
+			Convierte un disparo en una bala de explosión de ónice
+			"Una energía oscura emana de la pistola"
+			'''
+		Wap_LaserRifle_Text:
+			'''
+			Lanza un láser del ojo de un perdedor
+			"Increíble, ¡ese enorme ojo fue introducido en esta pistola!"
+			'''
+		Wap_CobaltRepeater_Text:
+			'''
+			Carga y dispara flechas rápidas
+			"Una ballesta hecha de cobalto, fuerte y poderosa"
+			'''
+		Wap_PalladiumRepeater_Text:
+			'''
+			Con la posibilidad de disparar dos flechas dispersas
+			"Una ballesta de paladio, capaz de dominar la técnica de dispersar dos flechas"
+			'''
+		Wap_MythrilRepeater_Text:
+			'''
+			Carga y dispara flechas rápidas
+			Hará que la flecha penetre a un enemigo extra
+			"Una ballesta de mithril, aún más fuerte y poderosa"
+			'''
+		Wap_OrichalcumRepeater_Text:
+			'''
+			Dispara de manera estable dos flechas dispersas
+			"Una ballesta de oricalco, capaz de dominar completamente la técnica de dispersar dos flechas"
+			'''
+		Wap_AdamantiteRepeater_Text:
+			'''
+			Carga y dispara flechas rápidas
+			Hará que la flecha penetre a dos enemigos extra
+			"Una ballesta de adamantita, fuerte y poderosa, ¡fuerte y poderosa!"
+			'''
+		Wap_TitaniumRepeater_Text:
+			'''
+			Dispara dos o tres flechas dispersas
+			"Una ballesta de titanio, te das cuenta de que dispersar dos flechas es fácil, así que intentas con tres"
+			'''
+		Wap_ChlorophyteShotbow_Text:
+			'''
+			Dispara rápidamente varias flechas
+			Convierte flechas de madera en flechas de clorofita
+			"Después de suficiente fotosíntesis, aunque no puede lanzar guisantes, ya es una gran ballesta de múltiples cabezas"
+			'''
+		Wap_HallowedRepeater_Text:
+			'''
+			Carga y dispara flechas rápidas
+			Hará que la flecha penetre a dos enemigos extra
+			Además dispara flechas de esencia, flechas sagradas y flechas malditas
+			"Las fuerzas del bien y del mal abren camino a esta flecha"
+			'''
+		Wap_GrenadeLauncher_Text:
+			'''
+			Se puede disparar solo en ángulo
+			Lanza dos granadas en forma de arco
+			Puede lanzar una o dos granadas pequeñas adicionales
+			"Finalmente tenemos una manera fácil de lanzar estas bombas, aunque aún puede lastimarnos"
+			'''
+		Wap_RocketLauncher_Text:
+			'''
+			Carga y lanza un cohete
+			Si mantienes presionado después de que el cohete impacte, lanza varias cohetes pequeños adicionales
+			"Apuesto a que no será detenido por el suelo"
+			'''
+		Wap_ElectrosphereLauncher_Text:
+			'''
+			Lanza tres cohetes que dispersan dispositivos de anillo eléctrico
+			La explosión del cohete crea un anillo eléctrico que causa daño continuo
+			Se generan arcos eléctricos entre los anillos
+			"¡Técnica de barbacoa alienígena!"
+			'''
+		Wap_ProximityMineLauncher_Text:
+			'''
+			Lanza minas de proximidad que infligen alto daño, se disfrazan y aumentan el daño
+			"Vamos a jugar a las minas"
+			'''
+		Wap_SnowmanCannon_Text:
+			'''
+			Lanza misiles de muñeco de nieve
+			Puede lanzar un gran misil de muñeco de nieve lentamente
+			"Amigo, este es tu regalo de Navidad"
+			'''
+		SupertableUI_Text4: Cerrar la supervisión de colocación
+		SupertableUI_Text5: Abrir la supervisión de colocación
+		AmmoBox_Text: Se ha alcanzado el límite de despliegue
+		AmmoBox_Text2: Desplegando
+		AmmoBox_Text3: Desplegado
+		HellfireExplosion_DeadLang_Text: Se convierte en cenizas en el fuego del infierno
+		SupMUI_OneClick_Text1: Colocar materiales rápidamente
+		SupMUI_OneClick_Text2: Recoger materiales rápidamente
+		TemporaryVersion_Text:
+			'''
+			[CalamityOverhaul-0.3.6.1.2]:
+			La versión actual es una versión temporal, diseñada para adaptarse a la nueva versión, 
+			realizar ajustes y correcciones de errores para garantizar la experiencia de juego más básica, hasta que llegue la versión 0.4.
+			La actualización se realizó apresuradamente, por lo que aún pueden existir errores evidentes.
+			Si encuentras problemas durante el juego, por favor, reporta un problema en Github,
+			o ve al hilo de retroalimentación sobre problemas en el taller creativo del mod para buscar ayuda.
+			'''
+		MS_Config_Text:
+			'''
+			Se ha detectado que tienes instalado [Magic Storage Mod]. Para resolver problemas de conflicto, 
+			se recomienda establecer [Recursion Crafting Depth] en 0 en la configuración del mod.
+			Esta configuración es para la elaboración recursiva y, al interactuar con este mod, 
+			puede llamar incorrectamente a todos los eventos de elaboración, lo que afectará gravemente la experiencia de juego.
+			'''
+		IconUI_Text0: Ir al repositorio de código abierto del mod :)
+		IconUI_Text1: Retroalimentación de problemas
+		IconUI_Text2: Lista de agradecimientos
+		IconUI_Text3: Artistas
+		IconUI_Text4: Ayuda con el código
+		IconUI_Text5: Donantes
+		IconUI_Text6: Pruebas de equilibrio
+		IconUI_Text7: Ver registro
+		Spazmatism_Text1: Despliegue exitoso de EUX_001, comportamiento registrado: Colaborar con PCZ_001 para eliminar el objetivo
+		Spazmatism_Text2: Despliegue exitoso de EUX_002, comportamiento registrado: Colaborar con PCZ_001 para eliminar el objetivo
+		Spazmatism_Text3: Estructura principal de EUX_001 dañada, intentando retirarse del campo de batalla...
+		Spazmatism_Text4: Estructura principal de EUX_002 dañada, intentando retirarse del campo de batalla...
+		Spazmatism_Text5: Objetivo eliminado
+		Spazmatism_Text6: Retirándose...
+		Spazmatism_Text7: Misión fallida, intentando retirarse del campo de batalla...
+		Spazmatism_Text8: Ya desplegado
+		Error_1:
+			'''
+			Un gancho ha fallado. Para el funcionamiento normal del juego, por favor cierra el juego y vuelve a entrar.
+			Si eso no resuelve el problema, lleva el registro exportado a un desarrollador del mod.
+			'''
+		Error_2:
+			'''
+			Se ha detectado una anomalía. El servidor está intentando recargar en tiempo real el sistema de bloques.
+			Esto puede causar un breve retraso y unos segundos de latencia en la red, lo cual es normal.
+			'''
+		Config_1: Usuario
+		Config_2: Se ha modificado la configuración del servidor
+		Wap_BubbleGun_Text:
+			'''
+			Dispara grandes burbujas explosivas del océano
+			Pocas burbujas seguirán a los enemigos
+			¿A quién no le gusta jugar con burbujas?
+			'''
+		Wap_Tsunami_Text:
+			'''
+			Dispara cinco flechas en fila
+			Presiona el botón derecho para cargar y explotar muchas flechas
+			'''
+		CWRGun_KL_Text: Presiona la tecla [KL] para recargar
+		CWRGun_Scope_Text: Presiona [Scope] para mirar a través del visor
+		CWRGun_Recoil_Text: "[Retroceso]"
+		CWRGun_MustCA_Text: Disparar siempre consume munición
+		CWRGun_Recoil_Level_0: Ninguno
+		CWRGun_Recoil_Level_1: Débil
+		CWRGun_Recoil_Level_2: Moderadamente débil
+		CWRGun_Recoil_Level_3: Normal
+		CWRGun_Recoil_Level_4: Fuerte
+		CWRGun_Recoil_Level_5: Loco
+		CWRGun_Recoil_Level_6: Ridículo
+		Wap_Revolver_Text: “Amigo, esto no es una película del oeste, las balas necesitan ser cargadas una a una”
+		Wap_Gatligator_Text:
+			'''
+			Me gustan las armas de tiburón, pero amo más a los cocodrilos. 
+			Después de todo, ambos tienen algo en común: pueden morderte los dedos en cualquier momento
+			'''
+		Wap_Xenopopper_Text:
+			'''
+			Lanza balas de burbujas con el botón izquierdo
+			Pulsa el botón derecho para un barrido automático
+			"No hay nada mejor que meter balas dentro de burbujas"
+			'''
+		Wap_DaedalusStormbow_Text:
+			'''
+			Lanza varias flechas que caen del cielo con el botón izquierdo
+			Pulsa el botón derecho para un disparo rápido y poderoso
+			"No tiene nada que ver con la tormenta ni con los ángeles"
+			'''
+		Wap_CandyCornRifle_Text: Lanza caramelos de maíz, ¡porque los caramelos de maíz son geniales!
+		Wap_WoodenBow_Text:
+			'''
+			El viaje del ranger está a punto de comenzar
+			Las flechas se convertirán en bellotas al impactar
+			'''
+		Wap_DemonBow_Text: ¿Metal demoníaco? Parece una de las maneras menos eficaces de utilizarlo
+		Wap_IronBow_Text:
+			'''
+			¡Hierro!
+			Las flechas otorgan un beneficio temporal de hierro al jugador al impactar
+			'''
+		Wap_TungstenBow_Text:
+			'''
+			¡Tungsteno!
+			Las flechas generan algunas monedas de plata al impactar
+			'''
+		Wap_TinBow_Text:
+			'''
+			¡Estaño!
+			Las flechas generan algunas monedas de cobre al impactar
+			'''
+		Wap_TendonBow_Text:
+			'''
+			Los demonios susurran al oído
+			Las flechas otorgan un beneficio temporal de miedo al jugador al impactar
+			'''
+		Wap_SilverBow_Text:
+			'''
+			¡Plata!
+			Las flechas generan algunas monedas de plata al impactar
+			'''
+		Wap_ShadowFlameBow_Text:
+			'''
+			Lanza flechas de llamas oscuras
+			"Viene de una bruja"
+			'''
+		Wap_PlatinumBow_Text:
+			'''
+			¡Platino!
+			Las flechas generan algunas monedas de oro al impactar
+			'''
+		Wap_Marrow_Text:
+			'''
+			¡Hueso!
+			Convierte flechas de madera en flechas óseas
+			Las flechas lanzan algunos huesos al impactar
+			'''
+		Wap_LeadBow_Text:
+			'''
+			¡Plomo!
+			Las flechas otorgan un beneficio temporal de hierro al jugador al impactar
+			'''
+		Wap_IceBow_Text:
+			'''
+			¡Hielo!
+			Tiene un poderoso disparo triple
+			Convierte flechas de madera en flechas congeladas
+			Las flechas generan una nube de hielo al impactar
+			'''
+		Wap_GoldBow_Text:
+			'''
+			¡Oro!
+			Las flechas generan algunas monedas de oro al impactar
+			'''
+		Wap_CopperBow_Text:
+			'''
+			¡Cobre!
+			Las flechas generan algunas monedas de cobre al impactar
+			'''
+		Wap_DD2BetsyBow_Text:
+			'''
+			Lanza cinco flechas que pueden dividirse
+			Causa más daño a objetivos en el aire
+			'''
+		Wap_NeutronBow_LoadingText1: Capturando gravedad
+		Wap_NeutronBow_LoadingText2: Haciendo ceder la gravedad
+		Wap_NeutronBow_LoadingText3: ¡Listo!!
+		Wap_Gladius_Text: Rápido y afilado
+		Wap_WoodenBoomerang_Text: Un ataque sigiloso lanzará rápidamente tres búmeranes
+		Wap_Flamarang_Text: Un ataque sigiloso lanzará rápidamente tres búmeranes
+		Wap_EnchantedBoomerang_Text: Un ataque sigiloso lanzará rápidamente tres búmeranes, invocando estrellas fugaces al impactar
+		Wap_Shroomerang_Text: Un ataque sigiloso liberará bombas de esporas de hongo
+		Wap_Spear_Text: Un ataque sigiloso lanzará una lanza poderosa
+		Wap_VortexBeater_Text:
+			'''
+			Lanza misiles de vórtice a intervalos
+			Pulsa el botón derecho para lanzar misiles de vórtice a plena potencia
+			'''
+		Wap_ChainGun_Text: Supresión de fuego
+		Wap_MoltenFury_Text:
+			'''
+			Convierte flechas de madera en flechas de fuego
+			Convierte flechas de llamas en flechas del inframundo
+			'''
+	}
+}
+
+Biomes: {
+	TungstenBiome: {
+		DisplayName: Rebelión de Tungsteno
+		TownNPCDialogueName: Bioma de Tungsteno
+	}
+}
