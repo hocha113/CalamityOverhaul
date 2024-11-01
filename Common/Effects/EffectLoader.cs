@@ -110,7 +110,9 @@ namespace CalamityOverhaul.Common.Effects
         }
 
         private void ProcessWarpSets(GraphicsDevice graphicsDevice, List<IDrawWarp> warpSets, bool noBlueshift) {
-            if (warpSets.Count == 0) return;
+            if (warpSets.Count <= 0) {
+                return;
+            }
 
             // 绘制屏幕到临时目标
             graphicsDevice.SetRenderTarget(screen);
@@ -208,15 +210,17 @@ namespace CalamityOverhaul.Common.Effects
             Main.spriteBatch.End();
         }
 
-        private bool HasPwoerEffect() => !CWRServerConfig.Instance.MurasamaSpaceFragmentationBool ? false : Main.LocalPlayer.CWR().EndSkillEffectStartBool;
+        private bool HasPwoerEffect() {
+            if (!CWRServerConfig.Instance.MurasamaSpaceFragmentationBool) {
+                return false;
+            }
+            return Main.LocalPlayer.CWR().EndSkillEffectStartBool;
+        }
 
         private bool HasWarpEffect(out List<IDrawWarp> warpSets, out List<IDrawWarp> warpSetsNoBlueshift) {
             warpSets = [];
             warpSetsNoBlueshift = [];
-            foreach (Projectile p in Main.projectile) {
-                if (!p.active) {
-                    continue;
-                }
+            foreach (Projectile p in Main.ActiveProjectiles) {
                 if (p.ModProjectile is IDrawWarp drawWarp) {
                     if (drawWarp.noBlueshift()) {
                         warpSetsNoBlueshift.Add(drawWarp);
