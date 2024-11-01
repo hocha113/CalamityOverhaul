@@ -3,6 +3,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -96,9 +97,9 @@ namespace CalamityOverhaul.Content.UIs
                 if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
                     key2 = "_dragonBreath";
                 }
-                //if (handItem.useAmmo == AmmoID.Rocket) {
-                //    key = "GrenadeRound";
-                //}
+                if (handItem.useAmmo == AmmoID.Rocket) {
+                    key = "GrenadeRound";
+                }
                 TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + key2);
             }
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.Magazines) {
@@ -117,13 +118,17 @@ namespace CalamityOverhaul.Content.UIs
             Initialize();
             CWRItems cwrItem = handItem.CWR();
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.CartridgeHolder) {
+                int offsetX = 0;
+                if (handItem.useAmmo == AmmoID.Rocket) {
+                    offsetX = 10;
+                }
                 spriteBatch.Draw(TextureValue, DrawPosition, null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, bulletNum.ToString()
-                    , DrawPosition.X + 50, DrawPosition.Y + 0, Color.AliceBlue, Color.Black, Vector2.Zero, 1.3f);
+                    , DrawPosition.X + 50 + offsetX, DrawPosition.Y + 0, Color.AliceBlue, Color.Black, Vector2.Zero, 1.3f);
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "Max"
-                    , DrawPosition.X + 50, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1f);
+                    , DrawPosition.X + 50 + offsetX, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1f);
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, cwrItem.AmmoCapacity.ToString()
-                    , DrawPosition.X + 85, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1.05f);
+                    , DrawPosition.X + 85 + offsetX, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1.05f);
             }
             if (cwrItem.CartridgeEnum == CartridgeUIEnum.Magazines) {
                 Rectangle rectangle = CWRUtils.GetRec(TextureValue, 6 - bulletNum, 7);
