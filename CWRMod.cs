@@ -183,6 +183,7 @@ namespace CalamityOverhaul
             CWR_InItemLoader_Set_Shoot_Hook = null;
             CWR_InItemLoader_Set_CanUse_Hook = null;
             CWR_InItemLoader_Set_UseItem_Hook = null;
+            CWRLoad.UnLoad();
             Instance = null;
         }
 

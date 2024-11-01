@@ -763,18 +763,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 }
 
                 if (CWRUtils.IsAmmunitionUnlimited(ammoItem)) {//如果该物品不消耗，那么可能是一个无限弹药类型的物品，这里进行特别处理
-                    if (CWRLoad.ItemToShootID.ContainsKey(ammoItem.type)) {
-                        int newAmmoType = ammoItem.type;
-                        if (CWRLoad.ProjectileToSafeAmmoMap.TryGetValue(ammoItem.shoot, out int value2)) {
-                            newAmmoType = value2;
-                        }
-                        Item newAmmoItem = new Item(newAmmoType, magazineCapacity - accumulatedAmount);
-                        newAmmoItem.CWR().AmmoProjectileReturn = false;//因为是无尽弹药类提供的弹药，所以不应该在之后的退弹中被返还
-                        loadedItems.Add(newAmmoItem);
-                        accumulatedAmount = magazineCapacity;
-                        AmmoState.Amount = magazineCapacity;
-                        break;
+                    int newAmmoType = ammoItem.type;
+                    if (CWRLoad.ProjectileToSafeAmmoMap.TryGetValue(ammoItem.shoot, out int value2)) {
+                        newAmmoType = value2;
                     }
+                    Item newAmmoItem = new Item(newAmmoType, magazineCapacity - accumulatedAmount);
+                    newAmmoItem.CWR().AmmoProjectileReturn = false;//因为是无尽弹药类提供的弹药，所以不应该在之后的退弹中被返还
+                    loadedItems.Add(newAmmoItem);
+                    accumulatedAmount = magazineCapacity;
+                    AmmoState.Amount = magazineCapacity;
+                    break;
                 }
                 if (ammoItem.type > ItemID.None && stack > 0) {
                     loadedItems.Add(new Item(ammoItem.type, stack));

@@ -221,10 +221,10 @@ namespace CalamityOverhaul.Content
             if (CWRLoad.AddMaxStackItemsIn64.Contains(item.type)) {
                 item.maxStack = 64;
             }
-
-            if (CWRLoad.WeaponIsHeldRanged.TryGetValue(item.type, out bool isRanged) && isRanged) {
-                item.noUseGraphic = true;
-            }
+            //TODO:我忘了为什么要加这个，猜测是当时要禁止切枪用的一个属性，但已经用另一个方法实现了，所以这段处理是无用的，暂时注释掉试试
+            //if (CWRLoad.OnLoadContentBool && CWRLoad.ItemIsRanged[item.type]) {
+            //    item.noUseGraphic = true;
+            //}
         }
 
         public void InitializeMagazine() {
@@ -308,10 +308,10 @@ namespace CalamityOverhaul.Content
                     Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero
                         , heldProjType, item.damage, item.knockBack, player.whoAmI);
                 }
-                if (CWRLoad.ItemToBaseRanged.TryGetValue(item.type, out BaseHeldRanged ranged)) {
+                if (CWRLoad.ItemIsRanged[item.type]) {
                     bool lDown = player.PressKey();
                     bool rDown = player.PressKey(false);
-                    if (lDown || (rDown && !lDown && ranged.CanRightClick && !player.cursorItemIconEnabled)) {
+                    if (lDown || (rDown && !lDown && CWRLoad.ItemIsRangedAndCanRightClickFire[item.type] && !player.cursorItemIconEnabled)) {
                         player.CWR().HeldStyle = 0;
                     }
                 }
@@ -338,8 +338,8 @@ namespace CalamityOverhaul.Content
 
         public static void OverModifyTool(Item item, List<TooltipLine> tooltips) {
             bool inRItemIndsDict = CWRMod.RItemIndsDict.ContainsKey(item.type);
-            if (CWRLoad.ItemToBaseGun.TryGetValue(item.type, out BaseGun gun)) {
-                if (gun.MustConsumeAmmunition && item.CWR().HasCartridgeHolder && CWRServerConfig.Instance.MagazineSystem) {
+            if (CWRLoad.ItemIsGun[item.type]) {
+                if (CWRLoad.ItemIsGunAndMustConsumeAmmunition[item.type] && item.CWR().HasCartridgeHolder && CWRServerConfig.Instance.MagazineSystem) {
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_MustCA", CWRLocText.GetTextValue("CWRGun_MustCA_Text")));
                 }
                 if (item.CWR().HasCartridgeHolder && CWRServerConfig.Instance.MagazineSystem) {
@@ -351,7 +351,7 @@ namespace CalamityOverhaul.Content
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Scope", newText));
                 }
                 if (CWRServerConfig.Instance.ActivateGunRecoil) {
-                    string newText3 = CWRLocText.GetTextValue("CWRGun_Recoil_Text").Replace("[Recoil]", CWRLocText.GetTextValue(gun.GetLckRecoilKey()));
+                    string newText3 = CWRLocText.GetTextValue("CWRGun_Recoil_Text").Replace("[Recoil]", CWRLocText.GetTextValue(CWRLoad.ItemIsGunAndGetRecoilLocKey[item.type]));
                     tooltips.Add(new TooltipLine(CWRMod.Instance, "CWRGun_Recoil", newText3));
                 }
 
@@ -377,6 +377,7 @@ namespace CalamityOverhaul.Content
                     tooltips.AddRange(prefixTooltips);
                 }
             }
+
             if (CWRConstant.ForceReplaceResetContent && inRItemIndsDict) {
                 string key = CWRMod.RItemIndsDict[item.type].TargetToolTipItemName;
                 if (key != "") {

@@ -718,23 +718,5 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 }
             }
         }
-
-        public string GetLckRecoilKey() {
-            float recoilValue = Math.Abs(Recoil);
-            string recoilKey;
-            if (recoilValue == 0) {
-                return "CWRGun_Recoil_Level_0";
-            }
-            recoilKey = recoilValue < 0.5f
-                ? "CWRGun_Recoil_Level_1"
-                : recoilValue < 0.1f
-                    ? "CWRGun_Recoil_Level_2"
-                    : recoilValue < 1.5f
-                                    ? "CWRGun_Recoil_Level_3"
-                                    : recoilValue < 2.2f ? "CWRGun_Recoil_Level_4"
-                                    : recoilValue < 3.2f ? "CWRGun_Recoil_Level_5"
-                                    : "CWRGun_Recoil_Level_6";
-            return recoilKey;
-        }
     }
 }

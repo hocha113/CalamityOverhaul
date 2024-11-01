@@ -714,7 +714,7 @@ End:;
                 }
                 else {
                     float value999 = 1;
-                    if (CWRLoad.ItemToBaseBow.ContainsKey(item.type)) {
+                    if (CWRLoad.ItemIsBow[item.type]) {
                         value999 = 0.5f;
                     }
                     spriteBatch.Draw(TextureAssets.Item[item.type].Value, drawpos + offset, new Rectangle?(rectangle), (drawColor == default ? Color.White : drawColor) * alp, 0f, vector / 2, slp * value999, 0, 0f);

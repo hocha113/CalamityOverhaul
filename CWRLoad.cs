@@ -1,5 +1,4 @@
-﻿using CalamityMod.Items;
-using CalamityMod.Items.LoreItems;
+﻿using CalamityMod.Items.LoreItems;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.PermanentBoosters;
 using CalamityMod.NPCs.Abyss;
@@ -14,6 +13,7 @@ using CalamityMod.NPCs.ExoMechs.Ares;
 using CalamityMod.NPCs.ExoMechs.Artemis;
 using CalamityMod.NPCs.ExoMechs.Thanatos;
 using CalamityMod.NPCs.HiveMind;
+using CalamityMod.NPCs.NormalNPCs;
 using CalamityMod.NPCs.Perforator;
 using CalamityMod.NPCs.PlaguebringerGoliath;
 using CalamityMod.NPCs.Polterghast;
@@ -32,6 +32,7 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -73,22 +74,6 @@ namespace CalamityOverhaul
         /// 关于哪些物品应该被设置为64的最大堆叠数
         /// </summary>
         public static int[] AddMaxStackItemsIn64 { get; private set; } = [];
-        /// <summary>
-        /// 无尽锭
-        /// </summary>
-        public static int[] MaterialsTypes { get; private set; }
-        /// <summary>
-        /// 湮宇星矢
-        /// </summary>
-        public static int[] MaterialsTypes2 { get; private set; }
-        /// <summary>
-        /// 天堂陨落
-        /// </summary>
-        public static int[] MaterialsTypes3 { get; private set; }
-        /// <summary>
-        /// 无尽镐
-        /// </summary>
-        public static int[] MaterialsTypes4 { get; private set; }
         /// <summary>
         /// 鬼妖，CWR
         /// </summary>
@@ -278,40 +263,41 @@ namespace CalamityOverhaul
         /// </summary>
         public static Dictionary<int, int> WallToItem { get; private set; } = [];
         /// <summary>
-        /// 物品对应射弹的词典
+        /// 该物品是否是一把枪械
         /// </summary>
-        public static Dictionary<int, int> ItemToShootID { get; private set; } = [];
-        public static Dictionary<int, List<int>> ShootToItemID { get; private set; } = [];
-        public static Dictionary<int, int> ItemToHeldProjID { get; private set; } = [];
-        public static Dictionary<int, Projectile> ItemToHeldProj { get; private set; } = [];
-        internal static Dictionary<int, BaseGun> ItemToBaseGun { get; private set; } = [];
-        internal static Dictionary<int, BaseBow> ItemToBaseBow { get; private set; } = [];
-        internal static Dictionary<int, BaseHeldRanged> ItemToBaseRanged { get; private set; } = [];
+        internal static Dictionary<int, bool> ItemIsGun { get; private set; } = [];
+        /// <summary>
+        /// 该物品是否是一个弓
+        /// </summary>
+        internal static Dictionary<int, bool> ItemIsBow { get; private set; } = [];
+        /// <summary>
+        /// 该物品是否是一个基本的远程类
+        /// </summary>
+        internal static Dictionary<int, bool> ItemIsRanged { get; private set; } = [];
+        /// <summary>
+        /// 该物品是否是一个基本的远程类，并且可以右键开火使用
+        /// </summary>
+        internal static Dictionary<int, bool> ItemIsRangedAndCanRightClickFire { get; private set; } = [];
+        /// <summary>
+        /// 获取一个弓类的箭族数量
+        /// </summary>
+        internal static Dictionary<int, int> ItemIsBowAndArrowNum { get; private set; } = [];
+        /// <summary>
+        /// 该枪械是否必定消耗弹药
+        /// </summary>
+        internal static Dictionary<int, bool> ItemIsGunAndMustConsumeAmmunition { get; private set; } = [];
+        /// <summary>
+        /// 获取一个枪械的后坐力数值
+        /// </summary>
+        internal static Dictionary<int, float> ItemIsGunAndGetRecoilValue { get; private set; } = [];
+        /// <summary>
+        /// 获取一个枪械的后坐力数值所对于的本地化描述键
+        /// </summary>
+        internal static Dictionary<int, string> ItemIsGunAndGetRecoilLocKey { get; private set; } = [];
+        /// <summary>
+        /// 让一个射弹安全的对应到弹药物品
+        /// </summary>
         internal static Dictionary<int, int> ProjectileToSafeAmmoMap { get; private set; } = [];
-        /// <summary>
-        /// 对应ID的武器是否应该判定为一个手持类远程武器
-        /// </summary>
-        internal static Dictionary<int, bool> WeaponIsHeldRanged { get; private set; } = [];
-        /// <summary>
-        /// 对应ID的武器是否应该判定为一个弓
-        /// </summary>
-        internal static Dictionary<int, bool> WeaponIsBow { get; private set; } = [];
-        /// <summary>
-        /// 对应ID的武器是否应该判定为一个枪
-        /// </summary>
-        internal static Dictionary<int, bool> WeaponIsGun { get; private set; } = [];
-        /// <summary>
-        /// 对应ID的武器是否应该判定为一个装填类枪
-        /// </summary>
-        internal static Dictionary<int, bool> WeaponIsFeederGun { get; private set; } = [];
-        /// <summary>
-        /// 对应ID的武器是否应该判定为一个霰弹枪
-        /// </summary>
-        internal static Dictionary<int, bool> WeaponIsShotgunSkt { get; private set; } = [];
-        /// <summary>
-        /// 对应ID的武器是否应该判定为一个弩
-        /// </summary>
-        internal static Dictionary<int, bool> WeaponIsCrossbow { get; private set; } = [];
         #endregion
 
         public static class NPCValue
@@ -380,9 +366,9 @@ namespace CalamityOverhaul
 
             AstrumAureus = NPCType<AstrumAureus>();
 
-            ArmoredDiggerHead = NPCType<CalamityMod.NPCs.NormalNPCs.ArmoredDiggerHead>();
-            ArmoredDiggerBody = NPCType<CalamityMod.NPCs.NormalNPCs.ArmoredDiggerBody>();
-            ArmoredDiggerTail = NPCType<CalamityMod.NPCs.NormalNPCs.ArmoredDiggerTail>();
+            ArmoredDiggerHead = NPCType<ArmoredDiggerHead>();
+            ArmoredDiggerBody = NPCType<ArmoredDiggerBody>();
+            ArmoredDiggerTail = NPCType<ArmoredDiggerTail>();
 
             Apollo = NPCType<Apollo>();
             Artemis = NPCType<Artemis>();
@@ -458,81 +444,6 @@ namespace CalamityOverhaul
                 DesertNuisanceBodyYoung, CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
                 , SepulcherBody, PerforatorBodyLarge, PerforatorBodyMedium, NPCID.TheDestroyerBody, NPCID.EaterofWorldsBody];
 
-            MaterialsTypes = [
-                ItemType<AerialiteBar>(),//水华锭
-                ItemType<AuricBar>(),//圣金源锭
-                ItemType<ShadowspecBar>(),//影魔锭
-                ItemType<AstralBar>(),//彗星锭
-                ItemType<CosmiliteBar>(),//宇宙锭
-                ItemType<CryonicBar>(),//极寒锭
-                ItemType<PerennialBar>(),//龙篙锭
-                ItemType<ScoriaBar>(),//岩浆锭
-                ItemType<MolluskHusk>(),//生物质
-                ItemType<MurkyPaste>(),//泥浆杂草混合物质
-                ItemType<DepthCells>(),//深渊生物组织
-                ItemType<DivineGeode>(),//圣神晶石
-                ItemType<DubiousPlating>(),//废弃装甲
-                ItemType<EffulgentFeather>(),//闪耀金羽
-                ItemType<ExoPrism>(),//星流棱晶
-                ItemType<BloodstoneCore>(),//血石核心
-                ItemType<CoreofCalamity>(),//灾劫精华
-                ItemType<AscendantSpiritEssence>(),//化神精魄
-                ItemType<AshesofCalamity>(),//灾厄尘
-                ItemType<AshesofAnnihilation>(),//至尊灾厄精华
-                ItemType<LifeAlloy>(),//生命合金
-                ItemType<LivingShard>(),//生命物质
-                ItemType<Lumenyl>(),//流明晶
-                ItemType<MeldConstruct>(),//幻塔物质
-                ItemType<MiracleMatter>(),//奇迹物质
-                //ItemType<Polterplasm>(),//幻魂
-                ItemType<RuinousSoul>(),//幽花之魂
-                ItemType<DarkPlasma>(),//暗物质
-                ItemType<UnholyEssence>(),//灼火精华
-                ItemType<TwistingNether>(),//扭曲虚空
-                ItemType<ArmoredShell>(),//装甲心脏
-                ItemType<YharonSoulFragment>(),//龙魂
-                ItemType<Rock>()//古恒石
-            ];
-
-            MaterialsTypes2 = new int[]{
-                ItemType<CalamityMod.Items.Weapons.Ranged.Deathwind>(),
-                ItemType<CalamityMod.Items.Weapons.Ranged.Alluvion>(),
-                ItemType<CalamityMod.Items.Weapons.Magic.Apotheosis>(),
-                ItemType<Rock>(),
-                ItemType<CosmiliteBar>()
-            };
-
-            MaterialsTypes3 = new int[]{
-                ItemType<CalamityMod.Items.Weapons.Ranged.Drataliornus>(),
-                ItemType<CalamityMod.Items.Weapons.Ranged.HeavenlyGale>(),
-                ItemType<CalamityMod.Items.Weapons.Magic.Eternity>(),
-                ItemType<InfiniteIngot>()
-            };
-
-            MaterialsTypes4 = new int[]{
-                ItemType<CalamityMod.Items.Tools.CrystylCrusher>(),
-                ItemType<CalamityMod.Items.Tools.AbyssalWarhammer>(),
-                ItemType<CalamityMod.Items.Tools.AerialHamaxe>(),
-                ItemType<CalamityMod.Items.Tools.AstralHamaxe>(),
-                ItemType<CalamityMod.Items.Tools.AstralPickaxe>(),
-                ItemType<CalamityMod.Items.Tools.AxeofPurity>(),
-                ItemType<CalamityMod.Items.Tools.BeastialPickaxe>(),
-                ItemType<CalamityMod.Items.Tools.BerserkerWaraxe>(),
-                ItemType<CalamityMod.Items.Tools.BlossomPickaxe>(),
-                ItemType<CalamityMod.Items.Tools.FellerofEvergreens>(),
-                ItemType<CalamityMod.Items.Tools.Gelpick>(),
-                ItemType<CalamityMod.Items.Tools.GenesisPickaxe>(),
-                ItemType<CalamityMod.Items.Tools.Grax>(),
-                ItemType<CalamityMod.Items.Tools.GreatbayPickaxe>(),
-                ItemType<CalamityMod.Items.Tools.InfernaCutter>(),
-                ItemType<CalamityMod.Items.Tools.ReefclawHamaxe>(),
-                ItemType<CalamityMod.Items.Tools.SeismicHampick>(),
-                ItemType<CalamityMod.Items.Tools.ShardlightPickaxe>(),
-                ItemType<CalamityMod.Items.Tools.SkyfringePickaxe>(),
-                ItemType<CalamityMod.Items.Tools.TectonicTruncator>(),
-                ItemType<InfiniteIngot>()
-            };
-
             ProjectileToSafeAmmoMap = new Dictionary<int, int>() {
                 { ProjectileID.BoneArrow, ItemID.BoneArrow},
                 { ProjectileID.MoonlordArrow, ItemID.MoonlordArrow},
@@ -579,16 +490,17 @@ namespace CalamityOverhaul
 
             MurasamaEcType.heldProjType = ProjectileType<MurasamaHeldProj>();
 
-            for (int i = 0; i < ItemLoader.ItemCount; i++) {
-                Item item = new Item(i);
+            for (int itemType = 0; itemType < ItemLoader.ItemCount; itemType++) {
+                Item item = new Item(itemType);
+                ItemIsGun[itemType] = false;
+                ItemIsGunAndMustConsumeAmmunition[itemType] = false;
+                ItemIsGunAndGetRecoilValue[itemType] = 1.2f;
+                ItemIsGunAndGetRecoilLocKey[itemType] = "";
+                ItemIsBow[itemType] = false;
+                ItemIsBowAndArrowNum[itemType] = 1;
+                ItemIsRanged[itemType] = false;
+                ItemIsRangedAndCanRightClickFire[itemType] = false;
                 if (item != null && item.type != ItemID.None) {//验证物品是否有效
-                    WeaponIsShotgunSkt.TryAdd(item.type, false);
-                    WeaponIsCrossbow.TryAdd(item.type, false);
-                    WeaponIsFeederGun.TryAdd(item.type, false);
-                    WeaponIsGun.TryAdd(item.type, false);
-                    WeaponIsBow.TryAdd(item.type, false);
-                    WeaponIsHeldRanged.TryAdd(item.type, false);
-
                     if (item.createTile != -1 && !TileToItem.ContainsKey(item.createTile)) {
                         TileToItem.Add(item.createTile, item.type);
                     }
@@ -596,56 +508,28 @@ namespace CalamityOverhaul
                         WallToItem.Add(item.createWall, item.type);
                     }
 
-                    if (!ItemToHeldProjID.ContainsKey(item.type)) {
-                        ItemToHeldProjID.Add(item.type, item.CWR().heldProjType);
-                    }
+                    int heldProjType = item.CWR().heldProjType;
+                    if (heldProjType > 0) {
+                        Projectile heldProj = new Projectile();
+                        heldProj.SetDefaults(heldProjType);
 
-                    if (!ItemToHeldProj.ContainsKey(item.type) && ItemToHeldProjID.ContainsKey(item.type)) {
-                        Projectile projectile = new Projectile();
-                        projectile.SetDefaults(ItemToHeldProjID[item.type]);
-                        ItemToHeldProj.Add(item.type, projectile);
+                        if (heldProj.ModProjectile != null) {
+                            if (heldProj.ModProjectile is BaseGun gun) {
+                                ItemIsGun[itemType] = true;
+                                ItemIsGunAndMustConsumeAmmunition[itemType] = gun.MustConsumeAmmunition;
+                                ItemIsGunAndGetRecoilValue[itemType] = gun.Recoil;
+                                ItemIsGunAndGetRecoilLocKey[itemType] = GetLckRecoilKey(gun.Recoil);
+                            }
 
-                        if (!ItemToBaseGun.ContainsKey(item.type)) {
-                            BaseGun gun = projectile.ModProjectile as BaseGun;
-                            if (gun != null) {
-                                ItemToBaseGun.Add(item.type, gun);
-                                WeaponIsGun[item.type] = true;
-                                if (gun.IsCrossbow) {
-                                    WeaponIsCrossbow[item.type] = true;
-                                }
+                            if (heldProj.ModProjectile is BaseBow bow) {
+                                ItemIsBow[itemType] = true;
+                                ItemIsBowAndArrowNum[itemType] = bow.BowArrowDrawNum;
                             }
-                            BaseFeederGun baseFeederGun = projectile.ModProjectile as BaseFeederGun;
-                            if (baseFeederGun != null) {
-                                WeaponIsFeederGun[item.type] = true;
-                                if (baseFeederGun.LoadingAmmoAnimation == BaseFeederGun.LoadingAmmoAnimationEnum.Shotgun) {
-                                    WeaponIsShotgunSkt[item.type] = true;
-                                }
-                            }
-                        }
-                        if (!ItemToBaseBow.ContainsKey(item.type)) {
-                            BaseBow bow = projectile.ModProjectile as BaseBow;
-                            if (bow != null) {
-                                WeaponIsBow[item.type] = true;
-                                ItemToBaseBow.Add(item.type, bow);
-                            }
-                        }
-                        if (!ItemToBaseRanged.ContainsKey(item.type)) {
-                            BaseHeldRanged ranged = projectile.ModProjectile as BaseHeldRanged;
-                            if (ranged != null) {
-                                WeaponIsHeldRanged[item.type] = true;
-                                ItemToBaseRanged.Add(item.type, ranged);
-                            }
-                        }
-                    }
 
-                    if (!ItemToShootID.ContainsKey(item.type)) {
-                        ItemToShootID.Add(item.type, item.shoot);
-                        if (ShootToItemID.ContainsKey(item.shoot)) {
-                            List<int> shoots = ShootToItemID[item.shoot];
-                            shoots.Add(item.type);
-                        }
-                        else {
-                            ShootToItemID.Add(item.shoot, [item.type]);
+                            if (heldProj.ModProjectile is BaseHeldRanged ranged) {
+                                ItemIsRanged[itemType] = true;
+                                ItemIsRangedAndCanRightClickFire[itemType] = ranged.CanRightClick;
+                            }
                         }
                     }
                 }
@@ -677,6 +561,45 @@ namespace CalamityOverhaul
             ];
 
             OnLoadContentBool = true;
+        }
+
+        public static void UnLoad() {
+            TileToItem.Clear();
+            WallToItem.Clear();
+            ItemIsGun.Clear();
+            ItemIsBow.Clear();
+            ItemIsRanged.Clear();
+            ItemIsRangedAndCanRightClickFire.Clear();
+            ItemIsBowAndArrowNum.Clear();
+            ItemIsGunAndMustConsumeAmmunition.Clear();
+            ItemIsGunAndGetRecoilValue.Clear();
+            ItemIsGunAndGetRecoilLocKey.Clear();
+            ProjectileToSafeAmmoMap.Clear();
+            NPCValue.TheofSteel.Clear();
+        }
+
+        public static string GetLckRecoilKey(float recoil) {
+            float recoilValue = Math.Abs(recoil);
+
+            if (recoilValue == 0) {
+                return "CWRGun_Recoil_Level_0";
+            }
+            else if (recoilValue < 0.1f) {
+                return "CWRGun_Recoil_Level_1";
+            }
+            else if (recoilValue < 0.5f) {
+                return "CWRGun_Recoil_Level_2";
+            }
+            else if (recoilValue < 1.5f) {
+                return "CWRGun_Recoil_Level_3";
+            }
+            else if (recoilValue < 2.2f) {
+                return "CWRGun_Recoil_Level_4";
+            }
+            else if (recoilValue < 3.2f) {
+                return "CWRGun_Recoil_Level_5";
+            }
+            return "CWRGun_Recoil_Level_6";
         }
 
         /// <summary>
