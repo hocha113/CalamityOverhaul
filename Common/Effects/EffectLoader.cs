@@ -19,7 +19,6 @@ namespace CalamityOverhaul.Common.Effects
         public static ArmorShaderData StreamerDustShader;
         public static ArmorShaderData InShootGlowShader;
 
-        internal static Type MiscShaderDataType;
         internal static FieldInfo Shader_Texture_FieldInfo_1;
         internal static FieldInfo Shader_Texture_FieldInfo_2;
         internal static FieldInfo Shader_Texture_FieldInfo_3;
@@ -32,6 +31,8 @@ namespace CalamityOverhaul.Common.Effects
             Asset<Effect> asset = getEffect(filename);
             Filters.Scene[filtersKey] = new Filter(new(asset, passname), EffectPriority.VeryHigh);
         }
+
+        private FieldInfo miscShaderGetFieldInfo(string key) => typeof(MiscShaderData).GetField(key, BindingFlags.NonPublic | BindingFlags.Instance);
 
         public static void LoadRegularShaders() {
             //Effect实例的获取被修改，它不再需要存储一个外置的字段值，因为这实际上毫无作用，使用CWRUTils.GetEffectValue()来获取这些实例
@@ -50,9 +51,7 @@ namespace CalamityOverhaul.Common.Effects
 
         void ICWRLoader.LoadData() {
             Instance = this;
-
-            MiscShaderDataType = typeof(MiscShaderData);
-            FieldInfo miscShaderGetFieldInfo(string key) => MiscShaderDataType.GetField(key, BindingFlags.NonPublic | BindingFlags.Instance);
+            
             Shader_Texture_FieldInfo_1 = miscShaderGetFieldInfo("_uImage1");
             Shader_Texture_FieldInfo_2 = miscShaderGetFieldInfo("_uImage2");
             Shader_Texture_FieldInfo_3 = miscShaderGetFieldInfo("_uImage3");
@@ -62,7 +61,6 @@ namespace CalamityOverhaul.Common.Effects
         }
 
         void ICWRLoader.UnLoadData() {
-            MiscShaderDataType = null;
             StreamerDustShader = null;
             InShootGlowShader = null;
             Shader_Texture_FieldInfo_1 = null;
