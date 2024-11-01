@@ -1622,7 +1622,7 @@ Items: {
 			The dissociative debuff causes 150 points of damage per second, which is affected by your ranged attribute
 			Each time the dissociative debuff causes damage, there is a chance for a critical hit or overkill to trigger
 			Converts musket bullets into high-speed bullets
-			30%几率节省弹药
+			30% chance to save ammunition
 			"Market forces dictate that you need to evolve or die."
 			'''
 	}
