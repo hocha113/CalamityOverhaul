@@ -221,6 +221,9 @@ namespace CalamityOverhaul.Common.Effects
             warpSets = [];
             warpSetsNoBlueshift = [];
             foreach (Projectile p in Main.ActiveProjectiles) {
+                if (p.ModProjectile is null) {
+                    continue;
+                }
                 if (p.ModProjectile is IDrawWarp drawWarp) {
                     if (drawWarp.noBlueshift()) {
                         warpSetsNoBlueshift.Add(drawWarp);
