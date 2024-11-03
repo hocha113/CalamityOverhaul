@@ -19,7 +19,11 @@ namespace CalamityOverhaul.Content.Events
         public static TungstenRiot Instance;
         public static Dictionary<int, TungstenEventNPCValue> TungstenEventNPCDic;
         public const float MaxEventIntegration = 300;
-        public bool TungstenRiotIsOngoing;
+        private bool _tungstenRiotIsOngoing;
+        public bool TungstenRiotIsOngoing {
+            get => _tungstenRiotIsOngoing;
+            internal set => _tungstenRiotIsOngoing = value;
+        }
         public int EventKillPoints;
         public int Time;
         public Color MainColor => new Color(28, 169, 175);

@@ -170,8 +170,8 @@ namespace CalamityOverhaul.Common.Effects
             Texture2D texture = CWRUtils.GetT2DValue(CWRConstant.Placeholder2);
             float screenDiagonalLength = (float)Math.Sqrt(Main.screenWidth * Main.screenWidth + Main.screenHeight * Main.screenHeight) * 4f;
 
-            foreach (Projectile proj in Main.projectile) {
-                if (!proj.active || proj.type != targetProjType) {
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.type != targetProjType) {
                     continue;
                 }
 
