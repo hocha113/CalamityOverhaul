@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content
         public override void NetSend(BinaryWriter writer) {
             BitsByte flags1 = new BitsByte();
             flags1[0] = TungstenRiot.Instance.TungstenRiotIsOngoing;
-            flags1[0] = DownedBossSystem.downedPrimordialWyrm;
+            flags1[1] = DownedBossSystem.downedPrimordialWyrm;
             writer.Write(flags1);
             writer.Write(TungstenRiot.Instance.EventKillPoints);
             writer.Write(InWorldBossPhase.YharonKillCount);
