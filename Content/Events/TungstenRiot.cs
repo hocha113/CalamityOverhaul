@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.Events
             if (npc.type == ModContent.NPCType<WulfrumAmplifier>()) {
                 EventKillPoints -= 2;
             }
-            if (EventKillPoints < 0) {
+            if (EventKillPoints <= 0) {
                 CloseEvent();
             }
         }
