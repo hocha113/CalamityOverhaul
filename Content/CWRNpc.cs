@@ -215,9 +215,15 @@ namespace CalamityOverhaul.Content
             }
             if (npc.type == CWRLoad.PrimordialWyrmHead) {//我不知道为什么原灾厄没有设置这个字段，为了保持进度的正常，我在这里额外设置一次
                 DownedBossSystem.downedPrimordialWyrm = true;
+                if (Main.dedServ) {
+                    NetMessage.SendData(MessageID.WorldData);
+                }
             }
             if (npc.type == CWRLoad.Yharon) {
                 InWorldBossPhase.YharonKillCount++;
+                if (Main.dedServ) {
+                    NetMessage.SendData(MessageID.WorldData);
+                }
             }
             if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
                 TungstenRiot.Instance.TungstenKillNPC(npc);

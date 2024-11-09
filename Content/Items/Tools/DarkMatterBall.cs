@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public static void DrawItemIcon(SpriteBatch spriteBatch, Vector2 position, int Type, float alp = 1) {
-            spriteBatch.Draw(DarkMatter.Value, position, null, Color.White, 0, DarkMatter.Value.Size() / 2, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(DarkMatter.Value, position, null, Color.White * alp, 0, DarkMatter.Value.Size() / 2, 1, SpriteEffects.None, 0);
             float sngs = Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.01f));
             spriteBatch.Draw(Full.Value, position, null, Color.White * sngs * (0.5f + alp * 0.5f), 0, Full.Value.Size() / 2, 1, SpriteEffects.None, 0);
         }

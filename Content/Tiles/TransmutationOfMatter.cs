@@ -103,20 +103,17 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override bool RightClick(int i, int j) {
-            SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
-            if (SupertableUI.Instance.Active && !Main.playerInventory) {
-                //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
-                Main.playerInventory = true;
-            }
-
             if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
-                int type = TileProcessorLoader.GetModuleID(typeof(TramModule));
-                TileProcessor module = TileProcessorLoader.FindModulePreciseSearch(type, point.X, point.Y);
-                if (module != null) {
-                    Main.LocalPlayer.CWR().TETramContrType = module.WhoAmI;
+                if (TileProcessorLoader.ByPositionGetTP(point, out TramModuleTP tram)) {
+                    Main.LocalPlayer.CWR().TETramContrType = tram.WhoAmI;
+                    SupertableUI.tramModuleEntity = tram;
+                    SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
+                    if (SupertableUI.Instance.Active && !Main.playerInventory) {
+                        //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
+                        Main.playerInventory = true;
+                    }
                 }
                 SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });
-                Recipe.FindRecipes();
             }
 
             return true;

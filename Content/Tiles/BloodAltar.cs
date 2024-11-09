@@ -63,12 +63,11 @@ namespace CalamityOverhaul.Content.Tiles
 
         public override bool RightClick(int i, int j) {
             if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
-                int id = TileProcessorLoader.GetModuleID(typeof(BloodAltarModule));
-                BloodAltarModule module = TileProcessorLoader.FindModulePreciseSearch<BloodAltarModule>(id, point.X, point.Y);
-                if (module != null && module.UseInPlayerBloodOrb(Main.LocalPlayer)) {
-                    BloodAltarModule.OnBoolMoon = !BloodAltarModule.OnBoolMoon;
-                    BloodAltarModule.startPlayerWhoAmI = Main.LocalPlayer.whoAmI;
-                    module.NetSend();
+                if (TileProcessorLoader.ByPositionGetTP(point, out BloodAltarTP module) && module.UseInPlayerBloodOrb(Main.LocalPlayer)) {
+                    BloodAltarTP.targetFuncsWhoAmi = module.WhoAmI;
+                    BloodAltarTP.startPlayerWhoAmI = Main.LocalPlayer.whoAmI;
+                    BloodAltarTP.OnBoolMoon = !BloodAltarTP.OnBoolMoon;
+                    module.SendData();
                 }
             }
             return true;
@@ -80,9 +79,7 @@ namespace CalamityOverhaul.Content.Tiles
             int frameYPos = t.TileFrameY;
 
             if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
-                int id = TileProcessorLoader.GetModuleID(typeof(BloodAltarModule));
-                BloodAltarModule module = TileProcessorLoader.FindModulePreciseSearch<BloodAltarModule>(id, point.X, point.Y);
-                if (module != null) {
+                if (TileProcessorLoader.ByPositionGetTP(point, out BloodAltarTP module)) {
                     frameYPos += module.frameIndex % 4 * (Height * SheetSquare);
                 }
             }

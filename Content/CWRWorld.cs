@@ -1,9 +1,8 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityMod;
 using CalamityOverhaul.Content.Events;
-using CalamityOverhaul.Content.Items.Rogue.Extras;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System.IO;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -43,29 +42,18 @@ namespace CalamityOverhaul.Content
         public override void NetSend(BinaryWriter writer) {
             BitsByte flags1 = new BitsByte();
             flags1[0] = TungstenRiot.Instance.TungstenRiotIsOngoing;
+            flags1[0] = DownedBossSystem.downedPrimordialWyrm;
             writer.Write(flags1);
             writer.Write(TungstenRiot.Instance.EventKillPoints);
+            writer.Write(InWorldBossPhase.YharonKillCount);
         }
 
         public override void NetReceive(BinaryReader reader) {
             BitsByte flags1 = reader.ReadByte();
             TungstenRiot.Instance.TungstenRiotIsOngoing = flags1[0];
+            DownedBossSystem.downedPrimordialWyrm = flags1[1];
             TungstenRiot.Instance.EventKillPoints = reader.ReadInt32();
-        }
-
-        public override void OnWorldLoad() {
-            ModGanged.Set_MS_Config_recursionCraftingDepth();
-            if (CWRServerConfig.Instance.AddExtrasContent) {
-                if (SupertableUI.Instance != null) {
-                    SupertableUI.Instance.loadOrUnLoadZenithWorldAsset = true;
-                    SupertableUI.Instance.Active = false;
-                }
-                if (RecipeUI.Instance != null) {
-                    RecipeUI.Instance.index = 0;
-                    RecipeUI.Instance.LoadPsreviewItems();
-                }
-            }
-            Gangarus.ZenithWorldAsset();
+            InWorldBossPhase.YharonKillCount = reader.ReadInt32();
         }
 
         public override void SaveWorldData(TagCompound tag) {
@@ -73,19 +61,6 @@ namespace CalamityOverhaul.Content
             tag.Add("_Event_DefeatTheTungstenArmy_Tag", DefeatTheTungstenArmy);
             tag.Add("_Event_TungstenRiotIsOngoing", TungstenRiot.Instance.TungstenRiotIsOngoing);
             tag.Add("_Event_EventKillPoints", TungstenRiot.Instance.EventKillPoints);
-            if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-                TungstenRiot.Instance.EventNetWorkSend();
-            }
-            if (CWRServerConfig.Instance.AddExtrasContent) {
-                if (SupertableUI.Instance != null && SupertableUI.Instance?.items != null) {
-                    for (int i = 0; i < SupertableUI.Instance.items.Length; i++) {
-                        if (SupertableUI.Instance.items[i] == null) {
-                            SupertableUI.Instance.items[i] = new Item(0);
-                        }
-                    }
-                    tag.Add("SupertableUI_ItemDate", SupertableUI.Instance.items);
-                }
-            }
         }
 
         public override void LoadWorldData(TagCompound tag) {
@@ -100,18 +75,6 @@ namespace CalamityOverhaul.Content
             }
             if (tag.TryGet("_Event_EventKillPoints", out int _eventKillPoints)) {
                 TungstenRiot.Instance.EventKillPoints = _eventKillPoints;
-            }
-
-            if (CWRServerConfig.Instance.AddExtrasContent) {
-                if (SupertableUI.Instance != null && tag.ContainsKey("SupertableUI_ItemDate")) {
-                    Item[] loadSupUIItems = tag.Get<Item[]>("SupertableUI_ItemDate");
-                    for (int i = 0; i < loadSupUIItems.Length; i++) {
-                        if (loadSupUIItems[i] == null) {
-                            loadSupUIItems[i] = new Item(0);
-                        }
-                    }
-                    SupertableUI.Instance.items = loadSupUIItems;
-                }
             }
         }
     }

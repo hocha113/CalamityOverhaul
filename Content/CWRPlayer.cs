@@ -2,6 +2,7 @@
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
+using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -191,6 +192,19 @@ namespace CalamityOverhaul.Content
             if (CWRServerConfig.Instance.AddExtrasContent) {
                 RecipeErrorFullUI.Instance.eyEBool = true;
             }
+
+            ModGanged.Set_MS_Config_recursionCraftingDepth();
+            if (CWRServerConfig.Instance.AddExtrasContent) {
+                if (SupertableUI.Instance != null) {
+                    SupertableUI.Instance.loadOrUnLoadZenithWorldAsset = true;
+                    SupertableUI.Instance.Active = false;
+                }
+                if (RecipeUI.Instance != null) {
+                    RecipeUI.Instance.index = 0;
+                    RecipeUI.Instance.LoadPsreviewItems();
+                }
+            }
+            Gangarus.ZenithWorldAsset();
 
             oldPlayerPositionChange = oldPlayerPositionChange = Player.position;
         }

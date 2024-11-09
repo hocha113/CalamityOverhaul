@@ -1,6 +1,9 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.TileModules;
+using InnoVault;
+using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -73,9 +76,13 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public static int maxCellNumY;
 
+        public static TramModuleTP tramModuleEntity;
+
         private Point mouseInCellCoord;
 
         private int inCoordIndex => (mouseInCellCoord.Y * maxCellNumX) + mouseInCellCoord.X;
+
+        private bool _old_SupertableUIStartBool;
 
         public override bool Active {
             get {
@@ -84,7 +91,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 }
                 return player.CWR().SupertableUIStartBool;
             }
-            set => player.CWR().SupertableUIStartBool = value;
+            set {
+                tpEntityLoadenItems();
+                player.CWR().SupertableUIStartBool = value;
+            }
         }
 
         public bool onMainP;
@@ -98,12 +108,22 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static List<RecipeData> AllRecipes = [];
         #endregion
 
+        internal void tpEntityLoadenItems() {
+            if (tramModuleEntity != null && tramModuleEntity.Active) {
+                items = tramModuleEntity.items;
+                if (!VaultUtils.isSinglePlayer) {
+                    tramModuleEntity.SendData();
+                }
+            }
+        }
+
         public override void Load() => Instance = this;
         void ICWRLoader.SetupData() {
             LoadRecipe();
             RecipeUI.LoadAllRecipes();
         }
         void ICWRLoader.UnLoadData() {
+            tramModuleEntity = null;
             RpsDataStringArrays = null;
             ModCall_OtherRpsData_StringList = [];
             Instance = null;
@@ -401,6 +421,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 break;
 End:;
             }
+            tpEntityLoadenItems();
         }
 
         public static void SetItemIsNull(ref Item item) {
