@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanCreateCaseEjection = false;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.clipOut = CWRSound.CaseEjection2 with { Pitch = -0.2f };
+            FireTime = MagazineSystem ? 10 : 90;
         }
         public override void FiringShoot() {
             Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
