@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             else {
                 if (Projectile.ai[0] == Projectile.ai[1] + 322 && !CWRUtils.isClient) {
                     int type = ModContent.ProjectileType<PrimeCannonOnSpan>();
-                    int maxProjSanShootNum = 4;
+                    int maxProjSanShootNum = 3;
                     for (int i = 0; i < maxProjSanShootNum; i++) {
                         Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center
                             , (MathHelper.TwoPi / maxProjSanShootNum * i + Projectile.rotation).ToRotationVector2() * 3

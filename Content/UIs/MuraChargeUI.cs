@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.UIs
 {
     internal class MuraChargeUI : UIHandle, ICWRLoader
     {
+        #region Data
         internal enum MuraUIStyleEnum
         {
             delicacy_overhead = 1,
@@ -47,6 +48,8 @@ namespace CalamityOverhaul.Content.UIs
         private static float charge;
         private static float newForCharge;
         private static int Time;
+        private static float invasionSetOffsetValue;
+        private static Vector2 setBossHealthBarOffsetValue;
         private static Color fullColor;
         internal MuraUIStyleEnum MuraUIStyle => (MuraUIStyleEnum)CWRServerConfig.Instance.MuraUIStyleType;
         internal MuraPosStyleEnum MuraPosStyle => (MuraPosStyleEnum)CWRServerConfig.Instance.MuraPosStyleType;
@@ -65,6 +68,7 @@ namespace CalamityOverhaul.Content.UIs
                 return murasamaHeld.Projectile.active || uiAlape > 0;
             }         
         }
+        #endregion
         void ICWRLoader.LoadAsset() {
             classical_SwordStanceBottom = CWRUtils.GetT2DAsset(CWRConstant.UI + "classical_SwordStanceBottom");
             classical_SwordStanceTop = CWRUtils.GetT2DAsset(CWRConstant.UI + "classical_SwordStanceTop");
@@ -126,6 +130,16 @@ namespace CalamityOverhaul.Content.UIs
             Time++;
         }
 
+        internal Vector2 ModifyBossHealthBarManagerPositon(int x, int y) {
+            Vector2 position = new Vector2(x, y);
+            Vector2 targetBossHealthBar = Vector2.Zero;
+            if (Active && MuraPosStyle == MuraPosStyleEnum.right) {
+                targetBossHealthBar = new Vector2(0, -100);
+            }
+            setBossHealthBarOffsetValue = Vector2.Lerp(setBossHealthBarOffsetValue, targetBossHealthBar, 0.1f);
+            return position + setBossHealthBarOffsetValue;
+        }
+
         internal void DrawOverheadSorwdBar(Player Owner, float risingDragon, int uiFrame, int maxFrame) {
             if (compact) {
                 return;
@@ -157,12 +171,20 @@ namespace CalamityOverhaul.Content.UIs
                 return;
             }
 
-            Vector2 otherOffset = new Vector2(Main.screenWidth - SwordStanceBottom.Width() - 40, 0);
+            Vector2 otherOffset;
             if (MuraPosStyle == MuraPosStyleEnum.left) {
                 otherOffset = new Vector2(80, 0);
             }
             else if (MuraPosStyle == MuraPosStyleEnum.high) {
                 otherOffset = new Vector2(Main.screenWidth / 3 * 2, -Main.screenHeight + 180);
+            }
+            else {
+                otherOffset = new Vector2(Main.screenWidth - SwordStanceBottom.Width() - 40 + invasionSetOffsetValue, 0);
+                int targetInvasion = 0;
+                if (CWRUtils.Invasion) {
+                    targetInvasion = -250;
+                }
+                invasionSetOffsetValue = MathHelper.Lerp(invasionSetOffsetValue, targetInvasion, 0.1f);
             }
             DrawPosition = origMuraBarDrawPos + otherOffset;
 
@@ -193,10 +215,6 @@ namespace CalamityOverhaul.Content.UIs
                 Rectangle rectangle = CWRUtils.GetRec(fullFG, uiFrame2, 9);
                 Main.spriteBatch.Draw(fullFG, DrawPosition, rectangle, color, 0f, rectangle.Size() / 2, scale, 0, 0f);
             }
-
-            //Rectangle numRec = CWRUtils.GetRec(Num.Value, InWorldBossPhase.Instance.Mura_Level(), 15);
-            //Vector2 numOrig = numRec.Size() / 2;
-            //Main.spriteBatch.Draw(Num.Value, muraBarDrawPos + new Vector2(160, 0), numRec, color, 0f, numOrig, scale, 0, 0f);
 
             if (compact) {
                 float risingDragon = Main.LocalPlayer.CWR().RisingDragonCharged;

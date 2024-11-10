@@ -1,8 +1,10 @@
 ﻿using CalamityMod;
+using CalamityMod.Events;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -19,6 +21,7 @@ using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.Events;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.GameInput;
 using Terraria.Graphics.Shaders;
@@ -1043,6 +1046,13 @@ namespace CalamityOverhaul
         #endregion
 
         #region GameUtils
+        /// <summary>
+        /// 是否处于入侵期间
+        /// </summary>
+        public static bool Invasion => Main.invasionType > 0 || Main.pumpkinMoon
+                || Main.snowMoon || DD2Event.Ongoing || AcidRainEvent.AcidRainEventIsOngoing
+                || TungstenRiot.Instance.TungstenRiotIsOngoing;
+
         public static bool IsTool(this Item item) => item.pick > 0 || item.axe > 0 || item.hammer > 0;
 
         public static Item GetItem(this Player player) => Main.mouseItem.IsAir ? player.inventory[player.selectedItem] : Main.mouseItem;

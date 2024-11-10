@@ -5,6 +5,7 @@ using CalamityMod.UI;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using CalamityOverhaul.Content.UIs;
 using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -515,11 +516,12 @@ namespace CalamityOverhaul.Common
             int startHeight = 100;
             int x = Main.screenWidth - 420;
             int y = Main.screenHeight - startHeight;
-            if (Main.playerInventory || Main.invasionType > 0 || Main.pumpkinMoon
-                || Main.snowMoon || DD2Event.Ongoing || AcidRainEvent.AcidRainEventIsOngoing
-                || TungstenRiot.Instance.TungstenRiotIsOngoing) {
+            if (Main.playerInventory || CWRUtils.Invasion) {
                 x -= 250;
             }
+            Vector2 modifyPos = MuraChargeUI.Instance.ModifyBossHealthBarManagerPositon(x, y);
+            x = (int)modifyPos.X;
+            y = (int)modifyPos.Y;
             //谢天谢地BossHealthBarManager.Bars和BossHealthBarManager.BossHPUI是公开的
             foreach (BossHealthBarManager.BossHPUI ui in BossHealthBarManager.Bars) {
                 ui.Draw(spriteBatch, x, y);

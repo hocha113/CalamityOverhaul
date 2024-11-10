@@ -9,6 +9,7 @@ using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -47,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     if (!p.active) {
                         continue;
                     }
-                    if ((!p.friendly || p.hostile) && p.type != Type) {
+                    if (p.hostile && p.type != Type) {
                         p.timeLeft = 2;
                         p.Kill();
                     }
