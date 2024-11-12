@@ -68,6 +68,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool EndSkillEffectStartBool;
         /// <summary>
+        /// 该属性用于判断鼠标是否处于接口状态，这个和<see cref="Player.mouseInterface"/>作用相同，但区别在于该属性的数据更新是惰性的，只在UI层级进行更新，保证其值不会失真
+        /// </summary>
+        public bool uiMouseInterface { get; private set; }
+        /// <summary>
         /// 手持状态
         /// </summary>
         public int HeldStyle;
@@ -113,10 +117,6 @@ namespace CalamityOverhaul.Content
         /// 玩家位置变化量
         /// </summary>
         public Vector2 PlayerPositionChange;
-        #region NetCode
-        public bool RecoilAccelerationAddBool;
-        public Vector2 RecoilAccelerationValue;
-        #endregion
 
         #region Buff
         public bool TyrantsFuryBuffBool;
@@ -127,6 +127,8 @@ namespace CalamityOverhaul.Content
         private static Asset<Texture2D> Quiver_back_Asset;
         private static Asset<Texture2D> IceGod_back_Asset;
         #endregion
+
+        internal void setUIMouseInterface(bool value) => uiMouseInterface = value;
 
         public override void Load() {
             if (!Main.dedServ) {
@@ -256,10 +258,6 @@ namespace CalamityOverhaul.Content
             }
             if (InspectOmigaTime > 0) {
                 InspectOmigaTime--;
-            }
-            if (RecoilAccelerationAddBool) {
-                Player.velocity += RecoilAccelerationValue;
-                RecoilAccelerationAddBool = false;
             }
 
             PlayerPositionChange = oldPlayerPositionChange.To(Player.position);

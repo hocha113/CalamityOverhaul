@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.TileModules;
 using InnoVault;
-using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

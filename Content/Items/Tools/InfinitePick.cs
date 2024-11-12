@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             rDown = player.PressKey(false);
             bool justRDown = rDown && !oldRDown;
             oldRDown = rDown;
-            if (justRDown && !player.mouseInterface && !player.mouseInterface && !player.cursorItemIconEnabled && player.cursorItemIconID == 0) {
+            if (justRDown && !player.CWR().uiMouseInterface && !player.cursorItemIconEnabled && player.cursorItemIconID == 0) {
                 SoundEngine.PlaySound(new SoundStyle(CWRConstant.Sound + "Pedestruct"), Main.MouseWorld);
                 if (!IsPick) {
                     for (int i = 0; i < 188; i++) {

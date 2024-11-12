@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         public override void PreInOwnerUpdate() {
             thisTime++;
-            if (DownLeft && IsKreload && !Owner.mouseInterface) {
+            if (DownLeft && IsKreload && !Owner.CWR().uiMouseInterface) {
                 if (thisTime % 2 == 0)
                     chargeSoundSpanTimer++;
                 Projectile.frameCounter++;

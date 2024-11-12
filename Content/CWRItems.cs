@@ -494,7 +494,7 @@ namespace CalamityOverhaul.Content
             if (player.PressKey() || player.PressKey(false)) {
                 if (player.whoAmI == Main.myPlayer && item.useStyle == ItemUseStyleID.Swing
                 && (item.createTile == -1 && item.createWall == -1)
-                && !player.mouseInterface && !player.cursorItemIconEnabled) {
+                && !player.CWR().uiMouseInterface && !player.cursorItemIconEnabled) {
                     player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);
                 }
             }

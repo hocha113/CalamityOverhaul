@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
             Projectile.timeLeft = 2;
             SetHeld();
-            if (!Owner.mouseInterface && Owner.PressKey() && noCanUseTime <= 0) {
+            if (!Owner.CWR().uiMouseInterface && Owner.PressKey() && noCanUseTime <= 0) {
                 OnUse();
             }
             if (!Owner.PressKey() || Owner.velocity.Length() > 0) {

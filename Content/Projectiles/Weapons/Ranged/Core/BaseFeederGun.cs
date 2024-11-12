@@ -694,7 +694,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
             if (DownLeft) {
                 if (!IsKreload && LoadingReminder) {
-                    if (!Owner.mouseInterface && kreloadTimeValue <= 0) {
+                    if (!Owner.CWR().uiMouseInterface && kreloadTimeValue <= 0) {
                         AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态
                         if (AmmoState.Amount <= 0) {
                             HandleEmptyAmmoEjection();
