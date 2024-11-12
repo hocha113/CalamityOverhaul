@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Tiles
         public const int Height = 3;
         public const int OriginOffsetX = 1;
         public const int OriginOffsetY = 1;
-        public const int SheetSquare = 16;
+        public const int SheetSquare = 18;
         private static Asset<Texture2D> assetValue;
         void ICWRLoader.LoadAsset() => assetValue = ModContent.Request<Texture2D>(Texture);
         void ICWRLoader.UnLoadData() => assetValue = null;
@@ -122,13 +122,10 @@ namespace CalamityOverhaul.Content.Tiles
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;
-            frameXPos = frameXPos / 18 * 16;
             int frameYPos = t.TileFrameY;
-            frameYPos = frameYPos / 18 * 16;
             frameYPos += (int)(Main.GameUpdateCount / 10 % 11) % 11 * (Height * SheetSquare);
             Texture2D tex = assetValue.Value;
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-            offset -= new Vector2(-2, 0);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
             Color drawColor = Lighting.GetColor(i, j);
 

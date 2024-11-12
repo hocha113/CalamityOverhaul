@@ -68,9 +68,9 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool EndSkillEffectStartBool;
         /// <summary>
-        /// 该属性用于判断鼠标是否处于接口状态，这个和<see cref="Player.mouseInterface"/>作用相同，但区别在于该属性的数据更新是惰性的，只在UI层级进行更新，保证其值不会失真
+        /// 该属性用于判断鼠标是否处于接口状态，这个和<see cref="Player.mouseInterface"/>作用相同
         /// </summary>
-        public bool uiMouseInterface { get; private set; }
+        public bool uiMouseInterface => Player.mouseInterface;
         /// <summary>
         /// 手持状态
         /// </summary>
@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content
         private static Asset<Texture2D> IceGod_back_Asset;
         #endregion
 
-        internal void setUIMouseInterface(bool value) => uiMouseInterface = value;
+        //internal void setUIMouseInterface(bool value) => uiMouseInterface = value;
 
         public override void Load() {
             if (!Main.dedServ) {
