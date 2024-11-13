@@ -1212,6 +1212,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return true;
         }
 
+        public override bool? On_PreKill() {
+            if (Main.zenithWorld) {
+                if (Main.dedServ) {
+                    NPC.downedMechBoss1 = NPC.downedMechBoss2 = NPC.downedMechBoss3 = true;
+                    NetMessage.SendData(MessageID.WorldData);
+                }
+            }
+            return base.On_PreKill();
+        }
+
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) 
             => npc.ai[0] == 1 && npc.life < npc.lifeMax && !death && !CalamityWorld.revenge;
 
