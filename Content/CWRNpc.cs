@@ -20,7 +20,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content
 {
-    public class CWRNpc : GlobalNPC, ICWRLoader
+    public class CWRNpc : GlobalNPC
     {
         #region Data
         public override bool InstancePerEntity => true;
@@ -65,8 +65,6 @@ namespace CalamityOverhaul.Content
         public bool IceParclose;
         public bool HellfireExplosion;
         public bool VoidErosionBool;
-
-        public static Asset<Texture2D> IceParcloseAsset { get; private set; }
         #endregion
 
         public override GlobalNPC Clone(NPC from, NPC to) => CloneCWRNpc((CWRNpc)base.Clone(from, to));
@@ -118,8 +116,6 @@ namespace CalamityOverhaul.Content
                 netMessage.Send(-1, whoAmI);
             }
         }
-
-        void ICWRLoader.LoadAsset() => IceParcloseAsset = CWRUtils.GetT2DAsset(CWRConstant.Projectile + "IceParclose");
 
         public override void ResetEffects(NPC npc) {
             IceParclose = false;
@@ -313,9 +309,10 @@ namespace CalamityOverhaul.Content
 
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (IceParclose) {
-                float slp = npc.scale * (npc.height / (float)IceParcloseAsset.Value.Height) * 2;
+                Texture2D value = CWRAsset.IceParcloseAsset.Value;
+                float slp = npc.scale * (npc.height / (float)value.Height) * 2;
                 float sengs = 0.3f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.1f) * 0.3f);
-                spriteBatch.Draw(IceParcloseAsset.Value, npc.Center - Main.screenPosition, null, Color.White * sengs, 0, IceParcloseAsset.Value.Size() / 2, slp, SpriteEffects.None, 0);
+                spriteBatch.Draw(value, npc.Center - Main.screenPosition, null, Color.White * sengs, 0, value.Size() / 2, slp, SpriteEffects.None, 0);
             }
         }
     }
