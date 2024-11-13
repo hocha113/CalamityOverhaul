@@ -13,18 +13,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniverseProj
 {
-    internal class AnnihilatingUniverseHeldProj : ModProjectile
+    internal class AnnihilatingUniverseHeldProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "AnnihilatingUniverseProj/AnnihilatingUniverseBow";
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<AnnihilatingUniverse>();
-
-        private Player Owners => CWRUtils.GetPlayerInstance(Projectile.owner);
-        private Vector2 toMou = Vector2.Zero;
-        private ref float Time => ref Projectile.ai[0];
-        private ref float Time2 => ref Projectile.ai[1];
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
+        public override bool CanFire => (Projectile.ai[2] == 0 && Owner.PressKey()) || (Projectile.ai[2] == 1 && Owner.PressKey(false));
+        private float Time;
+        private float Time2;
+        public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         public override void SetDefaults() {
             Projectile.width = 54;
             Projectile.height = 116;
@@ -36,41 +32,34 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             Projectile.hide = true;
         }
 
-        public override bool ShouldUpdatePosition() {
-            return false;
-        }
-
-        public override void SendExtraAI(BinaryWriter writer) {
-            writer.WriteVector2(toMou);
-        }
-
-        public override void ReceiveExtraAI(BinaryReader reader) {
-            toMou = reader.ReadVector2();
-        }
+        public override bool ShouldUpdatePosition() => false;
 
         public override void AI() {
             Lighting.AddLight(Projectile.Center, 0f, 0.7f, 0.5f);
 
-            if (Owners == null || Owners.HeldItem?.type != ModContent.ItemType<AnnihilatingUniverse>()) {
+            if (Owner == null || Owner.HeldItem?.type != ModContent.ItemType<AnnihilatingUniverse>()) {
                 Projectile.Kill();
                 return;
             }
 
-            if (Projectile.IsOwnedByLocalPlayer())
+            if (Projectile.IsOwnedByLocalPlayer()) {
                 SpanProj();
+            }
+                
             StickToOwner();
+
             Time++;
             Time2++;
         }
 
         public void SpanProj() {
-            int weaponDamage2 = Owners.GetWeaponDamage(Owners.ActiveItem());
-            float weaponKnockback2 = Owners.ActiveItem().knockBack;
+            int weaponDamage2 = Owner.GetWeaponDamage(Owner.ActiveItem());
+            float weaponKnockback2 = Owner.ActiveItem().knockBack;
             if (Projectile.ai[2] == 0) {
                 if (Time > 30) {
                     SoundEngine.PlaySound(HeavenlyGale.FireSound, Projectile.Center);
-                    bool haveAmmo = Owners.PickAmmo(Owners.ActiveItem(), out _, out _, out weaponDamage2, out weaponKnockback2, out _);
-                    weaponKnockback2 = Owners.GetWeaponKnockback(Owners.ActiveItem(), weaponKnockback2);
+                    bool haveAmmo = Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out weaponDamage2, out weaponKnockback2, out _);
+                    weaponKnockback2 = Owner.GetWeaponKnockback(Owner.ActiveItem(), weaponKnockback2);
                     Time2 = 0;
                     Time = 0;
                 }
@@ -78,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                     for (int i = 0; i < 3; i++) {
                         Vector2 offset = (Projectile.rotation + Main.rand.Next(-35, 35) * CWRUtils.atoR).ToRotationVector2() * 56;
                         Projectile.NewProjectile(Projectile.parent(), Projectile.Center + offset, Projectile.rotation.ToRotationVector2() * (17 + i)
-                        , ModContent.ProjectileType<CelestialObliterationArrow>(), weaponDamage2, weaponKnockback2, Owners.whoAmI);
+                        , ModContent.ProjectileType<CelestialObliterationArrow>(), weaponDamage2, weaponKnockback2, Owner.whoAmI);
                     }
                 }
             }
@@ -86,31 +75,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 int types = ModContent.ProjectileType<CosmicEddies>();
                 if (!Main.projectile.Any((Projectile n) => n.Alives() && n.ai[2] == 0 && n.type == types)) {
                     Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 15
-                        , types, (int)(weaponDamage2 * 1.25f), weaponKnockback2, Owners.whoAmI, Projectile.whoAmI);
+                        , types, (int)(weaponDamage2 * 1.25f), weaponKnockback2, Owner.whoAmI, Projectile.whoAmI);
                 }
             }
         }
 
         public void StickToOwner() {
-            if (Projectile.IsOwnedByLocalPlayer()) {
-                Vector2 oldToMou = toMou;
-                toMou = Owners.Center.To(Main.MouseWorld);
-                if (oldToMou != toMou) {
-                    Projectile.netUpdate = true;
-                }
-            }
-            if ((Projectile.ai[2] == 0 && Owners.PressKey()) || (Projectile.ai[2] == 1 && Owners.PressKey(false))) {
+            if (CanFire) {
                 Projectile.timeLeft = 2;
-                Owners.itemTime = 2;
-                Owners.itemAnimation = 2;
-                float frontArmRotation = (MathHelper.PiOver2 - 0.31f) * -Owners.direction;
-                Owners.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, frontArmRotation);
+                Owner.itemTime = 2;
+                Owner.itemAnimation = 2;
+                float frontArmRotation = (MathHelper.PiOver2 - 0.31f) * -Owner.direction;
+                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, frontArmRotation);
             }
-            Projectile.position = Owners.RotatedRelativePoint(Owners.MountedCenter, true) - Projectile.Size / 2f + toMou.UnitVector() * 5;
-            Projectile.rotation = toMou.ToRotation();
-            Projectile.spriteDirection = Projectile.direction = Math.Sign(toMou.X);
-            Owners.ChangeDir(Projectile.direction);
-            Owners.heldProj = Projectile.whoAmI;
+            Projectile.position = Owner.GetPlayerStabilityCenter() - Projectile.Size / 2f + ToMouse.UnitVector() * 5;
+            Projectile.rotation = ToMouse.ToRotation();
+            Projectile.spriteDirection = Projectile.direction = Math.Sign(ToMouse.X);
+            Owner.ChangeDir(Projectile.direction);
+            Owner.heldProj = Projectile.whoAmI;
         }
 
         public override void PostDraw(Color lightColor) {
@@ -124,7 +106,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 Projectile.rotation,
                 CWRUtils.GetOrig(mainValue, 4),
                 Projectile.scale,
-                Owners.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
+                Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
                 );
         }
 
@@ -138,7 +120,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 Projectile.rotation,
                 CWRUtils.GetOrig(mainValue, 4),
                 Projectile.scale,
-                Owners.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
+                Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically
                 );
             return false;
         }
