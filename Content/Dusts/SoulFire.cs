@@ -25,18 +25,12 @@ namespace CalamityOverhaul.Content.Dusts
         }
 
         public override bool PreDraw(Dust dust) {
-            Texture2D texture = CWRUtils.GetT2DValue(Texture);
+            Texture2D texture = CWRAsset.Dusts_SoulFire.Value;
             Main.EntitySpriteDraw(
-                texture,
-                dust.position - Main.screenPosition,
+                texture, dust.position - Main.screenPosition,
                 CWRUtils.GetRec(texture, (int)(Main.GameUpdateCount / 10 % 4), 4),
-                Color.White * (dust.alpha / 255f),
-                dust.rotation,
-                CWRUtils.GetOrig(texture, 4),
-                dust.scale,
-                SpriteEffects.None,
-                0
-                );
+                Color.White * (dust.alpha / 255f), dust.rotation, CWRUtils.GetOrig(texture, 4),
+                dust.scale, SpriteEffects.None, 0);
             return false;
         }
     }
