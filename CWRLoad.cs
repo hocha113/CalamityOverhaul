@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Items.LoreItems;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.PermanentBoosters;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.NPCs.Abyss;
 using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.AstrumAureus;
@@ -32,6 +33,8 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -333,7 +336,7 @@ namespace CalamityOverhaul
             StarMyriadChanges = ItemType<StarMyriadChanges>();
 
             MurasamaItem = ItemType<MurasamaEcType>();
-            MurasamaItem2 = ItemType<CalamityMod.Items.Weapons.Melee.Murasama>();
+            MurasamaItem2 = ItemType<Murasama>();
             MurasamaBreakSwing = ProjectileType<MurasamaBreakSwing>();
 
             Androomba = NPCType<Androomba>();

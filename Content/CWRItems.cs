@@ -241,10 +241,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public override bool AllowPrefix(Item item, int pre) {
-            return base.AllowPrefix(item, pre);
-        }
-
         //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，该函数会被加载一次
         public override void SaveData(Item item, TagCompound tag) {
             tag.Add("_MeleeCharge", MeleeCharge);
@@ -291,13 +287,6 @@ namespace CalamityOverhaul.Content
                 if (tag.ContainsKey("_IsKreload")) {
                     IsKreload = tag.GetBool("_IsKreload");
                 }
-            }
-        }
-
-        //当我要删除那么多东西后，使用BaseRitem来修改就没必要了，就这样在这里挂个钩子吧大修宝典放进去吧
-        public override void ModifyItemLoot(Item item, ItemLoot itemLoot) {
-            if (item.type == ModContent.ItemType<StarterBag>()) {
-                itemLoot.Add(ModContent.ItemType<OverhaulTheBibleBook>());
             }
         }
 
@@ -388,18 +377,6 @@ namespace CalamityOverhaul.Content
                         CWRUtils.OnModifyTooltips(CWRMod.Instance, tooltips, key);
                     }
                 }
-            }
-        }
-
-        public override void PostUpdate(Item item) {
-            if (isInfiniteItem) {
-                //Destruct(item, item.position, CWRUtils.InPosFindPlayer(item.position, 9999));
-            }
-        }
-
-        public override void UpdateInventory(Item item, Player player) {
-            if (isInfiniteItem) {
-                //Destruct(item, player.position, player);
             }
         }
 
@@ -560,14 +537,16 @@ namespace CalamityOverhaul.Content
             return true;
         }
 
+        internal static void drawIconSmall() {
+            Main.spriteBatch.Draw(CWRAsset.icon_small.Value, Main.MouseScreen - new Vector2(0, -26), null, Color.Gold, 0
+                , CWRAsset.icon_small.Value.Size() / 2, MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
+        }
+
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
-            if (CWRServerConfig.Instance.ForceReplaceResetContent) {
-                foreach (BaseRItem rItem in CWRMod.RItemInstances) {
-                    if (rItem.SetReadonlyTargetID == item.type) {
-                        Texture2D value = CWRUtils.GetT2DValue("CalamityOverhaul/icon_small");
-                        Main.spriteBatch.Draw(value, Main.MouseScreen - new Vector2(0, -26), null, Color.Gold, 0, value.Size() / 2
-                            , MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.05f + 0.7f, SpriteEffects.None, 0);
-                    }
+            if (CWRServerConfig.Instance.ForceReplaceResetContent 
+                && CWRMod.RItemIndsDict.TryGetValue(item.type, out BaseRItem baseRItem)) {
+                if (baseRItem.DrawingInfo) {
+                    drawIconSmall();
                 }
             }
         }
