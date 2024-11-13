@@ -367,7 +367,7 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            if (CWRConstant.ForceReplaceResetContent && inRItemIndsDict) {
+            if (CWRServerConfig.Instance.ForceReplaceResetContent && inRItemIndsDict) {
                 string key = CWRMod.RItemIndsDict[item.type].TargetToolTipItemName;
                 if (key != "") {
                     if (CWRMod.RItemIndsDict[item.type].IsVanilla) {

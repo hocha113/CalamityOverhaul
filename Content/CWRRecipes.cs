@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostAddRecipes() {
-            if (!CWRConstant.ForceReplaceResetContent) {
+            if (!CWRServerConfig.Instance.ForceReplaceResetContent) {
                 foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
                     if (baseRItem.FormulaSubstitution)
                         baseRItem.LoadItemRecipe();

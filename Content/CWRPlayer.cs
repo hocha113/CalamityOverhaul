@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content
 
         public override void CatchFish(FishingAttempt attempt, ref int itemDrop
             , ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {
-            if (!CWRConstant.ForceReplaceResetContent) {
+            if (!CWRServerConfig.Instance.ForceReplaceResetContent) {
                 return;
             }
             if (!attempt.inHoney && !attempt.inLava && Main.rand.NextBool(500)) {

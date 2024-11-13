@@ -46,7 +46,5 @@ namespace CalamityOverhaul
         public const string noProjectile = "Assets/Projectiles/";
 
         public const string githubUrl = "https://github.com/hocha113/CalamityOverhaul";
-
-        public static bool ForceReplaceResetContent => CWRServerConfig.Instance.ForceReplaceResetContent;
     }
 }
