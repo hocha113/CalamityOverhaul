@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<HeavenfallLongbow>();
         public override bool CanFire => (Projectile.ai[2] == 0 && DownLeft) || (Projectile.ai[2] == 1 && DownRight);
         private HeavenfallLongbow HFBow => (HeavenfallLongbow)Owner.ActiveItem().ModItem;
-        private int Time;
+        private int Time = 30;
         public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         public override void SetDefaults() {
             Projectile.width = 54;
@@ -89,8 +89,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
             if (CanFire) {
                 Projectile.timeLeft = 2;
-                Owner.itemTime = 2;
-                Owner.itemAnimation = 2;
                 float frontArmRotation = (MathHelper.PiOver2 - 0.31f) * -Owner.direction;
                 Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, frontArmRotation);
             }
