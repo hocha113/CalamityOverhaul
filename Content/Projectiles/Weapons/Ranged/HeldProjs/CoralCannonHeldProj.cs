@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<CoralCannon>();
         public override int targetCWRItem => ModContent.ItemType<CoralCannonEcType>();
         public override void SetRangedProperty() {
+            kreloadMaxTime = 80;
             CanCreateCaseEjection = false;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.clipOut = CWRSound.CaseEjection2 with { Pitch = -0.2f };

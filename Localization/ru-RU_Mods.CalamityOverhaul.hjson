@@ -2729,14 +2729,10 @@ Items: {
 Projectiles: {
 	// StarDust.DisplayName: Star Dust
 	// RenderDistort.DisplayName: Render Distort
-	// RenderGap.DisplayName: Render Gap
-	// DragonsBreathProjectiles.DisplayName: Dragons Breath Projectiles
-	// DragonFireRupture.DisplayName: Dragon Fire Rupture
 	// GunCasing.DisplayName: Gun Casing
-	// HeldProjectiles.DisplayName: Held Projectiles
-	// RemakeBansheeHookScythe.DisplayName: Remake Banshee Hook Scythe
-	// RemakeBlazingPhantomBlade.DisplayName: Remake Blazing Phantom Blade
-	// RemakeTerratomereHoldoutProj.DisplayName: Remake Terratomere Holdout Proj
+	// RemakeBansheeHookScythe.DisplayName: Banshee Hook Scythe
+	// RemakeBlazingPhantomBlade.DisplayName: Blazing Phantom Blade
+	// RemakeTerratomereHoldoutProj.DisplayName: Terratomere
 	// RedLightningFeather.DisplayName: Red Lightning Feather
 	// TerratomereBolt.DisplayName: Terratomere Bolt
 	// GildedProboscisKevinLightning.DisplayName: Gilded Proboscis Kevin Lightning
@@ -2747,9 +2743,9 @@ Projectiles: {
 	// AbominateSpirit.DisplayName: Abominate Spirit
 	// SpiritFlame.DisplayName: Spirit Flame
 	// DoGDeaths.DisplayName: DoG Deaths
-	// ArkoftheAncientsParryHoldouts.DisplayName: Arkofthe Ancients Parry Holdouts
+	// ArkoftheAncientsParryHoldouts.DisplayName: Arkofthe Ancients Parry
 	// ArkoftheCosmosBlasts.DisplayName: Arkofthe Cosmos Blasts
-	// ArkoftheCosmosParryHoldouts.DisplayName: Arkofthe Cosmos Parry Holdouts
+	// ArkoftheCosmosParryHoldouts.DisplayName: Arkofthe Cosmos Parry
 	// ArkoftheCosmosSwungBlades.DisplayName: Arkofthe Cosmos Swung Blades
 	// RendingNeedles.DisplayName: Rending Needles
 	// ArkoftheCosmosConstellations.DisplayName: Arkofthe Cosmos Constellations
@@ -2824,7 +2820,6 @@ Projectiles: {
 	// DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion Tail
 	// AegisBladeProj.DisplayName: Aegis Blade
 	// AegisBeams.DisplayName: Aegis Beams
-	// DragonsBreathRifleHeldProj.DisplayName: Dragons Breath Rifle
 	// InfiniteArrow.DisplayName: Infinite Arrow
 	// HeavenLightning.DisplayName: Heaven Lightning
 	// CelestialVortex.DisplayName: Celestial Vortex
@@ -2832,11 +2827,10 @@ Projectiles: {
 	// InfiniteRune.DisplayName: Infinite Rune
 	// VientianePunishment.DisplayName: Vientiane Punishment
 	// HolyColliderHolyFires.DisplayName: Holy Collider Holy Fires
-	// RBansheeHookScythe.DisplayName: R Banshee Hook Scythe
-	// RBlazingPhantomBlade.DisplayName: R Blazing Phantom Blade
-	// RCosmicShivBall.DisplayName: R Cosmic Shiv Ball
+	// RBansheeHookScythe.DisplayName: Banshee Hook Scythe
+	// RBlazingPhantomBlade.DisplayName: Blazing Phantom Blade
 	// RTerratomereHoldoutProj.DisplayName: Terratomere Holdout
-	// RTerrorBeam.DisplayName: R Terror Beam
+	// RTerrorBeam.DisplayName: Terror Beam
 	// StreamBeams.DisplayName: Stream Beams
 	// CosmicSpiritBombs.DisplayName: Cosmic Spirit Bombs
 	// CelestialClaymoreBeam.DisplayName: Celestial Claymore Beam
@@ -2846,12 +2840,12 @@ Projectiles: {
 	// InfiniteIngotTileProj.DisplayName: Black holes annihilate their cores
 	// JudgementBeam.DisplayName: Judgement Beam
 	// OrderbringerBeams.DisplayName: Orderbringer Beams
-	// OrderbringerProj.DisplayName: Orderbringer Proj
+	// OrderbringerProj.DisplayName: Orderbringer
 	// OrderbringerBeams2.DisplayName: Orderbringer Beams
 	// IridescentExcaliburBeam.DisplayName: Iridescent Excalibur Beam
 	// IridescentExcaliburLight.DisplayName: Iridescent Excalibur Light
 	// OrderbringerWhiteOrbs.DisplayName: Orderbringer White Orbs
-	// InfinitePickProj.DisplayName: Infinite Pick Proj
+	// InfinitePickProj.DisplayName: Infinite Pick
 	// InfiniteEnmgs.DisplayName: Infinite Enmgs
 	// TheDaybreak.DisplayName: The Daybreak
 	// TheEndSun.DisplayName: The End Sun
@@ -2873,10 +2867,10 @@ Projectiles: {
 	// SparkBall.DisplayName: Spark Ball
 	// SparkLightning.DisplayName: Spark Lightning
 	// BrimstoneSwordBall.DisplayName: Brimstone Sword Ball
-	// StarMyriadChangesProj.DisplayName: Star Myriad Changes Proj
-	// PGDeriveProj.DisplayName: P G Derive Proj
-	// PGProj.DisplayName: P G Proj
-	// SupPGProj.DisplayName: Sup P G Proj
+	// StarMyriadChangesProj.DisplayName: Star Myriad Changes
+	// PGDeriveProj.DisplayName: PG Derive Proj
+	// PGProj.DisplayName: PG Proj
+	// SupPGProj.DisplayName: SupPG Proj
 	// StellarStrikerBeam.DisplayName: Stellar Striker Beam
 	// GhostSkull.DisplayName: Ghost Skull
 	// PlagueBee.DisplayName: Plague Bee
@@ -2890,11 +2884,11 @@ Projectiles: {
 	// AstralPikeBeam.DisplayName: Astral Pike Beam
 	// AnarchyBeam.DisplayName: Anarchy Beam
 	// EarthenBall.DisplayName: Earthen Ball
-	// EarthenPikeThrowProj.DisplayName: Earthen Pike Throw Proj
+	// EarthenPikeThrowProj.DisplayName: Earthen Pike Throw
 	// MeleeFossilShard.DisplayName: Melee Fossil Shard
 
 	Melee: {
-		// EXSolsticeBeam.DisplayName: E X Solstice Beam
+		// EXSolsticeBeam.DisplayName: EX Solstice Beam
 		// MourningSkull2.DisplayName: Mourning Skull2
 		// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
 	}
