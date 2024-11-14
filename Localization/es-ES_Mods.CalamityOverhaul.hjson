@@ -23,16 +23,6 @@ Items: {
 			'''
 	}
 
-	DragonsBreath: {
-		DisplayName: Aliento del Dragón
-		Tooltip:
-			'''
-			Dispara numerosas balas de alta temperatura
-			Clic derecho dispara el ardiente aliento del dragón
-			"Las llamas restantes de este dragón muerto pueden calentar bien estas balas, a diferencia del cañón del fénix que reduce las balas a fragmentos"
-			'''
-	}
-
 	BansheeHookEcType: {
 		DisplayName: Garra de la Banshee
 		Tooltip:
@@ -392,11 +382,6 @@ Items: {
 			'''
 	}
 
-	DragonsBreathRifle: {
-		DisplayName: Rifle Aliento de Dragón
-		Tooltip: ""
-	}
-
 	TextItem: {
 		DisplayName: Artículo de Prueba
 		Tooltip: Hmm... no deberías tenerlo.
@@ -410,11 +395,6 @@ Items: {
 	InfiniteIngot: {
 		DisplayName: Lingote Infinito
 		Tooltip: El poder del universo, en tu mano.
-	}
-
-	CosmicMetalSingularity: {
-		DisplayName: Singularidad de Metal Cósmico
-		Tooltip: ""
 	}
 
 	TransmutationOfMatterItem: {

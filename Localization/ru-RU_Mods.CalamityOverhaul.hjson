@@ -24,16 +24,6 @@ Items: {
 			'''
 	}
 
-	DragonsBreath: {
-		DisplayName: Дыхание дракона
-		Tooltip:
-			'''
-			Стреляет высокотемпературными пулями
-			Правый ключ распыляет жгучее дыхание дракона
-			"Остатки пламени, оставленные после смерти дракона, хорошо разогревают пули, а не сжигают их на куски, как бластеты феникса".
-			'''
-	}
-
 	BansheeHookEcType: {
 		DisplayName: Крюк Банши
 		Tooltip:
@@ -395,11 +385,6 @@ Items: {
 			'''
 	}
 
-	DragonsBreathRifle: {
-		DisplayName: Автомат "дыхание дракона"
-		Tooltip: ""
-	}
-
 	TextItem: {
 		DisplayName: Тестировать
 		Tooltip: … У тебя не должно быть этого
@@ -413,11 +398,6 @@ Items: {
 	InfiniteIngot: {
 		DisplayName: Бесконечный слиток
 		Tooltip: Юниверсал форс, прямо в ладони
-	}
-
-	CosmicMetalSingularity: {
-		DisplayName: Космическая металлическая сингулярность
-		Tooltip: ""
 	}
 
 	TransmutationOfMatterItem: {

@@ -23,16 +23,6 @@ Items: {
 			'''
 	}
 
-	DragonsBreath: {
-		DisplayName: Drachenatem
-		Tooltip:
-			'''
-			Feuert eine große Menge heißer Kugeln ab
-			Rechtsklick sprüht brennenden Drachenatem
-			"Das verbleibende Feuer dieses Drachen nach seinem Tod kann diese Kugeln gut erhitzen, anstatt wie der Phönix-Buster die Kugeln in Stücke zu brennen"
-			'''
-	}
-
 	BansheeHookEcType: {
 		DisplayName: Banshee-Kralle
 		Tooltip:
@@ -395,11 +385,6 @@ Items: {
 			'''
 	}
 
-	DragonsBreathRifle: {
-		DisplayName: Drachenatem-Gewehr
-		Tooltip: ""
-	}
-
 	TextItem: {
 		DisplayName: Testobjekt
 		Tooltip: Hm... du solltest es nicht besitzen
@@ -413,11 +398,6 @@ Items: {
 	InfiniteIngot: {
 		DisplayName: Unendlicher Barren
 		Tooltip: Die Macht des Universums liegt in deiner Hand
-	}
-
-	CosmicMetalSingularity: {
-		DisplayName: Kosmische Metallsingularität
-		Tooltip: ""
 	}
 
 	TransmutationOfMatterItem: {
@@ -2810,7 +2790,6 @@ Projectiles: {
 	// DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion Tail
 	// AegisBladeProj.DisplayName: Aegis Blade
 	// AegisBeams.DisplayName: Aegis Beams
-	// DragonsBreathRound.DisplayName: Dragons Breath Round
 	// DragonsBreathRifleHeldProj.DisplayName: Dragons Breath Rifle
 	// InfiniteArrow.DisplayName: Infinite Arrow
 	// HeavenLightning.DisplayName: Heaven Lightning

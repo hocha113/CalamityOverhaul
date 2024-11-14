@@ -22,15 +22,6 @@ Items: {
 			'''
 	}
 
-	DragonsBreath: {
-		DisplayName: Dragons Breath
-		Tooltip:
-			'''
-			Fire a lot of hot bullets
-			Right - shot a searing dragon's breath
-			'''
-	}
-
 	BansheeHookEcType: {
 		DisplayName: Banshee Hook
 		Tooltip:
@@ -365,11 +356,6 @@ Items: {
 			'''
 	}
 
-	DragonsBreathRifle: {
-		DisplayName: Dragons Breath Rifle
-		Tooltip: ""
-	}
-
 	TextItem: {
 		DisplayName: Text Item
 		Tooltip: Um... You shouldn't have it
@@ -383,11 +369,6 @@ Items: {
 	InfiniteIngot: {
 		DisplayName: Infinite Ingot
 		Tooltip: The power of many worlds, universes and galaxies all coalesce into this singular ingot.
-	}
-
-	CosmicMetalSingularity: {
-		DisplayName: Cosmic Metal Singularity
-		Tooltip: ""
 	}
 
 	TransmutationOfMatterItem: {
@@ -464,7 +445,7 @@ Items: {
 			'''
 			Right-click and destroy everything it touches
 			Press [KEY] to change the mode
-			 You can sense that the very lands of Terraria trembles in fear whenever you hold it.
+			'You can sense that the very lands of Terraria trembles in fear whenever you hold it.'
 			'''
 	}
 
@@ -514,7 +495,13 @@ Items: {
 
 	DawnshatterAzure: {
 		DisplayName: Dawnshatter Azure
-		Tooltip: Summons the full might of Yharon's Auric Soul to tear into your enemies
+		Tooltip:
+			'''
+			Fires a shadow of the corona, summoning explosive dragon flames upon hitting enemies.
+			Hold the right mouse button to dash while raising your weapon.
+			Let the flames purify your soul and utterly plunder your enemies.
+			[c/fff08c:-Drops multiple items upon killing an enemy-]
+			'''
 	}
 
 	DecayParticles: {
@@ -2816,7 +2803,6 @@ Projectiles: {
 	DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion Tail
 	AegisBladeProj.DisplayName: Aegis Blade
 	AegisBeams.DisplayName: Aegis Beams
-	DragonsBreathRound.DisplayName: Dragons Breath Round
 	DragonsBreathRifleHeldProj.DisplayName: Dragons Breath Rifle
 	InfiniteArrow.DisplayName: Infinite Arrow
 	HeavenLightning.DisplayName: Heaven Lightning

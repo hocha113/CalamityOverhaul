@@ -23,16 +23,6 @@ Items: {
 			'''
 	}
 
-	DragonsBreath: {
-		DisplayName: Souffle du Dragon
-		Tooltip:
-			'''
-			Tirer un grand nombre de balles à haute température
-			Souffler du feu de dragon en faisant un clic droit
-			"Les flammes résiduelles de ce dragon mort peuvent chauffer ces balles efficacement, sans les réduire en morceaux comme un fusil à fragmentation de phénix"
-			'''
-	}
-
 	BansheeHookEcType: {
 		DisplayName: Griffes de Banshee
 		Tooltip:
@@ -395,11 +385,6 @@ Items: {
 			'''
 	}
 
-	DragonsBreathRifle: {
-		DisplayName: Fusil Souffle de Dragon
-		Tooltip: ""
-	}
-
 	TextItem: {
 		DisplayName: Objet de Test
 		Tooltip: Hmm... tu ne devrais pas l'avoir
@@ -413,11 +398,6 @@ Items: {
 	InfiniteIngot: {
 		DisplayName: Lingot Infini
 		Tooltip: Le pouvoir de l'univers, dans la paume de ta main
-	}
-
-	CosmicMetalSingularity: {
-		DisplayName: Singularité Métallique Cosmique
-		Tooltip: ""
 	}
 
 	TransmutationOfMatterItem: {

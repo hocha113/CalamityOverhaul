@@ -1,4 +1,6 @@
-﻿/// <summary>
+﻿using System.Text;
+
+/// <summary>
 /// 表示物品前缀附加属性的结构体
 /// 该结构体用于存储与物品前缀相关的所有属性加成，包括伤害倍率、击退倍率、使用时间倍率、尺寸倍率、射速倍率、法力消耗倍率、
 /// 暴击加成以及前缀的总体强度结构体还包括前缀ID和是否为模组前缀的标志
@@ -69,17 +71,17 @@ public struct PrefixState
         critBonus = 0;
     }
     public override string ToString() {
-        string content = "PrefixAddition:";
-        content += "\nprefixID:" + prefixID;
-        content += "\nisModPreFix:" + isModPreFix;
-        content += "\nstrength:" + strength;
-        content += "\ndamageMult:" + damageMult;
-        content += "\nknockbackMult:" + knockbackMult;
-        content += "\nuseTimeMult:" + useTimeMult;
-        content += "\nscaleMult:" + scaleMult;
-        content += "\nshootSpeedMult:" + shootSpeedMult;
-        content += "\nmanaMult:" + manaMult;
-        content += "\ncritBonus:" + critBonus;
-        return content;
+        StringBuilder content = new StringBuilder("PrefixAddition:");
+        content.AppendLine($"prefixID: {prefixID}");
+        content.AppendLine($"isModPreFix: {isModPreFix}");
+        content.AppendLine($"strength: {strength}");
+        content.AppendLine($"damageMult: {damageMult}");
+        content.AppendLine($"knockbackMult: {knockbackMult}");
+        content.AppendLine($"useTimeMult: {useTimeMult}");
+        content.AppendLine($"scaleMult: {scaleMult}");
+        content.AppendLine($"shootSpeedMult: {shootSpeedMult}");
+        content.AppendLine($"manaMult: {manaMult}");
+        content.AppendLine($"critBonus: {critBonus}");
+        return content.ToString();
     }
 }

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     , ModContent.ProjectileType<SmallCoral>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
         }
         public override void PostGunDraw(Vector2 drawPos, ref Color lightColor) {
-            if (IsKreload) {
+            if (IsKreload && MagazineSystem) {
                 Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Item_Ranged + "CoralCannon_PrimedForAction");
                 Main.EntitySpriteDraw(value, drawPos, null, lightColor
                     , Projectile.rotation, value.Size() / 2, Projectile.scale

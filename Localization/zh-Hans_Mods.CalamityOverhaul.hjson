@@ -23,16 +23,6 @@ Items: {
 			'''
 	}
 
-	DragonsBreath: {
-		DisplayName: 巨龙之息
-		Tooltip:
-			'''
-			发射大量高温子弹
-			右键喷射灼热的龙息
-			"这头龙死后残余的火焰可以很好的加热这些子弹，而不像凤凰爆破枪一样把子弹烧成碎片"
-			'''
-	}
-
 	BansheeHookEcType: {
 		DisplayName: 女妖之爪
 		Tooltip:
@@ -339,7 +329,7 @@ Items: {
 
 	FoodStallChair: {
 		DisplayName: 大排档塑料椅子
-		Tooltip: ""
+		Tooltip: I AM THE CHAIR THAT IS APPROACHING!
 	}
 
 	DaemonsFlameEcType: {
@@ -398,11 +388,6 @@ Items: {
 			'''
 	}
 
-	DragonsBreathRifle: {
-		DisplayName: 龙息冲锋枪
-		Tooltip: ""
-	}
-
 	TextItem: {
 		DisplayName: 测试物品
 		Tooltip: 嗯...你不应该拥有它
@@ -416,11 +401,6 @@ Items: {
 	InfiniteIngot: {
 		DisplayName: 无尽锭
 		Tooltip: 寰宇之力，就在掌中
-	}
-
-	CosmicMetalSingularity: {
-		DisplayName: 宇宙金属奇点
-		Tooltip: ""
 	}
 
 	TransmutationOfMatterItem: {
