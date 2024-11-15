@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using InnoVault;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,6 +18,7 @@ namespace CalamityOverhaul.Content.UIs
 {
     internal class OverhaulTheBibleUI : UIHandle, ICWRLoader
     {
+        #region Data
         internal static OverhaulTheBibleUI Instance { get; private set; }
         public override void Load() => Instance = this;
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BookPans");
@@ -129,6 +131,8 @@ namespace CalamityOverhaul.Content.UIs
 
         private Rectangle MainRec;
         private bool OnMain;
+        #endregion
+
         void ICWRLoader.SetupData() {
             Instance.ecTypeItemList = [];
             foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
@@ -356,7 +360,7 @@ namespace CalamityOverhaul.Content.UIs
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
             Rectangle originalScissorRect = spriteBatch.GraphicsDevice.ScissorRectangle;
-            Rectangle newScissorRect = CWRUtils.GetClippingRectangle(spriteBatch, new((int)DrawPosition.X + 9, (int)DrawPosition.Y + 9, 239, 213));
+            Rectangle newScissorRect = VaultUtils.GetClippingRectangle(spriteBatch, new((int)DrawPosition.X + 9, (int)DrawPosition.Y + 9, 239, 213));
             spriteBatch.GraphicsDevice.ScissorRectangle = newScissorRect;
             //遍历绘制索引目标的实例
             for (int i = 0; i < ecTypeItemList.Count; i++) {

@@ -1,9 +1,11 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Events;
+using InnoVault;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
+using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.UIs
 {
@@ -39,8 +41,11 @@ namespace CalamityOverhaul.Content.UIs
 
         public override void Update() => DrawPosition = new Vector2(Main.screenWidth - 60, Main.screenHeight - 60);
 
-        public override void Draw(SpriteBatch spriteBatch) =>
-            CWRUtils.DrawEventProgressBar(spriteBatch, DrawPosition, icon, 1 - TungstenRiot.Instance.EventKillRatio
-                , sengs, 200, 45, CWRLocText.GetTextValue("Event_TungstenRiot_Name"), TungstenRiot.Instance.MainColor);
+        public override void Draw(SpriteBatch spriteBatch) {
+            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            float ratio = 1 - TungstenRiot.Instance.EventKillRatio;
+            string name = CWRLocText.GetTextValue("Event_TungstenRiot_Name");
+            VaultUtils.DrawEventProgressBar(spriteBatch, pixel, DrawPosition, icon, ratio, sengs, 200, 45, name, TungstenRiot.Instance.MainColor);
+        }
     }
 }

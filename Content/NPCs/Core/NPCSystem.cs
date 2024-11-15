@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
 
         private void LoadNPCSets() {
             NPCSets = [];
-            foreach (Type type in CWRUtils.GetSubclassTypeList(typeof(NPCOverride))) {
+            foreach (Type type in VaultUtils.GetSubclassTypeList(typeof(NPCOverride))) {
                 if (type != typeof(NPCOverride)) {
                     object obj = Activator.CreateInstance(type);
                     if (obj is NPCOverride inds) {

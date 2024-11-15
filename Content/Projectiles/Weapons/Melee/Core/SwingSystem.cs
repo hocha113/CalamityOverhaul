@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using InnoVault;
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.ModLoader;
@@ -20,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             glowTextures = [];
         }
         void ICWRLoader.SetupData() {
-            Swings = CWRUtils.GetSubclass<BaseSwing>();
+            Swings = VaultUtils.GetSubclassInstances<BaseSwing>();
             foreach (var swing in Swings) {
                 string pathValue = swing.GetType().Name;
                 int type = CWRMod.Instance.Find<ModProjectile>(pathValue).Type;

@@ -25,7 +25,6 @@ namespace CalamityOverhaul.Content.Events
             internal set => _tungstenRiotIsOngoing = value;
         }
         public int EventKillPoints;
-        public int Time;
         public Color MainColor => new Color(28, 169, 175);
         public float EventKillRatio => EventKillPoints / MaxEventIntegration;
         public struct TungstenEventNPCValue

@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.OtherMods.ImproveGame;
 using CalamityOverhaul.Content.UIs;
+using InnoVault;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -380,12 +381,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 设置自动换弹，在一定条件下让玩家开始换弹，这个方法一般不需要手动调用，枪械会在合适的时候自行调用该逻辑
         /// </summary>
         protected void SetAutomaticCartridgeChange(bool ignoreKreLoad = false) {
-            if (AmmoState.Amount == 0) {
+            if (AmmoState.CurrentAmount == 0) {
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态以保证换弹流畅
             }
 
             if ((!IsKreload || ignoreKreLoad) && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0
-                && AmmoState.Amount > 0 && !ModOwner.NoCanAutomaticCartridgeChange
+                && AmmoState.CurrentAmount > 0 && !ModOwner.NoCanAutomaticCartridgeChange
                 && ModItem.NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.OnMainP) {
                 OnKreload = true;
                 kreloadTimeValue = kreloadMaxTime;
@@ -611,7 +612,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
                 if (WhetherStartChangingAmmunition()) {
                     AmmoState = Owner.GetAmmoState(Item.useAmmo);//在装填时更新弹药状态
-                    if (AmmoState.Amount >= MinimumAmmoPerReload) {//只有弹药量大于最小弹药量时才可装填
+                    if (AmmoState.CurrentAmount >= MinimumAmmoPerReload) {//只有弹药量大于最小弹药量时才可装填
                         OnKreload = true;
                         kreloadTimeValue = kreloadMaxTime;
                         extraKreloadMaxTime = 0;
@@ -675,7 +676,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     }
 
                     if (result2) {
-                        int value = AmmoState.Amount;
+                        int value = AmmoState.CurrentAmount;
                         if (value > ModItem.AmmoCapacity) {
                             value = ModItem.AmmoCapacity;
                         }
@@ -696,7 +697,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 if (!IsKreload && LoadingReminder) {
                     if (!Owner.CWR().uiMouseInterface && kreloadTimeValue <= 0) {
                         AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态
-                        if (AmmoState.Amount <= 0) {
+                        if (AmmoState.CurrentAmount <= 0) {
                             HandleEmptyAmmoEjection();
                         }
                     }
@@ -750,12 +751,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 if (ammoChain is not null && Owner.LoadFromAmmoChain(Item, ammoChain, Item.useAmmo
                     , magazineCapacity, out var pushedAmmo, out int ammoCount)) {
                     cwrItem.MagazineContents = pushedAmmo.ToArray();
-                    AmmoState.Amount = ammoCount;
+                    AmmoState.CurrentAmount = ammoCount;
                     return;
                 }
             }
 
-            foreach (Item ammoItem in AmmoState.InItemInds) {
+            foreach (Item ammoItem in AmmoState.CurrentItems) {
                 int stack = ammoItem.stack;
 
                 if (stack > magazineCapacity - accumulatedAmount) {
@@ -771,7 +772,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     newAmmoItem.CWR().AmmoProjectileReturn = false;//因为是无尽弹药类提供的弹药，所以不应该在之后的退弹中被返还
                     loadedItems.Add(newAmmoItem);
                     accumulatedAmount = magazineCapacity;
-                    AmmoState.Amount = magazineCapacity;
+                    AmmoState.CurrentAmount = magazineCapacity;
                     break;
                 }
                 if (ammoItem.type > ItemID.None && stack > 0) {
@@ -795,7 +796,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if (LoadingQuantity > 0) {
                 maxAmmo = LoadingQuantity;
             }
-            foreach (Item inds in AmmoState.InItemInds) {
+            foreach (Item inds in AmmoState.CurrentItems) {
                 if (ammo >= maxAmmo) {
                     break;
                 }

@@ -1,5 +1,6 @@
 ﻿using CalamityMod.CalPlayer;
 using CalamityOverhaul.Common;
+using InnoVault;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
@@ -264,7 +265,7 @@ namespace CalamityOverhaul.Content.Players.Core
         public override void Load() {
             IL_Player.Update += Player_Update_Hook;
 
-            PlayerSets = CWRUtils.GetSubclass<PlayerSet>();
+            PlayerSets = VaultUtils.GetSubclassInstances<PlayerSet>();
             playerLoaderType = typeof(PlayerLoader);
 
             MethodBase getPublicStaticMethod(string key) => playerLoaderType.GetMethod(key, BindingFlags.Public | BindingFlags.Static);

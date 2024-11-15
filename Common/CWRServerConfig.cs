@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Common
         {
             internal const float MScaleOffset_MinValue = 0.2f;
             internal const float MScaleOffset_MaxValue = 1f;
-            public static float MScaleOffsetValue;
             internal const float M_RDCD_BarSize_MinValue = 0.5f;
             internal const float M_RDCD_BarSize_MaxValue = 2f;
             public static int CartridgeUI_Offset_X;

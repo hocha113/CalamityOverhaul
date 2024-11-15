@@ -3,6 +3,7 @@ using CalamityMod.Projectiles.Melee.Yoyos;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Tiles;
+using InnoVault;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -213,12 +214,12 @@ namespace CalamityOverhaul.Content.TileModules
             if (OnBoolMoon) {
                 drawPos = Center + new Vector2(-8, -64) - Main.screenPosition;
                 float slp = MathF.Abs(MathF.Sin(Time * 0.03f) * 0.3f) + 1;
-                CWRUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<BloodOrb>(), drawPos, slp, 0, Color.White);
+                VaultUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<BloodOrb>(), drawPos, slp, 0, Color.White);
             }
             else if (mouseOnTile) {
                 drawPos = Center + new Vector2(-8, -32) - Main.screenPosition;
                 float slp = MathF.Abs(MathF.Sin(Time * 0.03f) * 0.3f) + 1;
-                CWRUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<BloodOrb>(), drawPos, slp, 0, Color.White);
+                VaultUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<BloodOrb>(), drawPos, slp, 0, Color.White);
             }
         }
 

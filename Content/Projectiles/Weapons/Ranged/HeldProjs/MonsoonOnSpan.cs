@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using InnoVault;
 using Terraria;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs

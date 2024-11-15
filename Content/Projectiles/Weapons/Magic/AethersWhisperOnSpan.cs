@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Particles;
+using InnoVault;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -23,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                 GeneralParticleHandler.SpawnParticle(spark2);
             }
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center
-                , Projectile.rotation.ToRotationVector2() * Owner.GetShootState().ScaleFactor
+                , Projectile.rotation.ToRotationVector2() * Owner.GetShootState().ShootSpeed
                 , ModContent.ProjectileType<AetherOrb>()
                 , Projectile.damage, Projectile.knockBack, Owner.whoAmI, 0);
         }

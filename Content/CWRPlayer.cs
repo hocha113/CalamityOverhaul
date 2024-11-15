@@ -124,23 +124,7 @@ namespace CalamityOverhaul.Content
         public bool HellfireExplosion;
         #endregion
 
-        private static Asset<Texture2D> Quiver_back_Asset;
-        private static Asset<Texture2D> IceGod_back_Asset;
         #endregion
-
-        //internal void setUIMouseInterface(bool value) => uiMouseInterface = value;
-
-        public override void Load() {
-            if (!Main.dedServ) {
-                Quiver_back_Asset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Players/Quiver_back");
-                IceGod_back_Asset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Players/IceGod_back");
-            }
-        }
-
-        public override void Unload() {
-            Quiver_back_Asset = null;
-            IceGod_back_Asset = null;
-        }
 
         public override void Initialize() {
             SwingIndex = 0;
@@ -291,7 +275,7 @@ namespace CalamityOverhaul.Content
                     if (player.velocity.Y == 0f && player.velocity.X != 0) {
                         frameindex = (int)(Main.GameUpdateCount / 3 % 5);
                     }
-                    value = Quiver_back_Asset.Value;
+                    value = CWRAsset.Quiver_back_Asset.Value;
                     frame = CWRUtils.GetRec(value, frameindex, 5);
                     if (HeldStyle >= 0) {
                         frame = CWRUtils.GetRec(value, 0, 5);
@@ -300,7 +284,7 @@ namespace CalamityOverhaul.Content
                 }
 
                 if (item.type == ModContent.ItemType<DarkFrostSolstice>()) {
-                    value = IceGod_back_Asset.Value;
+                    value = CWRAsset.IceGod_back_Asset.Value;
                     frame = CWRUtils.GetRec(value);
                     orig = CWRUtils.GetOrig(value);
                     float sengs = Main.GameUpdateCount * 0.05f;

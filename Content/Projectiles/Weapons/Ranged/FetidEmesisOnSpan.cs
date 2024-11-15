@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Projectiles.Ranged;
+using InnoVault;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

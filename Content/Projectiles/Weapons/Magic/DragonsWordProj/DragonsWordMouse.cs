@@ -2,6 +2,7 @@
 using CalamityMod.NPCs.Providence;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
+using InnoVault;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;

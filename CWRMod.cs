@@ -2,6 +2,7 @@ global using Microsoft.Xna.Framework;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
+using InnoVault;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -63,7 +64,7 @@ namespace CalamityOverhaul
 
             {
                 RItemInstances = [];//这里直接进行初始化，便不再需要进行UnLoad卸载
-                List<Type> rItemIndsTypes = CWRUtils.GetSubclassTypeList(typeof(BaseRItem));
+                List<Type> rItemIndsTypes = VaultUtils.GetSubclassTypeList(typeof(BaseRItem));
                 //($"一共获取到{rItemIndsTypes.Count}个待挑选元素Type").DompInConsole();
                 foreach (Type type in rItemIndsTypes) {
                     //($"指向元素{type}进行分析").DompInConsole();
@@ -102,7 +103,7 @@ namespace CalamityOverhaul
 
             {
                 EctypeItemInstance = [];
-                List<Type> ectypeIndsTypes = CWRUtils.GetSubclassTypeList(typeof(BaseRItem));
+                List<Type> ectypeIndsTypes = VaultUtils.GetSubclassTypeList(typeof(BaseRItem));
                 foreach (Type type in ectypeIndsTypes) {
                     if (type != typeof(EctypeItem)) {
                         object obj = Activator.CreateInstance(type);
@@ -115,7 +116,7 @@ namespace CalamityOverhaul
 
             {
                 NPCCustomizerInstances = [];//这里直接进行初始化，便不再需要进行UnLoad卸载
-                List<Type> npcCustomizerIndsTypes = CWRUtils.GetSubclassTypeList(typeof(NPCCustomizer));
+                List<Type> npcCustomizerIndsTypes = VaultUtils.GetSubclassTypeList(typeof(NPCCustomizer));
                 foreach (Type type in npcCustomizerIndsTypes) {
                     if (type != typeof(NPCCustomizer)) {
                         object obj = Activator.CreateInstance(type);
@@ -162,7 +163,7 @@ namespace CalamityOverhaul
         public override void Load() {
             Instance = this;
             FindMod();
-            ILoaders = CWRUtils.GetSubInterface<ICWRLoader>();
+            ILoaders = VaultUtils.GetSubInterface<ICWRLoader>();
             foreach (var setup in ILoaders) {
                 setup.LoadData();
             }
