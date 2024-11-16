@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Structures
             orig.Invoke(chest, type, hasPlacedLogAndSchematic);
             if (hasPlacedLogAndSchematic) {
                 AddChestContent(chest, ModContent.ItemType<SHPC>(), 1
-                    , CWRUtils.Translation("正在将 SHPC 塞入箱子", "Shoving SHPC into the chest."));
+                    , VaultUtils.Translation("正在将 SHPC 塞入箱子", "Shoving SHPC into the chest."));
             }
         }
 
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Structures
             orig.Invoke(chest, type, hasPlacedLogAndSchematic);
             if (hasPlacedLogAndSchematic) {
                 AddChestContent(chest, ModContent.ItemType<BlossomFlux>(), 1
-                    , CWRUtils.Translation("正在将 Blossom Flux 塞入箱子", "Stuffing Blossom Flux into chest."));
+                    , VaultUtils.Translation("正在将 Blossom Flux 塞入箱子", "Stuffing Blossom Flux into chest."));
             }
         }
     }

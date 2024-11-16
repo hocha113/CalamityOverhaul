@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 return;
             }
 
-            Color color = CWRUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(Time * 0.035f)), Color.Gold, Color.Green);
+            Color color = VaultUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(Time * 0.035f)), Color.Gold, Color.Green);
 
             spriteBatch.Draw(CWRUtils.GetT2DAsset(CWRConstant.Placeholder2).Value, Vector2.Zero
                 , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight)

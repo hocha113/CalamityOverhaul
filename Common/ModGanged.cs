@@ -105,13 +105,13 @@ namespace CalamityOverhaul.Common
             return reset;
         }
 
-        private static string text1 => CWRUtils.Translation("未成功加载", "Failed load");
+        private static string text1 => VaultUtils.Translation("未成功加载", "Failed load");
 
-        private static string text2 => CWRUtils.Translation("是否是", "whether it is");
+        private static string text2 => VaultUtils.Translation("是否是", "whether it is");
 
-        private static string text3 => CWRUtils.Translation("已经改动?", "Has it been changed?");
+        private static string text3 => VaultUtils.Translation("已经改动?", "Has it been changed?");
 
-        private static string text4 => CWRUtils.Translation("未加载模组", "The mod is not loaded");
+        private static string text4 => VaultUtils.Translation("未加载模组", "The mod is not loaded");
 
         private static void Domp1(string value1, string value2) {
             CWRMod.Instance.Logger.Info($"{text1} {value1} {text2} {value2} {text3}");

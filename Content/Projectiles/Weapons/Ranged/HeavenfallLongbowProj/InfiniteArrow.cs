@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        private Color chromaColor => CWRUtils.MultiStepColorLerp(Projectile.ai[0] % 45 / 45f, HeavenfallLongbow.rainbowColors);
+        private Color chromaColor => VaultUtils.MultiStepColorLerp(Projectile.ai[0] % 45 / 45f, HeavenfallLongbow.rainbowColors);
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 7, outerSparkScale, outerSparkColor);
                 PRTLoader.AddParticle(spark);
 
-                Color innerSparkColor = CWRUtils.MultiStepColorLerp(Projectile.ai[1] % 30 / 30f, HeavenfallLongbow.rainbowColors);
+                Color innerSparkColor = VaultUtils.MultiStepColorLerp(Projectile.ai[1] % 30 / 30f, HeavenfallLongbow.rainbowColors);
                 float innerSparkScale = 0.6f + scaleBoost;
                 PRT_HeavenfallStar spark2 = new PRT_HeavenfallStar(Projectile.Center, Projectile.velocity, false, 7, innerSparkScale, innerSparkColor);
                 PRTLoader.AddParticle(spark2);
@@ -112,12 +112,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                     Vector2 particleSpeed = Projectile.velocity * Main.rand.NextFloat(0.5f, 0.7f);
                     Vector2 pos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
                     BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                        , Main.rand.NextFloat(0.3f, 0.7f), CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 30, 1, 1.5f, hueShift: 0.0f);
+                        , Main.rand.NextFloat(0.3f, 0.7f), VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 30, 1, 1.5f, hueShift: 0.0f);
                     PRTLoader.AddParticle(energyLeak);
                 }
 
                 for (int i = 0; i < 6; i++)
-                    GeneralParticleHandler.SpawnParticle(new PulseRing(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(13, 130), Vector2.Zero, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 0.05f, 0.8f, 8));
+                    GeneralParticleHandler.SpawnParticle(new PulseRing(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(13, 130), Vector2.Zero, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 0.05f, 0.8f, 8));
             }
             Projectile.Explode(spanSound: false);
         }

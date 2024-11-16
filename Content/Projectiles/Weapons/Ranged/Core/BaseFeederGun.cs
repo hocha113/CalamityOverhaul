@@ -764,7 +764,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
                 if (CWRUtils.IsAmmunitionUnlimited(ammoItem)) {//如果该物品不消耗，那么可能是一个无限弹药类型的物品，这里进行特别处理
                     int newAmmoType = ammoItem.type;
-                    if (CWRLoad.ProjectileToSafeAmmoMap.TryGetValue(ammoItem.shoot, out int value2)) {
+                    if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(ammoItem.shoot, out int value2)) {
                         newAmmoType = value2;
                     }
                     Item newAmmoItem = new Item(newAmmoType, magazineCapacity - accumulatedAmount);
@@ -963,7 +963,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                             HanderPlaySound();
                         }
                         if (FireLight > 0) {
-                            Color fireColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold);
+                            Color fireColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold);
                             Vector3 fireColorToVr3 = fireColor.ToVector3() * Main.rand.NextFloat(0.1f, FireLight);
                             Lighting.AddLight(GunShootPos, fireColorToVr3);
                         }

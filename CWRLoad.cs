@@ -295,10 +295,6 @@ namespace CalamityOverhaul
         /// 获取一个枪械的后坐力数值所对于的本地化描述键
         /// </summary>
         internal static Dictionary<int, string> ItemIsGunAndGetRecoilLocKey { get; private set; } = [];
-        /// <summary>
-        /// 让一个射弹安全的对应到弹药物品
-        /// </summary>
-        internal static Dictionary<int, int> ProjectileToSafeAmmoMap { get; private set; } = [];
         #endregion
 
         public static class NPCValue
@@ -445,39 +441,6 @@ namespace CalamityOverhaul
                 DesertNuisanceBodyYoung, CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
                 , SepulcherBody, PerforatorBodyLarge, PerforatorBodyMedium, NPCID.TheDestroyerBody, NPCID.EaterofWorldsBody];
 
-            ProjectileToSafeAmmoMap = new Dictionary<int, int>() {
-                { ProjectileID.BoneArrow, ItemID.BoneArrow},
-                { ProjectileID.MoonlordArrow, ItemID.MoonlordArrow},
-                { ProjectileID.ChlorophyteArrow, ItemID.ChlorophyteArrow},
-                { ProjectileID.CursedArrow, ItemID.CursedArrow},
-                { ProjectileID.FlamingArrow, ItemID.FlamingArrow},
-                { ProjectileID.FrostburnArrow, ItemID.FrostburnArrow},
-                { ProjectileID.HellfireArrow, ItemID.HellfireArrow},
-                { ProjectileID.HolyArrow, ItemID.HolyArrow},
-                { ProjectileID.IchorArrow, ItemID.IchorArrow},
-                { ProjectileID.JestersArrow, ItemID.JestersArrow},
-                { ProjectileID.ShimmerArrow, ItemID.ShimmerArrow},
-                { ProjectileID.UnholyArrow, ItemID.UnholyArrow},
-                { ProjectileID.VenomArrow, ItemID.VenomArrow},
-                { ProjectileID.WoodenArrowFriendly, ItemID.WoodenArrow},
-                { ProjectileID.ChumBucket, ItemID.ChumBucket},
-                { ProjectileID.ChlorophyteBullet, ItemID.ChlorophyteBullet},
-                { ProjectileID.CrystalBullet, ItemID.CrystalBullet},
-                { ProjectileID.CursedBullet, ItemID.CursedBullet},
-                { ProjectileID.ExplosiveBullet, ItemID.ExplodingBullet},
-                { ProjectileID.GoldenBullet, ItemID.GoldenBullet},
-                { ProjectileID.BulletHighVelocity, ItemID.HighVelocityBullet},
-                { ProjectileID.IchorBullet, ItemID.IchorBullet},
-                { ProjectileID.MoonlordBullet, ItemID.MoonlordBullet},
-                { ProjectileID.MeteorShot, ItemID.MeteorShot},
-                { ProjectileID.Bullet, ItemID.MusketBall},
-                { ProjectileID.NanoBullet, ItemID.NanoBullet},
-                { ProjectileID.PartyBullet, ItemID.PartyBullet},
-                { ProjectileID.SilverBullet, ItemID.SilverBullet},
-                { ProjectileID.VenomBullet, ItemID.VenomBullet},
-                { ProjectileID.SnowBallFriendly, ItemID.Snowball},
-            };
-
             if (CWRMod.Instance.fargowiltasSouls != null) {
                 EternitySoul = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("EternitySoul").Type;
                 DevisCurse = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("DevisCurse").Type;
@@ -575,7 +538,7 @@ namespace CalamityOverhaul
             ItemIsGunAndMustConsumeAmmunition.Clear();
             ItemIsGunAndGetRecoilValue.Clear();
             ItemIsGunAndGetRecoilLocKey.Clear();
-            ProjectileToSafeAmmoMap.Clear();
+
             NPCValue.TheofSteel.Clear();
         }
 

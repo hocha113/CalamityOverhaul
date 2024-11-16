@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (colorDates == null) {
                 colorDates = CWRUtils.GetColorDate(CWRUtils.GetT2DValue(Texture));
             }
-            return CWRUtils.MultiStepColorLerp((150 - Projectile.timeLeft) / 150f, colorDates);
+            return VaultUtils.MultiStepColorLerp((150 - Projectile.timeLeft) / 150f, colorDates);
         }
 
         internal float WidthFunction(float completionRatio) {

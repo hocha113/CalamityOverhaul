@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 ProjColorDate = CWRUtils.GetColorDate(CWRUtils.GetT2DValue(Texture));
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-            Color color = CWRUtils.MultiStepColorLerp(Projectile.timeLeft / 120f, ProjColorDate);
+            Color color = VaultUtils.MultiStepColorLerp(Projectile.timeLeft / 120f, ProjColorDate);
             if (Main.netMode != NetmodeID.Server) {
                 for (int i = 0; i < 5; i++) {
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(6);

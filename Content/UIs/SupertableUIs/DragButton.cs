@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             spriteBatch.Draw(value, DrawPosition + new Vector2(0, 16.5f), r3, c3, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);//左
             spriteBatch.Draw(value, DrawPosition + new Vector2(32, 16.5f), r4, c4, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);//右
             if (onMain) {
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRUtils.Translation("左键拖动", "left-drag"), DrawPosition.X - 8, DrawPosition.Y - 16, Color.BlueViolet, Color.Black, Vector2.Zero, 0.8f);
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, VaultUtils.Translation("左键拖动", "left-drag"), DrawPosition.X - 8, DrawPosition.Y - 16, Color.BlueViolet, Color.Black, Vector2.Zero, 0.8f);
             }
         }
     }

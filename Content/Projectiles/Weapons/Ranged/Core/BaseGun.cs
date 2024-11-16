@@ -564,7 +564,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                         OffsetPos -= ShootVelocity.UnitVector() * RecoilRetroForceMagnitude;
                     }
                     if (FireLight > 0) {
-                        Lighting.AddLight(GunShootPos, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * FireLight);
+                        Lighting.AddLight(GunShootPos, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f), Color.Red, Color.Gold).ToVector3() * FireLight);
                     }
                 }
                 PostFiringShoot();
@@ -661,7 +661,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
                 if (!arrowItemInds.consumable) {
                     int newtype = ItemID.WoodenArrow;
-                    if (CWRLoad.ProjectileToSafeAmmoMap.TryGetValue(arrowItemInds.shoot, out int value2)) {
+                    if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(arrowItemInds.shoot, out int value2)) {
                         newtype = value2;
                     }
                     Main.instance.LoadItem(newtype);

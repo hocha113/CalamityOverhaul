@@ -90,7 +90,7 @@ public static class QotUtils
                     while (times > 0 && ammoQueue.Count > 0) {
                         var item = ammoQueue.Peek();
                         int ammoType = item.type;
-                        if (CWRLoad.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo))
+                        if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo))
                             ammoType = actualAmmo;
 
                         // 不消耗的独立处理
@@ -136,7 +136,7 @@ public static class QotUtils
 
                 foreach (var item in instances) {
                     int ammoType = item.type;
-                    if (CWRLoad.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo))
+                    if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo))
                         ammoType = actualAmmo;
 
                     // 不消耗的独立处理

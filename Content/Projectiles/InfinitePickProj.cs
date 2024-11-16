@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3() * (Projectile.ai[0] == 1 ? 1.2f : 10));
             if (Projectile.ai[0] == 1 && !VaultUtils.isServer) {
                 for (int i = 0; i < 8; i++) {
-                    PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center + CWRUtils.randVr(13), Projectile.velocity, false, 13, 1, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
+                    PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center + CWRUtils.randVr(13), Projectile.velocity, false, 13, 1, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
                     PRTLoader.AddParticle(spark);
                 }
                 Player own = Main.player[Projectile.owner];
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 Projectile.NewProjectile(Projectile.parent(), target.position + new Vector2(Main.rand.Next(-160, 160), -420), new Vector2(0, 13), ModContent.ProjectileType<InfiniteEnmgs>(), Projectile.damage / 2, 0, Projectile.owner);
             }
             for (int i = 0; i < 36; i++) {
-                Color outerSparkColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors);
+                Color outerSparkColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors);
                 Vector2 vector = Main.rand.NextVector2Unit() * Main.rand.Next(77);
                 float slp = Main.rand.NextFloat(0.5f, 0.9f);
                 GeneralParticleHandler.SpawnParticle(new FlareShine(Projectile.Center + Main.rand.NextVector2Unit() * 13, vector, Color.White, outerSparkColor
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, vector, false, 7, outerSparkScale, outerSparkColor);
                 PRTLoader.AddParticle(spark);
 
-                Color innerSparkColor = CWRUtils.MultiStepColorLerp(Projectile.ai[1] % 30 / 30f, HeavenfallLongbow.rainbowColors);
+                Color innerSparkColor = VaultUtils.MultiStepColorLerp(Projectile.ai[1] % 30 / 30f, HeavenfallLongbow.rainbowColors);
                 float innerSparkScale = 0.6f + scaleBoost;
                 PRT_HeavenfallStar spark2 = new PRT_HeavenfallStar(Projectile.Center, vector, false, 7, innerSparkScale, innerSparkColor);
                 PRTLoader.AddParticle(spark2);

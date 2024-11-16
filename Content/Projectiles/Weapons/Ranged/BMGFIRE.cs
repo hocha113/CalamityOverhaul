@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             BasePRT particle = new PRT_Light(Projectile.Center, Projectile.velocity, Main.rand.NextFloat(0.3f, 0.7f), Color.Red, 22, 0.2f);
             PRTLoader.AddParticle(particle);
             BasePRT particle2 = new PRT_Smoke(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), Projectile.velocity
-                , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Gold)
+                , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Gold)
                 , 32, Main.rand.NextFloat(0.2f, 1.1f), 0.5f, 0.1f);
             PRTLoader.AddParticle(particle2);
             if (Main.rand.NextBool(Projectile.timeLeft / 3 + 1)) {
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     , Projectile.velocity, Main.rand.NextFloat(0.3f, 0.7f), Color.Red, 22, 0.2f);
                 PRTLoader.AddParticle(particle3);
                 BasePRT particle4 = new PRT_Smoke(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3.3f, 15.7f)
-                    , Projectile.velocity, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Gold)
+                    , Projectile.velocity, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Gold)
                     , 32, Main.rand.NextFloat(0.2f, 1.1f) * slp, 0.5f, 0.1f);
                 PRTLoader.AddParticle(particle4);
             }

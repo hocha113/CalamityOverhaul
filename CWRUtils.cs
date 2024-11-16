@@ -34,17 +34,6 @@ namespace CalamityOverhaul
     public static class CWRUtils
     {
         #region System
-        public static string GenerateRandomString(int length) {
-            const string characters = "!@#$%^&*()-_=+[]{}|;:'\",.<>/?`~0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            char[] result = new char[length];
-
-            for (int i = 0; i < length; i++) {
-                result[i] = characters[Main.rand.Next(characters.Length)];
-            }
-
-            return new string(result);
-        }
-
         public static LocalizedText SafeGetItemName<T>() where T : ModItem {
             Type type = typeof(T);
             return type.BaseType == typeof(EctypeItem)
@@ -58,15 +47,6 @@ namespace CalamityOverhaul
                 return CWRLocText.GetText("None");
             }
             return item.GetLocalization("DisplayName");
-        }
-
-        public static void WebRedirection(this string str, bool inSteam = true) {
-            if (SocialAPI.Mode == SocialMode.Steam && inSteam) {
-                SteamFriends.ActivateGameOverlayToWebPage(str);
-            }
-            else {
-                Utils.OpenToURL(str);
-            }
         }
 
         /// <summary>
@@ -1101,52 +1081,6 @@ namespace CalamityOverhaul
                 return;
             }
             Main.NewText(message, newColor);
-        }
-
-        /// <summary>
-        /// 一个根据语言选项返回字符的方法
-        /// </summary>
-        public static string Translation(string Chinese = null, string English = null, string Spanish = null, string Russian = null) {
-            string text = default(string);
-
-            if (English == null) {
-                English = "Invalid Character";
-            }
-
-            switch (Language.ActiveCulture.LegacyId) {
-                case (int)GameCulture.CultureName.Chinese:
-                    text = Chinese;
-                    break;
-                case (int)GameCulture.CultureName.Russian:
-                    text = Russian;
-                    break;
-                case (int)GameCulture.CultureName.Spanish:
-                    text = Spanish;
-                    break;
-                case (int)GameCulture.CultureName.English:
-                    text = English;
-                    break;
-                default:
-                    text = English;
-                    break;
-            }
-
-            return text;
-        }
-
-        public static Color MultiStepColorLerp(float percent, params Color[] colors) {
-            if (colors == null) {
-                Text("MultiLerpColor: 空的颜色数组!");
-                return Color.White;
-            }
-            float per = 1f / (colors.Length - 1f);
-            float total = per;
-            int currentID = 0;
-            while (percent / total > 1f && currentID < colors.Length - 2) {
-                total += per;
-                currentID++;
-            }
-            return Color.Lerp(colors[currentID], colors[currentID + 1], (percent - (per * currentID)) / per);
         }
 
         /// <summary>

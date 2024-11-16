@@ -316,7 +316,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         private void ArrowResourceProcessing(ref Texture2D value, Item arrow) {
             if (!arrow.consumable) {
                 int newtype = ItemID.WoodenArrow;
-                if (CWRLoad.ProjectileToSafeAmmoMap.TryGetValue(arrow.shoot, out int value2)) {
+                if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(arrow.shoot, out int value2)) {
                     newtype = value2;
                 }
                 Main.instance.LoadItem(newtype);

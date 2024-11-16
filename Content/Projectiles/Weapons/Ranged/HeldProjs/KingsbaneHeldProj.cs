@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 , Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
 
             Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Item_Ranged + "Kingsbane_barrel");
-            Color drawColor2 = CWRUtils.MultiStepColorLerp(chargeValue / (float)maxChargeValue, drawColor, Color.Red);
+            Color drawColor2 = VaultUtils.MultiStepColorLerp(chargeValue / (float)maxChargeValue, drawColor, Color.Red);
             Main.EntitySpriteDraw(value, drawPos
                 , CWRUtils.GetRec(value, Projectile.frame, 10), drawColor2
                 , Projectile.rotation, CWRUtils.GetOrig(value, 10)

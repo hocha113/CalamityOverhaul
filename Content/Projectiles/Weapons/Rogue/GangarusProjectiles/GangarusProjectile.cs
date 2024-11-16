@@ -99,14 +99,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                             PRTLoader.AddParticle(energyLeak);
                         }
                         for (int i = 0; i < 136; i++) {
-                            Color outerSparkColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Gold);
+                            Color outerSparkColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.Gold);
                             Vector2 vector = Main.rand.NextVector2Unit() * Main.rand.Next(77);
                             float scaleBoost = MathHelper.Clamp(Main.rand.NextFloat(), 0f, 2f);
                             float outerSparkScale = 3.2f + scaleBoost;
                             PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center, vector, false, 27, outerSparkScale, outerSparkColor);
                             PRTLoader.AddParticle(spark);
 
-                            Color innerSparkColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Goldenrod, Color.Red);
+                            Color innerSparkColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Goldenrod, Color.Red);
                             float innerSparkScale = 0.6f + scaleBoost;
                             PRT_HeavenfallStar spark2 = new PRT_HeavenfallStar(Projectile.Center, vector, false, 37, innerSparkScale, innerSparkColor);
                             PRTLoader.AddParticle(spark2);

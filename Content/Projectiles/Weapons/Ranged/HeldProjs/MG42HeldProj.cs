@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PostGunDraw(Vector2 drawPos, ref Color lightColor) {
             Color maskingColor = lightColor;
             if (shootValue > 0) {
-                maskingColor = CWRUtils.MultiStepColorLerp(shootValue / 16f, lightColor, Color.Red);
+                maskingColor = VaultUtils.MultiStepColorLerp(shootValue / 16f, lightColor, Color.Red);
             }
             Main.EntitySpriteDraw(masking.Value, drawPos, null, maskingColor
                 , Projectile.rotation, masking.Size() / 2, Projectile.scale

@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
                 // 在(x, y)处生成粒子或执行其他操作
                 BasePRT energyLeak = new PRT_Light(new Vector2(x, y), Vector2.Zero
-                        , 1.5f, CWRUtils.MultiStepColorLerp(angleStep % 1, Color.MediumPurple, Color.White), 120, 1, 1.5f, hueShift: 0.0f);
+                        , 1.5f, VaultUtils.MultiStepColorLerp(angleStep % 1, Color.MediumPurple, Color.White), 120, 1, 1.5f, hueShift: 0.0f);
                 PRTLoader.AddParticle(energyLeak);
             }
 

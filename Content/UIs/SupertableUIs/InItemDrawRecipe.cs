@@ -72,14 +72,14 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
                 Vector2 drawText1 = new Vector2(DrawPos.X - 20, DrawPos.Y - 60) + offset;
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value,
-                    $"{CWRUtils.Translation("在", "In") + CWRUtils.SafeGetItemName<TransmutationOfMatterItem>() + CWRUtils.Translation("进行终焉合成", "Perform final synthesis")}："
+                    $"{VaultUtils.Translation("在", "In") + CWRUtils.SafeGetItemName<TransmutationOfMatterItem>() + VaultUtils.Translation("进行终焉合成", "Perform final synthesis")}："
                     , drawText1.X, drawText1.Y, Color.White, Color.Black, new Vector2(0.3f), 1f);
 
                 if (targetItem != null) {
                     SupertableUI.DrawItemIcons(spriteBatch, targetItem, DrawPos + new Vector2(450, 520), new Vector2(0.0001f, 0.0001f), Color.White, 1, 1.5f);
 
                     Vector2 drawText2 = new Vector2(DrawPos.X - 20, DrawPos.Y + 410) + offset;
-                    string text = $"{CWRUtils.Translation("合成获得：", "Synthetic acquisition：") + CWRUtils.SafeGetItemName(targetItem.type)}";
+                    string text = $"{VaultUtils.Translation("合成获得：", "Synthetic acquisition：") + CWRUtils.SafeGetItemName(targetItem.type)}";
                     Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, drawText2.X, drawText2.Y, Color.White, Color.Black, new Vector2(0.3f), 1f);
                 }
 

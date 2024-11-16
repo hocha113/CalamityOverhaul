@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void AI() {
             if (Projectile.ai[1] == 0f) {
-                ProjColor = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), richColors);
+                ProjColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), richColors);
                 Projectile.ai[1] = 1f;
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;

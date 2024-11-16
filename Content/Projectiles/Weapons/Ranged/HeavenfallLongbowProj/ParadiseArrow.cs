@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        private Color chromaColor => CWRUtils.MultiStepColorLerp(Projectile.ai[0] % 35 / 35f, HeavenfallLongbow.rainbowColors);
+        private Color chromaColor => VaultUtils.MultiStepColorLerp(Projectile.ai[0] % 35 / 35f, HeavenfallLongbow.rainbowColors);
         public override bool IsLoadingEnabled(Mod mod) {
             return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         }
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 Vector2 vector = Projectile.velocity * 1.05f;
                 float slp = Main.rand.NextFloat(0.5f, 0.9f);
                 PRTLoader.AddParticle(new PRT_HeavenStar(Projectile.Center, vector, Color.White
-                    , CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 0f, new Vector2(0.6f, 1f) * slp
+                    , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors), 0f, new Vector2(0.6f, 1f) * slp
                     , new Vector2(1.5f, 2.7f) * slp, 20 + Main.rand.Next(6), 0f, 3f, 0f, Main.rand.Next(7) * 2, Main.rand.NextFloat(-0.3f, 0.3f)));
             }
 
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             for (int i = 0; i < 3; i++) {
                 float slp = Main.rand.NextFloat(0.5f, 1.2f);
-                PRTLoader.AddParticle(new PRT_StarPulseRing(target.Center + Main.rand.NextVector2Unit() * Main.rand.Next(13, 330), Vector2.Zero, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 0.05f * slp, 0.8f * slp, 8));
+                PRTLoader.AddParticle(new PRT_StarPulseRing(target.Center + Main.rand.NextVector2Unit() * Main.rand.Next(13, 330), Vector2.Zero, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(1), HeavenfallLongbow.rainbowColors), 0.05f * slp, 0.8f * slp, 8));
             }
             Projectile.timeLeft -= 15;
             if (Projectile.timeLeft <= 0)
