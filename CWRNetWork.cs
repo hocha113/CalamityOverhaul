@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.TileModules;
 using System.IO;
 using Terraria.ModLoader;
 

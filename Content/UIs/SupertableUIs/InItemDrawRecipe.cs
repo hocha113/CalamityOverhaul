@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Items.Placeable;
-using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;

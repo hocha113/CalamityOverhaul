@@ -4,7 +4,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -45,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             if (Projectile.IsOwnedByLocalPlayer()) {
                 SpanProj();
             }
-                
+
             StickToOwner();
 
             Time++;

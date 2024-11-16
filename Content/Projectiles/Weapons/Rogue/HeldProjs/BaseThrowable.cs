@@ -259,7 +259,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            Projectile.velocity = Projectile.Center.To(Owner.GetPlayerStabilityCenter()).UnitVector(Projectile.oldVelocity.Length());
+            Projectile.velocity = Projectile.Center.To(Owner.GetPlayerStabilityCenter()).UnitVector() * Projectile.oldVelocity.Length();
             ReturnProgress = 1f;
             return false;
         }

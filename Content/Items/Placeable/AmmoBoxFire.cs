@@ -1,7 +1,5 @@
-﻿using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
+﻿using CalamityOverhaul.Content.Projectiles.AmmoBoxs;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 

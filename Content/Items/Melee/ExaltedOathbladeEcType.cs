@@ -3,7 +3,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
-using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

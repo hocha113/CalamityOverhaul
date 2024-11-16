@@ -2,7 +2,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.OtherMods.ImproveGame;
 using CalamityOverhaul.Content.UIs;
-using InnoVault;
 using System;
 using System.Collections.Generic;
 using Terraria;

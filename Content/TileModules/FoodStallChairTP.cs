@@ -1,7 +1,7 @@
 ﻿using InnoVault.TileProcessors;
 using System;
-using Terraria.Graphics.CameraModifiers;
 using Terraria;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileModules
@@ -9,7 +9,8 @@ namespace CalamityOverhaul.Content.TileModules
     internal class FoodStallChairTP : TileProcessor
     {
         public override int TargetTileID => ModContent.TileType<Tiles.FoodStallChair>();
-        Player player => Main.LocalPlayer;
+
+        private Player player => Main.LocalPlayer;
 
         public override void Update() {
             if (player.sitting.isSitting && player.position.DistanceSQ(PosInWorld) < 1024) {

@@ -6,7 +6,6 @@ using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Linq;
@@ -192,13 +191,13 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 spanPos = target.Center + offsetvr;
                 int proj1 = Projectile.NewProjectile(
                     CWRUtils.parent(player), spanPos,
-                    CWRUtils.UnitVector(offsetvr) * -13,
+                    offsetvr.UnitVector() * -13,
                     type, Item.damage - 50, 0, player.whoAmI);
                 Vector2 offsetvr2 = CWRUtils.GetRandomVevtor(165, 195, 900 + randomLengs);
                 Vector2 spanPos2 = target.Center + offsetvr2;
                 int proj2 = Projectile.NewProjectile(
                     CWRUtils.parent(player), spanPos2,
-                    CWRUtils.UnitVector(offsetvr2) * -13, type,
+                    offsetvr2.UnitVector() * -13, type,
                     Item.damage - 50, 0, player.whoAmI);
                 Main.projectile[proj1].extraUpdates += 1;
                 Main.projectile[proj2].extraUpdates += 1;
@@ -216,7 +215,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 _ = Projectile.NewProjectile(
                     CWRUtils.parent(player),
                     spanPos,
-                    CWRUtils.UnitVector(offsetvr) * -13,
+                    offsetvr.UnitVector() * -13,
                     type,
                     Item.damage / 3,
                     0,
@@ -227,7 +226,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 _ = Projectile.NewProjectile(
                     CWRUtils.parent(player),
                     spanPos2,
-                    CWRUtils.UnitVector(offsetvr2) * -13,
+                    offsetvr2.UnitVector() * -13,
                     type,
                     Item.damage / 3,
                     0,

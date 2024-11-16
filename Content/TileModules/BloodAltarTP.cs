@@ -1,9 +1,7 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityMod.Projectiles.Melee.Yoyos;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Tiles;
-using InnoVault;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;

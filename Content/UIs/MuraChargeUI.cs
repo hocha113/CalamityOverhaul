@@ -2,7 +2,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
-using InnoVault;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -56,7 +55,7 @@ namespace CalamityOverhaul.Content.UIs
         internal MuraPosStyleEnum MuraPosStyle => (MuraPosStyleEnum)CWRServerConfig.Instance.MuraPosStyleType;
         internal Vector2 origMuraBarDrawPos => new Vector2(180, Main.screenHeight - 40);
         private bool compact => MuraUIStyle == MuraUIStyleEnum.delicacy_compact || MuraUIStyle == MuraUIStyleEnum.classical_compact;
-        internal bool dontAddUIAlape => 
+        internal bool dontAddUIAlape =>
             murasamaHeld == null || murasamaHeld.Type != ModContent.ProjectileType<MurasamaHeldProj>() || Main.playerInventory;
         public override bool Active {
             get {
@@ -67,7 +66,7 @@ namespace CalamityOverhaul.Content.UIs
                     return uiAlape > 0;
                 }
                 return murasamaHeld.Projectile.active || uiAlape > 0;
-            }         
+            }
         }
         #endregion
         void ICWRLoader.LoadAsset() {

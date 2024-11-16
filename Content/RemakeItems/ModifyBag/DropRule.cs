@@ -1,5 +1,5 @@
-﻿using CalamityMod.NPCs.ExoMechs.Thanatos;
-using CalamityMod;
+﻿using CalamityMod;
+using CalamityMod.NPCs.ExoMechs.Thanatos;
 using CalamityOverhaul.Common;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ModLoader;

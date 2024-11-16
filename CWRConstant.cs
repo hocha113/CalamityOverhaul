@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Common;
-
-namespace CalamityOverhaul
+﻿namespace CalamityOverhaul
 {
     public static class CWRConstant
     {

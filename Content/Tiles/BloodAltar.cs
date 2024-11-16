@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.TileModules;
-using InnoVault;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

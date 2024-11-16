@@ -3,7 +3,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using InnoVault;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -131,7 +130,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 offsetvr = CWRUtils.GetRandomVevtor(-127.5f, -52.5f, 360);
                 Vector2 spanPos = target.Center + offsetvr;
                 int proj = Projectile.NewProjectile(Source, spanPos,
-                    CWRUtils.UnitVector(offsetvr) * -12, type, Item.damage / 2, 0, Owner.whoAmI);
+                    offsetvr.UnitVector() * -12, type, Item.damage / 2, 0, Owner.whoAmI);
                 Main.projectile[proj].timeLeft = 50;
                 Main.projectile[proj].usesLocalNPCImmunity = true;
                 Main.projectile[proj].localNPCHitCooldown = 15;

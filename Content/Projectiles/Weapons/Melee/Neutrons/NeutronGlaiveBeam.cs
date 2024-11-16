@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
             PType = ModContent.ProjectileType<NeutronGlaiveBeam>();
             warpTex = CWRUtils.GetT2DAsset(CWRConstant.Masking + "DiffusionCircle");
         }
-        
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.friendly = true;

@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Particles;
-using InnoVault;
 using Terraria;
 using Terraria.ModLoader;
 

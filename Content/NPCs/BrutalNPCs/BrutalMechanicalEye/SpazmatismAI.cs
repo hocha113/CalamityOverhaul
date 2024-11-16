@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.Eye;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
-using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

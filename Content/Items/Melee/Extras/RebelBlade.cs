@@ -1,7 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj;
-using InnoVault;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;

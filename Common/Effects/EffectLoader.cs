@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Common.Effects
 
         void ICWRLoader.LoadData() {
             Instance = this;
-            
+
             Shader_Texture_FieldInfo_1 = miscShaderGetFieldInfo("_uImage1");
             Shader_Texture_FieldInfo_2 = miscShaderGetFieldInfo("_uImage2");
             Shader_Texture_FieldInfo_3 = miscShaderGetFieldInfo("_uImage3");
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Common.Effects
             screen = null;
         }
 
-        private void FilterManager_EndCapture(On_FilterManager.orig_EndCapture orig, Terraria.Graphics.Effects.FilterManager self, 
+        private void FilterManager_EndCapture(On_FilterManager.orig_EndCapture orig, Terraria.Graphics.Effects.FilterManager self,
             RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor) {
 
             GraphicsDevice graphicsDevice = Main.instance.GraphicsDevice;

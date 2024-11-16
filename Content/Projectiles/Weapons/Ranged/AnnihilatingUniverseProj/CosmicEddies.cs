@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 else {
                     Projectile.velocity = Projectile.rotation.ToRotationVector2() * 22;
                 }
-                    
+
             }
             if (Main.netMode != NetmodeID.Server) {
                 int maxdustnum = (int)(Projectile.ai[1] / 40f);

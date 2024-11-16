@@ -1,12 +1,10 @@
 ﻿using CalamityMod;
-using CalamityMod.Items.TreasureBags.MiscGrabBags;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -543,7 +541,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
-            if (CWRServerConfig.Instance.ForceReplaceResetContent 
+            if (CWRServerConfig.Instance.ForceReplaceResetContent
                 && CWRMod.RItemIndsDict.TryGetValue(item.type, out BaseRItem baseRItem)) {
                 if (baseRItem.DrawingInfo) {
                     drawIconSmall();

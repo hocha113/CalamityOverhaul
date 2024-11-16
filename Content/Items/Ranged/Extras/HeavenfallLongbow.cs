@@ -11,7 +11,6 @@ using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowProj;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
-using InnoVault;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
