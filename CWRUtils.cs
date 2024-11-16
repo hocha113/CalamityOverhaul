@@ -496,35 +496,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 检测玩家是否有效且正常存活
-        /// </summary>
-        /// <returns>返回 true 表示活跃，返回 false 表示为空或者已经死亡的非活跃状态</returns>
-        public static bool Alives(this Player player) {
-            return player != null && player.active && !player.dead;
-        }
-
-
-        /// <summary>
-        /// 检测弹幕是否有效且正常存活
-        /// </summary>
-        /// <returns>返回 true 表示活跃，返回 false 表示为空或者已经死亡的非活跃状态</returns>
-        public static bool Alives(this Projectile projectile) {
-            return projectile != null && projectile.active && projectile.timeLeft > 0;
-        }
-
-        /// <summary>
-        /// 检测NPC是否有效且正常存活
-        /// </summary>
-        /// <returns>返回 true 表示活跃，返回 false 表示为空或者已经死亡的非活跃状态</returns>
-        public static bool Alives(this NPC npc) {
-            return npc != null && npc.active && npc.timeLeft > 0;
-        }
-
-        public static bool AlivesByNPC<T>(this ModNPC npc) where T : ModNPC {
-            return npc != null && npc.NPC.Alives() && npc.NPC.type == ModContent.NPCType<T>();
-        }
-
-        /// <summary>
         /// 根据索引返回在player域中的player实例，同时考虑合法性校验
         /// </summary>
         /// <returns>当获取值非法时将返回 <see cref="null"/> </returns>
