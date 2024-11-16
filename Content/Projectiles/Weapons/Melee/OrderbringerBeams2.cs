@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3());
-            if (!CWRUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 BasePRT energyLeak = new PRT_Light(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(3), Projectile.velocity * 0.25f
                                 , Main.rand.NextFloat(0.3f, 0.5f), ProjColor, 50, 1, 1.5f, hueShift: 0.0f);
                 PRTLoader.AddParticle(energyLeak);

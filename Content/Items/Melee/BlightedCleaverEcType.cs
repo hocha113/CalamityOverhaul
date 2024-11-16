@@ -3,6 +3,7 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using InnoVault;
 using System.Linq;
 using Terraria;
 using Terraria.ID;

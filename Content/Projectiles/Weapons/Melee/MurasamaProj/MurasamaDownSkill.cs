@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             //设置玩家的不可击退性并给予玩家短暂的无敌帧
             Owner.GivePlayerImmuneState(5);
 
-            if (!CWRUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 AltSparkParticle spark = new AltSparkParticle(
                     Projectile.Center + Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f) + Projectile.velocity * 1.2f
                     , Projectile.velocity

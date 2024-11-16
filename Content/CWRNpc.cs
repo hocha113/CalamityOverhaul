@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content
         }
 
         public static void OverBeatBackSend(NPC npc, float power = 0.99f) {
-            if (CWRUtils.isClient) {
+            if (VaultUtils.isClient) {
                 var netMessage = CWRMod.Instance.GetPacket();
                 netMessage.Write((byte)CWRMessageType.OverBeatBack);
                 netMessage.Write((byte)npc.whoAmI);
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content
             modnpc.OverBeatBackBool = true;
             modnpc.OverBeatBackVr = overBeatBackVr;
             modnpc.OverBeatBackAttenuationForce = power;
-            if (CWRUtils.isServer) {
+            if (VaultUtils.isServer) {
                 var netMessage = CWRMod.Instance.GetPacket();
                 netMessage.Write((byte)CWRMessageType.OverBeatBack);
                 netMessage.Write((byte)npc.whoAmI);
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostAI(NPC npc) {
-            if (!CWRUtils.isClient) {
+            if (!VaultUtils.isClient) {
                 if (WhipHitNum > 10) {
                     WhipHitNum = 10;
                 }
@@ -195,12 +195,12 @@ namespace CalamityOverhaul.Content
                 if (CWRLoad.targetNpcTypes7.Contains(npc.type) || npc.type == CWRLoad.PlaguebringerGoliath) {
                     for (int i = 0; i < Main.rand.Next(3, 6); i++) {
                         int type = Item.NewItem(npc.parent(), npc.Hitbox, CWRLoad.DubiousPlating, Main.rand.Next(7, 13));
-                        if (CWRUtils.isClient) {
+                        if (VaultUtils.isClient) {
                             NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                         }
                     }
                 }
-                if (npc.type == CWRLoad.Yharon && InWorldBossPhase.Instance.level11 && Main.zenithWorld && !CWRUtils.isClient) {
+                if (npc.type == CWRLoad.Yharon && InWorldBossPhase.Instance.level11 && Main.zenithWorld && !VaultUtils.isClient) {
                     Player target = CWRUtils.GetPlayerInstance(npc.target);
                     if (target.Alives()) {
                         float dir = npc.Center.To(target.Center).X;
@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content
                 else {
                     if (Main.rand.NextBool(5)) {//如果是在BossRush时期，让Boss有一定概率掉落古恒石，这是额外的掉落
                         int type = Item.NewItem(npc.parent(), npc.Hitbox, ModContent.ItemType<Rock>());
-                        if (CWRUtils.isClient) {
+                        if (VaultUtils.isClient) {
                             NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                         }
                     }

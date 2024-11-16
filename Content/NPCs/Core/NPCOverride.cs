@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// </summary>
         public bool netWorkSend {
             get {
-                if (!CWRUtils.isServer) {
+                if (!VaultUtils.isServer) {
                     return false;
                 }
                 return _netWorkSend;
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         #region NetWork
 
         internal void OtherNetWorkSendHander() {
-            if (!CWRUtils.isServer || !netWorkSend) {
+            if (!VaultUtils.isServer || !netWorkSend) {
                 return;
             }
             ModPacket netMessage = mod.GetPacket();
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// 发送网络数据，同步<see cref="ai"/>的值，只会在服务端上运行
         /// </summary>
         internal void NetAISend() {
-            if (CWRUtils.isServer) {
+            if (VaultUtils.isServer) {
                 var netMessage = mod.GetPacket();
                 netMessage.Write((byte)CWRMessageType.NPCOverrideAI);
                 netMessage.Write(npc.whoAmI);
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         /// </summary>
         /// <param name="npc"></param>
         internal static void NetAISend(NPC npc) {
-            if (CWRUtils.isServer) {
+            if (VaultUtils.isServer) {
                 var netMessage = CWRMod.Instance.GetPacket();
                 netMessage.Write((byte)CWRMessageType.NPCOverrideAI);
                 netMessage.Write(npc.whoAmI);

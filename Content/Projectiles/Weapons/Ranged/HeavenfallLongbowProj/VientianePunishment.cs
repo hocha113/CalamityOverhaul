@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         public override void AI() {
             if (Time == 0) {
 
-                if (!CWRUtils.isServer)
+                if (!VaultUtils.isServer)
                     GetColorDate();
             }
 
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             else//否则，让万象跟随玩家鼠标
             {
                 OrigPos = MousPos;
-                if (Main.rand.NextBool(2) && !CWRUtils.isServer) {
+                if (Main.rand.NextBool(2) && !VaultUtils.isServer) {
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * 120;
                     Vector2 particleSpeed = pos.To(Projectile.Center).UnitVector() * 3;
                     Color color = CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), VientianeColors);
@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         public void SpanInfiniteRune(Vector2 orig, int maxNum, float prtslp, float slp, Color[] colors) {
             SoundEngine.PlaySound(CommonCalamitySounds.PlasmaBoltSound, Projectile.Center);
             float rot = 0;
-            if (!CWRUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 for (int j = 0; j < maxNum; j++) {
                     rot += MathHelper.TwoPi / maxNum;
                     float scale = 2f / (3f - (float)Math.Cos(2 * rot)) * slp;
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         }
 
         public override void OnKill(int timeLeft) {
-            if (!CWRUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Cay_Wap_Ranged + VientianeTex[(int)Projectile.ai[0]]);
                 for (int i = 0; i < 16; i++) {
                     BasePRT energyLeak = new PRT_Light(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(value.Width), new Vector2(0, -7)

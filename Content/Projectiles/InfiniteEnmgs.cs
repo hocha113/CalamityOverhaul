@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 Projectile.velocity *= 1.01f;
             }
 
-            if (!CWRUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 for (int i = 0; i < 3; i++) {
                     Vector2 vector = Projectile.velocity * 1.05f;
                     float slp = Main.rand.NextFloat(0.5f, 0.9f);

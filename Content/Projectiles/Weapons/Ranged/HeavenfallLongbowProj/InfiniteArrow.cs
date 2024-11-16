@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             if (Projectile.ai[0] == 0) {
                 Projectile.ai[1] = Main.rand.Next(30);
             }
-            if (Projectile.ai[0] > 0 && !CWRUtils.isServer) {
+            if (Projectile.ai[0] > 0 && !VaultUtils.isServer) {
                 Color outerSparkColor = chromaColor;
                 float scaleBoost = MathHelper.Clamp(Projectile.ai[1] * 0.005f, 0f, 2f);
                 float outerSparkScale = 3.2f + scaleBoost;

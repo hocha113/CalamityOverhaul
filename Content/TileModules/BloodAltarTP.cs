@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.TileModules
             if (Main.bloodMoon) {
                 Main.bloodMoon = false;
             }
-            if (CWRUtils.isClient) {
+            if (VaultUtils.isClient) {
                 SendData();
             }
         }
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.TileModules
                     if (orbToPos.LengthSquared() > 62 * 62) {
                         Vector2 orbToPosUnit = orbToPos.UnitVector();
                         float leng = orbToPos.Length() / 62f;
-                        if (!CWRUtils.isServer) {
+                        if (!VaultUtils.isServer) {
                             for (int j = 0; j < 62; j++) {
                                 Vector2 spanPos = orb.Center + orbToPosUnit * leng * j;
                                 PRT_Light particle = new PRT_Light(spanPos, Vector2.Zero, 0.3f, Color.DarkRed, 15);
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.TileModules
                             Vector2 PosToChest = Center.To(chestPos);
                             Vector2 PosToChestUnit = PosToChest.UnitVector();
                             float leng = PosToChest.Length() / 32f;
-                            if (!CWRUtils.isServer) {
+                            if (!VaultUtils.isServer) {
                                 for (int j = 0; j < 32; j++) {
                                     Vector2 spanPos = Center + PosToChestUnit * leng * j;
                                     PRT_Light particle = new PRT_Light(spanPos, Vector2.Zero, 0.3f, Color.DarkGreen, 15);
@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.TileModules
             Rectangle tileRec = new Rectangle(Position.X * 16, Position.Y * 16, BloodAltar.Width * 18, BloodAltar.Height * 18);
             mouseOnTile = tileRec.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
             if (OnBoolMoon) {
-                if (targetFuncsWhoAmi == WhoAmI && !Old_OnBoolMoon && !CWRUtils.isServer) {
+                if (targetFuncsWhoAmi == WhoAmI && !Old_OnBoolMoon && !VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Roar, Center);
                     for (int i = 0; i < 63; i++) {
                         Vector2 vr = new Vector2(Main.rand.Next(-12, 12), Main.rand.Next(-23, -3));
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.TileModules
 
                 FindOrb();
 
-                if (!CWRUtils.isServer) {
+                if (!VaultUtils.isServer) {
                     SpanDustEfset();
                     CWRUtils.ClockFrame(ref frameIndex, 6, 3);
                     Lighting.AddLight(Center, Color.DarkRed.ToVector3() * (Math.Abs(MathF.Sin(Time * 0.005f)) * 23 + 2));
@@ -186,7 +186,7 @@ namespace CalamityOverhaul.Content.TileModules
                 if (Old_OnBoolMoon) {
                     if (targetFuncsWhoAmi == WhoAmI) {
                         SoundEngine.PlaySound(CWRSound.Peuncharge, Center);
-                        if (!CWRUtils.isServer) {
+                        if (!VaultUtils.isServer) {
                             for (int i = 0; i < 133; i++) {
                                 Vector2 vr = new Vector2(0, Main.rand.Next(-33, -3));
                                 Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y

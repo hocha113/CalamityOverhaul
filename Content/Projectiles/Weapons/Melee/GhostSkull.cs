@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
             }
 
-            if (!CWRUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 Vector2 dustVel = Projectile.velocity;
                 Dust dust = Dust.NewDustPerfect(Projectile.Center + (dustVel * 2), 5, dustVel, 0, default, 1f);
                 dust.shader = GameShaders.Armor.GetSecondaryShader(Owner.cShield, Owner);

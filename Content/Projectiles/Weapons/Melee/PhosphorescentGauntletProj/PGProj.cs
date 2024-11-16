@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
             if (Time == 0) {
                 SpanDust(Projectile, 1);
             }
-            if (!CWRUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(3, Projectile.width);
 
                 PGGlow glow = new PGGlow(pos, Projectile.velocity, Projectile.scale * Main.rand.NextFloat(1, 1.2f), Main.rand.Next(15, 22), 1);

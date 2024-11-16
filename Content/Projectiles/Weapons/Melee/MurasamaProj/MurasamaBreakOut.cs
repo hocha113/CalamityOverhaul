@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     Projectile.netUpdate = true;
                 }
                 //不要在服务器上执行粒子的生成代码浪费性能
-                if (!CWRUtils.isServer) {
+                if (!VaultUtils.isServer) {
                     AltSparkParticle spark = new AltSparkParticle(
                     Projectile.Center + Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f) + Projectile.velocity * 1.2f
                     , Projectile.velocity
@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 GeneralParticleHandler.SpawnParticle(spark2);
             }
 
-            if (Projectile.ai[0] != 2 && Projectile.ai[0] != 3 && !CWRUtils.isServer) {
+            if (Projectile.ai[0] != 2 && Projectile.ai[0] != 3 && !VaultUtils.isServer) {
                 //神皇在上，我竟然一直没有发现这个地方有多余的代码 -HoCha113 - 2024/9/22/17:32
                 //if (CWRKeySystem.Murasama_DownKey.JustPressed) {//触发下砸技能
                 //    if (!MurasamaEcType.UnlockSkill2) {//在击败史莱姆之神前不能使用这个技能

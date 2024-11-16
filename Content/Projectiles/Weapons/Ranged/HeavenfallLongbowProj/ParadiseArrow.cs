@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 Projectile.ChasingBehavior2(target.Center, 1, 0.3f);
             }
 
-            if (!CWRUtils.isServer && Main.rand.NextBool(2)) {
+            if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
                 Vector2 vector = Projectile.velocity * 1.05f;
                 float slp = Main.rand.NextFloat(0.5f, 0.9f);
                 PRTLoader.AddParticle(new PRT_HeavenStar(Projectile.Center, vector, Color.White

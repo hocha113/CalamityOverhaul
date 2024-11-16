@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                 Projectile.netUpdate = true;
             }
             Projectile.tileCollide = Projectile.position.Y > (Owner.position.Y + randomIntDownNum);
-            if (!CWRUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 Vector2 dustVel = Projectile.velocity * 0.1f;
                 for (int i = 0; i < 3; i++) {
                     Dust dust = Dust.NewDustPerfect(Projectile.Center + dustVel, 265, dustVel, 0, default, 0.7f);

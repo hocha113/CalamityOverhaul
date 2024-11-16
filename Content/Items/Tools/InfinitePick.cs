@@ -9,6 +9,7 @@ using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
+using InnoVault;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;

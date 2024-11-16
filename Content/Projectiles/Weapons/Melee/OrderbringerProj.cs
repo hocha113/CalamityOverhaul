@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             if (Projectile.ai[1] == 1) {
                 if (Projectile.scale < 3) {
                     Projectile.scale += 0.02f;
-                    if (!CWRUtils.isServer) {
+                    if (!VaultUtils.isServer) {
                         for (int i = 0; i < 6; i++) {
                             Vector2 pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(133, 140) * Projectile.scale;
                             Vector2 particleSpeed = pos.To(Projectile.Center).UnitVector() * 17;
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     }
                 }
                 else {
-                    if (!CWRUtils.isServer) {
+                    if (!VaultUtils.isServer) {
                         for (int i = 0; i < 6; i++) {
                             Vector2 randdom = Main.rand.NextVector2Unit();
                             Vector2 pos = Projectile.Center + randdom * Main.rand.Next(3, 14) * Projectile.scale;

@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 Projectile.velocity *= 0.96f;
             }
             else {
-                if (Projectile.ai[0] == Projectile.ai[1] + 322 && !CWRUtils.isClient) {
+                if (Projectile.ai[0] == Projectile.ai[1] + 322 && !VaultUtils.isClient) {
                     int type = ModContent.ProjectileType<PrimeCannonOnSpan>();
                     int maxProjSanShootNum = 3;
                     for (int i = 0; i < maxProjSanShootNum; i++) {

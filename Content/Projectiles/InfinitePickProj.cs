@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles
 
         public override void AI() {
             Lighting.AddLight(Projectile.Center, Main.DiscoColor.ToVector3() * (Projectile.ai[0] == 1 ? 1.2f : 10));
-            if (Projectile.ai[0] == 1 && !CWRUtils.isServer) {
+            if (Projectile.ai[0] == 1 && !VaultUtils.isServer) {
                 for (int i = 0; i < 8; i++) {
                     PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Projectile.Center + CWRUtils.randVr(13), Projectile.velocity, false, 13, 1, CWRUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
                     PRTLoader.AddParticle(spark);

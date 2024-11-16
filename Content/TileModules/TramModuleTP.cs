@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.TileModules
 
             CWRPlayer modPlayer = player.CWR();
 
-            if (CWRUtils.isServer) {
+            if (VaultUtils.isServer) {
                 return;
             }
 

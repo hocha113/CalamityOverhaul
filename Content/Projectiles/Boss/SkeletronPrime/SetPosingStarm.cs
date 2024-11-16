@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                         continue;
                     }
 
-                    if (!CWRUtils.isServer && !p.dead && p.active) {
+                    if (!VaultUtils.isServer && !p.dead && p.active) {
                         p.Calamity().infiniteFlight = true;
                     }
 
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 }
                 BrutalSkeletronPrimeAI.SpawnHouengEffect(boss);
                 //不 要 在 客 户 端 上 生 成 射 弹
-                if (!CWRUtils.isClient) {
+                if (!VaultUtils.isClient) {
                     float maxProjSanShootNum = 28;
                     if (ModGanged.InfernumModeOpenState) {
                         maxProjSanShootNum += 4;

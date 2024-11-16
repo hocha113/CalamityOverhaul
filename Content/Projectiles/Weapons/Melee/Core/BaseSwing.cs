@@ -535,7 +535,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             }
             PostInOwnerUpdate();
             UpdateFrame();
-            if (!CWRUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 NoServUpdate();
             }
             rotSpeed = Rotation - oldRot;

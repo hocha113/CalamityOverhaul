@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.Projectiles
         public override void OnKill(int timeLeft) {
             if (darkMatterBall.dorpTypes.Count > 0 && Projectile.IsOwnedByLocalPlayer()) {
                 int type = Item.NewItem(Projectile.parent(), Projectile.Hitbox, darkMatterBall.Item);
-                if (CWRUtils.isClient) {
+                if (VaultUtils.isClient) {
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                 }
             }

@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
         }
 
         public override void AI() {
-            if (!CWRUtils.isServer) {//因为蜜蜂云是纯视觉效果，因此不需要在服务器上运行相关代码，因为服务器看不见这些
+            if (!VaultUtils.isServer) {//因为蜜蜂云是纯视觉效果，因此不需要在服务器上运行相关代码，因为服务器看不见这些
                 if (Projectile.timeLeft > 60 && Projectile.numHits == 0) {
                     for (int i = 0; i < Main.rand.Next(2, 3); i++) {
                         bees.Add(new Bee(Projectile, Projectile.Center + CWRUtils.randVr(Projectile.width + 10), Projectile.velocity, Main.rand.Next(37, 60)
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
         }
 
         public override void OnKill(int timeLeft) {
-            if (!CWRUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 bees.Clear();
             }
         }

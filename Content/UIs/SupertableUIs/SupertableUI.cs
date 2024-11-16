@@ -298,7 +298,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <returns>解析后得到的物品类型</returns>
         public static int InStrGetItemType(string key, bool loadVanillaItem = false) {
             if (int.TryParse(key, out int intValue)) {
-                if (loadVanillaItem && !CWRUtils.isServer) {
+                if (loadVanillaItem && !VaultUtils.isServer) {
                     Main.instance.LoadItem(intValue);
                 }
                 return (intValue);
@@ -316,7 +316,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <returns>解析后得到的物品类型</returns>
         public static Item InStrGetItem(string key, bool loadVanillaItem = false) {
             if (int.TryParse(key, out int intValue)) {
-                if (loadVanillaItem && !CWRUtils.isServer) {
+                if (loadVanillaItem && !VaultUtils.isServer) {
                     Main.instance.LoadItem(intValue);
                 }
                 return new Item(intValue);

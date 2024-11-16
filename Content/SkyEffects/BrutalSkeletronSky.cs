@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.SkyEffects
         private UnifiedRandom random = new UnifiedRandom();
 
         void ICWRLoader.LoadData() {
-            if (CWRUtils.isServer) {
+            if (VaultUtils.isServer) {
                 return;
             }
             SkyManager.Instance[name] = this;

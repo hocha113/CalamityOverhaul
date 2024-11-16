@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void AI() {
-            if (!CWRUtils.isServer) {
+            if (!VaultUtils.isServer) {
                 Vector2 dustVel = Projectile.velocity;
                 Dust dust = Dust.NewDustPerfect(Projectile.Center + dustVel * 2, 272, dustVel, 0, default, 1f);
                 dust.shader = GameShaders.Armor.GetSecondaryShader(Owner.cShield, Owner);

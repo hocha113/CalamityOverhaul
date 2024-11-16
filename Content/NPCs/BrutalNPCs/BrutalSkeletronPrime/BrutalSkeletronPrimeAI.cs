@@ -230,7 +230,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             arm.position += head.velocity;
             arm.dontTakeDamage = true;
             arm.damage = 0;
-            if (!CWRUtils.isClient && NPC.IsMechQueenUp && pCOverride.ai[9] % 6 == 0 && setPosingStarmCount <= 0 && pCOverride.ai[10] <= 0) {
+            if (!VaultUtils.isClient && NPC.IsMechQueenUp && pCOverride.ai[9] % 6 == 0 && setPosingStarmCount <= 0 && pCOverride.ai[10] <= 0) {
                 int projType = ProjectileID.DeathLaser;
                 Vector2 ver = origeRot.ToRotationVector2() * 6;
                 Projectile.NewProjectile(arm.GetSource_FromAI(), arm.Center, ver, projType, 36, 2);
@@ -322,7 +322,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         internal static void SendExtraAI(NPC npc) {
-            if (CWRUtils.isServer) {
+            if (VaultUtils.isServer) {
                 npc.SyncExtraAI();
             }
         }
@@ -447,8 +447,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.active = false;
                 }
             }
-            CWRUtils.SpawnBossNetcoded(player, NPCID.Retinazer);
-            CWRUtils.SpawnBossNetcoded(player, NPCID.Spazmatism);
+            VaultUtils.SpawnBossNetcoded(player, NPCID.Retinazer);
+            VaultUtils.SpawnBossNetcoded(player, NPCID.Spazmatism);
         }
 
         private void Debut() {
@@ -472,7 +472,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             else {
                 toPoint = player.Center + new Vector2(0, -500);
-                if (ai0 == 90 && !CWRUtils.isServer) {
+                if (ai0 == 90 && !VaultUtils.isServer) {
                     SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
                 }
                 if (ai0 > 90) {
@@ -488,11 +488,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            if (ai0 == 172 && !CWRUtils.isServer) {
+            if (ai0 == 172 && !VaultUtils.isServer) {
                 SpawnHouengEffect(npc);
                 SoundEngine.PlaySound(CWRSound.SpawnArmMgs, Main.LocalPlayer.Center);
             }
-            if (ai0 == 180 && !CWRUtils.isClient) {
+            if (ai0 == 180 && !VaultUtils.isClient) {
                 spanArm(npc);
             }
 
@@ -518,7 +518,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.ai[2] = 0f;
                     npc.ai[1] = 1f;
                     calamityNPC.newAI[0]++;
-                    if (!CWRUtils.isClient && calamityNPC.newAI[0] >= 2) {
+                    if (!VaultUtils.isClient && calamityNPC.newAI[0] >= 2) {
                         int damage = SetMultiplier(npc.defDamage / 3);
                         Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
                             , ModContent.ProjectileType<SetPosingStarm>(), damage, 2, -1, 0, npc.whoAmI);
@@ -664,7 +664,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     if (++ai4 > 90) {
                         npc.TargetClosest();
 
-                        if (!CWRUtils.isClient) {
+                        if (!VaultUtils.isClient) {
                             if (ai8 % 2 == 0) {
                                 int totalProjectiles = bossRush ? 9 : 6;
                                 if (!noEye) {
@@ -718,7 +718,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 case 1:
                     if (ai4 > 90 && noEye && ai5 <= 2 && ai10 <= 0) {
                         npc.TargetClosest();
-                        if (!CWRUtils.isClient) {
+                        if (!VaultUtils.isClient) {
                             float maxLerNum = death ? 13 : 9f;
                             for (int i = 0; i < maxLerNum; i++) {
                                 float rotoffset = MathHelper.TwoPi / maxLerNum * i;
@@ -767,7 +767,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         npc.TargetClosest();
                         Vector2 pos2 = player.Center;
 
-                        if (!CWRUtils.isClient) {
+                        if (!VaultUtils.isClient) {
                             int maxShootNum = 40;
                             for (int i = 0; i < maxShootNum; i++) {
                                 int maxD = 200;
@@ -795,7 +795,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         ai7++;
                     }
 
-                    if (!CWRUtils.isServer) {
+                    if (!VaultUtils.isServer) {
                         foreach (Player p in Main.player) {
                             if (p.dead || !p.active) {
                                 continue;
@@ -840,7 +840,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
                     npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.065f);
 
-                    if (ai4 == 0 && CWRUtils.isServer) {
+                    if (ai4 == 0 && VaultUtils.isServer) {
                         SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
                     }
 
@@ -1167,7 +1167,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         private void spanArm(NPC npc, int limit = 0) {
-            if (CWRUtils.isClient) {
+            if (VaultUtils.isClient) {
                 return;
             }
             if (limit == 1 || limit == 0) {

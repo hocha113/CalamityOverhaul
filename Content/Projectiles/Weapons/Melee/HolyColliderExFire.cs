@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         private void SpwanPRTAndDustEffect_ShootFireShowFromProjEX() {
-            if (CWRUtils.isServer) {
+            if (VaultUtils.isServer) {
                 return;
             }
 
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         private void SpwanPRTAndDustEffect_ShootFireShowFromProj() {
-            if (CWRUtils.isServer) {
+            if (VaultUtils.isServer) {
                 return;
             }
 
