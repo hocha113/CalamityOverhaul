@@ -61,6 +61,7 @@
     <None Remove="Assets\Sky\PGFlash.png" />
     <None Remove="Assets\UIs\ScrollbarInner.png" />
     <None Remove="Assets\UIs\SliderBar.png" />
+    <None Remove="content\othermods\improvegame\Thank you Cyrilly.txt" />
     <None Remove="Localization\es-ES_Mods.CalamityOverhaul.hjson" />
   </ItemGroup>
   <ItemGroup>

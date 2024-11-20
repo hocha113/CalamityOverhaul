@@ -1,0 +1,3 @@
+这个文件夹中的代码用于实现与Qot联动的功能，目前实现了关于弹药链与弹匣机制的联动，是Cyrilly贡献的代码
+来自于推送:https://github.com/hocha113/CalamityOverhaul/pull/10
+谢谢你!Cyrilly!这让模组的兼容性变得更加的强大!

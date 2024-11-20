@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Lighting.AddLight(origin, Color.Red.ToVector3() * (Slashing == true ? 3.5f : 2f));
 
             Vector2 playerRotatedPoint = player.RotatedRelativePoint(player.MountedCenter, true);
-            if (Main.myPlayer == Projectile.owner) {
+            if (Projectile.IsOwnedByLocalPlayer()) {
                 if (player.channel && !player.noItems && !player.CCed
                     && player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] <= 0) {
                     HandleChannelMovement(player, playerRotatedPoint);
