@@ -517,26 +517,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 返回该NPC的生命比例
-        /// </summary>
-        public static float NPCLifeRatio(NPC npc) {
-            return npc.life / (float)npc.lifeMax;
-        }
-
-        /// <summary>
-        /// 根据难度返回相应的血量数值
-        /// </summary>
-        public static int ConvenientBossHealth(int normalHealth, int expertHealth, int masterHealth) {
-            return Main.expertMode ? expertHealth : Main.masterMode ? masterHealth : normalHealth;
-        }
-        /// <summary>
-        /// 根据难度返回相应的伤害数值
-        /// </summary>
-        public static int ConvenientBossDamage(int normalDamage, int expertDamage, int masterDamage) {
-            return Main.expertMode ? expertDamage : Main.masterMode ? masterDamage : normalDamage;
-        }
-
-        /// <summary>
         /// 获取鞭类弹幕的路径点集
         /// </summary>
         public static List<Vector2> GetWhipControlPoints(this Projectile projectile) {
