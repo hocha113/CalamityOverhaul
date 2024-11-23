@@ -22,7 +22,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override void AddRecipes() {
             _ = CreateRecipe().
                 AddIngredient<SnowQuay>().
-                AddIngredient<AerialiteBar>(5).
+                AddIngredient<CryonicBar>(5).
+                AddIngredient<EssenceofEleum>(5).
                 AddIngredient(ItemID.IceBlock, 1000).
                 AddTile(TileID.IceMachine).
                 Register();

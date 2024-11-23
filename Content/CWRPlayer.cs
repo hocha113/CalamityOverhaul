@@ -169,16 +169,15 @@ namespace CalamityOverhaul.Content
                 SpwanTextProj.New(Player, () => CWRUtils.Text(improvGameText, Color.Red), 210);
                 CWRMod.Instance.Logger.Info(improvGameText);
             }
-            if (CWRServerConfig.Instance.ForceReplaceResetContent) {
+            if (CWRServerConfig.Instance.ForceReplaceResetContent && Player.name == "HoCha113") {
                 string text = CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
                 SpwanTextProj.New(Player, () => CWRUtils.Text(text, Color.GreenYellow), 240);
             }
-            if (CWRServerConfig.Instance.AddExtrasContent) {
-                RecipeErrorFullUI.Instance.eyEBool = true;
-            }
 
             ModGanged.Set_MS_Config_recursionCraftingDepth();
+
             if (CWRServerConfig.Instance.AddExtrasContent) {
+                RecipeErrorFullUI.Instance.eyEBool = true;
                 if (SupertableUI.Instance != null) {
                     SupertableUI.Instance.loadOrUnLoadZenithWorldAsset = true;
                     SupertableUI.Instance.Active = false;
@@ -188,6 +187,7 @@ namespace CalamityOverhaul.Content
                     RecipeUI.Instance.LoadPsreviewItems();
                 }
             }
+
             Gangarus.ZenithWorldAsset();
 
             oldPlayerPositionChange = oldPlayerPositionChange = Player.position;

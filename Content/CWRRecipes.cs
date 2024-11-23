@@ -72,6 +72,14 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileID.DemonAltar)
                     .Register();
             }
+            //添加雏翼的合成
+            {
+                Recipe.Create(ItemID.CreativeWings)
+                    .AddIngredient(ItemID.Feather, 5)
+                    .AddIngredient(ItemID.Cloud, 50)
+                    .AddTile(TileID.SkyMill)
+                    .Register();
+            }
             //添加圣火之刃的合成
             {
                 Recipe.Create(ItemType<HolyCollider>())
