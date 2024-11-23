@@ -1,5 +1,4 @@
 ﻿using CalamityMod.NPCs.Yharon;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzureProj;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;

@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Tiles.Furniture.CraftingStations;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.TileModules;
 using CalamityOverhaul.Content.UIs.SupertableUIs;

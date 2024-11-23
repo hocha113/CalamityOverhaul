@@ -1,5 +1,4 @@
 ﻿using CalamityMod.NPCs.Yharon;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using Microsoft.Xna.Framework.Graphics;
 using System;

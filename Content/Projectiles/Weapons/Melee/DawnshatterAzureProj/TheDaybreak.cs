@@ -2,7 +2,6 @@
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.NPCs.Yharon;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;

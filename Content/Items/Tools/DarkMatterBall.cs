@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.LoreItems;
 using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;

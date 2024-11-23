@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles;
+﻿using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.ModLoader;

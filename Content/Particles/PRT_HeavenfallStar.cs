@@ -1,9 +1,7 @@
-﻿using CalamityOverhaul.Common.Effects;
-using InnoVault.PRT;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Particles
 {

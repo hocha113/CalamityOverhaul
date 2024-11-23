@@ -1,6 +1,5 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using CalamityOverhaul.Content.Tiles;

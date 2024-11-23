@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Common;
 using Terraria;
 using Terraria.ModLoader;
 

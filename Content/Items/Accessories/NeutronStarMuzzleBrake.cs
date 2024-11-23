@@ -3,7 +3,6 @@ using CalamityMod.CalPlayer;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Projectiles.Typeless;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
