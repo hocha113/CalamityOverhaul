@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Particles
         public float size;
         public int minLifeTime;
         public int maxLifeTime;
-        private float opacity;
         private float timeLife;
         private static Asset<Texture2D> StarTexture;
         private static Asset<Texture2D> SoftGlow;
@@ -64,7 +63,7 @@ namespace CalamityOverhaul.Content.Particles
                 return;
             }
 
-            opacity = MathHelper.Lerp(1f, 0f, (timeLeftMax / 2f - timeLife) / (timeLeftMax / 2f));
+            Opacity = MathHelper.Lerp(1f, 0f, (timeLeftMax / 2f - timeLife) / (timeLeftMax / 2f));
 
             if (ai[1] == 1) {
                 return;
@@ -94,7 +93,7 @@ namespace CalamityOverhaul.Content.Particles
             Texture2D tex2 = StarTexture.Value;
             Texture2D tex3 = SoftGlow.Value;
 
-            Color emberColor = Color.Lerp(colors[0], colors[2], (float)(timeLeftMax - timeLife) / timeLeftMax) * opacity;
+            Color emberColor = Color.Lerp(colors[0], colors[2], (float)(timeLeftMax - timeLife) / timeLeftMax) * Opacity;
             Color glowColor = Color.Lerp(colors[1], colors[2], (float)(timeLeftMax - timeLife) / timeLeftMax);
             float pixelRatio = 1f / 64f;
 

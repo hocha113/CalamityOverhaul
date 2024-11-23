@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_Light : BasePRT, ICWRLoader
     {
         public override string Texture => "CalamityMod/Particles/Light";
-        public float Opacity;
         public float SquishStrenght;
         public float MaxSquish;
         public float HueShift;

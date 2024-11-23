@@ -8,7 +8,6 @@ namespace CalamityOverhaul.Content.Particles
     internal class PRT_Smoke : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/HeavySmoke";
-        private float Opacity;
         private float Spin;
         private bool StrongVisual;
         private bool Glowing;

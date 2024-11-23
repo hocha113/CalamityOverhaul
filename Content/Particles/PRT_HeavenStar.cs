@@ -11,9 +11,8 @@ namespace CalamityOverhaul.Content.Particles
     {
         public override string Texture => "CalamityMod/Particles/ThinSparkle";
         private float Spin;
-        private float opacity;
         private Color Bloom;
-        private Color LightColor => Bloom * opacity;
+        private Color LightColor => Bloom * Opacity;
         private float BloomScale;
         private float HueShift;
         private Vector2 OriginalScale;
@@ -50,7 +49,7 @@ namespace CalamityOverhaul.Content.Particles
                 return;
             }
 
-            opacity = (float)Math.Sin(MathHelper.PiOver2 + LifetimeCompletion * MathHelper.PiOver2);
+            Opacity = (float)Math.Sin(MathHelper.PiOver2 + LifetimeCompletion * MathHelper.PiOver2);
             Velocity *= 0.80f;
             Rotation += Spin * ((Velocity.X > 0) ? 1f : -1f) * (LifetimeCompletion > 0.5 ? 1f : 0.5f) + RotationalSpeed;
             Position += Velocity;
@@ -69,9 +68,9 @@ namespace CalamityOverhaul.Content.Particles
             float properBloomSize = sparkTexture.Height / (float)bloomTexture.Height;
             Vector2 squish = Vector2.Lerp(OriginalScale, FinalScale, PiecewiseAnimation(LifetimeCompletion
                 , [new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4)]));
-            spriteBatch.Draw(bloomTexture, Position - Main.screenPosition, null, Bloom * opacity * 0.5f, 0
+            spriteBatch.Draw(bloomTexture, Position - Main.screenPosition, null, Bloom * Opacity * 0.5f, 0
                 , bloomTexture.Size() / 2f, squish * BloomScale * properBloomSize, SpriteEffects.None, 0);
-            spriteBatch.Draw(sparkTexture, Position - Main.screenPosition, null, Color * opacity, Rotation
+            spriteBatch.Draw(sparkTexture, Position - Main.screenPosition, null, Color * Opacity, Rotation
                 , sparkTexture.Size() / 2f, squish, SpriteEffects.None, 0);
             return false;
         }

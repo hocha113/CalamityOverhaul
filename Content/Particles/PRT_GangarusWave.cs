@@ -15,7 +15,6 @@ namespace CalamityOverhaul.Content.Particles
         }
         private float OriginalScale;
         private float FinalScale;
-        private float opacity;
         private Vector2 Squish;
         private Color BaseColor;
         private Entity Entity;
@@ -39,9 +38,9 @@ namespace CalamityOverhaul.Content.Particles
             float pulseProgress = PiecewiseAnimation(LifetimeCompletion, new CurveSegment[] { new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4) });
             Scale = MathHelper.Lerp(OriginalScale, FinalScale, pulseProgress);
 
-            opacity = (float)Math.Sin(MathHelper.PiOver2 + LifetimeCompletion * MathHelper.PiOver2);
+            Opacity = (float)Math.Sin(MathHelper.PiOver2 + LifetimeCompletion * MathHelper.PiOver2);
 
-            Color = BaseColor * opacity;
+            Color = BaseColor * Opacity;
             Lighting.AddLight(Position, Color.R / 255f, Color.G / 255f, Color.B / 255f);
             Velocity *= 0.95f;
 
@@ -60,7 +59,7 @@ namespace CalamityOverhaul.Content.Particles
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * opacity
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * Opacity
                 , Rotation, tex.Size() / 2f, Scale * Squish, SpriteEffects.None, 0);
             return false;
         }

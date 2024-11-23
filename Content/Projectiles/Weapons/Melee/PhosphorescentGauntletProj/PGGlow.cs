@@ -8,11 +8,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PhosphorescentGaunt
     internal class PGGlow : BasePRT
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "PhosphorescentGauntlet";
-        //public override bool UseAdditiveBlend => true;
-        //public override bool UseCustomDraw => true;
-        //public override bool SetLifetime => true;
-
-        public float Opacity;
         public float SquishStrenght;
         public float MaxSquish;
 

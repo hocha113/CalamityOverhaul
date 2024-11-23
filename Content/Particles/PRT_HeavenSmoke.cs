@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.Particles
         private Color[] rainbowColors = [Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet];
 
         private Color rainColor => VaultUtils.MultiStepColorLerp(sengs % 30 / 30f, rainbowColors);
-        private float Opacity;
         private float Spin;
         private int MaxTime;
         private bool StrongVisual;

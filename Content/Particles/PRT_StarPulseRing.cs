@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.Particles
         public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
         private float OriginalScale;
         private float FinalScale;
-        private float opacity;
         private Color BaseColor;
         public PRT_StarPulseRing(Vector2 position, Vector2 velocity, Color color
             , float originalScale, float finalScale, int lifeTime) {
@@ -33,8 +32,8 @@ namespace CalamityOverhaul.Content.Particles
             float pulseProgress = PiecewiseAnimation(LifetimeCompletion, [new CurveSegment(EasingType.PolyOut, 0f, 0f, 1f, 4)]);
             Scale = MathHelper.Lerp(OriginalScale, FinalScale, pulseProgress);
 
-            opacity = (float)Math.Sin(MathHelper.PiOver2 + LifetimeCompletion * MathHelper.PiOver2);
-            Color = BaseColor * opacity;
+            Opacity = (float)Math.Sin(MathHelper.PiOver2 + LifetimeCompletion * MathHelper.PiOver2);
+            Color = BaseColor * Opacity;
             Lighting.AddLight(Position, Color.R / 255f, Color.G / 255f, Color.B / 255f);
             Velocity *= 0.95f;
         }
@@ -42,7 +41,7 @@ namespace CalamityOverhaul.Content.Particles
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             Vector2 pos = Position - Main.screenPosition;
-            spriteBatch.Draw(tex, pos, null, Color * opacity, Rotation, tex.Size() / 2f, Scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, pos, null, Color * Opacity, Rotation, tex.Size() / 2f, Scale, SpriteEffects.None, 0);
 
             Texture2D star = ModContent.Request<Texture2D>("CalamityMod/Particles/ThinSparkle").Value;
             Texture2D bloom = ModContent.Request<Texture2D>("CalamityMod/Particles/BloomCircle").Value;
