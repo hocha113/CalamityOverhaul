@@ -19,7 +19,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         public override bool CanFire => (Projectile.ai[2] == 0 && Owner.PressKey()) || (Projectile.ai[2] == 1 && Owner.PressKey(false));
         private float Time;
         private float Time2;
-        public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         public override void SetDefaults() {
             Projectile.width = 54;
             Projectile.height = 116;

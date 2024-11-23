@@ -22,7 +22,6 @@ namespace CalamityOverhaul.Content.Items.Tools
         internal static Asset<Texture2D> Full;
         public List<int> dorpTypes = [];
         public List<Item> dorpItems = [];
-        public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         public override ModItem Clone(Item newEntity) {
             DarkMatterBall ball = (DarkMatterBall)base.Clone(newEntity);
             ball.dorpTypes = new List<int>(dorpTypes);

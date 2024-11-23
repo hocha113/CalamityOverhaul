@@ -28,9 +28,6 @@ namespace CalamityOverhaul.Content.Tiles
         private static Asset<Texture2D> assetValue;
         void ICWRLoader.LoadAsset() => assetValue = ModContent.Request<Texture2D>(Texture);
         void ICWRLoader.UnLoadData() => assetValue = null;
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;

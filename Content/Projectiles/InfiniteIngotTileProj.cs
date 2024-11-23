@@ -14,9 +14,6 @@ namespace CalamityOverhaul.Content.Projectiles
         public override string Texture => CWRConstant.Placeholder;
         public List<Item> items = [];
         private DarkMatterBall darkMatterBall;
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.penetrate = -1;

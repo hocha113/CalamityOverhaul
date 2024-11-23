@@ -3416,15 +3416,6 @@ Configs: {
 				'''
 		}
 
-		AddExtrasContent: {
-			Label: Zusätzliche Inhalte hinzufügen
-			Tooltip:
-				'''
-				Soll umstrittene Inhalte wie endlose Technologie dem Spiel hinzugefügt werden?
-				Standardmäßig aktiviert, Deaktivierung entfernt Inhalte, die möglicherweise nicht gut mit dem Katastrophe-Thema kompatibel sind
-				'''
-		}
-
 		WeaponEnhancementSystem: {
 			Label: Legendäre Waffeninhalte aktivieren
 			Tooltip:
@@ -3931,24 +3922,6 @@ TextContent: {
 			Es gibt auch eine mächtige Meereskreatur, die meine Maschine zerstört hat; lass uns Rache nehmen.
 			'''
 		Halibut_TextDictionary_Content_14: Ehrlich gesagt, ich möchte wieder ins Meer zurückkehren.
-		RemakeItem_Remind_TextContent:
-			'''
-			[Autorerinnerung]
-			Sie sollten gerade dabei sein, die Elemente der Katastrophenüberarbeitung zu überprüfen.
-			Diese Elemente sind zurückgesetzte Kopien und sollten normalerweise nicht in Ihrem Spielprozess gefunden werden.
-
-			Alle Waffenrücksetzinhalte der Katastrophenüberarbeitung werden direkt auf die Originalkatastrophenartikel angewendet. Wenn Sie in
-			[Einstellungen] --> [Mod-Konfiguration] --> [Calamity Overhaul] --> [Inhaltseinstellungen] --> [Erzwinge Reset-Inhalte ersetzen]
-			diese Option deaktivieren, wird der Reset-Code, der direkt auf die Originalkatastrophenartikel angewendet wird, deaktiviert.
-			Stattdessen werden diese Kopieelemente auf eine Weise in das Spiel integriert, dass sie mit den Originalartikeln austauschbar sind.
-
-			Es sei darauf hingewiesen, dass der Autor dringend davon abrät, diese Einstellung zu verwenden. Weitere Informationen finden Sie in der Mod-Konfiguration.
-
-			Der Zweck dieser Schnittstelle ist es, Missverständnisse zu vermeiden. Wenn Sie sicher sind, dass Sie es verstanden haben und diese Erinnerung nicht mehr sehen möchten,
-			gehen Sie zu:
-			[Einstellungen] --> [Mod-Konfiguration] --> [Calamity Overhaul Content Settings] --> [Reset-Item-Reminder],
-			und schalten Sie es aus.
-			'''
 		StarMyriadChanges_TextContent:
 			'''
 			Dies ist Teil des Plans.

@@ -17,9 +17,6 @@ namespace CalamityOverhaul.Content.Projectiles
     {
         public override string Texture => CWRConstant.Placeholder;
         public List<int> dorpTypes = [];
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.DamageType = EndlessDamageClass.Instance;

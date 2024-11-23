@@ -89,7 +89,7 @@ namespace CalamityOverhaul
                 return CWRServerConfig.Instance.ForceReplaceResetContent;
             }
             else if (callType == CallType.Config_AddExtrasContent) {
-                return CWRServerConfig.Instance.AddExtrasContent;
+                return true;
             }
 
             return null;

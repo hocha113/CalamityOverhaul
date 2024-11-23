@@ -12,10 +12,6 @@ namespace CalamityOverhaul.Content.Items.Materials
     internal class DecaySubstance : ModItem
     {
         public override string Texture => CWRConstant.Item + "Materials/DecaySubstance";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
-
         public override void SetDefaults() {
             Item.width = Item.height = 25;
             Item.maxStack = 9999;

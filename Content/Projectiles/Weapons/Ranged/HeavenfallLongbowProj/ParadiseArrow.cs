@@ -16,11 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
     internal class ParadiseArrow : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-
         private Color chromaColor => VaultUtils.MultiStepColorLerp(Projectile.ai[0] % 35 / 35f, HeavenfallLongbow.rainbowColors);
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;

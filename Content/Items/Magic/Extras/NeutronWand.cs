@@ -11,9 +11,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
 {
     internal class NeutronWand : ModItem, ICWRLoader
     {
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
         internal static int PType;
         void ICWRLoader.SetupData() => PType = ModContent.ItemType<NeutronWand>();

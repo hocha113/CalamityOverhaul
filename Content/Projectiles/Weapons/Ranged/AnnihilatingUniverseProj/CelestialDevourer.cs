@@ -12,9 +12,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
     internal class CelestialDevourer : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetDefaults() {
             Projectile.height = 24;
             Projectile.width = 24;

@@ -176,16 +176,14 @@ namespace CalamityOverhaul.Content
 
             ModGanged.Set_MS_Config_recursionCraftingDepth();
 
-            if (CWRServerConfig.Instance.AddExtrasContent) {
-                RecipeErrorFullUI.Instance.eyEBool = true;
-                if (SupertableUI.Instance != null) {
-                    SupertableUI.Instance.loadOrUnLoadZenithWorldAsset = true;
-                    SupertableUI.Instance.Active = false;
-                }
-                if (RecipeUI.Instance != null) {
-                    RecipeUI.Instance.index = 0;
-                    RecipeUI.Instance.LoadPsreviewItems();
-                }
+            RecipeErrorFullUI.Instance.eyEBool = true;
+            if (SupertableUI.Instance != null) {
+                SupertableUI.Instance.loadOrUnLoadZenithWorldAsset = true;
+                SupertableUI.Instance.Active = false;
+            }
+            if (RecipeUI.Instance != null) {
+                RecipeUI.Instance.index = 0;
+                RecipeUI.Instance.LoadPsreviewItems();
             }
 
             Gangarus.ZenithWorldAsset();

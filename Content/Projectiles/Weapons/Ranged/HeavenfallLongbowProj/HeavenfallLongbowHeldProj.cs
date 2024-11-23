@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         public override bool CanFire => (Projectile.ai[2] == 0 && DownLeft) || (Projectile.ai[2] == 1 && DownRight);
         private HeavenfallLongbow HFBow => (HeavenfallLongbow)Owner.ActiveItem().ModItem;
         private int Time = 30;
-        public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         public override void SetDefaults() {
             Projectile.width = 54;
             Projectile.height = 116;

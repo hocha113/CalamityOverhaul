@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
     internal class AnnihilatingUniverse : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "AnnihilatingUniverse";
-        public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         public override bool AltFunctionUse(Player player) => true;
         public override void SetDefaults() {

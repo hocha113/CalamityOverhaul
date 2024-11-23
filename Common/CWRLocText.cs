@@ -79,7 +79,6 @@ namespace CalamityOverhaul.Common
         public LocalizedText Halibut_TextDictionary_Content_12 { get; private set; }
         public LocalizedText Halibut_TextDictionary_Content_13 { get; private set; }
         public LocalizedText Halibut_TextDictionary_Content_14 { get; private set; }
-        public LocalizedText RemakeItem_Remind_TextContent { get; private set; }
         public LocalizedText StarMyriadChanges_TextContent { get; private set; }
         public LocalizedText Destruct_TextContent { get; private set; }
         public LocalizedText CWRRecipes_ApostolicRelics { get; private set; }

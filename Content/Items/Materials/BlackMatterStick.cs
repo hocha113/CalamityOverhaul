@@ -14,10 +14,6 @@ namespace CalamityOverhaul.Content.Items.Materials
     internal class BlackMatterStick : ModItem
     {
         public override string Texture => CWRConstant.Item + "Materials/BlackMatterStick";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
-
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 9999;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 18));

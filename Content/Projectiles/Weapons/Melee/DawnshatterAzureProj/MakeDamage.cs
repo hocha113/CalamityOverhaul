@@ -8,11 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
     internal class MakeDamage : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-
         public const int canDamageLengSQ = 9000000;
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 6000;
             Projectile.tileCollide = Projectile.ignoreWater = false;

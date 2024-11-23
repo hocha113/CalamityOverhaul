@@ -19,9 +19,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 if (SupertableUI.Instance == null) {
                     return false;
                 }
-                if (!CWRServerConfig.Instance.AddExtrasContent) {
-                    return false;
-                }
+
                 return SupertableUI.Instance.Active;
             }
         }

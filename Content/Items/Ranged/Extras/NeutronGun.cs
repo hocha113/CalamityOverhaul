@@ -18,17 +18,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public static int PType;
         public float Charge;
         internal static Asset<Texture2D> ShootGun;
-        public void SetupData() {
-            PType = ModContent.ItemType<NeutronGun>();
-            if (!Main.dedServ) {
-                ShootGun = CWRUtils.GetT2DAsset(CWRConstant.Item_Ranged + "NeutronGun2");
-            }
-        }
-
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
-
+        public void SetupData() => PType = ModContent.ItemType<NeutronGun>();
+        void ICWRLoader.LoadAsset() => ShootGun = CWRUtils.GetT2DAsset(CWRConstant.Item_Ranged + "NeutronGun2");
+        void ICWRLoader.UnLoadData() => ShootGun = null;
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 7));
