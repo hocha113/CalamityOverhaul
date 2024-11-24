@@ -3430,15 +3430,6 @@ Configs: {
 				'''
 		}
 
-		AddExtrasContent: {
-			Label: Add Extras Content
-			Tooltip:
-				'''
-				Whether to add controversial content to the game, such as Endless Technology
-				Enabled by default, when disabled, content that is not compatible with the theme of disaster can be removed from the game
-				'''
-		}
-
 		WeaponEnhancementSystem: {
 			Label: Enable Legendary Weapon Enhancement System
 			Tooltip:
@@ -3960,26 +3951,6 @@ TextContent: {
 			There's also a powerful sea creature that destroyed my machine; let’s seek revenge.
 			'''
 		Halibut_TextDictionary_Content_14: Honestly, I feel like going back to the sea.
-		RemakeItem_Remind_TextContent:
-			'''
-			【From the Author】
-			Before you came across this passage, you should have been browsing the items related to the 
-			Calamity Overhaul's reset.
-			These items serve as reset copies of the original content and, under normal circumstances, 
-			should not be encountered in your gameplay.
-			All weapon reset content in the Calamity Overhaul directly applies to the original Calamity items. 
-			However, when you navigate to【Settings】-->【Mod Config -->【Calamity Overhaul Content Settings 
-			-->【Enable Forced Reset Content Replacement】,
-			and disable this option, the reset codes directly applied to the original Calamity items will be deactivated. 
-			Instead, these reset copies will be introduced into the game as remedial measures 
-			that can be exchanged and crafted with the original items.
-			It's essential to note that the author strongly discourages using this setting. 
-			For specific reasons, please refer to the author's words in the mod configuration.
-			This interface aims to eliminate any potential misunderstandings.
-			If you are confident in your understanding and prefer not to see this passage again, 
-			please go to【Settings】-->【Mod Config】-->【Calamity Overhaul】--> 【Content Settings】-->【Reset Item Reminder】,
-			and disable it.
-			'''
 		StarMyriadChanges_TextContent:
 			'''
 			This is but a fragment of the plan.

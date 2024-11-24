@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
@@ -16,9 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
     {
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DawnshatterAzure>();
         public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;
             Projectile.DamageType = DamageClass.Melee;

@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
@@ -11,9 +10,6 @@ namespace CalamityOverhaul.Content.Projectiles
     internal class InfiniteEnmgs : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.penetrate = -1;

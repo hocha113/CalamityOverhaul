@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -15,14 +14,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override string Texture => CWRConstant.Item_Ranged + "NeutronBow";
         public static int PType;
         public float Charge;
-        public void SetupData() {
-            PType = ModContent.ItemType<NeutronBow>();
-        }
-
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
-
+        public void SetupData() => PType = ModContent.ItemType<NeutronBow>();
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 7));

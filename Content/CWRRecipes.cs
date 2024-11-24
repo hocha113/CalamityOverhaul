@@ -230,8 +230,7 @@ namespace CalamityOverhaul.Content
             }
             //添加苍穹破晓合成
             {
-                if (CWRServerConfig.Instance.AddExtrasContent) {
-                    Recipe.Create(ItemType<DawnshatterAzure>())
+                Recipe.Create(ItemType<DawnshatterAzure>())
                     .AddIngredient<Rock>(1)
                     .AddIngredient(ItemID.FragmentSolar, 16)
                     .AddIngredient(ItemID.DayBreak, 1)
@@ -243,7 +242,6 @@ namespace CalamityOverhaul.Content
                     .AddBlockingSynthesisEvent()
                     .AddTile(TileType<TransmutationOfMatter>())
                     .Register();
-                }
             }
             //添加雪球炮的合成
             {
@@ -363,21 +361,19 @@ namespace CalamityOverhaul.Content
                     }
                     //添加无尽催化剂的额外联动合成
                     {
-                        if (CWRServerConfig.Instance.AddExtrasContent) {
-                            if (CWRLoad.EternitySoul > ItemID.None) {
-                                if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
-                                    recipe.AddIngredient(CWRLoad.DeviatingEnergy, InfinityCatalyst.QFD(15));
-                                    recipe.AddIngredient(CWRLoad.AbomEnergy, InfinityCatalyst.QFD(15));
-                                    recipe.AddIngredient(CWRLoad.EternalEnergy, InfinityCatalyst.QFD(15));
-                                }
-                                //if (recipe.HasResult(CWRLoad.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
-                                //    recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
-                                //}
+                        if (CWRLoad.EternitySoul > ItemID.None) {
+                            if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
+                                recipe.AddIngredient(CWRLoad.DeviatingEnergy, InfinityCatalyst.QFD(15));
+                                recipe.AddIngredient(CWRLoad.AbomEnergy, InfinityCatalyst.QFD(15));
+                                recipe.AddIngredient(CWRLoad.EternalEnergy, InfinityCatalyst.QFD(15));
                             }
-                            if (CWRLoad.MetanovaBar > ItemID.None) {
-                                if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
-                                    recipe.AddIngredient(CWRLoad.MetanovaBar, InfinityCatalyst.QFD(15));
-                                }
+                            //if (recipe.HasResult(CWRLoad.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
+                            //    recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
+                            //}
+                        }
+                        if (CWRLoad.MetanovaBar > ItemID.None) {
+                            if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
+                                recipe.AddIngredient(CWRLoad.MetanovaBar, InfinityCatalyst.QFD(15));
                             }
                         }
                     }

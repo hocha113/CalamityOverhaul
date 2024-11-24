@@ -1,5 +1,4 @@
 ﻿using CalamityMod.NPCs.Yharon;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -13,18 +12,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
     internal class DawnshatterAzureProj : ModProjectile
     {
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DawnshatterAzure>();
-
         public override string Texture => CWRConstant.Item_Melee + "DawnshatterAzure";
-
         public Player Owner => Main.player[Projectile.owner];
-
         public Item elementalLance => Owner.HeldItem;
-
         protected float HoldoutRangeMin => -24f;
         protected float HoldoutRangeMax => 96f;
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;
             Projectile.DamageType = DamageClass.Melee;

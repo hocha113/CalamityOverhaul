@@ -30,9 +30,6 @@ namespace CalamityOverhaul.Content.Items.Tools
         public Texture2D value => CWRUtils.GetT2DValue(Texture);
         private bool oldRDown;
         private bool rDown;
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));

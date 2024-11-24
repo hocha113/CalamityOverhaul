@@ -45,20 +45,11 @@ namespace CalamityOverhaul.Common
         [BackgroundColor(35, 185, 78, 255)]
         [ReloadRequired]
         [DefaultValue(true)]
-        public bool AddExtrasContent { get; set; }
-
-        [BackgroundColor(35, 185, 78, 255)]
-        [ReloadRequired]
-        [DefaultValue(true)]
         public bool BiobehavioralOverlay { get; set; }
 
         [BackgroundColor(35, 185, 78, 255)]
         [DefaultValue(true)]
         public bool WeaponEnhancementSystem { get; set; }
-
-        [BackgroundColor(35, 185, 78, 255)]
-        [DefaultValue(true)]
-        public bool ResetItemReminder { get; set; }//温馨提示
 
         [Header("CWRWeapon")]
 

@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables.Furniture.CraftingStations;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using Terraria;
 using Terraria.DataStructures;
@@ -13,9 +12,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
     internal class TransmutationOfMatterItem : ModItem
     {
         public override string Texture => CWRConstant.Asset + "Items/Placeable/" + "TransmutationOfMatterItem";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetDefaults() {
             Item.width = 26;
             Item.height = 26;
@@ -29,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 11));
             Item.rare = ModContent.RarityType<DarkOrange>();
-            Item.value = Terraria.Item.buyPrice(gold: 16);
+            Item.value = Item.buyPrice(gold: 16);
         }
 
         public override void AddRecipes() {

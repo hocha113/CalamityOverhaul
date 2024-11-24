@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Tools;
@@ -16,9 +15,6 @@ namespace CalamityOverhaul.Content.Tiles
     internal class InfiniteIngotTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "InfiniteIngotTile";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetStaticDefaults() {
             Main.tileShine[Type] = 1100;
             Main.tileSolid[Type] = true;

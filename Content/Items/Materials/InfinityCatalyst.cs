@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -43,9 +42,6 @@ namespace CalamityOverhaul.Content.Items.Materials
             }
         }
         private static bool hasMod(string name) => LoadMods.Any(mod => mod.Name == name);
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 9999;
             ItemID.Sets.AnimatesAsSoul[Type] = true;

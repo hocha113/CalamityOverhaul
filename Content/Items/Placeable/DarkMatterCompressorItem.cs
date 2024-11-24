@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.Placeables.Furniture.CraftingStations;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using Terraria;
 using Terraria.DataStructures;
@@ -13,9 +12,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
     internal class DarkMatterCompressorItem : ModItem
     {
         public override string Texture => CWRConstant.Asset + "Items/Placeable/" + "DarkMatterCompressorItem";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));

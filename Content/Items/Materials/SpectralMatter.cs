@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,9 +12,6 @@ namespace CalamityOverhaul.Content.Items.Materials
     internal class SpectralMatter : ModItem
     {
         public override string Texture => CWRConstant.Item + "Materials/SpectralMatter";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetDefaults() {
             Item.width = Item.height = 25;
             Item.maxStack = 99;

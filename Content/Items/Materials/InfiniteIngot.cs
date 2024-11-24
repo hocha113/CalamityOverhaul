@@ -1,7 +1,6 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.PermanentBoosters;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -19,10 +18,6 @@ namespace CalamityOverhaul.Content.Items.Materials
     internal class InfiniteIngot : ModItem
     {
         public override string Texture => CWRConstant.Item + "Materials/InfiniteIngot";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
-
         //public float QFH {
         //    get {
         //        const float baseBonus = 1.0f;

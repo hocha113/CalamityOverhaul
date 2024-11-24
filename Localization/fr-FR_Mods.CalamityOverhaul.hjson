@@ -3419,15 +3419,6 @@ Configs: {
 				'''
 		}
 
-		AddExtrasContent: {
-			Label: Ajouter du contenu supplémentaire
-			Tooltip:
-				'''
-				Activer pour ajouter certains contenus controversés au jeu, comme la technologie sans fin
-				Activé par défaut, le désactiver permet de retirer du jeu des contenus qui pourraient ne pas être compatibles avec le thème de Calamité
-				'''
-		}
-
 		WeaponEnhancementSystem: {
 			Label: Activer le contenu des armes légendaires
 			Tooltip:
@@ -3947,24 +3938,6 @@ TextContent: {
 			Il y a aussi une puissante créature marine qui a détruit ma machine ; vengeons-nous.
 			'''
 		Halibut_TextDictionary_Content_14: Honnêtement, j'aimerais bien retourner à la mer.
-		RemakeItem_Remind_TextContent:
-			'''
-			[Auteur rappelle]
-			Avant de lire ce texte, vous devriez être en train de consulter les objets du Remake de Calamité.
-			Ces objets sont des copies réinitialisées et ne devraient généralement pas être rencontrés dans votre progression de jeu.
-
-			Tous les objets d'armement réinitialisés dans le Remake de Calamité seront directement appliqués aux objets originaux de Calamité. Lorsque vous
-			【Paramètres】-->【Configuration du mod】-->【Révision majeure de Calamité】-->【Paramètres de contenu】 -->【Activer le remplacement forcé du contenu de réinitialisation】
-			désactivez cette option, le code de réinitialisation appliqué directement aux objets originaux de Calamité sera désactivé,
-			au lieu de cela, ces objets de copie seront ajoutés au jeu de manière à pouvoir être échangés et synthétisés avec les objets d'origine.
-
-			Il est important de noter que l'auteur déconseille vivement l'utilisation de ce paramètre. Pour plus de détails, veuillez consulter les explications dans la configuration du mod.
-
-			L'objectif de cette interface est de prévenir toute confusion de votre part. Si vous avez bien compris et que vous ne souhaitez plus voir ce rappel,
-			veuillez vous rendre à :
-			【Paramètres】-->【Configuration du mod】-->【Révision majeure de Calamité】--> 【Rappel amical pour la réinitialisation des objets】,
-			et le désactiver.
-			'''
 		StarMyriadChanges_TextContent:
 			'''
 			Cela fait partie du plan

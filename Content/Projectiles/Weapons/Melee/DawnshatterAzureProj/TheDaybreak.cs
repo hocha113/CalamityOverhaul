@@ -2,7 +2,6 @@
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.NPCs.Yharon;
 using CalamityMod.Projectiles.Melee;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,9 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
     internal class TheDaybreak : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "DawnshatterAzureFire";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetDefaults() {
             Projectile.width = 32;
             Projectile.height = 62;

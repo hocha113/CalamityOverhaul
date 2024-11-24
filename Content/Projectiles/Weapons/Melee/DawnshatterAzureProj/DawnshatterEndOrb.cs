@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Particles;
+﻿using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.ModLoader;
@@ -9,9 +8,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
     internal class DawnshatterEndOrb : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        public override bool IsLoadingEnabled(Mod mod) {
-            return !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
-        }
         public override void SetDefaults() {
             Projectile.width = 32;
             Projectile.height = 62;

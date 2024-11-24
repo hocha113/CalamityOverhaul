@@ -3,7 +3,6 @@ using CalamityMod.Items;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles;
 using CalamityOverhaul.Content.Tiles;
@@ -29,7 +28,6 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public static Asset<Texture2D> EvaAsset;
         public int ChargeGrade;
         public override string Texture => CWRConstant.Item + "Rogue/Gangarus";
-        public override bool IsLoadingEnabled(Mod mod) => !CWRServerConfig.Instance.AddExtrasContent ? false : base.IsLoadingEnabled(mod);
         void ICWRLoader.LoadAsset() {
             GangarusAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");
             EvaAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3");
@@ -39,7 +37,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             EvaAsset = null;
         }
         public static void ZenithWorldAsset() {
-            if (!CWRServerConfig.Instance.AddExtrasContent || Main.dedServ) {
+            if (Main.dedServ) {
                 return;
             }
             TextureAssets.Item[CWRLoad.Gangarus] = Main.zenithWorld ? EvaAsset : GangarusAsset;

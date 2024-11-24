@@ -3454,15 +3454,6 @@ Configs: {
 				'''
 		}
 
-		AddExtrasContent: {
-			Label: ¿Agregar contenido extra?
-			Tooltip:
-				'''
-				¿Desea añadir contenido controvertido al juego, como la tecnología infinita?
-				Activado por defecto; desactivarlo eliminará contenido que es menos compatible con el tema del desastre.
-				'''
-		}
-
 		WeaponEnhancementSystem: {
 			Label: ¿Habilitar contenido de armas legendarias?
 			Tooltip:
@@ -3991,24 +3982,6 @@ TextContent: {
 			Y hay un poderoso ser marino que destruyó mi máquina, vamos a buscarlo para vengarnos
 			'''
 		Halibut_TextDictionary_Content_14: Honestamente, quiero regresar al mar
-		RemakeItem_Remind_TextContent:
-			'''
-			【Aviso del Autor】
-			Antes de leer este texto, deberías estar viendo los objetos de la Gran Revisión de Desastre.
-			Estos objetos son copias reiniciadas que, por lo general, no deberían aparecer durante tu juego.
-
-			Todos los contenidos de armas reiniciadas en la Gran Revisión de Desastre se aplicarán directamente a los objetos originales de desastre. Cuando vayas a
-			【Configuración】-->【Configuración del Módulo】-->【Gran Revisión de Desastre】-->【Configuración de Contenido】 -->【Activar reemplazo forzado de contenido reiniciado】
-			Si desactivas esta opción, el código de reinicio que se aplica directamente a los objetos originales de desastre se desactivará, 
-			en su lugar, estos objetos copia se añadirán al juego de una manera que puede ser intercambiada y creada con los objetos originales.
-
-			Es importante señalar que el autor desaconseja encarecidamente el uso de esta configuración. Para más detalles, consulta las instrucciones en la configuración del módulo.
-
-			Este interfaz tiene como objetivo prevenir cualquier posible malentendido. Si confirmas que entiendes y no deseas ver este recordatorio nuevamente, 
-			dirígete a:
-			【Configuración】-->【Configuración del Módulo】-->【Configuración de Contenido de la Gran Revisión de Desastre】--> 【Recordatorio amable sobre objetos reiniciados】,
-			y desactívalo.
-			'''
 		StarMyriadChanges_TextContent:
 			'''
 			Esto es parte del plan
