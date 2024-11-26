@@ -14,6 +14,7 @@ namespace CalamityOverhaul
             SetNoRecipeHasFrme,
             Config_ForceReplaceResetContent,
             Config_AddExtrasContent,
+            SupertableRecipeDate_ZenithWorld,
         }
 
         public static object Hander(params object[] args) {
@@ -88,8 +89,24 @@ namespace CalamityOverhaul
             else if (callType == CallType.Config_ForceReplaceResetContent) {
                 return CWRServerConfig.Instance.ForceReplaceResetContent;
             }
+            //已弃用，将始终返回true，因为已经有一些模组在使用这个call，为了保证适配性暂时不要删除它
             else if (callType == CallType.Config_AddExtrasContent) {
                 return true;
+            }
+            //如果要使用这个call，那么它最好在Load环节就调用一次，这样才能保证欧米茄能正常获取到值
+            else if (callType == CallType.SupertableRecipeDate_ZenithWorld) {
+                if (contentCount < 2) {
+                    Instance.Logger.Info("Call-SupertableRecipeDate_ZenithWorld was made without additional parameters.");
+                    return null;
+                }
+
+                if (args[1] is string[] addPms) {
+                    SupertableUI.OtherRpsData_ZenithWorld_StringList.Add(addPms);
+                }
+                else {
+                    Instance.Logger.Info("Call-SupertableRecipeDate_ZenithWorld was made with incorrect parameter types.");
+                    return null;
+                }
             }
 
             return null;

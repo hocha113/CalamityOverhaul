@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             SpwanGunDustMngsData.splNum = 0.3f;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             if (!MagazineSystem) {
+                LazyRotationUpdate = true;
                 FireTime += 12;
             }
         }

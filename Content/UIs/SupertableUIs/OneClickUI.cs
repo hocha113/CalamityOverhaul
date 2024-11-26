@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             DrawPosition = mainUI.DrawPosition + offsetDraw;
             mainRec = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 30, 30);
             // 判断鼠标是否在主矩形内
-            bool isMouseOverMainRec = mainRec.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
+            onMainP = mainRec.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
             //int mouseState = DownStartL();
             int mouseState = (int)keyLeftPressState;
             // 重置鼠标点击计数器
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 useMuse3AddCount = 30;
             }
             // 当鼠标在主区域内时，处理点击事件
-            if (isMouseOverMainRec) {
+            if (onMainP) {
                 if (mouseState == 1 || mouseState == 3) {
                     HandleClickEvents(mouseState);
                 }
@@ -52,7 +52,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (useTimeCoolding > 0) {
                 useTimeCoolding--;
             }
-            onMainP = isMouseOverMainRec;
         }
         private void HandleClickEvents(int mouseState) {
             if (checkSetO) {

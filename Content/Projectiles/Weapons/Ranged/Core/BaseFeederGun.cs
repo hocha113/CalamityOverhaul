@@ -340,8 +340,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override Vector2 GetGunInFirePos() {
-            return kreloadTimeValue == 0 ? Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2()
-                * (HandFireDistance + 5) + new Vector2(0, HandFireDistanceY * Math.Sign(Owner.gravDir)) + OffsetPos : GetGunBodyPos();
+            Vector2 gunBodyRotOffset = Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5);
+            Vector2 gunHeldOffsetY = new Vector2(0, HandFireDistanceY * SafeGravDir);
+            Vector2 motHeldPos = Owner.GetPlayerStabilityCenter() + gunBodyRotOffset + gunHeldOffsetY + OffsetPos;
+            return kreloadTimeValue == 0 ? motHeldPos : GetGunBodyPos();
         }
 
         public override float GetGunBodyRot() {
@@ -355,6 +357,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public override Vector2 GetGunBodyPos() {
             Vector2 handOffset = new Vector2(Owner.direction * HandDistance, HandDistanceY * SafeGravDir);
+            if (SafeGravDir < 0) {
+                handOffset.Y += 4;//似乎是GetPlayerStabilityCenter获得的位置在重力翻转下会产生Y方向的4像素的偏移，所以这里额外在翻转的情况下补回偏移
+            }
             return Owner.GetPlayerStabilityCenter() + FeederOffsetPos + handOffset;
         }
 
@@ -712,8 +717,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 AutomaticPolishing(FireTime);
 
             }
+
             PostInOwnerUpdate();
-            Projectile.netUpdate = true;
+            //出于网络性能考虑取消每帧发送的行为
+            //Projectile.netUpdate = true;
         }
 
         /// <summary>
@@ -899,6 +906,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if ((onFire || onFireR) && ShootCoolingValue <= 0 && kreloadTimeValue <= 0) {
                 if (LazyRotationUpdate) {
                     Projectile.rotation = oldSetRoting = ToMouseA;
+                    setBaseFromeAI();
                 }
 
                 //弹容替换在此处执行，将发射内容设置为弹匣第一位的弹药类型

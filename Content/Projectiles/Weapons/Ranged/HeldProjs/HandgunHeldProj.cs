@@ -14,9 +14,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             FireTime = 10;
             HandDistance = 16;
-            HandDistanceY = -1;
+            HandDistanceY = 2;
             HandFireDistance = 18;
-            HandFireDistanceY = -4;
+            HandFireDistanceY = 0;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -8;
             SpwanGunDustMngsData.splNum = 0.4f;
