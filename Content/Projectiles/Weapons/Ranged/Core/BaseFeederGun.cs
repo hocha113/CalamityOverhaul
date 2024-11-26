@@ -715,7 +715,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Get_LoadingAmmoAnimation_PostInOwnerUpdate();
             if (AutomaticPolishingEffect && automaticPolishingInShootStartFarg) {
                 AutomaticPolishing(FireTime);
-
             }
 
             PostInOwnerUpdate();
@@ -906,7 +905,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if ((onFire || onFireR) && ShootCoolingValue <= 0 && kreloadTimeValue <= 0) {
                 if (LazyRotationUpdate) {
                     Projectile.rotation = oldSetRoting = ToMouseA;
-                    setBaseFromeAI();
                 }
 
                 //弹容替换在此处执行，将发射内容设置为弹匣第一位的弹药类型
@@ -933,6 +931,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 }
 
                 if (canShoot) {
+                    //在生成射弹前再执行一次setBaseFromeAI，以防止因为更新顺序所导致的延迟帧情况
+                    setBaseFromeAI();
+
                     if (ForcedConversionTargetAmmoFunc.Invoke()) {
                         AmmoTypes = ToTargetAmmo;
                     }
@@ -989,6 +990,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                         if (BulletNum <= 0) {
                             SetEmptyMagazine();
                             AutomaticCartridgeChangeDelayTime += FireTime;
+                            if (AutomaticCartridgeChangeDelayTime > 10) {
+                                AutomaticCartridgeChangeDelayTime = 10;
+                            }
                         }
                     }
                 }
