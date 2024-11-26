@@ -33,17 +33,7 @@ namespace CalamityOverhaul.Content.Tiles
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-            TileObjectData.newTile.Width = Width;
-            TileObjectData.newTile.Height = Height;
-            TileObjectData.newTile.Origin = new Point16(OriginOffsetX, OriginOffsetY);
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile
-                | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
 
-            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
-            TileObjectData.newTile.LavaDeath = false;
-
-            TileObjectData.addTile(Type);
             AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<TransmutationOfMatterItem>());
             AnimationFrameHeight = 68;
 
@@ -71,6 +61,16 @@ namespace CalamityOverhaul.Content.Tiles
                 ModContent.TileType<StaticRefiner>(),
                 ModContent.TileType<DraedonsForge>(),
             ];
+
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
+            TileObjectData.newTile.Width = Width;
+            TileObjectData.newTile.Height = Height;
+            TileObjectData.newTile.Origin = new Point16(OriginOffsetX, OriginOffsetY);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
+            TileObjectData.newTile.LavaDeath = false;
+
+            TileObjectData.addTile(Type);
         }
         public override bool CanExplode(int i, int j) => false;
 

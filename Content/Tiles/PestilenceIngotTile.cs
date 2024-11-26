@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Tiles
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "PestilenceIngotTile";
         public override void SetStaticDefaults() {
+            AddMapEntry(new Color(121, 89, 9), CWRUtils.SafeGetItemName<PestilenceIngot>());
             Main.tileShine[Type] = 1100;
             Main.tileSolid[Type] = true;
             Main.tileSolidTop[Type] = true;
@@ -19,8 +20,6 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.newTile.LavaDeath = false;
             TileObjectData.addTile(Type);
-
-            AddMapEntry(new Color(121, 89, 9), CWRUtils.SafeGetItemName<PestilenceIngot>());
         }
 
         public override void RandomUpdate(int i, int j) {

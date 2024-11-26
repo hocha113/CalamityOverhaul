@@ -18,12 +18,15 @@ namespace CalamityOverhaul.Content.Tiles
         public const int OriginOffsetX = 1;
         public const int OriginOffsetY = 1;
         public const int SheetSquare = 18;
+        private int frameIndex = 1;
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
+            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<DarkMatterCompressorItem>());
+            AnimationFrameHeight = 52;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
             TileObjectData.newTile.Width = Width;
             TileObjectData.newTile.Height = Height;
@@ -32,8 +35,6 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.newTile.LavaDeath = false;
             TileObjectData.addTile(Type);
-            AddMapEntry(new Color(67, 72, 81), CWRUtils.SafeGetItemName<DarkMatterCompressorItem>());
-            AnimationFrameHeight = 52;
         }
 
         public override bool CanExplode(int i, int j) => false;
@@ -47,12 +48,10 @@ namespace CalamityOverhaul.Content.Tiles
 
         public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
-        private int frameIndex = 1;
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;
             int frameYPos = t.TileFrameY;
-            CWRUtils.ClockFrame(ref frameIndex, 6, 3);
             frameIndex = (int)(Main.GameUpdateCount / 10 % 4);
             frameYPos += frameIndex % 4 * (Height * SheetSquare);
             if (frameIndex != 2) {

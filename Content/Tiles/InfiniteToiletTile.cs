@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Placeables.FurnitureExo;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Content.Items.Placeable;
@@ -14,38 +15,38 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Tiles
 {
-    internal class InfiniteToilet : ModTile
+    internal class InfiniteToiletTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "InfiniteToilet";
-        public override bool IsLoadingEnabled(Mod mod) {
-            return false;
-        }
+        public override bool IsLoadingEnabled(Mod mod) => true;
         public override void SetStaticDefaults() {
+            RegisterItemDrop(ModContent.ItemType<InfiniteToiletItem>(), 1);
             RegisterItemDrop(ModContent.ItemType<InfiniteToiletItem>());
             Main.tileFrameImportant[Type] = true;
             Main.tileLavaDeath[Type] = false;
             Main.tileWaterDeath[Type] = false;
-            TileObjectData.newTile.Width = 2;
-            TileObjectData.newTile.Height = 3;
-            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
-            TileObjectData.newTile.CoordinateWidth = 16;
-            TileObjectData.newTile.CoordinatePadding = 2;
-            TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
-            TileObjectData.newTile.StyleHorizontal = true;
-            TileObjectData.newTile.Origin = new Point16(1, 1);
-            TileObjectData.newTile.UsesCustomCanPlace = true;
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, 2, 0);
-            TileObjectData.newTile.LavaDeath = false;
-            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
-            TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
-            TileObjectData.addAlternate(1);
-            TileObjectData.addTile(Type);
+            AdjTiles = [TileID.Chairs];
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
             AddMapEntry(new Color(191, 142, 111), Language.GetText("MapObject.Toilet"));
             TileID.Sets.CanBeSatOnForNPCs[Type] = true;
             TileID.Sets.CanBeSatOnForPlayers[Type] = true;
             TileID.Sets.HasOutlines[Type] = true;
-            AdjTiles = new int[] { TileID.Chairs };
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
+            TileObjectData.newTile.Width = 2;
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
+            TileObjectData.newTile.CoordinateWidth = 16;
+            TileObjectData.newTile.CoordinatePadding = 2;
+            TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.Origin = new Point16(0, 1);
+            TileObjectData.newTile.UsesCustomCanPlace = true;
+            TileObjectData.newTile.LavaDeath = false;
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, 2, 0);
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
+            TileObjectData.addAlternate(1);
+            TileObjectData.addTile(Type);
         }
 
         public override bool CanExplode(int i, int j) => false;

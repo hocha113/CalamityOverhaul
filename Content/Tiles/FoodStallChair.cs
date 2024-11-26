@@ -19,24 +19,19 @@ namespace CalamityOverhaul.Content.Tiles
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = true;
             TileID.Sets.HasOutlines[Type] = true;
-
             TileID.Sets.CanBeSatOnForNPCs[Type] = true; // 方便为NPC调用ModifySittingTargetInfo
             TileID.Sets.CanBeSatOnForPlayers[Type] = true; // 方便为玩家调用ModifySittingTargetInfo
-
             TileID.Sets.DisableSmartCursor[Type] = true;
-
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
-
-            AdjTiles = new int[] { TileID.Chairs };
-
             AddMapEntry(new Color(200, 200, 200), Language.GetText("MapObject.Chair"));
-
+            AdjTiles = [TileID.Chairs];
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.CoordinateHeights = new[] { 16, 16 };
             TileObjectData.newTile.CoordinatePaddingFix = new Point16(0, 2);
-
+            TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
             TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
             TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
+            TileObjectData.addAlternate(1);
             TileObjectData.addTile(Type);
         }
 
