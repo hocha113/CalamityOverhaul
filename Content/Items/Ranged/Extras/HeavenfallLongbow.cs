@@ -21,6 +21,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Extras
 {
@@ -93,34 +94,19 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
             if (line.Name == "ItemName" && line.Mod == "Terraria") {
-                _ = Main.DiscoColor;
-                Vector2 basePosition = new Vector2(line.X, line.Y);
-                string text = Language.GetTextValue("Mods.CalamityOverhaul.Items.HeavenfallLongbow.DisplayName");
-                InfiniteIngot.drawColorText(Main.spriteBatch, line, text, basePosition);
+                InfiniteIngot.drawColorText(Main.spriteBatch, line);
+                return false;
+            }
+            if (line.Name == "Damage" && line.Mod == "Terraria") {
+                InfiniteIngot.drawColorText(Main.spriteBatch, line);
                 return false;
             }
             return true;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            TooltipLine cumstops = tooltips.FirstOrDefault((TooltipLine x) => x.Name == "Damage" && x.Mod == "Terraria");
-            if (cumstops != null) {
-                Color baseDamageTextColor = Color.White;
-                Color baseDamageTypeColor = VaultUtils.MultiStepColorLerp(Main.GameUpdateCount % 660 / 660f, rainbowColors);
-                cumstops.Text = CalamityUtils.ColorMessage(Item.damage.ToString(), baseDamageTextColor) + " " + CalamityUtils.ColorMessage(Item.DamageType.DisplayName.Value, baseDamageTypeColor);
-                /*
-                //System.Numerics.BigInteger bigNum = System.Numerics.BigInteger.Parse("14757395258967641292848719592134");
-                //System.Numerics.BigInteger bigS = new System.Numerics.BigInteger(baseVoidDamageSizeFloat);
-                //bigNum = bigS * bigNum;
-                //TooltipLine newLine = new TooltipLine(Mod, "OverInEndDamageText", bigNum.ToString() + DamageClass.Ranged.DisplayName.Value);
-                //int index = tooltips.IndexOf(cumstops);
-                //if (index >= 0 && index < tooltips.Count) {
-                //    tooltips.Insert(index, newLine);
-                //}
-                */
-                tooltips.IntegrateHotkey(CWRKeySystem.HeavenfallLongbowSkillKey);
-                CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
-            }
+            tooltips.IntegrateHotkey(CWRKeySystem.HeavenfallLongbowSkillKey);
+            CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
         }
 
         public override bool CanConsumeAmmo(Item ammo, Player player) {

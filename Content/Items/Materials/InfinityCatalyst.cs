@@ -60,9 +60,7 @@ namespace CalamityOverhaul.Content.Items.Materials
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
             if (line.Name == "ItemName" && line.Mod == "Terraria") {
-                Vector2 basePosition = new Vector2(line.X, line.Y);
-                string text = Language.GetTextValue("Mods.CalamityOverhaul.Items.InfinityCatalyst.DisplayName");
-                InfiniteIngot.drawColorText(Main.spriteBatch, line, text, basePosition);
+                InfiniteIngot.drawColorText(Main.spriteBatch, line);
                 return false;
             }
             return true;

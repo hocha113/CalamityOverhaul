@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.rare = ItemRarityID.Green;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.pick = int.MaxValue;
+            Item.pick = 9999;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems3;
         }
 
@@ -59,17 +59,11 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage = damage.Scale(0);
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            TooltipLine cumstops = tooltips.FirstOrDefault((TooltipLine x) => x.Name == "Damage" && x.Mod == "Terraria");
-            if (cumstops != null) {
-                tooltips.IntegrateHotkey(CWRKeySystem.InfinitePickSkillKey);
-            }
-        }
-
         public override void HoldItem(Player player) {
             if (Main.myPlayer != player.whoAmI) {
                 return;
             }
+
             if (IsPick) {
                 Item.pick = 9999;
                 Item.hammer = 0;
@@ -142,11 +136,29 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            if (IsPick) {
+                TooltipLine cumstops = tooltips.FirstOrDefault((TooltipLine x) => x.Name == "PickPower" && x.Mod == "Terraria");
+                if (cumstops != null) {
+                    string typeV = Language.GetTextValue("LegacyTooltip.26");
+                    cumstops.Text = $"{int.MaxValue}{typeV}";
+                }
+            }
+            else {
+                TooltipLine cumstops = tooltips.FirstOrDefault((TooltipLine x) => x.Name == "HammerPower" && x.Mod == "Terraria");
+                if (cumstops != null) {
+                    string typeV = Language.GetTextValue("LegacyTooltip.28");
+                    cumstops.Text = $"{int.MaxValue}{typeV}";
+                }
+            }
+            
+            tooltips.IntegrateHotkey(CWRKeySystem.InfinitePickSkillKey);
+        }
+
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
-            if (line.Name == "ItemName" && line.Mod == "Terraria") {
-                Vector2 basePosition = new Vector2(line.X, line.Y);
-                string text = Language.GetTextValue("Mods.CalamityOverhaul.Items.InfinitePick.DisplayName");
-                InfiniteIngot.drawColorText(Main.spriteBatch, line, text, basePosition);
+            if ((line.Name == "ItemName" || line.Name == "Damage" || line.Name == "PickPower" || line.Name == "HammerPower")  
+                && line.Mod == "Terraria") {
+                InfiniteIngot.drawColorText(Main.spriteBatch, line);
                 return false;
             }
             return true;

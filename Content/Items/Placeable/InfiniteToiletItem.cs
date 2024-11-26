@@ -36,13 +36,12 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.createTile = ModContent.TileType<InfiniteToiletTile>();
+            Item.CWR().OmigaSnyContent = FullItems;
         }
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
             if (line.Name == "ItemName" && line.Mod == "Terraria") {
-                Vector2 basePosition = Main.MouseWorld - Main.screenPosition + new Vector2(23, 23);
-                string text = Language.GetTextValue("Mods.CalamityOverhaul.Items.InfiniteToiletItem.DisplayName");
-                InfiniteIngot.drawColorText(Main.spriteBatch, line, text, basePosition);
+                InfiniteIngot.drawColorText(Main.spriteBatch, line);
                 return false;
             }
             return true;

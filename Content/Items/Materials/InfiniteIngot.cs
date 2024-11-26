@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -66,39 +67,40 @@ namespace CalamityOverhaul.Content.Items.Materials
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
             if (line.Name == "ItemName" && line.Mod == "Terraria") {
-                Vector2 basePosition = new Vector2(line.X, line.Y);
-                string text = Language.GetTextValue("Mods.CalamityOverhaul.Items.InfiniteIngot.DisplayName");
-                drawColorText(Main.spriteBatch, line, text, basePosition);
+                drawColorText(Main.spriteBatch, line);
                 return false;
             }
+
             return true;
         }
 
-        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
-            return base.PreDrawInWorld(spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
-        }
+        public static void drawColorText(SpriteBatch sb, DrawableTooltipLine line) {
+            Effect effect = Filters.Scene["Crystal"].GetShader().Shader;
 
-        public static void drawColorText(SpriteBatch sb, DrawableTooltipLine line, string text, Vector2 basePosition) {
-            ChatManager.DrawColorCodedStringWithShadow(sb, line.Font, line.Text, basePosition
-                , VaultUtils.MultiStepColorLerp(Main.GameUpdateCount % 120 / 120f, HeavenfallLongbow.rainbowColors)
-                , line.Rotation, line.Origin, line.BaseScale * 1.05f, line.MaxWidth, line.Spread);
-            /*
-            //ChatManager.DrawColorCodedString(sb, line.Font, line.Text, basePosition, 
-            //    CWRUtils.MultiLerpColor(Main.GameUpdateCount  % 90 / 90f, HeavenfallLongbow.rainbowColors), 0f, Vector2.Zero, new Vector2(1.1f, 1.1f));
-            //EffectsRegistry.ColourModulationShader.Parameters["uTime"].SetValue(Main.GlobalTimeWrappedHourly * 0.25f);
-            //Main.instance.GraphicsDevice.Textures[1] = EffectsRegistry.Ticoninfinity;
-            //ChatManager.DrawColorCodedString(sb, line.Font, line.Text, basePosition, Color.White, 0f, Vector2.Zero, new Vector2(1.1f, 1.1f));
-            //sb.End();
-            //sb.Begin(SpriteSortMode.Immediate, sb.GraphicsDevice.BlendState, sb.GraphicsDevice.SamplerStates[0],
-            //    sb.GraphicsDevice.DepthStencilState, sb.GraphicsDevice.RasterizerState, EffectsRegistry.ColourModulationShader, Main.UIScaleMatrix);
-            //ChatManager.DrawColorCodedString(sb, line.Font, line.Text, basePosition, Color.White, 0f, Vector2.Zero, new Vector2(1.1f, 1.1f));
-            //ChatManager.DrawColorCodedStringWithShadow(sb, line.Font, line.Text, basePosition
-            //    , CWRUtils.MultiLerpColor(Main.GameUpdateCount % 120 / 120f, HeavenfallLongbow.rainbowColors)
-            //    , line.Rotation, line.Origin, line.BaseScale * 1.05f, line.MaxWidth, line.Spread);
-            //sb.End();
-            //sb.Begin(SpriteSortMode.Deferred, sb.GraphicsDevice.BlendState, sb.GraphicsDevice.SamplerStates[0],
-            //    sb.GraphicsDevice.DepthStencilState, sb.GraphicsDevice.RasterizerState, null, Main.UIScaleMatrix);
-            */
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            Texture2D noiseTex = CWRUtils.GetT2DValue(CWRConstant.Masking + "SplitTrail");
+
+            effect.Parameters["transformMatrix"].SetValue(projection);
+            effect.Parameters["basePos"].SetValue(new Vector2(line.X, line.Y));
+            effect.Parameters["scale"].SetValue(new Vector2(1.2f / Main.GameZoomTarget));
+            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.02f);
+            effect.Parameters["lightRange"].SetValue(0.15f);
+            effect.Parameters["lightLimit"].SetValue(0.45f);
+            effect.Parameters["addC"].SetValue(0.75f);
+            effect.Parameters["highlightC"].SetValue(Color.White.ToVector4());
+            effect.Parameters["brightC"].SetValue(Main.DiscoColor.ToVector4());
+            effect.Parameters["darkC"].SetValue(Main.DiscoColor.ToVector4());
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, effect, Main.UIScaleMatrix);
+
+            Main.graphics.GraphicsDevice.Textures[1] = noiseTex;
+            ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, line.Font, line.Text, new Vector2(line.X, line.Y)
+                , Color.White, line.Rotation, line.Origin, line.BaseScale, line.MaxWidth, line.Spread);
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 
         public override void AddRecipes() {
