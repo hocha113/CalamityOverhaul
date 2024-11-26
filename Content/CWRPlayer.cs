@@ -178,13 +178,14 @@ namespace CalamityOverhaul.Content
 
             RecipeErrorFullUI.Instance.eyEBool = true;
             if (SupertableUI.Instance != null) {
-                SupertableUI.Instance.loadOrUnLoadZenithWorldAsset = true;
                 SupertableUI.Instance.Active = false;
             }
             if (RecipeUI.Instance != null) {
                 RecipeUI.Instance.index = 0;
                 RecipeUI.Instance.LoadPsreviewItems();
             }
+
+            SupertableUI.LoadenWorld();
 
             Gangarus.ZenithWorldAsset();
 

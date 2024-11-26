@@ -49,27 +49,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public override void Load() => Instance = this;
         void ICWRLoader.UnLoadData() => Instance = null;
         public static void LoadAllRecipes() {
+            itemTarget.Clear();
+            itemNameString_FormulaContent_Values.Clear();
             for (int i = 0; i < SupertableUI.AllRecipes.Count; i++) {
                 itemTarget.Add(new Item(SupertableUI.AllRecipes[i].Target));
                 itemNameString_FormulaContent_Values.Add(SupertableUI.AllRecipes[i].Values);
-            }
-        }
-
-        public void LoadZenithWRecipes() {
-            if (Main.zenithWorld) {
-                if (itemTarget.Count < SupertableUI.AllRecipes.Count) {
-                    int index = SupertableUI.AllRecipes.Count - 1;
-                    itemTarget.Add(new Item(SupertableUI.AllRecipes[index].Target));
-                    itemNameString_FormulaContent_Values.Add(SupertableUI.AllRecipes[index].Values);
-                }
-            }
-            else {
-                for (int i = 0; i < itemTarget.Count; i++) {
-                    if (itemTarget[i].type == ModContent.ItemType<InfiniteToiletItem>()) {
-                        itemTarget.RemoveAt(i);
-                        itemNameString_FormulaContent_Values.RemoveAt(i);
-                    }
-                }
             }
         }
 

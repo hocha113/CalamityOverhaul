@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.TileModules;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    internal class SupertableUI : UIHandle, ICWRLoader
+    public class SupertableUI : UIHandle, ICWRLoader
     {
         #region Data
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue2");
@@ -26,6 +27,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public static string[][] RpsDataStringArrays;
 
+        public static List<string[]> OtherRpsData_ZenithWorld_StringList = [];
         public static List<string[]> ModCall_OtherRpsData_StringList = [];
 
         public string[] StaticFullItemNames;
@@ -60,8 +62,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public Rectangle closeRec;
 
-        public bool loadOrUnLoadZenithWorldAsset = true;
-
         public bool initializeBool = true;
 
         public Vector2 topLeft;
@@ -73,6 +73,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static int maxCellNumX;
 
         public static int maxCellNumY;
+        /// <summary>
+        /// 配方表最大数量，不包括天顶世界的特殊配方内容
+        /// </summary>
+        public static int AllRecipesVanillaContentCount;
 
         public static TramModuleTP tramModuleEntity;
 
@@ -111,10 +115,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public override void Load() => Instance = this;
+
         void ICWRLoader.SetupData() {
             LoadRecipe();
             RecipeUI.LoadAllRecipes();
         }
+
         void ICWRLoader.UnLoadData() {
             tramModuleEntity = null;
             RpsDataStringArrays = null;
@@ -148,7 +154,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 };
                 AllRecipes.Add(recipeData);
             }
-            CWRMod.Instance.Logger.Info($"Get the recipe table capacity: {AllRecipes.Count}");
+            AllRecipesVanillaContentCount = AllRecipes.Count;
+            CWRMod.Instance.Logger.Info($"Get the recipe table capacity: {AllRecipesVanillaContentCount}");
         }
 
         public void UpdateUIElementPos() {
@@ -193,28 +200,25 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
 
             inputItem ??= new Item();
+        }
 
-            if (loadOrUnLoadZenithWorldAsset) {
-                int infiniteToiletItemType = ModContent.ItemType<InfiniteToiletItem>();
-                if (Main.zenithWorld) {
-                    // 判断是否已经存在 InfiniteToiletItem 的配方，如果不存在则添加
-                    if (!AllRecipes.Any(n => n.Target == infiniteToiletItemType)) {
-                        string[] value = SupertableRecipeDate.FullItems1000.ToArray();
-                        RecipeData recipeData = new RecipeData {
-                            Values = value,
-                            Target = InStrGetItemType(value[value.Length - 1])
-                        };
-                        AllRecipes.Add(recipeData);
-                    }
+        public static void LoadenWorld() {
+            if (AllRecipes.Count > AllRecipesVanillaContentCount) {
+                AllRecipes.RemoveRange(AllRecipesVanillaContentCount, AllRecipes.Count - AllRecipesVanillaContentCount);
+            }
+            SetZenithWorldRecipesData();
+            RecipeUI.LoadAllRecipes();
+        }
+
+        public static void SetZenithWorldRecipesData() {
+            if (Main.zenithWorld) {
+                foreach (var recipes in OtherRpsData_ZenithWorld_StringList) {
+                    RecipeData recipeData = new RecipeData {
+                        Values = recipes,
+                        Target = InStrGetItemType(recipes[recipes.Length - 1])
+                    };
+                    AllRecipes.Add(recipeData);
                 }
-                else {
-                    // 移除所有 InfiniteToiletItem 的配方
-                    AllRecipes.RemoveAll(n => n.Target == infiniteToiletItemType);
-                }
-                // 加载配方并更新 UI
-                RecipeUI.Instance.LoadZenithWRecipes();
-                // 标记已经加载或者卸载了 Zenith World 资产
-                loadOrUnLoadZenithWorldAsset = false;
             }
         }
 

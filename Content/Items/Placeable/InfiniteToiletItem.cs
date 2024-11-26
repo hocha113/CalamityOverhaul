@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -11,7 +12,19 @@ namespace CalamityOverhaul.Content.Items.Placeable
 {
     internal class InfiniteToiletItem : ModItem
     {
+        public static string[] FullItems = ["CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
+            "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0",
+            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
+            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0",
+            "CalamityOverhaul/InfiniteToiletItem"
+        ];
         public override string Texture => CWRConstant.Item + "Placeable/" + "InfiniteToiletItem";
+        public override void SetStaticDefaults() => SupertableUI.OtherRpsData_ZenithWorld_StringList.Add(FullItems);
         public override void SetDefaults() {
             Item.width = 28;
             Item.height = 20;

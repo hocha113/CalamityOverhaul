@@ -295,19 +295,5 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/NeutronStarMuzzleBrake"
         };
-        /// <summary>
-        /// 无尽马桶
-        /// </summary>
-        public static List<string> FullItems1000 = ["CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot",
-            "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0",
-            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfinityCatalyst", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0",
-            "0", "0", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0",
-            "CalamityOverhaul/InfiniteToiletItem"
-        ];
     }
 }

@@ -45,13 +45,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     offset.Y -= 5;
                 }
             }
-            else {
-                if (offset.Y < 0) {
-                    offset.Y += 5;
-                }
-                if (offset.Y >= 0) {
-                    DrawPosition = Main.MouseScreen + new Vector2(40, -12);
-                }
+            else if (offset.Y < 0) {
+                offset.Y += 5;
             }
 
             Vector2 uiSize = new Vector2(1.5f, 0.6f);

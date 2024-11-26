@@ -28,7 +28,6 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.CoordinateHeights = new[] { 16, 16 };
             TileObjectData.newTile.CoordinatePaddingFix = new Point16(0, 2);
-            TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
             TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
             TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
             TileObjectData.addAlternate(1);
@@ -42,10 +41,6 @@ namespace CalamityOverhaul.Content.Tiles
         public override void ModifySittingTargetInfo(int i, int j, ref TileRestingInfo info) {
             info.AnchorTilePosition.X = i;
             info.AnchorTilePosition.Y = j;
-        }
-
-        public override void RandomUpdate(int i, int j) {
-            base.RandomUpdate(i, j);
         }
 
         public override bool RightClick(int i, int j) {
