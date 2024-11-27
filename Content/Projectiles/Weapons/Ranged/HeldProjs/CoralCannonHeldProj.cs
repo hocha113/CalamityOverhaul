@@ -17,6 +17,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             HandDistance = 20;
             kreloadMaxTime = 80;
+            Recoil = 2.8f;
+            InOwner_HandState__AlwaysSetInFireRoding = true;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 12;
+            RecoilOffsetRecoverValue = 0.9f;
             CanCreateCaseEjection = false;
             LoadingAmmoAnimation_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;

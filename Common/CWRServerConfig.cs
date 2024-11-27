@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using System.ComponentModel;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.Config;
 
@@ -191,7 +193,24 @@ namespace CalamityOverhaul.Common
         public override void OnLoaded() => Instance = this;
 
         public override void OnChanged() {
-            
+            if (Main.gameMenu) {
+                return;
+            }
+            if (Main.projectile == null) {
+                return;
+            }
+            foreach (var proj in Main.ActiveProjectiles) {
+                if (proj.hostile || proj.ModProjectile == null) {
+                    continue;
+                }
+                if (proj.ModProjectile is BaseFeederGun gun) {
+                    Item item = Main.player[proj.owner].GetItem();
+                    if (item.type != ItemID.None) {
+                        item.CWR().IsKreload = false;
+                    }
+                    gun.SetRangedProperty();
+                }
+            }
         }
 
         public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message) {

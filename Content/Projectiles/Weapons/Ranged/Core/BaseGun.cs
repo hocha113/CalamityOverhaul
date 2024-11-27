@@ -80,6 +80,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         protected bool EnableRecoilRetroEffect;
         /// <summary>
+        /// 在非开火的手持闲置期间是否始终使用开火状态的状态设置，包括枪体旋转角度和枪体位置设置，默认为<see langword="false"/>
+        /// </summary>
+        public bool InOwner_HandState__AlwaysSetInFireRoding;
+        /// <summary>
         /// 后坐力制推力度模长，推送方向为<see cref="BaseHeldRanged.ShootVelocity"/>的反向
         /// ，在<see cref="EnableRecoilRetroEffect"/>为<see langword="true"/>时生效，默认为5f
         /// </summary>
@@ -307,16 +311,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir;
         }
 
-        protected virtual void setBaseFromeAI() {
+        protected virtual void SetGunBodyInFire() {
             Owner.direction = LazyRotationUpdate ? oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1 : ToMouse.X > 0 ? 1 : -1;
-            Projectile.rotation = GetGunInFireRot();
             Projectile.Center = GetGunInFirePos();
+            Projectile.rotation = GetGunInFireRot();
             ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
         }
 
         public override void FiringIncident() {
             if (DownLeft) {
-                setBaseFromeAI();
+                SetGunBodyInFire();
                 if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
                     if (!onFire) {
                         oldSetRoting = ToMouseA;
@@ -329,7 +333,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
 
             if (DownRight && !onFire && CanRightClick && SafeMousetStart) {//Owner.PressKey()
-                setBaseFromeAI();
+                SetGunBodyInFire();
                 if (HaveAmmo) {// && Projectile.IsOwnedByLocalPlayer()
                     if (!onFireR) {
                         oldSetRoting = ToMouseA;
@@ -358,13 +362,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         }
 
-        public override void InOwner() {
-            PreInOwnerUpdate();
+        public virtual void SetGunBodyHandIdle() {
             ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
             Projectile.Center = GetGunBodyPos();
             Projectile.rotation = GetGunBodyRot();
             Projectile.timeLeft = 2;
+        }
+
+        public override void InOwner() {
+            PreInOwnerUpdate();
+
+            if (InOwner_HandState__AlwaysSetInFireRoding) {
+                SetGunBodyInFire();
+            }
+            else {
+                SetGunBodyHandIdle();
+            }
+            
             if (ShootCoolingValue > 0) {
                 SetWeaponOccupancyStatus();
                 ShootCoolingValue--;

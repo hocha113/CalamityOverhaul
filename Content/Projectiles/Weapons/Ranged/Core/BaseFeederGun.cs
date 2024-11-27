@@ -396,9 +396,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态以保证换弹流畅
             }
 
-            if ((!IsKreload || ignoreKreLoad) && kreloadTimeValue <= 0 && AutomaticCartridgeChangeDelayTime <= 0
+            if ((!IsKreload || ignoreKreLoad) && kreloadTimeValue <= 0
                 && AmmoState.CurrentAmount > 0 && !ModOwner.NoCanAutomaticCartridgeChange
-                && ModItem.NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.OnMainP) {
+                && ModItem.NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.OnMainP 
+                && OffsetPos.Length() <= 0.6f && Math.Abs(OffsetRot) <= 0.02f) {
                 OnKreload = true;
                 kreloadTimeValue = kreloadMaxTime;
             }
@@ -561,16 +562,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             ManualReloadStart = flags[6];
         }
 
-        protected override void setBaseFromeAI() {
-            Owner.direction = LazyRotationUpdate ? oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1 : ToMouse.X > 0 ? 1 : -1;
-            Projectile.rotation = LazyRotationUpdate ? oldSetRoting : GetGunInFireRot();
+        protected override void SetGunBodyInFire() {
+            if (!IsKreload && OffsetPos.Length() <= 0.6f && Math.Abs(OffsetRot) <= 0.02f && !InOwner_HandState__AlwaysSetInFireRoding) {
+                return;
+            }//检测一下IsKreload，防止枪械在换弹状态切换的那一帧发生动画闪烁。同时要检测一下ASIFR，否则会让这个字段被设置为ture的枪械在待换弹状态下脱手
+
+            SetOwnerDirection();
             Projectile.Center = GetGunInFirePos();
+            Projectile.rotation = LazyRotationUpdate ? oldSetRoting : GetGunInFireRot();
             ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
-            if (MagazineSystem) {
-                SetAutomaticCartridgeChange();
+        }
+
+        public override void SetGunBodyHandIdle() {
+            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
+            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
+            Projectile.Center = GetGunBodyPos();
+            Projectile.rotation = GetGunBodyRot();
+            Projectile.timeLeft = 2;
+        }
+
+        public void SetOwnerDirection() {
+            if (LazyRotationUpdate) {
+                Owner.direction = oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1;
             }
             else {
-                BulletNum = 2;
+                Owner.direction = ToMouse.X > 0 ? 1 : -1;
             }
         }
 
@@ -580,11 +596,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Get_LoadingAmmoAnimation_PreInOwnerUpdate();
             PreInOwnerUpdate();
 
-            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
-            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
-            Projectile.Center = GetGunBodyPos();
-            Projectile.rotation = GetGunBodyRot();
-            Projectile.timeLeft = 2;
+            if (InOwner_HandState__AlwaysSetInFireRoding) {
+                SetGunBodyInFire();
+            }
+            else {
+                SetGunBodyHandIdle();
+            }
 
             if (ShootCoolingValue > 0) {
                 SetWeaponOccupancyStatus();
@@ -593,13 +610,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if (ModItem.NoKreLoadTime > 0) {
                 ModItem.NoKreLoadTime--;
             }
-            if (AutomaticCartridgeChangeDelayTime > 0) {
-                AutomaticCartridgeChangeDelayTime--;
-            }
 
             if (SafeMouseInterfaceValue) {
+                FiringIncident();
+
+                if (CanFire) {//在允许开火的情况下实时检测是否应该进行换弹
+                    if (MagazineSystem) {
+                        SetAutomaticCartridgeChange();
+                    }
+                    else {
+                        BulletNum = 2;
+                    }
+                }
+
                 if (DownLeft) {
-                    setBaseFromeAI();
+                    SetGunBodyInFire();
                     if (IsKreload) {// && Projectile.IsOwnedByLocalPlayer()
                         if (!onFire) {
                             oldSetRoting = ToMouseA;
@@ -613,7 +638,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
                 if (DownRight && !onFire && CanRightClick && SafeMousetStart
                     && (!CartridgeHolderUI.Instance.OnMainP || SafeMousetStart2)) {//Owner.PressKey()
-                    setBaseFromeAI();
+                    SetGunBodyInFire();
                     if (IsKreload) {//&& Projectile.IsOwnedByLocalPlayer()
                         if (!onFireR) {
                             oldSetRoting = ToMouseA;
@@ -682,10 +707,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
                     OnKreload = false;
                     IsKreload = true;
+                    
                     if (Item.type != ItemID.None) {
                         ModItem.IsKreload = true;
                     }
                     kreloadTimeValue = 0;
+                    //通常不希望在装完弹后就立马开火，这会导致一个因为更新顺序所产生的动画位置和射弹位置的错位，即使只有一帧但也会影响玩家的视觉体验和流畅感。
+                    //所以这里在完成换弹后给开火冷却设置为1，充当一个延迟帧的效果，让枪体来得及从换弹动画中切换过来
+                    ShootCoolingValue = 1;
 
                     bool result2 = KreLoadFulfill();
                     if (LoadingAmmoAnimation != LoadingAmmoAnimationEnum.None) {
@@ -945,7 +974,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
                 if (canShoot) {
                     //在生成射弹前再执行一次setBaseFromeAI，以防止因为更新顺序所导致的延迟帧情况
-                    setBaseFromeAI();
+                    SetGunBodyInFire();
 
                     if (ForcedConversionTargetAmmoFunc.Invoke()) {
                         AmmoTypes = ToTargetAmmo;
@@ -998,17 +1027,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                         UpdateMagazineContents();
                     }
                 }
+
                 if (MagazineSystem) {
                     if (PreFireReloadKreLoad()) {
                         if (BulletNum <= 0) {
                             SetEmptyMagazine();
-                            AutomaticCartridgeChangeDelayTime += FireTime;
-                            if (AutomaticCartridgeChangeDelayTime > 10) {
-                                AutomaticCartridgeChangeDelayTime = 10;
-                            }
                         }
                     }
                 }
+
                 automaticPolishingInShootStartFarg = true;
                 ShootCoolingValue += FireTime + 1;
                 onFire = false;
@@ -1059,7 +1086,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <param name="yl"></param>
         public void LoadingAnimation(int rot, int xl, int yl) {
             if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
-                Owner.direction = ToMouse.X > 0 ? 1 : -1;//为了防止抽搐，这里额外设置一次玩家朝向
+                //SetOwnerDirection();//为了防止抽搐，这里额外设置一次玩家朝向
                 FeederOffsetRot = -rot * SafeGravDir;
                 FeederOffsetPos = new Vector2(DirSign * -xl, -yl * SafeGravDir);
             }

@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 48;
             CanCreateCaseEjection = false;
             NO_EEMONG_LOADINGNONESET = false;
+            InOwner_HandState__AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation_AlwaysSetInFireRoding = true;
             if (!MagazineSystem) {
                 FireTime += 36;
