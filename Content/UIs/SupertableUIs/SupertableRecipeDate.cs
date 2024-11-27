@@ -209,6 +209,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0",
             "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0",
             "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/NeutronGlaive"
         };
         /// <summary>
         /// 恒星猎手
@@ -222,19 +223,21 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/NeutronGun"
         };
         /// <summary>
         /// 洛希之弦
         /// </summary>
-        public static string[] FullItems19 = new string[] {"0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "0", "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0",
+        public static string[] FullItems19 = new string[] {"0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "0", "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/BlackMatterStick", "0", "0",
             "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
+            "CalamityOverhaul/NeutronBow"
         };
         /// <summary>
         /// 星墓之光
@@ -248,6 +251,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0",
             "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/NeutronWand"
         };
         /// <summary>
         /// 黑洞使者
@@ -261,6 +265,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/NeutronScythe"
         };
         /// <summary>
         /// 龙言
@@ -288,6 +293,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
             "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "CalamityOverhaul/NeutronStarMuzzleBrake"
         };
     }
 }

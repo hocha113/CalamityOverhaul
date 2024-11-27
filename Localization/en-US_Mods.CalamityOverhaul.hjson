@@ -2406,7 +2406,7 @@ Items: {
 	}
 
 	NeutronScythe: {
-		DisplayName: Planet Messenger
+		DisplayName: Blackhole Messenger
 		Tooltip:
 			'''
 			The scythe fires gamma rays at enemies, leaving several warp points along its path.

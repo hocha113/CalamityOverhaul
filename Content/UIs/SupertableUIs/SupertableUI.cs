@@ -163,6 +163,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 DrawPosition = (new Vector2(Main.screenWidth, Main.screenHeight) - new Vector2(Texture.Width - Main.screenWidth / 2, Texture.Height + 400)) / 2;
                 initializeBool = false;
             }
+
             topLeft = new Vector2(15, 30) + DrawPosition;
             cellWid = 48;
             cellHig = 46;
@@ -276,10 +277,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     GetResult(ref inputItem, ref Main.mouseItem, ref items);
                     OutItem();
                 }
-            }
-
-            if (keyLeftPressState == KeyPressState.Pressed) {
-                CWRUtils.ExportItemTypesToFile(items);
             }
 
             iterations = 0;

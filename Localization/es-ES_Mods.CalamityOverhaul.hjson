@@ -500,24 +500,9 @@ Items: {
 		Tooltip: ""
 	}
 
-	IridescentExcaliburEcType: {
-		DisplayName: Excalibur Iridiscente
-		Tooltip: ""
-	}
-
-	EndlessStabilizer: {
-		DisplayName: Estabilizador de Hume
-		Tooltip: Estabiliza algunos objetos poderosos.
-	}
-
 	BlackMatterStick: {
 		DisplayName: Bastón de Neutrones de Materia Superdensa
 		Tooltip: El peso de todo, concentrado en la yema de los dedos.
-	}
-
-	InfiniteStick: {
-		DisplayName: Bastón Infinito
-		Tooltip: ""
 	}
 
 	InfinityCatalyst: {
