@@ -200,72 +200,67 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <summary>
         /// 黑域斩切
         /// </summary>
-        public static string[] FullItems17 = new string[] {"0", "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
-            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
-            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
-            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
-            "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0",
+        public static string[] FullItems17 = new string[] {"0", "0", "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick",
+            "0", "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
+            "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0",
+            "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0",
             "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0",
             "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/NeutronGlaive"
         };
         /// <summary>
         /// 恒星猎手
         /// </summary>
         public static string[] FullItems18 = new string[] {"0", "0", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
-            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
-            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
-            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/NeutronGun"
+            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
         };
         /// <summary>
         /// 洛希之弦
         /// </summary>
-        public static string[] FullItems19 = new string[] {"0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
-            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
-            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
-            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "CalamityOverhaul/NeutronBow"
+        public static string[] FullItems19 = new string[] {"0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
         };
         /// <summary>
         /// 星墓之光
         /// </summary>
-        public static string[] FullItems20 = new string[] {"0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
-            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
-            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
-            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "CalamityOverhaul/BlackMatterStick", "0",
+        public static string[] FullItems20 = new string[] {"0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
             "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
             "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0",
             "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0",
             "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/NeutronWand"
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
         };
         /// <summary>
         /// 黑洞使者
         /// </summary>
         public static string[] FullItems21 = new string[] {"0", "0", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
-            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick",
-            "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick",
-            "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick",
-            "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/NeutronScythe"
+            "0", "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0",
+            "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0",
+            "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
+            "0", "0", "0", "0", "0", "0", "0", "0", "0",
         };
         /// <summary>
         /// 龙言
@@ -286,14 +281,13 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// </summary>
         public static string[] FullItems23 = new string[] {"0", "0", "0", "0", "0", "0", "0", "0", "0",
             "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
-            "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityMod/ElementalQuiver", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityMod/ElementalQuiver", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
             "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityMod/QuiverofNihility", "CalamityOverhaul/ElementMuzzleBrake", "CalamityMod/DynamoStemCells", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0",
-            "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityMod/DaawnlightSpiritOrigin", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "CalamityMod/DaawnlightSpiritOrigin", "CalamityOverhaul/BlackMatterStick", "0", "0", "0",
+            "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
             "0", "0", "0", "0", "CalamityOverhaul/BlackMatterStick", "0", "0", "0", "0",
             "0", "0", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/NeutronStarMuzzleBrake"
         };
     }
 }

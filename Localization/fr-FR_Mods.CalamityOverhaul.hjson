@@ -493,24 +493,9 @@ Items: {
 		Tooltip: ""
 	}
 
-	IridescentExcaliburEcType: {
-		DisplayName: Excalibur Iridescent
-		Tooltip: ""
-	}
-
-	EndlessStabilizer: {
-		DisplayName: Stabilisateur Infini
-		Tooltip: Stabilise certains objets puissants
-	}
-
 	BlackMatterStick: {
 		DisplayName: Bâton de Matière Noire
 		Tooltip: Le poids de toute chose, agrégé à la pointe des doigts
-	}
-
-	InfiniteStick: {
-		DisplayName: Bâton Infini
-		Tooltip: ""
 	}
 
 	InfinityCatalyst: {

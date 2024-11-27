@@ -493,24 +493,9 @@ Items: {
 		Tooltip: ""
 	}
 
-	IridescentExcaliburEcType: {
-		DisplayName: Schillerndes Excalibur
-		Tooltip: ""
-	}
-
-	EndlessStabilizer: {
-		DisplayName: Hum-Stabilisator
-		Tooltip: Stabilisiert einige mächtige Gegenstände
-	}
-
 	BlackMatterStick: {
 		DisplayName: Neutronensternverdichter
 		Tooltip: Das Gewicht des Universums in deinen Fingerspitzen
-	}
-
-	InfiniteStick: {
-		DisplayName: Unendlicher Stab
-		Tooltip: ""
 	}
 
 	InfinityCatalyst: {

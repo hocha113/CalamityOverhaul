@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<BlackMatterStick>(29)
+                .AddIngredient<BlackMatterStick>(11)
                 .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();

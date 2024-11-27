@@ -113,6 +113,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
             set => _inShotgun_FireForcedReloadInterruption = value;
         }
+        /// <summary>
+        /// 在换弹动画期间是否始终使用开火状态的状态设置，包括枪体旋转角度和枪体位置设置，默认为<see langword="false"/>
+        /// </summary>
+        public bool LoadingAmmoAnimation_AlwaysSetInFireRoding;
 
         public override bool OnHandheldDisplayBool {
             get {
@@ -336,6 +340,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override float GetGunInFireRot() {
+            if (LoadingAmmoAnimation_AlwaysSetInFireRoding) {
+                return GunOnFireRot;
+            }
             return kreloadTimeValue == 0 ? GunOnFireRot : GetGunBodyRot();
         }
 
@@ -343,6 +350,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Vector2 gunBodyRotOffset = Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5);
             Vector2 gunHeldOffsetY = new Vector2(0, HandFireDistanceY * SafeGravDir);
             Vector2 motHeldPos = Owner.GetPlayerStabilityCenter() + gunBodyRotOffset + gunHeldOffsetY + OffsetPos;
+            if (LoadingAmmoAnimation_AlwaysSetInFireRoding) {
+                return motHeldPos;
+            }
             return kreloadTimeValue == 0 ? motHeldPos : GetGunBodyPos();
         }
 
@@ -357,9 +367,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public override Vector2 GetGunBodyPos() {
             Vector2 handOffset = new Vector2(Owner.direction * HandDistance, HandDistanceY * SafeGravDir);
-            if (SafeGravDir < 0) {
-                handOffset.Y += 4;//似乎是GetPlayerStabilityCenter获得的位置在重力翻转下会产生Y方向的4像素的偏移，所以这里额外在翻转的情况下补回偏移
-            }
             return Owner.GetPlayerStabilityCenter() + FeederOffsetPos + handOffset;
         }
 
@@ -394,10 +401,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 && ModItem.NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.OnMainP) {
                 OnKreload = true;
                 kreloadTimeValue = kreloadMaxTime;
-            }
-
-            if (AutomaticCartridgeChangeDelayTime > 0) {
-                AutomaticCartridgeChangeDelayTime--;
             }
         }
 
@@ -451,17 +454,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Handgun) {
                 ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir + 0.3f;
-                FeederOffsetRot = LoadingAA_Handgun.feederOffsetRot;
-                FeederOffsetPos = new Vector2(DirSign * LoadingAA_Handgun.loadingAmmoStarg_x, LoadingAA_Handgun.loadingAmmoStarg_y) * SafeGravDir;
-                Projectile.Center = GetGunBodyPos();
-                Projectile.rotation = GetGunBodyRot();
+                //因为手枪类动画在这里额外设置了一次旋转角和位置，会覆盖前面的设定，所以这里要加上相关的判断以确保LoadingAmmoAnimation_AlwaysSetInFireRoding的功能正常
+                if (!LoadingAmmoAnimation_AlwaysSetInFireRoding) {
+                    FeederOffsetRot = LoadingAA_Handgun.feederOffsetRot;
+                    if (SafeGravDir < 0) {
+                        FeederOffsetRot *= -1;
+                    }
+                    FeederOffsetPos = new Vector2(Owner.direction * LoadingAA_Handgun.loadingAmmoStarg_x, LoadingAA_Handgun.loadingAmmoStarg_y * SafeGravDir);
+                    Projectile.Center = GetGunBodyPos();
+                    Projectile.rotation = GetGunBodyRot();
+                }
+                
                 int value1 = (int)(kreloadMaxTime * LoadingAA_Handgun.level1);
                 int value2 = (int)(kreloadMaxTime * LoadingAA_Handgun.level3);
                 if (kreloadTimeValue >= value1) {
-                    ArmRotSengsFront += (kreloadTimeValue - value1) * CWRUtils.atoR * 6;
+                    ArmRotSengsFront += (kreloadTimeValue - value1) * CWRUtils.atoR * 6 * SafeGravDir;
                 }
                 if (kreloadTimeValue >= value2 && kreloadTimeValue <= value2 * 2) {
-                    ArmRotSengsFront += (kreloadTimeValue - value2) * CWRUtils.atoR * 6;
+                    ArmRotSengsFront += (kreloadTimeValue - value2) * CWRUtils.atoR * 6 * SafeGravDir;
                 }
                 return false;
             }
@@ -582,6 +592,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
             if (ModItem.NoKreLoadTime > 0) {
                 ModItem.NoKreLoadTime--;
+            }
+            if (AutomaticCartridgeChangeDelayTime > 0) {
+                AutomaticCartridgeChangeDelayTime--;
             }
 
             if (SafeMouseInterfaceValue) {

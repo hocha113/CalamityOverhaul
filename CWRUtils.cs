@@ -12,6 +12,7 @@ using ReLogic.Content;
 using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -82,36 +83,36 @@ namespace CalamityOverhaul
         /// </summary>
         /// <param name="items">要导出的 Item 数组</param>
         /// <param name="path">写入文件的路径，默认为 "D:\\模组资源\\AAModPrivate\\input.cs"</param>
-        //public static void ExportItemTypesToFile(Item[] items, string path = "D:\\Mod_Resource\\input.cs") {
-        //    try {
-        //        int columnIndex = 0;
-        //        using StreamWriter sw = new(path);
-        //        sw.Write("string[] fullItems = new string[] {");
-        //        foreach (Item item in items) {
-        //            columnIndex++;
-        //            // 根据是否有 ModItem 决定写入的内容
-        //            string itemInfo = item.ModItem == null ? $"\"{item.type}\"" : $"\"{item.ModItem.FullName}\"";
-        //            sw.Write(itemInfo);
-        //            sw.Write(", ");
-        //            // 每行最多写入9个元素，然后换行
-        //            if (columnIndex >= 9) {
-        //                sw.WriteLine();
-        //                columnIndex = 0;
-        //            }
-        //        }
-        //        sw.Write("};");
-        //    } catch (UnauthorizedAccessException) {
-        //        CWRMod.Instance.Logger.Info($"UnauthorizedAccessException: 无法访问文件路径 '{path}'. 权限不足");
-        //    } catch (DirectoryNotFoundException) {
-        //        CWRMod.Instance.Logger.Info($"DirectoryNotFoundException: 文件路径 '{path}' 中的目录不存在");
-        //    } catch (PathTooLongException) {
-        //        CWRMod.Instance.Logger.Info($"PathTooLongException: 文件路径 '{path}' 太长");
-        //    } catch (IOException) {
-        //        CWRMod.Instance.Logger.Info($"IOException: 无法打开文件 '{path}' 进行写入");
-        //    } catch (Exception e) {
-        //        CWRMod.Instance.Logger.Info($"An error occurred: {e.Message}");
-        //    }
-        //}
+        public static void ExportItemTypesToFile(Item[] items, string path = "D:\\Mod_Resource\\input.cs") {
+            try {
+                int columnIndex = 0;
+                using StreamWriter sw = new(path);
+                sw.Write("string[] fullItems = new string[] {");
+                foreach (Item item in items) {
+                    columnIndex++;
+                    // 根据是否有 ModItem 决定写入的内容
+                    string itemInfo = item.ModItem == null ? $"\"{item.type}\"" : $"\"{item.ModItem.FullName}\"";
+                    sw.Write(itemInfo);
+                    sw.Write(", ");
+                    // 每行最多写入9个元素，然后换行
+                    if (columnIndex >= 9) {
+                        sw.WriteLine();
+                        columnIndex = 0;
+                    }
+                }
+                sw.Write("};");
+            } catch (UnauthorizedAccessException) {
+                CWRMod.Instance.Logger.Info($"UnauthorizedAccessException: 无法访问文件路径 '{path}'. 权限不足");
+            } catch (DirectoryNotFoundException) {
+                CWRMod.Instance.Logger.Info($"DirectoryNotFoundException: 文件路径 '{path}' 中的目录不存在");
+            } catch (PathTooLongException) {
+                CWRMod.Instance.Logger.Info($"PathTooLongException: 文件路径 '{path}' 太长");
+            } catch (IOException) {
+                CWRMod.Instance.Logger.Info($"IOException: 无法打开文件 '{path}' 进行写入");
+            } catch (Exception e) {
+                CWRMod.Instance.Logger.Info($"An error occurred: {e.Message}");
+            }
+        }
 
         public static int GetTileDorp(Tile tile) {
             int stye = TileObjectData.GetTileStyle(tile);

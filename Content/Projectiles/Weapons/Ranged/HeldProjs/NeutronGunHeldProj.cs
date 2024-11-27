@@ -43,6 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosToMouLengValue = 10;
             GunPressure = 0.1f;
             ControlForce = 0.03f;
+            CanCreateSpawnGunDust = false;
         }
 
         public override void PostInOwnerUpdate() {

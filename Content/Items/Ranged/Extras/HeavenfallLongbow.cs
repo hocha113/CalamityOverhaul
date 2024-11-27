@@ -94,11 +94,11 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
             if (line.Name == "ItemName" && line.Mod == "Terraria") {
-                InfiniteIngot.drawColorText(Main.spriteBatch, line);
+                InfiniteIngot.DrawColorText(Main.spriteBatch, line);
                 return false;
             }
             if (line.Name == "Damage" && line.Mod == "Terraria") {
-                InfiniteIngot.drawColorText(Main.spriteBatch, line);
+                InfiniteIngot.DrawColorText(Main.spriteBatch, line);
                 return false;
             }
             return true;

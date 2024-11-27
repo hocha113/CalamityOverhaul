@@ -377,25 +377,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        public void Destruct(Item item, Vector2 pos, Player player) {
-            if (Main.myPlayer == player.whoAmI) {
-                destructTime--;
-                Item[] inven = player.inventory;
-                if (!noDestruct && destructTime <= 0 && inven.Count((Item n) => n.type == CWRLoad.EndlessStabilizer) == 0) {
-                    if (item.type != CWRLoad.StarMyriadChanges) {
-                        Projectile.NewProjectile(new EntitySource_WorldEvent()
-                        , pos, Vector2.Zero, ModContent.ProjectileType<InfiniteIngotTileProj>(), 9999, 0);
-                    }
-                    else {
-                        Projectile.NewProjectile(new EntitySource_WorldEvent()
-                        , pos, Vector2.Zero, ModContent.ProjectileType<StarMyriadChangesProj>(), 1, 0);
-                    }
-                    item.TurnToAir();
-                    StarMyriadChanges.DompDestruct_TextContent();
-                }
-            }
-        }
-
         //////////////////////////////////////////////////
         //我不知道为什么 CWRPlayer 里面的Modify方法         //
         //所修改的值无法作用到枪械射弹上，上帝，让这些东西去死吧//                                        

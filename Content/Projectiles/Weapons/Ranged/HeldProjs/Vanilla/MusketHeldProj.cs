@@ -16,13 +16,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
-            HandDistance = 15;
+            HandDistance = 20;
             HandDistanceY = 0;
+            HandFireDistance = 16;
             GunPressure = 0.6f;
             ControlForce = 0.1f;
             Recoil = 2.8f;
             RangeOfStress = 48;
+            CanCreateCaseEjection = false;
             NO_EEMONG_LOADINGNONESET = false;
+            LoadingAmmoAnimation_AlwaysSetInFireRoding = true;
             if (!MagazineSystem) {
                 FireTime += 36;
             }
@@ -30,21 +33,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 
         public override bool PreOnKreloadEvent() {
             ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir + 0.3f;
-            FeederOffsetRot = 10;
-            FeederOffsetPos = new Vector2(DirSign * 5, 0) * SafeGravDir;
-            Projectile.Center = GetGunBodyPos();
-            Projectile.rotation = GetGunBodyRot();
             if (kreloadTimeValue >= 50) {
-                ArmRotSengsFront += (kreloadTimeValue - 50) * CWRUtils.atoR * 6;
+                ArmRotSengsFront += (kreloadTimeValue - 50) * CWRUtils.atoR * 6 * SafeGravDir;
             }
             if (kreloadTimeValue >= 10 && kreloadTimeValue <= 20) {
-                ArmRotSengsFront += (kreloadTimeValue - 10) * CWRUtils.atoR * 6;
+                ArmRotSengsFront += (kreloadTimeValue - 10) * CWRUtils.atoR * 6 * SafeGravDir;
             }
             return false;
         }
 
         public override bool PreReloadEffects(int time, int maxTime) {
             if (time == 50) {
+                CaseEjection();
                 SoundEngine.PlaySound(CWRSound.Gun_Musket_ClipOut with { Volume = 0.65f }, Projectile.Center);
             }
             if (time == 10) {

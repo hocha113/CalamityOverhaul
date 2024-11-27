@@ -500,24 +500,9 @@ Items: {
 		Tooltip: ""
 	}
 
-	IridescentExcaliburEcType: {
-		DisplayName: 元素圣剑
-		Tooltip: ""
-	}
-
-	EndlessStabilizer: {
-		DisplayName: 休谟稳定器
-		Tooltip: 让一些强大的物品稳定下来
-	}
-
 	BlackMatterStick: {
-		DisplayName: 超密质中子星聚合锭
+		DisplayName: 中子星锭
 		Tooltip: 万物之重，聚合指尖
-	}
-
-	InfiniteStick: {
-		DisplayName: 无尽杆
-		Tooltip: ""
 	}
 
 	InfinityCatalyst: {

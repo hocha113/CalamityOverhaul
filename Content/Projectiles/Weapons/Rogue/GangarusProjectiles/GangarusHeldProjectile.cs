@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = TextureAssets.Item[CWRLoad.Gangarus].Value;
-            int dir = Owner.direction;
+            int dir = Owner.direction * (int)Owner.gravDir;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition + Owner.CWR().SpecialDrawPositionOffset, null, lightColor
                 , Projectile.rotation + MathHelper.PiOver4 + (dir > 0 ? MathHelper.PiOver2 : 0)
                 , value.Size() / 2, Projectile.scale * 0.9f, dir > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);

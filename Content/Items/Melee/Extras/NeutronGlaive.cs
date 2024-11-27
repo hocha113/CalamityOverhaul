@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<BlackMatterStick>(23)
+                .AddIngredient<BlackMatterStick>(11)
                 .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();

@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
             if (line.Name == "ItemName" && line.Mod == "Terraria") {
-                InfiniteIngot.drawColorText(Main.spriteBatch, line);
+                InfiniteIngot.DrawColorText(Main.spriteBatch, line);
                 return false;
             }
             return true;

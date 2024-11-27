@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.accessory = true;
+            Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(0, 22, 15, 0);
         }
 

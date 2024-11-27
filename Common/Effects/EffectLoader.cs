@@ -43,6 +43,7 @@ namespace CalamityOverhaul.Common.Effects
             loadFiltersEffect("CWRMod:twistColoringShader", "TwistColoring", "TwistColoringPass");
             loadFiltersEffect("CWRMod:knifeRendering", "KnifeRendering", "KnifeRenderingPass");
             loadFiltersEffect("CWRMod:knifeDistortion", "KnifeDistortion", "KnifeDistortionPass");
+            loadFiltersEffect("CWRMod:crystal", "Crystal", "CrystalPass");
             StreamerDustShader = new ArmorShaderData(getEffect("StreamerDust"), "StreamerDustPass");
             InShootGlowShader = new ArmorShaderData(getEffect("InShootGlow"), "InShootGlowPass");
         }

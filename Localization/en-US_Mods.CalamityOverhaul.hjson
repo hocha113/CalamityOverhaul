@@ -468,24 +468,9 @@ Items: {
 		Tooltip: ""
 	}
 
-	IridescentExcaliburEcType: {
-		DisplayName: Iridescent Excalibur
-		Tooltip: ""
-	}
-
-	EndlessStabilizer: {
-		DisplayName: Endless Stabilizer
-		Tooltip: ""
-	}
-
 	BlackMatterStick: {
-		DisplayName: Dense Neutron Star Ingot
-		Tooltip: ""
-	}
-
-	InfiniteStick: {
-		DisplayName: Infinite Stick
-		Tooltip: ""
+		DisplayName: Neutron Star Ingot
+		Tooltip: The weight of all things, gathered at your fingertips
 	}
 
 	InfinityCatalyst: {

@@ -278,6 +278,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 }
             }
 
+            if (keyLeftPressState == KeyPressState.Pressed) {
+                CWRUtils.ExportItemTypesToFile(items);
+            }
+
             iterations = 0;
         }
 

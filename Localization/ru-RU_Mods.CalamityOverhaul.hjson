@@ -489,24 +489,9 @@ Items: {
 		Tooltip: ""
 	}
 
-	IridescentExcaliburEcType: {
-		DisplayName: Священный меч элемента
-		Tooltip: ""
-	}
-
-	EndlessStabilizer: {
-		DisplayName: Стабилизатор хьюма
-		Tooltip: Стабилизирую некоторые мощные предметы
-	}
-
 	BlackMatterStick: {
 		DisplayName: Слиток сверхплотной нейтронной звезды
 		Tooltip: Вес всего, соединяющего кончики пальцев
-	}
-
-	InfiniteStick: {
-		DisplayName: Бесконечные столбы
-		Tooltip: ""
 	}
 
 	InfinityCatalyst: {

@@ -67,15 +67,15 @@ namespace CalamityOverhaul.Content.Items.Materials
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
             if (line.Name == "ItemName" && line.Mod == "Terraria") {
-                drawColorText(Main.spriteBatch, line);
+                DrawColorText(Main.spriteBatch, line);
                 return false;
             }
 
             return true;
         }
 
-        public static void drawColorText(SpriteBatch sb, DrawableTooltipLine line) {
-            Effect effect = Filters.Scene["Crystal"].GetShader().Shader;
+        public static void DrawColorText(SpriteBatch sb, DrawableTooltipLine line) {
+            Effect effect = CWRUtils.GetEffectValue("Crystal");
 
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

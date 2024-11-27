@@ -55,10 +55,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool InFoodStallChair;
         /// <summary>
-        /// 玩家是否装备休谟稳定器
-        /// </summary>
-        public bool EndlessStabilizerBool;
-        /// <summary>
         /// 玩家是否手持鬼妖
         /// </summary>
         public bool HeldMurasamaBool;
@@ -149,7 +145,6 @@ namespace CalamityOverhaul.Content
             HeldRangedBool = false;
             HeldMurasamaBool = false;
             HeldFeederGunBool = false;
-            EndlessStabilizerBool = false;
             EndSkillEffectStartBool = false;
             TyrantsFuryBuffBool = false;
             NoCanAutomaticCartridgeChange = false;
@@ -254,7 +249,7 @@ namespace CalamityOverhaul.Content
             Player player = drawInfo.drawPlayer;
 
             SpecialDrawPositionOffset = Main.OffsetsPlayerHeadgear[player.bodyFrame.Y / player.bodyFrame.Height] * player.Directions;
-            SpecialDrawPositionOffset.Y -= 2;
+            SpecialDrawPositionOffset.Y -= 2 * player.gravDir;//乘以一个重力矫正，这是一个无视偏转的值，所以需要考虑重力方向
 
             Item item = player.ActiveItem();
             if (HeldStyle >= 0) {

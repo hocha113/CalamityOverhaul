@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 .AddIngredient<ElementalQuiver>()
                 .AddIngredient<DaawnlightSpiritOrigin>()
                 .AddIngredient<QuiverofNihility>()
-                .AddIngredient<BlackMatterStick>(20)
+                .AddIngredient<BlackMatterStick>(12)
                 .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();
