@@ -526,18 +526,17 @@ namespace CalamityOverhaul
         }
 
         public static void UnLoad() {
-            TileToItem.Clear();
-            WallToItem.Clear();
-            ItemIsGun.Clear();
-            ItemIsBow.Clear();
-            ItemIsRanged.Clear();
-            ItemIsRangedAndCanRightClickFire.Clear();
-            ItemIsBowAndArrowNum.Clear();
-            ItemIsGunAndMustConsumeAmmunition.Clear();
-            ItemIsGunAndGetRecoilValue.Clear();
-            ItemIsGunAndGetRecoilLocKey.Clear();
-
-            NPCValue.TheofSteel.Clear();
+            TileToItem?.Clear();
+            WallToItem?.Clear();
+            ItemIsGun?.Clear();
+            ItemIsBow?.Clear();
+            ItemIsRanged?.Clear();
+            ItemIsRangedAndCanRightClickFire?.Clear();
+            ItemIsBowAndArrowNum?.Clear();
+            ItemIsGunAndMustConsumeAmmunition?.Clear();
+            ItemIsGunAndGetRecoilValue?.Clear();
+            ItemIsGunAndGetRecoilLocKey?.Clear();
+            NPCValue.TheofSteel?.Clear();
         }
 
         public static string GetLckRecoilKey(float recoil) {
