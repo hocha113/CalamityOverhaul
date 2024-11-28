@@ -2677,27 +2677,26 @@ Items: {
 	}
 
 	CrackshotColtEcType: {
-	    DisplayName: Präzisions-Kolt
-	    Tooltip:
-	        '''
-	        Feuert Scharfschützenkugeln ab
-	        Mit der rechten Maustaste wird eine Kupfermünze in die Luft geworfen
-	        Kugeln, die die Münze treffen, zielen auf den nächsten Feind
-	        Es können bis zu 4 Münzen geworfen werden, wobei Kugeln zwischen mehreren Münzen abprallen können, falls möglich
-	        Abprallende Kugeln sind garantiert kritisch und erhöhen den Schaden basierend auf der Anzahl der Abpraller
-	        "Geld ist Macht"
-	        '''
-	}
-	
-	EvisceratorEcType: {
-	    DisplayName: Der Ausweider
-	    Tooltip:
-	        '''
-	        Wandelt Musketenkugeln in langsam fliegende Blutgerinnsel um
-	        "Von Aliens, um Aliens zu vernichten"
-	        '''
+		DisplayName: Präzisions-Kolt
+		Tooltip:
+			'''
+			Feuert Scharfschützenkugeln ab
+			Mit der rechten Maustaste wird eine Kupfermünze in die Luft geworfen
+			Kugeln, die die Münze treffen, zielen auf den nächsten Feind
+			Es können bis zu 4 Münzen geworfen werden, wobei Kugeln zwischen mehreren Münzen abprallen können, falls möglich
+			Abprallende Kugeln sind garantiert kritisch und erhöhen den Schaden basierend auf der Anzahl der Abpraller
+			"Geld ist Macht"
+			'''
 	}
 
+	EvisceratorEcType: {
+		DisplayName: Der Ausweider
+		Tooltip:
+			'''
+			Wandelt Musketenkugeln in langsam fliegende Blutgerinnsel um
+			"Von Aliens, um Aliens zu vernichten"
+			'''
+	}
 }
 
 Projectiles: {

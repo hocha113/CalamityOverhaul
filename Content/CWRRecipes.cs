@@ -5,6 +5,7 @@ using CalamityMod.Items.Placeables;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Items.Weapons.Summon;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
@@ -12,6 +13,8 @@ using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.Tiles;
+using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -27,6 +30,7 @@ namespace CalamityOverhaul.Content
         public static RecipeGroup ARGroup;
         public static RecipeGroup GodDWGroup;
         public static RecipeGroup FishGroup;
+        public static RecipeGroup AdamantiteBarGroup;
         public static void SpawnAction(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
             item.TurnToAir();
             Main.LocalPlayer.CWR().InspectOmigaTime = 120;
@@ -52,6 +56,13 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        public override void Unload() {
+            ARGroup = null;
+            GodDWGroup = null;
+            FishGroup = null;
+            AdamantiteBarGroup = null;
+        }
+
         public override void PostAddRecipes() {
             if (!CWRServerConfig.Instance.ForceReplaceResetContent) {
                 foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
@@ -59,6 +70,7 @@ namespace CalamityOverhaul.Content
                         baseRItem.LoadItemRecipe();
                 }
             }
+
             //添加血泪的额外合成
             {
                 Recipe.Create(ItemID.BloodMoonStarter)
@@ -70,6 +82,31 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(ItemType<RottenMatter>(), 50)
                     .AddIngredient(ItemType<BlightedGel>(), 75)
                     .AddTile(TileID.DemonAltar)
+                    .Register();
+            }
+            //添加迈达斯统帅的合成
+            {
+                Recipe.Create(ItemType<MidasPrime>())
+                .AddIngredient(ItemType<CrackshotColt>())
+                .AddIngredient(ItemID.GoldRing)
+                .AddTile(TileID.Anvils)
+                .Register();
+            }
+            //添加钱币枪的合成
+            {
+                Recipe.Create(ItemID.CoinGun)
+                .AddIngredient(ItemType<MidasPrime>())
+                .AddRecipeGroup(AdamantiteBarGroup, 5)
+                .AddIngredient(ItemID.PlatinumCoin, 5)
+                .AddTile(TileID.MythrilAnvil)
+                .Register();
+            }
+            //添加暴政的新合成
+            {
+                Recipe.Create(ItemType<TheEnforcer>())
+                    .AddIngredient(ItemType<HolyCollider>())
+                    .AddIngredient(ItemType<CosmiliteBar>(), 5)
+                    .AddTile(TileType<CosmicAnvil>())
                     .Register();
             }
             //添加圣火之刃的合成
@@ -409,63 +446,64 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-            //添加暴政的新合成
-            {
-                Recipe.Create(ItemType<TheEnforcer>())
-                    .AddIngredient(ItemType<HolyCollider>())
-                    .AddIngredient(ItemType<CosmiliteBar>(), 5)
-                    .AddTile(TileType<CosmicAnvil>())
-                    .Register();
-            }
         }
 
         public override void AddRecipeGroups() {
-            void LoadGroup(ref RecipeGroup group, string key, int[] itemIDs) {
-                string name = CWRLocText.GetTextValue(key);
-                group = new RecipeGroup(() => $"{Any} {name}", itemIDs);
-                RecipeGroup.RegisterGroup(name, group);
-            }
+            AdamantiteBarGroup = new RecipeGroup(() => $"{Any} {Lang.GetItemNameValue(ItemID.AdamantiteBar)}",
+            [
+                ItemID.AdamantiteBar,
+                ItemID.TitaniumBar,
+            ]);
+            RecipeGroup.RegisterGroup("CWRMod:AdamantiteBarGroup", AdamantiteBarGroup);
 
-            LoadGroup(ref ARGroup, "CWRRecipes_ApostolicRelics", new int[] { ItemType<ArmoredShell>()
-                , ItemType<DarkPlasma>()
-                , ItemType<TwistingNether>()
-            });
+            ARGroup = new RecipeGroup(() => $"{Any} {CWRLocText.GetTextValue("CWRRecipes_ApostolicRelics")}",
+            [
+                ItemType<ArmoredShell>(),
+                ItemType<DarkPlasma>(),
+                ItemType<TwistingNether>(),
+            ]);
+            RecipeGroup.RegisterGroup("CWRMod:ARGroup", ARGroup);
 
-            LoadGroup(ref GodDWGroup, "CWRRecipes_GodEaterWeapon", new int[] {ItemType<Excelsus>()
-                , ItemType<TheObliterator>()
-                , ItemType<Deathwind>()
-                , ItemType<DeathhailStaff>()
-                , ItemType<CalamityMod.Items.Weapons.Summon.StaffoftheMechworm>()
-                , ItemType<CalamityMod.Items.Weapons.Rogue.Eradicator>()
-                , ItemType<CosmicDischarge>()
-                , ItemType<Norfleet>()
-            });
+            GodDWGroup = new RecipeGroup(() => $"{Any} {CWRLocText.GetTextValue("CWRRecipes_GodEaterWeapon")}",
+            [
+                ItemType<Excelsus>(),
+                ItemType<TheObliterator>(),
+                ItemType<Deathwind>(),
+                ItemType<DeathhailStaff>(),
+                ItemType<StaffoftheMechworm>(),
+                ItemType<Eradicator>(),
+                ItemType<CosmicDischarge>(),
+                ItemType<Norfleet>(),
+            ]);
+            RecipeGroup.RegisterGroup("CWRMod:AdamantiteBarGroup", GodDWGroup);
 
-            LoadGroup(ref FishGroup, "CWRRecipes_FishGroup", new int[] {ItemID.Fish
-                , ItemID.Goldfish
-                , ItemID.Bass
-                , ItemID.Trout
-                , ItemID.Salmon
-                , ItemID.AtlanticCod
-                , ItemID.Tuna
-                , ItemID.RedSnapper
-                , ItemID.NeonTetra
-                , ItemID.ArmoredCavefish
-                , ItemID.Damselfish
-                , ItemID.CrimsonTigerfish
-                , ItemID.FrostMinnow
-                , ItemID.PrincessFish
-                , ItemID.GoldenCarp
-                , ItemID.SpecularFish
-                , ItemID.Prismite
-                , ItemID.VariegatedLardfish
-                , ItemID.FlarefinKoi
-                , ItemID.DoubleCod
-                , ItemID.Honeyfin
-                , ItemID.Obsidifish
-                , ItemID.ChaosFish
-                , ItemID.Stinkfish
-            });
+            FishGroup = new RecipeGroup(() => $"{Any} {CWRLocText.GetTextValue("CWRRecipes_FishGroup")}",
+            [
+                ItemID.Goldfish,
+                ItemID.Bass,
+                ItemID.Trout,
+                ItemID.Salmon,
+                ItemID.AtlanticCod,
+                ItemID.Tuna,
+                ItemID.RedSnapper,
+                ItemID.NeonTetra,
+                ItemID.ArmoredCavefish,
+                ItemID.Damselfish,
+                ItemID.CrimsonTigerfish,
+                ItemID.FrostMinnow,
+                ItemID.PrincessFish,
+                ItemID.GoldenCarp,
+                ItemID.SpecularFish,
+                ItemID.Prismite,
+                ItemID.VariegatedLardfish,
+                ItemID.FlarefinKoi,
+                ItemID.DoubleCod,
+                ItemID.Honeyfin,
+                ItemID.Obsidifish,
+                ItemID.ChaosFish,
+                ItemID.Stinkfish,
+            ]);
+            RecipeGroup.RegisterGroup("CWRMod:FishGroup", FishGroup);
         }
     }
 }

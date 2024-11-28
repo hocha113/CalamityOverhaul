@@ -2714,25 +2714,25 @@ Items: {
 	}
 
 	CrackshotColtEcType: {
-	    DisplayName: Colt Tirador
-	    Tooltip:
-	        '''
-	        Dispara balas de tirador
-	        Clic derecho lanza una moneda de cobre al aire
-	        Las balas que golpean la moneda apuntan al enemigo más cercano
-	        Se pueden lanzar hasta 4 monedas, y las balas pueden rebotar entre múltiples monedas si es posible
-	        Las balas que rebotan siempre son críticas y aumentan el daño en función de la cantidad de rebotes
-	        "El dinero es poder"
-	        '''
+		DisplayName: Colt Tirador
+		Tooltip:
+			'''
+			Dispara balas de tirador
+			Clic derecho lanza una moneda de cobre al aire
+			Las balas que golpean la moneda apuntan al enemigo más cercano
+			Se pueden lanzar hasta 4 monedas, y las balas pueden rebotar entre múltiples monedas si es posible
+			Las balas que rebotan siempre son críticas y aumentan el daño en función de la cantidad de rebotes
+			"El dinero es poder"
+			'''
 	}
-	
+
 	EvisceratorEcType: {
-	    DisplayName: El Eviscerador
-	    Tooltip:
-	        '''
-	        Convierte balas de mosquete en proyectiles de sangre de vuelo lento
-	        "De los alienígenas, para exterminar alienígenas"
-	        '''
+		DisplayName: El Eviscerador
+		Tooltip:
+			'''
+			Convierte balas de mosquete en proyectiles de sangre de vuelo lento
+			"De los alienígenas, para exterminar alienígenas"
+			'''
 	}
 }
 

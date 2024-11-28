@@ -2679,25 +2679,25 @@ Items: {
 	}
 
 	CrackshotColtEcType: {
-	    DisplayName: Colt de Tireur d'élite
-	    Tooltip:
-	        '''
-	        Tire des balles de tireur d'élite
-	        Un clic droit lance une pièce en l'air
-	        Les balles touchant la pièce visent l'ennemi le plus proche
-	        Jusqu'à 4 pièces peuvent être lancées, et les balles peuvent ricocher entre plusieurs pièces si possible
-	        Les balles ricochant infligent toujours un coup critique et augmentent les dégâts en fonction du nombre de ricochets
-	        "L'argent, c'est le pouvoir"
-	        '''
+		DisplayName: Colt de Tireur d'élite
+		Tooltip:
+			'''
+			Tire des balles de tireur d'élite
+			Un clic droit lance une pièce en l'air
+			Les balles touchant la pièce visent l'ennemi le plus proche
+			Jusqu'à 4 pièces peuvent être lancées, et les balles peuvent ricocher entre plusieurs pièces si possible
+			Les balles ricochant infligent toujours un coup critique et augmentent les dégâts en fonction du nombre de ricochets
+			"L'argent, c'est le pouvoir"
+			'''
 	}
-	
+
 	EvisceratorEcType: {
-	    DisplayName: L'Éviscérateur
-	    Tooltip:
-	        '''
-	        Transforme les balles de mousquet en projectiles de sang volant lentement
-	        "Par des aliens, pour exterminer des aliens"
-	        '''
+		DisplayName: L'Éviscérateur
+		Tooltip:
+			'''
+			Transforme les balles de mousquet en projectiles de sang volant lentement
+			"Par des aliens, pour exterminer des aliens"
+			'''
 	}
 }
 

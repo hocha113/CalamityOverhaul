@@ -1,10 +1,8 @@
 ﻿using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -25,7 +23,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override int TargetID => ModContent.ItemType<Eviscerator>();
         public override int ProtogenesisID => ModContent.ItemType<EvisceratorEcType>();
         public override string TargetToolTipItemName => "EvisceratorEcType";
-        public override void SetDefaults(Item item) => EvisceratorEcType.SetDefaultsFunc(item);
+        public override void SetDefaults(Item item) {
+            item.EasySetLocalTextNameOverride("EvisceratorEcType");
+            EvisceratorEcType.SetDefaultsFunc(item);
+        }
     }
 
     internal class EvisceratorHeld : BaseFeederGun
