@@ -13,6 +13,7 @@ using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -84,6 +85,7 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileID.DemonAltar)
                     .Register();
             }
+            
             //添加迈达斯统帅的合成
             {
                 Recipe.Create(ItemType<MidasPrime>())
@@ -317,6 +319,7 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileType<DraedonsForge>())
                     .Register();
             }
+
             //通用遍历修改部分
             {
                 for (int i = 0; i < Recipe.numRecipes; i++) {
@@ -444,7 +447,21 @@ namespace CalamityOverhaul.Content
                             recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
                         }
                     }
+                    //修改SHPC的微光合成
+                    {
+                        if (recipe.HasResult(ItemType<SHPC>())) {
+                            recipe.DisableDecraft();
+                        }
+                    }
                 }
+            }
+
+            //添加SHPC微光返回内容，这个部分必须放在遍历之后
+            {
+                Recipe.Create(ItemType<SHPC>())
+                    .AddCustomShimmerResult(ItemType<PlasmaDriveCore>(), 1)
+                    .AddCustomShimmerResult(ItemType<SuspiciousScrap>(), 4)
+                    .Register();
             }
         }
 

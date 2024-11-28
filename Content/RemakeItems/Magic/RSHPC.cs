@@ -1,4 +1,6 @@
-﻿using CalamityMod.Items.Weapons.Magic;
+﻿using CalamityMod.Items.Materials;
+using CalamityMod.Items.SummonItems;
+using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.RemakeItems.Core;
@@ -7,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -18,13 +21,17 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override int TargetID => ModContent.ItemType<SHPC>();
         public override int ProtogenesisID => ModContent.ItemType<SHPCEcType>();
         public override string TargetToolTipItemName => "";
+
         private static void onSHPCToolFunc(RItemLoader.On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
+
         void ICWRLoader.LoadData() {
             methodInfo = typeof(SHPC).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);
             CWRHook.Add(methodInfo, onSHPCToolFunc);
         }
         void ICWRLoader.UnLoadData() => methodInfo = null;
+
         public override void SetDefaults(Item item) => SHPCEcType.SetDefaultsFunc(item);
+
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
             SHPCEcType.SHPCDamage(player, item, ref damage);
             return false;
