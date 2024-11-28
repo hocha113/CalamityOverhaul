@@ -462,8 +462,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                         FeederOffsetRot *= -1;
                     }
                     FeederOffsetPos = new Vector2(Owner.direction * LoadingAA_Handgun.loadingAmmoStarg_x, LoadingAA_Handgun.loadingAmmoStarg_y * SafeGravDir);
-                    Projectile.Center = GetGunBodyPos();
                     Projectile.rotation = GetGunBodyRot();
+                    Projectile.Center = GetGunBodyPos();
                 }
                 
                 int value1 = (int)(kreloadMaxTime * LoadingAA_Handgun.level1);
@@ -568,21 +568,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 return;
             }
             //不要在换弹的时候设置玩家朝向鼠标方向，否则换弹动画会难以避免的抽搐起来
-            if (kreloadTimeValue <= 0) {
+            if (kreloadTimeValue <= 0 || LoadingAmmoAnimation_AlwaysSetInFireRoding) {
                 SetOwnerDirection();
             }
-            
-            Projectile.Center = GetGunInFirePos();
+            //值得一说的是，设置旋转角的操作必须在设置位置之前，因为位置设置需要旋转角的值，否则会造成不必要的延迟帧
             Projectile.rotation = LazyRotationUpdate ? oldSetRoting : GetGunInFireRot();
+            Projectile.Center = GetGunInFirePos();
             ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
-        }
-
-        public override void SetGunBodyHandIdle() {
-            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
-            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
-            Projectile.Center = GetGunBodyPos();
-            Projectile.rotation = GetGunBodyRot();
-            Projectile.timeLeft = 2;
         }
 
         public void SetOwnerDirection() {
@@ -594,7 +586,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
         }
 
+        public override void FiringIncident() {
+            
+        }
+
         public sealed override void InOwner() {
+            Projectile.timeLeft = 2;
             SetHeld();
             InitializeMagazine();
             Get_LoadingAmmoAnimation_PreInOwnerUpdate();
@@ -977,7 +974,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 }
 
                 if (canShoot) {
-                    //在生成射弹前再执行一次setBaseFromeAI，以防止因为更新顺序所导致的延迟帧情况
+                    //在生成射弹前再执行一次 SetGunBodyInFire，以防止因为更新顺序所导致的延迟帧情况
                     SetGunBodyInFire();
 
                     if (ForcedConversionTargetAmmoFunc.Invoke()) {

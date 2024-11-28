@@ -2688,6 +2688,28 @@ Items: {
 			"Blow them all to the skies!"
 			'''
 	}
+
+	CrackshotColtEcType: {
+		DisplayName: Crackshot Colt
+		Tooltip:
+			'''
+			Fires sharpshooter bullets.  
+			Right-click to toss a copper coin into the air.  
+			Bullets that hit the coin will home in on the nearest enemy.  
+			Up to 4 coins can be tossed at once. When possible, bullets will ricochet between multiple coins.  
+			Ricocheting bullets are guaranteed to critically strike and gain increased damage based on the number of bounces.  
+			"Money is power."
+			'''
+	}
+
+	EvisceratorEcType: {
+		DisplayName: Eviscerator
+		Tooltip:
+			'''
+			Converts musket balls into slow-flying blood coagulation bullets.  
+			"From the Xenos, to annihilate the Xenos."
+			'''
+	}
 }
 
 Projectiles: {
@@ -3395,7 +3417,9 @@ Projectiles: {
 	SnowQuayMK2Held.DisplayName: Snow Quay MK2
 	HghExplosiveHeld.DisplayName: Hgh Explosive
 	HghExplosiveProj.DisplayName: Hgh Explosive
-	CrackshotColtHeld.DisplayName: Crackshot Colt Held
+	CrackshotColtHeld.DisplayName: Crackshot Colt
+	EvisceratorHeld.DisplayName: Eviscerator
+	CoinGunHeld.DisplayName: Coin Gun
 }
 
 Configs: {

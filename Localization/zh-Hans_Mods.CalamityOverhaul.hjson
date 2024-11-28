@@ -2690,6 +2690,28 @@ Items: {
 			"把他们都炸上天!"
 			'''
 	}
+
+	CrackshotColtEcType: {
+		DisplayName: 神枪手柯尔特
+		Tooltip:
+			'''
+			发射神射手弹
+			右键将一枚铜币抛向空中
+			击中硬币的子弹会向着最近的敌人瞄准
+			至多可抛出4枚硬币，在可能的情况下，子弹会在多枚硬币之间反弹
+			反弹的子弹必定暴击，并且会基于反弹的次数增加伤害
+			“金钱就是力量”
+			'''
+	}
+
+	EvisceratorEcType: {
+		DisplayName: 开膛者
+		Tooltip:
+			'''
+			将火枪子弹转化为缓慢飞行的血凝弹
+			"来自异形，诛灭异形"
+			'''
+	}
 }
 
 Projectiles: {
@@ -3397,7 +3419,9 @@ Projectiles: {
 	// SnowQuayMK2Held.DisplayName: Snow Quay MK2
 	// HghExplosiveHeld.DisplayName: Hgh Explosive
 	// HghExplosiveProj.DisplayName: Hgh Explosive
-	// CrackshotColtHeld.DisplayName: Crackshot Colt Held
+	// CrackshotColtHeld.DisplayName: Crackshot Colt
+	// EvisceratorHeld.DisplayName: Eviscerator
+	// CoinGunHeld.DisplayName: Coin Gun
 }
 
 Configs: {

@@ -48,15 +48,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public float ArmRotSengsBackNoFireOffset;
         /// <summary>
-        /// 是否自动在一次单次射击后调用后坐力函数
+        /// 是否自动在一次单次射击后调用后坐力函数，默认为<see langword="true"/>
         /// </summary>
         internal bool CanCreateRecoilBool = true;
         /// <summary>
-        /// 是否自动在一次单次射击后调用开火粒子
+        /// 是否自动在一次单次射击后调用开火粒子，默认为<see langword="true"/>
         /// </summary>
         internal bool CanCreateSpawnGunDust = true;
         /// <summary>
-        /// 是否自动在一次单次射击后调用抛壳函数，如果<see cref="AutomaticPolishingEffect"/>为<see langword="true"/>，那么该属性将无效化
+        /// 是否自动在一次单次射击后调用抛壳函数，默认为<see langword="true"/>，如果<see cref="AutomaticPolishingEffect"/>为<see langword="true"/>，那么该属性将无效化
         /// </summary>
         internal bool CanCreateCaseEjection = true;
         /// <summary>
@@ -310,12 +310,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             return Owner.GetPlayerStabilityCenter()
                 + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir;
         }
-
+        /// <summary>
+        /// 在开火时被调用，在适当的时机下调用这个函数
+        /// </summary>
         protected virtual void SetGunBodyInFire() {
             Owner.direction = LazyRotationUpdate ? oldSetRoting.ToRotationVector2().X > 0 ? 1 : -1 : ToMouse.X > 0 ? 1 : -1;
-            Projectile.Center = GetGunInFirePos();
+            //值得一说的是，设置旋转角的操作必须在设置位置之前，因为位置设置需要旋转角的值，否则会造成不必要的延迟帧
             Projectile.rotation = GetGunInFireRot();
+            Projectile.Center = GetGunInFirePos();
             ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
+        }
+        /// <summary>
+        /// 在闲置时被调用，一般用于设置非开火状态下的手持状态
+        /// </summary>
+        public virtual void SetGunBodyHandIdle() {
+            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
+            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
+            Projectile.rotation = GetGunBodyRot();
+            Projectile.Center = GetGunBodyPos();
         }
 
         public override void FiringIncident() {
@@ -362,15 +374,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         }
 
-        public virtual void SetGunBodyHandIdle() {
-            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR * SafeGravDir;
-            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR * SafeGravDir;
-            Projectile.Center = GetGunBodyPos();
-            Projectile.rotation = GetGunBodyRot();
-            Projectile.timeLeft = 2;
-        }
-
         public override void InOwner() {
+            Projectile.timeLeft = 2;
             PreInOwnerUpdate();
 
             if (InOwner_HandState_AlwaysSetInFireRoding) {
@@ -384,7 +389,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 SetWeaponOccupancyStatus();
                 ShootCoolingValue--;
             }
+
             SetHeld();
+
             if (SafeMouseInterfaceValue) {
                 FiringIncident();
             }
@@ -544,6 +551,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 if (ForcedConversionTargetAmmoFunc.Invoke()) {
                     AmmoTypes = ToTargetAmmo;
                 }
+
+                //在生成射弹前再执行一次 SetGunBodyInFire，以防止因为更新顺序所导致的延迟帧情况
+                SetGunBodyInFire();
 
                 SetShootAttribute();
 

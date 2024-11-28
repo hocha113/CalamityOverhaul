@@ -2675,6 +2675,29 @@ Items: {
 			"Schieß sie in den Himmel!"
 			'''
 	}
+
+	CrackshotColtEcType: {
+	    DisplayName: Präzisions-Kolt
+	    Tooltip:
+	        '''
+	        Feuert Scharfschützenkugeln ab
+	        Mit der rechten Maustaste wird eine Kupfermünze in die Luft geworfen
+	        Kugeln, die die Münze treffen, zielen auf den nächsten Feind
+	        Es können bis zu 4 Münzen geworfen werden, wobei Kugeln zwischen mehreren Münzen abprallen können, falls möglich
+	        Abprallende Kugeln sind garantiert kritisch und erhöhen den Schaden basierend auf der Anzahl der Abpraller
+	        "Geld ist Macht"
+	        '''
+	}
+	
+	EvisceratorEcType: {
+	    DisplayName: Der Ausweider
+	    Tooltip:
+	        '''
+	        Wandelt Musketenkugeln in langsam fliegende Blutgerinnsel um
+	        "Von Aliens, um Aliens zu vernichten"
+	        '''
+	}
+
 }
 
 Projectiles: {
@@ -3382,7 +3405,9 @@ Projectiles: {
 	// SnowQuayMK2Held.DisplayName: Snow Quay MK2
 	// HghExplosiveHeld.DisplayName: Hgh Explosive
 	// HghExplosiveProj.DisplayName: Hgh Explosive
-	// CrackshotColtHeld.DisplayName: Crackshot Colt Held
+	// CrackshotColtHeld.DisplayName: Crackshot Colt
+	// EvisceratorHeld.DisplayName: Eviscerator
+	// CoinGunHeld.DisplayName: Coin Gun
 }
 
 Configs: {

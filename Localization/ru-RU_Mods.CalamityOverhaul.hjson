@@ -2709,6 +2709,28 @@ Items: {
 			"Взорвите их до небес!"
 			'''
 	}
+
+	CrackshotColtEcType: {
+	    DisplayName: Меткий Кольт
+	    Tooltip:
+	        '''
+	        Выпускает стрелковые пули
+	        Правая кнопка мыши подбрасывает монету в воздух
+	        Пули, попадающие в монету, наводятся на ближайшего врага
+	        Можно подбросить до 4 монет, при возможности пули будут отскакивать между ними
+	        Отскакивающие пули гарантированно наносят критический урон и получают дополнительный урон за каждый отскок
+	        "Деньги — это сила"
+	        '''
+	}
+	
+	EvisceratorEcType: {
+		DisplayName: Потрошитель
+		Tooltip:
+		    '''
+		    Преобразует пули мушкета в медленно летящие кровавые сгустки
+		    "Из чужих, для уничтожения чужих"
+		    '''
+	}
 }
 
 Projectiles: {
@@ -3416,7 +3438,9 @@ Projectiles: {
 	// SnowQuayMK2Held.DisplayName: Snow Quay MK2
 	// HghExplosiveHeld.DisplayName: Hgh Explosive
 	// HghExplosiveProj.DisplayName: Hgh Explosive
-	// CrackshotColtHeld.DisplayName: Crackshot Colt Held
+	// CrackshotColtHeld.DisplayName: Crackshot Colt
+	// EvisceratorHeld.DisplayName: Eviscerator
+	// CoinGunHeld.DisplayName: Coin Gun
 }
 
 Configs: {

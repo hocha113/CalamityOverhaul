@@ -81,22 +81,33 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void FiringShootR() {
-            long cashAvailable = Utils.CoinsCount(out bool overflow, Owner.inventory);
+            if (Type == ModContent.ProjectileType<CrackshotColtHeld>()) {
+                long cashAvailable = Utils.CoinsCount(out bool overflow, Owner.inventory);
+                if (overflow || cashAvailable > 1) {
+                    Owner.BuyItem(1);
 
-            if (overflow || cashAvailable > 10000) {
-                Owner.BuyItem(10000);
-                nextShotGoldCoin = true;
+                    Projectile.NewProjectile(Source, GunShootPos, Owner.GetCoinTossVelocity()
+                    , ModContent.ProjectileType<RicoshotCoin>()
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                }
             }
             else {
-                Owner.BuyItem(100);
-                nextShotGoldCoin = false;
+                long cashAvailable = Utils.CoinsCount(out bool overflow, Owner.inventory);
+                if (overflow || cashAvailable > 10000) {
+                    Owner.BuyItem(10000);
+                    nextShotGoldCoin = true;
+                }
+                else {
+                    Owner.BuyItem(100);
+                    nextShotGoldCoin = false;
+                }
+
+                float coinAIVariable = nextShotGoldCoin ? 2f : 1f;
+
+                Projectile.NewProjectile(Source, GunShootPos, Owner.GetCoinTossVelocity()
+                    , ModContent.ProjectileType<RicoshotCoin>()
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, coinAIVariable);
             }
-
-            float coinAIVariable = nextShotGoldCoin ? 2f : 1f;
-
-            Projectile.NewProjectile(Source, GunShootPos, Owner.GetCoinTossVelocity()
-                , ModContent.ProjectileType<RicoshotCoin>()
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI, coinAIVariable);
         }
     }
 }
