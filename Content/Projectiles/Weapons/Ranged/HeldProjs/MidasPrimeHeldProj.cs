@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 HandDistanceY = 2;
                 HandFireDistance = 20;
                 HandFireDistanceY = -2;
-                InOwner_HandState__AlwaysSetInFireRoding = true;
+                InOwner_HandState_AlwaysSetInFireRoding = true;
             }
         }
 

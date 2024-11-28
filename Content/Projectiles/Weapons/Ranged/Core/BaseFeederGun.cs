@@ -564,7 +564,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         protected override void SetGunBodyInFire() {
             //检测一下IsKreload，防止枪械在换弹状态切换的那一帧发生动画闪烁。同时要检测一下ASIFR，否则会让这个字段被设置为ture的枪械在待换弹状态下脱手
-            if (!IsKreload && OffsetPos.Length() <= 0.6f && Math.Abs(OffsetRot) <= 0.02f && !InOwner_HandState__AlwaysSetInFireRoding) {
+            if (!IsKreload && OffsetPos.Length() <= 0.6f && Math.Abs(OffsetRot) <= 0.02f && !InOwner_HandState_AlwaysSetInFireRoding) {
                 return;
             }
             //不要在换弹的时候设置玩家朝向鼠标方向，否则换弹动画会难以避免的抽搐起来
@@ -600,7 +600,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Get_LoadingAmmoAnimation_PreInOwnerUpdate();
             PreInOwnerUpdate();
 
-            if (InOwner_HandState__AlwaysSetInFireRoding) {
+            if (InOwner_HandState_AlwaysSetInFireRoding) {
                 SetGunBodyInFire();
             }
             else {

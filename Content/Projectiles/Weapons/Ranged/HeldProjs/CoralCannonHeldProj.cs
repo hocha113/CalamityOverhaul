@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistance = 20;
             kreloadMaxTime = 80;
             Recoil = 2.8f;
-            InOwner_HandState__AlwaysSetInFireRoding = true;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 12;
             RecoilOffsetRecoverValue = 0.9f;
@@ -27,11 +27,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.clipOut = CWRSound.CaseEjection2 with { Pitch = -0.2f };
             FireTime = MagazineSystem ? 10 : 90;
+            ForcedConversionTargetAmmoFunc = () => true;
+            ToTargetAmmo = ModContent.ProjectileType<SmallCoral>();
         }
-        public override void FiringShoot() {
-            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity
-                    , ModContent.ProjectileType<SmallCoral>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 1);
-        }
+
         public override void PostGunDraw(Vector2 drawPos, ref Color lightColor) {
             if (IsKreload && MagazineSystem) {
                 Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Item_Ranged + "CoralCannon_PrimedForAction");
