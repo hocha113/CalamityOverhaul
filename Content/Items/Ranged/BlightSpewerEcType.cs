@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetItemCopySD<BlightSpewer>();
             Item.SetCartridgeGun<BlightSpewerHeldProj>(160);
-            Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
+            Item.CWR().CartridgeType = CartridgeUIEnum.JAR;
         }
     }
 }

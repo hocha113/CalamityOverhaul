@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetItemCopySD<ElementalEruption>();
             Item.SetCartridgeGun<ElementalEruptionHeldProj>(160);
-            Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
+            Item.CWR().CartridgeType = CartridgeUIEnum.JAR;
         }
     }
 }

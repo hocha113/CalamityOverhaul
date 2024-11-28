@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.UIs
             CWRItems cwrItem = handItem.CWR();
             if (TextureValue != null) {
                 mainRec = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, TextureValue.Width, TextureValue.Height);
-                if (cwrItem.CartridgeEnum == CartridgeUIEnum.Magazines)
+                if (cwrItem.CartridgeType == CartridgeUIEnum.Magazines)
                     mainRec = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, TextureValue.Width, TextureValue.Height / 6);
                 onMainP = mainRec.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
             }
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.UIs
 
         public void Initialize() {
             CWRItems cwrItem = handItem.CWR();
-            if (cwrItem.CartridgeEnum == CartridgeUIEnum.CartridgeHolder) {
+            if (cwrItem.CartridgeType == CartridgeUIEnum.CartridgeHolder) {
                 DrawPosition = new Vector2(20, Main.screenHeight - 100);
                 string key = "BulletCard";
                 string key2 = "";
@@ -101,11 +101,11 @@ namespace CalamityOverhaul.Content.UIs
                 }
                 TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + key2);
             }
-            if (cwrItem.CartridgeEnum == CartridgeUIEnum.Magazines) {
+            if (cwrItem.CartridgeType == CartridgeUIEnum.Magazines) {
                 DrawPosition = new Vector2(60, Main.screenHeight - 100);
                 TextureValue = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/Magazines");
             }
-            if (cwrItem.CartridgeEnum == CartridgeUIEnum.JAR) {
+            if (cwrItem.CartridgeType == CartridgeUIEnum.JAR) {
                 DrawPosition = new Vector2(60, Main.screenHeight - 100);
                 TextureValue = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR");
             }
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.UIs
         public override void Draw(SpriteBatch spriteBatch) {
             Initialize();
             CWRItems cwrItem = handItem.CWR();
-            if (cwrItem.CartridgeEnum == CartridgeUIEnum.CartridgeHolder) {
+            if (cwrItem.CartridgeType == CartridgeUIEnum.CartridgeHolder) {
                 int offsetX = 0;
                 if (handItem.useAmmo == AmmoID.Rocket) {
                     offsetX = 10;
@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.UIs
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, cwrItem.AmmoCapacity.ToString()
                     , DrawPosition.X + 85 + offsetX, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1.05f);
             }
-            if (cwrItem.CartridgeEnum == CartridgeUIEnum.Magazines) {
+            if (cwrItem.CartridgeType == CartridgeUIEnum.Magazines) {
                 Rectangle rectangle = CWRUtils.GetRec(TextureValue, 6 - bulletNum, 7);
                 spriteBatch.Draw(TextureValue, DrawPosition + rectangle.Size() / 2, rectangle, Color.White
                     , otherPotData, rectangle.Size() / 2, 1, SpriteEffects.None, 0);
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.UIs
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, cwrItem.AmmoCapacity.ToString()
                     , DrawPosition.X + 85, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1.05f);
             }
-            if (cwrItem.CartridgeEnum == CartridgeUIEnum.JAR) {
+            if (cwrItem.CartridgeType == CartridgeUIEnum.JAR) {
                 Texture2D jar2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR_Full");
                 Texture2D ctb = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR_CTB");
                 Date.JARSengs = MathHelper.Lerp(Date.JARSengs, bulletNum / (float)cwrItem.AmmoCapacity, 0.05f);

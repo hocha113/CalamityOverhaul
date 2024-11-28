@@ -3416,6 +3416,7 @@ Projectiles: {
 	// SnowQuayMK2Held.DisplayName: Snow Quay MK2
 	// HghExplosiveHeld.DisplayName: Hgh Explosive
 	// HghExplosiveProj.DisplayName: Hgh Explosive
+	// CrackshotColtHeld.DisplayName: Crackshot Colt Held
 }
 
 Configs: {

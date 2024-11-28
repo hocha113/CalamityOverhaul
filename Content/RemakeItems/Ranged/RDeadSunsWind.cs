@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 9f;
             item.useAmmo = AmmoID.Gel;
             item.SetCartridgeGun<DeadSunsWindHeldProj>(120);
-            item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
+            item.CWR().CartridgeType = CartridgeUIEnum.JAR;
             CWRUtils.EasySetLocalTextNameOverride(item, "DeadSunsWindEcType");
         }
     }

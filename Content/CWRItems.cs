@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 使用的弹匣UI类型
         /// </summary>
-        public CartridgeUIEnum CartridgeEnum;
+        public CartridgeUIEnum CartridgeType;
         /// <summary>
         /// 特种状态
         /// </summary>
@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content
             cwr.hasHeldNoCanUseBool = hasHeldNoCanUseBool;
             cwr.IsKreload = IsKreload;
             cwr.HasCartridgeHolder = HasCartridgeHolder;
-            cwr.CartridgeEnum = CartridgeEnum;
+            cwr.CartridgeType = CartridgeType;
             cwr.SpecialAmmoState = SpecialAmmoState;
             cwr.MagazineContents = MagazineContents;
             cwr.NumberBullets = NumberBullets;

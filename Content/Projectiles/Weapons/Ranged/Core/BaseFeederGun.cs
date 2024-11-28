@@ -563,11 +563,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         protected override void SetGunBodyInFire() {
+            //检测一下IsKreload，防止枪械在换弹状态切换的那一帧发生动画闪烁。同时要检测一下ASIFR，否则会让这个字段被设置为ture的枪械在待换弹状态下脱手
             if (!IsKreload && OffsetPos.Length() <= 0.6f && Math.Abs(OffsetRot) <= 0.02f && !InOwner_HandState__AlwaysSetInFireRoding) {
                 return;
-            }//检测一下IsKreload，防止枪械在换弹状态切换的那一帧发生动画闪烁。同时要检测一下ASIFR，否则会让这个字段被设置为ture的枪械在待换弹状态下脱手
-
-            SetOwnerDirection();
+            }
+            //不要在换弹的时候设置玩家朝向鼠标方向，否则换弹动画会难以避免的抽搐起来
+            if (kreloadTimeValue <= 0) {
+                SetOwnerDirection();
+            }
+            
             Projectile.Center = GetGunInFirePos();
             Projectile.rotation = LazyRotationUpdate ? oldSetRoting : GetGunInFireRot();
             ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
@@ -1086,7 +1090,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <param name="yl"></param>
         public void LoadingAnimation(int rot, int xl, int yl) {
             if (kreloadTimeValue > 0) {//设置一个特殊的装弹动作，调整转动角度和中心点，让枪身看起来上抬
-                //SetOwnerDirection();//为了防止抽搐，这里额外设置一次玩家朝向
                 FeederOffsetRot = -rot * SafeGravDir;
                 FeederOffsetPos = new Vector2(DirSign * -xl, -yl * SafeGravDir);
             }

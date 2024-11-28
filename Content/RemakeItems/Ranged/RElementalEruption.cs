@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
         public override string TargetToolTipItemName => "ElementalEruptionEcType";
         public override void SetDefaults(Item item) {
             item.SetCartridgeGun<ElementalEruptionHeldProj>(160);
-            item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
+            item.CWR().CartridgeType = CartridgeUIEnum.JAR;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.SetItemCopySD<BloodBoiler>();
             Item.useAmmo = AmmoID.Gel;
             Item.SetCartridgeGun<BloodBoilerHeldProj>(160);
-            Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
+            Item.CWR().CartridgeType = CartridgeUIEnum.JAR;
         }
     }
 }

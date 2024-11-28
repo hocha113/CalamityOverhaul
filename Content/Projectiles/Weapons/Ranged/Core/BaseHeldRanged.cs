@@ -96,6 +96,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public bool HandheldDisplay = true;
         /// <summary>
+        /// 是否是单手手持动作，默认为<see langword="false"/>
+        /// </summary>
+        public bool Onehanded;//这就引申出来一个有趣的问题：泰拉人到底是左撇子还是右撇子？那边是右手？
+        /// <summary>
         /// 开火冷切计时器
         /// </summary>
         public float ShootCoolingValue {

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetItemCopySD<AuroraBlazer>();
             Item.SetCartridgeGun<AuroraBlazerHeldProj>(660);
-            Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
+            Item.CWR().CartridgeType = CartridgeUIEnum.JAR;
         }
     }
 }

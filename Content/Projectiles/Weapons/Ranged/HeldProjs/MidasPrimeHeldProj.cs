@@ -4,6 +4,7 @@ using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using CalamityOverhaul.Content.UIs;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
@@ -20,10 +21,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 22;
-            HandDistance = 25;
-            HandDistanceY = 5;
-            HandFireDistance = 25;
-            HandFireDistanceY = -5;
+            HandDistance = 24;
+            HandDistanceY = 4;
+            HandFireDistance = 24;
+            HandFireDistanceY = -4;
             ShootPosNorlLengValue = -10;
             ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;
@@ -32,13 +33,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 1.2f;
             RangeOfStress = 25;
             CanRightClick = true;
+            Onehanded = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Revolver;
+            if (Type == ModContent.ProjectileType<CrackshotColtHeld>()) {
+                kreloadMaxTime = 50;
+                FireTime = 24;
+                HandDistance = 22;
+                HandDistanceY = 2;
+                HandFireDistance = 20;
+                HandFireDistanceY = -2;
+                InOwner_HandState__AlwaysSetInFireRoding = true;
+            }
         }
 
         public override void PreInOwnerUpdate() {
             CanRightClick = true;
             long cashAvailable2 = Utils.CoinsCount(out bool overflow2, Owner.inventory);
-            if (cashAvailable2 < 100 && !overflow2 || Owner.GetActiveRicoshotCoinCount() >= 4) {
+            if (cashAvailable2 < 100 && !overflow2 || Owner.GetActiveRicoshotCoinCount() >= 4 || CartridgeHolderUI.Instance.OnMainP) {
                 if (!oldRsD && DownRight) {
                     SoundEngine.PlaySound(CWRSound.Ejection, Projectile.Center);
                 }
@@ -50,6 +61,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetShootAttribute() {
             CanUpdateMagazineContentsInShootBool = CanCreateRecoilBool = onFire;
             FireTime = onFireR ? 12 : 22;
+            if (Type == ModContent.ProjectileType<CrackshotColtHeld>()) {
+                FireTime = onFireR ? 16 : 24;
+            }
             CanCreateCaseEjection = CanCreateSpawnGunDust = onFire;
         }
 

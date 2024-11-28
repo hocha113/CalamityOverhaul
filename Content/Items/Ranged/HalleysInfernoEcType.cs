@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.rare = ModContent.RarityType<PureGreen>();
             Item.SetHeldProj<HalleysInfernoHeldProj>();
             Item.CWR().HasCartridgeHolder = true;
-            Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
+            Item.CWR().CartridgeType = CartridgeUIEnum.JAR;
             Item.CWR().AmmoCapacity = 86;
         }
     }

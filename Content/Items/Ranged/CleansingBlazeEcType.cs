@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetItemCopySD<CleansingBlaze>();
             Item.SetCartridgeGun<CleansingBlazeHeldProj>(160);
-            Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
+            Item.CWR().CartridgeType = CartridgeUIEnum.JAR;
         }
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI) {

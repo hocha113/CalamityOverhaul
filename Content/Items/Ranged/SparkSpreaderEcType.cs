@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetItemCopySD<SparkSpreader>();
             Item.SetCartridgeGun<SparkSpreaderHeldProj>(120);
-            Item.CWR().CartridgeEnum = CartridgeUIEnum.JAR;
+            Item.CWR().CartridgeType = CartridgeUIEnum.JAR;
         }
     }
 }

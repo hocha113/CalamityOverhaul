@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             item.SetHeldProj<TheUndertakerHeldProj>();
             item.CWR().HasCartridgeHolder = true;
             item.CWR().AmmoCapacity = 6;
-            item.CWR().CartridgeEnum = CartridgeUIEnum.Magazines;
+            item.CWR().CartridgeType = CartridgeUIEnum.Magazines;
             item.damage = 16;
         }
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
