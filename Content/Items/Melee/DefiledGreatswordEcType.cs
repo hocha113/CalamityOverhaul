@@ -16,7 +16,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
-    /// 暴君巨刃
+    /// 神殇巨剑
     /// </summary>
     internal class DefiledGreatswordEcType : EctypeItem, ICWRLoader
     {
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useTime = 18;
             Item.useTurn = true;
             Item.knockBack = 7.5f;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.autoReuse = true;
             Item.height = 102;
             Item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
@@ -126,6 +126,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (rageEnergy > 0) {
                 SwingData.baseSwingSpeed = 12.45f;
             }
+            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1SwingSpeed: 3.2f, phase2SwingSpeed: 5f);
             return base.PreInOwnerUpdate();
         }
 

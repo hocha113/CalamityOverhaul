@@ -9,11 +9,15 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
+    /// <summary>
+    /// 风暴管束者
+    /// </summary>
     internal class StormRulerEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "StormRuler";
         public override void SetDefaults() {
             Item.SetItemCopySD<StormRuler>();
+            Item.UseSound = null;
             Item.SetKnifeHeld<StormRulerHeld>();
         }
     }
@@ -22,7 +26,10 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override int TargetID => ModContent.ItemType<StormRuler>();
         public override int ProtogenesisID => ModContent.ItemType<StormRulerEcType>();
-        public override void SetDefaults(Item item) => item.SetKnifeHeld<StormRulerHeld>();
+        public override void SetDefaults(Item item) {
+            item.UseSound = null;
+            item.SetKnifeHeld<StormRulerHeld>();
+        }
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
@@ -44,7 +51,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             drawTrailCount = 6;
             Length = 82;
             SwingData.starArg = 54;
-            SwingData.baseSwingSpeed = 4.65f;
+            SwingData.baseSwingSpeed = 3.65f;
             ShootSpeed = 20;
             SwingAIType = SwingAITypeEnum.UpAndDown;
         }
@@ -61,6 +68,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     , DustID.Flare_Blue, Owner.direction * 2, 0f, 150, default, 1.3f);
                 Main.dust[swingDust].velocity *= 0.2f;
             }
+            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1SwingSpeed: 6.2f, phase2SwingSpeed: 4f);
             return base.PreInOwnerUpdate();
         }
     }

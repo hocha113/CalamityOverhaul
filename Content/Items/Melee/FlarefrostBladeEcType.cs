@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string Texture => CWRConstant.Cay_Wap_Melee + "FlarefrostBlade";
         public override void SetDefaults() {
             Item.SetItemCopySD<FlarefrostBlade>();
+            Item.UseSound = null;
             Item.SetKnifeHeld<FlarefrostBladeHeld>();
         }
     }
@@ -22,7 +23,10 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override int TargetID => ModContent.ItemType<FlarefrostBlade>();
         public override int ProtogenesisID => ModContent.ItemType<FlarefrostBladeEcType>();
-        public override void SetDefaults(Item item) => item.SetKnifeHeld<FlarefrostBladeHeld>();
+        public override void SetDefaults(Item item) {
+            item.UseSound = null;
+            item.SetKnifeHeld<FlarefrostBladeHeld>();
+        }
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
@@ -54,12 +58,16 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , Projectile.knockBack, Owner.whoAmI, 0f, 0);
         }
 
-        public override bool PreInOwnerUpdate() {
+        public override void MeleeEffect() {
             int dustChoice = Main.rand.Next(2);
             dustChoice = dustChoice == 0 ? 67 : 6;
-            if (Main.rand.NextBool(3)) {
+            if (Main.rand.NextBool(2)) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustChoice);
             }
+        }
+
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(phase1Ratio : 0.2f, phase0SwingSpeed : -0.1f, phase1SwingSpeed : 4.2f, phase2SwingSpeed : 3f, phase0MeleeSizeIncrement : 0, phase2MeleeSizeIncrement: 0);
             return base.PreInOwnerUpdate();
         }
 

@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj
         }
 
         public override void OnKill(int timeLeft) {
-            _ = SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
+            SoundEngine.PlaySound(SoundID.Item69 with { Pitch = 0.8f, Volume = 0.6f }, Projectile.Center);
             int inc;
             for (int i = 4; i < 31; i = inc + 1) {
                 float dustX = Projectile.oldVelocity.X * (30f / i);

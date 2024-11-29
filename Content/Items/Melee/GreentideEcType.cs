@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.DamageType = DamageClass.Melee;
             Item.width = 62;
             Item.height = 62;
-            Item.scale = 1.5f;
+            Item.scale = 1.2f;
             Item.useTime = 24;
             Item.useAnimation = 24;
             Item.useTurn = true;
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.knockBack = 7;
             Item.value = CalamityGlobalItem.RarityLimeBuyPrice;
             Item.rare = ItemRarityID.Lime;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<GreenWater>();
             Item.shootSpeed = 18f;
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             distanceToOwner = 20;
             drawTrailBtommWidth = 50;
             drawTrailTopWidth = 20;
-            drawTrailCount = 6;
+            drawTrailCount = 16;
             Length = 52;
             SwingAIType = SwingAITypeEnum.UpAndDown;
             ShootSpeed = 32f;
@@ -77,6 +77,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             Projectile.NewProjectile(Source, InMousePos + new Vector2(0, 600), new Vector2(0, -22).RotatedByRandom(0.3f)
                     , ModContent.ProjectileType<GreenWater>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
+        }
+
+        public override void MeleeEffect() {
+            int randomDust = Main.rand.Next(2);
+            randomDust = randomDust == 0 ? 33 : 89;
+            Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, randomDust);
         }
 
         public override bool PreInOwnerUpdate() {
@@ -94,12 +100,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SwingData.maxClampLength = 100;
             }
 
-            int randomDust = Main.rand.Next(2);
-            randomDust = randomDust == 0 ? 33 : 89;
-            if (Main.rand.NextBool(4)) {
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, randomDust);
-            }
-
+            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.1f, phase1SwingSpeed: 3.2f, phase2SwingSpeed: 6f);
             return base.PreInOwnerUpdate();
         }
 

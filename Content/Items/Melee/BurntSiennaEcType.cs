@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
-    /// 沙之刃
+    /// 灼炎弯刀
     /// </summary>
     internal class BurntSiennaEcType : EctypeItem
     {
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useTurn = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 5.5f;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.autoReuse = true;
             Item.height = 54;
             Item.value = CalamityGlobalItem.RarityBlueBuyPrice;

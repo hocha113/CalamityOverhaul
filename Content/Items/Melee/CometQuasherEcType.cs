@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useTime = 15;
             Item.useTurn = true;
             Item.knockBack = 2.75f;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityYellowBuyPrice;
             Item.rare = ItemRarityID.Yellow;

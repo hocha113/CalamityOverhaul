@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.knockBack = 7.5f;
             Item.value = CalamityGlobalItem.RarityPinkBuyPrice;
             Item.rare = ItemRarityID.Pink;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<MeleeFossilShard>();
             Item.shootSpeed = 12f;

@@ -12,6 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
     {
         public override int TargetID => ModContent.ItemType<SolsticeClaymore>();
         public override int ProtogenesisID => ModContent.ItemType<SolsticeClaymoreEcType>();
-        public override void SetDefaults(Item item) => item.SetKnifeHeld<SolsticeClaymoreHeld>();
+        public override void SetDefaults(Item item) => SolsticeClaymoreEcType.SetDefaultsFunc(item);
     }
 }

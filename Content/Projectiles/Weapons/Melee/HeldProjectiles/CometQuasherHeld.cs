@@ -18,8 +18,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             distanceToOwner = 20;
             drawTrailBtommWidth = 50;
             drawTrailTopWidth = 20;
-            drawTrailCount = 6;
+            drawTrailCount = 16;
             Length = 52;
+        }
+
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(phase1Ratio : 0.2f, phase0SwingSpeed: 0.1f, phase1SwingSpeed: 4.2f, phase2SwingSpeed: 6f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
+            return base.PreInOwnerUpdate();
         }
 
         public override void Shoot() {

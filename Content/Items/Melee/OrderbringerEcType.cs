@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useTime = 18;
             Item.useTurn = true;
             Item.knockBack = 7f;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             Item.rare = ModContent.RarityType<DarkBlue>();
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             drawTrailCount = 16;
             Length = 120;
             unitOffsetDrawZkMode = 0;
-            SwingData.starArg = 80;
+            SwingData.starArg = 60;
             SwingData.ler1_UpLengthSengs = 0.1f;
             SwingData.minClampLength = 130;
             SwingData.maxClampLength = 140;
@@ -63,11 +63,15 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , Projectile.knockBack, Owner.whoAmI, 0f, 0);
         }
 
-        public override bool PreInOwnerUpdate() {
-            if (Main.rand.NextBool(3 * updateCount)) {
+        public override void MeleeEffect() {
+            if (Main.rand.NextBool(3)) {
                 _ = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height
                     , DustID.GoldCoin, 0f, 0f, 0, new Color(255, Main.DiscoG, 53));
             }
+        }
+
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1SwingSpeed: 9.2f, phase2SwingSpeed: 4f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
             return base.PreInOwnerUpdate();
         }
     }

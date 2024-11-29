@@ -21,6 +21,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.width = Projectile.height = 66;
             SwingAIType = SwingAITypeEnum.UpAndDown;
             Length = 86;
+            shootSengs = 0.5f;
+        }
+
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(phase1Ratio : 0.2f, phase0SwingSpeed: -0.2f, phase1SwingSpeed: 1.2f, phase2SwingSpeed: 6f);
+            return base.PreInOwnerUpdate();
         }
 
         public override void Shoot() {

@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.width = Item.height = 54;
             Item.shootSpeed = 9;
             Item.crit = 8;
-            Item.damage = 186;
+            Item.damage = 286;
             Item.useTime = 30;
             Item.useAnimation = 15;
             Item.knockBack = 6;
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
-                Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<RebelBladeFlyAttcke>(), damage, knockback, player.whoAmI);
+                Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<RebelBladeFlyAttcke>(), (int)(damage * 0.6f), knockback, player.whoAmI);
                 return false;
             }
             return true;
@@ -91,7 +91,6 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override int TargetID => ModContent.ItemType<RebelBlade>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail2";
         public override string gradientTexturePath => CWRConstant.ColorBar + "RebelBlade_Bar";
-        private bool onSound;
         public override void SetKnifeProperty() {
             canDrawSlashTrail = true;
             distanceToOwner = -20;
@@ -108,41 +107,16 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             SwingData.maxClampLength = 210;
             SwingData.ler1_UpSizeSengs = 0.016f;
             SwingData.baseSwingSpeed = 4.2f;
+            SwingAIType = SwingAITypeEnum.UpAndDown;
             ShootSpeed = 12;
         }
 
         public override bool PreInOwnerUpdate() {
-            if (Time == 0) {
-                OtherMeleeSize = 0.84f;
-            }
-            float swingUp = SetSwingSpeed(1f);
-            int time1 = (int)(maxSwingTime / 2 * updateCount * swingUp);
-            int time2 = (int)(maxSwingTime * 0.6f * updateCount * swingUp);
-            if (Time > time1) {
-                if (!onSound) {
-                    SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.6f }, Owner.Center);
-                    onSound = true;
-                }
-                canDrawSlashTrail = true;
-                SwingData.baseSwingSpeed = 3.2f;
-                if (Time == time1 + 1) {
-                    speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingUp;
-                }
-            }
-            else {
-                OtherMeleeSize += 0.002f;
-                SwingData.baseSwingSpeed = -0.4f;
-                speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingUp;
-                canDrawSlashTrail = false;
-            }
-
-            if (Time > time2) {
-                OtherMeleeSize -= 0.002f;
-                SwingData.baseSwingSpeed = 6f;
-                if (Time == time2 + 1) {
-                    speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingUp;
-                }
-            }
+            ExecuteAdaptiveSwing(
+            phase0SwingSpeed : -0.4f,
+            phase1SwingSpeed : 3.4f,
+            phase2SwingSpeed : 7f,
+            swingSound : SoundID.Item71 with { Pitch = -0.6f });
             return base.PreInOwnerUpdate();
         }
 

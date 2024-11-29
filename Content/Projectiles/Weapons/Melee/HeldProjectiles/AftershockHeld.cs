@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Length = 44;
             SwingAIType = SwingAITypeEnum.UpAndDown;
             canShoot2 = true;
-            shootSengs = 0.9f;
+            shootSengs = 0.6f;
         }
 
         public override void Shoot() {
@@ -50,6 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 SwingData.minClampLength = 70;
                 SwingData.maxClampLength = 90;
             }
+            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1SwingSpeed: 3.2f, phase2SwingSpeed: 6f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
             return base.PreInOwnerUpdate();
         }
 

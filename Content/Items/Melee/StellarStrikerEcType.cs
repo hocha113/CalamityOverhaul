@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useTime = 20;
             Item.useTurn = true;
             Item.knockBack = 7.75f;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
             Item.rare = ItemRarityID.Red;
@@ -108,6 +108,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Projectile.ai[0] == 1) {
                 OtherMeleeSize = 1.1f;
             }
+            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1SwingSpeed: 8.2f, phase2SwingSpeed: 6f);
             return base.PreInOwnerUpdate();
         }
 

@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useTime = 18;
             Item.useTurn = true;
             Item.knockBack = 7f;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.autoReuse = true;
             Item.height = 78;
             Item.value = CalamityGlobalItem.RarityPurpleBuyPrice;
@@ -50,6 +50,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             Length = 68;
             SwingData.baseSwingSpeed = 4.65f;
             SwingAIType = SwingAITypeEnum.UpAndDown;
+        }
+
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1SwingSpeed: 4.2f, phase2SwingSpeed: 6f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
+            return base.PreInOwnerUpdate();
         }
 
         public override void Shoot() {

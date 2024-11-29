@@ -96,9 +96,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         protected float rotSpeed;
         /// <summary>
-        /// 射击时间比例，默认为0.5f
+        /// 射击时间比例，默认为0.3f
         /// </summary>
-        protected float shootSengs = 0.5f;
+        protected float shootSengs = 0.3f;
         /// <summary>
         /// 基本速度
         /// </summary>
@@ -514,7 +514,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         /// <returns></returns>
         public sealed override bool PreUpdate() {
-            canShoot = Time == (int)(maxSwingTime * shootSengs);
+            canShoot = Time == (int)(maxSwingTime * shootSengs * updateCount);
             if (!isInitialize) {
                 _meleeSize = 1f;
                 if (Item.type != ItemID.None) {

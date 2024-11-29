@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
-    /// 暴君之刃
+    /// 凋亡屠刀
     /// </summary>
     internal class BlightedCleaverEcType : EctypeItem
     {

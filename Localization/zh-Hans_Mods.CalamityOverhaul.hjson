@@ -2876,7 +2876,6 @@ Projectiles: {
 	// MeleeFossilShard.DisplayName: Melee Fossil Shard
 
 	Melee: {
-		// EXSolsticeBeam.DisplayName: EX Solstice Beam
 		// MourningSkull2.DisplayName: Mourning Skull2
 		// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
 	}
@@ -3422,6 +3421,8 @@ Projectiles: {
 	// CrackshotColtHeld.DisplayName: Crackshot Colt
 	// EvisceratorHeld.DisplayName: Eviscerator
 	// CoinGunHeld.DisplayName: Coin Gun
+	// SolsticeHomeBeam.DisplayName: Solstice Home Beam
+	// MeowmereHeld.DisplayName: Meowmere Held
 }
 
 Configs: {

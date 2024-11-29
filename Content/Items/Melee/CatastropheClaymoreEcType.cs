@@ -9,11 +9,15 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
+    /// <summary>
+    /// 灾难巨剑
+    /// </summary>
     internal class CatastropheClaymoreEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "CatastropheClaymore";
         public override void SetDefaults() {
             Item.SetItemCopySD<CatastropheClaymore>();
+            Item.UseSound = null;
             Item.SetKnifeHeld<CatastropheClaymoreHeld>();
         }
     }
@@ -22,7 +26,10 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override int TargetID => ModContent.ItemType<CatastropheClaymore>();
         public override int ProtogenesisID => ModContent.ItemType<CatastropheClaymoreEcType>();
-        public override void SetDefaults(Item item) => item.SetKnifeHeld<CatastropheClaymoreHeld>();
+        public override void SetDefaults(Item item) {
+            item.UseSound = null;
+            item.SetKnifeHeld<CatastropheClaymoreHeld>();
+        }
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
@@ -48,10 +55,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             ShootSpeed = 11;
         }
 
-        public override bool PreInOwnerUpdate() {
-            if (Main.rand.NextBool(3 * updateCount)) {
+        public override void MeleeEffect() {
+            if (Main.rand.NextBool(3)) {
                 int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.PinkFairy);
             }
+        }
+
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(phase0SwingSpeed: -0.1f, phase1SwingSpeed: 3.2f, phase2SwingSpeed: 6f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
             return base.PreInOwnerUpdate();
         }
 

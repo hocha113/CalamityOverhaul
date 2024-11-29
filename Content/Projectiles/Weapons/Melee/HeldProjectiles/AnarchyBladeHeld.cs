@@ -23,18 +23,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             drawTrailBtommWidth = 50;
             drawTrailTopWidth = 30;
             Length = 90;
+            autoSetShoot = true;
             SwingAIType = SwingAITypeEnum.UpAndDown;
             Projectile.localNPCHitCooldown = 20;
         }
 
         public override void Shoot() {
             Item.initialize();
-            if (++Item.CWR().ai[0] > 2) {
-                SoundEngine.PlaySound(SoundID.Item69 with { Pitch = 0.8f }, Owner.Center);
+            if (++Item.CWR().ai[0] > 3) {
                 Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
                 , ModContent.ProjectileType<AnarchyBeam>(), Projectile.damage / 3, Projectile.knockBack, Owner.whoAmI);
                 Item.CWR().ai[0] = 0;
             }
+        }
+
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.1f, phase1SwingSpeed: 3.2f, phase2SwingSpeed: 6f);
+            return base.PreInOwnerUpdate();
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
