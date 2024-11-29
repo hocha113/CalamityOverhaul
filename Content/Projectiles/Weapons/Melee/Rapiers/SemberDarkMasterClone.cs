@@ -15,10 +15,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
     {
         public override string Texture => CWRConstant.Placeholder;
         private Item item => Owner.GetItem();
-        public override void SetDefaults() {
-            Projectile.CloneDefaults(ModContent.ProjectileType<DarkMasterClone>());
-            Projectile.penetrate = -1;
-        }
+        public override void SetDefaults() => Projectile.CloneDefaults(ModContent.ProjectileType<DarkMasterClone>());
+        public override bool? CanDamage() => false;
         public override void AI() {
             Projectile.velocity = Vector2.Zero;
             Projectile.localAI[1] += Owner.velocity.X * 0.1f;
