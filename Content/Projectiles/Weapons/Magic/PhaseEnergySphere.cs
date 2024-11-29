@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 {
     internal class PhaseEnergySphere : ModProjectile
     {
+        public override string Texture => CWRConstant.Cay_Proj_Magic + "SHPB";
         public override void SetStaticDefaults() => Main.projFrames[Projectile.type] = 4;
         public override void SetDefaults() {
             Projectile.width = 24;

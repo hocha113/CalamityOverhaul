@@ -5,6 +5,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 信号枪
+    /// </summary>
     internal class FlareGunHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;

@@ -2893,12 +2893,6 @@ Projectiles: {
 	// EarthenBall.DisplayName: Earthen Ball
 	// EarthenPikeThrowProj.DisplayName: Earthen Pike Throw
 	// MeleeFossilShard.DisplayName: Melee Fossil Shard
-
-	Melee: {
-		// MourningSkull2.DisplayName: Mourning Skull2
-		// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
-	}
-
 	// TeardropCleaverProj.DisplayName: Teardrop Cleaver Proj
 	// DarkIceZeros.DisplayName: Dark Ice Zeros
 	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
@@ -3013,12 +3007,6 @@ Projectiles: {
 	// FlintSpearProj.DisplayName: Flint Spear Proj
 	// TheUpiSteleHeldProj.DisplayName: The Upi Stele
 	// MagicStar.DisplayName: Magic Star
-
-	Magic: {
-		// _SHPB.DisplayName: Energy Ball
-		// _SHPL.DisplayName: Dissociation Ray
-	}
-
 	// TheSpiritFlintProjL.DisplayName: The Spirit Flint Proj L
 	// TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
 	// TheSpiritFlintProj.DisplayName: The Spirit Flint Proj
@@ -3442,6 +3430,10 @@ Projectiles: {
 	// CoinGunHeld.DisplayName: Coin Gun
 	// SolsticeHomeBeam.DisplayName: Solstice Home Beam
 	// MeowmereHeld.DisplayName: Meowmere Held
+	// PhaseEnergySphere.DisplayName: Phase Energy Sphere
+	// PhaseLaser.DisplayName: Phase Laser
+	// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
+	// SoulSeekerSkull.DisplayName: Soul Seeker Skull
 }
 
 Configs: {

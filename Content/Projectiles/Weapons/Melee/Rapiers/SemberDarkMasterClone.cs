@@ -13,30 +13,36 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
     internal class SemberDarkMasterClone : BaseHeldProj
     {
+        public override string Texture => CWRConstant.Placeholder;
         private Item item => Owner.GetItem();
-        public override void SetDefaults() => Projectile.CloneDefaults(ModContent.ProjectileType<DarkMasterClone>());
+        public override void SetDefaults() {
+            Projectile.CloneDefaults(ModContent.ProjectileType<DarkMasterClone>());
+            Projectile.penetrate = -1;
+        }
         public override void AI() {
             Projectile.velocity = Vector2.Zero;
-            Player owner = Main.player[Projectile.owner];
-            Vector2 moveTo;
-            Projectile.localAI[1] += owner.velocity.X * 0.1f;
-            moveTo = (Projectile.localAI[1] * 0.05f + MathHelper.TwoPi / 3 * Projectile.ai[0]).ToRotationVector2() * 160;
+            Projectile.localAI[1] += Owner.velocity.X * 0.1f;
+            if (Owner.velocity.X == 0) {
+                Projectile.localAI[1] += Owner.direction * 0.1f;
+            }
+
+            Vector2 moveTo = (Projectile.localAI[1] * 0.05f + MathHelper.TwoPi / 3 * Projectile.ai[0]).ToRotationVector2() * 160;
 
             Lighting.AddLight(Projectile.Center, Color.DarkBlue.ToVector3());
 
             if (item.type != ModContent.ItemType<TheDarkMaster>()
                 && item.type != ModContent.ItemType<TheDarkMasterEcType>()
-                || owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0
-                || !owner.active || owner.CCed || owner == null) {
+                || Owner.ownedProjectileCounts[ModContent.ProjectileType<Hit>()] > 0
+                || !Owner.active || Owner.CCed || Owner == null) {
                 if (Projectile.ai[0] == 1) {
-                    owner.AddBuff(BuffID.Darkness, 180);
+                    Owner.AddBuff(BuffID.Darkness, 180);
                 }
                 Projectile.Kill();
             }
 
             Projectile.timeLeft = 30;
-            Projectile.Center = Vector2.Lerp(Projectile.Center, owner.Center + moveTo, 0.4f);
-            if (Projectile.Distance(owner.Center + moveTo) < 16) {
+            Projectile.Center = Vector2.Lerp(Projectile.Center, Owner.Center + moveTo, 0.4f);
+            if (Projectile.Distance(Owner.Center + moveTo) < 16) {
                 Projectile.ai[2] = 1;
             }
             if (Projectile.ai[2] == 0) {
@@ -47,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 GeneralParticleHandler.SpawnParticle(smoke);
             }
 
-            if (owner.PressKey()) {
+            if (DownLeft) {
                 Projectile.ai[1]++;
             }
             else {
@@ -57,7 +63,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             if (Projectile.ai[1] > 30) {
                 Vector2 direction = Projectile.Center.DirectionTo(Main.MouseWorld);
                 Projectile.direction = Math.Sign(direction.X);
-                if (Projectile.owner == Main.myPlayer) {
+                if (Projectile.IsOwnedByLocalPlayer()) {
                     int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, direction * 16
                         , ModContent.ProjectileType<DarkMasterBeam>(), (int)(Projectile.damage * 0.4f), Projectile.knockBack, Projectile.owner, 1, 1);
                     Main.projectile[proj].Calamity().allProjectilesHome = true;
@@ -65,7 +71,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 Projectile.ai[1] = 0;
             }
 
-            Projectile.localAI[0] = Math.Abs(MathF.Sin(Projectile.ai[1] * 0.5f)) * 25;
+            Projectile.localAI[0] = Math.Abs(MathF.Sin(Projectile.ai[1] * 0.5f)) * 25 - 10;
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -113,7 +119,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 Vector2 distToPlayer = Projectile.position - Owner.position;
                 Vector2 drawPos = Owner.GetPlayerStabilityCenter() + distToPlayer - Main.screenPosition
                     + (rots - MathHelper.PiOver4).ToRotationVector2() * (Projectile.localAI[0] - 5);
-                Main.EntitySpriteDraw(Sword, drawPos, null, lightColor, rots, new Vector2(0, Sword.Height), 1f, SpriteEffects.None);
+                Main.EntitySpriteDraw(Sword, drawPos, null, Color.Black, rots, new Vector2(0, Sword.Height), 1f, SpriteEffects.None);
             }
             return false;
         }
