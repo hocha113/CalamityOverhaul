@@ -20,7 +20,7 @@ namespace CalamityOverhaul
             CWRMessageType type = (CWRMessageType)reader.ReadByte();
 
             if (type == CWRMessageType.TungstenRiot) {
-                TungstenRiot.EventNetWorkReceive(reader);
+                TungstenRiot.EventNetWorkReceive(reader, whoAmI);
             }
             else if (type == CWRMessageType.OverBeatBack) {
                 CWRNpc.OtherBeatBackReceive(reader, whoAmI);

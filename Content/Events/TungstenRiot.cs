@@ -75,8 +75,7 @@ namespace CalamityOverhaul.Content.Events
         }
 
         public bool TryStartEvent() {
-            if (TungstenRiotIsOngoing || (!NPC.downedBoss1 && !Main.hardMode && !DownedBossSystem.downedAquaticScourge)
-                || BossRushEvent.BossRushActive || AcidRainEvent.AcidRainEventIsOngoing) {
+            if (CWRUtils.Invasion) {
                 return false;
             }
 
@@ -128,20 +127,26 @@ namespace CalamityOverhaul.Content.Events
             }
         }
 
-        public void EventNetWorkSend(int ignoreIndex = -1) {
+        public void EventNetWorkSend() {
             if (VaultUtils.isServer) {
-                NetMessage.SendData(MessageID.WorldData);
                 var netMessage = CWRMod.Instance.GetPacket();
                 netMessage.Write((byte)CWRMessageType.TungstenRiot);
                 netMessage.Write(TungstenRiotIsOngoing);
                 netMessage.Write(EventKillPoints);
-                netMessage.Send(-1, ignoreIndex);
+                netMessage.Send();
             }
         }
 
-        public static void EventNetWorkReceive(BinaryReader reader) {
+        public static void EventNetWorkReceive(BinaryReader reader, int whoAmi) {
             Instance.TungstenRiotIsOngoing = reader.ReadBoolean();
             Instance.EventKillPoints = reader.ReadInt32();
+            if (VaultUtils.isServer) {
+                var netMessage = CWRMod.Instance.GetPacket();
+                netMessage.Write((byte)CWRMessageType.TungstenRiot);
+                netMessage.Write(Instance.TungstenRiotIsOngoing);
+                netMessage.Write(Instance.EventKillPoints);
+                netMessage.Send(-1, whoAmi);
+            }
         }
 
         public void ModifyEventNPCLoot(NPC npc, ref NPCLoot npcLoot) {
