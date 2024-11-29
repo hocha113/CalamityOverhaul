@@ -30,7 +30,10 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         }
         void ICWRLoader.UnLoadData() => methodInfo = null;
 
-        public override void SetDefaults(Item item) => SHPCEcType.SetDefaultsFunc(item);
+        public override void SetDefaults(Item item) {
+            SHPCEcType.SetDefaultsFunc(item);
+            ItemID.Sets.ShimmerTransformToItem[item.type] = ModContent.ItemType<PlasmaDriveCore>();
+        }
 
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
             SHPCEcType.SHPCDamage(player, item, ref damage);

@@ -447,21 +447,7 @@ namespace CalamityOverhaul.Content
                             recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
                         }
                     }
-                    //修改SHPC的微光合成
-                    {
-                        if (recipe.HasResult(ItemType<SHPC>())) {
-                            recipe.DisableDecraft();
-                        }
-                    }
                 }
-            }
-
-            //添加SHPC微光返回内容，这个部分必须放在遍历之后
-            {
-                Recipe.Create(ItemType<SHPC>())
-                    .AddCustomShimmerResult(ItemType<PlasmaDriveCore>(), 1)
-                    .AddCustomShimmerResult(ItemType<SuspiciousScrap>(), 4)
-                    .Register();
             }
         }
 
