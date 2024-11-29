@@ -3451,8 +3451,8 @@ Configs: {
 	CWRServerConfig: {
 		DisplayName: Configuración de contenido
 
-		ForceReplaceResetContent: {
-			Label: ¿Habilitar reemplazo forzado de contenido?
+		WeaponOverhaul: {
+			Label: Reforma de armas
 			Tooltip:
 				'''
 				Si se activa, se modificará directamente el contenido original del mod de desastre.
@@ -3475,17 +3475,6 @@ Configs: {
 				'''
 		}
 
-		ResetItemReminder: {
-			Label: Recordatorio sobre el restablecimiento de objetos
-			Tooltip:
-				'''
-				¡Hola! Si ves esto, ¡no te apresures a cerrarlo! Asegúrate de comprender la [c/fff08c: función y significado del reemplazo forzado de contenido]
-				[c/de0808: ¡especialmente qué sucederá si lo cierras!][c/de0808: ]
-				Si, después de leer la guía del contenido del mod, aún tienes dudas y problemas,
-				ve al foro para contactarme o envía un correo a coslowkimberli185@gmail.com
-				'''
-		}
-
 		ScreenVibration: {
 			Label: Efecto de vibración de pantalla en ataques especiales de armas
 			Tooltip: Si se activa, al realizar algunos ataques, la pantalla vibrará, lo que podría intensificar la sensación de impacto.
@@ -3504,16 +3493,6 @@ Configs: {
 			CWRSystem: Configuración del sistema de mejora
 			CWRWeapon: Configuración de armas de mejora
 			CWRUI: Configuración de interfaz de usuario de mejora
-		}
-
-		MurasamaRisingDragonCoolDownBarSize: {
-			Label: Tamaño de la UI de carga de Murasama
-			Tooltip:
-				'''
-				Un factor de corrección adicional para el tamaño de la UI, basado en porcentajes %.
-				Establezca esto para adaptarse al tamaño de UI que prefiera, generalmente manteniendo un tamaño del 100% es suficiente.
-				Deslice este control para ajustar el porcentaje; el máximo es 200%, el doble del tamaño original, y el mínimo es 50%.
-				'''
 		}
 
 		LensEasing: {
@@ -3600,15 +3579,6 @@ Configs: {
 			Tooltip: Cuanto mayor sea el valor, más notable será el sonido; 1 es el volumen original.
 		}
 
-		OpeningOukModification: {
-			Label: Habilitar modificación del inventario inicial[c/06e33f:(experimental)]
-			Tooltip:
-				'''
-				Si se activa, se modificará completamente el inventario del personaje inicial; por ejemplo, las herramientas de cobre se convertirán en herramientas de piedra.
-				Actualmente, se clasifica como una función experimental y está desactivada por defecto; si se habilita, solo afectará a los personajes recién creados.
-				'''
-		}
-
 		ShotgunFireForcedReloadInterruption: {
 			Label: Interrupción forzada de recarga de disparo de escopeta[c/06e33f:(experimental)]
 			Tooltip:
@@ -3618,7 +3588,7 @@ Configs: {
 				'''
 		}
 
-		BiobehavioralOverlay: {
+		BiologyOverhaul: {
 			Label: Modificación de comportamiento biológico[c/06e33f:(experimental)]
 			Tooltip:
 				'''
@@ -3634,16 +3604,6 @@ Configs: {
 				'''
 				Habilitado por defecto, muchas armas de tipo espada tendrán brillantes efectos de luz.
 				En la mayoría de los casos, esto hará que el juego se vea más impresionante.
-				'''
-		}
-
-		TileModuleBosSizeDraw: {
-			Label: Dibujo de caja de módulo de bloques[c/06e33f:(opción de desarrollador)]
-			Tooltip:
-				'''
-				[c/c20909:No recomendado para no desarrolladores]
-				Utilizado para depurar y observar la estructura de colisión de TileModule.
-				Al habilitarlo, TileModule dibujará su caja de colisión, nombre de tipo y otros datos en el mundo.
 				'''
 		}
 

@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
                 if (type != typeof(NPCOverride)) {
                     object obj = Activator.CreateInstance(type);
                     if (obj is NPCOverride inds) {
-                        if (inds.CanLoad() && CWRServerConfig.Instance.BiobehavioralOverlay) {//前提是开启了生物修改
+                        if (inds.CanLoad() && CWRServerConfig.Instance.BiologyOverhaul) {//前提是开启了生物修改
                             NPCSets.Add(inds);
                         }
                     }

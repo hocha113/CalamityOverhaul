@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostAddRecipes() {
-            if (!CWRServerConfig.Instance.ForceReplaceResetContent) {
+            if (!CWRServerConfig.Instance.WeaponOverhaul) {
                 foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
                     if (baseRItem.FormulaSubstitution)
                         baseRItem.LoadItemRecipe();

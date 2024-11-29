@@ -3414,8 +3414,8 @@ Configs: {
 	CWRServerConfig: {
 		DisplayName: Inhalt eingeben
 
-		ForceReplaceResetContent: {
-			Label: Aktivieren Sie die erzwungene Inhaltserneuerung
+		WeaponOverhaul: {
+			Label: Waffen Überholung
 			Tooltip:
 				'''
 				Wenn aktiviert, werden die Originalinhalte des Katastrophe-Moduls direkt geändert
@@ -3437,17 +3437,6 @@ Configs: {
 				'''
 		}
 
-		ResetItemReminder: {
-			Label: Erinnerung zur Zurücksetzung von Gegenständen
-			Tooltip:
-				'''
-				Hey! Bevor Sie diese Option deaktivieren, stellen Sie sicher, dass Sie die Auswirkungen und Bedeutung der [c/fff08c:erzwungenen Inhaltserneuerung] verstanden haben
-				[c/de0808:Insbesondere was passieren wird, wenn Sie die [c/fff08c:erzwungene Inhaltserneuerung] deaktivieren!]
-				Wenn Sie nach dem Lesen der Modulinhalte immer noch Fragen oder Probleme haben,
-				wenden Sie sich bitte an das Forum oder senden Sie eine E-Mail an coslowkimberli185@gmail.com
-				'''
-		}
-
 		ScreenVibration: {
 			Label: Bildschirmvibration für spezielle Waffenangriffe
 			Tooltip: Wenn aktiviert, vibriert der Bildschirm bei bestimmten Angriffen, um den Schlag stärker zu betonen
@@ -3466,16 +3455,6 @@ Configs: {
 			CWRSystem: Großreparatursystemeinstellungen
 			CWRWeapon: Großreparaturwaffeneinstellungen
 			CWRUI: Großreparatur-UI-Einstellungen
-		}
-
-		MurasamaRisingDragonCoolDownBarSize: {
-			Label: Murasama-Auflade-UI-Größe
-			Tooltip:
-				'''
-				Ein zusätzlicher UI-Größenkorrekturfaktor für Murasamas Aufladung, basierend auf Prozentsätzen
-				Dies dient zur Anpassung an Ihre bevorzugte UI-Größe, sollte normalerweise bei 100% bleiben
-				Ziehen Sie den Schieberegler, um den Prozentsatz einzustellen, mit einem Maximum von 200% für die doppelte Originalgröße und einem Minimum von 50%
-				'''
 		}
 
 		LensEasing: {
@@ -3562,15 +3541,6 @@ Configs: {
 			Tooltip: Je höher der Wert, desto lauter ist der Sound; 1 entspricht der Originallautstärke
 		}
 
-		OpeningOukModification: {
-			Label: Startgegenstände-Taschenmodifikation aktivieren[c/06e33f:(Experimentell)]
-			Tooltip:
-				'''
-				Wenn aktiviert, werden die Startgegenstände im Inventar des Charakters vollständig geändert, z. B. werden Kupferwerkzeuge durch Steinwerkzeuge ersetzt
-				In der aktuellen Version als experimentelles Feature eingestuft, standardmäßig deaktiviert; aktiviert, wirkt sich nur auf neu erstellte Charaktere aus
-				'''
-		}
-
 		ShotgunFireForcedReloadInterruption: {
 			Label: Schrotflintenfeuer erzwingt Unterbrechung der Zwangsladung[c/06e33f:(Experimentell)]
 			Tooltip:
@@ -3580,7 +3550,7 @@ Configs: {
 				'''
 		}
 
-		BiobehavioralOverlay: {
+		BiologyOverhaul: {
 			Label: Biologische Verhaltensüberlagerung[c/06e33f:(Experimentell)]
 			Tooltip:
 				'''
@@ -3596,16 +3566,6 @@ Configs: {
 				'''
 				Standardmäßig aktiviert, viele Schwertwaffen werden schillernde Lichteffekte haben.
 				In den meisten Fällen wird dies das Spiel cooler machen.
-				'''
-		}
-
-		TileModuleBosSizeDraw: {
-			Label: Kachelmodul-Kollisionsbox-Zeichnung [c/06e33f:(Entwickleroption)]
-			Tooltip:
-				'''
-				[c/c20909:ür Nicht-Entwickler wird das Aktivieren nicht empfohlen]
-				                Zum Debuggen und Beobachten der Kollisionsstrukturen des TileModules,
-				                Nach dem Aktivieren wird das TileModule seine Kollisionsbox, den Typnamen und andere Daten in der Welt darstellen.
 				'''
 		}
 

@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     , ShootVelocity.UnitVector() * 5, ModContent.ProjectileType<GhostSkull>()
                 , Projectile.damage, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3), Main.rand.Next(3));
             }
-            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ModContent.ProjectileType<MourningSkull2>()
+            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ModContent.ProjectileType<SoulSeekerSkull>()
                 , Projectile.damage / 3, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));
         }
 
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
                 Vector2 spanPos = ShootSpanPos + CWRUtils.randVr(600, 700);
                 Vector2 ver = spanPos.To(target.Center).UnitVector() * ShootSpeed;
-                Projectile.NewProjectile(Source, spanPos, ver, ModContent.ProjectileType<MourningSkull2>()
+                Projectile.NewProjectile(Source, spanPos, ver, ModContent.ProjectileType<SoulSeekerSkull>()
                 , Projectile.damage, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));
             }
         }
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SoundEngine.PlaySound(in SoundID.Item117, Projectile.position);
                 Vector2 spanPos = ShootSpanPos + CWRUtils.randVr(600, 700);
                 Vector2 ver = spanPos.To(target.Center).UnitVector() * ShootSpeed;
-                Projectile.NewProjectile(Source, spanPos, ver, ModContent.ProjectileType<MourningSkull2>()
+                Projectile.NewProjectile(Source, spanPos, ver, ModContent.ProjectileType<SoulSeekerSkull>()
                 , Projectile.damage, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));
             }
         }

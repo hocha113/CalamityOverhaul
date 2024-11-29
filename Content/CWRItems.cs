@@ -364,7 +364,7 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            if (CWRServerConfig.Instance.ForceReplaceResetContent && inRItemIndsDict) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && inRItemIndsDict) {
                 string key = CWRMod.RItemIndsDict[item.type].TargetToolTipItemName;
                 if (key != "") {
                     if (CWRMod.RItemIndsDict[item.type].IsVanilla) {
@@ -521,7 +521,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostDrawTooltip(Item item, ReadOnlyCollection<DrawableTooltipLine> lines) {
-            if (CWRServerConfig.Instance.ForceReplaceResetContent
+            if (CWRServerConfig.Instance.WeaponOverhaul
                 && CWRMod.RItemIndsDict.TryGetValue(item.type, out BaseRItem baseRItem)) {
                 if (baseRItem.DrawingInfo) {
                     drawIconSmall();

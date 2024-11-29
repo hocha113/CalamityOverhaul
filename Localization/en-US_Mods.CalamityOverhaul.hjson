@@ -2872,12 +2872,6 @@ Projectiles: {
 	EarthenBall.DisplayName: Earthen Ball
 	EarthenPikeThrowProj.DisplayName: Earthen Pike Throw
 	MeleeFossilShard.DisplayName: Melee Fossil Shard
-
-	Melee: {
-		MourningSkull2.DisplayName: Mourning Skull2
-		SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
-	}
-
 	TeardropCleaverProj.DisplayName: Teardrop Cleaver Proj
 	DarkIceZeros.DisplayName: Dark Ice Zeros
 	RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
@@ -2992,12 +2986,6 @@ Projectiles: {
 	FlintSpearProj.DisplayName: Flint Spear Proj
 	TheUpiSteleHeldProj.DisplayName: The Upi Stele
 	MagicStar.DisplayName: Magic Star
-
-	Magic: {
-		_SHPB.DisplayName: Energy Ball
-		_SHPL.DisplayName: Dissociation Ray
-	}
-
 	TheSpiritFlintProjL.DisplayName: The Spirit Flint Proj L
 	TheSpiritFlintProjR.DisplayName: The Spirit Flint Proj R
 	TheSpiritFlintProj.DisplayName: The Spirit Flint Proj
@@ -3427,8 +3415,8 @@ Configs: {
 	CWRServerConfig: {
 		DisplayName: Content Config
 
-		ForceReplaceResetContent: {
-			Label: Enable Forceful Reset Content Replacement
+		WeaponOverhaul: {
+			Label: Weapon Overhaul
 			Tooltip:
 				'''
 				If enabled, it will directly modify the original content of the Calamity mod.
@@ -3451,18 +3439,6 @@ Configs: {
 				'''
 		}
 
-		ResetItemReminder: {
-			Label: Reset Item Reminder
-			Tooltip:
-				'''
-				Hey! If you see this! Don't turn it off! Before doing so, 
-				make sure you understand what [c/fff08c: Mandatory Remastered Content replacement] does and what it means!
-				[c/de0808: Especially closed][c/fff08c: Forced remake content replacement][c/de0808: What happens after!!]
-				If you still can't solve your doubts and questions after reading the content guide of the module,
-				Contact me in the forums or send me an email at coslowkimberli185@gmail.com
-				'''
-		}
-
 		ScreenVibration: {
 			Label: Weapon Screen Vibration
 			Tooltip: If turned on, the screen will vibrate during some attacks, which may make the hit feel more intense
@@ -3481,17 +3457,6 @@ Configs: {
 			CWRSystem: System Configs
 			CWRWeapon: Weapon Configs
 			CWRUI: UI Configs
-		}
-
-		MurasamaRisingDragonCoolDownBarSize: {
-			Label: Murasama Charged UI Size
-			Tooltip:
-				'''
-				An additional UI size correction factor, in percentage % units
-				Set this to fit your preferred Ui size, which is generally left at 100%
-				Pull the slider to adjust the percentage data to a maximum of 200%, 
-				double the volume of the original size, and a minimum of 50%
-				'''
 		}
 
 		LensEasing: {
@@ -3579,17 +3544,6 @@ Configs: {
 			Tooltip: The larger the value, the more prominent the sound; 1 is the original volume
 		}
 
-		OpeningOukModification: {
-			Label: Opening Ouk Modification [c/06e33f:(Experimental)]
-			Tooltip:
-				'''
-				If enabled, it will completely modify the starting inventory of new characters; 
-				for example, copper tools will be replaced with stone tools.
-				In the current version, this is classified as an experimental feature and is disabled by default. 
-				If enabled, it will only affect newly created characters.
-				'''
-		}
-
 		ShotgunFireForcedReloadInterruption: {
 			Label: Shotgun Fire Forced Reload Interruption [c/06e33f:(Experimental)]
 			Tooltip:
@@ -3599,8 +3553,8 @@ Configs: {
 				'''
 		}
 
-		BiobehavioralOverlay: {
-			Label: Biobehavioral Modification [c/06e33f:(Experimental)]
+		BiologyOverhaul: {
+			Label: Biology Overhaul [c/06e33f:(Experimental)]
 			Tooltip:
 				'''
 				[c/c20909:Unfinished]
@@ -3615,16 +3569,6 @@ Configs: {
 				'''
 				Turned on by default, many sword weapons will have a dazzling bright knife light
 				In the vast majority of cases, this makes the game cooler
-				'''
-		}
-
-		TileModuleBosSizeDraw: {
-			Label: Tile Module Bounding Box Draw [c/06e33f:(Developer Option)]
-			Tooltip:
-				'''
-				[c/c20909:Not recommended for non-developers]
-				Used for debugging and observing the collision structure of TileModule.
-				When enabled, TileModule will draw its bounding boxes, type names, and other data in the world.
 				'''
 		}
 

@@ -3429,8 +3429,8 @@ Configs: {
 	CWRServerConfig: {
 		DisplayName: 内容设置
 
-		ForceReplaceResetContent: {
-			Label: 是否开启强制重制内容替换
+		WeaponOverhaul: {
+			Label: 武器大修
 			Tooltip:
 				'''
 				如果开启，将直接修改灾厄模组的原内容
@@ -3453,17 +3453,6 @@ Configs: {
 				'''
 		}
 
-		ResetItemReminder: {
-			Label: 重置物品温馨提示
-			Tooltip:
-				'''
-				嘿！如果您看到了这个！别急着关掉，在这之前确保您理解了[c/fff08c:强制重制内容替换]的作用和意义
-				[c/de0808:尤其是关闭了][c/fff08c:强制重制内容替换][c/de0808:之后会发生什么！！]
-				如果您在阅读了模组的内容引导后仍旧解决不了您的疑惑与问题，
-				请前往论坛联系我或者向 coslowkimberli185@gmail.com 发送邮件
-				'''
-		}
-
 		ScreenVibration: {
 			Label: 武器特殊攻击屏幕振动效果
 			Tooltip: 如果开启，在进行一些攻击时会让屏幕发生振动，这或许可以让打击感更加强烈
@@ -3482,16 +3471,6 @@ Configs: {
 			CWRSystem: 大修系统设置
 			CWRWeapon: 大修武器设置
 			CWRUI: 大修UI设置
-		}
-
-		MurasamaRisingDragonCoolDownBarSize: {
-			Label: 鬼妖村正充能UI大小
-			Tooltip:
-				'''
-				一个额外的UI大小矫正因子，单位以百分比%为基准
-				设置这个来适应您喜好的Ui大小，一般保持为100%大小即可
-				拉动这个滑块调节百分比数据，最大为200%，为原大小的两倍体积，最小为50%
-				'''
 		}
 
 		LensEasing: {
@@ -3578,15 +3557,6 @@ Configs: {
 			Tooltip: 值越大声音越明显，1为原音量
 		}
 
-		OpeningOukModification: {
-			Label: 启用开局物品袋修改[c/06e33f:(实验性)]
-			Tooltip:
-				'''
-				如果开启，会完全修改初始角色的背包物品，比如，铜质工具会变成石头工具
-				在当前版本归纳为实验性功能，默认关闭，如果开启，将只会在新创建的角色上生效
-				'''
-		}
-
 		ShotgunFireForcedReloadInterruption: {
 			Label: 霰弹枪开火强制打断子弹装填[c/06e33f:(实验性)]
 			Tooltip:
@@ -3596,8 +3566,8 @@ Configs: {
 				'''
 		}
 
-		BiobehavioralOverlay: {
-			Label: 生物行为修改[c/06e33f:(实验性)]
+		BiologyOverhaul: {
+			Label: 生物大修[c/06e33f:(实验性)]
 			Tooltip:
 				'''
 				[c/c20909:未完成]
@@ -3612,16 +3582,6 @@ Configs: {
 				'''
 				默认开启，许多刀剑类武器将会拥有炫彩亮丽的刀光
 				在绝大多数情况下，这会让游戏变得更酷
-				'''
-		}
-
-		TileModuleBosSizeDraw: {
-			Label: 物块模块箱体绘制[c/06e33f:(开发者选项)]
-			Tooltip:
-				'''
-				[c/c20909:非开发人员不建议开启]
-				用于调试和观察TileModule的碰撞结构，
-				开启后，TileModule会在世界中绘制出自身的碰撞箱体、类型名等数据
 				'''
 		}
 

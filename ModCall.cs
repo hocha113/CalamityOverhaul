@@ -87,7 +87,7 @@ namespace CalamityOverhaul
             }
             //获取设置内容，是否开启强制内容替换
             else if (callType == CallType.Config_ForceReplaceResetContent) {
-                return CWRServerConfig.Instance.ForceReplaceResetContent;
+                return CWRServerConfig.Instance.WeaponOverhaul;
             }
             //已弃用，将始终返回true，因为已经有一些模组在使用这个call，为了保证适配性暂时不要删除它
             else if (callType == CallType.Config_AddExtrasContent) {

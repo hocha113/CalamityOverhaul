@@ -3,6 +3,8 @@ using CalamityMod.NPCs.SlimeGod;
 using CalamityMod.Projectiles.Magic;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Magic;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -10,28 +12,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
 {
-    public class _SHPB : SHPB
-    {
-        public override string Texture => CWRConstant.Cay_Proj_Magic + "SHPB";
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (target.type == ModContent.NPCType<CrimulanPaladin>() || target.type == ModContent.NPCType<EbonianPaladin>()) {
-                modifiers.FinalDamage *= 0.5f;
-            }
-            base.ModifyHitNPC(target, ref modifiers);
-        }
-    }
-
-    public class _SHPL : SHPL
-    {
-        public override string Texture => "CalamityMod/Projectiles/LaserProj";
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (target.type == ModContent.NPCType<CrimulanPaladin>() || target.type == ModContent.NPCType<EbonianPaladin>()) {
-                modifiers.FinalDamage *= 0.75f;
-            }
-            base.ModifyHitNPC(target, ref modifiers);
-        }
-    }
-
     internal class SHPCHeldProj : BaseMagicGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + "SHPC";
@@ -116,7 +96,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void FiringShoot() {
-            int type = ModContent.ProjectileType<_SHPB>();
+            int type = ModContent.ProjectileType<PhaseEnergySphere>();
             switch (level) {
                 case 0:
                 case 1:
@@ -148,7 +128,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         }
 
         public override void FiringShootR() {
-            int type = ModContent.ProjectileType<_SHPL>();
+            int type = ModContent.ProjectileType<PhaseLaser>();
             switch (level) {
                 case 0:
                 case 1:

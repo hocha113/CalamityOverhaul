@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
             bool heldBool1 = murasama.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>();
             bool heldBool2 = murasama.type != ModContent.ItemType<MurasamaEcType>();
-            if (CWRServerConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换
+            if (CWRServerConfig.Instance.WeaponOverhaul) {//如果开启了强制替换
                 if (heldBool1) {//只需要判断原版的物品
                     Projectile.Kill();
                     return false;

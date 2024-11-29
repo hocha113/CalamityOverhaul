@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 Owner.CWR().RisingDragonCharged = 0;
             }
 
-            if (CWRServerConfig.Instance.ForceReplaceResetContent) {
+            if (CWRServerConfig.Instance.WeaponOverhaul) {
                 if (murasama.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>()) {
                     Projectile.Kill();
                     return;

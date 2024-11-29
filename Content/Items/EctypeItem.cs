@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items
     {
         protected virtual bool isload => false;
         public sealed override bool IsLoadingEnabled(Mod mod) {
-            return CWRServerConfig.Instance.ForceReplaceResetContent && !isload ? false : base.IsLoadingEnabled(mod);
+            return CWRServerConfig.Instance.WeaponOverhaul && !isload ? false : base.IsLoadingEnabled(mod);
         }
     }
 }

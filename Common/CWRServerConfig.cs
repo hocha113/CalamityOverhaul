@@ -42,12 +42,12 @@ namespace CalamityOverhaul.Common
         [BackgroundColor(35, 185, 78, 255)]
         [ReloadRequired]
         [DefaultValue(true)]
-        public bool ForceReplaceResetContent { get; set; }//是否开启强制内容替换
+        public bool WeaponOverhaul { get; set; }//是否开启强制内容替换
 
         [BackgroundColor(35, 185, 78, 255)]
         [ReloadRequired]
         [DefaultValue(true)]
-        public bool BiobehavioralOverlay { get; set; }
+        public bool BiologyOverhaul { get; set; }
 
         [BackgroundColor(35, 185, 78, 255)]
         [DefaultValue(true)]

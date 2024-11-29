@@ -349,7 +349,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         public virtual bool CheckAlive() {
             bool heldBool1 = Item.type != targetCayItem;
             bool heldBool2 = Item.type != targetCWRItem;
-            if (CWRServerConfig.Instance.ForceReplaceResetContent) {//如果开启了强制替换
+            if (CWRServerConfig.Instance.WeaponOverhaul) {//如果开启了强制替换
                 if (heldBool1) {//只需要判断原版的物品
                     return false;
                 }

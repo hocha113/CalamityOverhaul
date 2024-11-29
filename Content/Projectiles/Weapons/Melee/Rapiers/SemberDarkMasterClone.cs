@@ -11,9 +11,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 {
-    internal class SemberDarkMasterClone : DarkMasterClone
+    internal class SemberDarkMasterClone : BaseHeldProj
     {
-        private Item item => Main.player[Projectile.owner].ActiveItem();
+        private Item item => Owner.GetItem();
+        public override void SetDefaults() => Projectile.CloneDefaults(ModContent.ProjectileType<DarkMasterClone>());
         public override void AI() {
             Projectile.velocity = Vector2.Zero;
             Player owner = Main.player[Projectile.owner];
@@ -69,13 +70,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
 
         public override bool PreDraw(ref Color lightColor) {
             Main.playerVisualClone[Projectile.owner] ??= new();
-            Player owner = Main.player[Projectile.owner];
             Player player = Main.playerVisualClone[Projectile.owner];
 
-            player.CopyVisuals(Main.player[Projectile.owner]);
+            player.CopyVisuals(Owner);
 
-            player.hair = owner.hair;
-            player.skinVariant = owner.skinVariant;
+            player.hair = Owner.hair;
+            player.skinVariant = Owner.skinVariant;
             player.skinColor = Color.Black;
             player.shirtColor = Color.Black;
             player.underShirtColor = Color.Black;
@@ -97,8 +97,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             player.UpdateDyes();
             player.PlayerFrame();
 
-            if (owner.ItemAnimationActive && owner.altFunctionUse != 2) {
-                player.bodyFrame = owner.bodyFrame;
+            if (Owner.ItemAnimationActive && Owner.altFunctionUse != 2) {
+                player.bodyFrame = Owner.bodyFrame;
             }
             else {
                 player.bodyFrame.Y = 0;
@@ -107,11 +107,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
             player.legFrame.Y = 0;
             player.direction = Math.Sign(Projectile.DirectionTo(Main.MouseWorld).X);
             Main.PlayerRenderer.DrawPlayer(Main.Camera, player, Projectile.position, 0f, player.fullRotationOrigin, 0f, 1f);
-            if (owner.ItemAnimationActive && owner.altFunctionUse != 2) {
+            if (Owner.ItemAnimationActive && Owner.altFunctionUse != 2) {
                 Texture2D Sword = ModContent.Request<Texture2D>("CalamityMod/Items/Weapons/Melee/TheDarkMaster").Value;
                 float rots = Projectile.Center.DirectionTo(Main.MouseWorld).ToRotation() + MathHelper.PiOver4;
-                Vector2 distToPlayer = Projectile.position - owner.position;
-                Vector2 drawPos = owner.GetPlayerStabilityCenter() + distToPlayer - Main.screenPosition
+                Vector2 distToPlayer = Projectile.position - Owner.position;
+                Vector2 drawPos = Owner.GetPlayerStabilityCenter() + distToPlayer - Main.screenPosition
                     + (rots - MathHelper.PiOver4).ToRotationVector2() * (Projectile.localAI[0] - 5);
                 Main.EntitySpriteDraw(Sword, drawPos, null, lightColor, rots, new Vector2(0, Sword.Height), 1f, SpriteEffects.None);
             }

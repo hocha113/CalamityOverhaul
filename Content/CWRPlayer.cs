@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content
                 SpwanTextProj.New(Player, () => CWRUtils.Text(improvGameText, Color.Red), 210);
                 CWRMod.Instance.Logger.Info(improvGameText);
             }
-            if (CWRServerConfig.Instance.ForceReplaceResetContent && Player.name == "HoCha113") {
+            if (CWRServerConfig.Instance.WeaponOverhaul && Player.name == "HoCha113") {
                 string text = CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
                 SpwanTextProj.New(Player, () => CWRUtils.Text(text, Color.GreenYellow), 240);
             }
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content
 
         public override void CatchFish(FishingAttempt attempt, ref int itemDrop
             , ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {
-            if (!CWRServerConfig.Instance.ForceReplaceResetContent) {
+            if (!CWRServerConfig.Instance.WeaponOverhaul) {
                 return;
             }
             if (!attempt.inHoney && !attempt.inLava && Main.rand.NextBool(500)) {

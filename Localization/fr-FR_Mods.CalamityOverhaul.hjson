@@ -3416,8 +3416,8 @@ Configs: {
 	CWRServerConfig: {
 		DisplayName: Paramétrage du contenu
 
-		ForceReplaceResetContent: {
-			Label: Activer le remplacement forcé du contenu
+		WeaponOverhaul: {
+			Label: Refonte des armes
 			Tooltip:
 				'''
 				Si activé, cela modifiera directement le contenu original du module de Calamité
@@ -3440,17 +3440,6 @@ Configs: {
 				'''
 		}
 
-		ResetItemReminder: {
-			Label: Rappel de réinitialisation des objets
-			Tooltip:
-				'''
-				Hé ! Si vous voyez ceci ! Ne le désactivez pas trop vite, assurez-vous de comprendre l'effet et la signification de [c/fff08c:Activer le remplacement forcé du contenu]
-				[c/de0808:Particulièrement ce qui se passe après avoir désactivé] [c/fff08c:Activer le remplacement forcé du contenu][c/de0808: ! !]
-				Si, après avoir lu les instructions du module, vous ne parvenez toujours pas à résoudre vos doutes et problèmes,
-				veuillez contacter le forum ou envoyer un e-mail à coslowkimberli185@gmail.com
-				'''
-		}
-
 		ScreenVibration: {
 			Label: Effet de vibration de l'écran pour les attaques spéciales des armes
 			Tooltip: Si activé, cela provoquera des vibrations de l'écran lors de certaines attaques, augmentant ainsi la sensation de coup
@@ -3469,16 +3458,6 @@ Configs: {
 			CWRSystem: Paramètres du système de grande réparation
 			CWRWeapon: Paramètres d'armes de grande réparation
 			CWRUI: Paramètres d'interface utilisateur de grande réparation
-		}
-
-		MurasamaRisingDragonCoolDownBarSize: {
-			Label: Taille de la barre de recharge de Murasama Rising Dragon
-			Tooltip:
-				'''
-				Un facteur de correction de la taille de l'interface utilisateur supplémentaire, en pourcentage %
-				Réglez ceci pour adapter la taille de l'interface utilisateur à vos préférences, généralement maintenu à 100% de la taille
-				Faites glisser ce curseur pour ajuster le pourcentage, maximum à 200%, double taille d'origine, minimum à 50%
-				'''
 		}
 
 		LensEasing: {
@@ -3564,15 +3543,6 @@ Configs: {
 			Tooltip: Plus la valeur est élevée, plus le son est fort. 1 correspond au volume original
 		}
 
-		OpeningOukModification: {
-			Label: Activer la modification des objets de départ [c/06e33f:(expérimental)]
-			Tooltip:
-				'''
-				Si activé, modifie complètement les objets du sac à dos du personnage de départ, par exemple, les outils en cuivre deviendront des outils en pierre
-				Considéré comme une fonctionnalité expérimentale dans cette version, désactivée par défaut. Si activée, elle n'affectera que les nouveaux personnages créés
-				'''
-		}
-
 		ShotgunFireForcedReloadInterruption: {
 			Label: Interruption forcée du rechargement par le feu des fusils à pompe [c/06e33f:(expérimental)]
 			Tooltip:
@@ -3583,7 +3553,7 @@ Configs: {
 				'''
 		}
 
-		BiobehavioralOverlay: {
+		BiologyOverhaul: {
 			Label: Modification du comportement biologique [c/06e33f:(expérimental)]
 			Tooltip:
 				'''
@@ -3599,16 +3569,6 @@ Configs: {
 				'''
 				Activé par défaut, de nombreuses épées auront des effets lumineux éclatants.
 				Dans la plupart des cas, cela rendra le jeu plus cool.
-				'''
-		}
-
-		TileModuleBosSizeDraw: {
-			Label: Dessin des boîtes de collision du module de tuiles [c/06e33f:(Option développeur)]
-			Tooltip:
-				'''
-				 [c/c20909:recommandé pour les non-développeurs]
-				                Utilisé pour déboguer et observer la structure de collision du TileModule,
-				                Lorsqu'il est activé, TileModule affichera dans le monde ses propres boîtes de collision, noms de type et autres données.
 				'''
 		}
 
