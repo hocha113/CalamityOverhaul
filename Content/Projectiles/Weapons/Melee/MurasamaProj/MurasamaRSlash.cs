@@ -22,17 +22,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "MurasamaSlash";
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<MurasamaEcType>();
-        public ref int hitCooldown => ref Main.player[Projectile.owner].Calamity().murasamaHitCooldown;
+        public ref int hitCooldown => ref Owner.Calamity().murasamaHitCooldown;
         public int time = 0;
-        public override void SetStaticDefaults() {
-            Main.projFrames[Projectile.type] = 14;
-        }
-
+        public bool CanAttemptDead;
         public bool Slashing = false;
         public bool Slash1 => Projectile.frame == 10;
         public bool Slash2 => Projectile.frame == 0;
         public bool Slash3 => Projectile.frame == 6;
-
+        public override void SetStaticDefaults() => Main.projFrames[Projectile.type] = 14;
         public override void SetDefaults() {
             Projectile.width = 216;
             Projectile.height = 216;
@@ -92,7 +89,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 if (hitCooldown == 0) {
                     Slashing = true;
                 }
-
+                CanAttemptDead = true;
                 Projectile.numHits = 0;
             }
             else if (Slash3) {
@@ -100,7 +97,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 if (hitCooldown == 0) {
                     Slashing = true;
                 }
-
+                CanAttemptDead = true;
                 Projectile.numHits = 0;
             }
             else if (Slash1) {
@@ -108,10 +105,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 if (hitCooldown == 0) {
                     Slashing = true;
                 }
-
+                CanAttemptDead = true;
                 Projectile.numHits = 0;
             }
             else {
+                CanAttemptDead = false;
                 Slashing = false;
             }
 
@@ -137,8 +135,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     HandleChannelMovement(player, playerRotatedPoint);
                 }
                 else {
-                    hitCooldown = Main.zenithWorld ? 0 : 8;
-                    Projectile.Kill();
+                    if (CanAttemptDead) {
+                        hitCooldown = Main.zenithWorld ? 0 : 8;
+                        Projectile.Kill();
+                    }
                 }
             }
 
@@ -153,9 +153,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.Center = playerRotatedPoint + (velocityAngle2.ToRotationVector2() * offset);
 
             player.ChangeDir(Projectile.direction);
-
-            Projectile.timeLeft = 2;
-
             player.itemRotation = (Projectile.velocity * Projectile.direction).ToRotation();
             player.heldProj = Projectile.whoAmI;
             player.itemTime = 2;
