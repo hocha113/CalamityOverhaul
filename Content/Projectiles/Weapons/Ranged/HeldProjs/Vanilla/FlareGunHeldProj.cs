@@ -54,12 +54,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         }
 
         public override void PostInOwnerUpdate() {
-            if (!IsKreload) {
+            if (!IsKreload || ShootCoolingValue > 0) {
                 return;
             }
 
             int dustType = GetFlareDustID(this);
-            int dust = Dust.NewDust(GunShootPos, 1, 1, dustType, ShootVelocity.X, ShootVelocity.Y);
+            Vector2 setTo = ShootVelocity + Owner.velocity;
+            int dust = Dust.NewDust(GunShootPos, 1, 1, dustType, setTo.X, setTo.Y);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].scale = Main.rand.NextFloat(1, 1.6f);
         }

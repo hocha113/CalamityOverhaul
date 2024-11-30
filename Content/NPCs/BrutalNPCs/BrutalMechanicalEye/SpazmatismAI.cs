@@ -42,9 +42,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 }
             }
             if (accompany) {
-                for (int i = 0; i < npc.buffImmune.Length; i++) {
-                    npc.buffImmune[i] = true;
-                }
+                //for (int i = 0; i < npc.buffImmune.Length; i++) {
+                //    npc.buffImmune[i] = true;
+                //}
                 ai[11] = 0;
                 NPC skeletronPrime = CWRUtils.FindNPCFromeType(NPCID.SkeletronPrime);
                 if (skeletronPrime.Alives()) {

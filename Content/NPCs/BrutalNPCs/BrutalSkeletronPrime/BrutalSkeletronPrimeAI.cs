@@ -331,9 +331,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             ai0 = ai1 = ai2 = ai3 = ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = ai11 = 0;
             setPosingStarmCount = 0;
             SmokeDrawer = new ThanatosSmokeParticleSet(-1, 3, 0f, 16f, 1.5f);
-            for (int i = 0; i < npc.buffImmune.Length; i++) {
-                npc.buffImmune[i] = true;
-            }
+            //for (int i = 0; i < npc.buffImmune.Length; i++) {
+            //    npc.buffImmune[i] = true;
+            //}
             int newMaxLife = (int)(npc.lifeMax * 0.7f);
             npc.life = npc.lifeMax = newMaxLife;
         }

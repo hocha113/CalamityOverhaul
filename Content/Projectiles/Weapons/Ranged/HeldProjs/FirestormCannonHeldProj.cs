@@ -31,6 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanCreateCaseEjection = false;
             RecoilRetroForceMagnitude = 7;
             CanRightClick = true;
+            CanCreateSpawnGunDust = false;
         }
 
         public override void SetShootAttribute() {
@@ -61,12 +62,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostInOwnerUpdate() {
-            if (!IsKreload) {
+            if (!IsKreload || ShootCoolingValue > 0) {
                 return;
             }
 
             int dustType = FlareGunHeldProj.GetFlareDustID(this);
-            int dust = Dust.NewDust(GunShootPos, 1, 1, dustType, ShootVelocity.X, ShootVelocity.Y);
+            Vector2 projRotTo = Projectile.rotation.ToRotationVector2() * 13 + Owner.velocity;
+            int dust = Dust.NewDust(GunShootPos, 1, 1, dustType, projRotTo.X, projRotTo.Y);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].scale = Main.rand.NextFloat(1, 1.6f);
         }
