@@ -4232,6 +4232,9 @@ TextContent: {
 		IconUI_Text5: Donor
 		IconUI_Text6: Balance Tester
 		IconUI_Text7: View log
+		SPU_Text0: In
+		SPU_Text1: Perform final synthesis
+		SPU_Text2: Synthetic acquisition：
 		Spazmatism_Text1: EUX_001 deployed successfully, behavior logged: Collaborate with PCZ_001 to neutralize the target.
 		Spazmatism_Text2: EUX_002 deployed successfully, behavior logged: Collaborate with PCZ_001 to neutralize the target.
 		Spazmatism_Text3: EUX_001 main structure damaged, attempting to retreat from the battlefield...

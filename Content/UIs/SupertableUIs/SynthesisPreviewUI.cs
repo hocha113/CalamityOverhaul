@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Placeable;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Placeable;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -6,9 +7,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    public class InItemDrawRecipe : ICWRLoader
+    public class SynthesisPreviewUI : ICWRLoader
     {
-        public static InItemDrawRecipe Instance { get; private set; }
+        public static SynthesisPreviewUI Instance { get; private set; }
         public Vector2 DrawPos;
         public Texture2D mainBookPValue => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BookPans");
         public Texture2D mainCellValue => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue3");
@@ -67,20 +68,22 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 Vector2 drawMainUISize = new Vector2(2.2f, 2.6f);
                 spriteBatch.Draw(mainBookPValue, DrawPos, null, Color.DarkGoldenrod, 0, Vector2.Zero, drawMainUISize, SpriteEffects.None, 0);//绘制出UI主体
                 spriteBatch.Draw(mainCellValue, DrawPos + new Vector2(-25, -25) + offset, null, Color.DarkGoldenrod, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-                Vector2 drawTOMItemIconPos = DrawPos + new Vector2(-50, mainCellValue.Height) + offset;
+
+                Vector2 drawTOMItemIconPos = DrawPos + new Vector2(-20, mainCellValue.Height + 10) + offset;
                 VaultUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<TransmutationOfMatterItem>(), drawTOMItemIconPos, 1, 0, Color.White);
 
                 Vector2 drawText1 = new Vector2(DrawPos.X - 20, DrawPos.Y - 60) + offset;
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value,
-                    $"{VaultUtils.Translation("在", "In") + CWRUtils.SafeGetItemName<TransmutationOfMatterItem>() + VaultUtils.Translation("进行终焉合成", "Perform final synthesis")}："
+                    $"{CWRLocText.GetTextValue("SPU_Text0") + CWRUtils.SafeGetItemName<TransmutationOfMatterItem>() + CWRLocText.GetTextValue("SPU_Text1")}："
                     , drawText1.X, drawText1.Y, Color.White, Color.Black, new Vector2(0.3f), 1f);
 
                 if (targetItem != null) {
-                    SupertableUI.DrawItemIcons(spriteBatch, targetItem, DrawPos + new Vector2(450, 520), new Vector2(0.0001f, 0.0001f), Color.White, 1, 1.5f);
-
-                    Vector2 drawText2 = new Vector2(DrawPos.X - 20, DrawPos.Y + 410) + offset;
-                    string text = $"{VaultUtils.Translation("合成获得：", "Synthetic acquisition：") + CWRUtils.SafeGetItemName(targetItem.type)}";
+                    Vector2 drawText2 = new Vector2(DrawPos.X + 16, DrawPos.Y + 420) + offset;
+                    string text = $"{CWRLocText.GetTextValue("SPU_Text2") + CWRUtils.SafeGetItemName(targetItem.type)}";
+                    Vector2 size = FontAssets.MouseText.Value.MeasureString(text);
                     Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, drawText2.X, drawText2.Y, Color.White, Color.Black, new Vector2(0.3f), 1f);
+                    Vector2 drawItemPos = drawText2 + new Vector2(size.X + 20, 8);
+                    SupertableUI.DrawItemIcons(spriteBatch, targetItem, drawItemPos, new Vector2(0.0001f, 0.0001f));
                 }
 
                 for (int i = 0; i < items.Length - 1; i++) {//遍历绘制出UI格中的所有预览物品

@@ -721,8 +721,9 @@ End:;
                 Rectangle rectangle = Main.itemAnimations[item.type] != null ? Main.itemAnimations[item.type].GetFrame(TextureAssets.Item[item.type].Value) : TextureAssets.Item[item.type].Value.Frame(1, 1, 0, 0);
                 Vector2 vector = rectangle.Size();
                 Vector2 size = TextureAssets.Item[item.type].Value.Size();
-                if (offset == default)
+                if (offset == default) {
                     offset = new Vector2(cellWid, cellHig) / 2;
+                } 
                 float slp = 32f / size.X;
                 slp *= overSlp;
                 if (item.type == CWRLoad.DarkMatterBall) {

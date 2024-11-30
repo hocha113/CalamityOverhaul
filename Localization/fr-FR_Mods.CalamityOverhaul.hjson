@@ -4225,7 +4225,10 @@ TextContent: {
 		IconUI_Text4: Assistance technique
 		IconUI_Text5: Donateurs
 		IconUI_Text6: Tests d'équilibrage
-		// IconUI_Text7: View log
+		IconUI_Text7: Voir le journal
+		SPU_Text0: En cours
+		SPU_Text1: Synthèse finale en cours
+		SPU_Text2: Obtenu par synthèse :
 		Spazmatism_Text1: EUX_001 déployé avec succès, comportement enregistré : Collaboration avec PCZ_001 pour neutraliser la cible.
 		Spazmatism_Text2: EUX_002 déployé avec succès, comportement enregistré : Collaboration avec PCZ_001 pour neutraliser la cible.
 		Spazmatism_Text3: Structure principale de EUX_001 endommagée, tentative de retraite du champ de bataille...

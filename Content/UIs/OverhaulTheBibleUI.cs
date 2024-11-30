@@ -12,6 +12,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.UIs
 {
@@ -126,10 +127,13 @@ namespace CalamityOverhaul.Content.UIs
         /// 上一帧的鼠标状态
         /// </summary>
         private MouseState oldMouseState;
+        private bool old_Ldown;
+        private bool onDrag;
+        private Vector2 dragOffset;
         internal List<Item> ecTypeItemList;
-
         private Rectangle MainRec;
         private bool OnMain;
+        private bool OnBook;
         #endregion
 
         void ICWRLoader.SetupData() {
@@ -144,10 +148,21 @@ namespace CalamityOverhaul.Content.UIs
             }
         }
         public void Initialize() {
-            DrawPosition = new Vector2(600, 300);
-
             if (SlideroutVlue > -35) {
                 SlideroutVlue--;
+            }
+
+            if (DrawPosition.X < 0) {
+                DrawPosition.X = 0;
+            }
+            if (DrawPosition.Y < 0) {
+                DrawPosition.Y = 0;
+            }
+            if (DrawPosition.X > Main.screenWidth - Texture.Width * 2) {
+                DrawPosition.X = Main.screenWidth - Texture.Width * 2;
+            }
+            if (DrawPosition.Y > Main.screenHeight - Texture.Height) {
+                DrawPosition.Y = Main.screenHeight - Texture.Height;
             }
 
             int frmeInY = 40;
@@ -175,6 +190,7 @@ namespace CalamityOverhaul.Content.UIs
             Rectangle mouseRec = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
 
             OnMain = MainRec.Intersects(mouseRec);
+            OnBook = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, Texture.Width * 2, Texture.Height).Intersects(mouseRec);
 
             onMeleeP = meleeRec.Intersects(mouseRec);
             onRangedP = rangedRec.Intersects(mouseRec);
@@ -240,7 +256,46 @@ namespace CalamityOverhaul.Content.UIs
             }
         }
 
+        public void SaveData(TagCompound tag) {
+            tag["OverhaulTheBibleUI_DrawPos_X"] = DrawPosition.X;
+            tag["OverhaulTheBibleUI_DrawPos_Y"] = DrawPosition.Y;
+        }
+
+        public void LoadData(TagCompound tag) {
+            if (tag.TryGet("OverhaulTheBibleUI_DrawPos_X", out float x)) {
+                DrawPosition.X = x;
+            }
+            else {
+                DrawPosition.X = 500;
+            }
+
+            if (tag.TryGet("OverhaulTheBibleUI_DrawPos_Y", out float y)) {
+                DrawPosition.Y = y;
+            }
+            else {
+                DrawPosition.Y = 300;
+            }
+        }
+
         public override void Update() {
+            if (OnBook) {
+                player.mouseInterface = true;
+                if (keyLeftPressState == KeyPressState.Held) {
+                    if (!onDrag) {
+                        dragOffset = DrawPosition - MousePosition;
+                    }
+                    onDrag = true;
+                }
+            }
+
+            if (onDrag) {
+                player.mouseInterface = true;
+                DrawPosition = MousePosition + dragOffset;
+                if (keyLeftPressState == KeyPressState.Released) {
+                    onDrag = false;
+                }
+            }
+
             Initialize();
 
             //int museS = DownStartL();
@@ -261,7 +316,6 @@ namespace CalamityOverhaul.Content.UIs
             setSouldKey(ref rogue, onRogueP, museS);
 
             if (OnMain) {
-                player.mouseInterface = true;
                 MouseState currentMouseState = Mouse.GetState();
                 int scrollWheelDelta = currentMouseState.ScrollWheelValue - oldMouseState.ScrollWheelValue;
                 //更具滚轮的变动量来更新矫正值
@@ -338,10 +392,6 @@ namespace CalamityOverhaul.Content.UIs
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (DrawPosition == Vector2.Zero) {
-                DrawPosition = new Vector2(500, 300);
-            }
-
             Texture2D value13 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/TexturePackButtons");
             Rectangle rec1 = new Rectangle(0, 32, 32, 32);
             spriteBatch.Draw(value13, LsmogPos, rec1, onLsmogP ? Color.Wheat : Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);

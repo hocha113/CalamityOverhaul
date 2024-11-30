@@ -21,6 +21,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Config;
 using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Content
@@ -32,11 +33,24 @@ namespace CalamityOverhaul.Content
         public static RecipeGroup GodDWGroup;
         public static RecipeGroup FishGroup;
         public static RecipeGroup AdamantiteBarGroup;
+        public static void MS_Error_Set() {
+            if (ModGanged.Has_MS_Config_recursionCraftingDepth(out ModConfig modConfig)) {
+                string errorText = "检测到异常的合成任务调用，已经将RecursionCraftingDepth设置为0，该防御性改动是临时的，" +
+                    "请自行前往magicStorage的模组设置中将RecursionCraftingDepth调整为0并保存!";
+                string errorText2 = "Abnormal composition task call detected, RecursionCraftingDepth has been set to 0, " +
+                    "this defensive change is temporary, please go to magicStorage's module Settings to adjust RecursionCraftingDepth to 0 and save!";
+                CWRUtils.Text(VaultUtils.Translation(errorText, errorText2), Color.Red);
+                ModGanged.MS_Config_recursionCraftingDepth_FieldInfo.SetValue(modConfig, 0);
+            }
+        }
+
         public static void SpawnAction(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
             item.TurnToAir();
             Main.LocalPlayer.CWR().InspectOmigaTime = 120;
             CombatText.NewText(Main.LocalPlayer.Hitbox, Main.DiscoColor
                 , Language.GetTextValue($"Mods.CalamityOverhaul.Tools.RecipesLoseText"));
+
+            MS_Error_Set();
         }
 
         public static void MouldRecipeEvent(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
@@ -55,6 +69,8 @@ namespace CalamityOverhaul.Content
                     Main.LocalPlayer.QuickSpawnItem(item.parent(), murasamaMould.Item);
                 }
             }
+
+            MS_Error_Set();
         }
 
         public override void Unload() {

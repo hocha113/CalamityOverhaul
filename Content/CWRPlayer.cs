@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using CalamityOverhaul.Content.UIs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -12,6 +13,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
 {
@@ -156,20 +158,20 @@ namespace CalamityOverhaul.Content
         public override void OnEnterWorld() {
             CWRHook.CheckHookStatus();
 
-            if (CWRMod.Instance.magicStorage != null) {
-                SpwanTextProj.New(Player, () => CWRUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
-            }
             if (!CWRMod.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");
                 SpwanTextProj.New(Player, () => CWRUtils.Text(improvGameText, Color.Red), 210);
                 CWRMod.Instance.Logger.Info(improvGameText);
             }
+
             if (CWRServerConfig.Instance.WeaponOverhaul && Player.name == "HoCha113") {
                 string text = CWRMod.RItemIndsDict.Count + CWRLocText.GetTextValue("OnEnterWorld_TextContent");
                 SpwanTextProj.New(Player, () => CWRUtils.Text(text, Color.GreenYellow), 240);
             }
 
-            ModGanged.Set_MS_Config_recursionCraftingDepth();
+            if (ModGanged.Has_MS_Config_recursionCraftingDepth(out _)) {
+                SpwanTextProj.New(Player, () => CWRUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
+            }
 
             RecipeErrorFullUI.Instance.eyEBool = true;
             if (SupertableUI.Instance != null) {
@@ -179,12 +181,23 @@ namespace CalamityOverhaul.Content
                 RecipeUI.Instance.index = 0;
                 RecipeUI.Instance.LoadPsreviewItems();
             }
+            if (OverhaulTheBibleUI.Instance != null) {
+                OverhaulTheBibleUI.Instance.Active = false;
+            }
 
             SupertableUI.LoadenWorld();
 
             Gangarus.ZenithWorldAsset();
 
             oldPlayerPositionChange = oldPlayerPositionChange = Player.position;
+        }
+
+        public override void SaveData(TagCompound tag) {
+            OverhaulTheBibleUI.Instance?.SaveData(tag);
+        }
+
+        public override void LoadData(TagCompound tag) {
+            OverhaulTheBibleUI.Instance?.LoadData(tag);
         }
 
         public override void OnHurt(Player.HurtInfo info) {
@@ -196,10 +209,7 @@ namespace CalamityOverhaul.Content
 
         public override void CatchFish(FishingAttempt attempt, ref int itemDrop
             , ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {
-            if (!CWRServerConfig.Instance.WeaponOverhaul) {
-                return;
-            }
-            if (!attempt.inHoney && !attempt.inLava && Main.rand.NextBool(500)) {
+            if (CWRServerConfig.Instance.WeaponOverhaul && !attempt.inHoney && !attempt.inLava && Main.rand.NextBool(500)) {
                 itemDrop = ModContent.ItemType<HalibutCannon>();
             }
         }

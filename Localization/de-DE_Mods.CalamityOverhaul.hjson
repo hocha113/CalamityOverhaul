@@ -4210,6 +4210,9 @@ TextContent: {
 		IconUI_Text5: Spender
 		IconUI_Text6: Balancing-Tests
 		IconUI_Text7: Log anzeigen
+		SPU_Text0: In Arbeit
+		SPU_Text1: Endsynthetisierung läuft
+		SPU_Text2: Durch Synthese erhalten:
 		Spazmatism_Text1: EUX_001 erfolgreich eingesetzt, Verhalten protokolliert: Zusammenarbeit mit PCZ_001 zur Neutralisierung des Ziels.
 		Spazmatism_Text2: EUX_002 erfolgreich eingesetzt, Verhalten protokolliert: Zusammenarbeit mit PCZ_001 zur Neutralisierung des Ziels.
 		Spazmatism_Text3: Hauptstruktur von EUX_001 beschädigt, versuche, das Schlachtfeld zu verlassen...

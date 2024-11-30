@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         internal static bool doDraw;
         private bool oldLeftCtrlPressed;
-        private static Vector2 origPos => InItemDrawRecipe.Instance.DrawPos;
+        private static Vector2 origPos => SynthesisPreviewUI.Instance.DrawPos;
         private Vector2 offset;
 
         public override void Load() {
@@ -28,19 +28,19 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             bool leftCtrlPressed = Main.keyState.IsKeyDown(Keys.LeftControl);
             if (leftCtrlPressed && !oldLeftCtrlPressed) {
                 SoundEngine.PlaySound(SoundID.Chat);
-                InItemDrawRecipe.Instance.DrawBool = !InItemDrawRecipe.Instance.DrawBool;
+                SynthesisPreviewUI.Instance.DrawBool = !SynthesisPreviewUI.Instance.DrawBool;
             }
             oldLeftCtrlPressed = leftCtrlPressed;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (InItemDrawRecipe.Instance.DrawPos == Vector2.Zero) {
-                InItemDrawRecipe.Instance.DrawPos = new Vector2(700, 100);
+            if (SynthesisPreviewUI.Instance.DrawPos == Vector2.Zero) {
+                SynthesisPreviewUI.Instance.DrawPos = new Vector2(700, 100);
             }
 
             DrawPosition = origPos + offset;
 
-            if (InItemDrawRecipe.Instance.DrawBool) {
+            if (SynthesisPreviewUI.Instance.DrawBool) {
                 if (offset.Y > -30) {
                     offset.Y -= 5;
                 }

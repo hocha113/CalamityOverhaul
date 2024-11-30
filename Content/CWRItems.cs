@@ -530,13 +530,13 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y) {
-            if (InItemDrawRecipe.Instance != null && SupertableUI.Instance != null) {
+            if (SynthesisPreviewUI.Instance != null && SupertableUI.Instance != null) {
                 int offsetX = SupertableUI.Instance.Active ? 0 : 600;
                 if (OmigaSnyContent != null && !SupertableUI.Instance.onMainP) {
                     MouseTextContactPanel.Instance.Update();
                     MouseTextContactPanel.Instance.Draw(Main.spriteBatch);
                     MouseTextContactPanel.doDraw = true;
-                    InItemDrawRecipe.Instance.Draw(Main.spriteBatch, new Vector2(offsetX + 100, 100), OmigaSnyContent);
+                    SynthesisPreviewUI.Instance.Draw(Main.spriteBatch, new Vector2(offsetX + 100, 100), OmigaSnyContent);
                 }
             }
             return base.PreDrawTooltip(item, lines, ref x, ref y);

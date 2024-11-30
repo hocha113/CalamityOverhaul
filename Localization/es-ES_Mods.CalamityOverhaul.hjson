@@ -4271,6 +4271,9 @@ TextContent: {
 		IconUI_Text5: Donantes
 		IconUI_Text6: Pruebas de equilibrio
 		IconUI_Text7: Ver registro
+		SPU_Text0: En proceso
+		SPU_Text1: Realizando síntesis final
+		SPU_Text2: Obtenido por síntesis:
 		Spazmatism_Text1: Despliegue exitoso de EUX_001, comportamiento registrado: Colaborar con PCZ_001 para eliminar el objetivo
 		Spazmatism_Text2: Despliegue exitoso de EUX_002, comportamiento registrado: Colaborar con PCZ_001 para eliminar el objetivo
 		Spazmatism_Text3: Estructura principal de EUX_001 dañada, intentando retirarse del campo de batalla...

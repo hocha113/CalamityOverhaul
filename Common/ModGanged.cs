@@ -481,7 +481,8 @@ namespace CalamityOverhaul.Common
             orig.Invoke(instance, projectile);
         }
 
-        internal static bool Set_MS_Config_recursionCraftingDepth() {
+        internal static bool Has_MS_Config_recursionCraftingDepth(out ModConfig modConfig) {
+            modConfig = null;
             if (CWRMod.Instance.magicStorage == null) {
                 return false;
             }
@@ -489,13 +490,16 @@ namespace CalamityOverhaul.Common
                 return false;
             }
 
-            ModConfig modConfig = CWRMod.Instance.magicStorage.Find<ModConfig>("MagicStorageConfig");
-            int recursionCraftingDepthNum = ((int)MS_Config_recursionCraftingDepth_FieldInfo.GetValue(modConfig));
-            if (recursionCraftingDepthNum == 0) {
+            try {
+                modConfig = CWRMod.Instance.magicStorage.Find<ModConfig>("MagicStorageConfig");
+                int recursionCraftingDepthNum = ((int)MS_Config_recursionCraftingDepth_FieldInfo.GetValue(modConfig));
+                if (recursionCraftingDepthNum == 0) {
+                    return false;
+                }
+            } catch {
                 return false;
             }
 
-            MS_Config_recursionCraftingDepth_FieldInfo.SetValue(modConfig, 0);
             return true;
         }
 
