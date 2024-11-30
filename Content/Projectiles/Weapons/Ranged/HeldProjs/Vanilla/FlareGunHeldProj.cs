@@ -28,6 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 48;
             CanCreateCaseEjection = false;
             SpwanGunDustMngsData.splNum = 0.3f;
+            Onehanded = true;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
