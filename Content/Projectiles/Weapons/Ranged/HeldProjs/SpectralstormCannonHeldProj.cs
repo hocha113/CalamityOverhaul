@@ -3,6 +3,7 @@ using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Rogue;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -31,6 +32,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
+        }
+
+        public override void PostInOwnerUpdate() {
+            if (!IsKreload) {
+                return;
+            }
+
+            int dustType = FlareGunHeldProj.GetFlareDustID(this);
+            int dust = Dust.NewDust(GunShootPos, 1, 1, dustType, ShootVelocity.X, ShootVelocity.Y);
+            Main.dust[dust].noGravity = true;
+            Main.dust[dust].scale = Main.rand.NextFloat(1, 1.6f);
         }
 
         public override void FiringShoot() {
