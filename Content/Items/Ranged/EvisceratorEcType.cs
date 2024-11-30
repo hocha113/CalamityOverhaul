@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.clipOut = SoundID.DD2_GoblinHurt with { Pitch = -0.2f };
             FireTime = MagazineSystem ? 30 : 36;
-            ForcedConversionTargetAmmoFunc = () => true;
+            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
             ToTargetAmmo = ModContent.ProjectileType<BloodClotFriendly>();
         }
     }
