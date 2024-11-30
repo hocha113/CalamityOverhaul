@@ -37,22 +37,27 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
         }
 
-        public override void PostInOwnerUpdate() {
-            if (!IsKreload) {
-                return;
-            }
-
+        public static int GetFlareDustID(BaseFeederGun gun) {
             int dustType = DustID.Flare;
-            Item ammo = GetSelectedBullets();
+            Item ammo = gun.GetSelectedBullets();
 
             if (ammo == null || ammo.type == ItemID.None) {
-                return;
+                return DustID.Flare;
             }
 
             if (ammo.shoot == ProjectileID.BlueFlare) {
                 dustType = DustID.BlueFlare;
             }
 
+            return dustType;
+        }
+
+        public override void PostInOwnerUpdate() {
+            if (!IsKreload) {
+                return;
+            }
+
+            int dustType = GetFlareDustID(this);
             int dust = Dust.NewDust(GunShootPos, 1, 1, dustType, ShootVelocity.X, ShootVelocity.Y);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].scale = Main.rand.NextFloat(1, 1.6f);
