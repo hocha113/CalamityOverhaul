@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0;
             Recoil = 3.2f;
             RangeOfStress = 25;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 22;
             EjectCasingProjSize = 3;

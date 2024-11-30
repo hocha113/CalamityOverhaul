@@ -3400,6 +3400,8 @@ Projectiles: {
 	// PhaseLaser.DisplayName: Phase Laser
 	// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
 	// SoulSeekerSkull.DisplayName: Soul Seeker Skull
+	// EyeofMagnusHeldProj.DisplayName: Eyeof Magnus Held Proj
+	// LunicEyeHeldProj.DisplayName: Lunic Eye Held Proj
 }
 
 Configs: {

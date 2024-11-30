@@ -25,6 +25,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public override void AI() {
             Projectile.MaxUpdates = 2;
             BaseOnSpanProj.FlowerAI(Projectile);
+            Item item = Owner.GetItem();
+            if (item.type != ItemID.None) {
+                item.CWR().NoKreLoadTime = 2;
+            }
             if (Projectile.timeLeft % 5 == 0 && DownLeft) {
                 Vector2 vr = Projectile.rotation.ToRotationVector2() * 7;
                 CWRUtils.SpawnGunDust(Projectile, Projectile.Center, vr);
