@@ -13,10 +13,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
-    internal class MurasamaHeldProj : BaseHeldProj, ICWRLoader
+    internal class MurasamaHeld : BaseHeldProj, ICWRLoader
     {
-        public override string Texture => CWRConstant.Projectile_Melee + "MurasamaHeldProj";
-        private Item murasama => Owner.ActiveItem();
+        public override string Texture => CWRConstant.Projectile_Melee + "MurasamaHeld";
+        private Item murasama => Owner.GetItem();
         private ref float Time => ref Projectile.ai[0];
         private ref int risingDragon => ref Owner.CWR().RisingDragonCharged;
         private bool onFireR => DownRight && !DownLeft;
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private int maxFrame = 6;
         internal int noAttenuationTime;
         private static int breakOutType;
-        void ICWRLoader.SetupData() => breakOutType = ModContent.ProjectileType<MurasamaBreakOut>();
+        void ICWRLoader.SetupData() => breakOutType = ModContent.ProjectileType<MuraTriggerDash>();
         void ICWRLoader.UnLoadData() => breakOutType = 0;
 
         public override void SetDefaults() {
@@ -77,9 +77,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
             }
             Owner.CWR().HeldMurasamaBool = true;
-            if (base.Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaRSlash>()] != 0
+            if (base.Owner.ownedProjectileCounts[ModContent.ProjectileType<MuraSlashDefault>()] != 0
                 || base.Owner.ownedProjectileCounts[ModContent.ProjectileType<CalamityMod.Projectiles.Melee.MurasamaSlash>()] != 0
-                || base.Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] != 0) {
+                || base.Owner.ownedProjectileCounts[ModContent.ProjectileType<MuraTriggerDash>()] != 0) {
                 Projectile.hide = false;
                 return true;
             }
@@ -92,8 +92,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         private void CheakNoHasProj() {
-            noHasDownSkillProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaDownSkill>()] == 0;
-            noHasBreakOutProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] == 0;
+            noHasDownSkillProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MuraGroundSmash>()] == 0;
+            noHasBreakOutProj = Owner.ownedProjectileCounts[ModContent.ProjectileType<MuraTriggerDash>()] == 0;
             noHasEndSkillEffectStart = Owner.ownedProjectileCounts[ModContent.ProjectileType<EndSkillEffectStart>()] == 0;
         }
 
@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     SoundEngine.PlaySound(MurasamaEcType.BigSwing with { Pitch = -0.1f }, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 5)
-                        , ModContent.ProjectileType<MurasamaDownSkill>(), (int)(MurasamaEcType.ActualTrueMeleeDamage * (2 + level * 1f)), 0, Owner.whoAmI);
+                        , ModContent.ProjectileType<MuraGroundSmash>(), (int)(MurasamaEcType.ActualTrueMeleeDamage * (2 + level * 1f)), 0, Owner.whoAmI);
                     }
 
                     murasama.CWR().ai[0] -= 1;//消耗一点能量

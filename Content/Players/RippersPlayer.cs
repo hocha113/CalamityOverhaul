@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Players
                 ModContent.ProjectileType<CosmicIceBurst>(),
                 ModContent.ProjectileType<EndSkillMakeDamage>(),
                 ModContent.ProjectileType<EndSkillMakeDamage>(),
-                ModContent.ProjectileType<MurasamaEndSkillOrb>(),
+                ModContent.ProjectileType<MuraExecutionCut>(),
                 ModContent.ProjectileType<StormGoddessSpearProj>(),
                 ModContent.ProjectileType<StormArc>(),
                 ModContent.ProjectileType<StormLightning>(),

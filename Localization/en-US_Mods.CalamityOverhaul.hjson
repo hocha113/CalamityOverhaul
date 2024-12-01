@@ -2931,14 +2931,12 @@ Projectiles: {
 	DarkIceZeros.DisplayName: Dark Ice Zeros
 	RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
 	WaningMoonLight.DisplayName: Waning Moon Light
-	MurasamaHeldProj.DisplayName: Murasama
-	MurasamaBreakOut.DisplayName: Murasama
-	MurasamaBreakSwing.DisplayName: Half Moon
-	MurasamaEndSilkOrb.DisplayName: Dimensional chopping - end
-	MurasamaEndSilkOrbOnSpan.DisplayName: Dimensional chopping - beginning
-	MurasamaDownSkill.DisplayName: Murasama
-	MurasamaEndSkillOrb.DisplayName: Dimensional chopping - end
-	MurasamaEndSkillOrbOnSpan.DisplayName: Dimensional chopping - beginning
+	MurasamaHeld.DisplayName: Murasama
+	MuraTriggerDash.DisplayName: Murasama
+	MuraBreakerSlash.DisplayName: Half Moon
+	MuraExecutionCut.DisplayName: Dimensional chopping - end
+	MuraExecutionCutOnSpan.DisplayName: Dimensional chopping - beginning
+	MuraGroundSmash.DisplayName: Murasama
 	EndSkillEffectStart.DisplayName: Dimensional chopping - beginning
 	EndSkillMakeDamage.DisplayName: Dimensional chopping - end
 	PowerSoundEgg.DisplayName: Power Sound Egg

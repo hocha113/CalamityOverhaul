@@ -39,10 +39,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public Item[] previewItems;
 
         public Item inputItem;
-        /// <summary>
-        /// 最大迭代数量
-        /// </summary>
-        public int MaxIterations;
+
         /// <summary>
         /// 主UI的面板矩形
         /// </summary>
@@ -218,8 +215,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public override void Update() {
             Initialize();
 
-            //int museS = DownStartL();
-            //int museSR = DownStartR();
             int museS = (int)keyLeftPressState;
             int museSR = (int)keyRightPressState;
             if (onCloseP) {
@@ -243,22 +238,22 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                         else {
                             HandleItemClick(ref items[inCoordIndex], ref Main.mouseItem);
                         }
-                        OutItem();
+                        FinalizeCraftingResult();
                     }
 
                     if (CWRKeySystem.TOM_GatheringItem.Current) {
                         GatheringItem(inCoordIndex, ref Main.mouseItem);
-                        OutItem();
+                        FinalizeCraftingResult();
                     }
 
                     if (museSR == 1) {
                         HandleRightClick(ref items[inCoordIndex], ref Main.mouseItem);
-                        OutItem();
+                        FinalizeCraftingResult();
                     }
 
                     if (museSR == 3) {
                         DragDorg(ref items[inCoordIndex], ref Main.mouseItem);
-                        OutItem();
+                        FinalizeCraftingResult();
                     }
                 }
             }
@@ -267,7 +262,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 player.mouseInterface = true;
                 if (museS == 3 || museS == 1) {
                     GetResult(ref inputItem, ref Main.mouseItem, ref items);
-                    OutItem();
+                    FinalizeCraftingResult();
                 }
             }
         }
@@ -355,7 +350,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <summary>
         /// 进行输出制作结果的操作，应当注意他的使用方式防止造成不必要的性能浪费
         /// </summary>
-        public void OutItem() {
+        public void FinalizeCraftingResult() {
             foreach (RecipeData data in AllRecipes) {
                 string[] arg = data.Values;
                 fullItemTypes = FullItem(arg);
@@ -691,7 +686,7 @@ End:;
                 holdItem = new Item();
             }
 
-            OutItem();
+            FinalizeCraftingResult();
         }
 
         /// <summary>

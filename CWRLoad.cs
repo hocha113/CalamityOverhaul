@@ -75,18 +75,6 @@ namespace CalamityOverhaul
         /// </summary>
         public static int[] AddMaxStackItemsIn64 { get; private set; } = [];
         /// <summary>
-        /// 鬼妖，CWR
-        /// </summary>
-        public static int MurasamaItem;
-        /// <summary>
-        /// 鬼妖，Calamity
-        /// </summary>
-        public static int MurasamaItem2;
-        /// <summary>
-        /// 升龙半月
-        /// </summary>
-        public static int MurasamaBreakSwing;
-        /// <summary>
         /// 扫地机器人
         /// </summary>
         public static int Androomba;
@@ -333,10 +321,6 @@ namespace CalamityOverhaul
             Gangarus = ItemType<Gangarus>();
             StarMyriadChanges = ItemType<StarMyriadChanges>();
 
-            MurasamaItem = ItemType<MurasamaEcType>();
-            MurasamaItem2 = ItemType<Murasama>();
-            MurasamaBreakSwing = ProjectileType<MurasamaBreakSwing>();
-
             Androomba = NPCType<Androomba>();
             Polterghast = NPCType<Polterghast>();
             Yharon = NPCType<Yharon>();
@@ -481,7 +465,7 @@ namespace CalamityOverhaul
                 MetanovaBar = CWRMod.Instance.catalystMod.Find<ModItem>("MetanovaBar").Type;
             }
 
-            MurasamaEcType.heldProjType = ProjectileType<MurasamaHeldProj>();
+            MurasamaEcType.heldProjType = ProjectileType<MurasamaHeld>();
 
             for (int itemType = 0; itemType < ItemLoader.ItemCount; itemType++) {
                 Item item = new Item(itemType);

@@ -9,9 +9,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    internal class MouseTextContactPanel : UIHandle
+    internal class SynthesisPreviewStart : UIHandle
     {
-        internal static MouseTextContactPanel Instance { get; private set; }
+        internal static SynthesisPreviewStart Instance { get; private set; }
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MouseTextContactPanel");
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         internal static bool doDraw;

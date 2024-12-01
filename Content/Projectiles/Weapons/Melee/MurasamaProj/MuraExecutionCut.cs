@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
-    internal class MurasamaEndSkillOrb : ModProjectile
+    internal class MuraExecutionCut : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
         private Vector2 origVer;
@@ -40,10 +40,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     Vector2 ver = origVer.UnitVector() * ((i / maxNum) * maxNum + 0.1f);
                     Color color = VaultUtils.MultiStepColorLerp(i / maxNum, Color.DarkRed, Color.IndianRed);
                     BasePRT spark2 = new PRT_Spark(Projectile.Center, ver, false, 119, 2.3f, color);
+                    //不要在屏幕外面就消除了，否则玩家什么都看不到
+                    spark2.ShouldKillWhenOffScreen = false;
                     PRTLoader.AddParticle(spark2);
                 }
                 set = true;
             }
+
             Projectile.ai[0]++;
         }
 

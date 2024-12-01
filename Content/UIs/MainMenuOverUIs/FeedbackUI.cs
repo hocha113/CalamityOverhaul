@@ -9,11 +9,11 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    internal class OpenUI : UIHandle, ICWRLoader
+    internal class FeedbackUI : UIHandle, ICWRLoader
     {
         private float _sengs;
         internal bool _active;
-        internal static OpenUI Instance { get; private set; }
+        internal static FeedbackUI Instance { get; private set; }
 
         private static Asset<Texture2D> githubOAC;
         private static Asset<Texture2D> steamOAC;

@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content
                 SpwanTextProj.New(Player, () => CWRUtils.Text(CWRLocText.GetTextValue("MS_Config_Text"), Color.IndianRed));
             }
 
-            RecipeErrorFullUI.Instance.eyEBool = true;
+            CraftingSlotHighlighter.Instance.eyEBool = true;
             if (SupertableUI.Instance != null) {
                 SupertableUI.Instance.Active = false;
             }

@@ -2933,14 +2933,12 @@ Projectiles: {
 	// DarkIceZeros.DisplayName: Dark Ice Zeros
 	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
 	// WaningMoonLight.DisplayName: Waning Moon Light
-	MurasamaHeldProj.DisplayName: 分子斩切
-	MurasamaBreakOut.DisplayName: 分子斩切
-	MurasamaBreakSwing.DisplayName: 升龙半月
-	MurasamaEndSilkOrb.DisplayName: 次元斩-终
-	MurasamaEndSilkOrbOnSpan.DisplayName: 次元斩-始
-	MurasamaDownSkill.DisplayName: 坠地
-	MurasamaEndSkillOrb.DisplayName: 次元斩-终
-	MurasamaEndSkillOrbOnSpan.DisplayName: 次元斩-始
+	MurasamaHeld.DisplayName: 分子斩切
+	MuraTriggerDash.DisplayName: 分子斩切
+	MuraBreakerSlash.DisplayName: 升龙半月
+	MuraExecutionCut.DisplayName: 次元斩-终
+	MuraExecutionCutOnSpan.DisplayName: 次元斩-始
+	MuraGroundSmash.DisplayName: 坠地
 	EndSkillEffectStart.DisplayName: 次元斩-始
 	EndSkillMakeDamage.DisplayName: 次元斩-终
 	// PowerSoundEgg.DisplayName: Power Sound Egg

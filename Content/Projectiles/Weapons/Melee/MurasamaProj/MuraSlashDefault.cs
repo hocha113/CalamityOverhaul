@@ -18,12 +18,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
-    internal class MurasamaRSlash : BaseHeldProj
+    internal class MuraSlashDefault : BaseHeldProj
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "MurasamaSlash";
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<MurasamaEcType>();
         public ref int hitCooldown => ref Owner.Calamity().murasamaHitCooldown;
-        public int time = 0;
+        public bool onspan;
         public bool CanAttemptDead;
         public bool Slashing = false;
         public bool Slash1 => Projectile.frame == 10;
@@ -76,13 +76,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override void AI() {
             Projectile.Calamity().timesPierced = 0;
-            Player player = Main.player[Projectile.owner];
-            if (time == 0) {
-                Projectile.scale = (MurasamaEcType.NameIsSam(player) ? 1.65f : MurasamaEcType.GetOnScale);
-                Projectile.scale *= GetMuraSizeInMeleeSengs(Owner);
+            if (!onspan) {
+                Projectile.scale = (MurasamaEcType.NameIsSam(Owner) ? 1.65f : MurasamaEcType.GetOnScale);
+                Projectile.scale *= GetMuraSizeInMeleeSengs(base.Owner);
                 Projectile.frame = Main.zenithWorld ? 6 : 10;
                 Projectile.alpha = 0;
-                time++;
+                onspan = true;
             }
             if (Slash2) {
                 _ = SoundEngine.PlaySound(MurasamaEcType.Swing with { Pitch = -0.1f }, Projectile.Center);
@@ -128,11 +127,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Vector2 origin = Projectile.Center + (Projectile.velocity * 3f);
             Lighting.AddLight(origin, Color.Red.ToVector3() * (Slashing == true ? 3.5f : 2f));
 
-            Vector2 playerRotatedPoint = player.RotatedRelativePoint(player.MountedCenter, true);
+            Vector2 playerRotatedPoint = Owner.RotatedRelativePoint(Owner.MountedCenter, true);
             if (Projectile.IsOwnedByLocalPlayer()) {
-                if (player.channel && !player.noItems && !player.CCed
-                    && player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] <= 0) {
-                    HandleChannelMovement(player, playerRotatedPoint);
+                if (Owner.channel && !Owner.noItems && !Owner.CCed
+                    && Owner.ownedProjectileCounts[ModContent.ProjectileType<MuraTriggerDash>()] <= 0) {
+                    HandleChannelMovement(Owner, playerRotatedPoint);
                 }
                 else {
                     if (CanAttemptDead) {
@@ -152,11 +151,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             float offset = 80f * Projectile.scale;
             Projectile.Center = playerRotatedPoint + (velocityAngle2.ToRotationVector2() * offset);
 
-            player.ChangeDir(Projectile.direction);
-            player.itemRotation = (Projectile.velocity * Projectile.direction).ToRotation();
-            player.heldProj = Projectile.whoAmI;
-            player.itemTime = 2;
-            player.itemAnimation = 2;
+            Owner.ChangeDir(Projectile.direction);
+            Owner.itemRotation = (Projectile.velocity * Projectile.direction).ToRotation();
+            Owner.heldProj = Projectile.whoAmI;
+            Owner.itemTime = 2;
+            Owner.itemAnimation = 2;
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
@@ -317,12 +316,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 if (Owner.CWR().RisingDragonCharged > MurasamaEcType.GetOnRDCD) {
                     Owner.CWR().RisingDragonCharged = MurasamaEcType.GetOnRDCD;
                 }
-                int type = ModContent.ProjectileType<MurasamaHeldProj>();
+                int type = ModContent.ProjectileType<MurasamaHeld>();
                 foreach (var p in Main.projectile) {
                     if (p.type != type) {
                         continue;
                     }
-                    MurasamaHeldProj murasamaHeldProj = p.ModProjectile as MurasamaHeldProj;
+                    MurasamaHeld murasamaHeldProj = p.ModProjectile as MurasamaHeld;
                     if (murasamaHeldProj != null) {
                         murasamaHeldProj.noAttenuationTime = 180;
                     }

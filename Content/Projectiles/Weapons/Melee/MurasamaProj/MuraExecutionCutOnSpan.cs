@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
-    internal class MurasamaEndSkillOrbOnSpan : ModProjectile
+    internal class MuraExecutionCutOnSpan : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
         private List<Vector2> PosLists;
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 //SoundEngine.PlaySound(ModSound.EndSilkOrbSpanSound with { Volume = 0.1f }, Projectile.Center);
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), new Vector2(Projectile.ai[0], Projectile.ai[1])
-                        , Projectile.velocity, ModContent.ProjectileType<MurasamaEndSkillOrb>()
+                        , Projectile.velocity, ModContent.ProjectileType<MuraExecutionCut>()
                         , Projectile.damage, 0, Projectile.owner, 0, Main.rand.Next(30));
                 }
 

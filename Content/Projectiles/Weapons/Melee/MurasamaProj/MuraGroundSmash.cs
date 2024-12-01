@@ -7,7 +7,7 @@ using Terraria.Graphics.CameraModifiers;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
-    internal class MurasamaDownSkill : MurasamaBreakOut
+    internal class MuraGroundSmash : MuraTriggerDash
     {
         public override void AI() {
             if (Projectile.IsOwnedByLocalPlayer()) {

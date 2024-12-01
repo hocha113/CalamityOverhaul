@@ -9,7 +9,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    internal class OneClickUI : UIHandle
+    internal class MaterialOrganizer : UIHandle
     {
         protected SupertableUI mainUI => SupertableUI.Instance;
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/OneClick");
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         private int useTimeCoolding;
         private int useMuse3AddCount;
         private bool onMainP;
-        private bool checkSetO => GetType() != typeof(OneClickUI);
+        private bool checkSetO => GetType() != typeof(MaterialOrganizer);
 
         public override void Update() {
             // 更新当前绘制位置和矩形
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
         protected virtual void ClickEvent() {
             mainUI.OneClickPFunc();
-            mainUI.OutItem();
+            mainUI.FinalizeCraftingResult();
         }
         public override void Draw(SpriteBatch spriteBatch) {
             Color color = Color.White;

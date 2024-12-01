@@ -12,7 +12,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
     //老实说，这样的完全不利于扩展，如果想加入一条新的词条会非常麻烦，更别说如果想更换词条之间的顺序，更好的选择是将每个词条抽象成类实例管理 -hocah113 2024/6/28
-    internal class IconUI : UIHandle, ICWRLoader
+    internal class BulletinBoardUI : UIHandle, ICWRLoader
     {
         #region Date
         internal static Asset<Texture2D> icon;
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private string text4 => CWRLocText.GetTextValue("IconUI_Text2");
         private Vector2 text4Vr => Font.Value.MeasureString(text4);
         private Vector2 text4Pos => new Vector2(DrawPosition.X - text4Vr.X + 76, text3Pos.Y + text1Vr.Y - 2);
-        internal bool safeStart => !OpenUI.Instance.OnActive() && !AcknowledgmentUI.Instance.OnActive();
+        internal bool safeStart => !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.Instance.OnActive();
         public override bool Active => CWRLoad.OnLoadContentBool;
         #endregion
         void ICWRLoader.LoadAsset() {
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 }
                 else if (onText2) {
                     SoundEngine.PlaySound(SoundID.MenuOpen);
-                    OpenUI.Instance._active = true;
+                    FeedbackUI.Instance._active = true;
                 }
                 else if (onText3) {
                     SoundEngine.PlaySound(SoundID.MenuOpen);

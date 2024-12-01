@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.TileModules
                 }
             }
             SupertableUI.Instance.items = items;
-            SupertableUI.Instance.OutItem();
+            SupertableUI.Instance.FinalizeCraftingResult();
         }
         public override void SaveData(TagCompound tag) {
             for (int i = 0; i < items.Length; i++) {

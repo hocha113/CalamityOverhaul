@@ -46,6 +46,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                         Vector2 vr = new Vector2((Main.rand.NextBool() ? -1 : 1) * Main.rand.Next(7, 51), 0);
                         PRT_Light light = new PRT_Light(spanPos
                             , vr, 0.3f, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), colors), 30);
+                        //不要在屏幕外面就消除了，否则玩家什么都看不到
+                        light.ShouldKillWhenOffScreen = false;
                         PRTLoader.AddParticle(light);
                     }
                 }

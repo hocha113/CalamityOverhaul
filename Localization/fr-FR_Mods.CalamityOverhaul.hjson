@@ -2920,14 +2920,12 @@ Projectiles: {
 	// DarkIceZeros.DisplayName: Dark Ice Zeros
 	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
 	// WaningMoonLight.DisplayName: Waning Moon Light
-	MurasamaHeldProj.DisplayName: Coupe moléculaire
-	MurasamaBreakOut.DisplayName: Coupe moléculaire
-	MurasamaBreakSwing.DisplayName: Demi-lune de dragon
-	MurasamaEndSilkOrb.DisplayName: Coupe dimensionnelle - Fin
-	MurasamaEndSilkOrbOnSpan.DisplayName: Coupe dimensionnelle - Début
-	MurasamaDownSkill.DisplayName: Chute au sol
-	MurasamaEndSkillOrb.DisplayName: Coupe dimensionnelle - Fin
-	MurasamaEndSkillOrbOnSpan.DisplayName: Coupe dimensionnelle - Début
+	MurasamaHeld.DisplayName: Coupe moléculaire
+	MuraTriggerDash.DisplayName: Coupe moléculaire
+	MuraBreakerSlash.DisplayName: Demi-lune de dragon
+	MuraExecutionCut.DisplayName: Coupe dimensionnelle - Fin
+	MuraExecutionCutOnSpan.DisplayName: Coupe dimensionnelle - Début
+	MuraGroundSmash.DisplayName: Chute au sol
 	EndSkillEffectStart.DisplayName: Coupe dimensionnelle - Début
 	EndSkillMakeDamage.DisplayName: Coupe dimensionnelle - Fin
 	// PowerSoundEgg.DisplayName: Power Sound Egg

@@ -8,9 +8,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    internal class RecipeErrorFullUI : UIHandle, ICWRLoader
+    internal class CraftingSlotHighlighter : UIHandle, ICWRLoader
     {
-        public static RecipeErrorFullUI Instance;
+        public static CraftingSlotHighlighter Instance;
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/CallFull");
         public override float RenderPriority => 2;
         public override bool Active {

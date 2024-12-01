@@ -117,8 +117,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
 
         public override bool? On_CanUseItem(Item item, Player player) {
             //在升龙斩或者爆发弹幕存在时不能使用武器
-            return player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakSwing>()] > 0
-                || player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] > 0
+            return player.ownedProjectileCounts[ModContent.ProjectileType<MuraBreakerSlash>()] > 0
+                || player.ownedProjectileCounts[ModContent.ProjectileType<MuraTriggerDash>()] > 0
                 || player.PressKey(false)
                 ? false
                 : !CWRServerConfig.Instance.WeaponEnhancementSystem && !InWorldBossPhase.Instance.level11
@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MurasamaRSlash>(), damage, knockback, player.whoAmI, 0f, 0f);
+            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MuraSlashDefault>(), damage, knockback, player.whoAmI, 0f, 0f);
             return false;
         }
     }

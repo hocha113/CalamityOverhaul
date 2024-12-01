@@ -2,6 +2,7 @@
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.NPCs.Yharon;
 using CalamityMod.Projectiles.Melee;
+using CalamityMod.Projectiles.Pets;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -51,6 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
             double startAngle = Math.Atan2(Projectile.velocity.X, Projectile.velocity.Y) - (spread / 2);
             double deltaAngle = spread / 8f;
             double offsetAngle;
+
             if (Projectile.IsOwnedByLocalPlayer() && Projectile.ai[2] == 0) {
                 offsetAngle = startAngle + deltaAngle + 32f;
                 _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y
@@ -60,14 +62,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                     , (float)(-Math.Sin(offsetAngle) * 5f), (float)(-Math.Cos(offsetAngle) * 5f)
                     , ModContent.ProjectileType<SandFire>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0f, 0f);
             }
+
             Lighting.AddLight(Projectile.Center, Color.Red.ToVector3() * 17f);
             Projectile.Explode(1220, Supernova.ExplosionSound with { Pitch = 0.8f });
+
             for (int i = 0; i < Projectile.ai[1]; i++) {
                 BasePRT particle = new PRT_Light(Projectile.Center, CWRUtils.randVr(3, 116), Main.rand.NextFloat(0.3f, 0.7f), Color.OrangeRed, 12, 0.2f);
+                //不要在屏幕外面就消除了，否则玩家什么都看不到
+                particle.ShouldKillWhenOffScreen = false;
                 PRTLoader.AddParticle(particle);
                 BasePRT particle2 = new PRT_Smoke(Projectile.Center + Projectile.velocity * Main.rand.NextFloat(0.3f, 1.7f), CWRUtils.randVr(3, 16)
                     , VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), Color.Red, Color.DarkRed)
                     , 13, Main.rand.NextFloat(0.2f, 1.1f), 0.5f, 0.1f);
+                particle2.ShouldKillWhenOffScreen = false;
                 PRTLoader.AddParticle(particle2);
             }
         }

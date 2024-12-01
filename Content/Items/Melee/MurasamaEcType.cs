@@ -194,12 +194,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.knockBack = 6.5f;
             Item.autoReuse = false;
             Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
-            Item.shoot = ModContent.ProjectileType<MurasamaRSlash>();
+            Item.shoot = ModContent.ProjectileType<MuraSlashDefault>();
             Item.shootSpeed = 24f;
             Item.rare = ModContent.RarityType<Violet>();
             Item.CWR().isHeldItem = true;
             Item.CWR().heldProjType = heldProjType;
-            Item.CWR().GetAllowPrefix = true;
             Item.CWR().GetMeleePrefix = true;
         }
         public static void SetTooltip(ref List<TooltipLine> tooltips, string modName = "Terraria") {
@@ -287,15 +286,15 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool CanUseItem(Player player) {
             //在升龙斩或者爆发弹幕存在时不能使用武器
-            return player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakSwing>()] > 0
-                || player.ownedProjectileCounts[ModContent.ProjectileType<MurasamaBreakOut>()] > 0
+            return player.ownedProjectileCounts[ModContent.ProjectileType<MuraBreakerSlash>()] > 0
+                || player.ownedProjectileCounts[ModContent.ProjectileType<MuraTriggerDash>()] > 0
                 || player.PressKey(false)
                 ? false
                 : player.ownedProjectileCounts[Item.shoot] == 0;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MurasamaRSlash>(), damage, knockback, player.whoAmI, 0f, 0f);
+            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MuraSlashDefault>(), damage, knockback, player.whoAmI, 0f, 0f);
             return false;
         }
     }

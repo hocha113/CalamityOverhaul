@@ -2952,14 +2952,12 @@ Projectiles: {
 	// DarkIceZeros.DisplayName: Dark Ice Zeros
 	// RFlarefrostBladeHeldProj.DisplayName: R Flarefrost Blade
 	// WaningMoonLight.DisplayName: Waning Moon Light
-	MurasamaHeldProj.DisplayName: Молекулярный разрез
-	MurasamaBreakOut.DisplayName: Молекулярный разрез
-	MurasamaBreakSwing.DisplayName: Полумесяц восходящего дракона
-	MurasamaEndSilkOrb.DisplayName: Разрез измерений - Конец
-	MurasamaEndSilkOrbOnSpan.DisplayName: Разрез измерений - Начало
-	MurasamaDownSkill.DisplayName: Падение на землю
-	MurasamaEndSkillOrb.DisplayName: Разрез измерений - Конец
-	MurasamaEndSkillOrbOnSpan.DisplayName: Разрез измерений - Начало
+	MurasamaHeld.DisplayName: Молекулярный разрез
+	MuraTriggerDash.DisplayName: Молекулярный разрез
+	MuraBreakerSlash.DisplayName: Полумесяц восходящего дракона
+	MuraExecutionCut.DisplayName: Разрез измерений - Конец
+	MuraExecutionCutOnSpan.DisplayName: Разрез измерений - Начало
+	MuraGroundSmash.DisplayName: Падение на землю
 	EndSkillEffectStart.DisplayName: Начало разреза измерений
 	EndSkillMakeDamage.DisplayName: Конец разреза измерений
 	// PowerSoundEgg.DisplayName: Power Sound Egg

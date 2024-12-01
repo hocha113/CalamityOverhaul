@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
@@ -11,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 {
-    internal class MurasamaBreakOut : ModProjectile
+    internal class MuraTriggerDash : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
         protected Player Owner => Main.player[Projectile.owner];
@@ -54,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
 
             if (CWRServerConfig.Instance.WeaponOverhaul) {
-                if (murasama.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.Murasama>()) {
+                if (murasama.type != ModContent.ItemType<Murasama>()) {
                     Projectile.Kill();
                     return;
                 }
@@ -151,7 +152,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
                         int sengsDmg = (int)(MurasamaEcType.ActualTrueMeleeDamage * sengs);
                         Projectile.NewProjectile(new EntitySource_ItemUse(Owner, murasama, "MBOut"), Projectile.Center + breakOutVector * (36 + level * 3), breakOutVector * 3
-                        , ModContent.ProjectileType<MurasamaBreakSwing>(), sengsDmg, 0, Owner.whoAmI);
+                        , ModContent.ProjectileType<MuraBreakerSlash>(), sengsDmg, 0, Owner.whoAmI);
 
                         Projectile.Kill();
                     }

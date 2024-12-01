@@ -23,9 +23,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
     /// <summary>
     /// 升龙斩的爆发弹幕刀刃效果
     /// </summary>
-    internal class MurasamaBreakSwing : ModProjectile
+    internal class MuraBreakerSlash : ModProjectile
     {
-        public override string Texture => CWRConstant.Projectile_Melee + "MurasamaBreakSwing";
+        public override string Texture => CWRConstant.Projectile_Melee + "MuraBreakerSlash";
         private Player Owner => Main.player[Projectile.owner];
         private Item murasama => Owner.ActiveItem();
         private List<NPC> onHitNpcs = [];
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override void AI() {
             if (Projectile.ai[0] == 0) {
                 Projectile.scale = 0.5f + level * 0.0f;
-                Projectile.scale *= MurasamaRSlash.GetMuraSizeInMeleeSengs(Owner);
+                Projectile.scale *= MuraSlashDefault.GetMuraSizeInMeleeSengs(Owner);
             }
             Lighting.AddLight(Projectile.Center, Color.IndianRed.ToVector3() * 2.2f);
             Projectile.scale += (0.05f + level * 0.005f);
@@ -243,7 +243,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         for (int i = 0; i < maxSpanNum; i++) {
                             Vector2 spanPos = Projectile.Center + CWRUtils.randVr(1380, 2200);
                             Vector2 vr = spanPos.To(Projectile.Center + CWRUtils.randVr(180, 320 + level * 12)).UnitVector() * 12;
-                            Projectile.NewProjectile(Projectile.GetSource_FromAI(), spanPos, vr, ModContent.ProjectileType<MurasamaEndSkillOrbOnSpan>(), Projectile.damage / 2, 0, Owner.whoAmI);
+                            Projectile.NewProjectile(Projectile.GetSource_FromAI(), spanPos, vr, ModContent.ProjectileType<MuraExecutionCutOnSpan>(), Projectile.damage / 2, 0, Owner.whoAmI);
                         }
                         //生成一个制造终结技核心效果的弹幕，这样的程序设计是为了减少耦合度
                         Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, Vector2.Zero,

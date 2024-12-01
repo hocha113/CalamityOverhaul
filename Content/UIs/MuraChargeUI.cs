@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.UIs
             high,
         }
         internal static MuraChargeUI Instance;
-        internal MurasamaHeldProj murasamaHeld;
+        internal MurasamaHeld murasamaHeld;
         internal Item murasama => Main.LocalPlayer.GetItem();
         private static Asset<Texture2D> classical_SwordStanceTop;
         private static Asset<Texture2D> classical_SwordStanceFull;
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.UIs
         internal Vector2 origMuraBarDrawPos => new Vector2(180, Main.screenHeight - 40);
         private bool compact => MuraUIStyle == MuraUIStyleEnum.delicacy_compact || MuraUIStyle == MuraUIStyleEnum.classical_compact;
         internal bool dontAddUIAlape =>
-            murasamaHeld == null || murasamaHeld.Type != ModContent.ProjectileType<MurasamaHeldProj>() || Main.playerInventory;
+            murasamaHeld == null || murasamaHeld.Type != ModContent.ProjectileType<MurasamaHeld>() || Main.playerInventory;
         public override bool Active {
             get {
                 if (dontAddUIAlape) {
@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.UIs
                 fullColor = Color.White;
             }
 
-            if (murasamaHeld != null && murasamaHeld.Type == ModContent.ProjectileType<MurasamaHeldProj>()) {
+            if (murasamaHeld != null && murasamaHeld.Type == ModContent.ProjectileType<MurasamaHeld>()) {
                 uiFrame = murasamaHeld.uiFrame;
                 uiFrame2 = murasamaHeld.uiFrame2;
             }
