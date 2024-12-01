@@ -50,12 +50,9 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 }
             }
             if (num < cwr.AmmoCapacity) {
-                int ammoType = item.useAmmo == AmmoID.Rocket ? ItemID.RocketI : ItemID.MusketBall;
-                if (item.useAmmo == AmmoID.FallenStar) {
-                    ammoType = ItemID.FallenStar;
-                }
-                if (item.useAmmo == AmmoID.Gel) {
-                    ammoType = ItemID.Gel;
+                int ammoType = ItemID.MusketBall;
+                if (CWRLoad.AmmoIDToItemIDMapping.TryGetValue(item.useAmmo, out int ammoItemID)) {
+                    ammoType = ammoItemID;
                 }
                 list.Add(new Item(ammoType, cwr.AmmoCapacity - num));
             }

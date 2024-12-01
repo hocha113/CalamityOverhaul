@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.TileModules
         internal static Asset<Texture2D> modeuleBodyAsset;
         internal static Asset<Texture2D> truesFromeAsset;
         public Item[] items;
-        public const int itemCount = 81;
+        public const int itemCount_W_X_H = 81;
         internal Vector2 Center => PosInWorld + new Vector2(TransmutationOfMatter.Width, TransmutationOfMatter.Height) * 8;
         void ICWRLoader.LoadAsset() {
             modeuleBodyAsset = CWRUtils.GetT2DAsset(CWRConstant.Asset + "Tiles/TransmutationOfMatter");
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.TileModules
         }
         void ICWRLoader.UnLoadData() => modeuleBodyAsset = truesFromeAsset = null;
         private void initializeItems() {
-            items = new Item[itemCount];
+            items = new Item[itemCount_W_X_H];
             for (int i = 0; i < items.Length; i++) {
                 items[i] = new Item();
             }
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.TileModules
             }
         }
         public override void SendData(ModPacket data) {
-            for (int i = 0; i < itemCount; i++) {
+            for (int i = 0; i < itemCount_W_X_H; i++) {
                 if (items[i] == null) {
                     items[i] = new Item(0);
                 }
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.TileModules
             }
         }
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
-            for (int i = 0; i < itemCount; i++) {
+            for (int i = 0; i < itemCount_W_X_H; i++) {
                 int type = reader.ReadInt32();
                 int stack = reader.ReadInt32();
                 if (type < 0 || type >= ItemLoader.ItemCount) {
@@ -65,6 +65,8 @@ namespace CalamityOverhaul.Content.TileModules
                     items[i].stack = stack;
                 }
             }
+            SupertableUI.Instance.items = items;
+            SupertableUI.Instance.OutItem();
         }
         public override void SaveData(TagCompound tag) {
             for (int i = 0; i < items.Length; i++) {

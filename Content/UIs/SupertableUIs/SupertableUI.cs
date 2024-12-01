@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         internal void tpEntityLoadenItems() {
             if (tramModuleEntity != null && tramModuleEntity.Active) {
-                items = tramModuleEntity.items;
+                tramModuleEntity.items = items;
                 if (!VaultUtils.isSinglePlayer) {
                     tramModuleEntity.SendData();
                 }
@@ -417,12 +417,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 End:;
             }
             tpEntityLoadenItems();
-        }
-
-        public static void SetItemIsNull(ref Item item) {
-            if (item == null) {
-                item = new Item();
-            }
         }
 
         /// <summary>

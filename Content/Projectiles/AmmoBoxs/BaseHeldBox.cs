@@ -212,37 +212,39 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                     , rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
             }
 
-            rotation = 0;
-            drawColor = canUse_SetAmmoBox ? lightColor : Color.Red;
-            spriteEffects = SpriteEffects.None;
-            drawBoxPos = setAmmoBoxPos - Main.screenPosition;
-            Main.EntitySpriteDraw(TextureValue, drawBoxPos + DrawBoxOffsetPos, null, drawColor * 0.6f
-                    , rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                rotation = 0;
+                drawColor = canUse_SetAmmoBox ? lightColor : Color.Red;
+                spriteEffects = SpriteEffects.None;
+                drawBoxPos = setAmmoBoxPos - Main.screenPosition;
+                Main.EntitySpriteDraw(TextureValue, drawBoxPos + DrawBoxOffsetPos, null, drawColor * 0.6f
+                        , rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
 
-            if (!(Charge <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
-                Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;
-                Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;
-                float barScale = 2f;
-                Vector2 barOrigin = barBG.Size() * 0.5f;
-                Vector2 drawPos = Owner.GetPlayerStabilityCenter() + Vector2.UnitY * 250 - Main.screenPosition;
-                Rectangle frameCrop = new Rectangle(0, 0, (int)(Charge / (float)MaxCharge * barFG.Width), barFG.Height);
-                Color color = Color.White;
-                Main.spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, barScale, 0, 0f);
-                Main.spriteBatch.Draw(barFG, drawPos, frameCrop, Color.Green * 0.8f, 0f, barOrigin, barScale, 0, 0f);
-                Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("AmmoBox_Text2")
-                    , drawPos.X - 32, drawPos.Y - 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
-                if (Charge % 10 == 0) {
-                    textlevelsengs++;
-                    if (textlevelsengs > 10) {
-                        textlevelsengs = 0;
+                if (!(Charge <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
+                    Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;
+                    Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;
+                    float barScale = 2f;
+                    Vector2 barOrigin = barBG.Size() * 0.5f;
+                    Vector2 drawPos = Owner.GetPlayerStabilityCenter() + Vector2.UnitY * 250 - Main.screenPosition;
+                    Rectangle frameCrop = new Rectangle(0, 0, (int)(Charge / (float)MaxCharge * barFG.Width), barFG.Height);
+                    Color color = Color.White;
+                    Main.spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, barScale, 0, 0f);
+                    Main.spriteBatch.Draw(barFG, drawPos, frameCrop, Color.Green * 0.8f, 0f, barOrigin, barScale, 0, 0f);
+                    Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("AmmoBox_Text2")
+                        , drawPos.X - 32, drawPos.Y - 30, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
+                    if (Charge % 10 == 0) {
+                        textlevelsengs++;
+                        if (textlevelsengs > 10) {
+                            textlevelsengs = 0;
+                        }
                     }
+                    string text = "";
+                    for (int i = 0; i < textlevelsengs; i++) {
+                        text += ".";
+                    }
+                    Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, text
+                        , drawPos.X - 20, drawPos.Y, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
                 }
-                string text = "";
-                for (int i = 0; i < textlevelsengs; i++) {
-                    text += ".";
-                }
-                Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.ItemStack.Value, text
-                    , drawPos.X - 20, drawPos.Y, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
             }
         }
     }

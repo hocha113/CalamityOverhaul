@@ -294,6 +294,11 @@ namespace CalamityOverhaul
         /// 获取一个枪械的后坐力数值所对于的本地化描述键
         /// </summary>
         internal static Dictionary<int, string> ItemIsGunAndGetRecoilLocKey { get; private set; } = [];
+        /// <summary>
+        /// 根据<see cref="Item.useAmmo"/>映射到对应的物品id之上
+        /// </summary>
+        internal static Dictionary<int, int> AmmoIDToItemIDMapping { get; private set; } = [];
+
         #endregion
 
         public static class NPCValue
@@ -438,6 +443,26 @@ namespace CalamityOverhaul
             WormBodys = [ AquaticScourgeBody, StormWeaverBody, ArmoredDiggerBody, DesertScourgeBody, DesertNuisanceBody,
                 DesertNuisanceBodyYoung, CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
                 , SepulcherBody, PerforatorBodyLarge, PerforatorBodyMedium, NPCID.TheDestroyerBody, NPCID.EaterofWorldsBody];
+
+            AmmoIDToItemIDMapping = new Dictionary<int, int>
+            {
+                { AmmoID.FallenStar, ItemID.FallenStar },
+                { AmmoID.Gel, ItemID.Gel },
+                { AmmoID.Arrow, ItemID.WoodenArrow },
+                { AmmoID.Coin, ItemID.CopperCoin },
+                { AmmoID.Bullet, ItemID.MusketBall },
+                { AmmoID.Sand, ItemID.SandBlock },
+                { AmmoID.Dart, ItemID.PoisonDart },
+                { AmmoID.Rocket, ItemID.RocketI },
+                { AmmoID.Flare, ItemID.Flare },
+                { AmmoID.Snowball, ItemID.Snowball },
+                { AmmoID.StyngerBolt, ItemID.StyngerBolt },
+                { AmmoID.CandyCorn, ItemID.CandyCorn },
+                { AmmoID.JackOLantern, ItemID.JackOLantern },
+                { AmmoID.Stake, ItemID.Stake },
+                { AmmoID.NailFriendly, ItemID.Nail },
+                { AmmoID.None, ItemID.MusketBall }
+            };
 
             if (CWRMod.Instance.fargowiltasSouls != null) {
                 EternitySoul = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("EternitySoul").Type;
