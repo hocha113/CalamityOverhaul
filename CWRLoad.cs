@@ -146,13 +146,6 @@ namespace CalamityOverhaul
         public static int PerforatorBodyMedium;
         public static int PerforatorTailMedium;
         /// <summary>
-        /// 血肉蠕虫3
-        /// </summary>
-        public static List<int> targetNpcTypes18;
-        public static int PerforatorHeadSmall;
-        public static int PerforatorBodySmall;
-        public static int PerforatorTailSmall;
-        /// <summary>
         /// 装甲掘地虫 
         /// </summary>
         public static List<int> targetNpcTypes6;
@@ -248,6 +241,14 @@ namespace CalamityOverhaul
         public static int RavagerHead;
         public static int RavagerLegLeft;
         public static int RavagerLegRight;
+
+        /// <summary>
+        /// 血肉蠕虫3
+        /// </summary>
+        public static List<int> targetNpcTypes17;
+        public static int PerforatorHeadSmall;
+        public static int PerforatorBodySmall;
+        public static int PerforatorTailSmall;
 
         /// <summary>
         /// 蠕虫类体节
@@ -420,6 +421,10 @@ namespace CalamityOverhaul
             AresTeslaCannon = NPCType<AresTeslaCannon>();
             AresGaussNuke = NPCType<AresGaussNuke>();
 
+            PerforatorHeadSmall = NPCType<PerforatorHeadSmall>();
+            PerforatorBodySmall = NPCType<PerforatorBodySmall>();
+            PerforatorTailSmall = NPCType<PerforatorTailSmall>();
+
             Projectile_ArcZap = ProjectileType<ArcZap>();
 
             targetNpcTypes = [SepulcherHead, SepulcherBody, SepulcherTail];
@@ -439,10 +444,11 @@ namespace CalamityOverhaul
             targetNpcTypes14 = [NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail];
             targetNpcTypes15 = [NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail];
             targetNpcTypes16 = [RavagerBody, RavagerClawLeft, RavagerClawRight, RavagerHead, RavagerLegLeft, RavagerLegRight];
+            targetNpcTypes17 = [PerforatorHeadSmall, PerforatorBodySmall, PerforatorTailSmall];
 
             WormBodys = [ AquaticScourgeBody, StormWeaverBody, ArmoredDiggerBody, DesertScourgeBody, DesertNuisanceBody,
                 DesertNuisanceBodyYoung, CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
-                , SepulcherBody, PerforatorBodyLarge, PerforatorBodyMedium, NPCID.TheDestroyerBody, NPCID.EaterofWorldsBody];
+                , SepulcherBody, PerforatorBodyLarge, PerforatorBodyMedium, PerforatorBodySmall, NPCID.TheDestroyerBody, NPCID.EaterofWorldsBody];
 
             AmmoIDToItemIDMapping = new Dictionary<int, int>
             {

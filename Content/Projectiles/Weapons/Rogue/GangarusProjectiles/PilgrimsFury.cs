@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
         private NPC Target => Main.npc[(int)Projectile.ai[1]];
         private Vector2 targetEndPos;
         private float targetEndRot;
-        private Rectangle targetEndFrame;
         private int Time {
             get => (int)Projectile.ai[0];
             set => Projectile.ai[0] = value;

@@ -19,9 +19,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Extras
 {

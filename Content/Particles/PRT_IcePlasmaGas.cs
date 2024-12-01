@@ -8,7 +8,6 @@ namespace CalamityOverhaul.Content.Particles
     {
         public override string Texture => "CalamityMod/Projectiles/Summon/SmallAresArms/MinionPlasmaGas";
         private bool StrongVisual;
-        private bool Glowing;
         private float sengsValue;
 
         public PRT_IcePlasmaGas(Vector2 position, Vector2 velocity, Color color, int lifetime, float scale, bool required = false) {

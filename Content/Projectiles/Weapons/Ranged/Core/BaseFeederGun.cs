@@ -58,10 +58,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         protected int LoadingQuantity = 0;
         /// <summary>
-        /// 换弹延迟计时器
-        /// </summary>
-        protected int AutomaticCartridgeChangeDelayTime;
-        /// <summary>
         /// 装弹计时器
         /// </summary>
         protected int kreloadTimeValue;
@@ -398,7 +394,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
             if ((!IsKreload || ignoreKreLoad) && kreloadTimeValue <= 0
                 && AmmoState.CurrentAmount > 0 && !ModOwner.NoCanAutomaticCartridgeChange
-                && ModItem.NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.OnMainP 
+                && ModItem.NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.OnMainP
                 && OffsetPos.Length() <= 0.6f && Math.Abs(OffsetRot) <= 0.02f) {
                 OnKreload = true;
                 kreloadTimeValue = kreloadMaxTime;
@@ -465,7 +461,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     Projectile.rotation = GetGunBodyRot();
                     Projectile.Center = GetGunBodyPos();
                 }
-                
+
                 int value1 = (int)(kreloadMaxTime * LoadingAA_Handgun.level1);
                 int value2 = (int)(kreloadMaxTime * LoadingAA_Handgun.level3);
                 if (kreloadTimeValue >= value1) {
@@ -587,7 +583,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override void FiringIncident() {
-            
+
         }
 
         public sealed override void InOwner() {
@@ -708,7 +704,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
                     OnKreload = false;
                     IsKreload = true;
-                    
+
                     if (Item.type != ItemID.None) {
                         ModItem.IsKreload = true;
                     }

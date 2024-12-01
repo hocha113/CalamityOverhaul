@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Content.SkyEffects
         internal static string name => "CWRMod:BrutalSkeletronSky";
         private bool active;
         private float intensity;
-        private float maxIntensity = 0.6f;
         private PGBolt[] bolts;
         private int ticksUntilNextBolt;
         private UnifiedRandom random = new UnifiedRandom();

@@ -24,7 +24,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool sawAlive;
         private bool dontAttack;
         private NPC head;
-        private int frame;
         private Player player;
         public override bool CanLoad() => true;
         public override bool? CheckDead() => true;

@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             item.useTime = 21;
             item.useStyle = ItemUseStyleID.Swing;
             item.useTurn = true;
+            item.UseSound = null;
             item.knockBack = 7f;
             item.autoReuse = true;
             item.noUseGraphic = true;

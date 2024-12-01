@@ -6,7 +6,6 @@ using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Graphics.Shaders;
@@ -17,14 +16,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 {
     internal class HeavenLightning : ModProjectile
     {
-        public bool HasPlayedSound;
         public const int Lifetime = 45;
         private Color chromaColor => VaultUtils.MultiStepColorLerp(Projectile.timeLeft % 15 / 15f, HeavenfallLongbow.rainbowColors);
-        public ref float InitialVelocityAngle => ref Projectile.ai[0];
-        public ref float BaseTurnAngleRatio => ref Projectile.ai[1];
-        public ref float AccumulatedXMovementSpeeds => ref Projectile.localAI[0];
-        public ref float BranchingIteration => ref Projectile.localAI[1];
-        public virtual float LightningTurnRandomnessFactor { get; } = 2f;
         public override string Texture => "CalamityMod/Projectiles/LightningProj";
         public override void SetStaticDefaults() {
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 10000;
@@ -45,16 +38,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 13 * Projectile.MaxUpdates;
             Projectile.timeLeft = Projectile.MaxUpdates * Lifetime;
-        }
-
-        public override void SendExtraAI(BinaryWriter writer) {
-            writer.Write(AccumulatedXMovementSpeeds);
-            writer.Write(BranchingIteration);
-        }
-
-        public override void ReceiveExtraAI(BinaryReader reader) {
-            AccumulatedXMovementSpeeds = reader.ReadSingle();
-            BranchingIteration = reader.ReadSingle();
         }
 
         public override void AI() {

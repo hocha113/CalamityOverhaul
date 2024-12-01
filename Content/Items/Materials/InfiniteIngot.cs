@@ -1,15 +1,12 @@
 ﻿using CalamityMod.Items.Materials;
 using CalamityMod.Items.PermanentBoosters;
 using CalamityMod.Rarities;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI.Chat;
 using static Terraria.ModLoader.ModContent;

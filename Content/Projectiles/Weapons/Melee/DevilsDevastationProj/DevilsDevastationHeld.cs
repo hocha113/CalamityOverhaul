@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 return;
             }
             else if (Projectile.ai[0] == 3) {
-                shootSengs = 0.95f;
+                shootSengs = 0.35f;
                 maxSwingTime = 70;
                 canDrawSlashTrail = false;
                 SwingBehavior(starArg: 13, baseSwingSpeed: 2, ler1_UpLengthSengs: 0.1f, ler1_UpSpeedSengs: 0.1f, ler1_UpSizeSengs: 0.062f

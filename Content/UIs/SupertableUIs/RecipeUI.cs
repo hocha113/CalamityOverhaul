@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Placeable;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -7,7 +6,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         protected bool onFire;
         protected Color color1 = Color.Lime;
         protected Color color2 = Color.White;
-        protected bool rightControl;
+        protected bool rightControl = false;
 
         public override void SetDefaults() {
             Projectile.width = 14;

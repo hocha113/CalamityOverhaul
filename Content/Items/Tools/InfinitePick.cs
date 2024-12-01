@@ -151,12 +151,12 @@ namespace CalamityOverhaul.Content.Items.Tools
                     cumstops.Text = $"{int.MaxValue}{typeV}";
                 }
             }
-            
+
             tooltips.IntegrateHotkey(CWRKeySystem.InfinitePickSkillKey);
         }
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
-            if ((line.Name == "ItemName" || line.Name == "Damage" || line.Name == "PickPower" || line.Name == "HammerPower")  
+            if ((line.Name == "ItemName" || line.Name == "Damage" || line.Name == "PickPower" || line.Name == "HammerPower")
                 && line.Mod == "Terraria") {
                 InfiniteIngot.DrawColorText(Main.spriteBatch, line);
                 return false;

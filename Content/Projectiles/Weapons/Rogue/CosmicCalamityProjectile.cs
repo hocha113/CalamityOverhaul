@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         public override string Texture => CWRConstant.Item + "Rogue/CosmicCalamity";
         public int Time = 0;
         public int TimeUnderground = 0;
-        public Vector2 SavedOldVelocity;
         public Vector2 NPCDestination;
         public Player Owner => Main.player[Projectile.owner];
         public override void SetStaticDefaults() {

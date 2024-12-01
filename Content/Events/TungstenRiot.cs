@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Events;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Materials;
 using CalamityMod.NPCs.NormalNPCs;

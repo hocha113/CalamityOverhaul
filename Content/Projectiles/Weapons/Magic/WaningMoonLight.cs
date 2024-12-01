@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
     {
         public override string Texture => CWRConstant.Placeholder;
         private Player Owner => Main.player[Projectile.owner];
-        private bool onhitNPCBool = true;
         private int randomIntDownNum;
 
         public override void SetDefaults() {

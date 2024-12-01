@@ -46,9 +46,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             bool canExplode = false;
 
             foreach (var n in Main.ActiveNPCs) {
-                if (n.CanBeChasedBy(Projectile) && Collision.CanHit(Projectile.Center, 1, 1, n.Center, 1, 1) 
+                if (n.CanBeChasedBy(Projectile) && Collision.CanHit(Projectile.Center, 1, 1, n.Center, 1, 1)
                     && Vector2.Distance(Projectile.Center, n.Center) < 250f) {
-                    canExplode = true; 
+                    canExplode = true;
                     break;
                 }
             }

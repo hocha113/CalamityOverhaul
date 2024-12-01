@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreInOwnerUpdate() {
-            ExecuteAdaptiveSwing(phase1Ratio : 0.2f, phase0SwingSpeed : -0.1f, phase1SwingSpeed : 4.2f, phase2SwingSpeed : 3f, phase0MeleeSizeIncrement : 0, phase2MeleeSizeIncrement: 0);
+            ExecuteAdaptiveSwing(phase1Ratio: 0.2f, phase0SwingSpeed: -0.1f, phase1SwingSpeed: 4.2f, phase2SwingSpeed: 3f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
             return base.PreInOwnerUpdate();
         }
 

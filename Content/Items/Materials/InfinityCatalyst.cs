@@ -9,7 +9,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using static CalamityOverhaul.CWRMod;
 using static Terraria.ModLoader.ModContent;

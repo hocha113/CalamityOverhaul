@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
         public float ChargeProgress => 15 * (MaxCharge - timenum) / MaxCharge;
         public float Spread => MathHelper.PiOver2 * (1 - (float)Math.Pow(ChargeProgress, 1.5) * 0.95f);
         private bool onFire;
+        private int timenum = 1000;
+        private int rot = 60;
         public override void SetDefaults() {
             Projectile.width = 14;
             Projectile.height = 14;
@@ -32,9 +34,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override bool? CanDamage() => false;
 
-        private int timenum = 1000;
-        private int timenum2;
-        private int rot = 60;
         public override void AI() {
             Projectile.MaxUpdates = 1;
             Projectile flowProj = null;

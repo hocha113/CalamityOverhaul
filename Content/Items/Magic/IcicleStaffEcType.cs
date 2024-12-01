@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
 using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
@@ -30,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Magic
 
     internal class IcicleStaffHeld : BaseMagicStaff<IcicleStaff>
     {
-        int fireIndex;
+        private int fireIndex;
         public override void FiringShoot() {
             int leftorright = (InMousePos - Owner.Center).X > 0 ? 1 : -1;
             Vector2 starpos = Owner.Center + new Vector2(Main.rand.NextFloat(-120, 240) * leftorright, Main.rand.NextFloat(-600, -800));

@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Items.Placeables.FurnitureExo;
 using CalamityMod.Particles;
 using CalamityMod.Projectiles.Magic;
 using CalamityOverhaul.Content.Items.Placeable;

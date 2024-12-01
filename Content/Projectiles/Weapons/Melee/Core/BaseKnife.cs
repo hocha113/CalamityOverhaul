@@ -18,7 +18,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         protected bool autoSetShoot;
         protected bool onSound;
         protected Dictionary<int, NPC> onHitNPCs = [];
-        protected int formeInHitNPCCoolTime;
         public enum SwingAITypeEnum
         {
             None = 0,
@@ -170,7 +169,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                     phase2SwingSpeed *= -1;
                 }
             }
-            
+
             // 计算当前挥击速度比例
             float swingSpeedMultiplier = SetSwingSpeed(1f);
 

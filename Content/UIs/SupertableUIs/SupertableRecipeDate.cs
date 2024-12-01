@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace CalamityOverhaul.Content.UIs.SupertableUIs
+﻿namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     public class SupertableRecipeDate
     {

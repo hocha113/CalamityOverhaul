@@ -22,12 +22,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
         private int Time2;
         private bool shoot;
         private bool shoot2;
-        private float drawTimer;
-        private Vector2 offsetHitPos;
-        private NPC hitNPC;
-        private float offsetHitRot;
-        private float oldNPCROt;
-        private float npcRotUpdateSengs;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.DontCancelChannelOnKill[Type] = true;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
@@ -153,7 +147,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 }
             }
 
-            CWRUtils.DrawMarginEffect(Main.spriteBatch, texture, (int)drawTimer, Projectile.Center - Main.screenPosition
+            CWRUtils.DrawMarginEffect(Main.spriteBatch, texture, Time, Projectile.Center - Main.screenPosition
                 , null, Color.OrangeRed, Projectile.rotation, drawOrigin, Projectile.scale, 0);
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor)
                 , Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);

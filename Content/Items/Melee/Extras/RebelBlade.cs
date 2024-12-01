@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -113,10 +112,10 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
 
         public override bool PreInOwnerUpdate() {
             ExecuteAdaptiveSwing(
-            phase0SwingSpeed : -0.4f,
-            phase1SwingSpeed : 3.4f,
-            phase2SwingSpeed : 7f,
-            swingSound : SoundID.Item71 with { Pitch = -0.6f });
+            phase0SwingSpeed: -0.4f,
+            phase1SwingSpeed: 3.4f,
+            phase2SwingSpeed: 7f,
+            swingSound: SoundID.Item71 with { Pitch = -0.6f });
             return base.PreInOwnerUpdate();
         }
 

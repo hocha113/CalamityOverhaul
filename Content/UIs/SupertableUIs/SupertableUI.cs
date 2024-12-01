@@ -1,11 +1,9 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.TileModules;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,10 +44,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// </summary>
         public int MaxIterations;
         /// <summary>
-        /// 迭代次数的计数器，用于防止无限递归导致堆栈溢出的保险
-        /// </summary>
-        private int iterations;
-        /// <summary>
         /// 主UI的面板矩形
         /// </summary>
         private Rectangle mainRec;
@@ -83,8 +77,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         private Point mouseInCellCoord;
 
         private int inCoordIndex => (mouseInCellCoord.Y * maxCellNumX) + mouseInCellCoord.X;
-
-        private bool _old_SupertableUIStartBool;
 
         public override bool Active {
             get => player.CWR().SupertableUIStartBool;
@@ -278,8 +270,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     OutItem();
                 }
             }
-
-            iterations = 0;
         }
 
         /// <summary>
@@ -717,7 +707,7 @@ End:;
                 Vector2 size = TextureAssets.Item[item.type].Value.Size();
                 if (offset == default) {
                     offset = new Vector2(cellWid, cellHig) / 2;
-                } 
+                }
                 float slp = 32f / size.X;
                 slp *= overSlp;
                 if (item.type == CWRLoad.DarkMatterBall) {

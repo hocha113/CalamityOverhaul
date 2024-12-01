@@ -439,8 +439,8 @@ namespace CalamityOverhaul.Content
 
         private void OwnerByDir(Item item, Player player) {
             if ((player.PressKey() || player.PressKey(false)) && player.whoAmI == Main.myPlayer) {
-                if (item.type > ItemID.None && item.useStyle == ItemUseStyleID.Swing 
-                    && (item.createTile == -1 && item.createWall == -1) 
+                if (item.type > ItemID.None && item.useStyle == ItemUseStyleID.Swing
+                    && (item.createTile == -1 && item.createWall == -1)
                     && item.CWR().heldProjType == 0
                     && !player.CWR().uiMouseInterface && !player.cursorItemIconEnabled) {
                     player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);

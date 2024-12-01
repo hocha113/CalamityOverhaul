@@ -1,10 +1,6 @@
 ﻿using CalamityMod.Items.Weapons.Magic;
-using CalamityMod.NPCs.SlimeGod;
-using CalamityMod.Projectiles.Magic;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Magic;
-using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

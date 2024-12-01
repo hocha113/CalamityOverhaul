@@ -384,7 +384,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             else {
                 SetGunBodyHandIdle();
             }
-            
+
             if (ShootCoolingValue > 0) {
                 SetWeaponOccupancyStatus();
                 ShootCoolingValue--;

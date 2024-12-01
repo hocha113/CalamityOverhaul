@@ -15,9 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Item_Ranged + "AvalancheM60Held";
         public override int targetCayItem => ModContent.ItemType<AvalancheM60>();
         public override int targetCWRItem => ModContent.ItemType<AvalancheM60>();
-
         private int fireIndex;
-        private int fireIndex2;
         private int onFireTime;
         private int onFireTime2;
         public override void SetRangedProperty() {
@@ -139,11 +137,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Projectile proj3 = Projectile.NewProjectileDirect(Source, GunShootPos, ShootVelocity, ModContent.ProjectileType<ExtremeColdHail>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, ShootVelocity.Y);
             proj3.rotation = proj3.velocity.ToRotation() + MathHelper.PiOver2;
             if (FireTime <= 8) {
-                fireIndex2++;
-                if (fireIndex2 > 20) {
+                fireIndex++;
+                if (fireIndex > 20) {
                     FireTime = 50;
                     onFireTime += 60;
-                    fireIndex2 = 0;
+                    fireIndex = 0;
                 }
             }
         }

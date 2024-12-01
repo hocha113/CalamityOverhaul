@@ -30,31 +30,15 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         /// </summary>
         public float ArmRotSengsBack;
         /// <summary>
-        /// 右手角度值矫正
-        /// </summary>
-        public float ArmRotSengsFrontNoFireOffset;
-        /// <summary>
-        /// 左手角度值矫正
-        /// </summary>
-        public float ArmRotSengsBackNoFireOffset;
-        /// <summary>
-        /// 手持距离，生效于非开火状态下，默认为15
+        /// 手持距离，生效于非使用状态下，默认为15
         /// </summary>
         public float HandDistance = 15;
         /// <summary>
-        /// 手持距离，生效于非开火状态下，默认为0
+        /// 手持距离，生效于非使用状态下，默认为0
         /// </summary>
         public float HandDistanceY = 0;
         /// <summary>
-        /// 手持距离，生效于开火状态下，默认为20
-        /// </summary>
-        public float HandFireDistance = 20;
-        /// <summary>
-        /// 手持距离，生效于开火状态下，默认为-3
-        /// </summary>
-        public float HandFireDistanceY = -3;
-        /// <summary>
-        /// 这个角度用于设置枪体在玩家非开火阶段的仰角，这个角度是周角而非弧度角，默认为20f
+        /// 这个角度用于设置箱体在玩家非使用阶段的仰角，这个角度是周角而非弧度角，默认为20f
         /// </summary>
         public float AngleFirearmRest = 20f;
         public SoundStyle DeploymentSound = CWRSound.DeploymentSound;
@@ -114,8 +98,8 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         }
 
         public virtual void InOwner() {
-            ArmRotSengsFront = (60 + ArmRotSengsFrontNoFireOffset) * CWRUtils.atoR;
-            ArmRotSengsBack = (110 + ArmRotSengsBackNoFireOffset) * CWRUtils.atoR;
+            ArmRotSengsFront = 60 * CWRUtils.atoR;
+            ArmRotSengsBack = 110 * CWRUtils.atoR;
             Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
             Projectile.timeLeft = 2;

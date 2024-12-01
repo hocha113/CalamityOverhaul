@@ -135,9 +135,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         protected int ToTargetAmmo;
         /// <summary>
-        /// 关于绘制的弹药转化目标，如果值大于0，则会在绘制效果上覆盖<see cref="ToTargetAmmo"/>
+        /// 关于绘制的弹药转化目标，如果值大于0，则会在绘制效果上覆盖<see cref="ToTargetAmmo"/>，默认为0
         /// </summary>
-        protected int ToTargetAmmoInDraw;
+        protected int ToTargetAmmoInDraw = 0;
         /// <summary>
         /// 一个委托变量，用于决定什么弹药会被转化，与<see cref="ToTargetAmmo"/>配合使用
         /// </summary>

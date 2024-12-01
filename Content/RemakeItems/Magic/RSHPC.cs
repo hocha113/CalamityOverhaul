@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Materials;
-using CalamityMod.Items.SummonItems;
 using CalamityMod.Items.Weapons.Magic;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;

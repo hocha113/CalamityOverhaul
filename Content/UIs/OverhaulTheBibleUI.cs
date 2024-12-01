@@ -59,7 +59,6 @@ namespace CalamityOverhaul.Content.UIs
         private bool magic = true;
         private bool summon = true;
         private bool rogue = true;
-        private bool slive = false;
         private float offsetMouseY;
 
         private bool onMeleeP;
@@ -127,7 +126,6 @@ namespace CalamityOverhaul.Content.UIs
         /// 上一帧的鼠标状态
         /// </summary>
         private MouseState oldMouseState;
-        private bool old_Ldown;
         private bool onDrag;
         private Vector2 dragOffset;
         internal List<Item> ecTypeItemList;

@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
@@ -15,7 +14,6 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         private bool onProj;
         private bool onDorp;
         protected int maxFrameNum = 1;
-        protected Vector2 drawOffsetPos;
         public int FromeThisTImeID;
 
         public override void SetDefaults() {

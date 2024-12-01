@@ -13,9 +13,6 @@ using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.Tiles;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
-using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -101,7 +98,7 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileID.DemonAltar)
                     .Register();
             }
-            
+
             //添加迈达斯统帅的合成
             {
                 Recipe.Create(ItemType<MidasPrime>())

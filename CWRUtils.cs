@@ -12,7 +12,6 @@ using ReLogic.Content;
 using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;

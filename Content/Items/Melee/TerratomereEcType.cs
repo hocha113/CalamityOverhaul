@@ -34,6 +34,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.autoReuse = true;
             Item.noUseGraphic = true;
             Item.noMelee = true;
+            Item.UseSound = null;
             Item.value = CalamityGlobalItem.RarityTurquoiseBuyPrice;
             Item.rare = ModContent.RarityType<Turquoise>();
             Item.SetKnifeHeld<TerratomereHeld>();
@@ -71,33 +72,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreInOwnerUpdate() {
-            if (Time == 0) {
-                SoundEngine.PlaySound(new SoundStyle("CalamityMod/Sounds/Item/TerratomereSwing"), Owner.Center);
-            }
-            float swingUp = SetSwingSpeed(1f);
-            int time1 = (int)(maxSwingTime / 3 * updateCount * swingUp);
-            int time2 = (int)(maxSwingTime * 0.6f * updateCount * swingUp);
-            if (Time > time1) {
-                canDrawSlashTrail = true;
-                SwingData.baseSwingSpeed = 8f;
-                if (Time == time1 + 1) {
-                    speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingUp;
-                }
-            }
-            else {
-                OtherMeleeSize += 0.012f;
-                SwingData.baseSwingSpeed = -1f;
-                speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingUp;
-                canDrawSlashTrail = false;
-            }
-
-            if (Time > time2) {
-                OtherMeleeSize -= 0.01f;
-                SwingData.baseSwingSpeed = 3f;
-                if (Time == time2 + 1) {
-                    speed = MathHelper.ToRadians(SwingData.baseSwingSpeed) / swingUp;
-                }
-            }
+            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase1Ratio: 0.3333f, phase2Ratio: 0.6f, phase0SwingSpeed: -1f
+                , phase1SwingSpeed: 8f, phase2SwingSpeed: 3f, phase0MeleeSizeIncrement: 0.012f
+                , phase2MeleeSizeIncrement: -0.01f, swingSound: new SoundStyle("CalamityMod/Sounds/Item/TerratomereSwing"));
             return base.PreInOwnerUpdate();
         }
 

@@ -57,9 +57,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         public bool Incandescence;
         /// <summary>
-        /// 刀光纹理倾斜采样
+        /// 刀光纹理倾斜采样，默认为<see langword="false"/>
         /// </summary>
-        public bool ObliqueSampling;
+        public bool ObliqueSampling = false;
         /// <summary>
         /// 动画帧切换间隔，默认为5
         /// </summary>

@@ -27,9 +27,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override bool PreInOwnerUpdate() {
             if (Projectile.ai[0] == 1) {
-                if (Time == 0) {
-                    SoundEngine.PlaySound(SoundID.Item71, Owner.position);
-                }
                 distanceToOwner = 100;
                 SwingAIType = SwingAITypeEnum.None;
                 SwingData.starArg = 63;
@@ -38,13 +35,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 SwingData.ler1_UpSizeSengs = 0.06f;
                 SwingData.minClampLength = 90;
                 SwingData.maxClampLength = 130;
+                ExecuteAdaptiveSwing(initialMeleeSize: 1, phase1Ratio: 0.133f, phase2Ratio: 0.6f, phase0SwingSpeed: 2f
+                , phase1SwingSpeed: 8f, phase2SwingSpeed: 3f, phase0MeleeSizeIncrement: 0.01f
+                , phase2MeleeSizeIncrement: 0, swingSound: SoundID.Item71);
             }
             else if (Projectile.ai[0] == 2) {
                 if (Time == 0) {
                     SoundEngine.PlaySound(SoundID.Item88, Owner.position);
                 }
+
                 SwingAIType = SwingAITypeEnum.None;
-                shootSengs = 0.95f;
+                shootSengs = 0.25f;
                 maxSwingTime = 70;
                 canDrawSlashTrail = false;
                 SwingData.starArg = 13;
@@ -56,6 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 SwingData.ler2_DownSpeedSengs = 0.22f;
                 SwingData.maxSwingTime = 40;
             }
+            
             return true;
         }
 

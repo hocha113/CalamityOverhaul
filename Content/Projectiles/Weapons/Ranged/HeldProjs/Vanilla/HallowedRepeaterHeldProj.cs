@@ -12,9 +12,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.HallowedRepeater].Value;
         public override int targetCayItem => ItemID.HallowedRepeater;
         public override int targetCWRItem => ItemID.HallowedRepeater;
-
-        private int thisNeedsTime;
-        private int chargeAmmoNum;
         public override void SetRangedProperty() {
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;

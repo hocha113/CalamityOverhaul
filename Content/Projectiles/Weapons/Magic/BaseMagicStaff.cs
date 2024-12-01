@@ -1,8 +1,5 @@
-﻿using CalamityMod.Items.Weapons.Magic;
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Magic;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -16,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
     {
         public override string Texture => CWRConstant.Cay_Wap_Magic + typeof(TItem).Name;
         public override int targetCayItem => ModContent.ItemType<TItem>();
-        public override int targetCWRItem => CWRServerConfig.Instance.WeaponOverhaul 
+        public override int targetCWRItem => CWRServerConfig.Instance.WeaponOverhaul
             ? ItemID.None : CWRMod.Instance.Find<ModItem>(typeof(TItem).Name + "EcType").Type;
         public sealed override void SetMagicProperty() {
             ShootPosToMouLengValue = -30;
@@ -32,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         }
 
         public virtual void SetStaffProperty() {
-            
+
         }
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
