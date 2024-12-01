@@ -3404,6 +3404,9 @@ Projectiles: {
 	// SoulSeekerSkull.DisplayName: Soul Seeker Skull
 	// EyeofMagnusHeldProj.DisplayName: Eyeof Magnus Held Proj
 	// LunicEyeHeldProj.DisplayName: Lunic Eye Held Proj
+	// EvilSmasherHeld.DisplayName: Evil Smasher Held
+	// AestheticusHeldProj.DisplayName: Aestheticus Held Proj
+	// BasherHeld.DisplayName: Basher Held
 }
 
 Configs: {

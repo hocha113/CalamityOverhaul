@@ -35,17 +35,11 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         /// <summary>
         /// 是否参与配方替换，默认为<see langword="true"/>，如果<see cref="IsVanilla"/>为<see langword="true"/>，那么该属性自动返回<see langword="false"/>
         /// </summary>
-        public virtual bool FormulaSubstitution {
-            get {
-                return !IsVanilla;
-            }
-        }
-
+        public virtual bool FormulaSubstitution => !IsVanilla;
         /// <summary>
         /// 该重置节点是否会加载进图鉴中，默认为true
         /// </summary>
         public virtual bool DrawingInfo => true;
-
         /// <summary>
         /// 该重置节点在图鉴中的绘制缩放，默认为1
         /// </summary>
