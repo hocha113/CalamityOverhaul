@@ -156,7 +156,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             float phase2SwingSpeed = 9f,
             float phase0MeleeSizeIncrement = 0.002f,
             float phase2MeleeSizeIncrement = -0.002f,
-            SoundStyle swingSound = default) {
+            SoundStyle swingSound = default,
+            bool drawSlash = true) {
             // 初始化时间为0时设置初始武器大小
             if (Time == 0) {
                 OtherMeleeSize = initialMeleeSize;
@@ -186,7 +187,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 }
 
                 // 启用挥击轨迹绘制
-                canDrawSlashTrail = true;
+                canDrawSlashTrail = drawSlash;
 
                 // 设置第二阶段的挥击速度
                 SwingData.baseSwingSpeed = phase1SwingSpeed;

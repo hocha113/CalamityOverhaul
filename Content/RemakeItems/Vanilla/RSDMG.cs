@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RSDMG : BaseRItem
     {
         public override int TargetID => ItemID.SDMG;
-        public override bool FormulaSubstitution => false;
+        public override bool IsVanilla => true;
         public override void SetDefaults(Item item) {
             item.SetHeldProj<SDMGHeldProj>();
             item.CWR().HasCartridgeHolder = true;

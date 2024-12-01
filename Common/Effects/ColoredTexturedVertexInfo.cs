@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace CalamityOverhaul
+namespace CalamityOverhaul.Common.Effects
 {
     public struct ColoredTexturedVertexInfo : IVertexType
     {

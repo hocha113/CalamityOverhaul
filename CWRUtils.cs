@@ -882,6 +882,9 @@ namespace CalamityOverhaul
             item.noUseGraphic = true;
             item.CWR().IsShootCountCorlUse = true;
             item.shoot = ModContent.ProjectileType<T>();
+            if (item.shootSpeed <= 0) {
+                item.shootSpeed = 1;
+            }
         }
 
         /// <summary>

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     internal class RLaserRifle : BaseRItem
     {
         public override int TargetID => ItemID.LaserRifle;
-        public override bool FormulaSubstitution => false;
+        public override bool IsVanilla => true;
         public override void SetDefaults(Item item) {
             item.mana = 6;
             item.SetHeldProj<LaserRifleHeldProj>();
