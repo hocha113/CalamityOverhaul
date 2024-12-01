@@ -12,9 +12,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     /// </summary>
     internal class RLunicEye : BaseRItem
     {
+        public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<LunicEye>();
         public override int ProtogenesisID => ModContent.ItemType<LunicEyeEcType>();
-        public override string TargetToolTipItemName => "LunicEyeEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<LunicEyeHeldProj>();
     }
 
@@ -23,9 +23,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     /// </summary>
     internal class REyeofMagnus : BaseRItem
     {
+        public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<EyeofMagnus>();
         public override int ProtogenesisID => ModContent.ItemType<EyeofMagnusEcType>();
-        public override string TargetToolTipItemName => "EyeofMagnusEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<EyeofMagnusHeldProj>();
     }
 
@@ -34,9 +34,9 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     /// </summary>
     internal class RAestheticus : BaseRItem
     {
+        public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<Aestheticus>();
         public override int ProtogenesisID => ModContent.ItemType<AestheticusEcType>();
-        public override string TargetToolTipItemName => "AestheticusEcType";
         public override void SetDefaults(Item item) => item.SetHeldProj<AestheticusHeldProj>();
     }
 }

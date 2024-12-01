@@ -2701,47 +2701,57 @@ Items: {
 	}
 
 	AquamarineStaffEcType: {
-		// DisplayName: Aquamarine Staff Ec Type
+		// DisplayName: Aquamarine Staff
 		// Tooltip: ""
 	}
 
 	IcicleStaffEcType: {
-		// DisplayName: Icicle Staff Ec Type
+		// DisplayName: Icicle Staff
 		// Tooltip: ""
 	}
 
 	ManaRoseEcType: {
-		// DisplayName: Mana Rose Ec Type
+		// DisplayName: Mana Rose
 		// Tooltip: ""
 	}
 
 	PlasmaRodEcType: {
-		// DisplayName: Plasma Rod Ec Type
+		// DisplayName: Plasma Rod
 		// Tooltip: ""
 	}
 
 	SandstreamScepterEcType: {
-		// DisplayName: Sandstream Scepter Ec Type
+		// DisplayName: Sandstream Scepter
 		// Tooltip: ""
 	}
 
 	SkyGlazeEcType: {
-		// DisplayName: Sky Glaze Ec Type
+		// DisplayName: Sky Glaze
 		// Tooltip: ""
 	}
 
 	AestheticusEcType: {
-		// DisplayName: Aestheticus Ec Type
+		// DisplayName: Aestheticus
 		// Tooltip: ""
 	}
 
 	EyeofMagnusEcType: {
-		// DisplayName: Eyeof Magnus Ec Type
+		// DisplayName: Eyeof Magnus
 		// Tooltip: ""
 	}
 
 	LunicEyeEcType: {
-		// DisplayName: Lunic Eye Ec Type
+		// DisplayName: Lunic Eye
+		// Tooltip: ""
+	}
+
+	BasherEcType: {
+		// DisplayName: Basher
+		// Tooltip: ""
+	}
+
+	EvilSmasherEcType: {
+		// DisplayName: Evil Smasher
 		// Tooltip: ""
 	}
 }
@@ -3449,16 +3459,15 @@ Projectiles: {
 	// SoulSeekerSkull.DisplayName: Soul Seeker Skull
 	// EyeofMagnusHeldProj.DisplayName: Eyeof Magnus Held Proj
 	// LunicEyeHeldProj.DisplayName: Lunic Eye Held Proj
+	// EvilSmasherHeld.DisplayName: Evil Smasher Held
+	// AestheticusHeldProj.DisplayName: Aestheticus Held Proj
+	// BasherHeld.DisplayName: Basher Held
 	// AquamarineStaffHeld.DisplayName: Aquamarine Staff Held
 	// IcicleStaffHeld.DisplayName: Icicle Staff Held
 	// ManaRoseHeld.DisplayName: Mana Rose Held
 	// PlasmaRodHeld.DisplayName: Plasma Rod Held
 	// SandstreamScepterHeld.DisplayName: Sandstream Scepter Held
 	// SkyGlazeHeld.DisplayName: Sky Glaze Held
-	// AestheticusHeldProj.DisplayName: Aestheticus Held Proj
-	// EvilSmasherHeld.DisplayName: Evil Smasher Held
-	// AestheticusHeldProj.DisplayName: Aestheticus Held Proj
-	// BasherHeld.DisplayName: Basher Held
 }
 
 Configs: {

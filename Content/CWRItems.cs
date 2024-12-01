@@ -2,8 +2,6 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
-using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -309,16 +307,10 @@ namespace CalamityOverhaul.Content
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             if (remakeItem) {
                 TooltipLine nameLine = tooltips.FirstOrDefault((x) => x.Name == "ItemName" && x.Mod == "Terraria");
-                ApplyNameLineColor(
-                    new Color(1f, 0.72f + 0.2f * Main.DiscoG / 255f, 0.45f + 0.5f * Main.DiscoG / 255f)
-                    , nameLine
-                    );
-                TooltipLine line = new TooltipLine(CWRMod.Instance, "CalamityOverhaul",
-                    CalamityUtils.ColorMessage(
-                        CWRLocText.GetTextValue("CWRItem_IsRemakeItem_TextContent")
-                        , new Color(196, 35, 44))
-                    );
-                tooltips.Add(line);
+                if (nameLine != null) {
+                    string overText = $" ([c/fff08c:{CWRLocText.GetTextValue("CWRItem_IsRemakeItem_TextContent")}])";
+                    nameLine.Text += overText;
+                }
             }
         }
 
@@ -446,16 +438,15 @@ namespace CalamityOverhaul.Content
         }
 
         private void OwnerByDir(Item item, Player player) {
-            if (player.PressKey() || player.PressKey(false)) {
-                if (player.whoAmI == Main.myPlayer && item.useStyle == ItemUseStyleID.Swing
-                && (item.createTile == -1 && item.createWall == -1)
-                && !player.CWR().uiMouseInterface && !player.cursorItemIconEnabled) {
+            if ((player.PressKey() || player.PressKey(false)) && player.whoAmI == Main.myPlayer) {
+                if (item.type > ItemID.None && item.useStyle == ItemUseStyleID.Swing 
+                    && (item.createTile == -1 && item.createWall == -1) 
+                    && item.CWR().heldProjType == 0
+                    && !player.CWR().uiMouseInterface && !player.cursorItemIconEnabled) {
                     player.direction = Math.Sign(player.position.To(Main.MouseWorld).X);
                 }
             }
         }
-
-        private void ApplyNameLineColor(Color color, TooltipLine nameLine) => nameLine.OverrideColor = color;
 
         public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             CWRPlayer modPlayer = player.CWR();
