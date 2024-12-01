@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         /// 是否启用手持开关
         /// </summary>
         public bool OnHandheldDisplayBool => CWRServerConfig.Instance.WeaponHandheldDisplay;
-
+        private bool uiMouseInterface;
         public int Charge;
         public int MaxCharge = 600;
         public int AmmoBoxID;
@@ -98,6 +98,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         }
 
         public virtual void InOwner() {
+            uiMouseInterface = Owner.CWR().uiMouseInterface;
             ArmRotSengsFront = 60 * CWRUtils.atoR;
             ArmRotSengsBack = 110 * CWRUtils.atoR;
             Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY);
@@ -153,7 +154,6 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             }
             else {
                 if (AmmoBoxID > 0) {
-                    SoundEngine.PlaySound(DeploymentSound, Projectile.Center);
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         ExtraGeneration();
                         Vector2 pos = new Vector2((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)) * 16;
@@ -192,17 +192,19 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             Color drawColor = lightColor;
             SpriteEffects spriteEffects = DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             if (Charge <= 0) {
-                Main.EntitySpriteDraw(TextureValue, drawBoxPos + DrawBoxOffsetPos, null, drawColor
-                    , rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
+                Main.EntitySpriteDraw(TextureValue, drawBoxPos + DrawBoxOffsetPos + Owner.CWR().SpecialDrawPositionOffset
+                    , null, drawColor, rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
             }
 
             if (Projectile.IsOwnedByLocalPlayer()) {
-                rotation = 0;
-                drawColor = canUse_SetAmmoBox ? lightColor : Color.Red;
-                spriteEffects = SpriteEffects.None;
-                drawBoxPos = setAmmoBoxPos - Main.screenPosition;
-                Main.EntitySpriteDraw(TextureValue, drawBoxPos + DrawBoxOffsetPos, null, drawColor * 0.6f
-                        , rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
+                if (!uiMouseInterface) {
+                    rotation = 0;
+                    drawColor = canUse_SetAmmoBox ? lightColor : Color.Red;
+                    spriteEffects = SpriteEffects.None;
+                    drawBoxPos = setAmmoBoxPos - Main.screenPosition;
+                    Main.EntitySpriteDraw(TextureValue, drawBoxPos + DrawBoxOffsetPos, null, drawColor * 0.6f
+                            , rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
+                }
 
                 if (!(Charge <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
                     Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;

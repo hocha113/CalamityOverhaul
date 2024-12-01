@@ -24,9 +24,16 @@ namespace CalamityOverhaul.Content.Tiles
         public const int OriginOffsetX = 1;
         public const int OriginOffsetY = 1;
         public const int SheetSquare = 18;
-        private static Asset<Texture2D> assetValue;
-        void ICWRLoader.LoadAsset() => assetValue = ModContent.Request<Texture2D>(Texture);
-        void ICWRLoader.UnLoadData() => assetValue = null;
+        private static Asset<Texture2D> tileAsset;
+        private static Asset<Texture2D> tileGlowAsset;
+        void ICWRLoader.LoadAsset() {
+            tileAsset = ModContent.Request<Texture2D>(Texture);
+            tileGlowAsset = ModContent.Request<Texture2D>(Texture + "Glow");
+        }
+        void ICWRLoader.UnLoadData() {
+            tileAsset = null;
+            tileGlowAsset = null;
+        }
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -115,11 +122,19 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
+            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
+                return false;
+            }
+            if (!TileProcessorLoader.ByPositionGetTP(point, out TramModuleTP tram)) {
+                return false;
+            }
+            
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;
             int frameYPos = t.TileFrameY;
-            frameYPos += (int)(Main.GameUpdateCount / 10 % 11) % 11 * (Height * SheetSquare);
-            Texture2D tex = assetValue.Value;
+            frameYPos += tram.frame * (Height * SheetSquare);
+            Texture2D tex = tileAsset.Value;
+            Texture2D glow = tileGlowAsset.Value;
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
             Color drawColor = Lighting.GetColor(i, j);
@@ -127,11 +142,16 @@ namespace CalamityOverhaul.Content.Tiles
             if (!t.IsHalfBlock && t.Slope == 0) {
                 spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
                     , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+                if (tram.drawGlow) {
+                    spriteBatch.Draw(glow, drawOffset, new Rectangle(frameXPos, t.TileFrameY, 16, 16)
+                    , tram.gloaColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+                }
             }
             else if (t.IsHalfBlock) {
                 spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
                     , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
             }
+
             return false;
         }
     }

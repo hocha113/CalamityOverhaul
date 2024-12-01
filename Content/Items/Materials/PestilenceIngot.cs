@@ -23,6 +23,8 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.useAnimation = Item.useTime = 15;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
+            Item.useTurn = true;
+            Item.autoReuse = true;
             Item.createTile = ModContent.TileType<PestilenceIngotTile>();
         }
 

@@ -23,9 +23,13 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.width = Item.height = 25;
             Item.maxStack = 99;
             Item.rare = ItemRarityID.Lime;
-            Item.value = Terraria.Item.sellPrice(gold: 999);
+            Item.value = Item.sellPrice(gold: 999);
             Item.useAnimation = Item.useTime = 15;
             Item.useStyle = ItemUseStyleID.Swing;
+            Item.consumable = true;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.createTile = ModContent.TileType<NeutronStarIngotTile>();
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems5;
         }
 

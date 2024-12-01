@@ -2,19 +2,26 @@
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Tiles
 {
-    internal class InfiniteIngotTile : ModTile
+    internal class InfiniteIngotTile : ModTile, ICWRLoader
     {
         public override string Texture => CWRConstant.Asset + "Tiles/" + "InfiniteIngotTile";
+        private static Asset<Texture2D> tileAsset;
+        void ICWRLoader.LoadAsset() => tileAsset = ModContent.Request<Texture2D>(Texture);
+        void ICWRLoader.UnLoadData() => tileAsset = null;
         public override void SetStaticDefaults() {
             Main.tileShine[Type] = 1100;
             Main.tileSolid[Type] = true;
@@ -28,13 +35,11 @@ namespace CalamityOverhaul.Content.Tiles
             AddMapEntry(new Color(121, 89, 9), CWRUtils.SafeGetItemName<InfiniteIngot>());
         }
 
-        public override IEnumerable<Item> GetItemDrops(int i, int j) {
-            Tile tile = CalamityUtils.ParanoidTileRetrieval(i, j);
-            if (tile.TileFrameX % 18 == 0 && tile.TileFrameY % 18 == 0) {
-                Item ingot = new Item(ModContent.ItemType<InfiniteIngot>());
-                ingot.CWR().noDestruct = true;
-                yield return ingot;
-            }
+        public override bool CreateDust(int i, int j, ref int type) {
+            Vector2 pos = new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(16), Main.rand.Next(16));
+            PRT_Spark2 spark2 = new PRT_Spark2(pos, new Vector2(0, Main.rand.Next(-3, 3)), true, 12, 0.4f, Main.DiscoColor);
+            PRTLoader.AddParticle(spark2);
+            return false;
         }
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) {
@@ -50,7 +55,7 @@ namespace CalamityOverhaul.Content.Tiles
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;
             int frameYPos = t.TileFrameY;
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D tex = tileAsset.Value;
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
             Color drawColor = VaultUtils.MultiStepColorLerp(Main.GameUpdateCount % 60 / 60f, HeavenfallLongbow.rainbowColors);

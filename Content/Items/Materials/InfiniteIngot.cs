@@ -53,10 +53,12 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.width = Item.height = 25;
             Item.maxStack = 99;
             Item.rare = RarityType<HotPink>();
-            Item.value = Terraria.Item.sellPrice(gold: 99999);
+            Item.value = Item.sellPrice(gold: 99999);
             Item.useAnimation = Item.useTime = 15;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
+            Item.useTurn = true;
+            Item.autoReuse = true;
             Item.createTile = TileType<InfiniteIngotTile>();
             Item.CWR().isInfiniteItem = true;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems8;

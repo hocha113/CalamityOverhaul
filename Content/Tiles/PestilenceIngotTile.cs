@@ -29,17 +29,15 @@ namespace CalamityOverhaul.Content.Tiles
             }
         }
 
+        public override bool CreateDust(int i, int j, ref int type) {
+            return false;
+        }
+
         public override void NumDust(int i, int j, bool fail, ref int num) {
-            if (fail) {
-                for (int o = 0; o < Main.rand.Next(7, 13); o++) {
-                    Dust.NewDust(new Vector2(i, j) * 16, 16, 16, DustID.GemEmerald, 0, -1);
-                }
-            }
-            else {
-                for (int o = 0; o < Main.rand.Next(37, 53); o++) {
-                    Dust.NewDust(new Vector2(i, j) * 16, 16, 16, DustID.GemEmerald
-                        , Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
-                }
+            for (int o = 0; o < Main.rand.Next(13); o++) {
+                int dust = Dust.NewDust(new Vector2(i, j) * 16, 16, 16, DustID.GemEmerald
+                    , Main.rand.NextFloat(-1, 1), Main.rand.NextFloat(-1, 1));
+                Main.dust[dust].noGravity = true;
             }
         }
     }

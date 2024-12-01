@@ -21,6 +21,10 @@ namespace CalamityOverhaul.Content.TileModules
         private float snegs;
         private int Time;
         private bool mouseOnTile;
+        internal bool drawGlow;
+        internal Color gloaColor;
+        private int gloawTime;
+        internal int frame;
         internal static Asset<Texture2D> modeuleBodyAsset;
         internal static Asset<Texture2D> truesFromeAsset;
         public Item[] items;
@@ -88,6 +92,8 @@ namespace CalamityOverhaul.Content.TileModules
         }
 
         public override void Update() {
+            CWRUtils.ClockFrame(ref frame, 6, 10);
+
             Player player = Main.LocalPlayer;
             if (!player.active || Main.myPlayer != player.whoAmI) {
                 return;
@@ -101,6 +107,16 @@ namespace CalamityOverhaul.Content.TileModules
 
             if (VaultUtils.isServer) {
                 return;
+            }
+
+            float leng = PosInWorld.Distance(player.Center);
+            drawGlow = leng < maxleng && !SupertableUI.Instance.Active;
+            if (drawGlow) {
+                gloawTime++;
+                gloaColor = Color.AliceBlue * MathF.Abs(MathF.Sin(gloawTime * 0.04f));
+            }
+            else {
+                gloawTime = 0;
             }
 
             Rectangle tileRec = new Rectangle(Position.X * 16, Position.Y * 16, BloodAltar.Width * 18, BloodAltar.Height * 18);
@@ -124,7 +140,6 @@ namespace CalamityOverhaul.Content.TileModules
                 return;
             }
 
-            float leng = PosInWorld.Distance(player.Center);
             if ((leng >= maxleng || player.dead) && modPlayer.TETramContrType == WhoAmI) {
                 modPlayer.SupertableUIStartBool = false;
                 modPlayer.TETramContrType = -1;

@@ -1,7 +1,9 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -13,6 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
 
         private bool onProj;
         private bool onDorp;
+        private int dorpDistank;
         protected int maxFrameNum = 1;
         public int FromeThisTImeID;
 
@@ -66,12 +69,16 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                 Tile tile = CWRUtils.GetTile(Projectile.Bottom / 16);
                 if (!(tile.HasTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]))) {
                     Projectile.position.Y += 1;
+                    dorpDistank++;
                 }
                 else {
                     if (!onDorp) {
-                        for (int z = 0; z < 33; z++) {
-                            int stompDust = Dust.NewDust(Projectile.BottomLeft, Projectile.width, 4, DustID.Smoke, 0f, 0f, 100, default, 1.5f);
-                            Main.dust[stompDust].velocity *= 0.2f;
+                        SoundEngine.PlaySound(CWRSound.DeploymentSound, Projectile.Center);
+                        if (dorpDistank > 16) {
+                            for (int z = 0; z < 33; z++) {
+                                int stompDust = Dust.NewDust(Projectile.BottomLeft, Projectile.width, 4, DustID.Smoke, 0f, 0f, 100, default, 1.5f);
+                                Main.dust[stompDust].velocity *= 0.2f;
+                            }
                         }
                         onDorp = true;
                     }
@@ -110,6 +117,21 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                         }
                     }
                     else {
+                        //bool inventoryIsFull = true;
+                        //for (int i = 0; i < 53; i++) {
+                        //    Item ccItem = player.inventory[i];
+                        //    if (ccItem.IsAir) {
+                        //        player.inventory[i] = item.Clone();
+                        //        player.inventory[player.selectedItem] = new Item(FromeThisTImeID);
+                        //        SoundEngine.PlaySound(SoundID.Grab, player.Center);
+                        //        inventoryIsFull = false;
+                        //        break;
+                        //    }
+                        //}
+
+                        //if (!inventoryIsFull) {
+                        //    Projectile.Kill();
+                        //}
                         player.QuickSpawnItem(Projectile.FromObjectGetParent(), new Item(FromeThisTImeID));
                         Projectile.Kill();
                     }
