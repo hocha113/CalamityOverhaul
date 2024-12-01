@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.consumable = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.Item1;
-            Item.rare = 4;
+            Item.rare = ItemRarityID.LightRed;
             Item.SetHeldProj<NapalmBombHeld>();
         }
 
