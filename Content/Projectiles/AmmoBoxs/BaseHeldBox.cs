@@ -15,9 +15,6 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
     internal abstract class BaseHeldBox : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item + "Placeable/NapalmBombBox";
-        /// <summary>
-        /// 该枪体使用的实际纹理
-        /// </summary>
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         public Item Item;
         public CWRItems ModItem;
@@ -71,6 +68,8 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public int AmmoBoxID;
         private int textlevelsengs;
         private int noCanUseTime;
+        protected bool canUse_SetAmmoBox;
+        protected Vector2 setAmmoBoxPos;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
@@ -100,6 +99,10 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                     return false;
                 }
             }
+
+            canUse_SetAmmoBox = CanUse();
+            setAmmoBoxPos = new Vector2((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)) * 16 + new Vector2(0, 4);
+
             return true;
         }
 
@@ -116,25 +119,50 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(DirSign * HandDistance, HandDistanceY);
             Projectile.rotation = DirSign > 0 ? MathHelper.ToRadians(AngleFirearmRest) : MathHelper.ToRadians(180 - AngleFirearmRest);
             Projectile.timeLeft = 2;
+
             SetHeld();
-            if (!Owner.CWR().uiMouseInterface && Owner.PressKey() && noCanUseTime <= 0) {
+
+            if (canUse_SetAmmoBox && DownLeft) {
                 OnUse();
             }
-            if (!Owner.PressKey() || Owner.velocity.Length() > 0) {
+            else {
                 Charge = 0;
             }
+
             if (OnHandheldDisplayBool) {
                 Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
                 Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
             }
         }
 
+        public bool CanUse() {
+            int x = (int)(setAmmoBoxPos.X / 16);
+            int y = (int)(setAmmoBoxPos.Y / 16);
+
+            if (CWRUtils.GetTile(x, y).HasSolidTile()) {
+                return false;
+            }
+            if (CWRUtils.GetTile(x + 1, y).HasSolidTile()) {
+                return false;
+            }
+            if (CWRUtils.GetTile(x - 1, y).HasSolidTile()) {
+                return false;
+            }
+
+            if (ToMouse.Length() > 200) {
+                return false;
+            }
+
+            return !Owner.CWR().uiMouseInterface && noCanUseTime <= 0;
+        }
+
         public virtual void OnUse() {
-            if (Owner.ownedProjectileCounts[Item.shoot] >= 5) {
+            if (Owner.ownedProjectileCounts[Item.shoot] >= 25) {
                 CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("AmmoBox_Text"));
                 noCanUseTime += 60;
                 return;
             }
+
             if (Charge < MaxCharge) {
                 ArmRotSengsBack += MathF.Sin(Main.GameUpdateCount * 0.3f) * 0.6f;
                 Charge++;
@@ -177,13 +205,20 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public virtual void BoxDraw(ref Color lightColor) {
             Vector2 drawBoxPos = Projectile.Center - Main.screenPosition;
             float rotation = Projectile.rotation;
+            Color drawColor = lightColor;
             SpriteEffects spriteEffects = DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
-            if (Charge > 0) {
-                rotation = 0;
-                spriteEffects = SpriteEffects.None;
-                drawBoxPos = new Vector2((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)) * 16 - Main.screenPosition + new Vector2(0, 4);
+            if (Charge <= 0) {
+                Main.EntitySpriteDraw(TextureValue, drawBoxPos + DrawBoxOffsetPos, null, drawColor
+                    , rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
             }
-            Main.EntitySpriteDraw(TextureValue, drawBoxPos + DrawBoxOffsetPos, null, lightColor, rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
+
+            rotation = 0;
+            drawColor = canUse_SetAmmoBox ? lightColor : Color.Red;
+            spriteEffects = SpriteEffects.None;
+            drawBoxPos = setAmmoBoxPos - Main.screenPosition;
+            Main.EntitySpriteDraw(TextureValue, drawBoxPos + DrawBoxOffsetPos, null, drawColor * 0.6f
+                    , rotation, TextureValue.Size() / 2, Projectile.scale, spriteEffects);
+
             if (!(Charge <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
                 Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;
                 Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;

@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public override void SetBox() {
             TargetItemID = ModContent.ItemType<ArmourPiercerBox>();
             AmmoBoxID = ModContent.ProjectileType<ArmourPiercerBoxProj>();
-            MaxCharge = 300;
+            MaxCharge = 60;
         }
     }
 }

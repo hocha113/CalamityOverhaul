@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public override void SetBox() {
             TargetItemID = ModContent.ItemType<HghExplosiveBox>();
             AmmoBoxID = ModContent.ProjectileType<HghExplosiveProj>();
-            MaxCharge = 300;
+            MaxCharge = 60;
             DrawBoxOffsetPos = new Vector2(0, 2);
         }
     }

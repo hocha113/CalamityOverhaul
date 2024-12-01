@@ -15,15 +15,15 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.consumable = true;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.UseSound = SoundID.Item1;
-            Item.rare = 6;
+            Item.rare = ItemRarityID.LightPurple;
             Item.SetHeldProj<HghExplosiveHeld>();
         }
 
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient(ItemID.AmmoBox)
-                .AddIngredient(ItemID.EmptyBullet, 100)
-                .AddIngredient(ModContent.ItemType<UnholyEssence>(), 5)
+                .AddIngredient(ItemID.EmptyBullet, 50)
+                .AddIngredient(ModContent.ItemType<UnholyEssence>(), 2)
                 .AddTile(TileID.Anvils)
                 .Register();
         }

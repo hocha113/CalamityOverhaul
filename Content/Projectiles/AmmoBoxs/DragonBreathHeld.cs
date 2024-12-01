@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public override void SetBox() {
             TargetItemID = ModContent.ItemType<DragonBreathBox>();
             AmmoBoxID = ModContent.ProjectileType<DragonBreathBoxProj>();
-            MaxCharge = 400;
+            MaxCharge = 80;
             DrawBoxOffsetPos = new Vector2(0, 2);
         }
     }

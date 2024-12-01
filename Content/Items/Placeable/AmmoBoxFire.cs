@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient(ItemID.AmmoBox)
-                .AddIngredient(ItemID.EmptyBullet, 100)
+                .AddIngredient(ItemID.EmptyBullet, 50)
                 .AddIngredient(ItemID.LivingFireBlock, 5)
                 .AddTile(TileID.Anvils)
                 .Register();

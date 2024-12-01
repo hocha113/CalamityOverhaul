@@ -23,8 +23,8 @@ namespace CalamityOverhaul.Content.Items.Placeable
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient(ItemID.AmmoBox)
-                .AddIngredient(ItemID.EmptyBullet, 100)
-                .AddIngredient(ModContent.ItemType<YharonSoulFragment>(), 5)
+                .AddIngredient(ItemID.EmptyBullet, 50)
+                .AddIngredient(ModContent.ItemType<YharonSoulFragment>(), 2)
                 .AddTile(TileID.Anvils)
                 .Register();
         }

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public override void SetBox() {
             TargetItemID = ModContent.ItemType<AmmoBoxFire>();
             AmmoBoxID = ModContent.ProjectileType<NapalmBombBox>();
-            MaxCharge = 240;
+            MaxCharge = 40;
         }
     }
 }

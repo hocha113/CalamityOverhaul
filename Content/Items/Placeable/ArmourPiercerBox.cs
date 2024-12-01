@@ -23,9 +23,9 @@ namespace CalamityOverhaul.Content.Items.Placeable
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient(ItemID.AmmoBox)
-                .AddIngredient(ItemID.EmptyBullet, 100)
-                .AddIngredient(ModContent.ItemType<WulfrumMetalScrap>(), 5)
-                .AddIngredient(ModContent.ItemType<DubiousPlating>(), 5)
+                .AddIngredient(ItemID.EmptyBullet, 50)
+                .AddIngredient(ModContent.ItemType<WulfrumMetalScrap>(), 2)
+                .AddIngredient(ModContent.ItemType<DubiousPlating>(), 2)
                 .AddTile(TileID.Anvils)
                 .Register();
         }
