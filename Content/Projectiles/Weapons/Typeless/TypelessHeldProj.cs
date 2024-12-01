@@ -35,6 +35,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Typeless
             ForcedConversionTargetAmmoFunc = () => true;
             ToTargetAmmo = ModContent.ProjectileType<LunicBeam>();
         }
+
+        public virtual bool DrawingInfo => false;
     }
 
     /// <summary>
@@ -63,6 +65,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Typeless
             ForcedConversionTargetAmmoFunc = () => true;
             ToTargetAmmo = ModContent.ProjectileType<MagnusBeam>();
         }
+
+        public virtual bool DrawingInfo => false;
     }
 
     /// <summary>
@@ -93,14 +97,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Typeless
             ToTargetAmmo = ModContent.ProjectileType<CursorProj>();
         }
 
-        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
+        public virtual bool DrawingInfo => false;
 
-            Main.EntitySpriteDraw(TextureValue, drawPos + (Main.MouseWorld - Owner.Center).UnitVector() * 16f + new Vector2(0, 6), null, lightColor
-                , Projectile.rotation + MathHelper.PiOver4, TextureValue.Size() / 2, Projectile.scale
-                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.None);
-            if (IsCrossbow && CanDrawCrossArrow && CWRServerConfig.Instance.BowArrowDraw) {
-                DrawBolt(drawPos);
-            }
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
+            float rot = DirSign > 0 ? MathHelper.PiOver4 : MathHelper.PiOver4 * 3;
+            Main.EntitySpriteDraw(TextureValue, drawPos, null, lightColor
+                , Projectile.rotation + rot, TextureValue.Size() / 2, Projectile.scale
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
         }
     }
 }
