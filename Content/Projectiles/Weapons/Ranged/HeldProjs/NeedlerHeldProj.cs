@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ShootPosToMouLengValue = 4;
             RepeatedCartridgeChange = true;
             CanCreateCaseEjection = false;
+            Onehanded = InOwner_HandState_AlwaysSetInFireRoding = true;
             GunPressure = 0.3f;
             ControlForce = 0.05f;
             Recoil = 1.2f;

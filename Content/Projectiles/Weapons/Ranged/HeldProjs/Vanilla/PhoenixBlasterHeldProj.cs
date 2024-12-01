@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 1.1f;
             RangeOfStress = 8;
+            Onehanded = true;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             SpwanGunDustMngsData.splNum = 0.5f;

@@ -20,9 +20,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             HandDistanceY = 0;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
-            Recoil = 1f;
+            Recoil = 0;
             RangeOfStress = 48;
             RepeatedCartridgeChange = true;
+            Onehanded = InOwner_HandState_AlwaysSetInFireRoding = true;
             kreloadMaxTime = 45;
             LoadingAA_None.loadingAA_None_Roting = 30;
             LoadingAA_None.loadingAA_None_X = 0;

@@ -5,6 +5,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 夺命枪
+    /// </summary>
     internal class TheUndertakerHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -23,6 +26,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             GunPressure = 0.3f;
             ControlForce = 0.05f;
             Recoil = 0.6f;
+            SpwanGunDustMngsData.splNum = 0.4f;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Revolver;
             if (!MagazineSystem) {
                 FireTime += 3;

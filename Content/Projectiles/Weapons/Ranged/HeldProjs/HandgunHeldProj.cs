@@ -23,6 +23,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             GunPressure = 0.2f;
             ControlForce = 0.05f;
             Recoil = 0.8f;
+            Onehanded = true;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
         }
     }

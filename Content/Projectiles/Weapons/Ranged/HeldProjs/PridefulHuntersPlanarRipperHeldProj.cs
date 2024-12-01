@@ -30,6 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.3f;
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             RecoilRetroForceMagnitude = 4;
             SpwanGunDustMngsData.splNum = 0.4f;
             fireIndex = 0;

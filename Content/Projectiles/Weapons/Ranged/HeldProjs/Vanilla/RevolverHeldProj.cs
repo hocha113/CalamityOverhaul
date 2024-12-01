@@ -29,6 +29,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             Recoil = 0.9f;
             RangeOfStress = 25;
+            SpwanGunDustMngsData.splNum = 0.4f;
+            Onehanded = true;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Revolver;
             if (!MagazineSystem) {
                 FireTime += 5;
