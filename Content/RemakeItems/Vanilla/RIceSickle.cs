@@ -1,7 +1,7 @@
-﻿using CalamityOverhaul.Content.RemakeItems.Core;
-using Terraria.ID;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {

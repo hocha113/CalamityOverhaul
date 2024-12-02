@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 SwingData.ler2_DownSpeedSengs = 0.22f;
                 SwingData.maxSwingTime = 40;
             }
-            
+
             return true;
         }
 

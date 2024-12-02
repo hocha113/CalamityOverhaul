@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.Tiles
             if (!TileProcessorLoader.ByPositionGetTP(point, out TramModuleTP tram)) {
                 return false;
             }
-            
+
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;
             int frameYPos = t.TileFrameY;

@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                     + (rots - MathHelper.PiOver4).ToRotationVector2() * (Projectile.localAI[0] - 5);
                 Main.EntitySpriteDraw(Sword, drawPos, null, Color.Black, rots, new Vector2(0, Sword.Height), 1f, SpriteEffects.None);
             }
-            
+
             return false;
         }
     }
