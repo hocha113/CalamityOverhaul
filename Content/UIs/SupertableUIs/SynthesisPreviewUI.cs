@@ -48,17 +48,18 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public void DrawHander(Item item, string[] OmigaSnyContent) {
-            if (Instance != null && SupertableUI.Instance != null) {
-                Vector2 drawPos = new Vector2(580, 100);
-                if (SupertableUI.Instance.Active) {
-                    drawPos = SupertableUI.Instance.DrawPosition - new Vector2(Instance.mainBookPValue.Width * 2.2f, 0);
-                }
-                if (OmigaSnyContent != null && !SupertableUI.Instance.onMainP) {
-                    Instance.Draw(Main.spriteBatch, drawPos, OmigaSnyContent);
-                    SynthesisPreviewStart.Instance.Update();
-                    SynthesisPreviewStart.Instance.Draw(Main.spriteBatch);
-                    SynthesisPreviewStart.doDraw = true;
-                }
+            if (SupertableUI.Instance == null || OmigaSnyContent == null) {
+                return;
+            }
+            Vector2 drawPos = new Vector2(580, 100);
+            if (SupertableUI.Instance.Active) {
+                drawPos = SupertableUI.Instance.DrawPosition - new Vector2(Instance.mainBookPValue.Width * 2.2f, 0);
+            }
+            if (!SupertableUI.Instance.onMainP) {
+                Instance.Draw(Main.spriteBatch, drawPos, OmigaSnyContent);
+                SynthesisPreviewStart.Instance.Update();
+                SynthesisPreviewStart.Instance.Draw(Main.spriteBatch);
+                SynthesisPreviewStart.doDraw = true;
             }
         }
 

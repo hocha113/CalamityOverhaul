@@ -521,7 +521,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y) {
-            SynthesisPreviewUI.Instance.DrawHander(item, OmigaSnyContent);
+            SynthesisPreviewUI.Instance?.DrawHander(item, OmigaSnyContent);
             return base.PreDrawTooltip(item, lines, ref x, ref y);
         }
     }
