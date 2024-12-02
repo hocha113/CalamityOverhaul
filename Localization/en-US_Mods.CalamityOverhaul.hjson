@@ -3491,6 +3491,7 @@ Projectiles: {
 	IceSickleHeld.DisplayName: Ice Sickle Held
 	DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
 	PhaseBlasting.DisplayName: Phase Blasting
+	DyeTradersScimitarHeld.DisplayName: Dye Traders Scimitar Held
 }
 
 Configs: {
@@ -3714,6 +3715,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		OnlyZenith: Only in Zenith World
 		Event_TungstenRiot_Name: Tungsten Riot
 		Event_TungstenRiot_Text_1: A large number of tungsten creatures are invading!
 		Event_TungstenRiot_Text_2: The Tungsten Army has been beaten back!

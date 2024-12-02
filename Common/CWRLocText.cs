@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Common
         public string LocalizationCategory => "TextContent";
         //不要被吓到，这些只是必须的
         #region 字段内容
+        public LocalizedText OnlyZenith { get; private set; }
         public LocalizedText Event_TungstenRiot_Name { get; private set; }
         public LocalizedText Event_TungstenRiot_Text_1 { get; private set; }
         public LocalizedText Event_TungstenRiot_Text_2 { get; private set; }

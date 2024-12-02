@@ -3512,6 +3512,7 @@ Projectiles: {
 	// IceSickleHeld.DisplayName: Ice Sickle Held
 	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
 	// PhaseBlasting.DisplayName: Phase Blasting
+	// DyeTradersScimitarHeld.DisplayName: Dye Traders Scimitar Held
 }
 
 Configs: {
@@ -3753,6 +3754,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		OnlyZenith: Только в мире Зенита
 		Event_TungstenRiot_Name: Восстание вольфрамовой стали
 		Event_TungstenRiot_Text_1: Массовое вторжение биомеханизмов вольфрамовой стали!
 		Event_TungstenRiot_Text_2: Армия вольфрамовой стали отбита!

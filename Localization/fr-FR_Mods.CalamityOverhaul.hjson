@@ -3481,6 +3481,7 @@ Projectiles: {
 	// IceSickleHeld.DisplayName: Ice Sickle Held
 	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
 	// PhaseBlasting.DisplayName: Phase Blasting
+	// DyeTradersScimitarHeld.DisplayName: Dye Traders Scimitar Held
 }
 
 Configs: {
@@ -3703,6 +3704,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		OnlyZenith: Uniquement dans le monde de Zenith
 		Event_TungstenRiot_Name: Émeute de tungstène
 		Event_TungstenRiot_Text_1: Une grande quantité de créatures en tungstène envahissent !
 		Event_TungstenRiot_Text_2: La légion en tungstène a été repoussée !

@@ -3478,6 +3478,7 @@ Projectiles: {
 	// IceSickleHeld.DisplayName: Ice Sickle Held
 	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
 	// PhaseBlasting.DisplayName: Phase Blasting
+	// DyeTradersScimitarHeld.DisplayName: Dye Traders Scimitar Held
 }
 
 Configs: {
@@ -3699,6 +3700,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		OnlyZenith: Nur in der Zenith-Welt
 		Event_TungstenRiot_Name: Wolfram-Aufstand
 		Event_TungstenRiot_Text_1: Eine große Anzahl von Wolfram-Kreaturen fällt ein!
 		Event_TungstenRiot_Text_2: Die Wolfram-Legion wurde zurückgeschlagen!

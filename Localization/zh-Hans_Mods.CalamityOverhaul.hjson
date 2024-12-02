@@ -3493,6 +3493,7 @@ Projectiles: {
 	// IceSickleHeld.DisplayName: Ice Sickle Held
 	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
 	// PhaseBlasting.DisplayName: Phase Blasting
+	// DyeTradersScimitarHeld.DisplayName: Dye Traders Scimitar Held
 }
 
 Configs: {
@@ -3715,6 +3716,7 @@ Keybinds: {
 
 TextContent: {
 	CWRLocText: {
+		OnlyZenith: 仅在天顶世界
 		Event_TungstenRiot_Name: 钨钢暴乱
 		Event_TungstenRiot_Text_1: 大量钨钢生物正在入侵!
 		Event_TungstenRiot_Text_2: 钨钢军团已被击退!

@@ -1,7 +1,9 @@
-﻿using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -60,9 +62,16 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void AddRecipes() {
+            string conditiontext = CWRLocText.GetTextValue("OnlyZenith");
+            Func<bool> conditiontfunc = () => Main.zenithWorld;
+            Condition condition = new Condition(conditiontext, conditiontfunc);
+
             CreateRecipe()
-                .AddIngredient<InfiniteIngot>(15)
+                .AddIngredient<InfiniteIngot>(29)
+                .AddIngredient<InfinityCatalyst>(9)
                 .AddBlockingSynthesisEvent()
+                .AddTile(ModContent.TileType<TransmutationOfMatter>())
+                .AddCondition(condition)
                 .Register();
         }
     }

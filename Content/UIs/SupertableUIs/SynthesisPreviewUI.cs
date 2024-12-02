@@ -84,6 +84,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, drawText2.X, drawText2.Y, Color.White, Color.Black, new Vector2(0.3f), 1f);
                     Vector2 drawItemPos = drawText2 + new Vector2(size.X + 20, 8);
                     SupertableUI.DrawItemIcons(spriteBatch, targetItem, drawItemPos, new Vector2(0.0001f, 0.0001f));
+
+                    if (targetItem.type == ModContent.ItemType<InfiniteToiletItem>()) {
+                        text = CWRLocText.GetTextValue("OnlyZenith");
+                        Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, drawText2.X, drawText2.Y + size.Y, Color.Coral, Color.Black, new Vector2(0.3f), 1f);
+                    }
                 }
 
                 for (int i = 0; i < items.Length - 1; i++) {//遍历绘制出UI格中的所有预览物品

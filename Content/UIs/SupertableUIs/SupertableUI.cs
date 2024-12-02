@@ -342,7 +342,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// 重置输入物品
         /// </summary>
         private void ResetInputItem() {
-            if (inputItem.type != ItemID.None) {
+            if (inputItem == null || inputItem.type != ItemID.None) {
                 inputItem = new Item();
             }
         }
