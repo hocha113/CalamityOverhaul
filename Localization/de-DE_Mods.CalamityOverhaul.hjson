@@ -816,14 +816,13 @@ Items: {
 		Tooltip: Linksklick feuert Sandspringer ab, Rechtklick feuert springende Sandspringer ab, Schleichangriffe lassen schnelle Sandspringer vom Himmel fallen
 	}
 
-	BlossomFluxEcType: {
-		DisplayName: Blütenfluss
-		Tooltip:
-			'''
-			Feuert verfolgte Blüten ab, die mit zunehmender Geschwindigkeit angreifen
-			Bei Treffern wird der Geschwindigkeitsbonus auf null gesetzt und die Flugzeit wird zurückgesetzt
-			Rechtsklick lädt auf und feuert eine mächtige Dschungel-Explosion ab
-			'''
+	BlossomFluxEcType: {  
+	    DisplayName: Blätterfluss
+	    Tooltip:
+	        '''
+	        Feuert schnell Lebensblatt-Pfeile ab.
+	        Rechtsklick, um eine mächtige Dschungel-Bombe aufzuladen und abzufeuern.
+	        '''
 	}
 
 	PhangasmEcType: {
@@ -2753,14 +2752,14 @@ Items: {
 		// Tooltip: ""
 	}
 
-	DeathSickleRogue: {  
-	    DisplayName: Fliegende Sense des Schnitters
-	    Tooltip:
-	        '''
-	        Schleichangriffe erzeugen sechs zielsuchende Sensen des Schnitters am Ende ihrer Flugbahn.
-	        "Der Schnitter dachte, dass dies seine Effizienz weiter steigern würde."
-	        '''
-	}  
+	DeathSickleRogue: {
+		DisplayName: Fliegende Sense des Schnitters
+		Tooltip:
+			'''
+			Schleichangriffe erzeugen sechs zielsuchende Sensen des Schnitters am Ende ihrer Flugbahn.
+			"Der Schnitter dachte, dass dies seine Effizienz weiter steigern würde."
+			'''
+	}
 }
 
 Projectiles: {

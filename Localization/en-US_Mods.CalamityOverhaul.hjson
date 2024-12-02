@@ -804,15 +804,14 @@ Items: {
 			'''
 	}
 
-	BlossomFluxEcType: {
-		DisplayName: Blossom Flux
-		Tooltip:
-			'''
-			Fires a stream of homing leaves that become faster over time.
-			Getting hit will reset the attack speed back to its base amount.
-			Right click to aim and fire a spread of jungle bombs that travel in a wavy pattern and explode on impact.
-			'''
-	}
+	BlossomFluxEcType: {  
+	    DisplayName: Leaf Flow  
+	    Tooltip:  
+	        '''  
+	        Rapidly fires Lifeleaf Arrows.  
+	        Right-click to charge and fire a powerful Jungle Bomb.  
+	        '''  
+	}  
 
 	PhangasmEcType: {
 		DisplayName: Phangasm
@@ -2767,13 +2766,13 @@ Items: {
 	}
 
 	DeathSickleRogue: {
-	    DisplayName: Reaper's Flying Scythe  
-	    Tooltip:  
-	        '''  
-	        Stealth attacks generate six homing reaper scythes at the end of their flight path.  
-	        "The Reaper figured this would further improve its efficiency."  
-	        '''  
-	}  
+		DisplayName: Reaper's Flying Scythe
+		Tooltip:
+			'''
+			Stealth attacks generate six homing reaper scythes at the end of their flight path.  
+			"The Reaper figured this would further improve its efficiency."  
+			'''
+	}
 }
 
 Projectiles: {

@@ -834,14 +834,13 @@ Items: {
 			'''
 	}
 
-	BlossomFluxEcType: {
-		DisplayName: Flujo de Hojas
-		Tooltip:
-			'''
-			Lanza un flujo de hojas que rastrea a los enemigos, la velocidad de ataque aumenta.
-			Recibir daño resetea el aumento de velocidad y vacía el tiempo de vuelo.
-			Clic derecho carga y lanza un poderoso proyectil de explosión selvática.
-			'''
+	BlossomFluxEcType: {  
+	    DisplayName: Flujo de Hojas
+	    Tooltip:
+	        '''
+	        Dispara rápidamente Flechas de Hoja Vital.
+	        Haz clic derecho para cargar y disparar una poderosa Bomba de Jungla.
+	        '''
 	}
 
 	PhangasmEcType: {
@@ -2791,13 +2790,13 @@ Items: {
 	}
 
 	DeathSickleRogue: {
-	    DisplayName: Guadaña Voladora del Segador
-	    Tooltip:
-	        '''
-	        Los ataques furtivos generan seis guadañas rastreadoras del segador al final de su trayectoria de vuelo.
-	        "El Segador pensó que esto mejoraría aún más su eficiencia."
-	        '''
-	}  
+		DisplayName: Guadaña Voladora del Segador
+		Tooltip:
+			'''
+			Los ataques furtivos generan seis guadañas rastreadoras del segador al final de su trayectoria de vuelo.
+			"El Segador pensó que esto mejoraría aún más su eficiencia."
+			'''
+	}
 }
 
 Projectiles: {

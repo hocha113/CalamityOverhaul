@@ -822,12 +822,12 @@ Items: {
 	}
 
 	BlossomFluxEcType: {
-		DisplayName: Flux de Floraison
-		Tooltip:
-			'''
-			Lance des fleurs traçantes sur les ennemis, la vitesse d'attaque augmente progressivement
-			Toucher réinitialise l'augmentation de la vitesse et vide le temps de vol, charge droit pour lancer une puissante bombe de la jungle
-			'''
+	    DisplayName: Flux de Feuilles
+	    Tooltip:
+	        '''
+	        Tire rapidement des Flèches Feuille de Vie.
+	        Clic droit pour charger et lancer une puissante Bombe de Jungle.
+	        '''
 	}
 
 	PhangasmEcType: {
@@ -2755,14 +2755,14 @@ Items: {
 		// Tooltip: ""
 	}
 
-	DeathSickleRogue: {  
-	    DisplayName: Faux Volante du Faucheur  
-	    Tooltip:  
-	        '''  
-	        Les attaques furtives génèrent six faux traçantes du Faucheur à la fin de leur trajectoire de vol.  
-	        "Le Faucheur pensait que cela améliorerait encore son efficacité."  
-	        '''  
-	}  
+	DeathSickleRogue: {
+		DisplayName: Faux Volante du Faucheur
+		Tooltip:
+			'''
+			Les attaques furtives génèrent six faux traçantes du Faucheur à la fin de leur trajectoire de vol.  
+			"Le Faucheur pensait que cela améliorerait encore son efficacité."  
+			'''
+	}
 }
 
 Projectiles: {

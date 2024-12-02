@@ -11,7 +11,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class BlossomFluxEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "BlossomFlux";
-        public override void SetDefaults() {
+        public override void SetDefaults() => SetDefaultsFunc(Item);
+        public static void SetDefaultsFunc(Item Item) {
             Item.damage = 50;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 38;
