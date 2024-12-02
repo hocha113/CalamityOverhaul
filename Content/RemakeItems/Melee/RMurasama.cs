@@ -99,22 +99,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
             return false;
         }
 
-        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            //item.initialize();
-            //if (!(item.CWR().ai[0] <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
-            //    Texture2D barBG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarBack", (AssetRequestMode)2).Value;
-            //    Texture2D barFG = ModContent.Request<Texture2D>("CalamityMod/UI/MiscTextures/GenericBarFront", (AssetRequestMode)2).Value;
-            //    float barScale = 3f;
-            //    Vector2 barOrigin = barBG.Size() * 0.5f;
-            //    float yOffset = 50f;
-            //    Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
-            //    Rectangle frameCrop = new Rectangle(0, 0, (int)(item.CWR().ai[0] / 10f * barFG.Width), barFG.Height);
-            //    Color color = Main.hslToRgb(Main.GlobalTimeWrappedHourly * 0.6f % 1f, 1f, 0.75f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f);
-            //    spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale * barScale, 0, 0f);
-            //    spriteBatch.Draw(barFG, drawPos, frameCrop, color * 0.8f, 0f, barOrigin, scale * barScale, 0, 0f);
-            //}
-        }
-
         public override bool? On_CanUseItem(Item item, Player player) {
             //在升龙斩或者爆发弹幕存在时不能使用武器
             return player.ownedProjectileCounts[ModContent.ProjectileType<MuraBreakerSlash>()] > 0
@@ -127,7 +111,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MuraSlashDefault>(), damage, knockback, player.whoAmI, 0f, 0f);
+            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MuraSlashDefault>(), damage, MurasamaEcType.GetOnKnockback, player.whoAmI, 0f, 0f);
             return false;
         }
     }

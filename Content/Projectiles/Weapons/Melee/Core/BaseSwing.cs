@@ -328,12 +328,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             InitializeCaches();
         }
 
-        public Vector2 RodingToVer(float radius, float theta) {
-            Vector2 vector2 = theta.ToRotationVector2();
-            vector2.X *= radius;
-            vector2.Y *= radius;
-            return vector2;
-        }
+        public Vector2 RodingToVer(float radius, float theta) => theta.ToRotationVector2() * radius;
 
         public float SetSwingSpeed(float speed) => speed / Owner.GetWeaponAttackSpeed(Item);
         /// <summary>
