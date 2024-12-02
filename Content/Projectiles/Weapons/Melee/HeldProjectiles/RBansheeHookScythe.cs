@@ -62,7 +62,7 @@ public class RBansheeHookScythe : ModProjectile
         Color color = CWRUtils.RecombinationColor((Color.Red, 0.3f), (Projectile.GetAlpha(Color.Gold), 0.7f));
         Main.EntitySpriteDraw(
             mainValue,
-            CWRUtils.WDEpos(Projectile.Center),
+            Projectile.Center - Main.screenPosition,
             null,
             color * alp,
             Projectile.ai[0],
@@ -77,7 +77,7 @@ public class RBansheeHookScythe : ModProjectile
             float slp = 1 - i / (float)Projectile.oldPos.Length * 0.5f;
             Main.EntitySpriteDraw(
                 mainValue,
-                CWRUtils.WDEpos(Projectile.oldPos[i] + Projectile.Center - Projectile.position),
+                Projectile.oldPos[i] + Projectile.Center - Projectile.position - Main.screenPosition,
                 null,
                 color * alp * alp2 * 0.5f,
                 Projectile.ai[0],

@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
             if (Projectile.ai[1] == 1) {
                 Main.EntitySpriteDraw(
-                    texture2D, CWRUtils.WDEpos(Projectile.Center), null, lightColor,
+                    texture2D, Projectile.Center - Main.screenPosition, null, lightColor,
                     Projectile.rotation + MathHelper.PiOver4, CWRUtils.GetOrig(texture2D),
                     Projectile.scale, SpriteEffects.None);
             }
@@ -252,7 +252,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
             if (Projectile.ai[1] == 1) {
                 Main.EntitySpriteDraw(
-                    texture2D, CWRUtils.WDEpos(Projectile.Center), null, lightColor,
+                    texture2D, Projectile.Center - Main.screenPosition, null, lightColor,
                     Projectile.rotation + MathHelper.PiOver4, CWRUtils.GetOrig(texture2D),
                     Projectile.scale, SpriteEffects.None);
             }
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public void DrawStar() {
             if (Projectile.localAI[2] != 0) {
                 Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.Masking + "StarTexture_White");
-                Vector2 pos = CWRUtils.WDEpos(Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * 45 * Projectile.scale);
+                Vector2 pos = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * 45 * Projectile.scale - Main.screenPosition;
                 int Time = (int)Projectile.localAI[2];
                 int slp = Time * 5;
                 if (slp > 255) { slp = 255; }
@@ -321,7 +321,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Texture2D frightEnergyChargeTop = CWRUtils.GetT2DValue(CWRConstant.UI + "FrightEnergyChargeTop");
             float slp = 3;
             int offsetwid = 4;
-            Vector2 drawPos = CWRUtils.WDEpos(Owner.Center + new Vector2(frightEnergyChargeBar.Width / -2 * slp, 135));
+            Vector2 drawPos = Owner.Center + new Vector2(frightEnergyChargeBar.Width / -2 * slp, 135) - Main.screenPosition;
             float alp = drawUIalp / 255f;
             Rectangle backRec = new Rectangle(offsetwid, 0, (int)((frightEnergyChargeBar.Width - offsetwid * 2) * (bansheeHook.CWR().MeleeCharge / 500f)), frightEnergyChargeBar.Height);
 

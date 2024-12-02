@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             if (Projectile.ai[1] == 1) {
                 Texture2D value = CWRUtils.GetT2DValue(Texture);
                 Main.EntitySpriteDraw(
-                    value, CWRUtils.WDEpos(Projectile.Center), null, lightColor,
+                    value, Projectile.Center - Main.screenPosition, null, lightColor,
                     Projectile.rotation + MathHelper.PiOver4 + (Owner.direction > 0 ? MathHelper.PiOver2 : MathHelper.Pi)
                     , CWRUtils.GetOrig(value), Projectile.scale, Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
                 return false;

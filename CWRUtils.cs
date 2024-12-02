@@ -1646,14 +1646,6 @@ namespace CalamityOverhaul
                 frameCounter = startCounter;
             }
         }
-        /// <summary>
-        /// 将世界位置矫正为适应屏幕的画布位置
-        /// </summary>
-        /// <param name="pos">绘制目标的世界位置</param>
-        /// <returns></returns>
-        public static Vector2 WDEpos(Vector2 pos) {
-            return pos - Main.screenPosition;
-        }
 
         /// <summary>
         /// 获取纹理实例，类型为 Texture2D

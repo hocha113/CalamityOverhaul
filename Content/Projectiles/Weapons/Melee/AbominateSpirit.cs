@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             Main.EntitySpriteDraw(
                 mainValue,
-                CWRUtils.WDEpos(Projectile.Center),
+                Projectile.Center - Main.screenPosition,
                 CWRUtils.GetRec(mainValue, Projectile.frameCounter, 4),
                 color * alp,
                 Projectile.rotation - MathHelper.PiOver2,

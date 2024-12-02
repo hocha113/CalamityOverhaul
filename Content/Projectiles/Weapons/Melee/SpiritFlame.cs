@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             float alp = Projectile.timeLeft / 30f;
             Main.EntitySpriteDraw(
                 texture,
-                CWRUtils.WDEpos(Projectile.Center),
+                Projectile.Center - Main.screenPosition,
                 CWRUtils.GetRec(texture, Projectile.frameCounter, 4),
                 Color.White * alp,
                 Projectile.rotation,
