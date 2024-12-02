@@ -47,6 +47,21 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             return pos;
         }
 
+        public void DrawHander(Item item, string[] OmigaSnyContent) {
+            if (Instance != null && SupertableUI.Instance != null) {
+                Vector2 drawPos = new Vector2(580, 100);
+                if (SupertableUI.Instance.Active) {
+                    drawPos = SupertableUI.Instance.DrawPosition - new Vector2(Instance.mainBookPValue.Width * 2.2f, 0);
+                }
+                if (OmigaSnyContent != null && !SupertableUI.Instance.onMainP) {
+                    Instance.Draw(Main.spriteBatch, drawPos, OmigaSnyContent);
+                    SynthesisPreviewStart.Instance.Update();
+                    SynthesisPreviewStart.Instance.Draw(Main.spriteBatch);
+                    SynthesisPreviewStart.doDraw = true;
+                }
+            }
+        }
+
         public void Draw(SpriteBatch spriteBatch, Vector2 drawPos, string[] names) {
             if (DrawBool) {
                 if (!SupertableUI.Instance.Active) {
