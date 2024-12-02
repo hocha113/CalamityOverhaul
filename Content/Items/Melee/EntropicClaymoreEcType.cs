@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Main.rand.NextBool(3)) {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Shadowflame);
             }
-            if (++Projectile.ai[1] > (20 * SetSwingSpeed(1))) {
+            if (++Projectile.ai[1] > (20 * SwingMultiplication)) {
                 canShoot = true;
                 Projectile.ai[1] = 0;
                 Projectile.ai[2]++;

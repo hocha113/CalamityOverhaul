@@ -2754,6 +2754,15 @@ Items: {
 		// DisplayName: Evil Smasher
 		// Tooltip: ""
 	}
+
+	DeathSickleRogue: {  
+	    DisplayName: Faux Volante du Faucheur  
+	    Tooltip:  
+	        '''  
+	        Les attaques furtives génèrent six faux traçantes du Faucheur à la fin de leur trajectoire de vol.  
+	        "Le Faucheur pensait que cela améliorerait encore son efficacité."  
+	        '''  
+	}  
 }
 
 Projectiles: {
@@ -3466,6 +3475,11 @@ Projectiles: {
 	// PlasmaRodHeld.DisplayName: Plasma Rod Held
 	// SandstreamScepterHeld.DisplayName: Sandstream Scepter Held
 	// SkyGlazeHeld.DisplayName: Sky Glaze Held
+	// CutlassHeld.DisplayName: Cutlass Held
+	// DeathSickleHeld.DisplayName: Death Sickle Held
+	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
+	// IceSickleHeld.DisplayName: Ice Sickle Held
+	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
 }
 
 Configs: {

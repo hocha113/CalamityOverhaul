@@ -2786,6 +2786,15 @@ Items: {
 		// DisplayName: Evil Smasher
 		// Tooltip: ""
 	}
+
+	DeathSickleRogue: {
+	    DisplayName: Летучий Серп Жнеца
+	    Tooltip:
+	        '''
+	        Скрытые атаки создают шесть самонаводящихся серпов жнеца в конце траектории полета.
+	        "Жнец решил, что это значительно повысит его эффективность."
+	        '''  
+	}
 }
 
 Projectiles: {
@@ -3498,6 +3507,11 @@ Projectiles: {
 	// PlasmaRodHeld.DisplayName: Plasma Rod Held
 	// SandstreamScepterHeld.DisplayName: Sandstream Scepter Held
 	// SkyGlazeHeld.DisplayName: Sky Glaze Held
+	// CutlassHeld.DisplayName: Cutlass Held
+	// DeathSickleHeld.DisplayName: Death Sickle Held
+	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
+	// IceSickleHeld.DisplayName: Ice Sickle Held
+	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
 }
 
 Configs: {

@@ -2752,6 +2752,15 @@ Items: {
 		// DisplayName: Evil Smasher
 		// Tooltip: ""
 	}
+
+	DeathSickleRogue: {  
+	    DisplayName: Fliegende Sense des Schnitters
+	    Tooltip:
+	        '''
+	        Schleichangriffe erzeugen sechs zielsuchende Sensen des Schnitters am Ende ihrer Flugbahn.
+	        "Der Schnitter dachte, dass dies seine Effizienz weiter steigern würde."
+	        '''
+	}  
 }
 
 Projectiles: {
@@ -3464,6 +3473,11 @@ Projectiles: {
 	// PlasmaRodHeld.DisplayName: Plasma Rod Held
 	// SandstreamScepterHeld.DisplayName: Sandstream Scepter Held
 	// SkyGlazeHeld.DisplayName: Sky Glaze Held
+	// CutlassHeld.DisplayName: Cutlass Held
+	// DeathSickleHeld.DisplayName: Death Sickle Held
+	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
+	// IceSickleHeld.DisplayName: Ice Sickle Held
+	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
 }
 
 Configs: {

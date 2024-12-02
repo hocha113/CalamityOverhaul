@@ -137,6 +137,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         protected float unitOffsetDrawZkMode;
         /// <summary>
+        /// 挥舞速度乘算系数，等价于<see cref="SetSwingSpeed(float)"/>参数为1的返回值
+        /// </summary>
+        protected float SwingMultiplication;
+        /// <summary>
         /// 历史旋转角度
         /// </summary>
         protected float[] oldRotate;
@@ -201,7 +205,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 射弹基本速度，受攻速加成影响
         /// </summary>
-        protected Vector2 ShootVelocity => UnitToMouseV * ShootSpeed / SetSwingSpeed(1);
+        protected Vector2 ShootVelocity => UnitToMouseV * ShootSpeed / SwingMultiplication;
         /// <summary>
         /// 生成抛射物的位置
         /// </summary>
@@ -403,7 +407,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
                 ler1Time = (int)(maxSwingTime * 0.4f);
             }
 
-            float speedUp = SetSwingSpeed(1f);
+            float speedUp = SwingMultiplication;
             speedUp *= overSpeedUpSengs;
 
             if (Time == 0) {
@@ -510,7 +514,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         /// <returns></returns>
         public sealed override bool PreUpdate() {
-            canShoot = Time == (int)(maxSwingTime * shootSengs * updateCount);
+            SwingMultiplication = SetSwingSpeed(1f);
+            canShoot = Time == (int)(maxSwingTime * shootSengs * SwingMultiplication * updateCount);
             if (!isInitialize) {
                 _meleeSize = 1f;
                 if (Item.type != ItemID.None) {

@@ -109,8 +109,11 @@ namespace CalamityOverhaul.Content.TileModules
                 return;
             }
 
+            Rectangle tileRec = new Rectangle(Position.X * 16, Position.Y * 16, BloodAltar.Width * 18, BloodAltar.Height * 18);
+            mouseOnTile = tileRec.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
+
             float leng = PosInWorld.Distance(player.Center);
-            drawGlow = leng < maxleng && !SupertableUI.Instance.Active;
+            drawGlow = leng < maxleng && mouseOnTile && !SupertableUI.Instance.Active;
             if (drawGlow) {
                 gloawTime++;
                 gloaColor = Color.AliceBlue * MathF.Abs(MathF.Sin(gloawTime * 0.04f));
@@ -119,9 +122,6 @@ namespace CalamityOverhaul.Content.TileModules
                 gloawTime = 0;
             }
 
-            Rectangle tileRec = new Rectangle(Position.X * 16, Position.Y * 16, BloodAltar.Width * 18, BloodAltar.Height * 18);
-            mouseOnTile = tileRec.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
-            Time++;
             if (modPlayer.InspectOmigaTime > 0) {
                 if (snegs < 1) {
                     snegs += 0.1f;
@@ -146,6 +146,8 @@ namespace CalamityOverhaul.Content.TileModules
                 tpEntityLoadenItems();
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.2f });
             }
+
+            Time++;
         }
 
         public override void OnKill() {

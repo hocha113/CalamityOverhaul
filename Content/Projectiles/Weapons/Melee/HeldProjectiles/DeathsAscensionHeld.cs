@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     OtherMeleeSize = 2.24f;
                 }
                 SwingData.baseSwingSpeed = 12;
-                OtherMeleeSize -= 0.006f / SetSwingSpeed(1f);
+                OtherMeleeSize -= 0.006f / SwingMultiplication;
                 return true;
             }
 
@@ -65,17 +65,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
 
                 if (Time < maxSwingTime / 3) {
-                    OtherMeleeSize += 0.025f / SetSwingSpeed(1f);
+                    OtherMeleeSize += 0.025f / SwingMultiplication;
                 }
                 else {
-                    OtherMeleeSize -= 0.005f / SetSwingSpeed(1f);
+                    OtherMeleeSize -= 0.005f / SwingMultiplication;
                 }
             }
             else {
                 overOffsetCachesRoting = MathHelper.ToRadians(6);
                 SwingData.starArg = 60;
                 SwingData.baseSwingSpeed = 5;
-                OtherMeleeSize -= 0.006f / SetSwingSpeed(1f);
+                OtherMeleeSize -= 0.006f / SwingMultiplication;
             }
 
             return base.PreInOwnerUpdate();

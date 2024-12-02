@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             }
 
             // 计算当前挥击速度比例
-            float swingSpeedMultiplier = SetSwingSpeed(1f);
+            float swingSpeedMultiplier = SwingMultiplication;
 
             // 计算各阶段的结束时间
             int phase1EndTime = (int)(maxSwingTime * phase1Ratio * updateCount * swingSpeedMultiplier);

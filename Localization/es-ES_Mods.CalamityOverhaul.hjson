@@ -2789,6 +2789,15 @@ Items: {
 		// DisplayName: Evil Smasher
 		// Tooltip: ""
 	}
+
+	DeathSickleRogue: {
+	    DisplayName: Guadaña Voladora del Segador
+	    Tooltip:
+	        '''
+	        Los ataques furtivos generan seis guadañas rastreadoras del segador al final de su trayectoria de vuelo.
+	        "El Segador pensó que esto mejoraría aún más su eficiencia."
+	        '''
+	}  
 }
 
 Projectiles: {
@@ -3501,6 +3510,11 @@ Projectiles: {
 	// PlasmaRodHeld.DisplayName: Plasma Rod Held
 	// SandstreamScepterHeld.DisplayName: Sandstream Scepter Held
 	// SkyGlazeHeld.DisplayName: Sky Glaze Held
+	// CutlassHeld.DisplayName: Cutlass Held
+	// DeathSickleHeld.DisplayName: Death Sickle Held
+	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
+	// IceSickleHeld.DisplayName: Ice Sickle Held
+	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
 }
 
 Configs: {

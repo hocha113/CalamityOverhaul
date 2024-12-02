@@ -2767,6 +2767,15 @@ Items: {
 		// DisplayName: Evil Smasher
 		// Tooltip: ""
 	}
+
+	DeathSickleRogue: {
+		DisplayName: 死神飞镰
+		Tooltip:
+			'''
+			潜伏攻击会在飞行轨迹末端生成六个追踪敌人的死神镰刀
+			"这样可以进一步提高工作效率"
+			'''
+	}
 }
 
 Projectiles: {
@@ -3479,6 +3488,11 @@ Projectiles: {
 	// PlasmaRodHeld.DisplayName: Plasma Rod Held
 	// SandstreamScepterHeld.DisplayName: Sandstream Scepter Held
 	// SkyGlazeHeld.DisplayName: Sky Glaze Held
+	// CutlassHeld.DisplayName: Cutlass Held
+	// DeathSickleHeld.DisplayName: Death Sickle Held
+	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
+	// IceSickleHeld.DisplayName: Ice Sickle Held
+	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
 }
 
 Configs: {
