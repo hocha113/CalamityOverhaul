@@ -68,6 +68,7 @@ namespace CalamityOverhaul.Content.UIs
         private bool onRogueP;
         private bool onSliveP;
         private bool onSliveP2;
+        private bool onSliveP3;
         private bool onLsmogP;
         private bool onRsmogP;
 
@@ -189,12 +190,13 @@ namespace CalamityOverhaul.Content.UIs
 
             OnMain = MainRec.Intersects(mouseRec);
             OnBook = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, Texture.Width * 2, Texture.Height).Intersects(mouseRec);
+            onSliveP3 = new Rectangle((int)DrawPosition.X + 2, (int)DrawPosition.Y, 20, Texture.Height).Intersects(mouseRec);
 
-            onMeleeP = meleeRec.Intersects(mouseRec);
-            onRangedP = rangedRec.Intersects(mouseRec);
-            onMagicP = magicRec.Intersects(mouseRec);
-            onSummonP = summonRec.Intersects(mouseRec);
-            onRogueP = rogueRec.Intersects(mouseRec);
+            onMeleeP = meleeRec.Intersects(mouseRec) && !onSliveP3;
+            onRangedP = rangedRec.Intersects(mouseRec) && !onSliveP3;
+            onMagicP = magicRec.Intersects(mouseRec) && !onSliveP3;
+            onSummonP = summonRec.Intersects(mouseRec) && !onSliveP3;
+            onRogueP = rogueRec.Intersects(mouseRec) && !onSliveP3;
             onSliveP = sliveRec.Intersects(mouseRec);
             onLsmogP = LsmogRec.Intersects(mouseRec);
             onRsmogP = RsmogRec.Intersects(mouseRec);
@@ -278,7 +280,7 @@ namespace CalamityOverhaul.Content.UIs
         public override void Update() {
             if (OnBook) {
                 player.mouseInterface = true;
-                if (keyLeftPressState == KeyPressState.Held) {
+                if (keyLeftPressState == KeyPressState.Held && !onSliveP3) {
                     if (!onDrag) {
                         dragOffset = DrawPosition - MousePosition;
                     }
@@ -342,16 +344,8 @@ namespace CalamityOverhaul.Content.UIs
                             offsetMouseY = slivePos.Y - MousePosition.Y + 6.24f;
                         }
                         onSliveP2 = true;
-                        float numY = MousePosition.Y + offsetMouseY;
-                        if (numY < 310) {
-                            numY = 310;
-                        }
-                        if (numY > 520) {
-                            numY = 520;
-                        }
-                        float numY2 = numY - 310;
-                        float numY3 = numY2 / 210;
-                        LCCoffsetY = numY3 * -snegValue;
+                        Vector2 sliderBarPos = DrawPosition + new Vector2(5, 5);
+                        LCCoffsetY = -4350 * (MousePosition.Y - sliderBarPos.Y) / 234f;
                     }
                     else {
                         onSliveP2 = false;

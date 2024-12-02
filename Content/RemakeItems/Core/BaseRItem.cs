@@ -61,9 +61,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             if (ProtogenesisID == 0) {
                 return;//如果没有设置ProtogenesisID，那么就表示不参与配方替换
             }
-            string conditiontext = CWRLocText.GetTextValue("LoadItemRecipe_Condition_Text1");
             Func<bool> conditiontfunc = () => Main.LocalPlayer.CWR().HasOverhaulTheBibleBook;
-            Condition condition = new Condition(conditiontext, conditiontfunc);
+            Condition condition = new Condition(CWRLocText.GetTextKey("LoadItemRecipe_Condition_Text1"), conditiontfunc);
             Recipe.Create(recipeTargetType).AddIngredient(TargetID).AddCondition(condition).Register();
             Recipe.Create(TargetID).AddIngredient(recipeTargetType).AddCondition(condition).Register();
         }

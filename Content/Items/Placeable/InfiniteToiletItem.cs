@@ -62,9 +62,8 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void AddRecipes() {
-            string conditiontext = CWRLocText.GetTextValue("OnlyZenith");
             Func<bool> conditiontfunc = () => Main.zenithWorld;
-            Condition condition = new Condition(conditiontext, conditiontfunc);
+            Condition condition = new Condition(CWRLocText.GetTextKey("OnlyZenith"), conditiontfunc);
 
             CreateRecipe()
                 .AddIngredient<InfiniteIngot>(29)

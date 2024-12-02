@@ -233,6 +233,7 @@ namespace CalamityOverhaul.Common
         #endregion
         protected override void Register() { }
         #region Utils
+        public static string GetTextKey(string key) => $"Mods.CalamityOverhaul.TextContent.CWRLocText.{key}";
         public static string GetTextValue(string key) => Language.GetTextValue($"Mods.CalamityOverhaul.TextContent.CWRLocText.{key}");
         public static LocalizedText GetText(string key) => Language.GetText($"Mods.CalamityOverhaul.TextContent.CWRLocText.{key}");
         #endregion
