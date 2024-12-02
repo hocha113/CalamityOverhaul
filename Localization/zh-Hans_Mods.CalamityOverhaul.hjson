@@ -3492,6 +3492,7 @@ Projectiles: {
 	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
 	// IceSickleHeld.DisplayName: Ice Sickle Held
 	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
+	// PhaseBlasting.DisplayName: Phase Blasting
 }
 
 Configs: {

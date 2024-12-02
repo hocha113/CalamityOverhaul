@@ -822,12 +822,12 @@ Items: {
 	}
 
 	BlossomFluxEcType: {
-	    DisplayName: Flux de Feuilles
-	    Tooltip:
-	        '''
-	        Tire rapidement des Flèches Feuille de Vie.
-	        Clic droit pour charger et lancer une puissante Bombe de Jungle.
-	        '''
+		DisplayName: Flux de Feuilles
+		Tooltip:
+			'''
+			Tire rapidement des Flèches Feuille de Vie.
+			Clic droit pour charger et lancer une puissante Bombe de Jungle.
+			'''
 	}
 
 	PhangasmEcType: {
@@ -3480,6 +3480,7 @@ Projectiles: {
 	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
 	// IceSickleHeld.DisplayName: Ice Sickle Held
 	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
+	// PhaseBlasting.DisplayName: Phase Blasting
 }
 
 Configs: {

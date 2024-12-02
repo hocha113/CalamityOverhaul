@@ -52,6 +52,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public bool MustConsumeAmmunition = true;
         /// <summary>
+        /// 在非开火的手持闲置期间是否始终使用开火状态的状态设置，包括武器旋转角度和武器位置设置，默认为<see langword="false"/>
+        /// </summary>
+        public bool InOwner_HandState_AlwaysSetInFireRoding;
+        /// <summary>
         /// 弹药类型
         /// </summary>
         public int AmmoTypes;

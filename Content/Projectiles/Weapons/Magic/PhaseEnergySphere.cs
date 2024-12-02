@@ -1,5 +1,4 @@
-﻿using CalamityMod.Projectiles.Magic;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -13,6 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
     {
         public override string Texture => CWRConstant.Cay_Proj_Magic + "SHPB";
         public override void SetStaticDefaults() => Main.projFrames[Projectile.type] = 4;
+        private int explodeTime = 30;
         public override void SetDefaults() {
             Projectile.width = 24;
             Projectile.height = 24;
@@ -21,7 +21,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             Projectile.penetrate = 1;
             Projectile.timeLeft = 300;
             Projectile.DamageType = DamageClass.Magic;
-            Projectile.ai[2] = 120;
         }
 
         public override void AI() {
@@ -54,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             }
 
             // 倒计时爆炸
-            if (canExplode && --Projectile.ai[2] <= 0) {
+            if (canExplode && --explodeTime <= 0) {
                 Projectile.Kill();
             }
         }
@@ -75,9 +74,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(SoundID.Item105, Projectile.Center);
-            if (Projectile.owner == Main.myPlayer) {
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, 0f, 0f
-                    , ModContent.ProjectileType<SHPExplosion>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0f, 0f);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero
+                    , ModContent.ProjectileType<PhaseBlasting>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0f, 0f);
             }
         }
     }

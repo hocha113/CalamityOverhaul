@@ -79,7 +79,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
     {
         public override string Texture => CWRConstant.Placeholder;
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.DeathSickle].Value;
-        private bool inOut;
         private bool outFive;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 7;

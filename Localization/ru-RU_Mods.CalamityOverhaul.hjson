@@ -817,13 +817,13 @@ Items: {
 			'''
 	}
 
-	BlossomFluxEcType: {  
-	    DisplayName: Поток Листьев
-	    Tooltip:
-	        '''
-	        Быстро выпускает стрелы Листьев Жизни.
-	        Щелчок правой кнопкой мыши заряжает и запускает мощную Джунглевую Бомбу.
-	        '''
+	BlossomFluxEcType: {
+		DisplayName: Поток Листьев
+		Tooltip:
+			'''
+			Быстро выпускает стрелы Листьев Жизни.
+			Щелчок правой кнопкой мыши заряжает и запускает мощную Джунглевую Бомбу.
+			'''
 	}
 
 	PhangasmEcType: {
@@ -3511,6 +3511,7 @@ Projectiles: {
 	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
 	// IceSickleHeld.DisplayName: Ice Sickle Held
 	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
+	// PhaseBlasting.DisplayName: Phase Blasting
 }
 
 Configs: {

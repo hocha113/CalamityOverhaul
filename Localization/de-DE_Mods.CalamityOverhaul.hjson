@@ -816,13 +816,13 @@ Items: {
 		Tooltip: Linksklick feuert Sandspringer ab, Rechtklick feuert springende Sandspringer ab, Schleichangriffe lassen schnelle Sandspringer vom Himmel fallen
 	}
 
-	BlossomFluxEcType: {  
-	    DisplayName: Blätterfluss
-	    Tooltip:
-	        '''
-	        Feuert schnell Lebensblatt-Pfeile ab.
-	        Rechtsklick, um eine mächtige Dschungel-Bombe aufzuladen und abzufeuern.
-	        '''
+	BlossomFluxEcType: {
+		DisplayName: Blätterfluss
+		Tooltip:
+			'''
+			Feuert schnell Lebensblatt-Pfeile ab.
+			Rechtsklick, um eine mächtige Dschungel-Bombe aufzuladen und abzufeuern.
+			'''
 	}
 
 	PhangasmEcType: {
@@ -3477,6 +3477,7 @@ Projectiles: {
 	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
 	// IceSickleHeld.DisplayName: Ice Sickle Held
 	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
+	// PhaseBlasting.DisplayName: Phase Blasting
 }
 
 Configs: {

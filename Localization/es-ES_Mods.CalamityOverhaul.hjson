@@ -834,13 +834,13 @@ Items: {
 			'''
 	}
 
-	BlossomFluxEcType: {  
-	    DisplayName: Flujo de Hojas
-	    Tooltip:
-	        '''
-	        Dispara rápidamente Flechas de Hoja Vital.
-	        Haz clic derecho para cargar y disparar una poderosa Bomba de Jungla.
-	        '''
+	BlossomFluxEcType: {
+		DisplayName: Flujo de Hojas
+		Tooltip:
+			'''
+			Dispara rápidamente Flechas de Hoja Vital.
+			Haz clic derecho para cargar y disparar una poderosa Bomba de Jungla.
+			'''
 	}
 
 	PhangasmEcType: {
@@ -3514,6 +3514,7 @@ Projectiles: {
 	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
 	// IceSickleHeld.DisplayName: Ice Sickle Held
 	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
+	// PhaseBlasting.DisplayName: Phase Blasting
 }
 
 Configs: {

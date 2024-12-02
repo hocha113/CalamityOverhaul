@@ -138,18 +138,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
         }
 
-        public override void FiringIncident() {
-            void setBaseFromeAI() {
-                Owner.direction = ToMouse.X > 0 ? 1 : -1;
-                Projectile.rotation = ToMouseA;
-                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2()
-                    * HandFireDistance + new Vector2(0, HandFireDistanceY * SafeGravDir);
-                ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
-                SetCompositeArm();
-            }
+        private void setInFireFromeAI() {
+            Owner.direction = ToMouse.X > 0 ? 1 : -1;
+            Projectile.rotation = ToMouseA;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2()
+                * HandFireDistance + new Vector2(0, HandFireDistanceY * SafeGravDir);
+            ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
+            SetCompositeArm();
+        }
 
+        private void setIdleFromeAI() {
+            ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR;
+            ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR;
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY);
+            int art = 20;
+            if (SafeGravDir < 0) {
+                art = 340;
+            }
+            Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(art) : MathHelper.ToRadians(180 - art);
+        }
+
+        public override void FiringIncident() {
             if (DownLeft) {
-                setBaseFromeAI();
+                setInFireFromeAI();
                 if (HaveAmmo) {
                     onFire = true;
                     SetArmInFire();
@@ -160,7 +171,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
 
             if (DownRight && CanRightClick && !onFire && SafeMousetStart) {
-                setBaseFromeAI();
+                setInFireFromeAI();
                 if (HaveAmmo) {
                     SafeMousetStart2 = true;
                     onFireR = true;
@@ -178,18 +189,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         public override void InOwner() {
             PreInOwner();
             SetHeld();
-            ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR;
-            ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR;
 
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY);
-
-            int art = 20;
-            if (SafeGravDir < 0) {
-                art = 340;
-            }
-            Projectile.rotation = Owner.direction > 0 ? MathHelper.ToRadians(art) : MathHelper.ToRadians(180 - art);
             Projectile.timeLeft = 2;
             ModItem.IsBow = IsBow;
+
+            if (InOwner_HandState_AlwaysSetInFireRoding) {
+                setInFireFromeAI();
+            }
+            else {
+                setIdleFromeAI();
+            }
+
             SetCompositeArm();
 
             if (SafeMouseInterfaceValue) {

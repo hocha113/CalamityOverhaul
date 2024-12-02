@@ -71,6 +71,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// </summary>
         public static int GetOnRDCD => RDCDDictionary[InWorldBossPhase.Instance.Mura_Level()];
         /// <summary>
+        /// 获取开局的击退力度
+        /// </summary>
+        public static float GetStartKnockback => KnockbackDictionary[0];
+        /// <summary>
         /// 获取时期对应的击退力度
         /// </summary>
         public static float GetOnKnockback => KnockbackDictionary[InWorldBossPhase.Instance.Mura_Level()];
@@ -194,8 +198,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 {10, 5.3f },
                 {11, 5.65f },
                 {12, 5.8f },
-                {13, 6.1f },
-                {14, 6.2f }
+                {13, 6.2f },
+                {14, 6.5f }
             };
         }
         public override void SetStaticDefaults() {
@@ -216,7 +220,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useAnimation = 25;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.useTime = 5;
-            Item.knockBack = 6.5f;
+            Item.knockBack = GetStartKnockback;
             Item.autoReuse = false;
             Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             Item.shoot = ModContent.ProjectileType<MuraSlashDefault>();
@@ -268,6 +272,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
             => CWRUtils.ModifyLegendWeaponDamageFunc(player, Item, GetOnDamage, GetStartDamage, ref damage);
 
+        public override void ModifyWeaponKnockback(Player player, ref StatModifier knockback)
+            => CWRUtils.ModifyLegendWeaponKnockbackFunc(player, Item, GetOnKnockback, GetStartKnockback, ref knockback);
+
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frameI, Color drawColor, Color itemColor, Vector2 origin, float scale) {
             Texture2D texture;
             if (Main.LocalPlayer.CWR().HeldMurasamaBool) {
@@ -304,7 +311,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MuraSlashDefault>(), damage, GetOnKnockback, player.whoAmI, 0f, 0f);
+            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MuraSlashDefault>(), damage, knockback, player.whoAmI, 0f, 0f);
             return false;
         }
     }

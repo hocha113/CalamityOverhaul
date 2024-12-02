@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<BlossomFluxEcType>();
         public override void SetRangedProperty() {
             CanRightClick = true;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             HandRotSpeedSengs = 0.6f;
         }
 

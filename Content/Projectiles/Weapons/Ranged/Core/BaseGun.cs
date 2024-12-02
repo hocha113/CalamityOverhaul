@@ -80,10 +80,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         protected bool EnableRecoilRetroEffect;
         /// <summary>
-        /// 在非开火的手持闲置期间是否始终使用开火状态的状态设置，包括枪体旋转角度和枪体位置设置，默认为<see langword="false"/>
-        /// </summary>
-        public bool InOwner_HandState_AlwaysSetInFireRoding;
-        /// <summary>
         /// 后坐力制推力度模长，推送方向为<see cref="BaseHeldRanged.ShootVelocity"/>的反向
         /// ，在<see cref="EnableRecoilRetroEffect"/>为<see langword="true"/>时生效，默认为5f
         /// </summary>

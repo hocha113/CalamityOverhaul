@@ -804,14 +804,14 @@ Items: {
 			'''
 	}
 
-	BlossomFluxEcType: {  
-	    DisplayName: Leaf Flow  
-	    Tooltip:  
-	        '''  
-	        Rapidly fires Lifeleaf Arrows.  
-	        Right-click to charge and fire a powerful Jungle Bomb.  
-	        '''  
-	}  
+	BlossomFluxEcType: {
+		DisplayName: Leaf Flow
+		Tooltip:
+			'''
+			Rapidly fires Lifeleaf Arrows.  
+			Right-click to charge and fire a powerful Jungle Bomb.  
+			'''
+	}
 
 	PhangasmEcType: {
 		DisplayName: Phangasm
@@ -3490,6 +3490,7 @@ Projectiles: {
 	DeathSickleThrowable.DisplayName: Death Sickle Throwable
 	IceSickleHeld.DisplayName: Ice Sickle Held
 	DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
+	PhaseBlasting.DisplayName: Phase Blasting
 }
 
 Configs: {

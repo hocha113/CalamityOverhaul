@@ -81,6 +81,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         //    damage /= oldMultiplicative;
         //    return false;
         //}
+        public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
+            => CWRUtils.ModifyLegendWeaponKnockbackFunc(player, item, MurasamaEcType.GetOnKnockback, MurasamaEcType.GetStartKnockback, ref knockback);
 
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
             crit += MurasamaEcType.GetOnCrit;
@@ -111,7 +113,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Melee
         }
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MuraSlashDefault>(), damage, MurasamaEcType.GetOnKnockback, player.whoAmI, 0f, 0f);
+            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<MuraSlashDefault>(), damage, knockback, player.whoAmI, 0f, 0f);
             return false;
         }
     }

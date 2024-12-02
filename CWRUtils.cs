@@ -849,6 +849,13 @@ namespace CalamityOverhaul
             damage *= item.GetPrefixState().damageMult;
         }
 
+        public static void ModifyLegendWeaponKnockbackFunc(Player player, Item item, float GetOnKnockback, float GetStartKnockback, ref StatModifier Knockback) {
+            Knockback *= GetOnKnockback / (float)GetStartKnockback;
+            //首先，因为SD的运行优先级并不可靠，有的模组的修改在SD之后运行，比如炼狱模式，这个基础击退缩放保证一些情况不会发生
+            Knockback *= GetStartKnockback / item.knockBack;
+            Knockback *= item.GetPrefixState().knockbackMult;
+        }
+
         public static NPC FindNPCFromeType(int type) {
             NPC npc = null;
             foreach (var n in Main.npc) {
