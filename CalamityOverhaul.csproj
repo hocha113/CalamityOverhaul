@@ -24,7 +24,7 @@
     <None Remove="Content\Projectiles\Weapons\Melee\ArkoftheCosmosProj\**" />
   </ItemGroup>
   <ItemGroup>
-    <AdditionalFiles Remove="0.5.0.2.1.txt" />
+    <AdditionalFiles Remove="0.5.0.2.2.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\Effects\ColorGradient.fx" />

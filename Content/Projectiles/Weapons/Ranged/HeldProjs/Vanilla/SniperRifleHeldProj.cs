@@ -8,6 +8,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
 {
+    /// <summary>
+    /// 狙击步枪
+    /// </summary>
     internal class SniperRifleHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -19,6 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             CanCreateCaseEjection = false;
             CanCreateSpawnGunDust = false;
             FiringDefaultSound = false;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             CanUpdateMagazineContentsInShootBool = false;
             RepeatedCartridgeChange = true;
             ShootPosToMouLengValue = 0;

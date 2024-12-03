@@ -21,12 +21,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             distanceToOwner = -20;
             drawTrailTopWidth = 86;
             ownerOrientationLock = true;
-            SwingData.starArg = 60;
+            SwingData.starArg = 48;
             SwingData.baseSwingSpeed = 4.35f;
             Length = 124;
         }
 
-        public override void PostInOwnerUpdate() {
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: -0.1f
+                , phase1SwingSpeed: 6.2f, phase2SwingSpeed: 4f
+                , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
+            return base.PreInOwnerUpdate();
+        }
+
+        public override void MeleeEffect() {
             int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.JungleSpore);
             Main.dust[dust].noGravity = true;
             Main.dust[dust].scale = Main.rand.NextFloat(0.5f, 2.2f);

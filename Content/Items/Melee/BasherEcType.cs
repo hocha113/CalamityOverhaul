@@ -44,8 +44,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             drawTrailBtommWidth = 0;
             SwingData.baseSwingSpeed = 4f;
             Projectile.width = Projectile.height = 46;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 22;
             Length = 66;
         }
 

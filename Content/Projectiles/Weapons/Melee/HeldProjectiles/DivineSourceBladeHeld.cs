@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             distanceToOwner = -20;
             drawTrailTopWidth = 86;
             ownerOrientationLock = true;
-            SwingData.starArg = 80;
+            SwingData.starArg = 42;
             SwingData.baseSwingSpeed = 4.65f;
-            unitOffsetDrawZkMode = 16;
+            unitOffsetDrawZkMode = 20;
             Length = 124;
             ShootSpeed = 18;
         }
@@ -39,6 +39,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             oldRotate[0] = safeInSwingUnit.RotatedBy(MathHelper.ToRadians(-8 * Projectile.spriteDirection)).ToRotation();
             oldDistanceToOwner[0] = distanceToOwner;
             oldLength[0] = Projectile.height * Projectile.scale;
+        }
+
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 0.3f
+                , phase1SwingSpeed: 8.2f, phase2SwingSpeed: 5f
+                , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
+            return base.PreInOwnerUpdate();
         }
 
         public override void Shoot() {
