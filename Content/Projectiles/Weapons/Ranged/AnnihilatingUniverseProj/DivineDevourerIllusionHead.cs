@@ -39,10 +39,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             }
             NPC target = Projectile.Center.FindClosestNPC(1900);
             if (target != null) {
-                Projectile.ChasingBehavior2(target.Center, 1, 0.2f);
+                Projectile.SmoothHomingBehavior(target.Center, 1, 0.2f);
             }
             else {
-                Projectile.ChasingBehavior2(InMousePos, 1, 0.2f);
+                Projectile.SmoothHomingBehavior(InMousePos, 1, 0.2f);
             }
 
             Projectile.rotation = Projectile.velocity.ToRotation();

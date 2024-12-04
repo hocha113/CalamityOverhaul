@@ -667,7 +667,7 @@ namespace CalamityOverhaul
         /// <param name="SpeedUpdates">速度的更新系数</param>
         /// <param name="HomingStrenght">追击力度</param>
         /// <returns></returns>
-        public static Vector2 ChasingBehavior2(this Entity entity, Vector2 TargetCenter, float SpeedUpdates = 1, float HomingStrenght = 0.1f) {
+        public static Vector2 SmoothHomingBehavior(this Entity entity, Vector2 TargetCenter, float SpeedUpdates = 1, float HomingStrenght = 0.1f) {
             float targetAngle = entity.AngleTo(TargetCenter);
             float f = entity.velocity.ToRotation().RotTowards(targetAngle, HomingStrenght);
             Vector2 speed = f.ToRotationVector2() * entity.velocity.Length() * SpeedUpdates;

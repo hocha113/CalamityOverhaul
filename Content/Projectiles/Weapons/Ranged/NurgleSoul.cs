@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 }
                 _ = Projectile.Center.To(npc.Center).LengthSquared() > 80000
                     ? Projectile.ChasingBehavior(npc.Center, 23)
-                    : Projectile.ChasingBehavior2(npc.Center, 1.001f, 0.15f);
+                    : Projectile.SmoothHomingBehavior(npc.Center, 1.001f, 0.15f);
             }
             else {
                 Player player = CWRUtils.InPosFindPlayer(Projectile.Center);
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         if (point == Vector2.Zero) {
                             point = Projectile.Center + CWRUtils.randVr(133, 202);
                         }
-                        Projectile.ChasingBehavior2(point, 1.001f, 0.25f);
+                        Projectile.SmoothHomingBehavior(point, 1.001f, 0.25f);
                         if (Main.rand.NextBool(1600)) {
                             point = Projectile.Center + CWRUtils.randVr(533, 1202);
                         }

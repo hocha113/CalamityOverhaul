@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             else {
                 target = Projectile.Center.FindClosestNPC(1600);
                 if (target != null) {
-                    Projectile.ChasingBehavior2(target.Center, 1, 0.06f);
+                    Projectile.SmoothHomingBehavior(target.Center, 1, 0.06f);
                 }
             }
             Lighting.AddLight(Projectile.Center, InnerColor.ToVector3() * 0.2f);

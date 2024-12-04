@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
             if (accompanying && ReturnProgress != 1 && Projectile.timeLeft < 220) {
                 NPC target = Projectile.Center.FindClosestNPC(600);
                 if (target != null) {
-                    Projectile.ChasingBehavior2(target.Center, 1, 0.3f);
+                    Projectile.SmoothHomingBehavior(target.Center, 1, 0.3f);
                 }
             }
         }

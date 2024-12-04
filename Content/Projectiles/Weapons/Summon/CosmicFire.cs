@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
             if (target != null && Projectile.timeLeft <= 150) {
                 if (Projectile.timeLeft == 150)
                     Projectile.velocity = Projectile.Center.To(target.Center).UnitVector() * 3;
-                Projectile.ChasingBehavior2(target.Center, 1.01f, 0.01f);
+                Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.01f);
             }
             for (int i = 0; i < 6; i++) {
                 StreamGougeMetaball.SpawnParticle(Projectile.Center + CWRUtils.randVr(13), Projectile.velocity, Main.rand.NextFloat(11.3f, 21.5f));

@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = SoundID.DD2_GhastlyGlaivePierce;
             Item.autoReuse = true;
             Item.height = 108;
-            Item.shoot = ModContent.ProjectileType<RBansheeHookProj>();
+            Item.shoot = ModContent.ProjectileType<BansheeHookHeld>();
             Item.shootSpeed = 42f;
             Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();

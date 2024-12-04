@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
             //在一定时间后开始追踪附近的敌人
             NPC target = Projectile.Center.FindClosestNPC(1900);
             if (target != null && Projectile.timeLeft < 1080) {
-                Projectile.ChasingBehavior2(target.Center + Projectile.velocity * 100, 1, 0.1f);
+                Projectile.SmoothHomingBehavior(target.Center + Projectile.velocity * 100, 1, 0.1f);
 
                 Vector2 toTarget = Projectile.Center.To(target.Center);
 

@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.PlagueProj
             if (Projectile.timeLeft < 330) {
                 NPC target = Projectile.Center.FindClosestNPC(1650);
                 if (target != null) {
-                    Projectile.ChasingBehavior2(target.Center, 0.995f, 0.35f);
+                    Projectile.SmoothHomingBehavior(target.Center, 0.995f, 0.35f);
                 }
             }
             if (Projectile.velocity.LengthSquared() < 184) {

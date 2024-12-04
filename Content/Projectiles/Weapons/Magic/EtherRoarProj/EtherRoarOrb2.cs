@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.EtherRoarProj
             if (Time > 60) {
                 NPC target = Projectile.Center.FindClosestNPC(600);
                 if (target != null) {
-                    Projectile.ChasingBehavior2(target.Center, 1.01f, 0.35f);
+                    Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.35f);
                 }
             }
         }

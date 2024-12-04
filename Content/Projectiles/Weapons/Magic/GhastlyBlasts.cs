@@ -45,13 +45,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                 if (Projectile.timeLeft < 200) {
 
                     if (target != null) {
-                        _ = Projectile.timeLeft > 100 ? Projectile.ChasingBehavior2(target.Center) : Projectile.ChasingBehavior(target.Center, 16);
+                        _ = Projectile.timeLeft > 100 ? Projectile.SmoothHomingBehavior(target.Center) : Projectile.ChasingBehavior(target.Center, 16);
                     }
                 }
             }
             else {
                 if (target != null) {
-                    _ = Projectile.ChasingBehavior2(target.Center, 1, 0.5f);
+                    _ = Projectile.SmoothHomingBehavior(target.Center, 1, 0.5f);
                 }
             }
 

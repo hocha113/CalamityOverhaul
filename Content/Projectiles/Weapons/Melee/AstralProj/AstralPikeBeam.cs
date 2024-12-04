@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
                 if (Projectile.timeLeft == 90) {
                     Projectile.velocity = Projectile.velocity.UnitVector() * 23;
                 }
-                Projectile.ChasingBehavior2(targetPos, 1, 0.05f);
+                Projectile.SmoothHomingBehavior(targetPos, 1, 0.05f);
             }
             LineParticle spark2 = new LineParticle(Projectile.Center, -Projectile.velocity * 0.05f, false, 17, 1.7f, Color.Goldenrod);
             GeneralParticleHandler.SpawnParticle(spark2);

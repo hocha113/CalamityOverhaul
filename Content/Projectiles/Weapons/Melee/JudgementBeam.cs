@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             NPC target = Projectile.Center.FindClosestNPC(320);
             if (target != null) {
-                Projectile.ChasingBehavior2(target.Center, 1.01f, 0.15f);
+                Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.15f);
             }
         }
 

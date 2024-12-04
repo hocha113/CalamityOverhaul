@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             NPC target = Projectile.Center.FindClosestNPC(1300);
             if (target != null && Projectile.ai[0] > 30) {
-                Projectile.ChasingBehavior2(target.Center, 1, 0.3f);
+                Projectile.SmoothHomingBehavior(target.Center, 1, 0.3f);
             }
 
             if (!VaultUtils.isServer && Main.rand.NextBool(2)) {

@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 if (target != null) {
                     float num = target.Center.Distance(Projectile.Center);
                     if (num > 120) {
-                        Projectile.ChasingBehavior2(target.Center, 1, 0.22f);
+                        Projectile.SmoothHomingBehavior(target.Center, 1, 0.22f);
                     }
                     else {
                         Projectile.ChasingBehavior(target.Center, Projectile.velocity.Length());

@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
                 NPC target = Projectile.Center.FindClosestNPC(1600);
                 if (target != null) {
                     if (Time < 290 * Projectile.extraUpdates) {
-                        Projectile.ChasingBehavior2(target.Center, 1, 0.08f);
+                        Projectile.SmoothHomingBehavior(target.Center, 1, 0.08f);
                     }
                     else {
                         Projectile.ChasingBehavior(target.Center, Projectile.velocity.Length());

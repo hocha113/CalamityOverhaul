@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void AI() {
             CWRUtils.ClockFrame(ref Projectile.frameCounter, 10, 3);
+            Vector2 posChange = Main.player[Projectile.owner].CWR().PlayerPositionChange;
             if (Projectile.ai[0] == 0) {
                 Player owner = CWRUtils.GetPlayerInstance(Projectile.owner);
                 Projectile.velocity = owner != null ? owner.velocity * 0.9f + new Vector2(0, -2) : new Vector2(0, -2);
@@ -42,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.scale *= 1.01f;
                 Projectile.velocity = Projectile.velocity.RotatedBy(0.03f);
                 Projectile.velocity *= 0.99f;
-                Projectile.position += Main.player[Projectile.owner].velocity;//需要靠这行代码实现与玩家的相对静止
+                Projectile.position += posChange;//需要靠这行代码实现与玩家的相对静止
             }
             if (Projectile.ai[0] == 2) {
                 if (Projectile.ai[1] == 0) {
@@ -53,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.scale *= 1.015f;
                 Projectile.velocity = Projectile.velocity.RotatedBy(0.04f);
                 Projectile.velocity *= 0.995f;
-                Projectile.position += Main.player[Projectile.owner].velocity;
+                Projectile.position += posChange;
             }
             if (Projectile.ai[0] == 3) {
                 if (Projectile.ai[1] == 0) {
@@ -64,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.scale *= 1.003f;
                 Projectile.velocity.Y = -3;
                 Projectile.velocity.X += MathF.Sin(Main.GameUpdateCount / 60 * MathHelper.Pi) * 3;
-                Projectile.position += Main.player[Projectile.owner].velocity;
+                Projectile.position += posChange;
             }
         }
 

@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon
             if (Projectile.timeLeft < 60) {
                 NPC target = Projectile.Center.FindClosestNPC(600);
                 if (target != null) {
-                    Projectile.ChasingBehavior2(target.Center, 1.01f, 0.1f);
+                    Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.1f);
                 }
             }
         }

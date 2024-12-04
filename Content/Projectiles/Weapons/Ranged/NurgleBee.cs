@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.timeLeft < 330) {
                 NPC target = Projectile.Center.FindClosestNPC(450);
                 if (target != null) {
-                    Projectile.ChasingBehavior2(target.Center, 0.995f, 0.12f);
+                    Projectile.SmoothHomingBehavior(target.Center, 0.995f, 0.12f);
                 }
             }
         }

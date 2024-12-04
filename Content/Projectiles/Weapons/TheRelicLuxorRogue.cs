@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
             if (Projectile.ai[0] == 1) {
                 Player owners = CWRUtils.GetPlayerInstance(Projectile.owner);
                 if (owners != null) {
-                    Projectile.ChasingBehavior2(owners.Center, 0.999f, 0.2f);
+                    Projectile.SmoothHomingBehavior(owners.Center, 0.999f, 0.2f);
                     if (Projectile.timeLeft <= 120) {
                         Projectile.ai[0] = 2;
                     }

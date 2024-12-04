@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Armor.Bloodflare;
+using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.BaseProjectiles;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Sounds;
@@ -16,19 +17,19 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
-    internal class RBansheeHookProj : BaseSpearProjectile
+    internal class BansheeHookHeld : BaseSpearProjectile
     {
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<BansheeHookEcType>();
-
-        public override SpearType SpearAiType => SpearType.GhastlyGlaiveSpear;
-
-        public override float TravelSpeed => 22f;
-
-        public override Action<Projectile> EffectBeforeReelback => delegate {
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity * 0.5f, Projectile.velocity * 0.8f, ModContent.ProjectileType<RBansheeHookScythe>(), (int)(Projectile.damage * 0.75f), Projectile.knockBack * 0.85f, Projectile.owner);
-        };
-
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BansheeHook";
+        public override SpearType SpearAiType => SpearType.GhastlyGlaiveSpear;
+        public override float TravelSpeed => 22f;
+        private Player Owner => CWRUtils.GetPlayerInstance(Projectile.owner);
+        private Item bansheeHook => Owner.GetItem();
+        private int drawUIalp = 0;
+        public override Action<Projectile> EffectBeforeReelback => delegate {
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity * 0.5f, Projectile.velocity * 0.8f
+                , ModContent.ProjectileType<RBansheeHookScythe>(), (int)(Projectile.damage * 0.75f), Projectile.knockBack * 0.85f, Projectile.owner);
+        };
 
         public override void SetDefaults() {
             Projectile.width = 40;
@@ -47,12 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.alpha = 255;
             Projectile.hide = true;
         }
-
-        private Player Owner => CWRUtils.GetPlayerInstance(Projectile.owner);
-
-        private Item bansheeHook => Owner.HeldItem;
-
-        private int drawUIalp = 0;
+        
         public override void AI() {
             if (Projectile.ai[1] == 0) {
                 base.AI();
@@ -80,7 +76,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     return;
                 }
                 if (bansheeHook == null || bansheeHook.type != ModContent.ItemType<BansheeHookEcType>()
-                    && bansheeHook.type != ModContent.ItemType<CalamityMod.Items.Weapons.Melee.BansheeHook>()) {
+                    && bansheeHook.type != ModContent.ItemType<BansheeHook>()) {
                     Projectile.Kill();
                     return;
                 }//因为需要替换原模组的内容，所以这里放弃了直接访问类型来获取属性，作为补救，禁止其余物品发射该弹幕，即使这种情况不应该出现

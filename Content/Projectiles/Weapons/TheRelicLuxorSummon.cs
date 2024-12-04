@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
                 Vector2 toTargetVr = Projectile.Center.To(target.Center);
                 if (status == 0) {
                     if (bevers == 0) {
-                        Projectile.ChasingBehavior2(target.Center, 1.01f, 0.02f);
+                        Projectile.SmoothHomingBehavior(target.Center, 1.01f, 0.02f);
                         if (time > 30 || toTargetVr.LengthSquared() < 130 * 130) {
                             bevers = 1;
                             time = 0;

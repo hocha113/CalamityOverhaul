@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.scale = 0.7f + MathF.Abs(MathF.Sin(MathHelper.ToRadians(Projectile.localAI[0] * 2)) * 0.5f);
                 NPC target = Projectile.Center.FindClosestNPC(300);
                 if (target != null) {
-                    Projectile.ChasingBehavior2(target.Center, 1, 0.1f);
+                    Projectile.SmoothHomingBehavior(target.Center, 1, 0.1f);
                 }
                 if (CWRUtils.GetTile(CWRUtils.WEPosToTilePos(Projectile.position)).HasSolidTile()) {
                     Projectile.velocity *= 0.99f;

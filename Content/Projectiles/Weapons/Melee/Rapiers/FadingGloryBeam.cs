@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 Projectile.alpha += 15;
                 NPC target = Projectile.Center.FindClosestNPC(1800);
                 if (target != null) {
-                    Projectile.ChasingBehavior2(target.Center, 1, 0.35f);
+                    Projectile.SmoothHomingBehavior(target.Center, 1, 0.35f);
                 }
             }
             else {

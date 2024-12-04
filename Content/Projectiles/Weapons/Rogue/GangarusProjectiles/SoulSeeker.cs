@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                         Projectile.ChasingBehavior(npc.Center, 23);
                     }
                     else {
-                        Projectile.ChasingBehavior2(npc.Center, 1.001f, 0.15f);
+                        Projectile.SmoothHomingBehavior(npc.Center, 1.001f, 0.15f);
                     }
                 }
             }

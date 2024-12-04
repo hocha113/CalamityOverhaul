@@ -33,56 +33,58 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override void AI() {
             Lighting.AddLight(Projectile.Center, 0.25f, 0.25f, 0f);
             Projectile.rotation += 1f;
-            Projectile.alpha -= 25;
-            if (Projectile.alpha < 0) {
-                Projectile.alpha = 0;
-            }
+            Projectile.alpha = Math.Max(Projectile.alpha - 25, 0);
+
             if (Projectile.localAI[0] == 0f) {
-                _ = SoundEngine.PlaySound(SoundID.Item73, Projectile.position);
-                Projectile.localAI[0] += 1f;
+                SoundEngine.PlaySound(SoundID.Item73, Projectile.position);
+                Projectile.localAI[0] = 1f;
             }
-            int num458 = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.GoldCoin, 0f, 0f, 100, new Color(255, Main.DiscoG, 53), 0.8f);
-            Main.dust[num458].noGravity = true;
-            Main.dust[num458].velocity *= 0.5f;
-            Main.dust[num458].velocity += Projectile.velocity * 0.1f;
+
+            CreateDust(Projectile.position, Projectile.width, Projectile.height, Projectile.velocity);
             if (Projectile.timeLeft < 90) {
                 NPC npc = Projectile.Center.FindClosestNPC(250);
                 if (npc != null) {
-                    float power = 0.045f;
-                    if (Projectile.ai[0] == 1) {
-                        power = 0.085f;
-                    }
-                    Projectile.ChasingBehavior2(npc.Center, 1.001f, power);
+                    float power = Projectile.ai[0] == 1 ? 0.085f : 0.045f;
+                    Projectile.SmoothHomingBehavior(npc.Center, 1.001f, power);
                 }
             }
         }
 
         public override void OnKill(int timeLeft) {
             Projectile.Explode(32, SoundID.Item20);
-            for (int d = 0; d <= 30; d++) {
-                float num463 = Main.rand.Next(-10, 11);
-                float num464 = Main.rand.Next(-10, 11);
-                float speed = Main.rand.Next(3, 9);
-                float num466 = (float)Math.Sqrt((double)((num463 * num463) + (num464 * num464)));
-                num466 = speed / num466;
-                num463 *= num466;
-                num464 *= num466;
-                int num467 = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, Projectile.height, DustID.GoldCoin, 0f, 0f, 100, new Color(255, Main.DiscoG, 53), 1.2f);
-                Dust dust = Main.dust[num467];
-                dust.noGravity = true;
-                dust.position.X = Projectile.Center.X;
-                dust.position.Y = Projectile.Center.Y;
-                dust.position.X += Main.rand.Next(-10, 11);
-                dust.position.Y += Main.rand.Next(-10, 11);
-                dust.velocity.X = num463;
-                dust.velocity.Y = num464;
-            }
-            int flameAmt = Main.rand.Next(2, 4);
-            if (Projectile.owner == Main.myPlayer) {
-                for (int i = 0; i < flameAmt; i++) {
+            CreateScatterDust(Projectile.Center, 30);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                int flameCount = Main.rand.Next(2, 4);
+                for (int i = 0; i < flameCount; i++) {
                     Vector2 velocity = CalamityUtils.RandomVelocity(100f, 70f, 100f);
-                    _ = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<AegisFlame>(), (int)(Projectile.damage * 0.75), 0f, Projectile.owner, 0f, 0f);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity
+                        , ModContent.ProjectileType<AegisFlame>(), (int)(Projectile.damage * 0.75), 0f, Projectile.owner);
                 }
+            }
+        }
+
+        private void CreateDust(Vector2 position, int width, int height, Vector2 velocity) {
+            int dustIndex = Dust.NewDust(position, width, height, DustID.GoldCoin, 0f, 0f, 100, new Color(255, Main.DiscoG, 53), 0.8f);
+            Dust dust = Main.dust[dustIndex];
+            dust.noGravity = true;
+            dust.velocity *= 0.5f;
+            dust.velocity += velocity * 0.1f;
+        }
+
+        private void CreateScatterDust(Vector2 center, int amount) {
+            for (int i = 0; i <= amount; i++) {
+                float randX = Main.rand.Next(-10, 11);
+                float randY = Main.rand.Next(-10, 11);
+                float speed = Main.rand.Next(3, 9);
+                float normFactor = speed / (float)Math.Sqrt(randX * randX + randY * randY);
+                randX *= normFactor;
+                randY *= normFactor;
+
+                int dustIndex = Dust.NewDust(center, 0, 0, DustID.GoldCoin, 0f, 0f, 100, new Color(255, Main.DiscoG, 53), 1.2f);
+                Dust dust = Main.dust[dustIndex];
+                dust.noGravity = true;
+                dust.position = center + new Vector2(Main.rand.Next(-10, 11), Main.rand.Next(-10, 11));
+                dust.velocity = new Vector2(randX, randY);
             }
         }
 
