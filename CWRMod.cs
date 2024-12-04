@@ -151,7 +151,7 @@ namespace CalamityOverhaul
             }
 
             //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
-            CWRLoad.Load();
+            CWRLoad.Setup();
             foreach (var i in ILoaders) {
                 i.SetupData();
                 if (!Main.dedServ) {
@@ -167,6 +167,7 @@ namespace CalamityOverhaul
             foreach (var setup in ILoaders) {
                 setup.LoadData();
             }
+            CWRLoad.Load();
             GameLoadCount++;
         }
 

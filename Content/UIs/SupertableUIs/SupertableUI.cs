@@ -350,7 +350,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <summary>
         /// 进行输出制作结果的操作，应当注意他的使用方式防止造成不必要的性能浪费
         /// </summary>
-        public void FinalizeCraftingResult() {
+        public void FinalizeCraftingResult(bool netWork = true) {
             foreach (RecipeData data in AllRecipes) {
                 string[] arg = data.Values;
                 fullItemTypes = FullItem(arg);
@@ -401,7 +401,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 break;
 End:;
             }
-            tpEntityLoadenItems();
+            if (netWork) {
+                tpEntityLoadenItems();
+            }
         }
 
         /// <summary>

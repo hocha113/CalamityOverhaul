@@ -27,8 +27,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
     {
         public override string Texture => CWRConstant.Projectile_Melee + "MuraBreakerSlash";
         private Player Owner => Main.player[Projectile.owner];
-        private Item murasama => Owner.ActiveItem();
+        private Item murasama => Owner.GetItem();
         private List<NPC> onHitNpcs = [];
+        public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
         public override void SetDefaults() {
             Projectile.width = 432;
             Projectile.height = 432;
@@ -201,11 +202,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
             }
 
-            if (!onHitNpcs.Contains(target)) {
-                strikeToFly(target);
-                onHitNpcs.Add(target);
-            }
-
             if (Projectile.numHits == 0) {
                 _ = !CWRLoad.NPCValue.ISTheofSteel(target.type)
                     ? SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 0.15f }, Projectile.Center)
@@ -245,6 +241,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                             Vector2 vr = spanPos.To(Projectile.Center + CWRUtils.randVr(180, 320 + level * 12)).UnitVector() * 12;
                             Projectile.NewProjectile(Projectile.GetSource_FromAI(), spanPos, vr, ModContent.ProjectileType<MuraExecutionCutOnSpan>(), Projectile.damage / 2, 0, Owner.whoAmI);
                         }
+
                         //生成一个制造终结技核心效果的弹幕，这样的程序设计是为了减少耦合度
                         Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, Vector2.Zero,
                             ModContent.ProjectileType<EndSkillEffectStart>(), (int)(Projectile.damage * 0.7f), 0, Owner.whoAmI, 0, Owner.Center.X, Owner.Center.Y);
@@ -262,6 +259,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 }
 
                 CombatText.NewText(target.Hitbox, Main.rand.NextBool(3) ? Color.Red : Color.IndianRed, $"{murasama.CWR().ai[0]}!", true);
+            }
+
+            if (!onHitNpcs.Contains(target)) {
+                strikeToFly(target);
+                onHitNpcs.Add(target);
             }
         }
 

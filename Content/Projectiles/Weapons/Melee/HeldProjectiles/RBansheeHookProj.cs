@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                         if (Projectile.localAI[1] > 10 && Projectile.localAI[1] % 20 == 0)//在鼠标处发射勾魂爪
                         {
                             SoundEngine.PlaySound(SoundID.DD2_GhastlyGlaivePierce with { Pitch = 0.35f, Volume = 0.7f }, Projectile.Center);
-                            int damages = (int)(Owner.GetWeaponDamage(Owner.ActiveItem()) * 0.5f);
+                            int damages = (int)(Owner.GetWeaponDamage(Owner.GetItem()) * 0.5f);
                             for (int i = 0; i < 3; i++) {
                                 Vector2 spanPos = Main.MouseWorld + CWRUtils.GetRandomVevtor(0, 360, 160);
                                 Projectile.NewProjectile(

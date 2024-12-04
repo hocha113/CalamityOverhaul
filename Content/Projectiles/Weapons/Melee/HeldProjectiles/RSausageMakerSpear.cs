@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "Spears/SausageMakerSpear";
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<SausageMakerEcType>();
-        private Item sausageMaker => Main.player[Projectile.owner].ActiveItem();
+        private Item sausageMaker => Main.player[Projectile.owner].GetItem();
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 44;
             Projectile.DamageType = ModContent.GetInstance<TrueMeleeDamageClass>();

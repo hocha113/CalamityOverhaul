@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         private Player Owner => Main.player[Projectile.owner];
 
-        private Item balefulHarvester => Owner.ActiveItem();
+        private Item balefulHarvester => Owner.GetItem();
 
         private Item IndsItem;
         private int Dir;

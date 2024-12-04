@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public static void DrawRageEnergyChargeBar(Player player, float alp) {
-            Item item = player.ActiveItem();
+            Item item = player.GetItem();
             if (item.IsAir) {
                 return;
             }

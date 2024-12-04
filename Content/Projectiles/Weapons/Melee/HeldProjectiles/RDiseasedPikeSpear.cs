@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         private Player Owner => CWRUtils.GetPlayerInstance(Projectile.owner);
 
-        private Item diseasedPike => Owner.ActiveItem();
+        private Item diseasedPike => Owner.GetItem();
 
         private int Time {
             get => (int)Projectile.ai[0];

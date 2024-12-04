@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <summary>
         /// 手持物品实例
         /// </summary>
-        public Item Item => Owner.ActiveItem();
+        public Item Item => Owner.GetItem();
         /// <summary>
         /// 对源灾厄的物品对象
         /// </summary>
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if (Item.useAmmo == AmmoID.None) {
                 return false;
             }
-            Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out _, out _, out _, canConsume && preCanConsumeAmmo);
+            Owner.PickAmmo(Owner.GetItem(), out _, out _, out _, out _, out _, canConsume && preCanConsumeAmmo);
             return canConsume;
         }
 
@@ -325,7 +325,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             SetHeld();
             ModItem = Item.CWR();
             ModOwner = Owner.CWR();
-            ModOwner.HeldRangedBool = true;
             CalOwner = Owner.Calamity();
             UpdateSafeMouseInterfaceValue();
             if (CanFire && _safeMouseInterfaceValue) {

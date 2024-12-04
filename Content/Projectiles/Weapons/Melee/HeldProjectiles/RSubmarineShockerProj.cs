@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void ExtraBehavior() {
-            Item item = Owner.ActiveItem();
+            Item item = Owner.GetItem();
             if (item.type == ItemID.None) {
                 return;
             }

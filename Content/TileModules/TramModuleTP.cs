@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.TileModules
                 }
             }
             SupertableUI.Instance.items = items;
-            SupertableUI.Instance.FinalizeCraftingResult();
+            SupertableUI.Instance.FinalizeCraftingResult(false);//不要进行网络发生，否则会迭代起来引发网络数据洪流
         }
         public override void SaveData(TagCompound tag) {
             for (int i = 0; i < items.Length; i++) {

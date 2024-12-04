@@ -50,13 +50,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         }
 
         public void SpanProj() {
-            int weaponDamage2 = Owner.GetWeaponDamage(Owner.ActiveItem());
-            float weaponKnockback2 = Owner.ActiveItem().knockBack;
+            ShootState shootState = Owner.GetShootState();
             if (Projectile.ai[2] == 0) {
                 if (Time > 30) {
                     SoundEngine.PlaySound(HeavenlyGale.FireSound, Projectile.Center);
-                    bool haveAmmo = Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out weaponDamage2, out weaponKnockback2, out _);
-                    weaponKnockback2 = Owner.GetWeaponKnockback(Owner.ActiveItem(), weaponKnockback2);
                     Time2 = 0;
                     Time = 0;
                 }
@@ -64,15 +61,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                     for (int i = 0; i < 3; i++) {
                         Vector2 offset = (Projectile.rotation + Main.rand.Next(-35, 35) * CWRUtils.atoR).ToRotationVector2() * 56;
                         Projectile.NewProjectile(Projectile.parent(), Projectile.Center + offset, Projectile.rotation.ToRotationVector2() * (17 + i)
-                        , ModContent.ProjectileType<CelestialObliterationArrow>(), weaponDamage2, weaponKnockback2, Owner.whoAmI);
+                        , ModContent.ProjectileType<CelestialObliterationArrow>()
+                        , shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI);
                     }
                 }
             }
             else {
                 int types = ModContent.ProjectileType<CosmicEddies>();
                 if (!Main.projectile.Any((Projectile n) => n.Alives() && n.ai[2] == 0 && n.type == types)) {
-                    Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 15
-                        , types, (int)(weaponDamage2 * 1.25f), weaponKnockback2, Owner.whoAmI, Projectile.whoAmI);
+                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 15
+                        , types, (int)(shootState.WeaponDamage * 1.25f), shootState.WeaponKnockback, Owner.whoAmI, Projectile.whoAmI);
                 }
             }
         }

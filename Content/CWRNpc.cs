@@ -39,6 +39,10 @@ namespace CalamityOverhaul.Content
         public byte WhipHitNum = 0;
         public byte WhipHitType = 0;
         /// <summary>
+        /// 如果为<see langword="true"/>，将停止该NPC的大部分活动以模拟冻结效果
+        /// </summary>
+        public bool FrozenActivity;
+        /// <summary>
         /// 一个特殊标记，用于朗基努斯识别目标
         /// </summary>
         public bool GangarusSign;
@@ -62,7 +66,13 @@ namespace CalamityOverhaul.Content
         /// 极寒神性屏障
         /// </summary>
         public bool IceParclose;
+        /// <summary>
+        /// 是否受到地狱炎爆debuff
+        /// </summary>
         public bool HellfireExplosion;
+        /// <summary>
+        /// 是否受到虚空终结debuff
+        /// </summary>
         public bool VoidErosionBool;
         #endregion
 
@@ -119,6 +129,7 @@ namespace CalamityOverhaul.Content
         public override void ResetEffects(NPC npc) {
             IceParclose = false;
             VoidErosionBool = false;
+            FrozenActivity = false;
         }
         public override void SetDefaults(NPC npc) {
             NPCOverride.SetDefaults(npc, this, npc.Calamity());
@@ -161,9 +172,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreAI(NPC npc) {
-            if (IceParclose) {
-                return false;
-            }
             UpdateOverBeatBack(npc);
             bool? tungstenset = TungstenRiot.Instance.UpdateNPCPreAISet(npc);
             return tungstenset.HasValue ? tungstenset.Value : base.PreAI(npc);
@@ -313,6 +321,25 @@ namespace CalamityOverhaul.Content
                 float sengs = 0.3f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.1f) * 0.3f);
                 spriteBatch.Draw(value, npc.Center - Main.screenPosition, null, Color.White * sengs, 0, value.Size() / 2, slp, SpriteEffects.None, 0);
             }
+        }
+
+        public override void ChatBubblePosition(NPC npc, ref Vector2 position, ref SpriteEffects spriteEffects) {
+            if (CWRPlayer.CanTimeFrozen()) {
+                position = new Vector2(-200, -200);
+            }
+            base.ChatBubblePosition(npc, ref position, ref spriteEffects);
+        }
+        public override void EmoteBubblePosition(NPC npc, ref Vector2 position, ref SpriteEffects spriteEffects) {
+            if (CWRPlayer.CanTimeFrozen()) {
+                position = new Vector2(-200, -200);
+            }
+            base.EmoteBubblePosition(npc, ref position, ref spriteEffects);
+        }
+        public override bool? DrawHealthBar(NPC npc, byte hbPosition, ref float scale, ref Vector2 position) {
+            if (CWRPlayer.CanTimeFrozen()) {
+                return false;
+            }
+            return base.DrawHealthBar(npc, hbPosition, ref scale, ref position);
         }
     }
 }

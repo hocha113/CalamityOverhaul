@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private float maxOrbNinmsWeith;
         private bool onSpan = true;
         private bool onOrb = true;
+        public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
         public override void SetDefaults() {
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 7000;
             Projectile.width = 32;

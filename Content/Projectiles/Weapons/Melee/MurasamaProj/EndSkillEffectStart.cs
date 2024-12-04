@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Placeable;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
@@ -34,6 +33,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             return count <= CanDamageInNPCCountNum;
         }
 
+        public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
+
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.timeLeft = 200;
@@ -43,15 +44,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public override bool? CanDamage() => false;
-
-        private struct EntityStart
-        {
-            public Vector2 origPos;
-            public float rot;
-        }
-
-        private Dictionary<Projectile, EntityStart> ProjDic = [];
-        private Dictionary<NPC, EntityStart> NPCDic = [];
 
         public Vector2 OrigPos {
             get => new Vector2(Projectile.ai[1], Projectile.ai[2]);
@@ -65,39 +57,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Main.LocalPlayer.CWR().EndSkillEffectStartBool = true;
             Projectile.Center = Main.player[Projectile.owner].Center;
 
-            foreach (Projectile p in Main.projectile) {
-                if (!ProjDic.ContainsKey(p) && !p.friendly) {
-                    ProjDic.Add(p, new EntityStart { origPos = p.position, rot = p.rotation });
-                }
-            }
-            foreach (NPC n in Main.npc) {
-                if (!NPCDic.ContainsKey(n) && !n.friendly) {
-                    NPCDic.Add(n, new EntityStart { origPos = n.position, rot = n.rotation });
-                }
-            }
-
-            foreach (Projectile p in ProjDic.Keys) {
-                if (p.Alives()) {
-                    p.rotation = ProjDic[p].rot;
-                    p.position = ProjDic[p].origPos;
-                }
-                else {
-                    ProjDic.Remove(p);
-                }
-            }
-            foreach (NPC n in NPCDic.Keys) {
-                if (n.Alives()) {
-                    n.rotation = NPCDic[n].rot;
-                    n.position = NPCDic[n].origPos;
-                }
-                else {
-                    NPCDic.Remove(n);
+            if (Time < CanDamageTime + 10) {
+                foreach (var player in Main.player) {
+                    if (!player.active) {
+                        continue;
+                    }
+                    player.CWR().TimeFrozenTick = 2;
                 }
             }
 
             if (Time == CanDamageTime) {
                 if (!CanDealDamageToNPCs() && Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.NewProjectile(Projectile.parent(), OrigPos, Vector2.Zero
+                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), OrigPos, Vector2.Zero
                         , ModContent.ProjectileType<EndSkillMakeDamage>(), Projectile.damage, 0, Projectile.owner);
                 }
             }

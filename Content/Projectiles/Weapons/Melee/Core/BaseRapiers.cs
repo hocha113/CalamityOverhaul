@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         public Item Item {
             get {
-                Item itemValue = Owner.ActiveItem();
+                Item itemValue = Owner.GetItem();
                 if (itemValue == null) {
                     itemValue = new Item();
                 }

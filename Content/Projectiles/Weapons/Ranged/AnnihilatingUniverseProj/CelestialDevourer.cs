@@ -45,13 +45,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
 
         public override void OnKill(int timeLeft) {
             Projectile.Explode();
-            if (Main.netMode != NetmodeID.Server) {
+            if (!VaultUtils.isServer) {
                 for (int i = 0; i < 36; i++)//生成这种粒子不是好主意
                 {
-                    Vector2 particleSpeed = CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(6, 9));
+                    Vector2 particleSpeed = CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(16, 49));
                     Vector2 pos = Projectile.Center;
                     BasePRT energyLeak = new PRT_Light(pos, particleSpeed
-                        , Main.rand.NextFloat(0.3f, 0.7f), Color.Purple, 30, 1, 1.5f, hueShift: 0.0f);
+                        , Main.rand.NextFloat(0.3f, 0.7f), Color.Purple, 60, 1, 1.5f, hueShift: 0.0f);
                     PRTLoader.AddParticle(energyLeak);
                 }
             }

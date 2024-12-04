@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.Kill();
                 return;
             }
-            Item item = Owner.ActiveItem();
+            Item item = Owner.GetItem();
             if (item.IsAir
                 || (item.type != ModContent.ItemType<DefiledGreatswordEcType>()
                 && item.type != ModContent.ItemType<DefiledGreatsword>())

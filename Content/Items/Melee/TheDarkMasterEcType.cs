@@ -54,11 +54,6 @@ namespace CalamityOverhaul.Content.Items.Melee
                 player.CWR().DontHasSemberDarkMasterCloneTime = maxDeBuffTime;
             }
         }
-        public override bool CanUseItem(Player player) {
-            if (player.CWR().NoSemberCloneSpanTime > 0) {
-                player.CWR().NoSemberCloneSpanTime--;
-            }
-            return player.ownedProjectileCounts[Item.shoot] <= 0;
-        }
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
     }
 }

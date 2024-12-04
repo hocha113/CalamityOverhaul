@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
 
         public override bool PreUpdate() {
             Player = Main.player[Projectile.owner];
-            Item = Player.ActiveItem();
+            Item = Player.GetItem();
             if (Item.type > ItemID.None) {
                 ModItem = Item.CWR();
             }

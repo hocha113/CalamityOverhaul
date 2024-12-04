@@ -7,7 +7,6 @@ using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles.Summon;
 using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Particles;
-
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
@@ -23,7 +22,6 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CosmicFire = CalamityOverhaul.Content.Projectiles.Weapons.Summon.CosmicFire;
 
 namespace CalamityOverhaul.Content
 {
@@ -88,65 +86,18 @@ namespace CalamityOverhaul.Content
     public class CWRProjectile : GlobalProjectile
     {
         public override bool InstancePerEntity => true;
-
+        public CWRItems cwrItem;
         public byte SpanTypes;
         public HitAttributeStruct GetHitAttribute;
         public IEntitySource Source;
-        public CWRItems cwrItem;
+        private Vector2 offsetHitPos;
         public bool NotSubjectToSpecialEffects;
         public bool Viscosity;
-        private Vector2 offsetHitPos;
         private NPC hitNPC;
         private float offsetHitRot;
         private float oldNPCRot;
         private float npcRotUpdateSengs;
         private int halibutAmmoTime;
-
-        //internal static void NetViscositySend(Projectile proj) {
-        //    if (CWRUtils.isSinglePlayer) {
-        //        return;
-        //    }
-        //    var netMessage = CWRMod.Instance.GetPacket();
-        //    CWRProjectile cwrProj = proj.CWR();
-        //    netMessage.Write((byte)CWRMessageType.ProjViscosityData);
-        //    netMessage.Write(proj.whoAmI);
-        //    netMessage.Write(proj.numHits);
-        //    netMessage.Write(cwrProj.hitNPC.whoAmI);
-        //    netMessage.Write(cwrProj.offsetHitRot);
-        //    netMessage.Write(cwrProj.oldNPCRot);
-        //    netMessage.WriteVector2(cwrProj.offsetHitPos);
-        //    netMessage.Send();
-        //}
-
-        //internal static void NetViscosityReceive(Mod mod, BinaryReader reader, int whoAmI) {
-        //    int projIndex = reader.ReadInt32();
-        //    int projHitNum = reader.ReadInt32();
-        //    int npcIndex = reader.ReadInt32();
-        //    float offsetHitRot = reader.ReadSingle();
-        //    float oldNPCRot = reader.ReadSingle();
-        //    Vector2 offsetHitPos = reader.ReadVector2();
-
-        //    Projectile targetProj = Main.projectile[projIndex];
-        //    targetProj.numHits = projHitNum;
-        //    CWRProjectile cwrProj = targetProj.CWR();
-        //    cwrProj.hitNPC = Main.npc[npcIndex];
-        //    cwrProj.offsetHitRot = offsetHitRot;
-        //    cwrProj.oldNPCRot = oldNPCRot;
-        //    cwrProj.offsetHitPos = offsetHitPos;
-
-        //    if (Main.dedServ) {
-        //        var netMessage = mod.GetPacket();
-        //        netMessage.Write((byte)CWRMessageType.ProjViscosityData);
-        //        netMessage.Write(projIndex);
-        //        netMessage.Write(projHitNum);
-        //        netMessage.Write(npcIndex);
-        //        netMessage.Write(offsetHitRot);
-        //        netMessage.Write(oldNPCRot);
-        //        netMessage.WriteVector2(offsetHitPos);
-        //        netMessage.Send(-1, whoAmI);
-        //    }
-        //}
-
         public override void SetDefaults(Projectile projectile) {
             if (projectile.type == ProjectileID.Meowmere) {
                 projectile.timeLeft = 160;
@@ -176,6 +127,14 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreAI(Projectile projectile) {
+            if (CWRPlayer.CanTimeFrozen() && !projectile.hide && !projectile.friendly 
+                && !Main.projPet[projectile.type] && !projectile.minion && !Main.projHook[projectile.type]
+                && !CWRLoad.ProjValue.ImmuneFrozen[projectile.type]) {
+                projectile.position = projectile.oldPosition;
+                projectile.timeLeft++;
+                return false;
+            }
+
             if (Viscosity && projectile.numHits > 0) {
                 if (!hitNPC.Alives()) {
                     projectile.Kill();

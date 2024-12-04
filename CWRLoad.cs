@@ -41,7 +41,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul
 {
-    internal static class CWRLoad
+    public static class CWRLoad
     {
         #region Data
         public static bool OnLoadContentBool;
@@ -295,6 +295,10 @@ namespace CalamityOverhaul
             /// 是否是一个金属性质的存在
             /// </summary>
             internal static Dictionary<int, bool> TheofSteel;
+            /// <summary>
+            /// 是否免疫冻结
+            /// </summary>
+            internal static Dictionary<int, bool> ImmuneFrozen;
             public static bool ISTheofSteel(int type) {
                 if (type == NPCID.Spazmatism && SpazmatismAI.Accompany) {
                     return true;
@@ -306,7 +310,30 @@ namespace CalamityOverhaul
             }
         }
 
+        public static class ProjValue
+        {
+            /// <summary>
+            /// 是否免疫冻结
+            /// </summary>
+            internal static Dictionary<int, bool> ImmuneFrozen;
+        }
+
         public static void Load() {
+            NPCValue.TheofSteel = [];
+            for (int i = 0; i < NPCLoader.NPCCount; i++) {
+                NPCValue.TheofSteel[i] = false;
+            }
+            NPCValue.ImmuneFrozen = [];
+            for (int i = 0; i < NPCLoader.NPCCount; i++) {
+                NPCValue.ImmuneFrozen[i] = false;
+            }
+            ProjValue.ImmuneFrozen = [];
+            for (int i = 0; i < ProjectileLoader.ProjectileCount; i++) {
+                ProjValue.ImmuneFrozen[i] = false;
+            }
+        }
+
+        public static void Setup() {
             InfiniteArrow = ProjectileType<InfiniteArrow>();
             InfiniteRune = ProjectileType<InfiniteArrow>();
             ParadiseArrow = ProjectileType<InfiniteArrow>();
@@ -511,11 +538,9 @@ namespace CalamityOverhaul
                 }
             }
 
-            NPCValue.TheofSteel = [];
             for (int i = 0; i < NPCLoader.NPCCount; i++) {
                 NPC npc = new NPC();
                 npc.SetDefaults(i);
-                bool isSteel = false;
                 if (npc.HitSound == SoundID.NPCHit2
                     || npc.HitSound == SoundID.NPCHit3 || npc.HitSound == SoundID.NPCHit4
                     || npc.HitSound == SoundID.NPCHit41 || npc.HitSound == SoundID.NPCHit42
@@ -523,9 +548,8 @@ namespace CalamityOverhaul
                     || targetNpcTypes7.Contains(npc.type) || targetNpcTypes7_1.Contains(npc.type)
                     || targetNpcTypes6.Contains(npc.type) || targetNpcTypes7_1.Contains(npc.type)
                     || npc.type == AstrumAureus) {
-                    isSteel = true;
+                    NPCValue.TheofSteel[i] = true;
                 }
-                NPCValue.TheofSteel.Add(i, isSteel);
             }
 
             AddMaxStackItemsIn64 = [
@@ -551,6 +575,7 @@ namespace CalamityOverhaul
             ItemIsGunAndGetRecoilValue?.Clear();
             ItemIsGunAndGetRecoilLocKey?.Clear();
             NPCValue.TheofSteel?.Clear();
+            ProjValue.ImmuneFrozen?.Clear();
         }
 
         public static string GetLckRecoilKey(float recoil) {

@@ -65,6 +65,14 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool EndSkillEffectStartBool;
         /// <summary>
+        /// 是否受伤
+        /// </summary>
+        public bool OnHit;
+        /// <summary>
+        /// 是否激活锈蚀勋章效果
+        /// </summary>
+        public bool RustyMedallion_Value;
+        /// <summary>
         /// 该属性用于判断鼠标是否处于接口状态，这个和<see cref="Player.mouseInterface"/>作用相同
         /// </summary>
         public bool uiMouseInterface => Player.mouseInterface;
@@ -76,36 +84,38 @@ namespace CalamityOverhaul.Content
         /// 升龙技充能
         /// </summary>
         public int RisingDragonCharged;
-        public int SafeHeldProjIndex;
+        /// <summary>
+        /// Tramg归属
+        /// </summary>
         public int TETramContrType;
+        /// <summary>
+        /// 欧米茄指示箭头计数器
+        /// </summary>
         public int InspectOmigaTime;
         /// <summary>
         /// 挥舞索引，一般被刀具所使用
         /// </summary>
         public int SwingIndex;
         /// <summary>
-        /// 是否受伤
+        /// 是否站在平台上，如果该值大于0，则会出现无重力的效果
         /// </summary>
-        public bool OnHit;
-        public bool HeldRangedBool;
-        public bool HeldFeederGunBool;
-        public bool HeldGunBool;
-        public bool HeldBowBool;
-        public bool NoCanAutomaticCartridgeChange;
-        public bool RustyMedallion_Value;
         public int ReceivingPlatformTime;
-        public int NoSemberCloneSpanTime;
+        /// <summary>
+        /// 值大于0时会停止大部分的游戏活动模拟冻结效果，这个值每帧会自动减1
+        /// </summary>
+        public int TimeFrozenTick;
         /// <summary>
         /// 如果该时间大于0，则玩家不能切换武器，这个值每帧会自动减1
         /// </summary>
         public int DontSwitchWeaponTime;
+        /// <summary>
+        /// 如果该时间大于0，则说明玩家正在换弹
+        /// </summary>
         public int PlayerIsKreLoadTime;
         /// <summary>
         /// 不能拥有暗影克隆体的时间，这个值每帧会自动减1
         /// </summary>
         public int DontHasSemberDarkMasterCloneTime;
-
-        private Vector2 oldPlayerPositionChange;
         /// <summary>
         /// 一个实时的绘制矫正值
         /// </summary>
@@ -114,12 +124,14 @@ namespace CalamityOverhaul.Content
         /// 玩家位置变化量
         /// </summary>
         public Vector2 PlayerPositionChange;
-
-        #region Buff
-        public bool TyrantsFuryBuffBool;
-        public bool FlintSummonBool;
+        /// <summary>
+        /// 上一帧的玩家位置变化量
+        /// </summary>
+        public Vector2 oldPlayerPositionChange;
+        /// <summary>
+        /// 是否有地狱炎爆debuff
+        /// </summary>
         public bool HellfireExplosion;
-        #endregion
 
         #endregion
 
@@ -139,20 +151,26 @@ namespace CalamityOverhaul.Content
             PressureIncrease = 1;
             HeldStyle = -1;
             OnHit = false;
-            HeldGunBool = false;
-            HeldBowBool = false;
-            FlintSummonBool = false;
             LoadMuzzleBrake = false;
             InFoodStallChair = false;
-            HeldRangedBool = false;
             HeldMurasamaBool = false;
-            HeldFeederGunBool = false;
             EndSkillEffectStartBool = false;
-            TyrantsFuryBuffBool = false;
-            NoCanAutomaticCartridgeChange = false;
             RustyMedallion_Value = false;
             HasOverhaulTheBibleBook = false;
             HellfireExplosion = false;
+        }
+
+        /// <summary>
+        /// 用于判断是否应该冻结时间
+        /// </summary>
+        /// <returns></returns>
+        public static bool CanTimeFrozen() {
+            if (Main.LocalPlayer != null && Main.LocalPlayer.active) {
+                if (Main.LocalPlayer.CWR().TimeFrozenTick > 0) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public override void OnEnterWorld() {
@@ -189,7 +207,9 @@ namespace CalamityOverhaul.Content
 
             Gangarus.ZenithWorldAsset();
 
-            oldPlayerPositionChange = oldPlayerPositionChange = Player.position;
+            //初始化位置信息
+            oldPlayerPositionChange = Player.position;
+            PlayerPositionChange = Vector2.Zero;
         }
 
         public override void SaveData(TagCompound tag) {
@@ -225,7 +245,7 @@ namespace CalamityOverhaul.Content
         }
 
         public void SetScope() {
-            Item heldItem = Player.ActiveItem();
+            Item heldItem = Player.GetItem();
             if (heldItem.type != ItemID.None && heldItem.CWR().Scope) {
                 Player.scope = false;
             }
@@ -245,6 +265,9 @@ namespace CalamityOverhaul.Content
             }
             if (InspectOmigaTime > 0) {
                 InspectOmigaTime--;
+            }
+            if (TimeFrozenTick > 0) {
+                TimeFrozenTick--;
             }
 
             PlayerPositionChange = oldPlayerPositionChange.To(Player.position);

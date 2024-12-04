@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Projectile.Kill();
                 return;
             }
-            Item item = player.ActiveItem();
+            Item item = player.GetItem();
             if (item.IsAir || (item.type != ModContent.ItemType<TerrorBladeEcType>()
                 && item.type != ModContent.ItemType<TerrorBlade>())) {
                 Projectile.Kill();

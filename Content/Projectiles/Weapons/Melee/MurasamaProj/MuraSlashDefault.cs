@@ -29,7 +29,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public bool Slash1 => Projectile.frame == 10;
         public bool Slash2 => Projectile.frame == 0;
         public bool Slash3 => Projectile.frame == 6;
-        public override void SetStaticDefaults() => Main.projFrames[Projectile.type] = 14;
+        public override void SetStaticDefaults() {
+            Main.projFrames[Projectile.type] = 14;
+            CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
+        }
         public override void SetDefaults() {
             Projectile.width = 216;
             Projectile.height = 216;
@@ -58,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         }
 
         public static float GetMuraSizeInMeleeSengs(Player player) {
-            Item mura = player.ActiveItem();
+            Item mura = player.GetItem();
             if ((mura.type == ModContent.ItemType<MurasamaEcType>()
                 || mura.type == ModContent.ItemType<Murasama>())
                 && mura.type != ItemID.None) {
@@ -292,8 +295,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public void HandleChannelMovement(Player player, Vector2 playerRotatedPoint) {
             float speed = 1f;
-            if (player.ActiveItem().shoot == Projectile.type) {
-                speed = player.ActiveItem().shootSpeed * Projectile.scale;
+            if (player.GetItem().shoot == Projectile.type) {
+                speed = player.GetItem().shootSpeed * Projectile.scale;
             }
             Vector2 newVelocity = ToMouse.SafeNormalize(Vector2.UnitX * player.direction) * speed;
 

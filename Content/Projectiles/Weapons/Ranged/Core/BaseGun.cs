@@ -600,7 +600,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if (ModOwner == null) {
                 ModOwner = Owner.CWR();
             }
-            ModOwner.HeldGunBool = true;
             return reset;
         }
 

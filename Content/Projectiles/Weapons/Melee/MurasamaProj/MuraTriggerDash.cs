@@ -16,12 +16,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
         protected Player Owner => Main.player[Projectile.owner];
-        protected Item murasama => Owner.ActiveItem();
+        protected Item murasama => Owner.GetItem();
         private Vector2 breakOutVector;
         private int Time;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 5;
+            CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
         }
 
         public override void SetDefaults() {

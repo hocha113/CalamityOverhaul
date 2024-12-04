@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         public override string Texture => CWRConstant.Placeholder;
 
         public const int canDamageLengSQ = 9000000;
-
+        public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 6000;
             Projectile.tileCollide = Projectile.ignoreWater = false;

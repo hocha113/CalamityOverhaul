@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Player player = Main.player[Projectile.owner];
-            Item item = player.ActiveItem();
+            Item item = player.GetItem();
             if (Projectile.numHits == 0 && item.type == ModContent.ItemType<DivineSourceBlade>()) {
                 int proj = Projectile.NewProjectile(new EntitySource_ItemUse(player, item), Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<TerratomereSlashCreator>(),

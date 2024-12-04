@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
         }
 
         public override void AI() {
-            if (Owner.ActiveItem().type != ModContent.ItemType<RebelBlade>()
+            if (Owner.GetItem().type != ModContent.ItemType<RebelBlade>()
                 || Owner.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeFlyAttcke>()] > 0
                 || DownLeft || DownRight
                 ) {

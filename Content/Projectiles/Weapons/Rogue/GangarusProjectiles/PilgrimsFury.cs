@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
     {
         public override string Texture => CWRConstant.Placeholder;
         private NPC Target => Main.npc[(int)Projectile.ai[1]];
-        private Vector2 targetEndPos;
-        private float targetEndRot;
         private int Time {
             get => (int)Projectile.ai[0];
             set => Projectile.ai[0] = value;
@@ -36,15 +34,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 return;
             }
 
-            if (Time == 0) {
-                targetEndPos = Target.position;
-                targetEndRot = Target.rotation;
-            }
-
             Projectile.Center = Target.Center;
-
-            Target.position = targetEndPos;
-            Target.rotation = targetEndRot;
+            Target.CWR().FrozenActivity = true;
 
             if (Time % 30 == 0) {
                 SoundStyle belCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 1f + Time * 0.05f, Pitch = -0.2f + Time * 0.007f };

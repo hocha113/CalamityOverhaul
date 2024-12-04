@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// <summary>
         /// 这个手持刀对应的物品实例
         /// </summary>
-        public Item Item => Owner.ActiveItem();
+        public Item Item => Owner.GetItem();
         /// <summary>
         /// 挥舞索引
         /// </summary>

@@ -375,16 +375,7 @@ namespace CalamityOverhaul.Content
         //////////////////////////////////////////////////
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback) {
             CWRPlayer modPlayer = player.CWR();
-            if (modPlayer.TyrantsFuryBuffBool) {
-                if (item.DamageType == DamageClass.Melee
-                    || item.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()) {
-                    knockback *= 0.9f;
-                }
-                if (item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
-                    || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
-                    knockback *= 0.8f;
-                }
-            }
+            
         }
 
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit) {
@@ -425,16 +416,7 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-            if (modPlayer.TyrantsFuryBuffBool) {
-                if (item.DamageType == DamageClass.Melee
-                    || item.DamageType == ModContent.GetInstance<MeleeNoSpeedDamageClass>()) {
-                    damage *= 1.05f;
-                }
-                if (item.DamageType == ModContent.GetInstance<TrueMeleeDamageClass>()
-                    || item.DamageType == ModContent.GetInstance<TrueMeleeNoSpeedDamageClass>()) {
-                    damage *= 1.1f;
-                }
-            }
+            
         }
 
         private void OwnerByDir(Item item, Player player) {

@@ -124,9 +124,22 @@ namespace CalamityOverhaul.Content.NPCs.Core
             if (npc.type == NPCID.None || !npc.active) {
                 return;
             }
+
+            CWRNpc cwrNPC = npc.CWR();
+
+            if (CWRPlayer.CanTimeFrozen() || cwrNPC.FrozenActivity) {
+                npc.position = npc.oldPosition;
+                npc.direction = npc.oldDirection;
+                npc.velocity = Vector2.Zero;
+                npc.frameCounter = 0.0;
+                npc.aiAction = 0;
+                npc.timeLeft++;
+                return;
+            }
+
             int type = npc.type;
-            bool reset = npc.CWR().NPCOverride.AI();
-            npc.CWR().NPCOverride.OtherNetWorkSendHander();
+            bool reset = cwrNPC.NPCOverride.AI();
+            cwrNPC.NPCOverride.OtherNetWorkSendHander();
             npc.type = type;
             if (!reset) {
                 return;

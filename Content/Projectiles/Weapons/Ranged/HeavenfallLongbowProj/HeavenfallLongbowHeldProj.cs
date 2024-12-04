@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         public override string Texture => CWRConstant.Projectile_Ranged + "HeavenfallLongbowProj";
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<HeavenfallLongbow>();
         public override bool CanFire => (Projectile.ai[2] == 0 && DownLeft) || (Projectile.ai[2] == 1 && DownRight);
-        private HeavenfallLongbow HFBow => (HeavenfallLongbow)Owner.ActiveItem().ModItem;
+        private HeavenfallLongbow HFBow => (HeavenfallLongbow)Owner.GetItem().ModItem;
         private int Time = 30;
         public override void SetDefaults() {
             Projectile.width = 54;
@@ -49,14 +49,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
         }
 
         public void SpanProj() {
-            Vector2 vr = Projectile.rotation.ToRotationVector2();
-            int weaponDamage2 = Owner.GetWeaponDamage(Owner.ActiveItem());
-            float weaponKnockback2 = Owner.GetWeaponKnockback(Owner.ActiveItem(), Owner.ActiveItem().knockBack);
+            Vector2 ver = Projectile.rotation.ToRotationVector2();
+            ShootState shootState = Owner.GetShootState();
             if (Projectile.ai[2] == 0) {
                 if (Time > 10) {
                     SoundEngine.PlaySound(HeavenlyGale.FireSound, Projectile.Center);
-                    Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out weaponDamage2, out weaponKnockback2, out _);
-                    Projectile.NewProjectile(Projectile.parent(), Projectile.Center, vr * 20, ProjectileType<InfiniteArrow>(), weaponDamage2, weaponKnockback2, Owner.whoAmI);
+                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, ver * 20, ProjectileType<InfiniteArrow>()
+                        , shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI);
                     HFBow.ChargeValue += 5;
                     Time = 0;
                 }
@@ -65,10 +64,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
                 if (Time > 15) {
                     SoundEngine.PlaySound(SoundID.Item5, Projectile.Center);
                     for (int i = 0; i < 5; i++) {
-                        Owner.PickAmmo(Owner.ActiveItem(), out _, out _, out weaponDamage2, out weaponKnockback2, out _);
                         Vector2 spanPos = Projectile.Center + new Vector2(0, -633) + new Vector2(Main.MouseWorld.X - Owner.position.X, 0) * Main.rand.NextFloat(0.3f, 0.45f);
                         Vector2 vr3 = spanPos.To(Main.MouseWorld).UnitVector().RotateRandom(12 * CWRUtils.atoR) * 23;
-                        Projectile.NewProjectile(Projectile.parent(), spanPos, vr3, ProjectileType<ParadiseArrow>(), (int)(weaponDamage2 * 0.5f), weaponKnockback2, Owner.whoAmI);
+                        Projectile.NewProjectile(Projectile.FromObjectGetParent(), spanPos, vr3, ProjectileType<ParadiseArrow>()
+                            , (int)(shootState.WeaponDamage * 0.5f), shootState.WeaponKnockback, Owner.whoAmI);
                     }
                     HFBow.ChargeValue += 3;
                     Time = 0;

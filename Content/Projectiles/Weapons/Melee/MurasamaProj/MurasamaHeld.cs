@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
         private static int breakOutType;
         void ICWRLoader.SetupData() => breakOutType = ModContent.ProjectileType<MuraTriggerDash>();
         void ICWRLoader.UnLoadData() => breakOutType = 0;
-
+        public override void SetStaticDefaults() => CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.tileCollide = false;

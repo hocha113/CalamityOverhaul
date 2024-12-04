@@ -35,6 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             npc.Center = Projectile.Center;
             npc.rotation = Projectile.ai[2];
             npc.CWR().IceParclose = true;
+            npc.CWR().FrozenActivity = true;
         }
 
         public override void OnKill(int timeLeft) {
