@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreAI(Projectile projectile) {
-            if (CWRPlayer.CanTimeFrozen() && !projectile.hide && !projectile.friendly 
+            if (CWRPlayer.CanTimeFrozen() && !projectile.hide && !projectile.friendly
                 && !Main.projPet[projectile.type] && !projectile.minion && !Main.projHook[projectile.type]
                 && !CWRLoad.ProjValue.ImmuneFrozen[projectile.type]) {
                 projectile.position = projectile.oldPosition;

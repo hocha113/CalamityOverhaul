@@ -375,7 +375,7 @@ namespace CalamityOverhaul.Content
         //////////////////////////////////////////////////
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback) {
             CWRPlayer modPlayer = player.CWR();
-            
+
         }
 
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit) {
@@ -416,7 +416,7 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-            
+
         }
 
         private void OwnerByDir(Item item, Player player) {

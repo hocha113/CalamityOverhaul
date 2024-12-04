@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Buffs.StatBuffs;
+﻿using CalamityMod.Buffs.StatBuffs;
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;

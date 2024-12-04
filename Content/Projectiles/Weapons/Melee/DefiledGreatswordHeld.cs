@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Melee;
+﻿using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Terraria;

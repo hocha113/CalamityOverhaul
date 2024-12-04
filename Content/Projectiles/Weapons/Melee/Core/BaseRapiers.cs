@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers;
 using Microsoft.Xna.Framework.Graphics;
 using System;

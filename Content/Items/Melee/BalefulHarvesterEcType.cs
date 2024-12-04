@@ -8,11 +8,9 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
 using ReLogic.Content;
 using System;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -68,7 +66,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) 
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
             => ShootFunc(Item, player, source, position, velocity, type, damage, knockback);
 
         public override void HoldItem(Player player) {
@@ -95,7 +93,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position
-            , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) 
+            , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
             => PostDrawInInventoryFunc(Item, spriteBatch, position, frame, scale);
 
         public static void SpanDust(Vector2 origPos, float maxSengNum, float minScale, float maxScale) {
@@ -159,7 +157,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 spanPos.X += Main.rand.Next(Projectile.Hitbox.Width);
                 spanPos.Y += Main.rand.Next(Projectile.Hitbox.Height);
                 BalefulHarvesterEcType.SpanDust(spanPos, 6, 0.3f, 0.5f);
-            }  
+            }
         }
 
         public override void Shoot() {

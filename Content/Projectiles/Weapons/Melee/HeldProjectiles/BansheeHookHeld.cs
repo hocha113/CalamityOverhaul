@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             Projectile.alpha = 255;
             Projectile.hide = true;
         }
-        
+
         public override void AI() {
             if (Projectile.ai[1] == 0) {
                 base.AI();
