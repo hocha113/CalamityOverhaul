@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.VulcaniteProj
 {
     internal class VulcaniteBall : ModProjectile
     {
-        public override string Texture => CWRConstant.Projectile + "SpiritFlame2";
+        public override string Texture => CWRConstant.Projectile + "HellFire";
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;

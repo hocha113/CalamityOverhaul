@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class SpiritFlame : ModProjectile
     {
-        public override string Texture => CWRConstant.Projectile + "SpiritFlame";
+        public override string Texture => CWRConstant.Projectile + "HellFire";
 
         public override void SetDefaults() {
             Projectile.width = 12;

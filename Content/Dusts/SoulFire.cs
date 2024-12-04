@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Dusts
             Texture2D texture = CWRAsset.Dusts_SoulFire.Value;
             Main.EntitySpriteDraw(
                 texture, dust.position - Main.screenPosition,
-                CWRUtils.GetRec(texture, (int)(Main.GameUpdateCount / 10 % 4), 4),
+                CWRUtils.GetRec(texture, (int)(Main.GameUpdateCount / 10 % 5), 5),
                 Color.White * (dust.alpha / 255f), dust.rotation, CWRUtils.GetOrig(texture, 4),
                 dust.scale, SpriteEffects.None, 0);
             return false;
