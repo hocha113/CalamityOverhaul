@@ -2912,7 +2912,7 @@ Projectiles: {
 	// PlagueBee.DisplayName: Plague Bee
 	// PlagueBeeWave.DisplayName: Plague Bee Wave
 	// GouldBee.DisplayName: Gould Bee
-	// BalefulHarvesterHeldProj.DisplayName: Baleful Harvester
+	// BalefulHarvesterHeld.DisplayName: Baleful Harvester
 	// BalefulSickle.DisplayName: Baleful Sickle
 	// BalefulBall.DisplayName: Baleful Ball
 	// VulcaniteBall.DisplayName: Vulcanite Ball
@@ -3479,6 +3479,8 @@ Projectiles: {
 	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
 	// PhaseBlasting.DisplayName: Phase Blasting
 	// DyeTradersScimitarHeld.DisplayName: Dye Traders Scimitar Held
+	// BalefulHarvesterHeldThrow.DisplayName: Baleful Harvester Held Throw
+	// SeedlerHeld.DisplayName: Seedler Held
 }
 
 Configs: {

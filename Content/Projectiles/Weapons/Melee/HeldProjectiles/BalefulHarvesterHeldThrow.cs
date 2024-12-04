@@ -12,7 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
-    internal class BalefulHarvesterHeldProj : ModProjectile
+    internal class BalefulHarvesterHeldThrow : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "BalefulHarvester";
         public const float MaxChargeTime = 20f;
@@ -98,8 +98,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public void InOwner() {
-            Projectile.timeLeft = 600;
-            Projectile.Center = Owner.Center + (Projectile.rotation.ToRotationVector2() * 32);
             if (Owner.PressKey(false)) {
                 if (CWRServerConfig.Instance.WeaponOverhaul) {
                     if (balefulHarvester.type != ItemType<CalamityMod.Items.Weapons.Melee.BalefulHarvester>()) {
@@ -142,6 +140,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 IndsItem.CWR().ai[0] = balefulHarvester.CWR().ai[0];
                 balefulHarvester.TurnToAir(true);
             }
+            Projectile.timeLeft = 600;
+            Vector2 toRot = Projectile.rotation.ToRotationVector2();
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + (toRot * 42);
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
@@ -164,7 +165,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public void SpanBall() {
             if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 73; i++) {
-                    _ = Projectile.NewProjectile(Projectile.parent(), new Vector2(-680 + (1360 / 73f * i), 0) + Projectile.Center, Vector2.Zero
+                    _ = Projectile.NewProjectile(Projectile.FromObjectGetParent(), new Vector2(-680 + (1360 / 73f * i), 0) + Projectile.Center, Vector2.Zero
                         , ProjectileType<BalefulBall>(), Projectile.damage, 0, Projectile.owner);
                 }
             }
@@ -180,17 +181,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = Request<Texture2D>(Texture).Value;
+            float rot = Projectile.rotation + (Projectile.ai[2] == 0 ? MathHelper.PiOver2 : 0) + MathHelper.ToRadians(30);
             if (Projectile.ai[2] == 1) {
                 for (int i = 0; i < Projectile.oldPos.Length; i++) {
                     Main.spriteBatch.Draw(value, Projectile.oldPos[i] - Main.screenPosition + (value.Size() / 2), null, Color.White
-                        , Projectile.rotation + (Projectile.ai[2] == 0 ? MathHelper.PiOver2 : 0), value.Size() / 2
-                    , Projectile.scale, Dir == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+                        , rot, value.Size() / 2, Projectile.scale, Dir == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
                 }
             }
 
             Main.spriteBatch.Draw(value, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor)
-                , Projectile.rotation + (Projectile.ai[2] == 0 ? MathHelper.PiOver2 : 0), value.Size() / 2
-                , Projectile.scale, Dir == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+                , rot, value.Size() / 2, Projectile.scale, Dir == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
             return false;
         }
     }

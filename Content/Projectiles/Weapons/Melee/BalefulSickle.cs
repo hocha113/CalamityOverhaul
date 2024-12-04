@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Melee;
+﻿using CalamityMod;
+using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -11,7 +12,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class BalefulSickle : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "BalefulSickle";
-
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Type] = 6;
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+        }
         public override void SetDefaults() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.width = Projectile.height = 52;
@@ -23,30 +27,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.timeLeft = 120 * Projectile.MaxUpdates;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 15 * Projectile.MaxUpdates;
-            ProjectileID.Sets.TrailCacheLength[Type] = 6;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
         }
 
         public override void PostAI() {
             Projectile.rotation += Math.Sign(Projectile.velocity.X) * (Projectile.ai[0] + 0.1f);
             Projectile.ai[0] += 0.01f;
-            if (Projectile.ai[0] > 0.5f)
+            if (Projectile.ai[0] > 0.5f) {
                 Projectile.ai[0] = 0.5f;
+            }
             Projectile.velocity *= 0.97f;
 
-            if (Projectile.timeLeft < 30) {
-                NPC target = Projectile.Center.FindClosestNPC(450);
+            if (Projectile.timeLeft < 40) {
+                NPC target = Projectile.Center.FindClosestNPC(650);
                 if (target != null) {
-                    Projectile.ChasingBehavior(target.Center, 33);
+                    Projectile.ChasingBehavior(target.Center, 30f);
                 }
-            }
-
-            for (int j = 0; j < 2; j++) {
-                int dust = Dust.NewDust(Projectile.position + Projectile.velocity * 2, Projectile.width, Projectile.height, Main.rand.NextBool() ? 5 : 6, Projectile.velocity.X * 0.2f, Projectile.velocity.Y * 0.2f, 100, default, Main.rand.NextFloat(1.3f, 2f));
-                Main.dust[dust].position -= Projectile.velocity * 2f;
-                Main.dust[dust].noGravity = true;
-                Main.dust[dust].velocity.X *= 0.3f;
-                Main.dust[dust].velocity.Y *= 0.3f;
             }
 
             Lighting.AddLight(Projectile.Center, Color.DarkGray.ToVector3());
@@ -83,15 +78,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override bool PreDraw(ref Color lightColor) {
             Texture2D value = CWRUtils.GetT2DValue(Texture);
 
-            for (int i = 0; i < Projectile.oldPos.Length; i++) {
-                Main.spriteBatch.Draw(value, Projectile.oldPos[i] - Main.screenPosition + value.Size() / 2, null, Color.Red
-                    , Projectile.rotation + (Projectile.ai[2] == 0 ? MathHelper.PiOver2 : 0), value.Size() / 2
-                , Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
-            }
-
             Main.spriteBatch.Draw(value, Projectile.Center - Main.screenPosition, null, Color.DarkRed
                 , Projectile.rotation + (Projectile.ai[2] == 0 ? MathHelper.PiOver2 : 0), value.Size() / 2
                 , Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+
+            Texture2D value2 = ModContent.Request<Texture2D>("CalamityMod/Particles/SemiCircularSmear").Value;
+            Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
+            Main.EntitySpriteDraw(color: Color.IndianRed
+                , origin: value2.Size() * 0.5f, texture: value2, position: Projectile.Center - Main.screenPosition
+                , sourceRectangle: null, rotation: Projectile.rotation - CWRUtils.PiOver5
+                , scale: Projectile.scale * 0.5f, effects: SpriteEffects.None);
+            Main.spriteBatch.ExitShaderRegion();
+
             return false;
         }
     }

@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.05f;
             RangeOfStress = 48;
             Recoil = 0;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
         }
     }
 }

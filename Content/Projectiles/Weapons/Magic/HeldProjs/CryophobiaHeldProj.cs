@@ -19,6 +19,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 6;
         }
