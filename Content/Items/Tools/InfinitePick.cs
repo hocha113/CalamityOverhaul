@@ -124,13 +124,13 @@ namespace CalamityOverhaul.Content.Items.Tools
                                 }
                             }
                         }
-                        Projectile.NewProjectile(player.parent(), Main.MouseWorld, Vector2.Zero, ModContent.ProjectileType<InfinitePickProj>(), Item.damage * 10, 0, player.whoAmI);
+                        Projectile.NewProjectile(player.FromObjectGetParent(), Main.MouseWorld, Vector2.Zero, ModContent.ProjectileType<InfinitePickProj>(), Item.damage * 10, 0, player.whoAmI);
                         if (darkMatterBall.dorpTypes.Count > 0)
-                            player.QuickSpawnItem(player.parent(), darkMatterBall.Item, 1);
+                            player.QuickSpawnItem(player.FromObjectGetParent(), darkMatterBall.Item, 1);
                     }
                 }
                 else {
-                    int proj = Projectile.NewProjectile(player.parent(), player.Center, player.Center.To(Main.MouseWorld).UnitVector() * 32, ModContent.ProjectileType<InfinitePickProj>(), Item.damage * 10, 0, player.whoAmI, 1);
+                    int proj = Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, player.Center.To(Main.MouseWorld).UnitVector() * 32, ModContent.ProjectileType<InfinitePickProj>(), Item.damage * 10, 0, player.whoAmI, 1);
                     Main.projectile[proj].width = Main.projectile[proj].height = 64;
                 }
             }

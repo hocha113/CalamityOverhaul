@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (BulletNum > 40) {
                 float sengs = (98 - BulletNum) * 0.015f;
                 SoundEngine.PlaySound(Item.UseSound.Value with { Pitch = sengs > 0.95f ? 0.95f : sengs }, Projectile.Center);
-                Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity * (1 + sengs)
+                Projectile.NewProjectile(Owner.FromObjectGetParent(), GunShootPos, ShootVelocity * (1 + sengs)
                     , ModContent.ProjectileType<PrismEnergyBullet>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
             else {
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                     return;
                 }
                 SoundEngine.PlaySound(Item.UseSound.Value with { Pitch = 1f }, Projectile.Center);
-                int proj = Projectile.NewProjectile(Owner.parent(), GunShootPos, ShootVelocity
+                int proj = Projectile.NewProjectile(Owner.FromObjectGetParent(), GunShootPos, ShootVelocity
                     , ModContent.ProjectileType<PrismaticEnergyBlast>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
                 Main.projectile[proj].usesIDStaticNPCImmunity = true;
                 Main.projectile[proj].localNPCHitCooldown = -1;

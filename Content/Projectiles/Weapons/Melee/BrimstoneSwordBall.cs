@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Vector2.Zero
+            Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                 , ModContent.ProjectileType<Brimblast>(), Projectile.damage, Projectile.knockBack, Main.myPlayer);
             return true;
         }

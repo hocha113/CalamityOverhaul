@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                             Main.mouseItem = IndsItem;
                         }
                         else {
-                            _ = Owner.QuickSpawnItem(Projectile.parent(), IndsItem);
+                            _ = Owner.QuickSpawnItem(Projectile.FromObjectGetParent(), IndsItem);
                         }
                     }
 

@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 if (Time2 > 5) {
                     for (int i = 0; i < 6; i++) {
                         int proj = Projectile.NewProjectile(
-                            Projectile.parent(),
+                            Projectile.FromObjectGetParent(),
                             Projectile.Center,
                             (MathHelper.TwoPi / 6f * i).ToRotationVector2() * 13,
                             types,
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                 }
                 else {
                     Projectile.NewProjectile(
-                            Projectile.parent(),
+                            Projectile.FromObjectGetParent(),
                             Projectile.Center,
                             Projectile.Center.To(target.Center).UnitVector() * 15,
                             types,

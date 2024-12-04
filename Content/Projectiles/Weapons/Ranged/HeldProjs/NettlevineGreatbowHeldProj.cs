@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
             nettlevineIndex++;
             if (nettlevineIndex > 4) {
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, ShootVelocity
+                Projectile.NewProjectile(Owner.FromObjectGetParent(), Projectile.Center, ShootVelocity
                     , ModContent.ProjectileType<TarragonArrowOnSpan>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, Projectile.whoAmI);
                 nettlevineIndex = 0;
             }

@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 
                 for (int i = 0; i < 3; i++) {
                     int proj = Projectile.NewProjectile(
-                        Projectile.parent(),
+                        Projectile.FromObjectGetParent(),
                         target.Center -
                         Main.player[Projectile.owner].Center.To(target.Center).UnitVector()
                         .RotatedBy(MathHelper.ToRadians(Main.rand.Next(-75, 75))) * 300,

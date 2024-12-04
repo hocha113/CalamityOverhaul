@@ -414,7 +414,7 @@ End:;
                 if (item == null)
                     continue;
                 Item item1 = item.Clone();
-                player.QuickSpawnItem(player.parent(), item1, item1.stack);
+                player.QuickSpawnItem(player.FromObjectGetParent(), item1, item1.stack);
                 item.TurnToAir();
             }
         }
@@ -667,7 +667,7 @@ End:;
             if (item.type == ItemID.None && items[inCoordIndex].type != ItemID.None) {
                 PlayGrabSound();
                 Item item1 = items[inCoordIndex].Clone();
-                player.QuickSpawnItem(player.parent(), item1, item1.stack);
+                player.QuickSpawnItem(player.FromObjectGetParent(), item1, item1.stack);
                 items[inCoordIndex] = new Item();
             }
         }

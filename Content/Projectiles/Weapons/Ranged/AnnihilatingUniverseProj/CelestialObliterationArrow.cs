@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
             if (Projectile.numHits == 0) {
                 StarRT(Projectile, target);
                 if (Main.rand.NextBool(3)) {
-                    int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center + Projectile.Center.To(target.Center) / 2, Vector2.Zero
+                    int proj = Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center + Projectile.Center.To(target.Center) / 2, Vector2.Zero
                     , ModContent.ProjectileType<CelestialDevourer>(), Projectile.damage / 2, 0, Projectile.owner);
                     Main.projectile[proj].scale = 0.3f;
                 }

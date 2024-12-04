@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content
         public override bool PreKill(NPC npc) {
             if (ContagionOnHitNum > 0 && CreateHitPlayer != null) {
                 if (Main.myPlayer == CreateHitPlayer.whoAmI && CreateHitPlayer.ownedProjectileCounts[ModContent.ProjectileType<NurgleSoul>()] <= 13) {
-                    Projectile proj = Projectile.NewProjectileDirect(CreateHitPlayer.parent(), npc.Center, CWRUtils.randVr(13)
+                    Projectile proj = Projectile.NewProjectileDirect(CreateHitPlayer.FromObjectGetParent(), npc.Center, CWRUtils.randVr(13)
                         , ModContent.ProjectileType<NurgleSoul>(), npc.damage, 2, CreateHitPlayer.whoAmI);
                     proj.scale = (npc.width / proj.width) * npc.scale;
                 }
@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content
             if (npc.boss) {
                 if (CWRLoad.targetNpcTypes7.Contains(npc.type) || npc.type == CWRLoad.PlaguebringerGoliath) {
                     for (int i = 0; i < Main.rand.Next(3, 6); i++) {
-                        int type = Item.NewItem(npc.parent(), npc.Hitbox, CWRLoad.DubiousPlating, Main.rand.Next(7, 13));
+                        int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, CWRLoad.DubiousPlating, Main.rand.Next(7, 13));
                         if (VaultUtils.isClient) {
                             NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                         }
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content
                     if (target.Alives()) {
                         float dir = npc.Center.To(target.Center).X;
                         int dirs = dir < 0 ? 1 : 0;
-                        Projectile.NewProjectile(npc.parent(), npc.position, Vector2.Zero
+                        Projectile.NewProjectile(npc.FromObjectGetParent(), npc.position, Vector2.Zero
                         , ModContent.ProjectileType<YharonOreProj>(), 0, 0, -1, dirs);
                     }
                 }
@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content
                 }
                 else {
                     if (Main.rand.NextBool(5)) {//如果是在BossRush时期，让Boss有一定概率掉落古恒石，这是额外的掉落
-                        int type = Item.NewItem(npc.parent(), npc.Hitbox, ModContent.ItemType<Rock>());
+                        int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<Rock>());
                         if (VaultUtils.isClient) {
                             NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                         }

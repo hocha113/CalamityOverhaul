@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 SoundEngine.PlaySound(CWRSound.BlackHole, Projectile.Center);
                 ExTile();
             }
-            CWRUtils.ForceFieldEffect(Projectile.Center, (int)(Projectile.scale * 96), 2, false);
+
             for (int i = 0; i < Main.item.Length; i++) {
                 Item item = Main.item[i];
                 if (item.Center.To(Projectile.Center).LengthSquared() < 32 * 32) {
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.Projectiles
 
         public override void OnKill(int timeLeft) {
             if (darkMatterBall.dorpTypes.Count > 0 && Projectile.IsOwnedByLocalPlayer()) {
-                int type = Item.NewItem(Projectile.parent(), Projectile.Hitbox, darkMatterBall.Item);
+                int type = Item.NewItem(Projectile.FromObjectGetParent(), Projectile.Hitbox, darkMatterBall.Item);
                 if (VaultUtils.isClient) {
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                 }

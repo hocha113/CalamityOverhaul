@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.UIs
                         if (!i.CWR().AmmoProjectileReturn) {
                             continue;
                         }
-                        player.QuickSpawnItem(player.parent(), new Item(i.type), i.stack);
+                        player.QuickSpawnItem(player.FromObjectGetParent(), new Item(i.type), i.stack);
                     }
                     cwrItem.InitializeMagazine();
                     cwrItem.SpecialAmmoState = SpecialAmmoStateEnum.ordinary;

@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         Vector2 spanPos = Projectile.Center;
                         Projectile.NewProjectile(
-                            Projectile.parent(),
+                            Projectile.FromObjectGetParent(),
                             spanPos,
                             CWRUtils.GetRandomVevtor(0, 360, 3),
                             ModContent.ProjectileType<AbominateSpirit>(),
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Vector2 spanPos = target.Center + offset;
                 int status = Main.rand.Next(3);
                 Projectile.NewProjectile(
-                    Projectile.parent(),
+                    Projectile.FromObjectGetParent(),
                     spanPos,
                     offset.UnitVector() * -13,
                     ModContent.ProjectileType<AbominateSpirit>(),

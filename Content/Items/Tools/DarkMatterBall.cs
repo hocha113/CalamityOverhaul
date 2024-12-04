@@ -87,9 +87,9 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override void RightClick(Player player) {
             LoadDorp();
             foreach (var item in dorpItems) {
-                player.QuickSpawnItem(player.parent(), item, item.stack);
+                player.QuickSpawnItem(player.FromObjectGetParent(), item, item.stack);
             }
-            player.QuickSpawnItem(player.parent(), new Item(Type));
+            player.QuickSpawnItem(player.FromObjectGetParent(), new Item(Type));
             dorpTypes = [];
             dorpItems = [];
         }

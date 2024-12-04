@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.timeLeft == 40) {
                 SoundEngine.PlaySound(SoundID.NPCDeath13 with { Volume = 0.6f, Pitch = -0.8f }, Projectile.Center);
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    int proj = Projectile.NewProjectile(player.parent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 7
+                    int proj = Projectile.NewProjectile(player.FromObjectGetParent(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 7
                     , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
                     Main.projectile[proj].penetrate = 5;
                 }
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             if (Projectile.timeLeft == 20) {
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     for (int i = 0; i < 3; i++) {
-                        int proj = Projectile.NewProjectile(player.parent(), Projectile.Center, (Projectile.rotation + (-1 + i) * 0.1f).ToRotationVector2() * 12
+                        int proj = Projectile.NewProjectile(player.FromObjectGetParent(), Projectile.Center, (Projectile.rotation + (-1 + i) * 0.1f).ToRotationVector2() * 12
                         , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
                         Main.projectile[proj].penetrate = 3;
                     }
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                 SoundEngine.PlaySound(SoundID.NPCDeath13 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     for (int i = 0; i < (Main.zenithWorld ? 115 : 5); i++) {
-                        int proj = Projectile.NewProjectile(player.parent(), Projectile.Center, (Projectile.rotation + (-2 + i) * 0.1f).ToRotationVector2() * 15
+                        int proj = Projectile.NewProjectile(player.FromObjectGetParent(), Projectile.Center, (Projectile.rotation + (-2 + i) * 0.1f).ToRotationVector2() * 15
                         , ModContent.ProjectileType<EmesisGore>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI, 0);
                         Main.projectile[proj].penetrate = 2;
                     }

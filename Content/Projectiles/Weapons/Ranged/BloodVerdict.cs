@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                     for (int i = 0; i < 3; i++) {
                         Vector2 vr = effusionDirection[i];
                         int proj = Projectile.NewProjectile(
-                            Projectile.parent(),
+                            Projectile.FromObjectGetParent(),
                             Projectile.Center,
                             vr,
                             Type,

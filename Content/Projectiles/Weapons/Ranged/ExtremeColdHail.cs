@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             BloodParticle blood = new BloodParticle(bloodSpawnPosition, bloodVelocity, bloodLifetime, bloodScale, bloodColor);
             GeneralParticleHandler.SpawnParticle(blood);
             if (Main.rand.NextBool(6)) {
-                Projectile.NewProjectileDirect(Projectile.parent(), Projectile.Center, Projectile.velocity * 0.1f, ModContent.ProjectileType<IceExplosionFriend>(), 13, 0, Projectile.owner, 0);
+                Projectile.NewProjectileDirect(Projectile.FromObjectGetParent(), Projectile.Center, Projectile.velocity * 0.1f, ModContent.ProjectileType<IceExplosionFriend>(), 13, 0, Projectile.owner, 0);
             }
         }
 

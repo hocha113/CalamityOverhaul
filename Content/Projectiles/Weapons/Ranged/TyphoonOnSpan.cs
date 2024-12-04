@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             for (int i = 0; i < 94; i++) {
                 float rot = MathHelper.TwoPi / 94 * i;
                 Vector2 velocity = rot.ToRotationVector2() * (1 + (-6f + rot % MathHelper.PiOver4) * 2);
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, velocity
+                Projectile.NewProjectile(Owner.FromObjectGetParent(), Projectile.Center, velocity
                     , ModContent.ProjectileType<TorrentialArrow>()
                     , shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI);
             }

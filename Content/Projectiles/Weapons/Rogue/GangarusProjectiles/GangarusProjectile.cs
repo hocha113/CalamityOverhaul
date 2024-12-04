@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                             Projectile.Explode(620);
                         }
                         if (target.CWR().GangarusSign) {
-                            Projectile.NewProjectile(Projectile.parent(), target.Center, Vector2.Zero, ModContent.ProjectileType<PilgrimsFury>(), Projectile.damage, 0, Projectile.owner, 0, target.whoAmI);
+                            Projectile.NewProjectile(Projectile.FromObjectGetParent(), target.Center, Vector2.Zero, ModContent.ProjectileType<PilgrimsFury>(), Projectile.damage, 0, Projectile.owner, 0, target.whoAmI);
                         }
                         else {
                             SpanSoulSeeker(target.Center);
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 if (hasGSignTarget != null) {
                     for (int i = 0; i < 13; i++) {
                         Vector2 vr = (MathHelper.TwoPi / 13 * i).ToRotationVector2() * 23;
-                        Projectile.NewProjectile(Projectile.parent(), spanPos, vr, ModContent.ProjectileType<SoulSeeker>(), Projectile.damage, 0, Projectile.owner, hasGSignTarget.whoAmI);
+                        Projectile.NewProjectile(Projectile.FromObjectGetParent(), spanPos, vr, ModContent.ProjectileType<SoulSeeker>(), Projectile.damage, 0, Projectile.owner, hasGSignTarget.whoAmI);
                     }
                 }
             }

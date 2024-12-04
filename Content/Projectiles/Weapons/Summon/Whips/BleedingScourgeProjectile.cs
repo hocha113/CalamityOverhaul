@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                 for (int i = 0; i < 3; i++) {
                     Vector2 pos = target.Center + CWRUtils.GetRandomVevtor(-120, -60, Main.rand.Next(760, 820));
                     Projectile.NewProjectile(
-                        Projectile.parent(),
+                        Projectile.FromObjectGetParent(),
                         pos,
                         pos.To(target.Center).UnitVector() * 13,
                         ModContent.ProjectileType<BloodBall>(),

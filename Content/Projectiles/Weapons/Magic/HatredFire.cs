@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
                         if (Time % 15 == 0 && Owner.ownedProjectileCounts[types] <= 36) {
                             Vector2 vr = toTarget.UnitVector() * 13;
                             Projectile.NewProjectile(
-                                Owner.parent(),
+                                Owner.FromObjectGetParent(),
                                 Projectile.Center + Main.rand.NextVector2Unit() * 16,
                                 vr,
                                 types,

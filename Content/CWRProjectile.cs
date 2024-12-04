@@ -309,7 +309,7 @@ namespace CalamityOverhaul.Content
             if (GetHitAttribute.SuperAttack) {
                 if (projectile.type == 961) {
                     if (!target.boss && !CWRLoad.WormBodys.Contains(target.type) && !target.CWR().IceParclose) {
-                        Projectile.NewProjectile(CWRUtils.parent(projectile), target.Center, Vector2.Zero
+                        Projectile.NewProjectile(projectile.FromObjectGetParent(), target.Center, Vector2.Zero
                             , ModContent.ProjectileType<IceParclose>(), 0, 0, projectile.owner, target.whoAmI, target.type, target.rotation);
                     }
                 }
@@ -365,7 +365,7 @@ namespace CalamityOverhaul.Content
                         Vector2 vr = player.Center.To(Main.MouseWorld)
                             .RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-15, 15))).UnitVector() * Main.rand.Next(7, 9);
                         Vector2 pos = player.Center + (vr * 10);
-                        Projectile.NewProjectileDirect(CWRUtils.parent(player), pos, vr, ModContent.ProjectileType<DeadWave>(),
+                        Projectile.NewProjectileDirect(player.FromObjectGetParent(), pos, vr, ModContent.ProjectileType<DeadWave>(),
                             projectile.damage, projectile.knockBack, projectile.owner).rotation = vr.ToRotation();
                     }
 
@@ -373,7 +373,7 @@ namespace CalamityOverhaul.Content
                 }
 
                 case SpanTypesEnum.ClaretCannon: {
-                    Projectile projectile1 = Projectile.NewProjectileDirect(CWRUtils.parent(player), target.position, Vector2.Zero,
+                    Projectile projectile1 = Projectile.NewProjectileDirect(player.FromObjectGetParent(), target.position, Vector2.Zero,
                         ModContent.ProjectileType<BloodVerdict>(), projectile.damage, projectile.knockBack, projectile.owner);
                     if (projectile1.ModProjectile is BloodVerdict bloodVerdict) {
                         bloodVerdict.offsetVr = new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height));
@@ -465,7 +465,7 @@ namespace CalamityOverhaul.Content
                 }
 
                 case SpanTypesEnum.Voidragon: {
-                    Projectile.NewProjectile(projectile.parent(), target.Center
+                    Projectile.NewProjectile(projectile.FromObjectGetParent(), target.Center
                     , CWRUtils.randVr(6, 13), ModContent.ProjectileType<RVoidTentacle>()
                     , projectile.damage, projectile.knockBack / 2, player.whoAmI
                     , Main.rand.Next(-160, 160) * 0.001f, Main.rand.Next(-160, 160) * 0.001f);
@@ -648,7 +648,7 @@ namespace CalamityOverhaul.Content
                         }
                         break;
                     case WhipHitTypeEnum.BleedingScourge:
-                        _ = Projectile.NewProjectile(CWRUtils.parent(projectile), target.Center, Vector2.Zero,
+                        _ = Projectile.NewProjectile(projectile.FromObjectGetParent(), target.Center, Vector2.Zero,
                                     ModContent.ProjectileType<Projectiles.Weapons.Summon.BloodBlast>(),
                                     projectile.damage / 2, 0, projectile.owner);
                         break;
@@ -718,7 +718,7 @@ namespace CalamityOverhaul.Content
                         }
                         for (int i = 0; i < 4; i++) {
                             Vector2 vr = projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.6f, 1.7f);
-                            int proj = Projectile.NewProjectile(projectile.parent(), projectile.Center + (projectile.velocity * -3), vr
+                            int proj = Projectile.NewProjectile(projectile.FromObjectGetParent(), projectile.Center + (projectile.velocity * -3), vr
                                 , ModContent.ProjectileType<BMGFIRE>(), (int)(newdamage * (hit.Crit ? 0.35f : 0.2f)), 0, projectile.owner, Main.rand.Next(23));
                             Main.projectile[proj].timeLeft /= 2;
                         }

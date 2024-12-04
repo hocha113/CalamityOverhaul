@@ -191,13 +191,13 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 offsetvr = CWRUtils.GetRandomVevtor(-15, 15, 900 + randomLengs);
                 Vector2 spanPos = target.Center + offsetvr;
                 int proj1 = Projectile.NewProjectile(
-                    CWRUtils.parent(player), spanPos,
+                    player.FromObjectGetParent(), spanPos,
                     offsetvr.UnitVector() * -13,
                     type, Item.damage - 50, 0, player.whoAmI);
                 Vector2 offsetvr2 = CWRUtils.GetRandomVevtor(165, 195, 900 + randomLengs);
                 Vector2 spanPos2 = target.Center + offsetvr2;
                 int proj2 = Projectile.NewProjectile(
-                    CWRUtils.parent(player), spanPos2,
+                    player.FromObjectGetParent(), spanPos2,
                     offsetvr2.UnitVector() * -13, type,
                     Item.damage - 50, 0, player.whoAmI);
                 Main.projectile[proj1].extraUpdates += 1;
@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 offsetvr = new(-600, offsety);
                 Vector2 spanPos = offsetvr + player.Center;
                 _ = Projectile.NewProjectile(
-                    CWRUtils.parent(player),
+                    player.FromObjectGetParent(),
                     spanPos,
                     offsetvr.UnitVector() * -13,
                     type,
@@ -225,7 +225,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Vector2 offsetvr2 = new(600, offsety);
                 Vector2 spanPos2 = offsetvr + player.Center;
                 _ = Projectile.NewProjectile(
-                    CWRUtils.parent(player),
+                    player.FromObjectGetParent(),
                     spanPos2,
                     offsetvr2.UnitVector() * -13,
                     type,

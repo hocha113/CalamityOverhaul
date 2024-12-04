@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
             item.initialize();
             if (Projectile.IsOwnedByLocalPlayer() && Timer == TotalDuration / 2 && !trueMelee && ++item.CWR().ai[0] > 1) {
-                Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Projectile.velocity * 5.5f
+                Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Projectile.velocity * 5.5f
                     , ModContent.ProjectileType<BrimstoneSwordBall>(), Projectile.damage / 2, Projectile.knockBack, Main.myPlayer);
                 item.CWR().ai[0] = 0;
             }

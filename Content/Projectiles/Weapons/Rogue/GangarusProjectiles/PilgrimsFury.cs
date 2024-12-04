@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 8; i++) {
-                    Projectile proj = Projectile.NewProjectileDirect(Projectile.parent(), Projectile.Center
+                    Projectile proj = Projectile.NewProjectileDirect(Projectile.FromObjectGetParent(), Projectile.Center
                     , new Vector2(0, 1), ModContent.ProjectileType<Godslight>(), Projectile.damage, 0, Projectile.owner, 0, 2f + i);
                 }
             }

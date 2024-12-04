@@ -65,7 +65,7 @@ namespace CalamityOverhaul
             for (int i = 0; i < maxSpanNum; i++) {
                 Vector2 spanPos = player.Center + CWRUtils.randVr(1380, 2200);
                 Vector2 vr = spanPos.To(player.Center + CWRUtils.randVr(180, 320 + 10 * 12)).UnitVector() * 12;
-                Projectile.NewProjectile(player.parent(), spanPos
+                Projectile.NewProjectile(player.FromObjectGetParent(), spanPos
                     , vr, ModContent.ProjectileType<MuraExecutionCutOnSpan>()
                     , (int)(100 * 0.7f), 0, player.whoAmI);
             }

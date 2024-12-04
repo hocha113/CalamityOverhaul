@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                         int randomOffset = Main.rand.Next(MaxVientNum);//生成一个随机的偏移值，这样可以让所有的弓都有机会出现
                         int frmer = 0;
                         for (int i = 0; i < MaxVientNum; i++) {
-                            int proj = Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, types, Item.damage, 0, player.whoAmI, i + randomOffset);//给予ai[0]一个可排序的索引量，这决定了该万象弹幕使用什么样的贴图
+                            int proj = Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, types, Item.damage, 0, player.whoAmI, i + randomOffset);//给予ai[0]一个可排序的索引量，这决定了该万象弹幕使用什么样的贴图
                             if (i == 0)//让第一个万象弹幕作为主弹幕，负责多数代码执行
 {
                                 frmer = proj;//将首号弹幕的索引储存起来
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                 }
 
                 if (player.ownedProjectileCounts[ModContent.ProjectileType<InfiniteRune>()] == 0) {
-                    _ = Projectile.NewProjectile(player.parent(), player.Center, Vector2.Zero, ModContent.ProjectileType<InfiniteRune>(), 99999, 0, player.whoAmI);
+                    _ = Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<InfiniteRune>(), 99999, 0, player.whoAmI);
                 }
 
                 spanInfiniteRuneBool = false;

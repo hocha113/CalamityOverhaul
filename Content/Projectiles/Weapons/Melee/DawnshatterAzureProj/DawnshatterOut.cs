@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
                     Owner.GivePlayerImmuneState(5, false);
                 }
                 if (!Owner.PressKey(false)) {
-                    Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
+                    Projectile.NewProjectile(Owner.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                         , ModContent.ProjectileType<DawnshatterSwing>(), Projectile.damage, 0, Owner.whoAmI);
                     spanSwing = false;
                     Projectile.Kill();
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DawnshatterAzurePro
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(CommonCalamitySounds.MeatySlashSound with { Pitch = 0.6f }, Projectile.Center);
             if (Projectile.IsOwnedByLocalPlayer() && spanSwing) {
-                Projectile.NewProjectile(Owner.parent(), Projectile.Center, Vector2.Zero
+                Projectile.NewProjectile(Owner.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                         , ModContent.ProjectileType<DawnshatterSwing>(), Projectile.damage, 0, Owner.whoAmI);
             }
         }

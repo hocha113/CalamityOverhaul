@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 if (Time2 % 5 == 0 && Time2 > 0 && Time2 < 20) {
                     for (int i = 0; i < 3; i++) {
                         Vector2 offset = (Projectile.rotation + Main.rand.Next(-35, 35) * CWRUtils.atoR).ToRotationVector2() * 56;
-                        Projectile.NewProjectile(Projectile.parent(), Projectile.Center + offset, Projectile.rotation.ToRotationVector2() * (17 + i)
+                        Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center + offset, Projectile.rotation.ToRotationVector2() * (17 + i)
                         , ModContent.ProjectileType<CelestialObliterationArrow>()
                         , shootState.WeaponDamage, shootState.WeaponKnockback, Owner.whoAmI);
                     }

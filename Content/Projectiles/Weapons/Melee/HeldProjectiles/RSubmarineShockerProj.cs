@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
             item.initialize();
             if (Projectile.IsOwnedByLocalPlayer() && Timer == TotalDuration / 2 && !trueMelee && ++item.CWR().ai[0] > 1) {
-                Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f)) * 3.5f
+                Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f)) * 3.5f
                     , ModContent.ProjectileType<LigSpark>(), (int)(Projectile.damage * 0.7f), Projectile.knockBack, Main.myPlayer);
                 item.CWR().ai[0] = 0;
             }

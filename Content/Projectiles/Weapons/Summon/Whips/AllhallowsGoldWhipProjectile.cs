@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 
         public override void OnSpawn(IEntitySource source) {
             Projectile.NewProjectile(
-                Projectile.parent(),
+                Projectile.FromObjectGetParent(),
                 Projectile.Center,
                 Vector2.Zero,
                 ModContent.ProjectileType<ATrail>(),

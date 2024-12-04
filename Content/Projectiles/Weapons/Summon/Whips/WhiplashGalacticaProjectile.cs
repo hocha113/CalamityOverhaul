@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 
         public override void OnSpawn(IEntitySource source) {
             Projectile.NewProjectile(
-                Projectile.parent(),
+                Projectile.FromObjectGetParent(),
                 Projectile.Center,
                 Vector2.Zero,
                 ModContent.ProjectileType<WTrail>(),
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 
                 for (int i = 0; i < 3; i++) {
                     Projectile.NewProjectile(
-                        Projectile.parent(),
+                        Projectile.FromObjectGetParent(),
 
                         target.Center -
                         Main.player[Projectile.owner].Center.To(target.Center).UnitVector()

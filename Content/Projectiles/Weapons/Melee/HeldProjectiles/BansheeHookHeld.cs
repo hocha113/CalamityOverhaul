@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                         for (int i = 0; i < 4; i++) {
                             Vector2 vr = Projectile.velocity.UnitVector().RotatedBy(MathHelper.ToRadians(-20 + 10 * i)) * 10f;
                             Projectile.NewProjectile(
-                                Projectile.parent(),
+                                Projectile.FromObjectGetParent(),
                                 Projectile.Center, vr,
                                 ModContent.ProjectileType<BansheeHookScythe>(),
                                 Projectile.damage,
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                             for (int i = 0; i < 7; i++) {
                                 Vector2 vr = CWRUtils.GetRandomVevtor(0, 360, 25);
                                 Projectile.NewProjectile(
-                                    Owner.parent(),
+                                    Owner.FromObjectGetParent(),
                                     Owner.Center,
                                     vr,
                                     ModContent.ProjectileType<BansheeHookScythe>(),
@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                         if (Projectile.localAI[1] % 10 == 0) {
                             for (int i = 0; i < 7; i++) {
                                 Vector2 vr = (MathHelper.TwoPi / 7 * i).ToRotationVector2() * 10;
-                                Projectile.NewProjectile(Owner.parent(), Owner.Center, vr, ModContent.ProjectileType<SpiritFlame>()
+                                Projectile.NewProjectile(Owner.FromObjectGetParent(), Owner.Center, vr, ModContent.ProjectileType<SpiritFlame>()
                                     , Projectile.damage / 3, 0, Owner.whoAmI, 1);
                             }
                         }
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                             for (int i = 0; i < 3; i++) {
                                 Vector2 spanPos = Main.MouseWorld + CWRUtils.GetRandomVevtor(0, 360, 160);
                                 Projectile.NewProjectile(
-                                    Owner.parent(), spanPos,
+                                    Owner.FromObjectGetParent(), spanPos,
                                     spanPos.To(Main.MouseWorld).UnitVector() * 15f,
                                     ModContent.ProjectileType<AbominateHookScythe>(),
                                     damages, 0, Owner.whoAmI);
@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                             for (int i = 0; i < 3; i++) {
                                 Vector2 pos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 45 * Projectile.scale + CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(2, 16));
                                 Projectile.NewProjectile(
-                                        Owner.parent(),
+                                        Owner.FromObjectGetParent(),
                                         pos,
                                         Vector2.Zero,
                                         ModContent.ProjectileType<SpiritFlame>(),

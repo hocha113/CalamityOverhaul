@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.EarthenProj
 
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer()) {
-                Projectile.NewProjectile(Projectile.parent(), Projectile.Center, new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.Next(-5, -3))
+                Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.Next(-5, -3))
                          , ModContent.ProjectileType<MeleeFossilShard>(), Projectile.damage, 2, Projectile.owner);
             }
         }

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
                 for (int i = 0; i < maxnum; i++) {
                     int types = i == (maxnum - 1) ? ModContent.ProjectileType<DivineDevourerIllusionTail>()
                         : ModContent.ProjectileType<DivineDevourerIllusionBody>();
-                    int proj = Projectile.NewProjectile(Projectile.parent(), Projectile.Center, Vector2.Zero
+                    int proj = Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                         , types, Projectile.damage / 2, Projectile.knockBack / 2, Projectile.owner, ai1: index);
                     Main.projectile[proj].netUpdate = true;
                     Main.projectile[proj].netUpdate2 = true;

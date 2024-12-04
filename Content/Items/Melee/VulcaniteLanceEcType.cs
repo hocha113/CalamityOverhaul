@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void HoldItem(Player player) {
             if (Main.rand.NextBool(13)) {
                 Vector2 pos = player.Center + new Vector2(Main.rand.Next(-320, 230), Main.rand.Next(-160, 32));
-                Projectile.NewProjectile(player.parent(), pos, new Vector2(0, -1), ModContent.ProjectileType<VulcaniteBall>(), Item.damage, 0, player.whoAmI);
+                Projectile.NewProjectile(player.FromObjectGetParent(), pos, new Vector2(0, -1), ModContent.ProjectileType<VulcaniteBall>(), Item.damage, 0, player.whoAmI);
             }
         }
 

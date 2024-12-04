@@ -145,8 +145,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
                 if (Projectile.Calamity().stealthStrike) {
-                    Projectile.NewProjectile(Projectile.parent(), Projectile.Center, MathHelper.PiOver4.ToRotationVector2() * 13, ModContent.ProjectileType<CosmicCalamityRay>(), Projectile.damage / 2, 0, Projectile.owner);
-                    Projectile.NewProjectile(Projectile.parent(), Projectile.Center, (MathHelper.PiOver2 + MathHelper.PiOver4).ToRotationVector2() * 13, ModContent.ProjectileType<CosmicCalamityRay>(), Projectile.damage / 2, 0, Projectile.owner);
+                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, MathHelper.PiOver4.ToRotationVector2() * 13, ModContent.ProjectileType<CosmicCalamityRay>(), Projectile.damage / 2, 0, Projectile.owner);
+                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, (MathHelper.PiOver2 + MathHelper.PiOver4).ToRotationVector2() * 13, ModContent.ProjectileType<CosmicCalamityRay>(), Projectile.damage / 2, 0, Projectile.owner);
                     for (int i = 0; i < 4; i++) {
                         float rot = MathHelper.PiOver2 * i;
                         Vector2 vr = rot.ToRotationVector2() * 10;

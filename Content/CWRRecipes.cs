@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content
                     murasamaMould.Item.TurnToAir();
                 }
                 else {
-                    Main.LocalPlayer.QuickSpawnItem(item.parent(), murasamaMould.Item);
+                    Main.LocalPlayer.QuickSpawnItem(item.FromObjectGetParent(), murasamaMould.Item);
                 }
             }
 

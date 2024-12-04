@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Projectiles
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             for (int i = 0; i < 3; i++) {
-                Projectile.NewProjectile(Projectile.parent(), target.position + new Vector2(Main.rand.Next(-160, 160), -420), new Vector2(0, 13), ModContent.ProjectileType<InfiniteEnmgs>(), Projectile.damage / 2, 0, Projectile.owner);
+                Projectile.NewProjectile(Projectile.FromObjectGetParent(), target.position + new Vector2(Main.rand.Next(-160, 160), -420), new Vector2(0, 13), ModContent.ProjectileType<InfiniteEnmgs>(), Projectile.damage / 2, 0, Projectile.owner);
             }
             for (int i = 0; i < 36; i++) {
                 Color outerSparkColor = VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors);
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 DarkMatterBall darkMatterBall = (DarkMatterBall)ball.ModItem;
                 if (dorpTypes.Count > 0) {
                     darkMatterBall.dorpTypes = dorpTypes;
-                    own.QuickSpawnItem(own.parent(), darkMatterBall.Item, 1);
+                    own.QuickSpawnItem(own.FromObjectGetParent(), darkMatterBall.Item, 1);
                 }
             }
         }
