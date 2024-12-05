@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Rogue
     {
         public override int TargetID => ModContent.ItemType<FrostcrushValari>();
         public override int ProtogenesisID => ModContent.ItemType<FrostcrushValariEcType>();
-        public override float DrawingSize => 0.5f;
         public override string TargetToolTipItemName => "FrostcrushValariEcType";
         public override void SetDefaults(Item item) => item.shoot = ModContent.ProjectileType<FrostcrushValariHeld>();
         public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[item.shoot] <= 6;

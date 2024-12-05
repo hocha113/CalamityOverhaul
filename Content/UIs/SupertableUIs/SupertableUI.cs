@@ -705,18 +705,16 @@ End:;
                 if (offset == default) {
                     offset = new Vector2(cellWid, cellHig) / 2;
                 }
-                float slp = 32f / size.X;
-                slp *= overSlp;
+                float slp = item.GetDrawItemSize(36) * overSlp;
                 if (item.type == CWRLoad.DarkMatterBall) {
                     DarkMatterBall.DrawItemIcon(spriteBatch, drawpos + offset, item.type, alp);
                 }
                 else {
-                    float value999 = 1;
-                    if (CWRLoad.ItemIsBow[item.type]) {
-                        value999 = 0.5f;
-                    }
-                    spriteBatch.Draw(TextureAssets.Item[item.type].Value, drawpos + offset, new Rectangle?(rectangle), (drawColor == default ? Color.White : drawColor) * alp, 0f, vector / 2, slp * value999, 0, 0f);
+                    Texture2D itemValue = TextureAssets.Item[item.type].Value;
+                    Color doDrawColor = (drawColor == default ? Color.White : drawColor) * alp;
+                    spriteBatch.Draw(itemValue, drawpos + offset, new Rectangle?(rectangle), doDrawColor, 0f, vector / 2, slp, 0, 0f);
                 }
+
                 if (item.stack > 1) {
                     Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, item.stack.ToString(), drawpos.X, drawpos.Y + 25, Color.White, Color.Black, new Vector2(0.3f), 1f);
                 }

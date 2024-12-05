@@ -408,11 +408,7 @@ namespace CalamityOverhaul.Content.UIs
                 Item item = ecTypeItemList[i];
                 Main.instance.LoadItem(item.type);
                 Vector2 drawPos = InCellPos + new Vector2(0, LCCoffsetY) + inIndexGetPos(i) * CellSlpSize;
-                float slp = 1;
-                if (CWRMod.RItemIndsDict.TryGetValue(item.type, out BaseRItem baseRItem)) {
-                    slp = baseRItem.DrawingSize;
-                }
-                SupertableUI.DrawItemIcons(spriteBatch, item, drawPos, new Vector2(0.001f, 0.001f), overSlp: slp);
+                VaultUtils.SimpleDrawItem(spriteBatch, item.type, drawPos, item.GetDrawItemSize(), 0, Color.White);
             }
             //恢复画布
             spriteBatch.GraphicsDevice.ScissorRectangle = originalScissorRect;

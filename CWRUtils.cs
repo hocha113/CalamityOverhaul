@@ -1377,6 +1377,21 @@ namespace CalamityOverhaul
 
         #region 普通绘制工具
 
+        public static float GetDrawItemSize(this Item item, int sizeW = 32) {
+            Rectangle rectangle = Main.itemAnimations[item.type] != null ?
+                        Main.itemAnimations[item.type].GetFrame(TextureAssets.Item[item.type].Value)
+                        : TextureAssets.Item[item.type].Value.Frame(1, 1, 0, 0);
+
+            float size = 1f;
+            if (rectangle.Width > sizeW) {
+                size = sizeW / (float)rectangle.Width;
+            }
+            if (size * rectangle.Height > sizeW) {
+                size = sizeW / (float)rectangle.Height;
+            }
+            return size;
+        }
+
         public static void DrawMarginEffect(SpriteBatch spriteBatch, Texture2D tex, int drawTimer, Vector2 position
             , Rectangle? rect, Color color, float rot, Vector2 origin, float scale, SpriteEffects effects = 0) {
             float time = Main.GlobalTimeWrappedHourly;

@@ -52,7 +52,6 @@ namespace CalamityOverhaul
         public static int FoodStallChair;
         public static int FoodStallChairTile;
         public static int Gangarus;
-        public static int StarMyriadChanges;
 
         #region OtherMods
         public static int EternitySoul;
@@ -345,7 +344,6 @@ namespace CalamityOverhaul
             FoodStallChair = ItemType<FoodStallChair>();
             FoodStallChairTile = TileType<Content.Tiles.FoodStallChair>();
             Gangarus = ItemType<Gangarus>();
-            StarMyriadChanges = ItemType<StarMyriadChanges>();
 
             Androomba = NPCType<Androomba>();
             Polterghast = NPCType<Polterghast>();
