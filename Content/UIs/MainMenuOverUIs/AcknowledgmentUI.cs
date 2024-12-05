@@ -221,6 +221,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             "ShadowHunter" + textElement3,
             "MysticWarrior" + textElement3,
             "StormBringer" + textElement3,
+            "无形剑" + textElement3,
             "IceQueen" + textElement3,
             "Yelena" + textElement3,
             "Viktor" + textElement3,
