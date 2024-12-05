@@ -2,6 +2,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -28,6 +29,9 @@ namespace CalamityOverhaul.Content.TileModules
         public bool mouseOnTile;
         public long Time = 0;
         public int frameIndex = 1;
+        internal bool drawGlow;
+        internal Color gloaColor;
+        private int gloawTime;
         void ICWRLoader.LoadAsset() => BloodAltarEffect = CWRUtils.GetT2DAsset(CWRConstant.Asset + "TileModules/BloodAltarEffect");
         void ICWRLoader.UnLoadData() => BloodAltarEffect = null;
         public override void SetProperty() {
@@ -150,9 +154,22 @@ namespace CalamityOverhaul.Content.TileModules
             }
         }
 
+        public void UpdateGlow() {
+            drawGlow = mouseOnTile;
+            if (drawGlow) {
+                gloawTime++;
+                gloaColor = Color.Red * MathF.Abs(MathF.Sin(gloawTime * 0.04f));
+            }
+            else {
+                gloawTime = 0;
+            }
+        }
+
         public override void Update() {
             Rectangle tileRec = new Rectangle(Position.X * 16, Position.Y * 16, BloodAltar.Width * 18, BloodAltar.Height * 18);
             mouseOnTile = tileRec.Intersects(new Rectangle((int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, 1, 1));
+            UpdateGlow();
+
             if (OnBoolMoon) {
                 if (targetFuncsWhoAmi == WhoAmI && !Old_OnBoolMoon && !VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Roar, Center);

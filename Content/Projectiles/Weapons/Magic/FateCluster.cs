@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 {
     internal class FateCluster : ModProjectile
     {
-        public override string Texture => CWRConstant.Cay_Proj_Magic + "FatesRevealFlame";
+        public override string Texture => CWRConstant.Projectile + "HellFire";
 
         public override void SetDefaults() {
             Projectile.width = 32;
