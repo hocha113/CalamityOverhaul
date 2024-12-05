@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.GoreEntity
 {
     internal class CaseGore : ModGore, ICWRLoader
     {
-        public override string Texture => CWRConstant.Asset + "CaseGore";
+        public override string Texture => CWRConstant.Other + "CaseGore";
         public static int PType;
         void ICWRLoader.SetupData() {
             PType = ModContent.GoreType<CaseGore>();

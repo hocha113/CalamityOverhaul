@@ -206,8 +206,8 @@ namespace CalamityOverhaul.Content.UIs
                 Main.spriteBatch.Draw(Mura.Value, DrawPosition + new Vector2(-110, -88), null, color, 0f, barOrigin, scale, 0, 0f);
             }
 
-            if (charge < 9) {
-                Rectangle frameCrop = new Rectangle(0, 0, (int)(newForCharge / 9f * barFG.Width), barFG.Height);
+            if (charge <= 9 || !MurasamaEcType.UnlockSkill3) {
+                Rectangle frameCrop = new Rectangle(0, 0, (int)(newForCharge / 10f * barFG.Width), barFG.Height);
                 Main.spriteBatch.Draw(barBG, DrawPosition, null, color, 0f, barOrigin, scale, 0, 0f);
                 Main.spriteBatch.Draw(barFG, DrawPosition + topBarOffset, frameCrop, fullColor * uiAlape, 0f, barOrigin, scale, 0, 0f);
             }

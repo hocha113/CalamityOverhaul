@@ -219,18 +219,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     Main.instance.CameraModifiers.Add(modifier);
                 }
 
-                if (Projectile.IsOwnedByLocalPlayer()) {
-                    //给玩家一个合适的远离被击中目标的初始速度
-                    Owner.velocity += ver * 10;
-
-                    //进行武器充能的操作
-                    murasama.initialize();
-                    murasama.CWR().ai[0]++;
-                    if (murasama.CWR().ai[0] > 10) {
-                        murasama.CWR().ai[0] = 10;
-                    }
-                }
-
                 //如果充能已经满了10点，并且该技能已经解锁，那么进行处决技的释放
                 if (murasama.CWR().ai[0] == 10 && MurasamaEcType.UnlockSkill3) {
                     SoundEngine.PlaySound(CWRSound.EndSilkOrbSpanSound with { Volume = 0.7f }, Projectile.Center);
@@ -250,6 +238,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                         CombatText.NewText(target.Hitbox, Color.Gold, "Finishing Blow!!!", true);
                     }
 
+                    CombatText.NewText(target.Hitbox, Main.rand.NextBool(3) ? Color.Red : Color.IndianRed, $"{murasama.CWR().ai[0]}!", true);
+
                     if (CWRServerConfig.Instance.ScreenVibration) {
                         PunchCameraModifier modifier2 = new PunchCameraModifier(Projectile.Center, new Vector2(0, Main.rand.NextFloat(-2, 2)), 10f, 30f, 20, 1000f, FullName);
                         Main.instance.CameraModifiers.Add(modifier2);
@@ -258,7 +248,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     return;
                 }
 
-                CombatText.NewText(target.Hitbox, Main.rand.NextBool(3) ? Color.Red : Color.IndianRed, $"{murasama.CWR().ai[0]}!", true);
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    //给玩家一个合适的远离被击中目标的初始速度
+                    Owner.velocity += ver * 10;
+
+                    //进行武器充能的操作
+                    murasama.initialize();
+                    murasama.CWR().ai[0]++;
+                    if (murasama.CWR().ai[0] > 10) {
+                        murasama.CWR().ai[0] = 10;
+                    }
+                }
             }
 
             if (!onHitNpcs.Contains(target)) {

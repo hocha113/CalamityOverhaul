@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.Dusts;
+using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
@@ -34,9 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                 if (owners != null) {
                     float lengs = owners.Center.To(pos).Length();
                     if (lengs > 60) {
-                        int num = Dust.NewDust(pos, Projectile.width, Projectile.height, ModContent.DustType<SoulFire>(), Projectile.direction * 2, 0f, 150, new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB), 1.3f);
-                        Main.dust[num].noGravity = true;
-                        Main.dust[num].velocity = new Vector2(0, -Main.rand.NextFloat(0.8f, 1.6f));
+                        PRTLoader.NewParticle<PRT_SoulFire>(pos, new Vector2(0, -Main.rand.NextFloat(0.8f, 1.6f)));
                     }
                 }
             }
