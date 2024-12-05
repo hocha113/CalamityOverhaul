@@ -10,18 +10,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Magic + "AcidGun";
         public override int targetCayItem => ModContent.ItemType<AcidGun>();
         public override int targetCWRItem => ModContent.ItemType<AcidGunEcType>();
-
         private int fireIndex;
         public override void SetMagicProperty() {
-            ShootPosToMouLengValue = 0;
+            ShootPosToMouLengValue = -20;
             ShootPosNorlLengValue = 0;
-            HandDistance = 15;
-            HandDistanceY = 0;
-            HandFireDistance = 15;
-            HandFireDistanceY = -5;
+            HandFireDistance = 16;
+            HandFireDistanceY = -4;
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
+            Onehanded = true;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
         }
 
         public override void SetShootAttribute() {

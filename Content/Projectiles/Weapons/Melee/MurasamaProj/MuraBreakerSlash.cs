@@ -61,9 +61,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             Projectile.ai[0]++;
         }
 
-        private void strikeToFly(NPC npc) {
-            Vector2 flyVr = new Vector2(Projectile.velocity.X, -16 + (InWorldBossPhase.Instance.Mura_Level() * 0.3f));
-            float modef = npc.Center.To(Owner.Center).Length() / (300 + level * 30);
+        internal static void StrikeToFly(Vector2 velocity, NPC npc, Player owner, int level) {
+            Vector2 flyVr = new Vector2(velocity.X, -16 + (InWorldBossPhase.Instance.Mura_Level() * 0.3f));
+            float modef = npc.Center.To(owner.Center).Length() / (300 + level * 30);
             if (modef > 1) {
                 modef = 1f;
             }
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
             if (npc.type == NPCID.WallofFlesh || npc.type == NPCID.WallofFleshEye) {
                 spanDust(133, DustID.Blood);
-                Owner.velocity += new Vector2(flyVr.X * -2, -1);
+                owner.velocity += new Vector2(flyVr.X * -2, -1);
                 return;
             }
             if (npc.type == ModContent.NPCType<BrimstoneHeart>()) {
@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
             }
 
             if (!onHitNpcs.Contains(target)) {
-                strikeToFly(target);
+                StrikeToFly(Projectile.velocity, target, Owner, level);
                 onHitNpcs.Add(target);
             }
         }

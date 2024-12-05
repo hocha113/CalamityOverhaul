@@ -13,17 +13,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = -30;
             ShootPosNorlLengValue = 0;
-            HandDistance = 15;
-            HandDistanceY = 3;
-            HandFireDistance = 15;
-            HandFireDistanceY = -5;
+            HandFireDistance = 16;
+            HandFireDistanceY = -4;
             GunPressure = 0;
             ControlForce = 0;
             Recoil = 0;
+            Onehanded = true;
+            EnableRecoilRetroEffect = true;
+            RecoilRetroForceMagnitude = 6;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
         }
 
         public override void FiringShoot() {
-            OffsetPos += ShootVelocity.UnitVector() * -5;
             int type = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             if (Main.rand.NextBool(6)) {

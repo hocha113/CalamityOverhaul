@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -8,9 +9,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniverseProj
 {
-    internal class CelestialDevourer : ModProjectile
+    internal class CelestialDevourer : ModProjectile, ICWRLoader
     {
         public override string Texture => CWRConstant.Placeholder;
+        private static Asset<Texture2D> starAsset;
+        void ICWRLoader.LoadAsset() => starAsset = CWRUtils.GetT2DAsset("CalamityMod/Projectiles/StarProj");
+        void ICWRLoader.UnLoadData() => starAsset = null;
         public override void SetDefaults() {
             Projectile.height = 24;
             Projectile.width = 24;
@@ -24,23 +28,29 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         }
 
         public override void AI() {
-            if (Projectile.ai[0] == -1f)
-                return;
-
-            if (!Main.npc[(int)Projectile.ai[0]].active)
+            if (Projectile.ai[0] == -1f || !Main.npc[(int)Projectile.ai[0]].active) {
                 Projectile.Kill();
+                return;
+            }
 
             Projectile.ai[1] += MathHelper.Pi / 30f;
             Projectile.Opacity = MathHelper.Clamp(Projectile.ai[1], 0f, 1f);
 
             if (Projectile.Opacity == 1f && Main.rand.NextBool(15)) {
-                Dust dust = Main.dust[Dust.NewDust(Projectile.Top, 0, 0, DustID.RainbowMk2, 0f, 0f, 100, new Color(150, 100, 255, 255), 1f)];
-                dust.velocity.X = 0f;
-                dust.noGravity = true;
-                dust.fadeIn = 1f;
-                dust.position = Projectile.Center + Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi) * (4f * Main.rand.NextFloat() + 26f);
-                dust.scale = 0.5f;
+                GenerateDust();
             }
+        }
+
+        private void GenerateDust() {
+            Vector2 dustPosition = Projectile.Center + Vector2.UnitY.RotatedByRandom(MathHelper.TwoPi)
+                                   * (4f * Main.rand.NextFloat() + 26f);
+            Dust dust = Main.dust[Dust.NewDust(Projectile.Top, 0, 0, DustID.RainbowMk2, 0f, 0f, 100,
+                                               new Color(150, 100, 255, 255), 1f)];
+            dust.velocity = Vector2.Zero;
+            dust.noGravity = true;
+            dust.fadeIn = 1f;
+            dust.position = dustPosition;
+            dust.scale = 0.5f;
         }
 
         public override void OnKill(int timeLeft) {
@@ -58,43 +68,42 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            float lerpMult = Utils.GetLerpValue(15f, 30f, Projectile.timeLeft, clamped: true) * Utils.GetLerpValue(240f, 200f, Projectile.timeLeft, clamped: true) * (1f + 0.2f * (float)Math.Cos(Main.GlobalTimeWrappedHourly % 30f / 0.5f * (MathHelper.Pi * 2f) * 3f)) * 0.8f;
+            float lerpMult = Utils.GetLerpValue(15f, 30f, Projectile.timeLeft, clamped: true)
+                            * Utils.GetLerpValue(240f, 200f, Projectile.timeLeft, clamped: true)
+                            * (1f + 0.2f * (float)Math.Cos(Main.GlobalTimeWrappedHourly % 30f / 0.5f * (MathHelper.Pi * 2f) * 3f)) * 0.8f;
 
-            Texture2D texture = ModContent.Request<Texture2D>("CalamityMod/Projectiles/StarProj").Value;
+            Texture2D texture = starAsset.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
-            Color baseColor = new Color(150, 100, 255, 255) * Projectile.Opacity;
-            baseColor *= 0.5f;
+            Color baseColor = new Color(150, 100, 255, 255) * Projectile.Opacity * 0.5f;
             baseColor.A = 0;
-            Color colorA = baseColor;
-            Color colorB = baseColor * 0.5f;
-            colorA *= lerpMult;
-            colorB *= lerpMult;
+            Color colorA = baseColor * lerpMult;
+            Color colorB = baseColor * 0.5f * lerpMult;
             Vector2 origin = texture.Size() / 2f;
             Vector2 scale = new Vector2(3f, 9f) * Projectile.Opacity * lerpMult * Projectile.scale;
 
-            SpriteEffects spriteEffects = SpriteEffects.None;
-            if (Projectile.spriteDirection == -1)
-                spriteEffects = SpriteEffects.FlipHorizontally;
+            SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            Main.EntitySpriteDraw(texture, drawPos, null, colorA, MathHelper.PiOver2, origin, scale, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture, drawPos, null, colorA, 0f, origin, scale, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture, drawPos, null, colorB, MathHelper.PiOver2, origin, scale * 0.8f, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture, drawPos, null, colorB, 0f, origin, scale * 0.8f, spriteEffects, 0);
+            void DrawSprite(float rotation, Vector2 scaleModifier, Color color) {
+                Main.EntitySpriteDraw(texture, drawPos, null, color, rotation, origin, scale * scaleModifier, spriteEffects, 0);
+            }
 
-            Main.EntitySpriteDraw(texture, drawPos, null, colorA, MathHelper.PiOver2 + Projectile.ai[1] * 0.25f, origin, scale, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture, drawPos, null, colorA, Projectile.ai[1] * 0.25f, origin, scale, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture, drawPos, null, colorB, MathHelper.PiOver2 + Projectile.ai[1] * 0.5f, origin, scale * 0.8f, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture, drawPos, null, colorB, Projectile.ai[1] * 0.5f, origin, scale * 0.8f, spriteEffects, 0);
+            for (int i = 0; i < 2; i++) {
+                float offset = i * MathHelper.PiOver2;
+                DrawSprite(offset, Vector2.One, colorA);
+                DrawSprite(offset, Vector2.One * 0.8f, colorB);
 
-            Main.EntitySpriteDraw(texture, drawPos, null, colorA, MathHelper.PiOver4, origin, scale * 0.6f, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture, drawPos, null, colorA, MathHelper.PiOver4 * 3f, origin, scale * 0.6f, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture, drawPos, null, colorB, MathHelper.PiOver4, origin, scale * 0.4f, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture, drawPos, null, colorB, MathHelper.PiOver4 * 3f, origin, scale * 0.4f, spriteEffects, 0);
+                DrawSprite(offset + Projectile.ai[1] * 0.25f, Vector2.One, colorA);
+                DrawSprite(offset + Projectile.ai[1] * 0.5f, Vector2.One * 0.8f, colorB);
+            }
 
-            Main.EntitySpriteDraw(texture, drawPos, null, colorA, MathHelper.PiOver4 + Projectile.ai[1] * 0.75f, origin, scale * 0.6f, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture, drawPos, null, colorA, MathHelper.PiOver4 * 3f + Projectile.ai[1] * 0.75f, origin, scale * 0.6f, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture, drawPos, null, colorB, MathHelper.PiOver4 + Projectile.ai[1], origin, scale * 0.4f, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture, drawPos, null, colorB, MathHelper.PiOver4 * 3f + Projectile.ai[1], origin, scale * 0.4f, spriteEffects, 0);
+            for (int i = 0; i < 2; i++) {
+                float offset = MathHelper.PiOver4 * (1 + i * 2);
+                DrawSprite(offset, Vector2.One * 0.6f, colorA);
+                DrawSprite(offset, Vector2.One * 0.4f, colorB);
+
+                DrawSprite(offset + Projectile.ai[1] * 0.75f, Vector2.One * 0.6f, colorA);
+                DrawSprite(offset + Projectile.ai[1], Vector2.One * 0.4f, colorB);
+            }
 
             return false;
         }

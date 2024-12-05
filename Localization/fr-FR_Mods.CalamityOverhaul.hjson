@@ -2763,6 +2763,11 @@ Items: {
 			"Le Faucheur pensait que cela améliorerait encore son efficacité."  
 			'''
 	}
+
+	TitanArmEcType: {
+		// DisplayName: Titan Arm
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3459,31 +3464,35 @@ Projectiles: {
 	// EvisceratorHeld.DisplayName: Eviscerator
 	// CoinGunHeld.DisplayName: Coin Gun
 	// SolsticeHomeBeam.DisplayName: Solstice Home Beam
-	// MeowmereHeld.DisplayName: Meowmere Held
+	// MeowmereHeld.DisplayName: Meowmere
 	// PhaseEnergySphere.DisplayName: Phase Energy Sphere
 	// PhaseLaser.DisplayName: Phase Laser
 	// SemberDarkMasterClone.DisplayName: Sember Dark Master Clone
 	// SoulSeekerSkull.DisplayName: Soul Seeker Skull
-	// EyeofMagnusHeldProj.DisplayName: Eyeof Magnus Held Proj
-	// LunicEyeHeldProj.DisplayName: Lunic Eye Held Proj
-	// EvilSmasherHeld.DisplayName: Evil Smasher Held
-	// AestheticusHeldProj.DisplayName: Aestheticus Held Proj
-	// BasherHeld.DisplayName: Basher Held
-	// AquamarineStaffHeld.DisplayName: Aquamarine Staff Held
-	// IcicleStaffHeld.DisplayName: Icicle Staff Held
-	// ManaRoseHeld.DisplayName: Mana Rose Held
-	// PlasmaRodHeld.DisplayName: Plasma Rod Held
-	// SandstreamScepterHeld.DisplayName: Sandstream Scepter Held
-	// SkyGlazeHeld.DisplayName: Sky Glaze Held
-	// CutlassHeld.DisplayName: Cutlass Held
-	// DeathSickleHeld.DisplayName: Death Sickle Held
+	// EyeofMagnusHeldProj.DisplayName: Eyeof Magnus
+	// LunicEyeHeldProj.DisplayName: Lunic Eye
+	// EvilSmasherHeld.DisplayName: Evil Smasher
+	// AestheticusHeldProj.DisplayName: Aestheticus
+	// BasherHeld.DisplayName: Basher
+	// AquamarineStaffHeld.DisplayName: Aquamarine Staff
+	// IcicleStaffHeld.DisplayName: Icicle Staff
+	// ManaRoseHeld.DisplayName: Mana Rose
+	// PlasmaRodHeld.DisplayName: Plasma Rod
+	// SandstreamScepterHeld.DisplayName: Sandstream Scepter
+	// SkyGlazeHeld.DisplayName: Sky Glaze
+	// CutlassHeld.DisplayName: Cutlass
+	// DeathSickleHeld.DisplayName: Death Sickle
 	// DeathSickleThrowable.DisplayName: Death Sickle Throwable
-	// IceSickleHeld.DisplayName: Ice Sickle Held
+	// IceSickleHeld.DisplayName: Ice Sickle
 	// DeathSickleThrowableRogue.DisplayName: Death Sickle Throwable Rogue
 	// PhaseBlasting.DisplayName: Phase Blasting
-	// DyeTradersScimitarHeld.DisplayName: Dye Traders Scimitar Held
-	// BalefulHarvesterHeldThrow.DisplayName: Baleful Harvester Held Throw
-	// SeedlerHeld.DisplayName: Seedler Held
+	// DyeTradersScimitarHeld.DisplayName: Dye Traders Scimitar
+	// BalefulHarvesterHeldThrow.DisplayName: Baleful Harvester Throw
+	// SeedlerHeld.DisplayName: Seedler
+	// TitanArmHeld.DisplayName: Titan Arm
+	// HeatRayHeld.DisplayName: Heat Ray
+	// SpaceGunHeld.DisplayName: Space Gun
+	// StarWrathHeld.DisplayName: Star Wrath
 }
 
 Configs: {

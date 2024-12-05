@@ -7,6 +7,7 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Items.Weapons.Summon;
+using CalamityMod.Projectiles.Pets;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
@@ -80,9 +81,19 @@ namespace CalamityOverhaul.Content
         public override void PostAddRecipes() {
             if (!CWRServerConfig.Instance.WeaponOverhaul) {
                 foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
-                    if (baseRItem.FormulaSubstitution)
+                    if (baseRItem.FormulaSubstitution) {
                         baseRItem.LoadItemRecipe();
+                    }  
                 }
+            }
+
+            //添加热线枪的合成
+            {
+                Recipe.Create(ItemID.HeatRay)
+                .AddIngredient(ItemID.SpaceGun)
+                    .AddIngredient(ItemType<ScoriaBar>(), 5)
+                    .AddTile(TileID.MythrilAnvil)
+                    .Register();
             }
 
             //添加血泪的额外合成
@@ -458,6 +469,12 @@ namespace CalamityOverhaul.Content
                             recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
                             recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
                             recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
+                        }
+                    }
+                    //修改拉扎尔射线
+                    {
+                        if (recipe.HasResult(ItemType<Lazhar>())) {
+                            recipe.RemoveIngredient(ItemID.SpaceGun);//移除太空枪的配方
                         }
                     }
                 }

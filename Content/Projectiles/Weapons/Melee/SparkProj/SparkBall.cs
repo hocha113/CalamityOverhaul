@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -20,58 +21,60 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.SparkProj
             damageScale = Main.rand.Next(Projectile.localNPCHitCooldown * 3);
         }
 
-        public override bool? CanHitNPC(NPC target) {
-            return damageScale > 0 ? false : base.CanHitNPC(target);
-        }
-
-        public override bool CanHitPvp(Player target) {
-            return damageScale > 0 ? false : base.CanHitPvp(target);
-        }
+        public override bool? CanHitNPC(NPC target) => damageScale > 0 ? false : base.CanHitNPC(target);
+        public override bool CanHitPvp(Player target) => damageScale > 0 ? false : base.CanHitPvp(target);
+        public override bool OnTileCollide(Vector2 oldVelocity) => false;
 
         public override void AI() {
             damageScale--;
-            if (Projectile.velocity.X != Projectile.velocity.X) {
-                Projectile.velocity.X = Projectile.velocity.X * -0.1f;
+            if (float.IsNaN(Projectile.velocity.X)) {
+                Projectile.velocity.X *= -0.1f;
             }
-            if (Projectile.velocity.X != Projectile.velocity.X) {
-                Projectile.velocity.X = Projectile.velocity.X * -0.5f;
+
+            if (float.IsNaN(Projectile.velocity.Y)) {
+                if (Projectile.velocity.Y > 1f) {
+                    Projectile.velocity.Y *= -0.5f;
+                }
             }
-            if (Projectile.velocity.Y != Projectile.velocity.Y && Projectile.velocity.Y > 1f) {
-                Projectile.velocity.Y = Projectile.velocity.Y * -0.5f;
-            }
-            Projectile.ai[0] += 1f;
-            if (Projectile.ai[0] > 5f) {
-                Projectile.ai[0] = 5f;
+
+            Projectile.ai[0] = Math.Min(Projectile.ai[0] + 1f, 5f);
+            if (Projectile.ai[0] == 5f) {
                 if (Projectile.velocity.Y == 0f && Projectile.velocity.X != 0f) {
-                    Projectile.velocity.X = Projectile.velocity.X * 0.97f;
-                    if ((double)Projectile.velocity.X is > (-0.01) and < 0.01) {
+                    Projectile.velocity.X *= 0.97f;
+
+                    if (Math.Abs(Projectile.velocity.X) < 0.01f) {
                         Projectile.velocity.X = 0f;
                         Projectile.netUpdate = true;
                     }
                 }
-                Projectile.velocity.Y = Projectile.velocity.Y + 0.2f;
+                Projectile.velocity.Y += 0.2f;
             }
+
             Projectile.rotation += Projectile.velocity.X * 0.1f;
-            var sparky = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.UnusedWhiteBluePurple, 0f, 0f, 100, default, 1f);
-            Main.dust[sparky].scale += Main.rand.Next(50) * 0.01f;
-            Main.dust[sparky].noGravity = true;
-            if (Main.rand.NextBool()) {
-                var sparkier = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.UnusedWhiteBluePurple, 0f, 0f, 100, default, 1f);
-                Main.dust[sparkier].scale += 0.3f + (Main.rand.Next(50) * 0.01f);
-                Main.dust[sparkier].noGravity = true;
-                Main.dust[sparkier].velocity *= 0.1f;
+
+            GenerateDust();
+
+            if (Projectile.velocity.Y is > 0.15f and < 0.25f) {
+                Projectile.velocity.X *= 0.8f;
             }
-            if ((double)Projectile.velocity.Y is < 0.25 and > 0.15) {
-                Projectile.velocity.X = Projectile.velocity.X * 0.8f;
-            }
+
             Projectile.rotation = -Projectile.velocity.X * 0.05f;
             if (Projectile.velocity.Y > 16f) {
                 Projectile.velocity.Y = 16f;
             }
         }
 
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            return false;
+        private void GenerateDust() {
+            int sparky = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.UnusedWhiteBluePurple, 0f, 0f, 100, default, 1f);
+            Main.dust[sparky].scale += Main.rand.Next(50) * 0.01f;
+            Main.dust[sparky].noGravity = true;
+
+            if (Main.rand.NextBool()) {
+                int sparkier = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.UnusedWhiteBluePurple, 0f, 0f, 100, default, 1f);
+                Main.dust[sparkier].scale += 0.3f + Main.rand.Next(50) * 0.01f;
+                Main.dust[sparkier].noGravity = true;
+                Main.dust[sparkier].velocity *= 0.1f;
+            }
         }
     }
 }
