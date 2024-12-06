@@ -1650,8 +1650,8 @@ Items: {
 		Tooltip:
 			'''
 			Reduce el retroceso y la presión del cañón en un 65%
-			Reduce el daño a distancia en un 15%
-			Aumenta la tasa de crítico a distancia en un 25%
+			Reduce el daño a distancia en un 5%
+			Aumenta la tasa de crítico a distancia en un 15%
 			'''
 	}
 
@@ -1671,8 +1671,8 @@ Items: {
 		Tooltip:
 			'''
 			Reduce el retroceso y la presión del cañón en un 55%
-			Reduce el daño a distancia en un 20%
-			Aumenta la tasa de crítico a distancia en un 15%
+			Reduce el daño a distancia en un 10%
+			Aumenta la tasa de crítico a distancia en un 10%
 			'''
 	}
 
@@ -1681,7 +1681,7 @@ Items: {
 		Tooltip:
 			'''
 			Reduce el retroceso y la presión del cañón en un 40%
-			Reduce el daño a distancia en un 25%
+			Reduce el daño a distancia en un 15%
 			Aumenta la tasa de crítico a distancia en un 5%
 			'''
 	}

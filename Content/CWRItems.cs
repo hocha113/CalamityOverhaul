@@ -369,15 +369,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        //////////////////////////////////////////////////
-        //我不知道为什么 CWRPlayer 里面的Modify方法         //
-        //所修改的值无法作用到枪械射弹上，上帝，让这些东西去死吧//                                        
-        //////////////////////////////////////////////////
-        public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback) {
-            CWRPlayer modPlayer = player.CWR();
-
-        }
-
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit) {
             CWRPlayer modPlayer = player.CWR();
             if (modPlayer.LoadMuzzleBrake) {
@@ -386,10 +377,10 @@ namespace CalamityOverhaul.Content
                         crit += 5;
                     }
                     else if (modPlayer.LoadMuzzleBrakeLevel == 2) {
-                        crit += 15;
+                        crit += 10;
                     }
                     else if (modPlayer.LoadMuzzleBrakeLevel == 3) {
-                        crit += 25;
+                        crit += 15;
                     }
                     else if (modPlayer.LoadMuzzleBrakeLevel == 4) {
                         crit += 100;
@@ -403,13 +394,13 @@ namespace CalamityOverhaul.Content
             if (modPlayer.LoadMuzzleBrake) {
                 if (item.DamageType.CountsAsClass(DamageClass.Ranged)) {
                     if (modPlayer.LoadMuzzleBrakeLevel == 1) {
-                        damage *= 0.75f;
+                        damage *= 0.85f;
                     }
                     else if (modPlayer.LoadMuzzleBrakeLevel == 2) {
-                        damage *= 0.8f;
+                        damage *= 0.9f;
                     }
                     else if (modPlayer.LoadMuzzleBrakeLevel == 3) {
-                        damage *= 0.85f;
+                        damage *= 0.95f;
                     }
                     else if (modPlayer.LoadMuzzleBrakeLevel == 4) {
                         damage *= 2;

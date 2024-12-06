@@ -128,12 +128,12 @@ namespace CalamityOverhaul.Content.NPCs.Core
             CWRNpc cwrNPC = npc.CWR();
 
             if (CWRPlayer.CanTimeFrozen() || cwrNPC.FrozenActivity) {
+                npc.timeLeft++;
+                npc.aiAction = 0;
+                npc.frameCounter = 0;
+                npc.velocity = Vector2.Zero;
                 npc.position = npc.oldPosition;
                 npc.direction = npc.oldDirection;
-                npc.velocity = Vector2.Zero;
-                npc.frameCounter = 0.0;
-                npc.aiAction = 0;
-                npc.timeLeft++;
                 return;
             }
 

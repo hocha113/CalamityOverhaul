@@ -1632,8 +1632,8 @@ Items: {
 		Tooltip:
 			'''
 			Réduit de 65% le recul et la pression à la bouche
-			Réduit les dégâts à distance de 15%
-			Augmente le taux de critique à distance de 25%
+			Réduit les dégâts à distance de 5%
+			Augmente le taux de critique à distance de 15%
 			'''
 	}
 
@@ -1653,8 +1653,8 @@ Items: {
 		Tooltip:
 			'''
 			Réduit de 55% le recul et la pression à la bouche
-			Réduit les dégâts à distance de 20%
-			Augmente le taux de critique à distance de 15%
+			Réduit les dégâts à distance de 10%
+			Augmente le taux de critique à distance de 10%
 			'''
 	}
 
@@ -1663,7 +1663,7 @@ Items: {
 		Tooltip:
 			'''
 			Réduit de 40% le recul et la pression à la bouche
-			Réduit les dégâts à distance de 25%
+			Réduit les dégâts à distance de 15%
 			Augmente le taux de critique à distance de 5%
 			'''
 	}

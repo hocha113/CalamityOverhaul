@@ -1622,8 +1622,8 @@ Items: {
 		Tooltip:
 			'''
 			Reduces recoil and chamber pressure by 65%
-			Reduces ranged damage by 15%
-			Increases ranged critical hit rate by 25%
+			Reduces ranged damage by 5%
+			Increases ranged critical hit rate by 15%
 			'''
 	}
 
@@ -1642,8 +1642,8 @@ Items: {
 		Tooltip:
 			'''
 			Reduces recoil and chamber pressure by 55%
-			Reduces ranged damage by 20%
-			Increases ranged critical hit rate by 15%
+			Reduces ranged damage by 10%
+			Increases ranged critical hit rate by 10%
 			'''
 	}
 
@@ -1652,7 +1652,8 @@ Items: {
 		Tooltip:
 			'''
 			Reduces recoil and chamber pressure by 40%
-			Reduces ranged damage by 25%
+			Reduces ranged damage by 15%
+			Increases ranged critical hit rate by 5%
 			'''
 	}
 

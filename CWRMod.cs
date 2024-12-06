@@ -167,7 +167,6 @@ namespace CalamityOverhaul
             foreach (var setup in ILoaders) {
                 setup.LoadData();
             }
-            CWRLoad.Load();
             GameLoadCount++;
         }
 

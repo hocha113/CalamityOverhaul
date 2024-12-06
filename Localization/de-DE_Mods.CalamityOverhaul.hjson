@@ -1627,8 +1627,8 @@ Items: {
 		Tooltip:
 			'''
 			Reduziert Rückstoß und Patronendruck um 65%
-			Verringert Fernschaden um 15%
-			Erhöht kritische Trefferchance auf Distanz um 25%
+			Verringert Fernschaden um 5%
+			Erhöht kritische Trefferchance auf Distanz um 15%
 			'''
 	}
 
@@ -1648,8 +1648,8 @@ Items: {
 		Tooltip:
 			'''
 			Reduziert Rückstoß und Patronendruck um 55%
-			Verringert Fernschaden um 20%
-			Erhöht kritische Trefferchance auf Distanz um 15%
+			Verringert Fernschaden um 10%
+			Erhöht kritische Trefferchance auf Distanz um 10%
 			'''
 	}
 
@@ -1658,7 +1658,7 @@ Items: {
 		Tooltip:
 			'''
 			Reduziert Rückstoß und Patronendruck um 40%
-			Verringert Fernschaden um 25%
+			Verringert Fernschaden um 15%
 			Erhöht kritische Trefferchance auf Distanz um 5%
 			'''
 	}

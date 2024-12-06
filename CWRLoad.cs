@@ -293,11 +293,11 @@ namespace CalamityOverhaul
             /// <summary>
             /// 是否是一个金属性质的存在
             /// </summary>
-            internal static Dictionary<int, bool> TheofSteel;
+            public static Dictionary<int, bool> TheofSteel = [];
             /// <summary>
             /// 是否免疫冻结
             /// </summary>
-            internal static Dictionary<int, bool> ImmuneFrozen;
+            public static Dictionary<int, bool> ImmuneFrozen = [];
             public static bool ISTheofSteel(int type) {
                 if (type == NPCID.Spazmatism && SpazmatismAI.Accompany) {
                     return true;
@@ -314,25 +314,11 @@ namespace CalamityOverhaul
             /// <summary>
             /// 是否免疫冻结
             /// </summary>
-            internal static Dictionary<int, bool> ImmuneFrozen;
-        }
-
-        public static void Load() {
-            NPCValue.TheofSteel = [];
-            for (int i = 0; i < NPCLoader.NPCCount; i++) {
-                NPCValue.TheofSteel[i] = false;
-            }
-            NPCValue.ImmuneFrozen = [];
-            for (int i = 0; i < NPCLoader.NPCCount; i++) {
-                NPCValue.ImmuneFrozen[i] = false;
-            }
-            ProjValue.ImmuneFrozen = [];
-            for (int i = 0; i < ProjectileLoader.ProjectileCount; i++) {
-                ProjValue.ImmuneFrozen[i] = false;
-            }
+            public static Dictionary<int, bool> ImmuneFrozen = [];
         }
 
         public static void Setup() {
+            #region ID
             InfiniteArrow = ProjectileType<InfiniteArrow>();
             InfiniteRune = ProjectileType<InfiniteArrow>();
             ParadiseArrow = ProjectileType<InfiniteArrow>();
@@ -435,6 +421,10 @@ namespace CalamityOverhaul
 
             Projectile_ArcZap = ProjectileType<ArcZap>();
 
+            MurasamaEcType.heldProjType = ProjectileType<MurasamaHeld>();
+            #endregion
+
+            #region List
             targetNpcTypes = [SepulcherHead, SepulcherBody, SepulcherTail];
             targetNpcTypes2 = [StormWeaverHead, StormWeaverBody, StormWeaverTail];
             targetNpcTypes3 = [PrimordialWyrmHead, PrimordialWyrmBody, PrimordialWyrmTail];
@@ -478,6 +468,15 @@ namespace CalamityOverhaul
                 { AmmoID.None, ItemID.MusketBall }
             };
 
+            AddMaxStackItemsIn64 = [
+                ItemType<BloodOrange>(),
+                ItemType<MiracleFruit>(),
+                ItemType<Elderberry>(),
+                ItemType<Dragonfruit>(),
+                ItemType<LoreCynosure>(),
+            ];
+            #endregion
+
             if (CWRMod.Instance.fargowiltasSouls != null) {
                 EternitySoul = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("EternitySoul").Type;
                 DevisCurse = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("DevisCurse").Type;
@@ -488,8 +487,6 @@ namespace CalamityOverhaul
             if (CWRMod.Instance.catalystMod != null) {
                 MetanovaBar = CWRMod.Instance.catalystMod.Find<ModItem>("MetanovaBar").Type;
             }
-
-            MurasamaEcType.heldProjType = ProjectileType<MurasamaHeld>();
 
             for (int itemType = 0; itemType < ItemLoader.ItemCount; itemType++) {
                 Item item = new Item(itemType);
@@ -539,6 +536,7 @@ namespace CalamityOverhaul
             for (int i = 0; i < NPCLoader.NPCCount; i++) {
                 NPC npc = new NPC();
                 npc.SetDefaults(i);
+                bool isSteel = false;
                 if (npc.HitSound == SoundID.NPCHit2
                     || npc.HitSound == SoundID.NPCHit3 || npc.HitSound == SoundID.NPCHit4
                     || npc.HitSound == SoundID.NPCHit41 || npc.HitSound == SoundID.NPCHit42
@@ -546,17 +544,18 @@ namespace CalamityOverhaul
                     || targetNpcTypes7.Contains(npc.type) || targetNpcTypes7_1.Contains(npc.type)
                     || targetNpcTypes6.Contains(npc.type) || targetNpcTypes7_1.Contains(npc.type)
                     || npc.type == AstrumAureus) {
-                    NPCValue.TheofSteel[i] = true;
+                    isSteel = true;
                 }
+
+                NPCValue.TheofSteel.TryAdd(i, isSteel);
+
+                NPCValue.ImmuneFrozen.TryAdd(i, false);
             }
 
-            AddMaxStackItemsIn64 = [
-                ItemType<BloodOrange>(),
-                ItemType<MiracleFruit>(),
-                ItemType<Elderberry>(),
-                ItemType<Dragonfruit>(),
-                ItemType<LoreCynosure>(),
-            ];
+            for (int i = 0; i < ProjectileLoader.ProjectileCount; i++) {
+                ProjValue.ImmuneFrozen.TryAdd(i, false);
+            }
+
 
             OnLoadContentBool = true;
         }
