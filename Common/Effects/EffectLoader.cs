@@ -210,6 +210,7 @@ namespace CalamityOverhaul.Common.Effects
         }
 
         private bool HasPwoerEffect() {
+            if (Main.gameMenu) return false;
             if (!CWRServerConfig.Instance.MurasamaSpaceFragmentationBool) {
                 return false;
             }
