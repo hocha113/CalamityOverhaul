@@ -1531,7 +1531,7 @@ Items: {
 	}
 
 	SepticSkewerEcType: {
-		DisplayName: 剧毒鱼叉枪
+		DisplayName: 剧毒叉枪
 		Tooltip:
 			'''
 			一下发射出所有黏性剧毒鱼叉

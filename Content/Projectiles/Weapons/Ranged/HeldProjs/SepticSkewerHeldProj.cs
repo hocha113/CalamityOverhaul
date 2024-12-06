@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             FireTime = 1;
             HandDistance = 24;
-            HandDistanceY = 4;
+            HandDistanceY = 0;
             HandFireDistance = 24;
             HandFireDistanceY = -2;
             ShootPosNorlLengValue = -8;
@@ -32,6 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAA_None.loadingAA_None_Y = 0;
             CanCreateSpawnGunDust = false;
             CanCreateCaseEjection = false;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.clipOut = CWRSound.Gun_HandGun_ClipOut with { Volume = 0.75f };

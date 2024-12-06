@@ -214,10 +214,12 @@ namespace CalamityOverhaul.Content
 
         public override void SaveData(TagCompound tag) {
             OverhaulTheBibleUI.Instance?.SaveData(tag);
+            SupertableUI.Instance?.SaveData(tag);
         }
 
         public override void LoadData(TagCompound tag) {
             OverhaulTheBibleUI.Instance?.LoadData(tag);
+            SupertableUI.Instance?.LoadData(tag);
         }
 
         public override void OnHurt(Player.HurtInfo info) {

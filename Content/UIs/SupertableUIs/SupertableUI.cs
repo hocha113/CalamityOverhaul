@@ -13,6 +13,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
@@ -52,8 +53,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public Rectangle inputRec;
 
         public Rectangle closeRec;
-
-        public bool initializeBool = true;
 
         public Vector2 topLeft;
 
@@ -148,10 +147,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public void UpdateUIElementPos() {
-            if (DrawPosition == Vector2.Zero && initializeBool) {
-                DrawPosition = (new Vector2(Main.screenWidth, Main.screenHeight) - new Vector2(Texture.Width - Main.screenWidth / 2, Texture.Height + 400)) / 2;
-                initializeBool = false;
-            }
+            //if (DrawPosition == Vector2.Zero && initializeBool) {
+            //    DrawPosition = (new Vector2(Main.screenWidth, Main.screenHeight) - new Vector2(Texture.Width - Main.screenWidth / 2, Texture.Height + 400)) / 2;
+            //    initializeBool = false;
+            //}
 
             topLeft = new Vector2(15, 30) + DrawPosition;
             cellWid = 48;
@@ -198,6 +197,27 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
             SetZenithWorldRecipesData();
             RecipeUI.LoadAllRecipes();
+        }
+
+        public void SaveData(TagCompound tag) {
+            tag["SupertableUI_DrawPos_X"] = DrawPosition.X;
+            tag["SupertableUI_DrawPos_Y"] = DrawPosition.Y;
+        }
+
+        public void LoadData(TagCompound tag) {
+            if (tag.TryGet("SupertableUI_DrawPos_X", out float x)) {
+                DrawPosition.X = x;
+            }
+            else {
+                DrawPosition.X = 500;
+            }
+
+            if (tag.TryGet("SupertableUI_DrawPos_Y", out float y)) {
+                DrawPosition.Y = y;
+            }
+            else {
+                DrawPosition.Y = 300;
+            }
         }
 
         public static void SetZenithWorldRecipesData() {

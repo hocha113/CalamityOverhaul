@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             if (Main.rand.NextBool(6)) {
                 Main.projectile[type].penetrate = -1;
+                Main.projectile[type].damage /= 2;
             }
         }
     }

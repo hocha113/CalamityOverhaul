@@ -34,27 +34,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.ShadowFlame, 600);
-            if (Projectile.owner == Main.myPlayer && Projectile.ai[0] == 0 && Projectile.numHits == 0) {
+            if (Projectile.IsOwnedByLocalPlayer() && Projectile.numHits == 0 && Projectile.ai[0] == 0) {
                 for (int i = 0; i < 8; i++) {
-                    Vector2 velocity = ((MathHelper.TwoPi * i / 8f) - (MathHelper.Pi / 8f)).ToRotationVector2() * 14f;
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity
+                    Vector2 velocity = ((MathHelper.TwoPi * i / 8f) - (MathHelper.Pi / 8f)).ToRotationVector2() * 6f;
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center - Projectile.velocity, velocity
                         , ModContent.ProjectileType<AetherOrb>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 1);
                 }
             }
         }
 
         public override void OnKill(int timeLeft) {
-            if (Projectile.owner == Main.myPlayer && Projectile.numHits == 0 && Projectile.ai[0] == 0) {
+            if (CWRUtils.GetProjectileHasNum(Type) > 120) {
+                return;
+            }
+
+            if (Projectile.IsOwnedByLocalPlayer() && Projectile.numHits == 0 && Projectile.ai[0] == 0) {
                 for (int i = 0; i < 8; i++) {
-                    Vector2 velocity = ((MathHelper.TwoPi * i / 8f) - (MathHelper.Pi / 8f)).ToRotationVector2() * 14f;
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity
+                    Vector2 velocity = ((MathHelper.TwoPi * i / 8f) - (MathHelper.Pi / 8f)).ToRotationVector2() * 6f;
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center - Projectile.velocity, velocity
                         , ModContent.ProjectileType<AetherOrb>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 1);
                 }
             }
-            if (Projectile.owner == Main.myPlayer && Projectile.ai[0] == 1) {
+            if (Projectile.IsOwnedByLocalPlayer() && Projectile.ai[0] == 1) {
                 for (int i = 0; i < 2; i++) {
-                    Vector2 velocity = Projectile.velocity.RotatedBy((-1 + i) * 0.1f) * 0.7f;
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity
+                    Vector2 velocity = Projectile.velocity.RotatedBy((-1 + i) * 0.1f) * 2f;
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center - Projectile.velocity, velocity
                         , ModContent.ProjectileType<AetherOrb>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 2);
                 }
             }
