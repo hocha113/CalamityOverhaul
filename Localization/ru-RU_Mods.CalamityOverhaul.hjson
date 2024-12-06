@@ -368,10 +368,18 @@ Items: {
 		Legend:
 			'''
 
-			Угли войны все еще горят сегодня, 10 миллиардов лет спустя
-			Тело бога царства ю было разбито на миллионы сияющих осколков, разбросанных по всей галактике
-			Чудо-всего лишь жалкая имитация божественного мусора
-			И теперь этот длинный лук, убивший всевышнего, восстанет из пламени рая
+			Сто миллиардов лет назад пламя войны не угасло; оно горит, словно раскалённые угли, пронзая бесконечное время, чтобы пылать до сих пор.
+			Это останки заката богов, послесвечение древней космической катастрофы, вечное эхо жизни и гибели.
+			Бог Сияния, воплощение галактического порядка, пал в величайшем мятеже, который когда-либо знал космос.
+			Его тело разбилось, словно звёзды, его осколки стали бесчисленными сверкающими божественными искрами, рассеянными по всем уголкам галактики.
+			Эти искры породили жизнь, знания и чудеса, но также принесли жадность, разрушение и осквернение. Смертные поклоняются его останкам, называя их святыми реликвиями;
+			но те чудесные вещи — лишь жалкие подражания его силе, символы безрассудной дерзости смертных.
+			Однако среди бесконечных руин и забытых реликвий есть артефакт, превосходящий даже божественные чудеса.
+			Он не только стал свидетелем падения Высшего Бога, но и сам отправил его в бездну вечной ночи — легендарный лук.
+			Он пылал в гневе небес, выпустил смертельную стрелу, сокрушившую власть Высшего и положившую конец амбициям богов.
+			С окончанием войны этот лук был погребён в потоке времени, утерян среди бесконечных тайн и легенд.
+			Но теперь колёса судьбы вновь вращаются. Небесный гнев воспламеняется заново. 
+			Лук убийцы богов вновь явится, среди симфонии звёзд, чтобы вновь написать историю кровью и звёздной пылью.
 
 			'''
 	}
@@ -2733,57 +2741,93 @@ Items: {
 
 	AquamarineStaffEcType: {
 		// DisplayName: Aquamarine Staff
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires two blue water bolts.
+			"Salty!"
+			''' */
 	}
 
 	IcicleStaffEcType: {
 		// DisplayName: Icicle Staff
-		// Tooltip: ""
+		// Tooltip: Summons icicles to fall from the sky.
 	}
 
 	ManaRoseEcType: {
 		// DisplayName: Mana Rose
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires a magical flower that explodes and splits into petals.
+			"A perfect day for confession."
+			''' */
 	}
 
 	PlasmaRodEcType: {
-		// DisplayName: Plasma Rod
-		// Tooltip: ""
+		// DisplayName: Plasma Rifle
+		/* Tooltip:
+			'''
+			Fires explosive ion beams.
+			Right-click to rapidly fire ion bolts.
+			''' */
 	}
 
 	SandstreamScepterEcType: {
 		// DisplayName: Sandstream Scepter
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires an explosive stream of sand fragments that fall after hitting enemies.
+			Explodes only when the sand fragments disappear.
+			''' */
 	}
 
 	SkyGlazeEcType: {
-		// DisplayName: Sky Glaze
-		// Tooltip: ""
+		// DisplayName: Sky Feather
+		// Tooltip: Summons feathers to fall from the sky, attaching to enemies and tiles before exploding.
 	}
 
 	AestheticusEcType: {
 		// DisplayName: Aestheticus
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires exploding crystals that slow enemies.
+			Benefits from all damage bonuses.
+			''' */
 	}
 
 	EyeofMagnusEcType: {
-		// DisplayName: Eyeof Magnus
-		// Tooltip: ""
+		// DisplayName: Eye of Magnus
+		/* Tooltip:
+			'''
+			Fires starlight beams that reduce enemy defense.
+			Restores health and mana upon hitting enemies.
+			Benefits from all damage bonuses.
+			''' */
 	}
 
 	LunicEyeEcType: {
 		// DisplayName: Lunic Eye
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires starlight beams that reduce enemy defense.
+			Benefits from all damage bonuses.
+			''' */
 	}
 
 	BasherEcType: {
 		// DisplayName: Basher
-		// Tooltip: ""
+		// Tooltip: Inflicts a radiation debuff upon hitting enemies.
 	}
 
 	EvilSmasherEcType: {
 		// DisplayName: Evil Smasher
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Grants attribute boosts for each enemy killed with this hammer.
+			Stops growing when the maximum value is reached.
+			Switching to another item removes the bonuses.
+			Taking damage removes one attribute boost.
+			"The hammer is both evil and powerful."
+			''' */
 	}
 
 	DeathSickleRogue: {
@@ -2797,7 +2841,11 @@ Items: {
 
 	TitanArmEcType: {
 		// DisplayName: Titan Arm
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Charge up for a mighty swing.
+			"Everyone gets slapped."
+			''' */
 	}
 }
 

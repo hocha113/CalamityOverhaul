@@ -368,10 +368,22 @@ Items: {
 		Legend:
 			'''
 
-			Les cendres de la guerre brûlent encore comme au premier jour, même après des milliards d'années
-			Le corps du dieu du rayonnement s'est brisé en d'innombrables fragments brillants dispersés à travers la galaxie
-			Le miracle n'est rien d'autre qu'une médiocre imitation des débris divins
-			Et maintenant, cet arc qui a tué le dieu suprême, ressuscitera du feu de la colère divine
+			Il y a cent milliards d’années, le feu de la guerre ne s’éteignit pas ; 
+			il brille encore tel des braises ardentes, traversant l’éternité pour embraser le présent.
+			Ce sont les vestiges du Crépuscule des Dieux, la lumière résiduelle de l’antique dislocation cosmique, 
+			l’écho incessant de la vie et de la destruction.
+			Le Dieu de la Lumière, incarnation de l’ordre galactique, 
+			périt dans la plus grande rébellion que l’univers ait jamais connue.
+			Son corps éclata comme des étoiles en fragments, se dispersant en d’innombrables éclats divins étincelants aux confins de la galaxie.
+			Ces éclats donnèrent naissance à la vie, à la connaissance et aux miracles, 
+			mais engendrèrent également la cupidité, la ruine et la profanation. Les mortels vénèrent ses vestiges et les appellent des reliques sacrées ;
+			pourtant, ces merveilles ne sont que des imitations maladroites de sa puissance, des symboles de l’arrogance imprudente des mortels.
+			Mais parmi les ruines sans fin et les reliques oubliées, il existe un artefact qui dépasse même les miracles divins.
+			Ce fut non seulement le témoin de la chute du Dieu Suprême, mais également l’instrument de sa descente dans l’abîme éternel – un arc légendaire.
+			Il brûlait dans la fureur céleste, lançant la flèche fatale qui brisa le pouvoir du Suprême et mit fin aux ambitions divines.
+			À la fin de la guerre, cet arc fut enseveli dans le flot du temps, perdu parmi les mystères et les légendes infinies.
+			Mais aujourd’hui, les rouages du destin tournent à nouveau. La fureur céleste s’embrase de nouveau. 
+			L’arc du tueur de dieux refera surface, au cœur de la symphonie des étoiles, pour écrire l’histoire à nouveau dans le sang et la poussière d’étoiles.
 
 			'''
 	}
@@ -2702,57 +2714,93 @@ Items: {
 
 	AquamarineStaffEcType: {
 		// DisplayName: Aquamarine Staff
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires two blue water bolts.
+			"Salty!"
+			''' */
 	}
 
 	IcicleStaffEcType: {
 		// DisplayName: Icicle Staff
-		// Tooltip: ""
+		// Tooltip: Summons icicles to fall from the sky.
 	}
 
 	ManaRoseEcType: {
 		// DisplayName: Mana Rose
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires a magical flower that explodes and splits into petals.
+			"A perfect day for confession."
+			''' */
 	}
 
 	PlasmaRodEcType: {
-		// DisplayName: Plasma Rod
-		// Tooltip: ""
+		// DisplayName: Plasma Rifle
+		/* Tooltip:
+			'''
+			Fires explosive ion beams.
+			Right-click to rapidly fire ion bolts.
+			''' */
 	}
 
 	SandstreamScepterEcType: {
 		// DisplayName: Sandstream Scepter
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires an explosive stream of sand fragments that fall after hitting enemies.
+			Explodes only when the sand fragments disappear.
+			''' */
 	}
 
 	SkyGlazeEcType: {
-		// DisplayName: Sky Glaze
-		// Tooltip: ""
+		// DisplayName: Sky Feather
+		// Tooltip: Summons feathers to fall from the sky, attaching to enemies and tiles before exploding.
 	}
 
 	AestheticusEcType: {
 		// DisplayName: Aestheticus
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires exploding crystals that slow enemies.
+			Benefits from all damage bonuses.
+			''' */
 	}
 
 	EyeofMagnusEcType: {
-		// DisplayName: Eyeof Magnus
-		// Tooltip: ""
+		// DisplayName: Eye of Magnus
+		/* Tooltip:
+			'''
+			Fires starlight beams that reduce enemy defense.
+			Restores health and mana upon hitting enemies.
+			Benefits from all damage bonuses.
+			''' */
 	}
 
 	LunicEyeEcType: {
 		// DisplayName: Lunic Eye
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires starlight beams that reduce enemy defense.
+			Benefits from all damage bonuses.
+			''' */
 	}
 
 	BasherEcType: {
 		// DisplayName: Basher
-		// Tooltip: ""
+		// Tooltip: Inflicts a radiation debuff upon hitting enemies.
 	}
 
 	EvilSmasherEcType: {
 		// DisplayName: Evil Smasher
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Grants attribute boosts for each enemy killed with this hammer.
+			Stops growing when the maximum value is reached.
+			Switching to another item removes the bonuses.
+			Taking damage removes one attribute boost.
+			"The hammer is both evil and powerful."
+			''' */
 	}
 
 	DeathSickleRogue: {
@@ -2766,7 +2814,11 @@ Items: {
 
 	TitanArmEcType: {
 		// DisplayName: Titan Arm
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Charge up for a mighty swing.
+			"Everyone gets slapped."
+			''' */
 	}
 }
 

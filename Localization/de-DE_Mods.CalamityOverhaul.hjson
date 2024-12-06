@@ -368,10 +368,23 @@ Items: {
 		Legend:
 			'''
 
-			Die Glut des Krieges brennt auch nach zehn Milliarden Jahren noch stark
-			Der Körper des strahlenden Gottes zerbrach in unzählige glitzernde Fragmente, verstreut über die ganze Galaxie
-			Wunderbare Artefakte sind nur schwache Nachahmungen der Überreste des Gottes
-			Und nun wird dieser Langbogen, der einen höchsten Gott getötet hat, aus dem Zorn des Himmels wiedergeboren
+			Vor hundert Milliarden Jahren erlosch das Feuer des Krieges nicht; 
+			es glimmt wie glühende Kohlen und durchdringt die endlose Zeit, um bis heute zu brennen.
+			Dies sind die Überreste der Götterdämmerung, 
+			das Nachleuchten des uralten kosmischen Zerfalls, das ewige Echo des Werdens.
+			Der Gott des Leuchtens, die Verkörperung der galaktischen Ordnung, 
+			fiel in der größten Rebellion, die das Universum je gesehen hat.
+			Sein Körper zerschellte wie Sterne, 
+			seine Splitter wurden zu unzähligen strahlenden göttlichen Funken und verteilten sich in allen Ecken der Galaxis.
+			Diese Funken brachten Leben, Wissen und Wunder hervor, doch sie brachten auch Gier, 
+			Zerstörung und Entweihung. Die Sterblichen verehren seine Überreste und nennen sie heilige Reliquien;
+			doch jene Wunderdinge sind nichts als schwache Nachahmungen seiner Macht, Symbole der vermessenen Hybris der Sterblichen.
+			Doch unter den endlosen Ruinen und vergessenen Relikten gibt es ein Artefakt, das selbst die Wunder der Götter überragt.
+			Es ist Zeuge des Sturzes des höchsten Gottes und zugleich der Auslöser seines Falls in die ewige Nacht – ein legendärer Langbogen.
+			Er brannte in der Wut des Himmels, sandte den tödlichen Pfeil aus, der die Macht des Höchsten zerschmetterte und die Ambitionen der Götter beendete.
+			Mit dem Ende des Krieges wurde dieser Bogen von den Fluten der Zeit verschlungen und in endloser Mysterien und Legenden begraben.
+			Doch jetzt dreht sich das Rad des Schicksals erneut. Der Zorn des Himmels entflammt aufs Neue. 
+			Der Gottesmörderbogen wird wieder auftauchen, inmitten der Symphonie der Sterne, und die Geschichte wird erneut in Blut und Sternenstaub geschrieben.
 
 			'''
 	}
@@ -2699,57 +2712,93 @@ Items: {
 
 	AquamarineStaffEcType: {
 		// DisplayName: Aquamarine Staff
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires two blue water bolts.
+			"Salty!"
+			''' */
 	}
 
 	IcicleStaffEcType: {
 		// DisplayName: Icicle Staff
-		// Tooltip: ""
+		// Tooltip: Summons icicles to fall from the sky.
 	}
 
 	ManaRoseEcType: {
 		// DisplayName: Mana Rose
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires a magical flower that explodes and splits into petals.
+			"A perfect day for confession."
+			''' */
 	}
 
 	PlasmaRodEcType: {
-		// DisplayName: Plasma Rod
-		// Tooltip: ""
+		// DisplayName: Plasma Rifle
+		/* Tooltip:
+			'''
+			Fires explosive ion beams.
+			Right-click to rapidly fire ion bolts.
+			''' */
 	}
 
 	SandstreamScepterEcType: {
 		// DisplayName: Sandstream Scepter
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires an explosive stream of sand fragments that fall after hitting enemies.
+			Explodes only when the sand fragments disappear.
+			''' */
 	}
 
 	SkyGlazeEcType: {
-		// DisplayName: Sky Glaze
-		// Tooltip: ""
+		// DisplayName: Sky Feather
+		// Tooltip: Summons feathers to fall from the sky, attaching to enemies and tiles before exploding.
 	}
 
 	AestheticusEcType: {
 		// DisplayName: Aestheticus
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires exploding crystals that slow enemies.
+			Benefits from all damage bonuses.
+			''' */
 	}
 
 	EyeofMagnusEcType: {
-		// DisplayName: Eyeof Magnus
-		// Tooltip: ""
+		// DisplayName: Eye of Magnus
+		/* Tooltip:
+			'''
+			Fires starlight beams that reduce enemy defense.
+			Restores health and mana upon hitting enemies.
+			Benefits from all damage bonuses.
+			''' */
 	}
 
 	LunicEyeEcType: {
 		// DisplayName: Lunic Eye
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Fires starlight beams that reduce enemy defense.
+			Benefits from all damage bonuses.
+			''' */
 	}
 
 	BasherEcType: {
 		// DisplayName: Basher
-		// Tooltip: ""
+		// Tooltip: Inflicts a radiation debuff upon hitting enemies.
 	}
 
 	EvilSmasherEcType: {
 		// DisplayName: Evil Smasher
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Grants attribute boosts for each enemy killed with this hammer.
+			Stops growing when the maximum value is reached.
+			Switching to another item removes the bonuses.
+			Taking damage removes one attribute boost.
+			"The hammer is both evil and powerful."
+			''' */
 	}
 
 	DeathSickleRogue: {
@@ -2763,7 +2812,11 @@ Items: {
 
 	TitanArmEcType: {
 		// DisplayName: Titan Arm
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Charge up for a mighty swing.
+			"Everyone gets slapped."
+			''' */
 	}
 }
 

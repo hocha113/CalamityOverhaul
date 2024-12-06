@@ -338,10 +338,26 @@ Items: {
 		Legend:
 			'''
 
-			The embers of the war still burn today, billions of years later
-			The body of the Lord of Glory shattered into countless pieces scattered throughout the galaxy
-			A miracle is a poor imitation of the remains of a god
-			And now, the longbow that struck the most High God will rise again from the wrath of heaven
+			The flames of war from a billion years ago have never truly been extinguished. 
+			Like smoldering embers, they traverse the endless corridors of time, burning brightly even now.
+			They are the remnants of the Twilight of the Gods, the afterglow of the universe’s ancient schism, the ceaseless echoes of existence and annihilation.
+			
+			The Radiant God, embodiment of galactic order, fell in the greatest rebellion the cosmos has ever witnessed.
+			The divine body shattered like a collapsing star, scattering countless brilliant fragments across every corner of the galaxy.
+			Those fragments became the seeds of life, the spark of knowledge, the cradle of miracles—and yet, 
+			they also bore the stain of greed, destruction, and desecration.
+			Mortals revere these remnants, calling them sacred relics; 
+			yet the so-called miracles crafted from them are but crude imitations of the divine, the reckless hubris of those who do not know reverence.
+			
+			But among the forgotten ruins and the echoes of legend, there exists an artifact that transcends all relics. 
+			It is no mere witness to the fall of the Supreme God; it was the very weapon that cast Him into eternal oblivion—a bow of legend.
+			Once wreathed in the fury of heaven’s fire, 
+			it loosed the fatal arrow that sundered the divine authority and extinguished the hubris of gods, bringing their ambitions to ruin.
+			As the war ended, the bow too was claimed by the tides of time, buried in the endless shroud of mystery and myth.
+			
+			Yet now, the wheel of fate turns once more. 
+			The fires of heaven reignite, and that god-slaying bow shall emerge anew amid the symphony of stars.
+			Once more, it shall carve the annals of history in blood and stardust.
 
 			'''
 	}
@@ -2713,71 +2729,111 @@ Items: {
 
 	AquamarineStaffEcType: {
 		DisplayName: Aquamarine Staff
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires two blue water bolts.
+			"Salty!"
+			'''
 	}
 
 	IcicleStaffEcType: {
 		DisplayName: Icicle Staff
-		Tooltip: ""
+		Tooltip: Summons icicles to fall from the sky.
 	}
 
 	ManaRoseEcType: {
 		DisplayName: Mana Rose
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires a magical flower that explodes and splits into petals.
+			"A perfect day for confession."
+			'''
 	}
 
 	PlasmaRodEcType: {
-		DisplayName: Plasma Rod
-		Tooltip: ""
+		DisplayName: Plasma Rifle
+		Tooltip:
+			'''
+			Fires explosive ion beams.
+			Right-click to rapidly fire ion bolts.
+			'''
 	}
 
 	SandstreamScepterEcType: {
 		DisplayName: Sandstream Scepter
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires an explosive stream of sand fragments that fall after hitting enemies.
+			Explodes only when the sand fragments disappear.
+			'''
 	}
 
 	SkyGlazeEcType: {
-		DisplayName: Sky Glaze
-		Tooltip: ""
+		DisplayName: Sky Feather
+		Tooltip: Summons feathers to fall from the sky, attaching to enemies and tiles before exploding.
 	}
 
 	AestheticusEcType: {
 		DisplayName: Aestheticus
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires exploding crystals that slow enemies.
+			Benefits from all damage bonuses.
+			'''
 	}
 
 	EyeofMagnusEcType: {
-		DisplayName: Eyeof Magnus
-		Tooltip: ""
+		DisplayName: Eye of Magnus
+		Tooltip:
+			'''
+			Fires starlight beams that reduce enemy defense.
+			Restores health and mana upon hitting enemies.
+			Benefits from all damage bonuses.
+			'''
 	}
 
 	LunicEyeEcType: {
 		DisplayName: Lunic Eye
-		Tooltip: ""
+		Tooltip:
+			'''
+			Fires starlight beams that reduce enemy defense.
+			Benefits from all damage bonuses.
+			'''
 	}
 
 	BasherEcType: {
 		DisplayName: Basher
-		Tooltip: ""
+		Tooltip: Inflicts a radiation debuff upon hitting enemies.
 	}
 
 	EvilSmasherEcType: {
 		DisplayName: Evil Smasher
-		Tooltip: ""
+		Tooltip:
+			'''
+			Grants attribute boosts for each enemy killed with this hammer.
+			Stops growing when the maximum value is reached.
+			Switching to another item removes the bonuses.
+			Taking damage removes one attribute boost.
+			"The hammer is both evil and powerful."
+			'''
 	}
 
 	DeathSickleRogue: {
 		DisplayName: Reaper's Flying Scythe
 		Tooltip:
 			'''
-			Stealth attacks generate six homing reaper scythes at the end of their flight path.  
-			"The Reaper figured this would further improve its efficiency."  
+			Stealth attacks spawn six tracking death sickles at the end of the flight path.
+			"This further enhances work efficiency."
 			'''
 	}
 
 	TitanArmEcType: {
 		DisplayName: Titan Arm
-		Tooltip: ""
+		Tooltip:
+			'''
+			Charge up for a mighty swing.
+			"Everyone gets slapped."
+			'''
 	}
 }
 

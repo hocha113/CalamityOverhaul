@@ -371,10 +371,16 @@ Items: {
 		Legend:
 			'''
 
-			战争的余烬在百亿年后的今天依然燃烧如初
-			耀界之神的身躯破碎成无数璀璨的碎片散落遍银河各处
-			奇迹之物不过是对神的残骸的拙劣仿制
-			而现在，这把击杀过至高神的长弓，将从天堂的怒火中复现
+			百亿年前的战火并未熄灭，它们如炽烈的余烬，穿越无尽时光，至今燃烧不息。
+			那是众神黄昏的遗迹，是古老宇宙裂变时刻的余光，是生生不息的回响。
+			耀界之神，银河秩序的化身，在那场宇宙间最伟大的反叛中陨落。
+			祂的身躯如同星辰碎裂，化作无数璀璨的神辉，散落至银河的每一个角落。
+			那些光辉孕育了生命、知识与奇迹，也带来了贪婪、毁灭与亵渎。凡人崇拜着祂的残骸，称之为神圣遗迹；
+			而那些奇迹之物，不过是对祂力量的拙劣复制，是凡人不知敬畏的狂妄象征。
+			但在无尽的遗忘与遗迹之中，有一物品超越了神迹，它不仅见证了至高神的陨落，更亲手将其送入永夜的深渊——这是一把传说中的长弓。
+			它曾在天堂的怒火中燃烧，射出那致命的一箭，粉碎了至高神的权能，终结了众神的野望。
+			随着战争的终结，这柄弓也随时间的洪流被埋葬在无尽的神秘与传说中。
+			而如今，命运的齿轮再次转动，天堂的怒火重新点燃。那柄杀神之弓，将在众星的赞歌中复现，再次将历史书写于鲜血与星尘之上
 
 			'''
 	}
@@ -2713,58 +2719,94 @@ Items: {
 	}
 
 	AquamarineStaffEcType: {
-		// DisplayName: Aquamarine Staff
-		// Tooltip: ""
+		DisplayName: 海水杖
+		Tooltip:
+			'''
+			发射两道蓝色水矢
+			"咸咸的"
+			'''
 	}
 
 	IcicleStaffEcType: {
-		// DisplayName: Icicle Staff
-		// Tooltip: ""
+		DisplayName: 冰坠法杖
+		Tooltip: 召唤冰柱从天而降
 	}
 
 	ManaRoseEcType: {
-		// DisplayName: Mana Rose
-		// Tooltip: ""
+		DisplayName: 魔法玫瑰
+		Tooltip:
+			'''
+			发射会爆炸分裂成花瓣的魔法花朵
+			"告白的好日子"
+			'''
 	}
 
 	PlasmaRodEcType: {
-		// DisplayName: Plasma Rod
-		// Tooltip: ""
+		DisplayName: 等离子步枪
+		Tooltip:
+			'''
+			发射会爆炸的离子射线
+			右键快速发射离子束
+			'''
 	}
 
 	SandstreamScepterEcType: {
-		// DisplayName: Sandstream Scepter
-		// Tooltip: ""
+		DisplayName: 流沙权杖
+		Tooltip:
+			'''
+			发射一束爆炸性的沙碎片，命中敌人后坠落
+			仅当沙碎片消失时才会引发爆炸
+			'''
 	}
 
 	SkyGlazeEcType: {
-		// DisplayName: Sky Glaze
-		// Tooltip: ""
+		DisplayName: 天空之羽
+		Tooltip: 召唤羽毛从天而降，会附着在敌人和物块上并爆炸
 	}
 
 	AestheticusEcType: {
-		// DisplayName: Aestheticus
-		// Tooltip: ""
+		DisplayName: 美学魔杖
+		Tooltip:
+			'''
+			发射爆炸水晶减速敌人
+			受所有的伤害属性加成
+			'''
 	}
 
 	EyeofMagnusEcType: {
-		// DisplayName: Eyeof Magnus
-		// Tooltip: ""
+		DisplayName: 马格努斯之眼
+		Tooltip:
+			'''
+			发射能够削减敌人防护能力的星光射线
+			击中敌人时会回复生命值和魔力值
+			受所有的伤害属性加成
+			'''
 	}
 
 	LunicEyeEcType: {
-		// DisplayName: Lunic Eye
-		// Tooltip: ""
+		DisplayName: 星光之眼
+		Tooltip:
+			'''
+			发射能够削减敌人防护能力的星光射线
+			受所有的伤害属性加成
+			'''
 	}
 
 	BasherEcType: {
-		// DisplayName: Basher
-		// Tooltip: ""
+		DisplayName: 痛击者
+		Tooltip: 击中敌人时会造成辐射减益
 	}
 
 	EvilSmasherEcType: {
-		// DisplayName: Evil Smasher
-		// Tooltip: ""
+		DisplayName: 邪恶粉碎者
+		Tooltip:
+			'''
+			每用这把锤子击杀一名敌人都会获得属性提升
+			属性到达最大值时停止增长
+			如果使用其他物品会移除加成
+			受击时移除一次属性提升
+			“搞哥邪恶而有力，毛哥有力而邪恶”
+			'''
 	}
 
 	DeathSickleRogue: {
@@ -2777,8 +2819,12 @@ Items: {
 	}
 
 	TitanArmEcType: {
-		// DisplayName: Titan Arm
-		// Tooltip: ""
+		DisplayName: 泰坦手臂
+		Tooltip:
+			'''
+			蓄力进行势大力沉的挥舞
+			"谁来都要挨一巴掌"
+			'''
 	}
 }
 
