@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                     HandleChannelMovement(Owner, playerRotatedPoint);
                 }
                 else {
-                    if (CanAttemptDead) {
+                    if (CanAttemptDead || Main.zenithWorld) {
                         hitCooldown = Main.zenithWorld ? 0 : 8;
                         Projectile.Kill();
                     }
@@ -307,12 +307,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 Projectile.velocity = newVelocity;
             }
         }
+
         public override void ModifyDamageHitbox(ref Rectangle hitbox) {
             int size = 60;
             if (Slash3) {
                 hitbox.Inflate(size, size);
             }
         }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.numHits == 0) {
                 Owner.CWR().RisingDragonCharged += (int)(MurasamaEcType.GetOnRDCD / 10f);
@@ -369,6 +371,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
                 dust2.noGravity = true;
             }
         }
+
         public override Color? GetAlpha(Color lightColor) {
             return new Color(100, 0, 0, 0);
         }
@@ -379,15 +382,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float point = 0;
-            Vector2 toMou = ToMouse;
-            Vector2 orig = Owner.Center + toMou.GetNormalVector() * 30;
+            Vector2 unitOffset = (Projectile.velocity * 0.3f) + new Vector2(0, -32).RotatedBy(Projectile.rotation);
+            Vector2 orig = Owner.GetPlayerStabilityCenter() + unitOffset;
             float lengMode = 220;
             float lengMode2 = 250;
             if (Slash3) {
                 lengMode = 300;
                 lengMode2 = 270;
             }
-            Vector2 endPos = orig + toMou.UnitVector() * (lengMode * Projectile.scale);
+            Vector2 endPos = orig + ToMouse.UnitVector() * (lengMode * Projectile.scale);
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
                 , orig, endPos, (lengMode2 * Projectile.scale), ref point);
         }
