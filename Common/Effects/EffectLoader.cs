@@ -209,16 +209,24 @@ namespace CalamityOverhaul.Common.Effects
             Main.spriteBatch.End();
         }
 
-        private bool HasPwoerEffect() {
+        private static bool HasPwoerEffect() {
+            if (Main.gameMenu) {
+                return false;
+            }
             if (!CWRServerConfig.Instance.MurasamaSpaceFragmentationBool) {
                 return false;
             }
             return Main.LocalPlayer.CWR().EndSkillEffectStartBool;
         }
 
-        private bool HasWarpEffect(out List<IDrawWarp> warpSets, out List<IDrawWarp> warpSetsNoBlueshift) {
+        private static bool HasWarpEffect(out List<IDrawWarp> warpSets, out List<IDrawWarp> warpSetsNoBlueshift) {
             warpSets = [];
             warpSetsNoBlueshift = [];
+
+            if (Main.gameMenu) {
+                return false;
+            }
+
             foreach (Projectile p in Main.ActiveProjectiles) {
                 if (p.ModProjectile is null) {
                     continue;
