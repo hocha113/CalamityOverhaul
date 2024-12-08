@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private static Asset<Texture2D> githubOAC;
         private static Asset<Texture2D> steamOAC;
 
-        private Vector2 githubPos1 => new Vector2(Main.screenWidth - 80, 20);
+        private Vector2 githubPos1 => new Vector2(Main.screenWidth - 60, 60);
 
-        private Vector2 githubPos2 => new Vector2(Main.screenWidth - 140, 30);
+        private Vector2 githubPos2 => new Vector2(Main.screenWidth - 140, 60);
 
         private Vector2 githubPos => Vector2.Lerp(githubPos1, githubPos2, _sengs);
 
@@ -43,9 +43,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         private float githubSiz => float.Lerp(githubSiz1, githubSiz2, _sengs);
 
-        private Vector2 steamPos1 => new Vector2(Main.screenWidth - 80, 20);
+        private Vector2 steamPos1 => new Vector2(Main.screenWidth - 80, 60);
 
-        private Vector2 steamPos2 => new Vector2(Main.screenWidth - 200, 30);
+        private Vector2 steamPos2 => new Vector2(Main.screenWidth - 200, 60);
 
         private Vector2 steamPos => Vector2.Lerp(steamPos1, steamPos2, _sengs);
 
