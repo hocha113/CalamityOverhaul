@@ -45,8 +45,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Eye
                     Velocity = Projectile.velocity * 0.2f,
                     Position = Projectile.Center + CWRUtils.randVr(6),
                     Scale = Main.rand.NextFloat(0.8f, 1.2f),
-                    maxLifeTime = 60,
-                    minLifeTime = 30
+                    maxLifeTime = 20,
+                    minLifeTime = 8
                 };
                 PRTLoader.AddParticle(lavaFire);
             }

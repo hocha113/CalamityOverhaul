@@ -26,7 +26,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override int TargetID => NPCID.SkeletronPrime;
         public ThanatosSmokeParticleSet SmokeDrawer;
         private const int maxfindModes = 6000;
-        private CalamityGlobalNPC calamityNPC;
         private Player player;
         private int frame = 0;
         private int frameCount;
@@ -310,7 +309,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void ThisFromeFindPlayer(NPC npc) {
+        internal static void SendExtraAI(NPC npc) {
+            if (VaultUtils.isServer) {
+                npc.SyncExtraAI();
+            }
+        }
+
+        private void ThisFromeFindPlayer() {
             if (Main.player[npc.target].dead || Math.Abs(npc.position.X - Main.player[npc.target].position.X) > maxfindModes
                 || Math.Abs(npc.position.Y - Main.player[npc.target].position.Y) > maxfindModes) {
                 npc.TargetClosest();
@@ -318,12 +323,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     || Math.Abs(npc.position.Y - Main.player[npc.target].position.Y) > maxfindModes) {
                     npc.ai[1] = 3f;
                 }
-            }
-        }
-
-        internal static void SendExtraAI(NPC npc) {
-            if (VaultUtils.isServer) {
-                npc.SyncExtraAI();
             }
         }
 
@@ -352,11 +351,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 NPC.mechQueen = npc.whoAmI;
             }
 
-            calamityNPC = null;
-            if (!npc.TryGetGlobalNPC(out calamityNPC)) {
-                return true;
-            }
-
             setPosingStarmCount = 0;
             int typeSetPosingStarm = ModContent.ProjectileType<SetPosingStarm>();
             foreach (var value in Main.projectile) {
@@ -379,7 +373,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.ai[0] = 1f;
             }
 
-            ThisFromeFindPlayer(npc);
+            ThisFromeFindPlayer();
             CheakRam(out cannonAlive, out viceAlive, out sawAlive, out laserAlive);
             DealingDaytimeRage();
 
@@ -396,7 +390,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 case 2:
                     if (setPosingStarmCount > 0 && !noEye) {
                         npc.damage = 0;
-                        MoveToPoint(npc, player.Center + new Vector2(0, -300));
+                        MoveToPoint(player.Center + new Vector2(0, -300));
                         npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
 
                         ai3 = 0;
@@ -431,10 +425,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        internal static void SpawnHouengEffect(NPC npc) {
+        internal void SpawnHouengEffect() {
             for (int i = 0; i < 333; i++) {
-                PRT_Light particle = new PRT_Light(npc.Center + CWRUtils.randVr(0, npc.width), new Vector2(0, -5), 3.2f, Color.Red, 122);
+                PRT_Light particle = new PRT_Light(npc.Center + CWRUtils.randVr(0, npc.width), CWRUtils.randVr(3, 33), Main.rand.Next(1, 3), Color.Red, 32);
                 PRTLoader.AddParticle(particle);
+            }
+            for (int i = 0; i < 60; i++) {
+                Vector2 dustV = CWRUtils.randVr(3, 63);
+                int dust = Dust.NewDust(npc.Center + CWRUtils.randVr(0, npc.width), 1, 1, DustID.FireworkFountain_Red, dustV.X, dustV.Y);
+                Main.dust[dust].scale = Main.rand.NextFloat(1, 6);
             }
         }
 
@@ -442,9 +441,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (bossRush || NPC.IsMechQueenUp) {
                 return;
             }
-            foreach (var npc in Main.npc) {
-                if (npc.active && npc.type == NPCID.Retinazer || npc.type == NPCID.Spazmatism) {
-                    npc.active = false;
+            foreach (var findN in Main.npc) {
+                if (findN.active && findN.type == NPCID.Retinazer || findN.type == NPCID.Spazmatism) {
+                    findN.active = false;
                 }
             }
             VaultUtils.SpawnBossNetcoded(player, NPCID.Retinazer);
@@ -489,11 +488,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             if (ai0 == 172 && !VaultUtils.isServer) {
-                SpawnHouengEffect(npc);
+                SpawnHouengEffect();
                 SoundEngine.PlaySound(CWRSound.SpawnArmMgs, Main.LocalPlayer.Center);
             }
             if (ai0 == 180 && !VaultUtils.isClient) {
-                spanArm(npc);
+                spanArm();
             }
 
             if (ai0 > 220) {
@@ -517,12 +516,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 if (npc.ai[2] >= aiThreshold) {
                     npc.ai[2] = 0f;
                     npc.ai[1] = 1f;
-                    calamityNPC.newAI[0]++;
-                    if (!VaultUtils.isClient && calamityNPC.newAI[0] >= 2) {
+                    calNPC.newAI[0]++;
+                    if (!VaultUtils.isClient && calNPC.newAI[0] >= 2) {
                         int damage = SetMultiplier(npc.defDamage / 3);
                         Projectile.NewProjectile(npc.GetSource_FromAI(), player.Center, new Vector2(0, 0)
                             , ModContent.ProjectileType<SetPosingStarm>(), damage, 2, -1, 0, npc.whoAmI);
-                        calamityNPC.newAI[0] = 0;
+                        calNPC.newAI[0] = 0;
                         ai11++;
                         SendExtraAI(npc);
                         NetAISend();
@@ -574,13 +573,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     }
                 }
 
-                AdjustVerticalMovement(npc, verticalAcceleration, maxVerticalSpeed, deceleration, verticalOffset, verticalThreshold);
-                AdjustHorizontalMovement(npc, horizontalAcceleration, maxHorizontalSpeed, deceleration, horizontalOffset);
+                AdjustVerticalMovement(verticalAcceleration, maxVerticalSpeed, deceleration, verticalOffset, verticalThreshold);
+                AdjustHorizontalMovement(horizontalAcceleration, maxHorizontalSpeed, deceleration, horizontalOffset);
             }
             else if (npc.ai[1] == 1f) {
                 npc.defense *= 2;
                 npc.damage = npc.defDamage * 2;
-                calamityNPC.CurrentlyIncreasingDefenseOrDR = true;
+                calNPC.CurrentlyIncreasingDefenseOrDR = true;
 
                 npc.ai[2]++;
                 if (npc.ai[2] == 2f) {
@@ -598,7 +597,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.ai[1] = 0f;
                 }
 
-                UpdateRotation(npc);
+                UpdateRotation();
 
                 Vector2 targetVector = Main.player[npc.target].Center - npc.Center;
                 float distanceToTarget = targetVector.Length();
@@ -609,18 +608,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     speedMultiplier *= mechQueenSpeedFactor;
                 }
 
-                UpdateVelocity(calamityNPC, npc, targetVector, speedMultiplier, distanceToTarget);
+                UpdateVelocity(targetVector, speedMultiplier, distanceToTarget);
             }
             else if (npc.ai[1] == 2f) {
-                EnrageNPC(calamityNPC, npc);
-                UpdateRotation(npc);
-                MoveTowardsPlayer(npc, 10f, 8f, 32f, 100f);
+                EnrageNPC();
+                UpdateRotation();
+                MoveTowardsPlayer(10f, 8f, 32f, 100f);
             }
             else {
                 if (npc.ai[1] != 3f) {
                     return;
                 }
-                HandleDespawn(npc);
+                HandleDespawn();
             }
         }
 
@@ -652,7 +651,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             if (setPosingStarmCount > 0 && !noEye && ai3 != 3) {
                 npc.damage = 0;
-                MoveToPoint(npc, player.Center + new Vector2(0, -300));
+                MoveToPoint(player.Center + new Vector2(0, -300));
                 npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
 
                 ai3 = 1;
@@ -939,7 +938,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.velocity *= 0.98f;
                 }
                 else {
-                    MoveToPoint(npc, player.Center + new Vector2(0, -300));
+                    MoveToPoint(player.Center + new Vector2(0, -300));
                 }
 
                 npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
@@ -975,11 +974,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         #region SetFromeAIFunc
-        private void MoveToPoint(NPC npc, Vector2 point) {
+        private void MoveToPoint(Vector2 point) {
             npc.ChasingBehavior(point, 20);
         }
 
-        private void AdjustVerticalMovement(NPC npc, float acceleration, float maxSpeed, float deceleration, int offset, int threshold) {
+        private void AdjustVerticalMovement(float acceleration, float maxSpeed, float deceleration, int offset, int threshold) {
             if (npc.position.Y > Main.player[npc.target].position.Y - offset) {
                 if (npc.velocity.Y > 0f) {
                     npc.velocity.Y *= deceleration;
@@ -1000,7 +999,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void AdjustHorizontalMovement(NPC npc, float acceleration, float maxSpeed, float deceleration, float offset) {
+        private void AdjustHorizontalMovement(float acceleration, float maxSpeed, float deceleration, float offset) {
             if (npc.Center.X > Main.player[npc.target].Center.X + 100f + offset) {
                 if (npc.velocity.X > 0f) {
                     npc.velocity.X *= deceleration;
@@ -1022,7 +1021,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void UpdateRotation(NPC npc) {
+        private void UpdateRotation() {
             if (NPC.IsMechQueenUp || ai3 == 3) {
                 npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
             }
@@ -1044,10 +1043,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return initialSpeed;
         }
 
-        private void UpdateVelocity(CalamityGlobalNPC calamityNPC, NPC npc, Vector2 targetVector, float speedMultiplier, float distance) {
+        private void UpdateVelocity(Vector2 targetVector, float speedMultiplier, float distance) {
             float adjustedSpeed = speedMultiplier / distance;
             if (death && ai11 >= 1) {
-                if (--calamityNPC.newAI[2] <= 0) {
+                if (--calNPC.newAI[2] <= 0) {
                     npc.velocity.X = targetVector.X * adjustedSpeed;
                     npc.velocity.Y = targetVector.Y * adjustedSpeed;
                 }
@@ -1056,7 +1055,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
 
                 if (death || Main.masterMode) {
-                    if (++calamityNPC.newAI[1] > 90) {
+                    if (++calNPC.newAI[1] > 90) {
                         Vector2 toD = npc.Center.To(player.Center) + player.velocity;
                         toD = toD.UnitVector();
                         npc.velocity += toD * 23;
@@ -1069,8 +1068,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         if (Main.npc[primeVice].active)
                             Main.npc[primeVice].velocity += toD * 53;
 
-                        calamityNPC.newAI[2] = 60;
-                        calamityNPC.newAI[1] = 0;
+                        calNPC.newAI[2] = 60;
+                        calNPC.newAI[1] = 0;
                         npc.netUpdate = true;
                         SendExtraAI(npc);
                     }
@@ -1088,16 +1087,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void EnrageNPC(CalamityGlobalNPC calamityNPC, NPC npc) {
+        private void EnrageNPC() {
             // 增加 NPC 的伤害和防御
             npc.damage = 1000;
             npc.defense = 9999;
             // 标记当前正在愤怒状态和增加防御力或伤害减免
-            calamityNPC.CurrentlyEnraged = true;
-            calamityNPC.CurrentlyIncreasingDefenseOrDR = true;
+            calNPC.CurrentlyEnraged = true;
+            calNPC.CurrentlyIncreasingDefenseOrDR = true;
         }
 
-        private void MoveTowardsPlayer(NPC npc, float baseSpeed, float minSpeed, float maxSpeed, float speedDivisor) {
+        private void MoveTowardsPlayer(float baseSpeed, float minSpeed, float maxSpeed, float speedDivisor) {
             // 计算玩家与 NPC 之间的向量和距离
             Vector2 npcCenter = npc.Center;
             Vector2 playerCenter = Main.player[npc.target].Center;
@@ -1111,20 +1110,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.velocity = directionToPlayer * adjustedSpeed;
         }
 
-        private void HandleDespawn(NPC npc) {
+        private void HandleDespawn() {
             if (NPC.IsMechQueenUp) {
                 DespawnNPC(NPCID.Retinazer);
                 DespawnNPC(NPCID.Spazmatism);
                 // 如果 Retinazer 和 Spazmatism 都不在，则变形并消失
                 if (!NPC.AnyNPCs(NPCID.Retinazer) && !NPC.AnyNPCs(NPCID.Spazmatism)) {
-                    TransformOrDespawnNPC(NPCID.TheDestroyer, NPCID.TheDestroyerTail, npc);
+                    TransformOrDespawnNPC(NPCID.TheDestroyer, NPCID.TheDestroyerTail);
                 }
-                AdjustVelocity(npc, 0.1f, 0.95f, 13f);
+                AdjustVelocity(0.1f, 0.95f, 13f);
             }
             else {
                 npc.velocity = Vector2.Zero;
                 if (++ai1 >= 60) {
-                    SpawnHouengEffect(npc);
+                    SpawnHouengEffect();
                     npc.active = false;
                     return;
                 }
@@ -1146,7 +1145,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void TransformOrDespawnNPC(int findNpcID, int transformNpcID, NPC npc) {
+        private void TransformOrDespawnNPC(int findNpcID, int transformNpcID) {
             int npcIndex = NPC.FindFirstNPC(findNpcID);
             if (npcIndex >= 0) {
                 Main.npc[npcIndex].Transform(transformNpcID);
@@ -1154,7 +1153,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.EncourageDespawn(5);
         }
 
-        private void AdjustVelocity(NPC npc, float verticalAcceleration, float horizontalDeceleration, float maxVerticalSpeed) {
+        private void AdjustVelocity(float verticalAcceleration, float horizontalDeceleration, float maxVerticalSpeed) {
             npc.velocity.Y += verticalAcceleration;
             if (npc.velocity.Y < 0f) {
                 npc.velocity.Y *= horizontalDeceleration;
@@ -1166,7 +1165,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void spanArm(NPC npc, int limit = 0) {
+        private void spanArm(int limit = 0) {
             if (VaultUtils.isClient) {
                 return;
             }

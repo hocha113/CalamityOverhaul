@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 调整Y轴速度的函数
-        private void AdjustVelocityY(NPC npc, NPC head, float acceleration, float topVelocity, float deceleration) {
+        private void AdjustVelocityY(NPC head, float acceleration, float topVelocity, float deceleration) {
             if (npc.position.Y > head.position.Y + 20f) {
                 if (npc.velocity.Y > 0f) npc.velocity.Y *= deceleration;
                 npc.velocity.Y -= acceleration;
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 调整X轴速度的函数
-        private void AdjustVelocityX(NPC npc, NPC head, float acceleration, float topVelocity, float deceleration) {
+        private void AdjustVelocityX(NPC head, float acceleration, float topVelocity, float deceleration) {
             if (npc.Center.X > head.Center.X + 20f) {
                 if (npc.velocity.X > 0f) npc.velocity.X *= deceleration;
                 npc.velocity.X -= acceleration * 2f;
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 处理初始阶段的函数
-        private void HandleInitialPhase(NPC npc, NPC head, bool cannonAlive, bool laserAlive, bool viceAlive, bool masterMode, bool bossRush) {
+        private void HandleInitialPhase(NPC head, bool cannonAlive, bool laserAlive, bool viceAlive, bool masterMode, bool bossRush) {
             if (head.ai[1] == 3f && npc.timeLeft > 10) {
                 npc.timeLeft = 10;
             }
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 处理冲锋阶段的函数
-        private void HandleChargePhase(NPC npc, NPC head, Player player, bool bossRush, bool cannonAlive, bool laserAlive, bool viceAlive) {
+        private void HandleChargePhase(NPC head, Player player, bool bossRush, bool cannonAlive, bool laserAlive, bool viceAlive) {
             Vector2 sawArmChargePos = npc.Center;
             float sawArmChargeTargetX = head.Center.X - 200f * npc.ai[0] - sawArmChargePos.X;
             float sawArmChargeTargetY = head.position.Y + 230f - sawArmChargePos.Y;
@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         // 处理其他冲锋阶段的函数
-        private void HandleOtherChargePhase(NPC npc, NPC head, Player player, bool bossRush, bool cannonAlive, bool laserAlive, bool viceAlive, bool masterMode) {
+        private void HandleOtherChargePhase(NPC head, Player player, bool bossRush, bool cannonAlive, bool laserAlive, bool viceAlive, bool masterMode) {
             npc.damage = npc.defDamage;
 
             float chargeVelocity = bossRush ? 13.5f : 11f;
@@ -263,17 +263,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 float topVelocity = acceleration * 100f;
                 float deceleration = masterMode ? 0.6f : 0.8f;
                 // 根据NPC和头部的位置调整Y轴速度
-                AdjustVelocityY(npc, head, acceleration, topVelocity, deceleration);
+                AdjustVelocityY(head, acceleration, topVelocity, deceleration);
                 // 根据NPC和头部的位置调整X轴速度
-                AdjustVelocityX(npc, head, acceleration, topVelocity, deceleration);
+                AdjustVelocityX(head, acceleration, topVelocity, deceleration);
             }
             else {
                 // 如果NPC处于特定AI状态
                 if (npc.ai[2] == 0f || npc.ai[2] == 3f) {
-                    HandleInitialPhase(npc, head, cannonAlive, laserAlive, viceAlive, masterMode, bossRush);
+                    HandleInitialPhase(head, cannonAlive, laserAlive, viceAlive, masterMode, bossRush);
                 }
                 else if (npc.ai[2] == 1f) {
-                    HandleChargePhase(npc, head, player, bossRush, cannonAlive, laserAlive, viceAlive);
+                    HandleChargePhase(head, player, bossRush, cannonAlive, laserAlive, viceAlive);
                 }
                 else if (npc.ai[2] == 2f) {
                     // 确定NPC的伤害
@@ -284,7 +284,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     }
                 }
                 else if (npc.ai[2] == 4f) {
-                    HandleOtherChargePhase(npc, head, player, bossRush, cannonAlive, laserAlive, viceAlive, masterMode);
+                    HandleOtherChargePhase(head, player, bossRush, cannonAlive, laserAlive, viceAlive, masterMode);
                 }
                 else if (npc.ai[2] == 5f) {
                     // 调整NPC状态

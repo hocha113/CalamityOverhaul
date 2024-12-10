@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override Texture2D TextureValue => TextureAssets.Item[ItemID.SpaceGun].Value;
         public override int targetCayItem => ItemID.SpaceGun;
         public override int targetCWRItem => ItemID.SpaceGun;
-        private int fireIndex;
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = -14;
             ShootPosNorlLengValue = -2;

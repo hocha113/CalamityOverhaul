@@ -133,7 +133,15 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     if (Main.npc[CalamityGlobalNPC.primeLaser].active)
                         Main.npc[CalamityGlobalNPC.primeLaser].Center = Projectile.Center;
                 }
-                BrutalSkeletronPrimeAI.SpawnHouengEffect(boss);
+                
+                if (!VaultUtils.isServer) {
+                    for (int i = 0; i < 333; i++) {
+                        PRT_Light particle = new PRT_Light(Projectile.Center + CWRUtils.randVr(0, boss.width)
+                            , new Vector2(0, -3), Main.rand.Next(1, 3), Color.Red, 62);
+                        PRTLoader.AddParticle(particle);
+                    }
+                }
+
                 //不 要 在 客 户 端 上 生 成 射 弹
                 if (!VaultUtils.isClient) {
                     float maxProjSanShootNum = 28;
@@ -146,8 +154,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
                     int type = ModContent.ProjectileType<Probe>();
                     for (int i = 0; i < maxProjSanShootNum; i++) {
-                        Projectile.NewProjectile(Projectile.GetSource_FromAI()
-                                , Projectile.Center, (MathHelper.TwoPi / maxProjSanShootNum * i).ToRotationVector2() * Main.rand.Next(3, 16)
+                        Vector2 ver = (MathHelper.TwoPi / maxProjSanShootNum * i).ToRotationVector2() * (maxProjSanShootNum / -2 + i);
+                        Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, ver
                                 , type, Projectile.damage, 0f, Main.myPlayer, 0, Main.rand.Next(30, 60));
                     }
 

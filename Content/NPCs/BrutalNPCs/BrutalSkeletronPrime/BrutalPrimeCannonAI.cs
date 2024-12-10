@@ -5,6 +5,7 @@ using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -27,7 +28,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private Player player;
         public override bool CanLoad() => true;
         public override bool? CheckDead() => true;
-        internal void Movement(NPC npc) {
+        internal void Movement() {
             float acceleration = (bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f));
             float accelerationMult = 1f;
             if (!laserAlive) {
@@ -82,7 +83,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     npc.velocity.X = -topVelocity;
             }
         }
-        internal void fireSlowerAttack(NPC npc) {
+
+        internal void fireSlowerAttack() {
             if (head.ai[1] == 3f && npc.timeLeft > 10)
                 npc.timeLeft = 10;
 
@@ -90,6 +92,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float cannonArmTargetX = player.Center.X - cannonArmPosition.X;
             float cannonArmTargetY = player.Center.Y - cannonArmPosition.Y;
             float cannonArmTargetDist = (float)Math.Sqrt(cannonArmTargetX * cannonArmTargetX + cannonArmTargetY * cannonArmTargetY);
+
             npc.rotation = (float)Math.Atan2(cannonArmTargetY, cannonArmTargetX) - MathHelper.PiOver2;
 
             if (Main.netMode != NetmodeID.MultiplayerClient && !dontAttack) {
@@ -141,7 +144,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
         }
-        internal void OtherFireSlowerAttack(NPC npc) {
+        internal void OtherFireSlowerAttack() {
             Vector2 cannonSpreadArmPosition = npc.Center;
             float cannonSpreadArmTargetX = player.Center.X - cannonSpreadArmPosition.X;
             float cannonSpreadArmTargetY = player.Center.Y - cannonSpreadArmPosition.Y;
@@ -265,16 +268,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            Movement(npc);
+            Movement();
 
             if (fireSlower) {
-                fireSlowerAttack(npc);
+                fireSlowerAttack();
             }
             else {
-                OtherFireSlowerAttack(npc);
+                OtherFireSlowerAttack();
+            }
+
+            if (FindPrimeCannonOnSpan(out Projectile primeCannonOnSpan)) {
+                npc.rotation = primeCannonOnSpan.rotation - MathHelper.PiOver2;
             }
 
             return false;
+        }
+
+        private bool FindPrimeCannonOnSpan(out Projectile projectile) {
+            bool reset = false;
+            projectile = null;
+            int type = ModContent.ProjectileType<PrimeCannonOnSpan>();
+            foreach (var proj in Main.ActiveProjectiles) {
+                if (proj.type != type) {
+                    continue;
+                }
+                if (proj.ai[0] == npc.whoAmI && proj.ai[2] == 0) {
+                    projectile = proj;
+                    reset = true;
+                    break;
+                }
+            }
+            
+            return reset;
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

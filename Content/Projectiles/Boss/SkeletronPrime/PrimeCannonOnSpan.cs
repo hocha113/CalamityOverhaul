@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     internal class PrimeCannonOnSpan : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile + "DeathLaser";
+        private int scaleTimer = 0;
+        private int scaleIndex = 0;
         private bool formeNPC;
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
         public override void SetDefaults() {
@@ -50,6 +52,16 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 Projectile.alpha += 15;
             }
 
+            if (scaleTimer < 8 && scaleIndex == 0) {
+                scaleTimer++;
+            }
+            if (Projectile.timeLeft < 30) {
+                scaleIndex = 1;
+            }
+            if (scaleIndex > 0) {
+                scaleTimer--;
+            }
+
             Projectile.localAI[0]++;
         }
 
@@ -62,11 +74,13 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.Placeholder2);
-            float sengs = Projectile.alpha / 255f;
-            Color color = VaultUtils.MultiStepColorLerp(sengs, Color.Blue, Color.Red);
-            Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, null, color with { A = 255 } * sengs, Projectile.rotation - MathHelper.PiOver2
-                    , new Vector2(mainValue.Width / 2, 0), new Vector2((0.1f + sengs) * 1.2f, 3000) * Projectile.scale, SpriteEffects.None, 0);
+            if (scaleTimer >= 0) {
+                Texture2D tex = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
+                Color drawColor = Color.White;
+                drawColor.A = 0;
+                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, drawColor
+                    , Projectile.rotation, new Vector2(0, tex.Height / 2f), new Vector2(1000, scaleTimer * 0.04f), SpriteEffects.None, 0);
+            }
             return false;
         }
     }

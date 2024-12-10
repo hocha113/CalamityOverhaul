@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         public override bool CanLoad() => true;
 
-        private void Movement(NPC npc) {
+        private void Movement() {
             float acceleration = (bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f));
             float accelerationMult = 1f;
             if (!cannonAlive) {
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void Attack(NPC npc) {
+        private void Attack() {
             // 如果头部正在冲刺
             if (head.ai[1] == 3f && npc.timeLeft > 10) {
                 npc.timeLeft = 10;
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void OtherAttack(NPC npc) {
+        private void OtherAttack() {
             npc.ai[3] += 1f;
 
             float timeLimit = 135f;
@@ -302,12 +302,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     BrutalSkeletronPrimeAI.SendExtraAI(npc);
                 }
             }
-            Movement(npc);
+            Movement();
             if (npc.ai[2] == 0f) {
-                Attack(npc);
+                Attack();
             }
             else if (npc.ai[2] == 1f) {
-                OtherAttack(npc);
+                OtherAttack();
                 lerterFireIndex = 0;
             }
             return false;
