@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 {
     internal class NeutronStarMuzzleBrake : ModItem
     {
-        public override string Texture => CWRConstant.Item + "MuzzleBrakeIV";
+        public override string Texture => CWRConstant.Item_Accessorie + "MuzzleBrakeIV";
         public override void SetStaticDefaults() {
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 6));
             ItemID.Sets.AnimatesAsSoul[Type] = true;

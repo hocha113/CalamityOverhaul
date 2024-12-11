@@ -14,6 +14,7 @@
         public const string Item_Melee = "CalamityOverhaul/Assets/Items/Melee/";
         public const string Item_Ranged = "CalamityOverhaul/Assets/Items/Ranged/";
         public const string Item_Summon = "CalamityOverhaul/Assets/Items/Summon/";
+        public const string Item_Accessorie = "CalamityOverhaul/Assets/Items/Accessories/";
         public const string Projectile = "CalamityOverhaul/Assets/Projectiles/";
         public const string Projectile_Magic = "CalamityOverhaul/Assets/Projectiles/Magic/";
         public const string Projectile_Melee = "CalamityOverhaul/Assets/Projectiles/Melee/";

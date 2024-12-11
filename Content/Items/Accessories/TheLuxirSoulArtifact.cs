@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 {
     internal class TheLuxirSoulArtifact : ModItem
     {
-        public override string Texture => CWRConstant.Item + "TheLuxirSoulArtifact";
+        public override string Texture => CWRConstant.Item_Accessorie + "TheLuxirSoulArtifact";
 
         public override bool IsLoadingEnabled(Mod mod) {
             return false;

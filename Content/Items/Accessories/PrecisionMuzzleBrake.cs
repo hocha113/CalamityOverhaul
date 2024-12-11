@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 {
     internal class PrecisionMuzzleBrake : ModItem
     {
-        public override string Texture => CWRConstant.Item + "MuzzleBrakeII";
+        public override string Texture => CWRConstant.Item_Accessorie + "MuzzleBrakeII";
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.accessory = true;

@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override string Texture => CWRConstant.Item + "Rogue/Gangarus";
         void ICWRLoader.LoadAsset() {
             GangarusAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");
-            EvaAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus3");
+            EvaAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus_Eva");
         }
         void ICWRLoader.UnLoadData() {
             GangarusAsset = null;

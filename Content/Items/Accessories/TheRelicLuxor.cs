@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 {
     internal class TheRelicLuxor : ModItem
     {
-        public override string Texture => CWRConstant.Item + "TheRelicLuxor";
+        public override string Texture => CWRConstant.Item_Accessorie + "TheRelicLuxor";
 
         public override bool IsLoadingEnabled(Mod mod) {
             return false;
