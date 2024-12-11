@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             AmmoTypeAffectedByMagazine = false;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 3;
-            LoadingAA_None.loadingAA_None_Y = 0;
+            LoadingAA_None.gunBodyY = 0;
             CanCreateSpawnGunDust = false;
             CanCreateCaseEjection = false;
             InOwner_HandState_AlwaysSetInFireRoding = true;

@@ -34,9 +34,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 3f;
             RangeOfStress = 10;
             kreloadMaxTime = 80;
-            LoadingAA_None.loadingAA_None_Roting = -30;
-            LoadingAA_None.loadingAA_None_X = 3;
-            LoadingAA_None.loadingAA_None_Y = -3;
+            LoadingAA_None.Roting = -30;
+            LoadingAA_None.gunBodyX = 3;
+            LoadingAA_None.gunBodyY = -3;
             if (!MagazineSystem) {
                 FireTime += 10;
             }

@@ -28,9 +28,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
             MustConsumeAmmunition = true;
             AutomaticPolishingEffect = true;
-            LoadingAA_None.loadingAA_None_Roting = 30;
-            LoadingAA_None.loadingAA_None_X = 0;
-            LoadingAA_None.loadingAA_None_Y = 23;
+            LoadingAA_None.Roting = 30;
+            LoadingAA_None.gunBodyX = 0;
+            LoadingAA_None.gunBodyY = 23;
         }
 
         public override void PreInOwnerUpdate() {

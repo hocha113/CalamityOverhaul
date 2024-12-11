@@ -25,9 +25,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RepeatedCartridgeChange = true;
             Onehanded = InOwner_HandState_AlwaysSetInFireRoding = true;
             kreloadMaxTime = 45;
-            LoadingAA_None.loadingAA_None_Roting = 30;
-            LoadingAA_None.loadingAA_None_X = 0;
-            LoadingAA_None.loadingAA_None_Y = 13;
+            LoadingAA_None.Roting = 30;
+            LoadingAA_None.gunBodyX = 0;
+            LoadingAA_None.gunBodyY = 13;
             CanCreateCaseEjection = CanCreateSpawnGunDust = false;
         }
 

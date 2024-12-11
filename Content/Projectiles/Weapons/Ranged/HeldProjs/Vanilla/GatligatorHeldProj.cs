@@ -28,9 +28,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             Recoil = 0.6f;
             RangeOfStress = 25;
             SpwanGunDustMngsData.splNum = 0.35f;
-            LoadingAA_None.loadingAA_None_Roting = 50;
-            LoadingAA_None.loadingAA_None_X = 3;
-            LoadingAA_None.loadingAA_None_Y = 15;
+            LoadingAA_None.Roting = 50;
+            LoadingAA_None.gunBodyX = 3;
+            LoadingAA_None.gunBodyY = 15;
             if (!MagazineSystem) {
                 FireTime += 1;
             }

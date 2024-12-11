@@ -32,9 +32,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             SpwanGunDustMngsData.dustID1 = DustID.FireworkFountain_Yellow;
             SpwanGunDustMngsData.dustID2 = DustID.BoneTorch;
             SpwanGunDustMngsData.dustID3 = DustID.FireworkFountain_Yellow;
-            LoadingAA_None.loadingAA_None_Roting = 30;
-            LoadingAA_None.loadingAA_None_X = 0;
-            LoadingAA_None.loadingAA_None_Y = 13;
+            LoadingAA_None.Roting = 30;
+            LoadingAA_None.gunBodyX = 0;
+            LoadingAA_None.gunBodyY = 13;
         }
     }
 }

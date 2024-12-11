@@ -25,9 +25,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = GunPressure = ControlForce = 0;
             ForcedConversionTargetAmmoFunc = () => true;
             ToTargetAmmo = ModContent.ProjectileType<P90Round>();
-            LoadingAA_None.loadingAA_None_Roting = 20;
-            LoadingAA_None.loadingAA_None_X = 3;
-            LoadingAA_None.loadingAA_None_Y = 5;
+            LoadingAA_None.Roting = 20;
+            LoadingAA_None.gunBodyX = 3;
+            LoadingAA_None.gunBodyY = 5;
             CanCreateSpawnGunDust = false;
         }
     }

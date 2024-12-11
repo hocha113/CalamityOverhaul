@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RecoilRetroForceMagnitude = 17;
             RecoilOffsetRecoverValue = 0.8f;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
-            LoadingAA_Handgun.loadingAmmoStarg_y = -16;
+            LoadingAA_Handgun.gunBodyY = -16;
         }
 
         public override void HanderCaseEjection() {

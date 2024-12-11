@@ -29,9 +29,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             SpwanGunDustMngsData.dustID1 = DustID.PinkStarfish;
             SpwanGunDustMngsData.dustID2 = DustID.PinkStarfish;
             SpwanGunDustMngsData.dustID3 = DustID.PinkStarfish;
-            LoadingAA_None.loadingAA_None_Roting = 30;
-            LoadingAA_None.loadingAA_None_X = 0;
-            LoadingAA_None.loadingAA_None_Y = 13;
+            LoadingAA_None.Roting = 30;
+            LoadingAA_None.gunBodyX = 0;
+            LoadingAA_None.gunBodyY = 13;
             if (!MagazineSystem) {
                 FireTime += 1;
             }

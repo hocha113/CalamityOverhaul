@@ -30,9 +30,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.clipLocked = CWRSound.Gun_Snowblindness_Clipin;
             LoadingAA_Handgun.clipOut = CWRSound.Gun_Snowblindness_Clipout;
-            LoadingAA_Handgun.feederOffsetRot = -30;
-            LoadingAA_Handgun.loadingAmmoStarg_x = -8;
-            LoadingAA_Handgun.loadingAmmoStarg_y = -16;
+            LoadingAA_Handgun.Roting = -30;
+            LoadingAA_Handgun.gunBodyX = -8;
+            LoadingAA_Handgun.gunBodyY = -16;
             CanCreateCaseEjection = false;
             SpwanGunDustMngsData.dustID1 = 76;
             SpwanGunDustMngsData.dustID2 = 149;

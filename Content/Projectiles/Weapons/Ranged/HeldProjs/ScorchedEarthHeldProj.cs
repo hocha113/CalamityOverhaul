@@ -31,9 +31,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 22;
             EjectCasingProjSize = 3;
-            LoadingAA_None.loadingAA_None_Roting = -50;
-            LoadingAA_None.loadingAA_None_X = 3;
-            LoadingAA_None.loadingAA_None_Y = 0;
+            LoadingAA_None.Roting = -50;
+            LoadingAA_None.gunBodyX = 3;
+            LoadingAA_None.gunBodyY = 0;
         }
 
         public override void FiringShoot() {

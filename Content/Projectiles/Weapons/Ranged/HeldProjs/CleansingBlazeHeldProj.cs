@@ -32,9 +32,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             CanCreateCaseEjection = false;
             CanCreateSpawnGunDust = false;
             loadTheRounds = CWRSound.Liquids_Fill_0 with { Pitch = -0.8f };
-            LoadingAA_None.loadingAA_None_Roting = 30;
-            LoadingAA_None.loadingAA_None_X = 0;
-            LoadingAA_None.loadingAA_None_Y = 13;
+            LoadingAA_None.Roting = 30;
+            LoadingAA_None.gunBodyX = 0;
+            LoadingAA_None.gunBodyY = 13;
         }
 
         public override void SetShootAttribute() {

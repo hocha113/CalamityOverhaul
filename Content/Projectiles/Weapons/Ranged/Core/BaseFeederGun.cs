@@ -124,123 +124,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
         }
 
-        public enum LoadingAmmoAnimationEnum
-        {
-            None,
-            Shotgun,
-            Handgun,
-            Revolver,
-        }
-
         public LoadingAmmoAnimationEnum LoadingAmmoAnimation = LoadingAmmoAnimationEnum.None;
-
-        public struct LoadingAA_None_Struct
-        {
-            /// <summary>
-            /// 默认为50
-            /// </summary>
-            public int loadingAA_None_Roting = 50;
-            /// <summary>
-            /// 默认为3
-            /// </summary>
-            public int loadingAA_None_X = 3;
-            /// <summary>
-            /// 默认为25
-            /// </summary>
-            public int loadingAA_None_Y = 25;
-
-            public LoadingAA_None_Struct() { }
-        }
 
         /// <summary>
         /// 是否启用默认的换弹行为，默认为<see langword="true"/>
         /// </summary>
         public bool NO_EEMONG_LOADINGNONESET = true;
+
         public LoadingAA_None_Struct LoadingAA_None = new LoadingAA_None_Struct();
 
-        public struct LoadingAA_Shotgun_Struct
-        {
-            public SoundStyle loadShellSound;
-            public SoundStyle pump;
-            /// <summary>
-            /// 默认为15
-            /// </summary>
-            public int pumpCoolingValue;
-            /// <summary>
-            /// 默认为30
-            /// </summary>
-            public int loadingAmmoStarg_rot;
-            /// <summary>
-            /// 默认为0
-            /// </summary>
-            public int loadingAmmoStarg_x;
-            /// <summary>
-            /// 默认为13
-            /// </summary>
-            public int loadingAmmoStarg_y;
-        }
+        public LoadingAA_Shotgun_Struct LoadingAA_Shotgun = new LoadingAA_Shotgun_Struct();
 
-        public LoadingAA_Shotgun_Struct LoadingAA_Shotgun = new LoadingAA_Shotgun_Struct() {
-            loadShellSound = CWRSound.Gun_Shotgun_LoadShell with { Volume = 0.75f },
-            pump = CWRSound.Gun_Shotgun_Pump with { Volume = 0.6f },
-            pumpCoolingValue = 15,
-            loadingAmmoStarg_rot = 30,
-            loadingAmmoStarg_x = 0,
-            loadingAmmoStarg_y = 13,
-        };
+        public LoadingAA_Handgun_Struct LoadingAA_Handgun = new LoadingAA_Handgun_Struct();
 
-        public struct LoadingAA_Handgun_Struct
-        {
-            public SoundStyle clipOut;
-            public SoundStyle clipLocked;
-            public SoundStyle slideInShoot;
-            public float level1;
-            public float level2;
-            public float level3;
-            /// <summary>
-            /// 默认为-20
-            /// </summary>
-            public int feederOffsetRot;
-            /// <summary>
-            /// 默认为6
-            /// </summary>
-            public int loadingAmmoStarg_x;
-            /// <summary>
-            /// 默认为-6
-            /// </summary>
-            public int loadingAmmoStarg_y;
-        }
-
-        public LoadingAA_Handgun_Struct LoadingAA_Handgun = new LoadingAA_Handgun_Struct() {
-            clipOut = CWRSound.Gun_HandGun_ClipOut with { Volume = 0.65f },
-            clipLocked = CWRSound.Gun_HandGun_ClipLocked with { Volume = 0.65f },
-            slideInShoot = CWRSound.Gun_HandGun_SlideInShoot with { Volume = 0.65f },
-            level1 = 50 / 60f,
-            level2 = 40 / 60f,
-            level3 = 10 / 60f,
-            feederOffsetRot = -20,
-            loadingAmmoStarg_x = 6,
-            loadingAmmoStarg_y = -6,
-        };
-
-        public struct LoadingAA_Revolver_Struct
-        {
-            public float Rotationratio;
-            public SoundStyle Sound;
-            public int ArmRotSengsFrontOffsetRotOver;
-            public float ArmRotSengsFrontStartRotOver;
-            public int loadingAmmoStarg_x;
-            public int loadingAmmoStarg_y;
-        }
-
-        public LoadingAA_Revolver_Struct LoadingAA_Revolver = new LoadingAA_Revolver_Struct() {
-            Rotationratio = 30,
-            Sound = CWRSound.CaseEjection,
-            ArmRotSengsFrontOffsetRotOver = 30,
-            ArmRotSengsFrontStartRotOver = 0.3f,
-            loadingAmmoStarg_x = 3,
-            loadingAmmoStarg_y = 5,
-        };
+        public LoadingAA_Revolver_Struct LoadingAA_Revolver = new LoadingAA_Revolver_Struct();
 
         protected int BulletNum {
             get => ModItem.NumberBullets;
@@ -418,15 +315,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         private void Get_LoadingAmmoAnimation_PreInOwnerUpdate() {
             if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
-                LoadingAnimation(LoadingAA_None.loadingAA_None_Roting, LoadingAA_None.loadingAA_None_X, LoadingAA_None.loadingAA_None_Y);
+                LoadingAnimation(LoadingAA_None.Roting, LoadingAA_None.gunBodyX, LoadingAA_None.gunBodyY);
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
-                LoadingAnimation(LoadingAA_Shotgun.loadingAmmoStarg_rot
-                    , LoadingAA_Shotgun.loadingAmmoStarg_x, LoadingAA_Shotgun.loadingAmmoStarg_y);
+                LoadingAnimation(LoadingAA_Shotgun.Roting
+                    , LoadingAA_Shotgun.gunBodyX, LoadingAA_Shotgun.gunBodyY);
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Revolver) {
                 LoadingAnimation((int)(Time * LoadingAA_Revolver.Rotationratio)
-                    , LoadingAA_Revolver.loadingAmmoStarg_x, LoadingAA_Revolver.loadingAmmoStarg_y);
+                    , LoadingAA_Revolver.gunBodyX, LoadingAA_Revolver.gunBodyY);
             }
         }
 
@@ -437,8 +334,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Revolver) {
                 if (kreloadTimeValue > 0) {
                     ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir
-                        - MathHelper.ToRadians(LoadingAA_Revolver.ArmRotSengsFrontOffsetRotOver))
-                        * SafeGravDir + LoadingAA_Revolver.ArmRotSengsFrontStartRotOver;
+                        - MathHelper.ToRadians(LoadingAA_Revolver.OffsetRotOver))
+                        * SafeGravDir + LoadingAA_Revolver.StartRotOver;
                     SetCompositeArm();
                 }
             }
@@ -452,11 +349,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir + 0.3f;
                 //因为手枪类动画在这里额外设置了一次旋转角和位置，会覆盖前面的设定，所以这里要加上相关的判断以确保LoadingAmmoAnimation_AlwaysSetInFireRoding的功能正常
                 if (!LoadingAmmoAnimation_AlwaysSetInFireRoding) {
-                    FeederOffsetRot = LoadingAA_Handgun.feederOffsetRot;
+                    FeederOffsetRot = LoadingAA_Handgun.Roting;
                     if (SafeGravDir < 0) {
                         FeederOffsetRot *= -1;
                     }
-                    FeederOffsetPos = new Vector2(Owner.direction * LoadingAA_Handgun.loadingAmmoStarg_x, LoadingAA_Handgun.loadingAmmoStarg_y * SafeGravDir);
+                    FeederOffsetPos = new Vector2(Owner.direction * LoadingAA_Handgun.gunBodyX, LoadingAA_Handgun.gunBodyY * SafeGravDir);
                     Projectile.rotation = GetGunBodyRot();
                     Projectile.Center = GetGunBodyPos();
                 }

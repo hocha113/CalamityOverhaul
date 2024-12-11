@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandDistanceY = 3;
             HandFireDistance = 35;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
-            LoadingAA_Handgun.loadingAmmoStarg_y = -16;
+            LoadingAA_Handgun.gunBodyY = -16;
             ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 10;
             GunPressure = 0.1f;

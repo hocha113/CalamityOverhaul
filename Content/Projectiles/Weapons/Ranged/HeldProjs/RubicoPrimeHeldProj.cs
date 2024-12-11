@@ -14,16 +14,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "RubicoPrime";
         public override int targetCayItem => ModContent.ItemType<RubicoPrime>();
         public override int targetCWRItem => ModContent.ItemType<RubicoPrimeEcType>();
-
         private int fireIndex;
         public override void SetRangedProperty() {
             kreloadMaxTime = 100;
-            FireTime = 19;
-            HandDistance = 25;
-            HandDistanceY = 5;
-            HandFireDistance = 25;
-            HandFireDistanceY = -5;
-            ShootPosNorlLengValue = -8;
+            FireTime = 18;
+            HandDistance = 26;
+            HandDistanceY = 2;
+            HandFireDistance = 22;
+            HandFireDistanceY = -2;
+            ShootPosNorlLengValue = -4;
             ShootPosToMouLengValue = 20;
             RepeatedCartridgeChange = true;
             AmmoTypeAffectedByMagazine = true;
@@ -36,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         }
 
         public override void PostInOwnerUpdate() {
-            if (!onFire && IsKreload && kreloadTimeValue <= 0) {
+            if (!onFire && IsKreload && kreloadTimeValue <= 0 && Projectile.IsOwnedByLocalPlayer()) {
                 if (++fireIndex > 50) {
                     NPC target = Projectile.Center.FindClosestNPC(1900, false, true);
                     if (target != null) {
@@ -65,6 +64,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             int proj = Projectile.NewProjectile(Source, GunShootPos, ShootVelocity
                 , ModContent.ProjectileType<ImpactRound>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             Main.projectile[proj].penetrate = 6;
+            fireIndex = 0;
         }
     }
 }

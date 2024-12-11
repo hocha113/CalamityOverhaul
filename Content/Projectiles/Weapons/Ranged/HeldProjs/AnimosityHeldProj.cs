@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistanceY = -10;
             CanRightClick = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
-            LoadingAA_Handgun.loadingAmmoStarg_y = -16;
+            LoadingAA_Handgun.gunBodyY = -16;
             LoadingAA_Handgun.clipLocked = CWRSound.Gun_HandGun_ClipLocked with { Pitch = -0.25f };
             btoole = ModLoader.GetMod("CalamityMod").Find<ModProjectile>("AnimosityBullet").Type;
         }

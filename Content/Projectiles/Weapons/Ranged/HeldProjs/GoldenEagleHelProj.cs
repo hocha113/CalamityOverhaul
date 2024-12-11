@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RepeatedCartridgeChange = true;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
-            LoadingAA_Handgun.loadingAmmoStarg_y = -10;
+            LoadingAA_Handgun.gunBodyY = -10;
             Recoil = 0.8f;
         }
 

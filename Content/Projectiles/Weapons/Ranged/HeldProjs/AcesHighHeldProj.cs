@@ -38,9 +38,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             SpwanGunDustMngsData.dustID2 = DustID.BoneTorch;
             SpwanGunDustMngsData.dustID3 = DustID.CorruptTorch;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
-            LoadingAA_Handgun.loadingAmmoStarg_x = -3;
-            LoadingAA_Handgun.loadingAmmoStarg_y = -10;
-            LoadingAA_Handgun.feederOffsetRot = -22;
+            LoadingAA_Handgun.gunBodyX = -3;
+            LoadingAA_Handgun.gunBodyY = -10;
+            LoadingAA_Handgun.Roting = -22;
         }
 
         public override void HanderPlaySound() {

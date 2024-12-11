@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 2.2f;
             RangeOfStress = 25;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
-            LoadingAA_Handgun.loadingAmmoStarg_y = -12;
+            LoadingAA_Handgun.gunBodyY = -12;
             LoadingAA_Handgun.clipLocked = CWRSound.Gun_Magnum_ClipLocked;
             LoadingAA_Handgun.clipOut = CWRSound.Gun_Magnum_ClipOut;
         }

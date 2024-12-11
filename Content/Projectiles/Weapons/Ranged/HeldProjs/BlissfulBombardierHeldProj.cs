@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RangeOfStress = 25;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 13;
-            EjectCasingProjSize = 2.4f;
+            EjectCasingProjSize = 1.4f;
         }
     }
 }

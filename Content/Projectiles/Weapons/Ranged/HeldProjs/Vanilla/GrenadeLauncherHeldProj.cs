@@ -32,9 +32,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RecoilRetroForceMagnitude = 7;
             RecoilOffsetRecoverValue = 0.7f;
             CanCreateSpawnGunDust = false;
-            LoadingAA_None.loadingAA_None_Roting = 30;
-            LoadingAA_None.loadingAA_None_X = 0;
-            LoadingAA_None.loadingAA_None_Y = 13;
+            LoadingAA_None.Roting = 30;
+            LoadingAA_None.gunBodyX = 0;
+            LoadingAA_None.gunBodyY = 13;
             if (!MagazineSystem) {
                 FireTime += 15;
             }

@@ -12,13 +12,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCayItem => ItemID.FlintlockPistol;
         public override int targetCWRItem => ItemID.FlintlockPistol;
         public override void SetRangedProperty() {
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             ShootPosToMouLengValue = 6;
             ShootPosNorlLengValue = -5;
             HandDistance = 20;
             HandDistanceY = 3;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
-            Recoil = 0.8f;
+            Recoil = 0.6f;
+            Onehanded = true;
+            SpwanGunDustMngsData.splNum = 0.3f;
         }
     }
 }

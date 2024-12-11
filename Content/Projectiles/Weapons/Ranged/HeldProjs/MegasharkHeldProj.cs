@@ -28,9 +28,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 4;
             SpwanGunDustMngsData.splNum = 0.4f;
-            LoadingAA_None.loadingAA_None_Roting = 30;
-            LoadingAA_None.loadingAA_None_X = 3;
-            LoadingAA_None.loadingAA_None_Y = 20;
+            LoadingAA_None.Roting = 30;
+            LoadingAA_None.gunBodyX = 3;
+            LoadingAA_None.gunBodyY = 20;
         }
     }
 }

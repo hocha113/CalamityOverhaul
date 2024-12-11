@@ -36,9 +36,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             SpwanGunDustMngsData.dustID3 = DustID.YellowTorch;
             RecoilRetroForceMagnitude = 4;
             SpwanGunDustMngsData.splNum = 0.6f;
-            LoadingAA_None.loadingAA_None_Roting = 30;
-            LoadingAA_None.loadingAA_None_X = 3;
-            LoadingAA_None.loadingAA_None_Y = 10;
+            LoadingAA_None.Roting = 30;
+            LoadingAA_None.gunBodyX = 3;
+            LoadingAA_None.gunBodyY = 10;
             if (!MagazineSystem) {
                 FireTime += 1;
             }
