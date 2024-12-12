@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Structures
 {
-    internal class StructuresBehavior : ICWRLoader
+    internal class ModifyStructure : ICWRLoader
     {
         internal delegate void SetChest_Delegate(Chest chest, int type, bool hasPlacedLogAndSchematic);
         void ICWRLoader.LoadData() {
