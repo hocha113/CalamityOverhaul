@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common.Effects;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

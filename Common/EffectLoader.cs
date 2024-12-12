@@ -10,7 +10,7 @@ using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Common.Effects
+namespace CalamityOverhaul.Common
 {
     public class EffectLoader : ICWRLoader
     {
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Common.Effects
             screen = null;
         }
 
-        private void FilterManager_EndCapture(On_FilterManager.orig_EndCapture orig, Terraria.Graphics.Effects.FilterManager self,
+        private void FilterManager_EndCapture(On_FilterManager.orig_EndCapture orig, FilterManager self,
             RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor) {
 
             GraphicsDevice graphicsDevice = Main.instance.GraphicsDevice;

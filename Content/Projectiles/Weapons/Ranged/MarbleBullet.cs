@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common.Effects;
+﻿using CalamityOverhaul.Common;
 using System;
 using Terraria;
 using Terraria.ID;

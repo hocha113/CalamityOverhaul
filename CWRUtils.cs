@@ -2,7 +2,6 @@
 using CalamityMod.Events;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Common.Effects;
 using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items;
