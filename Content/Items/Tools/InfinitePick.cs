@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
                                     tile.LiquidAmount = 0;
                                     tile.HasTile = false;
-                                    CWRUtils.SafeSquareTileFrame(tilePos, tile);
+                                    CWRUtils.SafeSquareTileFrame(tilePos);
                                     if (Main.netMode != NetmodeID.SinglePlayer) {
                                         NetMessage.SendTileSquare(player.whoAmI, x, y);
                                     }

@@ -209,11 +209,11 @@ namespace CalamityOverhaul.Common
         private static byte GetFrameNumber(this Tile tile) => (byte)tile.TileFrameNumber;
         private static bool GetInvisibleBlock(this Tile tile) => tile.IsTileInvisible;
 
-        public static void DoErrorTile(Vector2 tilePos, Tile tile) {
+        public static void DoErrorTile(Point tilePos, Tile tile) {
             string errorT = "";
             string path = "steamapps\\common\\tModLoader\\tModLoader-Logs";
-            string errorT_CN = $"格式化图格发生异常，位于地图坐标[{(int)tilePos.X}, {(int)tilePos.Y}]，如果需要寻求帮助，请附带上 {path} 文件夹下的client.log文件";
-            string errorT_EN = $"An exception occurred in the formatted grid, located at map coordinates[{(int)tilePos.X}, {(int)tilePos.Y}] {path} subfolder 'client.log' File";
+            string errorT_CN = $"格式化图格发生异常，位于地图坐标[{tilePos.X}, {tilePos.Y}]，如果需要寻求帮助，请附带上 {path} 文件夹下的client.log文件";
+            string errorT_EN = $"An exception occurred in the formatted grid, located at map coordinates[{tilePos.X}, {tilePos.Y}] {path} subfolder 'client.log' File";
             errorT = VaultUtils.Translation(errorT_CN, errorT_EN);
             CWRUtils.Text(errorT, Color.Red);
             CWRMod.Instance.Logger.Info(errorT);

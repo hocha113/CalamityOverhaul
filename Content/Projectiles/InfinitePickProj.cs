@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Projectiles
                             tile.HasTile = false;
                             tile.WallType = 0;
 
-                            CWRUtils.SafeSquareTileFrame(tilePos, tile);
+                            CWRUtils.SafeSquareTileFrame(tilePos);
                             if (Main.netMode != NetmodeID.SinglePlayer) {
                                 NetMessage.SendTileSquare(own.whoAmI, x, y);
                             }

@@ -1684,10 +1684,15 @@ namespace CalamityOverhaul
         #endregion
 
         #region TileUtils
+        public static void SafeSquareTileFrame(int x, int y, bool resetFrame = true)
+            => SafeSquareTileFrame(new Point(x, y), resetFrame);
 
-        public static void SafeSquareTileFrame(Vector2 tilePos, Tile tile, bool resetFrame = true) {
-            int i = (int)tilePos.X;
-            int j = (int)tilePos.Y;
+        public static void SafeSquareTileFrame(Vector2 tilePos, bool resetFrame = true)
+            => SafeSquareTileFrame(new Point((int)tilePos.X, (int)tilePos.Y), resetFrame);
+
+        public static void SafeSquareTileFrame(Point tilePos, bool resetFrame = true) {
+            int i = tilePos.X;
+            int j = tilePos.Y;
             TMLModifyFromeTileUtilsCode.TileFrame(i - 1, j - 1);
             TMLModifyFromeTileUtilsCode.TileFrame(i - 1, j);
             TMLModifyFromeTileUtilsCode.TileFrame(i - 1, j + 1);
@@ -1695,7 +1700,7 @@ namespace CalamityOverhaul
             try {
                 TMLModifyFromeTileUtilsCode.TileFrame(i, j, resetFrame);
             } catch {
-                TMLModifyFromeTileUtilsCode.DoErrorTile(tilePos, tile);
+                TMLModifyFromeTileUtilsCode.DoErrorTile(tilePos, Main.tile[tilePos.X, tilePos.Y]);
                 return;
             }
             TMLModifyFromeTileUtilsCode.TileFrame(i, j + 1);
