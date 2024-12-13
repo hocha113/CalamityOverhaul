@@ -75,6 +75,9 @@
     <Reference Include="InnoVault">
       <HintPath>..\InnoVault\bin\Debug\net8.0\InnoVault.dll</HintPath>
     </Reference>
+    <Reference Include="SubworldLibrary">
+      <HintPath>D:\ModSourcesInDF\SubworldLibrary\bin\Debug\net8.0\SubworldLibrary.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Users\Hommeng\Documents\My Games\Terraria\tModLoader\ModSources\CalamityOverhaul\.editorconfig" />
