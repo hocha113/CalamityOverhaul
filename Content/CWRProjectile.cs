@@ -6,6 +6,7 @@ using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Ranged;
 using CalamityMod.Projectiles.Summon;
 using CalamityMod.Projectiles.Typeless;
+using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
@@ -746,6 +747,7 @@ namespace CalamityOverhaul.Content
             SpanTypesOnHitNPC(player, projectile, target, hit);
             SpecialAmmoStateOnHitEffect(player, projectile, target, hit);
             RMeowmere.SpanDust(projectile);
+            JusticeUnveiled.OnHitNPCSpwanProj(projectile, target, hit, damageDone);
         }
 
         public override bool PreDraw(Projectile projectile, ref Color lightColor) {

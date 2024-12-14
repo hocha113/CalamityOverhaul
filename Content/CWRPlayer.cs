@@ -132,6 +132,10 @@ namespace CalamityOverhaul.Content
         /// 是否有地狱炎爆debuff
         /// </summary>
         public bool HellfireExplosion;
+        /// <summary>
+        /// 是否穿戴正义显现
+        /// </summary>
+        public bool IsJusticeUnveiled;
 
         #endregion
 
@@ -158,6 +162,7 @@ namespace CalamityOverhaul.Content
             RustyMedallion_Value = false;
             HasOverhaulTheBibleBook = false;
             HellfireExplosion = false;
+            IsJusticeUnveiled = false;
         }
 
         /// <summary>

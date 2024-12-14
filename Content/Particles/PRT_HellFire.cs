@@ -4,16 +4,16 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_SoulFire : BasePRT
+    internal class PRT_HellFire : BasePRT
     {
-        public override string Texture => CWRConstant.Other + "SoulFire";
+        public override string Texture => CWRConstant.Other + "HellFire";
         public override void SetProperty() {
             Opacity = 255;
-            ai[1] = Main.rand.Next(5);
+            ai[1] = Main.rand.Next(4);
         }
         public override void AI() {
             if (++ai[0] > 5) {
-                if (++ai[1] > 4) {
+                if (++ai[1] > 3) {
                     ai[1] = 0;
                 }
                 ai[0] = 0;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Particles
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
-            Rectangle rectangle = CWRUtils.GetRec(TexValue, (int)ai[1], 5);
+            Rectangle rectangle = CWRUtils.GetRec(TexValue, (int)ai[1], 4);
             Main.EntitySpriteDraw(
                 TexValue, Position - Main.screenPosition,
                 rectangle, Color.White * (Opacity / 255f), Rotation, rectangle.Size() / 2,

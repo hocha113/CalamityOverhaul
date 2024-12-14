@@ -2835,6 +2835,16 @@ Items: {
 			"Everyone gets slapped."
 			'''
 	}
+
+	JusticeUnveiled: {
+		DisplayName: Justice Unveiled
+		Tooltip: ""
+	}
+
+	WeaverGrievances: {
+		DisplayName: Weaver Grievances
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3560,6 +3570,11 @@ Projectiles: {
 	HeatRayHeld.DisplayName: Heat Ray
 	SpaceGunHeld.DisplayName: Space Gun
 	StarWrathHeld.DisplayName: Star Wrath
+	DivineJustice.DisplayName: Divine Justice
+	JusticeUnveiledExplode.DisplayName: Justice Unveiled Explode
+	WeaverBeam.DisplayName: Weaver Beam
+	WeaverExplode.DisplayName: Weaver Explode
+	WeaverGrievancesHeld.DisplayName: Weaver Grievances Held
 }
 
 Configs: {

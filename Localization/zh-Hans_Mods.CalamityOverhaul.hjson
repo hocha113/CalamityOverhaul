@@ -2826,6 +2826,21 @@ Items: {
 			"谁来都要挨一巴掌"
 			'''
 	}
+
+	JusticeUnveiled: {
+		DisplayName: 正义的显现
+		Tooltip:
+			'''
+			远程攻击有概率召唤正义的一击
+			巨大的神圣冲击将击溃敌人
+			"如果正义被需要的话，不管何处我都会前往"
+			'''
+	}
+
+	WeaverGrievances: {
+		// DisplayName: Weaver Grievances
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3551,6 +3566,11 @@ Projectiles: {
 	// HeatRayHeld.DisplayName: Heat Ray
 	// SpaceGunHeld.DisplayName: Space Gun
 	// StarWrathHeld.DisplayName: Star Wrath
+	// DivineJustice.DisplayName: Divine Justice
+	// JusticeUnveiledExplode.DisplayName: Justice Unveiled Explode
+	// WeaverBeam.DisplayName: Weaver Beam
+	// WeaverExplode.DisplayName: Weaver Explode
+	// WeaverGrievancesHeld.DisplayName: Weaver Grievances Held
 }
 
 Configs: {
