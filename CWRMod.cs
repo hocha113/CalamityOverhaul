@@ -25,6 +25,7 @@ namespace CalamityOverhaul
         //并提醒别人不要在错误的线程上调用这个单例就行了
         //-HoCha113 - 2024/9/20/ 14:32
         //神皇在上，这是异端发言，你不能把整个系统的安危寄托在所有人可以遵守开发守则上，况且我们根本没有那个东西
+
         internal static CWRMod Instance { get; private set; }
         internal static int GameLoadCount { get; private set; }
         internal static bool Suitableversion_improveGame { get; private set; }
