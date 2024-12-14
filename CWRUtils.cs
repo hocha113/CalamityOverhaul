@@ -1693,20 +1693,20 @@ namespace CalamityOverhaul
         public static void SafeSquareTileFrame(Point tilePos, bool resetFrame = true) {
             int i = tilePos.X;
             int j = tilePos.Y;
-            TMLModifyFromeTileUtilsCode.TileFrame(i - 1, j - 1);
-            TMLModifyFromeTileUtilsCode.TileFrame(i - 1, j);
-            TMLModifyFromeTileUtilsCode.TileFrame(i - 1, j + 1);
-            TMLModifyFromeTileUtilsCode.TileFrame(i, j - 1);
+            TMLPatchedTileUtils.TileFrame(i - 1, j - 1);
+            TMLPatchedTileUtils.TileFrame(i - 1, j);
+            TMLPatchedTileUtils.TileFrame(i - 1, j + 1);
+            TMLPatchedTileUtils.TileFrame(i, j - 1);
             try {
-                TMLModifyFromeTileUtilsCode.TileFrame(i, j, resetFrame);
+                TMLPatchedTileUtils.TileFrame(i, j, resetFrame);
             } catch {
-                TMLModifyFromeTileUtilsCode.DoErrorTile(tilePos, Main.tile[tilePos.X, tilePos.Y]);
+                TMLPatchedTileUtils.DoErrorTile(tilePos, Main.tile[tilePos.X, tilePos.Y]);
                 return;
             }
-            TMLModifyFromeTileUtilsCode.TileFrame(i, j + 1);
-            TMLModifyFromeTileUtilsCode.TileFrame(i + 1, j - 1);
-            TMLModifyFromeTileUtilsCode.TileFrame(i + 1, j);
-            TMLModifyFromeTileUtilsCode.TileFrame(i + 1, j + 1);
+            TMLPatchedTileUtils.TileFrame(i, j + 1);
+            TMLPatchedTileUtils.TileFrame(i + 1, j - 1);
+            TMLPatchedTileUtils.TileFrame(i + 1, j);
+            TMLPatchedTileUtils.TileFrame(i + 1, j + 1);
         }
 
         /// <summary>

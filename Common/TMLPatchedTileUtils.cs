@@ -10,14 +10,7 @@ namespace CalamityOverhaul.Common
     //[https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/ModLoader/TileLoader.cs]
     //与[https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/WorldGen.TML.cs]
     //该部分的代码有一定的修改，用于解决物块挖掘使游戏崩溃的问题，代码的使用遵循TmodLoader所使用的[MIT license]规则:[https://github.com/tModLoader/tModLoader]
-
-    // The following code is derived from the TModLoader source code:
-    // [https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/ModLoader/TileLoader.cs]
-    // and [https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/WorldGen.TML.cs]
-    // This portion of the code has been modified to address an issue where block mining causes the game to crash.
-    // The usage of this code follows the MIT license as specified by TModLoader:
-    // [https://github.com/tModLoader/tModLoader]
-    internal static class TMLModifyFromeTileUtilsCode
+    internal static class TMLPatchedTileUtils
     {
         private const string text =
             "// The following code is derived from the TModLoader source code:\r\n    " +
