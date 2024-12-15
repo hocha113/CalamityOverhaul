@@ -114,6 +114,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
     internal class WeaverBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Masking + "Wave_highest";
+        public static Color sloudColor1 => new Color();
+        public static Color sloudColor2 => new Color();
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 32;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
@@ -169,7 +171,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             for (int k = 0; k < Projectile.oldPos.Length; k++) {
                 Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + Projectile.Size / 2;
                 Color color = Projectile.GetAlpha(Color.Lerp(Color.DarkRed, Color.Red, 1f / Projectile.oldPos.Length * k) * (1f - 1f / Projectile.oldPos.Length * k));
-                float slp = (0.6f + 0.4f * (Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length) * 0.24f;
+                float slp = (0.6f + 0.4f * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length) * 0.24f;
                 Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, drawOrigin, Projectile.scale * slp, SpriteEffects.None, 0);
             }
             return false;

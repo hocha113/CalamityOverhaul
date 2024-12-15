@@ -3,7 +3,6 @@ using CalamityMod.Tiles.DraedonStructures;
 using CalamityMod.Tiles.Ores;
 using CalamityMod.Tiles.Plates;
 using CalamityMod.Walls;
-using InnoVault.AutoGens;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -16,8 +15,10 @@ using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.Structures
 {
-    internal class IslandMachineGen : AutoGen
+    internal class IslandMachineGen : GenPass
     {
+        public IslandMachineGen() : base("Terraria", 1) { }
+
         public static int Raycast(int x, int y) {
             while (Main.tile[x, y].HasSolidTile()) {
                 y++;
@@ -141,7 +142,7 @@ namespace CalamityOverhaul.Content.Structures
             CreateHouses(newPos.X, newPos.Y, housesTileID, houseSize, houseSize);
         }
 
-        public override void Pass(GenerationProgress progress, GameConfiguration configuration) {
+        protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
             progress.Message = VaultUtils.Translation("正在从破碎的虚空中凝聚岛屿...", "Islands are coalescing from the shattered void...");
             int isLandNum = WorldGen.GetWorldSize() * 4;
             int height = 120;
