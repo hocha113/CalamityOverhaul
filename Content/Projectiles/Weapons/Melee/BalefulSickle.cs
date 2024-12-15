@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -12,6 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class BalefulSickle : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "BalefulSickle";
+        private HashSet<NPC> onHitNPCs = [];
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 6;
             ProjectileID.Sets.TrailingMode[Type] = 2;
@@ -27,10 +29,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.timeLeft = 120 * Projectile.MaxUpdates;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 15 * Projectile.MaxUpdates;
+            onHitNPCs = [];
         }
 
         public override void PostAI() {
-            Projectile.rotation += Math.Sign(Projectile.velocity.X) * (Projectile.ai[0] + 0.1f);
+            float rotSpeed = Math.Sign(Projectile.velocity.X) * (Projectile.ai[0] + 0.1f);
+            int dir = rotSpeed > 0 ? 1 : -1;
+            if (Math.Abs(rotSpeed) < 0.1f) {
+                rotSpeed = 0.1f * dir;
+            }
+            Projectile.rotation += rotSpeed;
             Projectile.ai[0] += 0.01f;
             if (Projectile.ai[0] > 0.5f) {
                 Projectile.ai[0] = 0.5f;
@@ -38,7 +46,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.velocity *= 0.97f;
 
             if (Projectile.timeLeft < 40) {
-                NPC target = Projectile.Center.FindClosestNPC(650);
+                NPC target = null;
+                float dstan = 650f;
+                foreach (var npc in Main.ActiveNPCs) {
+                    if (onHitNPCs.Contains(npc)) {
+                        continue;
+                    }
+                    if (npc.friendly || npc.dontTakeDamage) {
+                        continue;
+                    }
+                    float newDstan = npc.Distance(Projectile.Center);
+                    if (newDstan < dstan) {
+                        target = npc;
+                        dstan = newDstan;
+                    }
+                }
+                Projectile.Center.FindClosestNPC();
                 if (target != null) {
                     Projectile.ChasingBehavior(target.Center, 30f);
                 }
@@ -50,6 +73,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.OnFire3, 240);
             BalefulHarvesterEcType.SpanDust(Projectile.Center, 13, 0.7f, 1.2f);
+            if (!onHitNPCs.Contains(target)) {
+                onHitNPCs.Add(target);
+            }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
