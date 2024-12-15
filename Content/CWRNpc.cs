@@ -5,6 +5,7 @@ using CalamityMod.NPCs.AquaticScourge;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events;
+using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
@@ -197,16 +198,17 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnKill(NPC npc) {
-            if (npc.boss) {
-                if (CWRLoad.targetNpcTypes7.Contains(npc.type) || npc.type == CWRLoad.PlaguebringerGoliath) {
+            if (!VaultUtils.isClient) {
+                if (npc.boss && CWRLoad.targetNpcTypes7.Contains(npc.type) || npc.type == CWRLoad.PlaguebringerGoliath) {
                     for (int i = 0; i < Main.rand.Next(3, 6); i++) {
                         int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, CWRLoad.DubiousPlating, Main.rand.Next(7, 13));
-                        if (VaultUtils.isClient) {
+                        if (!VaultUtils.isSinglePlayer) {
                             NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
                         }
                     }
                 }
-                if (npc.type == CWRLoad.Yharon && InWorldBossPhase.Instance.level11 && Main.zenithWorld && !VaultUtils.isClient) {
+
+                if (npc.type == CWRLoad.Yharon && InWorldBossPhase.Instance.level11 && Main.zenithWorld) {
                     Player target = CWRUtils.GetPlayerInstance(npc.target);
                     if (target.Alives()) {
                         float dir = npc.Center.To(target.Center).X;
@@ -215,7 +217,15 @@ namespace CalamityOverhaul.Content
                         , ModContent.ProjectileType<YharonOreProj>(), 0, 0, -1, dirs);
                     }
                 }
+
+                if (Main.rand.NextBool(4000) || npc.type == NPCID.Spazmatism && Main.LocalPlayer.ZoneOverworldHeight) {
+                    int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<JusticeUnveiled>());
+                    if (!VaultUtils.isSinglePlayer) {
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+                    }
+                }
             }
+
             if (npc.type == CWRLoad.PrimordialWyrmHead && !DownedBossSystem.downedPrimordialWyrm) {//我不知道为什么原灾厄没有设置这个字段，为了保持进度的正常，我在这里额外设置一次
                 DownedBossSystem.downedPrimordialWyrm = true;
                 if (Main.dedServ) {

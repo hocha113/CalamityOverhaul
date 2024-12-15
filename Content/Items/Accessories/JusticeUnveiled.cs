@@ -1,4 +1,8 @@
-﻿using CalamityMod.Rarities;
+﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Projectiles.Melee;
+using CalamityMod.Projectiles.Rogue;
+using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
@@ -8,6 +12,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Accessories
@@ -18,6 +23,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
     internal class JusticeUnveiled : ModItem
     {
         public override string Texture => CWRConstant.Item_Accessorie + "JusticeUnveiled";
+        private static bool OnLoaden;
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.accessory = true;
@@ -27,25 +33,62 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
             player.CWR().IsJusticeUnveiled = true;
+            //检测换弹
+            if (player.CWR().PlayerIsKreLoadTime > 0) {
+                OnLoaden = true;
+            }
         }
 
-        public static void OnHitNPCSpwanProj(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
-            Player player = Main.LocalPlayer;
-            if (!player.CWR().IsJusticeUnveiled) {
-                return;
-            }
+        public static bool SpwanBool(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
             int type = ModContent.ProjectileType<DivineJustice>();
             int type2 = ModContent.ProjectileType<JusticeUnveiledExplode>();
+
+            if (projectile.numHits > 0) {
+                return false;
+            }
             if (projectile.type == type || projectile.type == type2) {
-                return;
+                return false;
+            }
+
+            if (!player.CWR().IsJusticeUnveiled) {
+                return false;
             }
             if (player.ownedProjectileCounts[type] > 0 || player.ownedProjectileCounts[type2] > 0) {
-                return;
+                return false;
             }
-            if (projectile.numHits == 0) {
+
+            Item item = player.GetItem();
+            if (item.type > ItemID.None && item.CWR().HasCartridgeHolder && item.CWR().AmmoCapacity <= 20) {
+                if (OnLoaden) {
+                    OnLoaden = false;
+                    return true;
+                }
+            }
+
+            if (projectile.type == ModContent.ProjectileType<StellarContemptEcho>()
+                || projectile.type == ModContent.ProjectileType<GalaxySmasherEcho>()
+                || projectile.type == ModContent.ProjectileType<TriactisHammerProj>()) {
+                return true;
+            }
+
+            if (projectile.type == ModContent.ProjectileType<ExorcismProj>() && projectile.Calamity().stealthStrike) {
+                return true;
+            }
+
+            if (projectile.DamageType != DamageClass.Ranged) {
+                return false;
+            }
+            if (!hit.Crit) {
+                return false;
+            }
+            return true;
+        }
+
+        public static void OnHitNPCSpwanProj(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
+            if (SpwanBool(player, projectile, target, hit)) {
                 Projectile.NewProjectile(player.FromObjectGetParent()
                 , target.Center + new Vector2(0, -1120), new Vector2(0, 6)
-                , type, 20, 2, player.whoAmI, target.whoAmI);
+                , ModContent.ProjectileType<DivineJustice>(), 20, 2, player.whoAmI, target.whoAmI);
             }
         }
     }
@@ -80,8 +123,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer() && CWRUtils.GetNPCInstance((int)Projectile.ai[0]) != null) {
-                SoundStyle sound = new SoundStyle("CalamityMod/Sounds/Item/GalaxySmasherSmash");
-                sound.Pitch = 0.6f;
                 SoundEngine.PlaySound(CWRSound.JustStrike, Projectile.Center);
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                 , ModContent.ProjectileType<JusticeUnveiledExplode>(), 20, 2, Projectile.owner, Projectile.ai[0]);

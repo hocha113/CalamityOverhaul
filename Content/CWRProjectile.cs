@@ -747,7 +747,7 @@ namespace CalamityOverhaul.Content
             SpanTypesOnHitNPC(player, projectile, target, hit);
             SpecialAmmoStateOnHitEffect(player, projectile, target, hit);
             RMeowmere.SpanDust(projectile);
-            JusticeUnveiled.OnHitNPCSpwanProj(projectile, target, hit, damageDone);
+            JusticeUnveiled.OnHitNPCSpwanProj(player, projectile, target, hit);
         }
 
         public override bool PreDraw(Projectile projectile, ref Color lightColor) {
