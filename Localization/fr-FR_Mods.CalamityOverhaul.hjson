@@ -2835,6 +2835,11 @@ Items: {
 		// DisplayName: Starship
 		// Tooltip: ""
 	}
+
+	SandDagger: {
+		// DisplayName: Sand Dagger
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3566,6 +3571,7 @@ Projectiles: {
 	// WeaverExplode.DisplayName: Weaver Explode
 	// WeaverGrievancesHeld.DisplayName: Weaver Grievances Held
 	// StarshipHeld.DisplayName: Starship Held
+	// SandDaggerThrow.DisplayName: Sand Dagger Throw
 }
 
 Configs: {
