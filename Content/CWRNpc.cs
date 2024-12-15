@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content
                     }
                 }
 
-                if (Main.rand.NextBool(4000) || npc.type == NPCID.Spazmatism && Main.LocalPlayer.ZoneOverworldHeight) {
+                if (Main.rand.NextBool(4000) || (npc.type == NPCID.Spazmatism && Main.LocalPlayer.ZoneSkyHeight)) {
                     int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<JusticeUnveiled>());
                     if (!VaultUtils.isSinglePlayer) {
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);

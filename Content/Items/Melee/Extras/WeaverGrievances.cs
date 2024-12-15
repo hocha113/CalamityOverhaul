@@ -1,7 +1,16 @@
-﻿using CalamityOverhaul.Content.Particles;
+﻿using CalamityMod.Items.Accessories;
+using CalamityMod.Items.Dyes;
+using CalamityMod.Items.Materials;
+using CalamityMod.Items.Weapons.Magic;
+using CalamityMod.Items.Weapons.Melee;
+using CalamityMod.Items.Weapons.Ranged;
+using CalamityMod.Items.Weapons.Rogue;
+using CalamityMod.Items.Weapons.Summon;
+using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -35,6 +44,22 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.shoot = ModContent.ProjectileType<WeaverBeam>();
             Item.shootSpeed = 18f;
             Item.SetKnifeHeld<WeaverGrievancesHeld>();
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<TerrorBlade>()
+                .AddIngredient<BansheeHook>()
+                .AddIngredient<GhoulishGouger>()
+                .AddIngredient<FatesReveal>()
+                .AddIngredient<GhastlyVisage>()
+                .AddIngredient<DaemonsFlame>()
+                .AddIngredient<EtherealSubjugator>()
+                .AddIngredient<Affliction>()
+                .AddIngredient<Necroplasm>(5)
+                .AddIngredient<RuinousSoul>(5)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
         }
     }
 
@@ -150,6 +175,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
                 Projectile.scale -= 0.004f;
             }
             else {
+                if (Main.zenithWorld) {
+                    CartePRTEffect();
+                }
                 Projectile.scale += 0.006f;
             }
 
@@ -172,6 +200,23 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Projectile.ai[1]++;
         }
 
+        private void CartePRTEffect() {
+            int particleCount = 12; // 粒子数量
+            float arcAngle = MathHelper.Pi; // 圆弧的角度范围，MathHelper.Pi 表示半圆
+            Vector2 baseDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX); // 基准方向
+
+            for (int i = 0; i < particleCount; i++) {
+                // 根据粒子索引计算角度
+                float angleOffset = -arcAngle / 2 + arcAngle * (i / (float)(particleCount - 1));
+                Vector2 direction = baseDirection.RotatedBy(angleOffset); // 基准方向旋转到新角度
+                float distance = Main.rand.Next(60, 160) * Projectile.scale; // 粒子的随机距离
+                Vector2 spawnPos = Projectile.Center + direction * distance + Projectile.velocity * -4;
+                Vector2 ver = -direction * Main.rand.NextFloat(0.6f, 0.9f);
+                float slp = Main.rand.NextFloat(1f, 1.2f);
+                PRT_Spark prt = new PRT_Spark(spawnPos, ver, false, 8, slp, sloudColor1);
+                PRTLoader.AddParticle(prt);
+            }
+        }
 
         public override bool PreDraw(ref Color lightColor) {
             Main.instance.LoadProjectile(Projectile.type);
