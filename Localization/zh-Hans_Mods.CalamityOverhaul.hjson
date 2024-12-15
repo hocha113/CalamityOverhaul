@@ -858,7 +858,7 @@ Items: {
 			'''
 			左键发射速度极快的霍乱箭矢，途中释放多个瘟疫炸弹
 			右键召唤花园世界的生命蜜蜂
-			[c/085054:慈父将一直关注着这弓的持有者]
+			[c/085054:慈父将始终注视着这弓的持有者]
 			'''
 	}
 
@@ -2841,6 +2841,11 @@ Items: {
 		// DisplayName: Weaver Grievances
 		// Tooltip: ""
 	}
+
+	Starship: {
+		// DisplayName: Starship
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3571,6 +3576,7 @@ Projectiles: {
 	// WeaverBeam.DisplayName: Weaver Beam
 	// WeaverExplode.DisplayName: Weaver Explode
 	// WeaverGrievancesHeld.DisplayName: Weaver Grievances Held
+	// StarshipHeld.DisplayName: Starship Held
 }
 
 Configs: {

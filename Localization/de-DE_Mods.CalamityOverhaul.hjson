@@ -2828,6 +2828,11 @@ Items: {
 		// DisplayName: Weaver Grievances
 		// Tooltip: ""
 	}
+
+	Starship: {
+		// DisplayName: Starship
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3558,6 +3563,7 @@ Projectiles: {
 	// WeaverBeam.DisplayName: Weaver Beam
 	// WeaverExplode.DisplayName: Weaver Explode
 	// WeaverGrievancesHeld.DisplayName: Weaver Grievances Held
+	// StarshipHeld.DisplayName: Starship Held
 }
 
 Configs: {
