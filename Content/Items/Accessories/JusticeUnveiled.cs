@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Rarities;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -81,7 +82,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (Projectile.IsOwnedByLocalPlayer() && CWRUtils.GetNPCInstance((int)Projectile.ai[0]) != null) {
                 SoundStyle sound = new SoundStyle("CalamityMod/Sounds/Item/GalaxySmasherSmash");
                 sound.Pitch = 0.6f;
-                SoundEngine.PlaySound(sound, Projectile.Center);
+                SoundEngine.PlaySound(CWRSound.JustStrike, Projectile.Center);
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                 , ModContent.ProjectileType<JusticeUnveiledExplode>(), 20, 2, Projectile.owner, Projectile.ai[0]);
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
@@ -144,11 +145,10 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override bool? CanHitNPC(NPC target) {
+            if (!(frameIndex == 4 || frameIndex == 8)){
+                return false;
+            }
             return base.CanHitNPC(target);
-        }
-
-        public override void OnKill(int timeLeft) {
-            base.OnKill(timeLeft);
         }
 
         public override bool PreDraw(ref Color lightColor) {

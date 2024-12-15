@@ -106,7 +106,12 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override void AI() {
             for (int i = 0; i < 2; i++) {
                 Vector2 pos = Projectile.Center + CWRUtils.randVr(Projectile.width / 2);
-                PRTLoader.NewParticle<PRT_HellFire>(pos, new Vector2(0, -Main.rand.Next(2, 4)), default, Main.rand.NextFloat(0.3f, 1));
+                if (Main.player[Projectile.owner].ZoneDungeon) {
+                    PRTLoader.NewParticle<PRT_SoulFire>(pos, new Vector2(0, -Main.rand.Next(2, 4)), default, Main.rand.NextFloat(0.3f, 1));
+                }
+                else {
+                    PRTLoader.NewParticle<PRT_HellFire>(pos, new Vector2(0, -Main.rand.Next(2, 4)), default, Main.rand.NextFloat(0.3f, 1));
+                }
             }
         }
     }
@@ -114,12 +119,13 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
     internal class WeaverBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Masking + "Wave_highest";
-        public static Color sloudColor1 => new Color();
-        public static Color sloudColor2 => new Color();
+        public static Color sloudColor1 => new Color(100, 43, 69);
+        public static Color sloudColor2 => new Color(200, 111, 145);
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 32;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
         }
+
         public override void SetDefaults() {
             Projectile.width = 462;
             Projectile.height = 462;
@@ -131,6 +137,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Projectile.extraUpdates = 4;
             Projectile.penetrate = -1;
         }
+
         public override void AI() {
             if (Projectile.ai[0] == 0 && Projectile.ai[1] >= 0) {
                 SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot, Projectile.position);
@@ -157,8 +164,10 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
                 Projectile.velocity *= 0.98f;
             }
             if (Projectile.timeLeft == 2) {
-                Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
+                if (Main.player[Projectile.owner].ZoneDungeon || Main.player[Projectile.owner].ZoneHell()) {
+                    Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                     , ModContent.ProjectileType<WeaverExplode>(), Projectile.damage, 0, Projectile.owner);
+                }
             }
             Projectile.ai[1]++;
         }
@@ -170,14 +179,14 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Vector2 drawOrigin = texture.Size() / 2;
             for (int k = 0; k < Projectile.oldPos.Length; k++) {
                 Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + Projectile.Size / 2;
-                Color color = Projectile.GetAlpha(Color.Lerp(Color.DarkRed, Color.Red, 1f / Projectile.oldPos.Length * k) * (1f - 1f / Projectile.oldPos.Length * k));
-                float slp = (0.6f + 0.4f * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length) * 0.24f;
+                Color color = Projectile.GetAlpha(Color.Lerp(sloudColor1, sloudColor2, 1f / Projectile.oldPos.Length * k) * (1f - 1f / Projectile.oldPos.Length * k));
+                float slp = (0.6f + 0.4f * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length) * 0.28f;
                 Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, drawOrigin, Projectile.scale * slp, SpriteEffects.None, 0);
             }
             return false;
         }
         public override void PostDraw(Color lightColor) {
-            Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 1.75f * Main.essScale);
+            Lighting.AddLight(Projectile.Center, sloudColor1.ToVector3() * 1.75f * Main.essScale);
         }
     }
 }
