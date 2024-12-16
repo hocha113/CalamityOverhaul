@@ -30,6 +30,17 @@ namespace CalamityOverhaul
     public static class CWRUtils
     {
         #region System
+        public static string GetTextProgressively(string text, float progress) {
+            // 输入保护
+            if (string.IsNullOrEmpty(text)) {
+                return string.Empty;
+            }
+            // 将进度限制在有效范围 (0.0f - 1.0f)
+            progress = MathHelper.Clamp(progress, 0.0f, 1.0f);
+            int charCountToShow = (int)(text.Length * progress);
+            return text.Substring(0, charCountToShow);
+        }
+
         public static LocalizedText SafeGetItemName<T>() where T : ModItem {
             Type type = typeof(T);
             return type.BaseType == typeof(EctypeItem)
@@ -1796,6 +1807,36 @@ namespace CalamityOverhaul
             }
         }
 
+        #endregion
+
+        #region UIUtils
+        public static void DrawBorderedRectangle(SpriteBatch spriteBatch, Texture2D borderTexture, int borderWidth
+            , Vector2 drawPosition, int drawWidth, int drawHeight, Color borderColor, Color borderCenterColor, float scale = 1, Vector2 scaleCenter = default) {
+            if (scaleCenter == default) {
+                scaleCenter = new Vector2(0.5f, 0.5f);
+            }
+            // 计算缩放后的整体尺寸
+            int scaledWidth = (int)(drawWidth * scale);
+            int scaledHeight = (int)(drawHeight * scale);
+            // 计算缩放偏移量，以缩放中心为基准
+            float offsetX = (scaledWidth - drawWidth) * scaleCenter.X;
+            float offsetY = (scaledHeight - drawHeight) * scaleCenter.Y;
+            // 调整后的绘制起始位置
+            Vector2 adjustedPosition = new Vector2(drawPosition.X - offsetX, drawPosition.Y - offsetY);
+            // 重新定义外部和内部的矩形区域
+            Rectangle outerRect = new Rectangle((int)adjustedPosition.X, (int)adjustedPosition.Y, scaledWidth, scaledHeight);
+            Rectangle innerRect = new Rectangle(
+                outerRect.X + borderWidth,
+                outerRect.Y + borderWidth,
+                scaledWidth - 2 * borderWidth,
+                scaledHeight - 2 * borderWidth
+            );
+            spriteBatch.Draw(borderTexture, new Rectangle(outerRect.X, outerRect.Y, scaledWidth, borderWidth), borderColor);
+            spriteBatch.Draw(borderTexture, new Rectangle(outerRect.X, outerRect.Bottom - borderWidth, scaledWidth, borderWidth), borderColor);
+            spriteBatch.Draw(borderTexture, new Rectangle(outerRect.X, outerRect.Y + borderWidth, borderWidth, scaledHeight - 2 * borderWidth), borderColor);
+            spriteBatch.Draw(borderTexture, new Rectangle(outerRect.Right - borderWidth, outerRect.Y + borderWidth, borderWidth, scaledHeight - 2 * borderWidth), borderColor);
+            spriteBatch.Draw(borderTexture, innerRect, borderCenterColor);
+        }
         #endregion
     }
 }

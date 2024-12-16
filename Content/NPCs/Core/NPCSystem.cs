@@ -22,7 +22,6 @@ namespace CalamityOverhaul.Content.NPCs.Core
         internal delegate void On_ModifyIncomingHitDelegate(NPC npc, ref NPC.HitModifiers modifiers);
 
         public static Type npcLoaderType;
-        public static List<NPCOverride> NPCSets { get; private set; }
         public static MethodInfo onHitByProjectile_Method;
         public static MethodInfo modifyIncomingHit_Method;
         public static MethodInfo onNPCAI_Method;
@@ -30,6 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.Core
         public static MethodInfo onPreDraw_Method;
         public static MethodInfo onPostDraw_Method;
         public static MethodInfo onCheckDead_Method;
+        public static List<NPCOverride> NPCSets { get; private set; }
 
         private void LoadNPCSets() {
             NPCSets = [];
@@ -96,6 +96,18 @@ namespace CalamityOverhaul.Content.NPCs.Core
             npcLoaderType = typeof(NPCLoader);
             LoadNPCSets();
             LoaderMethodAndHook();
+        }
+
+        public override void Unload() {
+            npcLoaderType = null;
+            onHitByProjectile_Method = null;
+            modifyIncomingHit_Method = null;
+            onNPCAI_Method = null;
+            onPreKill_Method = null;
+            onPreDraw_Method = null;
+            onPostDraw_Method = null;
+            onCheckDead_Method = null;
+            NPCSets?.Clear();
         }
 
         public static bool OnPreKillHook(On_NPCDelegate2 orig, NPC npc) {

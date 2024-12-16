@@ -3599,6 +3599,7 @@ Projectiles: {
 	// WeaverGrievancesHeld.DisplayName: Weaver Grievances Held
 	// StarshipHeld.DisplayName: Starship Held
 	// SandDaggerThrow.DisplayName: Sand Dagger Throw
+	// DragoonDrizzlefishHeld.DisplayName: Dragoon Drizzlefish Held
 }
 
 Configs: {
