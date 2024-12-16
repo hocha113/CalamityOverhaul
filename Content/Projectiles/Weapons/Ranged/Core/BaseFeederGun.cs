@@ -239,6 +239,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             return kreloadTimeValue == 0 ? GunOnFireRot : GetGunBodyRot();
         }
 
+        public override void SetCompositeArm() {
+            if (OnHandheldDisplayBool) {
+                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
+                if (!Onehanded || OnKreload) {
+                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+                }
+            }
+        }
+
         public override Vector2 GetGunInFirePos() {
             Vector2 gunBodyRotOffset = Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5);
             Vector2 gunHeldOffsetY = new Vector2(0, HandFireDistanceY * SafeGravDir);

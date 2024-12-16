@@ -616,7 +616,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Recover();
         }
 
-        public void SetCompositeArm() {
+        public virtual void SetCompositeArm() {
             if (OnHandheldDisplayBool) {
                 Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
                 if (!Onehanded) {

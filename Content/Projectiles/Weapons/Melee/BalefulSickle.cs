@@ -1,5 +1,8 @@
 ﻿using CalamityMod;
+using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Particles;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -46,24 +49,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.velocity *= 0.97f;
 
             if (Projectile.timeLeft < 40) {
-                NPC target = null;
-                float dstan = 650f;
-                foreach (var npc in Main.ActiveNPCs) {
-                    if (onHitNPCs.Contains(npc)) {
-                        continue;
-                    }
-                    if (npc.friendly || npc.dontTakeDamage) {
-                        continue;
-                    }
-                    float newDstan = npc.Distance(Projectile.Center);
-                    if (newDstan < dstan) {
-                        target = npc;
-                        dstan = newDstan;
-                    }
-                }
-                Projectile.Center.FindClosestNPC();
+                NPC target = Projectile.Center.FindClosestNPC(650, false, true, onHitNPCs);
                 if (target != null) {
                     Projectile.ChasingBehavior(target.Center, 30f);
+                    if (!Main.dedServ) {
+                        PRT_Spark spark = new PRT_Spark(Projectile.Center, Projectile.velocity, false, 22, 1, Color.Gold);
+                        PRTLoader.AddParticle(spark);
+                    }
                 }
             }
 
@@ -74,6 +66,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             target.AddBuff(BuffID.OnFire3, 240);
             BalefulHarvesterEcType.SpanDust(Projectile.Center, 13, 0.7f, 1.2f);
             if (!onHitNPCs.Contains(target)) {
+                SoundStyle sound = CommonCalamitySounds.SwiftSliceSound;
+                sound.Pitch = 0.2f;
+                sound.MaxInstances = 3;
+                sound.Volume = 0.6f;
+                SoundEngine.PlaySound(sound, Projectile.Center);
                 onHitNPCs.Add(target);
             }
         }

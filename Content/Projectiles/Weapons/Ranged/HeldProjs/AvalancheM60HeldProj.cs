@@ -32,6 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             RecoilRetroForceMagnitude = 5;
             EnableRecoilRetroEffect = true;
             CanCreateCaseEjection = false;
+            LoadingAA_None.gunBodyY = 42;
         }
 
         public override void PostInOwnerUpdate() {

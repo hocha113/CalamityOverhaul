@@ -19,18 +19,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 20;
-            HandDistance = 25;
-            HandDistanceY = 5;
-            HandFireDistance = 25;
-            HandFireDistanceY = -5;
+            HandDistance = 22;
+            HandDistanceY = 4;
+            HandFireDistance = 22;
+            HandFireDistanceY = -4;
             ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 10;
             RepeatedCartridgeChange = true;
             GunPressure = 0;
             ControlForce = 0;
-            Recoil = 1.2f;
+            Recoil = 0.8f;
             RangeOfStress = 25;
             AmmoTypeAffectedByMagazine = false;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
+            Onehanded = true;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 7;
             SpwanGunDustMngsData.splNum = 0.5f;

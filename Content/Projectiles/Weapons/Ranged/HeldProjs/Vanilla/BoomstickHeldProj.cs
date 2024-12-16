@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.Boomstick;
         public override void SetRangedProperty() {
             FireTime = 21;
-            kreloadMaxTime = 30;
+            kreloadMaxTime = 20;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = -6;
             HandDistance = 17;
@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             RangeOfStress = 8;
             ArmRotSengsBackNoFireOffset = 30;
             RepeatedCartridgeChange = true;
+            Onehanded = true;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Shotgun;
             LoadingAA_Shotgun.loadShellSound = CWRSound.Gun_Shotgun_LoadShell with { Volume = 0.75f };
             LoadingAA_Shotgun.pump = CWRSound.Gun_Clipout with { Volume = 0.6f };

@@ -602,45 +602,41 @@ namespace CalamityOverhaul
         /// <param name="maxDistanceToCheck">搜索NPC的最大距离</param>
         /// <param name="ignoreTiles">在检查障碍物时是否忽略瓦片</param>
         /// <param name="bossPriority">是否优先选择Boss</param>
-        /// <returns>距离最近的NPC。</returns>
-        public static NPC FindClosestNPC(this Vector2 origin, float maxDistanceToCheck, bool ignoreTiles = true, bool bossPriority = false) {
+        /// <param name="onHitNPCs">排除的NPC列表</param>
+        /// <returns>距离最近的NPC</returns>
+        public static NPC FindClosestNPC(this Vector2 origin, float maxDistanceToCheck, bool ignoreTiles = true, bool bossPriority = false, IEnumerable<NPC> onHitNPCs = null) {
             NPC closestTarget = null;
             float distance = maxDistanceToCheck;
-            if (bossPriority) {
-                bool bossFound = false;
-                for (int index2 = 0; index2 < Main.npc.Length; index2++) {
-                    if ((bossFound && !Main.npc[index2].boss && Main.npc[index2].type != NPCID.WallofFleshEye) || !Main.npc[index2].CanBeChasedBy()) {
-                        continue;
+            bool bossFound = false;
+
+            foreach (var npc in Main.npc) {
+                // 跳过无效的NPC
+                if (!npc.CanBeChasedBy() || (onHitNPCs != null && onHitNPCs.Contains(npc))) {
+                    continue;
+                }
+
+                // Boss优先选择逻辑
+                if (bossPriority && bossFound && !npc.boss && npc.type != NPCID.WallofFleshEye) {
+                    continue;
+                }
+
+                // 计算NPC与起点的距离
+                float extraDistance = (npc.width / 2f) + (npc.height / 2f);
+                float actualDistance = Vector2.Distance(origin, npc.Center);
+
+                // 检查瓦片阻挡
+                bool canHit = ignoreTiles || Collision.CanHit(origin, 1, 1, npc.Center, 1, 1);
+
+                // 更新最近目标
+                if (actualDistance < distance + extraDistance && canHit) {
+                    if (bossPriority && (npc.boss || npc.type == NPCID.WallofFleshEye)) {
+                        bossFound = true;
                     }
-                    float extraDistance2 = (Main.npc[index2].width / 2) + (Main.npc[index2].height / 2);
-                    bool canHit2 = true;
-                    if (extraDistance2 < distance && !ignoreTiles) {
-                        canHit2 = Collision.CanHit(origin, 1, 1, Main.npc[index2].Center, 1, 1);
-                    }
-                    if (Vector2.Distance(origin, Main.npc[index2].Center) < distance + extraDistance2 && canHit2) {
-                        if (Main.npc[index2].boss || Main.npc[index2].type == NPCID.WallofFleshEye) {
-                            bossFound = true;
-                        }
-                        distance = Vector2.Distance(origin, Main.npc[index2].Center);
-                        closestTarget = Main.npc[index2];
-                    }
+                    distance = actualDistance;
+                    closestTarget = npc;
                 }
             }
-            else {
-                for (int index = 0; index < Main.npc.Length; index++) {
-                    if (Main.npc[index].CanBeChasedBy()) {
-                        float extraDistance = (Main.npc[index].width / 2) + (Main.npc[index].height / 2);
-                        bool canHit = true;
-                        if (extraDistance < distance && !ignoreTiles) {
-                            canHit = Collision.CanHit(origin, 1, 1, Main.npc[index].Center, 1, 1);
-                        }
-                        if (Vector2.Distance(origin, Main.npc[index].Center) < distance + extraDistance && canHit) {
-                            distance = Vector2.Distance(origin, Main.npc[index].Center);
-                            closestTarget = Main.npc[index];
-                        }
-                    }
-                }
-            }
+
             return closestTarget;
         }
 
