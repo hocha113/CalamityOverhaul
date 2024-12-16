@@ -4565,3 +4565,22 @@ Biomes: {
 		TownNPCDialogueName: Biome en acier tungstène
 	}
 }
+
+Legend: {
+	HalibutText: {
+		// Greeting0: I enjoy the atmosphere in the Abyss. Those giant creatures are actually very friendly, they’re just really shy, easily startled, and... a bit evil...
+		// Greeting1: Ah, welcome! Don't be surprised by my monocle and top hat. I’m Dr. Bigflatfish, a professor at Sulfur Sea University! Knowledge and elegance, both are essential.
+		// Greeting2: You may not have heard of Sulfur Sea University, but there, I’ve studied marine biology and abyssal botany. Oh, and I also showed off a bit in fishing competitions, winning two championships.
+		// Greeting3: Can a flounder attend university? Of course! The underwater world hides many corners of wisdom. Don’t let my leisurely swimming fool you, I always have a book in hand.
+		// Greeting4: Do you like my top hat? It’s quite stylish, isn’t it? Actually, it’s my lucky charm from the fishing competitions. It witnessed my glorious moments of winning twice!
+		// Greeting5: Abyssal botany is no small matter. Don’t underestimate those floating algae. Their stories are as profound as the starry sky. If you’re interested, I’d be happy to share some with you.
+		// Greeting6: Oh, as a fish, I’m no simple creature! Academic research, fishing contests, deep-sea adventures... I’m passionate about everything. Right now, I’m happy to chat with you.
+		// Greeting7: The title of professor is not just for show. Even sharks praise my knowledge! And, of course, my top hat is quite popular as well.
+		// Greeting8: ‘Knowledge is power,’ I firmly believe in that. Whether it’s earning my doctorate or dominating fishing competitions, it all relies on my rich brain and flexible fins!
+		// Greeting9: The underwater world is vast and unimaginably exciting. If you have time, come with me and explore the mysterious deep-sea plants. I can be your guide!
+		// Greeting10: Hey, sometimes even I can’t help but think: a flounder wearing a monocle, discussing underwater knowledge, it’s truly a wonder. But knowledge, anyone can have it, right?
+		// Greeting11: Every time I see the surprised expressions of land creatures, it’s quite amusing. There are many wise marine creatures, and I’m just one of the fish who’s ‘dressed up’ a bit.
+		// Greeting12: In addition to academic research, I enjoy observing the daily life underwater. The corals, schools of fish, and occasionally passing sea turtles, every scene is as beautiful as a natural painting.
+		// Greeting13: Winning two championships is nice, but what truly makes me proud is my love for knowledge. It’s because of this passion that I’m able to leave my small legend in the underwater world!
+	}
+}

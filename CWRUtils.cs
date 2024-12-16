@@ -1484,29 +1484,36 @@ namespace CalamityOverhaul
         }
 
         public static string GetSafeText(string text, Vector2 textSize, float maxWidth) {
-            int charWidth = (int)(textSize.X / text.Length);
             List<char> characters = text.ToList();
-            List<char> wrappedText = [];
-            int currentWidth = 0;
+            List<char> wrappedText = new List<char>();
+            float currentWidth = 0;
+            float charWidth;
 
             foreach (char character in characters) {
+                // 计算字符宽度
+                charWidth = textSize.X / text.Length;
+
+                // 如果是换行符，重置当前宽度并添加换行符
                 if (character == '\n') {
                     wrappedText.Add(character);
                     currentWidth = 0;
                 }
                 else {
-                    int characterWidth = charWidth;
-
-                    if (currentWidth + characterWidth > maxWidth) {
+                    // 计算字符实际宽度，处理字符超出最大宽度的情况
+                    float actualCharWidth = textSize.X / text.Length;
+                    if (currentWidth + actualCharWidth > maxWidth) {
+                        // 超出最大宽度，插入换行符并重置宽度
                         wrappedText.Add('\n');
                         currentWidth = 0;
                     }
 
+                    // 添加字符并更新当前宽度
                     wrappedText.Add(character);
-                    currentWidth += characterWidth;
+                    currentWidth += actualCharWidth;
                 }
             }
 
+            // 返回处理过的文本
             return new string(wrappedText.ToArray());
         }
 
