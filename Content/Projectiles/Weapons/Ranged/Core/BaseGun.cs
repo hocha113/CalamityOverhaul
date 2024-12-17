@@ -177,6 +177,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public int DrawCrossArrowNum = 1;
         /// <summary>
+        /// 绘制枪体的旋转矫正值，默认为0
+        /// </summary>
+        public float DrawGunBodyRotOffset;
+        /// <summary>
         /// 自定义绘制中心点，默认为<see cref="Vector2.Zero"/>，即不启用
         /// </summary>
         protected Vector2 CustomDrawOrig = Vector2.Zero;
@@ -639,8 +643,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public virtual void GunDraw(Vector2 drawPos, ref Color lightColor) {
+            float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
             Main.EntitySpriteDraw(TextureValue, drawPos, null, lightColor
-                , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale
+                , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             if (IsCrossbow && CanDrawCrossArrow && CWRServerConfig.Instance.BowArrowDraw) {
                 DrawBolt(drawPos);
@@ -669,75 +674,79 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 boolvalue = true;
             }
 
-            if (boolvalue) {
-                int useAmmoItemType = UseAmmoItemType;
-                if (useAmmoItemType == ItemID.None) {
-                    return;
-                }
-                if (useAmmoItemType > 0 && useAmmoItemType < TextureAssets.Item.Length) {
-                    Main.instance.LoadItem(useAmmoItemType);
-                }
+            float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
 
-                Texture2D arrowValue = TextureAssets.Item[useAmmoItemType].Value;
-                Item arrowItemInds = new Item(useAmmoItemType);
+            if (!boolvalue) {
+                return;
+            }
 
-                if (!arrowItemInds.consumable) {
-                    int newtype = ItemID.WoodenArrow;
-                    if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(arrowItemInds.shoot, out int value2)) {
-                        newtype = value2;
-                    }
-                    Main.instance.LoadItem(newtype);
-                    arrowValue = TextureAssets.Item[newtype].Value;
-                }
+            int useAmmoItemType = UseAmmoItemType;
+            if (useAmmoItemType == ItemID.None) {
+                return;
+            }
+            if (useAmmoItemType > 0 && useAmmoItemType < TextureAssets.Item.Length) {
+                Main.instance.LoadItem(useAmmoItemType);
+            }
 
-                if (ForcedConversionTargetAmmoFunc.Invoke() && ToTargetAmmoInDraw != -1) {
-                    arrowValue = TextureAssets.Projectile[ToTargetAmmo].Value;
-                    if (ToTargetAmmoInDraw > 0) {
-                        arrowValue = TextureAssets.Projectile[ToTargetAmmoInDraw].Value;
-                    }
-                    if (ISForcedConversionDrawAmmoInversion) {
-                        CustomDrawOrig = new Vector2(arrowValue.Width / 2, 0);
-                        DrawCrossArrowOffsetRot = MathHelper.Pi;
-                    }
-                }
-                else if (ISForcedConversionDrawAmmoInversion) {
-                    CustomDrawOrig = Vector2.Zero;
-                    DrawCrossArrowOffsetRot = 0;
-                }
+            Texture2D arrowValue = TextureAssets.Item[useAmmoItemType].Value;
+            Item arrowItemInds = new Item(useAmmoItemType);
 
-                float drawRot = Projectile.rotation + MathHelper.PiOver2;
-                float chordCoefficient = GetBoltInFireRatio();
-                float lengsOFstValue = chordCoefficient * 8 * DrawCrossArrowDrawingDieLengthRatio + DrawCrossArrowToMode;
-                Vector2 inprojRot = Projectile.rotation.ToRotationVector2();
-                Vector2 offsetDrawPos = inprojRot * lengsOFstValue;
-                Vector2 norlValue = inprojRot.GetNormalVector() * (DrawCrossArrowNorlMode + 2) * Owner.direction;
-                Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new(arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
-                drawPos += offsetDrawPos;
+            if (!arrowItemInds.consumable) {
+                int newtype = ItemID.WoodenArrow;
+                if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(arrowItemInds.shoot, out int value2)) {
+                    newtype = value2;
+                }
+                Main.instance.LoadItem(newtype);
+                arrowValue = TextureAssets.Item[newtype].Value;
+            }
 
-                Color drawColor = Color.White;
-                if (CWRServerConfig.Instance.WeaponAdaptiveIllumination || !CanFire) {
-                    drawColor = Lighting.GetColor(new Point((int)(Projectile.position.X / 16), (int)(Projectile.position.Y / 16)));
+            if (ForcedConversionTargetAmmoFunc.Invoke() && ToTargetAmmoInDraw != -1) {
+                arrowValue = TextureAssets.Projectile[ToTargetAmmo].Value;
+                if (ToTargetAmmoInDraw > 0) {
+                    arrowValue = TextureAssets.Projectile[ToTargetAmmoInDraw].Value;
                 }
+                if (ISForcedConversionDrawAmmoInversion) {
+                    CustomDrawOrig = new Vector2(arrowValue.Width / 2, 0);
+                    DrawCrossArrowOffsetRot = MathHelper.Pi;
+                }
+            }
+            else if (ISForcedConversionDrawAmmoInversion) {
+                CustomDrawOrig = Vector2.Zero;
+                DrawCrossArrowOffsetRot = 0;
+            }
 
-                void drawArrow(float overOffsetRot = 0, Vector2 overOffsetPos = default) => Main.EntitySpriteDraw(arrowValue
-                    , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos) + norlValue
-                    , null, drawColor, drawRot + overOffsetRot + DrawCrossArrowOffsetRot, drawOrig, Projectile.scale * DrawCrossArrowSize, SpriteEffects.FlipVertically);
+            float drawRot = Projectile.rotation + offsetRot + MathHelper.PiOver2;
+            float chordCoefficient = GetBoltInFireRatio();
+            float lengsOFstValue = chordCoefficient * 8 * DrawCrossArrowDrawingDieLengthRatio + DrawCrossArrowToMode;
+            Vector2 inprojRot = (Projectile.rotation + offsetRot).ToRotationVector2();
+            Vector2 offsetDrawPos = inprojRot * lengsOFstValue;
+            Vector2 norlValue = inprojRot.GetNormalVector() * (DrawCrossArrowNorlMode + 2) * Owner.direction;
+            Vector2 drawOrig = CustomDrawOrig == Vector2.Zero ? new(arrowValue.Width / 2, arrowValue.Height) : CustomDrawOrig;
+            drawPos += offsetDrawPos;
 
-                if (DrawCrossArrowNum == 1) {
-                    drawArrow();
-                }
-                else if (DrawCrossArrowNum == 2) {
-                    drawArrow(0.3f * chordCoefficient);
-                    drawArrow(-0.3f * chordCoefficient);
-                }
-                else if (DrawCrossArrowNum == 3) {
-                    drawArrow(0.4f * chordCoefficient * Owner.direction);
-                    drawArrow();
-                    drawArrow(-0.3f * chordCoefficient * Owner.direction);
-                }
-                else {
-                    drawArrow();
-                }
+            Color drawColor = Color.White;
+            if (CWRServerConfig.Instance.WeaponAdaptiveIllumination || !CanFire) {
+                drawColor = Lighting.GetColor(new Point((int)(Projectile.position.X / 16), (int)(Projectile.position.Y / 16)));
+            }
+
+            void drawArrow(float overOffsetRot = 0, Vector2 overOffsetPos = default) => Main.EntitySpriteDraw(arrowValue
+                , drawPos + (overOffsetPos == default ? Vector2.Zero : overOffsetPos) + norlValue
+                , null, drawColor, drawRot + overOffsetRot + DrawCrossArrowOffsetRot, drawOrig, Projectile.scale * DrawCrossArrowSize, SpriteEffects.FlipVertically);
+
+            if (DrawCrossArrowNum == 1) {
+                drawArrow();
+            }
+            else if (DrawCrossArrowNum == 2) {
+                drawArrow(0.3f * chordCoefficient);
+                drawArrow(-0.3f * chordCoefficient);
+            }
+            else if (DrawCrossArrowNum == 3) {
+                drawArrow(0.4f * chordCoefficient * Owner.direction);
+                drawArrow();
+                drawArrow(-0.3f * chordCoefficient * Owner.direction);
+            }
+            else {
+                drawArrow();
             }
         }
     }

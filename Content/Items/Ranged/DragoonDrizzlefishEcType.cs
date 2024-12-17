@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetDefaults() {
             Item.SetItemCopySD<DragoonDrizzlefish>();
             Item.CWR().CartridgeType = CartridgeUIEnum.JAR;
-            Item.SetCartridgeGun<DragoonDrizzlefishHeld>(22);
+            Item.SetCartridgeGun<DragoonDrizzlefishHeld>(62);
         }
     }
 
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override int ProtogenesisID => ModContent.ItemType<DragoonDrizzlefishEcType>();
         public override void SetDefaults(Item item) {
             item.CWR().CartridgeType = CartridgeUIEnum.JAR;
-            item.SetCartridgeGun<DragoonDrizzlefishHeld>(22);
+            item.SetCartridgeGun<DragoonDrizzlefishHeld>(62);
         }
     }
 
@@ -36,16 +36,20 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetRangedProperty() {
             Onehanded = true;
             InOwner_HandState_AlwaysSetInFireRoding = true;
-            ShootPosToMouLengValue = 6;
-            ShootPosNorlLengValue = -5;
-            HandDistance = 20;
-            HandDistanceY = 3;
+            ShootPosToMouLengValue = 0;
+            ShootPosNorlLengValue = 0;
+            HandDistance = 16;
+            HandDistanceY = 2;
+            HandFireDistance = 16;
+            HandFireDistanceY = 0;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
             Recoil = 0.6f;
-            SpwanGunDustMngsData.splNum = 0.3f;
+            CanCreateSpawnGunDust = false;
             CanCreateCaseEjection = false;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
+            DrawGunBodyRotOffset = MathHelper.PiOver4;
+
         }
 
         public override void FiringShoot() {
