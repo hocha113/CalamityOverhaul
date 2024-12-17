@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs.Vanilla
         public override void SetRangedProperty() {
             Projectile.DamageType = DamageClass.Magic;
             GunPressure = 0;
-            HandDistance = 15;
-            HandDistanceY = -5;
+            HandIdleDistanceX = 15;
+            HandIdleDistanceY = -5;
             Recoil = 0;
             ArmRotSengsFrontNoFireOffset = 13;
             AngleFirearmRest = 0;

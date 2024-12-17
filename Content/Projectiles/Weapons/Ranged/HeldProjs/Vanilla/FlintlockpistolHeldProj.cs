@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             InOwner_HandState_AlwaysSetInFireRoding = true;
             ShootPosToMouLengValue = 6;
             ShootPosNorlLengValue = -5;
-            HandDistance = 20;
-            HandDistanceY = 3;
+            HandIdleDistanceX = 20;
+            HandIdleDistanceY = 3;
             GunPressure = 0.2f;
             ControlForce = 0.05f;
             Recoil = 0.6f;

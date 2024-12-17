@@ -21,9 +21,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             kreloadMaxTime = 90;
             FireTime = 22;
-            HandDistance = 24;
-            HandDistanceY = 4;
-            HandFireDistance = 24;
+            HandIdleDistanceX = 24;
+            HandIdleDistanceY = 4;
+            HandFireDistanceX = 24;
             HandFireDistanceY = -4;
             ShootPosNorlLengValue = -10;
             ShootPosToMouLengValue = 10;
@@ -38,9 +38,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             if (Type == ModContent.ProjectileType<CrackshotColtHeld>()) {
                 kreloadMaxTime = 50;
                 FireTime = 24;
-                HandDistance = 22;
-                HandDistanceY = 2;
-                HandFireDistance = 20;
+                HandIdleDistanceX = 22;
+                HandIdleDistanceY = 2;
+                HandFireDistanceX = 20;
                 HandFireDistanceY = -2;
                 InOwner_HandState_AlwaysSetInFireRoding = true;
             }

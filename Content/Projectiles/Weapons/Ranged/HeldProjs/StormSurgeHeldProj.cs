@@ -14,9 +14,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCWRItem => ModContent.ItemType<StormSurgeEcType>();
 
         public override void SetRangedProperty() {
-            HandDistance = 15;
-            HandDistanceY = 3;
-            HandFireDistance = 15;
+            HandIdleDistanceX = 15;
+            HandIdleDistanceY = 3;
+            HandFireDistanceX = 15;
             HandFireDistanceY = -5;
             ShootPosNorlLengValue = 0;
             ShootPosToMouLengValue = 10;

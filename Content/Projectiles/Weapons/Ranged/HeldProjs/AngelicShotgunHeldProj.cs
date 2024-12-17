@@ -18,8 +18,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.1f;
             GunPressure = 0.3f;
             Recoil = 2;
-            HandDistance = 28;
-            HandDistanceY = 3;
+            HandIdleDistanceX = 28;
+            HandIdleDistanceY = 3;
             ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
             ToTargetAmmo = ModContent.ProjectileType<HallowPointRoundProj>();
         }

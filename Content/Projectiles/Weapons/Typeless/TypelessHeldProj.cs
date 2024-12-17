@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Typeless
         public override int targetCayItem => ModContent.ItemType<LunicEye>();
         public override int targetCWRItem => ModContent.ItemType<LunicEyeEcType>();
         public override void SetRangedProperty() {
-            HandFireDistance = 30;
+            HandFireDistanceX = 30;
             HandFireDistanceY = 0;
             ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 24;
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Typeless
         public override int targetCayItem => ModContent.ItemType<EyeofMagnus>();
         public override int targetCWRItem => ModContent.ItemType<EyeofMagnusEcType>();
         public override void SetRangedProperty() {
-            HandFireDistance = 30;
+            HandFireDistanceX = 30;
             HandFireDistanceY = 0;
             ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 24;
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Typeless
         public override int targetCWRItem => ModContent.ItemType<AestheticusEcType>();
 
         public override void SetRangedProperty() {
-            HandFireDistance = 40;
+            HandFireDistanceX = 40;
             HandFireDistanceY = 0;
             ShootPosNorlLengValue = 6;
             ShootPosToMouLengValue = 24;

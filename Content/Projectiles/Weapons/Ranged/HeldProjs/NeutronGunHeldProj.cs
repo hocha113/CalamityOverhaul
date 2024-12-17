@@ -34,9 +34,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ForcedConversionTargetAmmoFunc = () => true;
             ToTargetAmmo = ModContent.ProjectileType<NeutronBullet>();
             Recoil = 0.45f;
-            HandDistance = 35;
-            HandDistanceY = 3;
-            HandFireDistance = 35;
+            HandIdleDistanceX = 35;
+            HandIdleDistanceY = 3;
+            HandFireDistanceX = 35;
             LoadingAmmoAnimation = LoadingAmmoAnimationEnum.Handgun;
             LoadingAA_Handgun.gunBodyY = -16;
             ShootPosNorlLengValue = -2;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PostInOwnerUpdate() {
             CWRUtils.ClockFrame(ref Projectile.frame, 5, 6);
             CWRUtils.ClockFrame(ref uiframe, 5, 6);
-            HandDistance = onFireR ? (HandFireDistance = 65) : (HandFireDistance = 35);
+            HandIdleDistanceX = onFireR ? (HandFireDistanceX = 65) : (HandFireDistanceX = 35);
 
             if (canattce && Charge > 0) {
                 Charge--;

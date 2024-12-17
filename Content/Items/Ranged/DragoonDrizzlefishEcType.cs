@@ -38,9 +38,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
             InOwner_HandState_AlwaysSetInFireRoding = true;
             ShootPosToMouLengValue = 0;
             ShootPosNorlLengValue = 0;
-            HandDistance = 16;
-            HandDistanceY = 2;
-            HandFireDistance = 16;
+            HandIdleDistanceX = 16;
+            HandIdleDistanceY = 2;
+            HandFireDistanceX = 16;
             HandFireDistanceY = 0;
             GunPressure = 0.2f;
             ControlForce = 0.05f;

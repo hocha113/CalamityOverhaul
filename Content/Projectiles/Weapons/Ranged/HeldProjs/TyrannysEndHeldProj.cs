@@ -17,11 +17,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             FireTime = 20;
             kreloadMaxTime = 120;
             RangeOfStress = 25;
-            HandDistance = 45;
-            HandDistanceY = 5;
+            HandIdleDistanceX = 45;
+            HandIdleDistanceY = 5;
             GunPressure = 0.3f;
             ControlForce = 0.02f;
-            HandFireDistance = 45;
+            HandFireDistanceX = 45;
             HandFireDistanceY = -2;
             ShootPosNorlLengValue = -8;
             ShootPosToMouLengValue = 30;

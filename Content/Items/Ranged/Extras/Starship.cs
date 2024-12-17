@@ -29,9 +29,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         public override void SetRangedProperty() {
             kreloadMaxTime = 95;
             FireTime = 2;
-            HandDistance = 25;
-            HandDistanceY = 5;
-            HandFireDistance = 25;
+            HandIdleDistanceX = 25;
+            HandIdleDistanceY = 5;
+            HandFireDistanceX = 25;
             HandFireDistanceY = -10;
             ShootPosNorlLengValue = 0;
             ShootPosToMouLengValue = 14;

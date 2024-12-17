@@ -26,9 +26,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.3f;
             FireTime = 20;
             GunPressure = 0;
-            HandDistance = 70;
-            HandDistanceY = 0;
-            HandFireDistance = 70;
+            HandIdleDistanceX = 70;
+            HandIdleDistanceY = 0;
+            HandFireDistanceX = 70;
             HandFireDistanceY = -15;
             AngleFirearmRest = -1;
             ShootPosNorlLengValue = 5;

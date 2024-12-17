@@ -103,15 +103,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <summary>
         /// 手持距离，生效于非开火状态下，默认为15
         /// </summary>
-        public float HandDistance = 15;
+        public float HandIdleDistanceX = 15;
         /// <summary>
         /// 手持距离，生效于非开火状态下，默认为0
         /// </summary>
-        public float HandDistanceY = 0;
+        public float HandIdleDistanceY = 0;
         /// <summary>
         /// 手持距离，生效于开火状态下，默认为20
         /// </summary>
-        public float HandFireDistance = 20;
+        public float HandFireDistanceX = 20;
         /// <summary>
         /// 手持距离，生效于开火状态下，默认为-3
         /// </summary>
@@ -292,7 +292,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         /// <returns></returns>
         public virtual Vector2 GetGunInFirePos() {
-            return Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + new Vector2(0, HandFireDistanceY) + OffsetPos;
+            return Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistanceX + new Vector2(0, HandFireDistanceY) + OffsetPos;
         }
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <returns></returns>
         public virtual Vector2 GetGunBodyPos() {
             return Owner.GetPlayerStabilityCenter()
-                + new Vector2(DirSign * HandDistance, HandDistanceY * SafeGravDir) * SafeGravDir;
+                + new Vector2(DirSign * HandIdleDistanceX, HandIdleDistanceY * SafeGravDir) * SafeGravDir;
         }
         /// <summary>
         /// 在开火时被调用，在适当的时机下调用这个函数

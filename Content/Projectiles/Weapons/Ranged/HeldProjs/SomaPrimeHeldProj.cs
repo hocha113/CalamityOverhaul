@@ -23,9 +23,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0;
             Recoil = 0.2f;
             RangeOfStress = 25;
-            HandDistance = 25;
-            HandDistanceY = 5;
-            HandFireDistance = 25;
+            HandIdleDistanceX = 25;
+            HandIdleDistanceY = 5;
+            HandFireDistanceX = 25;
             HandFireDistanceY = -5;
             ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 10;

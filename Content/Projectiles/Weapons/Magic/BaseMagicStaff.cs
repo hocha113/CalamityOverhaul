@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         public sealed override void SetMagicProperty() {
             ShootPosToMouLengValue = -30;
             ShootPosNorlLengValue = 0;
-            HandFireDistance = 0;
+            HandFireDistanceX = 0;
             HandFireDistanceY = 0;
             InOwner_HandState_AlwaysSetInFireRoding = true;
             Onehanded = true;

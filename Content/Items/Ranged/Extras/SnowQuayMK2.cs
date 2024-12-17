@@ -39,9 +39,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Recoil = 0.3f;
             FireTime = 8;
             GunPressure = 0;
-            HandDistance = 40;
-            HandDistanceY = 0;
-            HandFireDistance = 40;
+            HandIdleDistanceX = 40;
+            HandIdleDistanceY = 0;
+            HandFireDistanceX = 40;
             HandFireDistanceY = -2;
             AngleFirearmRest = -1;
             ShootPosNorlLengValue = -6;

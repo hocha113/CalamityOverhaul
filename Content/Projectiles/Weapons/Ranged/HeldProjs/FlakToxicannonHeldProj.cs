@@ -20,11 +20,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             FireTime = 10;
             GunPressure = 0;
             ControlForce = 0;
-            HandDistance = 25;
-            HandDistanceY = 5;
+            HandIdleDistanceX = 25;
+            HandIdleDistanceY = 5;
             RangeOfStress = 25;
             kreloadMaxTime = 90;
-            HandFireDistance = 25;
+            HandFireDistanceX = 25;
             HandFireDistanceY = -5;
             ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 10;
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
                 if (ToMouseA + MathHelper.Pi > MathHelper.ToRadians(270)) {
                     Projectile.rotation = minRot - MathHelper.Pi;
                 }
-                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistance + OffsetPos;
+                Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HandFireDistanceX + OffsetPos;
                 ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (Projectile.rotation + 0.5f * DirSign)) * DirSign;
                 SetCompositeArm();
             }

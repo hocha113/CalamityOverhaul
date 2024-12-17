@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     internal class SkyGlazeHeld : BaseMagicStaff<SkyGlaze>
     {
         public override void SetStaffProperty() {
-            HandFireDistance = 0;
+            HandFireDistanceX = 0;
         }
         public override void FiringShoot() {
             for (int i = 3; i > 0; i--) {

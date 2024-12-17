@@ -26,9 +26,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void SetRangedProperty() {
             kreloadMaxTime = 110;
             FireTime = 1;
-            HandDistance = 40;
-            HandDistanceY = 5;
-            HandFireDistance = 40;
+            HandIdleDistanceX = 40;
+            HandIdleDistanceY = 5;
+            HandFireDistanceX = 40;
             HandFireDistanceY = 0;
             ShootPosNorlLengValue = 0;
             ShootPosToMouLengValue = 40;

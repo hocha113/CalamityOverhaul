@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Recoil = 0.45f;
             FireTime = 4;
             kreloadMaxTime = 60;
-            HandDistance = 40;
-            HandDistanceY = 10;
-            HandFireDistance = 40;
+            HandIdleDistanceX = 40;
+            HandIdleDistanceY = 10;
+            HandFireDistanceX = 40;
             HandFireDistanceY = 2;
             RecoilRetroForceMagnitude = 6;
             RecoilOffsetRecoverValue = 0.6f;

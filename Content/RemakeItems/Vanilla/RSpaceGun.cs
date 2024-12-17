@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = -14;
             ShootPosNorlLengValue = -2;
-            HandFireDistance = 18;
+            HandFireDistanceX = 18;
             HandFireDistanceY = -4;
             GunPressure = 0;
             ControlForce = 0;

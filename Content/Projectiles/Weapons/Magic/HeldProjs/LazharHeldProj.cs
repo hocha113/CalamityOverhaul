@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.HeldProjs
         public override void SetMagicProperty() {
             ShootPosToMouLengValue = -30;
             ShootPosNorlLengValue = 0;
-            HandFireDistance = 16;
+            HandFireDistanceX = 16;
             HandFireDistanceY = -4;
             GunPressure = 0;
             ControlForce = 0;

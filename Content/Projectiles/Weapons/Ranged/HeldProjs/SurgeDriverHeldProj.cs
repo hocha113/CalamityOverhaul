@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             loadTheRounds = CWRSound.CaseEjection2 with { Pitch = -0.2f };
             kreloadMaxTime = 120;
             FireTime = 20;
-            HandDistance = 52;
-            HandFireDistance = 52;
+            HandIdleDistanceX = 52;
+            HandFireDistanceX = 52;
             HandFireDistanceY = -13;
             ShootPosNorlLengValue = -4;
             ShootPosToMouLengValue = 35;

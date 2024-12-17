@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override Vector2 GetGunInFirePos() {
-            Vector2 gunBodyRotOffset = Projectile.rotation.ToRotationVector2() * (HandFireDistance + 5);
+            Vector2 gunBodyRotOffset = Projectile.rotation.ToRotationVector2() * (HandFireDistanceX + 5);
             Vector2 gunHeldOffsetY = new Vector2(0, HandFireDistanceY * SafeGravDir);
             Vector2 motHeldPos = Owner.GetPlayerStabilityCenter() + gunBodyRotOffset + gunHeldOffsetY + OffsetPos;
             if (LoadingAmmoAnimation_AlwaysSetInFireRoding) {
@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override Vector2 GetGunBodyPos() {
-            Vector2 handOffset = new Vector2(Owner.direction * HandDistance, HandDistanceY * SafeGravDir);
+            Vector2 handOffset = new Vector2(Owner.direction * HandIdleDistanceX, HandIdleDistanceY * SafeGravDir);
             return Owner.GetPlayerStabilityCenter() + FeederOffsetPos + handOffset;
         }
 

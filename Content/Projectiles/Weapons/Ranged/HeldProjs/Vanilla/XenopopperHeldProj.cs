@@ -19,9 +19,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             ControlForce = 0.1f;
             GunPressure = 0.2f;
             Recoil = 1;
-            HandDistance = 18;
-            HandDistanceY = 5;
-            HandFireDistance = 18;
+            HandIdleDistanceX = 18;
+            HandIdleDistanceY = 5;
+            HandFireDistanceX = 18;
             HandFireDistanceY = -5;
             CanRightClick = true;
             SpwanGunDustMngsData.dustID1 = DustID.Water;

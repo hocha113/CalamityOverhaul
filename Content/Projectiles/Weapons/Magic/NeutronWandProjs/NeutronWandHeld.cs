@@ -20,9 +20,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
         private bool colers2;
         private Vector2 firePos;
         public override void SetRangedProperty() {
-            HandDistance = 52;
-            HandDistanceY = -20;
-            HandFireDistance = 52;
+            HandIdleDistanceX = 52;
+            HandIdleDistanceY = -20;
+            HandFireDistanceX = 52;
             GunPressure = 0;
             Recoil = 0;
             ControlForce = 0;

@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0f;
             GunPressure = 0f;
             Recoil = 0f;
-            HandDistance = 20;
-            HandFireDistance = 25;
+            HandIdleDistanceX = 20;
+            HandFireDistanceX = 25;
             HandFireDistanceY = -5;
             CanCreateCaseEjection = CanCreateSpawnGunDust = false;
         }

@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override int targetCWRItem => ModContent.ItemType<EvisceratorEcType>();
         public override void SetRangedProperty() {
             Recoil = 1.8f;
-            HandDistance = 20;
+            HandIdleDistanceX = 20;
             kreloadMaxTime = 80;
             EnableRecoilRetroEffect = true;
             RecoilRetroForceMagnitude = 12;

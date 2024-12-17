@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ControlForce = 0.05f;
             GunPressure = 0.12f;
             Recoil = 1.2f;
-            HandDistance = 20;
-            HandDistanceY = 6;
-            HandFireDistance = 20;
+            HandIdleDistanceX = 20;
+            HandIdleDistanceY = 6;
+            HandFireDistanceX = 20;
             HandFireDistanceY = -4;
             CanRightClick = true;//可以右键使用
         }

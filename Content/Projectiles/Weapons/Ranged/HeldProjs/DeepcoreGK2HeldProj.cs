@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<DeepcoreGK2>();
         public override int targetCWRItem => ModContent.ItemType<DeepcoreGK2EcType>();
         public override void SetRangedProperty() {
-            HandFireDistance = HandDistance = 36;
-            HandDistanceY = -2;
+            HandFireDistanceX = HandIdleDistanceX = 36;
+            HandIdleDistanceY = -2;
             HandFireDistanceY = -4;
             ShootPosNorlLengValue = -18;
             ShootPosToMouLengValue = 28;
