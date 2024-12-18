@@ -13,16 +13,6 @@ Items: {
 			'''
 	}
 
-	CosmicShivEcType: {
-		DisplayName: Puñal Cósmico
-		Tooltip:
-			'''
-			Al golpear a un enemigo, genera varios Ojos del Infinito frente al jugador
-			Invoca rayos cósmicos que queman al enemigo
-			"Corta el velo del cosmos, revelando potentes rayos, en la antigua China, esto se llamaba pedir prestada la luz de la pared"
-			'''
-	}
-
 	BansheeHookEcType: {
 		DisplayName: Garra de la Banshee
 		Tooltip:
@@ -2874,6 +2864,11 @@ Items: {
 		// DisplayName: Sand Dagger
 		// Tooltip: ""
 	}
+
+	UnderTheSand: {
+		// DisplayName: Under The Sand
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3607,6 +3602,8 @@ Projectiles: {
 	// StarshipHeld.DisplayName: Starship Held
 	// SandDaggerThrow.DisplayName: Sand Dagger Throw
 	// DragoonDrizzlefishHeld.DisplayName: Dragoon Drizzlefish Held
+	// SaltationSend.DisplayName: Saltation Send
+	// UnderTheSandHeld.DisplayName: Under The Sand Held
 }
 
 Configs: {

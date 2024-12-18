@@ -13,15 +13,6 @@ Items: {
 			'''
 	}
 
-	CosmicShivEcType: {
-		DisplayName: Cosmic Shiv
-		Tooltip:
-			'''
-			After hitting an enemy, it summons Cosmic Portals to fire at enemies with Piercing Cosmic Beams
-			Inflicts Godslayer Inferno to flay your enemies
-			'''
-	}
-
 	BansheeHookEcType: {
 		DisplayName: Banshee Hook
 		Tooltip:
@@ -2855,6 +2846,11 @@ Items: {
 		DisplayName: Sand Dagger
 		Tooltip: ""
 	}
+
+	UnderTheSand: {
+		DisplayName: Under The Sand
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3588,6 +3584,8 @@ Projectiles: {
 	StarshipHeld.DisplayName: Starship Held
 	SandDaggerThrow.DisplayName: Sand Dagger Throw
 	DragoonDrizzlefishHeld.DisplayName: Dragoon Drizzlefish Held
+	SaltationSend.DisplayName: Saltation Send
+	UnderTheSandHeld.DisplayName: Under The Sand Held
 }
 
 Configs: {

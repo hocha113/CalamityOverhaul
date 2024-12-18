@@ -13,16 +13,6 @@ Items: {
 			'''
 	}
 
-	CosmicShivEcType: {
-		DisplayName: Poignard Cosmique
-		Tooltip:
-			'''
-			Créer plusieurs yeux cosmiques devant le joueur après avoir touché l'ennemi
-			Appeler un rayon cosmique brûlant pour incinérer les ennemis
-			"Fendre le rideau cosmique, libérer un rayon puissant. Dans l'ancienne Chine, cela s'appelait "percer le mur pour emprunter la lumière"
-			'''
-	}
-
 	BansheeHookEcType: {
 		DisplayName: Griffes de Banshee
 		Tooltip:
@@ -2840,6 +2830,11 @@ Items: {
 		// DisplayName: Sand Dagger
 		// Tooltip: ""
 	}
+
+	UnderTheSand: {
+		// DisplayName: Under The Sand
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3573,6 +3568,8 @@ Projectiles: {
 	// StarshipHeld.DisplayName: Starship Held
 	// SandDaggerThrow.DisplayName: Sand Dagger Throw
 	// DragoonDrizzlefishHeld.DisplayName: Dragoon Drizzlefish Held
+	// SaltationSend.DisplayName: Saltation Send
+	// UnderTheSandHeld.DisplayName: Under The Sand Held
 }
 
 Configs: {

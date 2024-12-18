@@ -13,16 +13,6 @@ Items: {
 			'''
 	}
 
-	CosmicShivEcType: {
-		DisplayName: Kosmischer Dolch
-		Tooltip:
-			'''
-			Bei einem Treffer entstehen vor dem Spieler mehrere Augen des Universums
-			Ruft kosmische Strahlen herbei, die die Feinde verbrennen
-			"Durchbricht den Schleier des Universums und erzeugt mächtige Strahlen, in der alten chinesischen Zeit wurde dies als 'Durchbohren der Wand, um Licht zu leihen' bezeichnet"
-			'''
-	}
-
 	BansheeHookEcType: {
 		DisplayName: Banshee-Kralle
 		Tooltip:
@@ -2838,6 +2828,11 @@ Items: {
 		// DisplayName: Sand Dagger
 		// Tooltip: ""
 	}
+
+	UnderTheSand: {
+		// DisplayName: Under The Sand
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3571,6 +3566,8 @@ Projectiles: {
 	// StarshipHeld.DisplayName: Starship Held
 	// SandDaggerThrow.DisplayName: Sand Dagger Throw
 	// DragoonDrizzlefishHeld.DisplayName: Dragoon Drizzlefish Held
+	// SaltationSend.DisplayName: Saltation Send
+	// UnderTheSandHeld.DisplayName: Under The Sand Held
 }
 
 Configs: {

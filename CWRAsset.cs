@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Common;
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 
 namespace CalamityOverhaul

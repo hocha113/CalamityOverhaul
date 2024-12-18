@@ -13,16 +13,6 @@ Items: {
 			'''
 	}
 
-	CosmicShivEcType: {
-		DisplayName: 宇宙短剑
-		Tooltip:
-			'''
-			击中敌人后在玩家前方生成数个浩渺之眼
-			召唤宇宙射线灼烧敌人
-			"划破宇宙的帷幕，引出强大的射线，在中国古代，这叫做凿壁借光"
-			'''
-	}
-
 	BansheeHookEcType: {
 		DisplayName: 女妖之爪
 		Tooltip:
@@ -2838,18 +2828,23 @@ Items: {
 	}
 
 	WeaverGrievances: {
-		// DisplayName: Weaver Grievances
-		// Tooltip: ""
+		DisplayName: 怨念编织者
+		Tooltip: ""
 	}
 
 	Starship: {
-		// DisplayName: Starship
-		// Tooltip: ""
+		DisplayName: 群星巨舰
+		Tooltip: ""
 	}
 
 	SandDagger: {
-		// DisplayName: Sand Dagger
-		// Tooltip: ""
+		DisplayName: 潜沙匕首
+		Tooltip: ""
+	}
+
+	UnderTheSand: {
+		DisplayName: 沙之下
+		Tooltip: ""
 	}
 }
 
@@ -3584,6 +3579,8 @@ Projectiles: {
 	// StarshipHeld.DisplayName: Starship Held
 	// SandDaggerThrow.DisplayName: Sand Dagger Throw
 	// DragoonDrizzlefishHeld.DisplayName: Dragoon Drizzlefish Held
+	// SaltationSend.DisplayName: Saltation Send
+	// UnderTheSandHeld.DisplayName: Under The Sand Held
 }
 
 Configs: {
