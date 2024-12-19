@@ -1,13 +1,14 @@
 ﻿using CalamityMod;
-using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Projectiles.Rogue;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -42,6 +43,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public static bool SpwanBool(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
             int type = ModContent.ProjectileType<DivineJustice>();
             int type2 = ModContent.ProjectileType<JusticeUnveiledExplode>();
+            int type3 = ModContent.ProjectileType<JUZenithWorldTime>();
 
             if (projectile.numHits > 0) {
                 return false;
@@ -57,6 +59,16 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return false;
             }
 
+            if (Main.zenithWorld) {
+                if (player.GetProjectileHasNum(type3) == 0) {
+                    Projectile.NewProjectile(player.FromObjectGetParent(), target.Center, Vector2.Zero, type3, 0, 0, player.whoAmI);
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
             Item item = player.GetItem();
             if (item.type > ItemID.None && item.CWR().HasCartridgeHolder && item.CWR().AmmoCapacity <= 20) {
                 if (OnLoaden) {
@@ -67,7 +79,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             if (projectile.type == ModContent.ProjectileType<StellarContemptEcho>()
                 || projectile.type == ModContent.ProjectileType<GalaxySmasherEcho>()
-                || projectile.type == ModContent.ProjectileType<TriactisHammerProj>()) {
+                || projectile.type == ModContent.ProjectileType<TriactisHammerProj>()
+                || projectile.type == ModContent.ProjectileType<GangarusProjectile>()) {
                 return true;
             }
 
@@ -84,12 +97,48 @@ namespace CalamityOverhaul.Content.Items.Accessories
             return true;
         }
 
+        public static void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers) {
+            if (Main.player[projectile.owner].CWR().IsJusticeUnveiled && !Main.zenithWorld) {
+                modifiers.CritDamage *= 0;//制造暴击伤害缩放
+            }
+        }
+
         public static void OnHitNPCSpwanProj(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
             if (SpwanBool(player, projectile, target, hit)) {
-                Projectile.NewProjectile(player.FromObjectGetParent()
-                , target.Center + new Vector2(0, -1120), new Vector2(0, 6)
-                , ModContent.ProjectileType<DivineJustice>(), 20, 2, player.whoAmI, target.whoAmI);
+                if (Main.zenithWorld && projectile.type == ModContent.ProjectileType<GangarusProjectile>()) {
+                    foreach (var npc in Main.ActiveNPCs) {
+                        if (npc.friendly) {
+                            continue;
+                        }
+                        Projectile.NewProjectile(player.FromObjectGetParent()
+                        , npc.Center + new Vector2(0, -1120), new Vector2(0, 6)
+                        , ModContent.ProjectileType<DivineJustice>(), projectile.damage, 2, player.whoAmI, npc.whoAmI);
+                    }
+                    return;
+                }
+                else {
+                    Projectile.NewProjectile(player.FromObjectGetParent()
+                    , target.Center + new Vector2(0, -1120), new Vector2(0, 6)
+                    , ModContent.ProjectileType<DivineJustice>(), projectile.damage, 2, player.whoAmI, target.whoAmI);
+                }
             }
+        }
+    }
+
+    internal class JUZenithWorldTime : ModProjectile
+    {
+        public override string Texture => CWRConstant.Placeholder;
+        public override void SetDefaults() {
+            Projectile.width = Projectile.height = 32;
+            Projectile.timeLeft = 300;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = false;
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Projectile.Center = Main.player[Projectile.owner].Center;
+            DefiledGreatswordEcType.DrawRageEnergyChargeBar(Main.player[Projectile.owner], 255, Projectile.timeLeft, 300);
+            return false;
         }
     }
 
@@ -123,9 +172,15 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer() && CWRUtils.GetNPCInstance((int)Projectile.ai[0]) != null) {
-                SoundEngine.PlaySound(CWRSound.JustStrike, Projectile.Center);
+                if (Main.zenithWorld) {
+                    SoundEngine.PlaySound(Gangarus.AT, Projectile.Center);
+                }
+                else {
+                    SoundEngine.PlaySound(CWRSound.JustStrike, Projectile.Center);
+                }
+                
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
-                , ModContent.ProjectileType<JusticeUnveiledExplode>(), 20, 2, Projectile.owner, Projectile.ai[0]);
+                , ModContent.ProjectileType<JusticeUnveiledExplode>(), Projectile.damage, 2, Projectile.owner, Projectile.ai[0]);
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
                         new Vector2(0, 2), 20f, 6f, 20, 1000f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);

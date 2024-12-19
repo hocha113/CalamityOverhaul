@@ -3570,6 +3570,7 @@ Projectiles: {
 	// DragoonDrizzlefishHeld.DisplayName: Dragoon Drizzlefish Held
 	// SaltationSend.DisplayName: Saltation Send
 	// UnderTheSandHeld.DisplayName: Under The Sand Held
+	// JUZenithWorldTime.DisplayName: J U Zenith World Time
 }
 
 Configs: {

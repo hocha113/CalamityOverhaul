@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.SetKnifeHeld<DefiledGreatswordHeld2>();
         }
 
-        public static void DrawRageEnergyChargeBar(Player player, float alp) {
+        public static void DrawRageEnergyChargeBar(Player player, float alp, float meleeCharge, float maxCharge) {
             Item item = player.GetItem();
             if (item.IsAir) {
                 return;
@@ -70,12 +70,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             Texture2D rageEnergyBack = rageEnergyBackAsset.Value;
             float slp = 3;
             int offsetwid = 4;
-            float max = DefiledGreatswordMaxRageEnergy;
             if (item.type == ModContent.ItemType<BlightedCleaverEcType>() || item.type == ModContent.ItemType<BlightedCleaver>()) {
-                max = BlightedCleaverEcType.BlightedCleaverMaxRageEnergy;
+                maxCharge = BlightedCleaverEcType.BlightedCleaverMaxRageEnergy;
             }
             Vector2 drawPos = player.GetPlayerStabilityCenter() + new Vector2(rageEnergyBar.Width / -2 * slp, 135) - Main.screenPosition;
-            Rectangle backRec = new(offsetwid, 0, (int)((rageEnergyBar.Width - (offsetwid * 2)) * (item.CWR().MeleeCharge / max)), rageEnergyBar.Height);
+            Rectangle backRec = new(offsetwid, 0, (int)((rageEnergyBar.Width - (offsetwid * 2)) * (meleeCharge / maxCharge)), rageEnergyBar.Height);
 
             Main.EntitySpriteDraw(rageEnergyBack, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(rageEnergyBar, drawPos + (new Vector2(offsetwid, 0) * slp)

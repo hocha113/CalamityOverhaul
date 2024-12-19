@@ -3,6 +3,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
@@ -72,7 +73,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
         public override bool ShouldUpdatePosition() => false;
         public override bool PreDraw(ref Color lightColor) {
-            DefiledGreatswordEcType.DrawRageEnergyChargeBar(Main.player[Projectile.owner], Projectile.ai[1]);
+            Item item = Main.player[Projectile.owner].GetItem();
+            if (item != null && item.type > ItemID.None) {
+                DefiledGreatswordEcType.DrawRageEnergyChargeBar(Main.player[Projectile.owner], Projectile.ai[1]
+                    , item.CWR().MeleeCharge, DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy);
+            }
+            
             return false;
         }
     }
