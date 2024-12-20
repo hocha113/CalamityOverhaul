@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Projectiles;
@@ -10,6 +11,7 @@ using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -133,10 +135,45 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool HellfireExplosion;
         /// <summary>
+        /// 是否有灵魂火debuff
+        /// </summary>
+        public bool SoulfireExplosion;
+        /// <summary>
         /// 是否穿戴正义显现
         /// </summary>
         public bool IsJusticeUnveiled;
-
+        /// <summary>
+        /// 存储待应用的冲刺速度向量，当其不为null时将在下一个帧应用
+        /// </summary>
+        public Vector2? PendingDashVelocity { get; set; } = null;
+        /// <summary>
+        /// 用于记录减速过程的计数器，表示减速剩余的帧数
+        /// </summary>
+        public float DecelerationCounter { get; set; }
+        /// <summary>
+        /// 指示玩家在冲刺过程中是否进行旋转
+        /// </summary>
+        public bool IsRotatingDuringDash { get; set; }
+        /// <summary>
+        /// 冲刺时的旋转方向，1为顺时针，-1为逆时针
+        /// </summary>
+        public float RotationDirection { get; set; } = 1f;
+        /// <summary>
+        /// 冲刺冷却计数器，用于记录冷却剩余的帧数
+        /// </summary>
+        public float DashCooldownCounter { get; set; }
+        /// <summary>
+        /// 记录旋转复位过程的计数器，表示复位剩余的帧数
+        /// </summary>
+        public float RotationResetCounter { get; set; }
+        /// <summary>
+        /// 旋转复位过程的持续时间（以帧为单位）
+        /// </summary>
+        public float RotationResetDuration { get; set; } = 15;
+        /// <summary>
+        /// 自定义冷却计数器，用于记录额外冷却的剩余帧数
+        /// </summary>
+        public int CustomCooldownCounter;
         #endregion
 
         public override void Initialize() {
@@ -176,6 +213,14 @@ namespace CalamityOverhaul.Content
                 }
             }
             return false;
+        }
+
+        public override void PostUpdateMiscEffects() {
+            if (Main.zenithWorld) {//在天顶世界中，怨念编织者会有特殊的粒子效果
+                if (Player.GetItem().type == ModContent.ItemType<WeaverGrievances>()) {
+                    WeaverGrievances.SpwanInOwnerDust(Player);
+                }
+            }
         }
 
         public override void OnEnterWorld() {
@@ -242,6 +287,36 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PreUpdateMovement() {
+            if (PendingDashVelocity.HasValue) {
+                Player.velocity = PendingDashVelocity.Value;
+                PendingDashVelocity = null;
+                RotationResetCounter = 0;
+            }
+
+            if (IsRotatingDuringDash) {
+                Player.fullRotation += Player.velocity.Length() * 0.015f * RotationDirection;
+                Player.fullRotationOrigin = Player.Size / 2;
+            }
+
+            if (RotationResetCounter > 0) {
+                RotationResetCounter--;
+                float resetProgress = RotationResetCounter / RotationResetDuration;
+                Player.fullRotation = MathHelper.Lerp(0, Player.fullRotation, resetProgress);
+            }
+
+            if (DecelerationCounter > 0) {
+                Player.velocity *= 0.95f;
+                DecelerationCounter--;
+            }
+
+            if (DashCooldownCounter > 0) {
+                DashCooldownCounter--;
+            }
+
+            if (CustomCooldownCounter > 0) {
+                CustomCooldownCounter--;
+            }
+
             if (ReceivingPlatformTime > 0) {
                 Player.gravity = 0;
                 if (Player.velocity.Y > 0) {
@@ -384,10 +459,20 @@ namespace CalamityOverhaul.Content
                 Player.lifeRegenTime = 0;
                 Player.lifeRegen -= 120;
             }
+            if (SoulfireExplosion) {
+                if (Player.lifeRegen > 0) {
+                    Player.lifeRegen = 0;
+                }
+                Player.lifeRegenTime = 0;
+                Player.lifeRegen -= 120;
+            }
         }
 
         public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource) {
             if (HellfireExplosion) {
+                damageSource = PlayerDeathReason.ByCustomReason(Player.name + CWRLocText.GetTextValue("HellfireExplosion_DeadLang_Text"));
+            }
+            if (SoulfireExplosion) {
                 damageSource = PlayerDeathReason.ByCustomReason(Player.name + CWRLocText.GetTextValue("HellfireExplosion_DeadLang_Text"));
             }
             return true;

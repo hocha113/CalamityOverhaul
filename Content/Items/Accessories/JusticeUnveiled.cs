@@ -6,6 +6,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Particles;
+using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -125,7 +126,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    internal class JUZenithWorldTime : ModProjectile
+    internal class JUZenithWorldTime : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
         public override void SetDefaults() {
@@ -134,10 +135,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Projectile.tileCollide = false;
             Projectile.ignoreWater = false;
         }
-
+        public override void AI() => Projectile.Center = Owner.GetPlayerStabilityCenter();
         public override bool PreDraw(ref Color lightColor) {
-            Projectile.Center = Main.player[Projectile.owner].Center;
-            DefiledGreatswordEcType.DrawRageEnergyChargeBar(Main.player[Projectile.owner], 255, Projectile.timeLeft, 300);
+            DefiledGreatswordEcType.DrawRageEnergyChargeBar(Owner, 255, Projectile.timeLeft, 300);
             return false;
         }
     }

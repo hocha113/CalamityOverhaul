@@ -75,6 +75,10 @@ namespace CalamityOverhaul.Content
         /// 是否受到虚空终结debuff
         /// </summary>
         public bool VoidErosionBool;
+        /// <summary>
+        /// 是否受到灵魂火debuff
+        /// </summary>
+        public bool SoulfireExplosion;
         #endregion
 
         public override GlobalNPC Clone(NPC from, NPC to) => CloneCWRNpc((CWRNpc)base.Clone(from, to));
@@ -266,6 +270,9 @@ namespace CalamityOverhaul.Content
                 DebuffSet(10000, 8000, ref npc.lifeRegen, ref damage);
             }
             if (HellfireExplosion) {
+                DebuffSet(1000, 80, ref npc.lifeRegen, ref damage);
+            }
+            if (SoulfireExplosion) {
                 DebuffSet(1000, 80, ref npc.lifeRegen, ref damage);
             }
         }
