@@ -3779,14 +3779,9 @@ Buffs: {
 		Description: 来自地狱的火焰
 	}
 
-	EXHellfire: {
+	HellburnBuff: {
 		DisplayName: 地狱炎爆
 		Description: 来自地狱的火焰
-	}
-
-	GodKillsFire: {
-		DisplayName: 神焰
-		Description: 烤灼灵魂
 	}
 
 	VoidErosion: {

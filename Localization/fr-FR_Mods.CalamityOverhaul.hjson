@@ -3763,14 +3763,9 @@ Buffs: {
 		Description: Flamme de l'enfer
 	}
 
-	EXHellfire: {
+	HellburnBuff: {
 		DisplayName: Explosion de feu de l'enfer
 		Description: Flamme de l'enfer
-	}
-
-	GodKillsFire: {
-		DisplayName: Feu divin
-		Description: Brûle les âmes
 	}
 
 	VoidErosion: {

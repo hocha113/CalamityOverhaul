@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.RebelBladeProj
                 Projectile.timeLeft = 1;
             }
             else {
-                target.AddBuff(ModContent.BuffType<EXHellfire>(), 30);
+                target.AddBuff(ModContent.BuffType<HellburnBuff>(), 30);
             }
         }
 

@@ -3760,14 +3760,9 @@ Buffs: {
 		Description: Flammen aus der Hölle
 	}
 
-	EXHellfire: {
+	HellburnBuff: {
 		DisplayName: Höllenfeuerexplosion
 		Description: Flammen aus der Hölle
-	}
-
-	GodKillsFire: {
-		DisplayName: Göttertötendes Feuer
-		Description: Seelenverbrennung
 	}
 
 	VoidErosion: {

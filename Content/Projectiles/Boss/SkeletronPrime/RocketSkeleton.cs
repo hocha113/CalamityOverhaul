@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             BasePRT pulse3 = new PRT_DWave(spanPos, vr, Color.Red
             , new Vector2(1.2f, 1.3f) * 0.8f, vr.ToRotation(), 1.18f, 3.32f, 60);
             PRTLoader.AddParticle(pulse3);
-            target.AddBuff(ModContent.BuffType<EXHellfire>(), 60);
+            target.AddBuff(ModContent.BuffType<HellburnBuff>(), 60);
         }
 
         public override void OnKill(int timeLeft) {

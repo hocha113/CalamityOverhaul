@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj
         private void UpdateSakura() {
             if (DownRight && Owner.CheckMana(Owner.GetItem())) {
                 if (Owner.name == "Sakura") {
-                    Owner.AddBuff(ModContent.BuffType<EXHellfire>(), 60);
+                    Owner.AddBuff(ModContent.BuffType<HellburnBuff>(), 60);
                     if (Main.rand.NextBool(300)) {
                         Owner.AddBuff(BuffID.Darkness, 60);
                     }

@@ -8,7 +8,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class AbominateHookScythe : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "BansheeHookScythe";
-
+        public ref float Time => ref Projectile.localAI[0];
+        public Vector2 DashVr = Vector2.Zero;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
@@ -29,8 +30,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.localNPCHitCooldown = 6;
         }
 
-        public Vector2 DashVr = Vector2.Zero;
-        public ref float Time => ref Projectile.localAI[0];
         public override void AI() {
             Lighting.AddLight(Projectile.Center, (255 - Projectile.alpha) * 0.6f / 255f, 0f, 0f);
             Projectile.localAI[0] += MathHelper.ToRadians(35);
@@ -94,8 +93,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
             Projectile.timeLeft -= 10;
             Projectile.ai[0] = 1;
-            if (Projectile.ai[2] == 0)
+            if (Projectile.ai[2] == 0) {
                 Projectile.ai[2] = target.whoAmI;
+            }
         }
 
         public override Color? GetAlpha(Color lightColor) {

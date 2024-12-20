@@ -3797,14 +3797,9 @@ Buffs: {
 		Description: Llama proveniente del infierno
 	}
 
-	EXHellfire: {
+	HellburnBuff: {
 		DisplayName: Explosión del infierno
 		Description: Llama proveniente del infierno
-	}
-
-	GodKillsFire: {
-		DisplayName: Fuego divino
-		Description: Quema las almas
 	}
 
 	VoidErosion: {

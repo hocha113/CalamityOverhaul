@@ -3780,14 +3780,9 @@ Buffs: {
 		Description: Fire from hell
 	}
 
-	EXHellfire: {
+	HellburnBuff: {
 		DisplayName: Hell fire Explosion
 		Description: Fire from hell
-	}
-
-	GodKillsFire: {
-		DisplayName: God Kills Fire
-		Description: Scorch the soul
 	}
 
 	VoidErosion: {

@@ -5,10 +5,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Buffs
 {
-    internal class EXHellfire : ModBuff
+    internal class HellburnBuff : ModBuff
     {
-        public override string Texture => CWRConstant.Buff + "EXHellfire";
-
+        public override string Texture => CWRConstant.Buff + "HellburnBuff";
         public override void SetStaticDefaults() {
             Main.debuff[Type] = true;
             Main.pvpBuff[Type] = true;

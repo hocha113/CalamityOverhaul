@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Eye
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<EXHellfire>(), 60);
+            target.AddBuff(ModContent.BuffType<HellburnBuff>(), 60);
         }
 
         public override bool PreDraw(ref Color lightColor) {

@@ -419,7 +419,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     , Projectile.knockBack, Projectile.owner, 0f, 0.85f + Main.rand.NextFloat() * 1.15f);
                 Main.projectile[proj].DamageType = DamageClass.Melee;
 
-                target.AddBuff(ModContent.BuffType<EXHellfire>(), 300);
+                target.AddBuff(ModContent.BuffType<HellburnBuff>(), 300);
             }
 
             else if (Projectile.ai[0] == 6 && Projectile.IsOwnedByLocalPlayer() && Projectile.numHits % 3 == 0 && DragonRageEcType.coolWorld) {
@@ -434,7 +434,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(ModContent.BuffType<EXHellfire>(), 300);
+            target.AddBuff(ModContent.BuffType<HellburnBuff>(), 300);
             if (Projectile.ai[0] == 3) {
                 int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center
                     , Vector2.Zero, ModContent.ProjectileType<FuckYou>(), Projectile.damage / 4

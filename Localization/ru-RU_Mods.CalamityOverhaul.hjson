@@ -3809,14 +3809,9 @@ Buffs: {
 		Description: Из пламени Ада
 	}
 
-	EXHellfire: {
+	HellburnBuff: {
 		DisplayName: Адский жар
 		Description: Из пламени Ада
-	}
-
-	GodKillsFire: {
-		DisplayName: Бог плам
-		Description: Сжечь душу
 	}
 
 	VoidErosion: {
