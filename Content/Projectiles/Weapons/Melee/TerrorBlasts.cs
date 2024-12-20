@@ -23,10 +23,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.DamageType = DamageClass.Melee;
         }
 
-        public override bool? CanDamage() {
-            return null;
-        }
-
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (CWRLoad.WormBodys.Contains(target.type)) {
                 modifiers.FinalDamage /= 10;

@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -50,7 +51,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 return;
             }
             Item item = Owner.GetItem();
-            if (item.type == ItemID.None) {
+            if (item == null || item.type == ItemID.None) {
                 return;
             }
             item.initialize();
@@ -61,9 +62,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            modifiers.CritDamage *= 0.5f;
-        }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) => modifiers.CritDamage *= 0.5f;
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             trueMelee = true;
@@ -73,22 +72,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             var source = Projectile.GetSource_FromThis();
             target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300);
             Vector2 spanPos = new(target.Center.X + Main.rand.Next(-260, 260), target.Center.Y);
-            Projectile.NewProjectile(source, spanPos, Vector2.Zero, ModContent.ProjectileType<Brimblast>(), Projectile.damage, Projectile.knockBack, Main.myPlayer);
+            Projectile.NewProjectile(source, spanPos, Vector2.Zero
+                , ModContent.ProjectileType<Brimblast>(), Projectile.damage, Projectile.knockBack, Main.myPlayer);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             trueMelee = true;
             var source = Projectile.GetSource_FromThis();
             target.AddBuff(ModContent.BuffType<BrimstoneFlames>(), 300);
-            Projectile.NewProjectile(source, target.Center, Vector2.Zero, ModContent.ProjectileType<Brimblast>(), Projectile.damage, Projectile.knockBack, Main.myPlayer);
+            Projectile.NewProjectile(source, target.Center, Vector2.Zero
+                , ModContent.ProjectileType<Brimblast>(), Projectile.damage, Projectile.knockBack, Main.myPlayer);
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D texture = TextureAssets.Projectile[Type].Value;
             float rot = Projectile.rotation;
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
             Vector2 origin = texture.Size() / 2;
-            Main.EntitySpriteDraw(texture, drawPosition, null, Projectile.GetAlpha(lightColor), rot, origin, Projectile.scale, Owner.direction > 0 ? 0 : SpriteEffects.FlipHorizontally, 0);
+            Main.EntitySpriteDraw(texture, drawPosition, null, Projectile.GetAlpha(lightColor)
+                , rot, origin, Projectile.scale, Owner.direction > 0 ? 0 : SpriteEffects.FlipHorizontally, 0);
             return false;
         }
     }

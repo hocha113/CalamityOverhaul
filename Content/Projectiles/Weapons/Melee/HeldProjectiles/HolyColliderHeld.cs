@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Particles;
-
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -34,11 +33,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         public override void Shoot() {
-            if (Projectile.ai[0] == 1) {
-                SpwanFireRainProj();
-                return;
-            }
-
             if (Projectile.ai[0] == 2) {
                 SoundEngine.PlaySound(SoundID.Item125 with { Pitch = 0.8f }, Projectile.Center);
                 Vector2 toMouse2 = Projectile.Center.To(InMousePos);
@@ -104,24 +98,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                         , target.height * 0.5f) + (Projectile.velocity * 1.2f), sparkVelocity2 * 1f
                         , false, (int)(sparkLifetime2 * 1.2f), sparkScale2 * 1.4f, sparkColor2);
                 PRTLoader.AddParticle(spark);
-            }
-
-            if (Projectile.IsOwnedByLocalPlayer() && Projectile.numHits == 0 && Projectile.ai[0] == 0) {
-                SpwanFireRainProj();
-            }
-        }
-
-        private void SpwanFireRainProj() {
-            for (int i = 0; i < Main.rand.Next(3, 5); i++) {
-                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + Main.rand.NextVector2Unit() * Main.rand.Next(342, 468), Projectile.velocity / 3
-                    , ModContent.ProjectileType<HolyColliderHolyFires>(), (int)(Projectile.damage * 0.5f), Projectile.knockBack, Owner.whoAmI);
-                for (int j = 0; j < 3; j++) {
-                    Vector2 pos = Owner.Center + Main.rand.NextVector2Unit() * Main.rand.Next(342, 468);
-                    Vector2 particleSpeed = pos.To(Owner.Center).UnitVector() * 7;
-                    BasePRT energyLeak = new PRT_HolyColliderLight(pos, particleSpeed
-                        , Main.rand.NextFloat(0.5f, 0.7f), Color.Gold, 90, 1, 1.5f, hueShift: 0.0f);
-                    PRTLoader.AddParticle(energyLeak);
-                }
             }
         }
 

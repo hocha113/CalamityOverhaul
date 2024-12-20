@@ -128,9 +128,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             return false;
         }
 
-        public override Color? GetAlpha(Color lightColor) {
-            return new Color(204, 255, 255, Projectile.alpha);
-        }
+        public override Color? GetAlpha(Color lightColor) => new Color(204, 255, 255, Projectile.alpha);
 
         public void SpanDust() {
             for (int i = 0; i <= 360; i += 3) {
@@ -148,9 +146,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void OnKill(int timeLeft) {
-            SoundStyle style = SoundID.Item60;
-            style.Volume = SoundID.Item60.Volume * 0.6f;
-            SoundEngine.PlaySound(in style, Projectile.Center);
+            if (!Main.dedServ) {
+                SoundStyle style = SoundID.Item60;
+                style.Volume = SoundID.Item60.Volume * 0.6f;
+                SoundEngine.PlaySound(in style, Projectile.Center);
+            }
+            
             SpanDust();
         }
     }

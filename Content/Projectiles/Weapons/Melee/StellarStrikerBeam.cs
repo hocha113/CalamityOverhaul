@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         public override string Texture => CWRConstant.Placeholder;
         private Player Owner => Main.player[Projectile.owner];
         private bool onhitNPCBool = true;
-
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
             Projectile.DamageType = DamageClass.Melee;
@@ -48,10 +47,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
                 onhitNPCBool = false;
             }
-        }
-
-        public override void OnKill(int timeLeft) {
-            base.OnKill(timeLeft);
         }
     }
 }

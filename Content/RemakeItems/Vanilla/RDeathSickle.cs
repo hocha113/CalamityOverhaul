@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 
 
             if (outFive) {
-                Texture2D value = ModContent.Request<Texture2D>("CalamityMod/Particles/SemiCircularSmear").Value;
+                Texture2D value = CWRAsset.SemiCircularSmear.Value;
                 Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
                 Main.EntitySpriteDraw(color: Color.BlueViolet * 0.9f
                     , origin: value.Size() * 0.5f, texture: value, position: Projectile.Center - Main.screenPosition

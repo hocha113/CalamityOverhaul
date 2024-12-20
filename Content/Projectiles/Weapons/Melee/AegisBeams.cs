@@ -2,6 +2,7 @@
 using CalamityMod.Graphics.Primitives;
 using CalamityMod.Projectiles.Melee;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -11,9 +12,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class AegisBeams : ModProjectile
+    internal class AegisBeams : ModProjectile, ICWRLoader
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "AegisBeam";
+        public static Asset<Texture2D> effectAsset;
+        void ICWRLoader.LoadAsset() => effectAsset = CWRUtils.GetT2DAsset("CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak");
+        void ICWRLoader.UnLoadData() => effectAsset = null;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 13;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
@@ -100,7 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             mainColor = Color.Lerp(Color.White, mainColor, 0.85f);
             secondaryColor = Color.Lerp(Color.White, secondaryColor, 0.85f);
 
-            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/GreyscaleGradients/EternityStreak"));
+            GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].SetMiscShaderAsset_1(effectAsset);
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseImage2("Images/Extra_189");
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseColor(mainColor);
             GameShaders.Misc["CalamityMod:HeavenlyGaleTrail"].UseSecondaryColor(secondaryColor);

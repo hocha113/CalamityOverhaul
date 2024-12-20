@@ -1,5 +1,6 @@
 ﻿using CalamityMod.Graphics.Primitives;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.IO;
 using Terraria;
@@ -10,12 +11,15 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class CosmicSpiritBombs : ModProjectile
+    internal class CosmicSpiritBombs : ModProjectile, ICWRLoader
     {
         public static Color[] colorDates;
         public int overTextIndex = 1;
         public Player Owner => Main.player[Projectile.owner];
+        public static Asset<Texture2D> scarletDevilStreakAsset;
         public override string Texture => CWRConstant.Cay_Proj_Melee + "CosmicSpiritBomb" + overTextIndex;
+        void ICWRLoader.LoadAsset() => scarletDevilStreakAsset = CWRUtils.GetT2DAsset("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak");
+        void ICWRLoader.UnLoadData() => scarletDevilStreakAsset = null;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
@@ -89,7 +93,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            GameShaders.Misc["CalamityMod:TrailStreak"].SetMiscShaderAsset_1(ModContent.Request<Texture2D>("CalamityMod/ExtraTextures/Trails/ScarletDevilStreak"));
+            GameShaders.Misc["CalamityMod:TrailStreak"].SetMiscShaderAsset_1(scarletDevilStreakAsset);
             PrimitiveRenderer.RenderTrail(Projectile.oldPos, new PrimitiveSettings(WidthFunction, ColorFunction
                 , (float _) => Projectile.Size * 0.5f, smoothen: true, pixelate: false, GameShaders.Misc["CalamityMod:TrailStreak"]), 30);
             return base.PreDraw(ref lightColor);

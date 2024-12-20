@@ -21,7 +21,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 }
             }
         }
-
+        public ref float Status => ref Projectile.ai[0];
+        private bool spwan;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 8;
@@ -43,17 +44,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.localNPCHitCooldown = 10;
         }
 
-        public ref float Status => ref Projectile.ai[0];
-
-        public override void OnSpawn(IEntitySource source) {
-            Projectile.rotation = Projectile.velocity.ToRotation();
-            SoundEngine.PlaySound(
-                SoundID.NPCDeath39,
-                Projectile.Center
-                );
-        }
-
         public override void AI() {
+            if (!spwan) {
+                SoundEngine.PlaySound(SoundID.NPCDeath39, Projectile.Center);
+                spwan = true;
+            }
+
             Projectile.rotation = Projectile.velocity.ToRotation();
             CWRUtils.ClockFrame(ref Projectile.frameCounter, 15, 3);
 
@@ -63,19 +59,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Player target = CWRUtils.GetPlayerInstance(Projectile.owner);
                 if (target != null) {
                     float leng = Projectile.Center.To(target.Center).Length();
-                    Projectile.ChasingBehavior(
-                        target.Center,
-                        6 + leng / 100f
-                        );
+                    Projectile.ChasingBehavior(target.Center, 6 + leng / 100f);
+
                     if (leng < 60) {
-                        if (Projectile.ai[1] > 10000)
+                        if (Projectile.ai[1] > 10000) {
                             target.Heal(Main.rand.Next(10, 15));
-                        else
+                        }
+                        else {
                             target.Heal(Main.rand.Next(1, 3));
+                        }
+                            
                         for (int i = 0; i < 13; i++) {
                             Vector2 vr = CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(4, 7));
                             Dust.NewDust(target.Center, 13, 13, DustID.HealingPlus, vr.X, vr.Y);
                         }
+
                         Projectile.Kill();
                     }
                 }

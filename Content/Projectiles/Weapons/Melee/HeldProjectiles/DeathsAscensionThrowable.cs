@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
 
             if (outFive) {
-                Texture2D value = ModContent.Request<Texture2D>("CalamityMod/Particles/SemiCircularSmear").Value;
+                Texture2D value = CWRAsset.SemiCircularSmear.Value;
                 Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
                 Main.EntitySpriteDraw(color: Color.Fuchsia * 0.9f
                     , origin: value.Size() * 0.5f, texture: value, position: Projectile.Center - Main.screenPosition

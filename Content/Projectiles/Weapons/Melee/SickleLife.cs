@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class LifeScythe1 : ModProjectile
+    internal class SickleLife : ModProjectile
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "LifeScythe";
         public override void SetStaticDefaults() {

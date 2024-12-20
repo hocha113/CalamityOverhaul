@@ -9,7 +9,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class LaserFountains : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-
+        public ref float Time => ref Projectile.ai[0];
+        public ref float Fower => ref Projectile.ai[1];
         public override void SetDefaults() {
             Projectile.width = 4;
             Projectile.height = 4;
@@ -20,12 +21,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.timeLeft = 60;
             Projectile.DamageType = DamageClass.Melee;
         }
-
-        public ref float Time => ref Projectile.ai[0];
-        public ref float Fower => ref Projectile.ai[1];
-
         public override bool? CanDamage() => false;
-
         public override void AI() {
             int types = ModContent.ProjectileType<DeathLaser>();
             if (Time > 0 && Time % 12 == 0 && Main.player[Projectile.owner].ownedProjectileCounts[types] <= 13) {

@@ -1,6 +1,7 @@
 ﻿using CalamityMod.Buffs.StatDebuffs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
@@ -8,7 +9,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class TeardropCleaverProj : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile + "Teardrop";
-
         private const int maxFrme = 8;
         public override void SetDefaults() {
             Projectile.width = 277;
@@ -18,10 +18,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 30;
-        }
-
-        public override bool ShouldUpdatePosition() {
-            return true;
         }
 
         public override void AI() {
@@ -42,8 +38,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition + Projectile.rotation.ToRotationVector2() * -100, CWRUtils.GetRec(value, Projectile.frame, 8), Color.White
+            Texture2D value = TextureAssets.Projectile[Type].Value;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition + Projectile.rotation.ToRotationVector2() * -100;
+            Main.EntitySpriteDraw(value, drawPos, CWRUtils.GetRec(value, Projectile.frame, 8), Color.White
                 , Projectile.rotation, new Vector2(0, Projectile.velocity.X > 0 ? 45 : 100)
                 , Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             return false;

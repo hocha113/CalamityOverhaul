@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
     internal class DevilsDevastationHeld : BaseSwing
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DevilsDevastation";
-        public override string GlowTexture => CWRConstant.Masking + "SplitTrail";
+        public override string GlowTexturePath => CWRConstant.Masking + "SplitTrail";
         public override string gradientTexturePath => CWRConstant.ColorBar + "DevilsDevastation_Bar";
         public override void SetSwingProperty() {
             drawTrailHighlight = false;

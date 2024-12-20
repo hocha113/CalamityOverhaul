@@ -81,15 +81,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Vector2 spanPos = target.Center + offset;
                 int status = Main.rand.Next(3);
                 Projectile.NewProjectile(
-                    Projectile.FromObjectGetParent(),
-                    spanPos,
-                    offset.UnitVector() * -13,
+                    Projectile.FromObjectGetParent(), spanPos, offset.UnitVector() * -13,
                     ModContent.ProjectileType<AbominateSpirit>(),
-                    Projectile.damage / 3,
-                    0,
-                    Projectile.owner,
-                    status
-                    );
+                    Projectile.damage / 3, 0, Projectile.owner, status);
             }
             Projectile.timeLeft -= 10;
             Projectile.ai[0] = 1;
@@ -110,17 +104,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D mainValue = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(
-                mainValue,
-                Projectile.Center - Main.screenPosition,
-                null,
+            Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, null,
                 CWRUtils.RecombinationColor((Color.Red, 0.3f), (Projectile.GetAlpha(Color.Gold), 0.7f)),
-                Projectile.localAI[0],
-                CWRUtils.GetOrig(mainValue),
-                Projectile.scale,
-                SpriteEffects.None,
-                0
-                );
+                Projectile.localAI[0], CWRUtils.GetOrig(mainValue), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

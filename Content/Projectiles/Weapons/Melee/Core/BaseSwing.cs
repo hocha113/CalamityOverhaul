@@ -226,10 +226,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         public virtual string gradientTexturePath => "";
         /// <summary>
-        /// 光效遮盖图路径
-        /// </summary>
-        public virtual string GlowTexturePath => "";
-        /// <summary>
         /// 关于弧光绘制的流形图，制造刀光的纹路
         /// </summary>
         public Texture2D TrailTexture => SwingSystem.trailTextures[Type].Value;
@@ -237,6 +233,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// 着色纹理图，用于制造刀光的颜色
         /// </summary>
         public Texture2D GradientTexture => SwingSystem.gradientTextures[Type].Value;
+        //不要试着使用这个属性，这个属性几乎是被废弃的，但我不知道其他的模组或者什么地方会用这个属性，进而可能会引发兼容性问题
+        //public override string GlowTexture => base.GlowTexture;
+        /// <summary>
+        /// 用于获取刀光光效纹理的路径属性，默认为空字符串，即不启用
+        /// </summary>
+        public virtual string GlowTexturePath => "";
         /// <summary>
         /// 是否可以绘制光效遮罩，如果给<see cref="GlowTexturePath"/>重写了一个合适的路径，将会返回<see cref="true"/>，此时刀体将自动绘制光效遮罩
         /// </summary>

@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 , Projectile.rotation + (Projectile.ai[2] == 0 ? MathHelper.PiOver2 : 0), value.Size() / 2
                 , Projectile.scale, Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 
-            Texture2D value2 = ModContent.Request<Texture2D>("CalamityMod/Particles/SemiCircularSmear").Value;
+            Texture2D value2 = CWRAsset.SemiCircularSmear.Value;
             Main.spriteBatch.EnterShaderRegion(BlendState.Additive);
             Main.EntitySpriteDraw(color: Color.IndianRed
                 , origin: value2.Size() * 0.5f, texture: value2, position: Projectile.Center - Main.screenPosition

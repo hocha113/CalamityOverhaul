@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             for (int i = 0; i < max; i++) {
                 Vector2 ver = (MathHelper.TwoPi / max * i).ToRotationVector2().RotatedBy(ToMouseA);
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + ver * 63, ver * (13 + max),
-                ModContent.ProjectileType<LifeScythe1>(), Projectile.damage / 2, Projectile.knockBack / 2, Projectile.owner);
+                ModContent.ProjectileType<SickleLife>(), Projectile.damage / 2, Projectile.knockBack / 2, Projectile.owner);
             }
         }
 

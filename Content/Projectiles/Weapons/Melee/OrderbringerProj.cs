@@ -101,9 +101,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.ai[0]++;
         }
 
-        public override bool? CanDamage() {
-            return Projectile.ai[1] != 2 ? false : base.CanDamage();
-        }
+        public override bool? CanDamage() => Projectile.ai[1] != 2 ? false : base.CanDamage();
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float point = 0;

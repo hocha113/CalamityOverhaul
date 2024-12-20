@@ -38,18 +38,17 @@ namespace CalamityOverhaul.Content.Items.Melee
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             return ShootFunc(ref Level, Item, player, source, position, velocity, type, damage, knockback);
         }
 
-        internal static bool ShootFunc(ref int Level, Item Item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+        internal static bool ShootFunc(ref int Level, Item Item, Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             int newLevel = 0;
             if (++Level > 6) {
                 newLevel = 2;
                 Level = 0;
-            }
-            if (player.altFunctionUse == 2) {
-                newLevel = 1;
             }
             Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<HolyColliderHeld>(), damage, knockback, player.whoAmI, newLevel);
             return false;

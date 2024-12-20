@@ -630,24 +630,7 @@ namespace CalamityOverhaul.Content
                 WhipHitTypeEnum wTypes = (WhipHitTypeEnum)npc.WhipHitType;
                 switch (wTypes) {
                     case WhipHitTypeEnum.WhiplashGalactica:
-                        if ((
-                            (projectile.numHits % 3 == 0 && projectile.minion == true)
-                            || (projectile.numHits == 0 && projectile.minion == false)
-                            )
-                            && projectile.type != ModContent.ProjectileType<CosmicFire>()
-                            ) {
-                            float randRot = Main.rand.NextFloat(MathHelper.TwoPi);
-
-                            for (int i = 0; i < 3; i++) {
-                                Vector2 vr = ((MathHelper.TwoPi / 3 * i) + randRot).ToRotationVector2() * 10;
-                                int proj = Projectile.NewProjectile(projectile.GetSource_FromThis(), target.Center, vr
-                                    , ModContent.ProjectileType<GodKillers>(), projectile.damage / 3, 0, projectile.owner, 0, 0, Main.rand.Next(22));
-                                Main.projectile[proj].timeLeft = 65;
-                                Main.projectile[proj].penetrate = -1;
-                                Main.projectile[proj].usesLocalNPCImmunity = true;
-                                Main.projectile[proj].localNPCHitCooldown = -1;
-                            }
-                        }
+                        //我很厌恶这个效果，暂时删掉等待重做
                         break;
                     case WhipHitTypeEnum.BleedingScourge:
                         _ = Projectile.NewProjectile(projectile.FromObjectGetParent(), target.Center, Vector2.Zero,
