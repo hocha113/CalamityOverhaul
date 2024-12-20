@@ -1,9 +1,9 @@
-﻿using CalamityOverhaul.Content.RemakeItems.Core;
-using Terraria.ID;
-using Terraria;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
+using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 {

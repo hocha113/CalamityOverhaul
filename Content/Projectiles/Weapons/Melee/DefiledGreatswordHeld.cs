@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 DefiledGreatswordEcType.DrawRageEnergyChargeBar(Main.player[Projectile.owner], Projectile.ai[1]
                     , item.CWR().MeleeCharge, DefiledGreatswordEcType.DefiledGreatswordMaxRageEnergy);
             }
-            
+
             return false;
         }
     }

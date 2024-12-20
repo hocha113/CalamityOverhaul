@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 style.Volume = SoundID.Item60.Volume * 0.6f;
                 SoundEngine.PlaySound(in style, Projectile.Center);
             }
-            
+
             SpanDust();
         }
     }

@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
             if (HeldHalibut && _sengs < 1) {
                 _sengs += 0.1f;
             }
-            
+
             DrawPosition = new Vector2(0, Main.screenHeight / 2);
             mainHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, Texture.Width, Texture.Height);
             Rectangle mouseRec = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);

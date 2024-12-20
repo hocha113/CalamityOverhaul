@@ -7,7 +7,6 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Items.Weapons.Summon;
-using CalamityMod.Projectiles.Pets;
 using CalamityMod.Tiles.Furniture.CraftingStations;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
@@ -83,7 +82,7 @@ namespace CalamityOverhaul.Content
                 foreach (BaseRItem baseRItem in CWRMod.RItemInstances) {
                     if (baseRItem.FormulaSubstitution) {
                         baseRItem.LoadItemRecipe();
-                    }  
+                    }
                 }
             }
 

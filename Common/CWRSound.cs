@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using Terraria.Audio;
-using Terraria.Localization;
+﻿using Terraria.Audio;
 
 namespace CalamityOverhaul.Common
 {

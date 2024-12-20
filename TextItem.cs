@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

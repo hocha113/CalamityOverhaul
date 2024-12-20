@@ -4,7 +4,6 @@ using CalamityMod.NPCs;
 using CalamityMod.Particles;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
@@ -133,7 +132,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     if (Main.npc[CalamityGlobalNPC.primeLaser].active)
                         Main.npc[CalamityGlobalNPC.primeLaser].Center = Projectile.Center;
                 }
-                
+
                 if (!VaultUtils.isServer) {
                     for (int i = 0; i < 333; i++) {
                         PRT_Light particle = new PRT_Light(Projectile.Center + CWRUtils.randVr(0, boss.width)

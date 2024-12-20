@@ -5,7 +5,6 @@ using CalamityMod.World;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
-using InnoVault;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -298,7 +297,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     break;
                 }
             }
-            
+
             return reset;
         }
 

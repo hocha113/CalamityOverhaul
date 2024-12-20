@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -68,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                         else {
                             target.Heal(Main.rand.Next(1, 3));
                         }
-                            
+
                         for (int i = 0; i < 13; i++) {
                             Vector2 vr = CWRUtils.GetRandomVevtor(0, 360, Main.rand.Next(4, 7));
                             Dust.NewDust(target.Center, 13, 13, DustID.HealingPlus, vr.X, vr.Y);

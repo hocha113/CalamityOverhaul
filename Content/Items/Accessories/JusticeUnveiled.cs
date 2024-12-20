@@ -178,7 +178,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 else {
                     SoundEngine.PlaySound(CWRSound.JustStrike, Projectile.Center);
                 }
-                
+
                 Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
                 , ModContent.ProjectileType<JusticeUnveiledExplode>(), Projectile.damage, 2, Projectile.owner, Projectile.ai[0]);
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (++Projectile.frameCounter > 3) {
                 frameIndex++;
                 if (frameIndex == 4) {
-                    PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center, 
+                    PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
                         new Vector2(0, 2), 20f, 6f, 20, 1000f, FullName);
                     Main.instance.CameraModifiers.Add(modifier);
                 }
@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override bool? CanHitNPC(NPC target) {
-            if (!(frameIndex == 4 || frameIndex == 8)){
+            if (!(frameIndex == 4 || frameIndex == 8)) {
                 return false;
             }
             return base.CanHitNPC(target);

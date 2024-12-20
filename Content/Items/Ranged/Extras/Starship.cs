@@ -2,8 +2,8 @@
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using System;
-using Terraria.ID;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Extras

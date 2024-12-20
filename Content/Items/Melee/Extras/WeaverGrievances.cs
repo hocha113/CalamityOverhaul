@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityMod.Dusts;
 using CalamityMod.Items.Accessories;
 using CalamityMod.Items.Armor.Bloodflare;
 using CalamityMod.Items.Materials;
@@ -84,7 +83,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
                     Projectile.NewProjectile(source, position, velocity
                         , ModContent.ProjectileType<WeaverGrievancesHurmp>(), damage, knockback, player.whoAmI, ai1: _swingDir);
                 }
-                
+
                 return false;
             }
             if (Main.zenithWorld) {

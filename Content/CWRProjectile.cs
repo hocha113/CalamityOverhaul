@@ -9,7 +9,6 @@ using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
 using CalamityOverhaul.Content.RemakeItems.Vanilla;
