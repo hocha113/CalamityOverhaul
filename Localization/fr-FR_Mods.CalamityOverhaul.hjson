@@ -2835,6 +2835,11 @@ Items: {
 		// DisplayName: Under The Sand
 		// Tooltip: ""
 	}
+
+	WastelandFang: {
+		// DisplayName: Wasteland Fang
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3573,6 +3578,7 @@ Projectiles: {
 	// JUZenithWorldTime.DisplayName: J U Zenith World Time
 	// WeaverGrievancesHurmp.DisplayName: Weaver Grievances Hurmp
 	// SickleLife.DisplayName: Sickle Life
+	// WastelandFangProj.DisplayName: Wasteland Fang Proj
 }
 
 Configs: {
