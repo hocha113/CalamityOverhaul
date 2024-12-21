@@ -15,13 +15,13 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Content.Items.Materials
 {
-    internal class InfinityCatalyst : ModItem
+    internal class InfinityCatalyst : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item + "Materials/InfinityCatalyst";
-        public static float QFH {
-            get {
-                const float baseBonus = 1.0f;
-                var modBonuses = new Dictionary<string, float>{
+        public static float QFH;
+        void ICWRLoader.SetupData() {
+            const float baseBonus = 1.0f;
+            var modBonuses = new Dictionary<string, float>{
                     {"LightAndDarknessMod", 0.1f},
                     {"DDmod", 0.1f},
                     {"MaxStackExtra", 0.1f},
@@ -32,13 +32,11 @@ namespace CalamityOverhaul.Content.Items.Materials
                     {"FargowiltasSouls", 0.25f},
                     {"MagicBuilder", 0.25f},
                     {"CalamityPostMLBoots", 0.25f},
-                    {"仆从暴击", 0.25f},
                 };
-                float overMdgs = LoadMods.Count / 10f;
-                overMdgs = overMdgs < 0.5f ? 0 : overMdgs;
-                float totalBonus = modBonuses.Sum(pair => hasMod(pair.Key) ? pair.Value : 0);
-                return baseBonus + overMdgs + totalBonus;
-            }
+            float overMdgs = LoadMods.Count / 10f;
+            overMdgs = overMdgs < 0.5f ? 0 : overMdgs;
+            float totalBonus = modBonuses.Sum(pair => hasMod(pair.Key) ? pair.Value : 0);
+            QFH = baseBonus + overMdgs + totalBonus;
         }
         private static bool hasMod(string name) => LoadMods.Any(mod => mod.Name == name);
         public override void SetStaticDefaults() {
