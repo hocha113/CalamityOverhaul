@@ -4,7 +4,6 @@ using CalamityMod.Projectiles.Typeless;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Particles;
-
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -331,44 +330,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         //模拟出一个勉强符合物理逻辑的命中粒子效果，最好不要动这些，这个效果是我凑出来的，我也不清楚这具体的数学逻辑，代码太乱了
         private void HitEffect(Entity target, bool theofSteel) {
+            HitEffectValue(target, 13, out Vector2 rotToTargetSpeedTrengsVumVer, out int sparkCount);
             if (theofSteel) {
                 SoundEngine.PlaySound(MurasamaEcType.InorganicHit with { Pitch = 0.75f }, target.Center);
             }
             else {
                 SoundEngine.PlaySound(MurasamaEcType.OrganicHit with { Pitch = 1.25f }, target.Center);
-            }
-
-            int sparkCount = 13;
-            Vector2 toTarget = Owner.Center.To(target.Center);
-            Vector2 norlToTarget = toTarget.GetNormalVector();
-            int ownerToTargetSetDir = Math.Sign(toTarget.X);
-            ownerToTargetSetDir = ownerToTargetSetDir != DirSign ? -1 : 1;
-
-            if (rotSpeed > 0) {
-                norlToTarget *= -1;
-            }
-            if (rotSpeed < 0) {
-                norlToTarget *= 1;
-            }
-
-            float rotToTargetSpeedSengs = rotSpeed * 3 * ownerToTargetSetDir;
-            Vector2 rotToTargetSpeedTrengsVumVer = norlToTarget.RotatedBy(-rotToTargetSpeedSengs) * 13;
-            if (Projectile.ai[0] == 3) {
-                rotToTargetSpeedTrengsVumVer = Projectile.velocity.RotatedBy(rotToTargetSpeedSengs);
-            }
-
-            int pysCount = PRTLoader.PRT_IDToInGame_World_Count[PRTLoader.GetParticleID(typeof(PRT_Spark))];
-            if (pysCount > 120) {
-                sparkCount = 10;
-            }
-            if (pysCount > 220) {
-                sparkCount = 8;
-            }
-            if (pysCount > 350) {
-                sparkCount = 6;
-            }
-            if (pysCount > 500) {
-                sparkCount = 3;
             }
 
             for (int i = 0; i < sparkCount; i++) {
@@ -429,7 +396,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     , type, Projectile.damage / 6, Projectile.knockBack, Projectile.owner, 0f, rotSpeed * 0.1f);
                 }
             }
-
+            
             HitEffect(target, CWRLoad.NPCValue.ISTheofSteel(target.type));
         }
 

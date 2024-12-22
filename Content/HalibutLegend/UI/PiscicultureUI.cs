@@ -9,8 +9,8 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
 {
     internal class PiscicultureUI : UIHandle
     {
-        public static PiscicultureUI Instance => (PiscicultureUI)UIHandleLoader.GetUIHandleInstance<PiscicultureUI>();
-        public static DialogboxUI Dialogbox => (DialogboxUI)UIHandleLoader.GetUIHandleInstance<DialogboxUI>();
+        public static PiscicultureUI Instance => UIHandleLoader.GetUIHandleInstance<PiscicultureUI>();
+        public static DialogboxUI Dialogbox => UIHandleLoader.GetUIHandleInstance<DialogboxUI>();
         public override bool Active => IsOnpen || _sengs > 0;
         public static bool IsOnpen;
         public static float _sengs;

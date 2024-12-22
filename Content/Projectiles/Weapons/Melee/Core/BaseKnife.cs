@@ -70,7 +70,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         }
 
+        public virtual bool PreSwingAI() {
+            return true;
+        }
+
         public sealed override void SwingAI() {
+            if (!PreSwingAI()) {
+                return;
+            }
             switch (SwingAIType) {
                 case SwingAITypeEnum.None:
                     SwingBehavior(SwingData);

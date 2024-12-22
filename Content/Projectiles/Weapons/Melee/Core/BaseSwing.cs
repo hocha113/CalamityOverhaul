@@ -667,7 +667,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         public void DrawTrailHander(List<VertexPositionColorTexture> bars, GraphicsDevice device, BlendState blendState = null
             , SamplerState samplerState = null, RasterizerState rasterizerState = null) {
-
             RasterizerState originalState = Main.graphics.GraphicsDevice.RasterizerState;
             BlendState originalBlendState = Main.graphics.GraphicsDevice.BlendState;
             SamplerState originalSamplerState = Main.graphics.GraphicsDevice.SamplerStates[0];

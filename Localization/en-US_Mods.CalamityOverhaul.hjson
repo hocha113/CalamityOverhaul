@@ -2856,6 +2856,11 @@ Items: {
 		DisplayName: Wasteland Fang
 		Tooltip: ""
 	}
+
+	Flawless: {
+		DisplayName: Flawless
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3595,6 +3600,7 @@ Projectiles: {
 	WeaverGrievancesHurmp.DisplayName: Weaver Grievances Hurmp
 	SickleLife.DisplayName: Sickle Life
 	WastelandFangProj.DisplayName: Wasteland Fang Proj
+	FlawlessHeld.DisplayName: Flawless Held
 }
 
 Configs: {

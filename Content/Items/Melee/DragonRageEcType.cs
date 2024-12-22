@@ -43,7 +43,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shootSpeed = 10f;
             Item.shoot = ModContent.ProjectileType<DragonRageHeld>();
             Item.rare = ModContent.RarityType<Violet>();
-            Item.CWR().GetAllowPrefix = true;
             Item.CWR().GetMeleePrefix = true;
         }
 
