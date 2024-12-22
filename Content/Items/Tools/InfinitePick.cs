@@ -84,55 +84,9 @@ namespace CalamityOverhaul.Content.Items.Tools
             bool justRDown = rDown && !oldRDown;
             oldRDown = rDown;
             if (justRDown && !player.CWR().uiMouseInterface && !player.cursorItemIconEnabled && player.cursorItemIconID == 0) {
-                SoundEngine.PlaySound(new SoundStyle(CWRConstant.Sound + "Pedestruct"), Main.MouseWorld);
-                if (!IsPick) {
-                    for (int i = 0; i < 188; i++) {
-                        PRT_HeavenfallStar spark = new PRT_HeavenfallStar(Main.MouseWorld + CWRUtils.randVr(213), new Vector2(0, 3), false, 13, 1, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(), HeavenfallLongbow.rainbowColors));
-                        PRTLoader.AddParticle(spark);
-                    }
-                    int maxX = 500;
-                    int maxY = 500;
-                    Vector2 pos = Main.MouseWorld - new Vector2(maxX, maxY) / 2;
-                    Item ball = new Item(ModContent.ItemType<DarkMatterBall>());
-                    DarkMatterBall darkMatterBall = (DarkMatterBall)ball.ModItem;
-                    if (darkMatterBall != null) {
-                        for (int x = 0; x < maxX; x++) {
-                            for (int y = 0; y < maxY; y++) {
-                                Vector2 tilePos = CWRUtils.WEPosToTilePos(pos + new Vector2(x, y));
-                                Tile tile = CWRUtils.GetTile(tilePos);
-                                if (tile.HasTile && tile.TileType != TileID.Cactus) {
-                                    int dorptype = CWRUtils.GetTileDorp(tile);
-                                    if (dorptype != 0)
-                                        darkMatterBall.dorpTypes.Add(dorptype);
-
-                                    tile.LiquidAmount = 0;
-                                    tile.HasTile = false;
-                                    CWRUtils.SafeSquareTileFrame(tilePos);
-                                    if (Main.netMode != NetmodeID.SinglePlayer) {
-                                        NetMessage.SendTileSquare(player.whoAmI, x, y);
-                                    }
-                                }
-
-                                if (tile.WallType != 0) {
-                                    if (CWRLoad.WallToItem.TryGetValue(tile.WallType, out int value))
-                                        darkMatterBall.dorpTypes.Add(value);
-
-                                    tile.WallType = 0;
-
-                                    if (Main.netMode != NetmodeID.SinglePlayer)
-                                        NetMessage.SendTileSquare(player.whoAmI, x, y);
-                                }
-                            }
-                        }
-                        Projectile.NewProjectile(player.FromObjectGetParent(), Main.MouseWorld, Vector2.Zero, ModContent.ProjectileType<InfinitePickProj>(), Item.damage * 10, 0, player.whoAmI);
-                        if (darkMatterBall.dorpTypes.Count > 0)
-                            player.QuickSpawnItem(player.FromObjectGetParent(), darkMatterBall.Item, 1);
-                    }
-                }
-                else {
-                    int proj = Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, player.Center.To(Main.MouseWorld).UnitVector() * 32, ModContent.ProjectileType<InfinitePickProj>(), Item.damage * 10, 0, player.whoAmI, 1);
-                    Main.projectile[proj].width = Main.projectile[proj].height = 64;
-                }
+                Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, player.Center.To(Main.MouseWorld).UnitVector() * 32
+                        , ModContent.ProjectileType<InfinitePickProj>(), Item.damage * 10, 0
+                        , player.whoAmI, IsPick ? 1 : 0, Main.MouseWorld.X, Main.MouseWorld.Y);
             }
         }
 
