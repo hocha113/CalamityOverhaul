@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static string[][] RpsDataStringArrays;
 
         public static List<string[]> OtherRpsData_ZenithWorld_StringList = [];
+
         public static List<string[]> ModCall_OtherRpsData_StringList = [];
 
         public string[] StaticFullItemNames;

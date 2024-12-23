@@ -8,8 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
 
 namespace CalamityOverhaul.Content.Items.Tools
@@ -21,12 +23,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         internal static Asset<Texture2D> Full;
         public List<int> dorpTypes = [];
         public List<Item> dorpItems = [];
-        public override ModItem Clone(Item newEntity) {
-            DarkMatterBall ball = (DarkMatterBall)base.Clone(newEntity);
-            ball.dorpTypes = new List<int>(dorpTypes);
-            ball.dorpItems = new List<Item>(dorpItems);
-            return ball;
-        }
+        private bool deposit;
         void ICWRLoader.LoadAsset() {
             DarkMatter = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/DarkMatter");
             Full = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/Full");
@@ -35,10 +32,15 @@ namespace CalamityOverhaul.Content.Items.Tools
             DarkMatter = null;
             Full = null;
         }
+        public override ModItem Clone(Item newEntity) {
+            DarkMatterBall ball = (DarkMatterBall)base.Clone(newEntity);
+            ball.dorpTypes = new List<int>(dorpTypes);
+            ball.dorpItems = new List<Item>(dorpItems);
+            return ball;
+        }
         public override void SetStaticDefaults() => Item.ResearchUnlockCount = 9999;
         public override void SetDefaults() {
             Item.maxStack = 99;
-            Item.consumable = true;
             Item.width = 24;
             Item.height = 24;
             Item.rare = ItemRarityID.Purple;
@@ -51,12 +53,21 @@ namespace CalamityOverhaul.Content.Items.Tools
             spriteBatch.Draw(Full.Value, position, null, Color.White * sngs * (0.5f + alp * 0.5f), 0, Full.Value.Size() / 2, 1, SpriteEffects.None, 0);
         }
 
-        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position
+            , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
             DrawItemIcon(spriteBatch, position, Type);
             return false;
         }
 
         public override bool CanRightClick() {
+            LoadDorp();
+            if (Main.mouseItem.type > ItemID.None) {
+                dorpItems.Add(Main.mouseItem.Clone());
+                Main.mouseItem.TurnToAir();
+                SoundEngine.PlaySound(SoundID.Grab);
+                deposit = true;
+                return true;
+            }
             return dorpItems.Count > 0;
         }
 
@@ -84,12 +95,17 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
+        public override bool ConsumeItem(Player player) => false;
+
         public override void RightClick(Player player) {
+            if (deposit) {
+                deposit = false;
+                return;
+            }
             LoadDorp();
             foreach (var item in dorpItems) {
                 player.QuickSpawnItem(player.FromObjectGetParent(), item, item.stack);
             }
-            player.QuickSpawnItem(player.FromObjectGetParent(), new Item(Type));
             dorpTypes = [];
             dorpItems = [];
         }
@@ -107,7 +123,8 @@ namespace CalamityOverhaul.Content.Items.Tools
                 for (int i = 0; i < dorpItems.Count; i++) {
                     Item item = dorpItems[i];
                     string text = item.HoverName;
-                    ChatManager.DrawColorCodedString(Main.spriteBatch, line.Font, text, basePosition + new Vector2(0, 22 * i + 66), Color.White, 0f, Vector2.Zero, Vector2.One * 0.9f);
+                    ChatManager.DrawColorCodedString(Main.spriteBatch, line.Font, text
+                        , basePosition + new Vector2(0, 22 * i + 66), Color.White, 0f, Vector2.Zero, Vector2.One * 0.9f);
                 }
             }
             return true;

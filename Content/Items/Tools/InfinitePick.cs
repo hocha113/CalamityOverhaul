@@ -25,11 +25,9 @@ namespace CalamityOverhaul.Content.Items.Tools
 {
     internal class InfinitePick : ModItem
     {
-        public bool IsPick = true;
         public override string Texture => CWRConstant.Item + "Tools/" + (IsPick ? "Pickaxe" : "Hammer");
-        public Texture2D value => CWRUtils.GetT2DValue(Texture);
-        private bool oldRDown;
-        private bool rDown;
+        private Texture2D value => CWRUtils.GetT2DValue(Texture);
+        private bool IsPick = true;
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));
@@ -47,6 +45,8 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.rare = ItemRarityID.Green;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
+            Item.shoot = ModContent.ProjectileType<InfinitePickProj>();
+            Item.shootSpeed = 32;
             Item.pick = 9999;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems3;
         }
@@ -80,14 +80,13 @@ namespace CalamityOverhaul.Content.Items.Tools
                 SoundEngine.PlaySound(!IsPick ? CWRSound.Pecharge : CWRSound.Peuncharge, player.Center);
                 TextureAssets.Item[Type] = CWRUtils.GetT2DAsset(Texture);
             }
-            rDown = player.PressKey(false);
-            bool justRDown = rDown && !oldRDown;
-            oldRDown = rDown;
-            if (justRDown && !player.CWR().uiMouseInterface && !player.cursorItemIconEnabled && player.cursorItemIconID == 0) {
-                Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, player.Center.To(Main.MouseWorld).UnitVector() * 32
-                        , ModContent.ProjectileType<InfinitePickProj>(), Item.damage * 10, 0
-                        , player.whoAmI, IsPick ? 1 : 0, Main.MouseWorld.X, Main.MouseWorld.Y);
-            }
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            Projectile.NewProjectile(source, position, velocity, type, Item.damage * 10, 0
+                , player.whoAmI, IsPick ? 1 : 0, Main.MouseWorld.X, Main.MouseWorld.Y);
+            return false;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
