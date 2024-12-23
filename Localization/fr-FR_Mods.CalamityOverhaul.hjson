@@ -2845,6 +2845,11 @@ Items: {
 		// DisplayName: Flawless
 		// Tooltip: ""
 	}
+
+	MelodyTheSand: {
+		// DisplayName: Melody The Sand
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3585,6 +3590,8 @@ Projectiles: {
 	// SickleLife.DisplayName: Sickle Life
 	// WastelandFangProj.DisplayName: Wasteland Fang Proj
 	// FlawlessHeld.DisplayName: Flawless Held
+	// MelodyTheSandHeld.DisplayName: Melody The Sand Held
+	// SandThorn.DisplayName: Sand Thorn
 }
 
 Configs: {

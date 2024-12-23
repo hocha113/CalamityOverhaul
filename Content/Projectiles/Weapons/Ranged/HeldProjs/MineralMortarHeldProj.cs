@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "MineralMortar";
         public override int targetCayItem => ModContent.ItemType<MineralMortar>();
         public override int targetCWRItem => ModContent.ItemType<MineralMortarEcType>();
-
         private bool oldOnFire;
         private int chargeIndex;
         public override void SetRangedProperty() {
