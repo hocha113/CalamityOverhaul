@@ -2866,6 +2866,11 @@ Items: {
 		DisplayName: Melody The Sand
 		Tooltip: ""
 	}
+
+	SandVortexOfTheDecayedSea: {
+		DisplayName: Sand Vortex Of The Decayed Sea
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3608,6 +3613,8 @@ Projectiles: {
 	FlawlessHeld.DisplayName: Flawless Held
 	MelodyTheSandHeld.DisplayName: Melody The Sand Held
 	SandThorn.DisplayName: Sand Thorn
+	DecayedSeaOrb.DisplayName: Decayed Sea Orb
+	SandVortexOfTheDecayedSeaHeld.DisplayName: Sand Vortex Of The Decayed Sea Held
 }
 
 Configs: {

@@ -67,6 +67,9 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
                     OffsetPos += CWRUtils.randVr(0.1f + chargeIndex * 0.05f);
                 }
             }
+            else {
+                chargeIndex = 0;
+            }
             oldOnFire = onFire;
         }
 
@@ -82,6 +85,17 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
                 
                 chargeIndex = 0;
             }
+        }
+
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
+            float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
+            Color color = Color.Gold;
+            color.A = 0;
+            float slp = (1 + 0.004f * chargeIndex);
+            Main.EntitySpriteDraw(TextureValue, drawPos, null, color
+                , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale * slp
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            base.GunDraw(drawPos, ref lightColor);
         }
     }
 
