@@ -2,7 +2,7 @@
 using CalamityMod.Items;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs;
+using CalamityOverhaul.Content.HalibutLegend;
 using System;
 using System.Collections.Generic;
 using System.Linq;

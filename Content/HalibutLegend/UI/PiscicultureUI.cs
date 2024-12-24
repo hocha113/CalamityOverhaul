@@ -3,6 +3,7 @@ using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.HalibutLegend.UI
@@ -30,12 +31,6 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
             halibutBodyDrawPos = new Vector2(Main.screenWidth / 2, Main.screenHeight - 400 * _sengs);
             //对话框的逻辑更新需要在主逻辑之后，以避免更新延迟现象
             Dialogbox.Update();
-
-            if (!Dialogbox.hoverInMainPage && _sengs >= 1) {
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    IsOnpen = false;
-                }
-            }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -45,6 +40,18 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
             spriteBatch.Draw(halibutValue, halibutBodyDrawPos, null, Color.White * _sengs, 0, halibutValue.Size() / 2, 2, SpriteEffects.None, 0);
             //调用对话框的绘制
             Dialogbox.Draw(spriteBatch);
+            if (HanderFishItem.TargetFish == null) {
+                return;
+            }
+            if (HanderFishItem.TargetFish.FishSkill == null) {
+                return;
+            }
+            if (HanderFishItem.TargetFish.FishSkill.Item == null) {
+                return;
+            }
+            if (HanderFishItem.TargetFish.FishSkill.Item.type > ItemID.None) {
+                HanderFishItem.TargetFish.DrawSkillIntroduction(spriteBatch);
+            }
         }
     }
 }

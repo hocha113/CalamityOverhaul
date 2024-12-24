@@ -1,10 +1,11 @@
 ﻿using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
+namespace CalamityOverhaul.Content.HalibutLegend
 {
     internal class HalibutCannonHeldProj : BaseGun
     {
@@ -25,10 +26,27 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 
         private void Shoot(int num) {
             for (int i = 0; i < num; i++) {
-                int proj14 = Projectile.NewProjectile(Source, GunShootPos
+                bool reset = true;
+
+                if (HanderFishItem.TargetFish != null && HanderFishItem.TargetFish.FishSkill != null) {
+                    reset = HanderFishItem.TargetFish.FishSkill.PreShoot();
+                }
+
+                int projIndex = -1;
+
+                if (reset) {
+                    projIndex = Projectile.NewProjectile(Source, GunShootPos
                     , ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.03f, 0.03f)) * Main.rand.NextFloat(0.9f, 1.32f)
                     , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                Main.projectile[proj14].CWR().SpanTypes = (byte)SpanTypesEnum.HalibutCannon;
+                }
+
+                if (projIndex >= 0) {
+                    Main.projectile[projIndex].CWR().SpanTypes = (byte)SpanTypesEnum.HalibutCannon;
+                }
+
+                if (HanderFishItem.TargetFish != null && HanderFishItem.TargetFish.FishSkill != null) {
+                    HanderFishItem.TargetFish.FishSkill.PostShoot(projIndex);
+                }
             }
         }
 

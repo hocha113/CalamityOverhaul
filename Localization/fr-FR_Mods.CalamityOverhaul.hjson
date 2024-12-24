@@ -4614,5 +4614,17 @@ Legend: {
 		// Greeting11: Every time I see the surprised expressions of land creatures, it’s quite amusing. There are many wise marine creatures, and I’m just one of the fish who’s ‘dressed up’ a bit.
 		// Greeting12: In addition to academic research, I enjoy observing the daily life underwater. The corals, schools of fish, and occasionally passing sea turtles, every scene is as beautiful as a natural painting.
 		// Greeting13: Winning two championships is nice, but what truly makes me proud is my love for knowledge. It’s because of this passion that I’m able to leave my small legend in the underwater world!
+
+		FishSkill: {
+			Bass: {
+				// Explain: A fish that lives in clear lake water, which has some research value. Thank you, Sir
+				// Introduce: This is Dr. Flounder's bass collection, and if carried, Dr. Flounder will be able to get his enemies entangled with seaweed
+			}
+
+			Goldfish: {
+				// Explain: A fish that lives in clear lake water, which has some research value. Thank you, Sir
+				// Introduce: This is Dr. Flounder's bass collection, and if carried, Dr. Flounder will be able to get his enemies entangled with seaweed
+			}
+		}
 	}
 }

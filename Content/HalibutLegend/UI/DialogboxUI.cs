@@ -3,12 +3,14 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HalibutLegend.UI
 {
     internal class DialogboxUI : UIHandle
     {
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
+        public Rectangle HitBox;
         public Vector2 borderedDrawPos;
         public int borderedWidth;
         public int borderedHeight;
@@ -16,11 +18,10 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
         public float sessionText_sengs;
         public int GreetingIndex;
         public string DialogTextContent;
-        private float piscicultureUI_MainBox_sengs => PiscicultureUI._sengs;
-        public Rectangle HitBox;
         public bool hoverInMainPage;
         public float borderedSize;
         public const int MaxGreetingCount = 13;
+        private static float piscicultureUI_MainBox_sengs => PiscicultureUI._sengs;
         public override void Update() {
             UpdateElement();
             HanderBorderedSize();
@@ -82,6 +83,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
                             GreetingIndex = 0;
                         }
                         sessionText_sengs = 0;
+                        HanderFishItem.HanderPressed();
                     }
                 }
             }
@@ -96,8 +98,11 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
         /// <returns></returns>
         public string GetDialogTextContent() {
             // 获取文本内容
-            string strContent = HalibutText.GetTextValue($"Greeting{GreetingIndex}");
-            float textLengthFactor = Math.Max(1.0f, strContent.Length / 20.0f); // 根据文本长度动态调整，20 是一个基准长度
+            string textContent = HalibutText.GetTextValue($"Greeting{GreetingIndex}");
+
+            HanderFishItem.HanderItemText(ref textContent);
+
+            float textLengthFactor = textContent.Length / 22.0f; // 根据文本长度动态调整，20 是一个基准长度
             float progressSpeed = 0.01f * (1.0f / textLengthFactor); // 控制速度，越短的文本，progressSpeed 越大
 
             if (bordered_sengs >= 1) {
@@ -110,17 +115,17 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
                 sessionText_sengs = 0;
             }
 
-            strContent = CWRUtils.GetTextProgressively(strContent, sessionText_sengs);
-            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(strContent);
-            strContent = CWRUtils.GetSafeText(strContent, textSize, borderedWidth - 22 * 2);
+            textContent = CWRUtils.GetTextProgressively(textContent, sessionText_sengs);
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(textContent);
+            textContent = CWRUtils.GetSafeText(textContent, textSize, borderedWidth - 22 * 2);
 
-            return strContent;
+            return textContent;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (piscicultureUI_MainBox_sengs >= 1) {
                 VaultUtils.DrawBorderedRectangle(spriteBatch, CWRUtils.GetT2DValue(CWRConstant.UI + "JAR"), 4, borderedDrawPos, borderedWidth, borderedHeight
-                    , Color.GreenYellow * 0.8f * piscicultureUI_MainBox_sengs, Color.Azure * 0.2f * piscicultureUI_MainBox_sengs, borderedSize);
+                    , Color.BlueViolet * 0.8f * piscicultureUI_MainBox_sengs, Color.Azure * 0.2f * piscicultureUI_MainBox_sengs, borderedSize);
             }
             if (bordered_sengs >= 1) {
                 Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, DialogTextContent
