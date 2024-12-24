@@ -11,7 +11,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
 
 namespace CalamityOverhaul.Content.Items.Tools

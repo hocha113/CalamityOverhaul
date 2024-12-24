@@ -164,6 +164,8 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
 
     internal class DeathSickleThrowableRogue : DeathSickleThrowable
     {
+        public override string Texture => CWRConstant.Item + "Rogue/DeathFlySickle";
+        public override Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         public override void SetThrowable() {
             base.SetThrowable();
             Projectile.DamageType = ModContent.GetInstance<RogueDamageClass>();

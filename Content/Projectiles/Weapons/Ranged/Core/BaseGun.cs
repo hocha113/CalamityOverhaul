@@ -636,10 +636,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     color = Color.White;
                 }
                 Vector2 drawPos = Projectile.Center - Main.screenPosition + SpecialDrawPositionOffset;
-                GunDraw(drawPos, ref color);
+                if (PreGunDraw(drawPos, ref color)) {
+                    GunDraw(drawPos, ref color);
+                }
                 PostGunDraw(drawPos, ref color);
             }
             return false;
+        }
+
+        public virtual bool PreGunDraw(Vector2 drawPos, ref Color lightColor) {
+            return true;
         }
 
         public virtual void GunDraw(Vector2 drawPos, ref Color lightColor) {

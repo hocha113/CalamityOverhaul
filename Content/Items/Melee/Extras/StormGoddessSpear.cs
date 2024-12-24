@@ -40,17 +40,9 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 7;
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            return true;
-        }
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<StormGoddessSpearProj>()] <= 0;
 
-        public override bool CanUseItem(Player player) {
-            return player.ownedProjectileCounts[ModContent.ProjectileType<StormGoddessSpearProj>()] <= 0;
-        }
-
-        public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
-        }
+        public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
 
         public override void AddRecipes() {
             CreateRecipe()

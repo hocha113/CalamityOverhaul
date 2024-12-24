@@ -11,9 +11,11 @@ using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
+using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -75,6 +77,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             }
         }
         public override bool AltFunctionUse(Player player) => true;
+        public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 6;
+        public override void ModifyTooltips(List<TooltipLine> tooltips) => CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
@@ -155,17 +159,8 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             }
         }
 
-        public override void MeleeEffect() {
-
-        }
-
-        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-
-        }
-
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-
-        }
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(ModContent.BuffType<SoulBurning>(), 300);
+        public override void OnHitPlayer(Player target, Player.HurtInfo info) => target.AddBuff(ModContent.BuffType<SoulBurning>(), 300);
     }
 
     internal class WeaverGrievancesHurmp : BaseHeldProj
@@ -277,6 +272,10 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.Explode();
             target.AddBuff(ModContent.BuffType<SoulBurning>(), 300);
+            if (Time < 4) {
+                Owner.GivePlayerImmuneState(16);
+                CombatText.NewText(target.Hitbox, Color.Gold, "Perfect Dodge!!!", true);
+            }
         }
 
         public override void OnKill(int timeLeft) {

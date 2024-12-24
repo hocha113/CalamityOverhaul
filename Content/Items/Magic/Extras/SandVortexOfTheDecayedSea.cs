@@ -47,17 +47,18 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
         }
 
         public override void FiringShoot() {
-            SoundStyle sound = SoundID.Item39;
-            SoundEngine.PlaySound(sound with { Pitch = 0.2f, PitchVariance = 1.1f }, Projectile.Center);
+            SoundStyle sound = SoundID.NPCDeath13;
+            SoundEngine.PlaySound(sound with { Pitch = -0.2f }, Projectile.Center);
             for (int i = 0; i < 4; i++) {
                 Vector2 ver = new Vector2(ShootVelocity.X * (0.6f + i * 0.12f), ShootVelocity.Y * Main.rand.NextFloat(0.6f, 1.2f));
                 Projectile.NewProjectile(Source, GunShootPos, ver, ModContent.ProjectileType<DecayedSeaOrb>()
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, UseAmmoItemType);
             }
-            fireIndex = 22;
         }
 
-        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
+        public override void SetShootAttribute() => fireIndex = 30;
+
+        public override bool PreGunDraw(Vector2 drawPos, ref Color lightColor) {
             float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
             Color color = Color.GreenYellow;
             color.A = 0;
@@ -65,7 +66,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             Main.EntitySpriteDraw(TextureValue, drawPos, null, color
                 , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale * slp
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
-            base.GunDraw(drawPos, ref lightColor);
+            return true;
         }
     }
 
@@ -101,9 +102,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
                 }
                 Lighting.AddLight(Projectile.Center, Color.PaleGoldenrod.ToVector3() * 1.75f * Main.essScale);
             }
-            if (Projectile.timeLeft == 200) {
-                Projectile.velocity = Projectile.velocity.UnitVector() * 4;
-            }
+
             if (Projectile.timeLeft < 200) {
                 Projectile.rotation = Projectile.velocity.ToRotation();
                 NPC target = Projectile.Center.FindClosestNPC(1600, false, false, onHitNPCs);

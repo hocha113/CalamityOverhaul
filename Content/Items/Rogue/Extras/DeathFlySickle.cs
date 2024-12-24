@@ -9,9 +9,9 @@ using static Terraria.ID.ContentSamples.CreativeHelper;
 
 namespace CalamityOverhaul.Content.Items.Rogue.Extras
 {
-    internal class DeathSickleRogue : ModItem
+    internal class DeathFlySickle : ModItem
     {
-        public override string Texture => $"Terraria/Images/Item_{ItemID.DeathSickle}";
+        public override string Texture => CWRConstant.Item + "Rogue/DeathFlySickle";
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DeathSickle);
             Item.damage = 40;

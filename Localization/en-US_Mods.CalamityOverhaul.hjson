@@ -2809,7 +2809,7 @@ Items: {
 			'''
 	}
 
-	DeathSickleRogue: {
+	DeathFlySickle: {
 		DisplayName: Reaper's Flying Scythe
 		Tooltip:
 			'''
@@ -2834,7 +2834,12 @@ Items: {
 
 	WeaverGrievances: {
 		DisplayName: Weaver Grievances
-		Tooltip: ""
+		Tooltip:
+			'''
+			TODO
+			[legend]
+			'''
+		Legend: TODO
 	}
 
 	Starship: {
@@ -2869,6 +2874,11 @@ Items: {
 
 	SandVortexOfTheDecayedSea: {
 		DisplayName: Sand Vortex Of The Decayed Sea
+		Tooltip: ""
+	}
+
+	IceFlySickle: {
+		DisplayName: Ice Fly Sickle
 		Tooltip: ""
 	}
 }
@@ -3615,6 +3625,7 @@ Projectiles: {
 	SandThorn.DisplayName: Sand Thorn
 	DecayedSeaOrb.DisplayName: Decayed Sea Orb
 	SandVortexOfTheDecayedSeaHeld.DisplayName: Sand Vortex Of The Decayed Sea Held
+	IceFlySickleThrowable.DisplayName: Ice Fly Sickle Throwable
 }
 
 Configs: {
