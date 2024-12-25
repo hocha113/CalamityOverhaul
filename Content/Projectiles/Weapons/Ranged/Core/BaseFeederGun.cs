@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.OtherMods.ImproveGame;
 using CalamityOverhaul.Content.UIs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -140,8 +141,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         public LoadingAA_Revolver_Struct LoadingAA_Revolver = new LoadingAA_Revolver_Struct();
 
         protected int BulletNum {
-            get => ModItem.NumberBullets;
-            set => ModItem.NumberBullets = value;
+            get {
+                if (ModItem == null) {
+                    return 0;
+                }
+                return ModItem.NumberBullets;
+            }
+            set {
+                if (ModItem != null) {
+                    ModItem.NumberBullets = value;
+                }
+            }
         }
 
         protected SoundStyle caseEjections = CWRSound.CaseEjection;
@@ -157,8 +167,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         protected float loadingAA_VolumeValue => CWRServerConfig.Instance.LoadingAA_Volume;
 
         #endregion
-
-        public bool AmmunitionIsBeingLoaded() => kreloadTimeValue > 0;
 
         /// <summary>
         /// 关于装弹过程中的具体效果实现，返回<see langword="false"/>禁用默认的效果行为
@@ -454,6 +462,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             flags = base.SandBitsByte(flags);
             flags[5] = IsKreload;
             flags[6] = ManualReloadStart;
+            flags[7] = automaticPolishingInShootStartFarg;
             return flags;
         }
 
@@ -461,6 +470,17 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             base.ReceiveBitsByte(flags);
             IsKreload = flags[5];
             ManualReloadStart = flags[6];
+            automaticPolishingInShootStartFarg = flags[7];
+        }
+
+        public override void NetHeldReceive(BinaryReader reader) {
+            ShootCoolingValue = reader.ReadSingle();
+            BulletNum = reader.ReadInt32();
+        }
+
+        public override void NetHeldSend(BinaryWriter writer) {
+            writer.Write(ShootCoolingValue);
+            writer.Write(BulletNum);
         }
 
         protected override void SetGunBodyInFire() {
@@ -941,6 +961,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 automaticPolishingInShootStartFarg = true;
                 ShootCoolingValue += FireTime + 1;
                 onFire = false;
+
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    NetUpdate();
+                }
             }
         }
         /// <summary>

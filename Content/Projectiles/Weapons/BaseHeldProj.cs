@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// <summary>
         /// 是否处于活跃状态
         /// </summary>
-        public virtual bool CanMove => false;
+        public virtual bool CanMouseNet => false;
 
         #endregion
 
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
 
                 bool difference = Math.Abs(toMouseVecterDate.X - _old_toMouseVecterDate.X) > toMouseVer_variationMode
                     || Math.Abs(toMouseVecterDate.Y - _old_toMouseVecterDate.Y) > toMouseVer_variationMode;
-                if (difference && (CanFire || CanMove)) {
+                if (difference && (CanFire || CanMouseNet)) {
                     NetUpdate();
                 }
                 _old_toMouseVecterDate = toMouseVecterDate;
@@ -167,20 +167,20 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         public sealed override void SendExtraAI(BinaryWriter writer) {
             writer.WriteVector2(toMouseVecterDate);
             writer.Write(SandBitsByte(new BitsByte()));
-            NetCodeHeldSend(writer);
+            NetHeldSend(writer);
         }
 
         public sealed override void ReceiveExtraAI(BinaryReader reader) {
             toMouseVecterDate = reader.ReadVector2();
             ReceiveBitsByte(reader.ReadByte());
-            NetCodeReceiveHeld(reader);
+            NetHeldReceive(reader);
         }
 
-        public virtual void NetCodeHeldSend(BinaryWriter writer) {
+        public virtual void NetHeldSend(BinaryWriter writer) {
 
         }
 
-        public virtual void NetCodeReceiveHeld(BinaryReader reader) {
+        public virtual void NetHeldReceive(BinaryReader reader) {
 
         }
 

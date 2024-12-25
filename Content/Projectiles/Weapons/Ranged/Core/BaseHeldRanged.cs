@@ -17,8 +17,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 获取对应的<see cref="CWRPlayer"/>实例，在弹幕初始化时更新这个值
         /// </summary>
         public CWRPlayer ModOwner = null;
-        protected CalamityPlayer CalOwner;
-
+        /// <summary>
+        /// 获取对应的<see cref="CalamityPlayer"/>实例，在弹幕初始化时更新这个值
+        /// </summary>
+        public CalamityPlayer CalOwner;
         /// <summary>
         /// 获取对应的<see cref="CWRItems"/>实例，在弹幕初始化时更新这个值
         /// </summary>
@@ -158,6 +160,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 鼠标是否处在空闲实际
         /// </summary>
         public bool SafeMousetStart => !Owner.cursorItemIconEnabled && Owner.cursorItemIconID == 0 || SafeMousetStart2;// && !Main.mouseText
+        /// <summary>
+        /// 如果设置了随时转向，那么实时同步鼠标状态让其在队友眼里面正常些
+        /// </summary>
+        public override bool CanMouseNet => InOwner_HandState_AlwaysSetInFireRoding;
         /// <summary>
         /// 一个额外附属值，用于矫正<see cref="SafeMousetStart"/>的连续，这个值应该在合适的时机被恢复为默认值<see langword="false"/>
         /// </summary>

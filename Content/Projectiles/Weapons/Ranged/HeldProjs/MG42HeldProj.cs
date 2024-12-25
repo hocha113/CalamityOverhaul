@@ -41,11 +41,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             ToTargetAmmo = ModContent.ProjectileType<NitroShot>();
         }
 
-        public override void NetCodeHeldSend(BinaryWriter writer) {
+        public override void NetHeldSend(BinaryWriter writer) {
+            base.NetHeldSend(writer);
             writer.Write(randomShootRotset);
         }
 
-        public override void NetCodeReceiveHeld(BinaryReader reader) {
+        public override void NetHeldReceive(BinaryReader reader) {
+            base.NetHeldReceive(reader);
             randomShootRotset = reader.ReadSingle();
         }
 

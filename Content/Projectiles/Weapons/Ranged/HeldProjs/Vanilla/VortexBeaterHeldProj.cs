@@ -40,11 +40,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             return rot;
         }
 
-        public override void NetCodeHeldSend(BinaryWriter writer) {
+        public override void NetHeldSend(BinaryWriter writer) {
             writer.Write(randomShootRotset);
         }
 
-        public override void NetCodeReceiveHeld(BinaryReader reader) {
+        public override void NetHeldReceive(BinaryReader reader) {
             randomShootRotset = reader.ReadSingle();
         }
 
