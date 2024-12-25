@@ -1,10 +1,8 @@
 ﻿using CalamityMod.Buffs.StatDebuffs;
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -31,8 +29,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.height = 66;
             Item.value = CalamityGlobalItem.RarityGreenBuyPrice;
             Item.rare = ItemRarityID.Green;
-            Item.shoot = ModContent.ProjectileType<TeardropCleaverProj>();
-            Item.shootSpeed = 1;
             Item.SetKnifeHeld<TeardropCleaverHeld>();
         }
     }
@@ -51,17 +47,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             drawTrailCount = 6;
             Length = 52;
             ShootSpeed = 2f;
-        }
-
-        public override void Shoot() {
-            SoundEngine.PlaySound(SoundID.Item13, Owner.Center);
-            Projectile.NewProjectile(Source, ShootSpanPos + ShootVelocity * 30, ShootVelocity
-                , ModContent.ProjectileType<TeardropCleaverProj>(), Projectile.damage / 2
-                , Projectile.knockBack, Owner.whoAmI);
-        }
-
-        public override bool PreInOwnerUpdate() {
-            return base.PreInOwnerUpdate();
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
