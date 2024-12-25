@@ -15,7 +15,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class AegisBladeEcType : EctypeItem
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AegisBlade";
-
         private int Level;
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         public override void SetDefaults() => SetDefaultsFunc(Item);

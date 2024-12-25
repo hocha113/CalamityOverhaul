@@ -17,10 +17,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     {
         public override string Texture => CWRConstant.Projectile_Melee + "BalefulSickle";
         private HashSet<NPC> onHitNPCs = [];
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 6;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
-        }
         public override void SetDefaults() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.width = Projectile.height = 52;

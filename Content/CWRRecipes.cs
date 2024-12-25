@@ -86,6 +86,142 @@ namespace CalamityOverhaul.Content
                 }
             }
 
+            //通用遍历修改部分
+            {
+                for (int i = 0; i < Recipe.numRecipes; i++) {
+                    Recipe recipe = Main.recipe[i];
+                    //修改凤凰爆破枪的合成
+                    {
+                        if (recipe.HasResult(ItemID.PhoenixBlaster)) {
+                            recipe.AddIngredient(ItemType<PurifiedGel>(), 10);//添加纯净凝胶
+                        }
+                    }
+                    //修改肉后矿弩的合成：添加前置弓以及同级转化
+                    {
+                        //秘银弓合成需要钴蓝弓
+                        if (recipe.HasResult(ItemID.MythrilRepeater)) {
+                            recipe.AddIngredient(ItemID.CobaltRepeater, 1);
+                        }
+                        //山铜弓合成需要钯金弓
+                        if (recipe.HasResult(ItemID.OrichalcumRepeater)) {
+                            recipe.AddIngredient(ItemID.PalladiumRepeater, 1);
+                        }
+                        //精金弓合成需要秘银弓
+                        if (recipe.HasResult(ItemID.AdamantiteRepeater)) {
+                            recipe.AddIngredient(ItemID.MythrilRepeater, 1);
+                        }
+                        //钛金弓合成需要山铜弓
+                        if (recipe.HasResult(ItemID.TitaniumRepeater)) {
+                            recipe.AddIngredient(ItemID.OrichalcumRepeater, 1);
+                        }
+                        //神圣连弩合成需要精金弩和钛金弩
+                        if (recipe.HasResult(ItemID.HallowedRepeater)) {
+                            recipe.AddIngredient(ItemID.AdamantiteRepeater, 1);
+                            recipe.AddIngredient(ItemID.TitaniumRepeater, 1);
+                            recipe.AddIngredient(ItemID.Ichor, 5);//添加灵液
+                            recipe.AddIngredient(ItemID.CursedFlame, 5);//添加诅咒焰
+                            recipe.AddIngredient(ItemID.UnicornHorn, 1);//添加独角兽角
+                        }
+                    }
+                    //修改禅心剑的合成
+                    {
+                        if (recipe.HasResult(ItemType<Ataraxia>())) {
+                            recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
+                        }
+                    }
+                    //修改天底的合成
+                    {
+                        if (recipe.HasResult(ItemType<Nadir>())) {
+                            recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
+                            recipe.AddIngredient(ItemType<CosmiliteBar>(), 5);//添加宇宙锭
+                        }
+                    }
+                    //修改天顶剑的合成
+                    {
+                        if (recipe.HasResult(ItemID.Zenith)) {
+                            recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
+                            recipe.RemoveTile(134);
+                            recipe.AddTile(TileID.LunarCraftingStation);
+                        }
+                    }
+                    //修改大守卫者的合成
+                    {
+                        if (recipe.HasResult(ItemType<GrandGuardian>())) {
+                            recipe.RemoveIngredient(ItemID.FragmentNebula);//移除星云碎片
+                            recipe.AddIngredient(ItemID.LunarBar, 5);//添加夜明锭
+                        }
+                    }
+                    //修改月神P的合成
+                    {
+                        if (recipe.HasResult(ItemType<SomaPrime>())) {
+                            recipe.AddIngredient(ItemType<Infinity>());//添加无穷
+                        }
+                    }
+                    //添加无尽催化剂的额外联动合成
+                    {
+                        if (CWRLoad.EternitySoul > ItemID.None) {
+                            if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
+                                recipe.AddIngredient(CWRLoad.DeviatingEnergy, InfinityCatalyst.QFD(15));
+                                recipe.AddIngredient(CWRLoad.AbomEnergy, InfinityCatalyst.QFD(15));
+                                recipe.AddIngredient(CWRLoad.EternalEnergy, InfinityCatalyst.QFD(15));
+                            }
+                            //if (recipe.HasResult(CWRLoad.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
+                            //    recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
+                            //}
+                        }
+                        if (CWRLoad.MetanovaBar > ItemID.None) {
+                            if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
+                                recipe.AddIngredient(CWRLoad.MetanovaBar, InfinityCatalyst.QFD(15));
+                            }
+                        }
+                    }
+                    //修改暴政的合成
+                    {
+                        if (recipe.HasResult(ItemType<TheEnforcer>())) {
+                            recipe.DisableRecipe();
+                        }
+                    }
+                    //瘟疫系列修改
+                    {
+                        //瘟疫大剑
+                        if (recipe.HasResult(ItemType<PlagueKeeper>())) {
+                            recipe.RemoveIngredient(ItemID.LunarBar);//移除夜明锭的配方
+                            recipe.AddIngredient(ItemType<Hellkite>());//添加地狱龙锋
+                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
+                        }
+                        //瘟疫
+                        if (recipe.HasResult(ItemType<Contagion>())) {
+                            recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
+                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 15);//添加瘟疫锭
+                        }
+                        //瘟疫胸甲
+                        if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerCarapace>())) {
+                            recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
+                            recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
+                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 8);//添加瘟疫锭
+                        }
+                        //瘟疫头盔
+                        if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerVisor>())) {
+                            recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
+                            recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
+                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
+                        }
+                        //瘟疫护腿
+                        if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerPistons>())) {
+                            recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
+                            recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
+                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
+                        }
+                    }
+                    //修改拉扎尔射线
+                    {
+                        if (recipe.HasResult(ItemType<Lazhar>())) {
+                            recipe.RemoveIngredient(ItemID.SpaceGun);//移除太空枪的配方
+                        }
+                    }
+                }
+            }
+
             //添加热线枪的合成
             {
                 Recipe.Create(ItemID.HeatRay)
@@ -341,142 +477,6 @@ namespace CalamityOverhaul.Content
                     .AddIngredient(ItemType<AshesofAnnihilation>(), 12)
                     .AddTile(TileType<DraedonsForge>())
                     .Register();
-            }
-
-            //通用遍历修改部分
-            {
-                for (int i = 0; i < Recipe.numRecipes; i++) {
-                    Recipe recipe = Main.recipe[i];
-                    //修改凤凰爆破枪的合成
-                    {
-                        if (recipe.HasResult(ItemID.PhoenixBlaster)) {
-                            recipe.AddIngredient(ItemType<PurifiedGel>(), 10);//添加纯净凝胶
-                        }
-                    }
-                    //修改肉后矿弩的合成：添加前置弓以及同级转化
-                    {
-                        //秘银弓合成需要钴蓝弓
-                        if (recipe.HasResult(ItemID.MythrilRepeater)) {
-                            recipe.AddIngredient(ItemID.CobaltRepeater, 1);
-                        }
-                        //山铜弓合成需要钯金弓
-                        if (recipe.HasResult(ItemID.OrichalcumRepeater)) {
-                            recipe.AddIngredient(ItemID.PalladiumRepeater, 1);
-                        }
-                        //精金弓合成需要秘银弓
-                        if (recipe.HasResult(ItemID.AdamantiteRepeater)) {
-                            recipe.AddIngredient(ItemID.MythrilRepeater, 1);
-                        }
-                        //钛金弓合成需要山铜弓
-                        if (recipe.HasResult(ItemID.TitaniumRepeater)) {
-                            recipe.AddIngredient(ItemID.OrichalcumRepeater, 1);
-                        }
-                        //神圣连弩合成需要精金弩和钛金弩
-                        if (recipe.HasResult(ItemID.HallowedRepeater)) {
-                            recipe.AddIngredient(ItemID.AdamantiteRepeater, 1);
-                            recipe.AddIngredient(ItemID.TitaniumRepeater, 1);
-                            recipe.AddIngredient(ItemID.Ichor, 5);//添加灵液
-                            recipe.AddIngredient(ItemID.CursedFlame, 5);//添加诅咒焰
-                            recipe.AddIngredient(ItemID.UnicornHorn, 1);//添加独角兽角
-                        }
-                    }
-                    //修改禅心剑的合成
-                    {
-                        if (recipe.HasResult(ItemType<Ataraxia>())) {
-                            recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
-                        }
-                    }
-                    //修改天底的合成
-                    {
-                        if (recipe.HasResult(ItemType<Nadir>())) {
-                            recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
-                            recipe.AddIngredient(ItemType<CosmiliteBar>(), 5);//添加宇宙锭
-                        }
-                    }
-                    //修改天顶剑的合成
-                    {
-                        if (recipe.HasResult(ItemID.Zenith)) {
-                            recipe.RemoveIngredient(ItemType<AuricBar>());//移除圣金源锭的配方
-                            recipe.RemoveTile(134);
-                            recipe.AddTile(TileID.LunarCraftingStation);
-                        }
-                    }
-                    //修改大守卫者的合成
-                    {
-                        if (recipe.HasResult(ItemType<GrandGuardian>())) {
-                            recipe.RemoveIngredient(ItemID.FragmentNebula);//移除星云碎片
-                            recipe.AddIngredient(ItemID.LunarBar, 5);//添加夜明锭
-                        }
-                    }
-                    //修改月神P的合成
-                    {
-                        if (recipe.HasResult(ItemType<SomaPrime>())) {
-                            recipe.AddIngredient(ItemType<Infinity>());//添加无穷
-                        }
-                    }
-                    //添加无尽催化剂的额外联动合成
-                    {
-                        if (CWRLoad.EternitySoul > ItemID.None) {
-                            if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
-                                recipe.AddIngredient(CWRLoad.DeviatingEnergy, InfinityCatalyst.QFD(15));
-                                recipe.AddIngredient(CWRLoad.AbomEnergy, InfinityCatalyst.QFD(15));
-                                recipe.AddIngredient(CWRLoad.EternalEnergy, InfinityCatalyst.QFD(15));
-                            }
-                            //if (recipe.HasResult(CWRLoad.EternitySoul)) {//永恒魂额外需要5个无尽锭来合成
-                            //    recipe.AddIngredient(ItemType<InfiniteIngot>(), 5);
-                            //}
-                        }
-                        if (CWRLoad.MetanovaBar > ItemID.None) {
-                            if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
-                                recipe.AddIngredient(CWRLoad.MetanovaBar, InfinityCatalyst.QFD(15));
-                            }
-                        }
-                    }
-                    //修改暴政的合成
-                    {
-                        if (recipe.HasResult(ItemType<TheEnforcer>())) {
-                            recipe.DisableRecipe();
-                        }
-                    }
-                    //瘟疫系列修改
-                    {
-                        //瘟疫大剑
-                        if (recipe.HasResult(ItemType<PlagueKeeper>())) {
-                            recipe.RemoveIngredient(ItemID.LunarBar);//移除夜明锭的配方
-                            recipe.AddIngredient(ItemType<Hellkite>());//添加地狱龙锋
-                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
-                        }
-                        //瘟疫
-                        if (recipe.HasResult(ItemType<Contagion>())) {
-                            recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
-                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 15);//添加瘟疫锭
-                        }
-                        //瘟疫胸甲
-                        if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerCarapace>())) {
-                            recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
-                            recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
-                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 8);//添加瘟疫锭
-                        }
-                        //瘟疫头盔
-                        if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerVisor>())) {
-                            recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
-                            recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
-                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
-                        }
-                        //瘟疫护腿
-                        if (recipe.HasResult(ItemType<CalamityMod.Items.Armor.Plaguebringer.PlaguebringerPistons>())) {
-                            recipe.RemoveIngredient(ItemType<InfectedArmorPlating>());//移除瘟疫装甲镀层的配方
-                            recipe.RemoveIngredient(ItemType<PlagueCellCanister>());//移除瘟疫细胞罐的配方
-                            recipe.AddIngredient(ItemType<PestilenceIngot>(), 5);//添加瘟疫锭
-                        }
-                    }
-                    //修改拉扎尔射线
-                    {
-                        if (recipe.HasResult(ItemType<Lazhar>())) {
-                            recipe.RemoveIngredient(ItemID.SpaceGun);//移除太空枪的配方
-                        }
-                    }
-                }
             }
         }
 

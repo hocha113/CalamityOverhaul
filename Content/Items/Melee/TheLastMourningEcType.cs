@@ -26,7 +26,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static void SetDefaultsFunc(Item Item) {
             Item.width = 94;
             Item.height = 94;
-            Item.scale = 1.5f;
             Item.DamageType = DamageClass.Melee;
             Item.damage = 220;
             Item.knockBack = 8.5f;
@@ -35,11 +34,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.autoReuse = true;
             Item.useTurn = true;
             Item.useStyle = ItemUseStyleID.Swing;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
             Item.Calamity().donorItem = true;
-            Item.shoot = ModContent.ProjectileType<MourningSkull>();
+            Item.shoot = ModContent.ProjectileType<SoulSeekerSkull>();
             Item.shootSpeed = 15;
             Item.SetKnifeHeld<TheLastMourningHeld>();
         }
@@ -87,11 +86,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Projectile.ai[0] == 1) {
                 return;
             }
-            if (Main.rand.NextBool(3)) {
-                _ = Projectile.NewProjectile(Source, ShootSpanPos + (ShootVelocity.RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f)) * Main.rand.Next(5))
-                    , ShootVelocity.UnitVector() * 5, ModContent.ProjectileType<GhostSkull>()
-                , Projectile.damage, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3), Main.rand.Next(3));
-            }
             Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ModContent.ProjectileType<SoulSeekerSkull>()
                 , Projectile.damage / 3, Projectile.knockBack, Main.myPlayer, 0f, Main.rand.Next(3));
         }
@@ -124,6 +118,9 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SwingData.maxClampLength = 160;
                 SwingData.ler1_UpSizeSengs = 0.1f;
             }
+            ExecuteAdaptiveSwing(initialMeleeSize: 1, phase0SwingSpeed: 0.3f
+                , phase1SwingSpeed: 8.2f, phase2SwingSpeed: 6f
+                , phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
             return base.PreInOwnerUpdate();
         }
 

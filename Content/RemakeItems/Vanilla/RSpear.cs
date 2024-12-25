@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override bool IsVanilla => true;
         public override string TargetToolTipItemName => "Wap_Spear_Text";
         public override void SetDefaults(Item item) {
+            item.UseSound = null;
             item.DamageType = ModContent.GetInstance<RogueDamageClass>();
             item.shoot = ModContent.ProjectileType<SpearHeld>();
         }
