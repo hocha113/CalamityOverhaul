@@ -3608,6 +3608,7 @@ Projectiles: {
 	// DecayedSeaOrb.DisplayName: Decayed Sea Orb
 	// SandVortexOfTheDecayedSeaHeld.DisplayName: Sand Vortex Of The Decayed Sea Held
 	// IceFlySickleThrowable.DisplayName: Ice Fly Sickle Throwable
+	// BlazingFireball.DisplayName: Blazing Fireball
 }
 
 Configs: {
