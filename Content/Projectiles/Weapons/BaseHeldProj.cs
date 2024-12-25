@@ -58,6 +58,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// 是否处于开火时间
         /// </summary>
         public virtual bool CanFire => false;
+        /// <summary>
+        /// 是否处于活跃状态
+        /// </summary>
+        public virtual bool CanMove => false;
 
         #endregion
 
@@ -78,7 +82,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
 
                 bool difference = Math.Abs(toMouseVecterDate.X - _old_toMouseVecterDate.X) > toMouseVer_variationMode
                     || Math.Abs(toMouseVecterDate.Y - _old_toMouseVecterDate.Y) > toMouseVer_variationMode;
-                if (difference && CanFire) {
+                if (difference && (CanFire || CanMove)) {
                     NetUpdate();
                 }
                 _old_toMouseVecterDate = toMouseVecterDate;
