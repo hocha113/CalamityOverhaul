@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class TerrorBladeHeld : BaseHeldProj
     {
@@ -24,8 +24,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 return;
             }
             Item item = player.GetItem();
-            if (item.IsAir || (item.type != ModContent.ItemType<TerrorBladeEcType>()
-                && item.type != ModContent.ItemType<TerrorBlade>())) {
+            if (item.IsAir || item.type != ModContent.ItemType<TerrorBladeEcType>()
+                && item.type != ModContent.ItemType<TerrorBlade>()) {
                 Projectile.Kill();
                 return;
             }

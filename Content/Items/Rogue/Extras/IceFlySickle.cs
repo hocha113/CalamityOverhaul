@@ -1,17 +1,14 @@
-﻿using CalamityMod.Items;
-using CalamityMod;
-using CalamityOverhaul.Content.RemakeItems.Vanilla;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria;
-using Terraria.ModLoader;
-using static Terraria.ID.ContentSamples.CreativeHelper;
+﻿using CalamityMod;
+using CalamityMod.Items;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
-using Terraria.Graphics.Shaders;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
+using static Terraria.ID.ContentSamples.CreativeHelper;
 
 namespace CalamityOverhaul.Content.Items.Rogue.Extras
 {

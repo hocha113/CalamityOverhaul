@@ -52,12 +52,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             else if (Projectile.ai[0] == 2 || Projectile.ai[0] == 3) {
                 for (int i = 0; i < 3; i++) {
                     Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedBy((-1 + i) * 0.3f) * 1.25f
-                , ModContent.ProjectileType<AegisBeams>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI, 1);
+                , ModContent.ProjectileType<BlazingFireball>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI, 1);
                 }
                 return;
             }
             Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
-                , ModContent.ProjectileType<AegisBeams>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
+                , ModContent.ProjectileType<BlazingFireball>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
         }
     }
 }

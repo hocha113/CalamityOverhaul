@@ -27,9 +27,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.coldDamage = true;
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            return Projectile.timeLeft <= 595;
-        }
+        public override bool PreDraw(ref Color lightColor) => Projectile.timeLeft <= 595;
 
         public override void AI() {
             if (Math.Abs(Projectile.velocity.X) + Math.Abs(Projectile.velocity.Y) < 16f) {

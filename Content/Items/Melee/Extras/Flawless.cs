@@ -1,15 +1,11 @@
 ﻿using CalamityMod;
-using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System;
-using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -159,7 +155,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         }
 
         public override void SwingModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            
+
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {

@@ -1,9 +1,7 @@
 ﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.GameContent;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HalibutLegend.UI
 {

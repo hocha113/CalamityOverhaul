@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class AegisBeams : ModProjectile, ICWRLoader
+    internal class BlazingFireball : ModProjectile, ICWRLoader
     {
         public override string Texture => CWRConstant.Cay_Proj_Melee + "AegisBeam";
         public static Asset<Texture2D> effectAsset;

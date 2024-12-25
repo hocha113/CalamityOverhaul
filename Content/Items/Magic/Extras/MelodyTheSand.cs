@@ -1,7 +1,4 @@
-﻿using CalamityMod.Items.Weapons.Ranged;
-using CalamityMod.Projectiles.Ranged;
-using CalamityOverhaul.Content.Items.Ranged;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -76,13 +73,13 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
         public override void FiringShoot() {
             if (chargeIndex > 60) {
                 SoundStyle sound = SoundID.Item39;
-                SoundEngine.PlaySound(sound with {Pitch = 0.2f, PitchVariance = 1.1f }, Projectile.Center);
+                SoundEngine.PlaySound(sound with { Pitch = 0.2f, PitchVariance = 1.1f }, Projectile.Center);
                 for (int i = 0; i < 8; i++) {
                     Vector2 ver = new Vector2(ShootVelocity.X * (0.6f + i * 0.12f), ShootVelocity.Y * Main.rand.NextFloat(0.6f, 1.2f));
                     Projectile.NewProjectile(Source, GunShootPos, ver, ModContent.ProjectileType<SandThorn>()
                     , WeaponDamage, WeaponKnockback, Owner.whoAmI, UseAmmoItemType);
                 }
-                
+
                 chargeIndex = 0;
             }
         }

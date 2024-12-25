@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using InnoVault.PRT;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;

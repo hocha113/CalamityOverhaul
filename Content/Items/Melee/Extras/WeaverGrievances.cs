@@ -11,7 +11,6 @@ using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.StormGoddessSpearProj;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;

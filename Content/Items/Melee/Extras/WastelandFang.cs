@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items;
-using CalamityMod.NPCs.SunkenSea;
 using CalamityMod.Projectiles.Boss;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using Microsoft.Xna.Framework.Graphics;
@@ -126,7 +125,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
                     sound.Pitch = -0.3f;
                     SoundEngine.PlaySound(sound, Projectile.position);
                 }
-                
+
                 Projectile.velocity = new Vector2(Projectile.velocity.X / 2, Projectile.velocity.Y / -2);
                 Projectile.ai[0] = 40;
             }

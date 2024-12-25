@@ -3,13 +3,10 @@ using CalamityMod.Items.Tools;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Items.Ranged.Extras;
-using CalamityOverhaul.Content.Particles;
 
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;

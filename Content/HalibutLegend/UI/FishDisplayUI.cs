@@ -1,9 +1,9 @@
 ﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.Audio;
-using Terraria.ID;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HalibutLegend.UI
 {
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
 
         public void DrawSkillIntroduction(SpriteBatch spriteBatch) {
             Color backColor = Color.Gold * 0.2f;
-            Vector2 drawPos = PiscicultureUI.Dialogbox.borderedDrawPos 
+            Vector2 drawPos = PiscicultureUI.Dialogbox.borderedDrawPos
                 - new Vector2(borderedWidth * 4 + 22, 0);
 
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRUtils.GetT2DValue(CWRConstant.UI + "JAR")

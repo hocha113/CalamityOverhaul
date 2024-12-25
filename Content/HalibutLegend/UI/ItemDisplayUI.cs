@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
             if (Item == null) {
                 Item = new Item();
             }
-            
+
             DrawPosition = new Vector2((Main.screenWidth - borderedWidth) / 2, Main.screenHeight / 2 - 200);
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, borderedWidth, borderedHeight);
             Rectangle mouseRec = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);

@@ -396,7 +396,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     , type, Projectile.damage / 6, Projectile.knockBack, Projectile.owner, 0f, rotSpeed * 0.1f);
                 }
             }
-            
+
             HitEffect(target, CWRLoad.NPCValue.ISTheofSteel(target.type));
         }
 

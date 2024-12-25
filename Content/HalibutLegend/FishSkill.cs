@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.HalibutLegend
         /// <summary>
         /// 这条鱼的藏品介绍内容
         /// </summary>
-        public virtual string Introduce => 
+        public virtual string Introduce =>
             HalibutText.GetTextValue($"FishSkill.{GetType().Name}.Introduce");
         public virtual bool PreShoot() => true;
         public virtual void PostShoot(int projIndex) { }

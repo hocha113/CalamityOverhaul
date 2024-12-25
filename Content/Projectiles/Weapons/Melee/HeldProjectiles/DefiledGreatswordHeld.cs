@@ -6,7 +6,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
     internal class DefiledGreatswordHeld : BaseHeldProj
     {
@@ -26,8 +26,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
             Item item = Owner.GetItem();
             if (item.IsAir
-                || (item.type != ModContent.ItemType<DefiledGreatswordEcType>()
-                && item.type != ModContent.ItemType<DefiledGreatsword>())
+                || item.type != ModContent.ItemType<DefiledGreatswordEcType>()
+                && item.type != ModContent.ItemType<DefiledGreatsword>()
                 && item.type != ModContent.ItemType<BlightedCleaverEcType>()
                 && item.type != ModContent.ItemType<BlightedCleaver>()
                 ) {

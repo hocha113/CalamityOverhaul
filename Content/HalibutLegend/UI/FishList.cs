@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HalibutLegend.UI
 {
@@ -39,7 +38,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
                 }
             }
 
-            DrawPosition = 
+            DrawPosition =
                 new Vector2(PiscicultureUI.Dialogbox.borderedDrawPos.X + PiscicultureUI.Dialogbox.borderedWidth
                 , PiscicultureUI.Dialogbox.borderedDrawPos.Y);
 
