@@ -22,18 +22,15 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TerrorBlade";
         public const float TerrorBladeMaxRageEnergy = 5000;
-        private static Asset<Texture2D> rageEnergyTopAsset;
-        private static Asset<Texture2D> rageEnergyBarAsset;
-        private static Asset<Texture2D> rageEnergyBackAsset;
+        public static Asset<Texture2D> rageEnergyBarAsset;
+        public static Asset<Texture2D> rageEnergyBackAsset;
         void ICWRLoader.SetupData() {
             if (!Main.dedServ) {
-                rageEnergyTopAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeTop");
                 rageEnergyBarAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeBar");
                 rageEnergyBackAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeBack");
             }
         }
         void ICWRLoader.UnLoadData() {
-            rageEnergyTopAsset = null;
             rageEnergyBarAsset = null;
             rageEnergyBackAsset = null;
         }
@@ -50,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.height = 80;
-            Item.shoot = ModContent.ProjectileType<RTerrorBeam>();
+            Item.shoot = ModContent.ProjectileType<WraithBeam>();
             Item.shootSpeed = 20f;
             Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
@@ -62,26 +59,26 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.DrawItemGlowmaskSingleFrame(spriteBatch, rotation, ModContent.Request<Texture2D>(CWRConstant.Cay_Wap_Melee + "TerrorBladeGlow", (AssetRequestMode)2).Value);
         }
 
-        public static void DrawRageEnergyChargeBar(Player player, float alp) {
+        public static void DrawRageEnergyChargeBar(Player player, float alp, float charge) {
             Item item = player.GetItem();
             if (item.IsAir) {
                 return;
             }
 
-            Texture2D rageEnergyTop = rageEnergyTopAsset.Value;
             Texture2D rageEnergyBar = rageEnergyBarAsset.Value;
             Texture2D rageEnergyBack = rageEnergyBackAsset.Value;
 
-            float slp = 3;
-            int offsetwid = 4;
-            Vector2 drawPos = player.Center + new Vector2(rageEnergyBar.Width / -2 * slp, 135) - Main.screenPosition;
-            Rectangle backRec = new Rectangle(offsetwid, 0, (int)((rageEnergyBar.Width - offsetwid * 2) * (item.CWR().MeleeCharge / TerrorBladeMaxRageEnergy)), rageEnergyBar.Height);
+            float slp = 1;
+            Vector2 drawPos = player.GetPlayerStabilityCenter() + new Vector2(rageEnergyBack.Width / -2, 120) - Main.screenPosition;
+            int width = (int)(rageEnergyBar.Width * charge);
+            if (width > rageEnergyBar.Width) {
+                width = rageEnergyBar.Width;
+            }
+            Rectangle backRec = new Rectangle(0, 0, width, rageEnergyBar.Height);
 
             Main.EntitySpriteDraw(rageEnergyBack, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
 
-            Main.EntitySpriteDraw(rageEnergyBar, drawPos + new Vector2(offsetwid, 0) * slp, backRec, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
-
-            Main.EntitySpriteDraw(rageEnergyTop, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(rageEnergyBar, drawPos + new Vector2(8, 6) * slp, backRec, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
         }
     }
 
@@ -125,7 +122,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (rageEnergy < 0) {
                 rageEnergy = 0;
             }
-            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ModContent.ProjectileType<RTerrorBeam>()
+            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity, ModContent.ProjectileType<WraithBeam>()
                 , Projectile.damage, Projectile.knockBack, Owner.whoAmI, (rageEnergy > 0) ? 1 : 0);
         }
 

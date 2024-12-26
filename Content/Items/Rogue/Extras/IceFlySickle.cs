@@ -1,8 +1,11 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -49,6 +52,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
     {
         public override string Texture => CWRConstant.Item + "Rogue/IceFlySickle";
         private bool outFive;
+        private HashSet<NPC> onHitNPCs = [];
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 7;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
@@ -56,7 +60,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
 
         public override void SetThrowable() {
             Projectile.DamageType = DamageClass.Melee;
-            HandOnTwringMode = -66;
+            HandOnTwringMode = -60;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 8;
             Projectile.scale = 1.5f;
@@ -103,16 +107,26 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Projectile.ai[2]++;
         }
 
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (stealthStrike && !target.boss && !CWRLoad.WormBodys.Contains(target.type) && !target.CWR().IceParclose && !onHitNPCs.Contains(target)) {
+                Projectile.NewProjectile(Projectile.FromObjectGetParent(), target.Center, Vector2.Zero
+                        , ModContent.ProjectileType<IceParclose>(), 0, 0, Projectile.owner
+                        , target.whoAmI, target.type, target.rotation);
+                onHitNPCs.Add(target);
+            }
+        }
+
         public override void DrawThrowable(Color lightColor) {
             Vector2 orig = TextureValue.Size() / 2;
             SpriteEffects spriteEffects = Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
-
-            for (int k = 0; k < Projectile.oldPos.Length; k++) {
-                Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + new Vector2(33, 33);
-                Color color = Color.AliceBlue * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
-                color.A = 0;
-                Main.EntitySpriteDraw(TextureValue, drawPos, null, color * Projectile.Opacity * 0.65f
-                    , Projectile.oldRot[k], orig, Projectile.scale, spriteEffects, 0);
+            if (outFive) {
+                for (int k = 0; k < Projectile.oldPos.Length; k++) {
+                    Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + new Vector2(33, 33);
+                    Color color = Color.AliceBlue * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+                    color.A = 0;
+                    Main.EntitySpriteDraw(TextureValue, drawPos, null, color * Projectile.Opacity * 0.65f
+                        , Projectile.oldRot[k], orig, Projectile.scale, spriteEffects, 0);
+                }
             }
 
             Main.EntitySpriteDraw(TextureValue, Projectile.Center - Main.screenPosition, null, lightColor

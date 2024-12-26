@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
     internal class SolsticeHomeBeam : ModProjectile
     {
-        public override string Texture => CWRConstant.Cay_Proj_Melee + "SolsticeBeam";
+        public override string Texture => CWRConstant.Item_Rogue + "SeasonalKunai";
         public override void SetDefaults() {
             Projectile.width = 20;
             Projectile.height = 20;
@@ -42,8 +42,8 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void AI() {
             // 为弹幕位置添加光照
-            Lighting.AddLight(Projectile.Center, GetColorBySeason().ToVector3());
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            Lighting.AddLight(Projectile.Center, GetColorBySeason(Projectile).ToVector3());
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             if (Projectile.ai[1] == 0f) {
                 Projectile.ai[1] = 1f;
                 SoundEngine.PlaySound(SoundID.Item60, Projectile.position);
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         // 根据当前季节返回对应的尘埃类型
-        private int GetDustTypeBySeason(Season season) {
+        internal static int GetDustTypeBySeason(Season season) {
             return season switch {
                 Season.Spring => Utils.SelectRandom(Main.rand, new[] { 74, 157, 107 }),
                 Season.Summer => Utils.SelectRandom(Main.rand, new[] { 247, 228, 57 }),
@@ -90,14 +90,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             };
         }
 
-        private Color GetColorBySeason() {
+        internal static Color GetColorBySeason(Projectile projectile) {
             // 根据当前季节定义弹幕颜色
             var color = CalamityMod.CalamityMod.CurrentSeason switch {
-                Season.Spring => new Color(0, 250, 0, Projectile.alpha),         // 春季：绿色
-                Season.Summer => new Color(250, 250, 0, Projectile.alpha),       // 夏季：黄色
-                Season.Fall => new Color(250, 150, 50, Projectile.alpha),        // 秋季：橙色
-                Season.Winter => new Color(100, 150, 250, Projectile.alpha),     // 冬季：淡蓝色
-                _ => new Color(255, 255, 255, Projectile.alpha)                  // 默认颜色：白色
+                Season.Spring => new Color(0, 250, 0, projectile.alpha),         // 春季：绿色
+                Season.Summer => new Color(250, 250, 0, projectile.alpha),       // 夏季：黄色
+                Season.Fall => new Color(250, 150, 50, projectile.alpha),        // 秋季：橙色
+                Season.Winter => new Color(100, 150, 250, projectile.alpha),     // 冬季：淡蓝色
+                _ => new Color(255, 255, 255, projectile.alpha)                  // 默认颜色：白色
             };
             return color;
         }
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             target.AddBuff(buff, 180);
         }
 
-        public override Color? GetAlpha(Color lightColor) => GetColorBySeason();
+        public override Color? GetAlpha(Color lightColor) => GetColorBySeason(Projectile);
 
         public override bool PreDraw(ref Color lightColor) {
             if (Projectile.timeLeft > 595) {

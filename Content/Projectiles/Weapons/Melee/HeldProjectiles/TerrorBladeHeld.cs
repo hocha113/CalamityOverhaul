@@ -3,6 +3,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
@@ -74,7 +75,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
         public override bool ShouldUpdatePosition() => false;
         public override bool PreDraw(ref Color lightColor) {
-            TerrorBladeEcType.DrawRageEnergyChargeBar(Main.player[Projectile.owner], Projectile.ai[1]);
+            Item item = Owner.GetItem();
+            if (item != null && item.type > ItemID.None) {
+                TerrorBladeEcType.DrawRageEnergyChargeBar(Main.player[Projectile.owner], Projectile.ai[1],
+                item.CWR().MeleeCharge / TerrorBladeEcType.TerrorBladeMaxRageEnergy);
+            }
             return false;
         }
     }

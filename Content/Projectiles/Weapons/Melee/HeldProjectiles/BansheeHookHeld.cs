@@ -7,7 +7,6 @@ using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Melee;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameInput;
@@ -252,7 +251,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Projectile.rotation + MathHelper.PiOver4, CWRUtils.GetOrig(texture2D),
                     Projectile.scale, SpriteEffects.None);
             }
-            DrawKevinChargeBar();
+            TerrorBladeEcType.DrawRageEnergyChargeBar(
+                Main.player[Projectile.owner], drawUIalp / 255f,
+                bansheeHook.CWR().MeleeCharge / 500f);
             DrawStar();
 
         }
@@ -260,13 +261,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public void DrawStar() {
             if (Projectile.localAI[2] != 0) {
                 Texture2D mainValue = CWRUtils.GetT2DValue(CWRConstant.Masking + "StarTexture_White");
-                Vector2 pos = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * 45 * Projectile.scale - Main.screenPosition;
+                Vector2 pos = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * 100 * Projectile.scale - Main.screenPosition;
                 int Time = (int)Projectile.localAI[2];
                 int slp = Time * 5;
                 if (slp > 255) { slp = 255; }
 
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp
+                    , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
                 for (int i = 0; i < 5; i++) {
                     Main.spriteBatch.Draw(
                         mainValue,
@@ -310,70 +312,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
         }
 
-        public void DrawKevinChargeBar() {
-            if (Owner == null || Projectile.ai[1] != 1) return;
-            Texture2D frightEnergyChargeBack = CWRUtils.GetT2DValue(CWRConstant.UI + "FrightEnergyChargeBack");
-            Texture2D frightEnergyChargeBar = CWRUtils.GetT2DValue(CWRConstant.UI + "FrightEnergyChargeBar");
-            Texture2D frightEnergyChargeTop = CWRUtils.GetT2DValue(CWRConstant.UI + "FrightEnergyChargeTop");
-            float slp = 3;
-            int offsetwid = 4;
-            Vector2 drawPos = Owner.Center + new Vector2(frightEnergyChargeBar.Width / -2 * slp, 135) - Main.screenPosition;
-            float alp = drawUIalp / 255f;
-            Rectangle backRec = new Rectangle(offsetwid, 0, (int)((frightEnergyChargeBar.Width - offsetwid * 2) * (bansheeHook.CWR().MeleeCharge / 500f)), frightEnergyChargeBar.Height);
-
-            Main.EntitySpriteDraw(
-                frightEnergyChargeBack,
-                drawPos,
-                null,
-                Color.White * alp,
-                0,
-                Vector2.Zero,
-                slp,
-                SpriteEffects.None,
-                0
-                );
-
-            Main.EntitySpriteDraw(
-                frightEnergyChargeBar,
-                drawPos + new Vector2(offsetwid, 0) * slp,
-                backRec,
-                Color.White * alp,
-                0,
-                Vector2.Zero,
-                slp,
-                SpriteEffects.None,
-                0
-                );
-
-            Main.EntitySpriteDraw(
-                frightEnergyChargeTop,
-                drawPos,
-                null,
-                Color.White * alp,
-                0,
-                Vector2.Zero,
-                slp,
-                SpriteEffects.None,
-                0
-                );
-        }
-
-        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) {
-            //overPlayers.Add(index);
-        }
-
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float f = Projectile.rotation - MathF.PI / 4f * Math.Sign(Projectile.velocity.X) + (Projectile.spriteDirection == -1).ToInt() * MathF.PI;
             float num = -95f;
             float collisionPoint = 0f;
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + f.ToRotationVector2() * num, (TravelSpeed + 1f) * Projectile.scale, ref collisionPoint)
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
+                , Projectile.Center, Projectile.Center + f.ToRotationVector2() * num
+                , (TravelSpeed + 1f) * Projectile.scale, ref collisionPoint)
                 ? true
                 : false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Projectile.owner == Main.myPlayer) {
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<BansheeHookBoom>(), (int)(hit.Damage * 0.25), 10f, Projectile.owner, 0f, 0.85f + Main.rand.NextFloat() * 1.15f);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero
+                    , ModContent.ProjectileType<BansheeHookBoom>(), (int)(hit.Damage * 0.25), 10f, Projectile.owner, 0f, 0.85f + Main.rand.NextFloat() * 1.15f);
             }
         }
     }

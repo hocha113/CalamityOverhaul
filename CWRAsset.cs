@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using Terraria.GameContent;
+using Terraria.ID;
 
 namespace CalamityOverhaul
 {
@@ -22,6 +24,7 @@ namespace CalamityOverhaul
             Placeholder_White = CWRUtils.GetT2DAsset(CWRConstant.Placeholder2);
             Placeholder_ERROR = CWRUtils.GetT2DAsset(CWRConstant.Placeholder3);
             SemiCircularSmear = CWRUtils.GetT2DAsset("CalamityMod/Particles/SemiCircularSmear");
+            TextureAssets.Item[ItemID.IceSickle] = CWRUtils.GetT2DAsset(CWRConstant.Item_Melee + "IceSickle");
         }
         void ICWRLoader.UnLoadData() {
             icon_small = null;

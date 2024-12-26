@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Remove="0.6.0.1.1.txt" />
+    <AdditionalFiles Remove="Assets\Projectiles\GostFire.png" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\Effects\ColorGradient.fx" />

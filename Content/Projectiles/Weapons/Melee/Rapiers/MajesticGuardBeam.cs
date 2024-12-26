@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
                 }
             }
             else {
-                Projectile.rotation = Projectile.velocity.ToRotation();
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             }
             Projectile.ai[0]++;
         }

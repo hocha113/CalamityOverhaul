@@ -2863,6 +2863,16 @@ Items: {
 		// DisplayName: Ice Fly Sickle
 		// Tooltip: ""
 	}
+
+	SeasonalKunai: {
+		// DisplayName: Seasonal Kunai
+		// Tooltip: ""
+	}
+
+	WraithKunai: {
+		// DisplayName: Wraith Kunai
+		// Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -3609,6 +3619,11 @@ Projectiles: {
 	// SandVortexOfTheDecayedSeaHeld.DisplayName: Sand Vortex Of The Decayed Sea Held
 	// IceFlySickleThrowable.DisplayName: Ice Fly Sickle Throwable
 	// BlazingFireball.DisplayName: Blazing Fireball
+	// SeasonalKunaiProj.DisplayName: Seasonal Kunai Proj
+	// SeasonalKunaiThrowable.DisplayName: Seasonal Kunai Throwable
+	// WraithKunaiProj.DisplayName: Wraith Kunai Proj
+	// WraithKunaiThrowable.DisplayName: Wraith Kunai Throwable
+	// WraithBeam.DisplayName: Wraith Beam
 }
 
 Configs: {

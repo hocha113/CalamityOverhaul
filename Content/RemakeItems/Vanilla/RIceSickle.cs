@@ -26,14 +26,15 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
             drawTrailHighlight = false;
             canDrawSlashTrail = true;
             drawTrailCount = 10;
-            drawTrailTopWidth = 46;
+            drawTrailTopWidth = 40;
             distanceToOwner = -22;
             drawTrailBtommWidth = 0;
             SwingData.baseSwingSpeed = 4f;
             Projectile.width = Projectile.height = 46;
-            Length = 60;
+            Length = 50;
             shootSengs = 0.8f;
             unitOffsetDrawZkMode = -2;
+            autoSetShoot = true;
         }
 
         public override bool PreInOwnerUpdate() {

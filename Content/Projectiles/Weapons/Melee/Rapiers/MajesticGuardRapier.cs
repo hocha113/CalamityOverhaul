@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Rapiers
     internal class MajesticGuardRapier : BaseRapiers
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "MajesticGuard";
-        public override string GlowPath => CWRConstant.Item_Melee + "MajesticGuardGlow";
+        public override string GlowPath => CWRConstant.Placeholder;
         public override void SetRapiers() {
             overHitModeing = 73;
             SkialithVarSpeedMode = 3;
