@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.width = 32;
             Item.height = 32;
-            Item.damage = 288;
+            Item.damage = 388;
             Item.useTime = 30;
             Item.useAnimation = 30;
             Item.mana = 6;
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
 
         public override void FiringShoot() {
             SoundStyle sound = SoundID.NPCDeath13;
-            SoundEngine.PlaySound(sound with { Pitch = -0.2f }, Projectile.Center);
+            SoundEngine.PlaySound(sound with { Pitch = -0.2f, Volume = 0.6f }, Projectile.Center);
             for (int i = 0; i < 4; i++) {
                 Vector2 ver = new Vector2(ShootVelocity.X * (0.6f + i * 0.12f), ShootVelocity.Y * Main.rand.NextFloat(0.6f, 1.2f));
                 Projectile.NewProjectile(Source, GunShootPos, ver, ModContent.ProjectileType<DecayedSeaOrb>()

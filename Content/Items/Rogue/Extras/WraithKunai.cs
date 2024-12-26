@@ -1,8 +1,8 @@
 ﻿using CalamityMod;
 using CalamityMod.Items;
+using CalamityMod.Items.Armor.Bloodflare;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
 using System;
 using Terraria;
@@ -19,14 +19,14 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override string Texture => CWRConstant.Item_Rogue + "WraithKunai";
         public override void SetDefaults() {
             Item.CloneDefaults(ModContent.ItemType<LunarKunai>());
-            Item.damage = 80;
+            Item.damage = 160;
             Item.UseSound = null;
             Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
             Item.shoot = ModContent.ProjectileType<WraithKunaiThrowable>();
             Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
         }
 
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 4;
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
 
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
 
@@ -127,16 +127,39 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             }
         }
 
+        public override bool? CanHitNPC(NPC target) {
+            if (Projectile.ai[2] > 0 && Projectile.ai[0] < Inder2) {
+                return false;
+            }
+            return base.CanHitNPC(target);
+        }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(ModContent.BuffType<SoulBurning>(), 300);
+            if (Main.dayTime) {
+                target.AddBuff(BuffID.OnFire, 300);
+            }
+            else {
+                target.AddBuff(ModContent.BuffType<SoulBurning>(), 300);
+            }
         }
 
         public override void OnKill(int timeLeft) {
             if (Projectile.ai[2] > 0) {
-                int type = ModContent.ProjectileType<TerrorBlasts>();
-                int damage = (int)(Projectile.damage * 0.3f);
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero
-                    , type, damage, Projectile.knockBack, Projectile.owner);
+                Projectile.damage /= 2;
+                Projectile.Explode(300);
+                for (int i = 0; i < 6; i++) {
+                    Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.RedTorch, 0f, 0f, 100, default, 1.5f);
+                }
+
+                for (int i = 0; i < 66; i++) {
+                    Vector2 pos = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.Next(-200, 200) + Projectile.Center;
+                    int num = Dust.NewDust(pos, 1, 1, DustID.RedTorch, 0f, 0f, 0, default, 2.5f);
+                    Main.dust[num].noGravity = true;
+                    Main.dust[num].velocity *= 3f;
+                    num = Dust.NewDust(pos, 2, 2, DustID.RedTorch, 0f, 0f, 100, default, 1.5f);
+                    Main.dust[num].velocity *= 2f;
+                    Main.dust[num].noGravity = true;
+                }
             }
         }
 
@@ -150,7 +173,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
     {
         public override string Texture => CWRConstant.Item_Rogue + "WraithKunai";
         public override void SetThrowable() {
-            Projectile.DamageType = DamageClass.Melee;
+            Projectile.DamageType = ModContent.GetInstance<RogueDamageClass>();
             HandOnTwringMode = -50;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 8;
@@ -165,7 +188,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
                 }
             }
             else {
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < 3; i++) {
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, UnitToMouseV.RotatedByRandom(0.2f) * 8
                         , ModContent.ProjectileType<WraithKunaiProj>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
                 }

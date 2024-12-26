@@ -1,5 +1,4 @@
-﻿using CalamityMod.NPCs.DesertScourge;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -55,7 +54,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
 
         public override void PostInOwnerUpdate() {
             if (onFire != oldOnFire && onFire) {
-                SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
                 chargeIndex = 0;
             }
             if (onFire) {
@@ -106,7 +104,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
         }
         public override void SetDefaults() {
             Projectile.DamageType = DamageClass.Magic;
-            Projectile.penetrate = 1;
+            Projectile.penetrate = 13;
             Projectile.width = 30;
             Projectile.height = 30;
             Projectile.timeLeft = 700;

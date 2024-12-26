@@ -1,11 +1,9 @@
 ﻿using CalamityMod;
 using CalamityMod.Buffs.DamageOverTime;
-using CalamityMod.CalPlayer;
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -21,14 +19,14 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override void SetDefaults() {
             Item.CloneDefaults(ModContent.ItemType<LunarKunai>());
             Item.useStyle = ItemUseStyleID.Swing;
-            Item.damage = 60;
+            Item.damage = 90;
             Item.UseSound = null;
             Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
             Item.shoot = ModContent.ProjectileType<SeasonalKunaiThrowable>();
             Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
         }
 
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 4;
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
 
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = (ItemGroup)CalamityResearchSorting.RogueWeapon;
 
@@ -158,7 +156,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
     {
         public override string Texture => CWRConstant.Item_Rogue + "SeasonalKunai";
         public override void SetThrowable() {
-            Projectile.DamageType = DamageClass.Melee;
+            Projectile.DamageType = ModContent.GetInstance<RogueDamageClass>();
             HandOnTwringMode = -40;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 8;
