@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.rare = ItemRarityID.Green;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<InfinitePickProj>();
+            Item.shoot = 0;
             Item.shootSpeed = 32;
             Item.pick = 9999;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems3;
@@ -81,8 +81,11 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Projectile.NewProjectile(source, position, velocity, type, Item.damage * 10, 0
-                , player.whoAmI, IsPick ? 1 : 0, Main.MouseWorld.X, Main.MouseWorld.Y);
+            if (player.altFunctionUse == 2) {
+                Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<InfinitePickProj>()
+                    , Item.damage * 10, 0, player.whoAmI, IsPick ? 1 : 0, Main.MouseWorld.X, Main.MouseWorld.Y);
+            }
+            
             return false;
         }
 

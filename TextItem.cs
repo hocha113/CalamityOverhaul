@@ -1,7 +1,11 @@
 ﻿using CalamityMod.Items;
+using CalamityMod.Projectiles.Melee;
+using CalamityOverhaul.Content.Items.Melee.Extras;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul
 {
@@ -11,7 +15,7 @@ namespace CalamityOverhaul
 
         //private bool old;
         public override bool IsLoadingEnabled(Mod mod) {
-            return false;
+            return true;
         }
 
         public override void SetDefaults() {
@@ -44,30 +48,67 @@ namespace CalamityOverhaul
         public override void HoldItem(Player player) {
         }
 
+        private void WriteTile(BinaryWriter writer, Tile tile, Point offsetPoint) {
+            writer.Write(offsetPoint.X);
+            writer.Write(offsetPoint.Y);
+            writer.Write(tile.WallType);
+            writer.Write(tile.TileType);
+            writer.Write(tile.TileFrameX);
+            writer.Write(tile.TileFrameY);
+            writer.Write(tile.HasTile);
+            writer.Write((byte)tile.Slope);
+        }
+
+        private void SetTile(BinaryReader reader) {
+            int tilePosX = reader.ReadInt32() + 3720;
+            int tilePosY = reader.ReadInt32() + 400;
+            ushort wallType = reader.ReadUInt16();
+            ushort tileType = reader.ReadUInt16();
+            short frameX = reader.ReadInt16();
+            short frameY = reader.ReadInt16();
+            bool hasTile = reader.ReadBoolean();
+            byte slope = reader.ReadByte();
+            Tile tile = Main.tile[tilePosX, tilePosY];
+            if (wallType > 1) {
+                tile.WallType = wallType;
+                tile.LiquidAmount = 255;
+            }
+
+            tile.HasTile = hasTile;
+            tile.Slope = (SlopeType)slope;
+
+            if (tileType > 0) {
+                tile.TileType = tileType;
+            }
+            tile.TileFrameX = frameX;
+            tile.TileFrameY = frameY;
+            CWRUtils.SafeSquareTileFrame(tilePosX, tilePosY);
+        }
+
         public override bool? UseItem(Player player) {
-            //if (TungstenRiot.Instance.TungstenRiotIsOngoing) {
-            //    TungstenRiot.Instance.CloseEvent();
+            Point startPoint = new Point(1720, 400);
+            Point endPoint = new Point(1720, 400);
+            int heiget = 2000;
+            int wid = 1400;
+            //using (BinaryWriter writer = new BinaryWriter(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Create))) {
+            //    for (int x = 0; x < wid; x++) {
+            //        for (int y = 0; y < heiget; y++) {
+            //            Point offsetPoint = new Point(x, y);
+            //            WriteTile(writer, Main.tile[startPoint.X + x, startPoint.Y + y], offsetPoint);
+            //        }
+            //    }
             //}
-            //else {
-            //    TungstenRiot.Instance.TryStartEvent();
+            //Point point = new Point((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+            //point.Domp();
+
+            //using (BinaryReader reader = new BinaryReader(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Open))) {
+            //    for (int x = 0; x < wid; x++) {
+            //        for (int y = 0; y < heiget; y++) {
+            //            SetTile(reader);
+            //        }
+            //    }
             //}
 
-            //int maxProjSanShootNum = 22;
-            //int type = ModContent.ProjectileType<Probe>();
-            //for (int i = 0; i < maxProjSanShootNum; i++) {
-            //    Projectile.NewProjectile(player.GetSource_FromAI()
-            //            , player.Center, (MathHelper.TwoPi / maxProjSanShootNum * i).ToRotationVector2() * Main.rand.Next(3, 16)
-            //            , type, 42, 0f, Main.myPlayer, 0, Main.rand.Next(30, 60));
-            //}
-
-            //int maxSpanNum = 13 + 10;
-            //for (int i = 0; i < maxSpanNum; i++) {
-            //    Vector2 spanPos = player.Center + CWRUtils.randVr(1380, 2200);
-            //    Vector2 vr = spanPos.To(player.Center + CWRUtils.randVr(180, 320 + 10 * 12)).UnitVector() * 12;
-            //    Projectile.NewProjectile(player.FromObjectGetParent(), spanPos
-            //        , vr, ModContent.ProjectileType<MuraExecutionCutOnSpan>()
-            //        , (int)(100 * 0.7f), 0, player.whoAmI);
-            //}
             return true;
         }
     }
