@@ -6,7 +6,7 @@ using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
-using CalamityOverhaul.Content.UIs;
+using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using System;

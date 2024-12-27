@@ -19,6 +19,14 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         internal static string textElement3 => $" [{CWRLocText.GetTextValue("IconUI_Text5")}]";
         internal static string textElement4 => $" [{CWRLocText.GetTextValue("IconUI_Text6")}]";
         internal static string[] names = [];
+        private int musicFade50;
+        private float _sengs;
+        internal bool _active;
+        internal static AcknowledgmentUI Instance { get; private set; }
+        private static Asset<Texture2D> Logo;
+        internal List<ProjItem> projectiles = [];
+        internal List<EffectEntity> effectEntities = [];
+        private Vector2 itemPos => new Vector2(Main.screenWidth / 2, Main.screenHeight - 60);
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool;
         internal class ProjItem
@@ -79,7 +87,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     , position.X - textSize.X / 2, position.Y, color * textAlp, Color.Black * textAlp, new Vector2(0.2f), 1);
             }
         }
-
         internal class EffectEntity : ProjItem
         {
             protected int ai0;
@@ -152,16 +159,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 spriteBatch.Draw(texture, position, rectangle, newColor, rotation, orig, size, SpriteEffects.None, 0);
             }
         }
-
-        private int musicFade50;
-        private float _sengs;
-        internal bool _active;
-        internal static AcknowledgmentUI Instance { get; private set; }
-        private static Asset<Texture2D> Logo;
-        internal List<ProjItem> projectiles = [];
-        internal List<EffectEntity> effectEntities = [];
-
-        private Vector2 itemPos => new Vector2(Main.screenWidth / 2, Main.screenHeight - 60);
         public bool OnActive() => _active || _sengs > 0;
         public override bool CanLoad() => true;
         public override void Load() {

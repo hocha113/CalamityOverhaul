@@ -1,5 +1,5 @@
 ﻿using CalamityMod.Items;
-using CalamityOverhaul.Content.UIs;
+using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
