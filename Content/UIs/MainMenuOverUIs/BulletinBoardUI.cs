@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         public override void Draw(SpriteBatch spriteBatch) {
             Color color = VaultUtils.MultiStepColorLerp(Math.Abs(MathF.Sin(Time * 0.035f)), Color.Gold, Color.Green);
-            Color higtColor = new Color(190, 210, 200);
+            Color higtColor = Color.White;
 
             Color textColor1 = (onText1 ? color : higtColor);
             Color textColor2 = (onText2 ? color : higtColor);
