@@ -43,7 +43,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             onR = rAow.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
             onL = lAow.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
         }
-
         public override void Load() => Instance = this;
         void ICWRLoader.UnLoadData() => Instance = null;
         public static void LoadAllRecipes() {
@@ -57,16 +56,24 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public override void Update() {
             Initialize();
-            //int museS = DownStartL();
+            if (onR || onL || onM) {
+                DragButton.DontDragTime = 2;
+            }
+
             int museS = (int)keyLeftPressState;
             if (museS == 1) {
                 if (onR) {
                     SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.5f });
                     index += 1;
+                    DragButton.DontDragTime = 2;
                 }
                 if (onL) {
                     SoundEngine.PlaySound(SoundID.Chat with { Pitch = -0.5f });
                     index -= 1;
+                    DragButton.DontDragTime = 2;
+                }
+                if (onM) {
+                    DragButton.DontDragTime = 2;
                 }
                 if (index < 0) {
                     index = itemTarget.Count - 1;

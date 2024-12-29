@@ -64,55 +64,62 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 drawPos, string[] names) {
-            if (DrawBool) {
-                if (!SupertableUI.Instance.Active) {
-                    SupertableUI.Instance.onMainP =
-                    SupertableUI.Instance.onMainP2 =
-                    SupertableUI.Instance.onInputP =
-                    SupertableUI.Instance.onCloseP = false;
+            if (!DrawBool) {
+                return;
+            }
+
+            if (!SupertableUI.Instance.Active) {
+                SupertableUI.Instance.onMainP =
+                SupertableUI.Instance.onMainP2 =
+                SupertableUI.Instance.onInputP =
+                SupertableUI.Instance.onCloseP = false;
+            }
+            DrawPos = Prevention(drawPos);
+            Vector2 offset = new Vector2(100, 100);
+            Item[] items = new Item[names.Length];
+            Item targetItem = SupertableUI.InStrGetItem(names[names.Length - 1], true);
+            for (int i = 0; i < names.Length - 1; i++) {
+                string name = names[i];
+                Item item = SupertableUI.InStrGetItem(name, true);
+                items[i] = item;
+            }
+
+            Vector2 drawMainUISize = new Vector2(2.2f, 2.6f);
+
+            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 4, DrawPos
+                , (int)(mainBookPValue.Width * 2.2f), (int)(mainBookPValue.Height * 2.5f), Color.BlueViolet * 0.8f, Color.Azure * 0.2f, 1);
+            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.Placeholder_White.Value, 4, DrawPos
+                , (int)(mainBookPValue.Width * 2.2f), (int)(mainBookPValue.Height * 2.5f), Color.BlueViolet * 0, Color.CadetBlue * 0.6f, 1);
+
+            spriteBatch.Draw(mainCellValue, DrawPos + new Vector2(-25, -25) + offset, null, Color.White * 0.8f, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+
+            Vector2 drawTOMItemIconPos = DrawPos + new Vector2(-20, mainCellValue.Height + 10) + offset;
+            VaultUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<TransmutationOfMatterItem>(), drawTOMItemIconPos, 1, 0, Color.White);
+
+            Vector2 drawText1 = new Vector2(DrawPos.X - 20, DrawPos.Y - 60) + offset;
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value,
+                $"{CWRLocText.GetTextValue("SPU_Text0") + CWRUtils.SafeGetItemName<TransmutationOfMatterItem>() + CWRLocText.GetTextValue("SPU_Text1")}："
+                , drawText1.X, drawText1.Y, Color.White, Color.Black, new Vector2(0.3f), 1f);
+
+            if (targetItem != null) {
+                Vector2 drawText2 = new Vector2(DrawPos.X + 16, DrawPos.Y + 420) + offset;
+                string text = $"{CWRLocText.GetTextValue("SPU_Text2") + CWRUtils.SafeGetItemName(targetItem.type)}";
+                Vector2 size = FontAssets.MouseText.Value.MeasureString(text);
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, drawText2.X, drawText2.Y, Color.White, Color.Black, new Vector2(0.3f), 1f);
+                Vector2 drawItemPos = drawText2 + new Vector2(size.X + 20, 8);
+                SupertableUI.DrawItemIcons(spriteBatch, targetItem, drawItemPos, new Vector2(0.0001f, 0.0001f));
+
+                if (targetItem.type == ModContent.ItemType<InfiniteToiletItem>()) {
+                    text = CWRLocText.GetTextValue("OnlyZenith");
+                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, drawText2.X, drawText2.Y + size.Y, Color.Coral, Color.Black, new Vector2(0.3f), 1f);
                 }
-                DrawPos = Prevention(drawPos);
-                Vector2 offset = new Vector2(100, 100);
-                Item[] items = new Item[names.Length];
-                Item targetItem = SupertableUI.InStrGetItem(names[names.Length - 1], true);
-                for (int i = 0; i < names.Length - 1; i++) {
-                    string name = names[i];
-                    Item item = SupertableUI.InStrGetItem(name, true);
-                    items[i] = item;
-                }
+            }
 
-                Vector2 drawMainUISize = new Vector2(2.2f, 2.6f);
-                spriteBatch.Draw(mainBookPValue, DrawPos, null, Color.DarkGoldenrod, 0, Vector2.Zero, drawMainUISize, SpriteEffects.None, 0);//绘制出UI主体
-                spriteBatch.Draw(mainCellValue, DrawPos + new Vector2(-25, -25) + offset, null, Color.DarkGoldenrod, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-
-                Vector2 drawTOMItemIconPos = DrawPos + new Vector2(-20, mainCellValue.Height + 10) + offset;
-                VaultUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<TransmutationOfMatterItem>(), drawTOMItemIconPos, 1, 0, Color.White);
-
-                Vector2 drawText1 = new Vector2(DrawPos.X - 20, DrawPos.Y - 60) + offset;
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value,
-                    $"{CWRLocText.GetTextValue("SPU_Text0") + CWRUtils.SafeGetItemName<TransmutationOfMatterItem>() + CWRLocText.GetTextValue("SPU_Text1")}："
-                    , drawText1.X, drawText1.Y, Color.White, Color.Black, new Vector2(0.3f), 1f);
-
-                if (targetItem != null) {
-                    Vector2 drawText2 = new Vector2(DrawPos.X + 16, DrawPos.Y + 420) + offset;
-                    string text = $"{CWRLocText.GetTextValue("SPU_Text2") + CWRUtils.SafeGetItemName(targetItem.type)}";
-                    Vector2 size = FontAssets.MouseText.Value.MeasureString(text);
-                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, drawText2.X, drawText2.Y, Color.White, Color.Black, new Vector2(0.3f), 1f);
-                    Vector2 drawItemPos = drawText2 + new Vector2(size.X + 20, 8);
-                    SupertableUI.DrawItemIcons(spriteBatch, targetItem, drawItemPos, new Vector2(0.0001f, 0.0001f));
-
-                    if (targetItem.type == ModContent.ItemType<InfiniteToiletItem>()) {
-                        text = CWRLocText.GetTextValue("OnlyZenith");
-                        Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, drawText2.X, drawText2.Y + size.Y, Color.Coral, Color.Black, new Vector2(0.3f), 1f);
-                    }
-                }
-
-                for (int i = 0; i < items.Length - 1; i++) {//遍历绘制出UI格中的所有预览物品
-                    if (items[i] != null) {
-                        Item item = items[i];
-                        if (item != null) {
-                            SupertableUI.DrawItemIcons(spriteBatch, item, ArcCellPos(i, DrawPos + offset), new Vector2(0.0001f, 0.0001f));
-                        }
+            for (int i = 0; i < items.Length - 1; i++) {//遍历绘制出UI格中的所有预览物品
+                if (items[i] != null) {
+                    Item item = items[i];
+                    if (item != null) {
+                        SupertableUI.DrawItemIcons(spriteBatch, item, ArcCellPos(i, DrawPos + offset), new Vector2(0.0001f, 0.0001f), Color.White * 0.9f);
                     }
                 }
             }

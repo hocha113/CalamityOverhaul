@@ -49,17 +49,15 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 offset.Y += 5;
             }
 
-            Vector2 uiSize = new Vector2(1.5f, 0.6f);
             string text = CWRLocText.GetTextValue("MouseTextContactPanel_TextContent");
             Vector2 size = FontAssets.MouseText.Value.MeasureString(text);
-            float overSizeX = size.X / (uiSize.X * Texture.Width);
 
             if (!doDraw) {
                 return;
             }
 
-            spriteBatch.Draw(Texture, DrawPosition, null, Color.DarkGoldenrod, 0, Vector2.Zero, uiSize * new Vector2(overSizeX * 1.1f, 1), SpriteEffects.None, 0);//绘制出UI主体
-
+            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 4, DrawPosition
+                , (int)size.X + 22, (int)size.Y, Color.BlueViolet * 0.8f, Color.Azure * 1.2f, 1);
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, DrawPosition.X + 3, DrawPosition.Y + 3, Color.White, Color.Black, new Vector2(0.3f), 1f);
         }
     }

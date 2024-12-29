@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 return SupertableUI.Instance.Active;
             }
         }
-        protected virtual Vector2 offsetDraw => new Vector2(578, 330);
+        protected virtual Vector2 offsetDraw => new Vector2(570, 330);
         private Rectangle mainRec;
         private int useTimeCoolding;
         private int useMuse3AddCount;
@@ -47,6 +47,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 if (mouseState == 1 || mouseState == 3) {
                     HandleClickEvents(mouseState);
                 }
+                DragButton.DontDragTime = 2;
             }
             // 冷却时间递减
             if (useTimeCoolding > 0) {

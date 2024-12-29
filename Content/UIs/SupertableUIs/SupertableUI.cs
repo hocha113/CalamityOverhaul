@@ -24,6 +24,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public static SupertableUI Instance { get; private set; }
 
+        private static RecipeSidebarListViewUI RecipeSidebarListView;
+
         public static string[][] RpsDataStringArrays;
 
         public static List<string[]> OtherRpsData_ZenithWorld_StringList = [];
@@ -41,7 +43,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public Item[] previewItems;
 
         public Item inputItem;
-
         /// <summary>
         /// 主UI的面板矩形
         /// </summary>
@@ -61,9 +62,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public static int cellHig;
 
-        public static int maxCellNumX;
+        public const int maxCellNumX = 9;
 
-        public static int maxCellNumY;
+        public const int maxCellNumY = 9;
         /// <summary>
         /// 配方表最大数量，不包括天顶世界的特殊配方内容
         /// </summary>
@@ -136,34 +137,53 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 RpsDataStringArrays = RpsDataStringArrays.Concat(ModCall_OtherRpsData_StringList).ToArray();
             }
 
+            //不要新new一个实例，提醒自己，使用UIHandleLoader的实例
+            RecipeSidebarListView = UIHandleLoader.GetUIHandleOfType<RecipeSidebarListViewUI>();
+            RecipeSidebarListView.recipeTargetElmts = new List<RecipeTargetElmt>();
+
             foreach (string[] value in RpsDataStringArrays) {
+                // 检查数组长度
+                if (value.Length != 82) {
+                    string pag = string.Join(", ", value);
+                    throw new InvalidOperationException($"Invalid length: {pag} Length is not 82.");
+                }
+
+                string targetItemFullName = value[^1];
+                int targetItemID = InStrGetItemType(targetItemFullName);
+
+                // 检查目标合成结果是否有效
+                if (targetItemFullName != "Null/Null" && targetItemID == ItemID.None) {
+                    string pag = string.Join(", ", value);
+                    throw new InvalidOperationException($"Invalid target item: {pag} The result of the Target " +
+                        $"synthesis is a None item, but the key you gave is not a \"Null/Null\" placeholder.");
+                }
+
+                // 处理 Recipe 数据
                 RecipeData recipeData = new RecipeData {
                     Values = value,
-                    Target = InStrGetItemType(value[value.Length - 1])
+                    Target = targetItemID,
                 };
                 AllRecipes.Add(recipeData);
+
+                RecipeTargetElmt recipeTargetElmt = new RecipeTargetElmt { recipeData = recipeData };
+                RecipeSidebarListView.recipeTargetElmts.Add(recipeTargetElmt);
             }
+
             AllRecipesVanillaContentCount = AllRecipes.Count;
             CWRMod.Instance.Logger.Info($"Get the recipe table capacity: {AllRecipesVanillaContentCount}");
         }
 
         public void UpdateUIElementPos() {
-            //if (DrawPosition == Vector2.Zero && initializeBool) {
-            //    DrawPosition = (new Vector2(Main.screenWidth, Main.screenHeight) - new Vector2(Texture.Width - Main.screenWidth / 2, Texture.Height + 400)) / 2;
-            //    initializeBool = false;
-            //}
-
             topLeft = new Vector2(15, 30) + DrawPosition;
             cellWid = 48;
             cellHig = 46;
-            maxCellNumX = maxCellNumY = 9;
 
             Vector2 inUIMousePos = MousePosition - topLeft;
             int mouseXGrid = (int)(inUIMousePos.X / cellWid);
             int mouseYGrid = (int)(inUIMousePos.Y / cellHig);
             mouseInCellCoord = new Point(mouseXGrid, mouseYGrid);
 
-            mainRec = new Rectangle((int)topLeft.X, (int)topLeft.Y, cellWid * maxCellNumX + 200, cellHig * maxCellNumY);
+            UIHitBox = mainRec = new Rectangle((int)topLeft.X, (int)topLeft.Y, cellWid * maxCellNumX + 200, cellHig * maxCellNumY);
             mainRec2 = new Rectangle((int)topLeft.X, (int)topLeft.Y, cellWid * maxCellNumX, cellHig * maxCellNumY);
             inputRec = new Rectangle((int)(DrawPosition.X + 555), (int)(DrawPosition.Y + 215), 92, 90);
             closeRec = new Rectangle((int)(DrawPosition.X), (int)(DrawPosition.Y), 30, 30);
@@ -281,11 +301,16 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             if (onInputP) {
                 player.mouseInterface = true;
+                if (inputItem != null && inputItem.type > ItemID.None) {
+                    DragButton.DontDragTime = 2;
+                }
                 if (museS == 3 || museS == 1) {
                     GetResult(ref inputItem, ref Main.mouseItem, ref items);
                     FinalizeCraftingResult();
                 }
             }
+
+            RecipeSidebarListView.Update();
         }
 
         /// <summary>
@@ -299,6 +324,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <param name="key">用于解析的字符串键，可以是整数类型或模组/物品名称的组合</param>
         /// <returns>解析后得到的物品类型</returns>
         public static int InStrGetItemType(string key, bool loadVanillaItem = false) {
+            if (key == "Null/Null") {
+                return ItemID.None;
+            }
+
             if (int.TryParse(key, out int intValue)) {
                 if (loadVanillaItem && !VaultUtils.isServer) {
                     Main.instance.LoadItem(intValue);
@@ -554,6 +583,7 @@ End:;
             if (onitem.type == ItemID.None && holdItem.type == ItemID.None) {
                 return;
             }
+            
             // 捡起物品逻辑
             if (onitem.type != ItemID.None && holdItem.type == ItemID.None) {
                 PlayGrabSound();
@@ -586,7 +616,6 @@ End:;
                 PlayGrabSound();
                 (holdItem, onitem) = (onitem, holdItem);
             }
-
         }
 
         /// <summary>
@@ -743,6 +772,8 @@ End:;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
+            RecipeSidebarListView.Draw(spriteBatch);
+
             spriteBatch.Draw(Texture, DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
             spriteBatch.Draw(CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon"), DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出关闭按键
             if (onCloseP) {
@@ -793,10 +824,6 @@ End:;
             if (onInputP && inputItem != null && inputItem?.type != 0) {//处理查看输出结果物品的事情
                 Main.HoverItem = inputItem.Clone();
                 Main.hoverItemName = inputItem.Name;
-            }
-
-            if (DragButton.Instance != null) {
-                DragButton.Instance.ThisDraw(spriteBatch);
             }
         }
     }

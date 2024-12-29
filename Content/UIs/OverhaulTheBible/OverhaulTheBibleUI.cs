@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
     internal class OverhaulTheBibleUI : UIHandle, ICWRLoader
     {
         internal static OverhaulTheBibleUI Instance => UIHandleLoader.GetUIHandleOfType<OverhaulTheBibleUI>();
+        public override bool Active { get => _active || _sengs > 0; set => _active = value; }
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BookPans");
         private bool onDrag;
         private bool onMainP;
@@ -21,24 +22,23 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
         private bool onTopDarg;
         private bool _active;
         internal float _sengs;
-        public override bool Active {
-            get => _active || _sengs > 0;
-            set => _active = value;
-        }
         private Vector2 dragOffset;
         private Vector2 topOffset;
         internal int boxWeith = 400;
         internal int boxHeight = 300;
         internal List<ItemVidous> itemVidousList = [];
         internal MouseState oldMouseState;
-        private float rollerValue;
-        private float rollerSengs;
+        internal float rollerValue;
+        internal float rollerSengs;
+        private SliderUI sliderUI;
         private TabControl tabControlMelee;
         private TabControl tabControlRanged;
         private TabControl tabControlMagic;
         private TabControl tabControlRogue;
         private TabControl tabControlSummon;
         private TabControl tabControlClose;
+        internal int elementsPerRow;
+        internal int elementsPerColumn;
         public void SaveData(TagCompound tag) {
             tag["OverhaulTheBibleUI_DrawPos_X"] = DrawPosition.X;
             tag["OverhaulTheBibleUI_DrawPos_Y"] = DrawPosition.Y;
@@ -63,6 +63,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
         private void InitializeElement() {
             if (itemVidousList == null) {
                 SetItemVidousList();
+            }
+            if (sliderUI == null) {
+                sliderUI = new SliderUI();
             }
             if (tabControlMelee == null) {
                 tabControlMelee = new TabControl();
@@ -100,30 +103,31 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
             InitializeElement();
 
             int itemVidousListCount = itemVidousList.Count > 0 ? itemVidousList.Count : 1;
-            int elementsPerRow = boxWeith / ItemVidous.Width; // 每行最多元素数
+            elementsPerRow = boxWeith / ItemVidous.Width; // 每行最多元素数
             if (elementsPerRow <= 0) {
                 elementsPerRow = 1; // 确保至少有一列
             }
-            int elementsPerColumn = itemVidousListCount / elementsPerRow;
+            elementsPerColumn = itemVidousListCount / elementsPerRow;
+            if (elementsPerColumn <= 0) {
+                elementsPerColumn = 1; // 确保至少有一行
+            }
 
             if (onMainP) {
                 player.mouseInterface = true;
-                if (keyLeftPressState == KeyPressState.Held && !onTopDarg) {
+                if (keyLeftPressState == KeyPressState.Held && !onTopDarg && !UIHandleLoader.GetUIHandleOfType<SliderUI>().onDrag) {
                     if (!onDrag) {
                         dragOffset = DrawPosition - MousePosition;
                     }
                     onDrag = true;
                 }
-                MouseState currentMouseState = Mouse.GetState();
-                int scrollWheelDelta = currentMouseState.ScrollWheelValue - oldMouseState.ScrollWheelValue;
-
-                rollerValue += scrollWheelDelta;
-                rollerValue = MathHelper.Clamp(rollerValue, 0, elementsPerColumn * ItemVidous.Height);
-
-                rollerSengs = (rollerValue / (elementsPerColumn * ItemVidous.Height)) * boxHeight;
-
-                oldMouseState = currentMouseState;
             }
+
+            MouseState currentMouseState = Mouse.GetState();
+            int scrollWheelDelta = currentMouseState.ScrollWheelValue - oldMouseState.ScrollWheelValue;
+            rollerValue += scrollWheelDelta;
+            rollerValue = MathHelper.Clamp(rollerValue, 0, elementsPerColumn * ItemVidous.Height);
+            oldMouseState = currentMouseState;
+            rollerSengs = (rollerValue / (elementsPerColumn * ItemVidous.Height)) * boxHeight;
 
             if (onDrag) {
                 player.mouseInterface = true;
@@ -154,6 +158,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
                 }
             }
 
+            sliderUI.Update();
             UpdateTabControl();
 
             for (int i = 0; i < itemVidousList.Count; i++) {
@@ -251,14 +256,13 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
             spriteBatch.GraphicsDevice.ScissorRectangle = originalScissorRect;
             spriteBatch.ResetUICanvasState();
 
-            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRUtils.GetT2DValue(CWRConstant.UI + "JAR")
+            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value
                 , 4, viedutRect.TopLeft(), (int)(viedutRect.Width * _sengs), (int)(viedutRect.Height * _sengs), Color.White, Color.White * 0, 1);
 
-            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRUtils.GetT2DValue(CWRConstant.UI + "JAR")
+            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value
                 , 4, DrawPosition + new Vector2(boxWeith, 0) * _sengs, 10, (int)(boxHeight * _sengs), Color.Blue, Color.White * 0, 1);
 
-            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRUtils.GetT2DValue(CWRConstant.UI + "JAR")
-                , 4, DrawPosition + new Vector2(boxWeith - 4, rollerSengs - 4) * _sengs, 18, 18, Color.Blue, Color.White, 1);
+            sliderUI.Draw(spriteBatch);
 
             tabControlMelee.Draw(spriteBatch);
             tabControlRanged.Draw(spriteBatch);
