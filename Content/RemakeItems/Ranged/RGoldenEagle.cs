@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Ranged
             item.shootSpeed = 20f;
             item.useAmmo = AmmoID.Bullet;
             item.Calamity().canFirePointBlankShots = true;
-            item.SetCartridgeGun<GoldenEagleHelProj>(38);
+            item.SetCartridgeGun<GoldenEagleHeldProj>(38);
         }
     }
 }

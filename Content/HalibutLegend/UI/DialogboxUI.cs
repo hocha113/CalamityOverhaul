@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (piscicultureUI_MainBox_sengs >= 1) {
-                VaultUtils.DrawBorderedRectangle(spriteBatch, CWRUtils.GetT2DValue(CWRConstant.UI + "JAR"), 4, borderedDrawPos, borderedWidth, borderedHeight
+                VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 4, borderedDrawPos, borderedWidth, borderedHeight
                     , Color.BlueViolet * 0.8f * piscicultureUI_MainBox_sengs, Color.Azure * 0.2f * piscicultureUI_MainBox_sengs, borderedSize);
             }
             if (bordered_sengs >= 1) {

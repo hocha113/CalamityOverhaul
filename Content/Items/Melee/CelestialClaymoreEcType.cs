@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityLightRedBuyPrice;
             Item.rare = ItemRarityID.LightRed;
-            Item.shoot = ModContent.ProjectileType<CosmicSpiritBombs>();
+            Item.shoot = ModContent.ProjectileType<PercussionCosmicSpiritBomb>();
             Item.shootSpeed = 0.1f;
             Item.SetKnifeHeld<CelestialClaymoreHeld>();
         }
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 int swingDust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, dustType, player.direction * 2, 0f, 150, default, 1.3f);
                 Main.dust[swingDust].velocity *= 0.2f;
                 foreach (Projectile proj in Main.projectile) {
-                    if (proj.type == ModContent.ProjectileType<CosmicSpiritBombs>()) {
+                    if (proj.type == ModContent.ProjectileType<PercussionCosmicSpiritBomb>()) {
                         if (proj.Hitbox.Intersects(hitbox)) {
                             Vector2 toMou = proj.Center.To(Main.MouseWorld).UnitVector();
                             proj.ai[0] += 1;
@@ -88,8 +88,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 realPlayerPos.X = ((realPlayerPos.X + player.Center.X) / 2f) + Main.rand.Next(-200, 201);
                 realPlayerPos.Y -= 100 * i;
                 int proj = Projectile.NewProjectile(Source, realPlayerPos.X, realPlayerPos.Y, 0f, 0f
-                    , ModContent.ProjectileType<CosmicSpiritBombs>(), Projectile.damage / 2, Projectile.knockBack, player.whoAmI, 0f, Main.rand.Next(3));
-                CosmicSpiritBombs cosmicSpiritBombs = Main.projectile[proj].ModProjectile as CosmicSpiritBombs;
+                    , ModContent.ProjectileType<PercussionCosmicSpiritBomb>(), Projectile.damage / 2, Projectile.knockBack, player.whoAmI, 0f, Main.rand.Next(3));
+                PercussionCosmicSpiritBomb cosmicSpiritBombs = Main.projectile[proj].ModProjectile as PercussionCosmicSpiritBomb;
                 cosmicSpiritBombs.overTextIndex = Main.rand.Next(1, 4);
             }
         }
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 int swingDust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustType, Owner.direction * 2, 0f, 150, default, 1.3f);
                 Main.dust[swingDust].velocity *= 0.2f;
                 foreach (Projectile proj in Main.projectile) {
-                    if (proj.type == ModContent.ProjectileType<CosmicSpiritBombs>()) {
+                    if (proj.type == ModContent.ProjectileType<PercussionCosmicSpiritBomb>()) {
                         if (proj.Hitbox.Intersects(Projectile.Hitbox)) {
                             proj.ai[0] += 1;
                             proj.velocity = UnitToMouseV * 20;

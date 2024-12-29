@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Common
 
             // 缓存项目符号类型和纹理以减少多次调用
             int targetProjType = ModContent.ProjectileType<MuraExecutionCutOnSpan>();
-            Texture2D texture = CWRUtils.GetT2DValue(CWRConstant.Placeholder2);
+            Texture2D texture = CWRAsset.Placeholder_White.Value;
             float screenDiagonalLength = (float)Math.Sqrt(Main.screenWidth * Main.screenWidth + Main.screenHeight * Main.screenHeight) * 4f;
 
             foreach (Projectile proj in Main.ActiveProjectiles) {

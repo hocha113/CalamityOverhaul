@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Magic.DragonsWordProj;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -12,9 +13,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Extras
 {
-    internal class DragonsWord : ModItem
+    internal class DragonsWord : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Magic + "DragonsWord";
+        public static Asset<Texture2D> Glow;
+        void ICWRLoader.LoadAsset() => Glow = CWRUtils.GetT2DAsset(Texture + "Glow");
+        void ICWRLoader.UnLoadData() => Glow = null;
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.damage = 682;
@@ -36,8 +40,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
         public override bool AltFunctionUse(Player player) => true;
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI) {
-            Texture2D mainValue = CWRUtils.GetT2DValue(Texture + "Glow");
-            spriteBatch.Draw(mainValue, Item.position - Main.screenPosition + new Vector2(Item.width / 2, -Item.height / 2), null, Color.White, rotation, mainValue.Size() / 2, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(Glow.Value, Item.position - Main.screenPosition + new Vector2(Item.width / 2, -Item.height / 2)
+                , null, Color.White, rotation, Glow.Value.Size() / 2, scale, SpriteEffects.None, 0);
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

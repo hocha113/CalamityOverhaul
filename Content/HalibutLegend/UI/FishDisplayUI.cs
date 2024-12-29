@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
             if (HanderFishItem.TargetFish != null && HanderFishItem.TargetFish == this) {
                 backColor = Color.Gold;
             }
-            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRUtils.GetT2DValue(CWRConstant.UI + "JAR")
+            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value
                 , 4, DrawPosition, borderedWidth, borderedHeight
                 , FishSkill.Item.GetColor(Color.White) * 0.8f * PiscicultureUI._sengs, backColor, borderedSize);
             if (FishSkill.Item.type > ItemID.None) {
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
             Vector2 drawPos = PiscicultureUI.Dialogbox.borderedDrawPos
                 - new Vector2(borderedWidth * 4 + 22, 0);
 
-            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRUtils.GetT2DValue(CWRConstant.UI + "JAR")
+            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value
                 , 4, drawPos, borderedWidth * 4, borderedHeight * 3
                 , Color.AliceBlue * 0.8f * PiscicultureUI._sengs, backColor, borderedSize);
 

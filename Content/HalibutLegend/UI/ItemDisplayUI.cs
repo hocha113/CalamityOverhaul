@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRUtils.GetT2DValue(CWRConstant.UI + "JAR"), 4, DrawPosition, borderedWidth, borderedHeight
+            VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 4, DrawPosition, borderedWidth, borderedHeight
                     , Color.AliceBlue * 0.8f * PiscicultureUI._sengs, Color.Azure * 0.2f * PiscicultureUI._sengs, borderedSize);
             if (Item.type > ItemID.None) {
                 float drawSize = CWRUtils.GetDrawItemSize(Item, borderedWidth) * borderedSize;

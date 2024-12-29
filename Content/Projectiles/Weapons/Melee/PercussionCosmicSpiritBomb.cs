@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class CosmicSpiritBombs : ModProjectile, ICWRLoader
+    internal class PercussionCosmicSpiritBomb : ModProjectile, ICWRLoader
     {
         public static Color[] colorDates;
         public int overTextIndex = 1;
@@ -46,7 +46,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.tileCollide = false;
             Projectile.timeLeft = 150;
             Projectile.DamageType = DamageClass.Melee;
-
         }
 
         public override void AI() {
@@ -56,20 +55,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             Vector2 toOwner = Projectile.position.To(Owner.position);
             float projDistance = toOwner.Length() / 100f;
-            if (projDistance > 12.3333f)
+            if (projDistance > 12.3333f) {
                 projDistance = 12.3333f;
-            if (Projectile.ai[0] == 0)
+            }
+            if (Projectile.ai[0] == 0) {
                 Projectile.velocity = toOwner.UnitVector() * projDistance;
+            }
+                
             Projectile.rotation += Projectile.velocity.X * 0.03f;
         }
 
-        public override Color? GetAlpha(Color lightColor) {
-            return new Color(200, 200, 200, Projectile.alpha);
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(BuffID.Frostburn, 180);
-        }
+        public override Color? GetAlpha(Color lightColor) => new Color(200, 200, 200, Projectile.alpha);
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(BuffID.Frostburn, 180);
 
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(SoundID.Item14, Projectile.position);

@@ -15,6 +15,7 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> Placeholder_White;
         public static Asset<Texture2D> Placeholder_ERROR;
         public static Asset<Texture2D> SemiCircularSmear;
+        public static Asset<Texture2D> UI_JAR;
         void ICWRLoader.LoadAsset() {
             icon_small = CWRUtils.GetT2DAsset("CalamityOverhaul/icon_small");
             IceParcloseAsset = CWRUtils.GetT2DAsset(CWRConstant.Projectile + "IceParclose");
@@ -24,6 +25,7 @@ namespace CalamityOverhaul
             Placeholder_White = CWRUtils.GetT2DAsset(CWRConstant.Placeholder2);
             Placeholder_ERROR = CWRUtils.GetT2DAsset(CWRConstant.Placeholder3);
             SemiCircularSmear = CWRUtils.GetT2DAsset("CalamityMod/Particles/SemiCircularSmear");
+            UI_JAR = CWRUtils.GetT2DAsset(CWRConstant.UI + "JAR");
             TextureAssets.Item[ItemID.IceSickle] = CWRUtils.GetT2DAsset(CWRConstant.Item_Melee + "IceSickle");
         }
         void ICWRLoader.UnLoadData() {
@@ -35,6 +37,7 @@ namespace CalamityOverhaul
             Placeholder_White = null;
             Placeholder_ERROR = null;
             SemiCircularSmear = null;
+            UI_JAR = null;
         }
     }
 }

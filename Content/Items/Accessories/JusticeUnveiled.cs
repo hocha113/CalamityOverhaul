@@ -10,6 +10,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -188,12 +189,15 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    internal class JusticeUnveiledExplode : ModProjectile
+    internal class JusticeUnveiledExplode : ModProjectile, ICWRLoader
     {
         public override string Texture => CWRConstant.Projectile + "JusticeUnveiledExplode";
         public const int maxFrame = 14;
         private int frameIndex = 0;
         private int time;
+        public static Asset<Texture2D> MaskLaserLine;
+        void ICWRLoader.LoadAsset() => MaskLaserLine = CWRUtils.GetT2DAsset(CWRConstant.Masking + "MaskLaserLine");
+        void ICWRLoader.UnLoadData() => MaskLaserLine = null;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 332;
             Projectile.friendly = true;
@@ -251,11 +255,10 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (time < 6) {
                 return false;
             }
-            Texture2D tex = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
             Color drawColor = Color.Gold;
             drawColor.A = 0;
-            Main.EntitySpriteDraw(tex, Projectile.Bottom - Main.screenPosition, null, drawColor
-                , Projectile.rotation - MathHelper.PiOver2, tex.Size() / 2
+            Main.EntitySpriteDraw(MaskLaserLine.Value, Projectile.Bottom - Main.screenPosition, null, drawColor
+                , Projectile.rotation - MathHelper.PiOver2, MaskLaserLine.Value.Size() / 2
                 , new Vector2(4000, Projectile.ai[1] * 0.04f), SpriteEffects.None, 0);
 
             Texture2D value = TextureAssets.Projectile[Type].Value;

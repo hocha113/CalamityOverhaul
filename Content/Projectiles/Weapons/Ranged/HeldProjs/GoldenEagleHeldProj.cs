@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
-    internal class GoldenEagleHelProj : BaseFeederGun
+    internal class GoldenEagleHeldProj : BaseFeederGun
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "GoldenEagle";
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.GoldenEagle>();
