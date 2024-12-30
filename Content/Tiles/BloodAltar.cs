@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.TileModules;
+﻿using CalamityMod.Items.Materials;
+using CalamityOverhaul.Content.Items.Placeable;
+using CalamityOverhaul.Content.TileModules;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -47,6 +49,14 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
             TileObjectData.newTile.LavaDeath = false;
             TileObjectData.addTile(Type);
+        }
+
+        public override void MouseOver(int i, int j) {
+            Player player = Main.LocalPlayer;
+            player.noThrow = 2;
+            player.mouseInterface = true;
+            player.cursorItemIconEnabled = true;
+            player.cursorItemIconID = ModContent.ItemType<BloodOrb>();
         }
 
         public override bool CanExplode(int i, int j) => false;
