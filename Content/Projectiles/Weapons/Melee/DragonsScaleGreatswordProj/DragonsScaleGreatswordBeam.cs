@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -7,7 +9,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatsw
     internal class DragonsScaleGreatswordBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "SporeCloud";
-
         public override void SetDefaults() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.width = Projectile.height = 24;
@@ -46,8 +47,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DragonsScaleGreatsw
             Projectile.Kill();
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            return false;
-        }
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 }
