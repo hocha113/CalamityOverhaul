@@ -65,9 +65,15 @@ namespace CalamityOverhaul.Content.Tiles
         public override bool RightClick(int i, int j) {
             if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 if (TileProcessorLoader.ByPositionGetTP(point, out CompressorTP compressor)) {
-                    Main.LocalPlayer.CWR().CompressorContrType = compressor.WhoAmI;
-                    CompressorUI.Instance.compressorEntity = compressor;
-                    CompressorUI.Instance.Active = !CompressorUI.Instance.Active;
+                    ref int playerContrType = ref Main.LocalPlayer.CWR().CompressorContrType;
+                    if (playerContrType == compressor.WhoAmI && playerContrType >= 0) {
+                        CompressorUI.Instance.Active = !CompressorUI.Instance.Active;
+                    }
+                    else {
+                        playerContrType = compressor.WhoAmI;
+                        CompressorUI.Instance.compressorEntity = compressor;
+                        CompressorUI.Instance.Active = true;
+                    }
                 }
                 SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });
             }

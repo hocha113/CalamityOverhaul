@@ -16,11 +16,13 @@ namespace CalamityOverhaul.Content.UIs.CompressorUIs
         internal bool IsRight;
         internal bool hoverInMainUI;
         public override void Update() {
-            if (FaterConversion != null && FaterConversion.NextConversion != null) {
-                if (!IsRight) {
+            if (!IsRight) {
+                if (FaterConversion != null && FaterConversion.NextConversion != null) {
                     FaterConversion.NextConversion.ContainerLeft.TargetID = FaterConversion.TargetItem.type;
                 }
-                else {
+            }
+            else {
+                if (FaterConversion != null) {
                     TargetID = FaterConversion.TargetItem.type;
                 }
             }

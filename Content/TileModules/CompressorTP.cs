@@ -2,8 +2,11 @@
 using CalamityOverhaul.Content.UIs.CompressorUIs;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.TileProcessors;
+using InnoVault.UIHandles;
 using System;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -64,6 +67,16 @@ namespace CalamityOverhaul.Content.TileModules
             }
             else {
                 gloawTime = 0;
+            }
+
+            if (!CompressorUI.Instance.Active) {
+                return;
+            }
+
+            if ((leng >= maxleng || player.dead) && modPlayer.CompressorContrType == WhoAmI) {
+                CompressorUI.Instance.Active = false;
+                modPlayer.CompressorContrType = -1;
+                SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.2f });
             }
         }
     }
