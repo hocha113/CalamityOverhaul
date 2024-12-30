@@ -90,6 +90,10 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int TETramContrType;
         /// <summary>
+        /// Compressor归属
+        /// </summary>
+        public int CompressorContrType;
+        /// <summary>
         /// 欧米茄指示箭头计数器
         /// </summary>
         public int InspectOmigaTime;

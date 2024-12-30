@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
 
             MouseState currentMouseState = Mouse.GetState();
             int scrollWheelDelta = currentMouseState.ScrollWheelValue - oldMouseState.ScrollWheelValue;
-            rollerValue += scrollWheelDelta;
+            rollerValue -= scrollWheelDelta;
             rollerValue = MathHelper.Clamp(rollerValue, 0, elementsPerColumn * ItemVidous.Height);
             oldMouseState = currentMouseState;
             rollerSengs = (rollerValue / (elementsPerColumn * ItemVidous.Height)) * boxHeight;

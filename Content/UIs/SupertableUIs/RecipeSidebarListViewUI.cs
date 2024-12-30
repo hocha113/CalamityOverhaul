@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             siderHeight = (int)(handerHeight / recipeTargetElmts.Count * 7);
             MouseState currentMouseState = Mouse.GetState();
             int scrollWheelDelta = currentMouseState.ScrollWheelValue - oldMouseState.ScrollWheelValue;
-            rollerValue += scrollWheelDelta;
+            rollerValue -= scrollWheelDelta;
             rollerValue = MathHelper.Clamp(rollerValue, 64, handerHeight - 64 * 4);
             rollerValue = ((int)rollerValue / 64) * 64;
             oldMouseState = currentMouseState;
