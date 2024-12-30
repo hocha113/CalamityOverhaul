@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -25,6 +26,8 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override string Texture => CWRConstant.Item + "Tools/" + (IsPick ? "Pickaxe" : "Hammer");
         private Texture2D value => CWRUtils.GetT2DValue(Texture);
         private bool IsPick = true;
+        private bool rDown;
+        private bool oldRDown;
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));
@@ -42,8 +45,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.rare = ItemRarityID.Green;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<InfinitePickProj>();
-            Item.shootSpeed = 32;
             Item.pick = 9999;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems3;
         }
@@ -78,21 +79,16 @@ namespace CalamityOverhaul.Content.Items.Tools
                 SoundEngine.PlaySound(!IsPick ? CWRSound.Pecharge : CWRSound.Peuncharge, player.Center);
                 TextureAssets.Item[Type] = CWRUtils.GetT2DAsset(Texture);
             }
-        }
 
-        public override void ModifyShootStats(Player player, ref Vector2 position
-            , ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
-            type = player.altFunctionUse == 2 ? ModContent.ProjectileType<InfinitePickProj>() : ProjectileID.None;
-        }
+            rDown = player.PressKey(false);
+            bool justRDown = rDown && !oldRDown;
+            oldRDown = rDown;
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            if (player.altFunctionUse == 2) {
-                Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<InfinitePickProj>()
+            if (justRDown) {
+                Projectile.NewProjectile(player.FromObjectGetParent(), player.GetPlayerStabilityCenter()
+                    , player.Center.To(Main.MouseWorld).UnitVector() * 32, ModContent.ProjectileType<InfinitePickProj>()
                     , Item.damage, 0, player.whoAmI, IsPick ? 1 : 0, Main.MouseWorld.X, Main.MouseWorld.Y);
             }
-            
-            return false;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
