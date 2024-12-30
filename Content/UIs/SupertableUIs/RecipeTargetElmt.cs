@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, borderedWidth, borderedHeight);
             Rectangle mouseRec = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
-            hoverInMainPage = mouseRec.Intersects(UIHitBox);
+            hoverInMainPage = mouseRec.Intersects(UIHitBox) && mouseRec.Intersects(UIHandleLoader.GetUIHandleInstance<RecipeSidebarListViewUI>().UIHitBox);
             float targetSize = 1;
             Color targetColor = Color.Azure * 0.2f;
             if (hoverInMainPage) {

@@ -109,24 +109,20 @@ namespace CalamityOverhaul.Content.Tiles
             if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 if (TileProcessorLoader.ByPositionGetTP(point, out TramModuleTP tram)) {
                     ref int playerTramType = ref Main.LocalPlayer.CWR().TETramContrType;
-                    //if (playerTramType == tram.WhoAmI && playerTramType >= 0) {
-                    //    SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
-                    //}
-                    //else {
-                    //    playerTramType = tram.WhoAmI;
-                    //    SupertableUI.tramModuleEntity = tram;
-                    //    SupertableUI.Instance.Active = true;
-                    //    if (SupertableUI.Instance.Active && !Main.playerInventory) {
-                    //        //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
-                    //        Main.playerInventory = true;
-                    //    }
-                    //}
-                    playerTramType = tram.WhoAmI;
-                    SupertableUI.tramModuleEntity = tram;
-                    SupertableUI.Instance.Active = true;
-                    if (SupertableUI.Instance.Active && !Main.playerInventory) {
-                        //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
-                        Main.playerInventory = true;
+                    if (playerTramType == tram.WhoAmI && playerTramType >= 0) {
+                        if (SupertableUI.tramModuleEntity == null) {
+                            SupertableUI.tramModuleEntity = tram;
+                        }
+                        SupertableUI.Instance.Active = !SupertableUI.Instance.Active;
+                    }
+                    else {
+                        playerTramType = tram.WhoAmI;
+                        SupertableUI.tramModuleEntity = tram;
+                        SupertableUI.Instance.Active = true;
+                        if (SupertableUI.Instance.Active && !Main.playerInventory) {
+                            //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
+                            Main.playerInventory = true;
+                        }
                     }
                 }
                 SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.3f });

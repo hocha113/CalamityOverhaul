@@ -79,8 +79,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public override bool Active {
             get => player.CWR().SupertableUIStartBool;
             set {
-                tpEntityLoadenItems();
                 player.CWR().SupertableUIStartBool = value;
+                tpEntityLoadenItems();
             }
         }
 
@@ -97,7 +97,13 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         internal void tpEntityLoadenItems() {
             if (tramModuleEntity != null && tramModuleEntity.Active) {
-                tramModuleEntity.items = items;
+                if (tramModuleEntity.items == null) {
+                    tramModuleEntity.items = items;
+                }
+                else {
+                    items = tramModuleEntity.items;
+                }
+
                 if (!VaultUtils.isSinglePlayer) {
                     tramModuleEntity.SendData();
                 }

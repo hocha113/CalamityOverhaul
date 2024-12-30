@@ -88,11 +88,11 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// Tramg归属
         /// </summary>
-        public int TETramContrType;
+        public int TETramContrType = -1;
         /// <summary>
         /// Compressor归属
         /// </summary>
-        public int CompressorContrType;
+        public int CompressorContrType = -1;
         /// <summary>
         /// 欧米茄指示箭头计数器
         /// </summary>

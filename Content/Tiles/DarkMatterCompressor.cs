@@ -67,6 +67,9 @@ namespace CalamityOverhaul.Content.Tiles
                 if (TileProcessorLoader.ByPositionGetTP(point, out CompressorTP compressor)) {
                     ref int playerContrType = ref Main.LocalPlayer.CWR().CompressorContrType;
                     if (playerContrType == compressor.WhoAmI && playerContrType >= 0) {
+                        if (CompressorUI.Instance.compressorEntity == null) {
+                            CompressorUI.Instance.compressorEntity = compressor;
+                        }
                         CompressorUI.Instance.Active = !CompressorUI.Instance.Active;
                     }
                     else {
