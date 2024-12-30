@@ -3,12 +3,10 @@ using CalamityMod.Items.Tools;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Materials;
-
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -84,7 +82,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             bool justRDown = rDown && !oldRDown;
             oldRDown = rDown;
 
-            if (justRDown) {
+            if (justRDown && !player.CWR().uiMouseInterface && !player.cursorItemIconEnabled && player.cursorItemIconID == 0) {
                 Projectile.NewProjectile(player.FromObjectGetParent(), player.GetPlayerStabilityCenter()
                     , player.Center.To(Main.MouseWorld).UnitVector() * 32, ModContent.ProjectileType<InfinitePickProj>()
                     , Item.damage, 0, player.whoAmI, IsPick ? 1 : 0, Main.MouseWorld.X, Main.MouseWorld.Y);
