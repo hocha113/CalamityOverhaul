@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons
+namespace CalamityOverhaul.Common
 {
     internal interface IDrawWarp
     {

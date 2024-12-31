@@ -32,18 +32,19 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
         public override void SetDefaults() {
             Item.damage = 9999;
-            Item.DamageType = EndlessDamageClass.Instance;
+            Item.knockBack = 6;
             Item.width = 40;
             Item.height = 40;
             Item.useTime = 1;
             Item.useAnimation = 10;
             Item.useStyle = ItemUseStyleID.Swing;
-            Item.knockBack = 6;
+            Item.DamageType = EndlessDamageClass.Instance;
             Item.value = Item.buyPrice(gold: 999);
             Item.rare = ItemRarityID.Green;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
             Item.pick = 9999;
+            Item.tileBoost = 64;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems3;
         }
 
@@ -63,13 +64,15 @@ namespace CalamityOverhaul.Content.Items.Tools
             if (IsPick) {
                 Item.pick = 9999;
                 Item.hammer = 0;
-                Item.useAnimation = Item.useTime = 10;
+                Item.useTime = 1;
+                Item.useAnimation = 10;
 
             }
             else {
                 Item.pick = 0;
                 Item.hammer = 9999;
-                Item.useAnimation = Item.useTime = 30;
+                Item.useTime = 2;
+                Item.useAnimation = 10;
             }
 
             if (CWRKeySystem.InfinitePickSkillKey.JustPressed) {

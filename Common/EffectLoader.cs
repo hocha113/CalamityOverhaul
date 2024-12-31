@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
+﻿using CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Projectiles.Weapons;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
 using CalamityOverhaul.Content.Tiles;

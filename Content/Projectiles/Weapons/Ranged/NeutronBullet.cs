@@ -1,4 +1,5 @@
 ﻿using CalamityMod;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

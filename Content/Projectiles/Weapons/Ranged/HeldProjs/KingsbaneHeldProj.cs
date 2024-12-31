@@ -43,18 +43,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PreInOwnerUpdate() {
             thisTime++;
             if (DownLeft && IsKreload && !Owner.CWR().uiMouseInterface) {
-                if (thisTime % 2 == 0)
+                if (thisTime % 2 == 0) {
                     chargeSoundSpanTimer++;
+                }
                 Projectile.frameCounter++;
 
                 if (Projectile.frameCounter > upNeedsSengs) {
                     if (Projectile.frame == 1 && thisTime < 85) {
                         Projectile.frame = 0;
                     }
-                    else
+                    else {
                         Projectile.frame++;
-                    if (upNeedsSengs > 0)
+                    }
+                        
+                    if (upNeedsSengs > 0) {
                         upNeedsSengs--;
+                    }
                     Projectile.frameCounter = 0;
                 }
 
@@ -122,11 +126,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             Projectile.NewProjectile(Source, GunShootPos, ShootVelocity.RotatedByRandom(MathHelper.ToRadians(4f)) * 3
                 , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             chargeValue++;
-        }
-
-        public override void PostFiringShoot() {
-            if (!thisOnFire) { return; }
-            base.PostFiringShoot();
         }
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
