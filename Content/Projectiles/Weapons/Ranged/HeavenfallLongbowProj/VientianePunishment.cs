@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
         public ref float TargetIndex => ref Projectile.ai[2];
 
-        public static string[] VientianeTex = new string[]{
+        public static string[] VientianeTex = [
             "Alluvion",
             "ArterialAssault",
             "AstralBow",
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
             "Ultima",
             "Toxibow",
             "VernalBolter"
-        };
+        ];
 
         public Color[] VientianeColors;
 

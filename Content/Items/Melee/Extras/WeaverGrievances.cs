@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
 
     internal class WeaverBeam : ModProjectile
     {
-        public override string Texture => CWRConstant.Masking + "Wave_highest";
+        public override string Texture => CWRConstant.Cay_Proj_Melee + "BansheeHookScythe";
         public static Color sloudColor1 => new Color(100, 43, 69);
         public static Color sloudColor2 => new Color(200, 111, 145);
         public override void SetStaticDefaults() {
@@ -447,7 +447,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D texture = CWRUtils.GetT2DValue(CWRConstant.Cay_Proj_Melee + "BansheeHookScythe");
+            Texture2D texture = TextureAssets.Projectile[Type].Value;
             Vector2 drawOrigin = texture.Size() / 2;
             for (int k = 0; k < Projectile.oldPos.Length; k++) {
                 Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + Projectile.Size / 2;

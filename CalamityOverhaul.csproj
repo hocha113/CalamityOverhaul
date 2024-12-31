@@ -29,12 +29,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\Effects\ColorGradient.fx" />
+    <None Remove="Assets\Effects\GradientTrail.fx" />
     <None Remove="Assets\Effects\InShootGlow.fx" />
     <None Remove="assets\effects\KnifeDistortion.fx" />
     <None Remove="Assets\Effects\KnifeRendering.fx" />
     <None Remove="Assets\Effects\NeutronRingShader.fx" />
     <None Remove="Assets\Effects\PrimeHaloShader.fx" />
     <None Remove="Assets\Effects\StreamerDust.fx" />
+    <None Remove="Assets\Effects\TrailWarp.fx" />
     <None Remove="Assets\Effects\TwistColoring.fx" />
     <None Remove="Assets\Effects\WarpShader.fx" />
     <None Remove="Assets\Events\TungstenRiotIcon.png" />
@@ -58,6 +60,10 @@
     <None Remove="Assets\Masking\WavyNoise.png" />
     <None Remove="Assets\Projectiles\AcidEtchedTearDrop.png" />
     <None Remove="Assets\Projectiles\DeathLaser.png" />
+    <None Remove="Assets\Projectiles\Ranged\TurbulenceArrowHighlight.png" />
+    <None Remove="Assets\Projectiles\Ranged\TurbulenceFlow.png" />
+    <None Remove="Assets\Projectiles\Ranged\TurbulenceGradient.png" />
+    <None Remove="Assets\Projectiles\Ranged\TurbulenceGradient2.png" />
     <None Remove="Assets\Sky\PGBolt.png" />
     <None Remove="Assets\Sky\PGFlash.png" />
     <None Remove="Assets\UIs\ScrollbarInner.png" />

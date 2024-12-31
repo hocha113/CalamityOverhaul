@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
             if (BaseRItem.IsVanilla) {
                 Main.instance.LoadItem(BaseRItem.TargetID);
             }
-            float size = CWRUtils.GetDrawItemSize(item, Width);
+            float size = VaultUtils.GetDrawItemSize(item, Width);
             VaultUtils.SimpleDrawItem(spriteBatch, BaseRItem.TargetID, DrawPosition + new Vector2(Width, Height) / 2
                 , size, 0, Color.White * OverhaulTheBibleUI.Instance._sengs, Vector2.Zero);
         }

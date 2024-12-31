@@ -3502,6 +3502,8 @@ Projectiles: {
 	// MeowmereHeld.DisplayName: Meowmere Held
 	// SpaceGunHeld.DisplayName: Space Gun Held
 	// StarWrathHeld.DisplayName: Star Wrath Held
+	// TurbulenceArrow.DisplayName: Turbulence Arrow
+	// StarshipAmmo.DisplayName: Starship Ammo
 }
 
 Configs: {

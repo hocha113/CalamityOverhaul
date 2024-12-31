@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 4, DrawPosition, borderedWidth, borderedHeight
                     , Color.AliceBlue * 0.8f * PiscicultureUI._sengs, Color.Azure * 0.2f * PiscicultureUI._sengs, borderedSize);
             if (Item.type > ItemID.None) {
-                float drawSize = CWRUtils.GetDrawItemSize(Item, borderedWidth) * borderedSize;
+                float drawSize = VaultUtils.GetDrawItemSize(Item, borderedWidth) * borderedSize;
                 Vector2 drawPos = DrawPosition + new Vector2(borderedWidth, borderedHeight) / 2;
                 VaultUtils.SimpleDrawItem(spriteBatch, Item.type, drawPos, drawSize, 0, Color.White);
             }

@@ -83,18 +83,18 @@ namespace CalamityOverhaul.Content.UIs.CompressorUIs
                     Texture2D aim = CWRUtils.GetT2DValue(CWRConstant.Other + "AimTarget");
                     spriteBatch.Draw(aim, drawPos, null, Color.White * 0.4f, 0, aim.Size() / 2, 0.1f, SpriteEffects.None, 0);
 
-                    float drawSize = CWRUtils.GetDrawItemSize(new Item(TargetID), (int)(ItemConversion.Weith * 0.6f)) * 1;
+                    float drawSize = VaultUtils.GetDrawItemSize(new Item(TargetID), (int)(ItemConversion.Weith * 0.6f)) * 1;
                     VaultUtils.SimpleDrawItem(spriteBatch, TargetID, drawPos, drawSize, 0, Color.White * 0.6f);
                 }
             }
             else if (TargetID > ItemID.None) {
-                float drawSize = CWRUtils.GetDrawItemSize(FaterConversion.TargetItem, (int)(ItemConversion.Weith * 0.6f)) * 1;
+                float drawSize = VaultUtils.GetDrawItemSize(FaterConversion.TargetItem, (int)(ItemConversion.Weith * 0.6f)) * 1;
                 Vector2 drawPos = DrawPosition + new Vector2(ItemConversion.Weith, ItemConversion.Height) / 2;
                 VaultUtils.SimpleDrawItem(spriteBatch, TargetID, drawPos, drawSize, 0, Color.White * 0.6f);
             }
 
             if (Item.type > ItemID.None) {
-                float drawSize = CWRUtils.GetDrawItemSize(Item, ItemConversion.Weith) * 1;
+                float drawSize = VaultUtils.GetDrawItemSize(Item, ItemConversion.Weith) * 1;
                 Vector2 drawPos = DrawPosition + new Vector2(ItemConversion.Weith, ItemConversion.Height) / 2;
                 VaultUtils.SimpleDrawItem(spriteBatch, Item.type, drawPos, drawSize, 0, Color.White);
                 if (Item.stack > 1) {

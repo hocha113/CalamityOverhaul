@@ -701,7 +701,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         }
 
         public virtual Matrix GetTransfromMaxrix() {
-            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
             Matrix view = Main.GameViewMatrix.TransformationMatrix;
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
             return world * view * projection;
@@ -726,8 +726,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
                 var topColor = Color.Lerp(new Color(238, 218, 130, 200), new Color(167, 127, 95, 0), 1 - factor);
                 var bottomColor = Color.Lerp(new Color(109, 73, 86, 200), new Color(83, 16, 85, 0), 1 - factor);
-                bars.Add(new VertexPositionColorTexture(Top.Vec3(), topColor, new Vector2(factor, 0)));
-                bars.Add(new VertexPositionColorTexture(Bottom.Vec3(), bottomColor, new Vector2(factor, 1)));
+                bars.Add(new VertexPositionColorTexture(Top.ToVector3(), topColor, new Vector2(factor, 0)));
+                bars.Add(new VertexPositionColorTexture(Bottom.ToVector3(), bottomColor, new Vector2(factor, 1)));
             }
 
             if (bars.Count > 2) {

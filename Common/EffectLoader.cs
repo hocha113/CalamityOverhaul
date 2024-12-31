@@ -42,7 +42,8 @@ namespace CalamityOverhaul.Common
             loadFiltersEffect("CWRMod:twistColoringShader", "TwistColoring", "TwistColoringPass");
             loadFiltersEffect("CWRMod:knifeRendering", "KnifeRendering", "KnifeRenderingPass");
             loadFiltersEffect("CWRMod:knifeDistortion", "KnifeDistortion", "KnifeDistortionPass");
-            loadFiltersEffect("CWRMod:crystal", "Crystal", "CrystalPass");
+            loadFiltersEffect("CWRMod:gradientTrail", "GradientTrail", "GradientTrailPass");
+            loadFiltersEffect("CWRMod:trailWarp", "TrailWarp", "TrailWarpPass");
             StreamerDustShader = new ArmorShaderData(getEffect("StreamerDust"), "StreamerDustPass");
             InShootGlowShader = new ArmorShaderData(getEffect("InShootGlow"), "InShootGlowPass");
         }
@@ -121,6 +122,13 @@ namespace CalamityOverhaul.Common
             }
 
             DrawPrimitiveProjectile();
+
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointWrap
+                , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            DrawAdditiveProjectile();
+
+            Main.spriteBatch.End();
         }
 
         private static void DrawPrimitiveProjectile() {
@@ -130,6 +138,17 @@ namespace CalamityOverhaul.Common
                 }
                 if (p.ModProjectile is IDrawPrimitive primitive) {
                     primitive.DrawPrimitives();
+                }
+            }
+        }
+
+        private static void DrawAdditiveProjectile() {
+            foreach (var p in Main.projectile) {
+                if (p.ModProjectile == null || !p.active) {
+                    continue;
+                }
+                if (p.ModProjectile is IDrawAdditive additive) {
+                    additive.DrawAdditive(Main.spriteBatch);
                 }
             }
         }

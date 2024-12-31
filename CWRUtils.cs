@@ -213,6 +213,23 @@ namespace CalamityOverhaul
         public static void SetArrowRot(int proj) => Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
         public static void SetArrowRot(this Projectile proj) => proj.rotation = proj.velocity.ToRotation() + MathHelper.PiOver2;
 
+        public static void UpdateOldPosCache(this Projectile projectile, bool useCenter = true, bool addVelocity = true) {
+            for (int i = 0; i < projectile.oldPos.Length - 1; i++)
+                projectile.oldPos[i] = projectile.oldPos[i + 1];
+            projectile.oldPos[^1] = (useCenter ? projectile.Center : projectile.position) + (addVelocity ? projectile.velocity : Vector2.Zero);
+        }
+
+        public static void InitOldPosCache(this Projectile projectile, int trailCount, bool useCenter = true) {
+            projectile.oldPos = new Vector2[trailCount];
+
+            for (int i = 0; i < trailCount; i++) {
+                if (useCenter)
+                    projectile.oldPos[i] = projectile.Center;
+                else
+                    projectile.oldPos[i] = projectile.position;
+            }
+        }
+
         /// <summary>
         /// 关于火箭的弹药映射
         /// </summary>
@@ -1129,6 +1146,23 @@ namespace CalamityOverhaul
             return minusRadian < 0 ? (MathHelper.TwoPi + minusRadian) / MathHelper.TwoPi : minusRadian / MathHelper.TwoPi;
         }
 
+        public static T[] FastUnion<T>(this T[] front, T[] back) {
+            T[] combined = new T[front.Length + back.Length];
+
+            Array.Copy(front, combined, front.Length);
+            Array.Copy(back, 0, combined, front.Length, back.Length);
+
+            return combined;
+        }
+
+        public static Matrix GetTransfromMatrix() {
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+            Matrix view = Main.GameViewMatrix.TransformationMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            return world * view * projection;
+        }
+
         /// <summary>
         /// 生成一组不重复的随机数集合，数字的数量不能大于取值范围
         /// </summary>
@@ -1384,22 +1418,6 @@ namespace CalamityOverhaul
         #region DrawUtils
 
         #region 普通绘制工具
-
-        public static float GetDrawItemSize(this Item item, int sizeW = 32) {
-            Rectangle rectangle = Main.itemAnimations[item.type] != null ?
-                        Main.itemAnimations[item.type].GetFrame(TextureAssets.Item[item.type].Value)
-                        : TextureAssets.Item[item.type].Value.Frame(1, 1, 0, 0);
-
-            float size = 1f;
-            if (rectangle.Width > sizeW) {
-                size = sizeW / (float)rectangle.Width;
-            }
-            if (size * rectangle.Height > sizeW) {
-                size = sizeW / (float)rectangle.Height;
-            }
-            return size;
-        }
-
         public static void DrawMarginEffect(SpriteBatch spriteBatch, Texture2D tex, int drawTimer, Vector2 position
             , Rectangle? rect, Color color, float rot, Vector2 origin, float scale, SpriteEffects effects = 0) {
             float time = Main.GlobalTimeWrappedHourly;
@@ -1419,11 +1437,6 @@ namespace CalamityOverhaul
                 spriteBatch.Draw(tex, position + new Vector2(0f, 4f).RotatedBy(radians) * time, rect
                     , new Color(color.R, color.G, color.B, 77), rot, origin, scale, effects, 0);
             }
-        }
-
-        public static void SetAnimation(int type, int tickValue, int maxFrame) {
-            ItemID.Sets.AnimatesAsSoul[type] = true;
-            Main.RegisterItemAnimation(type, new DrawAnimationVertical(tickValue, maxFrame));
         }
 
         /// <summary>
@@ -1693,8 +1706,6 @@ namespace CalamityOverhaul
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(0, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
         }
-
-        public static Vector3 Vec3(this Vector2 vector) => new Vector3(vector.X, vector.Y, 0);
         #endregion
 
         #endregion

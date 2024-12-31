@@ -80,16 +80,18 @@ namespace CalamityOverhaul.Content.Items.Materials
 
             Texture2D noiseTex = CWRUtils.GetT2DValue(CWRConstant.Masking + "SplitTrail");
 
-            effect.Parameters["transformMatrix"].SetValue(projection);
-            effect.Parameters["basePos"].SetValue(new Vector2(line.X, line.Y));
-            effect.Parameters["scale"].SetValue(new Vector2(1.2f / Main.GameZoomTarget));
-            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.02f);
-            effect.Parameters["lightRange"].SetValue(0.15f);
-            effect.Parameters["lightLimit"].SetValue(0.45f);
-            effect.Parameters["addC"].SetValue(0.75f);
-            effect.Parameters["highlightC"].SetValue(Color.White.ToVector4());
-            effect.Parameters["brightC"].SetValue(Main.DiscoColor.ToVector4());
-            effect.Parameters["darkC"].SetValue(Main.DiscoColor.ToVector4());
+            if (effect != null) {
+                effect.Parameters["transformMatrix"].SetValue(projection);
+                effect.Parameters["basePos"].SetValue(new Vector2(line.X, line.Y));
+                effect.Parameters["scale"].SetValue(new Vector2(1.2f / Main.GameZoomTarget));
+                effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.02f);
+                effect.Parameters["lightRange"].SetValue(0.15f);
+                effect.Parameters["lightLimit"].SetValue(0.45f);
+                effect.Parameters["addC"].SetValue(0.75f);
+                effect.Parameters["highlightC"].SetValue(Color.White.ToVector4());
+                effect.Parameters["brightC"].SetValue(Main.DiscoColor.ToVector4());
+                effect.Parameters["darkC"].SetValue(Main.DiscoColor.ToVector4());
+            }
 
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, effect, Main.UIScaleMatrix);

@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
                 , 4, DrawPosition, borderedWidth, borderedHeight
                 , FishSkill.Item.GetColor(Color.White) * 0.8f * PiscicultureUI._sengs, backColor, borderedSize);
             if (FishSkill.Item.type > ItemID.None) {
-                float drawSize = CWRUtils.GetDrawItemSize(FishSkill.Item, borderedWidth) * borderedSize;
+                float drawSize = VaultUtils.GetDrawItemSize(FishSkill.Item, borderedWidth) * borderedSize;
                 Vector2 drawPos = DrawPosition + new Vector2(borderedWidth, borderedHeight) / 2;
                 VaultUtils.SimpleDrawItem(spriteBatch, FishSkill.Item.type, drawPos, drawSize, 0, Color.White);
             }

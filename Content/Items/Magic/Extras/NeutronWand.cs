@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -13,7 +14,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
         internal static int PType;
         void ICWRLoader.SetupData() => PType = ModContent.ItemType<NeutronWand>();
-        public override void SetStaticDefaults() => CWRUtils.SetAnimation(Type, 5, 12);
+        public override void SetStaticDefaults() {
+            ItemID.Sets.AnimatesAsSoul[Type] = true;
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 12));
+        }
         public override void SetDefaults() {
             Item.width = Item.height = 32;
             Item.damage = 282;

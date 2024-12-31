@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             Item item = new Item(recipeData.Target);
 
             if (item.type > ItemID.None) {
-                float drawSize = CWRUtils.GetDrawItemSize(item, borderedWidth) * borderedSizeF;
+                float drawSize = VaultUtils.GetDrawItemSize(item, borderedWidth) * borderedSizeF;
                 Vector2 drawPos = DrawPosition + new Vector2(borderedWidth, borderedHeight) / 2;
                 VaultUtils.SimpleDrawItem(spriteBatch, item.type, drawPos, drawSize, 0, Color.White);
             }
