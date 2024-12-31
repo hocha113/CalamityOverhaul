@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
         public override bool Active { get => _active || _sengs > 0; set => _active = value; }
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BookPans");
         private bool onDrag;
-        private bool onMainP;
         private bool onTopP;
         private bool onTopDarg;
         private bool _active;
@@ -95,7 +94,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, boxWeith, boxHeight);
             Rectangle topHit = new Rectangle((int)DrawPosition.X + boxWeith - 20, (int)DrawPosition.Y + boxHeight - 20, 20, 20);
             Rectangle mouseHit = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
-            onMainP = UIHitBox.Intersects(mouseHit);
+            hoverInMainPage = UIHitBox.Intersects(mouseHit);
             onTopP = topHit.Intersects(mouseHit);
         }
 
@@ -112,7 +111,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
                 elementsPerColumn = 1; // 确保至少有一行
             }
 
-            if (onMainP) {
+            if (hoverInMainPage) {
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Held && !onTopDarg && !UIHandleLoader.GetUIHandleOfType<SliderUI>().onDrag) {
                     if (!onDrag) {

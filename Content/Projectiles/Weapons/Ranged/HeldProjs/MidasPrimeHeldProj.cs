@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override void PreInOwnerUpdate() {
             CanRightClick = true;
             long cashAvailable2 = Utils.CoinsCount(out bool overflow2, Owner.inventory);
-            if (cashAvailable2 < 100 && !overflow2 || Owner.GetActiveRicoshotCoinCount() >= 4 || CartridgeHolderUI.Instance.OnMainP) {
+            if (cashAvailable2 < 100 && !overflow2 || Owner.GetActiveRicoshotCoinCount() >= 4 || CartridgeHolderUI.Instance.hoverInMainPage) {
                 if (!oldRsD && DownRight) {
                     SoundEngine.PlaySound(CWRSound.Ejection, Projectile.Center);
                 }

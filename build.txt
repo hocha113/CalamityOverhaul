@@ -1,5 +1,5 @@
 displayName = Calamity Overhaul
-modReferences = CalamityMod@2.0.4.3, InnoVault@1.5
+modReferences = CalamityMod@2.0.4.3, InnoVault@1.6
 sortAfter = CalamityMod, InnoVault
 weakReferences = WeaponOut@1.4.4.9
 homepage = https://github.com/hocha113/CalamityOverhaul

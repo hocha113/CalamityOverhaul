@@ -307,7 +307,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
 
             if ((!IsKreload || ignoreKreLoad) && kreloadTimeValue <= 0 && AmmoState.CurrentAmount > 0
-                && ModItem.NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.OnMainP
+                && ModItem.NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.hoverInMainPage
                 && OffsetPos.Length() <= 0.6f && Math.Abs(OffsetRot) <= 0.02f) {
                 OnKreload = true;
                 kreloadTimeValue = kreloadMaxTime;
@@ -559,7 +559,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 }
 
                 if (DownRight && !onFire && CanRightClick && SafeMousetStart
-                    && (!CartridgeHolderUI.Instance.OnMainP || SafeMousetStart2)) {//Owner.PressKey()
+                    && (!CartridgeHolderUI.Instance.hoverInMainPage || SafeMousetStart2)) {//Owner.PressKey()
                     SetGunBodyInFire();
                     if (IsKreload) {//&& Projectile.IsOwnedByLocalPlayer()
                         if (!onFireR) {

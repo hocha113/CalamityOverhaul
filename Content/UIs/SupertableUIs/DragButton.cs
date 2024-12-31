@@ -5,10 +5,10 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    internal class DragButton : UIHandle, ICWRLoader
+    internal class DragButton : UIHandle
     {
         public override Texture2D Texture => CWRAsset.Placeholder_ERROR.Value;
-        public static DragButton Instance;
+        public static DragButton Instance => UIHandleLoader.GetUIHandleOfType<DragButton>();
         public override float RenderPriority => 1;
         public override bool Active {
             get {
@@ -23,21 +23,19 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public Vector2 InSupPosOffset => new Vector2(554, 380);
         public Vector2 InPosOffsetDragToPos;
         public Vector2 DragVelocity;
-        public bool OnMain;
         public static int DontDragTime;
         public static bool OnDrag;
-        public override void Load() => Instance = this;
-        void ICWRLoader.UnLoadData() => Instance = null;
+
         public void Initialize() {
             if (DontDragTime > 0) {
                 DontDragTime--;
             }
             DrawPosition = SupertableUI.Instance.DrawPosition + InSupPosOffset;
-            OnMain = SupertableUI.Instance.onMainP && DontDragTime <= 0;
-            if (Main.mouseItem.type > ItemID.None && SupertableUI.Instance.onMainP2) {
+            hoverInMainPage = SupertableUI.Instance.hoverInMainPage && DontDragTime <= 0;
+            if (Main.mouseItem.type > ItemID.None && SupertableUI.Instance.hoverInPutItemCellPage) {
                 DontDragTime = 2;
                 OnDrag = false;
-                OnMain = false;
+                hoverInMainPage = false;
             }
         }
 
@@ -48,7 +46,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             Initialize();
 
-            if (OnMain) {
+            if (hoverInMainPage) {
                 if (keyLeftPressState == KeyPressState.Pressed && !OnDrag) {//如果玩家刚刚按下鼠标左键，并且此时没有开启拖拽状态
                     OnDrag = true;
                     InPosOffsetDragToPos = DrawPosition.To(MousePosition);//记录此时的偏移向量

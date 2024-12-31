@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
         public int borderedHeight;
         public float bordered_sengs;
         public float borderedSize;
-        public bool hoverInMainPage;
         public FishSkill FishSkill;
         public override void Update() {
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, borderedWidth, borderedHeight);

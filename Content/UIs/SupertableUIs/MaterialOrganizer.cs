@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     internal class MaterialOrganizer : UIHandle
     {
-        protected SupertableUI mainUI => SupertableUI.Instance;
+        protected SupertableUI mainUI => UIHandleLoader.GetUIHandleOfType<SupertableUI>();
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/OneClick");
         public override float RenderPriority => 2;
         public override bool Active {
@@ -24,18 +24,16 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
         }
         protected virtual Vector2 offsetDraw => new Vector2(570, 330);
-        private Rectangle mainRec;
         private int useTimeCoolding;
         private int useMuse3AddCount;
-        private bool onMainP;
         private bool checkSetO => GetType() != typeof(MaterialOrganizer);
 
         public override void Update() {
             // 更新当前绘制位置和矩形
             DrawPosition = mainUI.DrawPosition + offsetDraw;
-            mainRec = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 30, 30);
+            UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 30, 30);
             // 判断鼠标是否在主矩形内
-            onMainP = mainRec.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
+            hoverInMainPage = UIHitBox.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
             //int mouseState = DownStartL();
             int mouseState = (int)keyLeftPressState;
             // 重置鼠标点击计数器
@@ -43,7 +41,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 useMuse3AddCount = 30;
             }
             // 当鼠标在主区域内时，处理点击事件
-            if (onMainP) {
+            if (hoverInMainPage) {
                 if (mouseState == 1 || mouseState == 3) {
                     HandleClickEvents(mouseState);
                 }
@@ -84,11 +82,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
         public override void Draw(SpriteBatch spriteBatch) {
             Color color = Color.White;
-            if (onMainP) {
+            if (hoverInMainPage) {
                 color = Color.Gold;
             }
             spriteBatch.Draw(Texture, DrawPosition, null, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-            if (onMainP) {
+            if (hoverInMainPage) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
                 , checkSetO ? CWRLocText.GetTextValue("SupMUI_OneClick_Text2") : CWRLocText.GetTextValue("SupMUI_OneClick_Text1")
                 , DrawPosition.X - 30, DrawPosition.Y + 30, Color.White, Color.Black, new Vector2(0.3f), 0.8f);

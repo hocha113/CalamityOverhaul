@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
         public float sessionText_sengs;
         public int GreetingIndex;
         public string DialogTextContent;
-        public bool hoverInMainPage;
         public float borderedSize;
         public const int MaxGreetingCount = 13;
         private static float piscicultureUI_MainBox_sengs => PiscicultureUI._sengs;

@@ -11,7 +11,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     internal class CraftingSlotHighlighter : UIHandle, ICWRLoader
     {
-        public static CraftingSlotHighlighter Instance;
+        public static CraftingSlotHighlighter Instance => UIHandleLoader.GetUIHandleOfType<CraftingSlotHighlighter>();
+        private SupertableUI mainUI => UIHandleLoader.GetUIHandleOfType<SupertableUI>();
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/CallFull");
         public static Asset<Texture2D> eyeAsset;
         public override float RenderPriority => 2;
@@ -23,21 +24,17 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 return SupertableUI.Instance.Active;
             }
         }
-        private SupertableUI mainUI => SupertableUI.Instance;
-        public Rectangle MainRec;
-        public bool onMainP;
+        
         public bool eyEBool;
-        public override void Load() => Instance = this;
+
         void ICWRLoader.LoadAsset() => eyeAsset = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/UIs/SupertableUIs/Eye");
-        void ICWRLoader.UnLoadData() {
-            Instance = null;
-            eyeAsset = null;
-        }
+        void ICWRLoader.UnLoadData() => eyeAsset = null;
+
         public override void Update() {
             DrawPosition = mainUI.DrawPosition + new Vector2(460, 420);
-            MainRec = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 30, 30);
-            onMainP = MainRec.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
-            if (onMainP) {
+            UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 30, 30);
+            hoverInMainPage = UIHitBox.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
+            if (hoverInMainPage) {
                 //int mouseS = DownStartL();
                 int mouseS = (int)keyLeftPressState;
                 if (mouseS == 1) {
@@ -67,7 +64,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     }
                 }
             }
-            if (onMainP) {
+            if (hoverInMainPage) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
                 , eyEBool ? CWRLocText.GetTextValue("SupertableUI_Text4") : CWRLocText.GetTextValue("SupertableUI_Text5")
                 , DrawPosition.X - 30, DrawPosition.Y + 30, Color.White, Color.Black, new Vector2(0.3f), 0.8f);

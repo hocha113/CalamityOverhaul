@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         #region Data
         public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue2");
 
-        public static SupertableUI Instance { get; private set; }
+        public static SupertableUI Instance => UIHandleLoader.GetUIHandleOfType<SupertableUI>();
 
         private static RecipeSidebarListViewUI RecipeSidebarListView;
 
@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public static List<string[]> OtherRpsData_ZenithWorld_StringList = [];
 
         public static List<string[]> ModCall_OtherRpsData_StringList = [];
+
+        public static List<RecipeData> AllRecipes = [];
 
         public string[] StaticFullItemNames;
 
@@ -44,23 +46,19 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public Item inputItem;
         /// <summary>
-        /// 主UI的面板矩形
-        /// </summary>
-        private Rectangle mainRec;
-        /// <summary>
         /// 物品放置格子的面板矩形
         /// </summary>
-        private Rectangle mainRec2;
+        private Rectangle PutItemCellRec;
 
         public Rectangle inputRec;
 
         public Rectangle closeRec;
 
-        public Vector2 topLeft;
+        public Vector2 topLeft => DrawPosition + new Vector2(16, 30);
 
-        public static int cellWid;
+        public const int cellWid = 48;
 
-        public static int cellHig;
+        public const int cellHig = 46;
 
         public const int maxCellNumX = 9;
 
@@ -84,15 +82,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
         }
 
-        public bool onMainP;
-
-        public bool onMainP2;
+        public bool hoverInPutItemCellPage;
 
         public bool onInputP;
 
         public bool onCloseP;
-
-        public static List<RecipeData> AllRecipes = [];
         #endregion
 
         internal void tpEntityLoadenItems() {
@@ -110,8 +104,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
         }
 
-        public override void Load() => Instance = this;
-
         void ICWRLoader.SetupData() {
             LoadRecipe();
             RecipeUI.LoadAllRecipes();
@@ -121,7 +113,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             tramModuleEntity = null;
             RpsDataStringArrays = null;
             ModCall_OtherRpsData_StringList = [];
-            Instance = null;
         }
 
         public static void LoadRecipe() {
@@ -180,22 +171,17 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public void UpdateUIElementPos() {
-            topLeft = new Vector2(15, 30) + DrawPosition;
-            cellWid = 48;
-            cellHig = 46;
-
             Vector2 inUIMousePos = MousePosition - topLeft;
             int mouseXGrid = (int)(inUIMousePos.X / cellWid);
             int mouseYGrid = (int)(inUIMousePos.Y / cellHig);
             mouseInCellCoord = new Point(mouseXGrid, mouseYGrid);
-
-            UIHitBox = mainRec = new Rectangle((int)topLeft.X, (int)topLeft.Y, cellWid * maxCellNumX + 200, cellHig * maxCellNumY);
-            mainRec2 = new Rectangle((int)topLeft.X, (int)topLeft.Y, cellWid * maxCellNumX, cellHig * maxCellNumY);
+            UIHitBox = new Rectangle((int)topLeft.X, (int)topLeft.Y, cellWid * maxCellNumX + 200, cellHig * maxCellNumY);
+            PutItemCellRec = new Rectangle((int)topLeft.X, (int)topLeft.Y, cellWid * maxCellNumX, cellHig * maxCellNumY);
             inputRec = new Rectangle((int)(DrawPosition.X + 555), (int)(DrawPosition.Y + 215), 92, 90);
             closeRec = new Rectangle((int)(DrawPosition.X), (int)(DrawPosition.Y), 30, 30);
-            Rectangle mouseRec = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
-            onMainP = mainRec.Intersects(mouseRec);
-            onMainP2 = mainRec2.Intersects(mouseRec);
+            Rectangle mouseRec = MouseHitBox;
+            hoverInMainPage = UIHitBox.Intersects(mouseRec);
+            hoverInPutItemCellPage = PutItemCellRec.Intersects(mouseRec);
             onInputP = inputRec.Intersects(mouseRec);
             onCloseP = closeRec.Intersects(mouseRec);
         }
@@ -271,9 +257,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     Active = false;
                 }
             }
-            if (onMainP) {
+            if (hoverInMainPage) {
                 player.mouseInterface = true;
-                if (onMainP2) {
+                if (hoverInPutItemCellPage) {
                     if (museS == 1) {
                         if (items[inCoordIndex] == null) {
                             items[inCoordIndex] = new Item();
@@ -384,14 +370,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <param name="index"></param>
         /// <returns></returns>
         public Vector2 ArcCellPos(int index) {
-            if (maxCellNumX != 0) {
-                int y = index / maxCellNumX;
-                int x = index - (y * maxCellNumX);
-                return (new Vector2(x, y) * new Vector2(cellWid, cellHig)) + topLeft;
-            }
-            else {
-                return Vector2.Zero;
-            }
+            int y = index / maxCellNumX;
+            int x = index - (y * maxCellNumX);
+            return (new Vector2(x, y) * new Vector2(cellWid, cellHig)) + topLeft;
         }
 
         /// <summary>
@@ -815,7 +796,7 @@ End:;
             }
             spriteBatch.Draw(arrow, DrawPosition + new Vector2(460, 225), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出输出箭头
 
-            if (onMainP2 && inCoordIndex >= 0 && inCoordIndex <= 80) { //处理鼠标在UI格中查看物品的事情
+            if (hoverInPutItemCellPage && inCoordIndex >= 0 && inCoordIndex <= 80) { //处理鼠标在UI格中查看物品的事情
                 Item overItem = items[inCoordIndex];
                 if (overItem == null)
                     overItem = new Item();

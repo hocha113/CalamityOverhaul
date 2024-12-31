@@ -12,18 +12,13 @@ namespace CalamityOverhaul.Content.UIs
 {
     internal class CartridgeHolderUI : UIHandle
     {
-        public static class Date
-        {
-            public static float JARSengs;
-        }
-        private int Time;
-        public static CartridgeHolderUI Instance;
+        public static CartridgeHolderUI Instance => UIHandleLoader.GetUIHandleOfType<CartridgeHolderUI>();
         public static Texture2D TextureValue;
+        public static float JARSengs;
         private Item handItem => player.ActiveItem();
         private int bulletNum => player.ActiveItem().CWR().NumberBullets;
-        private Rectangle mainRec;
-        private bool onMainP;
         private float otherPotData;
+        private int Time;
         public override bool Active {
             get {
                 if (!CWRServerConfig.Instance.MagazineSystem) {
@@ -32,18 +27,16 @@ namespace CalamityOverhaul.Content.UIs
                 return handItem.type == ItemID.None ? false : handItem.CWR().HasCartridgeHolder;
             }
         }
-        public bool OnMainP => onMainP;
-        public override void Load() => Instance = this;
 
         public override void Update() {
             CWRItems cwrItem = handItem.CWR();
             if (TextureValue != null) {
-                mainRec = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, TextureValue.Width, TextureValue.Height);
+                UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, TextureValue.Width, TextureValue.Height);
                 if (cwrItem.CartridgeType == CartridgeUIEnum.Magazines)
-                    mainRec = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, TextureValue.Width, TextureValue.Height / 6);
-                onMainP = mainRec.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
+                    UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, TextureValue.Width, TextureValue.Height / 6);
+                hoverInMainPage = UIHitBox.Intersects(new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1));
             }
-            if (onMainP) {
+            if (hoverInMainPage) {
                 bool mr2 = true;
                 if (player.CWR().TryGetInds_BaseFeederGun(out BaseFeederGun gun)) {
                     if (gun.SafeMousetStart2) {
@@ -143,14 +136,14 @@ namespace CalamityOverhaul.Content.UIs
             if (cwrItem.CartridgeType == CartridgeUIEnum.JAR) {
                 Texture2D jar2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR_Full");
                 Texture2D ctb = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR_CTB");
-                Date.JARSengs = MathHelper.Lerp(Date.JARSengs, bulletNum / (float)cwrItem.AmmoCapacity, 0.05f);
-                float sengs = jar2.Height * (1 - Date.JARSengs);
+                JARSengs = MathHelper.Lerp(JARSengs, bulletNum / (float)cwrItem.AmmoCapacity, 0.05f);
+                float sengs = jar2.Height * (1 - JARSengs);
                 Rectangle rectangle = new(0, (int)sengs, jar2.Width, (int)(jar2.Height - sengs) + 1);
                 spriteBatch.Draw(TextureValue, DrawPosition, null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
                 spriteBatch.Draw(jar2, DrawPosition + new Vector2(4, sengs + 6), rectangle, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
                 spriteBatch.Draw(ctb, DrawPosition + new Vector2(4, 6), null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             }
-            if (onMainP) {
+            if (hoverInMainPage) {
                 string text = $"{CWRLocText.GetTextValue("CartridgeHolderUI_Text1")}\n";
                 int value = 0;
                 if (cwrItem.MagazineContents != null && cwrItem.MagazineContents.Length > 0) {

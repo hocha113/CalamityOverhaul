@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         private int borderedHeight;
         private int borderedSize;
         private float borderedSizeF;
-        private bool hoverInMainPage;
         private Color backColor = Color.Azure * 0.2f;
         private static RecipeSidebarListViewUI recipeSidebarListView => UIHandleLoader.GetUIHandleOfType<RecipeSidebarListViewUI>();
         public override void Update() {

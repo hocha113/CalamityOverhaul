@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Placeable;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -7,17 +8,16 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    public class SynthesisPreviewUI : ICWRLoader
+    public class SynthesisPreviewUI : UIHandle
     {
-        public static SynthesisPreviewUI Instance { get; private set; }
-        public Vector2 DrawPos;
+        public static SynthesisPreviewUI Instance => UIHandleLoader.GetUIHandleOfType<SynthesisPreviewUI>();
+        public override LayersModeEnum LayersMode => LayersModeEnum.None;
         public Texture2D mainBookPValue => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BookPans");
         public Texture2D mainCellValue => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue3");
         public Texture2D TOMTex => CWRUtils.GetT2DValue(CWRConstant.Asset + "Items/Placeable/" + "TransmutationOfMatterItem");
+        public Vector2 DrawPos;
         public bool DrawBool;
-        public bool OnSupTale => SupertableUI.Instance.onMainP || SupertableUI.Instance.onMainP2 || SupertableUI.Instance.onInputP || SupertableUI.Instance.onCloseP;
-        void ICWRLoader.LoadData() => Instance = this;
-        void ICWRLoader.UnLoadData() => Instance = null;
+        public bool OnSupTale => SupertableUI.Instance.hoverInMainPage || SupertableUI.Instance.hoverInPutItemCellPage || SupertableUI.Instance.onInputP || SupertableUI.Instance.onCloseP;
         /// <summary>
         /// 在只利用一个数字索引的情况下反向计算出对应的格坐标
         /// </summary>
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (SupertableUI.Instance.Active) {
                 drawPos = SupertableUI.Instance.DrawPosition - new Vector2(Instance.mainBookPValue.Width * 2.2f, 0);
             }
-            if (!SupertableUI.Instance.onMainP) {
+            if (!SupertableUI.Instance.hoverInMainPage) {
                 Instance.Draw(Main.spriteBatch, drawPos, OmigaSnyContent);
                 SynthesisPreviewStart.Instance.Update();
                 SynthesisPreviewStart.Instance.Draw(Main.spriteBatch);
@@ -69,8 +69,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
 
             if (!SupertableUI.Instance.Active) {
-                SupertableUI.Instance.onMainP =
-                SupertableUI.Instance.onMainP2 =
+                SupertableUI.Instance.hoverInMainPage =
+                SupertableUI.Instance.hoverInPutItemCellPage =
                 SupertableUI.Instance.onInputP =
                 SupertableUI.Instance.onCloseP = false;
             }
