@@ -58,6 +58,7 @@ namespace CalamityOverhaul.Common
 
             On_FilterManager.EndCapture += FilterManager_EndCapture;
             Main.OnResolutionChanged += Main_OnResolutionChanged;
+            On_Main.DrawDust += EndDraw;
         }
 
         void ICWRLoader.UnLoadData() {
@@ -71,6 +72,7 @@ namespace CalamityOverhaul.Common
 
             On_FilterManager.EndCapture -= FilterManager_EndCapture;
             Main.OnResolutionChanged -= Main_OnResolutionChanged;
+            On_Main.DrawDust -= EndDraw;
 
             Instance = null;
         }
@@ -95,19 +97,44 @@ namespace CalamityOverhaul.Common
                 screen = new RenderTarget2D(graphicsDevice, Main.screenWidth, Main.screenHeight);
             }
 
-            if (HasWarpEffect(out List<IDrawWarp> warpSets, out List<IDrawWarp> warpSetsNoBlueshift)) {
-                ProcessWarpSets(graphicsDevice, warpSets, false);
-                ProcessWarpSets(graphicsDevice, warpSetsNoBlueshift, true);
-            }
+            if (!Main.gameMenu) {
+                DrawPrimitiveProjectile();
 
-            if (HasPwoerEffect()) {
-                DrawPwoerEffect(graphicsDevice, Main.spriteBatch);
+                if (HasWarpEffect(out List<IDrawWarp> warpSets, out List<IDrawWarp> warpSetsNoBlueshift)) {
+                    ProcessWarpSets(graphicsDevice, warpSets, false);
+                    ProcessWarpSets(graphicsDevice, warpSetsNoBlueshift, true);
+                }
+
+                if (HasPwoerEffect()) {
+                    DrawPwoerEffect(graphicsDevice, Main.spriteBatch);
+                }
             }
 
             orig.Invoke(self, finalTexture, screenTarget1, screenTarget2, clearColor);
         }
 
-        private void ProcessWarpSets(GraphicsDevice graphicsDevice, List<IDrawWarp> warpSets, bool noBlueshift) {
+        private void EndDraw(On_Main.orig_DrawDust orig, Main self) {
+            orig(self);
+
+            if (Main.gameMenu) {
+                return;
+            }
+
+            DrawPrimitiveProjectile();
+        }
+
+        private static void DrawPrimitiveProjectile() {
+            foreach (var p in Main.projectile) {
+                if (p.ModProjectile == null || !p.active) {
+                    continue;
+                }
+                if (p.ModProjectile is IDrawPrimitive primitive) {
+                    primitive.DrawPrimitives();
+                }
+            }
+        }
+
+        private static void ProcessWarpSets(GraphicsDevice graphicsDevice, List<IDrawWarp> warpSets, bool noBlueshift) {
             if (warpSets.Count <= 0) {
                 return;
             }
@@ -151,7 +178,7 @@ namespace CalamityOverhaul.Common
             Main.spriteBatch.End();
         }
 
-        private void DrawPwoerEffect(GraphicsDevice graphicsDevice, SpriteBatch sb) {
+        private static void DrawPwoerEffect(GraphicsDevice graphicsDevice, SpriteBatch sb) {
             // 设置初始渲染目标和清除
             graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
             graphicsDevice.Clear(Color.Transparent);
@@ -209,9 +236,6 @@ namespace CalamityOverhaul.Common
         }
 
         private static bool HasPwoerEffect() {
-            if (Main.gameMenu) {
-                return false;
-            }
             if (!CWRServerConfig.Instance.MurasamaSpaceFragmentationBool) {
                 return false;
             }
@@ -221,10 +245,6 @@ namespace CalamityOverhaul.Common
         private static bool HasWarpEffect(out List<IDrawWarp> warpSets, out List<IDrawWarp> warpSetsNoBlueshift) {
             warpSets = [];
             warpSetsNoBlueshift = [];
-
-            if (Main.gameMenu) {
-                return false;
-            }
 
             foreach (Projectile p in Main.ActiveProjectiles) {
                 if (p.ModProjectile is null) {
