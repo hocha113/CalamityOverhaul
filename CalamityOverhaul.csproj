@@ -55,6 +55,7 @@
     <None Remove="Assets\Masking\Streak3.png" />
     <None Remove="Assets\Masking\Wave.png" />
     <None Remove="Assets\Masking\WavyNoise.png" />
+    <None Remove="Assets\Players\Quiver_back.png" />
     <None Remove="Assets\Projectiles\AcidEtchedTearDrop.png" />
     <None Remove="Assets\Projectiles\DeathLaser.png" />
     <None Remove="Assets\Sky\PGBolt.png" />
@@ -65,7 +66,6 @@
     <None Remove="Localization\es-ES_Mods.CalamityOverhaul.hjson" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\Players\" />
     <Folder Include="Assets\TileModules\" />
   </ItemGroup>
   <ItemGroup>
