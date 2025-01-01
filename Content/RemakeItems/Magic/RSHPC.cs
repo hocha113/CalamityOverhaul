@@ -11,6 +11,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static CalamityOverhaul.Content.RemakeItems.Core.ItemRebuildLoader;
 
 namespace CalamityOverhaul.Content.RemakeItems.Magic
 {
@@ -21,7 +22,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Magic
         public override int ProtogenesisID => ModContent.ItemType<SHPCEcType>();
         public override string TargetToolTipItemName => "";
 
-        private static void onSHPCToolFunc(RItemLoader.On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
+        private static void onSHPCToolFunc(On_ModItem_ModifyTooltips_Delegate orig, object obj, List<TooltipLine> list) { }
 
         void ICWRLoader.LoadData() {
             methodInfo = typeof(SHPC).GetMethod("ModifyTooltips", BindingFlags.Public | BindingFlags.Instance);

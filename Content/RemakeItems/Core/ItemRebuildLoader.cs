@@ -14,8 +14,8 @@ using static CalamityOverhaul.CWRMod;
 
 namespace CalamityOverhaul.Content.RemakeItems.Core
 {
-    //关于物品重置节点的钩子均挂载于此处
-    internal class RItemLoader : GlobalItem, ICWRLoader
+    //关于物品重制节点的钩子均挂载于此处
+    internal class ItemRebuildLoader : GlobalItem, ICWRLoader
     {
         #region On and IL
         internal delegate bool On_Item_Dalegate(Item item);
@@ -462,6 +462,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         }
         #endregion
 
+        #region Loader Item Hook
         public static void ProcessRemakeAction(Item item, Action<BaseRItem> action) {
             if (!CWRServerConfig.Instance.WeaponOverhaul) {
                 return;
@@ -789,5 +790,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
         public override void UseStyle(Item item, Player player, Rectangle heldItemFrame) {
             ProcessRemakeAction(item, (inds) => inds.UseStyle(item, player, heldItemFrame));
         }
+
+        #endregion
     }
 }
