@@ -45,10 +45,6 @@ namespace CalamityOverhaul.Content.RemakeItems.Core
             return true;
         }
 
-        public virtual void Load() {
-
-        }
-
         /// <summary>
         /// 加入配方，当关闭了强制内容替换设置时进行调用
         /// </summary>

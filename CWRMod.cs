@@ -65,6 +65,8 @@ namespace CalamityOverhaul
 
             {
                 RItemInstances = [];//这里直接进行初始化，便不再需要进行UnLoad卸载
+
+
                 List<Type> rItemIndsTypes = VaultUtils.GetSubclassTypeList(typeof(BaseRItem));
                 //($"一共获取到{rItemIndsTypes.Count}个待挑选元素Type").DompInConsole();
                 foreach (Type type in rItemIndsTypes) {
@@ -76,7 +78,6 @@ namespace CalamityOverhaul
                             if (inds.CanLoad()) {
                                 //($"正在初始化元素{type}").DompInConsole();
                                 inds.SetReadonlyTargetID = inds.TargetID;//这里默认加载一次，在多数情况使其下不用重写Load()方法
-                                inds.Load();
                                 inds.SetStaticDefaults();
                                 if (inds.TargetID != 0) {
                                     //($"成功加入元素{type}").DompInConsole();
