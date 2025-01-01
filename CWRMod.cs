@@ -61,71 +61,16 @@ namespace CalamityOverhaul
         public override object Call(params object[] args) => ModCall.Hander(args);
 
         public override void PostSetupContent() {
-            LoadMods = ModLoader.Mods.ToList();
-
             {
-                RItemInstances = [];//这里直接进行初始化，便不再需要进行UnLoad卸载
-
-
-                List<Type> rItemIndsTypes = VaultUtils.GetSubclassTypeList(typeof(BaseRItem));
-                //($"一共获取到{rItemIndsTypes.Count}个待挑选元素Type").DompInConsole();
-                foreach (Type type in rItemIndsTypes) {
-                    //($"指向元素{type}进行分析").DompInConsole();
-                    if (type != typeof(BaseRItem)) {
-                        object obj = Activator.CreateInstance(type);
-                        if (obj is BaseRItem inds) {
-                            //($"元素{type}成功转换为object并进行分析").DompInConsole();
-                            if (inds.CanLoad()) {
-                                //($"正在初始化元素{type}").DompInConsole();
-                                inds.SetReadonlyTargetID = inds.TargetID;//这里默认加载一次，在多数情况使其下不用重写Load()方法
-                                inds.SetStaticDefaults();
-                                if (inds.TargetID != 0) {
-                                    //($"成功加入元素{type}").DompInConsole();
-                                    //("______________________________").DompInConsole();
-                                    RItemInstances.Add(inds);
-                                }//最后再判断一下TargetID是否为0，因为如果这是一个有效的Ritem实例，那么它的TargetID就不可能为0，否则将其添加进去会导致LoadRecipe部分报错
-                                else {
-                                    //($"元素{type}的TargetID返回0，载入失败").DompInConsole();
-                                }
-                            }
-                            else {
-                                //($"元素{type}CanLoad返回false").DompInConsole();
-                            }
-                        }
-                        else {
-                            //($"元素{type}转换BaseRItem失败").DompInConsole();
-                        }
-                    }
-                    else {
-                        //($"元素{type}是{typeof(BaseRItem)}").DompInConsole();
-                    }
-                }
-                //($"{RItemInstances.Count}个元素已经装载进RItemInstances").DompInConsole();
+                LoadMods = [.. ModLoader.Mods];
             }
 
             {
-                EctypeItemInstance = [];
-                List<Type> ectypeIndsTypes = VaultUtils.GetSubclassTypeList(typeof(BaseRItem));
-                foreach (Type type in ectypeIndsTypes) {
-                    if (type != typeof(EctypeItem)) {
-                        object obj = Activator.CreateInstance(type);
-                        if (obj is EctypeItem inds) {
-                            EctypeItemInstance.Add(inds);
-                        }
-                    }
-                }
-            }
-
-            {
-                NPCCustomizerInstances = [];//这里直接进行初始化，便不再需要进行UnLoad卸载
-                List<Type> npcCustomizerIndsTypes = VaultUtils.GetSubclassTypeList(typeof(NPCCustomizer));
-                foreach (Type type in npcCustomizerIndsTypes) {
-                    if (type != typeof(NPCCustomizer)) {
-                        object obj = Activator.CreateInstance(type);
-                        if (obj is NPCCustomizer inds) {
-                            NPCCustomizerInstances.Add(inds);
-                        }
-                    }
+                RItemInstances = VaultUtils.GetSubclassInstances<BaseRItem>();
+                RItemInstances.RemoveAll(inds => !inds.CanLoad() || inds.TargetID == 0);
+                foreach (var rItem in RItemInstances) {
+                    rItem.SetReadonlyTargetID = rItem.TargetID;
+                    rItem.SetStaticDefaults();
                 }
             }
 
@@ -135,6 +80,14 @@ namespace CalamityOverhaul
                     RItemIndsDict.Add(ritem.SetReadonlyTargetID, ritem);
                 }
                 Instance.Logger.Info($"{RItemIndsDict.Count} key pair is loaded into the RItemIndsDict");
+            }
+
+            {
+                EctypeItemInstance = VaultUtils.GetSubclassInstances<EctypeItem>();
+            }
+
+            {
+                NPCCustomizerInstances = VaultUtils.GetSubclassInstances<NPCCustomizer>();
             }
 
             {
@@ -177,12 +130,12 @@ namespace CalamityOverhaul
                 setup.UnLoadData();
             }
             emptyMod();
-            LoadMods = null;
-            ILoaders = null;
-            RItemInstances = null;
-            EctypeItemInstance = null;
-            NPCCustomizerInstances = null;
-            RItemIndsDict = null;
+            LoadMods?.Clear();
+            ILoaders?.Clear();
+            RItemInstances?.Clear();
+            RItemIndsDict?.Clear();
+            EctypeItemInstance?.Clear();
+            NPCCustomizerInstances?.Clear();
             CWR_InItemLoader_Set_Shoot_Hook = null;
             CWR_InItemLoader_Set_CanUse_Hook = null;
             CWR_InItemLoader_Set_UseItem_Hook = null;
