@@ -4,4 +4,4 @@ sortAfter = CalamityMod, InnoVault
 weakReferences = WeaponOut@1.4.4.9
 homepage = https://github.com/hocha113/CalamityOverhaul
 author = HoCha113
-version = 0.5025
+version = 0.5026
