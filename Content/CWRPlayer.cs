@@ -300,15 +300,16 @@ namespace CalamityOverhaul.Content
                 int frameindex = 0;
 
                 if (cwrItem.IsBow) {
+                    int maxframe = 4;
                     if (player.velocity.Y == 0f && player.velocity.X != 0) {
-                        frameindex = (int)(Main.GameUpdateCount / 3 % 5);
+                        frameindex = (int)(Main.GameUpdateCount / 4 % maxframe);
                     }
                     value = CWRAsset.Quiver_back_Asset.Value;
-                    frame = CWRUtils.GetRec(value, frameindex, 5);
+                    frame = CWRUtils.GetRec(value, frameindex, maxframe);
                     if (HeldStyle >= 0) {
-                        frame = CWRUtils.GetRec(value, 0, 5);
+                        frame = CWRUtils.GetRec(value, 0, maxframe);
                     }
-                    orig = CWRUtils.GetOrig(value, 5);
+                    orig = frame.Size() / 2;
                 }
 
                 if (item.type == ModContent.ItemType<DarkFrostSolstice>()) {
@@ -324,9 +325,10 @@ namespace CalamityOverhaul.Content
                 }
 
                 SpriteEffects spriteEffects = Player.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                Vector2 drawPos = Vector2.Zero;
+                Vector2 drawPos;
                 drawPos.X = (int)(((int)player.position.X) - Main.screenPosition.X + (player.width / 2) - (9 * player.direction)) - 4f * player.direction + offsetPos.X;
                 drawPos.Y = (int)(((int)player.position.Y) - Main.screenPosition.Y + (player.height / 2) + 2f * player.gravDir - 8f * player.gravDir) + offsetPos.Y + player.gfxOffY;
+                drawPos.Y += SpecialDrawPositionOffset.Y;
                 DrawData howDoIDrawThings = new DrawData(value, drawPos, frame, drawInfo.colorArmorBody, player.bodyRotation, orig, size, spriteEffects, 0) {
                     shader = 0
                 };
