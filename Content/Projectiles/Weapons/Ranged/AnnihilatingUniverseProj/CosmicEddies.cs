@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.AnnihilatingUniver
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            return CWRUtils.CircularHitboxCollision(Projectile.Center, rgs, targetHitbox);
+            return VaultUtils.CircleIntersectsRectangle(Projectile.Center, rgs, targetHitbox);
         }
 
         public override bool PreDraw(ref Color lightColor) {

@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            return CWRUtils.CircularHitboxCollision(Projectile.Center, 75, targetHitbox);
+            return VaultUtils.CircleIntersectsRectangle(Projectile.Center, 75, targetHitbox);
         }
 
         public override void OnThrowing() {

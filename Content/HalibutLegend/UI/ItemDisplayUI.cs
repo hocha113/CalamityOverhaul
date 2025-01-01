@@ -15,7 +15,6 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
         public int borderedHeight;
         public float bordered_sengs;
         public float borderedSize;
-        public bool hoverInMainPage;
         public Item Item = new Item();
         public override void Update() {
             if (Item == null) {
@@ -57,7 +56,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     Item mouseItem = Main.mouseItem.Clone();
                     Item uiItem = Item.Clone();
-                    if (mouseItem.type > 0 || uiItem.type > 0) {
+                    if (mouseItem.type > ItemID.None || uiItem.type > ItemID.None) {
                         SoundEngine.PlaySound(SoundID.Grab);
                     }
                     Main.mouseItem = uiItem;

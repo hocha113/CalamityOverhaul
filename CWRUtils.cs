@@ -30,17 +30,6 @@ namespace CalamityOverhaul
     public static class CWRUtils
     {
         #region System
-        public static string GetTextProgressively(string text, float progress) {
-            // 输入保护
-            if (string.IsNullOrEmpty(text)) {
-                return string.Empty;
-            }
-            // 将进度限制在有效范围 (0.0f - 1.0f)
-            progress = MathHelper.Clamp(progress, 0.0f, 1.0f);
-            int charCountToShow = (int)(text.Length * progress);
-            return text.Substring(0, charCountToShow);
-        }
-
         public static LocalizedText SafeGetItemName<T>() where T : ModItem {
             Type type = typeof(T);
             return type.BaseType == typeof(EctypeItem)
@@ -231,100 +220,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 关于火箭的弹药映射
-        /// </summary>
-        /// <param name="ammoItem"></param>
-        /// <returns></returns>
-        public static int RocketAmmo(Item ammoItem) {
-            int ammoTypes = ammoItem.shoot;
-            if (ammoItem.type == ItemID.RocketI) {
-                ammoTypes = ProjectileID.RocketI;
-            }
-            if (ammoItem.type == ItemID.RocketII) {
-                ammoTypes = ProjectileID.RocketII;
-            }
-            if (ammoItem.type == ItemID.RocketIII) {
-                ammoTypes = ProjectileID.RocketIII;
-            }
-            if (ammoItem.type == ItemID.RocketIV) {
-                ammoTypes = ProjectileID.RocketIV;
-            }
-            if (ammoItem.type == ItemID.ClusterRocketI) {
-                ammoTypes = ProjectileID.ClusterRocketI;
-            }
-            if (ammoItem.type == ItemID.ClusterRocketII) {
-                ammoTypes = ProjectileID.ClusterRocketII;
-            }
-            if (ammoItem.type == ItemID.DryRocket) {
-                ammoTypes = ProjectileID.DryRocket;
-            }
-            if (ammoItem.type == ItemID.WetRocket) {
-                ammoTypes = ProjectileID.WetRocket;
-            }
-            if (ammoItem.type == ItemID.HoneyRocket) {
-                ammoTypes = ProjectileID.HoneyRocket;
-            }
-            if (ammoItem.type == ItemID.LavaRocket) {
-                ammoTypes = ProjectileID.LavaRocket;
-            }
-            if (ammoItem.type == ItemID.MiniNukeI) {
-                ammoTypes = ProjectileID.MiniNukeRocketI;
-            }
-            if (ammoItem.type == ItemID.MiniNukeII) {
-                ammoTypes = ProjectileID.MiniNukeRocketII;
-            }
-            return ammoTypes;
-        }
-
-        /// <summary>
-        /// 雪人类弹药映射
-        /// </summary>
-        /// <param name="ammoItem"></param>
-        /// <returns></returns>
-        public static int SnowmanCannonAmmo(Item ammoItem) {
-            int AmmoTypes = ProjectileID.RocketSnowmanI;
-            switch (ammoItem.type) {
-                case ItemID.RocketI:
-                    AmmoTypes = ProjectileID.RocketSnowmanI;
-                    break;
-                case ItemID.RocketII:
-                    AmmoTypes = ProjectileID.RocketSnowmanII;
-                    break;
-                case ItemID.RocketIII:
-                    AmmoTypes = ProjectileID.RocketSnowmanIII;
-                    break;
-                case ItemID.RocketIV:
-                    AmmoTypes = ProjectileID.RocketSnowmanIV;
-                    break;
-                case ItemID.ClusterRocketI:
-                    AmmoTypes = ProjectileID.ClusterSnowmanRocketI;
-                    break;
-                case ItemID.ClusterRocketII:
-                    AmmoTypes = ProjectileID.ClusterSnowmanRocketII;
-                    break;
-                case ItemID.DryRocket:
-                    AmmoTypes = ProjectileID.DrySnowmanRocket;
-                    break;
-                case ItemID.WetRocket:
-                    AmmoTypes = ProjectileID.WetSnowmanRocket;
-                    break;
-                case ItemID.HoneyRocket:
-                    AmmoTypes = ProjectileID.HoneySnowmanRocket;
-                    break;
-                case ItemID.LavaRocket:
-                    AmmoTypes = ProjectileID.LavaSnowmanRocket;
-                    break;
-                case ItemID.MiniNukeI:
-                    AmmoTypes = ProjectileID.MiniNukeSnowmanRocketI;
-                    break;
-                case ItemID.MiniNukeII:
-                    AmmoTypes = ProjectileID.MiniNukeSnowmanRocketII;
-                    break;
-            }
-            return AmmoTypes;
-        }
-
-        /// <summary>
         /// 如果对象是一个蠕虫体节，那么按机会分母的倒数返回布尔值，如果输入5，那么会有4/5的概率返回<see langword="true"/>
         /// </summary>
         /// <param name="targetNPCType"></param>
@@ -385,39 +280,6 @@ namespace CalamityOverhaul
             Vector2 toMou = targetCenter - thisCenter;
             float thisSpeed = toMou.LengthSquared() > shutdownDistance * shutdownDistance ? speed : MathHelper.Min(speed, toMou.Length());
             return thisSpeed;
-        }
-
-        /// <summary>
-        /// 进行圆形的碰撞检测
-        /// </summary>
-        /// <param name="centerPosition">中心点</param>
-        /// <param name="radius">半径</param>
-        /// <param name="targetHitbox">碰撞对象的箱体结构</param>
-        /// <returns></returns>
-        public static bool CircularHitboxCollision(Vector2 centerPosition, float radius, Rectangle targetHitbox) {
-            if (new Rectangle((int)centerPosition.X, (int)centerPosition.Y, 1, 1).Intersects(targetHitbox)) {
-                return true;
-            }
-
-            float distanceToTopLeft = Vector2.Distance(centerPosition, targetHitbox.TopLeft());
-            float distanceToTopRight = Vector2.Distance(centerPosition, targetHitbox.TopRight());
-            float distanceToBottomLeft = Vector2.Distance(centerPosition, targetHitbox.BottomLeft());
-            float distanceToBottomRight = Vector2.Distance(centerPosition, targetHitbox.BottomRight());
-            float closestDistance = distanceToTopLeft;
-
-            if (distanceToTopRight < closestDistance) {
-                closestDistance = distanceToTopRight;
-            }
-
-            if (distanceToBottomLeft < closestDistance) {
-                closestDistance = distanceToBottomLeft;
-            }
-
-            if (distanceToBottomRight < closestDistance) {
-                closestDistance = distanceToBottomRight;
-            }
-
-            return closestDistance <= radius;
         }
 
         /// <summary>
@@ -621,51 +483,6 @@ namespace CalamityOverhaul
             Vector2 speed = f.ToRotationVector2() * entity.velocity.Length() * SpeedUpdates;
             entity.velocity = speed;
             return speed;
-        }
-
-        /// <summary>
-        /// 寻找距离指定位置最近的NPC
-        /// </summary>
-        /// <param name="origin">开始搜索的位置</param>
-        /// <param name="maxDistanceToCheck">搜索NPC的最大距离</param>
-        /// <param name="ignoreTiles">在检查障碍物时是否忽略瓦片</param>
-        /// <param name="bossPriority">是否优先选择Boss</param>
-        /// <param name="onHitNPCs">排除的NPC列表</param>
-        /// <returns>距离最近的NPC</returns>
-        public static NPC FindClosestNPC(this Vector2 origin, float maxDistanceToCheck, bool ignoreTiles = true, bool bossPriority = false, IEnumerable<NPC> onHitNPCs = null) {
-            NPC closestTarget = null;
-            float distance = maxDistanceToCheck;
-            bool bossFound = false;
-
-            foreach (var npc in Main.npc) {
-                // 跳过无效的NPC
-                if (!npc.CanBeChasedBy() || (onHitNPCs != null && onHitNPCs.Contains(npc))) {
-                    continue;
-                }
-
-                // Boss优先选择逻辑
-                if (bossPriority && bossFound && !npc.boss && npc.type != NPCID.WallofFleshEye) {
-                    continue;
-                }
-
-                // 计算NPC与起点的距离
-                float extraDistance = (npc.width / 2f) + (npc.height / 2f);
-                float actualDistance = Vector2.Distance(origin, npc.Center);
-
-                // 检查瓦片阻挡
-                bool canHit = ignoreTiles || Collision.CanHit(origin, 1, 1, npc.Center, 1, 1);
-
-                // 更新最近目标
-                if (actualDistance < distance + extraDistance && canHit) {
-                    if (bossPriority && (npc.boss || npc.type == NPCID.WallofFleshEye)) {
-                        bossFound = true;
-                    }
-                    distance = actualDistance;
-                    closestTarget = npc;
-                }
-            }
-
-            return closestTarget;
         }
 
         public static void EntityToRot(this NPC entity, float ToRot, float rotSpeed) {
@@ -1418,27 +1235,6 @@ namespace CalamityOverhaul
         #region DrawUtils
 
         #region 普通绘制工具
-        public static void DrawMarginEffect(SpriteBatch spriteBatch, Texture2D tex, int drawTimer, Vector2 position
-            , Rectangle? rect, Color color, float rot, Vector2 origin, float scale, SpriteEffects effects = 0) {
-            float time = Main.GlobalTimeWrappedHourly;
-            float timer = drawTimer / 240f + time * 0.04f;
-            time %= 4f;
-            time /= 2f;
-            if (time >= 1f)
-                time = 2f - time;
-            time = time * 0.5f + 0.5f;
-            for (float i = 0f; i < 1f; i += 0.25f) {
-                float radians = (i + timer) * MathHelper.TwoPi;
-                spriteBatch.Draw(tex, position + new Vector2(0f, 8f).RotatedBy(radians) * time, rect
-                    , new Color(color.R, color.G, color.B, 50), rot, origin, scale, effects, 0);
-            }
-            for (float i = 0f; i < 1f; i += 0.34f) {
-                float radians = (i + timer) * MathHelper.TwoPi;
-                spriteBatch.Draw(tex, position + new Vector2(0f, 4f).RotatedBy(radians) * time, rect
-                    , new Color(color.R, color.G, color.B, 77), rot, origin, scale, effects, 0);
-            }
-        }
-
         /// <summary>
         /// 安全的获取对应实例的图像资源
         /// </summary>
@@ -1496,38 +1292,34 @@ namespace CalamityOverhaul
             return TextureAssets.Npc[n.type].Value;
         }
 
-        public static string GetSafeText(string text, Vector2 textSize, float maxWidth) {
-            List<char> characters = text.ToList();
-            List<char> wrappedText = new List<char>();
-            float currentWidth = 0;
-            float charWidth;
+        /// <summary>
+        /// 获取指定路径的纹理实例 <see cref="Texture2D"/>
+        /// </summary>
+        /// <param name="texture">纹理路径（相对于模组内容目录的路径）</param>
+        /// <param name="immediateLoad">
+        /// 是否立即加载纹理：
+        /// <br>- <see langword="true"/>：同步加载纹理（适合需要立即使用的资源）</br>
+        /// <br>- <see langword="false"/>：异步加载纹理（提升加载性能，适合非紧急资源）</br>
+        /// </param>
+        /// <returns>返回加载的 Texture2D 实例</returns>
+        public static Texture2D GetT2DValue(string texture, bool immediateLoad = false) {
+            return ModContent.Request<Texture2D>(texture
+                , immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad).Value;
+        }
 
-            foreach (char character in characters) {
-                // 计算字符宽度
-                charWidth = textSize.X / text.Length;
-
-                // 如果是换行符，重置当前宽度并添加换行符
-                if (character == '\n') {
-                    wrappedText.Add(character);
-                    currentWidth = 0;
-                }
-                else {
-                    // 计算字符实际宽度，处理字符超出最大宽度的情况
-                    float actualCharWidth = textSize.X / text.Length;
-                    if (currentWidth + actualCharWidth > maxWidth) {
-                        // 超出最大宽度，插入换行符并重置宽度
-                        wrappedText.Add('\n');
-                        currentWidth = 0;
-                    }
-
-                    // 添加字符并更新当前宽度
-                    wrappedText.Add(character);
-                    currentWidth += actualCharWidth;
-                }
-            }
-
-            // 返回处理过的文本
-            return new string(wrappedText.ToArray());
+        /// <summary>
+        /// 获取指定路径的纹理资源（类型为 Asset&lt;Texture2D&gt;）
+        /// </summary>
+        /// <param name="texture">纹理路径（相对于模组内容目录的路径）</param>
+        /// <param name="immediateLoad">
+        /// 是否立即加载纹理：
+        /// <br>- <see langword="true"/>：同步加载纹理（适合需要立即使用的资源）</br>
+        /// <br>- <see langword="false"/>：异步加载纹理（提升加载性能，适合非紧急资源）</br>
+        /// </param>
+        /// <returns>返回加载的 Asset&lt;Texture2D&gt; 对象，包含纹理资源及其加载状态</returns>
+        public static Asset<Texture2D> GetT2DAsset(string texture, bool immediateLoad = false) {
+            return ModContent.Request<Texture2D>(texture
+                , immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad);
         }
 
         /// <summary>
@@ -1612,26 +1404,6 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 获取纹理实例，类型为 Texture2D
-        /// </summary>
-        /// <param name="texture">纹理路径</param>
-        /// <returns></returns>
-        public static Texture2D GetT2DValue(string texture, bool immediateLoad = false) {
-            return ModContent.Request<Texture2D>(texture
-                , immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad).Value;
-        }
-
-        /// <summary>
-        /// 获取纹理实例，类型为 AssetTexture2D
-        /// </summary>
-        /// <param name="texture">纹理路径</param>
-        /// <returns></returns>
-        public static Asset<Texture2D> GetT2DAsset(string texture, bool immediateLoad = false) {
-            return ModContent.Request<Texture2D>(texture
-                , immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad);
-        }
-
-        /// <summary>
         /// 便捷的获取模组内的Effect实例
         /// </summary>
         /// <param name="name"></param>
@@ -1673,7 +1445,7 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 任意设置 <see cref=" SpriteBatch "/> 的 <see cref=" BlendState "/>。
+        /// 任意设置 <see cref=" SpriteBatch "/> 的 <see cref=" BlendState "/>
         /// </summary>
         /// <param name="spriteBatch">绘制模式</param>
         /// <param name="blendState">要使用的混合状态</param>

@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeavenfallLongbowP
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             return Index == 0 && Time > 120
-                ? CWRUtils.CircularHitboxCollision(OrigPos, 300, targetHitbox)
+                ? VaultUtils.CircleIntersectsRectangle(OrigPos, 300, targetHitbox)
                 : base.Colliding(projHitbox, targetHitbox);
         }
 

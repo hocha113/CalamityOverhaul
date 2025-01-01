@@ -112,9 +112,9 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
                 sessionText_sengs = 0;
             }
 
-            textContent = CWRUtils.GetTextProgressively(textContent, sessionText_sengs);
+            textContent = VaultUtils.GetTextProgressively(textContent, sessionText_sengs);
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(textContent);
-            textContent = CWRUtils.GetSafeText(textContent, textSize, borderedWidth - 22 * 2);
+            textContent = VaultUtils.WrapTextToWidth(textContent, textSize, borderedWidth - 22 * 2);
 
             return textContent;
         }

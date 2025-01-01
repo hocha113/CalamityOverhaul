@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.HalibutLegend.UI
 
             string textContent = FishSkill.Introduce;
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(textContent);
-            textContent = CWRUtils.GetSafeText(textContent, textSize, borderedWidth * 4 - 22 * 2);
+            textContent = VaultUtils.WrapTextToWidth(textContent, textSize, borderedWidth * 4 - 22 * 2);
             Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, textContent
                 , drawPos.X + 20, drawPos.Y + 20, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
         }

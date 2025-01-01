@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             }
 
             if (Projectile.ai[0] == 2) {
-                CWRUtils.DrawMarginEffect(Main.spriteBatch, texture, Time, drawPos, null, Color.Gold * 0.6f
+                VaultUtils.DrawRotatingMarginEffect(Main.spriteBatch, texture, Time, drawPos, null, Color.Gold * 0.6f
                     , drawRoting, drawOrigin, Projectile.scale * MeleeSize, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             }
 

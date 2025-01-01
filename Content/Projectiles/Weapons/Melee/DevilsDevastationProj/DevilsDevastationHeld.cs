@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.DevilsDevastationPr
                 drawRoting += MathHelper.Pi;
             }
             if (Projectile.ai[0] != 0) {
-                CWRUtils.DrawMarginEffect(Main.spriteBatch, texture, Projectile.timeLeft, drawPos
+                VaultUtils.DrawRotatingMarginEffect(Main.spriteBatch, texture, Projectile.timeLeft, drawPos
                 , null, Color.Red, drawRoting, drawOrigin, Projectile.scale, effects);
             }
 

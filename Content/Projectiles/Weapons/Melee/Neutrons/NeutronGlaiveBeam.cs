@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
                 Main.EntitySpriteDraw(mainValue, drawPos2, rectangle, color, rot, orig, Projectile.scale, SpriteEffects.None, 0);
             }
 
-            CWRUtils.DrawMarginEffect(Main.spriteBatch, mainValue, Projectile.timeLeft, drawPos, rectangle, Color.Blue, rot, orig, Projectile.scale, 0);
+            VaultUtils.DrawRotatingMarginEffect(Main.spriteBatch, mainValue, Projectile.timeLeft, drawPos, rectangle, Color.Blue, rot, orig, Projectile.scale, 0);
             Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, rectangle
                 , Color.White, Projectile.rotation, orig, Projectile.scale, SpriteEffects.None, 0);
         }

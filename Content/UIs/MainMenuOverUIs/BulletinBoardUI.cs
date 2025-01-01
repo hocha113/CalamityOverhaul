@@ -128,15 +128,15 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 sengs2 *= 0.3f;
             }
 
-            Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, CWRUtils.GetSafeText(text1, text1Vr, 1000)
+            Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, VaultUtils.WrapTextToWidth(text1, text1Vr, 1000)
                 , text1Pos.X, text1Pos.Y, textColor1 * sengs, Color.Black, new Vector2(0.2f), 1);
-            Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, CWRUtils.GetSafeText(text2, text2Vr, 1000)
+            Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, VaultUtils.WrapTextToWidth(text2, text2Vr, 1000)
                 , text2Pos.X, text2Pos.Y, textColor2 * sengs * sengs2, Color.Black * sengs2, new Vector2(0.2f), 1);
-            Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, CWRUtils.GetSafeText(text3, text3Vr, 1000)
+            Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, VaultUtils.WrapTextToWidth(text3, text3Vr, 1000)
                 , text3Pos.X, text3Pos.Y, textColor3 * sengs * sengs2, Color.Black * sengs2, new Vector2(0.2f), 1);
-            Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, CWRUtils.GetSafeText(text4, text4Vr, 1000)
+            Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, VaultUtils.WrapTextToWidth(text4, text4Vr, 1000)
                 , text4Pos.X, text4Pos.Y, textColor4 * sengs * sengs2, Color.Black * sengs2, new Vector2(0.2f), 1);
-            Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, CWRUtils.GetSafeText(text5, text5Vr, 1000)
+            Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, VaultUtils.WrapTextToWidth(text5, text5Vr, 1000)
                 , text5Pos.X, text5Pos.Y, textColor5 * sengs * sengs2, Color.Black * sengs2, new Vector2(0.2f), 1);
 
             if (onText1 && safeStart) {
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 if (textX > Main.screenWidth - text0Vr.X) {
                     textX = Main.screenWidth - text0Vr.X;
                 }
-                Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, CWRUtils.GetSafeText(text0, text0Vr, 1000)
+                Utils.DrawBorderStringFourWay(spriteBatch, Font.Value, VaultUtils.WrapTextToWidth(text0, text0Vr, 1000)
                 , textX, MousePosition.Y + 20, color, Color.Black, new Vector2(0.2f), 1);
             }
         }

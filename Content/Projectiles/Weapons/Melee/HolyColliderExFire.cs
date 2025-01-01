@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            return CWRUtils.CircularHitboxCollision(Projectile.Center, Projectile.ai[0] == 1 ? 300 : 120, targetHitbox);
+            return VaultUtils.CircleIntersectsRectangle(Projectile.Center, Projectile.ai[0] == 1 ? 300 : 120, targetHitbox);
         }
 
         public override bool ShouldUpdatePosition() => false;

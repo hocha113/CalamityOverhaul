@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
                 Color color = Projectile.GetAlpha(Color.Pink) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
                 Main.EntitySpriteDraw(mainValue, drawPos2, null, color, rot, orig, Projectile.scale, SpriteEffects.None, 0);
             }
-            CWRUtils.DrawMarginEffect(Main.spriteBatch, mainValue, (int)Projectile.ai[0], drawPos, null, Color.Pink, rot, orig, Projectile.scale, 0);
+            VaultUtils.DrawRotatingMarginEffect(Main.spriteBatch, mainValue, (int)Projectile.ai[0], drawPos, null, Color.Pink, rot, orig, Projectile.scale, 0);
             Main.EntitySpriteDraw(mainValue, drawPos, null, Color.White, rot, orig, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }

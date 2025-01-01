@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float size = 62f + (160f * (getMode() - 1f));
-            return CWRUtils.CircularHitboxCollision(Projectile.Center, size, targetHitbox);
+            return VaultUtils.CircleIntersectsRectangle(Projectile.Center, size, targetHitbox);
         }
 
         public override void AI() {

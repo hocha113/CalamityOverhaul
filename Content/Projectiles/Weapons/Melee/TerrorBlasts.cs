@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            return CWRUtils.CircularHitboxCollision(Projectile.Center, 150, targetHitbox);
+            return VaultUtils.CircleIntersectsRectangle(Projectile.Center, 150, targetHitbox);
         }
 
         public override void OnKill(int timeLeft) {
