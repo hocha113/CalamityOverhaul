@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class EntropicClaymoreHeld : BaseKnife, IDrawWarp
+    internal class EntropicClaymoreHeld : BaseKnife, IWarpDrawable
     {
         public override int TargetID => ModContent.ItemType<EntropicClaymore>();
         public override void SetKnifeProperty() {
@@ -131,13 +131,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             return base.PreInOwnerUpdate();
         }
 
-        bool IDrawWarp.canDraw() => true;
+        bool IWarpDrawable.CanDrawCustom() => true;
 
-        bool IDrawWarp.noBlueshift() => true;
+        bool IWarpDrawable.DontUseBlueshiftEffect() => true;
 
-        void IDrawWarp.Warp() => WarpDraw();
+        void IWarpDrawable.Warp() => WarpDraw();
 
-        void IDrawWarp.costomDraw(SpriteBatch spriteBatch) {
+        void IWarpDrawable.DrawCustom(SpriteBatch spriteBatch) {
             Texture2D texture = TextureValue;
             Rectangle rect = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 drawOrigin = new Vector2(texture.Width / 2, texture.Height / 2);

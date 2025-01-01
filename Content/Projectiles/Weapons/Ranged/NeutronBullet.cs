@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
-    internal class NeutronBullet : ModProjectile, IDrawWarp
+    internal class NeutronBullet : ModProjectile, IWarpDrawable
     {
         public override string Texture => "CalamityMod/Projectiles/Ranged/GodSlayerSlugBlue";
         public override void SetStaticDefaults() {
@@ -51,9 +51,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 
         public override bool PreDraw(ref Color lightColor) => false;
 
-        public bool canDraw() => true;
+        public bool CanDrawCustom() => true;
 
-        public void costomDraw(SpriteBatch spriteBatch) {
+        public void DrawCustom(SpriteBatch spriteBatch) {
             CalamityUtils.DrawAfterimagesFromEdge(Projectile, 0, Color.White, Projectile.T2DValue());
         }
 

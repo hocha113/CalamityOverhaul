@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 {
-    internal class NeutronExplode : ModProjectile, IDrawWarp
+    internal class NeutronExplode : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
         public override void SetDefaults() {
@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
             Projectile.usesLocalNPCImmunity = true;
         }
 
-        public bool canDraw() => false;
+        public bool CanDrawCustom() => false;
 
         public override void AI() {
             if (Projectile.ai[2] == 0) {
@@ -68,6 +68,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
             }
         }
 
-        public void costomDraw(SpriteBatch spriteBatch) { }
+        public void DrawCustom(SpriteBatch spriteBatch) { }
     }
 }

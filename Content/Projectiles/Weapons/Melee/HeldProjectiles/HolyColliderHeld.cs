@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 {
-    internal class HolyColliderHeld : BaseSwing, IDrawWarp
+    internal class HolyColliderHeld : BaseSwing, IWarpDrawable
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "HolyCollider";
         public override string gradientTexturePath => CWRConstant.ColorBar + "HolyCollider_Bar";
@@ -110,13 +110,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             HitEffect(target, false);
         }
 
-        bool IDrawWarp.canDraw() => true;
+        bool IWarpDrawable.CanDrawCustom() => true;
 
-        bool IDrawWarp.noBlueshift() => true;
+        bool IWarpDrawable.DontUseBlueshiftEffect() => true;
 
-        void IDrawWarp.Warp() => WarpDraw();
+        void IWarpDrawable.Warp() => WarpDraw();
 
-        void IDrawWarp.costomDraw(SpriteBatch spriteBatch) {
+        void IWarpDrawable.DrawCustom(SpriteBatch spriteBatch) {
             Texture2D texture = CWRUtils.GetT2DValue(Texture);
             Rectangle rect = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 drawOrigin = new Vector2(texture.Width / 2, texture.Height / 2);

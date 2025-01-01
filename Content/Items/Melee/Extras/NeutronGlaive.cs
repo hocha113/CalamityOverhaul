@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
         }
     }
 
-    internal class NeutronGlaiveHeld : BaseKnife, IDrawWarp
+    internal class NeutronGlaiveHeld : BaseKnife, IWarpDrawable
     {
         public override int TargetID => ModContent.ItemType<NeutronGlaive>();
         public override void SetKnifeProperty() {
@@ -115,13 +115,13 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
 
         }
 
-        bool IDrawWarp.canDraw() => true;
+        bool IWarpDrawable.CanDrawCustom() => true;
 
-        bool IDrawWarp.noBlueshift() => true;
+        bool IWarpDrawable.DontUseBlueshiftEffect() => true;
 
-        void IDrawWarp.Warp() => WarpDraw();
+        void IWarpDrawable.Warp() => WarpDraw();
 
-        void IDrawWarp.costomDraw(SpriteBatch spriteBatch) {
+        void IWarpDrawable.DrawCustom(SpriteBatch spriteBatch) {
             Texture2D texture = TextureValue;
             Rectangle rect = CWRUtils.GetRec(texture, Projectile.frame, AnimationMaxFrme);
             Vector2 drawOrigin = rect.Size() / 2;

@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Common
             if (!Main.gameMenu) {
                 DrawPrimitiveProjectile();
 
-                if (HasWarpEffect(out List<IDrawWarp> warpSets, out List<IDrawWarp> warpSetsNoBlueshift)) {
+                if (HasWarpEffect(out List<IWarpDrawable> warpSets, out List<IWarpDrawable> warpSetsNoBlueshift)) {
                     ProcessWarpSets(graphicsDevice, warpSets, false);
                     ProcessWarpSets(graphicsDevice, warpSetsNoBlueshift, true);
                 }
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Common
                 if (p.ModProjectile == null || !p.active) {
                     continue;
                 }
-                if (p.ModProjectile is IDrawPrimitive primitive) {
+                if (p.ModProjectile is IPrimitiveDrawable primitive) {
                     primitive.DrawPrimitives();
                 }
             }
@@ -147,13 +147,13 @@ namespace CalamityOverhaul.Common
                 if (p.ModProjectile == null || !p.active) {
                     continue;
                 }
-                if (p.ModProjectile is IDrawAdditive additive) {
-                    additive.DrawAdditive(Main.spriteBatch);
+                if (p.ModProjectile is IAdditiveDrawable additive) {
+                    additive.DrawAdditiveAfterNon(Main.spriteBatch);
                 }
             }
         }
 
-        private static void ProcessWarpSets(GraphicsDevice graphicsDevice, List<IDrawWarp> warpSets, bool noBlueshift) {
+        private static void ProcessWarpSets(GraphicsDevice graphicsDevice, List<IWarpDrawable> warpSets, bool noBlueshift) {
             if (warpSets.Count <= 0) {
                 return;
             }
@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Common
             graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
             graphicsDevice.Clear(Color.Transparent);
             Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-            foreach (IDrawWarp p in warpSets) {
+            foreach (IWarpDrawable p in warpSets) {
                 p.Warp();
             }
             Main.spriteBatch.End();
@@ -189,9 +189,9 @@ namespace CalamityOverhaul.Common
 
             // 绘制自定义内容
             Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-            foreach (IDrawWarp p in warpSets) {
-                if (p.canDraw()) {
-                    p.costomDraw(Main.spriteBatch);
+            foreach (IWarpDrawable p in warpSets) {
+                if (p.CanDrawCustom()) {
+                    p.DrawCustom(Main.spriteBatch);
                 }
             }
             Main.spriteBatch.End();
@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Common
             return Main.LocalPlayer.CWR().EndSkillEffectStartBool;
         }
 
-        private static bool HasWarpEffect(out List<IDrawWarp> warpSets, out List<IDrawWarp> warpSetsNoBlueshift) {
+        private static bool HasWarpEffect(out List<IWarpDrawable> warpSets, out List<IWarpDrawable> warpSetsNoBlueshift) {
             warpSets = [];
             warpSetsNoBlueshift = [];
 
@@ -269,8 +269,8 @@ namespace CalamityOverhaul.Common
                 if (p.ModProjectile is null) {
                     continue;
                 }
-                if (p.ModProjectile is IDrawWarp drawWarp) {
-                    if (drawWarp.noBlueshift()) {
+                if (p.ModProjectile is IWarpDrawable drawWarp) {
+                    if (drawWarp.DontUseBlueshiftEffect()) {
                         warpSetsNoBlueshift.Add(drawWarp);
                     }
                     else {

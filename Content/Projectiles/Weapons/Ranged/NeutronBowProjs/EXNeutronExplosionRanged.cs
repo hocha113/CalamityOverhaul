@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
 {
-    internal class EXNeutronExplosionRanged : ModProjectile, IDrawWarp
+    internal class EXNeutronExplosionRanged : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Masking + "StarTexture_White";
         public override void SetDefaults() {
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
             Projectile.ArmorPenetration = 80;
         }
 
-        public bool canDraw() => false;
+        public bool CanDrawCustom() => false;
 
         public override void AI() {
             if (Projectile.ai[2] == 0) {
@@ -69,6 +69,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.NeutronBowProjs
             }
         }
 
-        public void costomDraw(SpriteBatch spriteBatch) { }
+        public void DrawCustom(SpriteBatch spriteBatch) { }
     }
 }

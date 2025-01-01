@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
 {
-    internal class NeutronWandExplode : ModProjectile, IDrawWarp
+    internal class NeutronWandExplode : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
         public override void SetDefaults() {
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             Projectile.ArmorPenetration = 80;
         }
 
-        public bool canDraw() => false;
+        public bool CanDrawCustom() => false;
 
         private void SpanStar(Vector2 offset) {
             for (int i = 0; i < 4; i++) {
@@ -87,6 +87,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             }
         }
 
-        public void costomDraw(SpriteBatch spriteBatch) { }
+        public void DrawCustom(SpriteBatch spriteBatch) { }
     }
 }

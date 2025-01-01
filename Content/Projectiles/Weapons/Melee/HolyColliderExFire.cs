@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class HolyColliderExFire : BaseHeldProj, IDrawWarp
+    internal class HolyColliderExFire : BaseHeldProj, IWarpDrawable
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
         private int Time;
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
         public override bool PreDraw(ref Color lightColor) => false;
 
-        void IDrawWarp.Warp() {
+        void IWarpDrawable.Warp() {
             Texture2D warpTex = TextureAssets.Projectile[Type].Value;
             Color warpColor = new Color(45, 45, 45) * Projectile.ai[1];
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
@@ -254,10 +254,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        bool IDrawWarp.noBlueshift() => true;
+        bool IWarpDrawable.DontUseBlueshiftEffect() => true;
 
-        bool IDrawWarp.canDraw() => false;
+        bool IWarpDrawable.CanDrawCustom() => false;
 
-        void IDrawWarp.costomDraw(SpriteBatch spriteBatch) { }
+        void IWarpDrawable.DrawCustom(SpriteBatch spriteBatch) { }
     }
 }

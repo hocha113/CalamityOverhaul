@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
 {
-    internal class NeutronGlaiveBeam : ModProjectile, IDrawWarp, ICWRLoader
+    internal class NeutronGlaiveBeam : ModProjectile, IWarpDrawable, ICWRLoader
     {
         public override string Texture => CWRConstant.Projectile_Melee + "NeutronGlaiveBeam";
         public static int PType;
@@ -101,8 +101,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
         }
 
         public override bool PreDraw(ref Color lightColor) => false;
-        bool IDrawWarp.canDraw() => true;
-        void IDrawWarp.Warp() {
+        bool IWarpDrawable.CanDrawCustom() => true;
+        void IWarpDrawable.Warp() {
             Color warpColor = new Color(45, 45, 45) * Projectile.ai[1];
             Vector2 orig = warpTex.Size() / 2;
             for (int i = 0; i < 3; i++) {
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons
             }
         }
 
-        public void costomDraw(SpriteBatch spriteBatch) {
+        public void DrawCustom(SpriteBatch spriteBatch) {
             Texture2D mainValue = TextureAssets.Projectile[Type].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Rectangle rectangle = CWRUtils.GetRec(mainValue);

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
         }
     }
 
-    internal class StarshipAmmo : ModProjectile, ICWRLoader, IDrawPrimitive, IDrawWarp, IDrawAdditive
+    internal class StarshipAmmo : ModProjectile, ICWRLoader, IPrimitiveDrawable, IWarpDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
         public static Asset<Texture2D> ArcWave { get; private set; }
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
 
         public override bool PreDraw(ref Color lightColor) => false;
 
-        void IDrawPrimitive.DrawPrimitives() {
+        void IPrimitiveDrawable.DrawPrimitives() {
             if (trail == null)
                 return;
 
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
         }
 
-        void IDrawWarp.Warp() {
+        void IWarpDrawable.Warp() {
             if (warpTrail == null) {
                 return;
             }
@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             warpTrail?.DrawTrail(effect);
         }
 
-        void IDrawAdditive.DrawAdditive(SpriteBatch spriteBatch) {
+        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             Texture2D tex = ArcWave.Value;
 
             Vector2 scale = new Vector2(0.8f, 0.55f * trailAlpha) * 0.65f;
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
                 , Projectile.rotation, tex.Size() / 2, scale, 0, 0);
         }
 
-        public void costomDraw(SpriteBatch spriteBatch) { }
+        public void DrawCustom(SpriteBatch spriteBatch) { }
     }
 
     internal class StarshipHeld : BaseFeederGun
