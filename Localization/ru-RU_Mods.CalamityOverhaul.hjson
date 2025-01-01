@@ -4184,6 +4184,7 @@ TextContent: {
 			Для обеспечения функционирования игры, пожалуйста, убедитесь, что [Quality of Terraria Mod] версия не ниже 1.7.1.7
 			'''
 		CaseEjection_TextContent: холост
+		CaseEjection_TextContent2: No Money
 		SupertableUI_Text1: закр
 		SupertableUI_Text2: Проверь формулу
 		SupertableUI_Text3: без

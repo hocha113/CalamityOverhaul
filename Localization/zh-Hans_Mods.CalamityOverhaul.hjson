@@ -4115,6 +4115,7 @@ TextContent: {
 			为了保证游戏正常运行，请保证[更好的体验]版本不低于1.7.1.7
 			'''
 		CaseEjection_TextContent: 空弹
+		CaseEjection_TextContent2: 没有钱币
 		SupertableUI_Text1: 关闭
 		SupertableUI_Text2: 查看配方
 		SupertableUI_Text3: 无

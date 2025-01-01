@@ -4123,6 +4123,7 @@ TextContent: {
 			Pour assurer le bon fonctionnement du jeu, assurez-vous que la version de [Better Experience] est supérieure ou égale à 1.7.1.7
 			'''
 		CaseEjection_TextContent: Cartouche vide
+		CaseEjection_TextContent2: No Money
 		SupertableUI_Text1: Fermé
 		SupertableUI_Text2: Voir la recette
 		SupertableUI_Text3: Aucun

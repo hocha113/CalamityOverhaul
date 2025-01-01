@@ -4107,6 +4107,7 @@ TextContent: {
 			Um sicherzustellen, dass das Spiel ordnungsgemäß funktioniert, stellen Sie sicher, dass die Version von [Better Experience] nicht niedriger als 1.7.1.7 ist.
 			'''
 		CaseEjection_TextContent: Leerhülsen
+		CaseEjection_TextContent2: No Money
 		SupertableUI_Text1: Schließen
 		SupertableUI_Text2: Rezept anzeigen
 		SupertableUI_Text3: Kein

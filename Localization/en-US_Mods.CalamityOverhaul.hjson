@@ -4138,6 +4138,7 @@ TextContent: {
 			[Quality of Terraria Mod] version is at least 1.7.1.7.
 			'''
 		CaseEjection_TextContent: Need to change ammunition
+		CaseEjection_TextContent2: No Money
 		SupertableUI_Text1: close
 		SupertableUI_Text2: View recipe
 		SupertableUI_Text3: nothing

@@ -901,7 +901,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public virtual void HandleEmptyAmmoEjection() {
             SoundEngine.PlaySound(CWRSound.Ejection, Projectile.Center);
-            CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("CaseEjection_TextContent"));
+            if (Item.useAmmo != AmmoID.Coin) {
+                CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("CaseEjection_TextContent"));
+            }
+            else {
+                CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("CaseEjection_TextContent2"));
+            }
         }
         /// <summary>
         /// 左键单次开火事件，在网络模式中只会被弹幕主人调用

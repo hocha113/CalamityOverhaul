@@ -96,6 +96,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText OnEnterWorld_TextContent { get; private set; }
         public LocalizedText OnEnterWorld_TextContent2 { get; private set; }
         public LocalizedText CaseEjection_TextContent { get; private set; }
+        public LocalizedText CaseEjection_TextContent2 { get; private set; }
         public LocalizedText SupertableUI_Text1 { get; private set; }
         public LocalizedText SupertableUI_Text2 { get; private set; }
         public LocalizedText SupertableUI_Text3 { get; private set; }

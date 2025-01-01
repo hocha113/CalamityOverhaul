@@ -4166,6 +4166,7 @@ TextContent: {
 			Para garantizar el funcionamiento normal del juego, asegúrese de que la versión de [Mejor Experiencia] no sea inferior a 1.7.1.7
 			'''
 		CaseEjection_TextContent: Cartucho vacío
+		CaseEjection_TextContent2: No Money
 		SupertableUI_Text1: Cerrar
 		SupertableUI_Text2: Ver recetas
 		SupertableUI_Text3: Ninguno
