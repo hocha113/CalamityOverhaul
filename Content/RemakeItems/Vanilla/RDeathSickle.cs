@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         public override void SetThrowable() {
             base.SetThrowable();
-            Projectile.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            Projectile.DamageType = CWRLoad.RogueDamageClass;
         }
 
         public override void FlyToMovementAI() {

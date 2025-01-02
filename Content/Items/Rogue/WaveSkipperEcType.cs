@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Rogue
             Item.rare = ItemRarityID.Pink;
             Item.shoot = ModContent.ProjectileType<RWaveSkipperProjectile>();
             Item.shootSpeed = 12f;
-            Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            Item.DamageType = CWRLoad.RogueDamageClass;
 
         }
 

@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DeathSickle);
             Item.damage = 40;
-            Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            Item.DamageType = CWRLoad.RogueDamageClass;
             Item.shoot = ModContent.ProjectileType<DeathSickleThrowableRogue>();
             Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
         }

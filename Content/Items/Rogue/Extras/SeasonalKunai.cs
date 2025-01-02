@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.useStyle = ItemUseStyleID.Swing;
             Item.damage = 90;
             Item.UseSound = null;
-            Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            Item.DamageType = CWRLoad.RogueDamageClass;
             Item.shoot = ModContent.ProjectileType<SeasonalKunaiThrowable>();
             Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
         }
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Projectile.ignoreWater = true;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 300;
-            Projectile.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            Projectile.DamageType = CWRLoad.RogueDamageClass;
             Projectile.extraUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10 * Projectile.extraUpdates;
@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
     {
         public override string Texture => CWRConstant.Item_Rogue + "SeasonalKunai";
         public override void SetThrowable() {
-            Projectile.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            Projectile.DamageType = CWRLoad.RogueDamageClass;
             HandOnTwringMode = -40;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 8;

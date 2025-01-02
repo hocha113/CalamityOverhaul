@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.rare = ItemRarityID.Green;
             Item.shoot = ModContent.ProjectileType<SandDaggerThrow>();
             Item.shootSpeed = 10f;
-            Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            Item.DamageType = CWRLoad.RogueDamageClass;
         }
     }
 

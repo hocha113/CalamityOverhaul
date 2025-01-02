@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Vanilla
         public override bool IsVanilla => true;
         public override string TargetToolTipItemName => "Wap_EnchantedBoomerang_Text";
         public override void SetDefaults(Item item) {
-            item.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            item.DamageType = CWRLoad.RogueDamageClass;
             item.shoot = ModContent.ProjectileType<EnchantedBoomerangHeld>();
         }
         public override bool? On_CanUseItem(Item item, Player player) => player.ownedProjectileCounts[item.shoot] <= 6;

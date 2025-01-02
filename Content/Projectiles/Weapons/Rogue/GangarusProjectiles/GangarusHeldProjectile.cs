@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
             Projectile.height = 46;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
-            Projectile.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            Projectile.DamageType = CWRLoad.RogueDamageClass;
             Projectile.penetrate = -1;
             Projectile.hide = true;
         }

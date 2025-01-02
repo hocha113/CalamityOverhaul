@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -8,8 +9,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
 {
     internal class FateCluster : ModProjectile
     {
-        public override string Texture => CWRConstant.Other + "HellFire";
-
+        public override string Texture => CWRConstant.Projectile + "GostFire";
+        private const int maxFrame = 3;
         public override void SetDefaults() {
             Projectile.width = 32;
             Projectile.height = 32;
@@ -30,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, 3);
+            CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, maxFrame - 1);
             Projectile.rotation = Projectile.velocity.ToRotation();
             if (Projectile.ai[0] == 0) {
                 NPC target = Projectile.Center.FindClosestNPC(300);
@@ -62,17 +63,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D mainValue = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(
-                mainValue,
-                Projectile.Center - Main.screenPosition,
-                CWRUtils.GetRec(mainValue, Projectile.frameCounter, 4),
-                Color.White * (Projectile.alpha / 255f),
-                Projectile.rotation - MathHelper.PiOver2,
-                CWRUtils.GetOrig(mainValue, 4),
-                Projectile.scale,
-                SpriteEffects.None
-                );
+            Texture2D mainValue = TextureAssets.Projectile[Type].Value;
+            Rectangle rectangle = CWRUtils.GetRec(mainValue, Projectile.frameCounter, maxFrame);
+            Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, rectangle, Color.White * (Projectile.alpha / 255f)
+                , Projectile.rotation - MathHelper.PiOver2, rectangle.Size() / 2, Projectile.scale, SpriteEffects.None);
             return false;
         }
     }

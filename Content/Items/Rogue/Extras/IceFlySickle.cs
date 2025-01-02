@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.IceSickle);
             Item.damage = 20;
-            Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            Item.DamageType = CWRLoad.RogueDamageClass;
             Item.shoot = ModContent.ProjectileType<IceFlySickleThrowable>();
             Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
         }

@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
             }
             if (tabControlRogue == null) {
                 tabControlRogue = new TabControl();
-                tabControlRogue.DamageClass = ModContent.GetInstance<RogueDamageClass>();
+                tabControlRogue.DamageClass = CWRLoad.RogueDamageClass;
             }
             if (tabControlSummon == null) {
                 tabControlSummon = new TabControl();
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
                     if (!tabControlMagic.Tab && ccItem.DamageType == DamageClass.Magic) {
                         continue;
                     }
-                    if (!tabControlRogue.Tab && ccItem.DamageType == ModContent.GetInstance<RogueDamageClass>()) {
+                    if (!tabControlRogue.Tab && ccItem.DamageType == CWRLoad.RogueDamageClass) {
                         continue;
                     }
                     var itemVidous = new ItemVidous();

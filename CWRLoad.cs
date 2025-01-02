@@ -1,4 +1,5 @@
-﻿using CalamityMod.Items.LoreItems;
+﻿using CalamityMod;
+using CalamityMod.Items.LoreItems;
 using CalamityMod.Items.Materials;
 using CalamityMod.Items.PermanentBoosters;
 using CalamityMod.NPCs.Abyss;
@@ -61,6 +62,8 @@ namespace CalamityOverhaul
         public static int EternalEnergy;
         public static int MetanovaBar;
         #endregion
+
+        public static RogueDamageClass RogueDamageClass => GetInstance<RogueDamageClass>();
 
         public static int InfiniteArrow;
         public static int InfiniteRune;

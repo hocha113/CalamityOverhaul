@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs.Vanilla
                         Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI()
                             , Projectile.Center, (MathHelper.TwoPi / 3 * i + rand).ToRotationVector2() * 6
                             , ProjectileID.Mushroom, Projectile.damage / 5, 0.2f, Owner.whoAmI);
-                        proj.DamageType = ModContent.GetInstance<RogueDamageClass>();
+                        proj.DamageType = CWRLoad.RogueDamageClass;
                     }
                     Projectile.ai[2] = 0;
                 }

@@ -2,14 +2,15 @@
 using System;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class SpiritFlame : ModProjectile
     {
-        public override string Texture => CWRConstant.Other + "HellFire";
-
+        public override string Texture => CWRConstant.Projectile + "GostFire";
+        private const int maxFrame = 3;
         public override void SetDefaults() {
             Projectile.width = 12;
             Projectile.height = 12;
@@ -23,12 +24,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void OnSpawn(IEntitySource source) {
-            Projectile.frameCounter = Main.rand.Next(4);
+            Projectile.frameCounter = Main.rand.Next(maxFrame);
             Projectile.scale = Main.rand.NextFloat(0.2f, 0.8f);
         }
 
         public override void AI() {
-            CWRUtils.ClockFrame(ref Projectile.frameCounter, 10, 3);
+            CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, maxFrame - 1);
             Vector2 posChange = Main.player[Projectile.owner].CWR().PlayerPositionChange;
             if (Projectile.ai[0] == 0) {
                 Player owner = CWRUtils.GetPlayerInstance(Projectile.owner);
@@ -70,19 +71,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D texture = CWRUtils.GetT2DValue(Texture);
+            Texture2D texture = TextureAssets.Projectile[Type].Value;
             float alp = Projectile.timeLeft / 30f;
-            Main.EntitySpriteDraw(
-                texture,
-                Projectile.Center - Main.screenPosition,
-                CWRUtils.GetRec(texture, Projectile.frameCounter, 4),
-                Color.White * alp,
-                Projectile.rotation,
-                CWRUtils.GetOrig(texture, 4),
-                Projectile.scale,
-                SpriteEffects.None,
-                0
-                );
+            Rectangle rectangle = CWRUtils.GetRec(texture, Projectile.frameCounter, maxFrame);
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, rectangle, Color.White * alp
+                , Projectile.rotation, rectangle.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

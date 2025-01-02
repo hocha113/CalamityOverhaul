@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue
             Projectile.height = 26;
             Projectile.friendly = true;
             Projectile.penetrate = 6;
-            Projectile.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            Projectile.DamageType = CWRLoad.RogueDamageClass;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 20;
             Projectile.tileCollide = true;

@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.rare = ModContent.RarityType<Violet>();
             Item.shoot = ModContent.ProjectileType<GangarusProjectile>();
             Item.shootSpeed = 15f;
-            Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            Item.DamageType = CWRLoad.RogueDamageClass;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems16;
             Item.CWR().isHeldItem = true;
             Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;

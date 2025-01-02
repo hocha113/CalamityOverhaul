@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
         public Vector2 DrawPositionOffset { get; set; }
         public DamageClass DamageClass { get; set; }
-        public bool Tab { get; set; }
+        public bool Tab { get; set; } = true;
         public override void Update() {
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, 64, 64);
             Rectangle mouseHit = new Rectangle((int)MousePosition.X, (int)MousePosition.Y, 1, 1);
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
                 if (DamageClass == DamageClass.Summon) {
                     targetID = 4281;
                 }
-                if (DamageClass == ModContent.GetInstance<RogueDamageClass>()) {
+                if (DamageClass == CWRLoad.RogueDamageClass) {
                     targetID = 55;
                 }
 

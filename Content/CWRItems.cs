@@ -2,7 +2,6 @@
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items;
-using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,7 +10,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;

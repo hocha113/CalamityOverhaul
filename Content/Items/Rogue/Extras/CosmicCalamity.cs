@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.rare = ItemRarityID.Pink;
             Item.shoot = ModContent.ProjectileType<CosmicCalamityProjectile>();
             Item.shootSpeed = 12f;
-            Item.DamageType = ModContent.GetInstance<RogueDamageClass>();
+            Item.DamageType = CWRLoad.RogueDamageClass;
             Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
         }
 
