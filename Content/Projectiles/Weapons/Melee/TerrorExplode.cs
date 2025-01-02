@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class TerrorBlasts : ModProjectile
+    internal class TerrorExplode : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
 
@@ -34,7 +34,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void OnKill(int timeLeft) {
-            SoundEngine.PlaySound(in SoundID.Item60, Projectile.position);
+            SoundStyle sound = SoundID.Item60;
+            sound.MaxInstances = 6;
+            SoundEngine.PlaySound(sound, Projectile.position);
             Projectile.width = 400;
             Projectile.height = 400;
             Vector2 projCenter = Projectile.position;

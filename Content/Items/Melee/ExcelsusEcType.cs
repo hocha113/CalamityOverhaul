@@ -101,12 +101,12 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             Projectile.NewProjectile(Source, target.Center, Vector2.Zero
-                , ModContent.ProjectileType<LaserFountains>(), Projectile.damage, 0f, Owner.whoAmI, target.whoAmI);
+                , ModContent.ProjectileType<DeathLaserSpwan>(), Projectile.damage, 0f, Owner.whoAmI, target.whoAmI);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             Projectile.NewProjectile(Source, target.Center, Vector2.Zero
-                , ModContent.ProjectileType<LaserFountains>(), Projectile.damage, 0f, Owner.whoAmI, target.whoAmI);
+                , ModContent.ProjectileType<DeathLaserSpwan>(), Projectile.damage, 0f, Owner.whoAmI, target.whoAmI);
         }
     }
 }

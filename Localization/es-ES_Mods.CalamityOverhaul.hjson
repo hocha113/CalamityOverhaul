@@ -3134,9 +3134,9 @@ Projectiles: {
 	// HolyColliderExFire.DisplayName: Holy Collider Ex Fire
 	// HyperBlade.DisplayName: Hyper Blade
 	// JudgementBeam.DisplayName: Judgement Beam
-	// LaserFountains.DisplayName: Laser Fountains
+	// DeathLaserSpwan.DisplayName: Death Laser Spwan
 	// PowerSoundEgg.DisplayName: Power Sound Egg
-	// EXNeutronExplode.DisplayName: E X Neutron Explode
+	// EXNeutronExplode.DisplayName: EX Neutron Explode
 	// NeutronExplode.DisplayName: Neutron Explode
 	// NeutronGlaiveBeam.DisplayName: Neutron Glaive Beam
 	// NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive Held Alt
@@ -3175,7 +3175,7 @@ Projectiles: {
 	// StormArc.DisplayName: Storm Arc
 	// StormLightning.DisplayName: Storm Lightning
 	// SunlightBlades.DisplayName: Sunlight Blades
-	// TerrorBlasts.DisplayName: Terror Blasts
+	// TerrorExplode.DisplayName: Terror Explode
 	// AnarchyBeam.DisplayName: Anarchy Beam
 	// VulcaniteBall.DisplayName: Vulcanite Ball
 	// AnimosityOnSpan.DisplayName: Animosity On Span

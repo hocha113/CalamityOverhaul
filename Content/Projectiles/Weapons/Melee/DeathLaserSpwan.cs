@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class LaserFountains : ModProjectile
+    internal class DeathLaserSpwan : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
         public ref float Time => ref Projectile.ai[0];

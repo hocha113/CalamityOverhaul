@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         }
 
         private void SpawnTerrorBlast() {
-            int type = ModContent.ProjectileType<TerrorBlasts>();
+            int type = ModContent.ProjectileType<TerrorExplode>();
             int damage = (int)(Projectile.damage * 0.3f);
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, type, damage, Projectile.knockBack, Projectile.owner);
         }
@@ -66,9 +66,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
                     Main.dust[num].noGravity = true;
                 }
 
-                if (Math.Abs(oldVelocity.Y) > Math.Abs(oldVelocity.X))
+                if (Math.Abs(oldVelocity.Y) > Math.Abs(oldVelocity.X)) {
                     Projectile.velocity.X = Projectile.velocity.X > 0 ? 20 : -20;
-                else Projectile.velocity.Y = Projectile.velocity.Y > 0 ? 20 : -20;
+                }
+                else {
+                    Projectile.velocity.Y = Projectile.velocity.Y > 0 ? 20 : -20;
+                }
 
                 return false;
             }
@@ -121,7 +124,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
 
         public override void AI() {
             if (Projectile.localAI[1] == 0f) {
-                SoundEngine.PlaySound(in SoundID.Item60, Projectile.position);
+                SoundStyle sound = SoundID.Item60;
+                sound.MaxInstances = 6;
+                SoundEngine.PlaySound(sound, Projectile.position);
                 Projectile.localAI[1] += 1f;
             }
 
