@@ -3026,7 +3026,6 @@ Projectiles: {
 	// EtherRoarOrb.DisplayName: Ether Roar Orb
 	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
 	// FateCluster.DisplayName: Fate Cluster
-	// GhastlyBlasts.DisplayName: Ghastly Blasts
 	// HatredFire.DisplayName: Hatred Fire
 	// AcidGunHeldProj.DisplayName: Acid Gun
 	// AethersWhisperHeldProj.DisplayName: Aethers Whisper
@@ -4285,6 +4284,7 @@ TextContent: {
 		AmmoBox_Text2: 正在部署
 		AmmoBox_Text3: 已部署
 		HellfireExplosion_DeadLang_Text: 在地狱的烈火中化为灰烬
+		// SoulfireExplosion_DeadLang_Text: The Soul Rises In Fire
 		SupMUI_OneClick_Text1: 快捷放置材料
 		SupMUI_OneClick_Text2: 快捷拿取材料
 		TemporaryVersion_Text:

@@ -3008,7 +3008,6 @@ Projectiles: {
 	// EtherRoarOrb.DisplayName: Ether Roar Orb
 	// EtherRoarOrb2.DisplayName: Ether Roar Orb2
 	// FateCluster.DisplayName: Fate Cluster
-	// GhastlyBlasts.DisplayName: Ghastly Blasts
 	// HatredFire.DisplayName: Hatred Fire
 	// AcidGunHeldProj.DisplayName: Acid Gun
 	// AethersWhisperHeldProj.DisplayName: Aethers Whisper
@@ -4267,6 +4266,7 @@ TextContent: {
 		AmmoBox_Text2: Bereitstellung läuft
 		AmmoBox_Text3: Bereitgestellt
 		HellfireExplosion_DeadLang_Text: Verbrenne in der Hölle zu Asche
+		// SoulfireExplosion_DeadLang_Text: The Soul Rises In Fire
 		SupMUI_OneClick_Text1: Materialien schnell platzieren
 		SupMUI_OneClick_Text2: Materialien schnell nehmen
 		TemporaryVersion_Text:
