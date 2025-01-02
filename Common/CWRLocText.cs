@@ -128,6 +128,7 @@ namespace CalamityOverhaul.Common
         public LocalizedText AmmoBox_Text2 { get; private set; }
         public LocalizedText AmmoBox_Text3 { get; private set; }
         public LocalizedText HellfireExplosion_DeadLang_Text { get; private set; }
+        public LocalizedText SoulfireExplosion_DeadLang_Text { get; private set; }
         public LocalizedText SupMUI_OneClick_Text1 { get; private set; }
         public LocalizedText SupMUI_OneClick_Text2 { get; private set; }
         public LocalizedText TemporaryVersion_Text { get; private set; }

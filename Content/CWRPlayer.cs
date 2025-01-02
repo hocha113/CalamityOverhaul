@@ -435,25 +435,6 @@ namespace CalamityOverhaul.Content
                 ScreenShakeValue = mode;
         }
 
-        //public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) {
-        //    if (CWRServerConfig.Instance.OpeningOukModification) {
-        //        yield return new Item(ModContent.ItemType<PebbleSpear>());
-        //        yield return new Item(ModContent.ItemType<PebblePick>());
-        //        yield return new Item(ModContent.ItemType<PebbleAxe>());
-        //    }
-        //    else {//如果不进行开局修改，那么直接放一本宝典在玩家背包中
-        //        yield return new Item(ModContent.ItemType<OverhaulTheBibleBook>());
-        //    }
-        //}
-
-        //public override void ModifyStartingInventory(IReadOnlyDictionary<string, List<Item>> itemsByMod, bool mediumCoreDeath) {
-        //    if (!mediumCoreDeath && CWRServerConfig.Instance.OpeningOukModification) {
-        //        _ = itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperAxe);
-        //        _ = itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperShortsword);
-        //        _ = itemsByMod["Terraria"].RemoveAll(item => item.type == ItemID.CopperPickaxe);
-        //    }
-        //}
-
         public override void UpdateBadLifeRegen() {
             if (HellfireExplosion) {
                 if (Player.lifeRegen > 0) {
@@ -476,7 +457,7 @@ namespace CalamityOverhaul.Content
                 damageSource = PlayerDeathReason.ByCustomReason(Player.name + CWRLocText.GetTextValue("HellfireExplosion_DeadLang_Text"));
             }
             if (SoulfireExplosion) {
-                damageSource = PlayerDeathReason.ByCustomReason(Player.name + CWRLocText.GetTextValue("HellfireExplosion_DeadLang_Text"));
+                damageSource = PlayerDeathReason.ByCustomReason(Player.name + CWRLocText.GetTextValue("SoulfireExplosion_DeadLang_Text"));
             }
             return true;
         }
