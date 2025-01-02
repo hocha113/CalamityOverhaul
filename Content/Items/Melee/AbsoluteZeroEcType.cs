@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override string Texture => CWRConstant.Cay_Wap_Melee + "AbsoluteZero";
         public override void SetDefaults() {
             Item.SetItemCopySD<AbsoluteZero>();
+            Item.UseSound = null;
             Item.SetKnifeHeld<AbsoluteZeroHeld>();
         }
     }

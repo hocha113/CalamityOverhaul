@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
         private Vector2 topOffset;
         internal int boxWeith = 400;
         internal int boxHeight = 300;
-        internal List<ItemVidous> itemVidousList = [];
+        internal List<ItemVidous> itemVidousList;
         internal MouseState oldMouseState;
         internal float rollerValue;
         internal float rollerSengs;
@@ -60,9 +60,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
         }
 
         private void InitializeElement() {
-            if (itemVidousList == null) {
-                SetItemVidousList();
-            }
             if (sliderUI == null) {
                 sliderUI = new SliderUI();
             }
@@ -89,6 +86,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
             if (tabControlClose == null) {
                 tabControlClose = new TabControl();
                 tabControlClose.DamageClass = DamageClass.Default;
+            }
+            if (itemVidousList == null) {
+                SetItemVidousList();
             }
 
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, boxWeith, boxHeight);

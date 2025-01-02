@@ -20,12 +20,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             SwingData.baseSwingSpeed = 4f;
             Projectile.width = Projectile.height = 46;
             Length = 56;
+            autoSetShoot = true;
         }
 
         public override void Shoot() {
-            Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center + UnitToMouseV * 42
-                , UnitToMouseV * 9, ModContent.ProjectileType<DarkIceZeros>()
+            Projectile.NewProjectile(Projectile.GetSource_FromAI(), ShootSpanPos
+                , ShootVelocity, ModContent.ProjectileType<DarkIceBomb>()
                 , (int)(Projectile.damage * 0.8f), Projectile.knockBack * 0.8f, Owner.whoAmI);
+        }
+
+        public override bool PreInOwnerUpdate() {
+            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1Ratio: 0.2f, phase1SwingSpeed: 6.2f
+                    , phase2SwingSpeed: 2f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
+            return base.PreInOwnerUpdate();
         }
 
         public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -33,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             target.AddBuff(ModContent.BuffType<GlacialState>(), 60);
             var source = Owner.GetSource_ItemUse(Item);
             int p = Projectile.NewProjectile(source, target.Center, Vector2.Zero
-                , ModContent.ProjectileType<DarkIceZeros>(), (int)(Item.damage * 1.25f), 12f, Owner.whoAmI);
+                , ModContent.ProjectileType<DarkIceBomb>(), (int)(Item.damage * 1.25f), 12f, Owner.whoAmI);
             Main.projectile[p].timeLeft = 12;
         }
 
@@ -42,7 +49,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
             target.AddBuff(ModContent.BuffType<GlacialState>(), 60);
             var source = Owner.GetSource_ItemUse(Item);
             int p = Projectile.NewProjectile(source, target.Center, Vector2.Zero
-                , ModContent.ProjectileType<DarkIceZeros>(), (int)(Item.damage * 1.25f), 12f, Owner.whoAmI);
+                , ModContent.ProjectileType<DarkIceBomb>(), (int)(Item.damage * 1.25f), 12f, Owner.whoAmI);
             Main.projectile[p].timeLeft = 12;
         }
     }
