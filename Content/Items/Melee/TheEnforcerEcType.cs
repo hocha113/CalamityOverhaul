@@ -29,11 +29,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useTime = 17;
             Item.useTurn = true;
             Item.knockBack = 9f;
-            Item.UseSound = SoundID.Item20;
+            Item.UseSound = null;
             Item.autoReuse = true;
             Item.value = CalamityGlobalItem.RarityDarkBlueBuyPrice;
             Item.rare = ModContent.RarityType<DarkBlue>();
-            Item.shoot = ModContent.ProjectileType<EssenceFlames>();
+            Item.shoot = ModContent.ProjectileType<EnforcerFlame>();
             Item.shootSpeed = 2;
             Item.SetKnifeHeld<TheEnforcerHeld>();
         }
@@ -72,16 +72,25 @@ namespace CalamityOverhaul.Content.Items.Melee
                     + (Main.mouseX + Main.screenPosition.X - Owner.position.X), Owner.MountedCenter.Y);
                 realPlayerPos.X = ((realPlayerPos.X + Owner.Center.X) / 2f) + Main.rand.Next(-350, 351);
                 realPlayerPos.Y -= 100 * i;
-                Projectile.NewProjectile(Source, realPlayerPos.X, realPlayerPos.Y, 0f, 0f
-                    , ModContent.ProjectileType<EssenceFlames>(), Projectile.damage / 4
+                Projectile.NewProjectile(Source, realPlayerPos, Vector2.Zero
+                    , ModContent.ProjectileType<EnforcerFlame>(), Projectile.damage / 4
+                    , Projectile.knockBack, Owner.whoAmI, 0f, Main.rand.Next(3));
+            }
+        }
+
+        public override void MeleeEffect() => Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.ShadowbeamStaff);
+
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            for (int i = 0; i < 4; i++) {
+                Projectile.NewProjectile(Source, target.Center + CWRUtils.randVr(660, 880), Vector2.Zero
+                    , ModContent.ProjectileType<EnforcerFlame>(), Projectile.damage / 4
                     , Projectile.knockBack, Owner.whoAmI, 0f, Main.rand.Next(3));
             }
         }
 
         public override bool PreInOwnerUpdate() {
-            if (Main.rand.NextBool(3)) {
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.ShadowbeamStaff);
-            }
+            ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1Ratio: 0.2f, phase1SwingSpeed: 6.2f
+                    , phase2SwingSpeed: 2f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0, swingSound: SoundID.Item20);
             return base.PreInOwnerUpdate();
         }
     }

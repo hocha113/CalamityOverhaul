@@ -1,16 +1,20 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
-    internal class EssenceFlames : ModProjectile
+    internal class EnforcerFlame : ModProjectile
     {
         public override string Texture => "CalamityMod/Projectiles/Healing/EssenceFlame";
         public Player Owner => Main.player[Projectile.owner];
-        public Texture2D mainValue => CWRUtils.GetT2DValue(Texture);
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+        }
         public override void SetDefaults() {
             Projectile.width = 24;
             Projectile.height = 24;
@@ -19,21 +23,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             Projectile.tileCollide = false;
             Projectile.timeLeft = 150;
             Projectile.DamageType = DamageClass.Melee;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
         public override void AI() {
+            if (!Owner.Alives()) {
+                Projectile.Kill();
+                return;
+            }
+
+            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
             float scaleModd = Main.mouseTextColor / 200f - 0.35f;
             scaleModd *= 0.2f;
             Projectile.scale = scaleModd + 0.95f;
 
             Vector2 toOwner = Projectile.position.To(Owner.position);
             float projDistance = toOwner.Length() / 80f;
-            if (projDistance > 17.3333f)
+            if (projDistance > 17.3333f) {
                 projDistance = 17.3333f;
-            if (Projectile.ai[0] == 0)
+            }
+            if (Projectile.ai[0] == 0) {
                 Projectile.velocity = toOwner.UnitVector() * projDistance;
+            }
+                
             Projectile.rotation += Projectile.velocity.X * 0.03f;
             if (Projectile.rotation > MathHelper.ToRadians(12)) {
                 Projectile.rotation = MathHelper.ToRadians(12);
@@ -43,13 +54,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
         }
 
-        public override Color? GetAlpha(Color lightColor) {
-            return new Color(200, 200, 200, Projectile.alpha);
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(BuffID.Frostburn, 180);
-        }
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(BuffID.Frostburn, 180);
 
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(SoundID.Item74, Projectile.Center);
@@ -72,9 +77,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
-            Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, CWRUtils.GetRec(mainValue, Projectile.frame, 4)
-                , Color.White, Projectile.rotation, CWRUtils.GetOrig(mainValue, 4), Projectile.scale, SpriteEffects.None, 0);
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            Rectangle rectangle = CWRUtils.GetRec(texture, Projectile.frame, 4);
+            Vector2 drawOrigin = rectangle.Size() / 2;
+
+            float bmtSize = 1f;
+            for (int k = 0; k < Projectile.oldPos.Length; k++) {
+                Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + Projectile.Size / 2;
+                Color color = Color.White * (float)(((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length) / 2);
+                Main.EntitySpriteDraw(texture, drawPos, rectangle, color, Projectile.rotation, drawOrigin, Projectile.scale * bmtSize, SpriteEffects.None, 0);
+                bmtSize -= 0.02f;
+            }
+
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, rectangle, Color.White, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }
