@@ -215,6 +215,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 return false;
             }
 
+            if (Projectile.IsOwnedByLocalPlayer() && CWRKeySystem.KreLoad_Key.JustPressed) {
+                if (AmmoState.CurrentAmount <= 0) {
+                    AmmoState = Owner.GetAmmoState(Item.useAmmo);//惰性检测一下
+                }
+                if (AmmoState.CurrentAmount <= 0 && !Owner.CWR().uiMouseInterface && kreloadTimeValue <= 0) {
+                    HandleEmptyAmmoEjection();
+                }
+            }
+
             bool canReload = kreloadTimeValue == 0
                 && (!IsKreload || RepeatedCartridgeChange)
                 && BulletNum < ModItem.AmmoCapacity
@@ -827,7 +836,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public virtual void HandleEmptyAmmoEjection() {
             SoundEngine.PlaySound(CWRSound.Ejection, Projectile.Center);
-            CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue("CaseEjection_TextContent"));
+            string textKey = "CaseEjection_TextContent";
+            if (Item.useAmmo == AmmoID.Coin) {
+                textKey = "CaseEjection_TextContent_Coin";
+            }
+            else if (Item.useAmmo == AmmoID.Arrow) {
+                textKey = "CaseEjection_TextContent_Arrow";
+            }
+            CombatText.NewText(Owner.Hitbox, Color.Gold, CWRLocText.GetTextValue(textKey));
         }
         /// <summary>
         /// 左键单次开火事件，在网络模式中只会被弹幕主人调用
