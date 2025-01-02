@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.height = 58;
             Item.value = CalamityGlobalItem.RarityOrangeBuyPrice;
             Item.rare = ItemRarityID.Orange;
-            Item.shoot = ModContent.ProjectileType<Cyclones>();
+            Item.shoot = ModContent.ProjectileType<AirBomb>();
             Item.shootSpeed = 3f;
             Item.SetKnifeHeld<WindBladeHeld>();
         }
@@ -73,28 +73,22 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void KnifeInitialize() {
-            if (Projectile.ai[0] == 0) {
-                SoundEngine.PlaySound(SoundID.Item1, Owner.Center);
-            }
-            else {
+            if (Projectile.ai[0] != 0) {
                 drawTrailCount = 60;
                 drawTrailCount *= updateCount;
                 oldRotate = new float[drawTrailCount];
                 oldDistanceToOwner = new float[drawTrailCount];
                 oldLength = new float[drawTrailCount];
                 InitializeCaches();
-                SoundEngine.PlaySound(SoundID.Item84 with { MaxInstances = 6 }, Owner.Center);
             }
         }
 
         public override void Shoot() {
-            int proj = Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , ModContent.ProjectileType<Cyclones>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI);
+            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
+                , ModContent.ProjectileType<AirBomb>(), Projectile.damage / 2
+                , Projectile.knockBack, Owner.whoAmI, Projectile.ai[0]);
             if (Projectile.ai[0] == 1) {
-                Main.projectile[proj].ai[0] = 1;
-                Main.projectile[proj].timeLeft = 360;
-                Main.projectile[proj].damage = Projectile.damage / 4;
-
+                SoundEngine.PlaySound(SoundID.Item84 with { MaxInstances = 6, Pitch = -0.2f, Volume = 0.8f }, Owner.Center);
                 for (int i = 0; i <= 360; i += 3) {
                     Vector2 vr = new Vector2(3f, 3f).RotatedBy(MathHelper.ToRadians(i));
                     int num = Dust.NewDust(ShootSpanPos, Owner.width, Owner.height
@@ -113,6 +107,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Projectile.ai[0] == 1) {
                 SwingData.baseSwingSpeed = 7.25f;
             }
+            else {
+                ExecuteAdaptiveSwing(phase0SwingSpeed: 0.3f, phase1SwingSpeed: 4.2f
+                    , phase2SwingSpeed: 6f, phase0MeleeSizeIncrement: 0, phase2MeleeSizeIncrement: 0);
+            }
+            
             return base.PreInOwnerUpdate();
         }
     }
