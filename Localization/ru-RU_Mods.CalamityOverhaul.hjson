@@ -2840,17 +2840,43 @@ Items: {
 
 	JusticeUnveiled: {
 		// DisplayName: Justice Unveiled
-		// Tooltip: ""
+		/* Tooltip:
+			'''
+			Ranged attacks have a chance to summon a strike of justice
+			The great divine impact will crush the enemy
+			"If justice is needed, I will go wherever it is."
+			''' */
 	}
 
 	WeaverGrievances: {
 		// DisplayName: Weaver Grievances
 		/* Tooltip:
 			'''
-			TODO
+			Unleash a large number of claws of Evil spirits and have special effects in hell and dungeon environments
+			Right-click and roll in the direction of the cursor. Hitting an enemy during the roll will give the player an invincible frame
+			A close roll would be considered a perfect dodge
 			[legend]
 			''' */
-		// Legend: TODO
+		/* Legend:
+			'''
+			The eternal dungeon stretches across the land, its walls etched with the inscriptions and screams of ancient warriors. 
+			Each stone is saturated with lingering malice, like chains of the damned, binding it to the endless darkness at time’s end.  
+			These warriors were once the blades of their king, waging war across the realms. 
+			Their swords had illuminated countless battlefields, their blood forged the towering empire. 
+			Their loyalty was as enduring as the stars, their conviction as unyielding as iron.  
+			Yet, when the wars ceased, and the Demonlord’s banners were torn asunder at the king’s feet, 
+			the moment peace descended, the king decreed their consignment to the abyss.  
+			“We betrayed not, yet the king has betrayed us!” The anguished wails of the damned tore through the void, piercing the silence of eternity. 
+			Their noble spirits did not return to the dust but were imprisoned in the void’s chasm, condemned as witnesses to eternal night.  
+			The ceaseless lamentations transformed into a silent accusation, one that reached the furthest ends of the stars.  
+			It is said the king, in fear of their unyielding loyalty and the inferno of their wrath, 
+			heeded the whispers of the Demonlord’s sorcerers, choosing to consign these warriors to the shadows of history.  
+			But malice, like a tide, has twisted the dungeon’s reality. Their suffering has shaken the barriers of time and space, weaving a prophecy of vengeance:  
+			“The Demonlord shall return; the void shall be torn asunder, and our wrath shall consume all!”  
+			When Terra once more faces the brink of annihilation, these restless dead will rise from the darkness. 
+			Their blades will no longer fight for the glory of an empire but for the judgment of the betrayer.  
+			Glory and loyalty are long since obliterated—only the flames of vengeance remain, destined to engulf all.
+			''' */
 	}
 
 	Starship: {
@@ -3514,6 +3540,8 @@ Projectiles: {
 	// StarWrathHeld.DisplayName: Star Wrath Held
 	// TurbulenceArrow.DisplayName: Turbulence Arrow
 	// StarshipAmmo.DisplayName: Starship Ammo
+	// GuardOfLife.DisplayName: Guard Of Life
+	// GuardOfLifeCore.DisplayName: Guard Of Life Core
 }
 
 Configs: {

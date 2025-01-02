@@ -198,6 +198,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         protected float ShootSpeed = 6f;
         /// <summary>
+        /// 绘制的方向矫正值，默认为0
+        /// </summary>
+        protected float SwingDrawRotingOffset = 0;
+        /// <summary>
         /// 较为稳妥的获取一个正确的刀尖单位方向向量
         /// </summary>
         protected Vector2 safeInSwingUnit => GetOwnerCenter().To(Projectile.Center).UnitVector();
@@ -746,13 +750,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
             Vector2 offsetOwnerPos = safeInSwingUnit.GetNormalVector() * unitOffsetDrawZkMode * Projectile.spriteDirection * MeleeSize;
             float drawRoting = Projectile.rotation;
+            float otherRoting = SwingDrawRotingOffset;
             if (Projectile.spriteDirection == -1) {
                 drawRoting += MathHelper.Pi;
+                otherRoting *= -1;
             }
             //烦人的对角线翻转代码，我凑出来了这个效果，它很稳靠，但我仍旧不想细究这其中的数学逻辑
             if (inDrawFlipdiagonally) {
                 effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
                 drawRoting += MathHelper.PiOver2;
+                otherRoting -= MathHelper.Pi;
                 offsetOwnerPos *= -1;
             }
 
@@ -765,10 +772,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             Vector2 trueDrawPos = drawPosValue - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;
 
             Main.EntitySpriteDraw(texture, trueDrawPos, new Rectangle?(rect)
-                , color, drawRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
+                , color, drawRoting + otherRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
             if (canDrawGlow) {
                 Main.EntitySpriteDraw(glowTexValue.Value, trueDrawPos, new Rectangle?(rect)
-                    , Color.White, drawRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
+                    , Color.White, drawRoting + otherRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
             }
         }
 
