@@ -1097,15 +1097,6 @@ Items: {
 			'''
 	}
 
-	CursedCapperEcType: {
-		DisplayName: Pistola Maldita
-		Tooltip:
-			'''
-			Dispara balas malditas.
-			"Definitivamente no querrás saber de dónde las sacó."
-			'''
-	}
-
 	DisseminatorEcType: {
 		DisplayName: Diseminador
 		Tooltip:
@@ -1123,15 +1114,6 @@ Items: {
 			Una escopeta ardiente.
 			Clic derecho para disparo automático.
 			Cuando se dispara, el cañón inflige un gran daño a los enemigos.
-			'''
-	}
-
-	PetrifiedDisease: {
-		DisplayName: Enfermedad Petrificada
-		Tooltip:
-			'''
-			Dispara una gran flecha de veneno pétreo.
-			"Una extraña enfermedad que convierte lentamente en piedra a cualquier animal o planta que infecta."
 			'''
 	}
 
@@ -1320,11 +1302,6 @@ Items: {
 			'''
 	}
 
-	ScorpioEcType: {
-		DisplayName: Escorpión
-		Tooltip: “BOOM”
-	}
-
 	ArcherfishEcType: {
 		DisplayName: Pez Arquero
 		Tooltip: Convierte balas de fusil en un chorro de agua.
@@ -1392,11 +1369,6 @@ Items: {
 			Lanza varias balas.
 			"El hombre de barro"
 			'''
-	}
-
-	NorfleetEcType: {
-		DisplayName: Norfleet
-		Tooltip: Perfectamente equilibrado, apto para todo...
 	}
 
 	ShroomerEcType: {
@@ -1471,15 +1443,6 @@ Items: {
 
 	MolecularManipulatorEcType: {
 		DisplayName: Manipulador Molecular
-		Tooltip:
-			'''
-			Lanza un "proyectil vacío" que distorsiona las propiedades de los monstruos.
-			"Referencia de objeto no establecida en una instancia de un objeto"
-			'''
-	}
-
-	NullificationRifleEcType: {
-		DisplayName: Nulo
 		Tooltip:
 			'''
 			Lanza un "proyectil vacío" que distorsiona las propiedades de los monstruos.
@@ -1693,15 +1656,6 @@ Items: {
 		Tooltip: Lanza dos flechas y cuatro hojas afiladas a la vez
 	}
 
-	CleansingBlazeEcType: {
-		DisplayName: Llama Purificadora
-		Tooltip:
-			'''
-			Libera un rayo de fuego que puede atravesar bloques
-			Usa gel como munición
-			'''
-	}
-
 	FirestormCannonEcType: {
 		DisplayName: Cañón de Tormenta de Fuego
 		Tooltip:
@@ -1718,15 +1672,6 @@ Items: {
 			Dispara hacia el cursor en un ángulo determinado
 			Solo puede disparar en un rango de cierta inclinación sobre la cabeza del jugador
 			"Requiere: alto coeficiente intelectual"
-			'''
-	}
-
-	FreedomStarEcType: {
-		DisplayName: Estrella de la Libertad
-		Tooltip:
-			'''
-			Clic izquierdo para disparar una esfera de energía
-			Mantén presionado el clic izquierdo para cargar y disparar un rayo que explota al impactar
 			'''
 	}
 
@@ -1868,11 +1813,6 @@ Items: {
 			Usa bolas de nieve como munición.
 			Una gran pieza de artillería de nieve que lanza proyectiles de nieve mezclados.
 			'''
-	}
-
-	StorageBatteryI: {
-		DisplayName: Batería de Almacenamiento Simple
-		Tooltip: ""
 	}
 
 	ArterialAssaultEcType: {
@@ -2077,11 +2017,6 @@ Items: {
 			"Perdido en la tormenta de nieve, esperando eternamente, mapa de dolor, adelantamiento en curvas,
 			lentes agrietadas, manchas de sangre secas, hielo rojo, castores llorando, sombras humanas en el hielo."
 			'''
-	}
-
-	Slingshot: {
-		DisplayName: Hondas de Madera
-		Tooltip: Arma de carga primitiva.
 	}
 
 	CondemnationEcType: {
@@ -2413,16 +2348,6 @@ Items: {
 			y el jugador recibirá un debuff de miedo oscuro durante 10 segundos, 
 			en este tiempo el jugador no podrá invocar el contrato oscuro nuevamente
 			'''
-	}
-
-	GraniteRifle: {
-		DisplayName: Rifle de Granito
-		Tooltip: Convierte las balas de pistola en proyectiles de fragmentos de granito, que se mueven en serpiente dentro de bloques sólidos
-	}
-
-	MarbleRifle: {
-		DisplayName: Rifle de Mármol
-		Tooltip: Convierte las balas de pistola en proyectiles de fragmentos de mármol, que rebotan y explotan al impactar
 	}
 
 	FrostcrushValariEcType: {

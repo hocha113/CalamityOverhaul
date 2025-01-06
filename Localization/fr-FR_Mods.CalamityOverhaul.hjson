@@ -1083,15 +1083,6 @@ Items: {
 			'''
 	}
 
-	CursedCapperEcType: {
-		DisplayName: Pistolet Maudit
-		Tooltip:
-			'''
-			Tire des balles maudites
-			"Vous ne voudriez vraiment pas savoir d'où il sort ça"
-			'''
-	}
-
 	DisseminatorEcType: {
 		DisplayName: Disséminateur
 		Tooltip:
@@ -1109,15 +1100,6 @@ Items: {
 			Un fusil à pompe très chaud
 			Clic droit pour tirer en rafale automatique
 			En tirant, le canon peut infliger de grands dégâts aux ennemis
-			'''
-	}
-
-	PetrifiedDisease: {
-		DisplayName: Maladie Pétrifiée
-		Tooltip:
-			'''
-			Tire une grande flèche toxique de pierre
-			"Une maladie étrange qui transforme progressivement les animaux et les plantes en pierre"
 			'''
 	}
 
@@ -1303,11 +1285,6 @@ Items: {
 			'''
 	}
 
-	ScorpioEcType: {
-		DisplayName: Scorpion
-		Tooltip: BOOM
-	}
-
 	ArcherfishEcType: {
 		DisplayName: Poisson Archer
 		Tooltip: Convertit les balles de fusil en un jet d'eau
@@ -1375,11 +1352,6 @@ Items: {
 			Tire plusieurs balles
 			"Un siège de goudron"
 			'''
-	}
-
-	NorfleetEcType: {
-		DisplayName: Norfleet
-		Tooltip: Équilibré parfaitement, approprié pour tout...
 	}
 
 	ShroomerEcType: {
@@ -1454,15 +1426,6 @@ Items: {
 
 	MolecularManipulatorEcType: {
 		DisplayName: Manipulateur Moléculaire
-		Tooltip:
-			'''
-			Tire un "tir vide" qui tord les propriétés des monstres
-			"Référence d'objet non définie sur une instance d'objet"
-			'''
-	}
-
-	NullificationRifleEcType: {
-		DisplayName: Fusil de Nullification
 		Tooltip:
 			'''
 			Tire un "tir vide" qui tord les propriétés des monstres
@@ -1675,15 +1638,6 @@ Items: {
 		Tooltip: Tire deux flèches et quatre lames tranchantes d'un coup
 	}
 
-	CleansingBlazeEcType: {
-		DisplayName: Flammes de Purification
-		Tooltip:
-			'''
-			Libère un rayon de flammes capable de traverser les blocs
-			Utilise du gel comme munition
-			'''
-	}
-
 	FirestormCannonEcType: {
 		DisplayName: Canon Tempête de Feu
 		Tooltip:
@@ -1700,15 +1654,6 @@ Items: {
 			Tire à un angle précis vers le curseur
 			Peut seulement tirer dans un certain angle de visée vers le sommet de la tête du joueur
 			"Nécessite : Intelligence élevée"
-			'''
-	}
-
-	FreedomStarEcType: {
-		DisplayName: Étoile de Liberté
-		Tooltip:
-			'''
-			Clic gauche pour lancer une boule d'énergie
-			Maintenir le clic gauche pour charger et lancer un rayon explosif à l'impact
 			'''
 	}
 
@@ -1849,11 +1794,6 @@ Items: {
 			Utilise des boules de neige comme munitions
 			Un canon à neige de gros calibre, tirant des obus mixtes de glace et de neige
 			'''
-	}
-
-	StorageBatteryI: {
-		DisplayName: Batterie de Stockage Primaire
-		Tooltip: ""
 	}
 
 	ArterialAssaultEcType: {
@@ -2056,11 +1996,6 @@ Items: {
 			"Perdu dans la tempête de neige, en attente éternelle, une carte douloureuse, un dépassement de virage,
 			verres craqués, traces de sang desséchées, glace rouge, larmes de castor, silhouette dans la glace"
 			'''
-	}
-
-	Slingshot: {
-		DisplayName: Lance-Pierre en Bois
-		Tooltip: Arme à énergie primitive
 	}
 
 	CondemnationEcType: {
@@ -2381,16 +2316,6 @@ Items: {
 			Si le joueur est blessé pendant l'existence du pacte sombre, toutes les copies d'ombre sont immédiatement dissipées
 			et accorde au joueur une diminution de la peur des ténèbres de 10 secondes; pendant cette période, le joueur ne peut plus invoquer de pacte sombre par une attaque au corps à corps
 			'''
-	}
-
-	GraniteRifle: {
-		DisplayName: Fusil de Granite
-		Tooltip: Convertit les balles de fusil en éclats de granit, se déplaçant en zigzag à travers les blocs solides
-	}
-
-	MarbleRifle: {
-		DisplayName: Fusil de Marbre
-		Tooltip: Convertit les balles de fusil en éclats de marbre, rebondissant et explosant lorsqu'ils touchent un bloc solide
 	}
 
 	FrostcrushValariEcType: {

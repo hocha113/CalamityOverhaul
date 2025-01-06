@@ -792,11 +792,6 @@ Items: {
 		Tooltip: Emitter ice bomb
 	}
 
-	FlarefrostBlade: {
-		DisplayName: Flarefrost Blade
-		Tooltip: ""
-	}
-
 	MurasamaMould: {
 		DisplayName: Blood gold mold
 		Tooltip: A Material from seemingly another plain of existence. Its warm and electrifying to the touch and it seems to seek for bloodshed.
@@ -1087,15 +1082,6 @@ Items: {
 			'''
 	}
 
-	CursedCapperEcType: {
-		DisplayName: Cursed Capper
-		Tooltip:
-			'''
-			Fire the liquid bullet
-			"You don't want to know where it came from."
-			'''
-	}
-
 	DisseminatorEcType: {
 		DisplayName: Disseminator
 		Tooltip:
@@ -1112,15 +1098,6 @@ Items: {
 			'''
 			A red-hot shotgun
 			When fired, the gun body will deal great damage to enemies
-			'''
-	}
-
-	PetrifiedDisease: {
-		DisplayName: Petrified Disease
-		Tooltip:
-			'''
-			Fire a giant stone poison arrow
-			"A strange disease that affects both animals and plants and gradually turns them to stone."
 			'''
 	}
 
@@ -1301,11 +1278,6 @@ Items: {
 			'''
 	}
 
-	ScorpioEcType: {
-		DisplayName: Scorpio
-		Tooltip: “BOOM”
-	}
-
 	ArcherfishEcType: {
 		DisplayName: Archerfish
 		Tooltip: Converts musket bullets into a jet of water
@@ -1369,11 +1341,6 @@ Items: {
 	GunkShotEcType: {
 		DisplayName: Gunk Shot
 		Tooltip: Fires several bullets
-	}
-
-	NorfleetEcType: {
-		DisplayName: Norfleet
-		Tooltip: Perfect balance, suitable for all...
 	}
 
 	ShroomerEcType: {
@@ -1448,15 +1415,6 @@ Items: {
 
 	MolecularManipulatorEcType: {
 		DisplayName: Molecular Manipulatore
-		Tooltip:
-			'''
-			Fires a "blank" round that twists the properties of monsters
-			“Object reference not set to an instance of an object”
-			'''
-	}
-
-	NullificationRifleEcType: {
-		DisplayName: Nullification Rifle
 		Tooltip:
 			'''
 			Fires a "blank" round that twists the properties of monsters
@@ -1669,15 +1627,6 @@ Items: {
 		Tooltip: Fire two arrows and four blades at once
 	}
 
-	CleansingBlazeEcType: {
-		DisplayName: Cleansing Blaze
-		Tooltip:
-			'''
-			Releases a beam of flame that can pass through blocks
-			Uses gel as ammunition
-			'''
-	}
-
 	FirestormCannonEcType: {
 		DisplayName: Firestorm Cannon
 		Tooltip:
@@ -1694,15 +1643,6 @@ Items: {
 			Fires at the cursor at a certain angle
 			Can only fire within a certain elevation range above the player's head
 			"Requirement: High IQ"
-			'''
-	}
-
-	FreedomStarEcType: {
-		DisplayName: Freedom Star
-		Tooltip:
-			'''
-			Click the left mouse button to fire an energy ball
-			Hold down the left mouse button to charge and fire a beam that explodes upon impact
 			'''
 	}
 
@@ -1854,11 +1794,6 @@ Items: {
 			Use snowballs as ammunition
 			A large-caliber snow cannon, firing ice and snow mixed shells
 			'''
-	}
-
-	StorageBatteryI: {
-		DisplayName: Simple Storage Battery
-		Tooltip: ""
 	}
 
 	ArterialAssaultEcType: {
@@ -2064,11 +1999,6 @@ Items: {
 			"Lost in the blizzard, eternal waiting, the map of agony, overtaking on the bend,
 			Cracked mirrors, dried bloodstains, red ice, weeping beavers, figures in the ice."
 			'''
-	}
-
-	Slingshot: {
-		DisplayName: Slingshot
-		Tooltip: Primitive energy storage weapon
 	}
 
 	CondemnationEcType: {
@@ -2397,16 +2327,6 @@ Items: {
 			'''
 	}
 
-	GraniteRifle: {
-		DisplayName: Granite Rifle
-		Tooltip: Converting musket bullet into a granite-debris projectile will snake through the solid mass.
-	}
-
-	MarbleRifle: {
-		DisplayName: Marble Rifle
-		Tooltip: Converting musket bullet into a marble clastic projectile that bounces and explodes when it hits the mass.
-	}
-
 	FrostcrushValariEcType: {
 		DisplayName: Frostcrush Valari
 		Tooltip: A lurking attack throws a giant boomerang and two companion boomerangs that track the target
@@ -2658,11 +2578,6 @@ Items: {
 
 	HellionFlowerSpearEcType: {
 		DisplayName: Hellion Flower Spear
-		Tooltip: ""
-	}
-
-	RealmSource: {
-		DisplayName: Realm Source
 		Tooltip: ""
 	}
 
@@ -3250,7 +3165,6 @@ Projectiles: {
 	ChickenCannonHeldProj.DisplayName: Chicken Cannon
 	ClamorRifleHeldProj.DisplayName: Clamor Rifle
 	ClaretCannonHeldProj.DisplayName: Claret Cannon
-	CleansingBlazeHeldProj.DisplayName: Cleansing Blaze
 	ClockGatlignumHeldProj.DisplayName: Clock Gatlignum
 	CondemnationHeldProj.DisplayName: Condemnation
 	ConferenceCallHeldProj.DisplayName: Conference Call

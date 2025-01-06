@@ -62,8 +62,6 @@
     <None Remove="Assets\Projectiles\DeathLaser.png" />
     <None Remove="Assets\Projectiles\Ranged\TurbulenceArrowHighlight.png" />
     <None Remove="Assets\Projectiles\Ranged\TurbulenceFlow.png" />
-    <None Remove="Assets\Projectiles\Ranged\TurbulenceGradient.png" />
-    <None Remove="Assets\Projectiles\Ranged\TurbulenceGradient2.png" />
     <None Remove="Assets\Sky\PGBolt.png" />
     <None Remove="Assets\Sky\PGFlash.png" />
     <None Remove="Assets\UIs\ScrollbarInner.png" />

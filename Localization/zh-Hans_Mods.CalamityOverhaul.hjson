@@ -809,11 +809,6 @@ Items: {
 		Tooltip: 发射极寒冰弹
 	}
 
-	FlarefrostBlade: {
-		DisplayName: 冰与火之刃
-		Tooltip: ""
-	}
-
 	MurasamaMould: {
 		DisplayName: 血金模具
 		Tooltip: 用于制作一些高精度的东西，合成时不会直接消耗而是损耗耐久
@@ -1091,15 +1086,6 @@ Items: {
 			'''
 	}
 
-	CursedCapperEcType: {
-		DisplayName: 诅咒手枪
-		Tooltip:
-			'''
-			发射诅咒子弹
-			"你绝对不会想知道它是从哪里掏出来的"
-			'''
-	}
-
 	DisseminatorEcType: {
 		DisplayName: 散播者
 		Tooltip:
@@ -1117,15 +1103,6 @@ Items: {
 			一把炽热的霰弹枪
 			右键进行全自动扫射
 			开火时枪身将可以对敌人造成巨大伤害
-			'''
-	}
-
-	PetrifiedDisease: {
-		DisplayName: 化石病
-		Tooltip:
-			'''
-			发射一发巨大石性毒箭
-			"一种奇怪的疾病，不管是动物还是植物都会在感染后逐渐变成石头"
 			'''
 	}
 
@@ -1311,11 +1288,6 @@ Items: {
 			'''
 	}
 
-	ScorpioEcType: {
-		DisplayName: 天蝎座
-		Tooltip: “BOOM”
-	}
-
 	ArcherfishEcType: {
 		DisplayName: 射水鱼
 		Tooltip: 将火枪子弹转化为一束水流
@@ -1383,11 +1355,6 @@ Items: {
 			发射数颗子弹
 			“胶泥座人”
 			'''
-	}
-
-	NorfleetEcType: {
-		DisplayName: 诺法雷
-		Tooltip: 完美平衡，万物皆宜......
 	}
 
 	ShroomerEcType: {
@@ -1462,15 +1429,6 @@ Items: {
 
 	MolecularManipulatorEcType: {
 		DisplayName: 分子操纵器
-		Tooltip:
-			'''
-			发射一个“空弹”扭曲怪物的属性
-			“Object reference not set to an instance of an object”
-			'''
-	}
-
-	NullificationRifleEcType: {
-		DisplayName: Null
 		Tooltip:
 			'''
 			发射一个“空弹”扭曲怪物的属性
@@ -1684,15 +1642,6 @@ Items: {
 		Tooltip: 一次发射两支箭和四片锋叶
 	}
 
-	CleansingBlazeEcType: {
-		DisplayName: 净化怒焰
-		Tooltip:
-			'''
-			释放一束可以穿过物块的火焰
-			使用凝胶作为弹药
-			'''
-	}
-
 	FirestormCannonEcType: {
 		DisplayName: 烈焰风暴
 		Tooltip:
@@ -1709,15 +1658,6 @@ Items: {
 			以一定的角度向光标处射击
 			仅能朝着玩家头顶的一定仰角范围内开火
 			“要求：智商高”
-			'''
-	}
-
-	FreedomStarEcType: {
-		DisplayName: 自由之星
-		Tooltip:
-			'''
-			点击左键以发射能量球
-			按住左键进行充能并发射在命中时会爆炸的光束
 			'''
 	}
 
@@ -1858,11 +1798,6 @@ Items: {
 			使用雪球作为弹药
 			一把大口径雪炮，发射冰雪混合炮弹
 			'''
-	}
-
-	StorageBatteryI: {
-		DisplayName: 简陋蓄电池
-		Tooltip: ""
 	}
 
 	ArterialAssaultEcType: {
@@ -2067,11 +2002,6 @@ Items: {
 			"迷失在暴雪中，永恒的等待，痛苦地图，弯道超车，
 			冻裂的镜片，干涸的血迹，红色的冰，哭泣的海狸，冰中人影"
 			'''
-	}
-
-	Slingshot: {
-		DisplayName: 木制弹弓
-		Tooltip: 原始的蓄能武器
 	}
 
 	CondemnationEcType: {
@@ -2395,16 +2325,6 @@ Items: {
 			'''
 	}
 
-	GraniteRifle: {
-		DisplayName: 花岗岩步枪
-		Tooltip: 将火枪子弹转化为花岗岩碎屑弹丸，会在实心物块中蛇形游走
-	}
-
-	MarbleRifle: {
-		DisplayName: 大理岩步枪
-		Tooltip: 将火枪子弹转化为大理岩碎屑弹丸，击中物块时弹起并爆炸
-	}
-
 	FrostcrushValariEcType: {
 		DisplayName: 寒霜回旋镖
 		Tooltip: 潜伏攻击将投掷出一个巨大的回旋镖和两个追踪目标的伴生回旋镖
@@ -2652,11 +2572,6 @@ Items: {
 
 	HellionFlowerSpearEcType: {
 		DisplayName: 刺花长矛
-		Tooltip: ""
-	}
-
-	RealmSource: {
-		DisplayName: 境-源
 		Tooltip: ""
 	}
 

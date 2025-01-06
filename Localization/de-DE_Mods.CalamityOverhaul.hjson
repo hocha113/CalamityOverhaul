@@ -1079,15 +1079,6 @@ Items: {
 			'''
 	}
 
-	CursedCapperEcType: {
-		DisplayName: Verfluchte Pistole
-		Tooltip:
-			'''
-			Feuert verfluchte Kugeln ab
-			"Du willst sicher nicht wissen, woher es die hat"
-			'''
-	}
-
 	DisseminatorEcType: {
 		DisplayName: Verbreiter
 		Tooltip:
@@ -1105,15 +1096,6 @@ Items: {
 			Eine feurige Schrotflinte
 			Rechtsklick feuert vollautomatisch ab
 			Beim Feuern verursacht die Waffe großen Schaden
-			'''
-	}
-
-	PetrifiedDisease: {
-		DisplayName: Versteinerte Krankheit
-		Tooltip:
-			'''
-			Feuert einen riesigen steinigen Giftpfeil ab
-			"Eine seltsame Krankheit, die Tiere und Pflanzen nach der Infektion allmählich in Stein verwandelt"
 			'''
 	}
 
@@ -1299,11 +1281,6 @@ Items: {
 			'''
 	}
 
-	ScorpioEcType: {
-		DisplayName: Skorpion
-		Tooltip: BOOM
-	}
-
 	ArcherfishEcType: {
 		DisplayName: Schützenfisch
 		Tooltip: Verwandelt Gewehrkugeln in einen Wasserstrahl
@@ -1371,11 +1348,6 @@ Items: {
 			Feuert mehrere Kugeln ab
 			"Der Gunksitzer"
 			'''
-	}
-
-	NorfleetEcType: {
-		DisplayName: Norfleet
-		Tooltip: Perfekt ausbalanciert, für alles geeignet......
 	}
 
 	ShroomerEcType: {
@@ -1450,15 +1422,6 @@ Items: {
 
 	MolecularManipulatorEcType: {
 		DisplayName: Molekularmanipulator
-		Tooltip:
-			'''
-			Feuert eine "leere Kugel" ab, die die Eigenschaften von Monstern verdreht
-			"Objektverweis wurde nicht auf eine Objektinstanz festgelegt"
-			'''
-	}
-
-	NullificationRifleEcType: {
-		DisplayName: Nullifikationsgewehr
 		Tooltip:
 			'''
 			Feuert eine "leere Kugel" ab, die die Eigenschaften von Monstern verdreht
@@ -1671,15 +1634,6 @@ Items: {
 		Tooltip: Feuert gleichzeitig zwei Pfeile und vier Klingenkanten ab
 	}
 
-	CleansingBlazeEcType: {
-		DisplayName: Reinigende Glut
-		Tooltip:
-			'''
-			Entlässt eine Flamme, die durch Blöcke hindurchgehen kann
-			Verwendet Gel als Munition
-			'''
-	}
-
 	FirestormCannonEcType: {
 		DisplayName: Feuersturmkanone
 		Tooltip:
@@ -1696,15 +1650,6 @@ Items: {
 			Feuert unter einem bestimmten Winkel auf den Cursor
 			Feuert nur innerhalb eines bestimmten Aufwärts-Winkelbereichs über dem Kopf des Spielers
 			"Anforderung: Hoher IQ"
-			'''
-	}
-
-	FreedomStarEcType: {
-		DisplayName: Freiheitsstern
-		Tooltip:
-			'''
-			Klicken Sie mit der linken Maustaste, um Energiebälle abzufeuern
-			Halten Sie die linke Maustaste gedrückt, um aufzuladen und einen Strahl abzufeuern, der bei Aufprall explodiert
 			'''
 	}
 
@@ -1844,11 +1789,6 @@ Items: {
 			Verwendet Schneebälle als Munition
 			Eine großkalibrige Schneekanone, feuert gemischte Eis- und Schneegeschosse ab
 			'''
-	}
-
-	StorageBatteryI: {
-		DisplayName: Einfache Batterie
-		Tooltip: ""
 	}
 
 	ArterialAssaultEcType: {
@@ -2053,11 +1993,6 @@ Items: {
 			"Verloren im Schneesturm, ewiges Warten, Schmerzen auf der Karte, Überholen in Kurven,
 			Gefrorene Risse, vertrocknete Blutflecken, rotes Eis, weinender Biber, Gestalten im Eis"
 			'''
-	}
-
-	Slingshot: {
-		DisplayName: Holzschleuder
-		Tooltip: Primitives Energiewaffen
 	}
 
 	CondemnationEcType: {
@@ -2376,16 +2311,6 @@ Items: {
 			Während des dunklen Paktes, wenn der Spieler Schaden erleidet, werden alle Schattenkopien sofort aufgelöst
 			und der Spieler erhält 10 Sekunden lang einen dunklen Furcht-Debuff, währenddessen kann der Spieler keine Schattenkopien mehr durch echten Nahkampf beschwören
 			'''
-	}
-
-	GraniteRifle: {
-		DisplayName: Granitgewehr
-		Tooltip: Verwandelt Gewehrkugeln in Granitsplittergeschosse, die durch feste Objekte schlängeln
-	}
-
-	MarbleRifle: {
-		DisplayName: Marmorgewehr
-		Tooltip: Verwandelt Gewehrkugeln in Marmorsplittergeschosse, die bei Treffer auf Objekten aufspringen und explodieren
 	}
 
 	FrostcrushValariEcType: {
