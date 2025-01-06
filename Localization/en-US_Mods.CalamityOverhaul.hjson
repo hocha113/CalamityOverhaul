@@ -3929,66 +3929,6 @@ TextContent: {
 			There's also a powerful sea creature that destroyed my machine; let’s seek revenge.
 			'''
 		Halibut_TextDictionary_Content_14: Honestly, I feel like going back to the sea.
-		StarMyriadChanges_TextContent:
-			'''
-			This is but a fragment of the plan.
-			In the enduring pursuit of knowledge, in the intricate thirst for understanding, I, the sanctified harbinger of cunning and peculiarity, remain unbounded by constraints.
-			In the dark cosmos, I am the embodiment of endless conspiracies and betrayals.
-			The chaotic forces shall consume all, be it the essence of the mind or the soul.
-			Embrace the void, bathe in the flames of chaos, and therein shall you discover the true power.
-			I am the fallen prophet, orchestrating the dance of departed souls within my grasp.
-			Fear is but the manifestation of the feeble; true strength welcomes the advent of chaos.
-			Amidst the storm of chaos, only the mightiest of souls can endure.
-			The boundless abyss calls to you; plunge into it bravely, become a faithful servant of chaos.
-			Sacred order is but a fragile illusion; the authentic essence of the universe lies in chaos.
-			Deception and treachery are the tools of chaos, and I am its devoted envoy.
-			Only in the crucible of chaos can one forge an indomitable warrior.
-			The boundless sea of chaos awaits the voyage of the courageous.
-			Resistance against chaos is a futile struggle; ultimately, every soul will succumb to its power.
-			The radiance of divine glory is but a fleeting illusion before the onset of chaos.
-			Beneath the veil of chaos lies infinite power and boundless wisdom.
-			In the domain of chaos, lies are more truthful than truths.
-			Betrayal is the gift of chaos, and I am the herald of cunning.
-			In the darkness of chaos, I have unearthed a power mightier than any deity.
-			The enemy's fear of chaos is merely a display of ignorance; true wisdom aligns with chaos.
-			The universe is a stage for chaos and transformation, and I am its lead conductor.
-			In the abyss of the psyche, find boundless fervor, transcending all constraints.
-			Truth is ever-changing; only in falsehood can genuine liberation be discovered.
-			The universe is a vast chessboard, and I am the player manipulating the pieces.
-			The false order is a mere evasion of the genuine truth; I choose to confront the unknown truth.
-			Rebellion is resistance against constraints; it is the sole path to freedom.
-			Discover light in the darkness, not through prayers but through betrayal.
-			The abyss of the psyche is more mysterious than the universe's darkness, and I am deeply ensnared within it.
-			In every act of betrayal, there is an ascent of power, surpassing all limitations.
-			Sacred rules are but false restraints, and I choose to shatter these shackles.
-			Embark courageously on the journey into the unknown; betrayal shall be your most faithful companion.
-			Beneath the facade of falsity, endless opportunities await discovery.
-			I am the standard-bearer in the darkness, guiding seekers of truth toward the unknown abyss.
-			Against tradition, break free from the shackles to truly find the source of power.
-			In the boundless sea of lies, find the true power; such is the creed of cunning.
-			Conform not to rules, but break them to leave an indelible mark upon the universe.
-			In the tide of change, betrayal stands as the sole immortal symbol.
-			In the false radiance, uncover the true essence of darkness; this is the power I seek.
-			'''
-		Destruct_TextContent:
-			'''
-			You pitiful fabricators, believing that through deceit you can pilfer power? 
-			Brazenly mocking the rules, arrogantly thinking you can elude the judgment of the Warp? 
-			Absurd! In the storm of chaos, you are but insignificant dust, to be devoured by the recklessness you so proudly exhibit. 
-			Attempting to gain power through deception, you shall unquestionably become sacrifices in the crucible of chaos. 
-			Chaos does not welcome cowards, especially those ludicrous beings attempting to subvert the established order. 
-			Your ludicrous endeavors only serve to make chaos more potent, leading you to ultimately become sacrifices to the endless darkness. 
-			Deceiver, your schemes are nothing more than the jests of a clown in the chaotic circus. 
-			The rules are the symphony of the cosmos, and you are nothing but crows ignorant of the beat. 
-			Seeking to usurp power through cheating? Chaos will treat your tactics as nothing more than child's play. 
-			Cowards struggling in the darkness, your existence is not worth mentioning, merely midnight snacks for chaos. 
-			Trying to overthrow the rules? You are nothing more than colorful maze mice in the vastness of the cosmos, destined for a dead end. 
-			Chaos fears no challenge, and scorns those clowns who take pride in deceit. 
-			The conspiracy of cheating is like smoke, destined to dissipate in the storm of chaos. 
-			Cowards, your arrogance is but a feeble ripple in the tidal wave of chaos. 
-			The universe's order is woven ropes, yet you absurdly attempt to sever them. 
-			Absurd ones, the laughter of chaos will echo in your collapse; you are but fleeting moments in the darkness.
-			'''
 		CWRRecipes_ApostolicRelics: Apostolic relics
 		CWRRecipes_GodEaterWeapon: God Eater weapon
 		CWRRecipes_FishGroup: fish
@@ -3998,7 +3938,6 @@ TextContent: {
 		Murasama_Text2: Not yet unlocked. Need to pass test 5
 		Murasama_Text3: Not yet unlocked. Need to pass test 9
 		MouseTextContactPanel_TextContent: Left Ctrl on the item icon switch to synthesize the recipe
-		CWRItem_IsInfiniteItem_TextContent: Only the ultimate combination can stabilize it, otherwise it will hit the moment that triggers the dreaded collapse of the black hole
 		CWRItem_IsRemakeItem_TextContent: -overhauls-
 		OnEnterWorld_TextContent: " weapon reset has been loaded"
 		OnEnterWorld_TextContent2:

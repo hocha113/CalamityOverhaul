@@ -80,8 +80,6 @@ namespace CalamityOverhaul.Common
         public LocalizedText Halibut_TextDictionary_Content_12 { get; private set; }
         public LocalizedText Halibut_TextDictionary_Content_13 { get; private set; }
         public LocalizedText Halibut_TextDictionary_Content_14 { get; private set; }
-        public LocalizedText StarMyriadChanges_TextContent { get; private set; }
-        public LocalizedText Destruct_TextContent { get; private set; }
         public LocalizedText CWRRecipes_ApostolicRelics { get; private set; }
         public LocalizedText CWRRecipes_GodEaterWeapon { get; private set; }
         public LocalizedText CWRRecipes_FishGroup { get; private set; }
@@ -91,7 +89,6 @@ namespace CalamityOverhaul.Common
         public LocalizedText Murasama_Text2 { get; private set; }
         public LocalizedText Murasama_Text3 { get; private set; }
         public LocalizedText MouseTextContactPanel_TextContent { get; private set; }
-        public LocalizedText CWRItem_IsInfiniteItem_TextContent { get; private set; }
         public LocalizedText CWRItem_IsRemakeItem_TextContent { get; private set; }
         public LocalizedText OnEnterWorld_TextContent { get; private set; }
         public LocalizedText OnEnterWorld_TextContent2 { get; private set; }
