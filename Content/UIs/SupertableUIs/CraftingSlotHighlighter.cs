@@ -49,7 +49,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
         }
         public override void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(eyeAsset.Value, DrawPosition, CWRUtils.GetRec(eyeAsset.Value, eyEBool ? 1 : 0, 2), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(eyeAsset.Value, DrawPosition, CWRUtils.GetRec(eyeAsset.Value, eyEBool ? 1 : 0, 2)
+                , Color.White * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             if (mainUI.items != null) {
                 for (int i = 0; i < mainUI.items.Length; i++) {
                     if (mainUI.items[i] == null) {
@@ -60,14 +61,15 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     }
                     if (mainUI.items[i].type != mainUI.previewItems[i].type && mainUI.items[i].type != ItemID.None && eyEBool) {
                         Vector2 pos = mainUI.ArcCellPos(i) + new Vector2(-1, 0);
-                        spriteBatch.Draw(Texture, pos, null, Color.White * 0.6f, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                        spriteBatch.Draw(Texture, pos, null, Color.White * 0.6f * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                     }
                 }
             }
             if (hoverInMainPage) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
                 , eyEBool ? CWRLocText.GetTextValue("SupertableUI_Text4") : CWRLocText.GetTextValue("SupertableUI_Text5")
-                , DrawPosition.X - 30, DrawPosition.Y + 30, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
+                , DrawPosition.X - 30, DrawPosition.Y + 30
+                , Color.White * SupertableUI.Instance._sengs, Color.Black * SupertableUI.Instance._sengs, new Vector2(0.3f), 0.8f);
             }
         }
     }

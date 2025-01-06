@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content
 {
     internal class CWRWorld : ModSystem
     {
+        public static bool DontSetHoverItem;
         public static bool _defeatTheTungstenArmy;
         public static bool DefeatTheTungstenArmy {
             get => _defeatTheTungstenArmy;
@@ -22,20 +23,16 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private static int _time;
-        public static int Time {
-            get => _time;
-            set => _time = value;
-        }
-
         public override void ClearWorld() {
             TungstenRiot.Instance.TungstenRiotIsOngoing = false;
             TungstenRiot.Instance.EventKillPoints = 0;
-            Time = 0;
         }
 
-        public override void PostUpdateTime() {
-            Time++;
+        public override void PostUpdateEverything() {
+            if (!DontSetHoverItem) {
+                CWRLoad.HoverItem = Main.HoverItem;
+            }
+            DontSetHoverItem = false;
         }
 
         public override void NetSend(BinaryWriter writer) {

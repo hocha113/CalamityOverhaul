@@ -3923,7 +3923,7 @@ TextContent: {
 		Murasama_Text1: Non déverrouillé - Requiert l'épreuve 2
 		Murasama_Text2: Non déverrouillé - Requiert l'épreuve 5
 		Murasama_Text3: Non déverrouillé - Requiert l'épreuve 9
-		MouseTextContactPanel_TextContent: Clic gauche Ctrl sur l'icône de cet objet pour activer/désactiver la recette de synthèse finale
+		MouseTextContactPanel_TextContent: Appuyez sur [KEY] pour basculer l'aperçu des recettes de synthèse finale.
 		CWRItem_IsRemakeItem_TextContent: - Calamité -
 		OnEnterWorld_TextContent: armes réinitialisées sont déjà chargées
 		OnEnterWorld_TextContent2:

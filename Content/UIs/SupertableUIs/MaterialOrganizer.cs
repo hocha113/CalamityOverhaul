@@ -85,11 +85,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             if (hoverInMainPage) {
                 color = Color.Gold;
             }
-            spriteBatch.Draw(Texture, DrawPosition, null, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(Texture, DrawPosition, null, color * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             if (hoverInMainPage) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value
                 , checkSetO ? CWRLocText.GetTextValue("SupMUI_OneClick_Text2") : CWRLocText.GetTextValue("SupMUI_OneClick_Text1")
-                , DrawPosition.X - 30, DrawPosition.Y + 30, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
+                , DrawPosition.X - 30, DrawPosition.Y + 30
+                , Color.White * SupertableUI.Instance._sengs, Color.Black * SupertableUI.Instance._sengs, new Vector2(0.3f), 0.8f);
             }
         }
     }

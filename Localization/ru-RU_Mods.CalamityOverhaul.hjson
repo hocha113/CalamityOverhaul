@@ -3979,7 +3979,7 @@ TextContent: {
 		Murasama_Text1: Не разблокировано. Требуется пройти испытание 2
 		Murasama_Text2: Не разблокировано. Требуется пройти испытание 5
 		Murasama_Text3: Не разблокировано. Требуется пройти испытание 9
-		MouseTextContactPanel_TextContent: Левый Ctrl нажимает на кнопку иконы объекта, чтобы синтезировать формулу
+		MouseTextContactPanel_TextContent: Нажмите [KEY], чтобы переключить предварительный просмотр рецептов финального синтеза.
 		CWRItem_IsRemakeItem_TextContent: -ремонт-
 		OnEnterWorld_TextContent: " заряда для сброса оружия"
 		OnEnterWorld_TextContent2:

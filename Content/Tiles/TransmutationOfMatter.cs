@@ -119,6 +119,7 @@ namespace CalamityOverhaul.Content.Tiles
                         playerTramType = tram.WhoAmI;
                         SupertableUI.tramModuleEntity = tram;
                         SupertableUI.Instance.Active = true;
+                        SupertableUI.Instance.downSengsTime = 5;
                         if (SupertableUI.Instance.Active && !Main.playerInventory) {
                             //如果是开启合成UI但此时玩家并没有打开背包，那么就打开背包UI
                             Main.playerInventory = true;

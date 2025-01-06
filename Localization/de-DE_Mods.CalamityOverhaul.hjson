@@ -3907,7 +3907,7 @@ TextContent: {
 		Murasama_Text1: Nicht entsperrt, benötigt Trial 2
 		Murasama_Text2: Nicht entsperrt, benötigt Trial 5
 		Murasama_Text3: Nicht entsperrt, benötigt Trial 9
-		MouseTextContactPanel_TextContent: Klicken Sie mit der linken Strg-Taste auf das Symbol, um die Endzeit-Syntheseformel zu aktivieren.
+		MouseTextContactPanel_TextContent: Drücken Sie [KEY], um die Vorschau der Endsynthetiserezepte umzuschalten.
 		CWRItem_IsRemakeItem_TextContent: - Überarbeitung -
 		OnEnterWorld_TextContent: Waffenrücksetzung wurde geladen
 		OnEnterWorld_TextContent2:

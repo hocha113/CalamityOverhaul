@@ -20,29 +20,27 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         internal int siderHeight;
         public override void Update() {
             DrawPosition = supertableUI.DrawPosition + new Vector2(supertableUI.UIHitBox.Width + 18, 8);
-            float handerHeight = 0;
             for (int i = 0; i < recipeTargetElmts.Count; i++) {
                 RecipeTargetElmt targetElmt = recipeTargetElmts[i];
                 targetElmt.DrawPosition = DrawPosition + new Vector2(4, i * targetElmt.UIHitBox.Height - rollerValue);
                 targetElmt.Update();
-                handerHeight += targetElmt.UIHitBox.Height;
             }
-            siderHeight = (int)(handerHeight / recipeTargetElmts.Count * 7);
+            siderHeight = recipeTargetElmts.Count * 64 / recipeTargetElmts.Count * 7;
             MouseState currentMouseState = Mouse.GetState();
             int scrollWheelDelta = currentMouseState.ScrollWheelValue - oldMouseState.ScrollWheelValue;
             rollerValue -= scrollWheelDelta;
-            rollerValue = MathHelper.Clamp(rollerValue, 64, handerHeight - 64 * 4);
+            rollerValue = MathHelper.Clamp(rollerValue, 64, recipeTargetElmts.Count * 64  - 64 * 4);
             rollerValue = ((int)rollerValue / 64) * 64;
             oldMouseState = currentMouseState;
-            rollerSengs = (rollerValue / handerHeight) * siderHeight;
+            rollerSengs = (rollerValue / recipeTargetElmts.Count * 64) * siderHeight;
             UIHitBox = new Rectangle((int)DrawPosition.X - 4, (int)DrawPosition.Y, 72, siderHeight);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 4, DrawPosition, 70, siderHeight
-                    , Color.AliceBlue * 0.8f, Color.Azure * 0, 1);
+                    , Color.AliceBlue * 0.8f * SupertableUI.Instance._sengs, Color.Azure * 0, 1);
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 4, DrawPosition, 70, siderHeight
-                    , Color.AliceBlue * 0, Color.Azure * 1, 1);
+                    , Color.AliceBlue * 0, Color.Azure * 1 * SupertableUI.Instance._sengs, 1);
 
 
             //进行矩形画布裁剪绘制

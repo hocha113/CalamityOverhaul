@@ -3913,7 +3913,7 @@ TextContent: {
 		Murasama_Text1: 未解锁 需要通过试炼2
 		Murasama_Text2: 未解锁 需要通过试炼5
 		Murasama_Text3: 未解锁 需要通过试炼9
-		MouseTextContactPanel_TextContent: 左Ctrl点击该物品图标开关终焉合成配方
+		MouseTextContactPanel_TextContent: 按下[KEY]切换终焉合成配方预览状态
 		CWRItem_IsRemakeItem_TextContent: -大修-
 		OnEnterWorld_TextContent: 个武器重置已经装载
 		OnEnterWorld_TextContent2:

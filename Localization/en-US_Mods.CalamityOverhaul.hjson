@@ -3937,7 +3937,7 @@ TextContent: {
 		Murasama_Text1: Not yet unlocked. Need to pass test 2
 		Murasama_Text2: Not yet unlocked. Need to pass test 5
 		Murasama_Text3: Not yet unlocked. Need to pass test 9
-		MouseTextContactPanel_TextContent: Left Ctrl on the item icon switch to synthesize the recipe
+		MouseTextContactPanel_TextContent: Press [KEY] to toggle the End Synthesis Recipe Preview.
 		CWRItem_IsRemakeItem_TextContent: -overhauls-
 		OnEnterWorld_TextContent: " weapon reset has been loaded"
 		OnEnterWorld_TextContent2:

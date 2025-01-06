@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             float targetSize = 1;
             Color targetColor = Color.Azure * 0.2f;
             if (hoverInMainPage) {
+                player.mouseInterface = true;
                 if (recipeSidebarListView.PreviewTargetPecipePointer != this) {
                     SoundStyle sound = SoundID.Grab;
                     sound.Pitch = -0.6f;
@@ -51,8 +52,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
                 Item item = new Item(recipeData.Target);
                 if (item != null && item.type > ItemID.None) {
-                    Main.HoverItem = item.Clone();
-                    Main.hoverItemName = item.Name;
+                    SynthesisPreviewUI.Instance.TargetItem = item;
+                    CWRLoad.HoverItem = item;
+                    CWRWorld.DontSetHoverItem = true;
                 }
 
                 targetSize = 1.2f;
@@ -71,13 +73,14 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         public override void Draw(SpriteBatch spriteBatch) {
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 4, DrawPosition, borderedWidth, borderedHeight
-                    , Color.AliceBlue * 0.8f, backColor, borderedSizeF);
+                    , Color.AliceBlue * 0.8f * SupertableUI.Instance._sengs, backColor * SupertableUI.Instance._sengs, borderedSizeF);
             Item item = new Item(recipeData.Target);
 
             if (item.type > ItemID.None) {
                 float drawSize = VaultUtils.GetDrawItemSize(item, borderedWidth) * borderedSizeF;
                 Vector2 drawPos = DrawPosition + new Vector2(borderedWidth, borderedHeight) / 2;
-                VaultUtils.SimpleDrawItem(spriteBatch, item.type, drawPos, drawSize, 0, Color.White);
+                VaultUtils.SimpleDrawItem(spriteBatch, item.type, drawPos, drawSize, 0
+                    , Color.White * SupertableUI.Instance._sengs);
             }
         }
     }

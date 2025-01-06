@@ -74,8 +74,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         private int inCoordIndex => (mouseInCellCoord.Y * maxCellNumX) + mouseInCellCoord.X;
 
+        internal float _sengs;
+
+        internal int downSengsTime;
+
         public override bool Active {
-            get => player.CWR().SupertableUIStartBool;
+            get => player.CWR().SupertableUIStartBool || _sengs > 0;
             set {
                 player.CWR().SupertableUIStartBool = value;
                 tpEntityLoadenItems();
@@ -171,6 +175,23 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public void UpdateUIElementPos() {
+            if (player.CWR().SupertableUIStartBool && downSengsTime <= 0) {
+                if (_sengs < 1f) {
+                    _sengs += 0.1f;
+                }
+            }
+            else {
+                if (_sengs > 0f) {
+                    _sengs -= 0.1f;
+                }
+            }
+
+            _sengs = MathHelper.Clamp(_sengs, 0, 1);
+
+            if (downSengsTime > 0) {
+                downSengsTime--;
+            }
+
             Vector2 inUIMousePos = MousePosition - topLeft;
             int mouseXGrid = (int)(inUIMousePos.X / cellWid);
             int mouseYGrid = (int)(inUIMousePos.Y / cellHig);
@@ -338,6 +359,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         /// <param name="key">用于解析的字符串键，可以是整数类型或模组/物品名称的组合</param>
         /// <returns>解析后得到的物品类型</returns>
         public static Item InStrGetItem(string key, bool loadVanillaItem = false) {
+            if (key == "Null/Null") {
+                return new Item();
+            }
             if (int.TryParse(key, out int intValue)) {
                 if (loadVanillaItem && !VaultUtils.isServer) {
                     Main.instance.LoadItem(intValue);
@@ -761,9 +785,9 @@ End:;
         public override void Draw(SpriteBatch spriteBatch) {
             RecipeSidebarListView.Draw(spriteBatch);
 
-            spriteBatch.Draw(Texture, DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
-            spriteBatch.Draw(CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon"), DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出关闭按键
-            if (onCloseP) {
+            spriteBatch.Draw(Texture, DrawPosition, null, Color.White * _sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
+            spriteBatch.Draw(CWRUtils.GetT2DValue("CalamityMod/UI/DraedonSummoning/DecryptCancelIcon"), DrawPosition, null, Color.White * _sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出关闭按键
+            if (onCloseP && _sengs >= 1) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("SupertableUI_Text1"), DrawPosition.X, DrawPosition.Y, Color.Gold, Color.Black, new Vector2(0.3f), 1.1f + Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.1f));
             }
 
@@ -772,7 +796,7 @@ End:;
                     if (previewItems[i] != null) {
                         Item item = previewItems[i];
                         if (item != null) {
-                            DrawItemIcons(spriteBatch, item, ArcCellPos(i), alp: 0.25f);
+                            DrawItemIcons(spriteBatch, item, ArcCellPos(i), alp: 0.25f * _sengs);
                             //Main.DrawItemIcon(spriteBatch, item, ArcCellPos(i), Color.White * 0.25f, 1);
                         }
                     }
@@ -783,7 +807,7 @@ End:;
                     if (items[i] != null) {
                         Item item = items[i];
                         if (item != null) {
-                            DrawItemIcons(spriteBatch, item, ArcCellPos(i));
+                            DrawItemIcons(spriteBatch, item, ArcCellPos(i), alp: _sengs);
                         }
                     }
                 }
@@ -791,10 +815,10 @@ End:;
 
             Texture2D arrow = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/InputArrow2");
             if (inputItem != null && inputItem?.type != 0) {//如果输出格有物品，那么将它画出来
-                DrawItemIcons(spriteBatch, inputItem, DrawPosition + new Vector2(552, 215), overSlp: 1.5f);
+                DrawItemIcons(spriteBatch, inputItem, DrawPosition + new Vector2(552, 215), alp: _sengs, overSlp: 1.5f * _sengs);
                 arrow = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/InputArrow");
             }
-            spriteBatch.Draw(arrow, DrawPosition + new Vector2(460, 225), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出输出箭头
+            spriteBatch.Draw(arrow, DrawPosition + new Vector2(460, 225), null, Color.White * _sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出输出箭头
 
             if (hoverInPutItemCellPage && inCoordIndex >= 0 && inCoordIndex <= 80) { //处理鼠标在UI格中查看物品的事情
                 Item overItem = items[inCoordIndex];

@@ -62,24 +62,41 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             int museS = (int)keyLeftPressState;
             if (museS == 1) {
+                RecipeSidebarListViewUI recipeSidebarListView = UIHandleLoader.GetUIHandleOfType<RecipeSidebarListViewUI>();
                 if (onR) {
                     SoundEngine.PlaySound(SoundID.Chat with { Pitch = 0.5f });
                     index += 1;
+                    recipeSidebarListView.rollerValue += 64;
                     DragButton.DontDragTime = 2;
                 }
                 if (onL) {
                     SoundEngine.PlaySound(SoundID.Chat with { Pitch = -0.5f });
                     index -= 1;
+                    recipeSidebarListView.rollerValue -= 64;
                     DragButton.DontDragTime = 2;
                 }
                 if (onM) {
                     DragButton.DontDragTime = 2;
                 }
+
                 if (index < 0) {
                     index = itemTarget.Count - 1;
+                    recipeSidebarListView.rollerValue = recipeSidebarListView.recipeTargetElmts.Count * 64;
                 }
                 if (index > itemTarget.Count - 1) {
                     index = 0;
+                    recipeSidebarListView.rollerValue = recipeSidebarListView.recipeTargetElmts.Count * 0;
+                }
+
+                RecipeTargetElmt elmt = null;
+                foreach (RecipeTargetElmt folwerElmt in recipeSidebarListView.recipeTargetElmts) {
+                    if (folwerElmt.recipeData.Target == itemTarget[index].type) {
+                        elmt = folwerElmt;
+                    }
+                }
+
+                if (elmt != null) {
+                    recipeSidebarListView.TargetPecipePointer = elmt;
                 }
 
                 LoadPsreviewItems();
@@ -132,16 +149,18 @@ End:;
         public override void Draw(SpriteBatch spriteBatch) {
             Texture2D arow = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BlueArrow");
             Texture2D arow2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BlueArrow2");
-            spriteBatch.Draw(Texture, DrawPosition, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
-            spriteBatch.Draw(onR ? arow : arow2, DrawPosition + new Vector2(65, 20), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-            spriteBatch.Draw(onL ? arow : arow2, DrawPosition + new Vector2(-30, 20), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
+            spriteBatch.Draw(Texture, DrawPosition, null, Color.White * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);//绘制出UI主体
+            spriteBatch.Draw(onR ? arow : arow2, DrawPosition + new Vector2(65, 20), null, Color.White * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(onL ? arow : arow2, DrawPosition + new Vector2(-30, 20), null, Color.White * SupertableUI.Instance._sengs, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
             string text2 = $"{index + 1} -:- {itemTarget.Count}";
-            Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text2, DrawPosition.X - text2.Length * 5 + 40, DrawPosition.Y + 65, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
+            Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text2, DrawPosition.X - text2.Length * 5 + 40, DrawPosition.Y + 65
+                , Color.White * SupertableUI.Instance._sengs, Color.Black * SupertableUI.Instance._sengs, new Vector2(0.3f), 0.8f);
             if (itemTarget != null && SupertableUI.Instance != null && index >= 0 && index < itemTarget.Count) {
-                SupertableUI.DrawItemIcons(spriteBatch, itemTarget[index], DrawPosition + new Vector2(5, 5), alp: 0.6f, overSlp: 1.5f);
+                SupertableUI.DrawItemIcons(spriteBatch, itemTarget[index], DrawPosition + new Vector2(5, 5), alp: 0.6f * SupertableUI.Instance._sengs, overSlp: 1.5f * SupertableUI.Instance._sengs);
                 string name = itemTarget[index].HoverName;
                 string text = $"{CWRLocText.GetTextValue("SupertableUI_Text2")}：{(name == "" ? CWRLocText.GetTextValue("SupertableUI_Text3") : name)}";
-                Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, DrawPosition.X - text.Length * 5, DrawPosition.Y - 25, Color.White, Color.Black, new Vector2(0.3f), 0.8f);
+                Terraria.Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text, DrawPosition.X - text.Length * 5, DrawPosition.Y - 25
+                    , Color.White * SupertableUI.Instance._sengs, Color.Black * SupertableUI.Instance._sengs, new Vector2(0.3f), 0.8f);
             }
             if (onM) { //处理鼠标在UI格中查看物品的事情
                 Item overItem = itemTarget[index];

@@ -3964,7 +3964,7 @@ TextContent: {
 		Murasama_Text1: No desbloqueado. Necesita Prueba 2
 		Murasama_Text2: No desbloqueado. Necesita Prueba 5
 		Murasama_Text3: No desbloqueado. Necesita Prueba 9
-		MouseTextContactPanel_TextContent: Presione Ctrl izquierdo y haga clic en el ícono del objeto para alternar la receta de síntesis de apocalipsis
+		MouseTextContactPanel_TextContent: Presiona [KEY] para alternar la vista previa de la receta de síntesis final.
 		CWRItem_IsRemakeItem_TextContent: -Gran Renovación-
 		OnEnterWorld_TextContent: Se ha cargado la reinicialización de armas
 		OnEnterWorld_TextContent2:
