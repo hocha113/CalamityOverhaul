@@ -796,11 +796,6 @@ Items: {
 		Tooltip: Пусковая ледяная бомба
 	}
 
-	FlarefrostBlade: {
-		DisplayName: Лезвие льда и огня
-		Tooltip: ""
-	}
-
 	MurasamaMould: {
 		DisplayName: Кровавая золотая плесень
 		Tooltip: Для создания чего-то с высокой точностью, синтез не потребляется непосредственно, а изношен
@@ -2596,11 +2591,6 @@ Items: {
 		// Tooltip: ""
 	}
 
-	RealmSource: {
-		// DisplayName: Realm Source
-		// Tooltip: ""
-	}
-
 	FeralthornClaymoreEcType: {
 		// DisplayName: Feralthorn Claymore
 		// Tooltip: ""
@@ -3186,7 +3176,6 @@ Projectiles: {
 	// ChickenCannonHeldProj.DisplayName: Chicken Cannon
 	// ClamorRifleHeldProj.DisplayName: Clamor Rifle
 	// ClaretCannonHeldProj.DisplayName: Claret Cannon
-	// CleansingBlazeHeldProj.DisplayName: Cleansing Blaze
 	// ClockGatlignumHeldProj.DisplayName: Clock Gatlignum
 	// CondemnationHeldProj.DisplayName: Condemnation
 	// ConferenceCallHeldProj.DisplayName: Conference Call

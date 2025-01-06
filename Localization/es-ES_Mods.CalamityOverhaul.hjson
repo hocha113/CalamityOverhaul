@@ -817,11 +817,6 @@ Items: {
 		Tooltip: Lanza proyectiles de hielo extremadamente frío.
 	}
 
-	FlarefrostBlade: {
-		DisplayName: Hoja de Hielo y Fuego
-		Tooltip: ""
-	}
-
 	MurasamaMould: {
 		DisplayName: Molde de Sangre Dorada
 		Tooltip: Utilizado para crear objetos de alta precisión, no se consume al combinar, sino que se desgasta.
@@ -2602,11 +2597,6 @@ Items: {
 		Tooltip: ""
 	}
 
-	RealmSource: {
-		DisplayName: Fuente de Reino
-		Tooltip: ""
-	}
-
 	FeralthornClaymoreEcType: {
 		DisplayName: Claymore de Espinas Salvajes
 		Tooltip: ""
@@ -3193,7 +3183,6 @@ Projectiles: {
 	// ChickenCannonHeldProj.DisplayName: Chicken Cannon
 	// ClamorRifleHeldProj.DisplayName: Clamor Rifle
 	// ClaretCannonHeldProj.DisplayName: Claret Cannon
-	// CleansingBlazeHeldProj.DisplayName: Cleansing Blaze
 	// ClockGatlignumHeldProj.DisplayName: Clock Gatlignum
 	// CondemnationHeldProj.DisplayName: Condemnation
 	// ConferenceCallHeldProj.DisplayName: Conference Call

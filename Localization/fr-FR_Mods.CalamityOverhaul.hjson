@@ -804,11 +804,6 @@ Items: {
 		Tooltip: Lance des boules de glace extrêmement froides
 	}
 
-	FlarefrostBlade: {
-		DisplayName: Lame de Brume Glacée
-		Tooltip: ""
-	}
-
 	MurasamaMould: {
 		DisplayName: Moule de Murasama
 		Tooltip: Utilisé pour fabriquer des objets de haute précision, ne se consomme pas directement lors de la synthèse mais perd de la durabilité
@@ -2569,11 +2564,6 @@ Items: {
 		// Tooltip: ""
 	}
 
-	RealmSource: {
-		// DisplayName: Realm Source
-		// Tooltip: ""
-	}
-
 	FeralthornClaymoreEcType: {
 		// DisplayName: Feralthorn Claymore
 		// Tooltip: ""
@@ -3159,7 +3149,6 @@ Projectiles: {
 	// ChickenCannonHeldProj.DisplayName: Chicken Cannon
 	// ClamorRifleHeldProj.DisplayName: Clamor Rifle
 	// ClaretCannonHeldProj.DisplayName: Claret Cannon
-	// CleansingBlazeHeldProj.DisplayName: Cleansing Blaze
 	// ClockGatlignumHeldProj.DisplayName: Clock Gatlignum
 	// CondemnationHeldProj.DisplayName: Condemnation
 	// ConferenceCallHeldProj.DisplayName: Conference Call

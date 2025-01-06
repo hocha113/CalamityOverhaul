@@ -804,11 +804,6 @@ Items: {
 		Tooltip: Feuert extrem kalte Eisbälle ab
 	}
 
-	FlarefrostBlade: {
-		DisplayName: Klinge aus Eis und Feuer
-		Tooltip: ""
-	}
-
 	MurasamaMould: {
 		DisplayName: Blutgold-Form
 		Tooltip: Wird zur Herstellung präziser Gegenstände verwendet. Die Form wird bei der Herstellung nicht verbraucht, sondern nur abgenutzt.
@@ -2567,11 +2562,6 @@ Items: {
 		// Tooltip: ""
 	}
 
-	RealmSource: {
-		// DisplayName: Realm Source
-		// Tooltip: ""
-	}
-
 	FeralthornClaymoreEcType: {
 		// DisplayName: Feralthorn Claymore
 		// Tooltip: ""
@@ -3157,7 +3147,6 @@ Projectiles: {
 	// ChickenCannonHeldProj.DisplayName: Chicken Cannon
 	// ClamorRifleHeldProj.DisplayName: Clamor Rifle
 	// ClaretCannonHeldProj.DisplayName: Claret Cannon
-	// CleansingBlazeHeldProj.DisplayName: Cleansing Blaze
 	// ClockGatlignumHeldProj.DisplayName: Clock Gatlignum
 	// CondemnationHeldProj.DisplayName: Condemnation
 	// ConferenceCallHeldProj.DisplayName: Conference Call
