@@ -47,8 +47,6 @@ namespace CalamityOverhaul
         #region Data
         public static bool OnLoadContentBool;
 
-        public static Item HoverItem = new Item();
-
         public static int DarkMatterBall;
         public static int BlackMatterStick;
         public static int DubiousPlating;

@@ -15,12 +15,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         internal Texture2D mainBookPValue => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BookPans");
         internal Texture2D mainCellValue => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue3");
         internal Texture2D TOMTex => CWRUtils.GetT2DValue(CWRConstant.Asset + "Items/Placeable/" + "TransmutationOfMatterItem");
-        internal Item TargetItem = new Item();
         internal string[] OmigaSnyContent = [];
         internal float _sengs;
         internal bool DrawBool;
-        internal bool uiIsActive => !SupertableUI.Instance.hoverInMainPage && TargetItem.type == CWRLoad.HoverItem.type
-            && CWRLoad.HoverItem.type > ItemID.None && TargetItem.CWR().OmigaSnyContent != null && DrawBool;
+        internal bool uiIsActive => !SupertableUI.Instance.hoverInMainPage 
+            && CWRUI.HoverItem.type > ItemID.None 
+            && CWRUI.HoverItem.CWR().OmigaSnyContent != null && DrawBool;
         public override bool Active => _sengs > 0 || uiIsActive;
         // 在只利用一个数字索引的情况下反向计算出对应的格坐标
         public Vector2 ArcCellPos(int index, Vector2 pos) {
@@ -47,6 +47,15 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             return pos;
         }
 
+        public void SetPosition() {
+            DrawPosition = new Vector2(580, 100);
+            DrawPosition = Prevention(DrawPosition);
+            if (SupertableUI.Instance.Active) {
+                RecipeSidebarListViewUI recipeSidebarListViewUI = UIHandleLoader.GetUIHandleOfType<RecipeSidebarListViewUI>();
+                DrawPosition = recipeSidebarListViewUI.DrawPosition + new Vector2(64, 0);
+            }
+        }
+
         public override void Update() {
             if (uiIsActive) {
                 if (_sengs < 1f) {
@@ -58,16 +67,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     _sengs -= 0.1f;
                 }
             }
+
             _sengs = MathHelper.Clamp(_sengs, 0, 1);
-            DrawPosition = new Vector2(580, 100);
-            DrawPosition = Prevention(DrawPosition);
-            if (SupertableUI.Instance.Active) {
-                RecipeSidebarListViewUI recipeSidebarListViewUI = UIHandleLoader.GetUIHandleOfType<RecipeSidebarListViewUI>();
-                DrawPosition = recipeSidebarListViewUI.DrawPosition + new Vector2(64, 0);
-            }
+            SetPosition();
             OmigaSnyContent = SupertableRecipeDate.FullItems;
-            if (TargetItem.type > ItemID.None) {
-                string[] _omigaSnyContent = TargetItem.CWR().OmigaSnyContent;
+            if (CWRUI.HoverItem.type > ItemID.None) {
+                string[] _omigaSnyContent = CWRUI.HoverItem.CWR().OmigaSnyContent;
                 if (_omigaSnyContent != null) {
                     OmigaSnyContent = _omigaSnyContent;
                 }

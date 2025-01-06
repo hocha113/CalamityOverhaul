@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         private static Vector2 origPos => SynthesisPreviewUI.Instance.DrawPosition;
         private Vector2 offset;
         internal float _sengs;
-        internal bool uiIsActive => !SupertableUI.Instance.hoverInMainPage && 
-            SynthesisPreviewUI.Instance.TargetItem.type == CWRLoad.HoverItem.type
-            && CWRLoad.HoverItem.type > ItemID.None && SynthesisPreviewUI.Instance.TargetItem.CWR().OmigaSnyContent != null;
+        internal bool uiIsActive => !SupertableUI.Instance.hoverInMainPage
+                && CWRUI.HoverItem.type > ItemID.None
+                && CWRUI.HoverItem.CWR().OmigaSnyContent != null;
         public override bool Active => _sengs > 0 || uiIsActive;
         public override void Load() {
             Instance = this;
@@ -37,12 +37,17 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 }
             }
             _sengs = MathHelper.Clamp(_sengs, 0, 1);
+
             bool leftCtrlPressed = Main.keyState.IsKeyDown(Keys.L);
             if (leftCtrlPressed && !oldLeftCtrlPressed) {
                 SoundEngine.PlaySound(SoundID.Chat);
                 SynthesisPreviewUI.Instance.DrawBool = !SynthesisPreviewUI.Instance.DrawBool;
             }
             oldLeftCtrlPressed = leftCtrlPressed;
+
+            if (!SynthesisPreviewUI.Instance.DrawBool) {
+                SynthesisPreviewUI.Instance.SetPosition();
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {

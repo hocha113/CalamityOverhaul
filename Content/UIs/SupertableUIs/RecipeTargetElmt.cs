@@ -52,9 +52,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
                 Item item = new Item(recipeData.Target);
                 if (item != null && item.type > ItemID.None) {
-                    SynthesisPreviewUI.Instance.TargetItem = item;
-                    CWRLoad.HoverItem = item;
-                    CWRWorld.DontSetHoverItem = true;
+                    CWRUI.HoverItem = item;
+                    CWRUI.DontSetHoverItem = true;
                 }
 
                 targetSize = 1.2f;

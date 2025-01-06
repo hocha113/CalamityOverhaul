@@ -442,10 +442,5 @@ namespace CalamityOverhaul.Content
                 }
             }
         }
-
-        public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y) {
-            SynthesisPreviewUI.Instance.TargetItem = item;
-            return base.PreDrawTooltip(item, lines, ref x, ref y);
-        }
     }
 }
