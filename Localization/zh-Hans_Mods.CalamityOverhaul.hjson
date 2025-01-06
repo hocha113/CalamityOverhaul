@@ -3914,7 +3914,6 @@ TextContent: {
 		Murasama_Text2: 未解锁 需要通过试炼5
 		Murasama_Text3: 未解锁 需要通过试炼9
 		MouseTextContactPanel_TextContent: 左Ctrl点击该物品图标开关终焉合成配方
-		CWRItem_IsInfiniteItem_TextContent: 只有高级合成能让其稳定下来，否则会触及的一刻引发可怕的塌缩
 		CWRItem_IsRemakeItem_TextContent: -大修-
 		OnEnterWorld_TextContent: 个武器重置已经装载
 		OnEnterWorld_TextContent2:
@@ -4145,16 +4144,16 @@ TextContent: {
 		AmmoBox_Text2: 正在部署
 		AmmoBox_Text3: 已部署
 		HellfireExplosion_DeadLang_Text: 在地狱的烈火中化为灰烬
-		// SoulfireExplosion_DeadLang_Text: The Soul Rises In Fire
+		SoulfireExplosion_DeadLang_Text: 的灵魂在火焰中升华
 		SupMUI_OneClick_Text1: 快捷放置材料
 		SupMUI_OneClick_Text2: 快捷拿取材料
 		TemporaryVersion_Text:
 			'''
-			[CalamityOverhaul-0.3.6.1.2]:
-			当前版本为临时性版本，用于适配新版本，进行调整和错误修复以保证最基本的游玩体验，直到在0.4版本到来
+			[CalamityOverhaul-0.5.0.2.*]:
+			当前版本为临时性版本，用于适配新版本，仅能保证最基本的游玩体验，直到在0.6版本到来
 			更新较为仓促，所以仍可能存在一些明显的错误
-			如果您在游玩过程中发现问题，请在Github上向模组提交issue，
-			或者前往模组创意工坊Feedback on Issues反馈帖寻求帮助
+			如果您在游玩过程中发现问题，请在Github上向模组提交issue
+			或者前往模组创意工坊Feedback on Issues反馈帖中指出问题，开发者会快速反应并修复
 			'''
 		MS_Config_Text:
 			'''

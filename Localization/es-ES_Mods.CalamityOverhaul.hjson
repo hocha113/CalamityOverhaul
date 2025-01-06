@@ -3965,7 +3965,6 @@ TextContent: {
 		Murasama_Text2: No desbloqueado. Necesita Prueba 5
 		Murasama_Text3: No desbloqueado. Necesita Prueba 9
 		MouseTextContactPanel_TextContent: Presione Ctrl izquierdo y haga clic en el ícono del objeto para alternar la receta de síntesis de apocalipsis
-		CWRItem_IsInfiniteItem_TextContent: Solo la síntesis avanzada puede estabilizarlo; de lo contrario, tocarlo provocará un colapso aterrador
 		CWRItem_IsRemakeItem_TextContent: -Gran Renovación-
 		OnEnterWorld_TextContent: Se ha cargado la reinicialización de armas
 		OnEnterWorld_TextContent2:
@@ -4201,12 +4200,13 @@ TextContent: {
 		SupMUI_OneClick_Text2: Recoger materiales rápidamente
 		TemporaryVersion_Text:
 			'''
-			[CalamityOverhaul-0.3.6.1.2]:
-			La versión actual es una versión temporal, diseñada para adaptarse a la nueva versión, 
-			realizar ajustes y correcciones de errores para garantizar la experiencia de juego más básica, hasta que llegue la versión 0.4.
-			La actualización se realizó apresuradamente, por lo que aún pueden existir errores evidentes.
-			Si encuentras problemas durante el juego, por favor, reporta un problema en Github,
-			o ve al hilo de retroalimentación sobre problemas en el taller creativo del mod para buscar ayuda.
+			[CalamityOverhaul-0.5.0.2.*]:
+			Esta es una versión temporal diseñada para adaptarse a la nueva actualización, 
+			proporcionando solo la experiencia de juego más básica hasta que llegue la versión 0.6.
+			Debido a la actualización apresurada, puede haber algunos errores notables.
+			Si encuentras algún problema durante el juego, por favor envía un issue en Github,
+			o informa del problema en el hilo Feedback on Issues en la página del Workshop del mod. 
+			Los desarrolladores responderán y lo solucionarán rápidamente.
 			'''
 		MS_Config_Text:
 			'''
