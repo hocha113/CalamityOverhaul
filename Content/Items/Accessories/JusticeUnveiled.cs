@@ -7,7 +7,7 @@ using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles;
+using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (projectile.type == ModContent.ProjectileType<StellarContemptEcho>()
                 || projectile.type == ModContent.ProjectileType<GalaxySmasherEcho>()
                 || projectile.type == ModContent.ProjectileType<TriactisHammerProj>()
-                || projectile.type == ModContent.ProjectileType<GangarusProjectile>()) {
+                || projectile.type == ModContent.ProjectileType<LonginusThrow>()) {
                 return true;
             }
 
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public static void OnHitNPCSpwanProj(Player player, Projectile projectile, NPC target, NPC.HitInfo hit) {
             if (SpwanBool(player, projectile, target, hit)) {
-                if (Main.zenithWorld && projectile.type == ModContent.ProjectileType<GangarusProjectile>()) {
+                if (Main.zenithWorld && projectile.type == ModContent.ProjectileType<LonginusThrow>()) {
                     foreach (var npc in Main.ActiveNPCs) {
                         if (npc.friendly) {
                             continue;
@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer() && CWRUtils.GetNPCInstance((int)Projectile.ai[0]) != null) {
                 if (Main.zenithWorld) {
-                    SoundEngine.PlaySound(Gangarus.AT, Projectile.Center);
+                    SoundEngine.PlaySound(SpearOfLonginus.AT, Projectile.Center);
                 }
                 else {
                     SoundEngine.PlaySound(CWRSound.JustStrike, Projectile.Center);

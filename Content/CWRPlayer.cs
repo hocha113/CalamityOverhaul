@@ -258,7 +258,7 @@ namespace CalamityOverhaul.Content
 
             SupertableUI.LoadenWorld();
 
-            Gangarus.ZenithWorldAsset();
+            SpearOfLonginus.ZenithWorldAsset();
 
             //初始化位置信息
             oldPlayerPositionChange = Player.position;

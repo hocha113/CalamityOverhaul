@@ -610,7 +610,7 @@ Items: {
 			'''
 	}
 
-	Gangarus: {
+	SpearOfLonginus: {
 		DisplayName: Lanza de Longinos
 		Tooltip:
 			'''
@@ -2224,17 +2224,6 @@ Items: {
 			'''
 	}
 
-	CosmicDischargeEcType: {
-		DisplayName: Corte de frío cósmico
-		Tooltip:
-			'''
-			Golpea a los enemigos con un látigo que puede provocar explosiones 
-			de glaciares y otorga al jugador un beneficio de frío cósmico
-			Este beneficio aumenta la velocidad de regeneración de vida 
-			del jugador al estar quieto y congela a los enemigos cercanos
-			'''
-	}
-
 	NeutronGlaive: {
 		DisplayName: Corte de dominio negro
 		Tooltip:
@@ -3411,8 +3400,6 @@ Projectiles: {
 	// XenopopperProj.DisplayName: Xenopopper Proj
 	// CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
 	// CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
-	// GangarusHeldProjectile.DisplayName: Gangarusectile
-	// GangarusProjectile.DisplayName: Gangarus Projectile
 	// Godslight.DisplayName: Godslight
 	// PilgrimsFury.DisplayName: Pilgrims Fury
 	// FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
@@ -3463,6 +3450,8 @@ Projectiles: {
 	// StarshipAmmo.DisplayName: Starship Ammo
 	// GuardOfLife.DisplayName: Guard Of Life
 	// GuardOfLifeCore.DisplayName: Guard Of Life Core
+	// LonginusHeld.DisplayName: Longinus Held
+	// LonginusThrow.DisplayName: Longinus Throw
 }
 
 Configs: {

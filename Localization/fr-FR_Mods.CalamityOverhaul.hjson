@@ -596,7 +596,7 @@ Items: {
 			'''
 	}
 
-	Gangarus: {
+	SpearOfLonginus: {
 		DisplayName: Lance de Gangarus
 		Tooltip:
 			'''
@@ -2202,15 +2202,6 @@ Items: {
 			'''
 	}
 
-	CosmicDischargeEcType: {
-		DisplayName: Lame de Glace Cosmique
-		Tooltip:
-			'''
-			Frappe les ennemis avec un fouet qui provoque une explosion de glacier
-			Donne au joueur un bonus de glaciation qui augmente la régénération de vie quand il est immobile et gèle les ennemis autour
-			'''
-	}
-
 	NeutronGlaive: {
 		DisplayName: Lame à Neutrons
 		Tooltip:
@@ -3377,8 +3368,6 @@ Projectiles: {
 	// XenopopperProj.DisplayName: Xenopopper Proj
 	// CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
 	// CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
-	// GangarusHeldProjectile.DisplayName: Gangarusectile
-	// GangarusProjectile.DisplayName: Gangarus Projectile
 	// Godslight.DisplayName: Godslight
 	// PilgrimsFury.DisplayName: Pilgrims Fury
 	// FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
@@ -3429,6 +3418,8 @@ Projectiles: {
 	// StarshipAmmo.DisplayName: Starship Ammo
 	// GuardOfLife.DisplayName: Guard Of Life
 	// GuardOfLifeCore.DisplayName: Guard Of Life Core
+	// LonginusHeld.DisplayName: Longinus Held
+	// LonginusThrow.DisplayName: Longinus Throw
 }
 
 Configs: {

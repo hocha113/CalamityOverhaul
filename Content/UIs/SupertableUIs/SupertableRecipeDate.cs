@@ -193,7 +193,7 @@
             "0", "CalamityMod/ShadowspecBar", "CalamityOverhaul/BlackMatterStick", "CalamityMod/ShadowspecBar", "0", "0", "0", "0", "0",
             "CalamityMod/ShadowspecBar", "CalamityOverhaul/BlackMatterStick", "CalamityMod/ShadowspecBar", "0", "0", "0", "0", "0", "0",
             "CalamityMod/ShadowspecBar", "CalamityMod/ShadowspecBar", "0", "0", "0", "0", "0", "0", "0",
-            "CalamityOverhaul/Gangarus"
+            "CalamityOverhaul/SpearOfLonginus"
         };
 
         /// <summary>

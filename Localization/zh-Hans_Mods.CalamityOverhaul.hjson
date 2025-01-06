@@ -602,7 +602,7 @@ Items: {
 			'''
 	}
 
-	Gangarus: {
+	SpearOfLonginus: {
 		DisplayName: 朗基努斯之枪
 		Tooltip:
 			'''
@@ -2214,15 +2214,6 @@ Items: {
 			'''
 	}
 
-	CosmicDischargeEcType: {
-		DisplayName: 寒宙弹刃
-		Tooltip:
-			'''
-			用能引发冰川爆破的弹鞭击打敌人并使玩家获得寒宙增益
-			此增益会令玩家在站定不动时增加生命再生速度并冻结周围敌人
-			'''
-	}
-
 	NeutronGlaive: {
 		DisplayName: 黑域斩切
 		Tooltip:
@@ -2792,33 +2783,33 @@ Items: {
 	}
 
 	Flawless: {
-		// DisplayName: Flawless
-		// Tooltip: ""
+		DisplayName: 化境
+		Tooltip: ""
 	}
 
 	MelodyTheSand: {
-		// DisplayName: Melody The Sand
-		// Tooltip: ""
+		DisplayName: 沙中曲
+		Tooltip: ""
 	}
 
 	SandVortexOfTheDecayedSea: {
-		// DisplayName: Sand Vortex Of The Decayed Sea
-		// Tooltip: ""
+		DisplayName: 腐海沙涡
+		Tooltip: ""
 	}
 
 	IceFlySickle: {
-		// DisplayName: Ice Fly Sickle
-		// Tooltip: ""
+		DisplayName: 寒冰飞镰
+		Tooltip: ""
 	}
 
 	SeasonalKunai: {
-		// DisplayName: Seasonal Kunai
-		// Tooltip: ""
+		DisplayName: 季节苦无
+		Tooltip: ""
 	}
 
 	WraithKunai: {
-		// DisplayName: Wraith Kunai
-		// Tooltip: ""
+		DisplayName: 幽魂苦无
+		Tooltip: ""
 	}
 }
 
@@ -3381,8 +3372,6 @@ Projectiles: {
 	// XenopopperProj.DisplayName: Xenopopper Proj
 	// CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
 	// CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
-	// GangarusHeldProjectile.DisplayName: Gangarusectile
-	// GangarusProjectile.DisplayName: Gangarus Projectile
 	// Godslight.DisplayName: Godslight
 	// PilgrimsFury.DisplayName: Pilgrims Fury
 	// FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
@@ -3433,6 +3422,8 @@ Projectiles: {
 	// StarshipAmmo.DisplayName: Starship Ammo
 	// GuardOfLife.DisplayName: Guard Of Life
 	// GuardOfLifeCore.DisplayName: Guard Of Life Core
+	// LonginusHeld.DisplayName: Longinus Held
+	// LonginusThrow.DisplayName: Longinus Throw
 }
 
 Configs: {

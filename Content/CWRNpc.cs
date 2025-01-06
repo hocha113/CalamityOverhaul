@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 一个特殊标记，用于朗基努斯识别目标
         /// </summary>
-        public bool GangarusSign;
+        public bool LonginusSign;
         /// <summary>
         /// 实体是否受到额外的击退
         /// </summary>
@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content
             cwr.TheEndSunOnHitNum = TheEndSunOnHitNum;
             cwr.WhipHitNum = WhipHitNum;
             cwr.WhipHitType = WhipHitType;
-            cwr.GangarusSign = GangarusSign;
+            cwr.LonginusSign = LonginusSign;
             cwr.OverBeatBackBool = OverBeatBackBool;
             cwr.OverBeatBackVr = OverBeatBackVr;
             cwr.OverBeatBackAttenuationForce = OverBeatBackAttenuationForce;

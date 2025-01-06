@@ -581,7 +581,7 @@ Items: {
 			'''
 	}
 
-	Gangarus: {
+	SpearOfLonginus: {
 		DisplayName: Оружие лонгинуса
 		Tooltip:
 			'''
@@ -2217,16 +2217,6 @@ Items: {
 			'''
 	}
 
-	CosmicDischargeEcType: {
-		DisplayName: Холодный меч космоса
-		Tooltip:
-			'''
-			Бьет врагов кнутом, способным вызвать ледниковый взрыв, и дает игроку космическое усиление
-			Это усиление повышает скорость восстановления здоровья игрока, 
-			когда он стоит на месте, и замораживает окружающих врагов
-			'''
-	}
-
 	NeutronGlaive: {
 		DisplayName: Нейтронный глэйв
 		Tooltip:
@@ -3404,8 +3394,6 @@ Projectiles: {
 	// XenopopperProj.DisplayName: Xenopopper Proj
 	// CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
 	// CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
-	// GangarusHeldProjectile.DisplayName: Gangarusectile
-	// GangarusProjectile.DisplayName: Gangarus Projectile
 	// Godslight.DisplayName: Godslight
 	// PilgrimsFury.DisplayName: Pilgrims Fury
 	// FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
@@ -3456,6 +3444,8 @@ Projectiles: {
 	// StarshipAmmo.DisplayName: Starship Ammo
 	// GuardOfLife.DisplayName: Guard Of Life
 	// GuardOfLifeCore.DisplayName: Guard Of Life Core
+	// LonginusHeld.DisplayName: Longinus Held
+	// LonginusThrow.DisplayName: Longinus Throw
 }
 
 Configs: {

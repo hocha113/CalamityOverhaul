@@ -6,7 +6,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
 {
     internal class PilgrimsFury : ModProjectile
     {
@@ -41,10 +41,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                 SoundStyle belCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 1f + Time * 0.05f, Pitch = -0.2f + Time * 0.007f };
                 SoundEngine.PlaySound(belCanto, Projectile.Center);
                 Vector2 vr = new Vector2(0, 13);
-                PRT_GangarusWave pulse = new PRT_GangarusWave(Projectile.Center + new Vector2(0, -360), vr, Color.Gold, new Vector2(1.2f, 3f), vr.ToRotation(), 0.42f, 0.82f + (Time * 0.002f), 180, Projectile);
+                PRT_LonginusWave pulse = new PRT_LonginusWave(Projectile.Center + new Vector2(0, -360), vr, Color.Gold, new Vector2(1.2f, 3f), vr.ToRotation(), 0.42f, 0.82f + (Time * 0.002f), 180, Projectile);
                 PRTLoader.AddParticle(pulse);
                 Vector2 vr2 = new Vector2(0, -13);
-                PRT_GangarusWave pulse2 = new PRT_GangarusWave(Projectile.Center + new Vector2(0, 360), vr2, Color.Gold, new Vector2(1.2f, 3f), vr2.ToRotation(), 0.42f, 0.82f + (Time * 0.0015f), 180, Projectile);
+                PRT_LonginusWave pulse2 = new PRT_LonginusWave(Projectile.Center + new Vector2(0, 360), vr2, Color.Gold, new Vector2(1.2f, 3f), vr2.ToRotation(), 0.42f, 0.82f + (Time * 0.0015f), 180, Projectile);
                 PRTLoader.AddParticle(pulse2);
             }
 
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                     , new Vector2(0, 1), ModContent.ProjectileType<Godslight>(), Projectile.damage, 0, Projectile.owner, 0, 2f + i);
                 }
             }
-            SoundEngine.PlaySound(Gangarus.AT, Projectile.Center);
+            SoundEngine.PlaySound(SpearOfLonginus.AT, Projectile.Center);
             for (int i = 0; i < 4; i++) {
                 float rot = MathHelper.PiOver2 * i;
                 Vector2 vr = rot.ToRotationVector2() * 10;

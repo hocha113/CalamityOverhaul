@@ -572,7 +572,7 @@ Items: {
 		Tooltip: Throws a Javelin infused with the Devourer's power. Stealth strikes causes several laser beams to assail the enemy.
 	}
 
-	Gangarus: {
+	SpearOfLonginus: {
 		DisplayName: Spear of Longinus
 		Tooltip:
 			'''
@@ -2210,15 +2210,6 @@ Items: {
 			'''
 	}
 
-	CosmicDischargeEcType: {
-		DisplayName: Cosmic Discharge
-		Tooltip:
-			'''
-			Hit enemies with a projectile that causes glacier explosions and gives players a cryostat boost
-			This bonus will allow the player to increase health regeneration and freeze surrounding enemies while standing still
-			'''
-	}
-
 	NeutronGlaive: {
 		DisplayName: Black Zone Cleaver
 		Tooltip:
@@ -3393,8 +3384,6 @@ Projectiles: {
 	XenopopperProj.DisplayName: Xenopopper Proj
 	CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
 	CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
-	GangarusHeldProjectile.DisplayName: Gangarusectile
-	GangarusProjectile.DisplayName: Gangarus Projectile
 	Godslight.DisplayName: Godslight
 	PilgrimsFury.DisplayName: Pilgrims Fury
 	FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
@@ -3445,6 +3434,8 @@ Projectiles: {
 	StarshipAmmo.DisplayName: Starship Ammo
 	GuardOfLife.DisplayName: Guard Of Life
 	GuardOfLifeCore.DisplayName: Guard Of Life Core
+	LonginusHeld.DisplayName: Longinus Held
+	LonginusThrow.DisplayName: Longinus Throw
 }
 
 Configs: {

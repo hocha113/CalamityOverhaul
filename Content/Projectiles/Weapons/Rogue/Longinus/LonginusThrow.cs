@@ -1,5 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.NPCs.DevourerofGods;
+﻿using CalamityMod.NPCs.DevourerofGods;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
 using CalamityOverhaul.Content.Particles;
 using InnoVault.PRT;
@@ -10,11 +9,11 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
 {
-    internal class GangarusProjectile : ModProjectile
+    internal class LonginusThrow : ModProjectile
     {
-        public override string Texture => CWRConstant.Item + "Rogue/Gangarus";
+        public override string Texture => CWRConstant.Item + "Rogue/Longinus";
         public Player Owner => Main.player[Projectile.owner];
         private bool SpanPrmst = true;
         private bool StealthStrike => Projectile.ai[0] > 0;
@@ -68,11 +67,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                                 PRTLoader.AddParticle(pulse2);
                             }
                             SoundEngine.PlaySound(DevourerofGodsHead.DeathExplosionSound, Projectile.Center);
-                            SoundEngine.PlaySound(Gangarus.BelCanto, Projectile.Center);
+                            SoundEngine.PlaySound(SpearOfLonginus.BelCanto, Projectile.Center);
                             SpanPrmst = false;
                             Projectile.Explode(620);
                         }
-                        if (target.CWR().GangarusSign) {
+                        if (target.CWR().LonginusSign) {
                             Projectile.NewProjectile(Projectile.FromObjectGetParent(), target.Center, Vector2.Zero, ModContent.ProjectileType<PilgrimsFury>(), Projectile.damage, 0, Projectile.owner, 0, target.whoAmI);
                         }
                         else {
@@ -128,7 +127,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
                     if (npc.type == NPCID.None) {
                         continue;
                     }
-                    if (npc.CWR().GangarusSign) {
+                    if (npc.CWR().LonginusSign) {
                         hasGSignTarget = npc;
                     }
                 }
@@ -148,7 +147,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = TextureAssets.Item[CWRLoad.Gangarus].Value;
+            Texture2D value = TextureAssets.Item[CWRLoad.Longinus].Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation + MathHelper.PiOver4, value.Size() / 2, Projectile.scale * 0.9f, SpriteEffects.None, 0);
             return false;
         }

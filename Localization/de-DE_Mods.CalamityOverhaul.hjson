@@ -597,7 +597,7 @@ Items: {
 			'''
 	}
 
-	Gangarus: {
+	SpearOfLonginus: {
 		DisplayName: Lanze von Longinus
 		Tooltip:
 			'''
@@ -2199,15 +2199,6 @@ Items: {
 			'''
 	}
 
-	CosmicDischargeEcType: {
-		DisplayName: Kosmische Entladung
-		Tooltip:
-			'''
-			Schlagen Sie Feinde mit einem Peitschenstoß, der einen Gletschersprengung auslösen kann, und gewinnen Sie kosmische Verbesserungen für den Spieler
-			Diese Verbesserung erhöht die Lebensregeneration des Spielers, wenn er sich nicht bewegt, und friert umliegende Feinde ein
-			'''
-	}
-
 	NeutronGlaive: {
 		DisplayName: Neutronengleve
 		Tooltip:
@@ -3375,8 +3366,6 @@ Projectiles: {
 	// XenopopperProj.DisplayName: Xenopopper Proj
 	// CosmicCalamityProjectile.DisplayName: Cosmic Calamity Projectile
 	// CosmicCalamityRay.DisplayName: Cosmic Calamity Ray
-	// GangarusHeldProjectile.DisplayName: Gangarusectile
-	// GangarusProjectile.DisplayName: Gangarus Projectile
 	// Godslight.DisplayName: Godslight
 	// PilgrimsFury.DisplayName: Pilgrims Fury
 	// FrostcrushValariHeld.DisplayName: Frostcrush Valari Held
@@ -3427,6 +3416,8 @@ Projectiles: {
 	// StarshipAmmo.DisplayName: Starship Ammo
 	// GuardOfLife.DisplayName: Guard Of Life
 	// GuardOfLifeCore.DisplayName: Guard Of Life Core
+	// LonginusHeld.DisplayName: Longinus Held
+	// LonginusThrow.DisplayName: Longinus Throw
 }
 
 Configs: {

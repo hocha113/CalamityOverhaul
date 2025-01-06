@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Eye
             Lighting.AddLight(Projectile.Center, Color.Gold.ToVector3());
             if (Math.Abs(Projectile.position.X - Main.LocalPlayer.position.X) <= Main.screenWidth / 2
                 || Math.Abs(Projectile.position.Y - Main.LocalPlayer.position.Y) <= Main.screenWidth / 2) {
-                PRT_GangarusWave wave = new PRT_GangarusWave(Projectile.Center, Projectile.velocity
+                PRT_LonginusWave wave = new PRT_LonginusWave(Projectile.Center, Projectile.velocity
                 , Color.Gold, new Vector2(0.1f, 0.1f), Projectile.rotation, 2, 3, 12, null);
                 PRTLoader.AddParticle(wave);
             }

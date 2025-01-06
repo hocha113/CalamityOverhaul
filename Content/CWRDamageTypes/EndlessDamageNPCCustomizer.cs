@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Content.NPCs.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles;
+using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;

@@ -52,7 +52,7 @@ namespace CalamityOverhaul
         public static int DubiousPlating;
         public static int FoodStallChair;
         public static int FoodStallChairTile;
-        public static int Gangarus;
+        public static int Longinus;
 
         #region OtherMods
         public static int EternitySoul;
@@ -332,7 +332,7 @@ namespace CalamityOverhaul
             BlackMatterStick = ItemType<BlackMatterStick>();
             FoodStallChair = ItemType<FoodStallChair>();
             FoodStallChairTile = TileType<Content.Tiles.FoodStallChair>();
-            Gangarus = ItemType<Gangarus>();
+            Longinus = ItemType<SpearOfLonginus>();
 
             Androomba = NPCType<Androomba>();
             Polterghast = NPCType<Polterghast>();

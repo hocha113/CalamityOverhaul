@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_GangarusStar : BasePRT
+    internal class PRT_LonginusStar : BasePRT
     {
         public Color InitialColor;
         public bool AffectedByGravity;
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Particles
         private Vector2 OldEntityPos;
         private Vector2 EntityVariation;
 
-        public PRT_GangarusStar(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity) {
+        public PRT_LonginusStar(Vector2 relativePosition, Vector2 velocity, bool affectedByGravity, int lifetime, float scale, Color color, Entity entity) {
             Position = relativePosition;
             Velocity = velocity;
             AffectedByGravity = affectedByGravity;

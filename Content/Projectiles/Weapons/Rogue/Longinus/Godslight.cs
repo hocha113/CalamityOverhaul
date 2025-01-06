@@ -10,7 +10,7 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus
 {
     internal class Godslight : ModProjectile
     {

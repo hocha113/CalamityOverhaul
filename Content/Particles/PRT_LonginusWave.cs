@@ -6,7 +6,7 @@ using static CalamityMod.CalamityUtils;
 
 namespace CalamityOverhaul.Content.Particles
 {
-    internal class PRT_GangarusWave : BasePRT
+    internal class PRT_LonginusWave : BasePRT
     {
         public override string Texture => "CalamityMod/Particles/HollowCircleHardEdge";
         public override void SetProperty() {
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Particles
         private Vector2 EntityPos;
         private Vector2 OldEntityPos;
         private Vector2 EntityVariation;
-        public PRT_GangarusWave(Vector2 position, Vector2 velocity, Color color, Vector2 squish, float rotation, float originalScale, float finalScale, int lifeTime, Entity entity) {
+        public PRT_LonginusWave(Vector2 position, Vector2 velocity, Color color, Vector2 squish, float rotation, float originalScale, float finalScale, int lifeTime, Entity entity) {
             Position = position;
             Velocity = velocity;
             BaseColor = color;

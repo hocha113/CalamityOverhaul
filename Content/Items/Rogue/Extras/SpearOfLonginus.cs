@@ -4,7 +4,7 @@ using CalamityMod.Items.Materials;
 using CalamityMod.Items.Weapons.Rogue;
 using CalamityMod.Rarities;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.GangarusProjectiles;
+using CalamityOverhaul.Content.Projectiles.Weapons.Rogue.Longinus;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,27 +20,27 @@ using static Terraria.ID.ContentSamples.CreativeHelper;
 
 namespace CalamityOverhaul.Content.Items.Rogue.Extras
 {
-    internal class Gangarus : ModItem, ICWRLoader
+    internal class SpearOfLonginus : ModItem, ICWRLoader
     {
         public static SoundStyle BelCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 3.5f };
         public static SoundStyle AT = new("CalamityOverhaul/Assets/Sounds/AT") { Volume = 1.5f };
-        public static Asset<Texture2D> GangarusAsset;
+        public static Asset<Texture2D> LonginusAsset;
         public static Asset<Texture2D> EvaAsset;
         public int ChargeGrade;
-        public override string Texture => CWRConstant.Item + "Rogue/Gangarus";
+        public override string Texture => CWRConstant.Item + "Rogue/Longinus";
         void ICWRLoader.LoadAsset() {
-            GangarusAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus");
-            EvaAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Gangarus_Eva");
+            LonginusAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Longinus");
+            EvaAsset = CWRUtils.GetT2DAsset(CWRConstant.Item + "Rogue/Longinus_Eva");
         }
         void ICWRLoader.UnLoadData() {
-            GangarusAsset = null;
+            LonginusAsset = null;
             EvaAsset = null;
         }
         public static void ZenithWorldAsset() {
             if (Main.dedServ) {
                 return;
             }
-            TextureAssets.Item[CWRLoad.Gangarus] = Main.zenithWorld ? EvaAsset : GangarusAsset;
+            TextureAssets.Item[CWRLoad.Longinus] = Main.zenithWorld ? EvaAsset : LonginusAsset;
         }
         public override void SetDefaults() {
             Item.width = 44;
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.height = 44;
             Item.value = CalamityGlobalItem.RarityPinkBuyPrice;
             Item.rare = ModContent.RarityType<Violet>();
-            Item.shoot = ModContent.ProjectileType<GangarusProjectile>();
+            Item.shoot = ModContent.ProjectileType<LonginusThrow>();
             Item.shootSpeed = 15f;
             Item.DamageType = CWRLoad.RogueDamageClass;
             Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems16;
@@ -69,17 +69,17 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) => damage *= (ChargeGrade + 1);
 
         public override void HoldItem(Player player) {
-            if (player.GetProjectileHasNum(ModContent.ProjectileType<GangarusHeldProjectile>()) == 0
-                && player.GetProjectileHasNum(ModContent.ProjectileType<GangarusProjectile>()) == 0
+            if (player.GetProjectileHasNum(ModContent.ProjectileType<LonginusHeld>()) == 0
+                && player.GetProjectileHasNum(ModContent.ProjectileType<LonginusThrow>()) == 0
                 && Main.myPlayer == player.whoAmI) {
                 Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, Vector2.Zero
-                    , ModContent.ProjectileType<GangarusHeldProjectile>(), 0, 0, player.whoAmI);
+                    , ModContent.ProjectileType<LonginusHeld>(), 0, 0, player.whoAmI);
             }
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (ChargeGrade > 0) {
-                int proj = Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<GangarusProjectile>(), damage, knockback, player.whoAmI);
+                int proj = Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<LonginusThrow>(), damage, knockback, player.whoAmI);
                 Main.projectile[proj].ai[0] = 1;
                 Main.projectile[proj].ai[1] = ChargeGrade;
                 ChargeGrade = 0;
