@@ -4357,12 +4357,13 @@ TextContent: {
 		SupMUI_OneClick_Text2: Quick access to material
 		TemporaryVersion_Text:
 			'''
-			[CalamityOverhaul-0.3.6.1.2]: 
-			This current version is a temporary release used for adapting to the new version, 
-			making adjustments, and fixing errors to ensure a basic gameplay experience until version 0.4 arrives. 
-			The update was somewhat rushed, so there may still be some noticeable issues. 
-			If you encounter any problems during gameplay, please submit an issue on the mod's GitHub page 
-			or visit the mod's Steam Workshop 'Feedback on Issues' thread for assistance.
+			[CalamityOverhaul-[V1]]:
+			This is a temporary version designed to adapt to the new update, 
+			providing only the most basic gameplay experience until version [V2] arrives.
+			Due to the rushed update, there may still be some noticeable bugs.
+			If you encounter any issues during gameplay, please submit an issue on Github,
+			or report the problem in the Feedback on Issues thread on the mod's Workshop page. 
+			The developers will respond and fix it promptly.
 			'''
 		MS_Config_Text:
 			'''

@@ -173,8 +173,17 @@ namespace CalamityOverhaul.Content
             return false;
         }
 
+        private void DompTemporaryVersionText() {
+            string soubText = CWRLocText.GetTextValue("TemporaryVersion_Text");
+            soubText = soubText.Replace("[V1]", CWRMod.Instance.Version.ToString());
+            soubText = soubText.Replace("[V2]", "0.6");
+            SpwanTextProj.New(Player, () => CWRUtils.Text(soubText, Color.IndianRed));
+        }
+
         public override void OnEnterWorld() {
             CWRHook.CheckHookStatus();
+
+            DompTemporaryVersionText();
 
             if (!CWRMod.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");

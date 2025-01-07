@@ -4332,11 +4332,13 @@ TextContent: {
 		SupMUI_OneClick_Text2: Materialien schnell nehmen
 		TemporaryVersion_Text:
 			'''
-			[CalamityOverhaul-0.3.6.1.2]:
-			Die aktuelle Version ist vorübergehend und dient der Anpassung an die neue Version, zur Fehlerbehebung und zur Sicherstellung eines grundlegenden Spielerlebnisses, bis Version 0.4 veröffentlicht wird.
-			Da das Update eilig war, können noch einige offensichtliche Fehler vorhanden sein.
-			Wenn Sie Probleme beim Spielen feststellen, reichen Sie bitte ein Problem auf GitHub bei dem Mod ein
-			oder besuchen Sie den Feedback-Thread im Mod-Workshop für Hilfe bei Problemen.
+			[CalamityOverhaul-[V1]]:
+			Dies ist eine temporäre Version, die zur Anpassung an das neue Update entwickelt wurde 
+			und nur grundlegende Spielerfahrungen bietet, bis Version [V2] veröffentlicht wird.
+			Aufgrund des überstürzten Updates könnten noch einige auffällige Fehler vorhanden sein.
+			Sollten Sie während des Spiels auf Probleme stoßen, melden Sie diese bitte auf Github
+			oder geben Sie die Probleme im Feedback-Thread zu Problemen auf der Workshop-Seite des Mods an. 
+			Die Entwickler werden schnell reagieren und sie beheben.
 			'''
 		MS_Config_Text:
 			'''

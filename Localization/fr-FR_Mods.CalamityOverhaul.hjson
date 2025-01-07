@@ -4348,11 +4348,13 @@ TextContent: {
 		SupMUI_OneClick_Text2: Ramasser rapidement des matériaux
 		TemporaryVersion_Text:
 			'''
-			[CalamityOverhaul-0.3.6.1.2]:
-			Cette version actuelle est une version temporaire utilisée pour s'adapter à la nouvelle version, ajuster et corriger les erreurs afin d'assurer une expérience de jeu de base, en attendant l'arrivée de la version 0.4.
-			La mise à jour a été rapide, donc il peut encore y avoir quelques erreurs évidentes.
-			Si vous rencontrez des problèmes en jouant, veuillez soumettre un problème sur GitHub,
-			ou visiter le fil de feedback sur les problèmes du Workshop du mod pour demander de l'aide.
+			[CalamityOverhaul-[V1]]:
+			Il s'agit d'une version temporaire conçue pour s'adapter à la nouvelle mise à jour, 
+			ne fournissant qu'une expérience de jeu basique jusqu'à l'arrivée de la version [V2].
+			En raison de la mise à jour précipitée, certains bugs notables peuvent subsister.
+			Si vous rencontrez des problèmes pendant le jeu, veuillez soumettre un problème sur Github,
+			ou signaler le problème dans le fil de discussion Feedback on Issues sur la page Workshop du mod. 
+			Les développeurs réagiront rapidement et corrigeront le problème.
 			'''
 		MS_Config_Text:
 			'''
