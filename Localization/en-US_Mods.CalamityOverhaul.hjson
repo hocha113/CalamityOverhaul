@@ -4168,9 +4168,9 @@ TextContent: {
 		SupMUI_OneClick_Text2: Quick access to material
 		TemporaryVersion_Text:
 			'''
-			[CalamityOverhaul-0.5.0.2.*]:
+			[CalamityOverhaul-[V1]]:
 			This is a temporary version designed to adapt to the new update, 
-			providing only the most basic gameplay experience until version 0.6 arrives.
+			providing only the most basic gameplay experience until version [V2] arrives.
 			Due to the rushed update, there may still be some noticeable bugs.
 			If you encounter any issues during gameplay, please submit an issue on Github,
 			or report the problem in the Feedback on Issues thread on the mod's Workshop page. 

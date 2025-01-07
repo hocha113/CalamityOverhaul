@@ -4199,9 +4199,9 @@ TextContent: {
 		SupMUI_OneClick_Text2: Recoger materiales rápidamente
 		TemporaryVersion_Text:
 			'''
-			[CalamityOverhaul-0.5.0.2.*]:
+			[CalamityOverhaul-[V1]]:
 			Esta es una versión temporal diseñada para adaptarse a la nueva actualización, 
-			proporcionando solo la experiencia de juego más básica hasta que llegue la versión 0.6.
+			proporcionando solo la experiencia de juego más básica hasta que llegue la versión [V2].
 			Debido a la actualización apresurada, puede haber algunos errores notables.
 			Si encuentras algún problema durante el juego, por favor envía un issue en Github,
 			o informa del problema en el hilo Feedback on Issues en la página del Workshop del mod. 

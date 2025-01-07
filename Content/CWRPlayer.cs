@@ -229,6 +229,13 @@ namespace CalamityOverhaul.Content
         public override void OnEnterWorld() {
             CWRHook.CheckHookStatus();
 
+            //if (false) {
+            //    string soubText = CWRLocText.GetTextValue("TemporaryVersion_Text");
+            //    soubText.Replace("[V1]", CWRMod.Instance.Version.ToString());
+            //    soubText.Replace("[V2]", "0.6");
+            //    SpwanTextProj.New(Player, () => CWRUtils.Text(soubText, Color.IndianRed));
+            //}
+
             if (!CWRMod.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");
                 SpwanTextProj.New(Player, () => CWRUtils.Text(improvGameText, Color.Red), 210);

@@ -4148,8 +4148,8 @@ TextContent: {
 		SupMUI_OneClick_Text2: 快捷拿取材料
 		TemporaryVersion_Text:
 			'''
-			[CalamityOverhaul-0.5.0.2.*]:
-			当前版本为临时性版本，用于适配新版本，仅能保证最基本的游玩体验，直到在0.6版本到来
+			[CalamityOverhaul-[V1]]:
+			当前版本为临时性版本，用于适配新版本，仅能保证最基本的游玩体验，直到在[V2]版本到来
 			更新较为仓促，所以仍可能存在一些明显的错误
 			如果您在游玩过程中发现问题，请在Github上向模组提交issue
 			或者前往模组创意工坊Feedback on Issues反馈帖中指出问题，开发者会快速反应并修复
