@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Common;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content
@@ -7,10 +8,7 @@ namespace CalamityOverhaul.Content
     {
         public static bool DontSetHoverItem;
         public static Item HoverItem = new Item();
-        public override void UpdateUI(GameTime gameTime) {
-            base.UpdateUI(gameTime);
-        }
-        public override void PostUpdateEverything() {
+        public override void PreUpdateEntities() {
             if (!DontSetHoverItem) {
                 HoverItem = Main.HoverItem;
             }
