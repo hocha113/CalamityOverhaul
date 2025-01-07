@@ -3432,6 +3432,7 @@ Projectiles: {
 	LonginusThrow.DisplayName: Longinus Throw
 	BansheeHookHeld.DisplayName: Banshee Hook
 	BansheeHookHeldAlt.DisplayName: Banshee Hook
+	WTrail.DisplayName: W Trail
 }
 
 Configs: {

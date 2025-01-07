@@ -50,13 +50,21 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<BansheeHookHeldAlt>()] == 0;
 
+        public static void PlaySouldSound(Player player) {
+            SoundStyle sound1 = CommonCalamitySounds.MeatySlashSound;
+            SoundStyle sound2 = BloodflareHeadRanged.ActivationSound;
+            sound1.Volume = 0.6f;
+            sound2.Volume = 0.6f;
+            SoundEngine.PlaySound(sound1, player.Center);
+            SoundEngine.PlaySound(sound2, player.Center);
+        }
+
         public static bool ShootFunc(Item item, Player player, EntitySource_ItemUse_WithAmmo source
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
                 type = ModContent.ProjectileType<BansheeHookHeldAlt>();
                 Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
-                SoundEngine.PlaySound(in CommonCalamitySounds.MeatySlashSound, player.Center);
-                SoundEngine.PlaySound(in BloodflareHeadRanged.ActivationSound, player.Center);
+                PlaySouldSound(player);
                 item.CWR().MeleeCharge = 0;
                 return false;
             }
@@ -306,8 +314,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     Projectile.localAI[1] = 0;
                     Projectile.netUpdate = true;
                     bansheeHook.CWR().MeleeCharge = 0;
-                    SoundEngine.PlaySound(in CommonCalamitySounds.MeatySlashSound, Projectile.Center);
-                    SoundEngine.PlaySound(in BloodflareHeadRanged.ActivationSound, Projectile.Center);
+                    BansheeHookEcType.PlaySouldSound(Owner);
                 }
             }
         }

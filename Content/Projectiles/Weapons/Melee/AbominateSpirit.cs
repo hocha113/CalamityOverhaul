@@ -8,18 +8,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 {
     internal class AbominateSpirit : ModProjectile
     {
-        public override string Texture {
-            get {
-                switch (Status) {
-                    case 0:
-                        return CWRConstant.Cay_Proj_Melee + "GhastlySoulLarge";
-                    case 1:
-                        return CWRConstant.Cay_Proj_Melee + "GhastlySoulMedium";
-                    default:
-                        return CWRConstant.Cay_Proj_Melee + "GhastlySoulSmall";
-                }
-            }
-        }
+        public override string Texture => CWRConstant.Projectile_Magic + "NofaceFire";
         public ref float Status => ref Projectile.ai[0];
         private bool spwan;
         public override void SetStaticDefaults() {
@@ -50,7 +39,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
             }
 
             Projectile.rotation = Projectile.velocity.ToRotation();
-            CWRUtils.ClockFrame(ref Projectile.frameCounter, 15, 3);
+            CWRUtils.ClockFrame(ref Projectile.frameCounter, 5, 2);
 
             if (Status == 3) {
                 Projectile.timeLeft = 2;
@@ -132,14 +121,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
 
             float alp = Projectile.alpha / 255f;
             color = CWRUtils.RecombinationColor((color, 0.5f), (new Color(255, 255, 255), 0.5f));
+            Rectangle rectangle = CWRUtils.GetRec(mainValue, Projectile.frameCounter, 3);
 
             Main.EntitySpriteDraw(
                 mainValue,
                 Projectile.Center - Main.screenPosition,
-                CWRUtils.GetRec(mainValue, Projectile.frameCounter, 4),
+                rectangle,
                 color * alp,
                 Projectile.rotation - MathHelper.PiOver2,
-                CWRUtils.GetOrig(mainValue, 4),
+                rectangle.Size() / 2,
                 Projectile.scale,
                 SpriteEffects.None,
                 0
