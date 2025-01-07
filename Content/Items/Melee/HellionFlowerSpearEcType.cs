@@ -7,6 +7,7 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -117,6 +118,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.ai[0]++;
         }
 
+        public override void OnKill(int timeLeft) {
+            for (int i = 0; i < 6; i++) {
+                CWRDust.SpanCycleDust(Projectile, DustID.GreenBlood, DustID.GreenBlood);
+            }
+        }
+
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
             Rectangle rectangle = CWRUtils.GetRec(texture);
@@ -158,6 +165,10 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+        }
+
+        public override void OnKill(int timeLeft) {
+            CWRDust.SpanCycleDust(Projectile, DustID.GreenBlood, DustID.GreenBlood);
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -226,7 +237,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            GuardOfLifeCore core = Projectile.NewProjectileDirect(Source, ShootSpanPos, ShootVelocity
+            GuardOfLifeCore core = Projectile.NewProjectileDirect(Source, ShootSpanPos, AbsolutelyShootVelocity
                 , ModContent.ProjectileType<GuardOfLifeCore>(), Projectile.damage
                 , Projectile.knockBack, Owner.whoAmI, 0f, 0).ModProjectile as GuardOfLifeCore;
 

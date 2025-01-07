@@ -210,6 +210,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         protected Vector2 ShootVelocity => UnitToMouseV * ShootSpeed / SwingMultiplication;
         /// <summary>
+        /// 绝对的射弹基本速度，受攻速加成影响，其方向由弹幕到玩家的相对位置决定，一般用于长矛类等攻击模式的武器上
+        /// </summary>
+        protected Vector2 AbsolutelyShootVelocity => vector.UnitVector() * ShootSpeed / SwingMultiplication;
+        /// <summary>
         /// 生成抛射物的位置
         /// </summary>
         protected Vector2 ShootSpanPos => GetOwnerCenter() + UnitToMouseV * Length * 0.5f;
@@ -393,6 +397,51 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
             float rotToTargetSpeedSengs = rotSpeed * 3 * ownerToTargetSetDir;
             rotToTargetSpeedTrengsVumVer = norlToTarget.RotatedBy(-rotToTargetSpeedSengs) * 13;
+        }
+
+        /// <summary>
+        /// 实现刺击行为的逻辑处理，包括长度调整、速度衰减、缩放变化等效果
+        /// </summary>
+        /// <param name="initialLength">初始刺击长度</param>
+        /// <param name="initialSpeedFactor">初始速度因子，用于计算刺击速度</param>
+        /// <param name="speedDecayRate">速度衰减速率</param>
+        /// <param name="lifetime">刺击的生命周期（帧数）</param>
+        /// <param name="initialScale">刺击的初始缩放比例</param>
+        /// <param name="scaleFactorDenominator">用于计算刺击缩放比例的分母</param>
+        /// <param name="minLength">刺击长度的最小值</param>
+        /// <param name="maxLength">刺击长度的最大值</param>
+        public void StabBehavior(
+            int initialLength = 60,
+            float initialSpeedFactor = 0.4f,
+            float speedDecayRate = 0.015f,
+            int lifetime = 26,
+            float initialScale = 1,
+            float scaleFactorDenominator = 510f,
+            int minLength = 60,
+            int maxLength = 90,
+            bool canDrawSlashTrail = true
+        ) {
+            // 刺击行为的初始化逻辑
+            if (Time == 0) {
+                this.canDrawSlashTrail = canDrawSlashTrail;
+                Length = initialLength;
+                startVector = RodingToVer(1, Projectile.velocity.ToRotation()); // 初始化方向向量
+                speed = 1 + initialSpeedFactor / updateCount / SwingMultiplication; // 初始化速度因子
+            }
+
+            Length *= speed;
+            vector = startVector * Length * SwingMultiplication; // 更新当前刺击的方向向量
+            speed -= speedDecayRate / updateCount; // 减小速度因子，模拟速度衰减效果
+
+            if (Time >= lifetime * updateCount * SwingMultiplication) {
+                Projectile.Kill();
+            }
+
+            float distanceToOwner = Projectile.Center.To(Owner.Center).Length();
+            Projectile.scale = initialScale + distanceToOwner / scaleFactorDenominator;
+            if (Time % updateCount == updateCount - 1) {
+                Length = MathHelper.Clamp(Length, minLength, maxLength);
+            }
         }
 
         public virtual void SwingBehavior(float starArg = 33, float baseSwingSpeed = 4

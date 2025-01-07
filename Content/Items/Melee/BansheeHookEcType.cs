@@ -4,6 +4,7 @@ using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Sounds;
 using CalamityOverhaul.Content.Items.Melee.Extras;
+using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.Projectiles.Weapons;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
@@ -12,9 +13,11 @@ using CalamityOverhaul.Content.RemakeItems.Core;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -146,7 +149,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             if (Projectile.ai[0] == 0) {
-                StabBehavior(scaleFactorDenominator: 520f, minLength: 20, maxLength: 120);
+                StabBehavior(scaleFactorDenominator: 400f, minLength: 20, maxLength: 120);
                 return false;
             }
 
@@ -154,19 +157,22 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void Shoot() {
+            if (Projectile.numHits > 0) {
+                return;
+            }
             if (Projectile.ai[0] == 3) {
                 return;
             }
             if (Projectile.ai[0] == 1 || Projectile.ai[0] == 2) {
                 for (int i = 0; i < 3; i++) {
                     Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity.RotatedBy((-1 + i) * 0.1f)
-                        , ModContent.ProjectileType<BansheeHookScythe>(), (int)(Projectile.damage * 0.75f)
+                        , ModContent.ProjectileType<BansheeHookScythe>(), Projectile.damage
                         , Projectile.knockBack * 0.85f, Projectile.owner);
                 }
                 return;
             }
-            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity * 1.2f
-                , ModContent.ProjectileType<GiantBansheeScythe>(), (int)(Projectile.damage * 0.75f)
+            Projectile.NewProjectile(Source, ShootSpanPos, AbsolutelyShootVelocity * 1.2f
+                , ModContent.ProjectileType<GiantBansheeScythe>(), (int)(Projectile.damage * 2.25f)
                 , Projectile.knockBack * 0.85f, Projectile.owner);
         }
 
@@ -202,10 +208,72 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero
-                    , ModContent.ProjectileType<BansheeHookBoom>(), (int)(hit.Damage * 0.25), 10f
+        private void SpanSoulSearchScythe(NPC target) {
+            Vector2 randOffsetTargetInPos = CWRUtils.randVr(target.width * 2);
+            Vector2 randPos = target.Center + randOffsetTargetInPos + CWRUtils.randVr(1162, 1282);
+            Vector2 shootVer = randPos.To(target.Center + randOffsetTargetInPos).UnitVector() * 16;
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), randPos, shootVer
+                    , ModContent.ProjectileType<SoulSearchScythe>(), Projectile.damage, 10f
                     , Projectile.owner, 0f, 0.85f + Main.rand.NextFloat() * 1.15f);
+        }
+
+        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            SpanSoulSearchScythe(target);
+        }
+    }
+
+    internal class SoulSearchScythe : ModProjectile
+    {
+        public override string Texture => CWRConstant.Cay_Proj_Melee + "BansheeHookScythe";
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+            ProjectileID.Sets.TrailCacheLength[Type] = 28;
+        }
+
+        public override void SetDefaults() {
+            Projectile.width = 38;
+            Projectile.height = 38;
+            Projectile.alpha = 100;
+            Projectile.friendly = true;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 290;
+            Projectile.extraUpdates = 6;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
+        }
+
+        public override void AI() {
+            Lighting.AddLight(Projectile.Center, (255 - Projectile.alpha) * 0.6f / 255f, 0f, 0f);
+            Projectile.rotation += MathHelper.ToRadians(35);
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            Projectile.velocity *= 0.95f;
+            Projectile.damage -= 25;
+        }
+
+        public override Color? GetAlpha(Color lightColor) {
+            byte b = (byte)(Projectile.timeLeft * 3);
+            byte alpha = (byte)(100f * (b / 255f));
+            return new Color(lightColor.R, lightColor.G, lightColor.B, alpha);
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D texture = TextureAssets.Projectile[Type].Value;
+            Vector2 drawOrigin = texture.Size() / 2;
+            for (int k = 0; k < Projectile.oldPos.Length; k++) {
+                Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + Projectile.Size / 2;
+                Color color = Projectile.GetAlpha(Color.Lerp(WeaverBeam.sloudColor1, WeaverBeam.sloudColor2, 1f / Projectile.oldPos.Length * k) * (1f - 1f / Projectile.oldPos.Length * k));
+                if (Projectile.ai[1] > 160) {
+                    color.A = 0;
+                }
+                float slp = (0.8f + 0.2f * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length);
+                Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation + k * 0.21f, drawOrigin, Projectile.scale * slp, SpriteEffects.None, 0);
+            }
+            return false;
         }
     }
 
@@ -262,13 +330,6 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     bansheeHook.CWR().MeleeCharge += 8.333f;
-                    if (Projectile.localAI[1] % 20 == 0) {
-                        SoundEngine.PlaySound(SoundID.DD2_GhastlyGlaivePierce, Projectile.Center);
-                        for (int i = 0; i < 7; i++) {
-                            Vector2 vr = CWRUtils.GetRandomVevtor(0, 360, 25);
-                            Projectile.NewProjectile(Owner.FromObjectGetParent(), Owner.Center, vr, ModContent.ProjectileType<BansheeHookScythe>(), Projectile.damage / 2, 0, Owner.whoAmI);
-                        }
-                    }
                     if (Projectile.localAI[1] % 10 == 0) {
                         for (int i = 0; i < 7; i++) {
                             Vector2 vr = (MathHelper.TwoPi / 7 * i).ToRotationVector2() * 10;
@@ -378,8 +439,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             return false;
         }
 
-        public override void PostDraw(Color lightColor) {
-
-        }
+        public override void PostDraw(Color lightColor) { }
     }
 }

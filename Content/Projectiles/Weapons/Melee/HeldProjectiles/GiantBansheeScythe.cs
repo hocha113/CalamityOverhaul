@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityMod;
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,7 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 public class GiantBansheeScythe : ModProjectile
 {
     public override string Texture => CWRConstant.Cay_Proj_Melee + "BansheeHookScythe";
-
+    private HashSet<NPC> onHitNPCs = [];
     public override void SetStaticDefaults() {
         ProjectileID.Sets.TrailingMode[Type] = 2;
         ProjectileID.Sets.TrailCacheLength[Type] = 8;
@@ -26,23 +28,24 @@ public class GiantBansheeScythe : ModProjectile
         Projectile.penetrate = -1;
         Projectile.timeLeft = 90;
         Projectile.usesLocalNPCImmunity = true;
-        Projectile.localNPCHitCooldown = 20;
+        Projectile.localNPCHitCooldown = 10;
     }
 
     public override void AI() {
         Lighting.AddLight(Projectile.Center, (255 - Projectile.alpha) * 0.6f / 255f, 0f, 0f);
         Projectile.ai[0] += MathHelper.ToRadians(35);
-        NPC target = Projectile.Center.FindClosestNPC(600);
+        NPC target = Projectile.Center.FindClosestNPC(600, onHitNPCs: onHitNPCs);
         if (Projectile.timeLeft < 65 && target != null) {
-            Vector2 toTarget = Projectile.Center.To(target.Center).UnitVector();
-            Projectile.EntityToRot(toTarget.ToRotation(), 0.07f);
-            Projectile.velocity = Projectile.rotation.ToRotationVector2() * 15;
+            Projectile.SmoothHomingBehavior(target.Center, 1, 0.2f);
         }
     }
 
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
         Projectile.velocity *= 0.95f;
         Projectile.damage -= 25;
+        if (Projectile.timeLeft <= 65) {
+            onHitNPCs.Add(target);
+        }
     }
 
     public override Color? GetAlpha(Color lightColor) {

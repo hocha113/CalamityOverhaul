@@ -3417,6 +3417,8 @@ Projectiles: {
 	// BansheeHookHeld.DisplayName: Banshee Hook
 	// BansheeHookHeldAlt.DisplayName: Banshee Hook
 	// WTrail.DisplayName: W Trail
+	// AstralPikeHeld.DisplayName: Astral Pike Held
+	// SoulSearchScythe.DisplayName: Soul Search Scythe
 }
 
 Configs: {

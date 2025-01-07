@@ -59,8 +59,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            if (target.lifeMax <= 0)
+            if (target.lifeMax <= 0) {
                 return;
+            }
 
             float lifeRatio = MathHelper.Clamp(target.life / (float)target.lifeMax, 0f, 1f);
             float multiplier = MathHelper.Lerp(1f, 2f, lifeRatio);
@@ -68,8 +69,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
             modifiers.SourceDamage *= multiplier;
             modifiers.Knockback *= multiplier;
 
-            if (Main.rand.NextBool((int)MathHelper.Clamp((astralBlade.crit + player.GetCritChance<MeleeDamageClass>()) * multiplier, 0f, 99f), 100))
+            if (Main.rand.NextBool((int)MathHelper.Clamp((astralBlade.crit + player.GetCritChance<MeleeDamageClass>()) * multiplier, 0f, 99f), 100)) {
                 modifiers.SetCrit();
+            }
 
             if (multiplier > 1.5f) {
                 SoundEngine.PlaySound(SoundID.Item105, player.Center);
@@ -88,8 +90,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.AstralProj
         }
 
         public override void OnKill(int timeLeft) {
-            SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
-
+            Projectile.Explode(60);
             for (int i = 0; i < 60; i++) {
                 float angle = MathHelper.TwoPi * Main.rand.NextFloat(0f, 1f);
                 Vector2 angleVec = angle.ToRotationVector2();
