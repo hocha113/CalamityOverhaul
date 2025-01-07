@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
 
-public class RBansheeHookScythe : ModProjectile
+public class GiantBansheeScythe : ModProjectile
 {
     public override string Texture => CWRConstant.Cay_Proj_Melee + "BansheeHookScythe";
 

@@ -3020,7 +3020,7 @@ Projectiles: {
 	// LifehuntScytheHeld.DisplayName: Lifehunt Scythe Held
 	// LifehuntScytheThrowable.DisplayName: Lifehunt Scythe Throwable
 	// PhasebladeHeld.DisplayName: Phaseblade Held
-	// RBansheeHookScythe.DisplayName: R Banshee Hook Scythe
+	// GiantBansheeScythe.DisplayName: Giant Banshee Scythe
 	// SeashineSwordHeld.DisplayName: Seashine Sword Held
 	// StormSaberHeld.DisplayName: Storm Saber Held
 	// TheBurningSkyHeld.DisplayName: The Burning Sky Held
@@ -3418,6 +3418,8 @@ Projectiles: {
 	// GuardOfLifeCore.DisplayName: Guard Of Life Core
 	// LonginusHeld.DisplayName: Longinus Held
 	// LonginusThrow.DisplayName: Longinus Throw
+	// BansheeHookHeld.DisplayName: Banshee Hook Held
+	// BansheeHookHeldAlt.DisplayName: Banshee Hook Held Alt
 }
 
 Configs: {

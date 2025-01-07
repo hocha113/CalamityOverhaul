@@ -759,7 +759,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
             if (inDrawFlipdiagonally) {
                 effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
                 drawRoting += MathHelper.PiOver2;
-                otherRoting -= MathHelper.Pi;
+                otherRoting *= -1;
                 offsetOwnerPos *= -1;
             }
 
