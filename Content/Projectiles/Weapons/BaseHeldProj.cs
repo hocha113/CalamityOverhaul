@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons
@@ -201,5 +202,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         protected void SetDirection() => Owner.direction = Math.Sign(ToMouse.X);
 
         protected void NetUpdate() => Projectile.netUpdate = true;
+
+        /// <summary>
+        /// 具体实现与子类之中，注意，该方法用于调用原物品的射击行为，会正常出发附加效果，比如饰品效果，所以在使用该函数时注意其他机制的运行避免效果重叠
+        /// </summary>
+        public virtual void OrigItemShoot() { }
     }
 }

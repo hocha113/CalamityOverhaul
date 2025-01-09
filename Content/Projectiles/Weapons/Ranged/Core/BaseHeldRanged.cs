@@ -161,6 +161,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public override bool CanMouseNet => InOwner_HandState_AlwaysSetInFireRoding;
         /// <summary>
+        /// 获取来自物品的生成源
+        /// </summary>
+        public virtual EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType);
+        /// <summary>
+        /// 获取来自物品的生成源副本
+        /// </summary>
+        public virtual EntitySource_ItemUse_WithAmmo Source2 => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType);
+        /// <summary>
         /// 一个额外附属值，用于矫正<see cref="SafeMousetStart"/>的连续，这个值应该在合适的时机被恢复为默认值<see langword="false"/>
         /// </summary>
         public bool SafeMousetStart2;
@@ -312,6 +320,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     CalOwner.stealthUIAlpha -= 0.02f;
                 }
             }
+        }
+
+        public override void OrigItemShoot() {
+            if (!CombinedHooks.Shoot(Owner, Item, Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback)) {
+                return;
+            }
+            Projectile.NewProjectile(Source, Projectile.Center, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
         }
 
         public void SetWeaponOccupancyStatus() {

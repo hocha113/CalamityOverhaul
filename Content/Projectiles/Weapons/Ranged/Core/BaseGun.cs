@@ -8,6 +8,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
@@ -229,11 +230,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <summary>
         /// 获取来自物品的生成源，该生成源实例会附加CWRGun标签，用于特殊识别
         /// </summary>
-        internal EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType, "CWRGunShoot");
-        /// <summary>
-        /// 获取来自物品的生成源，该生成源仅仅用于派生于物品关系，如果不想发射的弹幕被识别为枪械类射弹并受到特殊加成，使用这个
-        /// </summary>
-        internal EntitySource_ItemUse_WithAmmo Source2 => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType);
+        public override EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType, "CWRGunShoot");
         /// <summary>
         /// 该枪体使用的实际纹理
         /// </summary>
@@ -278,6 +275,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 CanCreateSpawnGunDust = false;
                 CanCreateCaseEjection = false;
             }
+        }
+
+        public override void OrigItemShoot() {
+            if (!CombinedHooks.Shoot(Owner, Item, Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback)) {
+                return;
+            }
+            Projectile.NewProjectile(Source, GunShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
         }
 
         /// <summary>

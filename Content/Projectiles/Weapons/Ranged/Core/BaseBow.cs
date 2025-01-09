@@ -123,8 +123,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// <summary>
         /// 获取来自物品的生成源
         /// </summary>
-        protected EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType, "CWRBow");
-        protected EntitySource_ItemUse_WithAmmo Source2 => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType);
+        public override EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType, "CWRBow");
         #endregion
 
         public void SetArmInFire() {
