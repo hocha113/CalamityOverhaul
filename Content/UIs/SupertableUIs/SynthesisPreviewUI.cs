@@ -18,9 +18,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         internal string[] OmigaSnyContent = [];
         internal float _sengs;
         internal bool DrawBool;
-        internal bool uiIsActive => !SupertableUI.Instance.hoverInMainPage 
-            && CWRUI.HoverItem.type > ItemID.None 
-            && CWRUI.HoverItem.CWR().OmigaSnyContent != null && DrawBool;
+        internal bool uiIsActive => DrawBool &&!SupertableUI.Instance.hoverInMainPage 
+            && CWRLoad.ItemIDToOmigaSnyContent[CWRUI.HoverItem.type] != null;
         public override bool Active => _sengs > 0 || uiIsActive;
         // 在只利用一个数字索引的情况下反向计算出对应的格坐标
         public Vector2 ArcCellPos(int index, Vector2 pos) {
@@ -72,7 +71,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             SetPosition();
             OmigaSnyContent = SupertableRecipeDate.FullItems;
             if (CWRUI.HoverItem.type > ItemID.None) {
-                string[] _omigaSnyContent = CWRUI.HoverItem.CWR().OmigaSnyContent;
+                string[] _omigaSnyContent = CWRLoad.ItemIDToOmigaSnyContent[CWRUI.HoverItem.type];
                 if (_omigaSnyContent != null) {
                     OmigaSnyContent = _omigaSnyContent;
                 }

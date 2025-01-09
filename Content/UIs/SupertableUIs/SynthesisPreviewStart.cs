@@ -16,9 +16,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         private static Vector2 origPos => SynthesisPreviewUI.Instance.DrawPosition;
         private Vector2 offset;
         internal float _sengs;
-        internal bool uiIsActive => !SupertableUI.Instance.hoverInMainPage
-                && CWRUI.HoverItem.type > ItemID.None
-                && CWRUI.HoverItem.CWR().OmigaSnyContent != null;
+        internal bool uiIsActive => !SupertableUI.Instance.hoverInMainPage && CWRLoad.ItemIDToOmigaSnyContent[CWRUI.HoverItem.type] != null;
         public override bool Active => _sengs > 0 || uiIsActive;
         public override void Load() {
             Instance = this;

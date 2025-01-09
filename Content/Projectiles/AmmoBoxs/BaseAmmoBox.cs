@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
             }
             if (num < cwr.AmmoCapacity) {
                 int ammoType = ItemID.MusketBall;
-                if (CWRLoad.AmmoIDToItemIDMapping.TryGetValue(item.useAmmo, out int ammoItemID)) {
+                if (VaultUtils.AmmoIDToItemIDMapping.TryGetValue(item.useAmmo, out int ammoItemID)) {
                     ammoType = ammoItemID;
                 }
                 list.Add(new Item(ammoType, cwr.AmmoCapacity - num));

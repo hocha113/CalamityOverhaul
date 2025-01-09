@@ -285,9 +285,9 @@ namespace CalamityOverhaul
         /// </summary>
         internal static Dictionary<int, string> ItemIsGunAndGetRecoilLocKey { get; private set; } = [];
         /// <summary>
-        /// 根据<see cref="Item.useAmmo"/>映射到对应的物品id之上
+        /// 从物品id映射到对应的终焉合成内容上，如果该物品没有终焉合成则返回<see langword="null"/>
         /// </summary>
-        internal static Dictionary<int, int> AmmoIDToItemIDMapping { get; private set; } = [];
+        internal static Dictionary<int, string[]> ItemIDToOmigaSnyContent { get; private set; } = [];
 
         #endregion
 
@@ -451,26 +451,6 @@ namespace CalamityOverhaul
                 DesertNuisanceBodyYoung, CosmicGuardianBody, PrimordialWyrmBody, ThanatosBody1, ThanatosBody2, DevourerofGodsBody, AstrumDeusBody
                 , SepulcherBody, PerforatorBodyLarge, PerforatorBodyMedium, PerforatorBodySmall, NPCID.TheDestroyerBody, NPCID.EaterofWorldsBody];
 
-            AmmoIDToItemIDMapping = new Dictionary<int, int>
-            {
-                { AmmoID.FallenStar, ItemID.FallenStar },
-                { AmmoID.Gel, ItemID.Gel },
-                { AmmoID.Arrow, ItemID.WoodenArrow },
-                { AmmoID.Coin, ItemID.CopperCoin },
-                { AmmoID.Bullet, ItemID.MusketBall },
-                { AmmoID.Sand, ItemID.SandBlock },
-                { AmmoID.Dart, ItemID.PoisonDart },
-                { AmmoID.Rocket, ItemID.RocketI },
-                { AmmoID.Flare, ItemID.Flare },
-                { AmmoID.Snowball, ItemID.Snowball },
-                { AmmoID.StyngerBolt, ItemID.StyngerBolt },
-                { AmmoID.CandyCorn, ItemID.CandyCorn },
-                { AmmoID.JackOLantern, ItemID.JackOLantern },
-                { AmmoID.Stake, ItemID.Stake },
-                { AmmoID.NailFriendly, ItemID.Nail },
-                { AmmoID.None, ItemID.MusketBall }
-            };
-
             AddMaxStackItemsIn64 = [
                 ItemType<BloodOrange>(),
                 ItemType<MiracleFruit>(),
@@ -501,12 +481,18 @@ namespace CalamityOverhaul
                 ItemIsBowAndArrowNum[itemType] = 1;
                 ItemIsRanged[itemType] = false;
                 ItemIsRangedAndCanRightClickFire[itemType] = false;
+                ItemIDToOmigaSnyContent[itemType] = null;
                 if (item != null && item.type != ItemID.None) {//验证物品是否有效
                     if (item.createTile != -1 && !TileToItem.ContainsKey(item.createTile)) {
                         TileToItem.Add(item.createTile, item.type);
                     }
                     if (item.createWall != -1 && !WallToItem.ContainsKey(item.createWall)) {
                         WallToItem.Add(item.createWall, item.type);
+                    }
+
+                    string[] snyOmig = item.CWR().OmigaSnyContent;
+                    if (snyOmig != null) {
+                        ItemIDToOmigaSnyContent[itemType] = snyOmig;
                     }
 
                     int heldProjType = item.CWR().heldProjType;
