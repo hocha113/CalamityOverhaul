@@ -25,6 +25,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         /// </summary>
         internal virtual Player Owner => Main.player[Projectile.owner];
         /// <summary>
+        /// 手持物品实例
+        /// </summary>
+        public Item Item => Owner.GetItem();
+        /// <summary>
         /// 安全的获取一个重力倒转值
         /// </summary>
         internal int SafeGravDir => Math.Sign(Owner.gravDir);

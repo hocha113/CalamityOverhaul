@@ -59,16 +59,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
 
         public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
 
-        public Item Item {
-            get {
-                Item itemValue = Owner.GetItem();
-                if (itemValue == null) {
-                    itemValue = new Item();
-                }
-                return itemValue;
-            }
-        }
-
         public virtual string GlowPath => CWRConstant.Placeholder;
 
         public virtual Texture2D GlowValue => CWRUtils.GetT2DValue(GlowPath);

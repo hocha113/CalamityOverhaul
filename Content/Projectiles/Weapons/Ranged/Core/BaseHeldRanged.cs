@@ -34,10 +34,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public ref float Time => ref Projectile.ai[0];
         /// <summary>
-        /// 手持物品实例
-        /// </summary>
-        public Item Item => Owner.GetItem();
-        /// <summary>
         /// 对源灾厄的物品对象
         /// </summary>
         public virtual int targetCayItem => ItemID.None;

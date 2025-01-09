@@ -68,10 +68,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         /// </summary>
         public int AnimationMaxFrme = 1;
         /// <summary>
-        /// 这个手持刀对应的物品实例
-        /// </summary>
-        public Item Item => Owner.GetItem();
-        /// <summary>
         /// 挥舞索引
         /// </summary>
         public ref int SwingIndex => ref Owner.CWR().SwingIndex;
