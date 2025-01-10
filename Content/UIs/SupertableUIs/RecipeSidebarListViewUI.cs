@@ -34,6 +34,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             oldMouseState = currentMouseState;
             rollerSengs = (rollerValue / recipeTargetElmts.Count * 64) * siderHeight;
             UIHitBox = new Rectangle((int)DrawPosition.X - 4, (int)DrawPosition.Y, 72, siderHeight);
+            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {

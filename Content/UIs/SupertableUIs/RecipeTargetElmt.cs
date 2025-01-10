@@ -37,13 +37,13 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     if (recipeSidebarListView.TargetPecipePointer != this) {
-                        recipeSidebarListView.TargetPecipePointer = recipeSidebarListView.PreviewTargetPecipePointer;
+                        recipeSidebarListView.TargetPecipePointer = this;
                         SoundStyle sound = SoundID.Grab;
                         sound.Pitch = 0.6f;
                         SoundEngine.PlaySound(sound);
 
                         for (int i = 0; i < SupertableUI.AllRecipes.Count; i++) {
-                            if (recipeData.Target == SupertableUI.AllRecipes[i].Target) {
+                            if (recipeData == SupertableUI.AllRecipes[i]) {
                                 RecipeUI.Instance.index = i;
                             }
                         }

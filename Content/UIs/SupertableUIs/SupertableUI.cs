@@ -177,12 +177,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         public void UpdateUIElementPos() {
             if (player.CWR().SupertableUIStartBool && downSengsTime <= 0) {
                 if (_sengs < 1f) {
-                    _sengs += 0.1f;
+                    _sengs += 0.14f;
                 }
             }
             else {
                 if (_sengs > 0f) {
-                    _sengs -= 0.1f;
+                    _sengs -= 0.14f;
                 }
             }
 

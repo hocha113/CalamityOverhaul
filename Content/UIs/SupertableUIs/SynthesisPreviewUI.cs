@@ -81,6 +81,11 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                     OmigaSnyContent = _omigaSnyContent;
                 }
             }
+
+            RecipeSidebarListViewUI recipeSidebarListView = UIHandleLoader.GetUIHandleOfType<RecipeSidebarListViewUI>();
+            if (recipeSidebarListView.hoverInMainPage && recipeSidebarListView.PreviewTargetPecipePointer != null) {
+                OmigaSnyContent = recipeSidebarListView.PreviewTargetPecipePointer.recipeData.Values;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch) {

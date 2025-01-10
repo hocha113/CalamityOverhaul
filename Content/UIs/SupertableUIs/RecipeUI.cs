@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
                 RecipeTargetElmt elmt = null;
                 foreach (RecipeTargetElmt folwerElmt in recipeSidebarListView.recipeTargetElmts) {
-                    if (folwerElmt.recipeData.Target == itemTarget[index].type) {
+                    if (folwerElmt.recipeData == SupertableUI.AllRecipes[index]) {
                         elmt = folwerElmt;
                     }
                 }
