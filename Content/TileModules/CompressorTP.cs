@@ -1,8 +1,6 @@
 ﻿using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.CompressorUIs;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.TileProcessors;
-using InnoVault.UIHandles;
 using System;
 using Terraria;
 using Terraria.Audio;
