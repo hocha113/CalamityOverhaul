@@ -460,7 +460,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	BlackMatterStick: {
+	NeutronStarIngot: {
 		DisplayName: Neutron Star Ingot
 		Tooltip: The weight of all things, gathered at your fingertips
 	}

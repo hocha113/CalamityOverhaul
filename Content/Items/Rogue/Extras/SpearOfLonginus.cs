@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.shoot = ModContent.ProjectileType<LonginusThrow>();
             Item.shootSpeed = 15f;
             Item.DamageType = CWRLoad.RogueDamageClass;
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems16;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_SpearOfLonginus;
             Item.CWR().isHeldItem = true;
             Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
         }
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
                 .AddIngredient<ScarletDevil>(1)
                 .AddIngredient<CosmicCalamity>(1)
                 .AddIngredient(ItemID.Gungnir, 1)
-                .AddIngredient<BlackMatterStick>(3)
+                .AddIngredient<NeutronStarIngot>(3)
                 .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();

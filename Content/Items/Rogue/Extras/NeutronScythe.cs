@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
             Item.noUseGraphic = true;
             Item.DamageType = CWRLoad.RogueDamageClass;
             Item.shoot = ModContent.ProjectileType<NeutronScytheHeld>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems21;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronScythe;
             Item.CWR().GetMeleePrefix = Item.CWR().GetRangedPrefix = true;
         }
 
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Items.Rogue.Extras
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<BlackMatterStick>(11)
+                .AddIngredient<NeutronStarIngot>(11)
                 .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();

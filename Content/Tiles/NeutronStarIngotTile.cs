@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Tiles
             tileGlowAsset = null;
         }
         public override void SetStaticDefaults() {
-            AddMapEntry(new Color(121, 89, 9), CWRUtils.SafeGetItemName<BlackMatterStick>());
+            AddMapEntry(new Color(121, 89, 9), CWRUtils.SafeGetItemName<NeutronStarIngot>());
             Main.tileShine[Type] = 1100;
             Main.tileSolid[Type] = true;
             Main.tileSolidTop[Type] = true;

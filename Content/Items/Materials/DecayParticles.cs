@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.value = Item.sellPrice(gold: 3);
             Item.useAnimation = Item.useTime = 15;
             Item.useStyle = ItemUseStyleID.HoldUp;
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems11;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_DecayParticles;
         }
 
         public override void AddRecipes() {

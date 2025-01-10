@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.shoot = ModContent.ProjectileType<NeutronGlaiveBeam>();
             Item.shootSpeed = 18f;
             Item.SetKnifeHeld<NeutronGlaiveHeld>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems17;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronGlaive;
         }
 
         public override bool CanUseItem(Player player) {
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<BlackMatterStick>(11)
+                .AddIngredient<NeutronStarIngot>(11)
                 .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();

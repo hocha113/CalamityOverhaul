@@ -481,7 +481,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	BlackMatterStick: {
+	NeutronStarIngot: {
 		DisplayName: Neutronensternverdichter
 		Tooltip: Das Gewicht des Universums in deinen Fingerspitzen
 	}

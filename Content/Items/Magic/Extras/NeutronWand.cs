@@ -31,12 +31,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Extras
             Item.crit = 6;
             Item.UseSound = SoundID.NPCDeath56;
             Item.SetHeldProj<NeutronWandHeld>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems20;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronWand;
         }
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<BlackMatterStick>(11)
+                .AddIngredient<NeutronStarIngot>(11)
                 .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();

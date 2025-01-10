@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.accessory = true;
             Item.value = Item.buyPrice(180, 22, 15, 0);
             Item.rare = ModContent.RarityType<Turquoise>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems23;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronStarMuzzleBrake;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 .AddIngredient<ElementalQuiver>()
                 .AddIngredient<DaawnlightSpiritOrigin>()
                 .AddIngredient<QuiverofNihility>()
-                .AddIngredient<BlackMatterStick>(12)
+                .AddIngredient<NeutronStarIngot>(12)
                 .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();

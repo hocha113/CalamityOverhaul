@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
             Item.rare = ItemRarityID.Quest;
             Item.shoot = ModContent.ProjectileType<DawnshatterAzureProj>();
             Item.shootSpeed = 8f;
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems10;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_DawnshatterAzure;
             Item.CWR().isHeldItem = true;
         }
 

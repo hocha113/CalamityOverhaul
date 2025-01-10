@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.autoReuse = true;
             Item.createTile = TileType<InfiniteIngotTile>();
             Item.CWR().isInfiniteItem = true;
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems8;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_InfiniteIngot;
         }
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.Items.Materials
                 .AddIngredient<Dragonfruit>(1)
                 .AddIngredient<MiracleMatter>(6)
                 .AddIngredient<ShadowspecBar>(9)
-                .AddIngredient<BlackMatterStick>(11)
+                .AddIngredient<NeutronStarIngot>(11)
                 .AddBlockingSynthesisEvent()
                 .AddTile(TileType<TransmutationOfMatter>())
                 .Register();

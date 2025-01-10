@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Items.Placeable;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -9,18 +10,22 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
-    public class SynthesisPreviewUI : UIHandle
+    public class SynthesisPreviewUI : UIHandle, ICWRLoader
     {
         public static SynthesisPreviewUI Instance => UIHandleLoader.GetUIHandleOfType<SynthesisPreviewUI>();
-        internal Texture2D mainBookPValue => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BookPans");
-        internal Texture2D mainCellValue => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue3");
-        internal Texture2D TOMTex => CWRUtils.GetT2DValue(CWRConstant.Asset + "Items/Placeable/" + "TransmutationOfMatterItem");
+        internal static int Width => 564;
+        internal static int Height => 564;
+        internal static Asset<Texture2D> MainValueInCell;
         internal string[] OmigaSnyContent = [];
         internal float _sengs;
         internal bool DrawBool;
-        internal bool uiIsActive => DrawBool &&!SupertableUI.Instance.hoverInMainPage 
-            && CWRLoad.ItemIDToOmigaSnyContent[CWRUI.HoverItem.type] != null;
+        internal bool uiIsActive => DrawBool &&!SupertableUI.Instance.hoverInMainPage && CWRLoad.ItemIDToOmigaSnyContent[CWRUI.HoverItem.type] != null;
         public override bool Active => _sengs > 0 || uiIsActive;
+        void ICWRLoader.LoadAsset() => MainValueInCell = CWRUtils.GetT2DAsset("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValueInCell");
+        void ICWRLoader.UnLoadData() {
+            MainValueInCell = null;
+            OmigaSnyContent = [];
+        }
         // 在只利用一个数字索引的情况下反向计算出对应的格坐标
         public Vector2 ArcCellPos(int index, Vector2 pos) {
             int y = index / 9;
@@ -29,8 +34,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         public Vector2 Prevention(Vector2 pos) {
-            float maxW = mainBookPValue.Width * 2.2f;
-            float maxH = mainBookPValue.Height * 2.5f;
+            float maxW = Width;
+            float maxH = Height;
             if (pos.X < 0) {
                 pos.X = 0;
             }
@@ -69,7 +74,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             _sengs = MathHelper.Clamp(_sengs, 0, 1);
             SetPosition();
-            OmigaSnyContent = SupertableRecipeDate.FullItems;
+            OmigaSnyContent = SupertableRecipeDate.FullItems_Null;
             if (CWRUI.HoverItem.type > ItemID.None) {
                 string[] _omigaSnyContent = CWRLoad.ItemIDToOmigaSnyContent[CWRUI.HoverItem.type];
                 if (_omigaSnyContent != null) {
@@ -98,13 +103,13 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             Vector2 drawMainUISize = new Vector2(2.2f, 2.6f);
 
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.UI_JAR.Value, 4, DrawPosition
-                , (int)(mainBookPValue.Width * 2.2f * _sengs), (int)(mainBookPValue.Height * 2.5f * _sengs), Color.BlueViolet * 0.8f * _sengs, Color.Azure * 0.2f * _sengs, 1);
+                , (int)(Width * _sengs), (int)(Height * _sengs), Color.BlueViolet * 0.8f * _sengs, Color.Azure * 0.2f * _sengs, 1);
             VaultUtils.DrawBorderedRectangle(spriteBatch, CWRAsset.Placeholder_White.Value, 4, DrawPosition
-                , (int)(mainBookPValue.Width * 2.2f * _sengs), (int)(mainBookPValue.Height * 2.5f * _sengs), Color.BlueViolet * 0 * _sengs, Color.CadetBlue * 0.6f * _sengs, 1);
+                , (int)(Width * _sengs), (int)(Height * _sengs), Color.BlueViolet * 0 * _sengs, Color.CadetBlue * 0.6f * _sengs, 1);
 
-            spriteBatch.Draw(mainCellValue, DrawPosition + new Vector2(-25, -25) + offset * _sengs, null, Color.White * 0.8f * _sengs, 0, Vector2.Zero, _sengs, SpriteEffects.None, 0);
+            spriteBatch.Draw(MainValueInCell.Value, DrawPosition + new Vector2(-25, -25) + offset * _sengs, null, Color.White * 0.8f * _sengs, 0, Vector2.Zero, _sengs, SpriteEffects.None, 0);
 
-            Vector2 drawTOMItemIconPos = DrawPosition + new Vector2(-20 * _sengs, mainCellValue.Height * _sengs + 10) + offset;
+            Vector2 drawTOMItemIconPos = DrawPosition + new Vector2(-20 * _sengs, MainValueInCell.Value.Height * _sengs + 10) + offset;
             VaultUtils.SimpleDrawItem(spriteBatch, ModContent.ItemType<TransmutationOfMatterItem>(), drawTOMItemIconPos, 1 * _sengs, 0, Color.White * _sengs);
 
             Vector2 drawText1 = new Vector2(DrawPosition.X - 20 * _sengs, DrawPosition.Y - 60 * _sengs) + offset;

@@ -481,7 +481,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	BlackMatterStick: {
+	NeutronStarIngot: {
 		DisplayName: 中子星锭
 		Tooltip: 万物之重，聚合指尖
 	}

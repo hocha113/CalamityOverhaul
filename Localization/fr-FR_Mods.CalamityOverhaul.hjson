@@ -480,7 +480,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	BlackMatterStick: {
+	NeutronStarIngot: {
 		DisplayName: Bâton de Matière Noire
 		Tooltip: Le poids de toute chose, agrégé à la pointe des doigts
 	}

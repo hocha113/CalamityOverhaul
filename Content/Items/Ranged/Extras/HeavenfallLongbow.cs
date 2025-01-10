@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.useAmmo = AmmoID.Arrow;
             Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems2;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_HeavenfallLongbow;
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit = 9999;

@@ -487,7 +487,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	BlackMatterStick: {
+	NeutronStarIngot: {
 		DisplayName: Bastón de Neutrones de Materia Superdensa
 		Tooltip: El peso de todo, concentrado en la yema de los dedos.
 	}

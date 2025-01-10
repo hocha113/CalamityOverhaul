@@ -1,5 +1,4 @@
 ﻿using CalamityMod;
-using CalamityOverhaul.Content.RemakeItems.Core;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -15,7 +14,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulTheBible
     {
         internal static OverhaulTheBibleUI Instance => UIHandleLoader.GetUIHandleOfType<OverhaulTheBibleUI>();
         public override bool Active { get => _active || _sengs > 0; set => _active = value; }
-        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/BookPans");
         private bool onDrag;
         private bool onTopP;
         private bool onTopDarg;

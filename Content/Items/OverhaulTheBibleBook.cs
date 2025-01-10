@@ -10,9 +10,22 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items
 {
-    internal class OverhaulTheBibleBook : ModItem
+    internal class OverhaulTheBibleBook : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item + "Tools/OverhaulTheBibleBook_Close";
+        private static Asset<Texture2D> OverhaulTheBibleBook_Close;
+        private static Asset<Texture2D> OverhaulTheBibleBook_Open_Dark;
+        private static Asset<Texture2D> OverhaulTheBibleBook_Open_Light;
+        void ICWRLoader.LoadAsset() {
+            OverhaulTheBibleBook_Close = CWRUtils.GetT2DAsset(Texture);
+            OverhaulTheBibleBook_Open_Dark = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/OverhaulTheBibleBook_Open1");
+            OverhaulTheBibleBook_Open_Light = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/OverhaulTheBibleBook_Open2");
+        }
+        void ICWRLoader.UnLoadData() {
+            OverhaulTheBibleBook_Close = null;
+            OverhaulTheBibleBook_Open_Dark = null;
+            OverhaulTheBibleBook_Open_Light = null;
+        }
         public override void SetDefaults() {
             Item.width = 58;
             Item.height = 48;
@@ -26,25 +39,20 @@ namespace CalamityOverhaul.Content.Items
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            Asset<Texture2D> value;
             if (OverhaulTheBibleUI.Instance.Active) {
-                value = CWRUtils.GetT2DAsset(CWRConstant.Item + "Tools/OverhaulTheBibleBook_Open1");
-                TextureAssets.Item[Type] = value;
-                spriteBatch.Draw(value.Value, position, null, Color.White, 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
-                Texture2D mengs = CWRUtils.GetT2DValue(CWRConstant.Item + "Tools/OverhaulTheBibleBook_Open2");
-                spriteBatch.Draw(mengs, position, null, Color.White * Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f)), 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
+                TextureAssets.Item[Type] = OverhaulTheBibleBook_Open_Dark;
+                spriteBatch.Draw(OverhaulTheBibleBook_Open_Dark.Value, position, null, Color.White, 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
+                Color sengsColor = Color.White * Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f));
+                spriteBatch.Draw(OverhaulTheBibleBook_Open_Light.Value, position, null, sengsColor, 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
             }
             else {
-                value = CWRUtils.GetT2DAsset(Texture);
-                TextureAssets.Item[Type] = value;
-                spriteBatch.Draw(value.Value, position, null, Color.White, 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
+                TextureAssets.Item[Type] = OverhaulTheBibleBook_Close;
+                spriteBatch.Draw(OverhaulTheBibleBook_Close.Value, position, null, Color.White, 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
             }
             return false;
         }
 
-        public override void UpdateInventory(Player player) {
-            player.CWR().HasOverhaulTheBibleBook = true;
-        }
+        public override void UpdateInventory(Player player) => player.CWR().HasOverhaulTheBibleBook = true;
 
         public override bool? UseItem(Player player) {
             if (player.whoAmI == Main.myPlayer) {

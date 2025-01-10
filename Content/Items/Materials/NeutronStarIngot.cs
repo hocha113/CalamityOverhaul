@@ -10,9 +10,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Materials
 {
-    internal class BlackMatterStick : ModItem
+    internal class NeutronStarIngot : ModItem
     {
-        public override string Texture => CWRConstant.Item + "Materials/BlackMatterStick";
+        public override string Texture => CWRConstant.Item + "Materials/NeutronStarIngot";
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 9999;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 18));
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.useTurn = true;
             Item.autoReuse = true;
             Item.createTile = ModContent.TileType<NeutronStarIngotTile>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems5;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronStarIngot;
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {

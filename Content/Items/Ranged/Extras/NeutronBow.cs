@@ -33,12 +33,12 @@ namespace CalamityOverhaul.Content.Items.Ranged.Extras
             Item.value = Item.buyPrice(13, 33, 75, 0);
             Item.crit = 20;
             Item.SetHeldProj<NeutronBowHeldProj>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems19;
+            Item.CWR().OmigaSnyContent = SupertableRecipeDate.FullItems_NeutronBow;
         }
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient<BlackMatterStick>(11)
+                .AddIngredient<NeutronStarIngot>(11)
                 .AddBlockingSynthesisEvent()
                 .AddTile(ModContent.TileType<TransmutationOfMatter>())
                 .Register();

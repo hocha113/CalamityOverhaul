@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
     public class SupertableUI : UIHandle, ICWRLoader
     {
         #region Data
-        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue2");
+        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue");
 
         public static SupertableUI Instance => UIHandleLoader.GetUIHandleOfType<SupertableUI>();
 
@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
             if (fullItemTypes == null || fullItemTypes?.Length != items.Length) {
                 fullItemTypes = new int[items.Length];
-                FullItem(SupertableRecipeDate.FullItems);
+                FullItem(SupertableRecipeDate.FullItems_Null);
             }
 
             inputItem ??= new Item();

@@ -472,7 +472,7 @@ Items: {
 		Tooltip: ""
 	}
 
-	BlackMatterStick: {
+	NeutronStarIngot: {
 		DisplayName: Слиток сверхплотной нейтронной звезды
 		Tooltip: Вес всего, соединяющего кончики пальцев
 	}
