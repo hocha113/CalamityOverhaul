@@ -421,21 +421,6 @@ Items: {
 			'''
 	}
 
-	Oracle: {
-		DisplayName: Oracle
-		Tooltip: ""
-	}
-
-	PerfectDark: {
-		DisplayName: Perfect Dark
-		Tooltip: ""
-	}
-
-	StarnightLance: {
-		DisplayName: Starnight Lance
-		Tooltip: ""
-	}
-
 	CelestialClaymoreEcType: {
 		DisplayName: Celestial Claymore
 		Tooltip: Spawns cosmic energy flames near the player that seek out enemies after a short while.
@@ -2011,66 +1996,12 @@ Items: {
 			'''
 	}
 
-	BlightSpewerEcType: {
-		DisplayName: Blight Spewer
-		Tooltip:
-			'''
-			Fires a cloud of plague nanomachines that adhere to surfaces. 
-			The nanomachines actively seek out nearby enemies to lock onto.
-			'''
-	}
-
-	BloodBoilerEcType: {
-		DisplayName: Blood Boiler
-		Tooltip:
-			'''
-			Fired forth two streams of lifeblood fire that will return to your side. 
-			Using gel as ammunition, this launch consumes life upon firing.
-			'''
-	}
-
-	ElementalEruptionEcType: {
-		DisplayName: Elemental Eruption
-		Tooltip:
-			'''
-			Harness the power to unleash streams of vibrant colored flames and paired tracking bursts of elemental brilliance. 
-			Using gel as ammunition
-			'''
-	}
-
-	HavocsBreathEcType: {
-		DisplayName: Havocs Breath
-		Tooltip:
-			'''
-			Fires a cone of high-temperature sulfur flames, 
-			Using gel as ammunition
-			'''
-	}
-
 	PristineFuryEcType: {
 		DisplayName: Pristine Fury
 		Tooltip:
 			'''
 			Unleashes a fierce spiral of flames that explode into a column of fire. 
 			Additionally, right-clicking launches a burst of short-range radiant flames. 
-			Using gel as ammunition.
-			'''
-	}
-
-	ShadethrowerEcType: {
-		DisplayName: Shadethrower
-		Tooltip:
-			'''
-			Emitting a shadowy cloud of psychic flux, causing enemies' minds to decay. 
-			Using gel as ammunition.
-			'''
-	}
-
-	TerraFlamebursterEcType: {
-		DisplayName: Terra Flameburster
-		Tooltip:
-			'''
-			Harnessing energy to launch a beam of reactive flames along with paired tracking Terra fireballs. 
 			Using gel as ammunition.
 			'''
 	}
@@ -2117,11 +2048,6 @@ Items: {
 			If the point of generation is a solid block, they will instead emit from the gun's muzzle.
 			"Listen to the dragon's roar."
 			'''
-	}
-
-	GenisisEcType: {
-		DisplayName: Genisis
-		Tooltip: Launch a Y-shaped destructive energy beam and a cluster of lasers
 	}
 
 	IonBlasterEcType: {
@@ -2174,15 +2100,6 @@ Items: {
 			'''
 	}
 
-	WingmanEcType: {
-		DisplayName: Wingman
-		Tooltip:
-			'''
-			A focused laser beam is emitted
-			"It doesn't do any good."
-			'''
-	}
-
 	EternalBlizzardEcType: {
 		DisplayName: Eternal Blizzard
 		Tooltip:
@@ -2198,15 +2115,6 @@ Items: {
 			'''
 			Converts musket bullets into fossil fragments, which generate additional fossil fragments when hit
 			"There are no special infected people here."
-			'''
-	}
-
-	SparkSpreaderEcType: {
-		DisplayName: Spark Spreader
-		Tooltip:
-			'''
-			Ignite your enemy with a spark
-			Using gel as ammunition
 			'''
 	}
 

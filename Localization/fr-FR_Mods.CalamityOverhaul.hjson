@@ -437,21 +437,6 @@ Items: {
 		Tooltip: Lorsque balancée, elle rassemble les flammes sacrées vers vous
 	}
 
-	Oracle: {
-		DisplayName: Oracle
-		Tooltip: Visez et frappez
-	}
-
-	PerfectDark: {
-		DisplayName: Écho de l'Ombre Parfaite
-		Tooltip: ""
-	}
-
-	StarnightLance: {
-		DisplayName: Lance de Nuit Étoilée
-		Tooltip: Glace jusqu'au corps entier
-	}
-
 	CelestialClaymoreEcType: {
 		DisplayName: Épée Céleste
 		Tooltip:
@@ -2003,67 +1988,12 @@ Items: {
 			'''
 	}
 
-	BlightSpewerEcType: {
-		DisplayName: Répandeur de Flétrissure
-		Tooltip:
-			'''
-			Tire un nuage de nanomachines de peste qui adhèrent aux surfaces
-			Les nanomachines ciblent activement les ennemis à proximité
-			'''
-	}
-
-	BloodBoilerEcType: {
-		DisplayName: Ébullition Sanguine
-		Tooltip:
-			'''
-			Tire deux jets de feu de vie qui reviennent vers vous
-			Utilise de la gelée comme munitions
-			Consomme de la vie lors de la décharge
-			'''
-	}
-
-	ElementalEruptionEcType: {
-		DisplayName: Éruption Élémentale
-		Tooltip:
-			'''
-			Charge et libère des flammes colorées et des éclairs élémentaires traqueurs par paires
-			Utilise de la gelée comme munitions
-			'''
-	}
-
-	HavocsBreathEcType: {
-		DisplayName: Souffle du Chaos
-		Tooltip:
-			'''
-			Tire un faisceau de soufre à haute température en forme de cône
-			Utilise du gel comme munition
-			'''
-	}
-
 	PristineFuryEcType: {
 		DisplayName: Furie Pristine
 		Tooltip:
 			'''
 			Tire un tourbillon de flammes violentes qui explosent en piliers de feu
 			Clic droit pour tirer une flamme résiduelle à courte portée
-			Utilise du gel comme munition
-			'''
-	}
-
-	ShadethrowerEcType: {
-		DisplayName: Lanceur d'Ombres
-		Tooltip:
-			'''
-			Projette des nuages d'ombre qui font pourrir le cerveau des ennemis
-			Utilise du gel comme munition
-			'''
-	}
-
-	TerraFlamebursterEcType: {
-		DisplayName: Lance-Flammes Térra
-		Tooltip:
-			'''
-			Charge et tire un faisceau de flammes actives et des boules de feu Térra traçantes
 			Utilise du gel comme munition
 			'''
 	}
@@ -2109,11 +2039,6 @@ Items: {
 			Les ondes rebondissent sur les blocs et, si elles rencontrent un bloc plein, sont renvoyées depuis le canon
 			"Écoutez le gémissement du dragon"
 			'''
-	}
-
-	GenisisEcType: {
-		DisplayName: Genèse
-		Tooltip: Tire un faisceau de destruction en Y et un groupe de lasers
 	}
 
 	IonBlasterEcType: {
@@ -2166,15 +2091,6 @@ Items: {
 			'''
 	}
 
-	WingmanEcType: {
-		DisplayName: Aile
-		Tooltip:
-			'''
-			Tire un faisceau laser concentré
-			"Cela n'a aucune utilité"
-			'''
-	}
-
 	EternalBlizzardEcType: {
 		DisplayName: Blizzard Éternel
 		Tooltip:
@@ -2190,15 +2106,6 @@ Items: {
 			'''
 			Convertit les balles de pistolet en fragments fossiles et génère des fragments supplémentaires lors des impacts
 			"Il n'y a pas d'infectés spéciaux ici"
-			'''
-	}
-
-	SparkSpreaderEcType: {
-		DisplayName: Dispersion d'Étincelles
-		Tooltip:
-			'''
-			Enflamme vos ennemis avec des étincelles
-			Utilise du gel comme munition
 			'''
 	}
 

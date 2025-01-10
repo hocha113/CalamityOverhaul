@@ -444,21 +444,6 @@ Items: {
 			'''
 	}
 
-	Oracle: {
-		DisplayName: Oráculo
-		Tooltip: Apunta y dispara.
-	}
-
-	PerfectDark: {
-		DisplayName: Ecos de Oscuridad
-		Tooltip: ""
-	}
-
-	StarnightLance: {
-		DisplayName: Lanza de Noche Fría
-		Tooltip: Fría hasta los huesos.
-	}
-
 	CelestialClaymoreEcType: {
 		DisplayName: Espada Celestial
 		Tooltip:
@@ -2024,67 +2009,12 @@ Items: {
 			'''
 	}
 
-	BlightSpewerEcType: {
-		DisplayName: Propagador de Marchitez
-		Tooltip:
-			'''
-			Lanza nubes de nanomáquinas de peste que se adhieren a los bloques.
-			Las nanomáquinas buscan activamente a los enemigos cercanos.
-			'''
-	}
-
-	BloodBoilerEcType: {
-		DisplayName: Caldera de Sangre
-		Tooltip:
-			'''
-			Lanza dos flujos de fuego vital que regresan a ti.
-			Usa gel como munición.
-			Al disparar, consume vida.
-			'''
-	}
-
-	ElementalEruptionEcType: {
-		DisplayName: Lanzador Elemental
-		Tooltip:
-			'''
-			Carga y lanza llamas de colores y pares de destellos elementales que rastrean.
-			Usa gel como munición.
-			'''
-	}
-
-	HavocsBreathEcType: {
-		DisplayName: Aliento del Caos
-		Tooltip:
-			'''
-			Lanza un chorro de fuego de azufre a alta temperatura.
-			Usa gel como munición.
-			'''
-	}
-
 	PristineFuryEcType: {
 		DisplayName: Furia Pura de Llamas
 		Tooltip:
 			'''
 			Lanza un rayo de llamas en espiral, explotando en columnas de fuego.
 			Haz clic derecho para lanzar una bola de llamas de corto alcance.
-			Usa gel como munición.
-			'''
-	}
-
-	ShadethrowerEcType: {
-		DisplayName: Lanzador de Sombras
-		Tooltip:
-			'''
-			Lanza nubes de sombras que destruyen el cerebro de los enemigos.
-			Usa gel como munición.
-			'''
-	}
-
-	TerraFlamebursterEcType: {
-		DisplayName: Lanzador de Fuego Terra
-		Tooltip:
-			'''
-			Carga y lanza un rayo de fuego activo y pares de bolas de fuego Terra que rastrean.
 			Usa gel como munición.
 			'''
 	}
@@ -2131,11 +2061,6 @@ Items: {
 			Si el lugar de generación es un bloque sólido, se dispararán desde el cañón
 			"Escucha el lamento del dragón"
 			'''
-	}
-
-	GenisisEcType: {
-		DisplayName: Génesis
-		Tooltip: Lanza un rayo de energía destructiva en forma de Y y un grupo de láseres
 	}
 
 	IonBlasterEcType: {
@@ -2188,15 +2113,6 @@ Items: {
 			'''
 	}
 
-	WingmanEcType: {
-		DisplayName: Flanco
-		Tooltip:
-			'''
-			Lanza un rayo láser concentrado
-			"Esto no tiene utilidad"
-			'''
-	}
-
 	EternalBlizzardEcType: {
 		DisplayName: Blizzard eterno
 		Tooltip:
@@ -2212,15 +2128,6 @@ Items: {
 			'''
 			Convierte balas de pistola en fragmentos fósiles, genera fragmentos fósiles adicionales al impactar
 			"No hay infectados especiales aquí"
-			'''
-	}
-
-	SparkSpreaderEcType: {
-		DisplayName: Proyector de chispas
-		Tooltip:
-			'''
-			Enciende a tus enemigos con chispas
-			Usa gel como munición
 			'''
 	}
 

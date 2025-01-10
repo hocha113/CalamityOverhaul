@@ -438,21 +438,6 @@ Items: {
 		Tooltip: Beim Schwingen zieht sie heiliges Feuer zu dir
 	}
 
-	Oracle: {
-		DisplayName: Orakel
-		Tooltip: Schlägt zu, wo du hinzeigst
-	}
-
-	PerfectDark: {
-		DisplayName: Perfekte Dunkelheit
-		Tooltip: ""
-	}
-
-	StarnightLance: {
-		DisplayName: Sternennacht-Lanze
-		Tooltip: Kühlt dich bis auf die Knochen
-	}
-
 	CelestialClaymoreEcType: {
 		DisplayName: Himmlisches Claymore
 		Tooltip:
@@ -2000,67 +1985,12 @@ Items: {
 			'''
 	}
 
-	BlightSpewerEcType: {
-		DisplayName: Verfallausspucker
-		Tooltip:
-			'''
-			Feuert eine Wolke von Pest-Nanomaschinen ab, die an Objekten haften bleiben
-			Nanomaschinen zielen aktiv auf nahe Feinde ab
-			'''
-	}
-
-	BloodBoilerEcType: {
-		DisplayName: Blutkessel
-		Tooltip:
-			'''
-			Feuert zwei lebensspendende Flammen ab, die zu dir zurückkehren
-			Verwendet Gel als Munition
-			Verbraucht Leben beim Abschießen
-			'''
-	}
-
-	ElementalEruptionEcType: {
-		DisplayName: Elementareruption
-		Tooltip:
-			'''
-			Lädt auf für farbige Flammen und verfolgende Element-Flares
-			Verwendet Gel als Munition
-			'''
-	}
-
-	HavocsBreathEcType: {
-		DisplayName: Atem des Chaos
-		Tooltip:
-			'''
-			Feuert einen konischen Hochtemperaturschwefelstrahl ab
-			Verwendet Gel als Munition
-			'''
-	}
-
 	PristineFuryEcType: {
 		DisplayName: Reine Wutflamme
 		Tooltip:
 			'''
 			Feuert einen intensiven Flammenspirale ab, die zu einer Feuersäule explodiert
 			Rechtsklick für kurzdistanz Sonnenuntergangsflamme
-			Verwendet Gel als Munition
-			'''
-	}
-
-	ShadethrowerEcType: {
-		DisplayName: Schattenwerfer
-		Tooltip:
-			'''
-			Feuert Schattenflusswolken ab, die das Gehirn des Feindes verfaulen lassen
-			Verwendet Gel als Munition
-			'''
-	}
-
-	TerraFlamebursterEcType: {
-		DisplayName: Terraflammenwerfer
-		Tooltip:
-			'''
-			Lädt auf für aktive Flammen und verfolgende Terra-Feuerbälle
 			Verwendet Gel als Munition
 			'''
 	}
@@ -2106,11 +2036,6 @@ Items: {
 			Echo-Wellen prallen an Blöcken ab und feuern dann aus der Waffe
 			"Hört den Drachengesang"
 			'''
-	}
-
-	GenisisEcType: {
-		DisplayName: Genesis
-		Tooltip: Feuert Y-förmige Zerstörungsenergiebündel und einen Schwarm Laser ab
 	}
 
 	IonBlasterEcType: {
@@ -2163,15 +2088,6 @@ Items: {
 			'''
 	}
 
-	WingmanEcType: {
-		DisplayName: Seitenflügel
-		Tooltip:
-			'''
-			Feuert gebündelte Laserstrahlen ab
-			"Das hat eigentlich keine Verwendung"
-			'''
-	}
-
 	EternalBlizzardEcType: {
 		DisplayName: Ewiger Blizzard
 		Tooltip:
@@ -2187,15 +2103,6 @@ Items: {
 			'''
 			Verwandelt Schrotflintenkugeln in fossile Splitter, die beim Treffen zusätzliche fossile Splitter erzeugen
 			"Hier gibt es keine speziellen Infizierten"
-			'''
-	}
-
-	SparkSpreaderEcType: {
-		DisplayName: Funkenverbreiter
-		Tooltip:
-			'''
-			Zündet deine Feinde mit Funken an
-			Verwendet Gel als Munition
 			'''
 	}
 

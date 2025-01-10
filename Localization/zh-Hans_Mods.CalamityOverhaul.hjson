@@ -438,21 +438,6 @@ Items: {
 			'''
 	}
 
-	Oracle: {
-		DisplayName: 神启
-		Tooltip: 指哪打哪
-	}
-
-	PerfectDark: {
-		DisplayName: 暗雷回响
-		Tooltip: ""
-	}
-
-	StarnightLance: {
-		DisplayName: 寒夜长枪
-		Tooltip: 令人通体生寒
-	}
-
 	CelestialClaymoreEcType: {
 		DisplayName: 天神之剑
 		Tooltip:
@@ -2014,67 +1999,12 @@ Items: {
 			'''
 	}
 
-	BlightSpewerEcType: {
-		DisplayName: 枯萎散播者
-		Tooltip:
-			'''
-			发射粘附于物块上的瘟疫纳米机器云
-			纳米机器会主动锁定附近的敌人
-			'''
-	}
-
-	BloodBoilerEcType: {
-		DisplayName: 血祸沸炉
-		Tooltip:
-			'''
-			发射两股会回到你身边的生命血火
-			使用凝胶作为弹药
-			发射时消耗会生命
-			'''
-	}
-
-	ElementalEruptionEcType: {
-		DisplayName: 元素喷射器
-		Tooltip:
-			'''
-			蓄力喷射彩色火焰和成对的追踪元素耀斑
-			使用凝胶作为弹药
-			'''
-	}
-
-	HavocsBreathEcType: {
-		DisplayName: 混乱之息
-		Tooltip:
-			'''
-			射出一束锥形高温硫磺火
-			使用凝胶作为弹药
-			'''
-	}
-
 	PristineFuryEcType: {
 		DisplayName: 纯元怒焰
 		Tooltip:
 			'''
 			射出一束猛烈的烈焰螺旋，爆炸成一列火柱
 			右键发射一团短程余晖烈焰
-			使用凝胶作为弹药
-			'''
-	}
-
-	ShadethrowerEcType: {
-		DisplayName: 影流喷射器
-		Tooltip:
-			'''
-			喷射影流之云，使敌人的大脑溃烂
-			使用凝胶作为弹药
-			'''
-	}
-
-	TerraFlamebursterEcType: {
-		DisplayName: 泰拉喷火器
-		Tooltip:
-			'''
-			充能发射一束活性火焰和成对的追踪泰拉火球
 			使用凝胶作为弹药
 			'''
 	}
@@ -2121,11 +2051,6 @@ Items: {
 			如果生成位置是实心物块则会转而从枪口发射
 			"且听龙吟"
 			'''
-	}
-
-	GenisisEcType: {
-		DisplayName: 源
-		Tooltip: 发射Y形毁灭能量束和一簇激光
 	}
 
 	IonBlasterEcType: {
@@ -2178,15 +2103,6 @@ Items: {
 			'''
 	}
 
-	WingmanEcType: {
-		DisplayName: 侧翼
-		Tooltip:
-			'''
-			发射集中的激光束
-			"这并没有什么用处"
-			'''
-	}
-
 	EternalBlizzardEcType: {
 		DisplayName: 恒吹雪
 		Tooltip:
@@ -2202,15 +2118,6 @@ Items: {
 			'''
 			将火枪子弹转化为化石碎片，命中后生成额外的化石碎片
 			"这里没有特殊感染者"
-			'''
-	}
-
-	SparkSpreaderEcType: {
-		DisplayName: 火花喷射器
-		Tooltip:
-			'''
-			用火花点燃你的敌人
-			使用凝胶作为弹药
 			'''
 	}
 
