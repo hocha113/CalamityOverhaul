@@ -226,15 +226,18 @@ namespace CalamityOverhaul.Content
             }
         }
 
+        /// <summary>
+        /// 临时性版本提醒，在正式版本中不要调用这个函数
+        /// </summary>
+        private void DompTemporaryVersionText() {
+            string soubText = CWRLocText.GetTextValue("TemporaryVersion_Text");
+            soubText = soubText.Replace("[V1]", CWRMod.Instance.Version.ToString());
+            soubText = soubText.Replace("[V2]", "0.6");
+            SpwanTextProj.New(Player, () => CWRUtils.Text(soubText, Color.IndianRed));
+        }
+
         public override void OnEnterWorld() {
             CWRHook.CheckHookStatus();
-
-            //if (false) {
-            //    string soubText = CWRLocText.GetTextValue("TemporaryVersion_Text");
-            //    soubText.Replace("[V1]", CWRMod.Instance.Version.ToString());
-            //    soubText.Replace("[V2]", "0.6");
-            //    SpwanTextProj.New(Player, () => CWRUtils.Text(soubText, Color.IndianRed));
-            //}
 
             if (!CWRMod.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");
