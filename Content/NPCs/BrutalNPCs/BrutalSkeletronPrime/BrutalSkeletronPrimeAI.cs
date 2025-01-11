@@ -315,18 +315,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
+        internal bool TargetPlayerIsActive() => player == null || player.dead
+            || Math.Abs(npc.position.X - player.position.X) > maxfindModes
+            || Math.Abs(npc.position.Y - player.position.Y) > maxfindModes;
+
         private void ThisFromeFindPlayer() {
-            if (Main.player[npc.target].dead || Math.Abs(npc.position.X - Main.player[npc.target].position.X) > maxfindModes
-                || Math.Abs(npc.position.Y - Main.player[npc.target].position.Y) > maxfindModes) {
+            if (TargetPlayerIsActive()) {
                 npc.TargetClosest();
-                if (Main.player[npc.target].dead || Math.Abs(npc.position.X - Main.player[npc.target].position.X) > maxfindModes
-                    || Math.Abs(npc.position.Y - Main.player[npc.target].position.Y) > maxfindModes) {
+                //在Boss完成登场表演前不要去切换脱战行为，所以这里判断一下npc.ai0，
+                //防止Boss在初始化阶段或者出场阶段时，因为生成距离过远等原因而被判定脱战
+                if (npc.ai[0] > 1 && TargetPlayerIsActive()) {
                     npc.ai[1] = 3f;
                 }
             }
         }
-
-
 
         public override void SetProperty() {
             ai0 = ai1 = ai2 = ai3 = ai4 = ai5 = ai6 = ai7 = ai8 = ai9 = ai10 = ai11 = 0;
