@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
     internal class BalefulSickle : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "BalefulSickle";
+        int oldRotDir;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 6;
             ProjectileID.Sets.TrailingMode[Type] = 2;
@@ -30,7 +31,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee
         }
 
         public override void PostAI() {
-            Projectile.rotation += Math.Sign(Projectile.velocity.X) * (Projectile.ai[0] + 0.1f);
+            int rotDir = Math.Sign(Projectile.velocity.X);
+            if (rotDir == 0) {
+                rotDir = oldRotDir;
+            }
+            else {
+                oldRotDir = rotDir;
+            }
+            Projectile.rotation += rotDir * (Projectile.ai[0] + 0.1f);
             Projectile.ai[0] += 0.01f;
             if (Projectile.ai[0] > 0.5f) {
                 Projectile.ai[0] = 0.5f;

@@ -310,20 +310,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        private void ThisFromeFindPlayer(NPC npc) {
-            if (Main.player[npc.target].dead || Math.Abs(npc.position.X - Main.player[npc.target].position.X) > maxfindModes
-                || Math.Abs(npc.position.Y - Main.player[npc.target].position.Y) > maxfindModes) {
-                npc.TargetClosest();
-                if (Main.player[npc.target].dead || Math.Abs(npc.position.X - Main.player[npc.target].position.X) > maxfindModes
-                    || Math.Abs(npc.position.Y - Main.player[npc.target].position.Y) > maxfindModes) {
-                    npc.ai[1] = 3f;
-                }
-            }
-        }
-
         internal static void SendExtraAI(NPC npc) {
             if (VaultUtils.isServer) {
                 npc.SyncExtraAI();
+            }
+        }
+
+        internal bool TargetPlayerIsActive() => player == null || player.dead 
+            || Math.Abs(npc.position.X - player.position.X) > maxfindModes
+            || Math.Abs(npc.position.Y - player.position.Y) > maxfindModes;
+
+        private void ThisFromeFindPlayer() {
+            if (TargetPlayerIsActive()) {
+                npc.TargetClosest();
+                //在Boss完成登场表演前不要去切换脱战行为，所以这里判断一下npc.ai0，
+                //防止Boss在初始化阶段或者出场阶段时，因为生成距离过远等原因而被判定脱战
+                if (npc.ai[0] > 1 && TargetPlayerIsActive()) {
+                    npc.ai[1] = 3f;
+                }
             }
         }
 
@@ -379,7 +383,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.ai[0] = 1f;
             }
 
-            ThisFromeFindPlayer(npc);
+            ThisFromeFindPlayer();
             CheakRam(out cannonAlive, out viceAlive, out sawAlive, out laserAlive);
             DealingDaytimeRage();
 
@@ -541,7 +545,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 int verticalOffset = 200;
                 int verticalThreshold = 500;
                 float horizontalOffset = 0f;
-                int directionMultiplier = (Main.player[npc.target].Center.X < npc.Center.X) ? -1 : 1;
+                int directionMultiplier = (player.Center.X < npc.Center.X) ? -1 : 1;
 
                 if (NPC.IsMechQueenUp) {
                     horizontalOffset = -450f * directionMultiplier;
