@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
 {
     internal class AcidEtchedTearDrop : ModProjectile
     {

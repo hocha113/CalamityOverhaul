@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 SupertableUI.Instance.onCloseP = false;
             }
             
-            Vector2 offset = new Vector2(100, 100);
+            Vector2 offset = new Vector2(90, 100);
             Item[] items = new Item[OmigaSnyContent.Length];
             Item targetItem = SupertableUI.InStrGetItem(OmigaSnyContent[^1], true);
             for (int i = 0; i < OmigaSnyContent.Length - 1; i++) {

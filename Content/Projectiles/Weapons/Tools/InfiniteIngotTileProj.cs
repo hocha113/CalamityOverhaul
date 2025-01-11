@@ -7,7 +7,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
 {
     internal class InfiniteIngotTileProj : ModProjectile
     {
@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.hostile = true;
             Projectile.friendly = true;
             Projectile.timeLeft = 300;
-            darkMatterBall = (DarkMatterBall)(new Item(ModContent.ItemType<DarkMatterBall>()).ModItem);
+            darkMatterBall = (DarkMatterBall)new Item(ModContent.ItemType<DarkMatterBall>()).ModItem;
         }
 
         public void ExTile() {

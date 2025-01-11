@@ -4,7 +4,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee.Extras;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Rogue.Extras;
-using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.Projectiles.Others;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using CalamityOverhaul.Content.UIs.OverhaulTheBible;
 using CalamityOverhaul.Content.UIs.SupertableUIs;

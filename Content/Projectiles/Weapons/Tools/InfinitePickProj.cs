@@ -1,4 +1,5 @@
 ﻿using CalamityMod.Particles;
+using CalamityMod.Projectiles.Melee;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Ranged.Extras;
 using CalamityOverhaul.Content.Items.Tools;
@@ -11,7 +12,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
 {
     internal class InfinitePickProj : BaseHeldProj
     {
@@ -136,8 +137,17 @@ namespace CalamityOverhaul.Content.Projectiles
                 Item ball = new Item(ModContent.ItemType<DarkMatterBall>());
                 DarkMatterBall darkMatterBall = (DarkMatterBall)ball.ModItem;
                 if (dorpTypes.Count > 0 && darkMatterBall != null) {
-                    darkMatterBall.dorpTypes = dorpTypes;
-                    Owner.QuickSpawnItem(Owner.FromObjectGetParent(), darkMatterBall.Item, 1);
+                    Vector2 spanPos = Projectile.Center;
+                    if (Projectile.ai[0] != 1) {
+                        spanPos = InMousePos;
+                    }
+                    
+                    int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), spanPos, Vector2.Zero, ModContent.ProjectileType<SpanDMBall>(), 0, 0, Projectile.owner, ai1: Projectile.ai[0]);
+                    Projectile projectile = Main.projectile[proj];
+                    if (projectile.ModProjectile is SpanDMBall span) {
+                        darkMatterBall.dorpTypes = dorpTypes;
+                        span.darkMatterBall = darkMatterBall;
+                    }
                 }
             }
         }

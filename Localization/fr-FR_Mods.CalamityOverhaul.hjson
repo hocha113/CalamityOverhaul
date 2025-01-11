@@ -3326,6 +3326,7 @@ Projectiles: {
 	// WTrail.DisplayName: W Trail
 	// AstralPikeHeld.DisplayName: Astral Pike Held
 	// SoulSearchScythe.DisplayName: Soul Search Scythe
+	// SpanDMBall.DisplayName: Span D M Ball
 }
 
 Configs: {

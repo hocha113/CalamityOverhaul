@@ -5,7 +5,7 @@ using InnoVault.PRT;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles
+namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
 {
     internal class InfiniteEnmgs : ModProjectile
     {

@@ -3,7 +3,7 @@ using CalamityMod.Items.Tools;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.CWRDamageTypes;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.Projectiles.Weapons.Tools;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;

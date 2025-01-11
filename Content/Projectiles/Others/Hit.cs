@@ -1,6 +1,6 @@
 ﻿using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Projectiles
+namespace CalamityOverhaul.Content.Projectiles.Others
 {
     internal class Hit : ModProjectile
     {

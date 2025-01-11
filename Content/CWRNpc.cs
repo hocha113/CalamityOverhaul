@@ -7,7 +7,7 @@ using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Events;
 using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.NPCs.Core;
-using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.Projectiles.Others;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged;
 using Microsoft.Xna.Framework.Graphics;
 using System;
