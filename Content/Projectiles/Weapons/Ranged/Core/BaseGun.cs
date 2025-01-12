@@ -231,10 +231,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 获取来自物品的生成源，该生成源实例会附加CWRGun标签，用于特殊识别
         /// </summary>
         public override EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType, "CWRGunShoot");
-        /// <summary>
-        /// 该枪体使用的实际纹理
-        /// </summary>
-        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         #endregion
 
         /// <summary>

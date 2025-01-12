@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -23,10 +24,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core
         protected Vector2 vector;
         protected Vector2 startVector;
         protected float inWormBodysDamageFaul = 0.85f;
-        /// <summary>
-        /// 主纹理资源
-        /// </summary>
-        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         /// <summary>
         /// 刀刃是否应该受近战缩放影响
         /// </summary>

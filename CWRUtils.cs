@@ -15,7 +15,6 @@ using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Events;
 using Terraria.Graphics.Shaders;
@@ -1235,6 +1234,129 @@ namespace CalamityOverhaul
         #region DrawUtils
 
         #region 普通绘制工具
+        /// <summary>
+        /// 将给定的纹理区域根据扣除区域进行分割，返回所有剩余的区域
+        /// 该方法将纹理区域划分为四个可能的区域：上方、左侧、右侧、下方，排除掉扣除区域的部分
+        /// 现在支持旋转矩阵对区域切割的影响
+        /// </summary>
+        /// <param name="textureBounds">纹理的边界矩形，表示纹理的整个区域</param>
+        /// <param name="deductRegion">扣除区域的矩形，表示需要从纹理中排除的区域</param>
+        /// <param name="rotation">纹理旋转的角度（弧度）</param>
+        /// <returns>返回一个包含所有剩余区域的矩形列表</returns>
+        public static List<Rectangle> SplitTextureWithRotation(Rectangle textureBounds, Rectangle deductRegion, float rotation) {
+            var regions = new List<Rectangle>();
+
+            if (deductRegion == default) {
+                deductRegion = new Rectangle(0, 0, 0, 0);
+            }
+
+            // 创建旋转矩阵
+            Matrix rotationMatrix = Matrix.CreateRotationZ(rotation);
+
+            // 计算旋转后扣除区域的四个角
+            Vector2[] corners = new Vector2[4];
+            corners[0] = new Vector2(deductRegion.X, deductRegion.Y);  // 左上角
+            corners[1] = new Vector2(deductRegion.X + deductRegion.Width, deductRegion.Y);  // 右上角
+            corners[2] = new Vector2(deductRegion.X, deductRegion.Y + deductRegion.Height);  // 左下角
+            corners[3] = new Vector2(deductRegion.X + deductRegion.Width, deductRegion.Y + deductRegion.Height);  // 右下角
+
+            // 应用旋转矩阵到扣除区域的四个角
+            for (int i = 0; i < 4; i++) {
+                corners[i] = Vector2.Transform(corners[i], rotationMatrix);
+            }
+
+            // 获取旋转后的扣除区域的最小和最大坐标
+            float minX = corners.Min(c => c.X);
+            float maxX = corners.Max(c => c.X);
+            float minY = corners.Min(c => c.Y);
+            float maxY = corners.Max(c => c.Y);
+
+            // 创建旋转后的扣除区域
+            Rectangle rotatedDeductRegion = new Rectangle(
+                (int)minX,
+                (int)minY,
+                (int)(maxX - minX),
+                (int)(maxY - minY)
+            );
+
+            // 上方区域
+            if (rotatedDeductRegion.Y > textureBounds.Y) {
+                regions.Add(new Rectangle(
+                    textureBounds.X,
+                    textureBounds.Y,
+                    textureBounds.Width,
+                    rotatedDeductRegion.Y - textureBounds.Y));
+            }
+
+            // 左侧区域
+            if (rotatedDeductRegion.X > textureBounds.X) {
+                regions.Add(new Rectangle(
+                    textureBounds.X,
+                    rotatedDeductRegion.Y,
+                    rotatedDeductRegion.X - textureBounds.X,
+                    rotatedDeductRegion.Height));
+            }
+
+            // 右侧区域
+            if (rotatedDeductRegion.X + rotatedDeductRegion.Width < textureBounds.X + textureBounds.Width) {
+                regions.Add(new Rectangle(
+                    rotatedDeductRegion.X + rotatedDeductRegion.Width,
+                    rotatedDeductRegion.Y,
+                    textureBounds.X + textureBounds.Width - (rotatedDeductRegion.X + rotatedDeductRegion.Width),
+                    rotatedDeductRegion.Height));
+            }
+
+            // 下方区域
+            if (rotatedDeductRegion.Y + rotatedDeductRegion.Height < textureBounds.Y + textureBounds.Height) {
+                regions.Add(new Rectangle(
+                    textureBounds.X,
+                    rotatedDeductRegion.Y + rotatedDeductRegion.Height,
+                    textureBounds.Width,
+                    textureBounds.Y + textureBounds.Height - (rotatedDeductRegion.Y + rotatedDeductRegion.Height)));
+            }
+
+            return regions;
+        }
+
+        /// <summary>
+        /// 使用分割后的纹理区域绘制图案，考虑旋转、缩放和翻转效果
+        /// 该方法会在纹理的不同区域内绘制，并确保每个区域都绘制出来
+        /// </summary>
+        /// <param name="spriteBatch">用于绘制的SpriteBatch对象</param>
+        /// <param name="texture">要绘制的纹理对象</param>
+        /// <param name="textureBounds">纹理的边界矩形，表示整个纹理区域</param>
+        /// <param name="deductRegion">扣除区域的矩形，表示扣除的区域</param>
+        /// <param name="position">绘制位置的基准点</param>
+        /// <param name="color">绘制时的颜色</param>
+        /// <param name="rotation">纹理旋转的角度（弧度）</param>
+        /// <param name="origin">纹理旋转的原点</param>
+        /// <param name="scale">纹理的缩放比例</param>
+        /// <param name="effects">绘制时的纹理效果</param>
+        public static void DrawDeductSplit(SpriteBatch spriteBatch, Texture2D texture, Rectangle textureBounds,
+            Rectangle deductRegion, Vector2 position, Color color, float rotation, Vector2 origin, float scale, SpriteEffects effects) {
+            var splitRegions = SplitTextureWithRotation(textureBounds, deductRegion, rotation);
+
+            // 先构造变换矩阵
+            Matrix transformMatrix = Matrix.Identity;
+
+            // 处理缩放和旋转
+            transformMatrix = Matrix.CreateScale(scale) * Matrix.CreateRotationZ(rotation) * Matrix.CreateTranslation(position.X, position.Y, 0f);
+
+            // 对每个区域进行绘制
+            foreach (var region in splitRegions) {
+                // 将矩形转换为世界坐标
+                Vector2 regionCenter = new Vector2(region.X + region.Width / 2, region.Y + region.Height / 2);
+                Vector2 transformedCenter = Vector2.Transform(regionCenter, transformMatrix);
+
+                // 计算纹理的绘制位置，确保矩形的原点在旋转和缩放时处理正确
+                Vector2 finalPosition = transformedCenter - new Vector2(region.Width / 2, region.Height / 2);
+
+                // 绘制矩形
+                spriteBatch.Draw(texture, finalPosition, region, color, rotation, origin, scale, effects, 0f);
+            }
+        }
+
+
         /// <summary>
         /// 安全的获取对应实例的图像资源
         /// </summary>

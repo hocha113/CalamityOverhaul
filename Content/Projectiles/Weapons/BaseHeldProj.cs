@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.IO;
 using Terraria;
-using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons
@@ -13,6 +14,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         private bool downLeftValue;
         private bool old_downRightValue;
         private bool downRightValue;
+        /// <summary>
+        /// 主纹理资源，应该在子类中被实际使用
+        /// </summary>
+        public virtual Texture2D TextureValue => TextureAssets.Projectile[Type].Value;
         /// <summary>
         /// 玩家左键控制
         /// </summary>

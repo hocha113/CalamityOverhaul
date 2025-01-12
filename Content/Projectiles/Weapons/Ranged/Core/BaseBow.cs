@@ -11,7 +11,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
     internal abstract class BaseBow : BaseHeldRanged
     {
         #region Date
-        public virtual Texture2D TextureValue => CWRUtils.GetT2DValue(Texture);
         /// <summary>
         /// 右手角度值
         /// </summary>
