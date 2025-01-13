@@ -42,6 +42,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public virtual int targetCWRItem => ItemID.None;
         /// <summary>
+        /// 右手角度值
+        /// </summary>
+        public float ArmRotSengsFront;
+        /// <summary>
+        /// 左手角度值
+        /// </summary>
+        public float ArmRotSengsBack;
+        /// <summary>
         /// 远程武器本身是否具有碰撞伤害
         /// </summary>
         public bool CanMelee;
@@ -234,6 +242,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 return;
             }
             HaveAmmo = Owner.PickAmmo(Item, out AmmoTypes, out ShootSpeedModeFactor, out WeaponDamage, out WeaponKnockback, out UseAmmoItemType, true);
+        }
+
+        public virtual void SetCompositeArm() {
+            if (OnHandheldDisplayBool) {
+                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
+                if (!Onehanded) {
+                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
+                }
+            }
         }
 
         public sealed override void SetDefaults() {

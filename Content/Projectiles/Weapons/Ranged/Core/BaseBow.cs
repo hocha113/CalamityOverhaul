@@ -1,29 +1,16 @@
 ﻿using CalamityMod;
-using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
-using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.Graphics.Effects;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
     internal abstract class BaseBow : BaseHeldRanged
     {
         #region Date
-        /// <summary>
-        /// 右手角度值
-        /// </summary>
-        public float ArmRotSengsFront;
-        /// <summary>
-        /// 左手角度值
-        /// </summary>
-        public float ArmRotSengsBack;
         /// <summary>
         /// 右手基本角度值
         /// </summary>
@@ -109,18 +96,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public bool IsBow = true;
         /// <summary>
-        /// 是否裁切弓弦，这个会改变弓的绘制方式
-        /// </summary>
-        public bool DeductBowstring;
-        /// <summary>
-        /// 如果<see cref="DeductBowstring"/>为<see langword="true"/>就需要设置这个矩形，用于决定裁剪的部位
-        /// </summary>
-        public Rectangle DeductBowstringRectangle;
-        /// <summary>
-        /// 是否额外绘制动画弓弦
-        /// </summary>
-        public bool CanDrawBowstring;
-        /// <summary>
         /// 射弹特殊生成属性，用于决定射弹的特殊行为，默认值为<see cref="SpanTypesEnum.None"/>
         /// </summary>
         public SpanTypesEnum ShootSpanTypeValue = SpanTypesEnum.None;
@@ -140,6 +115,46 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 获取来自物品的生成源
         /// </summary>
         public override EntitySource_ItemUse_WithAmmo Source => new EntitySource_ItemUse_WithAmmo(Owner, Item, UseAmmoItemType, "CWRBow");
+        /// <summary>
+        /// 弓弦数据
+        /// </summary>
+        public BowstringDataStruct BowstringData = new BowstringDataStruct();
+        public struct BowstringDataStruct
+        {
+            /// <summary>
+            /// 是否裁切弓弦，这个会改变弓的绘制方式
+            /// </summary>
+            public bool CanDeduct;
+            /// <summary>
+            /// 是否额外绘制动画弓弦
+            /// </summary>
+            public bool CanDraw;
+            /// <summary>
+            /// 如果<see cref="CanDeduct"/>为<see langword="true"/>就需要设置这个矩形，用于决定裁剪的部位
+            /// </summary>
+            public Rectangle DeductRectangle = default;
+            /// <summary>
+            /// 设置这个会让整个弓弦位置移动
+            /// </summary>
+            public Vector2 CoreOffset = default;
+            /// <summary>
+            /// 上侧的位置矫正
+            /// </summary>
+            public Vector2 TopBowOffset = default;
+            /// <summary>
+            /// 下侧的位置矫正
+            /// </summary>
+            public Vector2 BottomBowOffset = default;
+            /// <summary>
+            /// 点集，为<see cref="DoEffect"/>所用
+            /// </summary>
+            public Vector2[] Points = new Vector2[3];
+            /// <summary>
+            /// 效果实例
+            /// </summary>
+            public PathEffect DoEffect = null;
+            public BowstringDataStruct() { }
+        }
         #endregion
 
         public void SetArmInFire() {
@@ -158,13 +173,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Projectile.rotation = ToMouseA;
             Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2()
                 * HandFireDistance + new Vector2(0, HandFireDistanceY * SafeGravDir);
-            ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
+            ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
             SetCompositeArm();
         }
 
         private void setIdleFromeAI() {
-            ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR;
-            ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR;
+            ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR * SafeGravDir;
+            ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR * SafeGravDir;
             Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY);
             int art = 20;
             if (SafeGravDir < 0) {
@@ -199,6 +214,21 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
         }
 
+        public override void PostSetRangedProperty() {
+            if (BowstringData.TopBowOffset != default || BowstringData.BottomBowOffset != default || BowstringData.CoreOffset != default) {
+                BowstringData.CanDraw = true;
+            }
+            if (BowstringData.TopBowOffset != default && BowstringData.BottomBowOffset == default) {
+                BowstringData.BottomBowOffset = BowstringData.TopBowOffset;
+            }
+            if (BowstringData.TopBowOffset == default && BowstringData.BottomBowOffset != default) {
+                BowstringData.TopBowOffset = BowstringData.BottomBowOffset;
+            }
+            if (BowstringData.DeductRectangle != default) {
+                BowstringData.CanDeduct = true;
+            }
+        }
+
         public virtual void PreInOwner() { }
 
         public override void InOwner() {
@@ -207,6 +237,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
             Projectile.timeLeft = 2;
             ModItem.IsBow = IsBow;
+
+            if (!onFire && !onFireR) {
+                if (Projectile.ai[1] > 0) {
+                    Projectile.ai[1] = 0;
+                }
+            }
 
             if (InOwner_HandState_AlwaysSetInFireRoding) {
                 setInFireFromeAI();
@@ -222,13 +258,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
 
             PostInOwner();
-        }
-
-        public void SetCompositeArm() {
-            if (OnHandheldDisplayBool) {
-                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -Owner.direction);
-                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -Owner.direction);
-            }
         }
 
         public virtual void PostInOwner() { }
@@ -279,6 +308,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if (overNoFireCeahks()) {
                 SpanProj();
             }
+            
             Time++;
         }
 
@@ -323,21 +353,22 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     color = Color.White;
                 }
 
-                if (DeductBowstring) {
+                if (BowstringData.CanDraw) {
+                    DrawBowstring();
+                }
+
+                if (BowstringData.CanDeduct) {
                     DeductBowDraw(drawPos, ref color);
                 }
                 else {
                     BowDraw(drawPos, ref color);
-                }
-
-                if (CanDrawBowstring) {
-                    DrawBowstring();
                 }
             }
 
             if (CWRServerConfig.Instance.BowArrowDraw && BowArrowDrawBool) {
                 ArrowDraw(drawPos);
             }
+
             return false;
         }
 
@@ -348,7 +379,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public virtual void DeductBowDraw(Vector2 drawPos, ref Color lightColor) {
-            Effect effect = CWRUtils.SetDeductEffect(TextureValue, DeductBowstringRectangle);
+            Effect effect = CWRUtils.GetEffectValue("DeductDraw");
+            effect.CurrentTechnique.Passes[0].Apply();
+            effect.Parameters["topLeft"].SetValue(BowstringData.DeductRectangle.TopLeft());
+            effect.Parameters["width"].SetValue(BowstringData.DeductRectangle.Width);
+            effect.Parameters["height"].SetValue(BowstringData.DeductRectangle.Height);
+            effect.Parameters["textureSize"].SetValue(TextureValue.Size());
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState
                 , default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
@@ -360,11 +396,39 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Main.spriteBatch.ResetBlendState();
         }
 
-        #region TrailDraw
         public virtual void DrawBowstring() {
-            
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp
+                , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            BowstringData.Points = new Vector2[3];
+
+            Vector2 toProjRot = Projectile.rotation.ToRotationVector2();
+
+            Vector2 bowPos = Projectile.Center - toProjRot * (TextureValue.Width / 2 - 1) + Owner.CWR().SpecialDrawPositionOffset;
+            bowPos += toProjRot * BowstringData.CoreOffset.X;
+            bowPos += toProjRot.GetNormalVector() * BowstringData.CoreOffset.Y * DirSign;
+
+            Vector2 posTop = bowPos + (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * (TextureValue.Height / 2 - BowstringData.TopBowOffset.Y) + toProjRot * BowstringData.TopBowOffset.X;
+            Vector2 posBottom = bowPos + (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * (TextureValue.Height / 2 - BowstringData.BottomBowOffset.Y) + toProjRot * BowstringData.BottomBowOffset.X;
+
+            float lengsOFstValue = Projectile.ai[1] / Item.useTime * 16;
+            BowstringData.Points[1] = bowPos - toProjRot * lengsOFstValue;
+
+            if (DirSign < 0) {
+                posTop = bowPos + (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * (TextureValue.Height / 2 - BowstringData.TopBowOffset.Y) + toProjRot * BowstringData.TopBowOffset.X;
+                posBottom = bowPos + (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * (TextureValue.Height / 2 - BowstringData.BottomBowOffset.Y) + toProjRot * BowstringData.BottomBowOffset.X;
+            }
+
+            BowstringData.Points[0] = posTop;
+            BowstringData.Points[2] = posBottom;
+
+            if (BowstringData.DoEffect == null) {
+                BowstringData.DoEffect = new PathEffect((float _) => 1, (Vector2 _) => new Color(150, 150, 150, 255));
+            }
+            BowstringData.DoEffect.Draw(BowstringData.Points, -Main.screenPosition, 88);
+            Main.spriteBatch.ResetBlendState();
         }
-        #endregion
 
         private void ArrowResourceProcessing(ref Texture2D value, Item arrow) {
             if (!arrow.consumable) {

@@ -389,8 +389,14 @@ namespace CalamityOverhaul.Content
                 Rectangle frame = new Rectangle(0, 0, 1, 1);
                 Vector2 orig = Vector2.Zero;
                 Vector2 offsetPos = Vector2.Zero;
+                Vector2 drawPos;
                 float size = 1;
+                float offsetRot = 0;
                 int frameindex = 0;
+                SpriteEffects spriteEffects = Player.direction == player.gravDir ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                if (player.gravDir < 0) {
+                    offsetRot = MathHelper.Pi;
+                }
 
                 if (cwrItem.IsBow) {
                     int maxframe = 4;
@@ -410,19 +416,17 @@ namespace CalamityOverhaul.Content
                     frame = CWRUtils.GetRec(value);
                     orig = CWRUtils.GetOrig(value);
                     float sengs = Main.GameUpdateCount * 0.05f;
-                    offsetPos = new Vector2(player.direction * 8, -25 + MathF.Sin(sengs) * 5);
+                    offsetPos = new Vector2(player.direction * 8, MathF.Sin(sengs) * 5 - 16);
                 }
 
                 if (value == null) {
                     return;
                 }
 
-                SpriteEffects spriteEffects = Player.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                Vector2 drawPos;
                 drawPos.X = (int)(((int)player.position.X) - Main.screenPosition.X + (player.width / 2) - (9 * player.direction)) - 4f * player.direction + offsetPos.X;
-                drawPos.Y = (int)(((int)player.position.Y) - Main.screenPosition.Y + (player.height / 2) + 2f * player.gravDir - 8f * player.gravDir) + offsetPos.Y + player.gfxOffY;
+                drawPos.Y = (int)(((int)player.position.Y) - Main.screenPosition.Y + (player.height / 2) + 2f * player.gravDir - 8f * player.gravDir) + offsetPos.Y * player.gravDir;
                 drawPos.Y += SpecialDrawPositionOffset.Y;
-                DrawData howDoIDrawThings = new DrawData(value, drawPos, frame, drawInfo.colorArmorBody, player.bodyRotation, orig, size, spriteEffects, 0) {
+                DrawData howDoIDrawThings = new DrawData(value, drawPos, frame, drawInfo.colorArmorBody, player.bodyRotation + offsetRot, orig, size, spriteEffects, 0) {
                     shader = 0
                 };
                 drawInfo.DrawDataCache.Add(howDoIDrawThings);

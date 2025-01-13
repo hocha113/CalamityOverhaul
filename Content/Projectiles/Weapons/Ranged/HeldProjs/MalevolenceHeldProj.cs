@@ -19,7 +19,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             HandFireDistance = 20;
             DrawArrowMode = -24;
             InOwner_HandState_AlwaysSetInFireRoding = true;
-            CanDrawBowstring = true;
+            BowstringData.DeductRectangle = new Rectangle(0, 14, 6, 44);
+            BowstringData.TopBowOffset = new Vector2(0, 10);
+            BowstringData.CoreOffset = new Vector2(2, 0);
         }
         public override void BowShoot() {
             if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {

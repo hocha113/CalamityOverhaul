@@ -33,14 +33,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         public Vector2 OffsetPos;
         /// <summary>
-        /// 右手角度值，这个值被自动设置，不要手动给它赋值
-        /// </summary>
-        public float ArmRotSengsFront;
-        /// <summary>
-        /// 右手角度值，这个值被自动设置，不要手动给它赋值
-        /// </summary>
-        public float ArmRotSengsBack;
-        /// <summary>
         /// 右手角度值矫正
         /// </summary>
         public float ArmRotSengsFrontNoFireOffset;
@@ -618,15 +610,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
             Time++;
             Recover();
-        }
-
-        public virtual void SetCompositeArm() {
-            if (OnHandheldDisplayBool) {
-                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
-                if (!Onehanded) {
-                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsBack * -DirSign);
-                }
-            }
         }
 
         public sealed override bool PreDraw(ref Color lightColor) {
