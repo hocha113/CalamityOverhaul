@@ -44,6 +44,7 @@ namespace CalamityOverhaul.Common
             loadFiltersEffect("CWRMod:knifeDistortion", "KnifeDistortion", "KnifeDistortionPass");
             loadFiltersEffect("CWRMod:gradientTrail", "GradientTrail", "GradientTrailPass");
             loadFiltersEffect("CWRMod:trailWarp", "TrailWarp", "TrailWarpPass");
+            loadFiltersEffect("CWRMod:deductDraw", "DeductDraw", "DeductDrawPass");
             StreamerDustShader = new ArmorShaderData(getEffect("StreamerDust"), "StreamerDustPass");
             InShootGlowShader = new ArmorShaderData(getEffect("InShootGlow"), "InShootGlowPass");
         }

@@ -29,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\Effects\ColorGradient.fx" />
+    <None Remove="assets\effects\DeductDraw.fx" />
     <None Remove="Assets\Effects\GradientTrail.fx" />
     <None Remove="Assets\Effects\InShootGlow.fx" />
     <None Remove="assets\effects\KnifeDistortion.fx" />

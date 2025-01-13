@@ -1,12 +1,36 @@
 ﻿using CalamityMod.Items;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.IO;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul
 {
+    //internal class TestProj : ModProjectile, IDeductDrawble
+    //{
+    //    public override string Texture => "CalamityOverhaul/icon";
+    //    public override void SetDefaults() {
+    //        Projectile.width = Projectile.height = 66;
+    //    }
+
+    //    public override bool PreDraw(ref Color lightColor) {
+    //        return false;
+    //    }
+
+    //    public void DeductDraw(SpriteBatch spriteBatch) {
+    //        Texture2D value = CWRAsset.Placeholder_150.Value;
+    //        spriteBatch.Draw(value, Projectile.Center - Main.screenPosition, null, Color.White, 0, value.Size() / 2, 111, SpriteEffects.None, 0);
+    //    }
+
+    //    public void PreDrawTureBody(SpriteBatch spriteBatch) {
+    //        Texture2D value = TextureAssets.Projectile[Type].Value;
+    //        spriteBatch.Draw(value, Projectile.Center - Main.screenPosition, null, Color.White, 0, value.Size() / 2, 1, SpriteEffects.None, 0);
+    //    }
+    //}
+
     internal class TextItem : ModItem
     {
         public override string Texture => "CalamityOverhaul/icon";
@@ -40,7 +64,22 @@ namespace CalamityOverhaul
             //    player.QuickSpawnItem(player.parent(), Main.HoverItem, Main.HoverItem.stack);
             //}
             //old = news;
+        }
 
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
+            Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Item_Melee + "WastelandFang");
+            Effect effect = CWRUtils.GetEffectValue("DeductDraw");
+            Rectangle deductRec = new Rectangle(0, 0, value.Width, value.Height / 2);
+            effect.CurrentTechnique.Passes[0].Apply();
+            effect.Parameters["topLeft"].SetValue(deductRec.TopLeft());
+            effect.Parameters["width"].SetValue(deductRec.Width);
+            effect.Parameters["height"].SetValue(deductRec.Height);
+            effect.Parameters["textureSize"].SetValue(value.Size());
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+            Main.spriteBatch.Draw(value, Item.position - Main.screenPosition, null, Color.White, Main.GameUpdateCount * 0.1f, value.Size() / 2, 1, SpriteEffects.FlipVertically, 0);
+            Main.spriteBatch.ResetBlendState();
+            return false;
         }
 
         public override void HoldItem(Player player) {
@@ -84,10 +123,10 @@ namespace CalamityOverhaul
         }
 
         public override bool? UseItem(Player player) {
-            Point startPoint = new Point(1720, 400);
-            Point endPoint = new Point(1720, 400);
-            int heiget = 2000;
-            int wid = 1400;
+            //Point startPoint = new Point(1720, 400);
+            //Point endPoint = new Point(1720, 400);
+            //int heiget = 2000;
+            //int wid = 1400;
             //using (BinaryWriter writer = new BinaryWriter(File.Open("D:\\TileWorldData\\structure.dat", FileMode.Create))) {
             //    for (int x = 0; x < wid; x++) {
             //        for (int y = 0; y < heiget; y++) {
@@ -106,7 +145,7 @@ namespace CalamityOverhaul
             //        }
             //    }
             //}
-
+            //Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero, ModContent.ProjectileType<TestProj>(), 0, 0, player.whoAmI);
             return true;
         }
     }
