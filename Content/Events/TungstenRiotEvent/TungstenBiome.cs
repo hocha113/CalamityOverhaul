@@ -1,6 +1,6 @@
 ﻿using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Events
+namespace CalamityOverhaul.Content.Events.TungstenRiotEvent
 {
     internal class TungstenBiome : ModBiome
     {

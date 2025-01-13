@@ -4,7 +4,7 @@ using System;
 using Terraria;
 using Terraria.Graphics.Effects;
 
-namespace CalamityOverhaul.Content.Events
+namespace CalamityOverhaul.Content.Events.TungstenRiotEvent
 {
     internal class TungstenSky : CustomSky, ICWRLoader
     {

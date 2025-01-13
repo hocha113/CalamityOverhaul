@@ -1,4 +1,5 @@
-﻿using Terraria.ModLoader;
+﻿using CalamityOverhaul.Content.Events.TungstenRiotEvent;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Events
 {

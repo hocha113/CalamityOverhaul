@@ -3,7 +3,7 @@ using CalamityMod.Events;
 using CalamityMod.NPCs.NormalNPCs;
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.Events;
+using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.Items;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

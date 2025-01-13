@@ -1,7 +1,7 @@
 ﻿using Terraria;
 using Terraria.Graphics.Shaders;
 
-namespace CalamityOverhaul.Content.Events
+namespace CalamityOverhaul.Content.Events.TungstenRiotEvent
 {
     internal class TungstenSkyDate : ScreenShaderData
     {

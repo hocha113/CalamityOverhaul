@@ -11,7 +11,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Events
+namespace CalamityOverhaul.Content.Events.TungstenRiotEvent
 {
     internal class TungstenRiot
     {

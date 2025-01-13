@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.Events;
+using CalamityOverhaul.Content.Events.TungstenRiotEvent;
 using CalamityOverhaul.Content.NPCs.Core;
 using System.IO;
 using Terraria.ModLoader;

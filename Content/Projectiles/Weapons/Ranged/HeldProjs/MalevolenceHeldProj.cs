@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
+    //蜂毒，我最喜欢的弓，纹理看起来很养眼
     internal class MalevolenceHeldProj : BaseBow
     {
         public override string Texture => CWRConstant.Cay_Wap_Ranged + "Malevolence";
@@ -17,6 +18,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
             BowArrowDrawNum = 2;
             HandFireDistance = 20;
             DrawArrowMode = -24;
+            InOwner_HandState_AlwaysSetInFireRoding = true;
+            CanDrawBowstring = true;
         }
         public override void BowShoot() {
             if (AmmoTypes == ProjectileID.WoodenArrowFriendly) {

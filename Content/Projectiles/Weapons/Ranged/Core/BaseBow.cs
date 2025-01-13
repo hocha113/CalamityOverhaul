@@ -1,10 +1,15 @@
 ﻿using CalamityMod;
+using CalamityMod.Graphics.Primitives;
 using CalamityOverhaul.Common;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Graphics.Effects;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 {
@@ -103,6 +108,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// 是一把弓
         /// </summary>
         public bool IsBow = true;
+        /// <summary>
+        /// 是否裁切弓弦，这个会改变弓的绘制方式
+        /// </summary>
+        public bool DeductBowstring;
+        /// <summary>
+        /// 如果<see cref="DeductBowstring"/>为<see langword="true"/>就需要设置这个矩形，用于决定裁剪的部位
+        /// </summary>
+        public Rectangle DeductBowstringRectangle;
+        /// <summary>
+        /// 是否额外绘制动画弓弦
+        /// </summary>
+        public bool CanDrawBowstring;
         /// <summary>
         /// 射弹特殊生成属性，用于决定射弹的特殊行为，默认值为<see cref="SpanTypesEnum.None"/>
         /// </summary>
@@ -306,7 +323,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     color = Color.White;
                 }
 
-                BowDraw(drawPos, ref color);
+                if (DeductBowstring) {
+                    DeductBowDraw(drawPos, ref color);
+                }
+                else {
+                    BowDraw(drawPos, ref color);
+                }
+
+                if (CanDrawBowstring) {
+                    DrawBowstring();
+                }
             }
 
             if (CWRServerConfig.Instance.BowArrowDraw && BowArrowDrawBool) {
@@ -320,6 +346,25 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
+
+        public virtual void DeductBowDraw(Vector2 drawPos, ref Color lightColor) {
+            Effect effect = CWRUtils.SetDeductEffect(TextureValue, DeductBowstringRectangle);
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+            Main.EntitySpriteDraw(TextureValue, drawPos, null, lightColor
+                , Projectile.rotation, TextureValue.Size() / 2, Projectile.scale
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+
+            Main.spriteBatch.ResetBlendState();
+        }
+
+        #region TrailDraw
+        public virtual void DrawBowstring() {
+            
+        }
+        #endregion
 
         private void ArrowResourceProcessing(ref Texture2D value, Item arrow) {
             if (!arrow.consumable) {

@@ -1,6 +1,6 @@
 ﻿using Terraria.ModLoader;
 
-namespace WorldGenTutorial
+namespace CalamityOverhaul.Content.Structures
 {
     public class WorldGenTutorialWorld : ModSystem
     {
