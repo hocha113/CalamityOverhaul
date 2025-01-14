@@ -143,13 +143,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Projectile.rotation = ToMouseA;
             Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2()
                 * HandFireDistance + new Vector2(0, HandFireDistanceY * SafeGravDir);
-            ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 - (ToMouseA + 0.5f * DirSign)) * DirSign;
+            ArmRotSengsBack = ArmRotSengsFront = (MathHelper.PiOver2 * SafeGravDir - Projectile.rotation) * DirSign * SafeGravDir;
             SetCompositeArm();
         }
 
         private void setIdleFromeAI() {
-            ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR;
-            ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR;
+            ArmRotSengsFront = ArmRotSengsFrontBaseValue * CWRUtils.atoR * SafeGravDir;
+            ArmRotSengsBack = ArmRotSengsBackBaseValue * CWRUtils.atoR * SafeGravDir;
             Projectile.Center = Owner.GetPlayerStabilityCenter() + new Vector2(Owner.direction * HandDistance, HandDistanceY);
             int art = 20;
             if (SafeGravDir < 0) {
