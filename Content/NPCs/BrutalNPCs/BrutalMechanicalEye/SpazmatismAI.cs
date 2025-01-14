@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                     toPoint = player.Center + (ai[4] * 0.04f + MathHelper.TwoPi / 2 * (isSpazmatism ? 1 : 2)).ToRotationVector2() * 760;
                 }
 
-                if (++ai[5] > fireTime) {
+                if (++ai[5] > fireTime && ai[4] > 30) {//这里需要停一下，不要立即开火
                     if (!VaultUtils.isClient) {
                         Projectile.NewProjectile(eye.GetSource_FromAI()
                             , eye.Center, toTarget.UnitVector() * 9, projType, projDamage, 0);
@@ -222,7 +222,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                             toPoint = player.Center + new Vector2(isSpazmatism ? 500 : -500, -650);
                         }
                         if (ai[2] == 30 && !VaultUtils.isClient) {
-                            float shootSpeed = death ? 9 : 7;
+                            float shootSpeed = death ? 8 : 6;
                             for (int i = 0; i < 6; i++) {
                                 Vector2 ver = (MathHelper.TwoPi / 6f * i).ToRotationVector2() * shootSpeed;
                                 Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center, ver, projType, projDamage, 0);
@@ -242,14 +242,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                             if (!VaultUtils.isClient) {
                                 if (skeletronPrimeIsTwo) {
                                     for (int i = 0; i < 3; i++) {
-                                        Vector2 ver = toTarget.RotatedBy((-1 + i) * 0.06f).UnitVector() * 6;
+                                        Vector2 ver = toTarget.RotatedBy((-1 + i) * 0.06f).UnitVector() * 5;
                                         Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center, ver, projType, projDamage, 0);
                                     }
                                 }
                                 else {
-                                    Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center, toTarget.UnitVector() * 9, projType, projDamage, 0);
+                                    Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center, toTarget.UnitVector() * 6, projType, projDamage, 0);
                                 }
-
                             }
                             ai[3]++;
                             ai[2] = 0;
@@ -353,14 +352,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                         if (!VaultUtils.isClient && ai[2] > 30) {
                             if (isSpazmatism) {
                                 for (int i = 0; i < 6; i++) {
-                                    Vector2 origVer = toTarget.UnitVector() * 9;
+                                    Vector2 origVer = toTarget.UnitVector() * 8;
                                     Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center
                                     , origVer + new Vector2(origVer.X * 0.2f * i, -0.1f * i), projType, projDamage, 0);
                                 }
                             }
                             else {
                                 for (int i = 0; i < ai[4]; i++) {
-                                    Vector2 origVer = toTarget.UnitVector() * 9;
+                                    Vector2 origVer = toTarget.UnitVector() * 8;
                                     Projectile.NewProjectile(eye.GetSource_FromAI(), eye.Center
                                     , origVer.RotatedBy((ai[4] / -2 + i) * 0.1f), projType, projDamage, 0);
                                 }
@@ -398,7 +397,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                         float maxNum = 6f;
                         if (ai[2] > 30) {
                             for (int i = 0; i < maxNum; i++) {
-                                Vector2 ver = (MathHelper.TwoPi / maxNum * i).ToRotationVector2() * (6 + ai[4]);
+                                Vector2 ver = (MathHelper.TwoPi / maxNum * i).ToRotationVector2() * (4 + ai[4] * 0.8f);
                                 Projectile.NewProjectile(eye.GetSource_FromAI()
                                     , eye.Center, ver, projType, projDamage, 0);
                             }

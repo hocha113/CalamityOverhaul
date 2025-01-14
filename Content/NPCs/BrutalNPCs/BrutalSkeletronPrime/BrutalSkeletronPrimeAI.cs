@@ -1059,15 +1059,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     if (++calNPC.newAI[1] > 90) {
                         Vector2 toD = npc.Center.To(player.Center) + player.velocity;
                         toD = toD.UnitVector();
-                        npc.velocity += toD * 23;
+                        npc.velocity += toD * 20;
                         if (Main.npc[primeCannon].active)
-                            Main.npc[primeCannon].velocity += toD * 33;
+                            Main.npc[primeCannon].velocity += toD * 26;
                         if (Main.npc[primeSaw].active)
-                            Main.npc[primeSaw].velocity += toD * 53;
+                            Main.npc[primeSaw].velocity += toD * 26;
                         if (Main.npc[primeLaser].active)
-                            Main.npc[primeLaser].velocity += toD * 33;
+                            Main.npc[primeLaser].velocity += toD * 26;
                         if (Main.npc[primeVice].active)
-                            Main.npc[primeVice].velocity += toD * 53;
+                            Main.npc[primeVice].velocity += toD * 26;
 
                         calNPC.newAI[2] = 60;
                         calNPC.newAI[1] = 0;
