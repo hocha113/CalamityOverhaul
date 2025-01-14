@@ -28,6 +28,10 @@ public static class QotUtils
         }
 
         var tag = (TagCompound)QotInstance.Call("GetAmmoChainSequence", item);
+        if (tag == null) {
+            return null;
+        }
+
         return !tag.TryGet("chain", out List<Ammo> chain) || chain.Count is 0 ? null : chain;
     }
 
@@ -90,8 +94,9 @@ public static class QotUtils
                     while (times > 0 && ammoQueue.Count > 0) {
                         var item = ammoQueue.Peek();
                         int ammoType = item.type;
-                        if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo))
+                        if (VaultUtils.ProjectileToSafeAmmoMap.TryGetValue(item.shoot, out int actualAmmo)) {
                             ammoType = actualAmmo;
+                        }
 
                         // 不消耗的独立处理
                         // 按常理来说，这里不需要 AmmunitionIsunlimited 的判断，CombinedHooks.CanConsumeAmmo 就够了
