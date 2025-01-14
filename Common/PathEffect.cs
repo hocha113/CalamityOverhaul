@@ -1,30 +1,38 @@
-﻿using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
-using InnoVault.Trails;
+﻿using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
-using Terraria.GameContent;
 
 namespace CalamityOverhaul.Common
 {
+    public delegate List<Vector2> PathPointRetrievalDelegation(IEnumerable<Vector2> controlPoints
+            , Vector2 offset, int totalPoints, IEnumerable<float> rotations = null);
+    public delegate void HandlerTexturePossDelegation(float t, out Vector2 leftTexCoord, out Vector2 rightTexCoord);
+
     public class PathEffect
     {
-        public delegate List<Vector2> PathPointRetrievalDelegation(IEnumerable<Vector2> controlPoints
-            , Vector2 offset, int totalPoints, IEnumerable<float> rotations = null);
-
-        public int SmoothingLevel;
-        public BasicEffect BaseEffect;
+        #region Data
+        private int SmoothingLevel;
+        private BasicEffect BaseEffect;
+        private Vector2 StickPoint = Vector2.Zero;
+        private Vector2[] ControlPoints;
         public TrailThicknessCalculator ThicknessEvaluator;
         public TrailColorEvaluator ColorEvaluator;
         public Func<float, Vector2> ParametricPositionFunction;
         public PathPointRetrievalDelegation PathPointRetrieval;
-        public Vector2 StickPoint = Vector2.Zero;
-        private Vector2[] ControlPoints;
+        public HandlerTexturePossDelegation HandlerTexturePoss;
+        public PathDataStruct PathData;
+        public struct PathDataStruct
+        {
+            public ColoredVertex[] vertices;
+            public short[] indices;
+        }
+        #endregion
 
-        public PathEffect(TrailThicknessCalculator thicknessEvaluator, TrailColorEvaluator colorEvaluator
-            , PathPointRetrievalDelegation pointRetrievalFunction = null, Func<float, Vector2> parametricPositionFunction = null) {
+        public PathEffect(TrailThicknessCalculator thicknessEvaluator, TrailColorEvaluator colorEvaluator, PathPointRetrievalDelegation pointRetrievalFunction = null
+            , Func<float, Vector2> parametricPositionFunction = null, HandlerTexturePossDelegation handlerTexturePoss = null) {
             ThicknessEvaluator = thicknessEvaluator;
             ColorEvaluator = colorEvaluator;
 
@@ -34,6 +42,8 @@ namespace CalamityOverhaul.Common
             // 默认参数化坐标映射函数
             ParametricPositionFunction = parametricPositionFunction ?? DefaultParametricPosition;
 
+            HandlerTexturePoss = handlerTexturePoss ?? DefaultHandlerTexturePoss;
+
             // 初始化基本渲染效果
             BaseEffect = new BasicEffect(Main.instance.GraphicsDevice) {
                 VertexColorEnabled = true,
@@ -42,18 +52,7 @@ namespace CalamityOverhaul.Common
             UpdateRenderingMatrices(out _, out _);
         }
 
-        public Vector2 Evaluate(float interpolant) => PrivateEvaluate(ControlPoints, MathHelper.Clamp(interpolant, 0f, 1f));
-
-        public List<Vector2> GetPoints(int totalPoints) {
-            float perStep = 1f / totalPoints;
-            List<Vector2> points = new List<Vector2>();
-            for (float step = 0f; step <= 1f; step += perStep) {
-                points.Add(Evaluate(step));
-            }
-            return points;
-        }
-
-        private Vector2 PrivateEvaluate(Vector2[] points, float T) {
+        public Vector2 Evaluate(Vector2[] points, float T) {
             while (points.Length > 2) {
                 Vector2[] nextPoints = new Vector2[points.Length - 1];
                 for (int i = 0; i < points.Length - 1; i++) {
@@ -62,6 +61,27 @@ namespace CalamityOverhaul.Common
                 points = nextPoints;
             }
             return Vector2.Lerp(points[0], points[1], T);
+        }
+
+
+        public List<Vector2> GetPoints(int totalPoints) {
+            float straightnessFactor = 0f;
+            // straightnessFactor: 控制直线和曲线的平衡，0完全曲线，1完全直线
+            straightnessFactor = MathHelper.Clamp(straightnessFactor, 0f, 1f);
+            float perStep = 1f / totalPoints;
+            List<Vector2> points = new List<Vector2>();
+            for (float step = 0f; step <= 1f; step += perStep) {
+                // 使用直线和贝塞尔曲线的加权插值
+                Vector2 bezierPoint = Evaluate(ControlPoints, MathHelper.Clamp(step, 0f, 1f));
+                Vector2 linearPoint = Vector2.Lerp(ControlPoints[0], ControlPoints[^1], step); // 起点到终点的直线
+                points.Add(Vector2.Lerp(bezierPoint, linearPoint, straightnessFactor));
+            }
+            return points;
+        }
+
+        public static void DefaultHandlerTexturePoss(float t, out Vector2 leftTexCoord, out Vector2 rightTexCoord) {
+            leftTexCoord = new Vector2(t, 0f);
+            rightTexCoord = new Vector2(t, 1f);
         }
 
         /// <summary>
@@ -83,7 +103,7 @@ namespace CalamityOverhaul.Common
             viewMatrix *= Matrix.CreateTranslation(0f, -height, 0f);
             viewMatrix *= Matrix.CreateRotationZ(MathHelper.Pi);
 
-            if (Main.LocalPlayer.gravDir == -1f) {
+            if (Main.LocalPlayer.gravDir < 0f) {
                 viewMatrix *= Matrix.CreateScale(1f, -1f, 1f) * Matrix.CreateTranslation(0f, height, 0f);
             }
 
@@ -123,15 +143,18 @@ namespace CalamityOverhaul.Common
         }
 
         /// <summary>
-        /// 渲染路径效果
+        /// 获取路径数据
         /// </summary>
-        public void Draw(IEnumerable<Vector2> controlPoints, Vector2 offset, int totalPoints, IEnumerable<float> rotations = null) {
-            Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-
+        /// <param name="controlPoints"></param>
+        /// <param name="offset"></param>
+        /// <param name="totalPoints"></param>
+        /// <param name="rotations"></param>
+        /// <returns></returns>
+        public PathDataStruct GetPathData(IEnumerable<Vector2> controlPoints, Vector2 offset, int totalPoints, IEnumerable<float> rotations = null) {
             List<Vector2> pathPoints = PathPointRetrieval(controlPoints, offset, totalPoints, rotations);
 
             if (pathPoints.Count < 2 || pathPoints.All(p => p == pathPoints[0])) {
-                return;
+                return default;
             }
 
             UpdateRenderingMatrices(out Matrix projection, out Matrix view);
@@ -139,12 +162,62 @@ namespace CalamityOverhaul.Common
             ColoredVertex[] vertices = GenerateVertices(pathPoints);
             short[] indices = GenerateIndices(pathPoints.Count);
             if (indices.Length % 6 != 0 || vertices.Length % 2 != 0) {
+                return default;
+            }
+
+            PathData = new PathDataStruct {
+                vertices = vertices,
+                indices = indices
+            };
+
+            return PathData;
+        }
+
+        /// <summary>
+        /// 渲染路径效果，使用前必须调用<see cref="GetPathData(IEnumerable{Vector2}, Vector2, int, IEnumerable{float})"/>
+        /// </summary>
+        public void Draw() {
+            Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+
+            if (PathData.vertices == null || PathData.indices == null) {
+                return;
+            }
+
+            Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, PathData.vertices, 0
+                , PathData.vertices.Length, PathData.indices, 0, PathData.indices.Length / 3);
+        }
+
+        /// <summary>
+        /// 渲染路径效果，使用前必须调用<see cref="GetPathData(IEnumerable{Vector2}, Vector2, int, IEnumerable{float})"/>
+        /// </summary>
+        public void Draw(Texture2D texture2D) {
+            Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+
+            if (PathData.vertices == null || PathData.indices == null) {
+                return;
+            }
+
+            Main.graphics.GraphicsDevice.Textures[0] = texture2D;
+
+            Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, PathData.vertices, 0
+                , PathData.vertices.Length, PathData.indices, 0, PathData.indices.Length / 3);
+        }
+
+        /// <summary>
+        /// 渲染路径效果
+        /// </summary>
+        public void Draw(IEnumerable<Vector2> controlPoints, Vector2 offset, int totalPoints, IEnumerable<float> rotations = null) {
+            Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+
+            PathDataStruct pathData = GetPathData(controlPoints, offset, totalPoints, rotations);
+            if (pathData.vertices == null || pathData.indices == null) {
                 return;
             }
 
             BaseEffect.CurrentTechnique.Passes[0].Apply();
 
-            Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0, indices.Length / 3);
+            Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, pathData.vertices, 0
+                , pathData.vertices.Length, pathData.indices, 0, pathData.indices.Length / 3);
         }
 
         /// <summary>
@@ -174,8 +247,7 @@ namespace CalamityOverhaul.Common
                 Vector2 current = pathPoints[i];
                 Vector2 direction = Utils.SafeNormalize(pathPoints[i + 1] - current, Vector2.Zero);
 
-                Vector2 leftTexCoord = new Vector2(t, 0f);
-                Vector2 rightTexCoord = new Vector2(t, 1f);
+                HandlerTexturePoss.Invoke(t, out Vector2 leftTexCoord, out Vector2 rightTexCoord);
 
                 Vector2 sideOffset = new Vector2(-direction.Y, direction.X) * width;
 

@@ -12,7 +12,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
         public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.MarksmanBow>();
         public override int targetCWRItem => ModContent.ItemType<MarksmanBowEcType>();
         public override void SetRangedProperty() {
-            base.SetRangedProperty();
+            DrawArrowMode = -26;
+            BowstringData.DeductRectangle = new Rectangle(6, 36, 2, 38);
         }
         public override void BowShoot() {
             for (int i = 0; i < 3; i++) {

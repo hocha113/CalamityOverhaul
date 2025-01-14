@@ -1,5 +1,6 @@
 ﻿using CalamityMod;
 using CalamityOverhaul.Common;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
@@ -153,6 +154,18 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             /// 效果实例
             /// </summary>
             public PathEffect DoEffect = null;
+            /// <summary>
+            /// 是否自动更具<see cref="DeductRectangle"/>的宽度来设置<see cref="thicknessEvaluator"/>，默认为<see langword="true"/>
+            /// </summary>
+            public bool AutomaticWidthSetting = true;
+            /// <summary>
+            /// 弓弦宽度
+            /// </summary>
+            public TrailThicknessCalculator thicknessEvaluator = (float _) => 1;
+            /// <summary>
+            /// 弓弦颜色
+            /// </summary>
+            public TrailColorEvaluator colorEvaluator = (Vector2 _) => Color.White;
             public BowstringDataStruct() { }
         }
         #endregion
@@ -215,17 +228,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override void PostSetRangedProperty() {
-            if (BowstringData.TopBowOffset != default || BowstringData.BottomBowOffset != default || BowstringData.CoreOffset != default) {
+            // 如果指定了弓弦的扣除矩形（用于纹理剪裁）
+            if (BowstringData.DeductRectangle != default) {
+                // 允许扣除逻辑进行
+                BowstringData.CanDeduct = true;
+                // 如果开启了自动宽度设置，并且扣除矩形的宽度有效（大于0）
+                if (BowstringData.AutomaticWidthSetting && BowstringData.DeductRectangle.Width > 0) {
+                    // 设置弓弦的厚度计算器为固定值，等于扣除矩形的宽度
+                    BowstringData.thicknessEvaluator = (float _) => BowstringData.DeductRectangle.Width / 2;
+                }
+                if (BowstringData.TopBowOffset == default && BowstringData.BottomBowOffset == default) {
+                    BowstringData.TopBowOffset = BowstringData.BottomBowOffset = new Vector2(BowstringData.DeductRectangle.Left, BowstringData.DeductRectangle.Top - 2);
+                }
+            }
+            
+            // 如果任意弓弦的偏移量（顶部、底部、核心）被设置，或者设置了矩形裁切，允许弓弦绘制
+            if (BowstringData.TopBowOffset != default || BowstringData.BottomBowOffset != default || BowstringData.CoreOffset != default || BowstringData.CanDeduct) {
                 BowstringData.CanDraw = true;
             }
+            // 如果仅设置了顶部偏移量，但未设置底部偏移量，则将底部偏移量与顶部偏移量保持一致
             if (BowstringData.TopBowOffset != default && BowstringData.BottomBowOffset == default) {
                 BowstringData.BottomBowOffset = BowstringData.TopBowOffset;
             }
+            // 如果仅设置了底部偏移量，但未设置顶部偏移量，则将顶部偏移量与底部偏移量保持一致
             if (BowstringData.TopBowOffset == default && BowstringData.BottomBowOffset != default) {
                 BowstringData.TopBowOffset = BowstringData.BottomBowOffset;
-            }
-            if (BowstringData.DeductRectangle != default) {
-                BowstringData.CanDeduct = true;
             }
         }
 
@@ -291,9 +318,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
         }
 
-        public virtual int SpanLuxirProj(int luxirDamage) {
-            return 0;
-        }
+        public virtual int SpanLuxirProj(int luxirDamage) => 0;
 
         public virtual void SetShootAttribute() {
 
@@ -396,6 +421,24 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Main.spriteBatch.ResetBlendState();
         }
 
+        public virtual void HanderBowstringTexturePoss(float t, out Vector2 leftTexCoord, out Vector2 rightTexCoord) {
+            // 获取 DeductRectangle 的相关信息
+            Rectangle deductRec = BowstringData.DeductRectangle;
+
+            // 计算矩形的起始点和范围在纹理上的比例
+            float minU = (float)deductRec.X / TextureValue.Width;  // 左边界的纹理坐标
+            float maxU = (float)(deductRec.X + deductRec.Width) / TextureValue.Width; // 右边界的纹理坐标
+            float minV = (float)deductRec.Y / TextureValue.Height; // 上边界的纹理坐标
+            float maxV = (float)(deductRec.Y + deductRec.Height) / TextureValue.Height; // 下边界的纹理坐标
+
+            // 确保 t 在 [0, 1] 范围内并均匀映射到 DeductRectangle 的 Y 轴范围
+            float v = minV + (maxV - minV) * t; // 均匀映射到纵向范围
+
+            // 生成左、右 TexCoord
+            leftTexCoord = new Vector2(minU, v);  // 左侧为矩形的左边界
+            rightTexCoord = new Vector2(maxU, v); // 右侧为矩形的右边界
+        }
+
         public virtual void DrawBowstring() {
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp
@@ -424,9 +467,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             BowstringData.Points[2] = posBottom;
 
             if (BowstringData.DoEffect == null) {
-                BowstringData.DoEffect = new PathEffect((float _) => 1, (Vector2 _) => new Color(150, 150, 150, 255));
+                BowstringData.DoEffect = new PathEffect(BowstringData.thicknessEvaluator, BowstringData.colorEvaluator, handlerTexturePoss: HanderBowstringTexturePoss);
             }
-            BowstringData.DoEffect.Draw(BowstringData.Points, -Main.screenPosition, 88);
+            BowstringData.DoEffect.GetPathData(BowstringData.Points, -Main.screenPosition, 88);
+            BowstringData.DoEffect.Draw(TextureValue);
             Main.spriteBatch.ResetBlendState();
         }
 

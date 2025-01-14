@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
         public override int targetCWRItem => ItemID.DemonBow;
         public override void SetRangedProperty() {
             InOwner_HandState_AlwaysSetInFireRoding = true;
-            BowstringData.DeductRectangle = new Rectangle(0, 10, 4, 20);
+            BowstringData.DeductRectangle = new Rectangle(2, 10, 2, 20);
             BowstringData.TopBowOffset = new Vector2(0, 2);
             ShootSpanTypeValue = SpanTypesEnum.DemonBow;
         }

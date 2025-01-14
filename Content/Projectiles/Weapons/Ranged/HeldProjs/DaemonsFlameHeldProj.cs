@@ -1,9 +1,9 @@
 ﻿using CalamityMod;
+using CalamityMod.Items.Weapons.Ranged;
 using CalamityMod.Projectiles.Ranged;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Projectiles.Weapons.Magic;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -12,28 +12,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs
 {
     internal class DaemonsFlameHeldProj : BaseBow
     {
-        public override string Texture => CWRConstant.Projectile_Ranged + "DaemonsFlameBow";
+        public override string Texture => CWRConstant.Cay_Wap_Ranged + "DaemonsFlame";
         public override LocalizedText DisplayName => CWRUtils.SafeGetItemName<DaemonsFlameEcType>();
-        public override int targetCayItem => ModContent.ItemType<CalamityMod.Items.Weapons.Ranged.DaemonsFlame>();
+        public override int targetCayItem => ModContent.ItemType<DaemonsFlame>();
         public override int targetCWRItem => ModContent.ItemType<DaemonsFlameEcType>();
-        public override void PostInOwner() {
-            HandDistance = 22;
-            HandFireDistance = 26;
+        public override void SetRangedProperty() {
+            HandDistance = 28;
+            HandFireDistance = 28;
             DrawArrowMode = -30;
-            CWRUtils.ClockFrame(ref Projectile.frame, 5, 3);
-        }
-
-        public override void BowDraw(Vector2 drawPos, ref Color lightColor) {
-            Texture2D value = CWRUtils.GetT2DValue(Texture);
-            Main.EntitySpriteDraw(value, drawPos, CWRUtils.GetRec(value, Projectile.frame, 4)
-                , onFire ? Color.White : lightColor, Projectile.rotation, CWRUtils.GetOrig(value, 4), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
-            value = CWRUtils.GetT2DValue(Texture + "Glow");
-            Main.EntitySpriteDraw(value, drawPos, CWRUtils.GetRec(value, Projectile.frame, 4)
-                , Color.White, Projectile.rotation, CWRUtils.GetOrig(value, 4), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
-            value = CWRUtils.GetT2DValue(Texture + "Fire");
-            Vector2 offset = Projectile.rotation.ToRotationVector2() * 20;
-            Main.EntitySpriteDraw(value, drawPos + offset, CWRUtils.GetRec(value, Projectile.frame, 4)
-                , Color.White, 0, new Vector2(value.Width / 2, value.Height / 4), Projectile.scale, DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
+            BowstringData.TopBowOffset = new Vector2(8, 4);
+            BowstringData.DeductRectangle = new Rectangle(4, 4, 4, 114);
         }
 
         public override void BowShoot() {
