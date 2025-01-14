@@ -28,6 +28,10 @@ public static class QotUtils
         }
 
         var tag = (TagCompound)QotInstance.Call("GetAmmoChainSequence", item);
+        if (tag == null) {
+            return null;
+        }
+
         return !tag.TryGet("chain", out List<Ammo> chain) || chain.Count is 0 ? null : chain;
     }
 

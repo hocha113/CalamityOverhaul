@@ -382,7 +382,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.MurasamaProj
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float point = 0;
-            Vector2 unitOffset = (Projectile.velocity * 0.3f) + new Vector2(0, -32).RotatedBy(Projectile.rotation);
+            Vector2 unitOffset = new Vector2(0, -32).RotatedBy(Projectile.rotation);
             Vector2 orig = Owner.GetPlayerStabilityCenter() + unitOffset;
             float lengMode = 220;
             float lengMode2 = 250;
