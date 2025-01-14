@@ -894,6 +894,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                         ModItem.MagazineContents[0] = new Item();
                     }
                     AmmoTypes = ModItem.MagazineContents[0].shoot;
+                    //要考虑到弹匣内有弹药但背包中已经无弹药的情况，因为WeaponDamage根据弹药计算伤害，
+                    //所以这里需要进行一个伤害弥补，虽然仍旧会有误差，但至少能减小影响
+                    if (!HaveAmmo) {
+                        WeaponDamage += (int)(ModItem.MagazineContents[0].damage * Owner.GetDamage<RangedDamageClass>().Additive);
+                    }
+
                     if (AmmoTypes == 0) {
                         AmmoTypes = ProjectileID.Bullet;
                     }
