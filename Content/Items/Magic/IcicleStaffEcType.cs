@@ -10,20 +10,11 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// <summary>
     /// 冰坠法杖
     /// </summary>
-    internal class IcicleStaffEcType : EctypeItem
-    {
-        public override string Texture => CWRConstant.Cay_Wap_Magic + "IcicleStaff";
-        public override void SetDefaults() {
-            Item.SetItemCopySD<IcicleStaff>();
-            Item.SetHeldProj<IcicleStaffHeld>();
-        }
-    }
-
     internal class RIcicleStaff : BaseRItem
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<IcicleStaff>();
-        public override int ProtogenesisID => ModContent.ItemType<IcicleStaffEcType>();
+        public override bool FormulaSubstitution => true;
         public override void SetDefaults(Item item) => item.SetHeldProj<IcicleStaffHeld>();
     }
 

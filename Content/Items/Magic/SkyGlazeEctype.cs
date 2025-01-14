@@ -7,20 +7,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
-    internal class SkyGlazeEcType : EctypeItem
-    {
-        public override string Texture => CWRConstant.Cay_Wap_Magic + "SkyGlaze";
-        public override void SetDefaults() {
-            Item.SetItemCopySD<SkyGlaze>();
-            Item.SetHeldProj<SkyGlazeHeld>();
-        }
-    }
-
     internal class RSkyGlaze : BaseRItem
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<SkyGlaze>();
-        public override int ProtogenesisID => ModContent.ItemType<SkyGlazeEcType>();
+        public override bool FormulaSubstitution => true;
         public override void SetDefaults(Item item) => item.SetHeldProj<SkyGlazeHeld>();
     }
 

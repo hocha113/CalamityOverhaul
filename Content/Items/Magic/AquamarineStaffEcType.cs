@@ -6,23 +6,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
-    /// <summary>
-    /// 海水杖
-    /// </summary>
-    internal class AquamarineStaffEcType : EctypeItem
-    {
-        public override string Texture => CWRConstant.Cay_Wap_Magic + "AquamarineStaff";
-        public override void SetDefaults() {
-            Item.SetItemCopySD<AquamarineStaff>();
-            Item.SetHeldProj<AquamarineStaffHeld>();
-        }
-    }
-
     internal class RAquamarineStaff : BaseRItem
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<AquamarineStaff>();
-        public override int ProtogenesisID => ModContent.ItemType<AquamarineStaffEcType>();
+        public override bool FormulaSubstitution => true;
         public override void SetDefaults(Item item) => item.SetHeldProj<AquamarineStaffHeld>();
     }
 

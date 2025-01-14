@@ -2532,77 +2532,12 @@ Items: {
 			'''
 	}
 
-	AquamarineStaffEcType: {
-		DisplayName: Aquamarine Staff
-		Tooltip:
-			'''
-			Fires two blue water bolts.
-			"Salty!"
-			'''
-	}
-
-	IcicleStaffEcType: {
-		DisplayName: Icicle Staff
-		Tooltip: Summons icicles to fall from the sky.
-	}
-
-	ManaRoseEcType: {
-		DisplayName: Mana Rose
-		Tooltip:
-			'''
-			Fires a magical flower that explodes and splits into petals.
-			"A perfect day for confession."
-			'''
-	}
-
 	PlasmaRodEcType: {
 		DisplayName: Plasma Rifle
 		Tooltip:
 			'''
 			Fires explosive ion beams.
 			Right-click to rapidly fire ion bolts.
-			'''
-	}
-
-	SandstreamScepterEcType: {
-		DisplayName: Sandstream Scepter
-		Tooltip:
-			'''
-			Fires an explosive stream of sand fragments that fall after hitting enemies.
-			Explodes only when the sand fragments disappear.
-			'''
-	}
-
-	SkyGlazeEcType: {
-		DisplayName: Sky Feather
-		Tooltip: Summons feathers to fall from the sky, attaching to enemies and tiles before exploding.
-	}
-
-	AestheticusEcType: {
-		DisplayName: Aestheticus
-		Tooltip:
-			'''
-			Fires exploding crystals that slow enemies.
-			Benefits from all damage bonuses.
-			'''
-	}
-
-	EyeofMagnusEcType: {
-		DisplayName: Eye of Magnus
-		Tooltip:
-			'''
-			Fires starlight beams that reduce enemy defense.
-			Restores health and mana upon hitting enemies.
-			Benefits from all damage bonuses.
-			'''
-	}
-
-	LunicEyeEcType: {
-		DisplayName: Lunic Eye
-		Tooltip:
-			'''
-			Fires starlight beams that reduce enemy defense.
-			Benefits from all damage bonuses.
 			'''
 	}
 

@@ -2513,29 +2513,6 @@ Items: {
 			'''
 	}
 
-	AquamarineStaffEcType: {
-		// DisplayName: Aquamarine Staff
-		/* Tooltip:
-			'''
-			Fires two blue water bolts.
-			"Salty!"
-			''' */
-	}
-
-	IcicleStaffEcType: {
-		// DisplayName: Icicle Staff
-		// Tooltip: Summons icicles to fall from the sky.
-	}
-
-	ManaRoseEcType: {
-		// DisplayName: Mana Rose
-		/* Tooltip:
-			'''
-			Fires a magical flower that explodes and splits into petals.
-			"A perfect day for confession."
-			''' */
-	}
-
 	PlasmaRodEcType: {
 		// DisplayName: Plasma Rifle
 		/* Tooltip:

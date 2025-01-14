@@ -1,6 +1,5 @@
 ﻿using CalamityMod.Items.Weapons.Typeless;
 using CalamityMod.Projectiles.Typeless;
-using CalamityOverhaul.Content.Items.Typeless;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -15,7 +14,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Typeless
     {
         public override string Texture => CWRConstant.Cay_Wap_Typeless + "LunicEye";
         public override int targetCayItem => ModContent.ItemType<LunicEye>();
-        public override int targetCWRItem => ModContent.ItemType<LunicEyeEcType>();
+        public override int targetCWRItem => ModContent.ItemType<LunicEye>();
         public override void SetRangedProperty() {
             HandFireDistanceX = 30;
             HandFireDistanceY = 0;
@@ -41,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Typeless
     {
         public override string Texture => CWRConstant.Cay_Wap_Typeless + "EyeofMagnus";
         public override int targetCayItem => ModContent.ItemType<EyeofMagnus>();
-        public override int targetCWRItem => ModContent.ItemType<EyeofMagnusEcType>();
+        public override int targetCWRItem => ModContent.ItemType<EyeofMagnus>();
         public override void SetRangedProperty() {
             HandFireDistanceX = 30;
             HandFireDistanceY = 0;
@@ -67,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Typeless
     {
         public override string Texture => CWRConstant.Cay_Wap_Typeless + "Aestheticus";
         public override int targetCayItem => ModContent.ItemType<Aestheticus>();
-        public override int targetCWRItem => ModContent.ItemType<AestheticusEcType>();
+        public override int targetCWRItem => ModContent.ItemType<Aestheticus>();
 
         public override void SetRangedProperty() {
             HandFireDistanceX = 40;

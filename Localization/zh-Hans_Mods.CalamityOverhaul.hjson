@@ -2526,77 +2526,12 @@ Items: {
 			'''
 	}
 
-	AquamarineStaffEcType: {
-		DisplayName: 海水杖
-		Tooltip:
-			'''
-			发射两道蓝色水矢
-			"咸咸的"
-			'''
-	}
-
-	IcicleStaffEcType: {
-		DisplayName: 冰坠法杖
-		Tooltip: 召唤冰柱从天而降
-	}
-
-	ManaRoseEcType: {
-		DisplayName: 魔法玫瑰
-		Tooltip:
-			'''
-			发射会爆炸分裂成花瓣的魔法花朵
-			"告白的好日子"
-			'''
-	}
-
 	PlasmaRodEcType: {
 		DisplayName: 等离子步枪
 		Tooltip:
 			'''
 			发射会爆炸的离子射线
 			右键快速发射离子束
-			'''
-	}
-
-	SandstreamScepterEcType: {
-		DisplayName: 流沙权杖
-		Tooltip:
-			'''
-			发射一束爆炸性的沙碎片，命中敌人后坠落
-			仅当沙碎片消失时才会引发爆炸
-			'''
-	}
-
-	SkyGlazeEcType: {
-		DisplayName: 天空之羽
-		Tooltip: 召唤羽毛从天而降，会附着在敌人和物块上并爆炸
-	}
-
-	AestheticusEcType: {
-		DisplayName: 美学魔杖
-		Tooltip:
-			'''
-			发射爆炸水晶减速敌人
-			受所有的伤害属性加成
-			'''
-	}
-
-	EyeofMagnusEcType: {
-		DisplayName: 马格努斯之眼
-		Tooltip:
-			'''
-			发射能够削减敌人防护能力的星光射线
-			击中敌人时会回复生命值和魔力值
-			受所有的伤害属性加成
-			'''
-	}
-
-	LunicEyeEcType: {
-		DisplayName: 星光之眼
-		Tooltip:
-			'''
-			发射能够削减敌人防护能力的星光射线
-			受所有的伤害属性加成
 			'''
 	}
 

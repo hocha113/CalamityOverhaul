@@ -1,5 +1,4 @@
 ﻿using CalamityMod.Items.Weapons.Typeless;
-using CalamityOverhaul.Content.Items.Typeless;
 using CalamityOverhaul.Content.Projectiles.Weapons.Typeless;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using Terraria;
@@ -14,7 +13,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<LunicEye>();
-        public override int ProtogenesisID => ModContent.ItemType<LunicEyeEcType>();
+        public override bool FormulaSubstitution => true;
         public override void SetDefaults(Item item) => item.SetHeldProj<LunicEyeHeldProj>();
     }
 
@@ -25,7 +24,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<EyeofMagnus>();
-        public override int ProtogenesisID => ModContent.ItemType<EyeofMagnusEcType>();
+        public override bool FormulaSubstitution => true;
         public override void SetDefaults(Item item) => item.SetHeldProj<EyeofMagnusHeldProj>();
     }
 
@@ -36,7 +35,7 @@ namespace CalamityOverhaul.Content.RemakeItems.Typeless
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<Aestheticus>();
-        public override int ProtogenesisID => ModContent.ItemType<AestheticusEcType>();
+        public override bool FormulaSubstitution => true;
         public override void SetDefaults(Item item) => item.SetHeldProj<AestheticusHeldProj>();
     }
 }
