@@ -6,20 +6,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
-    internal class PlasmaRodEcType : EctypeItem
-    {
-        public override string Texture => CWRConstant.Cay_Wap_Magic + "PlasmaRod";
-        public override void SetDefaults() {
-            Item.SetItemCopySD<PlasmaRod>();
-            Item.SetHeldProj<PlasmaRodHeld>();
-        }
-    }
-
     internal class RPlasmaRod : BaseRItem
     {
         public override bool DrawingInfo => false;
         public override int TargetID => ModContent.ItemType<PlasmaRod>();
-        public override int ProtogenesisID => ModContent.ItemType<PlasmaRodEcType>();
+        public override bool FormulaSubstitution => true;
         public override void SetDefaults(Item item) => item.SetHeldProj<PlasmaRodHeld>();
     }
 

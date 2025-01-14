@@ -2526,15 +2526,6 @@ Items: {
 			'''
 	}
 
-	PlasmaRodEcType: {
-		DisplayName: 等离子步枪
-		Tooltip:
-			'''
-			发射会爆炸的离子射线
-			右键快速发射离子束
-			'''
-	}
-
 	BasherEcType: {
 		DisplayName: 痛击者
 		Tooltip: 击中敌人时会造成辐射减益
