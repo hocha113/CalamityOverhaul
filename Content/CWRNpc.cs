@@ -212,16 +212,6 @@ namespace CalamityOverhaul.Content
                     }
                 }
 
-                if (npc.type == CWRLoad.Yharon && InWorldBossPhase.Instance.level11 && Main.zenithWorld) {
-                    Player target = CWRUtils.GetPlayerInstance(npc.target);
-                    if (target.Alives()) {
-                        float dir = npc.Center.To(target.Center).X;
-                        int dirs = dir < 0 ? 1 : 0;
-                        Projectile.NewProjectile(npc.FromObjectGetParent(), npc.position, Vector2.Zero
-                        , ModContent.ProjectileType<YharonOreProj>(), 0, 0, -1, dirs);
-                    }
-                }
-
                 if (Main.rand.NextBool(4000) || (npc.type == NPCID.Spazmatism && Main.LocalPlayer.ZoneSkyHeight)) {
                     int type = Item.NewItem(npc.FromObjectGetParent(), npc.Hitbox, ModContent.ItemType<JusticeUnveiled>());
                     if (!VaultUtils.isSinglePlayer) {

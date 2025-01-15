@@ -39,6 +39,9 @@ namespace CalamityOverhaul.Content.GunCustomization
                     }
 
                     if (proj.ModProjectile is BaseFeederGun gun) {
+                        if (!gun.GunIsKreLoad()) {
+                            break;
+                        }
                         Item newAmmo = gun.GetSelectedBullets();
                         if (newAmmo.type > ItemID.None) {
                             ammo = newAmmo;
@@ -53,6 +56,10 @@ namespace CalamityOverhaul.Content.GunCustomization
                 if (gAmmo != null) {
                     ammo = gAmmo;
                 }
+            }
+
+            if (ammo == null) {
+                ammo = orig.Invoke(obj, weapon);
             }
 
             return ammo;

@@ -168,7 +168,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         protected float loadingAA_VolumeValue => CWRServerConfig.Instance.LoadingAA_Volume;
 
         #endregion
-
+        /// <summary>
+        /// 用于外部获得枪械的装填装填
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool GunIsKreLoad() {
+            return IsKreload;
+        }
         /// <summary>
         /// 关于装弹过程中的具体效果实现，返回<see langword="false"/>禁用默认的效果行为
         /// </summary>
@@ -224,12 +230,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     HandleEmptyAmmoEjection();
                 }
             }
-
+            (HaveAmmo).Domp();
             bool canReload = kreloadTimeValue == 0
                 && (!IsKreload || RepeatedCartridgeChange)
                 && BulletNum < ModItem.AmmoCapacity
                 && !onFire && HaveAmmo && ModItem.NoKreLoadTime == 0;
-
+            
             if (Projectile.IsOwnedByLocalPlayer() && canReload) {
                 ManualReloadStart = CWRKeySystem.KreLoad_Key.JustPressed;
                 if (ManualReloadStart != old_ManualReloadDown) {
@@ -891,20 +897,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 //弹容替换在此处执行，将发射内容设置为弹匣第一位的弹药类型
                 if (AmmoTypeAffectedByMagazine && MagazineSystem
                     && ModItem.MagazineContents.Length > 0 && Projectile.IsOwnedByLocalPlayer()) {
+                    //要考虑到弹匣内有弹药但背包中已经无弹药的情况，因为WeaponDamage根据弹药计算伤害，
+                    //所以这里需要进行一个伤害弥补，虽然仍旧会有误差，但至少能减小影响
+                    //补充：
+                    //在FeederGunLoader类中已经添加了一个修改ChooseAmmo函数的钩子，
+                    //这个问题的本质是伤害的弹药部分不考虑弹匣供弹所造成的
+                    //在修改了ChooseAmmo后该问题便被解决，包括钱币枪的空弹无伤害问题也顺带解决，
+                    //所以注释掉这部分代码，因为已经无作用
+                    /*
                     if (ModItem.MagazineContents[0] == null) {
                         ModItem.MagazineContents[0] = new Item();
                     }
                     AmmoTypes = ModItem.MagazineContents[0].shoot;
-                    //要考虑到弹匣内有弹药但背包中已经无弹药的情况，因为WeaponDamage根据弹药计算伤害，
-                    //所以这里需要进行一个伤害弥补，虽然仍旧会有误差，但至少能减小影响
-                    //补充：
-                    //在FeederGunLoader类中已经添加了一个修改ChooseAmmo函数的钩子，这个问题的本质是伤害的弹药部分不考虑弹匣供弹所造成的
-                    //在修改了ChooseAmmo后该问题便被解决，包括钱币枪的空弹无伤害问题也顺带解决，
-                    //所以注释掉这部分代码，因为考虑到弹匣供弹后HaveAmmo在执行到这里时不可能为false
-                    //if (!HaveAmmo) {
-                    //    WeaponDamage += (int)(ModItem.MagazineContents[0].damage * Owner.GetDamage<RangedDamageClass>().Additive);
-                    //}
 
+                    if (!HaveAmmo) {
+                        WeaponDamage += (int)(ModItem.MagazineContents[0].damage * Owner.GetDamage<RangedDamageClass>().Additive);
+                    }
+                    */
                     if (AmmoTypes == 0) {
                         AmmoTypes = ProjectileID.Bullet;
                     }
