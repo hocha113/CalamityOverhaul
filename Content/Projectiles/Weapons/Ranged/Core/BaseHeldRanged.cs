@@ -224,7 +224,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             if (Item.useAmmo == AmmoID.None) {
                 return false;
             }
-            Owner.PickAmmo(Owner.GetItem(), out _, out _, out _, out _, out _, canConsume && preCanConsumeAmmo);
+            
+            Owner.PickAmmo(Item, out _, out _, out _, out _, out _, canConsume && preCanConsumeAmmo);
             return canConsume;
         }
 
@@ -241,6 +242,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 }
                 return;
             }
+
             HaveAmmo = Owner.PickAmmo(Item, out AmmoTypes, out ShootSpeedModeFactor, out WeaponDamage, out WeaponKnockback, out UseAmmoItemType, true);
         }
 
