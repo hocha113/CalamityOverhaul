@@ -1,6 +1,7 @@
 ﻿using CalamityMod;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
 using CalamityOverhaul.Content.Items;
 using CalamityOverhaul.Content.RemakeItems.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -232,6 +233,7 @@ namespace CalamityOverhaul.Content
             if (!CWRServerConfig.Instance.MagazineSystem) {
                 IsKreload = true;
             }
+            AmmoViewUI.Instance.LoadAmmos(this);
         }
 
         //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，该函数会被加载一次

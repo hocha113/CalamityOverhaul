@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -34,13 +35,13 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
         public virtual bool CanClick(Item item) => item.type != ItemID.None && item.CWR().HasCartridgeHolder;
 
         public virtual void Preprocessing(Player player, Item item) {
-            CWRItems cwr = item.CWR();
-            cwr.NumberBullets = cwr.AmmoCapacity;
-            cwr.IsKreload = true;
-            cwr.NoKreLoadTime += 30;
+            CWRItems cwrItem = item.CWR();
+            cwrItem.NumberBullets = cwrItem.AmmoCapacity;
+            cwrItem.IsKreload = true;
+            cwrItem.NoKreLoadTime += 30;
             int num = 0;
             List<Item> list = [];
-            foreach (Item i in cwr.MagazineContents) {
+            foreach (Item i in cwrItem.MagazineContents) {
                 if (i.type != ItemID.None && i.stack > 0) {
                     list.Add(i);
                 }
@@ -50,14 +51,15 @@ namespace CalamityOverhaul.Content.Projectiles.AmmoBoxs
                     num += i.stack;
                 }
             }
-            if (num < cwr.AmmoCapacity) {
+            if (num < cwrItem.AmmoCapacity) {
                 int ammoType = ItemID.MusketBall;
                 if (VaultUtils.AmmoIDToItemIDMapping.TryGetValue(item.useAmmo, out int ammoItemID)) {
                     ammoType = ammoItemID;
                 }
-                list.Add(new Item(ammoType, cwr.AmmoCapacity - num));
+                list.Add(new Item(ammoType, cwrItem.AmmoCapacity - num));
             }
-            cwr.MagazineContents = list.ToArray();
+            cwrItem.MagazineContents = list.ToArray();
+            AmmoViewUI.Instance.LoadAmmos(cwrItem);
         }
 
         public virtual bool ClickBehavior(Player player, CWRItems cwr) => true;

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
                         vr = Projectile.Center.To(target.Center).UnitVector() * Projectile.localAI[1];
                     }
                 }
-                Projectile.NewProjectileDirect(new EntitySource_ItemUse(Main.player[Projectile.owner], Main.player[Projectile.owner].ActiveItem())
+                Projectile.NewProjectileDirect(new EntitySource_ItemUse(Main.player[Projectile.owner], Main.player[Projectile.owner].GetItem())
                     , Projectile.Center, vr, (int)Projectile.localAI[0], Projectile.damage, Projectile.knockBack, Projectile.owner, 0);
             }
         }

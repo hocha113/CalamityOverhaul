@@ -1,5 +1,5 @@
-﻿using CalamityMod;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.GunCustomization.UI.AmmoView;
 using CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,10 +15,12 @@ namespace CalamityOverhaul.Content.UIs
         public static CartridgeHolderUI Instance => UIHandleLoader.GetUIHandleOfType<CartridgeHolderUI>();
         public static Texture2D TextureValue;
         public static float JARSengs;
-        private Item handItem => player.ActiveItem();
-        private int bulletNum => player.ActiveItem().CWR().NumberBullets;
+        private Item handItem => player.GetItem();
+        private int bulletNum => player.GetItem().CWR().NumberBullets;
         private float otherPotData;
         private int Time;
+        internal int Weith;
+        internal int Height;
         public override bool Active {
             get {
                 if (!CWRServerConfig.Instance.MagazineSystem) {
@@ -43,9 +45,8 @@ namespace CalamityOverhaul.Content.UIs
                         mr2 = false;
                     }
                 }
-                //int mr = DownStartR();
-                int mr = (int)keyRightPressState;
-                if (mr == 1 && mr2) {
+
+                if (keyRightPressState == KeyPressState.Pressed && mr2) {
                     SoundEngine.PlaySound(CWRSound.loadTheRounds, player.Center);
                     foreach (Item i in cwrItem.MagazineContents) {
                         if (i.type == ItemID.None || i.stack <= 0) {
@@ -67,6 +68,8 @@ namespace CalamityOverhaul.Content.UIs
             else {
                 otherPotData = 0;
             }
+
+            AmmoViewUI.Instance.Update();
 
             Time++;
         }
@@ -102,36 +105,59 @@ namespace CalamityOverhaul.Content.UIs
                 DrawPosition = new Vector2(60, Main.screenHeight - 100);
                 TextureValue = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR");
             }
+            Weith = TextureValue.Width;
+            Height = TextureValue.Height;
             DrawPosition += new Vector2(CWRServerConfig.Instance.CartridgeUI_Offset_X_Value
                 , -CWRServerConfig.Instance.CartridgeUI_Offset_Y_Value);
         }
 
+        private void DrawToolp(SpriteBatch spriteBatch, CWRItems cwrItem) {
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, bulletNum.ToString()
+                , DrawPosition.X + Weith + 2, DrawPosition.Y, Color.AliceBlue, Color.Black, Vector2.Zero, 1.3f);
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "Max"
+                , DrawPosition.X + Weith + 2, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1f);
+            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, cwrItem.AmmoCapacity.ToString()
+                , DrawPosition.X + Weith + 32 + 2, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1.05f);
+        }
+
+        private string DrawAmmoDataToolp(SpriteBatch spriteBatch, CWRItems cwrItem, out int value) {
+            string text = $"{CWRLocText.GetTextValue("CartridgeHolderUI_Text1")}\n";
+            value = 0;
+            if (cwrItem.MagazineContents != null && cwrItem.MagazineContents.Length > 0) {
+                foreach (Item ammo in cwrItem.MagazineContents) {
+                    if (ammo == null) {
+                        continue;
+                    }
+                    if (ammo.type != ItemID.None && ammo.ammo != AmmoID.None) {
+                        text += $"{ammo.Name} {CWRLocText.GetTextValue("CartridgeHolderUI_Text2")}: {ammo.stack}\n";
+                        value++;
+                    }
+                }
+            }
+            if (value == 0) {
+                text += CWRLocText.GetTextValue("CartridgeHolderUI_Text3");
+                value = 1;
+            }
+            return text;
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
             Initialize();
+
+            if (AmmoViewUI.Instance.Active) {
+                AmmoViewUI.Instance.Draw(spriteBatch);
+            }
+
             CWRItems cwrItem = handItem.CWR();
             if (cwrItem.CartridgeType == CartridgeUIEnum.CartridgeHolder) {
-                int offsetX = 0;
-                if (handItem.useAmmo == AmmoID.Rocket) {
-                    offsetX = 10;
-                }
                 spriteBatch.Draw(TextureValue, DrawPosition, null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, bulletNum.ToString()
-                    , DrawPosition.X + 50 + offsetX, DrawPosition.Y + 0, Color.AliceBlue, Color.Black, Vector2.Zero, 1.3f);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "Max"
-                    , DrawPosition.X + 50 + offsetX, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1f);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, cwrItem.AmmoCapacity.ToString()
-                    , DrawPosition.X + 85 + offsetX, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1.05f);
+                DrawToolp(spriteBatch, cwrItem);
             }
             if (cwrItem.CartridgeType == CartridgeUIEnum.Magazines) {
                 Rectangle rectangle = CWRUtils.GetRec(TextureValue, 6 - bulletNum, 7);
                 spriteBatch.Draw(TextureValue, DrawPosition + rectangle.Size() / 2, rectangle, Color.White
                     , otherPotData, rectangle.Size() / 2, 1, SpriteEffects.None, 0);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, bulletNum.ToString()
-                    , DrawPosition.X + 50, DrawPosition.Y + 0, Color.AliceBlue, Color.Black, Vector2.Zero, 1.3f);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, "Max"
-                    , DrawPosition.X + 50, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1f);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, cwrItem.AmmoCapacity.ToString()
-                    , DrawPosition.X + 85, DrawPosition.Y + 22, Color.Gold, Color.Black, Vector2.Zero, 1.05f);
+                DrawToolp(spriteBatch, cwrItem);
             }
             if (cwrItem.CartridgeType == CartridgeUIEnum.JAR) {
                 Texture2D jar2 = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/JAR_Full");
@@ -144,28 +170,10 @@ namespace CalamityOverhaul.Content.UIs
                 spriteBatch.Draw(ctb, DrawPosition + new Vector2(4, 6), null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
             }
             if (hoverInMainPage) {
-                string text = $"{CWRLocText.GetTextValue("CartridgeHolderUI_Text1")}\n";
-                int value = 0;
-                if (cwrItem.MagazineContents != null && cwrItem.MagazineContents.Length > 0) {
-                    foreach (Item i in cwrItem.MagazineContents) {
-                        if (i == null) {
-                            continue;
-                        }
-                        if (i.type != ItemID.None && i.ammo != AmmoID.None) {
-                            text += $"{i.Name} {CWRLocText.GetTextValue("CartridgeHolderUI_Text2")}: {i.stack}\n";
-                            value++;
-                        }
-                    }
-                }
-                if (value == 0) {
-                    text += CWRLocText.GetTextValue("CartridgeHolderUI_Text3");
-                    value = 1;
-                }
-
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, text
-                    , MousePosition.X + 0, MousePosition.Y - 40 - value * 24, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, CWRLocText.GetTextValue("CartridgeHolderUI_Text4")
-                    , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1.1f);
+                //Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, DrawAmmoDataToolp(spriteBatch, cwrItem, out int value)
+                //    , MousePosition.X + 0, MousePosition.Y - 40 - value * 24, Color.AliceBlue, Color.Black, Vector2.Zero, 1f);
+                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.GetTextValue("CartridgeHolderUI_Text4")
+                    , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
             }
         }
     }

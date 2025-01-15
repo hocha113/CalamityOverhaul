@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             Source = source;
             if (source?.Context == "CWRGunShoot") {
-                Item heldItem = Main.player[projectile.owner].ActiveItem();
+                Item heldItem = Main.player[projectile.owner].GetItem();
                 if (heldItem.type != ItemID.None) {
                     cwrItem = heldItem.CWR();
                 }

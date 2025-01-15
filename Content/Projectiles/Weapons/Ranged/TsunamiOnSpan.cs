@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged
             int arrowTypes;
             int weaponDamage;
             float weaponKnockback;
-            bool haveAmmo = Owner.PickAmmo(Owner.ActiveItem(), out arrowTypes, out _, out weaponDamage, out weaponKnockback, out _, false);
+            bool haveAmmo = Owner.PickAmmo(Owner.GetItem(), out arrowTypes, out _, out weaponDamage, out weaponKnockback, out _, false);
             if (haveAmmo) {
                 for (int i = 0; i < 84; i++) {
                     float rot = MathHelper.TwoPi / 64 * i;

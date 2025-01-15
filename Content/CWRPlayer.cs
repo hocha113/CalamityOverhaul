@@ -379,7 +379,7 @@ namespace CalamityOverhaul.Content
             SpecialDrawPositionOffset = Main.OffsetsPlayerHeadgear[player.bodyFrame.Y / player.bodyFrame.Height] * player.Directions;
             SpecialDrawPositionOffset.Y -= 2 * player.gravDir;//乘以一个重力矫正，这是一个无视偏转的值，所以需要考虑重力方向
 
-            Item item = player.ActiveItem();
+            Item item = player.GetItem();
             if (HeldStyle >= 0) {
                 player.bodyFrame.Y = player.bodyFrame.Height * HeldStyle;
             }

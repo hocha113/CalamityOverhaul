@@ -12,18 +12,15 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Rogue.HeldProjs
 {
     internal abstract class BaseThrowable : BaseHeldProj
     {
-        public virtual Texture2D TextureValue => GetT2DValue(Texture);
-
         protected float OverallProgress => 1 - Projectile.timeLeft / (float)TotalLifetime; // 总体进度
         protected float CurrentThrowProgress => 1 - Projectile.timeLeft / (float)TotalLifetime; // 当前投掷进度
+        protected float ThrowStorageProgress => 1 - ThrowStorage / (float)ChargeUpTime; // 投掷存储进度
+        protected ref float ReturnProgress => ref Projectile.ai[0]; // 返回进度
+        protected ref float BounceCount => ref Projectile.ai[1]; // 弹跳计数
         protected int ThrowStorage {
             get => Projectile.timeLeft - TotalLifetime;
             set => Projectile.timeLeft = TotalLifetime + value;
         }
-        protected float ThrowStorageProgress => 1 - ThrowStorage / (float)ChargeUpTime; // 投掷存储进度
-        protected ref float ReturnProgress => ref Projectile.ai[0]; // 返回进度
-        protected ref float BounceCount => ref Projectile.ai[1]; // 弹跳计数
-        protected Item Item => Owner.ActiveItem();
         /// <summary>
         /// 不要试图访问或者设置这个字段，该字段用于控制实体的二次设置
         /// </summary>
