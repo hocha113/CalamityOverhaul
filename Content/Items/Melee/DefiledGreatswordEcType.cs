@@ -1,15 +1,22 @@
-﻿using CalamityMod.Buffs.StatBuffs;
+﻿using CalamityMod;
+using CalamityMod.Buffs.StatBuffs;
 using CalamityMod.Items;
 using CalamityMod.Items.Weapons.Melee;
 using CalamityMod.Projectiles.Melee;
 using CalamityMod.Rarities;
+using CalamityOverhaul.Content.Items.Melee.Extras;
+using CalamityOverhaul.Content.Particles;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Core;
 using CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -21,21 +28,16 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class DefiledGreatswordEcType : EctypeItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "DefiledGreatsword";
-
         public const float DefiledGreatswordMaxRageEnergy = 15000;
-
-        private static Asset<Texture2D> rageEnergyTopAsset;
         private static Asset<Texture2D> rageEnergyBarAsset;
         private static Asset<Texture2D> rageEnergyBackAsset;
         void ICWRLoader.SetupData() {
             if (!Main.dedServ) {
-                rageEnergyTopAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyTop");
                 rageEnergyBarAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyBar");
                 rageEnergyBackAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "RageEnergyBack");
             }
         }
         void ICWRLoader.UnLoadData() {
-            rageEnergyTopAsset = null;
             rageEnergyBarAsset = null;
             rageEnergyBackAsset = null;
         }
@@ -58,34 +60,77 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shoot = ModContent.ProjectileType<BlazingPhantomBlade>();
             Item.shootSpeed = 12f;
             Item.CWR().heldProjType = ModContent.ProjectileType<DefiledGreatswordHeld>();
-            Item.SetKnifeHeld<DefiledGreatswordHeld2>();
+            Item.SetKnifeHeld<DefiledGreatswordSwing>();
         }
 
-        public static void DrawRageEnergyChargeBar(Player player, float alp, float meleeCharge, float maxCharge) {
+        public static void DrawFrightEnergyChargeBar(Player player, float alp, float charge) {
             Item item = player.GetItem();
             if (item.IsAir) {
                 return;
             }
-            Texture2D rageEnergyTop = rageEnergyTopAsset.Value;
+
             Texture2D rageEnergyBar = rageEnergyBarAsset.Value;
             Texture2D rageEnergyBack = rageEnergyBackAsset.Value;
-            float slp = 3;
-            int offsetwid = 4;
-            if (item.type == ModContent.ItemType<BlightedCleaverEcType>() || item.type == ModContent.ItemType<BlightedCleaver>()) {
-                maxCharge = BlightedCleaverEcType.BlightedCleaverMaxRageEnergy;
+
+            float slp = 1;
+            Vector2 drawPos = player.GetPlayerStabilityCenter() + new Vector2(rageEnergyBack.Width / -2, 120) - Main.screenPosition;
+            int width = (int)(rageEnergyBar.Width * charge);
+            if (width > rageEnergyBar.Width) {
+                width = rageEnergyBar.Width;
             }
-            Vector2 drawPos = player.GetPlayerStabilityCenter() + new Vector2(rageEnergyBar.Width / -2 * slp, 135) - Main.screenPosition;
-            Rectangle backRec = new(offsetwid, 0, (int)((rageEnergyBar.Width - (offsetwid * 2)) * (meleeCharge / maxCharge)), rageEnergyBar.Height);
+            Rectangle backRec = new Rectangle(0, 0, width, rageEnergyBar.Height);
 
             Main.EntitySpriteDraw(rageEnergyBack, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(rageEnergyBar, drawPos + (new Vector2(offsetwid, 0) * slp)
-                , backRec, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
 
-            Main.EntitySpriteDraw(rageEnergyTop, drawPos, null, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(rageEnergyBar, drawPos + new Vector2(8, 6) * slp, backRec, Color.White * alp, 0, Vector2.Zero, slp, SpriteEffects.None, 0);
         }
     }
 
-    internal class DefiledGreatswordHeld2 : BaseKnife
+    internal class RageKillerImpact : ModProjectile
+    {
+        public override string Texture => CWRConstant.Projectile_Melee + "RageKillerImpact";
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
+        }
+
+        public override void SetDefaults() {
+            Projectile.width = 62;
+            Projectile.height = 62;
+            Projectile.timeLeft = 300;
+            Projectile.friendly = true;
+            Projectile.hostile = false;
+            Projectile.ignoreWater = true;
+            Projectile.tileCollide = false;
+            Projectile.extraUpdates = 4;
+            Projectile.penetrate = -1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
+        }
+
+        public override void AI() {
+            Lighting.AddLight(Projectile.Center, Color.Gold.ToVector3() * 1.75f * Main.essScale);
+
+            Projectile.ai[1]++;
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D texture = TextureAssets.Projectile[Type].Value;
+            Vector2 drawOrigin = texture.Size() / 2;
+            for (int k = 0; k < Projectile.oldPos.Length; k++) {
+                Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + Projectile.Size / 2;
+                Color color = Projectile.GetAlpha(Color.Lerp(Color.White, Color.Gold, 1f / Projectile.oldPos.Length * k) * (1f - 1f / Projectile.oldPos.Length * k));
+                if (Projectile.ai[1] > 160) {
+                    color.A = 0;
+                }
+                float slp = (0.6f + 0.4f * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length);
+                Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, drawOrigin, Projectile.scale * slp, SpriteEffects.None, 0);
+            }
+            return false;
+        }
+    }
+
+    internal class DefiledGreatswordSwing : BaseKnife
     {
         public override int TargetID => ModContent.ItemType<DefiledGreatsword>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail4";

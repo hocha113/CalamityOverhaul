@@ -63,7 +63,6 @@ namespace CalamityOverhaul.Common
             return Vector2.Lerp(points[0], points[1], T);
         }
 
-
         public List<Vector2> GetPoints(int totalPoints) {
             float straightnessFactor = 0f;
             // straightnessFactor: 控制直线和曲线的平衡，0完全曲线，1完全直线

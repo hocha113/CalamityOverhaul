@@ -411,7 +411,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Main.spriteBatch.ExitShaderRegion();
             }
 
-            TerrorBladeEcType.DrawRageEnergyChargeBar(
+            TerrorBladeEcType.DrawFrightEnergyChargeBar(
                 Main.player[Projectile.owner], drawUIalp / 255f,
                 bansheeHook.CWR().MeleeCharge / 500f);
 

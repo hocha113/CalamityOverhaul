@@ -22,17 +22,17 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "TerrorBlade";
         public const float TerrorBladeMaxRageEnergy = 5000;
-        public static Asset<Texture2D> rageEnergyBarAsset;
-        public static Asset<Texture2D> rageEnergyBackAsset;
+        public static Asset<Texture2D> frightEnergyBarAsset;
+        public static Asset<Texture2D> frightEnergyBackAsset;
         void ICWRLoader.SetupData() {
             if (!Main.dedServ) {
-                rageEnergyBarAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeBar");
-                rageEnergyBackAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeBack");
+                frightEnergyBarAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeBar");
+                frightEnergyBackAsset = CWRUtils.GetT2DAsset(CWRConstant.UI + "FrightEnergyChargeBack");
             }
         }
         void ICWRLoader.UnLoadData() {
-            rageEnergyBarAsset = null;
-            rageEnergyBackAsset = null;
+            frightEnergyBarAsset = null;
+            frightEnergyBackAsset = null;
         }
         public override void SetDefaults() => SetDefaultsFunc(Item);
         public static void SetDefaultsFunc(Item Item) {
@@ -52,21 +52,21 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.value = CalamityGlobalItem.RarityPureGreenBuyPrice;
             Item.rare = ModContent.RarityType<PureGreen>();
             Item.CWR().heldProjType = ModContent.ProjectileType<TerrorBladeHeld>();
-            Item.SetKnifeHeld<TerrorBladeHeld2>();
+            Item.SetKnifeHeld<TerrorBladeSwing>();
         }
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI) {
             Item.DrawItemGlowmaskSingleFrame(spriteBatch, rotation, ModContent.Request<Texture2D>(CWRConstant.Cay_Wap_Melee + "TerrorBladeGlow", (AssetRequestMode)2).Value);
         }
 
-        public static void DrawRageEnergyChargeBar(Player player, float alp, float charge) {
+        public static void DrawFrightEnergyChargeBar(Player player, float alp, float charge) {
             Item item = player.GetItem();
             if (item.IsAir) {
                 return;
             }
 
-            Texture2D rageEnergyBar = rageEnergyBarAsset.Value;
-            Texture2D rageEnergyBack = rageEnergyBackAsset.Value;
+            Texture2D rageEnergyBar = frightEnergyBarAsset.Value;
+            Texture2D rageEnergyBack = frightEnergyBackAsset.Value;
 
             float slp = 1;
             Vector2 drawPos = player.GetPlayerStabilityCenter() + new Vector2(rageEnergyBack.Width / -2, 120) - Main.screenPosition;
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class TerrorBladeHeld2 : BaseKnife
+    internal class TerrorBladeSwing : BaseKnife
     {
         public override int TargetID => ModContent.ItemType<TerrorBlade>();
         public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";

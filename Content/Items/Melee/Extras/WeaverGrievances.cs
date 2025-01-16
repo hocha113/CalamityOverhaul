@@ -425,6 +425,7 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
                 }
             }
 
+            Lighting.AddLight(Projectile.Center, sloudColor1.ToVector3() * 1.75f * Main.essScale);
             Projectile.ai[1]++;
         }
 
@@ -459,9 +460,6 @@ namespace CalamityOverhaul.Content.Items.Melee.Extras
                 Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, drawOrigin, Projectile.scale * slp, SpriteEffects.None, 0);
             }
             return false;
-        }
-        public override void PostDraw(Color lightColor) {
-            Lighting.AddLight(Projectile.Center, sloudColor1.ToVector3() * 1.75f * Main.essScale);
         }
     }
 }

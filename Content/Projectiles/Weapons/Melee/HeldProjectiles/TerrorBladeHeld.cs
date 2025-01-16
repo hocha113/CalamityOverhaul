@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Melee.HeldProjectiles
         public override bool PreDraw(ref Color lightColor) {
             Item item = Owner.GetItem();
             if (item != null && item.type > ItemID.None) {
-                TerrorBladeEcType.DrawRageEnergyChargeBar(Main.player[Projectile.owner], Projectile.ai[1],
+                TerrorBladeEcType.DrawFrightEnergyChargeBar(Main.player[Projectile.owner], Projectile.ai[1],
                 item.CWR().MeleeCharge / TerrorBladeEcType.TerrorBladeMaxRageEnergy);
             }
             return false;
