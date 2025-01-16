@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
     internal abstract class BaseHeldProj : ModProjectile
     {
         #region Data
+        private bool _initialize;
         private bool old_downLeftValue;
         private bool downLeftValue;
         private bool old_downRightValue;
@@ -140,11 +141,23 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
             InMousePos = ToMouse + Owner.GetPlayerStabilityCenter();
         }
         /// <summary>
+        /// 初始化函数，只在弹幕生成后调用一次，运行在<see cref="ExtraPreSet"/>之后
+        /// </summary>
+        public virtual void Initialize() {
+
+        }
+        /// <summary>
         /// 在AI更新前进行数据更新
         /// </summary>
         public sealed override bool PreAI() {
             UpdateMouseData();
-            ExtraPreSet();
+            if (!ExtraPreSet()) {
+                return false;
+            }
+            if (!_initialize) {
+                Initialize();
+                _initialize = true;
+            }
             return PreUpdate();
         }
 
@@ -193,9 +206,12 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons
         public virtual void NetHeldReceive(BinaryReader reader) {
 
         }
-
-        public virtual void ExtraPreSet() {
-
+        /// <summary>
+        /// 运行在最开始的时期，用于设置一些非常靠前的数据
+        /// </summary>
+        /// <returns>返回<see langword="false"/>可以阻止后续逻辑的运行</returns>
+        public virtual bool ExtraPreSet() {
+            return true;
         }
 
         public virtual bool PreUpdate() {

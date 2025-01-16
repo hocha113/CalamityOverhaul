@@ -36,16 +36,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.HeldProjs.Vanilla
             }
         }
 
-        public override bool PreReloadEffects(int time, int maxTime) {
-            if (time == 1 && BulletNum == ModItem.AmmoCapacity) {
-                SoundEngine.PlaySound(CWRSound.Gun_Clipout with { Volume = 0.65f, Pitch = 0.2f }, Projectile.Center);
-            }
-            return false;
-        }
-
         public override void HanderPlaySound() {
             SoundEngine.PlaySound(CWRSound.Gun_Shotgun_Shoot
-                with { Volume = 0.35f, Pitch = -0.6f }, Projectile.Center);
+                with { Volume = 0.4f, Pitch = -0.6f }, Projectile.Center);
         }
 
         public override void FiringShoot() {

@@ -19,7 +19,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
     internal abstract class BaseFeederGun : BaseGun
     {
         #region Data
-        private bool _initialize;
         /// <summary>
         /// 子弹状态，对应枪械的弹匣内容
         /// </summary>
@@ -216,6 +215,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             return true;
         }
         /// <summary>
+        /// 是否有可以选择的弹药
+        /// </summary>
+        /// <returns></returns>
+        public bool CurrentAmountIsZero() {
+            return AmmoTypes == ProjectileID.None;
+        }
+        /// <summary>
         /// 是否可以进行手动换弹操作，返回<see langword="false"/>阻止玩家进行换弹操作
         /// </summary>
         /// <returns></returns>
@@ -224,13 +230,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 return false;
             }
 
-            if (Projectile.IsOwnedByLocalPlayer() && CWRKeySystem.KreLoad_Key.JustPressed) {
-                if (AmmoState.CurrentAmount <= 0) {
-                    AmmoState = Owner.GetAmmoState(Item.useAmmo);//惰性检测一下
-                }
-                if (AmmoState.CurrentAmount <= 0 && !Owner.CWR().uiMouseInterface && kreloadTimeValue <= 0) {
-                    HandleEmptyAmmoEjection();
-                }
+            if (Projectile.IsOwnedByLocalPlayer() && CWRKeySystem.KreLoad_Key.JustPressed 
+                && CurrentAmountIsZero() && !ModOwner.uiMouseInterface && kreloadTimeValue <= 0) {
+                HandleEmptyAmmoEjection();
             }
 
             bool canReload = kreloadTimeValue == 0
@@ -298,6 +300,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             return Owner.GetPlayerStabilityCenter() + FeederOffsetPos + handOffset;
         }
 
+        public override void Initialize() {
+            InitializeMagazine();
+            AmmoViewUI.Instance.LoadAmmos(ModItem);
+        }
+
         /// <summary>
         /// 初始化弹匣状态
         /// </summary>
@@ -309,27 +316,16 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                     ModItem.MagazineContents[i] = new Item();
                 }
             }
-            if (Item.type != ItemID.None) {
-                IsKreload = ModItem.IsKreload;
-                if (!MagazineSystem) {
-                    IsKreload = true;
-                }
-            }
-            if (!_initialize) {
-                AmmoViewUI.Instance.LoadAmmos(ModItem);
-                _initialize = true;
+            IsKreload = ModItem.IsKreload;
+            if (!MagazineSystem) {
+                IsKreload = true;
             }
         }
         /// <summary>
         /// 设置自动换弹，在一定条件下让玩家开始换弹，这个方法一般不需要手动调用，枪械会在合适的时候自行调用该逻辑
         /// </summary>
         protected void SetAutomaticCartridgeChange(bool ignoreKreLoad = false) {
-            //这个判断行为被移动到发射函数中
-            //if (AmmoState.CurrentAmount == 0) {
-            //    AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态以保证换弹流畅
-            //}
-
-            if ((!IsKreload || ignoreKreLoad) && kreloadTimeValue <= 0 && AmmoState.CurrentAmount > 0
+            if ((!IsKreload || ignoreKreLoad) && kreloadTimeValue <= 0 && !CurrentAmountIsZero()
                 && ModItem.NoKreLoadTime == 0 && !CartridgeHolderUI.Instance.hoverInMainPage
                 && OffsetPos.Length() <= 0.6f && Math.Abs(OffsetRot) <= 0.02f) {
                 OnKreload = true;
@@ -481,31 +477,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         #endregion
 
-        public override BitsByte SandBitsByte(BitsByte flags) {
-            flags = base.SandBitsByte(flags);
-            flags[5] = IsKreload;
-            flags[6] = ManualReloadStart;
-            flags[7] = automaticPolishingInShootStartFarg;
-            return flags;
-        }
-
-        public override void ReceiveBitsByte(BitsByte flags) {
-            base.ReceiveBitsByte(flags);
-            IsKreload = flags[5];
-            ManualReloadStart = flags[6];
-            automaticPolishingInShootStartFarg = flags[7];
-        }
-
-        public override void NetHeldReceive(BinaryReader reader) {
-            ShootCoolingValue = reader.ReadSingle();
-            BulletNum = reader.ReadInt32();
-        }
-
-        public override void NetHeldSend(BinaryWriter writer) {
-            writer.Write(ShootCoolingValue);
-            writer.Write(BulletNum);
-        }
-
         protected override void SetGunBodyInFire() {
             //检测一下IsKreload，防止枪械在换弹状态切换的那一帧发生动画闪烁。同时要检测一下ASIFR，否则会让这个字段被设置为ture的枪械在待换弹状态下脱手
             if (!IsKreload && OffsetPos.Length() <= 0.6f && Math.Abs(OffsetRot) <= 0.02f && !InOwner_HandState_AlwaysSetInFireRoding) {
@@ -570,7 +541,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
                 if (DownLeft) {
                     SetGunBodyInFire();
-                    if (IsKreload) {// && Projectile.IsOwnedByLocalPlayer()
+                    if (IsKreload) {
                         if (!onFire) {
                             oldSetRoting = ToMouseA;
                         }
@@ -584,7 +555,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 if (DownRight && !onFire && CanRightClick && SafeMousetStart
                     && (!CartridgeHolderUI.Instance.hoverInMainPage || SafeMousetStart2)) {//Owner.PressKey()
                     SetGunBodyInFire();
-                    if (IsKreload) {//&& Projectile.IsOwnedByLocalPlayer()
+                    if (IsKreload) {
                         if (!onFireR) {
                             oldSetRoting = ToMouseA;
                         }
@@ -686,11 +657,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
             if (DownLeft) {
                 if (!IsKreload && LoadingReminder) {
-                    if (!Owner.CWR().uiMouseInterface && kreloadTimeValue <= 0) {
-                        AmmoState = Owner.GetAmmoState(Item.useAmmo);//更新一次弹药状态
-                        if (AmmoState.CurrentAmount <= 0) {
-                            HandleEmptyAmmoEjection();
-                        }
+                    if (!ModOwner.uiMouseInterface && kreloadTimeValue <= 0 && CurrentAmountIsZero()) {
+                        HandleEmptyAmmoEjection();
                     }
                     LoadingReminder = false;
                 }
@@ -705,8 +673,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             }
 
             PostInOwnerUpdate();
-            //出于网络性能考虑取消每帧发送的行为
-            //Projectile.netUpdate = true;
         }
 
         /// <summary>
@@ -1014,6 +980,31 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
                 ModItem.IsKreload = false;
             }
             BulletNum = 0;
+        }
+
+        public override BitsByte SandBitsByte(BitsByte flags) {
+            flags = base.SandBitsByte(flags);
+            flags[5] = IsKreload;
+            flags[6] = ManualReloadStart;
+            flags[7] = automaticPolishingInShootStartFarg;
+            return flags;
+        }
+
+        public override void ReceiveBitsByte(BitsByte flags) {
+            base.ReceiveBitsByte(flags);
+            IsKreload = flags[5];
+            ManualReloadStart = flags[6];
+            automaticPolishingInShootStartFarg = flags[7];
+        }
+
+        public override void NetHeldReceive(BinaryReader reader) {
+            ShootCoolingValue = reader.ReadSingle();
+            BulletNum = reader.ReadInt32();
+        }
+
+        public override void NetHeldSend(BinaryWriter writer) {
+            writer.Write(ShootCoolingValue);
+            writer.Write(BulletNum);
         }
 
         #region Utils

@@ -354,14 +354,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         public override bool PreUpdate() {
-            if (!CheckAlive()) {
-                Projectile.Kill();
-                return false;
-            }
             SetHeld();
-            ModItem = Item.CWR();
-            ModOwner = Owner.CWR();
-            CalOwner = Owner.Calamity();
             UpdateSafeMouseInterfaceValue();
             if (CanFire && _safeMouseInterfaceValue) {
                 SetWeaponOccupancyStatus();
@@ -385,22 +378,28 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
             Time++;
         }
 
-        public virtual bool CheckAlive() {
-            bool heldBool1 = Item.type != targetCayItem;
-            bool heldBool2 = Item.type != targetCWRItem;
-            if (CWRServerConfig.Instance.WeaponOverhaul) {//如果开启了强制替换
-                if (heldBool1) {//只需要判断原版的物品
+        public override bool ExtraPreSet() {
+            if (CWRServerConfig.Instance.WeaponOverhaul) { //如果开启了强制替换
+                if (Item.type != targetCayItem) { //只需要判断原版的物品
+                    Projectile.Kill();
                     return false;
                 }
             }
-            else {//如果没有开启强制替换
-                if (heldBool2) {
-                    return false;
-                }
+            else if (Item.type != targetCWRItem) {// 如果没有开启强制替换
+                Projectile.Kill();
+                return false;
             }
-            return !Owner.CCed && Owner.active && !Owner.dead;
-        }
 
+            if (Owner.CCed || !Owner.active || Owner.dead) {
+                Projectile.Kill();
+                return false;
+            }
+
+            ModItem = Item.CWR();
+            ModOwner = Owner.CWR();
+            CalOwner = Owner.Calamity();
+            return true;
+        }
         public virtual void InOwner() {
 
         }
