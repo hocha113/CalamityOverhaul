@@ -15,23 +15,15 @@ namespace CalamityOverhaul.Content.UIs
         public static CartridgeHolderUI Instance => UIHandleLoader.GetUIHandleOfType<CartridgeHolderUI>();
         public static Texture2D TextureValue;
         public static float JARSengs;
-        private Item handItem => player.GetItem();
-        private int bulletNum => player.GetItem().CWR().NumberBullets;
+        private Item weapon => player.GetItem();
+        private int bulletNum => weapon.CWR().NumberBullets;
         private float otherPotData;
-        private int Time;
         internal int Weith;
         internal int Height;
-        public override bool Active {
-            get {
-                if (!CWRServerConfig.Instance.MagazineSystem) {
-                    return false;
-                }
-                return handItem.type == ItemID.None ? false : handItem.CWR().HasCartridgeHolder;
-            }
-        }
+        public override bool Active => CWRServerConfig.Instance.MagazineSystem && CWRLoad.ItemHasCartridgeHolder[weapon.type];
 
         public override void Update() {
-            CWRItems cwrItem = handItem.CWR();
+            CWRItems cwrItem = weapon.CWR();
             if (TextureValue != null) {
                 UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, TextureValue.Width, TextureValue.Height);
                 if (cwrItem.CartridgeType == CartridgeUIEnum.Magazines)
@@ -69,12 +61,10 @@ namespace CalamityOverhaul.Content.UIs
             }
 
             AmmoViewUI.Instance.Update();
-
-            Time++;
         }
 
         public void Initialize() {
-            CWRItems cwrItem = handItem.CWR();
+            CWRItems cwrItem = weapon.CWR();
             if (cwrItem.CartridgeType == CartridgeUIEnum.CartridgeHolder) {
                 DrawPosition = new Vector2(20, Main.screenHeight - 100);
                 string key = "BulletCard";
@@ -91,7 +81,7 @@ namespace CalamityOverhaul.Content.UIs
                 if (cwrItem.SpecialAmmoState == SpecialAmmoStateEnum.dragonBreath) {
                     key2 = "_dragonBreath";
                 }
-                if (handItem.useAmmo == AmmoID.Rocket) {
+                if (weapon.useAmmo == AmmoID.Rocket) {
                     key = "GrenadeRound";
                 }
                 TextureValue = CWRUtils.GetT2DValue($"CalamityOverhaul/Assets/UIs/{key}" + key2);
@@ -147,7 +137,7 @@ namespace CalamityOverhaul.Content.UIs
                 AmmoViewUI.Instance.Draw(spriteBatch);
             }
 
-            CWRItems cwrItem = handItem.CWR();
+            CWRItems cwrItem = weapon.CWR();
             if (cwrItem.CartridgeType == CartridgeUIEnum.CartridgeHolder) {
                 spriteBatch.Draw(TextureValue, DrawPosition, null, Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
                 DrawToolp(spriteBatch, cwrItem);

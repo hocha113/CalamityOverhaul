@@ -24,6 +24,7 @@ using CalamityMod.NPCs.StormWeaver;
 using CalamityMod.NPCs.SupremeCalamitas;
 using CalamityMod.NPCs.Yharon;
 using CalamityMod.Projectiles.Typeless;
+using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Placeable;
@@ -277,6 +278,10 @@ namespace CalamityOverhaul
         /// </summary>
         internal static Dictionary<int, bool> ItemIsGunAndMustConsumeAmmunition { get; private set; } = [];
         /// <summary>
+        /// 该枪械是否拥有弹匣
+        /// </summary>
+        internal static Dictionary<int, bool> ItemHasCartridgeHolder { get; private set; } = [];
+        /// <summary>
         /// 获取一个枪械的后坐力数值
         /// </summary>
         internal static Dictionary<int, float> ItemIsGunAndGetRecoilValue { get; private set; } = [];
@@ -477,6 +482,7 @@ namespace CalamityOverhaul
                 ItemIsGunAndMustConsumeAmmunition[itemType] = false;
                 ItemIsGunAndGetRecoilValue[itemType] = 1.2f;
                 ItemIsGunAndGetRecoilLocKey[itemType] = "";
+                ItemHasCartridgeHolder[itemType] = false;
                 ItemIsBow[itemType] = false;
                 ItemIsBowAndArrowNum[itemType] = 1;
                 ItemIsRanged[itemType] = false;
@@ -490,12 +496,16 @@ namespace CalamityOverhaul
                         WallToItem.Add(item.createWall, item.type);
                     }
 
-                    string[] snyOmig = item.CWR().OmigaSnyContent;
+                    CWRItems cwrItem = item.CWR();
+
+                    string[] snyOmig = cwrItem.OmigaSnyContent;
                     if (snyOmig != null) {
                         ItemIDToOmigaSnyContent[itemType] = snyOmig;
                     }
 
-                    int heldProjType = item.CWR().heldProjType;
+                    ItemHasCartridgeHolder[itemType] = cwrItem.HasCartridgeHolder;
+
+                    int heldProjType = cwrItem.heldProjType;
                     if (heldProjType > 0) {
                         Projectile heldProj = new Projectile();
                         heldProj.SetDefaults(heldProjType);
