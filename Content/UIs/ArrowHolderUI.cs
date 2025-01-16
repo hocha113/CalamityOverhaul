@@ -1,11 +1,9 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.OtherMods.ImproveGame;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.UIs
 {
@@ -18,13 +16,8 @@ namespace CalamityOverhaul.Content.UIs
         private int Weith;
         private int Height;
         public override void Update() {
-            if (ammo == null) {
-                Weith = Texture.Width;
-                Height = Texture.Height;
-            }
-            else {
-                Weith = Height = 32;
-            }
+            Weith = Texture.Width;
+            Height = Texture.Height;
             int arrowDrawStackCount = ammo.stack;
             if (arrowDrawStackCount > 6) {
                 arrowDrawStackCount = 6;
