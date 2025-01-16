@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         /// </summary>
         protected bool ManualReloadStart { get; private set; }
 
-        protected float loadingAA_VolumeValue => CWRServerConfig.Instance.LoadingAA_Volume;
+        private static float loadingAA_VolumeValue => CWRServerConfig.Instance.LoadingAA_Volume;
 
         #endregion
         /// <summary>

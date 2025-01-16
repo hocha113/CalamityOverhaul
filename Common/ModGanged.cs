@@ -88,6 +88,9 @@ namespace CalamityOverhaul.Common
 
         public static MethodBase calamityUtils_GetReworkedReforge_Method;
 
+        public static ModConfig LuiAFKConfig_ConfigInstance;
+        public static FieldInfo LuiAFKConfig_RangerAmmoInfo;
+
         internal static bool InfernumModeOpenState =>
             CWRMod.Instance.infernum == null ? false : (bool)CWRMod.Instance.infernum.Call("GetInfernumActive");
         #endregion
@@ -105,23 +108,33 @@ namespace CalamityOverhaul.Common
             return reset;
         }
 
-        private static string text1 => VaultUtils.Translation("未成功加载", "Failed load");
+        private static string FailedLoadMessage => VaultUtils.Translation("未成功加载", "Failed load");
 
-        private static string text2 => VaultUtils.Translation("是否是", "whether it is");
+        private static string VerificationMessage => VaultUtils.Translation("是否是", "whether it is");
 
-        private static string text3 => VaultUtils.Translation("已经改动?", "Has it been changed?");
+        private static string ChangeStatusMessage => VaultUtils.Translation("已经改动?", "Has it been changed?");
 
-        private static string text4 => VaultUtils.Translation("未加载模组", "The mod is not loaded");
+        private static string ModNotLoadedMessage => VaultUtils.Translation("未加载模组", "The mod is not loaded");
 
-        private static void Domp1(string value1, string value2) {
-            CWRMod.Instance.Logger.Info($"{text1} {value1} {text2} {value2} {text3}");
-        }
+        private static void LogFailedLoad(string value1, string value2) 
+            => CWRMod.Instance.Logger.Info($"{FailedLoadMessage} {value1} {VerificationMessage} {value2} {ChangeStatusMessage}");
 
-        private static void Domp2(string value1) {
-            CWRMod.Instance.Logger.Info($"{text4} {value1}");
-        }
+        private static void LogModNotLoaded(string value1) => CWRMod.Instance.Logger.Info($"{ModNotLoadedMessage} {value1}");
 
         void ICWRLoader.LoadData() {
+            #region
+            if (CWRMod.Instance.luiafk != null) {
+                Type luiAFKConfigType = GetTargetTypeInStringKey(GetModType(CWRMod.Instance.luiafk), "LuiAFKConfig");
+                LuiAFKConfig_RangerAmmoInfo = luiAFKConfigType.GetField("rangerAmmo", BindingFlags.Public | BindingFlags.Instance);
+                if (LuiAFKConfig_RangerAmmoInfo == null) {
+                    LogFailedLoad("LuiAFKConfig_RangerAmmoInfo", "miningcracks_take_on_luiafk.Config.LuiAFKConfig.rangerAmmo");
+                }
+            }
+            else {
+                LogModNotLoaded("miningcracks_take_on_luiafk");
+            }
+            #endregion
+
             #region weaponOut
             if (CWRMod.Instance.weaponOut != null) {
                 weaponOutCodeTypes = AssemblyManager.GetLoadableTypes(CWRMod.Instance.weaponOut.Code);
@@ -144,7 +157,7 @@ namespace CalamityOverhaul.Common
                     CWRHook.Add(weaponOut_WeaponLayer_1_Method, On_MP_Draw_1_Hook);
                 }
                 else {
-                    Domp1("weaponOut_WeaponLayer_1_Method", "WeaponLayer1.Draw");
+                    LogFailedLoad("weaponOut_WeaponLayer_1_Method", "WeaponLayer1.Draw");
                 }
 
                 if (weaponOut_WeaponLayer_2_Type != null) {
@@ -154,11 +167,11 @@ namespace CalamityOverhaul.Common
                     CWRHook.Add(weaponOut_WeaponLayer_2_Method, On_MP_Draw_2_Hook);
                 }
                 else {
-                    Domp1("weaponOut_WeaponLayer_2_Method", "WeaponLayer12.Draw");
+                    LogFailedLoad("weaponOut_WeaponLayer_2_Method", "WeaponLayer12.Draw");
                 }
             }
             else {
-                Domp2("WeaponOut");
+                LogModNotLoaded("WeaponOut");
             }
             #endregion
 
@@ -176,14 +189,14 @@ namespace CalamityOverhaul.Common
                         .GetMethod("ModifyDrawInfo", BindingFlags.Instance | BindingFlags.Public);
                 }
                 else {
-                    Domp1("weaponDisplay_ModifyDrawInfo_Method", "WeaponDisplayPlayer.ModifyDrawInfo");
+                    LogFailedLoad("weaponDisplay_ModifyDrawInfo_Method", "WeaponDisplayPlayer.ModifyDrawInfo");
                 }
                 if (weaponDisplay_ModifyDrawInfo_Method != null) {
                     CWRHook.Add(weaponDisplay_ModifyDrawInfo_Method, On_MP_Draw_3_Hook);
                 }
             }
             else {
-                Domp2("WeaponDisplay");
+                LogModNotLoaded("WeaponDisplay");
             }
             #endregion
 
@@ -202,14 +215,14 @@ namespace CalamityOverhaul.Common
                         .GetMethod("ModifyDrawInfo", BindingFlags.Instance | BindingFlags.Public);
                 }
                 else {
-                    Domp1("weaponDisplayLite_ModifyDrawInfo_Method", "WeaponDisplayPlayerLite.ModifyDrawInfo");
+                    LogFailedLoad("weaponDisplayLite_ModifyDrawInfo_Method", "WeaponDisplayPlayerLite.ModifyDrawInfo");
                 }
                 if (weaponDisplayLite_ModifyDrawInfo_Method != null) {
                     CWRHook.Add(weaponDisplayLite_ModifyDrawInfo_Method, On_MP_Draw_5_Hook);
                 }
             }
             else {
-                Domp2("WeaponDisplayLite");
+                LogModNotLoaded("WeaponDisplayLite");
             }
 
             #endregion
@@ -245,11 +258,11 @@ namespace CalamityOverhaul.Common
                         CWRHook.Add(trO_PlayerHoldOutAnimation_Method, On_ShouldForceUseAnim_Hook);
                     }
                     else {
-                        Domp1("trO_PlayerHoldOutAnimation_Method", "PlayerHoldOutAnimation.ShouldForceUseAnim");
+                        LogFailedLoad("trO_PlayerHoldOutAnimation_Method", "PlayerHoldOutAnimation.ShouldForceUseAnim");
                     }
                 }
                 else {
-                    Domp1("trO_PlayerHoldOutAnimation_Type", "TerrariaOverhaul.PlayerHoldOutAnimation");
+                    LogFailedLoad("trO_PlayerHoldOutAnimation_Type", "TerrariaOverhaul.PlayerHoldOutAnimation");
                 }
 
                 if (trO_CrosshairSystem_Type != null) {
@@ -258,11 +271,11 @@ namespace CalamityOverhaul.Common
 
                     }
                     else {
-                        Domp1("trO_Crosshair_AddImpulse_Method", "TerrariaOverhaul.CrosshairSystem.AddImpulse");
+                        LogFailedLoad("trO_Crosshair_AddImpulse_Method", "TerrariaOverhaul.CrosshairSystem.AddImpulse");
                     }
                 }
                 else {
-                    Domp1("trO_CrosshairSystem_Type", "TerrariaOverhaul.CrosshairSystem");
+                    LogFailedLoad("trO_CrosshairSystem_Type", "TerrariaOverhaul.CrosshairSystem");
                 }
 
                 if (trO_itemPowerAttacksTypes != null) {
@@ -271,11 +284,11 @@ namespace CalamityOverhaul.Common
                         CWRHook.Add(trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method, On_AttemptPowerAttackStart_Hook);
                     }
                     else {
-                        Domp1("trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method", "TerrariaOverhaul.ItemPowerAttacks.AttemptPowerAttackStart");
+                        LogFailedLoad("trO_itemPowerAttacksTypes_AttemptPowerAttackStart_Method", "TerrariaOverhaul.ItemPowerAttacks.AttemptPowerAttackStart");
                     }
                 }
                 else {
-                    Domp1("trO_itemPowerAttacksTypes", "TerrariaOverhaul.ItemPowerAttacks");
+                    LogFailedLoad("trO_itemPowerAttacksTypes", "TerrariaOverhaul.ItemPowerAttacks");
                 }
 
                 if (trO_Broadsword_Type != null) {
@@ -284,15 +297,15 @@ namespace CalamityOverhaul.Common
                         CWRHook.Add(trO_Broadsword_ShouldApplyItemOverhaul_Method, On_ShouldApplyItemOverhaul_Hook);
                     }
                     else {
-                        Domp1("trO_Broadsword_ShouldApplyItemOverhaul_Method", "TerrariaOverhaul.Broadsword.ShouldApplyItemOverhaul");
+                        LogFailedLoad("trO_Broadsword_ShouldApplyItemOverhaul_Method", "TerrariaOverhaul.Broadsword.ShouldApplyItemOverhaul");
                     }
                 }
                 else {
-                    Domp1("trO_Broadsword_Type", "TerrariaOverhaul.Broadsword");
+                    LogFailedLoad("trO_Broadsword_Type", "TerrariaOverhaul.Broadsword");
                 }
             }
             else {
-                Domp2("TerrariaOverhaul");
+                LogModNotLoaded("TerrariaOverhaul");
             }
 
             #endregion
@@ -303,7 +316,7 @@ namespace CalamityOverhaul.Common
 
             }
             else {
-                Domp2("CatalystMod");
+                LogModNotLoaded("CatalystMod");
             }
 
             #endregion
@@ -327,18 +340,18 @@ namespace CalamityOverhaul.Common
                     CWRHook.Add(FGS_Utils_OnSpawnEnchCanAffectProjectile_Method, On_OnSpawnEnchCanAffectProjectile_Hook);
                 }
                 else {
-                    Domp1("FGS_Utils_OnSpawnEnchCanAffectProjectile_Method", "FargoSoulsUtil.OnSpawnEnchCanAffectProjectile");
+                    LogFailedLoad("FGS_Utils_OnSpawnEnchCanAffectProjectile_Method", "FargoSoulsUtil.OnSpawnEnchCanAffectProjectile");
                 }
 
                 if (FGS_FGSGlobalProj_PostAI_Method != null) {
                     CWRHook.Add(FGS_FGSGlobalProj_PostAI_Method, On_FGS_FGSGlobalProj_PostAI_Hook);
                 }
                 else {
-                    Domp1("FGS_FGSGlobalProj_PostAI_Method", "FargoSoulsGlobalProjectile.PostAI");
+                    LogFailedLoad("FGS_FGSGlobalProj_PostAI_Method", "FargoSoulsGlobalProjectile.PostAI");
                 }
             }
             else {
-                Domp2("FargowiltasSouls");
+                LogModNotLoaded("FargowiltasSouls");
             }
 
             #endregion
@@ -360,11 +373,11 @@ namespace CalamityOverhaul.Common
                     CWRHook.Add(coolerItemVisualEffect_Method, On_MP_Draw_4_Hook);
                 }
                 else {
-                    Domp1("coolerItemVisualEffect_Method", "MeleeModifyPlayer.ModifyDrawInfo");
+                    LogFailedLoad("coolerItemVisualEffect_Method", "MeleeModifyPlayer.ModifyDrawInfo");
                 }
             }
             else {
-                Domp2("CoolerItemVisualEffect");
+                LogModNotLoaded("CoolerItemVisualEffect");
             }
 
             #endregion
@@ -378,11 +391,11 @@ namespace CalamityOverhaul.Common
                         .GetField("recursionCraftingDepth", BindingFlags.Public | BindingFlags.Instance);
                 }
                 else {
-                    Domp1("MagicStorage_MagicStorageConfig_Typ", "MagicStorage.MagicStorageConfig");
+                    LogFailedLoad("MagicStorage_MagicStorageConfig_Typ", "MagicStorage.MagicStorageConfig");
                 }
             }
             else {
-                Domp2("MagicStorage");
+                LogModNotLoaded("MagicStorage");
             }
 
             #endregion
@@ -396,7 +409,7 @@ namespace CalamityOverhaul.Common
                     CWRHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
                 }
                 else {
-                    Domp1("BossHealthBarManager_Draw_Method", "CalamityMod.BossHealthBarManager");
+                    LogFailedLoad("BossHealthBarManager_Draw_Method", "CalamityMod.BossHealthBarManager");
                 }
 
                 calamityUtils_GetReworkedReforge_Method = typeof(CalamityUtils)
@@ -405,7 +418,7 @@ namespace CalamityOverhaul.Common
                     CWRHook.Add(calamityUtils_GetReworkedReforge_Method, OnGetReworkedReforgeHook);
                 }
                 else {
-                    Domp1("calamityUtils_GetReworkedReforge_Method", "CalamityUtils.GetReworkedReforge");
+                    LogFailedLoad("calamityUtils_GetReworkedReforge_Method", "CalamityUtils.GetReworkedReforge");
                 }
             }
             #endregion
@@ -425,6 +438,8 @@ namespace CalamityOverhaul.Common
         }
 
         void ICWRLoader.UnLoadData() {
+            LuiAFKConfig_ConfigInstance = null;
+            LuiAFKConfig_RangerAmmoInfo = null;
             weaponOutCodeTypes = null;
             weaponOut_DrawToolType = null;
             on_weaponOut_DrawTool_Method = null;
@@ -459,6 +474,34 @@ namespace CalamityOverhaul.Common
             MS_Config_Type = null;
             MS_Config_recursionCraftingDepth_FieldInfo = null;
             calamityUtils_GetReworkedReforge_Method = null;
+        }
+
+        //LuiAFK的代码写的是真难绷，实现无限弹药的效果，不用CanConsumeAmmo，去用OnConsumeAmmo，
+        //检测符合条件在OnConsumeAmmo里面给弹药数量++，以抵消原版的弹药数量消耗，玛德你是一点都不想照顾其他模组对消耗状态的判断啊，活全家了你
+        //我是真无语要适配你这个效果还得专门反射，那配置也写的幽默的一笔，改动一个弹药不消耗上限还得重载模组
+        internal static bool LuiAFKSetAmmoIsNoConsume(Item ammoItem) {
+            if (CWRMod.Instance.luiafk == null) {
+                return false;
+            }
+
+            if (LuiAFKConfig_RangerAmmoInfo == null) {
+                return false;
+            }
+
+            try {
+                if (LuiAFKConfig_ConfigInstance == null) {
+                    LuiAFKConfig_ConfigInstance = CWRMod.Instance.luiafk.Find<ModConfig>("LuiAFKConfig");
+                }//懒加载一下
+                int rangerAmmo = (int)LuiAFKConfig_RangerAmmoInfo.GetValue(LuiAFKConfig_ConfigInstance);
+                if (ammoItem.stack >= rangerAmmo) {
+                    return true;
+                }
+            }
+            catch {
+                return false;
+            }
+
+            return false;
         }
 
         internal static void On_EditEnrageTooltips_Hook(On_Tooltips_Dalegate orig, Item item, List<TooltipLine> tooltips) {

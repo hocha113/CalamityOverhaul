@@ -233,6 +233,7 @@ namespace CalamityOverhaul.Content
             if (!CWRServerConfig.Instance.MagazineSystem) {
                 IsKreload = true;
             }
+            SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
             AmmoViewUI.Instance.LoadAmmos(this);
         }
 

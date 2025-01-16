@@ -48,17 +48,16 @@ namespace CalamityOverhaul.Content.UIs
 
                 if (keyRightPressState == KeyPressState.Pressed && mr2) {
                     SoundEngine.PlaySound(CWRSound.loadTheRounds, player.Center);
-                    foreach (Item i in cwrItem.MagazineContents) {
-                        if (i.type == ItemID.None || i.stack <= 0) {
+                    foreach (Item ammo in cwrItem.MagazineContents) {
+                        if (ammo.type == ItemID.None || ammo.stack <= 0) {
                             continue;
                         }
-                        if (!i.CWR().AmmoProjectileReturn) {
+                        if (!ammo.CWR().AmmoProjectileReturn) {
                             continue;
                         }
-                        player.QuickSpawnItem(player.FromObjectGetParent(), new Item(i.type), i.stack);
+                        player.QuickSpawnItem(player.FromObjectGetParent(), new Item(ammo.type), ammo.stack);
                     }
                     cwrItem.InitializeMagazine();
-                    cwrItem.SpecialAmmoState = SpecialAmmoStateEnum.ordinary;
                 }
             }
 

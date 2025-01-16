@@ -54,7 +54,12 @@ namespace CalamityOverhaul.Content.GunCustomization.UI.AmmoView
                         player.QuickSpawnItem(player.FromObjectGetParent(), Ammo);
                     }
 
-                    AmmoViewUI.Instance.LoadAmmos(cwrItem);
+                    if (cwrItem.MagazineContents.Length > 0) {
+                        AmmoViewUI.Instance.LoadAmmos(cwrItem);
+                    }
+                    else {
+                        cwrItem.InitializeMagazine();
+                    }
                 }
             }
             else {
