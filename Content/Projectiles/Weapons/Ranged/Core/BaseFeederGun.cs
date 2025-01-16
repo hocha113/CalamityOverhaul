@@ -129,11 +129,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
 
         public LoadingAmmoAnimationEnum LoadingAmmoAnimation = LoadingAmmoAnimationEnum.None;
 
-        /// <summary>
-        /// 是否启用默认的换弹行为，默认为<see langword="true"/>
-        /// </summary>
-        public bool NO_EEMONG_LOADINGNONESET = true;
-
         public LoadingAA_None_Struct LoadingAA_None = new LoadingAA_None_Struct();
 
         public LoadingAA_Shotgun_Struct LoadingAA_Shotgun = new LoadingAA_Shotgun_Struct();
@@ -350,7 +345,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         private void Get_LoadingAmmoAnimation_PreInOwnerUpdate() {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
                 LoadingAnimation(LoadingAA_None.Roting, LoadingAA_None.gunBodyX, LoadingAA_None.gunBodyY);
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
@@ -364,7 +359,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         private void Get_LoadingAmmoAnimation_PostInOwnerUpdate() {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
                 return;
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Revolver) {
@@ -378,7 +373,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         private bool? Get_LoadingAmmoAnimation_PreOnKreloadEvent() {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
                 return true;
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Handgun) {
@@ -408,7 +403,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         private bool Get_LoadingAmmoAnimation_PreConsumeAmmo() {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
                 return true;
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
@@ -418,7 +413,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         private bool Get_LoadingAmmoAnimation_KreLoadFulfill() {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
                 return true;
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
@@ -447,7 +442,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Ranged.Core
         }
 
         private bool? Get_LoadingAmmoAnimation_PreReloadEffects(int time, int maxTime) {
-            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None && NO_EEMONG_LOADINGNONESET) {
+            if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.None) {
                 return true;
             }
             else if (LoadingAmmoAnimation == LoadingAmmoAnimationEnum.Shotgun) {
